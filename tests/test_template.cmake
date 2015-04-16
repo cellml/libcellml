@@ -7,7 +7,7 @@ set(CURRENT_TEST <test-name>)
 # which will run the tests matching this category-label.
 # Can be left empty (or just not set)
 set(CURRENT_CATEGORY <category-label>)
-list(APPEND YAWOT_TESTS ${CURRENT_TEST})
+list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 # Remember this is relative to the CMakeLists.txt file in 
 # the tests directory
 set(${CURRENT_TEST}_SRCS
