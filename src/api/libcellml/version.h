@@ -21,7 +21,7 @@ limitations under the License.Some license of other
 
 #include "libcellml/libcellml_export.h"
 
-//! Everything in LibCellML is in this namespace.
+//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
