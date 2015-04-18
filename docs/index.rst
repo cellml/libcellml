@@ -15,6 +15,7 @@ Contents:
 
    roadmap
    usecases
+   object_model
 
 
 
