@@ -1,6 +1,8 @@
 
 # include gtest so we can make use of the gtest_main target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.7.0)
+mark_as_advanced(gtest_disable_pthreads)
+mark_as_advanced(gtest_force_shared_crt)
 
 # Any tests included here must append the test name
 # to the LIBCELLML_TESTS list.  Any source files for the
