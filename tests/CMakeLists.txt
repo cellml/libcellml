@@ -1,6 +1,9 @@
 
 # include gtest so we can make use of the gtest_main target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.7.0)
+if(APPLE)
+  set_target_properties(gtest gtest_main PROPERTIES MACOSX_RPATH ON)
+endif()
 mark_as_advanced(gtest_disable_pthreads)
 mark_as_advanced(gtest_force_shared_crt)
 
