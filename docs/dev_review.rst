@@ -9,10 +9,15 @@ Check for the Green Tick
 
 Before accepting a tranche of work into the libCellML prime repository check that Buildbot has tested and passed the code.  The status of the code is shown in the last commit of a pushed group of commits in the pull request.  The last commit will have a red cross for a failed build or a green tick for a passed build.  Obviously make sure that the last commit has a green tick before merging.
 
+Comments Resolved
+=================
+
+All comments on the pull request and associated issue should be responded to and satisfied.  It is the reviewers responsibility to check that this has happened before merging the pull request.
+
 Coding Standard
 ===============
 
-Currently there is no coding standard set, but the google coding standard can be considered a baseline for the standard of code that is expected for libCellML.  See the coding standard document for deviations from this standard.
+Currently there is no coding standard set, but the google coding guideline can be considered a baseline for the standard of code that is expected for libCellML.  See the :doc:`Coding Standards <dev_coding_standard>` document for deviations from this guideline.
 
 Merging
 =======

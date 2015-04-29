@@ -22,8 +22,7 @@ Contents:
    dev_building_from_source
    dev_contribution
    dev_coding_standard
-
-
+   glossary
 
 Indices and tables
 ==================
