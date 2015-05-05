@@ -36,7 +36,16 @@ If an issue does not exist for the required work (e.g. implementation of a featu
 Topic Branch
 ============
 
-Create a local topic branch to complete the work required for the issue being addressed.  Before creating the topic branch pull the latest changes from the :term:`prime repository` develop branch.  It is recommended to create a topic branch for all work and keep the develop branch up-to-date with the :term:`prime repository` develop branch.  Doing this will make it easier to have multiple topic branches at once and keep them concurrent with the :term:`prime repository` develop branch.
+A topic or feature branch is a branch that is local to you (and anyone you collaborate with), it is branch that will not be available from the :term:`prime repository`.  All development work should be carried out on a topic branch, for example any major feature that you work on or minor bug fix.  Before creating a local topic branch pull the latest changes from the :term:`prime repository` develop branch.
+
+.. _libcellml-branching:
+.. figure:: images/libCellMLProcesses-GitBranching.png
+   :align: center
+   :alt: Git branching illustration
+
+   Git branching illustration
+
+Following this process will make it easier to have multiple topic branches at once and keep them in-sync with the :term:`prime repository` develop branch.  Which will in turn make it easier to manage multiple pull requests.
 
 The following Git command line commands show an example of how to create a topic branch for fixing a (hypothetical) bug described in `issue #46`::
 
@@ -57,7 +66,7 @@ For simple or obvious bugs which have fallen through the testing gaps just the i
 GitHub Pull Request
 ===================
 
-Once some changes have been made and local commits committed push your changes to your GitHub libcellml repository.  From there create a pull request from your topic branch to the :term:`prime repository` develop branch.  When creating the pull request make sure to add in the comment 'addresses issue #46' (of course replace the number 46 with the actual number of the issue you are addressing), or something to that effect.  This will create a link between the issue and the pull request enabling other people to see that you are working on this issue and comment on your work.  
+Once some changes have been made and local commits committed push your changes to your GitHub libcellml repository (refer to :numref:`Figure %s <libcellml-branching>`).  From there create a pull request from your topic branch to the :term:`prime repository` develop branch.  When creating the pull request make sure to add in the comment 'addresses issue #46' (of course replace the number 46 with the actual number of the issue you are addressing), or something to that effect.  This will create a link between the issue and the pull request enabling other people to see that you are working on this issue and comment on your work.
 
 The following Git command line commands show an example of how to add all files, commit the changes and push them to a GitHub repository for the first time::
 
