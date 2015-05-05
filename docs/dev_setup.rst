@@ -20,11 +20,10 @@ This document doesn't cover the process of satisfying these prerequisites, it is
 
 The goal here is to get a working copy of source code, tests, and documentation onto your PC so that you can begin development.  To make this happen you will need to fork the prime libCellML repository, make a clone onto your PC, and set up the Git remotes.  In **Figure 1** you can see a pictorial representation of what we are aiming to achieve.
 
-.. figure:: images/githubrepos.png
+.. figure:: images/libCellMLProcesses-GitHubRepos.png
    :align: center
-   :width: 600px
    :alt: Setup of Git repositories
-   
+
    **Figure 1**: Setup of repositories for development
 
 The four steps to getting set up are detailed below.
@@ -38,7 +37,7 @@ Login to GitHub using your credentials and got to ::
 
 Use the fork button to create a libcellml repository under your own account, see **Figure 2** for locating this button.
 
-.. figure:: images/forkbutton.png
+.. figure:: images/libCellMLProcesses-GitHubForkButton.png
    :align: center
    :alt: Fork button of libCellML repository
 
@@ -55,7 +54,7 @@ You now need to clone the libCellML repository to your PC.  You do this by going
 
 On the right hand side of the webpage on your fork of the repository you can get the link for cloning the repository to your PC, in our example::
 
-        git@github.com:andre/mapclient.git
+        git@github.com:andre/libcellml.git
 
 Now clone the repository::
 

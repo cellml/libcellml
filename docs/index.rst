@@ -16,11 +16,12 @@ Contents:
    roadmap
    usecases
    object_model
-   dev_review
    dev_setup
    dev_building
    dev_building_from_source
+   dev_testing_code
    dev_contribution
+   dev_review
    dev_coding_standard
    glossary
 

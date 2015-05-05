@@ -22,7 +22,7 @@ Note that a bug is just a type of issue, and that resolving the bug should have 
 :numref:`Figure %s <libcellml-development-process>` gives a graphical overview of the developer contribution process.  For more detail see the text below.
 
 .. _libcellml-development-process:
-.. figure:: images/libCellmlProcesses-DevelopmentProcess.png
+.. figure:: images/libCellMLProcesses-DevelopmentProcess.png
    :align: center
    :alt: Developer contribution process
 
