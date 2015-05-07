@@ -18,39 +18,45 @@ The libCellML codebase is hosted on GitHub and therefore Git is used to track ch
 
 This document doesn't cover the process of satisfying these prerequisites, it is left as an exercise for you (Google is your friend).  The remainder of this document assumes that these prerequisites have been met.  This document covers setup from the command line if you are using a GUI like 'GitHub for Windows' then you will need to adjust the commands for the GUI you are using.
 
-The goal here is to get a working copy of source code, tests, and documentation onto your PC so that you can begin development.  To make this happen you will need to fork the prime libCellML repository, make a clone onto your PC, and set up the Git remotes.  In **Figure 1** you can see a pictorial representation of what we are aiming to achieve.
+The goal here is to get a working copy of source code, tests, and documentation onto your PC so that you can begin development.  To make this happen you will need to fork the :term:`prime libCellML repository`, make a clone onto your PC, and set up the Git remotes.  In :numref:`fig_devSetup_githubRepos` you can see a pictorial representation of what we are aiming to achieve.
+
+.. _fig_devSetup_githubRepos:
 
 .. figure:: images/libCellMLProcesses-GitHubRepos.png
    :align: center
    :alt: Setup of Git repositories
 
-   **Figure 1**: Setup of repositories for development
+   Setup of repositories for development
 
 The four steps to getting set up are detailed below.
 
 Forking your own copy
 =====================
 
-Login to GitHub using your credentials and got to ::
+Login to GitHub using your credentials and go to::
 
    https://github.com/cellml/libcellml
 
-Use the fork button to create a libcellml repository under your own account, see **Figure 2** for locating this button.
+Use the fork button to create a libcellml repository under your own account, see :numref:`fig_devSetup_githubFork` for locating this button.
+
+.. _fig_devSetup_githubFork:
 
 .. figure:: images/libCellMLProcesses-GitHubForkButton.png
    :align: center
    :alt: Fork button of libCellML repository
 
-   **Figure 2** Fork button for libCellML repository
+   Fork button for libCellML repository
 
 Clone
 =====
 
-You now need to clone the libCellML repository to your PC.  You do this by going to your fork (in this example user *andre*'s fork) at:
+You now need to clone the libCellML repository to your PC.  You do this by going to your fork (in this example user *andre*'s fork) at::
 
-        https://github.com/andre/libcellml
+   https://github.com/andre/libcellml
 
-**Note**: Don't try and clone this location substitute your GitHub username for *andre*.  In all likelihood it doesn't exist.
+.. warning::
+
+   Don't try and clone this location substitute your GitHub username for *andre*.  In all likelihood it doesn't exist.
 
 On the right hand side of the webpage on your fork of the repository you can get the link for cloning the repository to your PC, in our example::
 
