@@ -7,8 +7,3 @@ The prime libCellML repository is located at: https://github.com/cellml/libcellm
 
 The documentation for the libCellML project is available at: http://libcellml.readthedocs.org/.
 
-Scope
-=====
-
-The purpose of libCellML is to create, manipulate, serialize, deserialize, validate and instantiate CellML models.  It is not concerned with retrieving CellML imports from external sources.
-
