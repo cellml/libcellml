@@ -1,3 +1,4 @@
+.. _libCellMLUseCases:
 
 =======================
 Use-cases for libCellML
@@ -72,3 +73,4 @@ Use-cases for libCellML
 #. Import CellML 1.0/1.1 models
 
 #. Export CellML 1.1 (and by extension CellML 1.0)
+
