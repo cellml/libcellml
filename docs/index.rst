@@ -18,7 +18,6 @@ Contents:
    object_model
    dev_setup
    dev_building
-   dev_building_from_source
    dev_testing_code
    dev_contribution
    dev_review

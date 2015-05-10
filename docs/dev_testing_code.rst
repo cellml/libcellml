@@ -9,5 +9,5 @@ If you wish to test some new code without having to create a pull request you ca
 
 The website http://www.htaccesstools.com/htpasswd-generator/ can be used if you do not have access to the htpasswd application.
 
-When your request has been dealt with you will be able to login to the `Buildbot <http://autotest.bioeng.auckland.ac.nz/libcellml-buildbot/builders>`_.
+When your request has been dealt with you will be able to login to the `Buildbot <http://autotest.bioeng.auckland.ac.nz/libcellml-buildbot/builders>`_ and submit code for testing.
 

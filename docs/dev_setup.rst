@@ -13,7 +13,7 @@ Overview
 
 The libCellML codebase is hosted on GitHub and therefore Git is used to track changes in the codebase.  Before you begin you will need to have a few prerequisites satisfied:
 
-#. Github user account (for the rest of this document we will call our user *andre*)
+#. GitHub user account (for the rest of this document we will call our user *andre*)
 #. Git installed
 
 This document doesn't cover the process of satisfying these prerequisites, it is left as an exercise for you (Google is your friend).  The remainder of this document assumes that these prerequisites have been met.  This document covers setup from the command line if you are using a GUI like 'GitHub for Windows' then you will need to adjust the commands for the GUI you are using.
@@ -67,7 +67,7 @@ Now clone the repository::
         cd <somewhere/you/keep/development/code>
         git clone git@github.com:andre/libcellml.git
 
-Note: Again, don't and clone this location substitute your username for *andre*.
+Note: Again, don't clone this location substitute your username for *andre*.
 
 Set Git remotes
 ===============

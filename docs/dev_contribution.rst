@@ -36,7 +36,7 @@ If an issue does not exist for the required work (e.g. implementation of a featu
 Topic Branch
 ============
 
-A topic or feature branch is a branch that is local to you (and anyone you collaborate with), it is branch that will not be available from the :term:`prime repository`.  All development work should be carried out on a topic branch, for example any major feature that you work on or minor bug fix.  Before creating a local topic branch pull the latest changes from the :term:`prime repository` develop branch.
+A topic or feature branch is a branch that is local to you (and anyone you collaborate with), it is a branch that will not be available from the :term:`prime repository`.  All development work should be carried out on a topic branch, for example any major feature that you work on or minor bug fix.  Before creating a local topic branch pull the latest changes from the :term:`prime repository` develop branch.
 
 .. _libcellml-branching:
 .. figure:: images/libCellMLProcesses-GitBranching.png
@@ -52,7 +52,7 @@ The following Git command line commands show an example of how to create a topic
    git fetch prime develop
    git checkout develop # Not required if already on develop branch
    git merge prime/develop
-   git checkout -b iss46
+   git checkout -b issue46
 
 Test Driven Development
 =======================
@@ -66,15 +66,15 @@ For simple or obvious bugs which have fallen through the testing gaps just the i
 GitHub Pull Request
 ===================
 
-Once some changes have been made and local commits committed push your changes to your GitHub libcellml repository (refer to :numref:`Figure %s <libcellml-branching>`).  From there create a pull request from your topic branch to the :term:`prime repository` develop branch.  When creating the pull request make sure to add in the comment 'addresses issue #46' (of course replace the number 46 with the actual number of the issue you are addressing), or something to that effect.  This will create a link between the issue and the pull request enabling other people to see that you are working on this issue and comment on your work.
+Once some changes have been made and local commits committed push your changes to your GitHub libCellML repository (refer to :numref:`Figure %s <libcellml-branching>`).  From there create a pull request from your topic branch to the :term:`prime repository` develop branch.  When creating the pull request make sure to add in the comment ``addresses issue #46`` (of course replace the number 46 with the actual number of the issue you are addressing), or something to that effect.  This will create a link between the issue and the pull request enabling other people to see that you are working on this issue and comment on your work.
 
 The following Git command line commands show an example of how to add all files, commit the changes and push them to a GitHub repository for the first time::
 
    git add .
    git commit -m "Appropiately descriptive message about the changes made."
-   git push -u origin iss46
+   git push -u origin issue46
 
-The 'git add' and 'git commit' commands should be obvious,  the 'git push' command sets the local branch 'iss46' to be linked with the remote branch 'iss46' in the origin (the default shorthand for your libCellML repository on GitHub) repository, this branch will be created in the origin repository if it doesn't already exist.  
+The ``git add`` and ``git commit`` commands should be obvious,  the ``git push`` command sets the local branch ``issue46`` to be linked with the remote branch ``issue46`` in the origin (the default shorthand for your libCellML repository on GitHub) repository, this branch will be created in the origin repository if it doesn't already exist.  
 
 To create a pull request from one GitHub repository to another follow the instructions `here <https://help.github.com/articles/creating-a-pull-request/>`_.
 
@@ -91,5 +91,5 @@ It may happen that submitted work is not reviewed immediately or the work is fin
 Completion
 ==========
 
-Once the owners of the :term:`prime repository` are satisfied that the work on the issue is complete and that the feedback has been addressed, one of the owners will post a comment on the issue notifying subscribers that they intend to merge the pull request.  If no further objections are raised the owner will merge an close the pull request as outlined in :doc:`Reveiw Process <dev_review>`.
+To complete the process it is required to have two owners of the :term:`prime repository` comment on the pull request that they are satisfied that the work on the issue is complete and also that the feedback has been addressed, in essence that they are "happy" to merge the submission.  One of the owners will then post a comment on the issue notifying subscribers that they intend to merge the pull request.  If no further objections are raised the owner will merge and close the pull request as outlined in :doc:`Review Process <dev_review>`.
 

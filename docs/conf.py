@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'libCellML'
-copyright = u'2014-2015, University of Auckland'
+copyright = u'2014-2015, libCellML Contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -203,7 +203,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   ('index', 'libCellML.tex', u'libCellML Documentation',
-   u'David Nickerson', 'manual'),
+   u'libCellML Contributors', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -233,7 +233,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'libcellml', u'libCellML Documentation',
-     [u'David Nickerson'], 1)
+     [u'libCellML Contributors'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -247,7 +247,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'libCellML', u'libCellML Documentation',
-   u'David Nickerson', 'libCellML', 'One line description of project.',
+   u'libCellML Contributors', 'libCellML', 'C++ library for processing CellML models.',
    'Miscellaneous'),
 ]
 
