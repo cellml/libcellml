@@ -15,7 +15,7 @@ Configuration
 
 The libCellML library uses the CMake build configuration tool to configure the library.  Version 3.2 or greater of CMake is required to configure libCellML.  Download and installation instructions are available from `CMake <http://www.cmake.org/>`_.
 
-The configuration options for the library are detailed in the following table.  The command line options can be set with the ``-D`` flag, like so ``-DBUILD_TYPE=Release``.  Please note that in CMake GUI Configuration applications the config variable is prefixed with ``LIBCELLML\_``
+The configuration options for the library are detailed in the following table.  The command line options can be set with the ``-D`` flag, like so ``-DBUILD_TYPE=Release``.  Please note that in CMake GUI Configuration applications the config variable is prefixed with ``LIBCELLML_``
 
 .. include:: dev_configuration_options.rst
 
