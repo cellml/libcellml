@@ -37,7 +37,6 @@ endif()
 # MEMCHECK ==> LIBCELLML_MEMCHECK
 set(_PARAM_ANNOTATION "Enable memcheck testing.")
 if(VALGRIND_FOUND)
-if(CMAKE_COMPILER_IS_GNUCXX)
   set( LIBCELLML_MEMCHECK ON CACHE BOOL ${_PARAM_ANNOTATION} )
 endif()
 if( MEMCHECK AND VALGRIND_FOUND )
@@ -45,7 +44,7 @@ if( MEMCHECK AND VALGRIND_FOUND )
 endif()
 
 # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS
-set(_PARAM_ANNOTATION "Enable build of automated libCellML tests.")
+set(_PARAM_ANNOTATION "Enable libCellML tests.")
 set( LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} )
 if( UNIT_TESTS )
   set( LIBCELLML_UNIT_TESTS "${UNIT_TESTS}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
@@ -56,7 +55,7 @@ if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
 endif()
 
 # TWAE ==> LIBCELLML_WARNINGS_AS_ERRORS -- Note: This excludes third party code, where warnings are never treated as errors.
-set(_PARAM_ANNOTATION "Treat warnings as errors (note: warnings in 3rd party code are never treated as errors)")
+set(_PARAM_ANNOTATION "Treat warnings as errors, this setting applies only to compilation units built by this project.")
 set( LIBCELLML_TREAT_WARNINGS_AS_ERRORS ON CACHE BOOL ${_PARAM_ANNOTATION} )
 if( TWAE )
   set( LIBCELLML_TREAT_WARNINGS_AS_ERRORS "${TWAE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
