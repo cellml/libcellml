@@ -73,7 +73,7 @@ def find_gcov():
         return gcov
     else:
         print("gcov NOT FOUND")
-        exit(2)
+        exit(4)
 
 def find_find():
     find = which('find')
@@ -81,7 +81,7 @@ def find_find():
         return find
     else:
         print("find NOT FOUND")
-        exit(2)
+        exit(3)
 
 def run_single_test(note_file, prefix):
     sys.stdout.write(' >> running gcov on:')

@@ -20,30 +20,35 @@ project(${PROJECT_NAME} CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(common)
+include(environmentchecks)
 
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
 
 # COVERAGE ==> LIBCELLML_COVERAGE
 set(_PARAM_ANNOTATION "Enable coverage testing.")
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(GCOV_FOUND)
   set( LIBCELLML_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION} )
 endif()
-if( COVERAGE AND CMAKE_COMPILER_IS_GNUCXX )
+if(COVERAGE AND GCOV_FOUND)
   set( LIBCELLML_COVERAGE "${COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
+elseif(COVERAGE)
+  message(WARNING "Coverage testing requested but gcov or it's requirements not found!")
 endif()
 
 # MEMCHECK ==> LIBCELLML_MEMCHECK
 set(_PARAM_ANNOTATION "Enable memcheck testing.")
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(VALGRIND_FOUND)
   set( LIBCELLML_MEMCHECK ON CACHE BOOL ${_PARAM_ANNOTATION} )
 endif()
-if( MEMCHECK AND CMAKE_COMPILER_IS_GNUCXX )
+if( MEMCHECK AND VALGRIND_FOUND )
   set( LIBCELLML_MEMCHECK "${MEMCHECK}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
+elseif(MEMCHECK)
+  message(WARNING "Memcheck testing requested but valgrind or it's requirements not found!")
 endif()
 
 # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS
-set(_PARAM_ANNOTATION "Enable build of automated libCellML tests.")
+set(_PARAM_ANNOTATION "Enable libCellML tests.")
 set( LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} )
 if( UNIT_TESTS )
   set( LIBCELLML_UNIT_TESTS "${UNIT_TESTS}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
@@ -54,7 +59,7 @@ if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
 endif()
 
 # TWAE ==> LIBCELLML_WARNINGS_AS_ERRORS -- Note: This excludes third party code, where warnings are never treated as errors.
-set(_PARAM_ANNOTATION "Treat warnings as errors (note: warnings in 3rd party code are never treated as errors)")
+set(_PARAM_ANNOTATION "Treat warnings as errors, this setting applies only to compilation units built by this project.")
 set( LIBCELLML_TREAT_WARNINGS_AS_ERRORS ON CACHE BOOL ${_PARAM_ANNOTATION} )
 if( TWAE )
   set( LIBCELLML_TREAT_WARNINGS_AS_ERRORS "${TWAE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )

@@ -130,7 +130,7 @@ def find_valgrind():
         return valgrind
     else:
         print("valgrind NOT FOUND")
-        exit(2)
+        exit(3)
 
 def run_single_test(exe_name):
     success = False
