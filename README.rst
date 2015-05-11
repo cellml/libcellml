@@ -25,8 +25,8 @@ Continuous Integration
 ----------------------
 
 libCellML makes use of Buildbot for continuous integration testing, all code is run through the
-test suite when a pull request is created or added to.  More information is available from the
-`documentation <http://libcellml.readthedocs.org/>_`.
+test suite when a pull request is created or added to.  More information on how Buildbot is 
+integrated in to the development process is available from the documentation http://libcellml.readthedocs.org/.
 
 Contribute
 ----------
@@ -34,7 +34,7 @@ Contribute
 libCellML is an open-source project, thus, welcoming contributions.
 If you are interested you may:
 
-  * Fork libCellML on GitHub `here <https://github.com/cellml/libcellml>_` and submit pull-request with your modifications.
-    (For more information on contributing code see the `documentation <http://libcellml.readthedocs.org/>_`)
-  * Subscribe to the `libCellML mailing list <https://lists.cellml.org/sympa/info/cellml-tools-developers>_`
+   * Fork libCellML on GitHub (https://github.com/cellml/libcellml) and submit pull-request with your modifications.
+     For more information on contributing code see the documentation http://libcellml.readthedocs.org/
+   * Subscribe to the libCellML mailing list https://lists.cellml.org/sympa/info/cellml-tools-developers
 
