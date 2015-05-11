@@ -30,8 +30,10 @@ set(_PARAM_ANNOTATION "Enable coverage testing.")
 if(GCOV_FOUND)
   set( LIBCELLML_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION} )
 endif()
-if( COVERAGE AND GCOV_FOUND)
+if(COVERAGE AND GCOV_FOUND)
   set( LIBCELLML_COVERAGE "${COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
+elseif(COVERAGE)
+  message(WARNING "Coverage testing requested but gcov or it's requirements not found!")
 endif()
 
 # MEMCHECK ==> LIBCELLML_MEMCHECK
@@ -41,6 +43,8 @@ if(VALGRIND_FOUND)
 endif()
 if( MEMCHECK AND VALGRIND_FOUND )
   set( LIBCELLML_MEMCHECK "${MEMCHECK}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
+elseif(MEMCHECK)
+  message(WARNING "Memcheck testing requested but valgrind or it's requirements not found!")
 endif()
 
 # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS
