@@ -20,25 +20,26 @@ project(${PROJECT_NAME} CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(common)
+include(environmentchecks)
 
 # Use the following variables when configuring the build from the command line to
 # set the corresponding cache variables.
 
 # COVERAGE ==> LIBCELLML_COVERAGE
 set(_PARAM_ANNOTATION "Enable coverage testing.")
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(GCOV_FOUND)
   set( LIBCELLML_COVERAGE OFF CACHE BOOL ${_PARAM_ANNOTATION} )
 endif()
-if( COVERAGE AND CMAKE_COMPILER_IS_GNUCXX )
+if( COVERAGE AND GCOV_FOUND)
   set( LIBCELLML_COVERAGE "${COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
 endif()
 
 # MEMCHECK ==> LIBCELLML_MEMCHECK
 set(_PARAM_ANNOTATION "Enable memcheck testing.")
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(VALGRIND_FOUND)
   set( LIBCELLML_MEMCHECK OFF CACHE BOOL ${_PARAM_ANNOTATION} )
 endif()
-if( MEMCHECK AND CMAKE_COMPILER_IS_GNUCXX )
+if( MEMCHECK AND VALGRIND_FOUND )
   set( LIBCELLML_MEMCHECK "${MEMCHECK}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
 endif()
 
