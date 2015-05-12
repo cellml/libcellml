@@ -17,7 +17,7 @@ All comments on the pull request and associated issue should be responded to and
 Coding Standard
 ===============
 
-Currently there is no coding standard set, but the google coding guideline can be considered a baseline for the standard of code that is expected for libCellML.  See the :doc:`Coding Standards <dev_coding_standard>` document for deviations from this guideline.
+Currently there is no fully defined libCellML coding standard set, but the google coding guideline can be considered a baseline for the standard of code that is expected for libCellML.  See the :doc:`Coding Standards <dev_coding_standard>` document for deviations from this guideline.
 
 Merging
 =======
@@ -27,3 +27,4 @@ When merging a pull request the reviewer should add a comment so that the corres
    closes #2
 
 where the numeral corresponds to the issue that needs to be closed.  You can use other directives that will achieve the same outcome, `here <https://help.github.com/articles/closing-issues-via-commit-messages/>`_ is a list of all directives that will work on GitHub.
+

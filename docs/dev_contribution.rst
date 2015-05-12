@@ -91,5 +91,7 @@ It may happen that submitted work is not reviewed immediately or the work is fin
 Completion
 ==========
 
-To complete the process it is required to have two owners of the :term:`prime repository` comment on the pull request that they are satisfied that the work on the issue is complete and also that the feedback has been addressed, in essence that they are "happy" to merge the submission.  One of the owners will then post a comment on the issue notifying subscribers that they intend to merge the pull request.  If no further objections are raised the owner will merge and close the pull request as outlined in :doc:`Review Process <dev_review>`.
+To complete the process it is required to have two owners of the :term:`prime repository` comment on the pull request that they are satisfied that the work on the issue is complete and also that the feedback has been addressed, in essence that they are "happy" to merge the submission.  For small submissions it is sufficient for the second owner to show satisfaction by performing the merge.  For larger submissions one of the owners will post a comment on the issue notifying subscribers that they intend to merge the pull request.  If no further objections are raised the pull request will be merged and closed.
+
+A little a reminder for the repository owners to check that the :doc:`Review Process <dev_review>` has been followed/(is going to be followed) when merging the pull request.
 
