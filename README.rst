@@ -21,6 +21,9 @@ resolving and retrieving external resources - calling applications would be requ
 retrieve import URL's and provide the serialised documents to libCellML in the form of strings for
 instantiation as part of the CellML 1.1/1.2 hierarchical model description.
 
+Example code will be provided which demonstrates how such tasks can be achieved using standard tools,
+i.e., libcurl for C/C++ and requests for Python to resolve and retrieve imported models.
+
 Continuous Integration
 ----------------------
 
