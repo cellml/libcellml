@@ -76,7 +76,7 @@ Milestone 0: setting up development environment
 
    #. Builds required: Windows 64 bit, OS X 10.9, Ubuntu 14.04 64 bit
    #. Using Buildbot for CI framework
-   #. Interact with Github to process changes
+   #. Interact with GitHub to process changes
    #. Make Buildbot status available from autotest.bioeng.auckland.ac.nz/libcellml-buildbot/
 
 #. Document the development process/workflow.
