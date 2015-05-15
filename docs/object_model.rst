@@ -18,6 +18,6 @@ Overview of Object Model
 Object Model for Use Cases 1.i - 1.iii
 ======================================
 
-.. figure:: images/libCellMLRoughObjectModel-UseCases1.i-1.iii.png
+.. figure:: images/libCellMLRoughObjectModel-UseCases1-i-1-iii.png
    :alt: libCellML Object Model for use cases 1.i - 1.iii
 
