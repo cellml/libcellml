@@ -30,10 +30,14 @@ configure_file(
 
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
 )
 
 set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
   ${CELLML_EXPORT_H}
 )
 
@@ -47,6 +51,7 @@ add_compiler_export_flags()
 add_library(cellml
   ${SOURCE_FILES}
   ${HEADER_FILES}
+  ${MODULE_HEADER_FILES}
   ${API_HEADER_FILES}
 )
 
@@ -54,7 +59,9 @@ target_include_directories(cellml
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module>
   $<INSTALL_INTERFACE:include/>
+  $<INSTALL_INTERFACE:include/libcellml/module>
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
 )
@@ -88,6 +95,11 @@ install(TARGETS cellml EXPORT libcellml-targets
 install(FILES
   ${API_HEADER_FILES}
   DESTINATION include/libcellml
+)
+
+install(FILES
+  ${MODULE_HEADER_FILES}
+  DESTINATION include/libcellml/module
 )
 
 install(EXPORT libcellml-targets DESTINATION lib/cmake)

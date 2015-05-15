@@ -12,11 +12,13 @@ mark_as_advanced(gtest_force_shared_crt)
 # test must be set to <test_name>_SRCS, likewise for
 # header files <test_name>_HDRS.
 include(version/tests.cmake)
+include(model/tests.cmake)
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
 foreach(TEST ${LIBCELLML_TESTS})
   set(CURRENT_TEST test_${TEST})
+  set(CURRENT_CATEGORY ${${TEST}_CATEGORY})
   if(CURRENT_CATEGORY)
     set(CURRENT_CATEGORY "${CURRENT_CATEGORY}_")
   endif()
