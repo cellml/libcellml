@@ -10,3 +10,6 @@ build/
 # Qt Creator generated files
 CMakeLists.txt.user
 
+# OS X hidden system files
+.DS_Store
+
