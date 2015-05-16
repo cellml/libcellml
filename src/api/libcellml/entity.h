@@ -39,7 +39,7 @@ protected:
     /**
      * @brief Pure virtual deserialise method.
      * Pure virtual deserialise method for deserialising a CellML object from a std::string
-     * to and object in the given format.
+     * in the given format.
      * @param string The std::string representation of the object.
      * @param format The format of the string parameter.
      */
