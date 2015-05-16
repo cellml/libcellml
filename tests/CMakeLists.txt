@@ -24,6 +24,11 @@ foreach(TEST ${LIBCELLML_TESTS})
   endif()
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main)
+
+  set_target_properties(${CURRENT_TEST} PROPERTIES
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON)
+
 #  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
 #    target_warnings_as_errors(${CURRENT_TEST})
 #  endif()

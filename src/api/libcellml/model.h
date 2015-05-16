@@ -18,6 +18,7 @@ limitations under the License.Some license of other
 #define LIBCELLML_LIBCELLML_MODEL_H_
 
 #include <string>
+#include <memory>
 
 #include "libcellml/libcellml_export.h"
 #include "libcellml/entity.h"

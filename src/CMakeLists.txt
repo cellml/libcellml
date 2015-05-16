@@ -66,6 +66,10 @@ target_include_directories(cellml
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+set_target_properties(cellml PROPERTIES
+  CXX_STANDARD 11
+  CXX_STANDARD_REQUIRED ON)
+
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
 endif()
