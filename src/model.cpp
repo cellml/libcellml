@@ -25,11 +25,15 @@ namespace libcellml {
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-struct ModelImpl
+struct Model::ModelImpl
 {
+    ModelImpl(){}
+    ModelImpl(const ModelImpl&) = delete;
+    ModelImpl& operator=(const ModelImpl&) = delete;
 };
 
 Model::Model()
+    : _pimpl(new Model::ModelImpl)
 {
 }
 
@@ -37,13 +41,26 @@ Model::~Model()
 {
 }
 
+Model::Model(Model&& rhs)
+    : _pimpl(std::move(rhs._pimpl))
+{
+}
+
+Model& Model::operator=(Model&& rhs)
+{
+    _pimpl = std::move(rhs._pimpl);
+    return *this;
+}
+
 std::string Model::serialise(libcellml::CELLML_FORMATS format) const
 {
+    std::string repr = "";
     if (format == CELLML_FORMAT_XML)
     {
+        repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
     }
 
-    return "";
+    return repr;
 }
 
 void Model::deserialise(std::string string, libcellml::CELLML_FORMATS format)

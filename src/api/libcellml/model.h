@@ -44,6 +44,9 @@ public:
      */
     ~Model();
 
+    Model(Model&& rhs); /**< move constructor */
+    Model& operator=(Model&& rhs); /**< move assignment */
+
     /**
      * @brief serialise the Model.
      * This method serialises the Model to a std:string representation in the
@@ -65,8 +68,12 @@ public:
     void deserialise(std::string string, libcellml::CELLML_FORMATS format);
 
 private:
+
+    Model(const Model&) = delete; /**< non-copyable */
+    Model& operator=(const Model&) = delete; /**< non-copyable */
+
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    std::shared_ptr<ModelImpl> _pimpl; /**< Private member to implementation pointer */
+    std::unique_ptr<ModelImpl> _pimpl; /**< Private member to implementation pointer */
 };
 
 }
