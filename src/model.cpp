@@ -28,10 +28,13 @@ namespace libcellml {
 struct Model::ModelImpl
 {
     ModelImpl(){}
+    ~ModelImpl(){}
     ModelImpl(const ModelImpl&) = delete;
     ModelImpl& operator=(const ModelImpl&) = delete;
 };
 
+
+// Interface class Model implementation
 Model::Model()
     : _pimpl(new Model::ModelImpl)
 {
