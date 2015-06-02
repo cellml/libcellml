@@ -36,7 +36,7 @@ struct Model::ModelImpl
 
 // Interface class Model implementation
 Model::Model()
-    : _pimpl(new Model::ModelImpl)
+    : mPimpl(new Model::ModelImpl)
 {
 }
 
@@ -45,13 +45,13 @@ Model::~Model()
 }
 
 Model::Model(Model&& rhs)
-    : _pimpl(std::move(rhs._pimpl))
+    : mPimpl(std::move(rhs.mPimpl))
 {
 }
 
 Model& Model::operator=(Model&& rhs)
 {
-    _pimpl = std::move(rhs._pimpl);
+    mPimpl = std::move(rhs.mPimpl);
     return *this;
 }
 
@@ -66,7 +66,7 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
-void Model::deserialise(std::string string, libcellml::CELLML_FORMATS format)
+void Model::deserialise(const std::string &string, libcellml::CELLML_FORMATS format)
 {
     if(string.length() > 0)
     {

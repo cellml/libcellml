@@ -11,3 +11,9 @@ TEST(Model, serialise) {
    EXPECT_EQ(e, a);
 }
 
+TEST(Model, deserialise) {
+    libcellml::Model m = libcellml::Model();
+    std::string a = "empty";
+    m.deserialise(a, libcellml::CELLML_FORMAT_XML);
+}
+

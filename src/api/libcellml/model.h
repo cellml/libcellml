@@ -65,7 +65,7 @@ public:
      * @param string The std::string representation of the model to deserialise.
      * @param format The format of the given string.
      */
-    void deserialise(std::string string, libcellml::CELLML_FORMATS format);
+    void deserialise(const std::string &string, libcellml::CELLML_FORMATS format);
 
 private:
 
@@ -73,7 +73,7 @@ private:
     Model& operator=(const Model&) = delete; /**< non-copyable */
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    std::unique_ptr<ModelImpl> _pimpl; /**< Private member to implementation pointer */
+    std::unique_ptr<ModelImpl> mPimpl; /**< Private member to implementation pointer */
 };
 
 }

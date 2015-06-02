@@ -43,7 +43,7 @@ protected:
      * @param string The std::string representation of the object.
      * @param format The format of the string parameter.
      */
-    virtual void deserialise(std::string string, libcellml::CELLML_FORMATS format) = 0;
+    virtual void deserialise(const std::string& string, libcellml::CELLML_FORMATS format) = 0;
 };
 
 }
