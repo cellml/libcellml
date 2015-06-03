@@ -11,3 +11,12 @@ The following is a list of exceptions/deviations from the google style guide tha
 
  * lower camel case class method names
 
+Variable Naming
+===============
+
+The following rules for naming of variables should be followed.
+
+ * Class member variables: mMyClassMemberVariable
+ * Function parameter variables: myFunctionParameterVariable
+ * Local variables: myLocalVariable
+
