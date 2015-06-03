@@ -36,14 +36,6 @@ protected:
      */
     virtual std::string serialise(libcellml::CELLML_FORMATS format) const = 0;
 
-    /**
-     * @brief Pure virtual deserialise method.
-     * Pure virtual deserialise method for deserialising a CellML object from a std::string
-     * in the given format.
-     * @param string The std::string representation of the object.
-     * @param format The format of the string parameter.
-     */
-    virtual void deserialise(const std::string &string, libcellml::CELLML_FORMATS format) = 0;
 };
 
 }

@@ -66,15 +66,5 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
-void Model::deserialise(const std::string &string, libcellml::CELLML_FORMATS format)
-{
-    if(string.length() > 0)
-    {
-        if(format == CELLML_FORMAT_XML)
-        {
-        }
-    }
-}
-
 }
 

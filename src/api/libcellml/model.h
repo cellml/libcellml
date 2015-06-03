@@ -57,16 +57,6 @@ public:
      */
     std::string serialise(libcellml::CELLML_FORMATS format) const;
 
-    /**
-     * @brief deserialise the Model.
-     * Method to deserialise the Model from a std::string representation of the format
-     * given by the format parameter.
-     * @sa serialise
-     * @param string The std::string representation of the model to deserialise.
-     * @param format The format of the given string.
-     */
-    void deserialise(const std::string &string, libcellml::CELLML_FORMATS format);
-
 private:
 
     Model(const Model&) = delete; /**< non-copyable */
