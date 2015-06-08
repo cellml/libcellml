@@ -16,7 +16,7 @@
 cmake_minimum_required(VERSION 3.2)
 
 set(PROJECT_NAME libCellML)
-project(${PROJECT_NAME} CXX)
+project(${PROJECT_NAME} VERSION 0.1.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(common)
@@ -33,7 +33,12 @@ endif()
 if(COVERAGE AND GCOV_FOUND)
   set( LIBCELLML_COVERAGE "${COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
 elseif(COVERAGE)
-  message(WARNING "Coverage testing requested but gcov or it's requirements not found!")
+  if (CMAKE_COMPILER_IS_GCC)
+    message(WARNING "Coverage testing requested but gcov or its requirements not found!")
+  else()
+    message(WARNING "Coverage testing is not possible without a GNU C++ compiler!")
+  endif()
+  unset(COVERAGE CACHE)
 endif()
 
 # MEMCHECK ==> LIBCELLML_MEMCHECK
@@ -44,7 +49,12 @@ endif()
 if( MEMCHECK AND VALGRIND_FOUND )
   set( LIBCELLML_MEMCHECK "${MEMCHECK}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
 elseif(MEMCHECK)
-  message(WARNING "Memcheck testing requested but valgrind or it's requirements not found!")
+  if (CMAKE_COMPILER_IS_GCC)
+    message(WARNING "Memcheck testing requested but valgrind or its requirements not found!")
+  else()
+    message(WARNING "Memcheck testing is not possible without a GNU C++ compiler!")
+  endif()
+  unset(MEMCHECK CACHE)
 endif()
 
 # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS

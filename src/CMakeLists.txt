@@ -12,19 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-# The version number.
-set(LIBCELLML_VERSION_MAJOR 0)
-set(LIBCELLML_VERSION_MINOR 1)
-set(LIBCELLML_VERSION_PATCH 0)
-
-foreach(VERSION_PART LIBCELLML_VERSION_MAJOR LIBCELLML_VERSION_MINOR LIBCELLML_VERSION_PATCH)
+foreach(VERSION_PART libCellML_VERSION_MAJOR libCellML_VERSION_MINOR libCellML_VERSION_PATCH)
   string(LENGTH ${${VERSION_PART}} VERSION_PART_LENGTH)
   if(VERSION_PART_LENGTH EQUAL 1)
     set(${VERSION_PART}_PAD 0)
   endif()
 endforeach()
-set(LIBCELLML_LIBRARY_VERSION 0x${LIBCELLML_VERSION_MAJOR_PAD}${LIBCELLML_VERSION_MAJOR}${LIBCELLML_VERSION_MINOR_PAD}${LIBCELLML_VERSION_MINOR}${LIBCELLML_VERSION_PATCH_PAD}${LIBCELLML_VERSION_PATCH})
-set(LIBCELLML_LIBRARY_VERSION_STRING "${LIBCELLML_VERSION_MAJOR}.${LIBCELLML_VERSION_MINOR}.${LIBCELLML_VERSION_PATCH}")
+set(LIBCELLML_LIBRARY_VERSION 0x${libCellML_VERSION_MAJOR_PAD}${libCellML_VERSION_MAJOR}${libCellML_VERSION_MINOR_PAD}${libCellML_VERSION_MINOR}${libCellML_VERSION_PATCH_PAD}${libCellML_VERSION_PATCH})
+set(LIBCELLML_LIBRARY_VERSION_STRING "${libCellML_VERSION_MAJOR}.${libCellML_VERSION_MINOR}.${libCellML_VERSION_PATCH}")
 
 set(CELLML_EXPORT_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/libcellml_export.h")
 set(LIBCELLML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/libcellml_config.h")
@@ -35,10 +30,14 @@ configure_file(
 
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
 )
 
 set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
   ${CELLML_EXPORT_H}
 )
 
@@ -52,6 +51,7 @@ add_compiler_export_flags()
 add_library(cellml
   ${SOURCE_FILES}
   ${HEADER_FILES}
+  ${MODULE_HEADER_FILES}
   ${API_HEADER_FILES}
 )
 
@@ -59,10 +59,16 @@ target_include_directories(cellml
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module>
   $<INSTALL_INTERFACE:include/>
+  $<INSTALL_INTERFACE:include/libcellml/module>
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+set_target_properties(cellml PROPERTIES
+  CXX_STANDARD 11
+  CXX_STANDARD_REQUIRED ON)
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
@@ -93,6 +99,11 @@ install(TARGETS cellml EXPORT libcellml-targets
 install(FILES
   ${API_HEADER_FILES}
   DESTINATION include/libcellml
+)
+
+install(FILES
+  ${MODULE_HEADER_FILES}
+  DESTINATION include/libcellml/module
 )
 
 install(EXPORT libcellml-targets DESTINATION lib/cmake)

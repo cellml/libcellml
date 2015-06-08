@@ -12,16 +12,23 @@ mark_as_advanced(gtest_force_shared_crt)
 # test must be set to <test_name>_SRCS, likewise for
 # header files <test_name>_HDRS.
 include(version/tests.cmake)
+include(model/tests.cmake)
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
 foreach(TEST ${LIBCELLML_TESTS})
   set(CURRENT_TEST test_${TEST})
+  set(CURRENT_CATEGORY ${${TEST}_CATEGORY})
   if(CURRENT_CATEGORY)
     set(CURRENT_CATEGORY "${CURRENT_CATEGORY}_")
   endif()
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main)
+
+  set_target_properties(${CURRENT_TEST} PROPERTIES
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON)
+
 #  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
 #    target_warnings_as_errors(${CURRENT_TEST})
 #  endif()

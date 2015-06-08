@@ -1,5 +1,5 @@
 /*
-Copyright 2015 libCellML Contributors
+Copyright 2015 University of Auckland
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,20 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
-#ifndef LIBCELLML_LIBCELLML_CONFIG_H
-#define LIBCELLML_LIBCELLML_CONFIG_H
+#ifndef LIBCELLML_LIBCELLML_ENUMERATIONS_H_
+#define LIBCELLML_LIBCELLML_ENUMERATIONS_H_
 
-#include <string>
+/** @file */
 
 namespace libcellml {
 
-#define LIBCELLML_VERSION_MAJOR @libCellML_VERSION_MAJOR@
-#define LIBCELLML_VERSION_MINOR @libCellML_VERSION_MINOR@
-#define LIBCELLML_VERSION_PATCH @libCellML_VERSION_PATCH@
-
-static unsigned int LIBCELLML_LIBRARY_VERSION=@LIBCELLML_LIBRARY_VERSION@;
-static const std::string LIBCELLML_LIBRARY_VERSION_STRING="@LIBCELLML_LIBRARY_VERSION_STRING@";
+/**
+ * @brief The CELLML_FORMATS enum.
+ * Enum describing the formats that are available for
+ * serialisation.
+ */
+enum CELLML_FORMATS
+{
+     CELLML_FORMAT_XML = 0 /**< XML format for CellML files. */
+};
 
 }
 
-#endif /* LIBCELLML_LIBCELLML_CONFIG_H */
+#endif /* LIBCELLML_LIBCELLML_ENUMERATIONS_H_ */
+
