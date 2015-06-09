@@ -70,7 +70,7 @@ public:
      * Gets the name of the Model as a string.
      * @return std::string representation of the Model.
      */
-    const std::string getName() const;
+    std::string getName() const;
 
 private:
 

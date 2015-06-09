@@ -70,7 +70,7 @@ void Model::setName(const std::string & /*name*/)
 {
 }
 
-const std::string Model::getName() const
+std::string Model::getName() const
 {
     return "";
 }
