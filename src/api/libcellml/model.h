@@ -57,6 +57,21 @@ public:
      */
     std::string serialise(libcellml::CELLML_FORMATS format) const;
 
+    /**
+     * @brief set the name for the Model
+     * This method sets the name parameter of the Model.  It does not check
+     * the validity of the name.
+     * @param name A string to represent the name.
+     */
+    void setName(const std::string &name);
+
+    /**
+     * @brief get the name of the Model
+     * Gets the name of the Model as a string.
+     * @return std::string representation of the Model.
+     */
+    const std::string getName() const;
+
 private:
 
     Model(const Model&) = delete; /**< non-copyable */

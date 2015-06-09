@@ -66,5 +66,13 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
+void Model::setName(const std::string & /*name*/)
+{
 }
 
+const std::string Model::getName() const
+{
+    return "";
+}
+
+}
