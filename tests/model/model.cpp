@@ -2,9 +2,9 @@
 
 #include <libcellml>
 
-const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
 
 TEST(Model, serialise) {
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
     libcellml::Model m = libcellml::Model();
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
@@ -12,7 +12,7 @@ TEST(Model, serialise) {
 }
 
 TEST(Model, name) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"name\"></model>";
 
     libcellml::Model m = libcellml::Model();
     std::string n = "name";
@@ -24,6 +24,8 @@ TEST(Model, name) {
 }
 
 TEST(Model, invalid_name) {
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"invalid name\"></model>";
+
     libcellml::Model m = libcellml::Model();
     std::string in = "invalid name";
     m.setName(in);
