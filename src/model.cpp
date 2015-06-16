@@ -60,11 +60,9 @@ Model& Model::operator=(Model&& rhs)
 std::string Model::serialise(libcellml::CELLML_FORMATS format) const
 {
     std::string repr = "";
-    if (format == CELLML_FORMAT_XML)
-    {
+    if (format == CELLML_FORMAT_XML) {
         repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"";
-        if (mPimpl->mName.length())
-        {
+        if (mPimpl->mName.length()) {
             repr += " name=\"" + mPimpl->mName + "\"";
         }
         repr += "></model>";
