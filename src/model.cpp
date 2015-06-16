@@ -19,8 +19,6 @@ limitations under the License.Some license of other
 
 namespace libcellml {
 
-static const std::string initial_name = "OhOXiRmNswYoVBA2InM7NRPvQ0HMXFR2wNhoFExd";
-
 /**
  * @brief The private implementation for the Model class.
  * This struct is the private implementation struct for the Model class.  Separating
@@ -34,7 +32,7 @@ struct Model::ModelImpl
     ModelImpl(const ModelImpl&) = delete;
     ModelImpl& operator=(const ModelImpl&) = delete;
 
-    std::string mName = initial_name;
+    std::string mName = "";
 };
 
 
@@ -65,7 +63,7 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     if (format == CELLML_FORMAT_XML)
     {
         repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"";
-        if (mPimpl->mName != initial_name)
+        if (mPimpl->mName.length())
         {
             repr += " name=\"" + mPimpl->mName + "\"";
         }
