@@ -4,10 +4,44 @@
 
 
 TEST(Component, serialise) {
-    const std::string e = "<component></component>";
-    libcellml::Component m = libcellml::Component();
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    const std::string e = "<component/>";
+    libcellml::Component c = libcellml::Component();
+    std::string a = c.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
 
-   EXPECT_EQ(e, a);
+TEST(Component, valid_name) {
+    const std::string in = "valid_name";
+    const std::string e = "<component name=\"" + in + "\"/>";
+    libcellml::Component c = libcellml::Component();
+    c.setName(in);
+    std::string a = c.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e, a);
+    EXPECT_EQ("valid_name", c.getName());
+}
+
+TEST(Component, invalid_name) {
+    const std::string in = "invalid name -";
+    const std::string e = "<component name=\"" + in + "\"/>";
+    libcellml::Component c = libcellml::Component();
+    c.setName(in);
+    std::string a = c.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e, a);
+    EXPECT_EQ("invalid name -", c.getName());
+}
+
+TEST(Component, unset_name) {
+    const std::string in = "name";
+    const std::string eName = "<component name=\"" + in + "\"/>";
+    const std::string e = "<component/>";
+    libcellml::Component c = libcellml::Component();
+    c.setName(in);
+    std::string a = c.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ("name", c.getName());
+    EXPECT_EQ(eName, a);
+    c.setName("");
+    EXPECT_EQ("", c.getName());
+    a = c.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e, a);
 }
 
