@@ -49,3 +49,55 @@ TEST(Model, invalid_name) {
 
     EXPECT_EQ(e, m.serialise(libcellml::CELLML_FORMAT_XML));
 }
+
+TEST(Model, add_component) {
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component/></model>";
+    libcellml::Model m = libcellml::Model();
+    libcellml::Component c = libcellml::Component();
+    model.addComponent(c);
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+
+    EXPECT_EQ(e, a);
+}
+
+TEST(Model, add_valid_component) {
+    const std::string in = "valid_name";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + in + "\"/></model>";
+    libcellml::Model m = libcellml::Model();
+    libcellml::Component c = libcellml::Component();
+    c.setName(in);
+    model.addComponent(c);
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+
+    EXPECT_EQ(e, a);
+}
+
+TEST(Model, add_invalid_component) {
+    const std::string in = "invalid name";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + in + "\"/></model>";
+    libcellml::Model m = libcellml::Model();
+    libcellml::Component c = libcellml::Component();
+    c.setName(in);
+    model.addComponent(c);
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+
+    EXPECT_EQ(e, a);
+}
+
+TEST(Model, add_components) {
+    const std::string name1 = "component_1";
+    const std::string name2 = "component_2";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + name1 + "\"/><component name=\"" + name2 + "\"/></model>";
+    libcellml::Model m = libcellml::Model();
+    libcellml::Component c1 = libcellml::Component();
+    c1.setName(name1);
+    model.addComponent(c1);
+    libcellml::Component c2 = libcellml::Component();
+    model.addComponent(c2);
+    // once the component is added, we should be able to change the handle to the component and have those changes
+    // reflected in the model?
+    c2.setName(name2);
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+
+    EXPECT_EQ(e, a);
+}
