@@ -31,6 +31,8 @@ struct Model::ModelImpl
     ~ModelImpl(){}
     ModelImpl(const ModelImpl&) = delete;
     ModelImpl& operator=(const ModelImpl&) = delete;
+
+    std::string mName = "";
 };
 
 
@@ -58,13 +60,25 @@ Model& Model::operator=(Model&& rhs)
 std::string Model::serialise(libcellml::CELLML_FORMATS format) const
 {
     std::string repr = "";
-    if (format == CELLML_FORMAT_XML)
-    {
-        repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
+    if (format == CELLML_FORMAT_XML) {
+        repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"";
+        if (mPimpl->mName.length()) {
+            repr += " name=\"" + mPimpl->mName + "\"";
+        }
+        repr += "></model>";
     }
 
     return repr;
 }
 
+void Model::setName(const std::string &name)
+{
+    mPimpl->mName = name;
 }
 
+std::string Model::getName() const
+{
+    return mPimpl->mName;
+}
+
+}
