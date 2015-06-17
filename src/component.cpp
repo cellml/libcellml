@@ -15,58 +15,53 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
-#include "libcellml/model.h"
+#include "libcellml/component.h"
 
 namespace libcellml {
 
 /**
- * @brief The private implementation for the Model class.
- * This struct is the private implementation struct for the Model class.  Separating
+ * @brief The private implementation for the Component class.
+ * This struct is the private implementation struct for the Component class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
-struct Model::ModelImpl
+struct Component::ComponentImpl
 {
-    ModelImpl(){}
-    ~ModelImpl(){}
-    ModelImpl(const ModelImpl&) = delete;
-    ModelImpl& operator=(const ModelImpl&) = delete;
+    ComponentImpl(){}
+    ~ComponentImpl(){}
+    ComponentImpl(const ComponentImpl&) = delete;
+    ComponentImpl& operator=(const ComponentImpl&) = delete;
 };
 
-
 // Interface class Model implementation
-Model::Model()
-    : mPimpl(new Model::ModelImpl)
+Component::Component()
+    : mPimpl(new Component::ComponentImpl)
 {
 }
 
-Model::~Model()
+Component::~Component()
 {
 }
 
-Model::Model(Model&& rhs)
+Component::Component(Component&& rhs)
     : mPimpl(std::move(rhs.mPimpl))
 {
 }
 
-Model& Model::operator=(Model&& rhs)
+Component& Component::operator=(Component&& rhs)
 {
     mPimpl = std::move(rhs.mPimpl);
     return *this;
 }
 
-std::string Model::serialise(libcellml::CELLML_FORMATS format) const
+std::string Component::serialise(libcellml::CELLML_FORMATS format) const
 {
     std::string repr = "";
     if (format == CELLML_FORMAT_XML) {
-        repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"";
-        if (getName().length()) {
-            repr += " name=\"" + getName() + "\"";
-        }
-        repr += "></model>";
     }
 
     return repr;
 }
 
 }
+

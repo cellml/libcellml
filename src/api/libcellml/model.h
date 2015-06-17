@@ -21,7 +21,7 @@ limitations under the License.Some license of other
 #include <memory>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/entity.h"
+#include "libcellml/nameable.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
@@ -30,7 +30,7 @@ namespace libcellml {
  * @brief The Model class.
  * The Model class is for representing a CellML Model.
  */
-class LIBCELLML_EXPORT Model: public Entity
+class LIBCELLML_EXPORT Model: public Nameable
 {
 public:
     /**
@@ -56,21 +56,6 @@ public:
      * @return std::string representation of the Model in the given format.
      */
     std::string serialise(libcellml::CELLML_FORMATS format) const;
-
-    /**
-     * @brief set the name for the Model
-     * This method sets the name parameter of the Model.  It does not check
-     * the validity of the name.
-     * @param name A string to represent the name.
-     */
-    void setName(const std::string &name);
-
-    /**
-     * @brief get the name of the Model
-     * Gets the name of the Model as a string.
-     * @return std::string representation of the Model.
-     */
-    std::string getName() const;
 
 private:
 
