@@ -69,4 +69,9 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
+void Model::addComponent(Component &/* c */)
+{
+
+}
+
 }

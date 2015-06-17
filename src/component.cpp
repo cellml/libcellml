@@ -63,5 +63,10 @@ std::string Component::serialise(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
+void Component::addComponent(Component &/* c */)
+{
+
+}
+
 }
 

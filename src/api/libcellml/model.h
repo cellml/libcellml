@@ -22,6 +22,7 @@ limitations under the License.Some license of other
 
 #include "libcellml/libcellml_export.h"
 #include "libcellml/nameable.h"
+#include "libcellml/component.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
@@ -56,6 +57,13 @@ public:
      * @return std::string representation of the Model in the given format.
      */
     std::string serialise(libcellml::CELLML_FORMATS format) const;
+
+    /**
+     * @brief add a component to the model.
+     * Add a component to the model.
+     * @param c the component to add.
+     */
+    void addComponent(Component &c);
 
 private:
 

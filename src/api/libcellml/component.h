@@ -40,6 +40,13 @@ public:
     Component(Component&& rhs); /**< move constructor */
     Component& operator=(Component&& rhs); /**< move assignment */
 
+    /**
+     * @brief add a child component to this component.
+     * Add a child component to this component.
+     * @param c the component to add.
+     */
+    void addComponent(Component &c);
+
 private:
 
     Component(const Component&) = delete; /**< non-copyable */
