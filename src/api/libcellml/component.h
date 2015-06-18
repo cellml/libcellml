@@ -10,8 +10,8 @@
 namespace libcellml {
 
 /**
- * @brief The Model class.
- * The Model class is for representing a CellML Model.
+ * @brief The Component class.
+ * The Component class is for representing a CellML Component.
  */
 class LIBCELLML_EXPORT Component: public Nameable
 {
