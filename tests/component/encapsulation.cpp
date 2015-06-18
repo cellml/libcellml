@@ -4,8 +4,8 @@
 
 
 TEST(Encapsulation, serialise) {
-    libcellml::Component parent = libcellml::Component();
-    libcellml::Component child = libcellml::Component();
+    libcellml::Component parent;
+    libcellml::Component child;
     parent.addComponent(child);
     const std::string e_parent = "<component/><component/><encapsulation><component_ref><component_ref/></component_ref></encapsulation>";
     std::string a_parent = parent.serialise(libcellml::CELLML_FORMAT_XML);
@@ -16,9 +16,9 @@ TEST(Encapsulation, serialise) {
 }
 
 TEST(Encapsulation, serialise_with_names) {
-    libcellml::Component parent = libcellml::Component();
+    libcellml::Component parent;
     parent.setName("parent_component");
-    libcellml::Component child = libcellml::Component();
+    libcellml::Component child;
     parent.addComponent(child);
     child.setName("child_component");
     const std::string e_parent = "<component name=\"parent_component\"/><component name=\"child_component\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child_component\"/></component_ref></encapsulation>";
@@ -30,13 +30,13 @@ TEST(Encapsulation, serialise_with_names) {
 }
 
 TEST(Encapsulation, reparent_component) {
-    auto parent = libcellml::Component();
+    libcellml::Component parent;
     parent.setName("parent_component");
-    auto child1 = libcellml::Component();
+    libcellml::Component child1;
     child1.setName("child2");
-    auto child2 = libcellml::Component();
+    libcellml::Component child2;
     child2.setName("child2");
-    auto child3 = libcellml::Component();
+    libcellml::Component child3;
     child3.setName("child3");
     parent.addComponent(child1);
     parent.addComponent(child2);
