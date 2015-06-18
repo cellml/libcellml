@@ -7,7 +7,7 @@ TEST(Encapsulation, serialise) {
     libcellml::Component parent = libcellml::Component();
     libcellml::Component child = libcellml::Component();
     parent.addComponent(child);
-    const std::string e_parent = "<component/><component/><encapsulation><component_ref><component_ref/></component_ref>";
+    const std::string e_parent = "<component/><component/><encapsulation><component_ref><component_ref/></component_ref></encapsulation>";
     std::string a_parent = parent.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e_parent, a_parent);
     const std::string e_child= "<component/>";
@@ -21,7 +21,7 @@ TEST(Encapsulation, serialise_with_names) {
     libcellml::Component child = libcellml::Component();
     parent.addComponent(child);
     child.setName("child_component");
-    const std::string e_parent = "<component name=\"parent_component\"/><component name=\"child_component\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child_component\"/></component_ref>";
+    const std::string e_parent = "<component name=\"parent_component\"/><component name=\"child_component\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child_component\"/></component_ref></encapsulation>";
     std::string a_parent = parent.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e_parent, a_parent);
     const std::string e_child= "<component name=\"child_component\"/>";
