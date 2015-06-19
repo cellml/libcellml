@@ -70,12 +70,7 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
         }
         repr += ">";
         for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
-            repr += "<component";
-            std::string componentName = mPimpl->mComponents[i].getName();
-            if (componentName.length()) {
-                repr += " name=\"" + componentName + "\"";
-            }
-            repr += "/>";
+            repr += mPimpl->mComponents[i].serialise(format);
         }
         repr += "</model>";
     }

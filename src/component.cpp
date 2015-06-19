@@ -59,6 +59,12 @@ std::string Component::serialise(libcellml::CELLML_FORMATS format) const
 {
     std::string repr = "";
     if (format == CELLML_FORMAT_XML) {
+        repr += "<component";
+        std::string componentName = getName();
+        if (componentName.length()) {
+            repr += " name=\"" + componentName + "\"";
+        }
+        repr += "/>";
     }
 
     return repr;
