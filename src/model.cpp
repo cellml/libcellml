@@ -17,6 +17,8 @@ limitations under the License.Some license of other
 
 #include "libcellml/model.h"
 
+#include <vector>
+
 namespace libcellml {
 
 /**
@@ -31,6 +33,8 @@ struct Model::ModelImpl
     ~ModelImpl(){}
     ModelImpl(const ModelImpl&) = delete;
     ModelImpl& operator=(const ModelImpl&) = delete;
+
+    std::vector<Component> mComponents;
 };
 
 
@@ -45,7 +49,8 @@ Model::~Model()
 }
 
 Model::Model(Model&& rhs)
-    : mPimpl(std::move(rhs.mPimpl))
+    : Nameable(rhs)
+    , mPimpl(std::move(rhs.mPimpl))
 {
 }
 
@@ -63,15 +68,24 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
-        repr += "></model>";
+        repr += ">";
+        for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
+            repr += "<component";
+            std::string componentName = mPimpl->mComponents[i].getName();
+            if (componentName.length()) {
+                repr += " name=\"" + componentName + "\"";
+            }
+            repr += "/>";
+        }
+        repr += "</model>";
     }
 
     return repr;
 }
 
-void Model::addComponent(Component &/* c */)
+void Model::addComponent(Component& c)
 {
-
+    mPimpl->mComponents.push_back(std::move(c));
 }
 
 }

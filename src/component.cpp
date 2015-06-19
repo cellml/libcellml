@@ -44,7 +44,8 @@ Component::~Component()
 }
 
 Component::Component(Component&& rhs)
-    : mPimpl(std::move(rhs.mPimpl))
+    : Nameable(rhs)
+    , mPimpl(std::move(rhs.mPimpl))
 {
 }
 
