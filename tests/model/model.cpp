@@ -96,7 +96,7 @@ TEST(Model, add_invalid_component) {
 TEST(Model, add_components) {
     const std::string name1 = "component_1";
     const std::string name2 = "component_2";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + name1 + "\"/><component name=\"" + name2 + "\"/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + name1 + "\"/><component/></model>";
     libcellml::Model m;
     libcellml::Component c1;
     c1.setName(name1);
@@ -104,8 +104,9 @@ TEST(Model, add_components) {
     libcellml::Component c2;
     m.addComponent(c2);
     // once the component is added, we should be able to change the handle to the component and have those changes
-    // reflected in the model?
-    c2.setName(name2);
+    // reflected in the model? No, adding component to model moves that component to the model and we no longer have access
+    // to it here.
+    c2.setName(name2); // so should this give an error?
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
     EXPECT_EQ(e, a);
