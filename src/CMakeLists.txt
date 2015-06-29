@@ -79,8 +79,8 @@ if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
 endif()
 
 if(LIBCELLML_COVERAGE)
-  set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
-  target_link_libraries(cellml gcov)
+  set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
+    LINK_FLAGS "-fprofile-arcs -ftest-coverage")
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
