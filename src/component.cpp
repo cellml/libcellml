@@ -54,7 +54,6 @@ Component::Component(const Component& rhs)
 Component& Component::operator=(const Component& c)
 {
     // This would be much faster if copy-on-write was implemented
-    mPimpl = new ComponentImpl();
     mName = c.mName;
     mPimpl->mComponents = c.mPimpl->mComponents;
     return *this;
@@ -65,14 +64,17 @@ Component::Component(Component&& rhs)
     , mPimpl(rhs.mPimpl)
 {
     mName = std::move(rhs.mName);
-    rhs.mPimpl = 0;
+    rhs.mPimpl = nullptr;
 }
 
 Component& Component::operator=(Component&& rhs)
 {
-    mPimpl = rhs.mPimpl;
-    rhs.mPimpl = 0;
     mName = std::move(rhs.mName);
+    if (mPimpl) {
+        delete mPimpl;
+    }
+    mPimpl = rhs.mPimpl;
+    rhs.mPimpl = nullptr;
     return *this;
 }
 
