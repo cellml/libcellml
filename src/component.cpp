@@ -17,6 +17,9 @@ limitations under the License.Some license of other
 
 #include "libcellml/component.h"
 
+#include <vector>
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -27,36 +30,51 @@ namespace libcellml {
  */
 struct Component::ComponentImpl
 {
-    ComponentImpl(){}
-    ~ComponentImpl(){}
-    ComponentImpl(const ComponentImpl&) = delete;
-    ComponentImpl& operator=(const ComponentImpl&) = delete;
+    std::vector<Component> mComponents;
 };
 
 // Interface class Model implementation
 Component::Component()
-    : mPimpl(new Component::ComponentImpl)
+    : mPimpl(new ComponentImpl())
 {
 }
 
 Component::~Component()
 {
+    delete mPimpl;
+}
+
+Component::Component(const Component& rhs)
+    : Nameable(rhs)
+    , mPimpl(new ComponentImpl())
+{
+    mPimpl->mComponents = rhs.mPimpl->mComponents;
+}
+
+Component& Component::operator=(const Component& c)
+{
+    mPimpl = c.mPimpl;
+    return *this;
 }
 
 Component::Component(Component&& rhs)
     : Nameable(rhs)
     , mPimpl(std::move(rhs.mPimpl))
 {
+    std::cout << "Component move constructor" << std::endl;
 }
 
 Component& Component::operator=(Component&& rhs)
 {
+    std::cout << "Component move assignment" << std::endl;
     mPimpl = std::move(rhs.mPimpl);
     return *this;
 }
 
 std::string Component::serialise(libcellml::CELLML_FORMATS format) const
 {
+    const std::string encaps_tag = "<encapsulation>";
+    const std::string encaps_end_tag = "</encapsulation>";
     std::string repr = "";
     if (format == CELLML_FORMAT_XML) {
         repr += "<component";
@@ -65,14 +83,50 @@ std::string Component::serialise(libcellml::CELLML_FORMATS format) const
             repr += " name=\"" + componentName + "\"";
         }
         repr += "/>";
+        std::string encaps = "";
+        if (mPimpl->mComponents.size()) {
+            encaps += "<encapsulation>";
+            encaps += "<component_ref";
+            if (componentName.length()) {
+                encaps += " component=\"" + componentName + "\"";
+            }
+            encaps += ">";
+        }
+        for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
+            std::string comp = mPimpl->mComponents[i].serialise(format);
+            std::size_t found = comp.find(encaps_tag);
+            if (found == std::string::npos) {
+                encaps += "<component_ref";
+                if (mPimpl->mComponents[i].getName().length()) {
+                    encaps += " component=\"" + mPimpl->mComponents[i].getName() + "\"";
+                }
+                encaps += "/>";
+            } else {
+                std::string encaps_part = comp.substr(found);
+                comp = comp.substr(0, found);
+                found = encaps_part.find(encaps_tag);
+                encaps_part.replace(found, encaps_tag.length(), "");
+                found = encaps_part.find(encaps_end_tag);
+                encaps_part.replace(found, encaps_end_tag.length(), "");
+                encaps += encaps_part;
+            }
+            repr += comp;
+        }
+
+        if(mPimpl->mComponents.size()) {
+            encaps += "</component_ref></encapsulation>";
+        }
+
+        repr += encaps;
+
     }
 
     return repr;
 }
 
-void Component::addComponent(Component &/* c */)
+void Component::addComponent(const Component &c)
 {
-
+    mPimpl->mComponents.push_back(c);
 }
 
 }

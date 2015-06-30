@@ -27,6 +27,11 @@ public:
      */
     ~Component();
 
+    Component(Component&& rhs); /**< move constructor */
+    Component& operator=(Component&& rhs); /**< move assignment */
+    Component(const Component& rhs); /**< copy constructor */
+    Component& operator=(const Component& rhs); /**< assignment */
+
     /**
      * @brief serialise the Model.
      * This method serialises the Model to a std:string representation in the
@@ -37,23 +42,16 @@ public:
      */
     std::string serialise(CELLML_FORMATS format) const;
 
-    Component(Component&& rhs); /**< move constructor */
-    Component& operator=(Component&& rhs); /**< move assignment */
-
     /**
      * @brief add a child component to this component.
-     * Add a child component to this component.
+     * Add a copy of the given component as a child component of this component.
      * @param c the component to add.
      */
-    void addComponent(Component &c);
+    void addComponent(const Component &c);
 
 private:
-
-    Component(const Component&) = delete; /**< non-copyable */
-    Component& operator=(const Component&) = delete; /**< non-copyable */
-
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
-    std::unique_ptr<ComponentImpl> mPimpl; /**< Private member to implementation pointer */
+    ComponentImpl* mPimpl; /**< Private member to implementation pointer */
 
 };
 

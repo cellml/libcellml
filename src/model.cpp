@@ -19,6 +19,7 @@ limitations under the License.Some license of other
 
 #include <vector>
 
+#include <iostream>
 namespace libcellml {
 
 /**
@@ -29,29 +30,40 @@ namespace libcellml {
  */
 struct Model::ModelImpl
 {
-    ModelImpl(){}
-    ~ModelImpl(){}
-    ModelImpl(const ModelImpl&) = delete;
-    ModelImpl& operator=(const ModelImpl&) = delete;
-
     std::vector<Component> mComponents;
 };
 
-
 // Interface class Model implementation
 Model::Model()
-    : mPimpl(new Model::ModelImpl)
+    : mPimpl(new ModelImpl())
 {
 }
 
 Model::~Model()
 {
+    delete mPimpl;
+}
+
+Model::Model(const Model& rhs)
+    : Nameable(rhs)
+    , mPimpl(new ModelImpl())
+{
+    std::cout << "Model copy" << std::endl;
+    mPimpl->mComponents = rhs.mPimpl->mComponents;
+}
+
+Model& Model::operator=(const Model& c)
+{
+    std::cout << "Model assign" << std::endl;
+    mPimpl = c.mPimpl;
+    return *this;
 }
 
 Model::Model(Model&& rhs)
     : Nameable(rhs)
     , mPimpl(std::move(rhs.mPimpl))
 {
+    std::cout << "Model move constructor" << std::endl;
 }
 
 Model& Model::operator=(Model&& rhs)
@@ -78,9 +90,9 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
-void Model::addComponent(Component& c)
+void Model::addComponent(const Component& c)
 {
-    mPimpl->mComponents.push_back(std::move(c));
+    mPimpl->mComponents.push_back(c);
 }
 
 }

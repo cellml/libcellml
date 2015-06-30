@@ -47,6 +47,8 @@ public:
 
     Model(Model&& rhs); /**< move constructor */
     Model& operator=(Model&& rhs); /**< move assignment */
+    Model(const Model&);/**< copy constructor */
+    Model& operator=(const Model&);/**< assignment */
 
     /**
      * @brief serialise the Model.
@@ -60,18 +62,15 @@ public:
 
     /**
      * @brief add a component to the model.
-     * Add a component to the model.
+     * Adds a copy of the given component to the model.
      * @param c the component to add.
      */
-    void addComponent(Component &c);
+    void addComponent(const Component &c);
 
 private:
 
-    Model(const Model&) = delete; /**< non-copyable */
-    Model& operator=(const Model&) = delete; /**< non-copyable */
-
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    std::unique_ptr<ModelImpl> mPimpl; /**< Private member to implementation pointer */
+    ModelImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }
