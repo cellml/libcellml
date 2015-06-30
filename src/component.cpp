@@ -61,9 +61,10 @@ Component& Component::operator=(const Component& c)
 }
 
 Component::Component(Component&& rhs)
-    : Nameable(std::move(rhs))
+    : Nameable()
     , mPimpl(rhs.mPimpl)
 {
+    mName = std::move(rhs.mName);
     rhs.mPimpl = 0;
 }
 
