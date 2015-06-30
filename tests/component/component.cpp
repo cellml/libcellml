@@ -45,3 +45,35 @@ TEST(Component, unset_name) {
     EXPECT_EQ(e, a);
 }
 
+libcellml::Component RetByValue()
+{
+    libcellml::Component c;
+    c.setName("returned_by_value");
+    return c;
+}
+
+TEST(Component, constructors) {
+    const std::string n = "my_name";
+    libcellml::Component c, c1, c2;
+    c.setName(n);
+    c.addComponent(libcellml::Component());
+    std::string a = c.serialise(libcellml::CELLML_FORMAT_XML);
+
+    const std::string e = "<component name=\"my_name\"/><component/><encapsulation><component_ref component=\"my_name\"><component_ref/></component_ref></encapsulation>";
+    EXPECT_EQ(e, a);
+
+    c1 = c;
+    EXPECT_EQ("my_name", c1.getName());
+
+    // Testing move assignment for component
+    c2 = std::move(c1);
+    EXPECT_EQ("my_name", c2.getName());
+    EXPECT_EQ("", c1.getName());
+
+    // Testing move constructor for component
+    libcellml::Component c3 = std::move(c2);
+    EXPECT_EQ("my_name", c3.getName());
+    EXPECT_EQ("", c2.getName());
+
+}
+

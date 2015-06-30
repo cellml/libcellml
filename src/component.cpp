@@ -53,21 +53,25 @@ Component::Component(const Component& rhs)
 
 Component& Component::operator=(const Component& c)
 {
-    mPimpl = c.mPimpl;
+    // This would be much faster if copy-on-write was implemented
+    mPimpl = new ComponentImpl();
+    mName = c.mName;
+    mPimpl->mComponents = c.mPimpl->mComponents;
     return *this;
 }
 
 Component::Component(Component&& rhs)
-    : Nameable(rhs)
-    , mPimpl(std::move(rhs.mPimpl))
+    : Nameable(std::move(rhs))
+    , mPimpl(rhs.mPimpl)
 {
-    std::cout << "Component move constructor" << std::endl;
+    rhs.mPimpl = 0;
 }
 
 Component& Component::operator=(Component&& rhs)
 {
-    std::cout << "Component move assignment" << std::endl;
-    mPimpl = std::move(rhs.mPimpl);
+    mPimpl = rhs.mPimpl;
+    rhs.mPimpl = 0;
+    mName = std::move(rhs.mName);
     return *this;
 }
 

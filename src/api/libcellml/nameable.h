@@ -32,7 +32,7 @@ public:
         return mName;
     }
 
-private:
+protected:
     std::string mName;
 };
 
