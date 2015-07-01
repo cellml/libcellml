@@ -27,7 +27,7 @@ Use-cases for libCellML
       #. change the name of a top-level component
       #. change the name of an encapsulated child component
       #. replace one component with a new component
-      #. take a component
+      #. take a component (remove the component and return it to the user)
       #. determine if a component with a given name exists in a model or component
       #. determine the number of components encapsulated by a model or component
       #. determine the number of components with a given name that are encapsulated by a model or component
