@@ -17,9 +17,10 @@ limitations under the License.Some license of other
 
 #include "libcellml/model.h"
 
+#include <assert.h>
 #include <vector>
-
 #include <iostream>
+
 namespace libcellml {
 
 /**
@@ -48,27 +49,31 @@ Model::Model(const Model& rhs)
     : Nameable(rhs)
     , mPimpl(new ModelImpl())
 {
-    std::cout << "Model copy" << std::endl;
     mPimpl->mComponents = rhs.mPimpl->mComponents;
 }
 
 Model& Model::operator=(const Model& c)
 {
-    std::cout << "Model assign" << std::endl;
-    mPimpl = c.mPimpl;
+    mName = c.mName;
+    mPimpl->mComponents = c.mPimpl->mComponents;
     return *this;
 }
 
 Model::Model(Model&& rhs)
-    : Nameable(rhs)
-    , mPimpl(std::move(rhs.mPimpl))
+    : Nameable()
+    , mPimpl(rhs.mPimpl)
 {
-    std::cout << "Model move constructor" << std::endl;
+    mName = std::move(rhs.mName);
+    rhs.mPimpl = nullptr;
 }
 
 Model& Model::operator=(Model&& rhs)
 {
-    mPimpl = std::move(rhs.mPimpl);
+    mName = std::move(rhs.mName);
+    assert(mPimpl != nullptr);
+    delete mPimpl;
+    mPimpl = rhs.mPimpl;
+    rhs.mPimpl = nullptr;
     return *this;
 }
 

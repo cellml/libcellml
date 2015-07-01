@@ -17,6 +17,7 @@ limitations under the License.Some license of other
 
 #include "libcellml/component.h"
 
+#include <assert.h>
 #include <vector>
 #include <iostream>
 
@@ -70,9 +71,8 @@ Component::Component(Component&& rhs)
 Component& Component::operator=(Component&& rhs)
 {
     mName = std::move(rhs.mName);
-    if (mPimpl) {
-        delete mPimpl;
-    }
+    assert(mPimpl != nullptr);
+    delete mPimpl;
     mPimpl = rhs.mPimpl;
     rhs.mPimpl = nullptr;
     return *this;

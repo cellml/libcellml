@@ -111,3 +111,34 @@ TEST(Model, add_components) {
 
     EXPECT_EQ(e, a);
 }
+
+TEST(Model, constructors) {
+    const std::string n = "my_name";
+    libcellml::Model m, m1, m2;
+    m.setName(n);
+    m.addComponent(libcellml::Component());
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"my_name\"><component/></model>";
+    EXPECT_EQ(e, a);
+
+    //Testing copy constructor
+    libcellml::Model m3(m);
+    EXPECT_EQ("my_name", m3.getName());
+
+    // Testing model assignment
+    m1 = m;
+    EXPECT_EQ("my_name", m.getName());
+
+    // Testing move assignment for model
+    m2 = std::move(m1);
+    EXPECT_EQ("my_name", m2.getName());
+    EXPECT_EQ("", m1.getName());
+
+    // Testing move constructor for component
+    libcellml::Model m4 = std::move(m2);
+    EXPECT_EQ("my_name", m4.getName());
+    EXPECT_EQ("", m2.getName());
+
+}
+

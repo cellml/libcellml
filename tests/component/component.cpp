@@ -45,13 +45,6 @@ TEST(Component, unset_name) {
     EXPECT_EQ(e, a);
 }
 
-libcellml::Component RetByValue()
-{
-    libcellml::Component c;
-    c.setName("returned_by_value");
-    return c;
-}
-
 TEST(Component, constructors) {
     const std::string n = "my_name";
     libcellml::Component c, c1, c2;
