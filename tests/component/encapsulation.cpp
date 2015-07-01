@@ -63,3 +63,35 @@ TEST(Encapsulation, reparent_component) {
     // other options?
 }
 
+TEST(Encapsulation, hierarchy_waterfall) {
+
+    libcellml::Component parent;
+    parent.setName("parent_component");
+    libcellml::Component child1;
+    child1.setName("child1");
+    libcellml::Component child2;
+    child2.setName("child2");
+    libcellml::Component child3;
+    child3.setName("child3");
+
+    child2.addComponent(child3);
+    child1.addComponent(child2);
+    parent.addComponent(child1);
+    const std::string e_parent = "<component name=\"parent_component\"/><component name=\"child1\"/><component name=\"child2\"/><component name=\"child3\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"><component_ref component=\"child2\"><component_ref component=\"child3\"/></component_ref></component_ref></component_ref></encapsulation>";
+    std::string a_parent = parent.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e_parent, a_parent);
+}
+
+TEST(Encapsulation, hierarchy_circular) {
+
+    libcellml::Component parent;
+    parent.setName("parent_component");
+    libcellml::Component child1;
+    child1.setName("child1");
+
+    child1.addComponent(parent);
+    parent.addComponent(child1);
+    const std::string e_parent = "<component name=\"parent_component\"/><component name=\"child1\"/><component name=\"parent_component\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"><component_ref component=\"parent_component\"/></component_ref></component_ref></encapsulation>";
+    std::string a_parent = parent.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e_parent, a_parent);
+}
