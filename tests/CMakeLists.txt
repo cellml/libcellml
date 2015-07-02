@@ -48,10 +48,16 @@ if(LIBCELLML_COVERAGE)
     COMMENT "Prepare for coverage tests")
 
   add_custom_target(coverage
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovcoverage.py ${GCOV_ANALYSIS_PATH} ${GCOV_PREFIX_PATH} ${GCOV_BUILD_PREFIX_PATH}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE}
     DEPENDS ${TEST_LIST} prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gcov
     COMMENT "Running coverage tests")
+
+  add_custom_target(coverage-html
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --html --html-details --output=index.html --gcov-executable=${GCOV_EXE}
+    DEPENDS ${TEST_LIST} prepare_coverage
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gcov
+    COMMENT "Running coverage tests with html output")
 endif()
 
 if(LIBCELLML_MEMCHECK)
