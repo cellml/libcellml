@@ -30,7 +30,6 @@ Use-cases for libCellML
       #. take a component (remove the component and return it to the user)
       #. determine if a component with a given name exists in a model or component
       #. determine the number of components encapsulated by a model or component
-      #. determine the number of components with a given name that are encapsulated by a model or component
 
    #. a model with imported components
 
