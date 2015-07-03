@@ -17,6 +17,10 @@ limitations under the License.Some license of other
 
 #include "libcellml/model.h"
 
+#include <assert.h>
+#include <vector>
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -27,33 +31,49 @@ namespace libcellml {
  */
 struct Model::ModelImpl
 {
-    ModelImpl(){}
-    ~ModelImpl(){}
-    ModelImpl(const ModelImpl&) = delete;
-    ModelImpl& operator=(const ModelImpl&) = delete;
-
-    std::string mName = "";
+    std::vector<Component> mComponents;
 };
-
 
 // Interface class Model implementation
 Model::Model()
-    : mPimpl(new Model::ModelImpl)
+    : mPimpl(new ModelImpl())
 {
 }
 
 Model::~Model()
 {
+    delete mPimpl;
+}
+
+Model::Model(const Model& rhs)
+    : Nameable(rhs)
+    , mPimpl(new ModelImpl())
+{
+    mPimpl->mComponents = rhs.mPimpl->mComponents;
+}
+
+Model& Model::operator=(const Model& c)
+{
+    mName = c.mName;
+    mPimpl->mComponents = c.mPimpl->mComponents;
+    return *this;
 }
 
 Model::Model(Model&& rhs)
-    : mPimpl(std::move(rhs.mPimpl))
+    : Nameable()
+    , mPimpl(rhs.mPimpl)
 {
+    mName = std::move(rhs.mName);
+    rhs.mPimpl = nullptr;
 }
 
 Model& Model::operator=(Model&& rhs)
 {
-    mPimpl = std::move(rhs.mPimpl);
+    mName = std::move(rhs.mName);
+    assert(mPimpl != nullptr);
+    delete mPimpl;
+    mPimpl = rhs.mPimpl;
+    rhs.mPimpl = nullptr;
     return *this;
 }
 
@@ -62,23 +82,22 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     std::string repr = "";
     if (format == CELLML_FORMAT_XML) {
         repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"";
-        if (mPimpl->mName.length()) {
-            repr += " name=\"" + mPimpl->mName + "\"";
+        if (getName().length()) {
+            repr += " name=\"" + getName() + "\"";
         }
-        repr += "></model>";
+        repr += ">";
+        for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
+            repr += mPimpl->mComponents[i].serialise(format);
+        }
+        repr += "</model>";
     }
 
     return repr;
 }
 
-void Model::setName(const std::string &name)
+void Model::addComponent(const Component& c)
 {
-    mPimpl->mName = name;
-}
-
-std::string Model::getName() const
-{
-    return mPimpl->mName;
+    mPimpl->mComponents.push_back(c);
 }
 
 }

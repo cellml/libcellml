@@ -21,7 +21,8 @@ limitations under the License.Some license of other
 #include <memory>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/entity.h"
+#include "libcellml/nameable.h"
+#include "libcellml/component.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
@@ -30,7 +31,7 @@ namespace libcellml {
  * @brief The Model class.
  * The Model class is for representing a CellML Model.
  */
-class LIBCELLML_EXPORT Model: public Entity
+class LIBCELLML_EXPORT Model: public Nameable
 {
 public:
     /**
@@ -46,6 +47,8 @@ public:
 
     Model(Model&& rhs); /**< move constructor */
     Model& operator=(Model&& rhs); /**< move assignment */
+    Model(const Model&);/**< copy constructor */
+    Model& operator=(const Model&);/**< assignment */
 
     /**
      * @brief serialise the Model.
@@ -58,27 +61,16 @@ public:
     std::string serialise(libcellml::CELLML_FORMATS format) const;
 
     /**
-     * @brief set the name for the Model
-     * This method sets the name parameter of the Model.  It does not check
-     * the validity of the name.
-     * @param name A string to represent the name.
+     * @brief add a component to the model.
+     * Adds a copy of the given component to the model.
+     * @param c the component to add.
      */
-    void setName(const std::string &name);
-
-    /**
-     * @brief get the name of the Model
-     * Gets the name of the Model as a string.
-     * @return std::string representation of the Model.
-     */
-    std::string getName() const;
+    void addComponent(const Component &c);
 
 private:
 
-    Model(const Model&) = delete; /**< non-copyable */
-    Model& operator=(const Model&) = delete; /**< non-copyable */
-
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    std::unique_ptr<ModelImpl> mPimpl; /**< Private member to implementation pointer */
+    ModelImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }
