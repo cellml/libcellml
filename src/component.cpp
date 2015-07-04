@@ -136,5 +136,10 @@ void Component::addComponent(const Component &c)
     mPimpl->mComponents.push_back(c);
 }
 
+int Component::componentCount() const
+{
+    return 0;
+}
+
 }
 

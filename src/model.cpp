@@ -100,4 +100,9 @@ void Model::addComponent(const Component& c)
     mPimpl->mComponents.push_back(c);
 }
 
+int Model::componentCount() const
+{
+    return 0;
+}
+
 }

@@ -67,6 +67,13 @@ public:
      */
     void addComponent(const Component &c);
 
+    /**
+     * @brief get the number of components in the model.
+     * Returns the number of components the model directly contains.
+     * @return the number of components.
+     */
+    int componentCount() const;
+
 private:
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */

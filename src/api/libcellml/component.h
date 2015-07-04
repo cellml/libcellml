@@ -49,6 +49,13 @@ public:
      */
     void addComponent(const Component &c);
 
+    /**
+     * @brief get the number of components in the component.
+     * Returns the number of components the component directly contains.
+     * @return the number of components.
+     */
+    int componentCount() const;
+
 private:
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl* mPimpl; /**< Private member to implementation pointer */

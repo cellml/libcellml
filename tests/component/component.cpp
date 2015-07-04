@@ -45,6 +45,33 @@ TEST(Component, unset_name) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Component, count) {
+    libcellml::Component parent;
+    parent.setName("parent");
+    libcellml::Component child1;
+    child1.setName("child1");
+    libcellml::Component child2;
+    child2.setName("child2");
+    libcellml::Component child3;
+    child3.setName("child3");
+    libcellml::Component child4;
+    child4.setName("child4");
+
+    EXPECT_EQ(0, parent.componentCount());
+
+    parent.addComponent(child1);
+    parent.addComponent(child2);
+    parent.addComponent(child3);
+    parent.addComponent(child4);
+    EXPECT_EQ(4, parent.componentCount());
+
+    child3.addComponent(child4);
+    parent.addComponent(child3);
+    EXPECT_EQ(4, parent.componentCount());
+
+    EXPECT_EQ(1, child3.componentCount());
+}
+
 TEST(Component, constructors) {
     const std::string n = "my_name";
     libcellml::Component c, c1, c2;
@@ -55,6 +82,7 @@ TEST(Component, constructors) {
     const std::string e = "<component name=\"my_name\"/><component/><encapsulation><component_ref component=\"my_name\"><component_ref/></component_ref></encapsulation>";
     EXPECT_EQ(e, a);
 
+    // Testing assignment for component
     c1 = c;
     EXPECT_EQ("my_name", c1.getName());
 

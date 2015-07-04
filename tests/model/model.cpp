@@ -112,6 +112,17 @@ TEST(Model, add_components) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Model, count) {
+    libcellml::Model m;
+    libcellml::Component c1, c2;
+
+    EXPECT_EQ(0, m.componentCount());
+
+    m.addComponent(c1);
+    m.addComponent(c2);
+    EXPECT_EQ(2, m.componentCount());
+}
+
 TEST(Model, constructors) {
     const std::string n = "my_name";
     libcellml::Model m, m1, m2;
