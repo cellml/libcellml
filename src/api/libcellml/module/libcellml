@@ -23,7 +23,7 @@ limitations under the License.Some license of other
  *
  * \section intro_sec Introduction
  *
- * libCellML is a C++ library for manipulating, serialising and analysing CellML models.
+ * This is the source code documentation for the libCellML C++ library.
  *
  */
 #include <libcellml/version.h>
