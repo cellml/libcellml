@@ -197,7 +197,7 @@ TEST(Model, replace) {
     m.addComponent(c2);
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
-    EXPECT_EQ(e_after, a);
+    EXPECT_EQ(e_orig, a);
 
     m.replaceComponent(1, c3);
 
