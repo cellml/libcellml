@@ -48,7 +48,7 @@ public:
     Model(Model&& rhs); /**< move constructor */
     Model& operator=(Model&& rhs); /**< move assignment */
     Model(const Model&);/**< copy constructor */
-    Model& operator=(const Model&);/**< assignment */
+    Model& operator=(const Model&);/**< assignment operator */
 
     /**
      * @brief serialise the Model.
@@ -66,6 +66,71 @@ public:
      * @param c the component to add.
      */
     void addComponent(const Component &c);
+
+    /**
+     * @brief remove the component at the given index.
+     * Remove the component at the given index.  If the index is
+     * not in the range 0, componentCount then an exception will
+     * be raised.
+     * @param index the index of the component to remove.
+     */
+    void removeComponent(size_t index);
+
+    /**
+     * @brief remove the component at the given index.
+     * Remove the component with the given name.  This method will
+     * remove the first component that is found and return.  If the
+     * name is not found no component is removed.
+     * @param name the name of the component to remove.
+     */
+    void removeComponent(const std::string &name);
+
+    /**
+     * @brief tests to see if the component is contained within the Model.
+     * Tests to see if the component is contained within the Model.  Returns
+     * true if the component is in the Model and false otherwise.
+     * @param name the name of the component to test for existence in the Model.
+     * @return true if the named component is in the model and false otherwise.
+     */
+    bool containsComponent(const std::string &name);
+
+    /**
+     * @brief get a component at index.
+     * Returns a const reference to a component at the given index.  If the
+     * index is not valid std::runtime_error exception is thrown.
+     * @param index The index of the component to return
+     * @return a reference to the component at the given index
+     */
+    const Component& getComponent(size_t index) const;
+
+    /**
+     * @brief get a component at index.
+     * Returns a reference to a component at the given index.  If the index
+     * is not valid std::runtime_error exception is thrown.
+     * This is an overloaded method.
+     * @param index The index of the component to return
+     * @return a reference to the component at the given index
+     */
+    Component& getComponent(size_t index);
+
+    /**
+     * @brief take the component at the given index and return it.
+     * Removes the component at the given index position and returns it.
+     * If an invalid index is passed to the method a std::runtime_error
+     * exception is thrown.
+     * @param index the index of the component to take.
+     * @return the component at the given index.
+     */
+    Component takeComponentAt(size_t index);
+
+    /**
+     * @brief replace a component at index.
+     * Replaces the component at index with c.  Index must be a valid index
+     * position.
+     * @param index Index of the component to replace.
+     * @param c The component to use for replacement.
+     */
+    void replaceComponent(size_t index, const Component& c);
 
     /**
      * @brief get the number of components in the model.

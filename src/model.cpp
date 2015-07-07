@@ -100,9 +100,50 @@ void Model::addComponent(const Component& c)
     mPimpl->mComponents.push_back(c);
 }
 
+void Model::removeComponent(const std::string& name)
+{
+    if(name == mName) {
+        // std::remove
+    }
+}
+
+void Model::removeComponent(size_t index)
+{
+    if (index < mPimpl->mComponents.size()) {
+        //mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
+    } else {
+        throw std::runtime_error("Index out of range.");
+    }
+}
+
 int Model::componentCount() const
 {
     return 0;
+}
+
+bool Model::containsComponent(const std::string & /*name*/)
+{
+    return false;
+}
+
+Component& Model::getComponent(size_t /*index*/)
+{
+    return mPimpl->mComponents.back();
+}
+
+const Component& Model::getComponent(size_t /*index*/) const
+{
+    return mPimpl->mComponents.back();
+}
+
+Component Model::takeComponentAt(size_t index)
+{
+    return mPimpl->mComponents.at(index);
+}
+
+void Model::replaceComponent(size_t /*index*/, const Component & /*c*/)
+{
+
 }
 
 }

@@ -18,6 +18,14 @@ limitations under the License.Some license of other
 #ifndef LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
 #define LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
 
+/**
+ * @mainpage libCellML
+ *
+ * \section intro_sec Introduction
+ *
+ * libCellML is a C++ library for manipulating, serialising and analysing CellML models.
+ *
+ */
 #include <libcellml/version.h>
 #include <libcellml/model.h>
 #include <libcellml/component.h>

@@ -115,12 +115,94 @@ TEST(Model, add_components) {
 TEST(Model, count) {
     libcellml::Model m;
     libcellml::Component c1, c2;
+    c1.setName("child1");
+    c2.setName("child2");
 
     EXPECT_EQ(0, m.componentCount());
 
     m.addComponent(c1);
     m.addComponent(c2);
     EXPECT_EQ(2, m.componentCount());
+}
+
+TEST(Model, contains) {
+    libcellml::Model m;
+    libcellml::Component c1, c2;
+
+    EXPECT_FALSE(m.containsComponent("child1"));
+
+    m.addComponent(c1);
+    m.addComponent(c2);
+    EXPECT_TRUE(m.containsComponent("child2"));
+}
+
+TEST(Model, remove) {
+    libcellml::Model m;
+    libcellml::Component c1, c2;
+    c1.setName("child1");
+    c2.setName("child2");
+    m.addComponent(c1);
+    m.addComponent(c2);
+
+    m.removeComponent(0);
+    EXPECT_EQ(1, m.componentCount());
+    EXPECT_THROW(m.removeComponent(1), std::runtime_error);
+
+    m.addComponent(c1);
+    m.addComponent(c1);
+    m.removeComponent("child1");
+    EXPECT_EQ(1, m.componentCount());
+    EXPECT_THROW(m.removeComponent("child3"), std::runtime_error);
+}
+
+TEST(Model, getcomponent) {
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"childA\"/></model>";
+    libcellml::Model m;
+    libcellml::Component c1, c2;
+    c1.setName("child1");
+    c2.setName("child2");
+    m.addComponent(c1);
+
+    c2 = m.getComponent(0);
+    c2.setName("childA");
+
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Model, takeat) {
+
+    libcellml::Model m;
+    libcellml::Component c1, c2;
+    c1.setName("child1");
+    c2.setName("child2");
+    m.addComponent(c1);
+    m.addComponent(c2);
+
+    libcellml::Component c = m.takeComponentAt(1);
+    EXPECT_EQ(1, m.componentCount());
+
+    EXPECT_EQ("child2", c.getName());
+}
+
+TEST(Model, replace) {
+    const std::string e_orig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child1\"/><component name=\"child2\"/></model>";
+    const std::string e_after = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child1\"/><component name=\"child3\"/></model>";
+    libcellml::Model m;
+    libcellml::Component c1, c2, c3;
+    c1.setName("child1");
+    c2.setName("child2");
+    c3.setName("child3");
+    m.addComponent(c1);
+    m.addComponent(c2);
+
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e_after, a);
+
+    m.replaceComponent(1, c3);
+
+    a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e_after, a);
 }
 
 TEST(Model, constructors) {
