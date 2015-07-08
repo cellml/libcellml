@@ -128,6 +128,8 @@ TEST(Model, count) {
 TEST(Model, contains) {
     libcellml::Model m;
     libcellml::Component c1, c2;
+    c1.setName("child1");
+    c2.setName("child2");
 
     EXPECT_FALSE(m.containsComponent("child1"));
 
@@ -137,6 +139,8 @@ TEST(Model, contains) {
 }
 
 TEST(Model, remove) {
+    const std::string e1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child2\"/></model>";
+    const std::string e2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child2\"/><component name=\"child1\"/></model>";
     libcellml::Model m;
     libcellml::Component c1, c2;
     c1.setName("child1");
@@ -146,12 +150,17 @@ TEST(Model, remove) {
 
     m.removeComponent(0);
     EXPECT_EQ(1, m.componentCount());
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e1, a);
     EXPECT_THROW(m.removeComponent(1), std::runtime_error);
 
     m.addComponent(c1);
     m.addComponent(c1);
+    // Remove the first occurence of "child1".
     m.removeComponent("child1");
-    EXPECT_EQ(1, m.componentCount());
+    EXPECT_EQ(2, m.componentCount());
+    a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e2, a);
     EXPECT_THROW(m.removeComponent("child3"), std::runtime_error);
 }
 
@@ -170,8 +179,8 @@ TEST(Model, getcomponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, takeat) {
-
+TEST(Model, take) {
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"childA\"/></model>";
     libcellml::Model m;
     libcellml::Component c1, c2;
     c1.setName("child1");
@@ -179,10 +188,17 @@ TEST(Model, takeat) {
     m.addComponent(c1);
     m.addComponent(c2);
 
-    libcellml::Component c = m.takeComponentAt(1);
+    libcellml::Component c02 = m.takeComponent(1);
     EXPECT_EQ(1, m.componentCount());
 
-    EXPECT_EQ("child2", c.getName());
+    EXPECT_EQ("child2", c02.getName());
+
+    libcellml::Component c01 = m.takeComponent("child1");
+    EXPECT_EQ(0, m.componentCount());
+
+    EXPECT_EQ("child1", c01.getName());
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Model, replace) {

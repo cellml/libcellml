@@ -136,9 +136,14 @@ const Component& Model::getComponent(size_t /*index*/) const
     return mPimpl->mComponents.back();
 }
 
-Component Model::takeComponentAt(size_t index)
+Component Model::takeComponent(size_t index)
 {
     return mPimpl->mComponents.at(index);
+}
+
+Component Model::takeComponent(const std::string & /*name*/)
+{
+    return mPimpl->mComponents.at(0);
 }
 
 void Model::replaceComponent(size_t /*index*/, const Component & /*c*/)

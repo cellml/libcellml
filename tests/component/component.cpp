@@ -67,7 +67,7 @@ TEST(Component, count) {
 
     child3.addComponent(child4);
     parent.addComponent(child3);
-    EXPECT_EQ(4, parent.componentCount());
+    EXPECT_EQ(5, parent.componentCount());
 
     EXPECT_EQ(1, child3.componentCount());
 }

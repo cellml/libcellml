@@ -39,6 +39,7 @@ public:
      * Default Model constructor.
      */
     Model();
+
     /**
      * @brief Model Destructor.
      * Default Model destructor.
@@ -61,81 +62,108 @@ public:
     std::string serialise(libcellml::CELLML_FORMATS format) const;
 
     /**
-     * @brief add a component to the model.
+     * @brief Add a component to the model.
      * Adds a copy of the given component to the model.
-     * @param c the component to add.
+     * @param c The component to add.
      */
     void addComponent(const Component &c);
 
     /**
-     * @brief remove the component at the given index.
+     * @brief Remove the component at the given index.
      * Remove the component at the given index.  If the index is
-     * not in the range 0, componentCount then an exception will
+     * not in the range [0, #components) then an exception will
      * be raised.
-     * @param index the index of the component to remove.
+     * @param index The index of the component to remove (zero-based).
      */
     void removeComponent(size_t index);
 
     /**
-     * @brief remove the component at the given index.
+     * @brief Remove the component at the given index.
      * Remove the component with the given name.  This method will
      * remove the first component that is found and return.  If the
      * name is not found no component is removed.
-     * @param name the name of the component to remove.
+     *
+     * This is an overloaded method.
+     * @param name The name of the component to remove.
      */
     void removeComponent(const std::string &name);
 
     /**
-     * @brief tests to see if the component is contained within the Model.
+     * @brief Tests to see if the component is contained within the Model.
      * Tests to see if the component is contained within the Model.  Returns
      * true if the component is in the Model and false otherwise.
-     * @param name the name of the component to test for existence in the Model.
-     * @return true if the named component is in the model and false otherwise.
+     * @param name The name of the component to test for existence in the Model.
+     * @return 'true' if the named component is in the model and 'false' otherwise.
      */
     bool containsComponent(const std::string &name);
 
     /**
-     * @brief get a component at index.
+     * @brief Get a component at index.
      * Returns a const reference to a component at the given index.  If the
      * index is not valid std::runtime_error exception is thrown.
-     * @param index The index of the component to return
-     * @return a reference to the component at the given index
+     *
+     * This is an overloaded method.
+     * @param index The index of the component to return (zero-based).
+     * @return A const reference to the component at the given index.
      */
     const Component& getComponent(size_t index) const;
 
     /**
-     * @brief get a component at index.
+     * @brief Get a component at index.
      * Returns a reference to a component at the given index.  If the index
      * is not valid std::runtime_error exception is thrown.
      * This is an overloaded method.
-     * @param index The index of the component to return
-     * @return a reference to the component at the given index
+     * @param index The index of the component to return (zero-based).
+     * @return A reference to the component at the given index.
      */
     Component& getComponent(size_t index);
 
     /**
-     * @brief take the component at the given index and return it.
+     * @brief Take the component at the given index and return it.
      * Removes the component at the given index position and returns it.
      * If an invalid index is passed to the method a std::runtime_error
      * exception is thrown.
-     * @param index the index of the component to take.
-     * @return the component at the given index.
+     * @param index The index of the component to take (zero-based).
+     * @return The component at the given index.
      */
-    Component takeComponentAt(size_t index);
+    Component takeComponent(size_t index);
 
     /**
-     * @brief replace a component at index.
+     * @brief Take the component with the given name 'name' and return it.
+     * Removes the component at the given index position and returns it.
+     * If an invalid name is passed to the method a std::runtime_error
+     * exception is thrown.
+     *
+     * This is an overloaded method.
+     * @param name The name of the component to take.
+     * @return The component identified with the given name.
+     */
+    Component takeComponent(const std::string &name);
+
+    /**
+     * @brief Replace a component at index.
      * Replaces the component at index with c.  Index must be a valid index
      * position.
-     * @param index Index of the component to replace.
+     * @param index Index of the component to replace (zero-based).
      * @param c The component to use for replacement.
      */
     void replaceComponent(size_t index, const Component& c);
 
     /**
-     * @brief get the number of components in the model.
+     * @brief Replace a component with the given name.
+     * Replaces the component with the given name 'name' with c.  Name must be a valid name
+     * of a component in the model, if it isn't a std::runtime_error is thrown.
+     *
+     * This is an overloaded method.
+     * @param name The name of the component to replace.
+     * @param c The component to use for replacement.
+     */
+    void replaceComponent(const std::string &name, const Component& c);
+
+    /**
+     * @brief Get the number of components in the model.
      * Returns the number of components the model directly contains.
-     * @return the number of components.
+     * @return The number of components.
      */
     int componentCount() const;
 
