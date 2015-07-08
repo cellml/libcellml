@@ -69,17 +69,16 @@ public:
 
     /**
      * @brief Remove the component at the given index.
-     * Remove the component at the given index.  If the index is
-     * not in the range [0, #components) then an exception will
-     * be raised.
+     * Remove the component from the model with the index @p index.  If the index is
+     * not in the range [0, #components) a std::out_of_range exception
+     * will be thrown.
      * @param index The index of the component to remove (zero-based).
      */
     void removeComponent(size_t index);
 
     /**
-     * @brief Remove the component at the given index.
-     * Remove the component with the given name.  This method will
-     * remove the first component that is found and return.  If the
+     * @brief Remove the component with the given name.
+     * Remove the first component found that matches the name @p name.  If the
      * name is not found no component is removed.
      *
      * This is an overloaded method.
@@ -89,17 +88,18 @@ public:
 
     /**
      * @brief Tests to see if the component is contained within the Model.
-     * Tests to see if the component is contained within the Model.  Returns
-     * true if the component is in the Model and false otherwise.
+     * Tests to see if the component with the given name 'name' is contained
+     * within the Model.  Returns true if the component is in the Model and
+     * false otherwise.
      * @param name The name of the component to test for existence in the Model.
-     * @return 'true' if the named component is in the model and 'false' otherwise.
+     * @return @c true if the named component is in the model and @c false otherwise.
      */
     bool containsComponent(const std::string &name);
 
     /**
      * @brief Get a component at index.
-     * Returns a const reference to a component at the given index.  If the
-     * index is not valid std::out_of_range exception is thrown.
+     * Returns a const reference to a component at the index @p index.  If the
+     * index is not valid a std::out_of_range exception is thrown.
      *
      * This is an overloaded method.
      * @param index The index of the component to return (zero-based).
@@ -109,8 +109,8 @@ public:
 
     /**
      * @brief Get a component at index.
-     * Returns a reference to a component at the given index.  If the index
-     * is not valid std::out_of_range exception is thrown.
+     * Returns a reference to a component at the index @p index.  If the index
+     * is not valid a std::out_of_range exception is thrown.
      *
      * This is an overloaded method.
      * @param index The index of the component to return (zero-based).
@@ -129,8 +129,8 @@ public:
     Component takeComponent(size_t index);
 
     /**
-     * @brief Take the component with the given name 'name' and return it.
-     * Removes the component at the given index position and returns it.
+     * @brief Take the component with the given name @p name and return it.
+     * Takes the component at the given index position and returns it.
      * If an invalid name is passed to the method a std::out_of_range
      * exception is thrown.
      *
@@ -142,7 +142,7 @@ public:
 
     /**
      * @brief Replace a component at index.
-     * Replaces the component at index with c.  Index must be a valid index
+     * Replaces the component at index @p index with @p c.  Index must be a valid index
      * position.
      * @param index Index of the component to replace (zero-based).
      * @param c The component to use for replacement.
@@ -151,8 +151,8 @@ public:
 
     /**
      * @brief Replace a component with the given name.
-     * Replaces the component with the given name 'name' with c.  Name must be a valid name
-     * of a component in the model, if it isn't a std::runtime_error is thrown.
+     * Replaces the component with the given name @p name with @p c.  Name must be a valid name
+     * of a component in the model, if it isn't a std::out_of_range exception is thrown.
      *
      * This is an overloaded method.
      * @param name The name of the component to replace.
