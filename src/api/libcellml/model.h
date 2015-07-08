@@ -46,10 +46,9 @@ public:
      */
     ~Model();
 
-    Model(Model&& rhs); /**< move constructor */
-    Model& operator=(Model&& rhs); /**< move assignment */
-    Model(const Model&);/**< copy constructor */
-    Model& operator=(const Model&);/**< assignment operator */
+    Model(Model&& rhs); /**< Move constructor */
+    Model(const Model& rhs);/**< Copy constructor */
+    Model& operator=(Model rhs); /**< Assignment operator */
 
     /**
      * @brief serialise the Model.
@@ -100,7 +99,7 @@ public:
     /**
      * @brief Get a component at index.
      * Returns a const reference to a component at the given index.  If the
-     * index is not valid std::runtime_error exception is thrown.
+     * index is not valid std::out_of_range exception is thrown.
      *
      * This is an overloaded method.
      * @param index The index of the component to return (zero-based).
@@ -111,7 +110,8 @@ public:
     /**
      * @brief Get a component at index.
      * Returns a reference to a component at the given index.  If the index
-     * is not valid std::runtime_error exception is thrown.
+     * is not valid std::out_of_range exception is thrown.
+     *
      * This is an overloaded method.
      * @param index The index of the component to return (zero-based).
      * @return A reference to the component at the given index.
@@ -121,7 +121,7 @@ public:
     /**
      * @brief Take the component at the given index and return it.
      * Removes the component at the given index position and returns it.
-     * If an invalid index is passed to the method a std::runtime_error
+     * If an invalid index is passed to the method a std::out_of_range
      * exception is thrown.
      * @param index The index of the component to take (zero-based).
      * @return The component at the given index.
@@ -131,7 +131,7 @@ public:
     /**
      * @brief Take the component with the given name 'name' and return it.
      * Removes the component at the given index position and returns it.
-     * If an invalid name is passed to the method a std::runtime_error
+     * If an invalid name is passed to the method a std::out_of_range
      * exception is thrown.
      *
      * This is an overloaded method.
@@ -165,9 +165,10 @@ public:
      * Returns the number of components the model directly contains.
      * @return The number of components.
      */
-    int componentCount() const;
+    size_t componentCount() const;
 
 private:
+    void swap(Model &rhs);
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
     ModelImpl *mPimpl; /**< Private member to implementation pointer */

@@ -27,10 +27,9 @@ public:
      */
     ~Component();
 
-    Component(Component&& rhs); /**< move constructor */
-    Component& operator=(Component&& rhs); /**< move assignment */
-    Component(const Component& rhs); /**< copy constructor */
-    Component& operator=(const Component& rhs); /**< assignment */
+    Component(Component&& rhs); /**< Move constructor */
+    Component(const Component& rhs); /**< Copy constructor */
+    Component& operator=(Component rhs); /**< Assignment operator */
 
     /**
      * @brief serialise the Model.
@@ -57,6 +56,8 @@ public:
     int componentCount() const;
 
 private:
+    void swap(Component &rhs);
+
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl* mPimpl; /**< Private member to implementation pointer */
 

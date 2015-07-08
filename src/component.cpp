@@ -52,12 +52,16 @@ Component::Component(const Component& rhs)
     mPimpl->mComponents = rhs.mPimpl->mComponents;
 }
 
-Component& Component::operator=(const Component& c)
+Component& Component::operator=(Component c)
 {
-    // This would be much faster if copy-on-write was implemented
-    mName = c.mName;
-    mPimpl->mComponents = c.mPimpl->mComponents;
+    c.swap(*this);
     return *this;
+}
+
+void Component::swap(Component &rhs)
+{
+    std::swap(this->mName, rhs.mName);
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 Component::Component(Component&& rhs)
@@ -66,16 +70,6 @@ Component::Component(Component&& rhs)
 {
     mName = std::move(rhs.mName);
     rhs.mPimpl = nullptr;
-}
-
-Component& Component::operator=(Component&& rhs)
-{
-    mName = std::move(rhs.mName);
-    assert(mPimpl != nullptr);
-    delete mPimpl;
-    mPimpl = rhs.mPimpl;
-    rhs.mPimpl = nullptr;
-    return *this;
 }
 
 std::string Component::serialise(libcellml::CELLML_FORMATS format) const
@@ -138,7 +132,7 @@ void Component::addComponent(const Component &c)
 
 int Component::componentCount() const
 {
-    return 0;
+    return mPimpl->mComponents.size();
 }
 
 }

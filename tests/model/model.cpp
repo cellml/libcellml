@@ -152,7 +152,7 @@ TEST(Model, remove) {
     EXPECT_EQ(1, m.componentCount());
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e1, a);
-    EXPECT_THROW(m.removeComponent(1), std::runtime_error);
+    EXPECT_THROW(m.removeComponent(1), std::out_of_range);
 
     m.addComponent(c1);
     m.addComponent(c1);
@@ -161,26 +161,33 @@ TEST(Model, remove) {
     EXPECT_EQ(2, m.componentCount());
     a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e2, a);
-    EXPECT_THROW(m.removeComponent("child3"), std::runtime_error);
+    EXPECT_THROW(m.removeComponent("child3"), std::out_of_range);
 }
 
 TEST(Model, getcomponent) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"childA\"/></model>";
     libcellml::Model m;
-    libcellml::Component c1, c2;
+    libcellml::Component c1;
     c1.setName("child1");
-    c2.setName("child2");
     m.addComponent(c1);
 
-    c2 = m.getComponent(0);
-    c2.setName("childA");
+    libcellml::Component& cA = m.getComponent(0);
+    cA.setName("childA");
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e, a);
+
+    // Using const version of overloaded method
+    libcellml::Component cB = static_cast<const libcellml::Model>(m).getComponent(0);
+    // Can't do this as I have said it is a const reference
+    // cB.setName("gus");
+    EXPECT_EQ("childA", cB.getName());
+
+    EXPECT_THROW(m.getComponent(4), std::out_of_range);
 }
 
 TEST(Model, take) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"childA\"/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
     libcellml::Model m;
     libcellml::Component c1, c2;
     c1.setName("child1");
@@ -191,6 +198,8 @@ TEST(Model, take) {
     libcellml::Component c02 = m.takeComponent(1);
     EXPECT_EQ(1, m.componentCount());
 
+    EXPECT_THROW(m.takeComponent(4), std::out_of_range);
+
     EXPECT_EQ("child2", c02.getName());
 
     libcellml::Component c01 = m.takeComponent("child1");
@@ -199,26 +208,114 @@ TEST(Model, take) {
     EXPECT_EQ("child1", c01.getName());
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e, a);
+
+    EXPECT_THROW(m.takeComponent("child4"), std::out_of_range);
 }
+
+static int count = 0;
+class big_and_complicated {
+   // lots of complicated code
+public:
+    int id;
+    big_and_complicated()
+        : id(count+101)
+    {
+        count++;
+    }
+
+    ~big_and_complicated()
+    {
+        count--;
+    }
+};
+
+struct structure
+{
+    structure()
+      : m_data{new big_and_complicated{}}
+    {
+        std::cout << "structure constructor: " << m_data->id << std::endl;
+    }
+
+    structure(const structure& rhs)
+        : m_data{new big_and_complicated{}}
+    {
+        std::cout << "structure copy constructor: " << rhs.m_data->id << std::endl;
+        m_data->id = rhs.m_data->id;
+    }
+
+    structure(structure&& rhs)
+      : m_data(rhs.m_data)
+    {
+        std::cout << "structure move constructor: " << m_data->id << std::endl;
+        rhs.m_data = nullptr;
+    }
+
+    structure &operator=(structure r)
+    {
+        r.swap(*this);
+        return *this;
+    }
+
+    void swap(structure &r) throw()
+    {
+        std::swap(this->m_data, r.m_data);
+    }
+
+    ~structure()
+    {
+        std::cout << "structure destructor: ";
+        if (m_data) {
+            std::cout << m_data->id << std::endl;
+        } else {
+            std::cout << std::endl;
+        }
+        delete m_data;
+    }
+
+private:
+    big_and_complicated* m_data;
+};
+
+//TEST(Model, simplified_replace) {
+//    std::vector<structure> ss;
+//    structure s1, s2, s3;
+//    ss.push_back(s1);
+//    ss.push_back(s2);
+//    ss.erase(ss.begin());
+//    ss.insert(ss.begin(), s3);
+
+//}
 
 TEST(Model, replace) {
     const std::string e_orig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child1\"/><component name=\"child2\"/></model>";
     const std::string e_after = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child1\"/><component name=\"child3\"/></model>";
+    const std::string e_post = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child4\"/><component name=\"child3\"/></model>";
+
     libcellml::Model m;
-    libcellml::Component c1, c2, c3;
+    libcellml::Component c1, c2, c3, c4;
     c1.setName("child1");
     c2.setName("child2");
     c3.setName("child3");
+    c4.setName("child4");
     m.addComponent(c1);
     m.addComponent(c2);
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e_orig, a);
+    EXPECT_THROW(m.replaceComponent(5, c3), std::out_of_range);
 
     m.replaceComponent(1, c3);
 
     a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e_after, a);
+
+    EXPECT_THROW(m.replaceComponent("child5", c4), std::out_of_range);
+
+    m.replaceComponent("child1", c4);
+
+    a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e_post, a);
 }
 
 TEST(Model, constructors) {
