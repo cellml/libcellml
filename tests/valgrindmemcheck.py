@@ -76,6 +76,8 @@ class BackTrace:
             if xml_child_data(frame, 'fn'): # filter anonymous frames out
                 self.stack.append(Frame(frame))
         self.what = xml_child_data(self.dom, 'what')
+        if self.what is None:
+            self.what = 'None'
 
     def is_definitely_lost(self):
         return self.kind == 'Leak_DefinitelyLost'
@@ -84,7 +86,7 @@ class BackTrace:
         is_interesting = False
         for frame in self.stack:
             if frame.func:
-                if frame.func.find("vigra") != -1 or frame.func.find("TestSuite") != -1:
+                if "libcellml" in frame.func:
                     is_interesting = True
             if frame.sfile:
                 if frame.sfile.find("-test.cpp") != -1:
@@ -146,8 +148,8 @@ def run_single_test(exe_name):
         sys.stdout.write(" - PASS\n")
     else:
         for trace in errors:
-            sys.stderr.write(' ' + trace, end=' ')
-            sys.stderr.write("---------------------------------------------------")
+            sys.stderr.write(str(trace))
+            sys.stderr.write("---------------------------------------------------\n")
 
     return success
 

@@ -13,6 +13,7 @@ mark_as_advanced(gtest_force_shared_crt)
 # header files <test_name>_HDRS.
 include(version/tests.cmake)
 include(model/tests.cmake)
+include(component/tests.cmake)
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)

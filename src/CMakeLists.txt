@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
+include(GenerateExportHeader)
+
 foreach(VERSION_PART libCellML_VERSION_MAJOR libCellML_VERSION_MINOR libCellML_VERSION_PATCH)
   string(LENGTH ${${VERSION_PART}} VERSION_PART_LENGTH)
   if(VERSION_PART_LENGTH EQUAL 1)
@@ -22,6 +24,7 @@ set(LIBCELLML_LIBRARY_VERSION 0x${libCellML_VERSION_MAJOR_PAD}${libCellML_VERSIO
 set(LIBCELLML_LIBRARY_VERSION_STRING "${libCellML_VERSION_MAJOR}.${libCellML_VERSION_MINOR}.${libCellML_VERSION_PATCH}")
 
 set(CELLML_EXPORT_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/libcellml_export.h")
+set_source_files_properties(${CELLML_EXPORT_H} PROPERTIES GENERATED TRUE)
 set(LIBCELLML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/libcellml_config.h")
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/configure/libcellml_config.h.in"
@@ -31,13 +34,17 @@ configure_file(
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
 )
 
 set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/component.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/nameable.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module/libcellml
   ${CELLML_EXPORT_H}
 )
 
@@ -45,7 +52,6 @@ set(HEADER_FILES
   ${LIBCELLML_CONFIG_H}
 )
 
-include(GenerateExportHeader)
 add_compiler_export_flags()
 
 add_library(cellml
@@ -54,6 +60,8 @@ add_library(cellml
   ${MODULE_HEADER_FILES}
   ${API_HEADER_FILES}
 )
+
+generate_export_header(cellml EXPORT_FILE_NAME ${CELLML_EXPORT_H} BASE_NAME LIBCELLML)
 
 target_include_directories(cellml
   PUBLIC
@@ -75,18 +83,22 @@ if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
 endif()
 
 if(LIBCELLML_COVERAGE)
-  set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
-  target_link_libraries(cellml gcov)
+  set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
+    LINK_FLAGS "-fprofile-arcs -ftest-coverage")
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
   set(GCOV_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
   set(GCOV_BUILD_PREFIX_PATH "${CMAKE_CURRENT_BINARY_DIR}" PARENT_SCOPE)
+
+  set(GCOV_CLEAN_FILES)
+  foreach(src_file ${SOURCE_FILES})
+    get_filename_component(_tmp_file "${src_file}" NAME)
+    list(APPEND GCOV_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir/${_tmp_file}.gcno")
+    list(APPEND GCOV_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir/${_tmp_file}.gcda")
+  endforeach()
+  set_directory_properties(${GCOV_ANALYSIS_PATH} PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${GCOV_CLEAN_FILES}")
 endif()
-
-generate_export_header(cellml EXPORT_FILE_NAME ${CELLML_EXPORT_H} BASE_NAME LIBCELLML)
-
-set_source_files_properties(${CELLML_EXPORT_H} PROPERTIES GENERATED TRUE)
 
 export(TARGETS cellml FILE libcellml-exports.cmake)
 
