@@ -23,7 +23,8 @@ Use-cases for libCellML
       
    #. manipulation of a model with multi-level component encapsulation hierarchy
    
-      a. remove a component
+      a. remove a top-level component
+      #. remove an encapsulated child component
       #. change the name of a top-level component
       #. change the name of an encapsulated child component
       #. replace one component with a new component
