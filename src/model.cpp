@@ -20,7 +20,6 @@ limitations under the License.Some license of other
 #include <assert.h>
 #include <vector>
 #include <iostream>
-#include <algorithm>
 
 namespace libcellml {
 

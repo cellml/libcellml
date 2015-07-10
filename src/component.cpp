@@ -31,8 +31,15 @@ namespace libcellml {
  */
 struct Component::ComponentImpl
 {
+    std::vector<Component>::iterator findComponent(const std::string& name);
     std::vector<Component> mComponents;
 };
+
+std::vector<Component>::iterator Component::ComponentImpl::findComponent(const std::string& name)
+{
+    return std::find_if(mComponents.begin(), mComponents.end(),
+                        [=](const Component& c) -> bool {return c.getName() == name;});
+}
 
 // Interface class Model implementation
 Component::Component()
@@ -130,9 +137,71 @@ void Component::addComponent(const Component &c)
     mPimpl->mComponents.push_back(c);
 }
 
-int Component::componentCount() const
+void Component::removeComponent(const std::string& name)
+{
+    auto result = mPimpl->findComponent(name);
+    if(result != mPimpl->mComponents.end()) {
+        mPimpl->mComponents.erase(result);
+    } else {
+        throw std::out_of_range("Named component not found.");
+    }
+}
+
+void Component::removeComponent(size_t index)
+{
+    if (index < mPimpl->mComponents.size()) {
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
+    } else {
+        throw std::out_of_range("Index out of range.");
+    }
+}
+
+size_t Component::componentCount() const
 {
     return mPimpl->mComponents.size();
+}
+
+bool Component::containsComponent(const std::string& name)
+{
+    auto result = mPimpl->findComponent(name);
+    return result != mPimpl->mComponents.end();
+}
+
+Component& Component::getComponent(size_t index)
+{
+    return mPimpl->mComponents.at(index);
+}
+
+const Component& Component::getComponent(size_t index) const
+{
+    return mPimpl->mComponents.at(index);
+}
+
+Component Component::takeComponent(size_t index)
+{
+    Component c = mPimpl->mComponents.at(index);
+    removeComponent(index);
+    return c;
+}
+
+Component Component::takeComponent(const std::string & name)
+{
+    auto result = mPimpl->findComponent(name);
+    size_t index = result - mPimpl->mComponents.begin();
+    return takeComponent(index);
+}
+
+void Component::replaceComponent(size_t index, const Component& c)
+{
+    removeComponent(index);
+    mPimpl->mComponents.insert(mPimpl->mComponents.begin() + index, c);
+}
+
+void Component::replaceComponent(const std::string& name, const Component& c)
+{
+    auto result = mPimpl->findComponent(name);
+    size_t index = result - mPimpl->mComponents.begin();
+    replaceComponent(index, c);
 }
 
 }
