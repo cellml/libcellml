@@ -155,6 +155,10 @@ public:
 
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
+    void swap(ComponentEntity &rhs);
+
+    struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
+    ComponentEntityImpl* mPimpl; /**< Private member to implementation pointer */
 
 };
 

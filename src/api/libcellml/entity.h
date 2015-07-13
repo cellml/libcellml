@@ -33,7 +33,7 @@ public:
      * @param format The format to serialise the object to.
      * @return std::string representation of the object.
      */
-    std::string serialise(libcellml::CELLML_FORMATS format)
+    std::string serialise(libcellml::CELLML_FORMATS format) const
     {
         return doSerialisation(format);
     }
