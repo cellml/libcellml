@@ -1,4 +1,3 @@
-
 /*
 Copyright 2015 University of Auckland
 
@@ -54,7 +53,7 @@ Model::~Model()
 }
 
 Model::Model(const Model& rhs)
-    : Nameable(rhs)
+    : ComponentEntity(rhs)
     , mPimpl(new ModelImpl())
 {
     mPimpl->mComponents = rhs.mPimpl->mComponents;
@@ -73,14 +72,14 @@ void Model::swap(Model &rhs)
 }
 
 Model::Model(Model&& rhs)
-    : Nameable()
+    : ComponentEntity()
     , mPimpl(rhs.mPimpl)
 {
     mName = std::move(rhs.mName);
     rhs.mPimpl = nullptr;
 }
 
-std::string Model::serialise(libcellml::CELLML_FORMATS format) const
+std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
 {
     std::string repr = "";
     if (format == CELLML_FORMAT_XML) {

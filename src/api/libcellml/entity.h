@@ -27,14 +27,25 @@ namespace libcellml {
  */
 class Entity
 {
-protected:
+public:
     /**
-     * @brief Pure virtual serialise method.
+     * @brief Serialise entity to std::string.
+     * @param format The format to serialise the object to.
+     * @return std::string representation of the object.
+     */
+    std::string serialise(libcellml::CELLML_FORMATS format)
+    {
+        return doSerialisation(format);
+    }
+
+private:
+    /**
+     * @brief Pure virtual serialise method to be implemented by derived classes.
      * Pure virtual serialise method for serialising a CellML object to a std::string.
      * @param format The format to serialise the object to.
      * @return std::string representation of the object.
      */
-    virtual std::string serialise(libcellml::CELLML_FORMATS format) const = 0;
+    virtual std::string doSerialisation(libcellml::CELLML_FORMATS format) const = 0;
 
 };
 

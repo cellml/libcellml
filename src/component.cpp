@@ -1,4 +1,3 @@
-
 /*
 Copyright 2015 University of Auckland
 
@@ -54,7 +53,7 @@ Component::~Component()
 }
 
 Component::Component(const Component& rhs)
-    : Nameable(rhs)
+    : ComponentEntity(rhs)
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mComponents = rhs.mPimpl->mComponents;
@@ -73,14 +72,14 @@ void Component::swap(Component &rhs)
 }
 
 Component::Component(Component&& rhs)
-    : Nameable()
+    : ComponentEntity()
     , mPimpl(rhs.mPimpl)
 {
     mName = std::move(rhs.mName);
     rhs.mPimpl = nullptr;
 }
 
-std::string Component::serialise(libcellml::CELLML_FORMATS format) const
+std::string Component::doSerialisation(libcellml::CELLML_FORMATS format) const
 {
     const std::string encaps_tag = "<encapsulation>";
     const std::string encaps_end_tag = "</encapsulation>";

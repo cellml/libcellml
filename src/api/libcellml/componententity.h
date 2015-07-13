@@ -14,38 +14,37 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
-#ifndef LIBCELLML_LIBCELLML_COMPONENT_H
-#define LIBCELLML_LIBCELLML_COMPONENT_H
+#ifndef LIBCELLML_LIBCELLML_COMPONENTENTITY_H
+#define LIBCELLML_LIBCELLML_COMPONENTENTITY_H
 
-#include <string>
-#include <memory>
-
-#include "libcellml/libcellml_export.h"
-#include "libcellml/componententity.h"
+#include <libcellml/libcellml_export.h>
+#include <libcellml/namedentity.h>
+//#include <libcellml/component.h>
 
 namespace libcellml {
 
+class Component;
 /**
- * @brief The Component class.
- * The Component class is for representing a CellML Component.
+ * @brief The ComponentEntity class
+ * The interface class for managing Components.
  */
-class LIBCELLML_EXPORT Component: public ComponentEntity
+class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
     /**
-     * @brief Component Constructor.
-     * Default Component constructor.
+     * @brief ComponentEntity Constructor.
+     * Default ComponentEntity constructor.
      */
-    Component();
+    ComponentEntity();
     /**
-     * @brief Component Destructor.
-     * Default Component destructor.
+     * @brief ComponentEntity Destructor.
+     * Default ComponentEntity destructor.
      */
-    ~Component();
+    ~ComponentEntity();
 
-    Component(Component&& rhs); /**< Move constructor */
-    Component(const Component& rhs); /**< Copy constructor */
-    Component& operator=(Component rhs); /**< Assignment operator */
+    ComponentEntity(ComponentEntity&& rhs); /**< Move constructor */
+    ComponentEntity(const ComponentEntity& rhs); /**< Copy constructor */
+    ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Add a child component to this component.
@@ -156,14 +155,9 @@ public:
 
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
-    void swap(Component &rhs);
-
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentImpl* mPimpl; /**< Private member to implementation pointer */
 
 };
 
 }
 
-#endif // LIBCELLML_LIBCELLML_COMPONENT_H
-
+#endif // LIBCELLML_LIBCELLML_COMPONENTENTITY_H

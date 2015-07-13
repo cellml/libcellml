@@ -21,7 +21,7 @@ limitations under the License.Some license of other
 #include <memory>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/nameable.h"
+#include "libcellml/componententity.h"
 #include "libcellml/component.h"
 
 //! Everything in libCellML is in this namespace.
@@ -31,7 +31,7 @@ namespace libcellml {
  * @brief The Model class.
  * The Model class is for representing a CellML Model.
  */
-class LIBCELLML_EXPORT Model: public Nameable
+class LIBCELLML_EXPORT Model: public ComponentEntity
 {
 public:
     /**
@@ -49,16 +49,6 @@ public:
     Model(Model&& rhs); /**< Move constructor */
     Model(const Model& rhs);/**< Copy constructor */
     Model& operator=(Model rhs); /**< Assignment operator */
-
-    /**
-     * @brief serialise the Model.
-     * This method serialises the Model to a std:string representation in the
-     * desired format.
-     * @sa deserialise
-     * @param format The format to serialise the Model to.
-     * @return std::string representation of the Model in the given format.
-     */
-    std::string serialise(libcellml::CELLML_FORMATS format) const;
 
     /**
      * @brief Add a component to the model.
@@ -168,6 +158,7 @@ public:
     size_t componentCount() const;
 
 private:
+    std::string doSerialisation(CELLML_FORMATS format) const;
     void swap(Model &rhs);
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
