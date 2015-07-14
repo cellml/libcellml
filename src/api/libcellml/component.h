@@ -28,6 +28,12 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Component: public ComponentEntity
 {
+public:
+    Component(); /**< Constructor */
+    ~Component(); /**< Destructor */
+    Component(const Component& rhs); /**< Copy constructor */
+    Component(Component &&rhs); /**< Move constructor */
+    Component& operator=(Component m); /**< Assignment operator */
 };
 
 }

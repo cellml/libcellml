@@ -32,6 +32,13 @@ namespace libcellml {
  */
 class LIBCELLML_EXPORT Model: public ComponentEntity
 {
+public:
+    Model(); /**< Constructor */
+    ~Model(); /**< Destructor */
+    Model(const Model& rhs); /**< Copy constructor */
+    Model(Model &&rhs); /**< Move constructor */
+    Model& operator=(Model m); /**< Assignment operator */
+
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
 };

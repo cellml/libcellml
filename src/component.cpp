@@ -18,5 +18,33 @@ limitations under the License.Some license of other
 
 namespace libcellml {
 
+Component::Component()
+{
+
+}
+
+Component::~Component()
+{
+
+}
+
+Component::Component(const Component& rhs)
+    : ComponentEntity(rhs)
+{
+
+}
+
+Component::Component(Component &&rhs)
+    : ComponentEntity(std::move(rhs))
+{
+
+}
+
+Component& Component::operator=(Component m)
+{
+    ComponentEntity::operator= (m);
+    return *this;
+}
+
 }
 

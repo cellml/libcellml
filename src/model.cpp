@@ -18,6 +18,34 @@ limitations under the License.Some license of other
 
 namespace libcellml {
 
+Model::Model()
+{
+
+}
+
+Model::~Model()
+{
+
+}
+
+Model::Model(const Model& rhs)
+    : ComponentEntity(rhs)
+{
+
+}
+
+Model::Model(Model &&rhs)
+    : ComponentEntity(std::move(rhs))
+{
+
+}
+
+Model& Model::operator=(Model m)
+{
+    ComponentEntity::operator= (m);
+    return *this;
+}
+
 std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
 {
     std::string repr = "";

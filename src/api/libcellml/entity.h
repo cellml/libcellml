@@ -17,6 +17,7 @@ limitations under the License.Some license of other
 #ifndef LIBCELLML_LIBCELLML_ENTITY_H_
 #define LIBCELLML_LIBCELLML_ENTITY_H_
 
+#include "libcellml/libcellml_export.h"
 #include "libcellml/enumerations.h"
 
 namespace libcellml {
@@ -25,7 +26,7 @@ namespace libcellml {
  * @brief The Entity class.
  * Base class for all serialisable libCellML classes.
  */
-class Entity
+class LIBCELLML_EXPORT Entity
 {
 public:
     /**
