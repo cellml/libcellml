@@ -17,6 +17,7 @@ Contents:
    usecases
    object_model
    api_documentation
+   coverage_statistics
    dev_setup
    dev_building
    dev_testing_code

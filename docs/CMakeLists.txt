@@ -57,8 +57,13 @@ endif()
 
 if(LIBCELLML_COVERAGE)
   set(COVERAGE_DOCS_TARGET coveragedocs)
+message(STATUS "${CMAKE_SOURCE_DIR}/tests/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --html --html-details --output=${CMAKE_CURRENT_BINARY_DIR}/html/coverage/index.html --gcov-executable=${GCOV_EXE}")
   add_custom_target(${COVERAGE_DOCS_TARGET}
-    DEPENDS coverage)
+    COMMAND ${CMAKE_SOURCE_DIR}/tests/gcovr.py --exclude-unreachable-branches -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --html --html-details --output=${CMAKE_CURRENT_BINARY_DIR}/html/coverage/index.html --gcov-executable=${GCOV_EXE}
+    DEPENDS ${TEST_LIST} prepare_coverage
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Running coverage tests with html output")
+
 endif()
 
 if(SPHINX_FOUND OR DOXYGEN_FOUND OR LIBCELLML_COVERAGE)
