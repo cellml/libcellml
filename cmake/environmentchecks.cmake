@@ -17,6 +17,8 @@ find_package(PythonInterp)
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
 find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
+find_package(Doxygen)
+find_package(Sphinx)
 
 if(VALGRIND_EXE AND PYTHONINTERP_FOUND)
   set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run valgrind testing are available.")
