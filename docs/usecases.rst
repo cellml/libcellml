@@ -20,6 +20,17 @@ Use-cases for libCellML
       a. one component encapsulating two children
       #. one component encapsulating a single child which in turn encapsulates a single child
       #. an invalid cyclical encapsulation hierarchy
+      
+   #. manipulation of a model with multi-level component encapsulation hierarchy
+   
+      a. remove a top-level component
+      #. remove an encapsulated child component
+      #. change the name of a top-level component
+      #. change the name of an encapsulated child component
+      #. replace one component with a new component
+      #. take a component (remove the component and return it to the user)
+      #. determine if a component with a given name exists in a model or component
+      #. determine the number of components encapsulated by a model or component
 
    #. a model with imported components
 
