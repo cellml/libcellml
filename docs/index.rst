@@ -16,6 +16,8 @@ Contents:
    roadmap
    usecases
    object_model
+   api_documentation
+   coverage_statistics
    dev_setup
    dev_building
    dev_testing_code
@@ -23,6 +25,11 @@ Contents:
    dev_review
    dev_coding_standard
    glossary
+
+.. toctree::
+   :hidden:
+   
+   dev_configuration_options
 
 Indices and tables
 ==================
