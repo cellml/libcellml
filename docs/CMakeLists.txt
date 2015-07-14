@@ -13,7 +13,7 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 if(SPHINX_FOUND)
-  set(SPHINX_DOCS_TARGET projectdocs)
+  set(SPHINX_DOCS_TARGET project_docs)
   if(NOT DEFINED SPHINX_THEME)
     set(SPHINX_THEME alabaster)
   endif()
@@ -37,7 +37,7 @@ if(SPHINX_FOUND)
     @ONLY)
 
   add_custom_target(${SPHINX_DOCS_TARGET}
-    ${SPHINX_EXECUTABLE}
+    COMMAND ${SPHINX_EXECUTABLE}
         -q -b html
         -c "${BINARY_BUILD_DIR}"
         -d "${SPHINX_CACHE_DIR}"
@@ -47,28 +47,32 @@ if(SPHINX_FOUND)
 endif()
 
 if(DOXYGEN_FOUND)
-  set(DOXYGEN_DOCS_TARGET apidocs)
+  set(DOXYGEN_DOCS_TARGET api_docs)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxy.config.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
   add_custom_target(${DOXYGEN_DOCS_TARGET}
-    ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/html/code/
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif()
 
 if(LIBCELLML_COVERAGE)
-  set(COVERAGE_DOCS_TARGET coveragedocs)
-message(STATUS "${CMAKE_SOURCE_DIR}/tests/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --html --html-details --output=${CMAKE_CURRENT_BINARY_DIR}/html/coverage/index.html --gcov-executable=${GCOV_EXE}")
+  set(COVERAGE_DOCS_TARGET coverage_docs)
   add_custom_target(${COVERAGE_DOCS_TARGET}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/html/coverage/
     COMMAND ${CMAKE_SOURCE_DIR}/tests/gcovr.py --exclude-unreachable-branches -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --html --html-details --output=${CMAKE_CURRENT_BINARY_DIR}/html/coverage/index.html --gcov-executable=${GCOV_EXE}
-    DEPENDS ${TEST_LIST} prepare_coverage
+    DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests with html output")
-
 endif()
 
 if(SPHINX_FOUND OR DOXYGEN_FOUND OR LIBCELLML_COVERAGE)
   add_custom_target(docs
     DEPENDS ${SPHINX_DOCS_TARGET} ${DOXYGEN_DOCS_TARGET} ${COVERAGE_DOCS_TARGET}
     COMMENT "Generating documentation")
+  add_custom_target(clean_docs
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/html
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/_doctrees
+    COMMENT "Cleaning documentation")
 endif()
 

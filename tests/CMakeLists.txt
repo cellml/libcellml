@@ -43,6 +43,7 @@ if(LIBCELLML_COVERAGE)
   # Prepare for test coverage by generating the gcov note files
   # and creating an output directory for the data files
   add_custom_target(prepare_coverage
+    DEPENDS ${TEST_LIST}
     COMMAND find ${GCOV_ANALYSIS_PATH} -type f -name '*.gcda' -print | xargs /bin/rm -f
     COMMAND ctest > /dev/null
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/gcov
@@ -50,14 +51,13 @@ if(LIBCELLML_COVERAGE)
 
   add_custom_target(coverage
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE}
-    DEPENDS ${TEST_LIST} prepare_coverage
+    DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gcov
     COMMENT "Running coverage tests")
-message(STATUS "${GCOV_PREFIX_PATH}")
-message(STATUS "${CMAKE_CURRENT_BINARY_DIR}/gcov")
+
   add_custom_target(coverage-branches
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -k -b -r ${GCOV_ANALYSIS_PATH} --gcov-filter=${GCOV_PREFIX_PATH}/.* --filter=${GCOV_PREFIX_PATH}.* --gcov-executable=${GCOV_EXE}
-    DEPENDS ${TEST_LIST} prepare_coverage
+    DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/gcov
     COMMENT "Running coverage tests with html output")
 endif()
