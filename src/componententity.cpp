@@ -178,6 +178,20 @@ const Component& ComponentEntity::getComponent(size_t index) const
     return mPimpl->mComponents.at(index);
 }
 
+Component& ComponentEntity::getComponent(const std::string &name)
+{
+    auto result = mPimpl->findComponent(name);
+    size_t index = result - mPimpl->mComponents.begin();
+    return mPimpl->mComponents.at(index);
+}
+
+const Component& ComponentEntity::getComponent(const std::string &name) const
+{
+    auto result = mPimpl->findComponent(name);
+    size_t index = result - mPimpl->mComponents.begin();
+    return mPimpl->mComponents.at(index);
+}
+
 Component ComponentEntity::takeComponent(size_t index)
 {
     Component c = mPimpl->mComponents.at(index);

@@ -135,6 +135,9 @@ TEST(Component, getcomponent) {
 
     EXPECT_THROW(c.getComponent(4), std::out_of_range);
 
+    libcellml::Component& cAr = c.getComponent("childA");
+    EXPECT_EQ("childA", cAr.getName());
+
     // Modify a deeper Component
     c.setName("parent");
     c1.addComponent(c2);
@@ -144,6 +147,9 @@ TEST(Component, getcomponent) {
     libcellml::Component& cB = c.getComponent(1);
     libcellml::Component& cBB = cB.getComponent(0);
     cBB.setName("childB");
+
+    libcellml::Component cSn = static_cast<const libcellml::Component>(c).getComponent("child1");
+    EXPECT_EQ("child1", cSn.getName());
 
     a = c.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e2, a);

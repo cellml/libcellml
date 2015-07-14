@@ -104,6 +104,28 @@ public:
     Component& getComponent(size_t index);
 
     /**
+     * @brief Get a component with the given name @p name.
+     * Returns a const reference to a component with the name @p name.  If the
+     * name is not valid a std::out_of_range exception is thrown.
+     *
+     * This is an overloaded method.
+     * @param name The name of the Component to return.
+     * @return A const reference to the Component with the given name.
+     */
+    const Component& getComponent(const std::string &name) const;
+
+    /**
+     * @brief Get a component with the given name @p name.
+     * Returns a reference to a component with the name @p name.  If the name
+     * is not valid a std::out_of_range exception is thrown.
+     *
+     * This is an overloaded method.
+     * @param name The name of the Component to return.
+     * @return A reference to the Component with the given name.
+     */
+    Component& getComponent(const std::string &name);
+
+    /**
      * @brief Take the component at the given index and return it.
      * Removes the component at the given index position and returns it.
      * If an invalid index is passed to the method a std::out_of_range
@@ -115,7 +137,7 @@ public:
 
     /**
      * @brief Take the component with the given name @p name and return it.
-     * Takes the component at the given index position and returns it.
+     * Takes the component with the given name @p name and returns it.
      * If an invalid name is passed to the method a std::out_of_range
      * exception is thrown.
      *
