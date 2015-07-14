@@ -16,11 +16,6 @@ limitations under the License.Some license of other
 
 #include "libcellml/component.h"
 
-#include <assert.h>
-#include <vector>
-#include <iostream>
-#include <algorithm>
-
 namespace libcellml {
 
 }

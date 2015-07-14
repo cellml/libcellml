@@ -16,11 +16,6 @@ limitations under the License.Some license of other
 
 #include "libcellml/model.h"
 
-#include <assert.h>
-#include <vector>
-#include <iostream>
-#include <algorithm>
-
 namespace libcellml {
 
 std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const

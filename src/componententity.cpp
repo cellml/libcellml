@@ -17,6 +17,8 @@ limitations under the License.Some license of other
 #include "libcellml/componententity.h"
 
 #include <vector>
+#include <algorithm>
+#include <memory>
 
 #include "libcellml/component.h"
 
