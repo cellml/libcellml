@@ -14,45 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
-#include "libcellml/component.h"
+#ifndef LIBCELLML_LIBCELLML_TYPES_H_
+#define LIBCELLML_LIBCELLML_TYPES_H_
+
+#include <memory>
 
 namespace libcellml {
 
-Component::Component()
-{
+class Model; /**< Forward declaraion of Model class. */
+class Component; /**< Forward declaration of Component class. */
+typedef std::shared_ptr<Component> Component_Ptr; /**< Type definition for shared component pointer. */
 
 }
 
-Component::~Component()
-{
+#endif /* LIBCELLML_LIBCELLML_TYPES_H_ */
 
-}
-
-Component::Component(const Component& rhs)
-    : ComponentEntity(rhs)
-{
-
-}
-
-Component::Component(Component &&rhs)
-    : ComponentEntity(std::move(rhs))
-{
-
-}
-
-Component& Component::operator=(Component m)
-{
-    ComponentEntity::operator= (m);
-    return *this;
-}
-
-void Component::addComponent(const Component_Ptr &c)
-{
-    if (!hasParent(c.get())) {
-        c->setParent(this);
-        ComponentEntity::addComponent(c);
-    }
-}
-
-}
 

@@ -56,12 +56,21 @@ std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
         }
         repr += ">";
         for(size_t i = 0; i < componentCount(); i++) {
-            repr += getComponent(i).serialise(format);
+            repr += getComponent(i)->serialise(format);
         }
         repr += "</model>";
     }
 
     return repr;
+}
+
+void Model::addComponent(const Component_Ptr &c)
+{
+    // Check for cycles
+    if (!hasParent(c.get())) {
+        c->setParent(this);
+        ComponentEntity::addComponent(c);
+    }
 }
 
 }

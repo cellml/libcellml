@@ -62,7 +62,7 @@ TEST(Model, invalid_name) {
 TEST(Model, add_component) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component/></model>";
     libcellml::Model m;
-    libcellml::Component c;
+    libcellml::Component_Ptr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
@@ -73,8 +73,8 @@ TEST(Model, add_valid_component) {
     const std::string in = "valid_name";
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + in + "\"/></model>";
     libcellml::Model m;
-    libcellml::Component c;
-    c.setName(in);
+    libcellml::Component_Ptr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
@@ -85,8 +85,8 @@ TEST(Model, add_invalid_component) {
     const std::string in = "invalid name";
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + in + "\"/></model>";
     libcellml::Model m;
-    libcellml::Component c;
-    c.setName(in);
+    libcellml::Component_Ptr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
@@ -96,17 +96,16 @@ TEST(Model, add_invalid_component) {
 TEST(Model, add_components) {
     const std::string name1 = "component_1";
     const std::string name2 = "component_2";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + name1 + "\"/><component/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + name1 + "\"/><component name=\"" + name2 + "\"/></model>";
     libcellml::Model m;
-    libcellml::Component c1;
-    c1.setName(name1);
+    libcellml::Component_Ptr c1 = std::make_shared<libcellml::Component>();
+    c1->setName(name1);
     m.addComponent(c1);
-    libcellml::Component c2;
+    libcellml::Component_Ptr c2 = std::make_shared<libcellml::Component>();
     m.addComponent(c2);
     // once the component is added, we should be able to change the handle to the component and have those changes
-    // reflected in the model? No, adding component to model moves that component to the model and we no longer have access
-    // to it here.
-    c2.setName(name2); // so should this give an error?
+    // reflected in the model? Yes we are using shared pointers.
+    c2->setName(name2); // so should this give an error? Nope
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
     EXPECT_EQ(e, a);
@@ -114,9 +113,10 @@ TEST(Model, add_components) {
 
 TEST(Model, count) {
     libcellml::Model m;
-    libcellml::Component c1, c2;
-    c1.setName("child1");
-    c2.setName("child2");
+    libcellml::Component_Ptr c1 = std::make_shared<libcellml::Component>();
+    libcellml::Component_Ptr c2 = std::make_shared<libcellml::Component>();
+    c1->setName("child1");
+    c2->setName("child2");
 
     EXPECT_EQ(0, m.componentCount());
 
@@ -127,9 +127,10 @@ TEST(Model, count) {
 
 TEST(Model, contains) {
     libcellml::Model m;
-    libcellml::Component c1, c2;
-    c1.setName("child1");
-    c2.setName("child2");
+    libcellml::Component_Ptr c1 = std::make_shared<libcellml::Component>();
+    libcellml::Component_Ptr c2 = std::make_shared<libcellml::Component>();
+    c1->setName("child1");
+    c2->setName("child2");
 
     EXPECT_FALSE(m.containsComponent("child1"));
 
@@ -142,9 +143,10 @@ TEST(Model, remove) {
     const std::string e1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child2\"/></model>";
     const std::string e2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child2\"/><component name=\"child1\"/></model>";
     libcellml::Model m;
-    libcellml::Component c1, c2;
-    c1.setName("child1");
-    c2.setName("child2");
+    libcellml::Component_Ptr c1 = std::make_shared<libcellml::Component>();
+    libcellml::Component_Ptr c2 = std::make_shared<libcellml::Component>();
+    c1->setName("child1");
+    c2->setName("child2");
     m.addComponent(c1);
     m.addComponent(c2);
 
@@ -167,21 +169,21 @@ TEST(Model, remove) {
 TEST(Model, getcomponent) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"childA\"/></model>";
     libcellml::Model m;
-    libcellml::Component c1;
-    c1.setName("child1");
+    libcellml::Component_Ptr c1 = std::make_shared<libcellml::Component>();
+    c1->setName("child1");
     m.addComponent(c1);
 
-    libcellml::Component& cA = m.getComponent(0);
-    cA.setName("childA");
+    libcellml::Component_Ptr cA = m.getComponent(0);
+    cA->setName("childA");
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e, a);
 
     // Using const version of overloaded method
-    libcellml::Component cB = static_cast<const libcellml::Model>(m).getComponent(0);
-    // Can't do this as I have said it is a const reference
-    // cB.setName("gus");
-    EXPECT_EQ("childA", cB.getName());
+    const libcellml::Component_Ptr cB = static_cast<const libcellml::Model>(m).getComponent(0);
+    // Can do this as we just have a const pointer
+    cB->setName("gus");
+    EXPECT_EQ("gus", cB->getName());
 
     EXPECT_THROW(m.getComponent(4), std::out_of_range);
 }
@@ -189,23 +191,24 @@ TEST(Model, getcomponent) {
 TEST(Model, take) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
     libcellml::Model m;
-    libcellml::Component c1, c2;
-    c1.setName("child1");
-    c2.setName("child2");
+    libcellml::Component_Ptr c1 = std::make_shared<libcellml::Component>();
+    libcellml::Component_Ptr c2 = std::make_shared<libcellml::Component>();
+    c1->setName("child1");
+    c2->setName("child2");
     m.addComponent(c1);
     m.addComponent(c2);
 
-    libcellml::Component c02 = m.takeComponent(1);
+    libcellml::Component_Ptr c02 = m.takeComponent(1);
     EXPECT_EQ(1, m.componentCount());
 
     EXPECT_THROW(m.takeComponent(4), std::out_of_range);
 
-    EXPECT_EQ("child2", c02.getName());
+    EXPECT_EQ("child2", c02->getName());
 
-    libcellml::Component c01 = m.takeComponent("child1");
+    libcellml::Component_Ptr c01 = m.takeComponent("child1");
     EXPECT_EQ(0, m.componentCount());
 
-    EXPECT_EQ("child1", c01.getName());
+    EXPECT_EQ("child1", c01->getName());
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
     EXPECT_EQ(e, a);
 
@@ -293,11 +296,14 @@ TEST(Model, replace) {
     const std::string e_post = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child4\"/><component name=\"child3\"/></model>";
 
     libcellml::Model m;
-    libcellml::Component c1, c2, c3, c4;
-    c1.setName("child1");
-    c2.setName("child2");
-    c3.setName("child3");
-    c4.setName("child4");
+    libcellml::Component_Ptr c1 = std::make_shared<libcellml::Component>();
+    libcellml::Component_Ptr c2 = std::make_shared<libcellml::Component>();
+    libcellml::Component_Ptr c3 = std::make_shared<libcellml::Component>();
+    libcellml::Component_Ptr c4 = std::make_shared<libcellml::Component>();
+    c1->setName("child1");
+    c2->setName("child2");
+    c3->setName("child3");
+    c4->setName("child4");
     m.addComponent(c1);
     m.addComponent(c2);
 
@@ -322,7 +328,7 @@ TEST(Model, constructors) {
     const std::string n = "my_name";
     libcellml::Model m, m1, m2;
     m.setName(n);
-    m.addComponent(libcellml::Component());
+    m.addComponent(std::make_shared<libcellml::Component>());
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"my_name\"><component/></model>";

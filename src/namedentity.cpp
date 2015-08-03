@@ -14,45 +14,45 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
+#include "libcellml/componententity.h"
+
 #include "libcellml/component.h"
 
 namespace libcellml {
 
-Component::Component()
+NamedEntity::NamedEntity()
+    : mName("")
 {
 
 }
 
-Component::~Component()
+NamedEntity::~NamedEntity()
 {
 
 }
 
-Component::Component(const Component& rhs)
-    : ComponentEntity(rhs)
+NamedEntity::NamedEntity(const NamedEntity& rhs)
+    : Entity(rhs)
 {
-
+    mName = rhs.mName;
 }
 
-Component::Component(Component &&rhs)
-    : ComponentEntity(std::move(rhs))
+NamedEntity::NamedEntity(NamedEntity &&rhs)
+    : Entity(std::move(rhs))
 {
-
+    mName = std::move(rhs.mName);
 }
 
-Component& Component::operator=(Component m)
+NamedEntity& NamedEntity::operator=(NamedEntity n)
 {
-    ComponentEntity::operator= (m);
+    Entity::operator =(n);
+    n.swap(*this);
     return *this;
 }
 
-void Component::addComponent(const Component_Ptr &c)
+void NamedEntity::swap(NamedEntity &rhs)
 {
-    if (!hasParent(c.get())) {
-        c->setParent(this);
-        ComponentEntity::addComponent(c);
-    }
+    std::swap(this->mName, rhs.mName);
 }
 
 }
-

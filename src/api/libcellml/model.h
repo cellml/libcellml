@@ -39,6 +39,8 @@ public:
     Model(Model &&rhs); /**< Move constructor */
     Model& operator=(Model m); /**< Assignment operator */
 
+    void addComponent(const Component_Ptr &c);
+
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
 };

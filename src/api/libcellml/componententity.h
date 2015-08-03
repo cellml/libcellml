@@ -18,6 +18,7 @@ limitations under the License.Some license of other
 #define LIBCELLML_LIBCELLML_COMPONENTENTITY_H
 
 #include <libcellml/libcellml_export.h>
+#include <libcellml/types.h>
 #include <libcellml/namedentity.h>
 
 namespace libcellml {
@@ -50,7 +51,7 @@ public:
      * Add a copy of the given component as a child component of this component.
      * @param c The component to add.
      */
-    void addComponent(const Component &c);
+    void addComponent(const Component_Ptr &c);
 
     /**
      * @brief Remove the component at the given index.
@@ -90,7 +91,7 @@ public:
      * @param index The index of the Component to return (zero-based).
      * @return A const reference to the Component at the given index.
      */
-    const Component& getComponent(size_t index) const;
+    const Component_Ptr& getComponent(size_t index) const;
 
     /**
      * @brief Get a component at index.
@@ -101,7 +102,7 @@ public:
      * @param index The index of the Component to return (zero-based).
      * @return A reference to the Component at the given index.
      */
-    Component& getComponent(size_t index);
+    Component_Ptr getComponent(size_t index);
 
     /**
      * @brief Get a component with the given name @p name.
@@ -112,7 +113,7 @@ public:
      * @param name The name of the Component to return.
      * @return A const reference to the Component with the given name.
      */
-    const Component& getComponent(const std::string &name) const;
+    const Component_Ptr& getComponent(const std::string &name) const;
 
     /**
      * @brief Get a component with the given name @p name.
@@ -123,7 +124,7 @@ public:
      * @param name The name of the Component to return.
      * @return A reference to the Component with the given name.
      */
-    Component& getComponent(const std::string &name);
+    Component_Ptr getComponent(const std::string &name);
 
     /**
      * @brief Take the component at the given index and return it.
@@ -133,7 +134,7 @@ public:
      * @param index The index of the Component to take (zero-based).
      * @return The Component at the given index.
      */
-    Component takeComponent(size_t index);
+    Component_Ptr takeComponent(size_t index);
 
     /**
      * @brief Take the component with the given name @p name and return it.
@@ -145,7 +146,7 @@ public:
      * @param name The name of the Component to take.
      * @return The Component identified with the given name.
      */
-    Component takeComponent(const std::string &name);
+    Component_Ptr takeComponent(const std::string &name);
 
     /**
      * @brief Replace a component at index.
@@ -154,7 +155,7 @@ public:
      * @param index Index of the Component to replace (zero-based).
      * @param c The Component to use for replacement.
      */
-    void replaceComponent(size_t index, const Component& c);
+    void replaceComponent(size_t index, const Component_Ptr &c);
 
     /**
      * @brief Replace a component with the given name.
@@ -165,7 +166,7 @@ public:
      * @param name The name of the Component to replace.
      * @param c The Component to use for replacement.
      */
-    void replaceComponent(const std::string &name, const Component& c);
+    void replaceComponent(const std::string &name, const Component_Ptr& c);
 
     /**
      * @brief get the number of components in the component.

@@ -32,14 +32,14 @@ namespace libcellml {
  */
 struct ComponentEntity::ComponentEntityImpl
 {
-    std::vector<Component>::iterator findComponent(const std::string& name);
-    std::vector<Component> mComponents;
+    std::vector<Component_Ptr>::iterator findComponent(const std::string& name);
+    std::vector<Component_Ptr> mComponents;
 };
 
-std::vector<Component>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string& name)
+std::vector<Component_Ptr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string& name)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const Component& c) -> bool {return c.getName() == name;});
+                        [=](const Component_Ptr& c) -> bool {return c->getName() == name;});
 }
 
 // Interface class Model implementation
@@ -62,21 +62,20 @@ ComponentEntity::ComponentEntity(const ComponentEntity& rhs)
 
 ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
 {
+    NamedEntity::operator =(c);
     c.swap(*this);
     return *this;
 }
 
 void ComponentEntity::swap(ComponentEntity &rhs)
 {
-    std::swap(this->mName, rhs.mName);
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 ComponentEntity::ComponentEntity(ComponentEntity&& rhs)
-    : NamedEntity()
+    : NamedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
-    mName = std::move(rhs.mName);
     rhs.mPimpl = nullptr;
 }
 
@@ -102,12 +101,12 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
             encaps += ">";
         }
         for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
-            std::string comp = mPimpl->mComponents[i].serialise(format);
+            std::string comp = mPimpl->mComponents[i]->serialise(format);
             std::size_t found = comp.find(encaps_tag);
             if (found == std::string::npos) {
                 encaps += "<component_ref";
-                if (mPimpl->mComponents[i].getName().length()) {
-                    encaps += " component=\"" + mPimpl->mComponents[i].getName() + "\"";
+                if (mPimpl->mComponents[i]->getName().length()) {
+                    encaps += " component=\"" + mPimpl->mComponents[i]->getName() + "\"";
                 }
                 encaps += "/>";
             } else {
@@ -133,7 +132,7 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
     return repr;
 }
 
-void ComponentEntity::addComponent(const Component &c)
+void ComponentEntity::addComponent(const Component_Ptr &c)
 {
     mPimpl->mComponents.push_back(c);
 }
@@ -168,51 +167,52 @@ bool ComponentEntity::containsComponent(const std::string& name)
     return result != mPimpl->mComponents.end();
 }
 
-Component& ComponentEntity::getComponent(size_t index)
+Component_Ptr ComponentEntity::getComponent(size_t index)
 {
     return mPimpl->mComponents.at(index);
 }
 
-const Component& ComponentEntity::getComponent(size_t index) const
+const Component_Ptr& ComponentEntity::getComponent(size_t index) const
 {
     return mPimpl->mComponents.at(index);
 }
 
-Component& ComponentEntity::getComponent(const std::string &name)
+Component_Ptr ComponentEntity::getComponent(const std::string &name)
 {
     auto result = mPimpl->findComponent(name);
     size_t index = result - mPimpl->mComponents.begin();
     return mPimpl->mComponents.at(index);
 }
 
-const Component& ComponentEntity::getComponent(const std::string &name) const
+const Component_Ptr& ComponentEntity::getComponent(const std::string &name) const
 {
     auto result = mPimpl->findComponent(name);
     size_t index = result - mPimpl->mComponents.begin();
     return mPimpl->mComponents.at(index);
 }
 
-Component ComponentEntity::takeComponent(size_t index)
+Component_Ptr ComponentEntity::takeComponent(size_t index)
 {
-    Component c = mPimpl->mComponents.at(index);
+    Component_Ptr c = mPimpl->mComponents.at(index);
     removeComponent(index);
+    c->clearParent();
     return c;
 }
 
-Component ComponentEntity::takeComponent(const std::string & name)
+Component_Ptr ComponentEntity::takeComponent(const std::string & name)
 {
     auto result = mPimpl->findComponent(name);
     size_t index = result - mPimpl->mComponents.begin();
     return takeComponent(index);
 }
 
-void ComponentEntity::replaceComponent(size_t index, const Component& c)
+void ComponentEntity::replaceComponent(size_t index, const Component_Ptr& c)
 {
     removeComponent(index);
     mPimpl->mComponents.insert(mPimpl->mComponents.begin() + index, c);
 }
 
-void ComponentEntity::replaceComponent(const std::string& name, const Component& c)
+void ComponentEntity::replaceComponent(const std::string& name, const Component_Ptr& c)
 {
     auto result = mPimpl->findComponent(name);
     size_t index = result - mPimpl->mComponents.begin();

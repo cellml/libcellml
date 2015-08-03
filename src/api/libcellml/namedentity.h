@@ -20,6 +20,7 @@ limitations under the License.Some license of other
 #include <string>
 
 #include "libcellml/libcellml_export.h"
+#include "libcellml/types.h"
 #include "libcellml/entity.h"
 
 namespace libcellml {
@@ -31,8 +32,14 @@ namespace libcellml {
 class LIBCELLML_EXPORT NamedEntity: public Entity
 {
 public:
+    NamedEntity(); /**< Constructor */
+    ~NamedEntity(); /**< Destructor */
+    NamedEntity(const NamedEntity& rhs); /**< Copy constructor */
+    NamedEntity(NamedEntity &&rhs); /**< Move constructor */
+    NamedEntity& operator=(NamedEntity n); /**< Assignment operator */
+
     /**
-     * @brief set the name for the Entity
+     * @brief Set the name for the Entity
      * This method sets the name parameter of the Entity.  It does not check
      * the validity of the name.
      * @param name A string to represent the name.
@@ -42,7 +49,7 @@ public:
     }
 
     /**
-     * @brief get the name of the Entity
+     * @brief Get the name of the Entity
      * Gets the name of the Entity as a string.
      * @return std::string representation of the Entity name.
      */
@@ -50,8 +57,10 @@ public:
         return mName;
     }
 
-protected:
-    std::string mName;
+private:
+    void swap(NamedEntity &rhs);
+
+    std::string mName; /**< Entity name represented as a std::string. */
 };
 
 }
