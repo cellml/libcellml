@@ -86,6 +86,31 @@ TEST(Component, contains) {
     EXPECT_TRUE(c.containsComponent("child2"));
 }
 
+TEST(Component, add) {
+    const std::string e1 = "<component name=\"child0\"/><component name=\"child1\"/><component name=\"child2\"/><encapsulation><component_ref component=\"child0\"><component_ref component=\"child1\"><component_ref component=\"child2\"/></component_ref></component_ref></encapsulation>";
+    const std::string e2 = "<component name=\"child0\"/><component name=\"child1\"/><component name=\"child2\"/><component name=\"child3\"/><encapsulation><component_ref component=\"child0\"><component_ref component=\"child1\"><component_ref component=\"child2\"><component_ref component=\"child3\"/></component_ref></component_ref></component_ref></encapsulation>";
+    libcellml::ComponentPtr c0 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+
+    c0->setName("child0");
+    c3->setName("child3");
+
+    c1->addComponent(c2);
+    c0->addComponent(c1);
+
+    c1->setName("child1");
+    c2->setName("child2");
+
+    std::string a = c0->serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e1, a);
+
+    c2->addComponent(c3);
+    a = c0->serialise(libcellml::CELLML_FORMAT_XML);
+    EXPECT_EQ(e2, a);
+}
+
 TEST(Component, remove) {
     const std::string e1 = "<component/><component name=\"child2\"/><encapsulation><component_ref><component_ref component=\"child2\"/></component_ref></encapsulation>";
     const std::string e2 = "<component/><component name=\"child2\"/><component name=\"child1\"/><encapsulation><component_ref><component_ref component=\"child2\"/><component_ref component=\"child1\"/></component_ref></encapsulation>";
