@@ -61,6 +61,34 @@ std::string Entity::doSerialisation(libcellml::CELLML_FORMATS /* format */) cons
     return "";
 }
 
+std::string Entity::serialise(libcellml::CELLML_FORMATS format) const
+{
+    return doSerialisation(format);
+}
+
+void *Entity::getParent() const {
+    void *parent = 0;
+    if (mParentComponent) {
+        parent = mParentComponent;
+    } else if (mParentModel) {
+        parent = mParentModel;
+    }
+    return parent;
+}
+
+void Entity::setParent(Component *parent) {
+    mParentComponent = parent;
+}
+
+void Entity::setParent(Model *parent) {
+    mParentModel = parent;
+}
+
+void Entity::clearParent() {
+    mParentComponent = nullptr;
+    mParentModel = nullptr;
+}
+
 bool Entity::hasParent(Component *c) const
 {
     bool hasParent = false;

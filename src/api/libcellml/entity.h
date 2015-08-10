@@ -41,25 +41,14 @@ public:
      * @param format The format to serialise the object to.
      * @return std::string representation of the object.
      */
-    std::string serialise(libcellml::CELLML_FORMATS format) const
-    {
-        return doSerialisation(format);
-    }
+    std::string serialise(libcellml::CELLML_FORMATS format) const;
 
     /**
      * @brief getParent returns the parent of the CellML Entity.
      * @return a pointer to the entities parent if it has one,
      * otherwise the null pointer.
      */
-    void *getParent() const {
-        void *parent = 0;
-        if (mParentComponent) {
-            parent = mParentComponent;
-        } else if (mParentModel) {
-            parent = mParentModel;
-        }
-        return parent;
-    }
+    void *getParent() const;
 
     /**
      * @brief setParent sets the model as the parent of this entity.
@@ -68,9 +57,7 @@ public:
      * @overload
      * @param parent A raw pointer to a cellml::Model.
      */
-    void setParent(Model *parent) {
-        mParentModel = parent;
-    }
+    void setParent(Model *parent);
 
     /**
      * @brief setParent sets the component as the parent of this entity.
@@ -79,18 +66,13 @@ public:
      * @overload
      * @param parent A raw pointer to a cellml::Component.
      */
-    void setParent(Component *parent) {
-        mParentComponent = parent;
-    }
+    void setParent(Component *parent);
 
     /**
      * @brief clearParent clear the pointer to the parent entity.
      * Clears the pointer to the parent entity.
      */
-    void clearParent() {
-        mParentComponent = nullptr;
-        mParentModel = nullptr;
-    }
+    void clearParent();
 
     /**
      * @brief hasParent test to see if the given component is a parent.
