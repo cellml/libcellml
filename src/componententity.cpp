@@ -32,11 +32,11 @@ namespace libcellml {
  */
 struct ComponentEntity::ComponentEntityImpl
 {
-    std::vector<Component_Ptr>::iterator findComponent(const std::string& name);
+    std::vector<Component_Ptr>::iterator findComponent(const std::string &name);
     std::vector<Component_Ptr> mComponents;
 };
 
-std::vector<Component_Ptr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string& name)
+std::vector<Component_Ptr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
                         [=](const Component_Ptr& c) -> bool {return c->getName() == name;});
@@ -53,7 +53,7 @@ ComponentEntity::~ComponentEntity()
     delete mPimpl;
 }
 
-ComponentEntity::ComponentEntity(const ComponentEntity& rhs)
+ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
     : NamedEntity(rhs)
     , mPimpl(new ComponentEntityImpl())
 {
@@ -72,7 +72,7 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-ComponentEntity::ComponentEntity(ComponentEntity&& rhs)
+ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
     : NamedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
@@ -137,7 +137,7 @@ void ComponentEntity::addComponent(const Component_Ptr &c)
     mPimpl->mComponents.push_back(c);
 }
 
-void ComponentEntity::removeComponent(const std::string& name)
+void ComponentEntity::removeComponent(const std::string &name)
 {
     auto result = mPimpl->findComponent(name);
     if(result != mPimpl->mComponents.end()) {
@@ -161,7 +161,7 @@ size_t ComponentEntity::componentCount() const
     return mPimpl->mComponents.size();
 }
 
-bool ComponentEntity::containsComponent(const std::string& name)
+bool ComponentEntity::containsComponent(const std::string &name)
 {
     auto result = mPimpl->findComponent(name);
     return result != mPimpl->mComponents.end();
@@ -199,20 +199,20 @@ Component_Ptr ComponentEntity::takeComponent(size_t index)
     return c;
 }
 
-Component_Ptr ComponentEntity::takeComponent(const std::string & name)
+Component_Ptr ComponentEntity::takeComponent(const std::string &name)
 {
     auto result = mPimpl->findComponent(name);
     size_t index = result - mPimpl->mComponents.begin();
     return takeComponent(index);
 }
 
-void ComponentEntity::replaceComponent(size_t index, const Component_Ptr& c)
+void ComponentEntity::replaceComponent(size_t index, const Component_Ptr &c)
 {
     removeComponent(index);
     mPimpl->mComponents.insert(mPimpl->mComponents.begin() + index, c);
 }
 
-void ComponentEntity::replaceComponent(const std::string& name, const Component_Ptr& c)
+void ComponentEntity::replaceComponent(const std::string &name, const Component_Ptr &c)
 {
     auto result = mPimpl->findComponent(name);
     size_t index = result - mPimpl->mComponents.begin();

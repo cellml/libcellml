@@ -42,8 +42,8 @@ public:
      */
     ~ComponentEntity();
 
-    ComponentEntity(ComponentEntity&& rhs); /**< Move constructor */
-    ComponentEntity(const ComponentEntity& rhs); /**< Copy constructor */
+    ComponentEntity(ComponentEntity &&rhs); /**< Move constructor */
+    ComponentEntity(const ComponentEntity &rhs); /**< Copy constructor */
     ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
@@ -166,7 +166,7 @@ public:
      * @param name The name of the Component to replace.
      * @param c The Component to use for replacement.
      */
-    void replaceComponent(const std::string &name, const Component_Ptr& c);
+    void replaceComponent(const std::string &name, const Component_Ptr &c);
 
     /**
      * @brief get the number of components in the component.

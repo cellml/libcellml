@@ -34,7 +34,7 @@ class LIBCELLML_EXPORT NamedEntity: public Entity
 public:
     NamedEntity(); /**< Constructor */
     ~NamedEntity(); /**< Destructor */
-    NamedEntity(const NamedEntity& rhs); /**< Copy constructor */
+    NamedEntity(const NamedEntity &rhs); /**< Copy constructor */
     NamedEntity(NamedEntity &&rhs); /**< Move constructor */
     NamedEntity& operator=(NamedEntity n); /**< Assignment operator */
 
