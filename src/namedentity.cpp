@@ -45,7 +45,7 @@ NamedEntity::NamedEntity(NamedEntity &&rhs)
 
 NamedEntity& NamedEntity::operator=(NamedEntity n)
 {
-    Entity::operator =(n);
+    Entity::operator= (n);
     n.swap(*this);
     return *this;
 }

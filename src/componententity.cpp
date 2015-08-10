@@ -62,7 +62,7 @@ ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
 
 ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
 {
-    NamedEntity::operator =(c);
+    NamedEntity::operator= (c);
     c.swap(*this);
     return *this;
 }
