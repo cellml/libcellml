@@ -23,7 +23,7 @@ namespace libcellml {
 
 class Model; /**< Forward declaraion of Model class. */
 class Component; /**< Forward declaration of Component class. */
-typedef std::shared_ptr<Component> Component_Ptr; /**< Type definition for shared component pointer. */
+typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
 
 }
 

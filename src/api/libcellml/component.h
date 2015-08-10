@@ -35,7 +35,7 @@ public:
     Component(Component &&rhs); /**< Move constructor */
     Component& operator=(Component m); /**< Assignment operator */
 
-    void addComponent(const Component_Ptr &c);
+    void addComponent(const ComponentPtr &c);
 };
 
 }

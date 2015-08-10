@@ -46,7 +46,7 @@ Component& Component::operator=(Component m)
     return *this;
 }
 
-void Component::addComponent(const Component_Ptr &c)
+void Component::addComponent(const ComponentPtr &c)
 {
     if (!hasParent(c.get())) {
         c->setParent(this);
