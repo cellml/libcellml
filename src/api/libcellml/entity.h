@@ -17,6 +17,8 @@ limitations under the License.Some license of other
 #ifndef LIBCELLML_LIBCELLML_ENTITY_H_
 #define LIBCELLML_LIBCELLML_ENTITY_H_
 
+#include <string>
+
 #include "libcellml/libcellml_export.h"
 #include "libcellml/enumerations.h"
 #include "libcellml/types.h"
