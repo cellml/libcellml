@@ -1,11 +1,24 @@
+/*
+Copyright 2015 University of Auckland
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.Some license of other
+*/
+
 #ifndef LIBCELLML_LIBCELLML_COMPONENT_H
 #define LIBCELLML_LIBCELLML_COMPONENT_H
 
-#include <string>
-#include <memory>
-
 #include "libcellml/libcellml_export.h"
-#include "libcellml/nameable.h"
+#include "libcellml/componententity.h"
 
 namespace libcellml {
 
@@ -13,46 +26,16 @@ namespace libcellml {
  * @brief The Component class.
  * The Component class is for representing a CellML Component.
  */
-class LIBCELLML_EXPORT Component: public Nameable
+class LIBCELLML_EXPORT Component: public ComponentEntity
 {
 public:
-    /**
-     * @brief Component Constructor.
-     * Default Component constructor.
-     */
-    Component();
-    /**
-     * @brief Component Destructor.
-     * Default Component destructor.
-     */
-    ~Component();
+    Component(); /**< Constructor */
+    ~Component(); /**< Destructor */
+    Component(const Component &rhs); /**< Copy constructor */
+    Component(Component &&rhs); /**< Move constructor */
+    Component& operator=(Component m); /**< Assignment operator */
 
-    Component(Component&& rhs); /**< move constructor */
-    Component& operator=(Component&& rhs); /**< move assignment */
-    Component(const Component& rhs); /**< copy constructor */
-    Component& operator=(const Component& rhs); /**< assignment */
-
-    /**
-     * @brief serialise the Model.
-     * This method serialises the Model to a std:string representation in the
-     * desired format.
-     * @sa deserialise
-     * @param format The format to serialise the Model to.
-     * @return std::string representation of the Model in the given format.
-     */
-    std::string serialise(CELLML_FORMATS format) const;
-
-    /**
-     * @brief add a child component to this component.
-     * Add a copy of the given component as a child component of this component.
-     * @param c the component to add.
-     */
-    void addComponent(const Component &c);
-
-private:
-    struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentImpl* mPimpl; /**< Private member to implementation pointer */
-
+    void addComponent(const ComponentPtr &c);
 };
 
 }

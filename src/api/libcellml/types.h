@@ -1,4 +1,3 @@
-
 /*
 Copyright 2015 University of Auckland
 
@@ -15,19 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
-#ifndef LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
-#define LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
+#ifndef LIBCELLML_LIBCELLML_TYPES_H_
+#define LIBCELLML_LIBCELLML_TYPES_H_
 
-/**
- * @mainpage libCellML
- *
- * \section intro_sec Introduction
- *
- * This is the source code documentation for the libCellML C++ library.
- *
- */
-#include <libcellml/version.h>
-#include <libcellml/model.h>
-#include <libcellml/component.h>
+#include <memory>
 
-#endif  // LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
+namespace libcellml {
+
+class Model; /**< Forward declaraion of Model class. */
+class Component; /**< Forward declaration of Component class. */
+typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
+
+}
+
+#endif /* LIBCELLML_LIBCELLML_TYPES_H_ */
+
+

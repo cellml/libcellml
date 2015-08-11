@@ -18,11 +18,10 @@ limitations under the License.Some license of other
 #define LIBCELLML_LIBCELLML_MODEL_H_
 
 #include <string>
-#include <memory>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/nameable.h"
 #include "libcellml/component.h"
+#include "libcellml/componententity.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
@@ -31,46 +30,19 @@ namespace libcellml {
  * @brief The Model class.
  * The Model class is for representing a CellML Model.
  */
-class LIBCELLML_EXPORT Model: public Nameable
+class LIBCELLML_EXPORT Model: public ComponentEntity
 {
 public:
-    /**
-     * @brief Model Constructor.
-     * Default Model constructor.
-     */
-    Model();
-    /**
-     * @brief Model Destructor.
-     * Default Model destructor.
-     */
-    ~Model();
+    Model(); /**< Constructor */
+    ~Model(); /**< Destructor */
+    Model(const Model &rhs); /**< Copy constructor */
+    Model(Model &&rhs); /**< Move constructor */
+    Model& operator=(Model m); /**< Assignment operator */
 
-    Model(Model&& rhs); /**< move constructor */
-    Model& operator=(Model&& rhs); /**< move assignment */
-    Model(const Model&);/**< copy constructor */
-    Model& operator=(const Model&);/**< assignment */
-
-    /**
-     * @brief serialise the Model.
-     * This method serialises the Model to a std:string representation in the
-     * desired format.
-     * @sa deserialise
-     * @param format The format to serialise the Model to.
-     * @return std::string representation of the Model in the given format.
-     */
-    std::string serialise(libcellml::CELLML_FORMATS format) const;
-
-    /**
-     * @brief add a component to the model.
-     * Adds a copy of the given component to the model.
-     * @param c the component to add.
-     */
-    void addComponent(const Component &c);
+    void addComponent(const ComponentPtr &c);
 
 private:
-
-    struct ModelImpl; /**< Forward declaration for pImpl idiom. */
-    ModelImpl *mPimpl; /**< Private member to implementation pointer */
+    std::string doSerialisation(CELLML_FORMATS format) const;
 };
 
 }

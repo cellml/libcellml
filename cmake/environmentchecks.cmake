@@ -21,10 +21,10 @@ find_package(Doxygen)
 find_package(Sphinx)
 
 if(VALGRIND_EXE AND PYTHONINTERP_FOUND)
-  set(VALGRIND_FOUND TRUE CACHE BOOL "valgrind executable found.")
+  set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run valgrind testing are available.")
 endif()
 if(GCOV_EXE AND FIND_EXE AND PYTHONINTERP_FOUND)
-  set(GCOV_FOUND TRUE CACHE BOOL "gcov coverage executable found.")
+  set(COVERAGE_TEST_AVAILABLE TRUE CACHE BOOL "Executables required to run the coverage testing are available.")
 endif()
-mark_as_advanced(VALGRIND_EXE VALGRIND_FOUND GCOV_EXE FIND_EXE GCOV_FOUND)
+mark_as_advanced(VALGRIND_EXE VALGRIND_TESTING_AVAILABLE GCOV_EXE FIND_EXE COVERAGE_TEST_AVAILABLE)
 

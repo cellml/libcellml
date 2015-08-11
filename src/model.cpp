@@ -1,4 +1,3 @@
-
 /*
 Copyright 2015 University of Auckland
 
@@ -17,67 +16,37 @@ limitations under the License.Some license of other
 
 #include "libcellml/model.h"
 
-#include <assert.h>
-#include <vector>
-#include <iostream>
-
 namespace libcellml {
 
-/**
- * @brief The private implementation for the Model class.
- * This struct is the private implementation struct for the Model class.  Separating
- * the implementation from the definition allows for greater flexibility when
- * distributing the code.
- */
-struct Model::ModelImpl
-{
-    std::vector<Component> mComponents;
-};
-
-// Interface class Model implementation
 Model::Model()
-    : mPimpl(new ModelImpl())
 {
+
 }
 
 Model::~Model()
 {
-    delete mPimpl;
+
 }
 
 Model::Model(const Model& rhs)
-    : Nameable(rhs)
-    , mPimpl(new ModelImpl())
+    : ComponentEntity(rhs)
 {
-    mPimpl->mComponents = rhs.mPimpl->mComponents;
+
 }
 
-Model& Model::operator=(const Model& c)
+Model::Model(Model &&rhs)
+    : ComponentEntity(std::move(rhs))
 {
-    mName = c.mName;
-    mPimpl->mComponents = c.mPimpl->mComponents;
+
+}
+
+Model& Model::operator=(Model m)
+{
+    ComponentEntity::operator= (m);
     return *this;
 }
 
-Model::Model(Model&& rhs)
-    : Nameable()
-    , mPimpl(rhs.mPimpl)
-{
-    mName = std::move(rhs.mName);
-    rhs.mPimpl = nullptr;
-}
-
-Model& Model::operator=(Model&& rhs)
-{
-    mName = std::move(rhs.mName);
-    assert(mPimpl != nullptr);
-    delete mPimpl;
-    mPimpl = rhs.mPimpl;
-    rhs.mPimpl = nullptr;
-    return *this;
-}
-
-std::string Model::serialise(libcellml::CELLML_FORMATS format) const
+std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
 {
     std::string repr = "";
     if (format == CELLML_FORMAT_XML) {
@@ -86,8 +55,8 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
             repr += " name=\"" + getName() + "\"";
         }
         repr += ">";
-        for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
-            repr += mPimpl->mComponents[i].serialise(format);
+        for(size_t i = 0; i < componentCount(); i++) {
+            repr += getComponent(i)->serialise(format);
         }
         repr += "</model>";
     }
@@ -95,9 +64,13 @@ std::string Model::serialise(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
-void Model::addComponent(const Component& c)
+void Model::addComponent(const ComponentPtr &c)
 {
-    mPimpl->mComponents.push_back(c);
+    // Check for cycles
+    if (!hasParent(c.get())) {
+        c->setParent(this);
+        ComponentEntity::addComponent(c);
+    }
 }
 
 }
