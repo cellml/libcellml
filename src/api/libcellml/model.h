@@ -20,8 +20,8 @@ limitations under the License.Some license of other
 #include <string>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/componententity.h"
 #include "libcellml/component.h"
+#include "libcellml/componententity.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
