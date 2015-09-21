@@ -57,7 +57,7 @@ TEST(ComponentImport, singleImport02) {
    EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, multipleImport02) {
+TEST(ComponentImport, multipleImport01) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -98,7 +98,7 @@ TEST(ComponentImport, multipleImport02) {
    EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, multipleImport01) {
+TEST(ComponentImport, multipleImport02) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
