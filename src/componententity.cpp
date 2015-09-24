@@ -219,4 +219,9 @@ void ComponentEntity::replaceComponent(const std::string &name, const ComponentP
     replaceComponent(index, c);
 }
 
+void ComponentEntity::setSourceComponent(const ImportPtr &/*imp*/, const std::string &/*name*/)
+{
+
+}
+
 }

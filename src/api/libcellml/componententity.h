@@ -175,6 +175,8 @@ public:
      */
     size_t componentCount() const;
 
+    void setSourceComponent(const ImportPtr &imp, const std::string &name);
+
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
     void swap(ComponentEntity &rhs);

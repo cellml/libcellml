@@ -14,21 +14,51 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
-#ifndef LIBCELLML_LIBCELLML_TYPES_H_
-#define LIBCELLML_LIBCELLML_TYPES_H_
-
-#include <memory>
+#include "libcellml/import.h"
 
 namespace libcellml {
 
-class Model; /**< Forward declaration of Model class. */
-class Component; /**< Forward declaration of Component class. */
-typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
-class Import; /**< Forward declaration of Import class. */
-typedef std::shared_ptr<Import> ImportPtr; /**< Type definition for shared import pointer. */
+struct Import::ImportImpl
+{
+    std::string mReference;
+};
+
+Import::Import(const std::string &reference)
+    : mPimpl(new ImportImpl())
+{
+    mPimpl->mReference = reference;
+}
+
+Import::~Import()
+{
 
 }
 
-#endif /* LIBCELLML_LIBCELLML_TYPES_H_ */
+Import::Import(const Import& rhs)
+    : NamedEntity(rhs)
+{
 
+}
 
+Import::Import(Import &&rhs)
+    : NamedEntity(std::move(rhs))
+{
+
+}
+
+Import& Import::operator=(Import m)
+{
+    NamedEntity::operator= (m);
+    return *this;
+}
+
+std::string Import::doSerialisation(libcellml::CELLML_FORMATS format) const
+{
+    std::string repr = "";
+    if (format == CELLML_FORMAT_XML) {
+    }
+
+    return repr;
+}
+
+}
