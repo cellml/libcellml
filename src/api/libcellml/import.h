@@ -29,7 +29,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT Import: public Entity
 {
 public:
-    explicit Import(const std::string &reference); /**< Constructor */
+    Import(); /**< Constructor */
     ~Import(); /**< Destructor */
     Import(const Import &rhs); /**< Copy constructor */
     Import(Import &&rhs); /**< Move constructor */

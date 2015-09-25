@@ -23,10 +23,9 @@ struct Import::ImportImpl
     std::string mReference;
 };
 
-Import::Import(const std::string &reference)
+Import::Import()
     : mPimpl(new ImportImpl())
 {
-    mPimpl->mReference = reference;
 }
 
 Import::~Import()

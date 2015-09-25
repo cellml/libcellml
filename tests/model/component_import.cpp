@@ -38,7 +38,8 @@ TEST(ComponentImport, singleImport) {
                "</import>"
             "</model>";
     libcellml::Model m;
-    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>("some-other-model.xml");
+    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    imp->setSource("some-other-model.xml");
 
     libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
     importedComponent->setName("component_in_this_model");
@@ -68,7 +69,8 @@ TEST(ComponentImport, multipleImport) {
                 "</import>"
             "</model>";
     libcellml::Model m;
-    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>("some-other-model.xml");
+    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    imp->setSource("some-other-model.xml");
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     c1->setName("c1");
     c1->setSourceComponent(imp, "cc1");
@@ -78,7 +80,8 @@ TEST(ComponentImport, multipleImport) {
     c2->setSourceComponent(imp, "cc2");
     m.addComponent(c2);
 
-    libcellml::ImportPtr imp2 = std::make_shared<libcellml::Import>("some-other-model.xml");
+    libcellml::ImportPtr imp2 = std::make_shared<libcellml::Import>();
+    imp2->setSource("some-other-model.xml");
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
     c3->setName("c3");
     c3->setSourceComponent(imp2, "cc1");
