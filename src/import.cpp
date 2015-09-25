@@ -35,20 +35,20 @@ Import::~Import()
 }
 
 Import::Import(const Import& rhs)
-    : NamedEntity(rhs)
+    : Entity(rhs)
 {
 
 }
 
 Import::Import(Import &&rhs)
-    : NamedEntity(std::move(rhs))
+    : Entity(std::move(rhs))
 {
 
 }
 
 Import& Import::operator=(Import m)
 {
-    NamedEntity::operator= (m);
+    Entity::operator= (m);
     return *this;
 }
 
@@ -59,6 +59,11 @@ std::string Import::doSerialisation(libcellml::CELLML_FORMATS format) const
     }
 
     return repr;
+}
+
+void Import::setSource(const std::string &/*reference*/)
+{
+
 }
 
 }

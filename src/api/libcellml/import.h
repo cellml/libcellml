@@ -26,7 +26,7 @@ namespace libcellml {
  * @brief The Import class.
  * The import class is for encapsulating an external CellML Model.
  */
-class LIBCELLML_EXPORT Import: public NamedEntity
+class LIBCELLML_EXPORT Import: public Entity
 {
 public:
     explicit Import(const std::string &reference); /**< Constructor */
@@ -34,6 +34,13 @@ public:
     Import(const Import &rhs); /**< Copy constructor */
     Import(Import &&rhs); /**< Move constructor */
     Import& operator=(Import m); /**< Assignment operator */
+
+    /**
+     * @brief Set the source Model.
+     * Set the source Model that this import refers to.
+     * @param reference The reference model.
+     */
+    void setSource(const std::string &reference);
 
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
