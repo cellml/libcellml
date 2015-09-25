@@ -29,5 +29,6 @@ limitations under the License.Some license of other
 #include <libcellml/version.h>
 #include <libcellml/model.h>
 #include <libcellml/component.h>
+#include <libcellml/import.h>
 
 #endif  // LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_

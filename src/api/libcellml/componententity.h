@@ -175,6 +175,15 @@ public:
      */
     size_t componentCount() const;
 
+    /**
+     * @brief Set the source component for this component.
+     * Make this component an imported component by defining an import model
+     * from which to extract the named component from.
+     * @param imp The import from which the named component originates.
+     * @param name The name of the component in the imported model to use.
+     */
+    void setSourceComponent(const ImportPtr &imp, const std::string &name);
+
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
     void swap(ComponentEntity &rhs);
