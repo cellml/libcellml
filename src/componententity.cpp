@@ -93,7 +93,7 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
         repr += "/>";
         std::string encaps = "";
         if (mPimpl->mComponents.size()) {
-            encaps += "<encapsulation>";
+            encaps += encaps_tag;
             encaps += "<component_ref";
             if (componentName.length()) {
                 encaps += " component=\"" + componentName + "\"";
@@ -122,7 +122,7 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
         }
 
         if(mPimpl->mComponents.size()) {
-            encaps += "</component_ref></encapsulation>";
+            encaps += "</component_ref>" + encaps_end_tag;
         }
 
         repr += encaps;
