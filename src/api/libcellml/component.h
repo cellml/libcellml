@@ -35,8 +35,6 @@ public:
     Component(Component &&rhs); /**< Move constructor */
     Component& operator=(Component m); /**< Assignment operator */
 
-//    void addComponent(const ComponentPtr &c);
-
     /**
      * @brief Set the source component for this component.
      * Make this component an imported component by defining an import model
