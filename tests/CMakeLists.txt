@@ -14,6 +14,7 @@ mark_as_advanced(gtest_force_shared_crt)
 include(version/tests.cmake)
 include(model/tests.cmake)
 include(component/tests.cmake)
+include(coverage/tests.cmake)
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)

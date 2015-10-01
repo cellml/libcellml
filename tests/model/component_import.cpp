@@ -189,3 +189,57 @@ TEST(ComponentImport, hierarchicalImport) {
 
     EXPECT_EQ(e, a);
 }
+
+TEST(ComponentImport, complexImport) {
+
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+               "<import xlink:href=\"some-other-model.xml\" "
+                       "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                    "<component component_ref=\"cc1\" "
+                               "name=\"c1\"/>"
+               "</import>"
+               "<component name=\"dave\"/>"
+               "<component name=\"bob\"/>"
+               "<component name=\"angus\"/>"
+               "<encapsulation>"
+                  "<component_ref component=\"dave\">"
+                     "<component_ref component=\"bob\">"
+                        "<component_ref component=\"c1\"/>"
+                        "<component_ref component=\"angus\"/>"
+                     "</component_ref>"
+                  "</component_ref>"
+               "</encapsulation>"
+            "</model>";
+    libcellml::Model m;
+    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    imp->setSource("some-other-model.xml");
+
+    libcellml::ComponentPtr dave = std::make_shared<libcellml::Component>();
+    dave->setName("dave");
+    m.addComponent(dave);
+
+    libcellml::ComponentPtr bob = std::make_shared<libcellml::Component>();
+    bob->setName("bob");
+    dave->addComponent(bob);
+
+    EXPECT_FALSE(dave->isImport());
+
+    libcellml::ComponentPtr i1 = std::make_shared<libcellml::Component>();
+    i1->setName("c1");
+    i1->setSourceComponent(imp, "cc1");
+
+    EXPECT_TRUE(i1->isImport());
+
+    bob->addComponent(i1);
+
+    libcellml::ComponentPtr angus = std::make_shared<libcellml::Component>();
+    angus->setName("angus");
+    bob->addComponent(angus);
+
+    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+
+    EXPECT_EQ(e, a);
+}
+

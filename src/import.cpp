@@ -35,29 +35,28 @@ Import::~Import()
 
 Import::Import(const Import& rhs)
     : Entity(rhs)
+    , mPimpl(new ImportImpl())
 {
-
+    mPimpl->mReference = rhs.mPimpl->mReference;
 }
 
 Import::Import(Import &&rhs)
     : Entity(std::move(rhs))
+    , mPimpl(rhs.mPimpl)
 {
-
+    rhs.mPimpl = nullptr;
 }
 
-Import& Import::operator=(Import m)
+Import& Import::operator=(Import e)
 {
-    Entity::operator= (m);
+    Entity::operator= (e);
+    e.swap(*this);
     return *this;
 }
 
-std::string Import::doSerialisation(libcellml::CELLML_FORMATS format) const
+void Import::swap(Import &rhs)
 {
-    std::string repr = "";
-    if (format == CELLML_FORMAT_XML) {
-    }
-
-    return repr;
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 void Import::setSource(const std::string &reference)

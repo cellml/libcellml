@@ -45,7 +45,7 @@ public:
     std::string getSource() const;
 
 private:
-    std::string doSerialisation(CELLML_FORMATS format) const;
+    void swap(Import &rhs);
 
     struct ImportImpl; /**< Forward declaration for pImpl idiom. */
     ImportImpl* mPimpl; /**< Private member to implementation pointer */

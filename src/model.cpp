@@ -81,7 +81,7 @@ std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
                 incrementComponent = true;
             } else if (comp->componentCount()) {
                 // If the current component is a model component
-                // let the for loop take care of the stack.
+                // let the 'for' loop take care of the stack.
                 if (modelComponent != comp) {
                     componentStack.push(comp);
                     indeciesStack.push(index);
