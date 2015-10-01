@@ -91,10 +91,4 @@ void ImportedEntity::setImportReference(const std::string &reference)
     mPimpl->mImportReference = reference;
 }
 
-void ImportedEntity::setSourceComponent(const ImportPtr &imp, const std::string &name)
-{
-    mPimpl->mImport = imp;
-    mPimpl->mImportReference = name;
-}
-
 }

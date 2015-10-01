@@ -42,13 +42,19 @@ public:
      */
     void setSource(const std::string &reference);
 
+    /**
+     * @brief Get the source model.
+     * Get the source model set in this instance.  If no source model
+     * is set then return an empty string.
+     * @return The reference to the source model if set otherwise the emtpy string.
+     */
     std::string getSource() const;
 
 private:
-    void swap(Import &rhs);
+    void swap(Import &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ImportImpl; /**< Forward declaration for pImpl idiom. */
-    ImportImpl* mPimpl; /**< Private member to implementation pointer */
+    ImportImpl* mPimpl; /**< Private member to implementation pointer. */
 };
 
 }

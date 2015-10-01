@@ -137,6 +137,11 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
 
 void ComponentEntity::addComponent(const ComponentPtr &c)
 {
+    doAddComponent(c);
+}
+
+void ComponentEntity::doAddComponent(const ComponentPtr &c)
+{
     mPimpl->mComponents.push_back(c);
 }
 

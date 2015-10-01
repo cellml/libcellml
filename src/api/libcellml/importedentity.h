@@ -26,8 +26,8 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The Nameable class.
- * Base class for all nameable libCellML classes.
+ * @brief The Importable class.
+ * Base class for all importable libCellML classes.
  */
 class LIBCELLML_EXPORT ImportedEntity: public NamedEntity
 {
@@ -38,27 +38,50 @@ public:
     ImportedEntity(ImportedEntity &&rhs); /**< Move constructor */
     ImportedEntity& operator=(ImportedEntity n); /**< Assignment operator */
 
+    /**
+     * @brief Test if this entity is an imported entity.
+     * Method to test if this entity is an imported entity.  Returns
+     * true if the import is not the nullptr otherwise return false.
+     * @return true if the import is not the nullptr, false otherwise.
+     */
     bool isImport() const;
 
+    /**
+     * @brief Get the import set.
+     * Get the import set, if no import is set nullptr is returned.
+     * @sa setImport
+     * @return the shared pointer for the import, if no import is set returns nullptr.
+     */
     ImportPtr getImport() const;
 
+    /**
+     * @brief Set the import.
+     * Set the import for the imported entity.  Set to nullptr to unset the import.
+     * @sa getImport
+     * @param imp The import to set.
+     */
     void setImport(const ImportPtr &imp);
 
+    /**
+     * @brief Get the import reference.
+     * Get the reference to the entity in the imported model.
+     * @sa setImportReference
+     * @return the reference to the entity in the imported model, the empty
+     * string if it is not set.
+     */
     std::string getImportReference() const;
 
+    /**
+     * @brief Set the import reference.
+     * Set the import reference to an entity in the imported model.  The import
+     * reference should be a Component or a Unit in the import model.
+     * @sa getImportReference
+     * @param reference The name of the reference to refer to in the import model.
+     */
     void setImportReference(const std::string &reference);
 
-    /**
-     * @brief Set the source component for this component.
-     * Make this component an imported component by defining an import model
-     * from which to extract the named component from.
-     * @param imp The import from which the named component originates.
-     * @param name The name of the component in the imported model to use.
-     */
-    void setSourceComponent(const ImportPtr &imp, const std::string &name);
-
 private:
-    void swap(ImportedEntity &rhs);
+    void swap(ImportedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
     ImportedEntityImpl* mPimpl; /**< Private member to implementation pointer */

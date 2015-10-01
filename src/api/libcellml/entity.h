@@ -97,11 +97,7 @@ private:
      */
     virtual std::string doSerialisation(libcellml::CELLML_FORMATS format) const;
 
-    /**
-     * @brief swap method.
-     * @param rhs Entity to swap.
-     */
-    void swap(Entity &rhs);
+    void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     Model *mParentModel; /**< Pointer to parent model */
     Component *mParentComponent; /**< Pointer to component model */

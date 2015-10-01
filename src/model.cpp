@@ -139,12 +139,12 @@ std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
-void Model::addComponent(const ComponentPtr &c)
+void Model::doAddComponent(const ComponentPtr &c)
 {
     // Check for cycles
     if (!hasParent(c.get())) {
         c->setParent(this);
-        ComponentEntity::addComponent(c);
+        ComponentEntity::doAddComponent(c);
     }
 }
 
