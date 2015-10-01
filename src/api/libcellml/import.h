@@ -42,6 +42,8 @@ public:
      */
     void setSource(const std::string &reference);
 
+    std::string getSource() const;
+
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
 

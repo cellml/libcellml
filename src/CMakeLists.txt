@@ -36,6 +36,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/import.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
@@ -47,6 +48,7 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/import.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h

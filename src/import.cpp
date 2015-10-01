@@ -30,7 +30,7 @@ Import::Import()
 
 Import::~Import()
 {
-
+    delete mPimpl;
 }
 
 Import::Import(const Import& rhs)
@@ -60,9 +60,14 @@ std::string Import::doSerialisation(libcellml::CELLML_FORMATS format) const
     return repr;
 }
 
-void Import::setSource(const std::string &/*reference*/)
+void Import::setSource(const std::string &reference)
 {
+    mPimpl->mReference = reference;
+}
 
+std::string Import::getSource() const
+{
+    return mPimpl->mReference;
 }
 
 }

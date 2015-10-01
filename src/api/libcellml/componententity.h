@@ -18,7 +18,7 @@ limitations under the License.Some license of other
 #define LIBCELLML_LIBCELLML_COMPONENTENTITY_H
 
 #include <libcellml/libcellml_export.h>
-#include <libcellml/namedentity.h>
+#include <libcellml/importedentity.h>
 #include <libcellml/types.h>
 
 namespace libcellml {
@@ -28,7 +28,7 @@ class Component;
  * @brief The ComponentEntity class
  * The interface class for managing Components.
  */
-class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
+class LIBCELLML_EXPORT ComponentEntity: public ImportedEntity
 {
 public:
     /**
@@ -174,15 +174,6 @@ public:
      * @return the number of components.
      */
     size_t componentCount() const;
-
-    /**
-     * @brief Set the source component for this component.
-     * Make this component an imported component by defining an import model
-     * from which to extract the named component from.
-     * @param imp The import from which the named component originates.
-     * @param name The name of the component in the imported model to use.
-     */
-    void setSourceComponent(const ImportPtr &imp, const std::string &name);
 
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
