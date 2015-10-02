@@ -58,7 +58,7 @@ public:
     }
 
 private:
-    void swap(NamedEntity &rhs);
+    void swap(NamedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     std::string mName; /**< Entity name represented as a std::string. */
 };

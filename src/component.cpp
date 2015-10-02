@@ -46,12 +46,18 @@ Component& Component::operator=(Component m)
     return *this;
 }
 
-void Component::addComponent(const ComponentPtr &c)
+void Component::doAddComponent(const ComponentPtr &c)
 {
     if (!hasParent(c.get())) {
         c->setParent(this);
-        ComponentEntity::addComponent(c);
+        ComponentEntity::doAddComponent(c);
     }
+}
+
+void Component::setSourceComponent(const ImportPtr &imp, const std::string &name)
+{
+    setImport(imp);
+    setImportReference(name);
 }
 
 }
