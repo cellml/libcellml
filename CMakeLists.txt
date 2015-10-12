@@ -91,6 +91,9 @@ if( BUILD_SHARED )
   set( LIBCELLML_BUILD_SHARED ${BUILD_SHARED} CACHE BOOL ${_PARAM_ANNOTATION} FORCE )
 endif()
 
+# Defines LIBXML2_LIBRARIES and LIBXML2_INCLUDE_DIR (sadly not LIBXML2_INCLUDE_DIRS)
+find_package(LibXml2 REQUIRED)
+
 # Keep the GUI tidy.
 internalise_cmake_variables()
 hide_distracting_variables()

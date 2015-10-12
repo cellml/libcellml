@@ -16,6 +16,9 @@ limitations under the License.Some license of other
 
 #include "gtest/gtest.h"
 
+#include <libxml/parser.h>
+#include <libxml/c14n.h>
+
 #include <libcellml>
 
 /**
@@ -99,18 +102,37 @@ TEST(ComponentImport, singleImportB) {
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
 
 TEST(ComponentImport, multipleImport) {
-    const std::string e =
+
+    LIBXML_TEST_VERSION;
+
+    const std::string e1 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
-                "<import xlink:href=\"some-other-model.xml\" "
-                        "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                     "<component component_ref=\"cc1\" "
-                                "name=\"c3\"/>"
-                "</import>"
+            "<import xlink:href=\"some-other-model.xml\" "
+                    "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                 "<component component_ref=\"cc1\" "
+                            "name=\"c1\"/>"
+                 "<component component_ref=\"cc2\" "
+                            "name=\"c2\"/>"
+            "</import>"
+            "<import xlink:href=\"some-other-model.xml\" "
+                    "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                 "<component component_ref=\"cc1\" "
+                            "name=\"c3\"/>"
+            "</import>"
+            "</model>";
+    const std::string e2 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<import xlink:href=\"some-other-model.xml\" "
+                    "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                 "<component component_ref=\"cc1\" "
+                            "name=\"c3\"/>"
+            "</import>"
             "<import xlink:href=\"some-other-model.xml\" "
                     "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
                  "<component component_ref=\"cc1\" "
@@ -119,6 +141,7 @@ TEST(ComponentImport, multipleImport) {
                             "name=\"c2\"/>"
             "</import>"
             "</model>";
+
     libcellml::Model m;
     libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
     imp->setSource("some-other-model.xml");
@@ -140,7 +163,54 @@ TEST(ComponentImport, multipleImport) {
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    xmlDocPtr doc;
+    doc = xmlReadMemory(a.c_str(), a.length(), "unnamed.xml", NULL, 0);
+    EXPECT_NE(nullptr, doc);
+
+    xmlChar *result = NULL;
+    int ret, exclusive = 1, with_comments = 1;
+
+    ret = xmlC14NDocDumpMemory(doc,
+            nullptr,
+            exclusive, nullptr /*inclusive_namespaces*/,
+            with_comments, &result);
+    xmlFreeDoc(doc);
+
+    EXPECT_GT(ret, 0);
+    EXPECT_NE(nullptr, result);
+
+    std::string can_a(reinterpret_cast<char*>(result), xmlStrlen(result));
+    xmlFree(result);
+
+    doc = xmlReadMemory(e1.c_str(), e1.length(), "unnamed.xml", NULL, 0);
+    ret = xmlC14NDocDumpMemory(doc,
+            nullptr,
+            exclusive, nullptr /*inclusive_namespaces*/,
+            with_comments, &result);
+    xmlFreeDoc(doc);
+
+    EXPECT_GT(ret, 0);
+    EXPECT_NE(nullptr, result);
+
+    std::string can_e1(reinterpret_cast<char *>(result), xmlStrlen(result));
+    xmlFree(result);
+
+    doc = xmlReadMemory(e2.c_str(), e2.length(), "unnamed.xml", NULL, 0);
+    ret = xmlC14NDocDumpMemory(doc,
+            nullptr,
+            exclusive, nullptr /*inclusive_namespaces*/,
+            with_comments, &result);
+    xmlFreeDoc(doc);
+
+    EXPECT_GT(ret, 0);
+    EXPECT_NE(nullptr, result);
+
+    std::string can_e2(reinterpret_cast<char *>(result), xmlStrlen(result));
+    xmlFree(result);
+
+    EXPECT_TRUE((can_e1 == can_a) || (can_e2 == can_a));
+
+    xmlCleanupParser();
 }
 
 TEST(ComponentImport, hierarchicalImport) {

@@ -25,7 +25,8 @@ foreach(TEST ${LIBCELLML_TESTS})
     set(CURRENT_CATEGORY "${CURRENT_CATEGORY}_")
   endif()
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS})
-  target_link_libraries(${CURRENT_TEST} cellml gtest_main)
+  target_link_libraries(${CURRENT_TEST} cellml gtest_main ${LIBXML2_LIBRARIES})
+  target_include_directories(${CURRENT_TEST} SYSTEM PUBLIC ${LIBXML2_INCLUDE_DIR})
 
   set_target_properties(${CURRENT_TEST} PROPERTIES
     CXX_STANDARD 11
