@@ -16,9 +16,6 @@ limitations under the License.Some license of other
 
 #include "gtest/gtest.h"
 
-#include <libxml/parser.h>
-#include <libxml/c14n.h>
-
 #include <libcellml>
 
 /**
@@ -107,8 +104,6 @@ TEST(ComponentImport, singleImportB) {
 
 TEST(ComponentImport, multipleImport) {
 
-    LIBXML_TEST_VERSION;
-
     const std::string e1 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -163,54 +158,7 @@ TEST(ComponentImport, multipleImport) {
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
-    xmlDocPtr doc;
-    doc = xmlReadMemory(a.c_str(), a.length(), "unnamed.xml", NULL, 0);
-    EXPECT_NE(nullptr, doc);
-
-    xmlChar *result = NULL;
-    int ret, exclusive = 1, with_comments = 1;
-
-    ret = xmlC14NDocDumpMemory(doc,
-            nullptr,
-            exclusive, nullptr /*inclusive_namespaces*/,
-            with_comments, &result);
-    xmlFreeDoc(doc);
-
-    EXPECT_GT(ret, 0);
-    EXPECT_NE(nullptr, result);
-
-    std::string can_a(reinterpret_cast<char*>(result), xmlStrlen(result));
-    xmlFree(result);
-
-    doc = xmlReadMemory(e1.c_str(), e1.length(), "unnamed.xml", NULL, 0);
-    ret = xmlC14NDocDumpMemory(doc,
-            nullptr,
-            exclusive, nullptr /*inclusive_namespaces*/,
-            with_comments, &result);
-    xmlFreeDoc(doc);
-
-    EXPECT_GT(ret, 0);
-    EXPECT_NE(nullptr, result);
-
-    std::string can_e1(reinterpret_cast<char *>(result), xmlStrlen(result));
-    xmlFree(result);
-
-    doc = xmlReadMemory(e2.c_str(), e2.length(), "unnamed.xml", NULL, 0);
-    ret = xmlC14NDocDumpMemory(doc,
-            nullptr,
-            exclusive, nullptr /*inclusive_namespaces*/,
-            with_comments, &result);
-    xmlFreeDoc(doc);
-
-    EXPECT_GT(ret, 0);
-    EXPECT_NE(nullptr, result);
-
-    std::string can_e2(reinterpret_cast<char *>(result), xmlStrlen(result));
-    xmlFree(result);
-
-    EXPECT_TRUE((can_e1 == can_a) || (can_e2 == can_a));
-
-    xmlCleanupParser();
+    EXPECT_TRUE((e1 == a) || (e2 == a));
 }
 
 TEST(ComponentImport, hierarchicalImport) {
