@@ -99,18 +99,35 @@ TEST(ComponentImport, singleImportB) {
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
 
 TEST(ComponentImport, multipleImport) {
-    const std::string e =
+
+    const std::string e1 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
-                "<import xlink:href=\"some-other-model.xml\" "
-                        "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                     "<component component_ref=\"cc1\" "
-                                "name=\"c3\"/>"
-                "</import>"
+            "<import xlink:href=\"some-other-model.xml\" "
+                    "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                 "<component component_ref=\"cc1\" "
+                            "name=\"c1\"/>"
+                 "<component component_ref=\"cc2\" "
+                            "name=\"c2\"/>"
+            "</import>"
+            "<import xlink:href=\"some-other-model.xml\" "
+                    "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                 "<component component_ref=\"cc1\" "
+                            "name=\"c3\"/>"
+            "</import>"
+            "</model>";
+    const std::string e2 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<import xlink:href=\"some-other-model.xml\" "
+                    "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                 "<component component_ref=\"cc1\" "
+                            "name=\"c3\"/>"
+            "</import>"
             "<import xlink:href=\"some-other-model.xml\" "
                     "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
                  "<component component_ref=\"cc1\" "
@@ -119,6 +136,7 @@ TEST(ComponentImport, multipleImport) {
                             "name=\"c2\"/>"
             "</import>"
             "</model>";
+
     libcellml::Model m;
     libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
     imp->setSource("some-other-model.xml");
@@ -140,7 +158,7 @@ TEST(ComponentImport, multipleImport) {
 
     std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    EXPECT_TRUE((e1 == a) || (e2 == a));
 }
 
 TEST(ComponentImport, hierarchicalImport) {
