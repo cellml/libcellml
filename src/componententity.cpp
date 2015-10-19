@@ -25,8 +25,8 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The private implementation for the Component class.
- * This struct is the private implementation struct for the Component class.  Separating
+ * @brief The private implementation for the ComponentEntity class.
+ * This struct is the private implementation struct for the ComponentEntity class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
  */
@@ -54,15 +54,22 @@ ComponentEntity::~ComponentEntity()
 }
 
 ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
-    : NamedEntity(rhs)
+    : ImportedEntity(rhs)
     , mPimpl(new ComponentEntityImpl())
 {
     mPimpl->mComponents = rhs.mPimpl->mComponents;
 }
 
+ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
+    : ImportedEntity(std::move(rhs))
+    , mPimpl(rhs.mPimpl)
+{
+    rhs.mPimpl = nullptr;
+}
+
 ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
 {
-    NamedEntity::operator= (c);
+    ImportedEntity::operator= (c);
     c.swap(*this);
     return *this;
 }
@@ -72,19 +79,15 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
-    : NamedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
-{
-    rhs.mPimpl = nullptr;
-}
-
 std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) const
 {
     const std::string encaps_tag = "<encapsulation>";
     const std::string encaps_end_tag = "</encapsulation>";
     std::string repr = "";
     if (format == CELLML_FORMAT_XML) {
+        if (isImport()) {
+            return repr;
+        }
         repr += "<component";
         std::string componentName = getName();
         if (componentName.length()) {
@@ -93,7 +96,7 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
         repr += "/>";
         std::string encaps = "";
         if (mPimpl->mComponents.size()) {
-            encaps += "<encapsulation>";
+            encaps += encaps_tag;
             encaps += "<component_ref";
             if (componentName.length()) {
                 encaps += " component=\"" + componentName + "\"";
@@ -122,7 +125,7 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
         }
 
         if(mPimpl->mComponents.size()) {
-            encaps += "</component_ref></encapsulation>";
+            encaps += "</component_ref>" + encaps_end_tag;
         }
 
         repr += encaps;
@@ -133,6 +136,11 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
 }
 
 void ComponentEntity::addComponent(const ComponentPtr &c)
+{
+    doAddComponent(c);
+}
+
+void ComponentEntity::doAddComponent(const ComponentPtr &c)
 {
     mPimpl->mComponents.push_back(c);
 }

@@ -21,9 +21,11 @@ limitations under the License.Some license of other
 
 namespace libcellml {
 
-class Model; /**< Forward declaraion of Model class. */
+class Model; /**< Forward declaration of Model class. */
 class Component; /**< Forward declaration of Component class. */
 typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
+class Import; /**< Forward declaration of Import class. */
+typedef std::shared_ptr<Import> ImportPtr; /**< Type definition for shared import pointer. */
 
 }
 

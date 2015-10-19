@@ -88,6 +88,8 @@ class BackTrace:
             if frame.func:
                 if "libcellml" in frame.func:
                     is_interesting = True
+                elif "::TestBody" in frame.func:
+                    is_interesting = True
             if frame.sfile:
                 if frame.sfile.find("-test.cpp") != -1:
                     is_interesting = True

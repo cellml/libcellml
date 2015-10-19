@@ -18,7 +18,7 @@ limitations under the License.Some license of other
 #define LIBCELLML_LIBCELLML_COMPONENTENTITY_H
 
 #include <libcellml/libcellml_export.h>
-#include <libcellml/namedentity.h>
+#include <libcellml/importedentity.h>
 #include <libcellml/types.h>
 
 namespace libcellml {
@@ -28,7 +28,7 @@ class Component;
  * @brief The ComponentEntity class
  * The interface class for managing Components.
  */
-class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
+class LIBCELLML_EXPORT ComponentEntity: public ImportedEntity
 {
 public:
     /**
@@ -175,9 +175,19 @@ public:
      */
     size_t componentCount() const;
 
+protected:
+
+    /**
+     * @brief Virtual add component method to be implemented by derived classes.
+     * Virtual addComponent method to allow the model and component classes to
+     * implement their own versions.
+     * @param c The ComponentPtr to add to the list of components.
+     */
+    virtual void doAddComponent(const ComponentPtr &c);
+
 private:
     std::string doSerialisation(CELLML_FORMATS format) const;
-    void swap(ComponentEntity &rhs);
+    void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
     ComponentEntityImpl* mPimpl; /**< Private member to implementation pointer */
