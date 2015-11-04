@@ -37,6 +37,7 @@ Use-cases for libCellML
       a. import a component from a model
       #. import two components from the same model as separate components
       #. import a component into a hierarchy
+      #. import a component from a not-existent URL
 
    #. a model with units
 
