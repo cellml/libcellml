@@ -34,9 +34,10 @@ Use-cases for libCellML
 
    #. a model with imported components
 
-      a. import the component from model *1.iv.a*
-      #. import the component from model *1.iv.b*
-      #. import a component from a non-existing URL
+      a. import a component from a model
+      #. import two components from the same model as separate components
+      #. import a component into a hierarchy
+      #. import a component from a non-existent URL
 
    #. a model with units
 
@@ -73,14 +74,22 @@ Use-cases for libCellML
    
       a. … to be added to ...
    
-#. **Load and validate:** Load each of the models and validate them (the test is that the models are correctly identified as valid or invalid, and for the case when they are invalid the correct reason is given)
+#. **Load:** Load each of the models from 1 (new models can be added for this part if required).
+
+   #. a model with imported components
+
+      a. a single component
+      #. a component with a hierarchy
+      #. a component from a non-existent URL
    
-#. **Modify:** Modify each of the models from 1.
+#. **Modify:** Modify models (at least those models from 1 and 2).
 
    i. add {components, units, maths, variables, connections}
    #. remove {components, units, maths, variables, connections}
    #. update {components, units, maths, model attributes, variables, connections}
-   
+
+#. **Validate:**  Create, load, and modify models and then validate them (the test is that the models are correctly identified as valid or invalid, and for the case when they are invalid the correct reason is given, covering each rule in the specification). 
+
 #. Import CellML 1.0/1.1 models
 
 #. Export CellML 1.1 (and by extension CellML 1.0)
