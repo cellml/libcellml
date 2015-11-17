@@ -80,7 +80,7 @@ public:
      * @param name The name of the Component to test for existence in the Component.
      * @return @c true if the named Component is in the model and @c false otherwise.
      */
-    bool containsComponent(const std::string &name);
+    bool containsComponent(const std::string &name) const;
 
     /**
      * @brief Get a component at index.

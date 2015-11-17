@@ -169,7 +169,7 @@ size_t ComponentEntity::componentCount() const
     return mPimpl->mComponents.size();
 }
 
-bool ComponentEntity::containsComponent(const std::string &name)
+bool ComponentEntity::containsComponent(const std::string &name) const
 {
     auto result = mPimpl->findComponent(name);
     return result != mPimpl->mComponents.end();
