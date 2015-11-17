@@ -45,7 +45,7 @@ Use-cases for libCellML
       #. a single base units with an invalid name
       #. a units which defines micro-Ampere * Kelvin / milli-siemens
       #. the units from *1.ix.a* and *1.ix.c* and multiplies them
-	  #. create a new base units e.g. 'pH'
+      #. create a new base units e.g. 'pH'
 
    #. a model with imported units
 
