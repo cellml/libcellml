@@ -14,5 +14,5 @@ This document simply outlines some of the rationale that has an influence on how
   
  - Serialise and Deserialise from a string
  - Present a useful interface not tied to XML structure
- - Validation is going to be quite a separate (you are free to make invalid CellML models)
+ - Validation is going to be quite separate (you are free to make invalid CellML models)
 
