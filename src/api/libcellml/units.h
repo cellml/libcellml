@@ -57,30 +57,30 @@ public:
     /**
      * @brief Add a unit to this Units.
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * scale, and offset.
+     * multiplier and offset.
      * @param units The name of the unit to add.
      * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
      * @param exponent The exponent.
-     * @param scale The scale.
+     * @param multiplier The multiplier.
      * @param offset The offset.
      */
     void addUnit(const std::string &units, CELLML_PREFIXES prefix, double exponent,
-                 double scale=1.0, double offset=0.0);
+                 double multiplier=1.0, double offset=0.0);
 
     /**
      * @brief Add a unit to this Units.
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * scale, and offset.
+     * multiplier and offset.
      *
      * @overload
      * @param units The enum representing the unit to add.
      * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
      * @param exponent The exponent.
-     * @param scale The scale.
+     * @param multiplier The multiplier.
      * @param offset The offset.
      */
     void addUnit(CELLML_STANDARD_UNITS units, CELLML_PREFIXES prefix, double exponent,
-                 double scale=1.0, double offset=0.0);
+                 double multiplier=1.0, double offset=0.0);
 
     /**
      * @brief Add a unit to this Units.

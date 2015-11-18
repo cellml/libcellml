@@ -71,13 +71,13 @@ void Units::setBaseUnit(bool /* state */)
 }
 
 void Units::addUnit(const std::string & /* units */, CELLML_PREFIXES /* prefix */, double /* exponent */,
-             double /* scale */, double /* offset */)
+             double /* multiplier */, double /* offset */)
 {
 
 }
 
 void Units::addUnit(CELLML_STANDARD_UNITS /* units */, CELLML_PREFIXES /* prefix */, double /* exponent */,
-             double /* scale */, double /* offset */)
+             double /* multiplier */, double /* offset */)
 {
 
 }

@@ -100,7 +100,7 @@ TEST(Units, compound_units_enum) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
-            "<units name=\"compount_unit\">"
+            "<units name=\"compound_unit\">"
             "<unit prefix=\"micro\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
             "<unit exponent=\"-1.0\" prefix=\"milli\" units=\"siemens\""

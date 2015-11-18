@@ -33,7 +33,7 @@ enum CELLML_FORMATS
 
 /**
  * @brief The CELLML_PREFIXES enum.
- * Enum dexcribing the prefixes that are available for
+ * Enum describing the prefixes that are available for
  * units.
  */
 enum CELLML_PREFIXES
