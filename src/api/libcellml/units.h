@@ -26,6 +26,50 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
+ * @brief The STANDARD_UNITS.
+ * Strings describing the standard units that are suitable for variable declarations
+ * or attached to bare numbers in mathematics.  The list of strings comprises of
+ * the SI base units, the SI derived units with special names and symbols, and
+ * some additional units commonly used in the types of biological models likely
+ * to be defined using CellML.
+ */
+
+const std::string STANDARD_UNIT_AMPERE = "ampere"; /**< Base SI unit ampere. */
+const std::string STANDARD_UNIT_BECQUEREL = "becquerel"; /**< Derived SI unit becquerel. */
+const std::string STANDARD_UNIT_CANDELA = "candela"; /**< Base SI unit candela. */
+const std::string STANDARD_UNIT_CELSIUS = "celsius"; /**< Derived SI unit celsius. */
+const std::string STANDARD_UNIT_COULOMB = "coulomb"; /**< Derived SI unit coulomb. */
+const std::string STANDARD_UNIT_DIMENSIONLESS = "dimensionless"; /**< Convenience unit dimensionless. */
+const std::string STANDARD_UNIT_FARAD = "farad"; /**< Derived SI unit farad. */
+const std::string STANDARD_UNIT_GRAM = "gram"; /**< Convenience unit gram. */
+const std::string STANDARD_UNIT_GRAY = "gray"; /**< Derived SI unit gray. */
+const std::string STANDARD_UNIT_HENRY = "henry"; /**< Derived SI unit henry. */
+const std::string STANDARD_UNIT_HERTZ = "hertz"; /**< Derived SI unit hertz. */
+const std::string STANDARD_UNIT_JOULE = "joule"; /**< Derived SI unit joule. */
+const std::string STANDARD_UNIT_KATAL = "katal"; /**< Derived SI unit katal. */
+const std::string STANDARD_UNIT_KELVIN = "kelvin"; /**< Base SI unit kelvin. */
+const std::string STANDARD_UNIT_KILOGRAM = "kilogram"; /**< Base SI unit kilogram. */
+const std::string STANDARD_UNIT_LITER = "liter"; /**< Convenience unit liter (alternative spelling). */
+const std::string STANDARD_UNIT_LITRE = "litre"; /**< Convenience unit litre. */
+const std::string STANDARD_UNIT_LUMEN = "lumen"; /**< Derived SI unit lumen. */
+const std::string STANDARD_UNIT_LUX = "lux"; /**< Derived SI unit lux. */
+const std::string STANDARD_UNIT_METER = "meter"; /**< Base SI unit meter. */
+const std::string STANDARD_UNIT_METRE = "metre"; /**< Base SI unit metre (alternative spelling). */
+const std::string STANDARD_UNIT_MOLE = "mole"; /**< Base SI unit mole. */
+const std::string STANDARD_UNIT_NEWTON = "newton"; /**< Derived SI unit newton. */
+const std::string STANDARD_UNIT_OHM = "ohm"; /**< Derived SI unit ohm. */
+const std::string STANDARD_UNIT_PASCAL = "pascal"; /**< Derived SI unit pascal. */
+const std::string STANDARD_UNIT_RADIAN = "radian"; /**< Derived SI unit radian. */
+const std::string STANDARD_UNIT_SECOND = "second"; /**< Base SI unit second. */
+const std::string STANDARD_UNIT_SIEMENS = "siemens"; /**< Derived SI unit siemens. */
+const std::string STANDARD_UNIT_SIEVERT = "sievert"; /**< Derived SI unit sievert. */
+const std::string STANDARD_UNIT_STERADIAN = "steradian"; /**< Derived SI unit steradian. */
+const std::string STANDARD_UNIT_TESLA = "tesla"; /**< Derived SI unit tesla. */
+const std::string STANDARD_UNIT_VOLT = "volt"; /**< Derived SI unit volt. */
+const std::string STANDARD_UNIT_WATT = "watt"; /**< Derived SI unit watt. */
+const std::string STANDARD_UNIT_WEBER = "weber"; /**< Derived SI unit weber. */
+
+/**
  * @brief The Units class.
  * Class for Units.
  */
@@ -69,21 +113,6 @@ public:
 
     /**
      * @brief Add a unit to this Units.
-     * Add a unit as a child of this Units.  This method takes optional arguments
-     * multiplier and offset.
-     *
-     * @overload
-     * @param units The enum representing the unit to add.
-     * @param prefix The prefix for the unit, one of PREFIXES.
-     * @param exponent The exponent.
-     * @param multiplier The multiplier.
-     * @param offset The offset.
-     */
-    void addUnit(STANDARD_UNITS units, PREFIXES prefix, double exponent,
-                 double multiplier=1.0, double offset=0.0);
-
-    /**
-     * @brief Add a unit to this Units.
      * Add a unit as a child of this Units. This variant takes the units name
      * and prefix only.
      *
@@ -92,17 +121,6 @@ public:
      * @param prefix The prefix for the unit, one of PREFIXES.
      */
     void addUnit(const std::string &units, PREFIXES prefix);
-
-    /**
-     * @brief Add a unit to this Units.
-     * Add a unit as a child of this Units. This variant takes the units name
-     * specified as an enum and a prefix only.
-     *
-     * @overload
-     * @param units The enum representing the unit to add.
-     * @param prefix The prefix for the unit, one of PREFIXES.
-     */
-    void addUnit(STANDARD_UNITS units, PREFIXES prefix);
 
     /**
      * @brief Add a unit to this Units.
@@ -117,33 +135,12 @@ public:
 
     /**
      * @brief Add a unit to this Units.
-     * Add a unit as a child of this Units. This variant takes the units
-     * name specified with an enum and an exponent.
-     *
-     * @overload
-     * @param units The enum representing the unit to add.
-     * @param exponent The exponent for the unit.
-     */
-    void addUnit(STANDARD_UNITS units, double exponent);
-
-    /**
-     * @brief Add a unit to this Units.
      * Add a unit as a child of this Units, this variant specified with only a name.
      *
      * @overload
      * @param units The name of the unit to add.
      */
     void addUnit(const std::string &units);
-
-    /**
-     * @brief Add a unit to this Units.
-     * Add a unit as a child of this Units, this variant specified with only an enum
-     * representing the name.
-     *
-     * @overload
-     * @param units The enum representing the unit to add.
-     */
-    void addUnit(STANDARD_UNITS units);
 
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */

@@ -76,18 +76,7 @@ void Units::addUnit(const std::string & /* units */, PREFIXES /* prefix */, doub
 
 }
 
-void Units::addUnit(STANDARD_UNITS /* units */, PREFIXES /* prefix */, double /* exponent */,
-             double /* multiplier */, double /* offset */)
-{
-
-}
-
 void Units::addUnit(const std::string & /* units */, PREFIXES /* prefix */)
-{
-
-}
-
-void Units::addUnit(STANDARD_UNITS /* units */, PREFIXES /* prefix */)
 {
 
 }
@@ -97,20 +86,9 @@ void Units::addUnit(const std::string & /*units */, double /* exponent */)
 
 }
 
-void Units::addUnit(STANDARD_UNITS /*units */, double /* exponent */)
-{
-
-}
-
 void Units::addUnit(const std::string & /* units */)
 {
 
 }
-
-void Units::addUnit(STANDARD_UNITS /* units */)
-{
-
-}
-
 
 }
