@@ -44,17 +44,18 @@ Use-cases for libCellML
       a. a single base units with valid name
       #. a single base units with an invalid name
       #. a units which defines micro-Ampere * Kelvin / milli-siemens
-      #. the units from *1.viii.a* and *1.viii.c* and multiplies them
+      #. the units from *1.ix.a* and *1.ix.c* and multiplies them
+      #. create a new base units e.g. 'pH'
 
    #. a model with imported units
 
-      a. import the units from model *1.viii.c*
+      a. import a units from a model
 
          #. with a valid name
          #. with an invalid name
 
-      #. import a units from a non-existing URL
-      #. import the units from model *1.viii.d* and scale it by a factor of 1000
+      #. import a units from a non-existent URL
+      #. import a units from a model and scale it, prefix it, offset it, exponentise it
       
    #. a model with variables
    
