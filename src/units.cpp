@@ -60,4 +60,57 @@ void Units::swap(Units &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
+bool Units::isBaseUnit() const
+{
+    return false;
+}
+
+void Units::setBaseUnit(bool /* state */)
+{
+
+}
+
+void Units::addUnit(const std::string & /* units */, CELLML_PREFIXES /* prefix */, double /* exponent */,
+             double /* scale */, double /* offset */)
+{
+
+}
+
+void Units::addUnit(CELLML_STANDARD_UNITS /* units */, CELLML_PREFIXES /* prefix */, double /* exponent */,
+             double /* scale */, double /* offset */)
+{
+
+}
+
+void Units::addUnit(const std::string & /* units */, CELLML_PREFIXES /* prefix */)
+{
+
+}
+
+void Units::addUnit(CELLML_STANDARD_UNITS /* units */, CELLML_PREFIXES /* prefix */)
+{
+
+}
+
+void Units::addUnit(const std::string & /*units */, double /* exponent */)
+{
+
+}
+
+void Units::addUnit(CELLML_STANDARD_UNITS /*units */, double /* exponent */)
+{
+
+}
+
+void Units::addUnit(const std::string & /* units */)
+{
+
+}
+
+void Units::addUnit(CELLML_STANDARD_UNITS /* units */)
+{
+
+}
+
+
 }

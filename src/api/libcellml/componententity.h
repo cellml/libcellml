@@ -47,8 +47,15 @@ public:
     ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
-     * @brief Add a child component to this component.
-     * Add a copy of the given component as a child component of this component.
+     * @brief Add a child Units to this component entity.
+     * Add a copy of the given Units u as a child units of this component entity.
+     * @param u The Units to add.
+     */
+    void addUnits(const UnitsPtr &u);
+
+    /**
+     * @brief Add a child component to this component entity.
+     * Add a copy of the given component as a child component of this component entity.
      * @param c The component to add.
      */
     void addComponent(const ComponentPtr &c);
@@ -67,7 +74,7 @@ public:
      * Remove the first component found that matches the name @p name.  If the
      * name is not found no component is removed.
      *
-     * This is an overloaded method.
+     * @overload
      * @param name The name of the component to remove.
      */
     void removeComponent(const std::string &name);
@@ -87,7 +94,6 @@ public:
      * Returns a const reference to a component at the index @p index.  If the
      * index is not valid a std::out_of_range exception is thrown.
      *
-     * This is an overloaded method.
      * @param index The index of the Component to return (zero-based).
      * @return A const reference to the Component at the given index.
      */
@@ -98,7 +104,7 @@ public:
      * Returns a reference to a component at the index @p index.  If the index
      * is not valid a std::out_of_range exception is thrown.
      *
-     * This is an overloaded method.
+     * @overload
      * @param index The index of the Component to return (zero-based).
      * @return A reference to the Component at the given index.
      */
@@ -109,7 +115,7 @@ public:
      * Returns a const reference to a component with the name @p name.  If the
      * name is not valid a std::out_of_range exception is thrown.
      *
-     * This is an overloaded method.
+     * @overload
      * @param name The name of the Component to return.
      * @return A const reference to the Component with the given name.
      */
@@ -120,7 +126,7 @@ public:
      * Returns a reference to a component with the name @p name.  If the name
      * is not valid a std::out_of_range exception is thrown.
      *
-     * This is an overloaded method.
+     * @overload
      * @param name The name of the Component to return.
      * @return A reference to the Component with the given name.
      */
@@ -142,7 +148,7 @@ public:
      * If an invalid name is passed to the method a std::out_of_range
      * exception is thrown.
      *
-     * This is an overloaded method.
+     * @overload
      * @param name The name of the Component to take.
      * @return The Component identified with the given name.
      */
@@ -162,7 +168,7 @@ public:
      * Replaces the component with the given name @p name with @p c.  Name must be a valid name
      * of a component in the Component, if it isn't a std::out_of_range exception is thrown.
      *
-     * This is an overloaded method.
+     * @overload
      * @param name The name of the Component to replace.
      * @param c The Component to use for replacement.
      */

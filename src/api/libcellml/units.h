@@ -38,6 +38,113 @@ public:
     Units(Units &&rhs); /**< Move constructor */
     Units& operator=(Units n); /**< Assignment operator */
 
+    /**
+     * @brief Test to determine if Units is a base unit.
+     * Test to determine if Units is a base unit, return True if it is
+     * a base unit and False otherwise.
+     * @return True if Units is a base unit, False otherwise.
+     */
+    bool isBaseUnit() const;
+
+    /**
+     * @brief Set whether this unit is a base unit or not.
+     * Set the base unit flag to signify whether this Units is a base unit
+     * or not.  This flag cannot be set if this Units is a compound unit.
+     * @param state boolean value to set the base unit flag to.
+     */
+    void setBaseUnit(bool state=true);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units.  This method takes optional arguments
+     * scale, and offset.
+     * @param units The name of the unit to add.
+     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     * @param exponent The exponent.
+     * @param scale The scale.
+     * @param offset The offset.
+     */
+    void addUnit(const std::string &units, CELLML_PREFIXES prefix, double exponent,
+                 double scale=1.0, double offset=0.0);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units.  This method takes optional arguments
+     * scale, and offset.
+     *
+     * @overload
+     * @param units The enum representing the unit to add.
+     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     * @param exponent The exponent.
+     * @param scale The scale.
+     * @param offset The offset.
+     */
+    void addUnit(CELLML_STANDARD_UNITS units, CELLML_PREFIXES prefix, double exponent,
+                 double scale=1.0, double offset=0.0);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units. This variant takes the units name
+     * and prefix only.
+     *
+     * @overload
+     * @param units The name of the unit to add.
+     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     */
+    void addUnit(const std::string &units, CELLML_PREFIXES prefix);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units. This variant takes the units name
+     * specified as an enum and a prefix only.
+     *
+     * @overload
+     * @param units The enum representing the unit to add.
+     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     */
+    void addUnit(CELLML_STANDARD_UNITS units, CELLML_PREFIXES prefix);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units. This variant takes the units name
+     * and an exponent only.
+     *
+     * @overload
+     * @param units The name of the unit to add.
+     * @param exponent The exponent for the unit.
+     */
+    void addUnit(const std::string &units, double exponent);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units. This variant takes the units
+     * name specified with an enum and an exponent.
+     *
+     * @overload
+     * @param units The enum representing the unit to add.
+     * @param exponent The exponent for the unit.
+     */
+    void addUnit(CELLML_STANDARD_UNITS units, double exponent);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units, this variant specified with only a name.
+     *
+     * @overload
+     * @param units The name of the unit to add.
+     */
+    void addUnit(const std::string &units);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units, this variant specified with only an enum
+     * representing the name.
+     *
+     * @overload
+     * @param units The enum representing the unit to add.
+     */
+    void addUnit(CELLML_STANDARD_UNITS units);
+
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
 

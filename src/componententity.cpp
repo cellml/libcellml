@@ -135,6 +135,11 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
     return repr;
 }
 
+void ComponentEntity::addUnits(const UnitsPtr & /* u */)
+{
+
+}
+
 void ComponentEntity::addComponent(const ComponentPtr &c)
 {
     doAddComponent(c);

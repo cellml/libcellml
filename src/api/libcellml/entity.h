@@ -56,7 +56,6 @@ public:
      * @brief setParent sets the model as the parent of this entity.
      * Set the parent of the entity to the model given.
      *
-     * @overload
      * @param parent A raw pointer to a cellml::Model.
      */
     void setParent(Model *parent);
