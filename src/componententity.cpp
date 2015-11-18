@@ -79,12 +79,12 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) const
+std::string ComponentEntity::doSerialisation(libcellml::FORMATS format) const
 {
     const std::string encaps_tag = "<encapsulation>";
     const std::string encaps_end_tag = "</encapsulation>";
     std::string repr = "";
-    if (format == CELLML_FORMAT_XML) {
+    if (format == FORMAT_XML) {
         if (isImport()) {
             return repr;
         }

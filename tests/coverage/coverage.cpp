@@ -32,7 +32,7 @@ TEST(Coverage, import) {
     // Copy constructor
     libcellml::Import ic(im);
 
-    EXPECT_EQ(e, ic.serialise(libcellml::CELLML_FORMAT_XML));
+    EXPECT_EQ(e, ic.serialise(libcellml::FORMAT_XML));
 }
 
 TEST(Coverage, entity) {
@@ -40,7 +40,7 @@ TEST(Coverage, entity) {
 
     libcellml::Entity e, em;
 
-    EXPECT_EQ(ex, e.serialise(libcellml::CELLML_FORMAT_XML));
+    EXPECT_EQ(ex, e.serialise(libcellml::FORMAT_XML));
     em = std::move(e);
 
     libcellml::Model m;

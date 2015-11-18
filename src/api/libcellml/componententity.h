@@ -192,7 +192,7 @@ protected:
     virtual void doAddComponent(const ComponentPtr &c);
 
 private:
-    std::string doSerialisation(CELLML_FORMATS format) const;
+    std::string doSerialisation(FORMATS format) const;
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */

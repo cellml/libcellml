@@ -22,7 +22,7 @@ limitations under the License.Some license of other
 TEST(Model, serialise) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
     libcellml::Model m;
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
 
    EXPECT_EQ(e, a);
 }
@@ -30,7 +30,7 @@ TEST(Model, serialise) {
 TEST(Model, serialise_p) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"></model>";
     libcellml::Model* m = new libcellml::Model();
-    std::string a = m->serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m->serialise(libcellml::FORMAT_XML);
 
    EXPECT_EQ(e, a);
    delete m;
@@ -45,7 +45,7 @@ TEST(Model, name) {
 
     EXPECT_EQ("name", m.getName());
 
-    EXPECT_EQ(e, m.serialise(libcellml::CELLML_FORMAT_XML));
+    EXPECT_EQ(e, m.serialise(libcellml::FORMAT_XML));
 }
 
 TEST(Model, unset_name) {
@@ -56,11 +56,11 @@ TEST(Model, unset_name) {
     libcellml::Model m;
     m.setName(n);
     EXPECT_EQ("name", m.getName());
-    EXPECT_EQ(eName, m.serialise(libcellml::CELLML_FORMAT_XML));
+    EXPECT_EQ(eName, m.serialise(libcellml::FORMAT_XML));
 
     m.setName("");
     EXPECT_EQ("", m.getName());
-    EXPECT_EQ(e, m.serialise(libcellml::CELLML_FORMAT_XML));
+    EXPECT_EQ(e, m.serialise(libcellml::FORMAT_XML));
 }
 
 TEST(Model, invalid_name) {
@@ -72,7 +72,7 @@ TEST(Model, invalid_name) {
 
     EXPECT_EQ("invalid name", m.getName());
 
-    EXPECT_EQ(e, m.serialise(libcellml::CELLML_FORMAT_XML));
+    EXPECT_EQ(e, m.serialise(libcellml::FORMAT_XML));
 }
 
 TEST(Model, add_component) {
@@ -80,7 +80,7 @@ TEST(Model, add_component) {
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
 
     EXPECT_EQ(e, a);
 }
@@ -92,7 +92,7 @@ TEST(Model, add_valid_component) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
 
     EXPECT_EQ(e, a);
 }
@@ -104,7 +104,7 @@ TEST(Model, add_invalid_component) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
 
     EXPECT_EQ(e, a);
 }
@@ -122,7 +122,7 @@ TEST(Model, add_components) {
     // once the component is added, we should be able to change the handle to the component and have those changes
     // reflected in the model? Yes we are using shared pointers.
     c2->setName(name2); // so should this give an error? Nope
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
 
     EXPECT_EQ(e, a);
 }
@@ -168,7 +168,7 @@ TEST(Model, remove) {
 
     m.removeComponent(0);
     EXPECT_EQ(1, m.componentCount());
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e1, a);
     EXPECT_THROW(m.removeComponent(1), std::out_of_range);
 
@@ -177,7 +177,7 @@ TEST(Model, remove) {
     // Remove the first occurence of "child1".
     m.removeComponent("child1");
     EXPECT_EQ(2, m.componentCount());
-    a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e2, a);
     EXPECT_THROW(m.removeComponent("child3"), std::out_of_range);
 }
@@ -192,7 +192,7 @@ TEST(Model, getcomponent) {
     libcellml::ComponentPtr cA = m.getComponent(0);
     cA->setName("childA");
 
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 
     // Using const version of overloaded method
@@ -225,7 +225,7 @@ TEST(Model, take) {
     EXPECT_EQ(0, m.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 
     EXPECT_THROW(m.takeComponent("child4"), std::out_of_range);
@@ -323,20 +323,20 @@ TEST(Model, replace) {
     m.addComponent(c1);
     m.addComponent(c2);
 
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e_orig, a);
     EXPECT_THROW(m.replaceComponent(5, c3), std::out_of_range);
 
     m.replaceComponent(1, c3);
 
-    a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e_after, a);
 
     EXPECT_THROW(m.replaceComponent("child5", c4), std::out_of_range);
 
     m.replaceComponent("child1", c4);
 
-    a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e_post, a);
 }
 
@@ -345,7 +345,7 @@ TEST(Model, constructors) {
     libcellml::Model m, m1, m2;
     m.setName(n);
     m.addComponent(std::make_shared<libcellml::Component>());
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
 
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"my_name\"><component/></model>";
     EXPECT_EQ(e, a);

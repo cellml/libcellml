@@ -43,7 +43,7 @@ public:
      * @param format The format to serialise the object to.
      * @return std::string representation of the object.
      */
-    std::string serialise(libcellml::CELLML_FORMATS format) const;
+    std::string serialise(libcellml::FORMATS format) const;
 
     /**
      * @brief getParent returns the parent of the CellML Entity.
@@ -94,7 +94,7 @@ private:
      * @param format The format to serialise the object to.
      * @return std::string representation of the object.
      */
-    virtual std::string doSerialisation(libcellml::CELLML_FORMATS format) const;
+    virtual std::string doSerialisation(libcellml::FORMATS format) const;
 
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 

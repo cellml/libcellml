@@ -59,12 +59,12 @@ public:
      * Add a unit as a child of this Units.  This method takes optional arguments
      * multiplier and offset.
      * @param units The name of the unit to add.
-     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     * @param prefix The prefix for the unit, one of PREFIXES.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &units, CELLML_PREFIXES prefix, double exponent,
+    void addUnit(const std::string &units, PREFIXES prefix, double exponent,
                  double multiplier=1.0, double offset=0.0);
 
     /**
@@ -74,12 +74,12 @@ public:
      *
      * @overload
      * @param units The enum representing the unit to add.
-     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     * @param prefix The prefix for the unit, one of PREFIXES.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(CELLML_STANDARD_UNITS units, CELLML_PREFIXES prefix, double exponent,
+    void addUnit(STANDARD_UNITS units, PREFIXES prefix, double exponent,
                  double multiplier=1.0, double offset=0.0);
 
     /**
@@ -89,9 +89,9 @@ public:
      *
      * @overload
      * @param units The name of the unit to add.
-     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     * @param prefix The prefix for the unit, one of PREFIXES.
      */
-    void addUnit(const std::string &units, CELLML_PREFIXES prefix);
+    void addUnit(const std::string &units, PREFIXES prefix);
 
     /**
      * @brief Add a unit to this Units.
@@ -100,9 +100,9 @@ public:
      *
      * @overload
      * @param units The enum representing the unit to add.
-     * @param prefix The prefix for the unit, one of CELLML_PREFIXES.
+     * @param prefix The prefix for the unit, one of PREFIXES.
      */
-    void addUnit(CELLML_STANDARD_UNITS units, CELLML_PREFIXES prefix);
+    void addUnit(STANDARD_UNITS units, PREFIXES prefix);
 
     /**
      * @brief Add a unit to this Units.
@@ -124,7 +124,7 @@ public:
      * @param units The enum representing the unit to add.
      * @param exponent The exponent for the unit.
      */
-    void addUnit(CELLML_STANDARD_UNITS units, double exponent);
+    void addUnit(STANDARD_UNITS units, double exponent);
 
     /**
      * @brief Add a unit to this Units.
@@ -143,7 +143,7 @@ public:
      * @overload
      * @param units The enum representing the unit to add.
      */
-    void addUnit(CELLML_STANDARD_UNITS units);
+    void addUnit(STANDARD_UNITS units);
 
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */

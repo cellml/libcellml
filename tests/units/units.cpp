@@ -22,7 +22,7 @@ limitations under the License.Some license of other
 TEST(Units, serialise) {
     const std::string e = "<units/>";
     libcellml::Units u;
-    std::string a = u.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = u.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
@@ -49,7 +49,7 @@ TEST(Units, valid_name) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", u->getName());
 }
@@ -69,7 +69,7 @@ TEST(Units, invalid_name) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
 }
@@ -88,11 +88,11 @@ TEST(Units, compound_units_string) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit("ampere", libcellml::CELLML_PREFIX_MICRO);
+    u->addUnit("ampere", libcellml::PREFIX_MICRO);
     u->addUnit("kelvin");
-    u->addUnit("siemens", libcellml::CELLML_PREFIX_MILLI, -1.0);
+    u->addUnit("siemens", libcellml::PREFIX_MILLI, -1.0);
 
-    std::string a = u->serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = u->serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
@@ -110,11 +110,11 @@ TEST(Units, compound_units_enum) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::CELLML_STANDARD_UNIT_AMPERE, libcellml::CELLML_PREFIX_MICRO);
-    u->addUnit(libcellml::CELLML_STANDARD_UNIT_KELVIN);
-    u->addUnit(libcellml::CELLML_STANDARD_UNIT_SIEMENS, libcellml::CELLML_PREFIX_MILLI, -1.0);
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::PREFIX_MICRO);
+    u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
+    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::PREFIX_MILLI, -1.0);
 
-    std::string a = u->serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = u->serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
@@ -133,7 +133,7 @@ TEST(Units, new_base_unit) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->getName());
 }
@@ -153,10 +153,10 @@ TEST(Units, farhenheit) {
     u->setName("farhenheit");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::CELLML_STANDARD_UNIT_CELSIUS, libcellml::CELLML_PREFIX_UNIT, 1.0, 1.8, 32.0);
+    u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, libcellml::PREFIX_UNIT, 1.0, 1.8, 32.0);
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::CELLML_FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("farhenheit", u->getName());
 }

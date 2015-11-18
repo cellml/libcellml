@@ -57,12 +57,12 @@ void Entity::swap(Entity &rhs)
     std::swap(this->mParentModel, rhs.mParentModel);
 }
 
-std::string Entity::doSerialisation(libcellml::CELLML_FORMATS /* format */) const
+std::string Entity::doSerialisation(libcellml::FORMATS /* format */) const
 {
     return "";
 }
 
-std::string Entity::serialise(libcellml::CELLML_FORMATS format) const
+std::string Entity::serialise(FORMATS format) const
 {
     return doSerialisation(format);
 }
