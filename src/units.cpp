@@ -254,10 +254,8 @@ std::string prefixToString(PREFIXES prefix)
         str = "tera";
         break;
     }
-    case PREFIX_UNIT: {
-        str = "unit";
-        break;
-    }
+    case PREFIX_UNIT: /* Should not ask for the string version of this.
+With the current codebase there is no way to trigger this case. */
     case PREFIX_YOCTO: {
         str = "yocto";
         break;

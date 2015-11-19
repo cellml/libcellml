@@ -54,3 +54,78 @@ TEST(Coverage, entity) {
     EXPECT_EQ(&c, e.getParent());
 }
 
+TEST(Coverage, units) {
+    std::string e = "<units/>";
+    libcellml::Units u, um;
+
+    um = std::move(u);
+
+    // Copy constructor
+    libcellml::Units uc(um);
+
+    EXPECT_EQ(e, uc.serialise(libcellml::FORMAT_XML));
+}
+
+
+TEST(Coverage, prefixToString) {
+    libcellml::Model m;
+
+    std::vector<std::string> prefix_str =
+        {"atto",
+         "centi",
+         "deca",
+         "deci",
+         "exa",
+         "femto",
+         "giga",
+         "hecto",
+         "kilo",
+         "mega",
+         "micro",
+         "milli",
+         "nano",
+         "peta",
+         "pico",
+         "tera",
+         "unit",
+         "yocto",
+         "yotta",
+         "zepto",
+         "zetta"
+        };
+    std::vector<libcellml::PREFIXES> prefix_enum =
+        {libcellml::PREFIX_ATTO,
+         libcellml::PREFIX_CENTI,
+         libcellml::PREFIX_DECA,
+         libcellml::PREFIX_DECI,
+         libcellml::PREFIX_EXA,
+         libcellml::PREFIX_FEMTO,
+         libcellml::PREFIX_GIGA,
+         libcellml::PREFIX_HECTO,
+         libcellml::PREFIX_KILO,
+         libcellml::PREFIX_MEGA,
+         libcellml::PREFIX_MICRO,
+         libcellml::PREFIX_MILLI,
+         libcellml::PREFIX_NANO,
+         libcellml::PREFIX_PETA,
+         libcellml::PREFIX_PICO,
+         libcellml::PREFIX_TERA,
+         libcellml::PREFIX_UNIT,
+         libcellml::PREFIX_YOCTO,
+         libcellml::PREFIX_YOTTA,
+         libcellml::PREFIX_ZEPTO,
+         libcellml::PREFIX_ZETTA
+        };
+    for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); i++) {
+        std::string prefix = prefix_str[i];
+        libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+        u->setName("abcdefg");
+        u->addUnit("empty", prefix_enum[i]);
+
+        m.addUnits(u);
+
+        std::string a = m.serialise(libcellml::FORMAT_XML);
+        std::size_t found = a.find(prefix);
+        EXPECT_NE(std::string::npos, found);
+    }
+}
