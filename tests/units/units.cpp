@@ -74,7 +74,7 @@ TEST(Units, invalid_name) {
     EXPECT_EQ("invalid name", u->getName());
 }
 
-TEST(Units, compound_units_string) {
+TEST(Units, compound_units_raw) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -88,15 +88,15 @@ TEST(Units, compound_units_string) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit("ampere", libcellml::PREFIX_MICRO);
+    u->addUnit("ampere", -6);
     u->addUnit("kelvin");
-    u->addUnit("siemens", libcellml::PREFIX_MILLI, -1.0);
+    u->addUnit("siemens", -3, -1.0);
 
     std::string a = u->serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, compound_units_enum) {
+TEST(Units, compound_units_using_defines) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
