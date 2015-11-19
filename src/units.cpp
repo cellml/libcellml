@@ -18,7 +18,7 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The Units::UnitsImpl struct
+ * @brief The Units::UnitsImpl struct.
  * The private implementation for the Units class.
  */
 struct Units::UnitsImpl

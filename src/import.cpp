@@ -19,7 +19,7 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The Import::ImportImpl struct
+ * @brief The Import::ImportImpl struct.
  * The private implementation for the Import class.
  */
 struct Import::ImportImpl

@@ -25,7 +25,7 @@ namespace libcellml {
 
 class Component;
 /**
- * @brief The ComponentEntity class
+ * @brief The ComponentEntity class.
  * The interface class for managing Components.
  */
 class LIBCELLML_EXPORT ComponentEntity: public ImportedEntity

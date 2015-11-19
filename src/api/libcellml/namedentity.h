@@ -26,7 +26,7 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The Nameable class.
+ * @brief The NamedEntity class.
  * Base class for all nameable libCellML classes.
  */
 class LIBCELLML_EXPORT NamedEntity: public Entity

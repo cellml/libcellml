@@ -25,7 +25,7 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The private implementation for the ComponentEntity class.
+ * @brief The ComponentEntity::ComponentEntityImpl struct.
  * This struct is the private implementation struct for the ComponentEntity class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
