@@ -149,6 +149,7 @@ def run_single_test(exe_name):
         success = True
         sys.stdout.write(" - PASS\n")
     else:
+        sys.stdout.write(" - FAIL\n")
         for trace in errors:
             sys.stderr.write(str(trace))
             sys.stderr.write("---------------------------------------------------\n")
