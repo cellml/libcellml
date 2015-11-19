@@ -129,6 +129,8 @@ std::string Model::doSerialisation(libcellml::FORMATS format) const
             repr += "</import>";
         }
 
+        repr += serialiseUnits(format);
+
         // Serialize components of the model, imported components have already been dealt with at this point.
         for(size_t i = 0; i < componentCount(); i++) {
             repr += getComponent(i)->serialise(format);

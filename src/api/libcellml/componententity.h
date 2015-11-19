@@ -191,6 +191,8 @@ protected:
      */
     virtual void doAddComponent(const ComponentPtr &c);
 
+    std::string serialiseUnits(FORMATS format) const;
+
 private:
     std::string doSerialisation(FORMATS format) const;
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */

@@ -171,6 +171,8 @@ public:
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
 
+    std::string doSerialisation(libcellml::FORMATS format) const;
+
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
     UnitsImpl* mPimpl; /**< Private member to implementation pointer */
 };

@@ -21,6 +21,7 @@ limitations under the License.Some license of other
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
@@ -34,6 +35,7 @@ struct ComponentEntity::ComponentEntityImpl
 {
     std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
     std::vector<ComponentPtr> mComponents;
+    std::vector<UnitsPtr> mUnits;
 };
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
@@ -58,6 +60,7 @@ ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
     , mPimpl(new ComponentEntityImpl())
 {
     mPimpl->mComponents = rhs.mPimpl->mComponents;
+    mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
 ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
@@ -77,6 +80,19 @@ ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
 void ComponentEntity::swap(ComponentEntity &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
+}
+
+std::string ComponentEntity::serialiseUnits(FORMATS format) const
+{
+    std::string repr = "";
+
+    if (format == FORMAT_XML) {
+        for(std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
+            repr += mPimpl->mUnits[i]->serialise(format);;
+        }
+    }
+
+    return repr;
 }
 
 std::string ComponentEntity::doSerialisation(libcellml::FORMATS format) const
@@ -135,9 +151,9 @@ std::string ComponentEntity::doSerialisation(libcellml::FORMATS format) const
     return repr;
 }
 
-void ComponentEntity::addUnits(const UnitsPtr & /* u */)
+void ComponentEntity::addUnits(const UnitsPtr & u)
 {
-
+    mPimpl->mUnits.push_back(u);
 }
 
 void ComponentEntity::addComponent(const ComponentPtr &c)

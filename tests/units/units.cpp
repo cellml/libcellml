@@ -78,12 +78,14 @@ TEST(Units, compound_units_raw) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
-            "<units name=\"compount_unit\">"
-            "<unit prefix=\"micro\" units=\"ampere\"/>"
+            "<units name=\"compound_unit\">"
+            "<unit prefix=\"-6\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
-            "<unit exponent=\"-1.0\" prefix=\"milli\" units=\"siemens\""
+            "<unit exponent=\"-1\" prefix=\"-3\" units=\"siemens\"/>"
             "</units>"
             "</model>";
+
+    libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
@@ -92,7 +94,9 @@ TEST(Units, compound_units_raw) {
     u->addUnit("kelvin");
     u->addUnit("siemens", -3, -1.0);
 
-    std::string a = u->serialise(libcellml::FORMAT_XML);
+    m.addUnits(u);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
@@ -103,9 +107,11 @@ TEST(Units, compound_units_using_defines) {
             "<units name=\"compound_unit\">"
             "<unit prefix=\"micro\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
-            "<unit exponent=\"-1.0\" prefix=\"milli\" units=\"siemens\""
+            "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
             "</units>"
             "</model>";
+
+    libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
@@ -114,7 +120,9 @@ TEST(Units, compound_units_using_defines) {
     u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
     u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::PREFIX_MILLI, -1.0);
 
-    std::string a = u->serialise(libcellml::FORMAT_XML);
+    m.addUnits(u);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
@@ -143,14 +151,14 @@ TEST(Units, farhenheit) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
             "<units name=\"fahrenheit\">"
-            "<unit multiplier=\"1.8\" offset=\"32.0\" units=\"celsius\"/>"
+            "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
             "</units>"
             "</model>";
 
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("farhenheit");
+    u->setName("fahrenheit");
 
     /* Give prefix and exponent their default values. */
     u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, libcellml::PREFIX_UNIT, 1.0, 1.8, 32.0);
@@ -158,6 +166,39 @@ TEST(Units, farhenheit) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("farhenheit", u->getName());
+    EXPECT_EQ("fahrenheit", u->getName());
+}
+
+TEST(Units, multiple) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<units name=\"fahrenheit\">"
+            "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+            "</units>"
+            "<units name=\"metres_per_second\">"
+            "<unit units=\"metre\"/>"
+            "<unit exponent=\"-1\" units=\"second\"/>"
+            "</units>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("fahrenheit");
+
+    /* Give prefix and exponent their default values. */
+    u1->addUnit(libcellml::STANDARD_UNIT_CELSIUS, libcellml::PREFIX_UNIT, 1.0, 1.8, 32.0);
+
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("metres_per_second");
+    u2->addUnit(libcellml::STANDARD_UNIT_METRE);
+    u2->addUnit(libcellml::STANDARD_UNIT_SECOND, -1.0);
+
+    m.addUnits(u1);
+    m.addUnits(u2);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
 }
 
