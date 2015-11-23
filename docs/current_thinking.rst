@@ -1,0 +1,18 @@
+.. _libCellMLCurrentThinking:
+
+==============================
+Current Thinking for libCellML
+==============================
+
+This document simply outlines some of the rationale that has an influence on how the codebase is developed.
+
+- Not dealing with external documents.
+ 
+  - Absolves libcellml from fetching files and communicating across the internet.
+  - Expect to provide another layer that would perform this role as a separate thing.
+  - No avenue to retrieve external references.
+ 
+- Serialise and deserialise from a string.
+- Present a useful interface not one tied to XML structure.
+- Validation is going to be quite separate (you are free to make invalid CellML models).
+

@@ -14,6 +14,7 @@ Contents:
    :titlesonly:
 
    roadmap
+   current_thinking
    usecases
    object_model
    api_documentation
