@@ -20,16 +20,29 @@ limitations under the License.Some license of other
 
 namespace libcellml {
 
+/**
+ * @brief Convert a PREFIXES into it's string form.
+ * Private function to convert a PREFIXES into it's string form.
+ *
+ * @param prefix The prefix to convert.
+ * @return A std::string form of the given prefix.
+ */
 std::string prefixToString(PREFIXES prefix);
 
+/**
+ * @brief The Unit struct.
+ * An internal structure to capture a unit definition.  The
+ * prefix can be expressed using either an integer or an enum.
+ * The enum structure member is given preference if both are set.
+ */
 struct Unit
 {
-    std::string mUnits = "";
-    int mPrefixInt = 0;
-    PREFIXES mPrefixEnum = PREFIX_UNIT;
-    double mExponent = 1.0;
-    double mMultiplier = 1.0;
-    double mOffset = 0.0;
+    std::string mUnits = ""; /**< Name for the unit.*/
+    int mPrefixInt = 0; /**< Integer expression of the prefix for the unit.*/
+    PREFIXES mPrefixEnum = PREFIX_UNIT; /**< Enum expression of the prefix for the unit.*/
+    double mExponent = 1.0; /**< Exponent for the unit.*/
+    double mMultiplier = 1.0; /**< Multiplier for the unit.*/
+    double mOffset = 0.0; /**< Offset for the unit.*/
 };
 
 /**
@@ -38,8 +51,8 @@ struct Unit
  */
 struct Units::UnitsImpl
 {
-    bool mBaseUnit = false;
-    std::vector<Unit> mUnits;
+    bool mBaseUnit = false; /**< Flag to determine if this Units is a base unit or not.*/
+    std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 };
 
 Units::Units()
@@ -163,16 +176,6 @@ void Units::addUnit(const std::string & units, int prefix, double exponent,
     u.mOffset = offset;
 
     mPimpl->mUnits.push_back(u);
-}
-
-void Units::addUnit(const std::string &units, PREFIXES prefix)
-{
-    addUnit(units, prefix, 1.0, 1.0, 0.0);
-}
-
-void Units::addUnit(const std::string &units, int prefix)
-{
-    addUnit(units, prefix, 1.0, 1.0, 0.0);
 }
 
 void Units::addUnit(const std::string &units, double exponent)

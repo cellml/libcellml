@@ -108,7 +108,7 @@ public:
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &units, PREFIXES prefix, double exponent,
+    void addUnit(const std::string &units, PREFIXES prefix, double exponent=1.0,
                  double multiplier=1.0, double offset=0.0);
 
     /**
@@ -123,30 +123,8 @@ public:
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &units, int prefix, double exponent,
+    void addUnit(const std::string &units, int prefix, double exponent=1.0,
                  double multiplier=1.0, double offset=0.0);
-
-    /**
-     * @brief Add a unit to this Units.
-     * Add a unit as a child of this Units. This variant takes the units name
-     * and prefix only.
-     *
-     * @overload
-     * @param units The name of the unit to add.
-     * @param prefix The prefix for the unit, one of PREFIXES.
-     */
-    void addUnit(const std::string &units, PREFIXES prefix);
-
-    /**
-     * @brief Add a unit to this Units.
-     * Add a unit as a child of this Units. This variant takes the units name
-     * and prefix as an integer only.
-     *
-     * @overload
-     * @param units The name of the unit to add.
-     * @param prefix The prefix for the unit expressed as an integer.
-     */
-    void addUnit(const std::string &units, int prefix);
 
     /**
      * @brief Add a unit to this Units.
