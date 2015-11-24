@@ -65,7 +65,7 @@ TEST(UnitsImport, importValidName) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
 
 TEST(UnitsImport, importInvalidName) {
@@ -95,7 +95,7 @@ TEST(UnitsImport, importInvalidName) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
 
 TEST(UnitsImport, nonExistentURL) {
@@ -125,6 +125,77 @@ TEST(UnitsImport, nonExistentURL) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
+}
+
+TEST(UnitsImport, importModify) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+               "<import xlink:href=\"some-other-model.xml\" "
+                       "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                   "<units units_ref=\"a_units_in_that_model\" "
+                              "name=\"units_in_this_model\"/>"
+               "</import>"
+               "<units name=\"multiplied_import\">"
+                  "<unit multiplier=\"5.6\" units=\"units_in_this_model\"/>"
+               "</units>"
+               "<units name=\"offset_import\">"
+                  "<unit offset=\"76\" units=\"units_in_this_model\"/>"
+               "</units>"
+               "<units name=\"prefixed_import\">"
+                  "<unit prefix=\"yotta\" units=\"units_in_this_model\"/>"
+               "</units>"
+               "<units name=\"exponented_import\">"
+                  "<unit exponent=\"3\" units=\"units_in_this_model\"/>"
+               "</units>"
+               "<units name=\"all_import\">"
+                  "<unit exponent=\"-4\" multiplier=\"-1.3\" offset=\"-99\" prefix=\"-17\" units=\"units_in_this_model\"/>"
+               "</units>"
+            "</model>";
+
+    libcellml::Model m;
+    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    imp->setSource("some-other-model.xml");
+
+    libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
+    importedUnits->setName("units_in_this_model");
+    importedUnits->setSourceUnits(imp, "units_in_this_model");
+
+    m.addUnits(importedUnits);
+
+    libcellml::UnitsPtr importedUnitsMultiplied = std::make_shared<libcellml::Units>();
+    importedUnitsMultiplied->setName("multiplied_import");
+    importedUnitsMultiplied->addUnit("units_in_this_model", libcellml::PREFIX_UNIT, 1.0, 5.6);
+
+    m.addUnits(importedUnitsMultiplied);
+
+    libcellml::UnitsPtr importedUnitsOffset = std::make_shared<libcellml::Units>();
+    importedUnitsOffset->setName("offset_import");
+    importedUnitsOffset->addUnit("units_in_this_model", libcellml::PREFIX_UNIT, 1.0, 1.0, 76);
+
+    m.addUnits(importedUnitsOffset);
+
+    libcellml::UnitsPtr importedUnitsPrefixed = std::make_shared<libcellml::Units>();
+    importedUnitsPrefixed->setName("prefixed_import");
+    importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::PREFIX_YOTTA);
+
+    m.addUnits(importedUnitsPrefixed);
+
+    libcellml::UnitsPtr importedUnitsExponented = std::make_shared<libcellml::Units>();
+    importedUnitsExponented->setName("exponented_import");
+    importedUnitsExponented->addUnit("units_in_this_model", 3.0);
+
+    m.addUnits(importedUnitsExponented);
+
+    libcellml::UnitsPtr importedUnitsAll = std::make_shared<libcellml::Units>();
+    importedUnitsAll->setName("all_import");
+    importedUnitsAll->addUnit("units_in_this_model", -17, -4.0, -1.3, -99);
+
+    m.addUnits(importedUnitsAll);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+
+    EXPECT_EQ(e, a);
 }
 
