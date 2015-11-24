@@ -149,6 +149,7 @@ def run_single_test(exe_name):
         success = True
         sys.stdout.write(" - PASS\n")
     else:
+        sys.stdout.write(" - FAIL\n")
         for trace in errors:
             sys.stderr.write(str(trace))
             sys.stderr.write("---------------------------------------------------\n")
@@ -162,11 +163,27 @@ if __name__ == '__main__':
     if len(sys.argv) > 2:
         exit_code = 0
         test_dir = sys.argv[1]
+        successes = []
+        failures = []
         for single_test in sys.argv[2:]:
             result = run_single_test(path.join(test_dir, single_test))
-            if not result:
+            if result:
+                successes.append(single_test)
+            else:
+                failures.append(single_test)
                 exit_code = 2
 
+        sys.stdout.write(">> Summary\n")
+        tot = len(successes) + len(failures)
+        per = 100.0*len(successes) / tot
+        sys.stdout.write("   {0}% tests passed, {1} tests failed out of {2}\n".format(per, len(failures), tot))
+        sys.stdout.write("\n")
+        if len(failures):
+            sys.stdout.write("   The failed tests were:\n")
+            for f in failures:
+                sys.stdout.write("    - {0}\n".format(f))
+
+            sys.stdout.write("\n")
         exit(exit_code)
     else:
         print("usage: ./valgrindmemcheck.py test_exectable_dir test_executable_1 [test_exectuable_2 ...]")

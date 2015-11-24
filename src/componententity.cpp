@@ -21,11 +21,12 @@ limitations under the License.Some license of other
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
 /**
- * @brief The private implementation for the ComponentEntity class.
+ * @brief The ComponentEntity::ComponentEntityImpl struct.
  * This struct is the private implementation struct for the ComponentEntity class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
@@ -34,6 +35,7 @@ struct ComponentEntity::ComponentEntityImpl
 {
     std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
     std::vector<ComponentPtr> mComponents;
+    std::vector<UnitsPtr> mUnits;
 };
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
@@ -58,6 +60,7 @@ ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
     , mPimpl(new ComponentEntityImpl())
 {
     mPimpl->mComponents = rhs.mPimpl->mComponents;
+    mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
 ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
@@ -79,12 +82,25 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) const
+std::string ComponentEntity::serialiseUnits(FORMATS format) const
+{
+    std::string repr = "";
+
+    if (format == FORMAT_XML) {
+        for(std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
+            repr += mPimpl->mUnits[i]->serialise(format);;
+        }
+    }
+
+    return repr;
+}
+
+std::string ComponentEntity::doSerialisation(libcellml::FORMATS format) const
 {
     const std::string encaps_tag = "<encapsulation>";
     const std::string encaps_end_tag = "</encapsulation>";
     std::string repr = "";
-    if (format == CELLML_FORMAT_XML) {
+    if (format == FORMAT_XML) {
         if (isImport()) {
             return repr;
         }
@@ -135,6 +151,11 @@ std::string ComponentEntity::doSerialisation(libcellml::CELLML_FORMATS format) c
     return repr;
 }
 
+void ComponentEntity::addUnits(const UnitsPtr & u)
+{
+    mPimpl->mUnits.push_back(u);
+}
+
 void ComponentEntity::addComponent(const ComponentPtr &c)
 {
     doAddComponent(c);
@@ -169,7 +190,7 @@ size_t ComponentEntity::componentCount() const
     return mPimpl->mComponents.size();
 }
 
-bool ComponentEntity::containsComponent(const std::string &name)
+bool ComponentEntity::containsComponent(const std::string &name) const
 {
     auto result = mPimpl->findComponent(name);
     return result != mPimpl->mComponents.end();

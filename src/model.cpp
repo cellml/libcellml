@@ -53,7 +53,7 @@ Model& Model::operator=(Model m)
     return *this;
 }
 
-std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
+std::string Model::doSerialisation(libcellml::FORMATS format) const
 {
     typedef std::pair <std::string, std::string> ImportNamePair;
     typedef std::vector<ImportNamePair>::const_iterator VectorPairIterator;
@@ -113,7 +113,7 @@ std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
     }
 
     std::string repr = "";
-    if (format == CELLML_FORMAT_XML) {
+    if (format == FORMAT_XML) {
         repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"";
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
@@ -128,6 +128,8 @@ std::string Model::doSerialisation(libcellml::CELLML_FORMATS format) const
             }
             repr += "</import>";
         }
+
+        repr += serialiseUnits(format);
 
         // Serialize components of the model, imported components have already been dealt with at this point.
         for(size_t i = 0; i < componentCount(); i++) {

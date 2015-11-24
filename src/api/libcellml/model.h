@@ -41,7 +41,7 @@ public:
 
 private:
     void doAddComponent(const ComponentPtr &c);
-    std::string doSerialisation(CELLML_FORMATS format) const;
+    std::string doSerialisation(FORMATS format) const;
 };
 
 }
