@@ -42,13 +42,17 @@ foreach(TEST ${LIBCELLML_TESTS})
 endforeach()
 
 if(LIBCELLML_COVERAGE)
-  # Prepare for test coverage by generating the gcov note files
-  # and creating an output directory for the data files
-  add_custom_target(prepare_coverage
+  # Clean away old gcov arc files
+  add_custom_target(clean_coverage
     DEPENDS ${TEST_LIST}
     COMMAND find ${GCOV_ANALYSIS_PATH} -type f -name '*.gcda' -print | xargs /bin/rm -f
+    COMMENT "Clean old coverage data")
+
+  # Prepare for test coverage by generating the gcov note files
+  add_custom_target(prepare_coverage
+    DEPENDS clean_coverage
     COMMAND ctest > /dev/null
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/gcov
+#    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/gcov
     COMMENT "Prepare for coverage tests")
 
   add_custom_target(coverage
