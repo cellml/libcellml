@@ -43,6 +43,7 @@ public:
      * @param name The name of the component in the imported model to use.
      */
     void setSourceComponent(const ImportPtr &imp, const std::string &name);
+
 private:
     void doAddComponent(const ComponentPtr &c);
 

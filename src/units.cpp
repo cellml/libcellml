@@ -66,7 +66,7 @@ Units::~Units()
 }
 
 Units::Units(const Units& rhs)
-    : NamedEntity(rhs)
+    : ImportedEntity(rhs)
     , mPimpl(new UnitsImpl())
 {
     mPimpl->mBaseUnit = rhs.mPimpl->mBaseUnit;
@@ -74,7 +74,7 @@ Units::Units(const Units& rhs)
 }
 
 Units::Units(Units &&rhs)
-    : NamedEntity(std::move(rhs))
+    : ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -82,7 +82,7 @@ Units::Units(Units &&rhs)
 
 Units& Units::operator=(Units e)
 {
-    NamedEntity::operator= (e);
+    ImportedEntity::operator= (e);
     e.swap(*this);
     return *this;
 }
@@ -96,11 +96,8 @@ std::string Units::doSerialisation(libcellml::FORMATS format) const
 {
     std::string repr = "";
     if (format == FORMAT_XML) {
-        repr += "<units";
-        if (getName().length() == 0) {
-            repr += "/>";
-        } else {
-            repr += " name=\"" + getName() + "\"";
+        if (getName().length()) {
+            repr += "<units name=\"" + getName() + "\"";
             if (isBaseUnit()) {
                 repr += " base_unit=\"yes\"";
                 repr += "/>";
@@ -186,6 +183,11 @@ void Units::addUnit(const std::string &units, double exponent)
 void Units::addUnit(const std::string &units)
 {
     addUnit(units, PREFIX_UNIT, 1.0, 1.0, 0.0);
+
+}
+
+void Units::setSourceUnits(const ImportPtr &/* imp */, const std::string &/* name */)
+{
 
 }
 

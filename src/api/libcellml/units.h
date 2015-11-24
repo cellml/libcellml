@@ -21,11 +21,12 @@ limitations under the License.Some license of other
 
 #include "libcellml/libcellml_export.h"
 #include "libcellml/types.h"
-#include "libcellml/namedentity.h"
+#include "libcellml/importedentity.h"
 
 namespace libcellml {
 
 /**
+ * @file
  * @brief The STANDARD_UNITS.
  * Strings describing the standard units that are suitable for variable declarations
  * or attached to bare numbers in mathematics.  The list of strings comprises of
@@ -73,7 +74,7 @@ const std::string STANDARD_UNIT_WEBER = "weber"; /**< Derived SI unit weber. */
  * @brief The Units class.
  * Class for Units.
  */
-class LIBCELLML_EXPORT Units: public NamedEntity
+class LIBCELLML_EXPORT Units: public ImportedEntity
 {
 public:
     Units(); /**< Constructor */
@@ -145,6 +146,15 @@ public:
      * @param units The name of the unit to add.
      */
     void addUnit(const std::string &units);
+
+    /**
+     * @brief Set the source of the units for this Units.
+     * Make this Units an imported units by defining an import model
+     * from which to extract the named Units from.
+     * @param imp The import from which the named Units originates.
+     * @param name The name of the Units in the imported model to use.
+     */
+    void setSourceUnits(const ImportPtr &imp, const std::string &name);
 
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
