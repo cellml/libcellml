@@ -126,6 +126,50 @@ TEST(Units, compound_units_using_defines) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Units, multiply) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<units name=\"compound_unit\">"
+            "<unit prefix=\"micro\" units=\"ampere\"/>"
+            "<unit units=\"kelvin\"/>"
+            "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+            "</units>"
+            "<units name=\"valid_name\" base_unit=\"yes\"/>"
+            "<units name=\"multiplied\">"
+            "<unit units=\"compound_unit\"/>"
+            "<unit units=\"valid_name\"/>"
+            "</units>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("compound_unit");
+
+    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::PREFIX_MICRO);
+    u1->addUnit(libcellml::STANDARD_UNIT_KELVIN);
+    u1->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::PREFIX_MILLI, -1.0);
+
+    m.addUnits(u1);
+
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("valid_name");
+    u2->setBaseUnit();
+
+    m.addUnits(u2);
+
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    u3->setName("multiplied");
+    u3->addUnit("compound_unit");
+    u3->addUnit("valid_name");
+
+    m.addUnits(u3);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Units, new_base_unit) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
