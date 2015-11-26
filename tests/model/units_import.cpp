@@ -56,10 +56,14 @@ TEST(UnitsImport, importValidName) {
 
     EXPECT_EQ(importedUnits->getImport(), nullptr);
 
+    EXPECT_FALSE(importedUnits->isImport());
+
     importedUnits->setName("units_in_this_model");
     importedUnits->setSourceUnits(imp, "a_units_in_that_model");
 
     EXPECT_EQ(importedUnits->getImport(), imp);
+
+    EXPECT_TRUE(importedUnits->isImport());
 
     m.addUnits(importedUnits);
 
@@ -160,7 +164,7 @@ TEST(UnitsImport, importModify) {
 
     libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
     importedUnits->setName("units_in_this_model");
-    importedUnits->setSourceUnits(imp, "units_in_this_model");
+    importedUnits->setSourceUnits(imp, "a_units_in_that_model");
 
     m.addUnits(importedUnits);
 

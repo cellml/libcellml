@@ -18,6 +18,8 @@ limitations under the License.Some license of other
 #include <vector>
 #include <sstream>
 
+#include "libcellml/import.h"
+
 namespace libcellml {
 
 /**
@@ -97,41 +99,47 @@ std::string Units::doSerialisation(libcellml::FORMATS format) const
     std::string repr = "";
     if (format == FORMAT_XML) {
         if (getName().length()) {
-            repr += "<units name=\"" + getName() + "\"";
-            if (isBaseUnit()) {
-                repr += " base_unit=\"yes\"";
-                repr += "/>";
+            if (isImport()) {
+                repr += "<import xlink:href=\"" + getImport()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                        "<units units_ref=\"" + getImportReference() + "\" name=\"" + getName() + "\"/>"
+                        "</import>";
             } else {
-                repr += ">";
-                for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
-                    repr += "<unit";
-                    Unit u = mPimpl->mUnits[i];
-                    if (u.mExponent != 1.0) {
-                        std::ostringstream strs;
-                        strs << u.mExponent;
-                        repr += " exponent=\"" + strs.str() + "\"";
-                    }
-                    if (u.mMultiplier != 1.0) {
-                        std::ostringstream strs;
-                        strs << u.mMultiplier;
-                        repr += " multiplier=\"" + strs.str() + "\"";
-                    }
-                    if (u.mOffset != 0.0) {
-                        std::ostringstream strs;
-                        strs << u.mOffset;
-                        repr += " offset=\"" + strs.str() + "\"";
-                    }
-                    if (u.mPrefixEnum != PREFIX_UNIT) {
-                        repr += " prefix=\"" + prefixToString(u.mPrefixEnum) + "\"";
-                    } else if (u.mPrefixInt != 0) {
-                        std::ostringstream strs;
-                        strs << u.mPrefixInt;
-                        repr += " prefix=\"" + strs.str() + "\"";
-                    }
-                    repr += " units=\"" + u.mUnits + "\"";
+                repr += "<units name=\"" + getName() + "\"";
+                if (isBaseUnit()) {
+                    repr += " base_unit=\"yes\"";
                     repr += "/>";
+                } else {
+                    repr += ">";
+                    for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
+                        repr += "<unit";
+                        Unit u = mPimpl->mUnits[i];
+                        if (u.mExponent != 1.0) {
+                            std::ostringstream strs;
+                            strs << u.mExponent;
+                            repr += " exponent=\"" + strs.str() + "\"";
+                        }
+                        if (u.mMultiplier != 1.0) {
+                            std::ostringstream strs;
+                            strs << u.mMultiplier;
+                            repr += " multiplier=\"" + strs.str() + "\"";
+                        }
+                        if (u.mOffset != 0.0) {
+                            std::ostringstream strs;
+                            strs << u.mOffset;
+                            repr += " offset=\"" + strs.str() + "\"";
+                        }
+                        if (u.mPrefixEnum != PREFIX_UNIT) {
+                            repr += " prefix=\"" + prefixToString(u.mPrefixEnum) + "\"";
+                        } else if (u.mPrefixInt != 0) {
+                            std::ostringstream strs;
+                            strs << u.mPrefixInt;
+                            repr += " prefix=\"" + strs.str() + "\"";
+                        }
+                        repr += " units=\"" + u.mUnits + "\"";
+                        repr += "/>";
+                    }
+                    repr += "</units>";
                 }
-                repr += "</units>";
             }
         }
     }
@@ -186,9 +194,10 @@ void Units::addUnit(const std::string &units)
 
 }
 
-void Units::setSourceUnits(const ImportPtr &/* imp */, const std::string &/* name */)
+void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
 {
-
+    setImport(imp);
+    setImportReference(name);
 }
 
 std::string prefixToString(PREFIXES prefix)
