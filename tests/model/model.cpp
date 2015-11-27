@@ -24,7 +24,7 @@ TEST(Model, serialise) {
     libcellml::Model m;
     std::string a = m.serialise(libcellml::FORMAT_XML);
 
-   EXPECT_EQ(e, a);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Model, serialise_p) {
@@ -32,8 +32,8 @@ TEST(Model, serialise_p) {
     libcellml::Model* m = new libcellml::Model();
     std::string a = m->serialise(libcellml::FORMAT_XML);
 
-   EXPECT_EQ(e, a);
-   delete m;
+    EXPECT_EQ(e, a);
+    delete m;
 }
 
 TEST(Model, name) {

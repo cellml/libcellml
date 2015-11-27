@@ -55,7 +55,7 @@ TEST(Coverage, entity) {
 }
 
 TEST(Coverage, units) {
-    std::string e = "<units/>";
+    std::string e = "";
     libcellml::Units u, um;
 
     um = std::move(u);

@@ -20,7 +20,7 @@ limitations under the License.Some license of other
 
 
 TEST(Units, serialise) {
-    const std::string e = "<units/>";
+    const std::string e = "";
     libcellml::Units u;
     std::string a = u.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
