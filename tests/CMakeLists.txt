@@ -16,6 +16,7 @@ include(model/tests.cmake)
 include(component/tests.cmake)
 include(coverage/tests.cmake)
 include(units/tests.cmake)
+include(variable/tests.cmake)
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)

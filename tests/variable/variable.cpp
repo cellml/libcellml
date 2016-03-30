@@ -1,4 +1,3 @@
-
 /*
 Copyright 2015 University of Auckland
 
@@ -15,22 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.Some license of other
 */
 
-#ifndef LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
-#define LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
+#include "gtest/gtest.h"
 
-/**
- * @mainpage libCellML
- *
- * \section intro_sec Introduction
- *
- * This is the source code documentation for the libCellML C++ library.
- *
- */
-#include <libcellml/version.h>
-#include <libcellml/model.h>
-#include <libcellml/component.h>
-#include <libcellml/import.h>
-#include <libcellml/units.h>
-#include <libcellml/variable.h>
+#include <libcellml>
 
-#endif  // LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
+
+TEST(Variable, serialise) {
+    const std::string e = "";
+    libcellml::Variable v;
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
