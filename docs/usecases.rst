@@ -74,20 +74,20 @@ Use-cases for libCellML
    #. a model with maths, variables and connections
    
       a. … to be added to ...
+
+#. **Modify:** Modify models from 1.
+
+   i. add {components, units, maths, variables, connections}
+   #. remove {components, units, maths, variables, connections}
+   #. update {components, units, maths, model attributes, variables, connections}
    
-#. **Load:** Load each of the models from 1 (new models can be added for this part if required).
+#. **Load:** Load each of the models from 1 and 2 (new models can be added for this part if required).
 
    #. a model with imported components
 
       a. a single component
       #. a component with a hierarchy
-      #. a component from a non-existent URL
-   
-#. **Modify:** Modify models (at least those models from 1 and 2).
-
-   i. add {components, units, maths, variables, connections}
-   #. remove {components, units, maths, variables, connections}
-   #. update {components, units, maths, model attributes, variables, connections}
+      #. a component from a non-existent URL   
 
 #. **Validate:**  Create, load, and modify models and then validate them (the test is that the models are correctly identified as valid or invalid, and for the case when they are invalid the correct reason is given, covering each rule in the specification). 
 
