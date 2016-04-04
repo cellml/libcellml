@@ -26,8 +26,8 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The Units class.
- * Class for Units.
+ * @brief The Variable class.
+ * Class for Variable.
  */
 class LIBCELLML_EXPORT Variable: public NamedEntity
 {

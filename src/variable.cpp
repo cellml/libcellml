@@ -19,8 +19,8 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief The Units::UnitsImpl struct.
- * The private implementation for the Units class.
+ * @brief The Variable::VariableImpl struct.
+ * The private implementation for the Variable class.
  */
 struct Variable::VariableImpl
 {

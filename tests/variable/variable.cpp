@@ -26,3 +26,92 @@ TEST(Variable, serialise) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, validVariableName) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+              "<component name=\"" + in + "\">"
+                "<variable name=\"" + in + "\" units=\"dimensionless\" />"
+              "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
+    m.addComponent(c);
+
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(in);
+    c->addVariable(v);
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("dimensionless");
+    v->setUnits(u);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+    EXPECT_EQ("valid_name", v.getName());
+}
+
+TEST(Variable, invalidVariableName) {
+    const std::string in = "invalid_name";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+              "<component name=\"" + in + "\">"
+                "<variable name=\"" + in + "\" units=\"dimensionless\" />"
+              "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
+    m.addComponent(c);
+
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(in);
+    c->addVariable(v);
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("dimensionless");
+    v->setUnits(u);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+    EXPECT_EQ("invalid_name", v.getName());
+}
+
+TEST(Variable, invalidUnitsName) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+              "<component name=\"" + in + "\">"
+                "<variable name=\"" + in + "\" units=\"invalid_name\" />"
+              "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
+    m.addComponent(c);
+
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(in);
+    c->addVariable(v);
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("invalid_name");
+    v->setUnits(u);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+    EXPECT_EQ("invalid_name", u.getName());
+}
+
+
+
