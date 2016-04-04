@@ -20,7 +20,7 @@ limitations under the License.Some license of other
 
 
 TEST(Variable, serialise) {
-    const std::string e = "";
+    const std::string e = "<variable/>";
     libcellml::Variable v;
     std::string a = v.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
@@ -56,7 +56,7 @@ TEST(Variable, validVariableName) {
 }
 
 TEST(Variable, invalidVariableName) {
-    const std::string in = "invalid_name";
+    const std::string in = "invalid name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -81,7 +81,7 @@ TEST(Variable, invalidVariableName) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid_name", v.getName());
+    EXPECT_EQ("invalid name", v.getName());
 }
 
 TEST(Variable, invalidUnitsName) {
@@ -90,7 +90,7 @@ TEST(Variable, invalidUnitsName) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
               "<component name=\"" + in + "\">"
-                "<variable name=\"" + in + "\" units=\"invalid_name\" />"
+                "<variable name=\"" + in + "\" units=\"invalid name\" />"
               "</component>"
             "</model>";
 
@@ -105,12 +105,12 @@ TEST(Variable, invalidUnitsName) {
     c->addVariable(v);
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("invalid_name");
+    u->setName("invalid name");
     v->setUnits(u);
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid_name", u.getName());
+    EXPECT_EQ("invalid name", u.getName());
 }
 
 
