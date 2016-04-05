@@ -52,7 +52,7 @@ TEST(Variable, validVariableName) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("valid_name", v.getName());
+    EXPECT_EQ("valid_name", v->getName());
 }
 
 TEST(Variable, invalidVariableName) {
@@ -81,7 +81,7 @@ TEST(Variable, invalidVariableName) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", v.getName());
+    EXPECT_EQ("invalid name", v->getName());
 }
 
 TEST(Variable, invalidUnitsName) {
@@ -110,7 +110,7 @@ TEST(Variable, invalidUnitsName) {
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", u.getName());
+    EXPECT_EQ("invalid name", u->getName());
 }
 
 

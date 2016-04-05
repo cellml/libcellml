@@ -27,7 +27,7 @@ namespace libcellml {
 
 /**
  * @brief The Variable class.
- * Class for Variable.
+ * Class for each variable in libCellML.
  */
 class LIBCELLML_EXPORT Variable: public NamedEntity
 {
@@ -37,6 +37,48 @@ public:
     Variable(const Variable &rhs); /**< Copy constructor */
     Variable(Variable &&rhs); /**< Move constructor */
     Variable& operator=(Variable n); /**< Assignment operator */
+
+    /**
+     * @brief Set the units for this variable.
+     * Set the units for this variable. Set to nullptr to unset the units.
+     * @sa getUnits
+     * @param u The units to set.
+     */
+    void setUnits(const UnitsPtr &u);
+
+    /**
+     * @brief Get the units for this variable.
+     * Get the units for this variable.  If no units are set nullptr is returned.
+     * @sa setUnits
+     * @param u The units to get.
+     */
+    UnitsPtr getUnits() const;
+
+    /**
+     * @brief Set the initial value for this variable using a real number.
+     * Set the initial value for this variable using a real number.
+     * @sa getInitialValue
+     * @param initialValue the initial value to set.
+     */
+    void setInitialValue(double initialValue);
+
+    /**
+     * @brief Set the initial value for this variable using a variable reference.
+     * Set the initial value for this variable using a variable reference.
+     *
+     * @overload
+     * @sa getInitialValue
+     * @param v the variable reference to use to set the initial value.
+     */
+    void setInitialValue(const VariablePtr &v);
+
+    /**
+     * @brief Get the initial value for this variable.
+     * Get the real number initial value for this variable.
+     * @sa setInitialValue
+     */
+    double getInitialValue();
+
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */

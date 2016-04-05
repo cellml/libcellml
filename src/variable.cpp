@@ -15,6 +15,8 @@ limitations under the License.Some license of other
 */
 #include "libcellml/variable.h"
 
+#include "libcellml/units.h"
+
 
 namespace libcellml {
 
@@ -24,6 +26,8 @@ namespace libcellml {
  */
 struct Variable::VariableImpl
 {
+    double mInitialValue;
+    UnitsPtr mUnits;
 };
 
 Variable::Variable()
@@ -68,6 +72,16 @@ std::string Variable::doSerialisation(FORMATS format) const
 
     }
     return repr;
+}
+
+void Variable::setUnits(const UnitsPtr &u)
+{
+    mPimpl->mUnits = u;
+}
+
+UnitsPtr Variable::getUnits() const
+{
+    return mPimpl->mUnits;
 }
 
 }
