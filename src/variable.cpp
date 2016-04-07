@@ -69,7 +69,14 @@ std::string Variable::doSerialisation(FORMATS format) const
 {
     std::string repr = "";
     if (format == FORMAT_XML) {
-
+        repr += "<variable";
+        if (getName().length()) {
+            repr += " name=\"" + getName() + "\"";
+            if (getUnits() != nullptr) {
+                repr += " units=\"" + getUnits()->getName() + "\"";
+            }
+        }
+        repr += "/>";
     }
     return repr;
 }

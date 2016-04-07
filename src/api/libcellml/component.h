@@ -109,12 +109,20 @@ public:
      */
     VariablePtr getVariable(const std::string &name);
 
+    /**
+     * @brief Get the number of variables in the component.
+     * Returns the number of variables the component directly contains.
+     * @return the number of variables.
+     */
+    size_t variableCount() const;
+
 private:
     void doAddComponent(const ComponentPtr &c);
 
+    std::string doSerialisation(libcellml::FORMATS format) const;
+
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl* mPimpl; /**< Private member to implementation pointer */
-
 };
 
 }

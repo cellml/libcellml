@@ -125,5 +125,37 @@ const VariablePtr& Component::getVariable(const std::string &name) const
     return mPimpl->mVariables.at(index);
 }
 
+size_t Component::variableCount() const
+{
+    return mPimpl->mVariables.size();
+}
+
+std::string Component::doSerialisation(FORMATS format) const
+{
+    std::string repr = "";
+    if (format == FORMAT_XML) {
+        repr += "<component";
+        bool endTag = false;
+        std::string componentName = getName();
+        if (componentName.length()) {
+            repr += " name=\"" + componentName + "\"";
+            if (variableCount() > 0) {
+                endTag = true;
+                repr += ">";
+                for(size_t i = 0; i < variableCount(); i++) {
+                    std::string var = getVariable(i)->serialise(format);
+                    repr += var;
+                }
+            }
+        }
+        if (endTag) {
+            repr += "</component>";
+        } else {
+            repr += "/>";
+        }
+    }
+    return repr;
+}
+
 }
 

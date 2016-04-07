@@ -104,12 +104,9 @@ std::string ComponentEntity::doSerialisation(libcellml::FORMATS format) const
         if (isImport()) {
             return repr;
         }
-        repr += "<component";
         std::string componentName = getName();
-        if (componentName.length()) {
-            repr += " name=\"" + componentName + "\"";
-        }
-        repr += "/>";
+        std::string comp = getComponent(componentName)->serialise(format);
+        repr += comp;
         std::string encaps = "";
         if (mPimpl->mComponents.size()) {
             encaps += encaps_tag;
