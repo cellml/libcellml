@@ -143,8 +143,7 @@ std::string Component::doSerialisation(FORMATS format) const
                 endTag = true;
                 repr += ">";
                 for(size_t i = 0; i < variableCount(); i++) {
-                    std::string var = getVariable(i)->serialise(format);
-                    repr += var;
+                    repr += getVariable(i)->serialise(format);
                 }
             }
         }
@@ -153,6 +152,7 @@ std::string Component::doSerialisation(FORMATS format) const
         } else {
             repr += "/>";
         }
+        repr += ComponentEntity::serialiseEncapsulation(format);
     }
     return repr;
 }
