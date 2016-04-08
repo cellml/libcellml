@@ -142,6 +142,8 @@ TEST(Variable, removeVariable) {
     c.removeVariable("variable1");
     std::string a = c.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
+
+    EXPECT_THROW(c.removeVariable("BAD_NAME"), std::out_of_range);
 }
 
 TEST(Variable, getVariableMethods) {
