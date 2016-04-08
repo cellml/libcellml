@@ -101,9 +101,6 @@ std::string ComponentEntity::serialiseEncapsulation(libcellml::FORMATS format) c
     const std::string encaps_end_tag = "</encapsulation>";
     std::string repr = "";
     if (format == FORMAT_XML) {
-        if (isImport()) {
-            return repr;
-        }
         std::string componentName = getName();
         std::string encaps = "";
         if (mPimpl->mComponents.size()) {
