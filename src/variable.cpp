@@ -72,9 +72,9 @@ std::string Variable::doSerialisation(FORMATS format) const
         repr += "<variable";
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
-            if (getUnits() != nullptr) {
-                repr += " units=\"" + getUnits()->getName() + "\"";
-            }
+        }
+        if (getUnits() != nullptr) {
+            repr += " units=\"" + getUnits()->getName() + "\"";
         }
         repr += "/>";
     }
