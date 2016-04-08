@@ -131,7 +131,7 @@ TEST(Coverage, prefixToString) {
 }
 
 TEST(Coverage, variable) {
-    std::string e = "";
+    std::string e = "<variable/>";
     libcellml::Variable v, vm;
 
     vm = std::move(v);
