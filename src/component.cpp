@@ -134,6 +134,9 @@ std::string Component::doSerialisation(FORMATS format) const
 {
     std::string repr = "";
     if (format == FORMAT_XML) {
+        if (isImport()) {
+            return repr;
+        }
         repr += "<component";
         bool endTag = false;
         std::string componentName = getName();
