@@ -98,6 +98,91 @@ TEST(Variable, addVariable) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, addTwoVariables) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<component name=\"" + in + "\">"
+                "<variable name=\"variable1\"/>"
+                "<variable name=\"variable2\"/>"
+            "</component>";
+
+    libcellml::Component c;
+    c.setName(in);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    c.addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    c.addVariable(v2);
+
+    std::string a = c.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, removeVariable) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<component name=\"" + in + "\">"
+                "<variable name=\"variable2\"/>"
+            "</component>";
+
+    libcellml::Component c;
+    c.setName(in);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    c.addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    c.addVariable(v2);
+
+    c.removeVariable("variable1");
+    std::string a = c.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, getVariableMethods) {
+    const std::string in = "valid_name";
+    libcellml::Component c;
+    c.setName(in);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    c.addVariable(v1);
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    c.addVariable(v2);
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    v3->setName("variable3");
+    c.addVariable(v3);
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    v4->setName("variable4");
+    c.addVariable(v4);
+
+    // Get by string
+    libcellml::VariablePtr vMethod1 = c.getVariable("variable1");
+    std::string a1 = vMethod1->getName();
+    EXPECT_EQ("variable1", a1);
+
+    // Get by index
+    libcellml::VariablePtr vMethod2 = c.getVariable(1);
+    std::string a2 = vMethod2->getName();
+    EXPECT_EQ("variable2", a2);
+
+    // Get const by string
+    const libcellml::VariablePtr vMethod3 = static_cast<const libcellml::Component>(c).getVariable("variable3");
+    std::string a3 = vMethod3->getName();
+    EXPECT_EQ("variable3", a3);
+
+    // Get const by index
+    const libcellml::VariablePtr vMethod4 = static_cast<const libcellml::Component>(c).getVariable(3);
+    std::string a4 = vMethod4->getName();
+    EXPECT_EQ("variable4", a4);
+}
+
 TEST(Variable, modelValidVariableName) {
     const std::string in = "valid_name";
     const std::string e =
