@@ -60,12 +60,21 @@ Use-cases for libCellML
    #. a model with variables
    
       a. model from *1.iv.a* and define a variable with a valid name and units dimensionless
+         #. with a valid variable initial value of 0.0
+         #. with an invalid variable initial value
+
       #. model from *1.iv.a* and define a variable with an invalid name and units dimensionless
       #. model from *1.iv.a* and define a variable with a valid name and invalid units name.
-      #. model from *1.vi.a*, define a single variable in each component with units dimensionless
-      
-         #. private interface in the parent and public interface in the child components and connect the variable in both children to the parent.
-         #. public interface in all components and connect the variables in the children to the parent
+      #. a model with a single component containing two variables.
+
+         #. with valid variable initial values of 1.0 and -1.0, respectively.
+
+   #. a model with connections
+
+      a. model with one component encapsulating two children components (1.vi.a), each child containing a single variable with units dimensionless
+
+         #. with a private interface in the parent and public interface in the child components and connect the variable in both children to the parent.
+         #. with a public interface in all components and connect the variables in the children to the parent
          
    #. a model with maths and variables
    
