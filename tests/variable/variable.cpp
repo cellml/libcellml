@@ -62,7 +62,20 @@ TEST(Variable, getInvalidVariableName) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, setUnitsDimensionless) {
+TEST(Variable, setUnits) {
+    const std::string in = "dimensionless";
+    const std::string e = "<variable units=\"" + in + "\"/>";
+    libcellml::Variable v;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName(in);
+    v.setUnits(u);
+
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setUnitsAndName) {
     const std::string in = "valid_name";
     const std::string e = "<variable name=\"" + in + "\" units=\"dimensionless\"/>";
     libcellml::Variable v;
