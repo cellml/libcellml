@@ -62,7 +62,6 @@ Use-cases for libCellML
       a. model from *1.iv.a* and define a variable with a valid name and units dimensionless
 
          #. with a valid variable initial value of 0.0
-         #. with an invalid variable initial value
 
       #. model from *1.iv.a* and define a variable with an invalid name and units dimensionless
       #. model from *1.iv.a* and define a variable with a valid name and invalid units name.
