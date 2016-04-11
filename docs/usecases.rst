@@ -68,6 +68,7 @@ Use-cases for libCellML
       #. a model with a single component containing two variables.
 
          #. with valid variable initial values of 1.0 and -1.0, respectively.
+         #. one with an initial value of 1.0 and the other with an initial value of the first variable.
 
    #. a model with connections
 
