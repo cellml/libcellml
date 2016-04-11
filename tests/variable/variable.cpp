@@ -370,5 +370,36 @@ TEST(Variable, modelTwoNamedInitialisedVariables) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, modelTwoNamedInitialisedVariablesOneReferenced) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+                "<component name=\"" + in + "\">"
+                    "<variable name=\"variable1\" initial_value=\"1\"/>"
+                    "<variable name=\"variable2\" initial_value=\"1\"/>"
+                "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
+    m.addComponent(c);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    v1->setInitialValue(1.0);
+    c->addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    v2->setInitialValue(v1);
+    c->addVariable(v2);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
 
 
