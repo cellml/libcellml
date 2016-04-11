@@ -15,6 +15,8 @@ limitations under the License.Some license of other
 */
 #include "libcellml/variable.h"
 
+#include <sstream>
+
 #include "libcellml/units.h"
 
 
@@ -26,8 +28,9 @@ namespace libcellml {
  */
 struct Variable::VariableImpl
 {
-    double mInitialValue;
-    UnitsPtr mUnits;
+    bool mInitialised = false; /**< Flag to determine if this Variable has had an initial_value set.*/
+    double mInitialValue; /**< Initial value for this Variable.*/
+    UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
 
 Variable::Variable()
@@ -76,6 +79,11 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getUnits() != nullptr) {
             repr += " units=\"" + getUnits()->getName() + "\"";
         }
+        if (isInitialised()) {
+            std::ostringstream strs;
+            strs << mPimpl->mInitialValue;
+            repr += " initial_value=\"" + strs.str() + "\"";
+        }
         repr += "/>";
     }
     return repr;
@@ -89,6 +97,32 @@ void Variable::setUnits(const UnitsPtr &u)
 UnitsPtr Variable::getUnits() const
 {
     return mPimpl->mUnits;
+}
+
+void Variable::setInitialValue(double initialValue)
+{
+    mPimpl->mInitialValue = initialValue;
+    mPimpl->mInitialised = true;
+}
+
+void Variable::setInitialValue(const VariablePtr &referenceVariable)
+{
+    mPimpl->mInitialValue = referenceVariable->getInitialValue();
+    mPimpl->mInitialised = true;
+}
+
+double Variable::getInitialValue()
+{
+    if (isInitialised()) {
+        return mPimpl->mInitialValue;
+    } else {
+        throw std::out_of_range("The initial value for this Variable has not been set.");
+    }
+}
+
+bool Variable::isInitialised() const
+{
+    return mPimpl->mInitialised;
 }
 
 }

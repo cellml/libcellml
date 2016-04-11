@@ -79,6 +79,13 @@ public:
      */
     double getInitialValue();
 
+    /**
+     * @brief Test to determine if Variable has been initialised.
+     * Test to determine if Variable has been initialised; return True if it has
+     * and False otherwise.
+     * @return True if Variable has been initialised, False otherwise.
+     */
+    bool isInitialised() const;
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
