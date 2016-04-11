@@ -89,6 +89,37 @@ TEST(Variable, setUnitsAndName) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, setInitialValue) {
+    const std::string e = "<variable initial_value=\"0\"/>";
+    libcellml::Variable v;
+    v.setInitialValue(0.0);
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInitialValueByRef) {
+    const std::string e = "<variable initial_value=\"1.1\"/>";
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setInitialValue(1.1);
+    libcellml::Variable v2;
+    v2.setInitialValue(v1);
+    std::string a = v2.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, getUnsetInitialValue) {
+    libcellml::Variable v;
+    EXPECT_THROW(v.getInitialValue(), std::out_of_range);
+}
+
+TEST(Variable, getSetInitialValue) {
+    libcellml::Variable v;
+    double e = 0.0;
+    v.setInitialValue(e);
+    double a = v.getInitialValue();
+    EXPECT_EQ(e, a);
+}
+
 TEST(Variable, addVariable) {
     const std::string in = "valid_name";
     const std::string e =
@@ -128,6 +159,29 @@ TEST(Variable, addTwoVariables) {
 
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     v2->setName("variable2");
+    c.addVariable(v2);
+
+    std::string a = c.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, twoInitialisedVariables) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<component name=\"" + in + "\">"
+                "<variable initial_value=\"1\"/>"
+                "<variable initial_value=\"-1\"/>"
+            "</component>";
+
+    libcellml::Component c;
+    c.setName(in);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setInitialValue(1.0);
+    c.addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setInitialValue(-1.0);
     c.addVariable(v2);
 
     std::string a = c.serialise(libcellml::FORMAT_XML);
@@ -283,6 +337,37 @@ TEST(Variable, modelInvalidUnitsName) {
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
+}
+
+TEST(Variable, modelTwoNamedInitialisedVariables) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+                "<component name=\"" + in + "\">"
+                    "<variable name=\"variable1\" initial_value=\"1\"/>"
+                    "<variable name=\"variable2\" initial_value=\"-1\"/>"
+                "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
+    m.addComponent(c);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    v1->setInitialValue(1.0);
+    c->addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    v2->setInitialValue(-1.0);
+    c->addVariable(v2);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
 }
 
 
