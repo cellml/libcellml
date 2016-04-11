@@ -95,21 +95,13 @@ std::string ComponentEntity::serialiseUnits(FORMATS format) const
     return repr;
 }
 
-std::string ComponentEntity::doSerialisation(libcellml::FORMATS format) const
+std::string ComponentEntity::serialiseEncapsulation(libcellml::FORMATS format) const
 {
     const std::string encaps_tag = "<encapsulation>";
     const std::string encaps_end_tag = "</encapsulation>";
     std::string repr = "";
     if (format == FORMAT_XML) {
-        if (isImport()) {
-            return repr;
-        }
-        repr += "<component";
         std::string componentName = getName();
-        if (componentName.length()) {
-            repr += " name=\"" + componentName + "\"";
-        }
-        repr += "/>";
         std::string encaps = "";
         if (mPimpl->mComponents.size()) {
             encaps += encaps_tag;
@@ -143,11 +135,8 @@ std::string ComponentEntity::doSerialisation(libcellml::FORMATS format) const
         if(mPimpl->mComponents.size()) {
             encaps += "</component_ref>" + encaps_end_tag;
         }
-
         repr += encaps;
-
     }
-
     return repr;
 }
 

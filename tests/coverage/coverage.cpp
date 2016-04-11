@@ -129,3 +129,15 @@ TEST(Coverage, prefixToString) {
         EXPECT_NE(std::string::npos, found);
     }
 }
+
+TEST(Coverage, variable) {
+    std::string e = "<variable/>";
+    libcellml::Variable v, vm;
+
+    vm = std::move(v);
+
+    // Copy constructor
+    libcellml::Variable vc(vm);
+
+    EXPECT_EQ(e, vc.serialise(libcellml::FORMAT_XML));
+}

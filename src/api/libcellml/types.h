@@ -28,6 +28,8 @@ class Import; /**< Forward declaration of Import class. */
 typedef std::shared_ptr<Import> ImportPtr; /**< Type definition for shared import pointer. */
 class Units; /**< Forward declaration of Units class. */
 typedef std::shared_ptr<Units> UnitsPtr; /**< Type definition for shared units pointer. */
+class Variable; /**< Forward declaration of Variable class. */
+typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
 
 }
 
