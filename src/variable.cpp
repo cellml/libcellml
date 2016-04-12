@@ -28,8 +28,7 @@ namespace libcellml {
  */
 struct Variable::VariableImpl
 {
-    bool mInitialised = false; /**< Flag to determine if this Variable has had an initial_value set.*/
-    double mInitialValue; /**< Initial value for this Variable.*/
+    std::string mInitialValue = ""; /**< Initial value for this Variable.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
 
@@ -79,10 +78,8 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getUnits() != nullptr) {
             repr += " units=\"" + getUnits()->getName() + "\"";
         }
-        if (isInitialised()) {
-            std::ostringstream strs;
-            strs << mPimpl->mInitialValue;
-            repr += " initial_value=\"" + strs.str() + "\"";
+        if (getInitialValue().length()) {
+            repr += " initial_value=\"" + getInitialValue() + "\"";
         }
         repr += "/>";
     }
@@ -99,30 +96,26 @@ UnitsPtr Variable::getUnits() const
     return mPimpl->mUnits;
 }
 
-void Variable::setInitialValue(double initialValue)
+void Variable::setInitialValue(const std::string initialValue)
 {
     mPimpl->mInitialValue = initialValue;
-    mPimpl->mInitialised = true;
+}
+
+void Variable::setInitialValue(double initialValue)
+{
+    std::ostringstream strs;
+    strs << initialValue;
+    mPimpl->mInitialValue = strs.str();
 }
 
 void Variable::setInitialValue(const VariablePtr &referenceVariable)
 {
-    mPimpl->mInitialValue = referenceVariable->getInitialValue();
-    mPimpl->mInitialised = true;
+    mPimpl->mInitialValue = referenceVariable->getName();
 }
 
-double Variable::getInitialValue()
+std::string Variable::getInitialValue() const
 {
-    if (isInitialised()) {
-        return mPimpl->mInitialValue;
-    } else {
-        throw std::out_of_range("The initial value for this Variable has not been set.");
-    }
-}
-
-bool Variable::isInitialised() const
-{
-    return mPimpl->mInitialised;
+    return mPimpl->mInitialValue;
 }
 
 }

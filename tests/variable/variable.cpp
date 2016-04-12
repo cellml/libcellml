@@ -90,17 +90,27 @@ TEST(Variable, setUnitsAndName) {
 }
 
 TEST(Variable, setInitialValue) {
+    const std::string e = "<variable initial_value=\"0.0\"/>";
+    libcellml::Variable v;
+    v.setInitialValue("0.0");
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInitialValueDouble) {
     const std::string e = "<variable initial_value=\"0\"/>";
     libcellml::Variable v;
-    v.setInitialValue(0.0);
+    double value = 0.0;
+    v.setInitialValue(value);
     std::string a = v.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInitialValueByRef) {
-    const std::string e = "<variable initial_value=\"1.1\"/>";
+    const std::string e = "<variable initial_value=\"referencedVariable\"/>";
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    v1->setInitialValue(1.1);
+    v1->setInitialValue("1.1");
+    v1->setName("referencedVariable");
     libcellml::Variable v2;
     v2.setInitialValue(v1);
     std::string a = v2.serialise(libcellml::FORMAT_XML);
@@ -109,14 +119,14 @@ TEST(Variable, setInitialValueByRef) {
 
 TEST(Variable, getUnsetInitialValue) {
     libcellml::Variable v;
-    EXPECT_THROW(v.getInitialValue(), std::out_of_range);
+    EXPECT_EQ(v.getInitialValue(), "");
 }
 
 TEST(Variable, getSetInitialValue) {
     libcellml::Variable v;
-    double e = 0.0;
+    std::string e = "0.0";
     v.setInitialValue(e);
-    double a = v.getInitialValue();
+    std::string a = v.getInitialValue();
     EXPECT_EQ(e, a);
 }
 
@@ -345,8 +355,8 @@ TEST(Variable, modelTwoNamedInitialisedVariables) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
                 "<component name=\"" + in + "\">"
-                    "<variable name=\"variable1\" initial_value=\"1\"/>"
-                    "<variable name=\"variable2\" initial_value=\"-1\"/>"
+                    "<variable name=\"variable1\" initial_value=\"1.0\"/>"
+                    "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
                 "</component>"
             "</model>";
 
@@ -358,12 +368,12 @@ TEST(Variable, modelTwoNamedInitialisedVariables) {
 
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     v1->setName("variable1");
-    v1->setInitialValue(1.0);
+    v1->setInitialValue("1.0");
     c->addVariable(v1);
 
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     v2->setName("variable2");
-    v2->setInitialValue(-1.0);
+    v2->setInitialValue("-1.0");
     c->addVariable(v2);
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
@@ -377,7 +387,7 @@ TEST(Variable, modelTwoNamedInitialisedVariablesOneReferenced) {
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
                 "<component name=\"" + in + "\">"
                     "<variable name=\"variable1\" initial_value=\"1\"/>"
-                    "<variable name=\"variable2\" initial_value=\"1\"/>"
+                    "<variable name=\"variable2\" initial_value=\"variable1\"/>"
                 "</component>"
             "</model>";
 

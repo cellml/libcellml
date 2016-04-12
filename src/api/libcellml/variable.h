@@ -55,8 +55,20 @@ public:
     UnitsPtr getUnits() const;
 
     /**
+     * @brief Set the initial value for this variable using a string.
+     * Set the initial value for this variable using a string.
+     *
+     * @overload
+     * @sa getInitialValue
+     * @param initialValue the initial value to set.
+     */
+    void setInitialValue(const std::string initialValue);
+
+    /**
      * @brief Set the initial value for this variable using a real number.
      * Set the initial value for this variable using a real number.
+     *
+     * @overload
      * @sa getInitialValue
      * @param initialValue the initial value to set.
      */
@@ -77,15 +89,7 @@ public:
      * Get the real number initial value for this variable.
      * @sa setInitialValue
      */
-    double getInitialValue();
-
-    /**
-     * @brief Test to determine if Variable has been initialised.
-     * Test to determine if Variable has been initialised; return True if it has
-     * and False otherwise.
-     * @return True if Variable has been initialised, False otherwise.
-     */
-    bool isInitialised() const;
+    std::string getInitialValue() const;
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
