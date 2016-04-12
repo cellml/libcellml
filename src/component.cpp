@@ -146,7 +146,7 @@ std::string Component::doSerialisation(FORMATS format) const
         if (variableCount() > 0) {
             endTag = true;
             repr += ">";
-            for(size_t i = 0; i < variableCount(); i++) {
+            for (size_t i = 0; i < variableCount(); ++i) {
                 repr += getVariable(i)->serialise(format);
             }
         }

@@ -154,9 +154,9 @@ TEST(Variable, addTwoVariables) {
 TEST(Variable, addVariables) {
 	const std::string e =
 		"<component>"
-		"<variable name=\"var1\" units=\"dimensionless\"/>"
-		"<variable name=\"var2\"/>"
-		"<variable name=\"var3\"/>"
+            "<variable name=\"var1\" units=\"dimensionless\"/>"
+            "<variable name=\"var2\"/>"
+            "<variable name=\"var3\"/>"
 		"</component>";
 
 	libcellml::Component c;
