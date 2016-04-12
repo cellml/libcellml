@@ -156,7 +156,8 @@ TEST(Variable, addVariables) {
 		"<component>"
             "<variable name=\"var1\" units=\"dimensionless\"/>"
             "<variable name=\"var2\"/>"
-            "<variable name=\"var3\"/>"
+            "<variable units=\"dimensionless\"/>"
+            "<variable/>"
 		"</component>";
 
 	libcellml::Component c;
@@ -166,14 +167,16 @@ TEST(Variable, addVariables) {
 	libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
 	v2->setName("var2");
 	libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
-	v3->setName("var3");
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
 	c.addVariable(v1);
 	c.addVariable(v2);
 	c.addVariable(v3);
+    c.addVariable(v4);
 
 	libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 	u->setName("dimensionless");
 	v1->setUnits(u);
+    v3->setUnits(u);
 
 	std::string a = c.serialise(libcellml::FORMAT_XML);
 	EXPECT_EQ(e, a);
