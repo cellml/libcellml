@@ -65,7 +65,8 @@ set(HEADER_FILES
   ${LIBCELLML_CONFIG_H}
 )
 
-add_compiler_export_flags()
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 add_library(cellml
   ${SOURCE_FILES}
