@@ -111,6 +111,23 @@ TEST(Variable, addVariable) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, addVariableToUnnamedComponent) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<component>"
+                "<variable name=\"" + in + "\"/>"
+             "</component>";
+
+    libcellml::Component c;
+
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(in);
+    c.addVariable(v);
+
+    std::string a = c.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Variable, addTwoVariables) {
     const std::string in = "valid_name";
     const std::string e =
