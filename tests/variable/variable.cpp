@@ -89,7 +89,7 @@ TEST(Variable, setUnitsAndName) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, setInitialValue) {
+TEST(Variable, setInitialValueByString) {
     const std::string e = "<variable initial_value=\"0.0\"/>";
     libcellml::Variable v;
     v.setInitialValue("0.0");
@@ -97,7 +97,7 @@ TEST(Variable, setInitialValue) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, setInitialValueDouble) {
+TEST(Variable, setInitialValueByDouble) {
     const std::string e = "<variable initial_value=\"0\"/>";
     libcellml::Variable v;
     double value = 0.0;
@@ -106,10 +106,9 @@ TEST(Variable, setInitialValueDouble) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, setInitialValueByRef) {
+TEST(Variable, setInitialValueByReference) {
     const std::string e = "<variable initial_value=\"referencedVariable\"/>";
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    v1->setInitialValue("1.1");
     v1->setName("referencedVariable");
     libcellml::Variable v2;
     v2.setInitialValue(v1);
@@ -175,7 +174,7 @@ TEST(Variable, addTwoVariables) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, twoInitialisedVariables) {
+TEST(Variable, componentWithTwoVariablesWithInitialValues) {
     const std::string in = "valid_name";
     const std::string e =
             "<component name=\"" + in + "\">"
@@ -349,7 +348,7 @@ TEST(Variable, modelInvalidUnitsName) {
     EXPECT_EQ("invalid name", u->getName());
 }
 
-TEST(Variable, modelTwoNamedInitialisedVariables) {
+TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
