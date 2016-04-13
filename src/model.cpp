@@ -65,7 +65,7 @@ std::string Model::doSerialisation(libcellml::FORMATS format) const
     std::stack<size_t> indeciesStack;
     std::stack<ComponentPtr> componentStack;
     bool incrementComponent = false;
-    for(size_t i = 0; i < componentCount(); ++i) {
+    for (size_t i = 0; i < componentCount(); ++i) {
         ComponentPtr comp = getComponent(i);
         ComponentPtr modelComponent = comp;
         size_t index = 0;
@@ -132,7 +132,7 @@ std::string Model::doSerialisation(libcellml::FORMATS format) const
         repr += serialiseUnits(format);
 
         // Serialize components of the model, imported components have already been dealt with at this point.
-        for(size_t i = 0; i < componentCount(); ++i) {
+        for (size_t i = 0; i < componentCount(); ++i) {
             repr += getComponent(i)->serialise(format);
         }
         repr += "</model>";
