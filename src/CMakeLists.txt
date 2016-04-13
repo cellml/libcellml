@@ -72,10 +72,6 @@ add_library(cellml
   ${API_HEADER_FILES}
 )
 
-set_target_properties(cellml PROPERTIES
-  CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1)
-
 generate_export_header(cellml EXPORT_FILE_NAME ${CELLML_EXPORT_H} BASE_NAME LIBCELLML)
 
 target_include_directories(cellml
@@ -91,7 +87,9 @@ target_include_directories(cellml
 
 set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11
-  CXX_STANDARD_REQUIRED ON)
+  CXX_STANDARD_REQUIRED ON
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN 1)
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
