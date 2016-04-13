@@ -152,34 +152,35 @@ TEST(Variable, addTwoVariables) {
 }
 
 TEST(Variable, addVariables) {
-	const std::string e =
-		"<component>"
+    const std::string e =
+        "<component>"
             "<variable name=\"var1\" units=\"dimensionless\"/>"
             "<variable name=\"var2\"/>"
             "<variable units=\"dimensionless\"/>"
             "<variable/>"
-		"</component>";
+        "</component>";
 
-	libcellml::Component c;
+    libcellml::Component c;
 
-	libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-	v1->setName("var1");
-	libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-	v2->setName("var2");
-	libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("var1");
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("var2");
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
-	c.addVariable(v1);
-	c.addVariable(v2);
-	c.addVariable(v3);
+
+    c.addVariable(v1);
+    c.addVariable(v2);
+    c.addVariable(v3);
     c.addVariable(v4);
 
-	libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-	u->setName("dimensionless");
-	v1->setUnits(u);
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("dimensionless");
+    v1->setUnits(u);
     v3->setUnits(u);
 
-	std::string a = c.serialise(libcellml::FORMAT_XML);
-	EXPECT_EQ(e, a);
+    std::string a = c.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Variable, removeVariable) {
