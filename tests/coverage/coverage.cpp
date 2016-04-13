@@ -116,7 +116,7 @@ TEST(Coverage, prefixToString) {
          libcellml::PREFIX_ZEPTO,
          libcellml::PREFIX_ZETTA
         };
-    for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); i++) {
+    for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); ++i) {
         std::string prefix = prefix_str[i];
         libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
         u->setName("abcdefg");

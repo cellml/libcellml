@@ -110,7 +110,7 @@ std::string Units::doSerialisation(libcellml::FORMATS format) const
                     repr += "/>";
                 } else {
                     repr += ">";
-                    for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
+                    for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
                         repr += "<unit";
                         Unit u = mPimpl->mUnits[i];
                         if (u.mExponent != 1.0) {

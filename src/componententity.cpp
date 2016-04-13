@@ -87,7 +87,7 @@ std::string ComponentEntity::serialiseUnits(FORMATS format) const
     std::string repr = "";
 
     if (format == FORMAT_XML) {
-        for(std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
+        for(std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
             repr += mPimpl->mUnits[i]->serialise(format);;
         }
     }
@@ -111,7 +111,7 @@ std::string ComponentEntity::serialiseEncapsulation(libcellml::FORMATS format) c
             }
             encaps += ">";
         }
-        for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
+        for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); ++i) {
             std::string comp = mPimpl->mComponents[i]->serialise(format);
             std::size_t found = comp.find(encaps_tag);
             if (found == std::string::npos) {
