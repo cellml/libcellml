@@ -142,12 +142,12 @@ std::string Component::doSerialisation(FORMATS format) const
         std::string componentName = getName();
         if (componentName.length()) {
             repr += " name=\"" + componentName + "\"";
-            if (variableCount() > 0) {
-                endTag = true;
-                repr += ">";
-                for(size_t i = 0; i < variableCount(); i++) {
-                    repr += getVariable(i)->serialise(format);
-                }
+        }
+        if (variableCount() > 0) {
+            endTag = true;
+            repr += ">";
+            for (size_t i = 0; i < variableCount(); ++i) {
+                repr += getVariable(i)->serialise(format);
             }
         }
         if (endTag) {
