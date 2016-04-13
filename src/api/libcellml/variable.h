@@ -60,9 +60,9 @@ public:
      *
      * @overload
      * @sa getInitialValue
-     * @param initialValue the initial value to set.
+     * @param initialValue The initial value to set.
      */
-    void setInitialValue(const std::string initialValue);
+    void setInitialValue(const std::string &initialValue);
 
     /**
      * @brief Set the initial value for this variable using a real number.
@@ -70,7 +70,7 @@ public:
      *
      * @overload
      * @sa getInitialValue
-     * @param initialValue the initial value to set.
+     * @param initialValue The initial value to set.
      */
     void setInitialValue(double initialValue);
 
@@ -80,7 +80,7 @@ public:
      *
      * @overload
      * @sa getInitialValue
-     * @param v the variable reference to use to set the initial value.
+     * @param v The variable reference to use to set the initial value.
      */
     void setInitialValue(const VariablePtr &v);
 

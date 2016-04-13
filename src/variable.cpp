@@ -96,7 +96,7 @@ UnitsPtr Variable::getUnits() const
     return mPimpl->mUnits;
 }
 
-void Variable::setInitialValue(const std::string initialValue)
+void Variable::setInitialValue(const std::string &initialValue)
 {
     mPimpl->mInitialValue = initialValue;
 }
@@ -108,9 +108,9 @@ void Variable::setInitialValue(double initialValue)
     mPimpl->mInitialValue = strs.str();
 }
 
-void Variable::setInitialValue(const VariablePtr &referenceVariable)
+void Variable::setInitialValue(const VariablePtr &v)
 {
-    mPimpl->mInitialValue = referenceVariable->getName();
+    mPimpl->mInitialValue = v->getName();
 }
 
 std::string Variable::getInitialValue() const
