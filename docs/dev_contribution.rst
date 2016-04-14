@@ -59,7 +59,7 @@ Test Driven Development
 
 Test driven development entails writing a test that covers the intended functionality (this may require a suite of tests to be written) and no more.  The tests will require some skeleton implementation so that the test(s) can compile but by definition not pass, at least not pass all the tests.  The purpose of this is two-fold: 1. writing the test(s) first sets out the intended design which can be shared through a pull request; and  2. the skeleton implementation will include the documentation clearly describing the intended purpose.  Following this contribution process allows others to comment and make corrections before time is spent on the functional code. 
 
-It may be necessary to refactor the current desgin to enable the easiest possible way to add the new feature.  This is a good thing as the quality of the design improves this makes it easier to work with in the future.  Refactoring means improving the code without adding features, and the tests provide validation that the refactored code performs as well as before.
+It may be necessary to refactor the current design to enable the easiest possible way to add the new feature.  This is a good thing as the quality of the design improves this makes it easier to work with in the future.  Refactoring means improving the code without adding features, and the tests provide validation that the refactored code performs as well as before.
 
 For simple or obvious bugs which have fallen through the testing gaps just the implementation is fine.
 
