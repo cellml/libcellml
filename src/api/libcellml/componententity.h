@@ -175,9 +175,9 @@ public:
     void replaceComponent(const std::string &name, const ComponentPtr &c);
 
     /**
-     * @brief get the number of components in the component.
+     * @brief Get the number of components in the component.
      * Returns the number of components the component directly contains.
-     * @return the number of components.
+     * @return The number of components.
      */
     size_t componentCount() const;
 
@@ -194,7 +194,7 @@ protected:
     /**
      * @brief Protected units serialisation.
      * @param format The format to serialise to.
-     * @return the string representation of the serialised units.
+     * @return The string representation of the serialised units.
      */
     std::string serialiseUnits(FORMATS format) const;
 

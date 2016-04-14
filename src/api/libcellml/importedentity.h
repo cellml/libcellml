@@ -42,7 +42,7 @@ public:
      * @brief Test if this entity is an imported entity.
      * Method to test if this entity is an imported entity.  Returns
      * true if the import is not the nullptr otherwise return false.
-     * @return true if the import is not the nullptr, false otherwise.
+     * @return @c true if the import is not the nullptr, @c false otherwise.
      */
     bool isImport() const;
 
@@ -50,7 +50,7 @@ public:
      * @brief Get the import set.
      * Get the import set, if no import is set nullptr is returned.
      * @sa setImport
-     * @return the shared pointer for the import, if no import is set returns nullptr.
+     * @return The shared pointer for the import, if no import is set returns nullptr.
      */
     ImportPtr getImport() const;
 
@@ -66,7 +66,7 @@ public:
      * @brief Get the import reference.
      * Get the reference to the entity in the imported model.
      * @sa setImportReference
-     * @return the reference to the entity in the imported model, the empty
+     * @return The reference to the entity in the imported model, the empty
      * string if it is not set.
      */
     std::string getImportReference() const;
@@ -84,7 +84,7 @@ private:
     void swap(ImportedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ImportedEntityImpl* mPimpl; /**< Private member to implementation pointer */
+    ImportedEntityImpl* mPimpl; /**< Private member to implementation pointer. */
 
 };
 

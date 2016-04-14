@@ -51,7 +51,7 @@ public:
     /**
      * @brief Get the name of the Entity
      * Gets the name of the Entity as a string.
-     * @return std::string representation of the Entity name.
+     * @return @c std::string representation of the Entity name.
      */
     std::string getName() const {
         return mName;
