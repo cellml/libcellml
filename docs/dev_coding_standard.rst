@@ -10,19 +10,18 @@ In essence we seek code that looks good, is easy to read and has great documenta
 The following is a list of exceptions/deviations from the google style guide that have been agreed upon for libCellML software development purposes.  Think of it like case-law.
 
  * lower camel case class method names
- * indent code 4 spaces at a time (no tabs)
+ * Indent core code 4 spaces at a time (no tabs); for CMake files use 2-space indentation.
 
 Doxygen Comments
 ================
 
- * Doxygen comments should be sentence-style: beginning with capitalisation and ending with punctuation. However, they do not need to form grammatically correct sentences.
-
-   * An exception for capitalisation is code-words (e.g., true, false, std::string), which should be styled as typewriter text with a preceding "@c".
+ * Code-words (e.g., true/false, std::string) should be styled as typewriter text with a preceding "@c".
+ * Doxygen comments should be sentence-style: beginning with capitalisation (except code-words) and ending with punctuation. However, they do not need to form grammatically correct sentences.
  
 Test Naming
 ===========
 
- * lower camel case 
+ * Names should respect lower camel case convention.
  * Names should be explicit enough to identify the specific code features they cover.
 
 Variable Naming
