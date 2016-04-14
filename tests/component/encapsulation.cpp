@@ -31,7 +31,7 @@ TEST(Encapsulation, serialise) {
     EXPECT_EQ(e_child, a_child);
 }
 
-TEST(Encapsulation, serialise_with_names) {
+TEST(Encapsulation, serialiseWithNames) {
     libcellml::Component parent;
     parent.setName("parent_component");
     libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
@@ -45,7 +45,7 @@ TEST(Encapsulation, serialise_with_names) {
     EXPECT_EQ(e_child, a_child);
 }
 
-TEST(Encapsulation, reparent_component) {
+TEST(Encapsulation, reparentComponent) {
     const std::string e_parent_1 = "<component name=\"parent_component\"/><component name=\"child1\"/><component name=\"child2\"/><component name=\"child3\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"/><component_ref component=\"child2\"/><component_ref component=\"child3\"/></component_ref></encapsulation>";
     const std::string e_parent_2 = "<component name=\"parent_component\"/><component name=\"child1\"/><component name=\"child2\"/><component name=\"child3\"/><component name=\"child3\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"/><component_ref component=\"child2\"><component_ref component=\"child3\"/></component_ref><component_ref component=\"child3\"/></component_ref></encapsulation>";
 
@@ -81,7 +81,7 @@ TEST(Encapsulation, reparent_component) {
     // other options?
 }
 
-TEST(Encapsulation, hierarchy_waterfall) {
+TEST(Encapsulation, hierarchyWaterfall) {
 
     libcellml::Component parent;
     parent.setName("parent_component");
@@ -100,7 +100,7 @@ TEST(Encapsulation, hierarchy_waterfall) {
     EXPECT_EQ(e_parent, a_parent);
 }
 
-TEST(Encapsulation, hierarchy_circular) {
+TEST(Encapsulation, hierarchyCircular) {
     const std::string e_parent_1 = "<component name=\"parent_component\"/><component name=\"child1\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"/></component_ref></encapsulation>";
     const std::string e_parent_2 = "<component name=\"parent_component\"/><component name=\"child1\"/><component name=\"child2\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"><component_ref component=\"child2\"/></component_ref></component_ref></encapsulation>";
 

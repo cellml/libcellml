@@ -26,7 +26,7 @@ TEST(Units, serialise) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, valid_name) {
+TEST(Units, validName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -54,7 +54,7 @@ TEST(Units, valid_name) {
     EXPECT_EQ("valid_name", u->getName());
 }
 
-TEST(Units, invalid_name) {
+TEST(Units, invalidName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -74,7 +74,7 @@ TEST(Units, invalid_name) {
     EXPECT_EQ("invalid name", u->getName());
 }
 
-TEST(Units, compound_units_raw) {
+TEST(Units, compoundUnitsRaw) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -100,7 +100,7 @@ TEST(Units, compound_units_raw) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, compound_units_using_defines) {
+TEST(Units, compoundUnitsUsingDefines) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -170,7 +170,7 @@ TEST(Units, multiply) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, new_base_unit) {
+TEST(Units, newBaseUnit) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"

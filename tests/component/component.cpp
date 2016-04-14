@@ -26,7 +26,7 @@ TEST(Component, serialise) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Component, valid_name) {
+TEST(Component, validName) {
     const std::string in = "valid_name";
     const std::string e = "<component name=\"" + in + "\"/>";
     libcellml::Component c;
@@ -36,7 +36,7 @@ TEST(Component, valid_name) {
     EXPECT_EQ("valid_name", c.getName());
 }
 
-TEST(Component, invalid_name) {
+TEST(Component, invalidName) {
     const std::string in = "invalid name -";
     const std::string e = "<component name=\"" + in + "\"/>";
     libcellml::Component c;
@@ -46,7 +46,7 @@ TEST(Component, invalid_name) {
     EXPECT_EQ("invalid name -", c.getName());
 }
 
-TEST(Component, unset_name) {
+TEST(Component, setAndUnsetName) {
     const std::string in = "name";
     const std::string eName = "<component name=\"" + in + "\"/>";
     const std::string e = "<component/>";
@@ -61,7 +61,7 @@ TEST(Component, unset_name) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Component, count) {
+TEST(Component, addAndCountChildren) {
     libcellml::Component parent;
     parent.setName("parent");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -102,7 +102,7 @@ TEST(Component, contains) {
     EXPECT_TRUE(c.containsComponent("child2"));
 }
 
-TEST(Component, add) {
+TEST(Component, addChildrenAndSerialise) {
     const std::string e1 = "<component name=\"child0\"/><component name=\"child1\"/><component name=\"child2\"/><encapsulation><component_ref component=\"child0\"><component_ref component=\"child1\"><component_ref component=\"child2\"/></component_ref></component_ref></encapsulation>";
     const std::string e2 = "<component name=\"child0\"/><component name=\"child1\"/><component name=\"child2\"/><component name=\"child3\"/><encapsulation><component_ref component=\"child0\"><component_ref component=\"child1\"><component_ref component=\"child2\"><component_ref component=\"child3\"/></component_ref></component_ref></component_ref></encapsulation>";
     libcellml::ComponentPtr c0 = std::make_shared<libcellml::Component>();
@@ -154,7 +154,7 @@ TEST(Component, remove) {
     EXPECT_THROW(c.removeComponent("child3"), std::out_of_range);
 }
 
-TEST(Component, getcomponent) {
+TEST(Component, getComponentMethods) {
     const std::string e1 = "<component/><component name=\"childA\"/><encapsulation><component_ref><component_ref component=\"childA\"/></component_ref></encapsulation>";
     const std::string e2 = "<component name=\"parent\"/><component name=\"gus\"/><component name=\"childB\"/><component name=\"child3\"/><component name=\"gus\"/><component name=\"childB\"/><component name=\"child3\"/><encapsulation><component_ref component=\"parent\"><component_ref component=\"gus\"><component_ref component=\"childB\"/><component_ref component=\"child3\"/></component_ref><component_ref component=\"gus\"><component_ref component=\"childB\"/><component_ref component=\"child3\"/></component_ref></component_ref></encapsulation>";
     libcellml::Component c;
@@ -199,7 +199,7 @@ TEST(Component, getcomponent) {
     EXPECT_EQ(e2, a);
 }
 
-TEST(Component, take) {
+TEST(Component, takeComponentMethods) {
     const std::string e = "<component/>";
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -226,7 +226,7 @@ TEST(Component, take) {
     EXPECT_THROW(c.takeComponent("child4"), std::out_of_range);
 }
 
-TEST(Component, replace) {
+TEST(Component, replaceComponentMethods) {
     const std::string e_orig = "<component name=\"parent\"/><component/><component name=\"child2\"/><encapsulation><component_ref component=\"parent\"><component_ref/><component_ref component=\"child2\"/></component_ref></encapsulation>";
     const std::string e_after = "<component name=\"parent\"/><component/><component name=\"child3\"/><encapsulation><component_ref component=\"parent\"><component_ref/><component_ref component=\"child3\"/></component_ref></encapsulation>";
     const std::string e_post = "<component name=\"parent\"/><component name=\"child4\"/><component name=\"child3\"/><encapsulation><component_ref component=\"parent\"><component_ref component=\"child4\"/><component_ref component=\"child3\"/></component_ref></encapsulation>";
