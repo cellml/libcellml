@@ -21,7 +21,7 @@ Doxygen Comments
 Test Naming
 ===========
 
- * Names should respect lower camel case convention.
+ * Names should respect the lower camel case convention.
  * Names should be explicit enough to identify the specific code features they cover.
 
 Variable Naming
