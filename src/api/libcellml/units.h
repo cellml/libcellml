@@ -85,8 +85,8 @@ public:
 
     /**
      * @brief Test to determine if Units is a base unit.
-     * Test to determine if Units is a base unit, return True if it is
-     * a base unit and False otherwise.
+     * Test to determine if Units is a base unit, return @c true if it is
+     * a base unit and @c false otherwise.
      * @return @c true if Units is a base unit, @c false otherwise.
      */
     bool isBaseUnit() const;

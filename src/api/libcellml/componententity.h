@@ -82,8 +82,8 @@ public:
     /**
      * @brief Tests to see if the component is contained within the Component.
      * Tests to see if the component with the given name 'name' is contained
-     * within the Component.  Returns true if the component is in the Component and
-     * false otherwise.
+     * within the Component.  Returns @c true if the component is in the Component and
+     * @c false otherwise.
      * @param name The name of the Component to test for existence in the Component.
      * @return @c true if the named Component is in the model and @c false otherwise.
      */

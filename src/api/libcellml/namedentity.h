@@ -39,7 +39,7 @@ public:
     NamedEntity& operator=(NamedEntity n); /**< Assignment operator */
 
     /**
-     * @brief Set the name for the Entity
+     * @brief Set the name for the Entity.
      * This method sets the name parameter of the Entity.  It does not check
      * the validity of the name.
      * @param name A string to represent the name.
@@ -49,7 +49,7 @@ public:
     }
 
     /**
-     * @brief Get the name of the Entity
+     * @brief Get the name of the Entity.
      * Gets the name of the Entity as a string.
      * @return @c std::string representation of the Entity name.
      */

@@ -41,22 +41,22 @@ public:
     /**
      * @brief Test if this entity is an imported entity.
      * Method to test if this entity is an imported entity.  Returns
-     * true if the import is not the nullptr otherwise return false.
-     * @return @c true if the import is not the nullptr, @c false otherwise.
+     * @c true if the import is not the @c nullptr otherwise return @c false.
+     * @return @c true if the import is not the @c nullptr, @c false otherwise.
      */
     bool isImport() const;
 
     /**
      * @brief Get the import set.
-     * Get the import set, if no import is set nullptr is returned.
+     * Get the import set, if no import is set @c nullptr is returned.
      * @sa setImport
-     * @return The shared pointer for the import, if no import is set returns nullptr.
+     * @return The shared pointer for the import, if no import is set returns @c nullptr.
      */
     ImportPtr getImport() const;
 
     /**
      * @brief Set the import.
-     * Set the import for the imported entity.  Set to nullptr to unset the import.
+     * Set the import for the imported entity.  Set to @c nullptr to unset the import.
      * @sa getImport
      * @param imp The import to set.
      */

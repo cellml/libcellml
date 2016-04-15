@@ -40,7 +40,7 @@ public:
 
     /**
      * @brief Set the units for this variable.
-     * Set the units for this variable. Set to nullptr to unset the units.
+     * Set the units for this variable. Set to @c nullptr to unset the units.
      * @sa getUnits
      * @param u The units to set.
      */
@@ -48,7 +48,7 @@ public:
 
     /**
      * @brief Get the units for this variable.
-     * Get the units for this variable.  If no units are set nullptr is returned.
+     * Get the units for this variable.  If no units are set @c nullptr is returned.
      * @sa setUnits
      * @param u The units to get.
      */
