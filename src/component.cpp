@@ -44,7 +44,6 @@ std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const 
 Component::Component()
     : mPimpl(new ComponentImpl())
 {
-
 }
 
 Component::~Component()

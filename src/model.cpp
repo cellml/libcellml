@@ -27,24 +27,20 @@ namespace libcellml {
 
 Model::Model()
 {
-
 }
 
 Model::~Model()
 {
-
 }
 
 Model::Model(const Model& rhs)
     : ComponentEntity(rhs)
 {
-
 }
 
 Model::Model(Model &&rhs)
     : ComponentEntity(std::move(rhs))
 {
-
 }
 
 Model& Model::operator=(Model m)
@@ -53,7 +49,7 @@ Model& Model::operator=(Model m)
     return *this;
 }
 
-std::string Model::doSerialisation(libcellml::FORMATS format) const
+std::string Model::doSerialisation(FORMATS format) const
 {
     typedef std::pair <std::string, std::string> ImportNamePair;
     typedef std::vector<ImportNamePair>::const_iterator VectorPairIterator;
