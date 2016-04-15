@@ -123,8 +123,8 @@ std::string Model::doSerialisation(libcellml::FORMATS format) const
         for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
         {
             repr += "<import xlink:href=\"" + iter->first->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">";
-            for (VectorPairIterator vector_iter = iter->second.begin(); vector_iter != iter->second.end(); ++vector_iter) {
-                repr += "<component component_ref=\"" + std::get<0>(*vector_iter) + "\" name=\"" + std::get<1>(*vector_iter) + "\"/>";
+            for (VectorPairIterator vectorIter = iter->second.begin(); vectorIter != iter->second.end(); ++vectorIter) {
+                repr += "<component component_ref=\"" + std::get<0>(*vectorIter) + "\" name=\"" + std::get<1>(*vectorIter) + "\"/>";
             }
             repr += "</import>";
         }
