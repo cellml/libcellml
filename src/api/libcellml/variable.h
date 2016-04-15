@@ -39,6 +39,20 @@ public:
     Variable& operator=(Variable n); /**< Assignment operator */
 
     /**
+     * @brief The INTERFACE_TYPES enum.
+     * Enum describing the interface types that are available for
+     * a given Variable.
+     */
+    enum INTERFACE_TYPES
+    {
+        INTERFACE_TYPE_UNDEFINED,
+        INTERFACE_TYPE_NONE,
+        INTERFACE_TYPE_PRIVATE,
+        INTERFACE_TYPE_PUBLIC,
+        INTERFACE_TYPE_PUBLIC_AND_PRIVATE
+    };
+
+    /**
      * @brief Set the units for this variable.
      * Set the units for this variable. Set to @c nullptr to unset the units.
      * @sa getUnits
@@ -91,6 +105,24 @@ public:
      * @sa setInitialValue
      */
     std::string getInitialValue() const;
+
+    /**
+     * @brief Set the interface type for this Variable.
+     * Set the interface type for this variable from the available
+     * options in the INTERFACE_TYPES enum.
+     * @sa getInterfaceType
+     * @param interfaceType The interface type to set for this variable.
+     */
+    void setInterfaceType(const INTERFACE_TYPES interfaceType);
+
+    /**
+     * @brief Get the interface type for this Variable.
+     * Set the interface type for this variable from the available
+     * options in the INTERFACE_TYPES enum.
+     * @sa setInterfaceType
+     * @param interfaceType The interface type to set for this variable.
+     */
+    INTERFACE_TYPES getInterfaceType() const;
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
