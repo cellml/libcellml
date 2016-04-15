@@ -65,8 +65,6 @@ set(HEADER_FILES
   ${LIBCELLML_CONFIG_H}
 )
 
-add_compiler_export_flags()
-
 add_library(cellml
   ${SOURCE_FILES}
   ${HEADER_FILES}
@@ -89,7 +87,9 @@ target_include_directories(cellml
 
 set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11
-  CXX_STANDARD_REQUIRED ON)
+  CXX_STANDARD_REQUIRED ON
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN 1)
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
