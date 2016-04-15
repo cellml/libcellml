@@ -191,7 +191,7 @@ TEST(Variable, addTwoVariables) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, addVariables) {
+TEST(Variable, addVariablesWithAndWithoutNameAndUnits) {
     const std::string e =
         "<component>"
             "<variable name=\"var1\" units=\"dimensionless\"/>"
@@ -310,7 +310,7 @@ TEST(Variable, getVariableMethods) {
     EXPECT_EQ("variable4", a4);
 }
 
-TEST(Variable, modelValidVariableName) {
+TEST(Variable, modelWithComponentWithVariableWithValidName) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -339,7 +339,7 @@ TEST(Variable, modelValidVariableName) {
     EXPECT_EQ("valid_name", v->getName());
 }
 
-TEST(Variable, modelInvalidVariableName) {
+TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
     const std::string in = "invalid name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -368,7 +368,7 @@ TEST(Variable, modelInvalidVariableName) {
     EXPECT_EQ("invalid name", v->getName());
 }
 
-TEST(Variable, modelInvalidUnitsName) {
+TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsName) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -428,7 +428,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, modelTwoNamedInitialisedVariablesOneReferenced) {
+TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesOneReferenced) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

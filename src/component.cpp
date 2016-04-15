@@ -94,7 +94,7 @@ void Component::addVariable(const VariablePtr &v)
 void Component::removeVariable(const std::string &name)
 {
     auto result = mPimpl->findVariable(name);
-    if(result != mPimpl->mVariables.end()) {
+    if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
     } else {
         throw std::out_of_range("Named variable not found.");

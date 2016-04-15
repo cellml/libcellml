@@ -82,8 +82,8 @@ public:
     /**
      * @brief Tests to see if the component is contained within the Component.
      * Tests to see if the component with the given name 'name' is contained
-     * within the Component.  Returns true if the component is in the Component and
-     * false otherwise.
+     * within the Component.  Returns @c true if the component is in the Component and
+     * @c false otherwise.
      * @param name The name of the Component to test for existence in the Component.
      * @return @c true if the named Component is in the model and @c false otherwise.
      */
@@ -175,9 +175,9 @@ public:
     void replaceComponent(const std::string &name, const ComponentPtr &c);
 
     /**
-     * @brief get the number of components in the component.
+     * @brief Get the number of components in the component.
      * Returns the number of components the component directly contains.
-     * @return the number of components.
+     * @return The number of components.
      */
     size_t componentCount() const;
 
@@ -194,7 +194,7 @@ protected:
     /**
      * @brief Protected units serialisation.
      * @param format The format to serialise to.
-     * @return the string representation of the serialised units.
+     * @return The string representation of the serialised units.
      */
     std::string serialiseUnits(FORMATS format) const;
 
