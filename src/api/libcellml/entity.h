@@ -39,21 +39,21 @@ public:
     Entity& operator=(Entity e); /**< Assignment operator */
 
     /**
-     * @brief Serialise entity to std::string.
+     * @brief Serialise entity to @c std::string.
      * @param format The format to serialise the object to.
-     * @return std::string representation of the object.
+     * @return @c std::string representation of the object.
      */
     std::string serialise(libcellml::FORMATS format) const;
 
     /**
-     * @brief getParent returns the parent of the CellML Entity.
-     * @return a pointer to the entities parent if it has one,
+     * @brief Returns the parent of the CellML Entity.
+     * @return A pointer to the entities parent if it has one,
      * otherwise the null pointer.
      */
     void *getParent() const;
 
     /**
-     * @brief setParent sets the model as the parent of this entity.
+     * @brief Sets the model as the parent of this entity.
      * Set the parent of the entity to the model given.
      *
      * @param parent A raw pointer to a cellml::Model.
@@ -61,7 +61,7 @@ public:
     void setParent(Model *parent);
 
     /**
-     * @brief setParent sets the component as the parent of this entity.
+     * @brief Sets the component as the parent of this entity.
      * Set the parent of the entity to the component given.
      *
      * @overload
@@ -70,36 +70,36 @@ public:
     void setParent(Component *parent);
 
     /**
-     * @brief clearParent clear the pointer to the parent entity.
+     * @brief Clear the pointer to the parent entity.
      * Clears the pointer to the parent entity.
      */
     void clearParent();
 
     /**
-     * @brief hasParent test to see if the given component is a parent.
+     * @brief Test to see if the given component is a parent.
      * Tests the given raw component pointer to determine if the entity or
      * any of it's parent entities already has this component as a parent.
      * This allows for a test against creating cycles. If the given component
-     * is a parent of the current entity then the result is true otherwise the
+     * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
      * @param c The raw pointer to the component to test against.
-     * @return true if the entity has the given component as a parent, false otherwise.
+     * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
     bool hasParent(Component *c) const;
 
 private:
     /**
      * @brief Virtual serialise method to be implemented by derived classes.
-     * Virtual serialise method for serialising a CellML object to a std::string.
+     * Virtual serialise method for serialising a CellML object to a @c std::string.
      * @param format The format to serialise the object to.
-     * @return std::string representation of the object.
+     * @return @c std::string representation of the object.
      */
     virtual std::string doSerialisation(libcellml::FORMATS format) const;
 
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    Model *mParentModel; /**< Pointer to parent model */
-    Component *mParentComponent; /**< Pointer to component model */
+    Model *mParentModel; /**< Pointer to parent model. */
+    Component *mParentComponent; /**< Pointer to component model. */
 };
 
 }

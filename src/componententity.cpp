@@ -87,7 +87,7 @@ std::string ComponentEntity::serialiseUnits(FORMATS format) const
     std::string repr = "";
 
     if (format == FORMAT_XML) {
-        for(std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
+        for (std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
             repr += mPimpl->mUnits[i]->serialise(format);;
         }
     }
@@ -111,7 +111,7 @@ std::string ComponentEntity::serialiseEncapsulation(libcellml::FORMATS format) c
             }
             encaps += ">";
         }
-        for(std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); i++) {
+        for (std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); ++i) {
             std::string comp = mPimpl->mComponents[i]->serialise(format);
             std::size_t found = comp.find(encaps_tag);
             if (found == std::string::npos) {
@@ -132,7 +132,7 @@ std::string ComponentEntity::serialiseEncapsulation(libcellml::FORMATS format) c
             repr += comp;
         }
 
-        if(mPimpl->mComponents.size()) {
+        if (mPimpl->mComponents.size()) {
             encaps += "</component_ref>" + encaps_end_tag;
         }
         repr += encaps;
@@ -158,7 +158,7 @@ void ComponentEntity::doAddComponent(const ComponentPtr &c)
 void ComponentEntity::removeComponent(const std::string &name)
 {
     auto result = mPimpl->findComponent(name);
-    if(result != mPimpl->mComponents.end()) {
+    if (result != mPimpl->mComponents.end()) {
         mPimpl->mComponents.erase(result);
     } else {
         throw std::out_of_range("Named component not found.");
