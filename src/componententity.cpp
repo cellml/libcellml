@@ -95,7 +95,7 @@ std::string ComponentEntity::serialiseUnits(FORMATS format) const
     return repr;
 }
 
-std::string ComponentEntity::serialiseEncapsulation(libcellml::FORMATS format) const
+std::string ComponentEntity::serialiseEncapsulation(FORMATS format) const
 {
     const std::string encaps_tag = "<encapsulation>";
     const std::string encaps_end_tag = "</encapsulation>";

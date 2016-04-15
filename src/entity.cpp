@@ -25,12 +25,10 @@ Entity::Entity()
     : mParentModel(nullptr)
     , mParentComponent(nullptr)
 {
-
 }
 
 Entity::~Entity()
 {
-
 }
 
 Entity::Entity(const Entity& rhs)
@@ -57,7 +55,7 @@ void Entity::swap(Entity &rhs)
     std::swap(this->mParentModel, rhs.mParentModel);
 }
 
-std::string Entity::doSerialisation(libcellml::FORMATS /* format */) const
+std::string Entity::doSerialisation(FORMATS /* format */) const
 {
     return "";
 }
