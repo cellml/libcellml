@@ -119,7 +119,7 @@ public:
 private:
     void doAddComponent(const ComponentPtr &c);
 
-    std::string doSerialisation(libcellml::FORMATS format) const;
+    std::string doSerialisation(FORMATS format) const;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl* mPimpl; /**< Private member to implementation pointer */

@@ -94,7 +94,7 @@ void Units::swap(Units &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Units::doSerialisation(libcellml::FORMATS format) const
+std::string Units::doSerialisation(FORMATS format) const
 {
     std::string repr = "";
     if (format == FORMAT_XML) {
@@ -110,7 +110,7 @@ std::string Units::doSerialisation(libcellml::FORMATS format) const
                     repr += "/>";
                 } else {
                     repr += ">";
-                    for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); i++) {
+                    for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
                         repr += "<unit";
                         Unit u = mPimpl->mUnits[i];
                         if (u.mExponent != 1.0) {
@@ -268,8 +268,11 @@ std::string prefixToString(PREFIXES prefix)
         str = "tera";
         break;
     }
-    case PREFIX_UNIT: /* Should not ask for the string version of this.
+    case PREFIX_UNIT: { /* Should not ask for the string version of this.
 With the current codebase there is no way to trigger this case. */
+        str = "";
+        break;
+    }
     case PREFIX_YOCTO: {
         str = "yocto";
         break;

@@ -23,12 +23,10 @@ namespace libcellml {
 NamedEntity::NamedEntity()
     : mName("")
 {
-
 }
 
 NamedEntity::~NamedEntity()
 {
-
 }
 
 NamedEntity::NamedEntity(const NamedEntity& rhs)
@@ -48,6 +46,14 @@ NamedEntity& NamedEntity::operator=(NamedEntity n)
     Entity::operator= (n);
     n.swap(*this);
     return *this;
+}
+
+void NamedEntity::setName(const std::string &name) {
+    mName = name;
+}
+
+std::string NamedEntity::getName() const {
+    return mName;
 }
 
 void NamedEntity::swap(NamedEntity &rhs)

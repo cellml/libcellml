@@ -39,23 +39,19 @@ public:
     NamedEntity& operator=(NamedEntity n); /**< Assignment operator */
 
     /**
-     * @brief Set the name for the Entity
+     * @brief Set the name for the Entity.
      * This method sets the name parameter of the Entity.  It does not check
      * the validity of the name.
      * @param name A string to represent the name.
      */
-    void setName(const std::string &name) {
-        mName = name;
-    }
+    void setName(const std::string &name);
 
     /**
-     * @brief Get the name of the Entity
+     * @brief Get the name of the Entity.
      * Gets the name of the Entity as a string.
-     * @return std::string representation of the Entity name.
+     * @return @c std::string representation of the Entity name.
      */
-    std::string getName() const {
-        return mName;
-    }
+    std::string getName() const;
 
 private:
     void swap(NamedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */

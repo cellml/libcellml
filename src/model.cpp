@@ -27,24 +27,20 @@ namespace libcellml {
 
 Model::Model()
 {
-
 }
 
 Model::~Model()
 {
-
 }
 
 Model::Model(const Model& rhs)
     : ComponentEntity(rhs)
 {
-
 }
 
 Model::Model(Model &&rhs)
     : ComponentEntity(std::move(rhs))
 {
-
 }
 
 Model& Model::operator=(Model m)
@@ -53,7 +49,7 @@ Model& Model::operator=(Model m)
     return *this;
 }
 
-std::string Model::doSerialisation(libcellml::FORMATS format) const
+std::string Model::doSerialisation(FORMATS format) const
 {
     typedef std::pair <std::string, std::string> ImportNamePair;
     typedef std::vector<ImportNamePair>::const_iterator VectorPairIterator;
@@ -65,7 +61,7 @@ std::string Model::doSerialisation(libcellml::FORMATS format) const
     std::stack<size_t> indeciesStack;
     std::stack<ComponentPtr> componentStack;
     bool incrementComponent = false;
-    for(size_t i = 0; i < componentCount(); i++) {
+    for (size_t i = 0; i < componentCount(); ++i) {
         ComponentPtr comp = getComponent(i);
         ComponentPtr modelComponent = comp;
         size_t index = 0;
@@ -120,11 +116,11 @@ std::string Model::doSerialisation(libcellml::FORMATS format) const
         }
         repr += ">";
 
-        for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); iter++)
+        for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
         {
             repr += "<import xlink:href=\"" + iter->first->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">";
-            for (VectorPairIterator vector_iter = iter->second.begin(); vector_iter != iter->second.end(); vector_iter++) {
-                repr += "<component component_ref=\"" + std::get<0>(*vector_iter) + "\" name=\"" + std::get<1>(*vector_iter) + "\"/>";
+            for (VectorPairIterator vectorIter = iter->second.begin(); vectorIter != iter->second.end(); ++vectorIter) {
+                repr += "<component component_ref=\"" + std::get<0>(*vectorIter) + "\" name=\"" + std::get<1>(*vectorIter) + "\"/>";
             }
             repr += "</import>";
         }
@@ -132,7 +128,7 @@ std::string Model::doSerialisation(libcellml::FORMATS format) const
         repr += serialiseUnits(format);
 
         // Serialize components of the model, imported components have already been dealt with at this point.
-        for(size_t i = 0; i < componentCount(); i++) {
+        for (size_t i = 0; i < componentCount(); ++i) {
             repr += getComponent(i)->serialise(format);
         }
         repr += "</model>";

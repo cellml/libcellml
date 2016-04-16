@@ -40,7 +40,7 @@ public:
 
     /**
      * @brief Set the units for this variable.
-     * Set the units for this variable. Set to nullptr to unset the units.
+     * Set the units for this variable. Set to @c nullptr to unset the units.
      * @sa getUnits
      * @param u The units to set.
      */
@@ -48,42 +48,54 @@ public:
 
     /**
      * @brief Get the units for this variable.
-     * Get the units for this variable.  If no units are set nullptr is returned.
+     * Get the units for this variable.  If no units are set @c nullptr is returned.
      * @sa setUnits
      * @param u The units to get.
      */
     UnitsPtr getUnits() const;
 
     /**
+     * @brief Set the initial value for this variable using a string.
+     * Set the initial value for this variable using a string.
+     *
+     * @sa getInitialValue
+     * @param initialValue The initial value to set.
+     */
+    void setInitialValue(const std::string &initialValue);
+
+    /**
      * @brief Set the initial value for this variable using a real number.
      * Set the initial value for this variable using a real number.
+     * The real number value will be converted to and stored as a string.
+     *
+     * @overload
      * @sa getInitialValue
-     * @param initialValue the initial value to set.
+     * @param initialValue The initial value to set.
      */
     void setInitialValue(double initialValue);
 
     /**
      * @brief Set the initial value for this variable using a variable reference.
      * Set the initial value for this variable using a variable reference.
+     * The initial value will be set to the name of the referenced variable.
      *
      * @overload
      * @sa getInitialValue
-     * @param v the variable reference to use to set the initial value.
+     * @param variable The variable reference to use to set the initial value.
      */
-    void setInitialValue(const VariablePtr &v);
+    void setInitialValue(const VariablePtr &variable);
 
     /**
      * @brief Get the initial value for this variable.
      * Get the real number initial value for this variable.
      * @sa setInitialValue
      */
-    double getInitialValue();
-
+    std::string getInitialValue() const;
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    std::string doSerialisation(libcellml::FORMATS format) const;
+    std::string doSerialisation(FORMATS format) const;
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl* mPimpl; /**< Private member to implementation pointer */
