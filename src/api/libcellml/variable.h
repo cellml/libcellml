@@ -41,7 +41,7 @@ public:
     /**
      * @brief The INTERFACE_TYPES enum.
      * Enum describing the interface types that are available for
-     * a given Variable.
+     * a given variable.
      */
     enum INTERFACE_TYPES
     {
@@ -106,7 +106,7 @@ public:
     std::string getInitialValue() const;
 
     /**
-     * @brief Set the interface type for this Variable.
+     * @brief Set the interface type for this variable.
      * Set the interface type for this variable from the available
      * options in the INTERFACE_TYPES enum.
      * @sa getInterfaceType
@@ -115,11 +115,11 @@ public:
     void setInterfaceType(const INTERFACE_TYPES interfaceType);
 
     /**
-     * @brief Get the interface type for this Variable.
-     * Set the interface type for this variable from the available
+     * @brief Get the interface type for this variable.
+     * Get the interface type for this variable from the available
      * options in the INTERFACE_TYPES enum.
      * @sa setInterfaceType
-     * @param interfaceType The interface type to set for this variable.
+     * @param interfaceType The interface type to get for this variable.
      */
     INTERFACE_TYPES getInterfaceType() const;
 

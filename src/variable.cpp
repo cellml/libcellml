@@ -23,8 +23,8 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief Convert a INTERFACE_TYPES into it's string form.
- * Private function to convert a Variable INTERFACE_TYPES into it's string form.
+ * @brief Convert a INTERFACE_TYPES into its string form.
+ * Private function to convert a Variable INTERFACE_TYPES into its string form.
  *
  * @param interfaceType The interface type to convert.
  * @return A @c std::string form of the given interface type.

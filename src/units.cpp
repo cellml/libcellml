@@ -23,8 +23,8 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief Convert a PREFIXES into it's string form.
- * Private function to convert a PREFIXES into it's string form.
+ * @brief Convert a PREFIXES into its string form.
+ * Private function to convert a PREFIXES into its string form.
  *
  * @param prefix The prefix to convert.
  * @return A std::string form of the given prefix.
