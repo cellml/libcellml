@@ -45,7 +45,6 @@ public:
      */
     enum INTERFACE_TYPES
     {
-        INTERFACE_TYPE_UNDEFINED,
         INTERFACE_TYPE_NONE,
         INTERFACE_TYPE_PRIVATE,
         INTERFACE_TYPE_PUBLIC,

@@ -38,7 +38,7 @@ std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
 struct Variable::VariableImpl
 {
     std::string mInitialValue = ""; /**< Initial value for this Variable.*/
-    INTERFACE_TYPES mInterfaceType = INTERFACE_TYPES::INTERFACE_TYPE_UNDEFINED; /**< Interface type for this Variable. Default to undefined.*/
+    INTERFACE_TYPES mInterfaceType = INTERFACE_TYPES::INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
 
@@ -91,7 +91,7 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getInitialValue().length()) {
             repr += " initial_value=\"" + getInitialValue() + "\"";
         }
-        if (getInterfaceType() != Variable::INTERFACE_TYPES::INTERFACE_TYPE_UNDEFINED) {
+        if (getInterfaceType() != Variable::INTERFACE_TYPES::INTERFACE_TYPE_NONE) {
             repr += " interface=\"" + interfaceTypeToString(getInterfaceType()) + "\"";
         }
         repr += "/>";
@@ -145,10 +145,6 @@ std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
 {
     std::string str;
     switch (interfaceType) {
-    case Variable::INTERFACE_TYPES::INTERFACE_TYPE_UNDEFINED: {
-        str = "";
-        break;
-    }
     case Variable::INTERFACE_TYPES::INTERFACE_TYPE_NONE: {
         str = "none";
         break;

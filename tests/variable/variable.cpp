@@ -130,7 +130,7 @@ TEST(Variable, getSetInitialValue) {
 }
 
 TEST(Variable, setInterfaceTypeNone) {
-    const std::string e = "<variable interface=\"none\"/>";
+    const std::string e = "<variable/>";
     libcellml::Variable v;
     v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_NONE);
     std::string a = v.serialise(libcellml::FORMAT_XML);
