@@ -4,6 +4,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.7.0)
 if(APPLE)
   set_target_properties(gtest gtest_main PROPERTIES MACOSX_RPATH ON)
 endif()
+set_target_properties(gtest gtest_main PROPERTIES FOLDER gtest)
 mark_as_advanced(gtest_disable_pthreads)
 mark_as_advanced(gtest_force_shared_crt)
 
@@ -18,6 +19,8 @@ include(coverage/tests.cmake)
 include(units/tests.cmake)
 include(variable/tests.cmake)
 
+set(test_path)
+list(APPEND test_path $ENV{PATH} $<TARGET_FILE_DIR:cellml>)
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
 foreach(TEST ${LIBCELLML_TESTS})
@@ -31,16 +34,19 @@ foreach(TEST ${LIBCELLML_TESTS})
 
   set_target_properties(${CURRENT_TEST} PROPERTIES
     CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED ON)
+    CXX_STANDARD_REQUIRED ON
+    FOLDER tests)
 
 #  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
 #    target_warnings_as_errors(${CURRENT_TEST})
 #  endif()
 
   add_test(${CURRENT_CATEGORY}unit_${CURRENT_TEST} ${CURRENT_TEST})
+
   list(APPEND TEST_LIST ${CURRENT_TEST})
   unset(CURRENT_CATEGORY)
 endforeach()
+
 
 if(LIBCELLML_COVERAGE)
   # Clean away old gcov arc files

@@ -95,6 +95,11 @@ endif()
 internalise_cmake_variables()
 hide_distracting_variables()
 
+# Turn on the ability to create folders to organize projects (.vcproj)
+# It creates "CMakePredefinedTargets" folder by default and adds CMake
+# defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
