@@ -112,7 +112,7 @@ public:
      * @sa getInterfaceType
      * @param interfaceType The interface type to set for this variable.
      */
-    void setInterfaceType(const INTERFACE_TYPES interfaceType);
+    void setInterfaceType(INTERFACE_TYPES interfaceType);
 
     /**
      * @brief Get the interface type for this variable.
