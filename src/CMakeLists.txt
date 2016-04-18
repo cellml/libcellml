@@ -65,6 +65,14 @@ set(HEADER_FILES
   ${LIBCELLML_CONFIG_H}
 )
 
+# Only does anything if configuration target is Visual Studio.
+group_source_to_dir_structure(
+  ${SOURCE_FILES}
+  ${HEADER_FILES}
+  ${MODULE_HEADER_FILES}
+  ${API_HEADER_FILES}
+)
+
 add_library(cellml
   ${SOURCE_FILES}
   ${HEADER_FILES}
