@@ -202,7 +202,7 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
 
 std::string prefixToString(PREFIXES prefix)
 {
-    std::string str;
+    std::string str = "";
     switch (prefix) {
     case PREFIX_ATTO: {
         str = "atto";
@@ -268,10 +268,6 @@ std::string prefixToString(PREFIXES prefix)
         str = "tera";
         break;
     }
-    case PREFIX_UNIT: {
-        /* Should not ask for the string version of this.
-        With the current codebase there is no way to trigger this case. */
-    }
     case PREFIX_YOCTO: {
         str = "yocto";
         break;
@@ -288,8 +284,12 @@ std::string prefixToString(PREFIXES prefix)
         str = "zetta";
         break;
     }
+    case PREFIX_UNIT: {
+        /* Should not ask for the string version of this.
+        With the current codebase there is no way to trigger this case. */
+        break;
     }
-
+    }
     return str;
 }
 

@@ -38,7 +38,7 @@ std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
 struct Variable::VariableImpl
 {
     std::string mInitialValue = ""; /**< Initial value for this Variable.*/
-    INTERFACE_TYPES mInterfaceType = INTERFACE_TYPES::INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
+    INTERFACE_TYPES mInterfaceType = INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
 
@@ -91,7 +91,7 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getInitialValue().length()) {
             repr += " initial_value=\"" + getInitialValue() + "\"";
         }
-        if (getInterfaceType() != Variable::INTERFACE_TYPES::INTERFACE_TYPE_NONE) {
+        if (getInterfaceType() != INTERFACE_TYPE_NONE) {
             repr += " interface=\"" + interfaceTypeToString(getInterfaceType()) + "\"";
         }
         repr += "/>";
@@ -143,22 +143,23 @@ Variable::INTERFACE_TYPES Variable::getInterfaceType() const
 
 std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
 {
-    std::string str;
+    std::string str = "";
     switch (interfaceType) {
-    case Variable::INTERFACE_TYPES::INTERFACE_TYPE_NONE: {
-        /* Should not ask for the string version of this.
-        With the current codebase there is no way to trigger this case. */
-    }
-    case Variable::INTERFACE_TYPES::INTERFACE_TYPE_PRIVATE: {
+    case Variable::INTERFACE_TYPE_PRIVATE: {
         str = "private";
         break;
     }
-    case Variable::INTERFACE_TYPES::INTERFACE_TYPE_PUBLIC: {
+    case Variable::INTERFACE_TYPE_PUBLIC: {
         str = "public";
         break;
     }
-    case Variable::INTERFACE_TYPES::INTERFACE_TYPE_PUBLIC_AND_PRIVATE: {
+    case Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE: {
         str = "public_and_private";
+        break;
+    }
+    case Variable::INTERFACE_TYPE_NONE: {
+        /* Should not ask for the string version of this.
+        With the current codebase there is no way to trigger this case. */
         break;
     }
     }
