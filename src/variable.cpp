@@ -145,6 +145,11 @@ std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
 {
     std::string str = "";
     switch (interfaceType) {
+    case Variable::INTERFACE_TYPE_NONE: {
+        /* Should not ask for the string version of this.
+        With the current codebase there is no way to trigger this case. */
+        break;
+    }
     case Variable::INTERFACE_TYPE_PRIVATE: {
         str = "private";
         break;
@@ -155,11 +160,6 @@ std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
     }
     case Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE: {
         str = "public_and_private";
-        break;
-    }
-    case Variable::INTERFACE_TYPE_NONE: {
-        /* Should not ask for the string version of this.
-        With the current codebase there is no way to trigger this case. */
         break;
     }
     }
