@@ -142,13 +142,20 @@ TEST(Coverage, variable) {
     EXPECT_EQ(e, vc.serialise(libcellml::FORMAT_XML));
 }
 
+// EXPORT_FOR_TESTING test cases
 namespace libcellml {
 
 std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
+std::string prefixToString(PREFIXES prefix);
 
 }
 
 TEST(Coverage, interfaceTypeToStringNone) {
     std::string s = libcellml::interfaceTypeToString(libcellml::Variable::INTERFACE_TYPE_NONE);
     EXPECT_EQ("none",s);
+}
+
+TEST(Coverage, prefixTypeToStringUnit) {
+    std::string s = libcellml::prefixToString(libcellml::PREFIX_UNIT);
+    EXPECT_EQ("",s);
 }

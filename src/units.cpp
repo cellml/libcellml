@@ -200,7 +200,7 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
     setImportReference(name);
 }
 
-std::string prefixToString(PREFIXES prefix)
+EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix)
 {
     std::string str = "";
     switch (prefix) {
@@ -271,6 +271,7 @@ std::string prefixToString(PREFIXES prefix)
     case PREFIX_UNIT: {
         /* Should not ask for the string version of this.
         With the current codebase there is no way to trigger this case. */
+        str = "";
         break;
     }
     case PREFIX_YOCTO: {
