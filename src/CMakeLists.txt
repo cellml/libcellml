@@ -85,7 +85,7 @@ target_include_directories(cellml
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if (LIBCELLML_UNIT_TESTS)
+if(LIBCELLML_UNIT_TESTS)
   target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=LIBCELLML_EXPORT)
 else()
   target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=)
