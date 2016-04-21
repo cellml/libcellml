@@ -141,13 +141,14 @@ Variable::INTERFACE_TYPES Variable::getInterfaceType() const
     return mPimpl->mInterfaceType;
 }
 
-std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
+EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
 {
     std::string str = "";
     switch (interfaceType) {
     case Variable::INTERFACE_TYPE_NONE: {
         /* Should not ask for the string version of this.
         With the current codebase there is no way to trigger this case. */
+        str = "none";
         break;
     }
     case Variable::INTERFACE_TYPE_PRIVATE: {

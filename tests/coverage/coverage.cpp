@@ -141,3 +141,14 @@ TEST(Coverage, variable) {
 
     EXPECT_EQ(e, vc.serialise(libcellml::FORMAT_XML));
 }
+
+namespace libcellml {
+
+std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
+
+}
+
+TEST(Coverage, interfaceTypeToStringNone) {
+    std::string s = libcellml::interfaceTypeToString(libcellml::Variable::INTERFACE_TYPE_NONE);
+    EXPECT_EQ("none",s);
+}
