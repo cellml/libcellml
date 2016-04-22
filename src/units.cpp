@@ -29,7 +29,7 @@ namespace libcellml {
  * @param prefix The prefix to convert.
  * @return A std::string form of the given prefix.
  */
-std::string prefixToString(PREFIXES prefix);
+EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix);
 
 /**
  * @brief The Unit struct.

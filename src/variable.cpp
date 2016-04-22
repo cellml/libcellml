@@ -29,7 +29,7 @@ namespace libcellml {
  * @param interfaceType The interface type to convert.
  * @return A @c std::string form of the given interface type.
  */
-std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
+EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
 
 /**
  * @brief The Variable::VariableImpl struct.
