@@ -23,13 +23,13 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
- * @brief Convert a PREFIXES into it's string form.
- * Private function to convert a PREFIXES into it's string form.
+ * @brief Convert a PREFIXES into its string form.
+ * Private function to convert a PREFIXES into its string form.
  *
  * @param prefix The prefix to convert.
  * @return A std::string form of the given prefix.
  */
-std::string prefixToString(PREFIXES prefix);
+EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix);
 
 /**
  * @brief The Unit struct.
@@ -200,9 +200,9 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
     setImportReference(name);
 }
 
-std::string prefixToString(PREFIXES prefix)
+EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix)
 {
-    std::string str;
+    std::string str = "";
     switch (prefix) {
     case PREFIX_ATTO: {
         str = "atto";
@@ -268,8 +268,9 @@ std::string prefixToString(PREFIXES prefix)
         str = "tera";
         break;
     }
-    case PREFIX_UNIT: { /* Should not ask for the string version of this.
-With the current codebase there is no way to trigger this case. */
+    case PREFIX_UNIT: {
+        /* Should not ask for the string version of this.
+        With the current codebase there is no way to trigger this case. */
         str = "";
         break;
     }
@@ -290,7 +291,6 @@ With the current codebase there is no way to trigger this case. */
         break;
     }
     }
-
     return str;
 }
 
