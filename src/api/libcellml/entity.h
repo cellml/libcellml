@@ -78,7 +78,7 @@ public:
     /**
      * @brief Test to see if the given component is a parent.
      * Tests the given raw component pointer to determine if the entity or
-     * any of it's parent entities already has this component as a parent.
+     * any of its parent entities already has this component as a parent.
      * This allows for a test against creating cycles. If the given component
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
