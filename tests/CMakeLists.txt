@@ -18,6 +18,7 @@ include(component/tests.cmake)
 include(coverage/tests.cmake)
 include(units/tests.cmake)
 include(variable/tests.cmake)
+include(connection/tests.cmake)
 
 set(test_path)
 list(APPEND test_path $ENV{PATH} $<TARGET_FILE_DIR:cellml>)

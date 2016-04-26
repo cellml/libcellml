@@ -217,7 +217,3 @@ TEST(Connection, twoEncapsulatedChildrenInterfaces) {
     std::string a = parent.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
-
-
-
-
