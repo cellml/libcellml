@@ -156,7 +156,7 @@ TEST(Connection, twoMapVariablesConnection) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, twoEncapsulatedChildrenInterfaces) {
+TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -211,6 +211,68 @@ TEST(Connection, twoEncapsulatedChildrenInterfaces) {
     v1->addEquivalence(v2);
     v1->addEquivalence(v3);
     v1.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PRIVATE);
+    v2.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+    v3.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+
+    std::string a = parent.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterfaces) {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+
+          "<component name=\"parent_component\">"
+            "<variable name=\"variable1\" interface=\"public\"/>"
+          "</component>"
+          "<component name=\"child1\">"
+            "<variable name=\"variable2\" interface=\"public\"/>"
+          "</component>"
+          "<component name=\"child2\">"
+            "<variable name=\"variable3\" interface=\"public\"/>"
+          "</component>"
+
+          "<encapsulation>"
+              "<component_ref component=\"parent_component\">"
+                  "<component_ref component=\"child1\"/>"
+                  "<component_ref component=\"child2\"/>"
+              "</component_ref>"
+          "</encapsulation>"
+
+          "<connection>"
+            "<map_components component_2=\"parent_component\" component_1=\"child1\"/>"
+            "<map_variables variable_2=\"variable1\" variable_1=\"variable2\"/>"
+          "</connection>"
+
+          "<connection>"
+            "<map_components component_2=\"parent_component\" component_1=\"child2\"/>"
+            "<map_variables variable_2=\"variable1\" variable_1=\"variable3\"/>"
+          "</connection>"
+        "</model>";
+
+    libcellml::Model m;
+    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+
+    parent->setName("parent_component");
+    child1->setName("child1");
+    child2->setName("child2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    m.addComponent(parent);
+    parent->addComponent(child1);
+    parent->addComponent(child2);
+    parent->addVariable(v1);
+    child1->addVariable(v2);
+    child2->addVariable(v3);
+    v1->addEquivalence(v2);
+    v1->addEquivalence(v3);
+    v1.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
     v2.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
     v3.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
 
