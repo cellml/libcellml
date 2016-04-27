@@ -39,3 +39,15 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+Supported by:
+------------
+
+.. figure:: docs/images/vpr.png
+   :target: www.virtualrat.org
+   :align: left
+   :width: 20%
+
+.. figure:: docs/images/abi.png
+   :target: www.abi.auckland.ac.nz
+   :align: left
+   :width: 20%
