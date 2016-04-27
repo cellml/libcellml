@@ -16,6 +16,8 @@ limitations under the License.Some license of other
 #include "libcellml/variable.h"
 
 #include <sstream>
+#include <vector>
+#include <algorithm>
 
 #include "libcellml/units.h"
 
@@ -37,10 +39,18 @@ EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES i
  */
 struct Variable::VariableImpl
 {
+    std::vector<VariablePtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
+    std::vector<VariablePtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/    
     std::string mInitialValue = ""; /**< Initial value for this Variable.*/
     INTERFACE_TYPES mInterfaceType = INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
+
+std::vector<VariablePtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
+{
+    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
+                        [=](const VariablePtr& variable) -> bool {return variable == equivalentVariable;});
+}
 
 Variable::Variable()
     : mPimpl(new VariableImpl())
@@ -75,6 +85,36 @@ Variable& Variable::operator=(Variable e)
 void Variable::swap(Variable &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
+}
+
+void Variable::addEquivalence(const VariablePtr &equivalentVariable)
+{
+    setEquivalentTo(equivalentVariable);
+    VariablePtr *pV = new VariablePtr(this);
+    equivalentVariable->setEquivalentTo(*pV);
+}
+
+VariablePtr Variable::getEquivalentVariable(size_t index)
+{
+    return mPimpl->mEquivalentVariables.at(index);
+}
+
+size_t Variable::equivalentVariableCount() const
+{
+    return mPimpl->mEquivalentVariables.size();
+}
+
+bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable)
+{
+    auto result = mPimpl->findEquivalentVariable(equivalentVariable);
+    return result != mPimpl->mEquivalentVariables.end();
+}
+
+void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
+{
+    if (!hasEquivalentVariable(equivalentVariable)) {
+        mPimpl->mEquivalentVariables.push_back(equivalentVariable);
+    }
 }
 
 std::string Variable::doSerialisation(FORMATS format) const

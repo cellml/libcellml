@@ -52,6 +52,43 @@ public:
     };
 
     /**
+     * @brief Add an equivalent variable to the set for this variable with reciprocity.
+     * Add an equivalent variable to the set of equivalent variable references for this
+     * variable if it is not already present. Also add this variable to the equivalent
+     * variables for the argument parameter variable if it is not already present (reciprocity).
+     * @sa getEquivalentVariable
+     * @param equivalentVariable The variable reference to add to this variable's equivalent
+     * variable set with reciprocity.
+     */
+    void addEquivalence(const VariablePtr &equivalentVariable);
+
+    /**
+     * @brief Get an equivalent variable at index.
+     * Returns a reference to the equivalent variable at the index @p index for this
+     * variable.
+     * @param index The index of the variable to return (zero-based).
+     * @return A reference to the equivalent variable at the given index.
+     */
+    VariablePtr getEquivalentVariable(size_t index);
+
+    /**
+     * @brief Get the number of equivalent variables for this variable.
+     * Returns the number of equivalent variables for this variable.
+     * @return the number of equivalent variables.
+     */
+    size_t equivalentVariableCount() const;
+
+    /**
+     * @brief Test whether the argument variable is in this variable's equivalent variables.
+     * Tests to see if the argument variable is in the set of this variable's equivalent
+     * variables. Returns @c true if the argument variable is in this variable's equivalent
+     * variables and @c false otherwise.
+     * @param equivalentVariable The variable reference to check for in this variable's equivalent variables.
+     * @return @c true if the named Component is in the model and @c false otherwise.
+     */
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
+
+    /**
      * @brief Set the units for this variable.
      * Set the units for this variable. Set to @c nullptr to unset the units.
      * @sa getUnits
@@ -125,6 +162,16 @@ public:
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
+
+    /**
+     * @brief Add an equivalent variable to the set for this variable.
+     * Add an equivalent variable to the set of equivalent variable references for this
+     * variable if it is not already present.
+     * @sa addEquivalence
+     * @param equivalentVariable The variable reference to add to this variable's equivalent
+     * variable set.
+     */
+    void setEquivalentTo(const VariablePtr &equivalentVariable);
 
     std::string doSerialisation(FORMATS format) const;
 
