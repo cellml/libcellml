@@ -43,8 +43,8 @@ Supported by:
 ------------
 
 .. figure:: images/vpr.png
-   :target: www.virtualrat.org
+   :target: http://www.virtualrat.org
    :width: 50%
 .. figure:: images/abi.png
-   :target: www.abi.auckland.ac.nz
+   :target: http://www.abi.auckland.ac.nz
    :width: 50%
