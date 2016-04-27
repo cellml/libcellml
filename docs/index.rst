@@ -44,10 +44,7 @@ Supported by:
 
 .. figure:: images/vpr.png
    :target: www.virtualrat.org
-   :align: left
-   :width: 20%
-
+   :width: 50%
 .. figure:: images/abi.png
    :target: www.abi.auckland.ac.nz
-   :align: left
-   :width: 20%
+   :width: 50%
