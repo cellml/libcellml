@@ -19,16 +19,16 @@ limitations under the License.Some license of other
 #include <libcellml>
 
 TEST(Variable, addAndGetEquivalentVariable) {
-    libcellml::Variable v1;
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    v1.addEquivalence(v2);
-    EXPECT_EQ(v2,v1.getEquivalentVariable(0));
+    v1->addEquivalence(v2);
+    EXPECT_EQ(v2,v1->getEquivalentVariable(0));
 }
 
 TEST(Variable, addAndGetEquivalentVariableReciprocal) {
-    libcellml::Variable v1;
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    v1.addEquivalence(v2);
+    v1->addEquivalence(v2);
     EXPECT_EQ(v1,v2->getEquivalentVariable(0));
 }
 
@@ -40,6 +40,18 @@ TEST(Variable, addTwoEquivalentVariablesAndCount) {
     v1.addEquivalence(v3);
     size_t e = 2;
     size_t a = v1.equivalentVariableCount();
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, addDuplicateEquivalentVariablesAndCount) {
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v1->addEquivalence(v2);
+    v1->addEquivalence(v2);
+    v2->addEquivalence(v1);
+    v2->addEquivalence(v1);
+    size_t e = 1;
+    size_t a = v1->equivalentVariableCount();
     EXPECT_EQ(e, a);
 }
 
