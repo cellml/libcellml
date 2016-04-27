@@ -57,7 +57,6 @@ TEST(Connection, componentlessVariableInvalidConnection) {
       "<component name=\"component1\">"
         "<variable name=\"variable1\"/>"
       "</component>"
-      "<variable name=\"variable2\"/>"
       "<connection>"
         "<map_components component1_1=\"component1\"/>"
         "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
@@ -214,7 +213,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     v2.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
     v3.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
 
-    std::string a = parent.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
@@ -276,6 +275,6 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     v2.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
     v3.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
 
-    std::string a = parent.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
