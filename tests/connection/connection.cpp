@@ -39,7 +39,7 @@ TEST(Variable, addTwoEquivalentVariablesAndCount) {
     v1.addEquivalence(v2);
     v1.addEquivalence(v3);
     size_t e = 2;
-    size_t a = v1.countEquivalentVariables;
+    size_t a = v1.equivalentVariableCount();
     EXPECT_EQ(e, a);
 }
 
@@ -193,6 +193,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
     parent->setName("parent_component");
     child1->setName("child1");
@@ -209,9 +211,9 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     child2->addVariable(v3);
     v1->addEquivalence(v2);
     v1->addEquivalence(v3);
-    v1.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PRIVATE);
-    v2.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
-    v3.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+    v1->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PRIVATE);
+    v2->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+    v3->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
@@ -255,6 +257,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
     parent->setName("parent_component");
     child1->setName("child1");
@@ -271,9 +275,9 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     child2->addVariable(v3);
     v1->addEquivalence(v2);
     v1->addEquivalence(v3);
-    v1.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
-    v2.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
-    v3.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+    v1->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+    v2->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+    v3->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
