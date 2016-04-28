@@ -7,7 +7,9 @@
 libCellML Documentation
 =======================
 
+
 Contents:
+=========
 
 .. toctree::
    :maxdepth: 2
@@ -39,3 +41,12 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+Supported by:
+==============
+
+.. figure:: images/vpr.png
+   :target: http://www.virtualrat.org
+   :width: 50%
+.. figure:: images/abi.png
+   :target: http://www.abi.auckland.ac.nz
+   :width: 50%
