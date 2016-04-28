@@ -87,11 +87,10 @@ void Variable::swap(Variable &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Variable::addEquivalence(const VariablePtr &equivalentVariable)
+void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    setEquivalentTo(equivalentVariable);
-    VariablePtr *pV = new VariablePtr(this);
-    equivalentVariable->setEquivalentTo(*pV);
+    variable1->setEquivalentTo(variable2);
+    variable2->setEquivalentTo(variable1);
 }
 
 VariablePtr Variable::getEquivalentVariable(size_t index)

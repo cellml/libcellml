@@ -52,15 +52,18 @@ public:
     };
 
     /**
-     * @brief Add an equivalent variable to the set for this variable with reciprocity.
-     * Add an equivalent variable to the set of equivalent variable references for this
-     * variable if it is not already present. Also add this variable to the equivalent
-     * variables for the argument parameter variable if it is not already present (reciprocity).
-     * @sa getEquivalentVariable
-     * @param equivalentVariable The variable reference to add to this variable's equivalent
-     * variable set with reciprocity.
+     * @brief Add each argument variable to the other's equivalent variable set.
+     * Add @p variable1 to the set of equivalent variable references for
+     * @p variable2 if not already present. Also add @p variable2 to the
+     * set of equivalent variable references for @p variable1 if not already
+     * present.
+     * @sa getEquivalentVariable, setEquivalentTo
+     * @param variable1 The variable reference to add to the equivalent variable set
+     * for @p variable2.
+     * @param variable2 The variable reference to add to the equivalent variable set
+     * for @p variable1.
      */
-    void addEquivalence(const VariablePtr &equivalentVariable);
+    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Get an equivalent variable at index.

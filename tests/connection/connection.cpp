@@ -21,45 +21,45 @@ limitations under the License.Some license of other
 TEST(Variable, addAndGetEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    v1->addEquivalence(v2);
+    libcellml::Variable::addEquivalence(v1,v2);
     EXPECT_EQ(v2,v1->getEquivalentVariable(0));
 }
 
 TEST(Variable, addAndGetEquivalentVariableReciprocal) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    v1->addEquivalence(v2);
+    libcellml::Variable::addEquivalence(v1,v2);
     EXPECT_EQ(v1,v2->getEquivalentVariable(0));
 }
 
 TEST(Variable, addTwoEquivalentVariablesAndCount) {
-    libcellml::Variable v1;
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
-    v1.addEquivalence(v2);
-    v1.addEquivalence(v3);
+    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1,v3);
     size_t e = 2;
-    size_t a = v1.equivalentVariableCount();
+    size_t a = v1->equivalentVariableCount();
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, addDuplicateEquivalentVariablesAndCount) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    v1->addEquivalence(v2);
-    v1->addEquivalence(v2);
-    v2->addEquivalence(v1);
-    v2->addEquivalence(v1);
+    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v2,v1);
+    libcellml::Variable::addEquivalence(v2,v1);
     size_t e = 1;
     size_t a = v1->equivalentVariableCount();
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, hasEquivalentVariable) {
-    libcellml::Variable v1;
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    v1.addEquivalence(v2);
-    EXPECT_EQ(true,v1.hasEquivalentVariable(v2));
+    libcellml::Variable::addEquivalence(v1,v2);
+    EXPECT_EQ(true,v1->hasEquivalentVariable(v2));
 }
 
 TEST(Connection, componentlessVariableInvalidConnection) {
@@ -83,7 +83,7 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     v2->setName("variable2");
     comp1->addVariable(v1);
     m.addComponent(comp1);
-    v1->addEquivalence(v2);
+    libcellml::Variable::addEquivalence(v1,v2);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
@@ -116,7 +116,7 @@ TEST(Connection, validConnection) {
     comp2->addVariable(v2);
     m.addComponent(comp1);
     m.addComponent(comp2);
-    v1->addEquivalence(v2);
+    libcellml::Variable::addEquivalence(v1,v2);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
@@ -160,8 +160,8 @@ TEST(Connection, twoMapVariablesConnection) {
     comp2->addVariable(v22);
     m.addComponent(comp1);
     m.addComponent(comp2);
-    v11->addEquivalence(v21);
-    v12->addEquivalence(v22);
+    libcellml::Variable::addEquivalence(v11,v21);
+    libcellml::Variable::addEquivalence(v12,v22);
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
@@ -221,8 +221,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     parent->addVariable(v1);
     child1->addVariable(v2);
     child2->addVariable(v3);
-    v1->addEquivalence(v2);
-    v1->addEquivalence(v3);
+    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1,v3);
     v1->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PRIVATE);
     v2->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
     v3->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
@@ -285,8 +285,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     parent->addVariable(v1);
     child1->addVariable(v2);
     child2->addVariable(v3);
-    v1->addEquivalence(v2);
-    v1->addEquivalence(v3);
+    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1,v3);
     v1->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
     v2->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
     v3->setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
