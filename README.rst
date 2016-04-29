@@ -28,7 +28,7 @@ Continuous Integration
 ----------------------
 
 libCellML makes use of Buildbot for continuous integration testing, all code is run through the
-test suite when a pull request is created or added to.  More information on how Buildbot is 
+test suite when a pull request is created or added to.  More information on how Buildbot is
 integrated in to the development process is available from the documentation http://libcellml.readthedocs.org/.
 
 Contribute
