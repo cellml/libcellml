@@ -20,7 +20,7 @@ if(SPHINX_FOUND)
   endif()
 
   if(NOT DEFINED SPHINX_THEME_DIR)
-    set(SPHINX_THEME_DIR ../../../docs)
+    set(SPHINX_THEME_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   endif()
 
   string(TIMESTAMP SPHINX_YEAR "%Y")
