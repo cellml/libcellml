@@ -88,6 +88,7 @@ void Component::setSourceComponent(const ImportPtr &imp, const std::string &name
 void Component::addVariable(const VariablePtr &v)
 {
     mPimpl->mVariables.push_back(v);
+    v->setParent(this);
 }
 
 void Component::removeVariable(const std::string &name)
