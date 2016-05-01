@@ -5,7 +5,7 @@ libCellML aims to become an easy to use library that will be useful to developer
 
 The prime libCellML repository is located at: https://github.com/cellml/libcellml.
 
-The documentation for the libCellML project is available at: http://libcellml.readthedocs.org/.
+The documentation for the libCellML project is available at: http://libcellml.readthedocs.io/.
 
 Scope
 -----
@@ -29,7 +29,7 @@ Continuous Integration
 
 libCellML makes use of Buildbot for continuous integration testing, all code is run through the
 test suite when a pull request is created or added to.  More information on how Buildbot is
-integrated in to the development process is available from the documentation http://libcellml.readthedocs.org/.
+integrated in to the development process is available from the documentation http://libcellml.readthedocs.io/.
 
 Contribute
 ----------
@@ -38,6 +38,6 @@ libCellML is an open-source project, thus, welcoming contributions.
 If you are interested you may (in short):
 
 * Fork libCellML on GitHub (https://github.com/cellml/libcellml) and submit a pull request with your modifications.
-  For more information on contributing code see the documentation http://libcellml.readthedocs.org/
+  For more information on contributing code see the documentation http://libcellml.readthedocs.io/
 * Subscribe to the libCellML mailing list https://lists.cellml.org/sympa/info/cellml-tools-developers
 
