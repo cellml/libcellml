@@ -70,7 +70,7 @@ TEST(Connection, componentlessVariableInvalidConnection) {
         "<variable name=\"variable1\"/>"
       "</component>"
       "<connection>"
-        "<map_components component1_1=\"component1\"/>"
+        "<map_components component_1=\"component1\"/>"
         "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
       "</connection>"
     "</model>";
@@ -167,6 +167,53 @@ TEST(Connection, twoMapVariablesConnection) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Connection, twoValidConnections) {
+    const std::string e =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    libcellml::Model m;
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    m.addComponent(comp1);
+    m.addComponent(comp2);
+    m.addComponent(comp3);
+    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1,v3);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -190,13 +237,13 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
           "</encapsulation>"
 
           "<connection>"
-            "<map_components component_2=\"parent_component\" component_1=\"child1\"/>"
-            "<map_variables variable_2=\"variable1\" variable_1=\"variable2\"/>"
+            "<map_components component_1=\"parent_component\" component_2=\"child1\"/>"
+            "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
           "</connection>"
 
           "<connection>"
-            "<map_components component_2=\"parent_component\" component_1=\"child2\"/>"
-            "<map_variables variable_2=\"variable1\" variable_1=\"variable3\"/>"
+            "<map_components component_1=\"parent_component\" component_2=\"child2\"/>"
+            "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
           "</connection>"
         "</model>";
 
@@ -254,13 +301,13 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
           "</encapsulation>"
 
           "<connection>"
-            "<map_components component_2=\"parent_component\" component_1=\"child1\"/>"
-            "<map_variables variable_2=\"variable1\" variable_1=\"variable2\"/>"
+            "<map_components component_1=\"parent_component\" component_2=\"child1\"/>"
+            "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
           "</connection>"
 
           "<connection>"
-            "<map_components component_2=\"parent_component\" component_1=\"child2\"/>"
-            "<map_variables variable_2=\"variable1\" variable_1=\"variable3\"/>"
+            "<map_components component_1=\"parent_component\" component_2=\"child2\"/>"
+            "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
           "</connection>"
         "</model>";
 
