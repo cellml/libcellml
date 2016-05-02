@@ -22,6 +22,7 @@ limitations under the License.Some license of other
 #include <stack>
 
 #include <libcellml/import.h>
+#include <libcellml/variable.h>
 
 namespace libcellml {
 
@@ -51,10 +52,22 @@ Model& Model::operator=(Model m)
 
 std::string Model::doSerialisation(FORMATS format) const
 {
+    // ImportMap
     typedef std::pair <std::string, std::string> ImportNamePair;
     typedef std::vector<ImportNamePair>::const_iterator VectorPairIterator;
     typedef std::map <ImportPtr, std::vector<ImportNamePair> > ImportMap;
     typedef ImportMap::const_iterator ImportMapIterator;
+    // VariableMap
+    typedef std::pair <VariablePtr, VariablePtr> VariablePair;
+    typedef std::vector<VariablePair>::const_iterator VariableMapIterator;
+    typedef std::vector<VariablePair> VariableMap;
+    VariableMap variableMap;
+    // ComponentMap
+    typedef std::pair <Component*, Component*> ComponentPair;
+    typedef std::vector<ComponentPair>::const_iterator ComponentMapIterator;
+    typedef std::vector<ComponentPair> ComponentMap;
+    ComponentMap componentMap;
+    ComponentMap serialisedComponentMap;
 
     // Gather all imports
     ImportMap importMap;
@@ -86,6 +99,34 @@ std::string Model::doSerialisation(FORMATS format) const
                 comp = comp->getComponent(index);
             } else {
                 incrementComponent = true;
+            }
+
+            // Build unique variable equivalence pairs (VariableMap)
+            for (size_t j = 0; j < comp->variableCount(); ++j) {
+                VariablePtr variable = comp->getVariable(j);
+                if (variable->equivalentVariableCount() > 0) {
+                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                        VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
+                        VariablePair variablePair = std::make_pair(variable, equivalentVariable);
+                        VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
+                        bool pairFound = false;
+                        for (VariableMapIterator iter = variableMap.begin(); iter < variableMap.end(); ++iter) {
+                            if (*iter == variablePair || *iter == reciprocalVariablePair) {
+                                pairFound = true;
+                                break;
+                            }
+                        }
+                        if (!pairFound) {
+                            // New unique variable equivalence pair found
+                            variableMap.push_back(variablePair);
+                            // Also create a component map corresponding with pairs of the variable map
+                            Component* component1 = static_cast<Component*>(variable->getParent());
+                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                            ComponentPair componentPair = std::make_pair(component1, component2);
+                            componentMap.push_back(componentPair);
+                        }
+                    }
+                }
             }
 
             if (incrementComponent) {
@@ -127,10 +168,65 @@ std::string Model::doSerialisation(FORMATS format) const
 
         repr += serialiseUnits(format);
 
-        // Serialize components of the model, imported components have already been dealt with at this point.
+        // Serialise components of the model, imported components have already been dealt with at this point.
         for (size_t i = 0; i < componentCount(); ++i) {
             repr += getComponent(i)->serialise(format);
         }
+
+        // Serialise connections of the model.
+        int componentMapIndex1 = 0;
+        for (ComponentMapIterator iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
+            Component* currentComponent1 = iterPair->first;
+            Component* currentComponent2 = iterPair->second;
+            ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
+            ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
+            // Check whether this set of map_components has already been serialised
+            bool pairFound = false;
+            for (ComponentMapIterator serialisedIterPair = serialisedComponentMap.begin(); serialisedIterPair < serialisedComponentMap.end(); ++serialisedIterPair) {
+                if (*serialisedIterPair == currentComponentPair || *serialisedIterPair == reciprocalCurrentComponentPair) {
+                    pairFound = true;
+                    break;
+                }
+            }
+            // Continue to the next component pair if the current pair has already been serialised
+            if (pairFound) {
+                ++componentMapIndex1;
+                continue;
+            }
+            // Serialise out the new connection
+            std::string connection = "<connection><map_components";
+            if (currentComponent1 != nullptr) {
+                connection += " component_1=\"" + currentComponent1->getName() + "\"";
+            }
+            if (currentComponent2 != nullptr) {
+                connection += " component_2=\"" + currentComponent2->getName() + "\"";
+            }
+            VariablePair variablePair = variableMap.at(componentMapIndex1);
+            connection += "/><map_variables variable_1=\"" + variablePair.first->getName() + "\""
+                                        + " variable_2=\"" + variablePair.second->getName() + "\"/>";
+            // Check for subsequent variable equivalence pairs with the same parent components
+            int componentMapIndex2 = componentMapIndex1 + 1;
+            ComponentMapIterator duplicateIterPair = iterPair;
+            ++duplicateIterPair;
+            for (ComponentMapIterator iterPair2 = duplicateIterPair; iterPair2 < componentMap.end(); ++iterPair2) {
+                Component* nextComponent1 = iterPair2->first;
+                Component* nextComponent2 = iterPair2->second;
+                VariablePair variablePair2 = variableMap.at(componentMapIndex2);
+                if (currentComponent1 == nextComponent1 && currentComponent2 == nextComponent2) {
+                    connection += "<map_variables variable_1=\"" + variablePair2.first->getName() + "\""
+                                                " variable_2=\"" + variablePair2.second->getName() + "\"/>";
+                } else if (currentComponent1 == nextComponent2 && currentComponent2 == nextComponent1) {
+                    connection += "<map_variables variable_1=\"" + variablePair2.second->getName() + "\""
+                                                " variable_2=\"" + variablePair2.first->getName() + "\"/>";
+                }
+                ++componentMapIndex2;
+            }
+            connection += "</connection>";
+            repr += connection;
+            serialisedComponentMap.push_back(currentComponentPair);
+            ++componentMapIndex1;
+        }
+
         repr += "</model>";
     }
 
