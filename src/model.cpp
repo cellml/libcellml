@@ -143,7 +143,7 @@ std::string Model::doSerialisation(FORMATS format) const
         // Serialise components of the model, imported components have already been dealt with at this point.
         for (size_t i = 0; i < componentCount(); ++i) {
             repr += getComponent(i)->serialise(format);
-            // Build unique variable equivalence pairs (VariableMap)
+            // Build unique variable equivalence pairs (VariableMap) for connections
             ComponentPtr component = getComponent(i);
             for (size_t j = 0; j < component->variableCount(); ++j) {
                 VariablePtr variable = component->getVariable(j);
@@ -222,7 +222,6 @@ std::string Model::doSerialisation(FORMATS format) const
             serialisedComponentMap.push_back(currentComponentPair);
             ++componentMapIndex1;
         }
-
         repr += "</model>";
     }
 

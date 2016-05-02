@@ -53,24 +53,23 @@ public:
 
     /**
      * @brief Add each argument variable to the other's equivalent variable set.
-     * Add @p variable1 to the set of equivalent variable references for
-     * @p variable2 if not already present. Also add @p variable2 to the
-     * set of equivalent variable references for @p variable1 if not already
-     * present.
+     * Add a copy of @p variable1 to the set of equivalent variables for
+     * @p variable2 if not already present. Also add a copy of @p variable2 to the
+     * set of equivalent variables for @p variable1 if not already present.
      * @sa getEquivalentVariable, setEquivalentTo
-     * @param variable1 The variable reference to add to the equivalent variable set
+     * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
-     * @param variable2 The variable reference to add to the equivalent variable set
+     * @param variable2 The variable to copy to the equivalent variable set
      * for @p variable1.
      */
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Get an equivalent variable at index.
-     * Returns a reference to the equivalent variable at the index @p index for this
+     * Returns the equivalent variable at the index @p index for this
      * variable.
      * @param index The index of the variable to return (zero-based).
-     * @return A reference to the equivalent variable at the given index.
+     * @return The equivalent variable at the given index.
      */
     VariablePtr getEquivalentVariable(size_t index);
 
@@ -83,11 +82,12 @@ public:
 
     /**
      * @brief Test whether the argument variable is in this variable's equivalent variables.
-     * Tests to see if the argument variable is in the set of this variable's equivalent
+     * Tests to see if the argument variable exists in the set of this variable's equivalent
      * variables. Returns @c true if the argument variable is in this variable's equivalent
      * variables and @c false otherwise.
-     * @param equivalentVariable The variable reference to check for in this variable's equivalent variables.
-     * @return @c true if the named Component is in the model and @c false otherwise.
+     * @param equivalentVariable The variable to check for in this variable's equivalent variables.
+     * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
+     * and @c false otherwise.
      */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
 
@@ -168,11 +168,12 @@ private:
 
     /**
      * @brief Add an equivalent variable to the set for this variable.
-     * Add an equivalent variable to the set of equivalent variable references for this
-     * variable if it is not already present.
+     * Add the argument equivalent variable to the set of equivalent variables for this
+     * variable if it is not already present. If the equivalent variable is present, 
+     * do nothing.
      * @sa addEquivalence
-     * @param equivalentVariable The variable reference to add to this variable's equivalent
-     * variable set.
+     * @param equivalentVariable The variable to add to this variable's equivalent
+     * variable set if not already present.
      */
     void setEquivalentTo(const VariablePtr &equivalentVariable);
 
