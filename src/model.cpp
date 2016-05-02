@@ -101,34 +101,6 @@ std::string Model::doSerialisation(FORMATS format) const
                 incrementComponent = true;
             }
 
-            // Build unique variable equivalence pairs (VariableMap)
-            for (size_t j = 0; j < comp->variableCount(); ++j) {
-                VariablePtr variable = comp->getVariable(j);
-                if (variable->equivalentVariableCount() > 0) {
-                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                        VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
-                        VariablePair variablePair = std::make_pair(variable, equivalentVariable);
-                        VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
-                        bool pairFound = false;
-                        for (VariableMapIterator iter = variableMap.begin(); iter < variableMap.end(); ++iter) {
-                            if (*iter == variablePair || *iter == reciprocalVariablePair) {
-                                pairFound = true;
-                                break;
-                            }
-                        }
-                        if (!pairFound) {
-                            // New unique variable equivalence pair found
-                            variableMap.push_back(variablePair);
-                            // Also create a component map corresponding with pairs of the variable map
-                            Component* component1 = static_cast<Component*>(variable->getParent());
-                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
-                            ComponentPair componentPair = std::make_pair(component1, component2);
-                            componentMap.push_back(componentPair);
-                        }
-                    }
-                }
-            }
-
             if (incrementComponent) {
                 if (!componentStack.empty()) {
                     index = indeciesStack.top();
@@ -171,8 +143,35 @@ std::string Model::doSerialisation(FORMATS format) const
         // Serialise components of the model, imported components have already been dealt with at this point.
         for (size_t i = 0; i < componentCount(); ++i) {
             repr += getComponent(i)->serialise(format);
+            // Build unique variable equivalence pairs (VariableMap)
+            ComponentPtr component = getComponent(i);
+            for (size_t j = 0; j < component->variableCount(); ++j) {
+                VariablePtr variable = component->getVariable(j);
+                if (variable->equivalentVariableCount() > 0) {
+                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                        VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
+                        VariablePair variablePair = std::make_pair(variable, equivalentVariable);
+                        VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
+                        bool pairFound = false;
+                        for (VariableMapIterator iter = variableMap.begin(); iter < variableMap.end(); ++iter) {
+                            if (*iter == variablePair || *iter == reciprocalVariablePair) {
+                                pairFound = true;
+                                break;
+                            }
+                        }
+                        if (!pairFound) {
+                            // New unique variable equivalence pair found
+                            variableMap.push_back(variablePair);
+                            // Also create a component map pair corresponding with the variable map pair.
+                            Component* component1 = static_cast<Component*>(variable->getParent());
+                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                            ComponentPair componentPair = std::make_pair(component1, component2);
+                            componentMap.push_back(componentPair);
+                        }
+                    }
+                }
+            }
         }
-
         // Serialise connections of the model.
         int componentMapIndex1 = 0;
         for (ComponentMapIterator iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
