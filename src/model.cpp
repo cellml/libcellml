@@ -214,9 +214,6 @@ std::string Model::doSerialisation(FORMATS format) const
                 if (currentComponent1 == nextComponent1 && currentComponent2 == nextComponent2) {
                     connection += "<map_variables variable_1=\"" + variablePair2.first->getName() + "\""
                                                 " variable_2=\"" + variablePair2.second->getName() + "\"/>";
-                } else if (currentComponent1 == nextComponent2 && currentComponent2 == nextComponent1) {
-                    connection += "<map_variables variable_1=\"" + variablePair2.second->getName() + "\""
-                                                " variable_2=\"" + variablePair2.first->getName() + "\"/>";
                 }
                 ++componentMapIndex2;
             }
