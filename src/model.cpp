@@ -205,9 +205,7 @@ std::string Model::doSerialisation(FORMATS format) const
                                         + " variable_2=\"" + variablePair.second->getName() + "\"/>";
             // Check for subsequent variable equivalence pairs with the same parent components.
             int componentMapIndex2 = componentMapIndex1 + 1;
-            ComponentMapIterator duplicateIterPair = iterPair;
-            ++duplicateIterPair;
-            for (ComponentMapIterator iterPair2 = duplicateIterPair; iterPair2 < componentMap.end(); ++iterPair2) {
+            for (ComponentMapIterator iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
                 Component* nextComponent1 = iterPair2->first;
                 Component* nextComponent2 = iterPair2->second;
                 VariablePair variablePair2 = variableMap.at(componentMapIndex2);
