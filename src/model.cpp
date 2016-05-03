@@ -154,7 +154,7 @@ std::string Model::doSerialisation(FORMATS format) const
                         VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
                         bool pairFound = false;
                         for (VariableMapIterator iter = variableMap.begin(); iter < variableMap.end(); ++iter) {
-                            if (*iter == variablePair || *iter == reciprocalVariablePair) {
+                            if ((*iter == variablePair) || (*iter == reciprocalVariablePair)) {
                                 pairFound = true;
                                 break;
                             }
@@ -182,7 +182,7 @@ std::string Model::doSerialisation(FORMATS format) const
             // Check whether this set of map_components has already been serialised.
             bool pairFound = false;
             for (ComponentMapIterator serialisedIterPair = serialisedComponentMap.begin(); serialisedIterPair < serialisedComponentMap.end(); ++serialisedIterPair) {
-                if (*serialisedIterPair == currentComponentPair || *serialisedIterPair == reciprocalCurrentComponentPair) {
+                if ((*serialisedIterPair == currentComponentPair) || (*serialisedIterPair == reciprocalCurrentComponentPair)) {
                     pairFound = true;
                     break;
                 }
@@ -211,7 +211,7 @@ std::string Model::doSerialisation(FORMATS format) const
                 Component* nextComponent1 = iterPair2->first;
                 Component* nextComponent2 = iterPair2->second;
                 VariablePair variablePair2 = variableMap.at(componentMapIndex2);
-                if (currentComponent1 == nextComponent1 && currentComponent2 == nextComponent2) {
+                if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                     connection += "<map_variables variable_1=\"" + variablePair2.first->getName() + "\""
                                                 " variable_2=\"" + variablePair2.second->getName() + "\"/>";
                 }
