@@ -67,7 +67,9 @@ TEST(Variable, hasEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1,v2);
-    EXPECT_EQ(true,v1->hasEquivalentVariable(v2));
+    bool a = v1->hasEquivalentVariable(v2);
+    bool e = true;
+    EXPECT_EQ(e,a);
 }
 
 TEST(Connection, componentlessVariableInvalidConnection) {
@@ -250,7 +252,7 @@ TEST(Connection, nineVariablesTenConnections) {
       "<component name=\"component3\">"
         "<variable name=\"variable31\"/>"
         "<variable name=\"variable32\"/>"
-      "<variable name=\"variable33\"/>"
+        "<variable name=\"variable33\"/>"
       "</component>"
       "<connection>"
         "<map_components component_1=\"component1\" component_2=\"component2\"/>"

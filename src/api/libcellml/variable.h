@@ -65,7 +65,7 @@ public:
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
-     * @brief Get an equivalent variable at index.
+     * @brief Get an equivalent variable at @p index.
      * Returns the equivalent variable at the index @p index for this
      * variable.
      * @param index The index of the variable to return (zero-based).
@@ -167,7 +167,7 @@ private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     /**
-     * @brief Add an equivalent variable to the set for this variable.
+     * @brief Private function to add an equivalent variable to the set for this variable.
      * Add the argument equivalent variable to the set of equivalent variables for this
      * variable if it is not already present. If the equivalent variable is present, 
      * do nothing.
