@@ -70,7 +70,7 @@ std::string Model::doSerialisation(FORMATS format) const
     ComponentMap componentMap;
     ComponentMap serialisedComponentMap;
 
-    // Gather all imports
+    // Gather all imports.
     std::stack<size_t> indeciesStack;
     std::stack<ComponentPtr> componentStack;
     bool incrementComponent = false;
@@ -143,7 +143,7 @@ std::string Model::doSerialisation(FORMATS format) const
         // Serialise components of the model, imported components have already been dealt with at this point.
         for (size_t i = 0; i < componentCount(); ++i) {
             repr += getComponent(i)->serialise(format);
-            // Build unique variable equivalence pairs (VariableMap) for connections
+            // Build unique variable equivalence pairs (VariableMap) for connections.
             ComponentPtr component = getComponent(i);
             for (size_t j = 0; j < component->variableCount(); ++j) {
                 VariablePtr variable = component->getVariable(j);
@@ -160,7 +160,7 @@ std::string Model::doSerialisation(FORMATS format) const
                             }
                         }
                         if (!pairFound) {
-                            // New unique variable equivalence pair found
+                            // New unique variable equivalence pair found.
                             variableMap.push_back(variablePair);
                             // Also create a component map pair corresponding with the variable map pair.
                             Component* component1 = static_cast<Component*>(variable->getParent());
@@ -179,7 +179,7 @@ std::string Model::doSerialisation(FORMATS format) const
             Component* currentComponent2 = iterPair->second;
             ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
             ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
-            // Check whether this set of map_components has already been serialised
+            // Check whether this set of map_components has already been serialised.
             bool pairFound = false;
             for (ComponentMapIterator serialisedIterPair = serialisedComponentMap.begin(); serialisedIterPair < serialisedComponentMap.end(); ++serialisedIterPair) {
                 if (*serialisedIterPair == currentComponentPair || *serialisedIterPair == reciprocalCurrentComponentPair) {
@@ -187,12 +187,12 @@ std::string Model::doSerialisation(FORMATS format) const
                     break;
                 }
             }
-            // Continue to the next component pair if the current pair has already been serialised
+            // Continue to the next component pair if the current pair has already been serialised.
             if (pairFound) {
                 ++componentMapIndex1;
                 continue;
             }
-            // Serialise out the new connection
+            // Serialise out the new connection.
             std::string connection = "<connection><map_components";
             if (currentComponent1 != nullptr) {
                 connection += " component_1=\"" + currentComponent1->getName() + "\"";
@@ -203,7 +203,7 @@ std::string Model::doSerialisation(FORMATS format) const
             VariablePair variablePair = variableMap.at(componentMapIndex1);
             connection += "/><map_variables variable_1=\"" + variablePair.first->getName() + "\""
                                         + " variable_2=\"" + variablePair.second->getName() + "\"/>";
-            // Check for subsequent variable equivalence pairs with the same parent components
+            // Check for subsequent variable equivalence pairs with the same parent components.
             int componentMapIndex2 = componentMapIndex1 + 1;
             ComponentMapIterator duplicateIterPair = iterPair;
             ++duplicateIterPair;
@@ -230,7 +230,7 @@ std::string Model::doSerialisation(FORMATS format) const
 
 void Model::doAddComponent(const ComponentPtr &c)
 {
-    // Check for cycles
+    // Check for cycles.
     if (!hasParent(c.get())) {
         c->setParent(this);
         ComponentEntity::doAddComponent(c);
