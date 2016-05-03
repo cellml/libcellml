@@ -57,20 +57,20 @@ std::string Model::doSerialisation(FORMATS format) const
     typedef std::vector<ImportNamePair>::const_iterator VectorPairIterator;
     typedef std::map <ImportPtr, std::vector<ImportNamePair> > ImportMap;
     typedef ImportMap::const_iterator ImportMapIterator;
+    ImportMap importMap;
     // VariableMap
     typedef std::pair <VariablePtr, VariablePtr> VariablePair;
-    typedef std::vector<VariablePair>::const_iterator VariableMapIterator;
     typedef std::vector<VariablePair> VariableMap;
+    typedef VariableMap::const_iterator VariableMapIterator;
     VariableMap variableMap;
     // ComponentMap
     typedef std::pair <Component*, Component*> ComponentPair;
-    typedef std::vector<ComponentPair>::const_iterator ComponentMapIterator;
     typedef std::vector<ComponentPair> ComponentMap;
+    typedef ComponentMap::const_iterator ComponentMapIterator;
     ComponentMap componentMap;
     ComponentMap serialisedComponentMap;
 
     // Gather all imports
-    ImportMap importMap;
     std::stack<size_t> indeciesStack;
     std::stack<ComponentPtr> componentStack;
     bool incrementComponent = false;
