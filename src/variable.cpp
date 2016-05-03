@@ -33,23 +33,25 @@ namespace libcellml {
  */
 EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
 
+typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak variable pointer. */
+
 /**
  * @brief The Variable::VariableImpl struct.
  * The private implementation for the Variable class.
  */
 struct Variable::VariableImpl
 {
-    std::vector<VariablePtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
-    std::vector<VariablePtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/    
+    std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
+    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
     std::string mInitialValue = ""; /**< Initial value for this Variable.*/
     INTERFACE_TYPES mInterfaceType = INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
 
-std::vector<VariablePtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
+std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
 {
     return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                        [=](const VariablePtr& variable) -> bool {return variable == equivalentVariable;});
+                        [=](VariableWeakPtr variableWeak) -> bool {return equivalentVariable == variableWeak.lock();});
 }
 
 Variable::Variable()
@@ -66,6 +68,7 @@ Variable::Variable(const Variable& rhs)
     : NamedEntity(rhs)
     , mPimpl(new VariableImpl())
 {
+    mPimpl->mEquivalentVariables = rhs.mPimpl->mEquivalentVariables;
 }
 
 Variable::Variable(Variable &&rhs)
@@ -95,7 +98,8 @@ void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
 
 VariablePtr Variable::getEquivalentVariable(size_t index)
 {
-    return mPimpl->mEquivalentVariables.at(index);
+    VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
+    return weakEquivalentVariable.lock();
 }
 
 size_t Variable::equivalentVariableCount() const
@@ -112,7 +116,8 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable)
 void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
     if (!hasEquivalentVariable(equivalentVariable)) {
-        mPimpl->mEquivalentVariables.push_back(equivalentVariable);
+        VariableWeakPtr weakEquivalentVariable = equivalentVariable;
+        mPimpl->mEquivalentVariables.push_back(weakEquivalentVariable);
     }
 }
 
