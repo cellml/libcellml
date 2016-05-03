@@ -503,3 +503,44 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
+
+TEST(Connection, importedComponentConnection) {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+          "<import xlink:href=\"some-other-model.xml\" "
+              "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+              "<component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>"
+          "</import>"
+          "<component name=\"component_bob\">"
+            "<variable name=\"variable_bob\"/>"
+          "</component>"
+          "<connection>"
+            "<map_components component_1=\"component_in_this_model\" component_2=\"component_bob\"/>"
+            "<map_variables variable_1=\"variable_import\" variable_2=\"variable_bob\"/>"
+          "</connection>"
+        "</model>";
+
+    libcellml::Model m;
+    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    libcellml::ComponentPtr componentImported = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr componentBob = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr variableImported = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr variableBob = std::make_shared<libcellml::Variable>();
+
+    imp->setSource("some-other-model.xml");
+    componentImported->setName("component_in_this_model");
+    componentImported->setSourceComponent(imp, "component_in_that_model");
+    componentBob->setName("component_bob");
+    variableImported->setName("variable_import");
+    variableBob->setName("variable_bob");
+
+    m.addComponent(componentImported);
+    m.addComponent(componentBob);
+    componentImported->addVariable(variableImported);
+    componentBob->addVariable(variableBob);
+    EXPECT_EQ(componentImported->getVariable(0),variableImported);
+    libcellml::Variable::addEquivalence(variableImported,variableBob);
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
