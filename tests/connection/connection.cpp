@@ -22,14 +22,14 @@ TEST(Variable, addAndGetEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1,v2);
-    EXPECT_EQ(v2,v1->getEquivalentVariable(0));
+    EXPECT_EQ(v2, v1->getEquivalentVariable(0));
 }
 
 TEST(Variable, addAndGetEquivalentVariableReciprocal) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1,v2);
-    EXPECT_EQ(v1,v2->getEquivalentVariable(0));
+    EXPECT_EQ(v1, v2->getEquivalentVariable(0));
 }
 
 TEST(Variable, addTwoEquivalentVariablesAndCount) {
@@ -38,7 +38,7 @@ TEST(Variable, addTwoEquivalentVariablesAndCount) {
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1,v2);
     libcellml::Variable::addEquivalence(v1,v3);
-    size_t e = 2;
+    const size_t e = 2;
     size_t a = v1->equivalentVariableCount();
     EXPECT_EQ(e, a);
 }
@@ -50,7 +50,7 @@ TEST(Variable, addDuplicateEquivalentVariablesAndCount) {
     libcellml::Variable::addEquivalence(v1,v2);
     libcellml::Variable::addEquivalence(v2,v1);
     libcellml::Variable::addEquivalence(v2,v1);
-    size_t e = 1;
+    const size_t e = 1;
     size_t a = v1->equivalentVariableCount();
     EXPECT_EQ(e, a);
 }
@@ -59,7 +59,7 @@ TEST(Variable, hasNoEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     bool a = v1->hasEquivalentVariable(v2);
-    bool e = false;
+    const bool e = false;
     EXPECT_EQ(e, a);
 }
 
@@ -68,8 +68,8 @@ TEST(Variable, hasEquivalentVariable) {
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1,v2);
     bool a = v1->hasEquivalentVariable(v2);
-    bool e = true;
-    EXPECT_EQ(e,a);
+    const bool e = true;
+    EXPECT_EQ(e, a);
 }
 
 TEST(Connection, componentlessVariableInvalidConnection) {
@@ -152,16 +152,17 @@ TEST(Connection, twoMapVariablesConnection) {
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    comp1->setName("component1");
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-    comp2->setName("component2");
     libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
-    v11->setName("variable11");
     libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
-    v12->setName("variable12");
     libcellml::VariablePtr v21 = std::make_shared<libcellml::Variable>();
-    v21->setName("variable21");
     libcellml::VariablePtr v22 = std::make_shared<libcellml::Variable>();
+
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v11->setName("variable11");
+    v12->setName("variable12");
+    v21->setName("variable21");
     v22->setName("variable22");
 
     comp1->addVariable(v11);
@@ -201,20 +202,21 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    comp1->setName("component1");
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-    comp2->setName("component2");
     libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
-    v11->setName("variable11");
     libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
-    v12->setName("variable12");
     libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
-    v13->setName("variable13");
     libcellml::VariablePtr v21 = std::make_shared<libcellml::Variable>();
-    v21->setName("variable21");
     libcellml::VariablePtr v22 = std::make_shared<libcellml::Variable>();
-    v22->setName("variable22");
     libcellml::VariablePtr v23 = std::make_shared<libcellml::Variable>();
+
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v11->setName("variable11");
+    v12->setName("variable12");
+    v13->setName("variable13");
+    v21->setName("variable21");
+    v22->setName("variable22");
     v23->setName("variable23");
 
     comp1->addVariable(v11);
@@ -277,28 +279,29 @@ TEST(Connection, nineVariablesTenConnections) {
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    comp1->setName("component1");
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-    comp2->setName("component2");
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
-    comp3->setName("component3");
     libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
-    v11->setName("variable11");
     libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
-    v12->setName("variable12");
     libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
-    v13->setName("variable13");
     libcellml::VariablePtr v21 = std::make_shared<libcellml::Variable>();
-    v21->setName("variable21");
     libcellml::VariablePtr v22 = std::make_shared<libcellml::Variable>();
-    v22->setName("variable22");
     libcellml::VariablePtr v23 = std::make_shared<libcellml::Variable>();
-    v23->setName("variable23");
     libcellml::VariablePtr v31 = std::make_shared<libcellml::Variable>();
-    v31->setName("variable31");
     libcellml::VariablePtr v32 = std::make_shared<libcellml::Variable>();
-    v32->setName("variable32");
     libcellml::VariablePtr v33 = std::make_shared<libcellml::Variable>();
+
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    v11->setName("variable11");
+    v12->setName("variable12");
+    v13->setName("variable13");
+    v21->setName("variable21");
+    v22->setName("variable22");
+    v23->setName("variable23");
+    v31->setName("variable31");
+    v32->setName("variable32");
     v33->setName("variable33");
 
     comp1->addVariable(v11);
@@ -381,7 +384,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
 
-          "<component name=\"parent_component\">"
+          "<component name=\"parent\">"
             "<variable name=\"variable1\" interface=\"private\"/>"
           "</component>"
           "<component name=\"child1\">"
@@ -392,19 +395,19 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
           "</component>"
 
           "<encapsulation>"
-              "<component_ref component=\"parent_component\">"
+              "<component_ref component=\"parent\">"
                   "<component_ref component=\"child1\"/>"
                   "<component_ref component=\"child2\"/>"
               "</component_ref>"
           "</encapsulation>"
 
           "<connection>"
-            "<map_components component_1=\"parent_component\" component_2=\"child1\"/>"
+            "<map_components component_1=\"parent\" component_2=\"child1\"/>"
             "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
           "</connection>"
 
           "<connection>"
-            "<map_components component_1=\"parent_component\" component_2=\"child2\"/>"
+            "<map_components component_1=\"parent\" component_2=\"child2\"/>"
             "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
           "</connection>"
         "</model>";
@@ -417,7 +420,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
-    parent->setName("parent_component");
+    parent->setName("parent");
     child1->setName("child1");
     child2->setName("child2");
     v1->setName("variable1");
@@ -445,7 +448,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
 
-          "<component name=\"parent_component\">"
+          "<component name=\"parent\">"
             "<variable name=\"variable1\" interface=\"public\"/>"
           "</component>"
           "<component name=\"child1\">"
@@ -456,19 +459,19 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
           "</component>"
 
           "<encapsulation>"
-              "<component_ref component=\"parent_component\">"
+              "<component_ref component=\"parent\">"
                   "<component_ref component=\"child1\"/>"
                   "<component_ref component=\"child2\"/>"
               "</component_ref>"
           "</encapsulation>"
 
           "<connection>"
-            "<map_components component_1=\"parent_component\" component_2=\"child1\"/>"
+            "<map_components component_1=\"parent\" component_2=\"child1\"/>"
             "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
           "</connection>"
 
           "<connection>"
-            "<map_components component_1=\"parent_component\" component_2=\"child2\"/>"
+            "<map_components component_1=\"parent\" component_2=\"child2\"/>"
             "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
           "</connection>"
         "</model>";
@@ -481,7 +484,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
-    parent->setName("parent_component");
+    parent->setName("parent");
     child1->setName("child1");
     child2->setName("child2");
     v1->setName("variable1");
@@ -539,7 +542,7 @@ TEST(Connection, importedComponentConnection) {
     m.addComponent(componentBob);
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
-    EXPECT_EQ(componentImported->getVariable(0),variableImported);
+    EXPECT_EQ(componentImported->getVariable(0), variableImported);
     libcellml::Variable::addEquivalence(variableImported,variableBob);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
