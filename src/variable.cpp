@@ -109,8 +109,7 @@ size_t Variable::equivalentVariableCount() const
 
 bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable)
 {
-    auto result = mPimpl->findEquivalentVariable(equivalentVariable);
-    return result != mPimpl->mEquivalentVariables.end();
+    return mPimpl->findEquivalentVariable(equivalentVariable) != mPimpl->mEquivalentVariables.end();
 }
 
 void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
