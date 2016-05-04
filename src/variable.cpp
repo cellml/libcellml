@@ -23,12 +23,22 @@ limitations under the License.Some license of other
 namespace libcellml {
 
 /**
+ * @brief Convert a INTERFACE_TYPES into its string form.
+ * Private function to convert a Variable INTERFACE_TYPES into its string form.
+ *
+ * @param interfaceType The interface type to convert.
+ * @return A @c std::string form of the given interface type.
+ */
+EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
+
+/**
  * @brief The Variable::VariableImpl struct.
  * The private implementation for the Variable class.
  */
 struct Variable::VariableImpl
 {
     std::string mInitialValue = ""; /**< Initial value for this Variable.*/
+    INTERFACE_TYPES mInterfaceType = INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
 
@@ -81,6 +91,9 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getInitialValue().length()) {
             repr += " initial_value=\"" + getInitialValue() + "\"";
         }
+        if (getInterfaceType() != INTERFACE_TYPE_NONE) {
+            repr += " interface=\"" + interfaceTypeToString(getInterfaceType()) + "\"";
+        }
         repr += "/>";
     }
     return repr;
@@ -116,6 +129,42 @@ void Variable::setInitialValue(const VariablePtr &v)
 std::string Variable::getInitialValue() const
 {
     return mPimpl->mInitialValue;
+}
+
+void Variable::setInterfaceType(Variable::INTERFACE_TYPES interfaceType)
+{
+    mPimpl->mInterfaceType = interfaceType;
+}
+
+Variable::INTERFACE_TYPES Variable::getInterfaceType() const
+{
+    return mPimpl->mInterfaceType;
+}
+
+EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
+{
+    std::string str = "";
+    switch (interfaceType) {
+    case Variable::INTERFACE_TYPE_NONE: {
+        /* Should not ask for the string version of this.
+        With the current codebase there is no way to trigger this case. */
+        str = "none";
+        break;
+    }
+    case Variable::INTERFACE_TYPE_PRIVATE: {
+        str = "private";
+        break;
+    }
+    case Variable::INTERFACE_TYPE_PUBLIC: {
+        str = "public";
+        break;
+    }
+    case Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE: {
+        str = "public_and_private";
+        break;
+    }
+    }
+    return str;
 }
 
 }

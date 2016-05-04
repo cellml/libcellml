@@ -129,6 +129,58 @@ TEST(Variable, getSetInitialValue) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, setInterfaceTypeNone) {
+    const std::string e = "<variable/>";
+    libcellml::Variable v;
+    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_NONE);
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInterfaceTypePrivate) {
+    const std::string e = "<variable interface=\"private\"/>";
+    libcellml::Variable v;
+    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PRIVATE);
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInterfaceTypePublic) {
+    const std::string e = "<variable interface=\"public\"/>";
+    libcellml::Variable v;
+    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInterfaceTypePublicAndPrivate) {
+    const std::string e = "<variable interface=\"public_and_private\"/>";
+    libcellml::Variable v;
+    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE);
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setGetInterfaceTypes) {
+    libcellml::Variable v1;
+    libcellml::Variable v2;
+    libcellml::Variable v3;
+    libcellml::Variable v4;
+    libcellml::Variable::INTERFACE_TYPES interfaceType1 = libcellml::Variable::INTERFACE_TYPE_NONE;
+    libcellml::Variable::INTERFACE_TYPES interfaceType2 = libcellml::Variable::INTERFACE_TYPE_PRIVATE;
+    libcellml::Variable::INTERFACE_TYPES interfaceType3 = libcellml::Variable::INTERFACE_TYPE_PUBLIC;
+    libcellml::Variable::INTERFACE_TYPES interfaceType4 = libcellml::Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE;
+    v1.setInterfaceType(interfaceType1);
+    v2.setInterfaceType(interfaceType2);
+    v3.setInterfaceType(interfaceType3);
+    v4.setInterfaceType(interfaceType4);
+
+    EXPECT_EQ(interfaceType1, v1.getInterfaceType());
+    EXPECT_EQ(interfaceType2, v2.getInterfaceType());
+    EXPECT_EQ(interfaceType3, v3.getInterfaceType());
+    EXPECT_EQ(interfaceType4, v4.getInterfaceType());
+}
+
 TEST(Variable, addVariable) {
     const std::string in = "valid_name";
     const std::string e =
