@@ -40,7 +40,7 @@ struct ComponentEntity::ComponentEntityImpl
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
 {
-    return std::find_if (mComponents.begin(), mComponents.end(),
+    return std::find_if(mComponents.begin(), mComponents.end(),
                         [=](const ComponentPtr& c) -> bool { return c->getName() == name; });
 }
 

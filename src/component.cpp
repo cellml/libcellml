@@ -37,7 +37,7 @@ struct Component::ComponentImpl
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
 {
-    return std::find_if (mVariables.begin(), mVariables.end(),
+    return std::find_if(mVariables.begin(), mVariables.end(),
                         [=](const VariablePtr& v) -> bool { return v->getName() == name; });
 }
 
