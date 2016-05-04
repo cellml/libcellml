@@ -37,7 +37,7 @@ foreach(TEST ${LIBCELLML_TESTS})
     CXX_STANDARD_REQUIRED ON
     FOLDER tests)
 
-#  if(LIBCELLML_WARNINGS_AS_ERRORS)
+#  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
 #    target_warnings_as_errors(${CURRENT_TEST})
 #  endif()
 

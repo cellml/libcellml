@@ -105,7 +105,7 @@ set_target_properties(cellml PROPERTIES
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1)
 
-if(LIBCELLML_WARNINGS_AS_ERRORS)
+if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
 endif()
 
