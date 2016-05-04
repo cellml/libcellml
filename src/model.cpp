@@ -78,7 +78,7 @@ std::string Model::doSerialisation(FORMATS format) const
         ComponentPtr comp = getComponent(i);
         ComponentPtr modelComponent = comp;
         size_t index = 0;
-        while (comp != nullptr) {
+        while (comp) {
             incrementComponent = false;
             if (comp->isImport()) {
                 ImportNamePair pair = std::make_pair(comp->getImportReference(), comp->getName());
@@ -194,10 +194,10 @@ std::string Model::doSerialisation(FORMATS format) const
             }
             // Serialise out the new connection.
             std::string connection = "<connection><map_components";
-            if (currentComponent1 != nullptr) {
+            if (currentComponent1) {
                 connection += " component_1=\"" + currentComponent1->getName() + "\"";
             }
-            if (currentComponent2 != nullptr) {
+            if (currentComponent2) {
                 connection += " component_2=\"" + currentComponent2->getName() + "\"";
             }
             VariablePair variablePair = variableMap.at(componentMapIndex1);

@@ -128,7 +128,7 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
-        if (getUnits() != nullptr) {
+        if (getUnits()) {
             repr += " units=\"" + getUnits()->getName() + "\"";
         }
         if (getInitialValue().length()) {
