@@ -60,7 +60,7 @@ if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
   set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 
-# TWAE ==> LIBCELLML_WARNINGS_AS_ERRORS -- Note: This excludes third party code, where warnings are never treated as errors.
+# TWAE ==> LIBCELLML_TREAT_WARNINGS_AS_ERRORS -- Note: This excludes third party code, where warnings are never treated as errors.
 set(_PARAM_ANNOTATION "Treat warnings as errors, this setting applies only to compilation units built by this project.")
 set(LIBCELLML_TREAT_WARNINGS_AS_ERRORS ON CACHE BOOL ${_PARAM_ANNOTATION})
 if(TWAE)
