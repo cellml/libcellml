@@ -203,6 +203,18 @@ TEST(Variable, addVariable) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, getParentComponent) {
+    libcellml::Component c;
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    c.addVariable(v);
+    EXPECT_EQ(&c, v->getParent());
+}
+
+TEST(Variable, getNullParentComponent) {
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    EXPECT_EQ(nullptr, v->getParent());
+}
+
 TEST(Variable, addVariableToUnnamedComponent) {
     const std::string in = "valid_name";
     const std::string e =

@@ -52,6 +52,46 @@ public:
     };
 
     /**
+     * @brief Add each argument variable to the other's equivalent variable set.
+     * Add a copy of @p variable1 to the set of equivalent variables for
+     * @p variable2 if not already present. Also add a copy of @p variable2 to the
+     * set of equivalent variables for @p variable1 if not already present.
+     * @sa getEquivalentVariable, setEquivalentTo
+     * @param variable1 The variable to copy to the equivalent variable set
+     * for @p variable2.
+     * @param variable2 The variable to copy to the equivalent variable set
+     * for @p variable1.
+     */
+    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Get an equivalent variable at @p index.
+     * Returns the equivalent variable at the index @p index for this
+     * variable.
+     * @param index The index of the variable to return (zero-based).
+     * @return The equivalent variable at the given index.
+     */
+    VariablePtr getEquivalentVariable(size_t index);
+
+    /**
+     * @brief Get the number of equivalent variables for this variable.
+     * Returns the number of equivalent variables for this variable.
+     * @return the number of equivalent variables.
+     */
+    size_t equivalentVariableCount() const;
+
+    /**
+     * @brief Test whether the argument variable is in this variable's equivalent variables.
+     * Tests to see if the argument variable exists in the set of this variable's equivalent
+     * variables. Returns @c true if the argument variable is in this variable's equivalent
+     * variables and @c false otherwise.
+     * @param equivalentVariable The variable to check for in this variable's equivalent variables.
+     * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
+     * and @c false otherwise.
+     */
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
+
+    /**
      * @brief Set the units for this variable.
      * Set the units for this variable. Set to @c nullptr to unset the units.
      * @sa getUnits
@@ -125,6 +165,17 @@ public:
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
+
+    /**
+     * @brief Private function to add an equivalent variable to the set for this variable.
+     * Add the argument equivalent variable to the set of equivalent variables for this
+     * variable if it is not already present. If the equivalent variable is present, 
+     * do nothing.
+     * @sa addEquivalence
+     * @param equivalentVariable The variable to add to this variable's equivalent
+     * variable set if not already present.
+     */
+    void setEquivalentTo(const VariablePtr &equivalentVariable);
 
     std::string doSerialisation(FORMATS format) const;
 

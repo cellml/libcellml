@@ -16,6 +16,8 @@ limitations under the License.Some license of other
 #include "libcellml/variable.h"
 
 #include <sstream>
+#include <vector>
+#include <algorithm>
 
 #include "libcellml/units.h"
 
@@ -31,16 +33,26 @@ namespace libcellml {
  */
 EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
 
+typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak variable pointer. */
+
 /**
  * @brief The Variable::VariableImpl struct.
  * The private implementation for the Variable class.
  */
 struct Variable::VariableImpl
 {
+    std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
+    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
     std::string mInitialValue = ""; /**< Initial value for this Variable.*/
     INTERFACE_TYPES mInterfaceType = INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
+
+std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
+{
+    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
+                        [=](VariableWeakPtr variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+}
 
 Variable::Variable()
     : mPimpl(new VariableImpl())
@@ -56,6 +68,7 @@ Variable::Variable(const Variable& rhs)
     : NamedEntity(rhs)
     , mPimpl(new VariableImpl())
 {
+    mPimpl->mEquivalentVariables = rhs.mPimpl->mEquivalentVariables;
 }
 
 Variable::Variable(Variable &&rhs)
@@ -77,6 +90,36 @@ void Variable::swap(Variable &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
+void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    variable1->setEquivalentTo(variable2);
+    variable2->setEquivalentTo(variable1);
+}
+
+VariablePtr Variable::getEquivalentVariable(size_t index)
+{
+    VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
+    return weakEquivalentVariable.lock();
+}
+
+size_t Variable::equivalentVariableCount() const
+{
+    return mPimpl->mEquivalentVariables.size();
+}
+
+bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable)
+{
+    return mPimpl->findEquivalentVariable(equivalentVariable) != mPimpl->mEquivalentVariables.end();
+}
+
+void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
+{
+    if (!hasEquivalentVariable(equivalentVariable)) {
+        VariableWeakPtr weakEquivalentVariable = equivalentVariable;
+        mPimpl->mEquivalentVariables.push_back(weakEquivalentVariable);
+    }
+}
+
 std::string Variable::doSerialisation(FORMATS format) const
 {
     std::string repr = "";
@@ -85,7 +128,7 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
-        if (getUnits() != nullptr) {
+        if (getUnits()) {
             repr += " units=\"" + getUnits()->getName() + "\"";
         }
         if (getInitialValue().length()) {
