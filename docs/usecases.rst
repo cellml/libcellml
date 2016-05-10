@@ -81,11 +81,11 @@ Use-cases for libCellML
          
    #. a model with maths and variables
    
-      a. … to be added to ...
+      a. model from *1.xi.d.1* and define valid maths
       
    #. a model with maths, variables and connections
    
-      a. … to be added to ...
+      a. model with two components, each containing two variables, maths, and one connection
 
 #. **Modify:** Modify models from 1.
 
