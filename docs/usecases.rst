@@ -81,7 +81,7 @@ Use-cases for libCellML
          
    #. a model with maths and variables
    
-      a. model from *1.xi.d.1* and define invalid maths
+      a. model from *1.xi.d.1* and define valid maths
       
    #. a model with maths, variables and connections
    
