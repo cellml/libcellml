@@ -12,12 +12,13 @@ mark_as_advanced(gtest_force_shared_crt)
 # to the LIBCELLML_TESTS list.  Any source files for the
 # test must be set to <test_name>_SRCS, likewise for
 # header files <test_name>_HDRS.
-include(version/tests.cmake)
-include(model/tests.cmake)
 include(component/tests.cmake)
+include(connection/tests.cmake)
 include(coverage/tests.cmake)
+include(model/tests.cmake)
 include(units/tests.cmake)
 include(variable/tests.cmake)
+include(version/tests.cmake)
 
 set(test_path)
 list(APPEND test_path $ENV{PATH} $<TARGET_FILE_DIR:cellml>)
