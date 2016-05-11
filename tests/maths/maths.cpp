@@ -61,7 +61,7 @@ TEST(Maths, appendAndSerialiseMathModel) {
     "</model>";
     std::string mathString =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
-    libcellml::Component m;
+    libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
     c->appendMath(mathString);
@@ -81,7 +81,7 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
       "</component>"
     "</model>";
     std::string mathString =
-    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">";
+    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -105,11 +105,11 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
       "<component name=\"component\">"
         "<variable name=\"variable1\" initial_value=\"1.0\"/>"
         "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
       "</component>"
     "</model>";
     std::string mathString =
-    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">";
+    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
