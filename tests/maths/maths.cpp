@@ -98,7 +98,6 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMathStrings) {
     EXPECT_EQ(e, a);
 }
 
-// 1.xiii.a
 TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMathString) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -128,6 +127,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMathString) {
     EXPECT_EQ(e, a);
 }
 
+// 1.xiii.a
 TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMathString) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -136,20 +136,24 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMathString) {
         "<variable name=\"A\" initial_value=\"1.0\"/>"
         "<variable name=\"B\" initial_value=\"-1.0\"/>"
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-          "<apply>"
-             "<plus/>"
-             "<ci>A</ci>"
-             "<ci>B</ci>"
+          "<apply><eq/>"
+            "<ci>C</ci>"
+            "<apply><plus/>"
+              "<ci>A</ci>"
+              "<ci>B</ci>"
+            "</apply>"
           "</apply>"
         "</math>"
       "</component>"
     "</model>";
     std::string mathString =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-      "<apply>"
-         "<plus/>"
-         "<ci>A</ci>"
-         "<ci>B</ci>"
+      "<apply><eq/>"
+        "<ci>C</ci>"
+        "<apply><plus/>"
+          "<ci>A</ci>"
+          "<ci>B</ci>"
+        "</apply>"
       "</apply>"
     "</math>";
     libcellml::Model m;
@@ -178,10 +182,12 @@ TEST(Maths, twoComponentsWithMathStringsAndConnection) {
         "<variable name=\"A1\"/>"
         "<variable name=\"B1\"/>"
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-          "<apply>"
-             "<plus/>"
-             "<ci>A1</ci>"
-             "<ci>B1</ci>"
+          "<apply><eq/>"
+            "<ci>C1</ci>"
+            "<apply><plus/>"
+              "<ci>A1</ci>"
+              "<ci>B1</ci>"
+            "</apply>"
           "</apply>"
         "</math>"
       "</component>"
@@ -189,10 +195,12 @@ TEST(Maths, twoComponentsWithMathStringsAndConnection) {
         "<variable name=\"A2\"/>"
         "<variable name=\"B2\"/>"
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-          "<apply>"
-             "<plus/>"
-             "<ci>A2</ci>"
-             "<ci>B2</ci>"
+          "<apply><eq/>"
+            "<ci>C2</ci>"
+            "<apply><plus/>"
+              "<ci>A2</ci>"
+              "<ci>B2</ci>"
+            "</apply>"
           "</apply>"
         "</math>"
       "</component>"
@@ -204,18 +212,22 @@ TEST(Maths, twoComponentsWithMathStringsAndConnection) {
 
     std::string mathString1 =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-      "<apply>"
-         "<plus/>"
-         "<ci>A1</ci>"
-         "<ci>B1</ci>"
+      "<apply><eq/>"
+        "<ci>C1</ci>"
+        "<apply><plus/>"
+          "<ci>A1</ci>"
+          "<ci>B1</ci>"
+        "</apply>"
       "</apply>"
     "</math>";
     std::string mathString2 =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-      "<apply>"
-         "<plus/>"
-         "<ci>A2</ci>"
-         "<ci>B2</ci>"
+      "<apply><eq/>"
+        "<ci>C2</ci>"
+        "<apply><plus/>"
+          "<ci>A2</ci>"
+          "<ci>B2</ci>"
+        "</apply>"
       "</apply>"
     "</math>";
 
