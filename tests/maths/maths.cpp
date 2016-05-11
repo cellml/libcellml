@@ -18,15 +18,15 @@ limitations under the License.Some license of other
 
 #include <libcellml>
 
-TEST(Maths, appendAndGetMathString) {
+TEST(Maths, appendAndGetMath) {
     std::string mathString =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.appendMathString(mathString);
-    EXPECT_EQ(mathString, c.getMathString());
+    c.appendMath(mathString);
+    EXPECT_EQ(mathString, c.getMath());
 }
 
-TEST(Maths, appendAndSerialiseMathStringComponent) {
+TEST(Maths, appendAndSerialiseMathComponent) {
     const std::string e =
     "<component>"
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
@@ -34,24 +34,24 @@ TEST(Maths, appendAndSerialiseMathStringComponent) {
     std::string mathString =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.appendMathString(mathString);
+    c.appendMath(mathString);
     std::string a = c.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndRemoveMathStringComponent) {
+TEST(Maths, appendAndRemoveMathComponent) {
     const std::string e =
     "<component/>";
     std::string mathString =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.appendMathString(mathString);
-    c.removeMathString();
+    c.appendMath(mathString);
+    c.removeMath();
     std::string a = c.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndSerialiseMathStringModel) {
+TEST(Maths, appendAndSerialiseMathModel) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -64,12 +64,12 @@ TEST(Maths, appendAndSerialiseMathStringModel) {
     libcellml::Component m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
-    c->appendMathString(mathString);
+    c->appendMath(mathString);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, modelWithTwoVariablesAndTwoInvalidMathStrings) {
+TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -91,14 +91,14 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMathStrings) {
     v2->setName("variable2");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMathString(mathString);
-    c->appendMathString(mathString);
+    c->appendMath(mathString);
+    c->appendMath(mathString);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMathString) {
+TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -121,14 +121,14 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMathString) {
     v2->setInitialValue("-1.0");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMathString(mathString);
+    c->appendMath(mathString);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
 // 1.xiii.a
-TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMathString) {
+TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -167,14 +167,14 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMathString) {
     v2->setInitialValue("-1.0");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMathString(mathString);
+    c->appendMath(mathString);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
 
 // 1.xiv.a
-TEST(Maths, twoComponentsWithMathStringsAndConnection) {
+TEST(Maths, twoComponentsWithMathAndConnection) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -250,8 +250,8 @@ TEST(Maths, twoComponentsWithMathStringsAndConnection) {
     comp1->addVariable(v12);
     comp2->addVariable(v21);
     comp2->addVariable(v22);
-    comp1->appendMathString(mathString1);
-    comp2->appendMathString(mathString2);
+    comp1->appendMath(mathString1);
+    comp2->appendMath(mathString2);
     m.addComponent(comp1);
     m.addComponent(comp2);
     libcellml::Variable::addEquivalence(v11,v21);
