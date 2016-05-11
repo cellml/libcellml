@@ -45,6 +45,27 @@ public:
     void setSourceComponent(const ImportPtr &imp, const std::string &name);
 
     /**
+     * @brief Appends the argument to the math string for this component.
+     * Appends the @p mathString to the existing math string for this component.
+     * @param mathString The @c std::string to append for this component.
+     */
+    void appendMath(const std::string &mathString);
+
+    /**
+     * @brief Get the math string for this component.
+     * Returns a math string if one has been appended for this component. Returns
+     * an empty string if math has not been appended (or has been removed).
+     * @return @c std::string math for this component.
+     */
+    std::string getMath() const;
+
+    /**
+     * @brief Remove the math string for this component.
+     * Resets the math string for this component to an empty string.
+     */
+    void removeMath();
+
+    /**
      * @brief Add a variable by reference as part of this component.
      * Add a variable by reference as part of the given component.
      * @sa removeVariable
