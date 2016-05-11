@@ -46,7 +46,7 @@ public:
 
     /**
      * @brief Appends the argument to the math string for this component.
-     * Appends the @p mathString to the current string for this component.
+     * Appends the @p mathString to the existing math string for this component.
      * @param mathString The @c std::string to append for this component.
      */
     void appendMath(const std::string &mathString);
@@ -54,7 +54,7 @@ public:
     /**
      * @brief Get the math string for this component.
      * Returns a math string if one has been appended for this component. Returns
-     * an empty string if no maths have been appended (or have been removed).
+     * an empty string if math has not been appended (or has been removed).
      * @return @c std::string math for this component.
      */
     std::string getMath() const;
