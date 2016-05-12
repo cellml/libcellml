@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include "libcellml/units.h"
 
+#include <assert.h>
 #include <map>
 #include <sstream>
 #include <vector>
@@ -203,6 +204,7 @@ void Units::addUnit(const std::string &name, PREFIXES prefix, double exponent,
              double multiplier, double offset)
 {
     auto search = prefixToString.find(prefix);
+    assert(search != prefixToString.end());
     const std::string prefixString = search->second;
     addUnit(name, prefixString, exponent, multiplier, offset);
 }
