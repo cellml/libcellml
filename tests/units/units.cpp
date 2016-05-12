@@ -90,7 +90,7 @@ TEST(Units, compoundUnitsRaw) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit("ampere", -6);
+    u->addUnit("ampere", -6, 1.0);
     u->addUnit("kelvin");
     u->addUnit("siemens", -3, -1.0);
 
