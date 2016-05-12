@@ -102,14 +102,14 @@ public:
     /**
      * @brief Add a unit to this Units.
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * multiplier and offset.
-     * @param units The name of the unit to add.
+     * exponent, multiplier and offset.
+     * @param name The name of the unit to add.
      * @param prefix The prefix for the unit, one of PREFIXES.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &units, PREFIXES prefix, double exponent=1.0,
+    void addUnit(const std::string &name, PREFIXES prefix, double exponent=1.0,
                  double multiplier=1.0, double offset=0.0);
 
     /**
@@ -118,13 +118,13 @@ public:
      * multiplier and offset.
      *
      * @overload
-     * @param units The name of the unit to add.
-     * @param prefix The prefix for the unit expressed as an integer.
+     * @param name The name of the unit to add.
+     * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &units, double prefix, double exponent,
+    void addUnit(const std::string &name, double prefix, double exponent,
                  double multiplier=1.0, double offset=0.0);
 
     /**
@@ -133,19 +133,19 @@ public:
      * and an exponent only.
      *
      * @overload
-     * @param units The name of the unit to add.
+     * @param name The name of the unit to add.
      * @param exponent The exponent for the unit.
      */
-    void addUnit(const std::string &units, double exponent);
+    void addUnit(const std::string &name, double exponent);
 
     /**
      * @brief Add a unit to this Units.
      * Add a unit as a child of this Units, this variant specified with only a name.
      *
      * @overload
-     * @param units The name of the unit to add.
+     * @param name The name of the unit to add.
      */
-    void addUnit(const std::string &units);
+    void addUnit(const std::string &name);
 
     /**
      * @brief Set the source of the units for this Units.

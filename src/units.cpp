@@ -39,7 +39,7 @@ std::string prefixToString(PREFIXES prefix);
  */
 struct Unit
 {
-    std::string mUnits; /**< Name for the unit.*/
+    std::string mName; /**< Name for the unit.*/
     std::string mPrefix = "0.0"; /**< String expression of the prefix for the unit.*/
     double mExponent = 1.0; /**< Exponent for the unit.*/
     double mMultiplier = 1.0; /**< Multiplier for the unit.*/
@@ -130,7 +130,7 @@ std::string Units::doSerialisation(FORMATS format) const
                         if (u.mPrefix != "0.0") {
                             repr += " prefix=\"" + u.mPrefix + "\"";
                         }
-                        repr += " units=\"" + u.mUnits + "\"";
+                        repr += " units=\"" + u.mName + "\"";
                         repr += "/>";
                     }
                     repr += "</units>";
@@ -152,11 +152,11 @@ void Units::setBaseUnit(bool state)
     mPimpl->mBaseUnit = state;
 }
 
-void Units::addUnit(const std::string & units, PREFIXES prefix, double exponent,
+void Units::addUnit(const std::string &name, PREFIXES prefix, double exponent,
              double multiplier, double offset)
 {
     Unit u;
-    u.mUnits = units;
+    u.mName = name;
     u.mPrefix = prefixToString(prefix);
     u.mExponent = exponent;
     u.mMultiplier = multiplier;
@@ -165,12 +165,12 @@ void Units::addUnit(const std::string & units, PREFIXES prefix, double exponent,
     mPimpl->mUnits.push_back(u);
 }
 
-void Units::addUnit(const std::string & units, double prefix, double exponent,
+void Units::addUnit(const std::string &name, double prefix, double exponent,
              double multiplier, double offset)
 {
     Unit u;
     std::ostringstream strs;
-    u.mUnits = units;
+    u.mName = name;
     if (prefix != 0.0) {
         strs << prefix;
         u.mPrefix = strs.str();
@@ -182,14 +182,14 @@ void Units::addUnit(const std::string & units, double prefix, double exponent,
     mPimpl->mUnits.push_back(u);
 }
 
-void Units::addUnit(const std::string &units, double exponent)
+void Units::addUnit(const std::string &name, double exponent)
 {
-    addUnit(units, 0.0, exponent, 1.0, 0.0);
+    addUnit(name, 0.0, exponent, 1.0, 0.0);
 }
 
-void Units::addUnit(const std::string &units)
+void Units::addUnit(const std::string &name)
 {
-    addUnit(units, 0.0, 1.0, 1.0, 0.0);
+    addUnit(name, 0.0, 1.0, 1.0, 0.0);
 
 }
 
