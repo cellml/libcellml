@@ -126,7 +126,7 @@ TEST(Units, compoundUnitsUsingDefines) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, compoundUnitsUsingDefinesStringPrefixes) {
+TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -143,8 +143,8 @@ TEST(Units, compoundUnitsUsingDefinesStringPrefixes) {
     u->setName("compound_unit");
 
     u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
-    u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
-    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, "milli", -1.0);
+    u->addUnit("kelvin");
+    u->addUnit("siemens", "milli", -1.0);
 
     m.addUnits(u);
 
