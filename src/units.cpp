@@ -54,34 +54,6 @@ std::map<PREFIXES, std::string> prefixToString =
 };
 
 /**
- * @brief Map a selection of strings to their PREFIXES form.
- * An internal map used to convert a selection of strings to PREFIXES.
- */
-std::map<std::string, PREFIXES> stringToPrefix =
-{
-    {"atto", PREFIX_ATTO},
-    {"centi", PREFIX_CENTI},
-    {"deca", PREFIX_DECA},
-    {"deci", PREFIX_DECI},
-    {"exa", PREFIX_EXA},
-    {"femto", PREFIX_FEMTO},
-    {"giga", PREFIX_GIGA},
-    {"hecto", PREFIX_HECTO},
-    {"kilo", PREFIX_KILO},
-    {"mega", PREFIX_MEGA},
-    {"micro", PREFIX_MICRO},
-    {"milli", PREFIX_MILLI},
-    {"nano", PREFIX_NANO},
-    {"peta", PREFIX_PETA},
-    {"pico", PREFIX_PICO},
-    {"tera", PREFIX_TERA},
-    {"yocto", PREFIX_YOCTO},
-    {"yotta", PREFIX_YOTTA},
-    {"zepto", PREFIX_ZEPTO},
-    {"zetta", PREFIX_ZETTA}
-};
-
-/**
  * @brief The Unit struct.
  * An internal structure to capture a unit definition.  The
  * prefix can be expressed using either an integer or an enum.
@@ -201,30 +173,15 @@ void Units::addUnit(const std::string &name, const std::string &prefix, double e
 {
     Unit u;
     u.mName = name;
-    auto search = stringToPrefix.find(prefix);
-    // Check if this is a SI prefix string
-    if (search != stringToPrefix.end()) {
+    // Allow all nonzero user-specified prefixes
+    try
+    {
+        double prefixDouble = std::stod(prefix);
+        if (prefixDouble != 0.0) {
+            u.mPrefix = prefix;
+        }
+    } catch(...) {
         u.mPrefix = prefix;
-    } else {
-        // Check if this is a real-valued prefix string
-        try
-        {
-            double prefixDouble = std::stod(prefix);
-            // Check if this is the default value
-            if (prefixDouble != 0.0) {
-                u.mPrefix = prefix;
-            }
-        }
-        catch(std::invalid_argument)
-        {
-            throw std::invalid_argument("Specified string prefix " + prefix +
-                                    " is not a standard SI prefix or a real number.");
-        }
-        catch(std::out_of_range)
-        {
-            throw std::out_of_range("Specified string prefix " + prefix +
-                                    " is not a standard SI prefix or a real number.");
-        }
     }
     if (exponent != 1.0) {
         std::ostringstream strs;
