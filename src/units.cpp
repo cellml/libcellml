@@ -40,10 +40,10 @@ std::string prefixToString(PREFIXES prefix);
 struct Unit
 {
     std::string mName; /**< Name for the unit.*/
-    std::string mPrefix = "0.0"; /**< String expression of the prefix for the unit.*/
-    double mExponent = 1.0; /**< Exponent for the unit.*/
-    double mMultiplier = 1.0; /**< Multiplier for the unit.*/
-    double mOffset = 0.0; /**< Offset for the unit.*/
+    std::string mPrefix; /**< String expression of the prefix for the unit.*/
+    std::string mExponent; /**< Exponent for the unit.*/
+    std::string mMultiplier; /**< Multiplier for the unit.*/
+    std::string mOffset; /**< Offset for the unit.*/
 };
 
 /**
@@ -112,22 +112,16 @@ std::string Units::doSerialisation(FORMATS format) const
                     for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
                         repr += "<unit";
                         Unit u = mPimpl->mUnits[i];
-                        if (u.mExponent != 1.0) {
-                            std::ostringstream strs;
-                            strs << u.mExponent;
-                            repr += " exponent=\"" + strs.str() + "\"";
+                        if (u.mExponent.length()) {
+                            repr += " exponent=\"" + u.mExponent + "\"";
                         }
-                        if (u.mMultiplier != 1.0) {
-                            std::ostringstream strs;
-                            strs << u.mMultiplier;
-                            repr += " multiplier=\"" + strs.str() + "\"";
+                        if (u.mMultiplier.length()) {
+                            repr += " multiplier=\"" + u.mMultiplier + "\"";
                         }
-                        if (u.mOffset != 0.0) {
-                            std::ostringstream strs;
-                            strs << u.mOffset;
-                            repr += " offset=\"" + strs.str() + "\"";
+                        if (u.mOffset.length()) {
+                            repr += " offset=\"" + u.mOffset + "\"";
                         }
-                        if (u.mPrefix != "0.0") {
+                        if (u.mPrefix.length()) {
                             repr += " prefix=\"" + u.mPrefix + "\"";
                         }
                         repr += " units=\"" + u.mName + "\"";
@@ -158,10 +152,21 @@ void Units::addUnit(const std::string &name, PREFIXES prefix, double exponent,
     Unit u;
     u.mName = name;
     u.mPrefix = prefixToString(prefix);
-    u.mExponent = exponent;
-    u.mMultiplier = multiplier;
-    u.mOffset = offset;
-
+    if (exponent != 1.0) {
+        std::ostringstream strs;
+        strs << exponent;
+        u.mExponent = strs.str();
+    }
+    if (multiplier != 1.0) {
+        std::ostringstream strs;
+        strs << multiplier;
+        u.mMultiplier = strs.str();
+    }
+    if (offset != 0.0) {
+        std::ostringstream strs;
+        strs << offset;
+        u.mOffset = strs.str();
+    }
     mPimpl->mUnits.push_back(u);
 }
 
@@ -169,16 +174,27 @@ void Units::addUnit(const std::string &name, double prefix, double exponent,
              double multiplier, double offset)
 {
     Unit u;
-    std::ostringstream strs;
     u.mName = name;
     if (prefix != 0.0) {
+        std::ostringstream strs;
         strs << prefix;
         u.mPrefix = strs.str();
     }
-    u.mExponent = exponent;
-    u.mMultiplier = multiplier;
-    u.mOffset = offset;
-
+    if (exponent != 1.0) {
+        std::ostringstream strs;
+        strs << exponent;
+        u.mExponent = strs.str();
+    }
+    if (multiplier != 1.0) {
+        std::ostringstream strs;
+        strs << multiplier;
+        u.mMultiplier = strs.str();
+    }
+    if (offset != 0.0) {
+        std::ostringstream strs;
+        strs << offset;
+        u.mOffset = strs.str();
+    }
     mPimpl->mUnits.push_back(u);
 }
 
@@ -199,7 +215,7 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
     setImportReference(name);
 }
 
-EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix)
+std::string prefixToString(PREFIXES prefix)
 {
     std::string str = "";
     switch (prefix) {
