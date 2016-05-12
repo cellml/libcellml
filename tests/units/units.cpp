@@ -126,6 +126,32 @@ TEST(Units, compoundUnitsUsingDefines) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Units, compoundUnitsUsingDefinesStringPrefixes) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<units name=\"compound_unit\">"
+            "<unit prefix=\"micro\" units=\"ampere\"/>"
+            "<unit units=\"kelvin\"/>"
+            "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+            "</units>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("compound_unit");
+
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
+    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, "milli", -1.0);
+
+    m.addUnits(u);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Units, multiply) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

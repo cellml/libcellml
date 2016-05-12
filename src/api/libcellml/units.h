@@ -104,6 +104,21 @@ public:
      * Add a unit as a child of this Units.  This method takes optional arguments
      * exponent, multiplier and offset.
      * @param name The name of the unit to add.
+     * @param prefix The string prefix for the unit.
+     * @param exponent The exponent.
+     * @param multiplier The multiplier.
+     * @param offset The offset.
+     */
+    void addUnit(const std::string &name, const std::string &prefix, double exponent=1.0,
+                 double multiplier=1.0, double offset=0.0);
+
+    /**
+     * @brief Add a unit to this Units.
+     * Add a unit as a child of this Units.  This method takes optional arguments
+     * exponent, multiplier and offset.
+     *
+     * @overload
+     * @param name The name of the unit to add.
      * @param prefix The prefix for the unit, one of PREFIXES.
      * @param exponent The exponent.
      * @param multiplier The multiplier.

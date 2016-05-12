@@ -15,21 +15,71 @@ limitations under the License.
 */
 #include "libcellml/units.h"
 
-#include <vector>
+#include <map>
 #include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 #include "libcellml/import.h"
 
 namespace libcellml {
 
 /**
- * @brief Convert a PREFIXES into its string form.
- * Private function to convert a PREFIXES into its string form.
- *
- * @param prefix The prefix to convert.
- * @return A std::string form of the given prefix.
+ * @brief Map PREFIXES to their string forms.
+ * An internal map used to convert a PREFIXES into its string form.
  */
-std::string prefixToString(PREFIXES prefix);
+std::map<PREFIXES, std::string> prefixToString =
+{
+    {PREFIX_ATTO, "atto"},
+    {PREFIX_CENTI, "centi"},
+    {PREFIX_DECA, "deca"},
+    {PREFIX_DECI, "deci"},
+    {PREFIX_EXA, "exa"},
+    {PREFIX_FEMTO, "femto"},
+    {PREFIX_GIGA, "giga"},
+    {PREFIX_HECTO, "hecto"},
+    {PREFIX_KILO, "kilo"},
+    {PREFIX_MEGA, "mega"},
+    {PREFIX_MICRO, "micro"},
+    {PREFIX_MILLI, "milli"},
+    {PREFIX_NANO, "nano"},
+    {PREFIX_PETA, "peta"},
+    {PREFIX_PICO, "pico"},
+    {PREFIX_TERA, "tera"},
+    {PREFIX_YOCTO, "yocto"},
+    {PREFIX_YOTTA, "yotta"},
+    {PREFIX_ZEPTO, "zepto"},
+    {PREFIX_ZETTA, "zetta"}
+};
+
+/**
+ * @brief Map a selection of strings to their PREFIXES form.
+ * An internal map used to convert a selection of strings to PREFIXES.
+ */
+std::map<std::string, PREFIXES> stringToPrefix =
+{
+    {"atto", PREFIX_ATTO},
+    {"centi", PREFIX_CENTI},
+    {"deca", PREFIX_DECA},
+    {"deci", PREFIX_DECI},
+    {"exa", PREFIX_EXA},
+    {"femto", PREFIX_FEMTO},
+    {"giga", PREFIX_GIGA},
+    {"hecto", PREFIX_HECTO},
+    {"kilo", PREFIX_KILO},
+    {"mega", PREFIX_MEGA},
+    {"micro", PREFIX_MICRO},
+    {"milli", PREFIX_MILLI},
+    {"nano", PREFIX_NANO},
+    {"peta", PREFIX_PETA},
+    {"pico", PREFIX_PICO},
+    {"tera", PREFIX_TERA},
+    {"yocto", PREFIX_YOCTO},
+    {"yotta", PREFIX_YOTTA},
+    {"zepto", PREFIX_ZEPTO},
+    {"zetta", PREFIX_ZETTA}
+};
 
 /**
  * @brief The Unit struct.
@@ -146,12 +196,36 @@ void Units::setBaseUnit(bool state)
     mPimpl->mBaseUnit = state;
 }
 
-void Units::addUnit(const std::string &name, PREFIXES prefix, double exponent,
+void Units::addUnit(const std::string &name, const std::string &prefix, double exponent,
              double multiplier, double offset)
 {
     Unit u;
     u.mName = name;
-    u.mPrefix = prefixToString(prefix);
+    auto search = stringToPrefix.find(prefix);
+    // Check if this is a SI prefix string
+    if (search != stringToPrefix.end()) {
+        u.mPrefix = prefix;
+    } else {
+        // Check if this is a real-valued prefix string
+        try
+        {
+            double prefixDouble = std::stod(prefix);
+            // Check if this is the default value
+            if (prefixDouble != 0.0) {
+                u.mPrefix = prefix;
+            }
+        }
+        catch(std::invalid_argument)
+        {
+            throw std::invalid_argument("Specified string prefix " + prefix +
+                                    " is not a standard SI prefix or a real number.");
+        }
+        catch(std::out_of_range)
+        {
+            throw std::out_of_range("Specified string prefix " + prefix +
+                                    " is not a standard SI prefix or a real number.");
+        }
+    }
     if (exponent != 1.0) {
         std::ostringstream strs;
         strs << exponent;
@@ -170,32 +244,21 @@ void Units::addUnit(const std::string &name, PREFIXES prefix, double exponent,
     mPimpl->mUnits.push_back(u);
 }
 
+void Units::addUnit(const std::string &name, PREFIXES prefix, double exponent,
+             double multiplier, double offset)
+{
+    auto search = prefixToString.find(prefix);
+    const std::string prefixString = search->second;
+    addUnit(name, prefixString, exponent, multiplier, offset);
+}
+
 void Units::addUnit(const std::string &name, double prefix, double exponent,
              double multiplier, double offset)
 {
-    Unit u;
-    u.mName = name;
-    if (prefix != 0.0) {
-        std::ostringstream strs;
-        strs << prefix;
-        u.mPrefix = strs.str();
-    }
-    if (exponent != 1.0) {
-        std::ostringstream strs;
-        strs << exponent;
-        u.mExponent = strs.str();
-    }
-    if (multiplier != 1.0) {
-        std::ostringstream strs;
-        strs << multiplier;
-        u.mMultiplier = strs.str();
-    }
-    if (offset != 0.0) {
-        std::ostringstream strs;
-        strs << offset;
-        u.mOffset = strs.str();
-    }
-    mPimpl->mUnits.push_back(u);
+    std::ostringstream strs;
+    strs << prefix;
+    const std::string prefixString = strs.str();
+    addUnit(name, prefixString, exponent, multiplier, offset);
 }
 
 void Units::addUnit(const std::string &name, double exponent)
@@ -213,94 +276,6 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
 {
     setImport(imp);
     setImportReference(name);
-}
-
-std::string prefixToString(PREFIXES prefix)
-{
-    std::string str = "";
-    switch (prefix) {
-    case PREFIX_ATTO: {
-        str = "atto";
-        break;
-    }
-    case PREFIX_CENTI: {
-        str = "centi";
-        break;
-    }
-    case PREFIX_DECA: {
-        str = "deca";
-        break;
-    }
-    case PREFIX_DECI: {
-        str = "deci";
-        break;
-    }
-    case PREFIX_EXA: {
-        str = "exa";
-        break;
-    }
-    case PREFIX_FEMTO: {
-        str = "femto";
-        break;
-    }
-    case PREFIX_GIGA: {
-        str = "giga";
-        break;
-    }
-    case PREFIX_HECTO: {
-        str = "hecto";
-        break;
-    }
-    case PREFIX_KILO: {
-        str = "kilo";
-        break;
-    }
-    case PREFIX_MEGA: {
-        str = "mega";
-        break;
-    }
-    case PREFIX_MICRO: {
-        str = "micro";
-        break;
-    }
-    case PREFIX_MILLI: {
-        str = "milli";
-        break;
-    }
-    case PREFIX_NANO: {
-        str = "nano";
-        break;
-    }
-    case PREFIX_PETA: {
-        str = "peta";
-        break;
-    }
-    case PREFIX_PICO: {
-        str = "pico";
-        break;
-    }
-    case PREFIX_TERA: {
-        str = "tera";
-        break;
-    }
-    case PREFIX_YOCTO: {
-        str = "yocto";
-        break;
-    }
-    case PREFIX_YOTTA: {
-        str = "yotta";
-        break;
-    }
-    case PREFIX_ZEPTO: {
-        str = "zepto";
-        break;
-    }
-    case PREFIX_ZETTA: {
-        str = "zetta";
-        break;
-    }
-    }
-    return str;
 }
 
 }
