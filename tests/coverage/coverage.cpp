@@ -87,7 +87,6 @@ TEST(Coverage, prefixToString) {
          "peta",
          "pico",
          "tera",
-         "unit",
          "yocto",
          "yotta",
          "zepto",
@@ -145,7 +144,6 @@ TEST(Coverage, variable) {
 namespace libcellml {
 
 std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
-std::string prefixToString(PREFIXES prefix);
 
 }
 
