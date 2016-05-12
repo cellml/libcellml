@@ -29,7 +29,7 @@ namespace libcellml {
  * @param prefix The prefix to convert.
  * @return A std::string form of the given prefix.
  */
-EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix);
+std::string prefixToString(PREFIXES prefix);
 
 /**
  * @brief The Unit struct.
@@ -39,9 +39,8 @@ EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix);
  */
 struct Unit
 {
-    std::string mUnits = ""; /**< Name for the unit.*/
-    int mPrefixInt = 0; /**< Integer expression of the prefix for the unit.*/
-    PREFIXES mPrefixEnum = PREFIX_UNIT; /**< Enum expression of the prefix for the unit.*/
+    std::string mUnits; /**< Name for the unit.*/
+    std::string mPrefix = "0.0"; /**< String expression of the prefix for the unit.*/
     double mExponent = 1.0; /**< Exponent for the unit.*/
     double mMultiplier = 1.0; /**< Multiplier for the unit.*/
     double mOffset = 0.0; /**< Offset for the unit.*/
@@ -128,12 +127,8 @@ std::string Units::doSerialisation(FORMATS format) const
                             strs << u.mOffset;
                             repr += " offset=\"" + strs.str() + "\"";
                         }
-                        if (u.mPrefixEnum != PREFIX_UNIT) {
-                            repr += " prefix=\"" + prefixToString(u.mPrefixEnum) + "\"";
-                        } else if (u.mPrefixInt != 0) {
-                            std::ostringstream strs;
-                            strs << u.mPrefixInt;
-                            repr += " prefix=\"" + strs.str() + "\"";
+                        if (u.mPrefix != "0.0") {
+                            repr += " prefix=\"" + u.mPrefix + "\"";
                         }
                         repr += " units=\"" + u.mUnits + "\"";
                         repr += "/>";
@@ -162,7 +157,7 @@ void Units::addUnit(const std::string & units, PREFIXES prefix, double exponent,
 {
     Unit u;
     u.mUnits = units;
-    u.mPrefixEnum = prefix;
+    u.mPrefix = prefixToString(prefix);
     u.mExponent = exponent;
     u.mMultiplier = multiplier;
     u.mOffset = offset;
@@ -170,12 +165,16 @@ void Units::addUnit(const std::string & units, PREFIXES prefix, double exponent,
     mPimpl->mUnits.push_back(u);
 }
 
-void Units::addUnit(const std::string & units, int prefix, double exponent,
+void Units::addUnit(const std::string & units, double prefix, double exponent,
              double multiplier, double offset)
 {
     Unit u;
+    std::ostringstream strs;
     u.mUnits = units;
-    u.mPrefixInt = prefix;
+    if (prefix != 0.0) {
+        strs << prefix;
+        u.mPrefix = strs.str();
+    }
     u.mExponent = exponent;
     u.mMultiplier = multiplier;
     u.mOffset = offset;
@@ -185,12 +184,12 @@ void Units::addUnit(const std::string & units, int prefix, double exponent,
 
 void Units::addUnit(const std::string &units, double exponent)
 {
-    addUnit(units, PREFIX_UNIT, exponent, 1.0, 0.0);
+    addUnit(units, 0.0, exponent, 1.0, 0.0);
 }
 
 void Units::addUnit(const std::string &units)
 {
-    addUnit(units, PREFIX_UNIT, 1.0, 1.0, 0.0);
+    addUnit(units, 0.0, 1.0, 1.0, 0.0);
 
 }
 
@@ -266,12 +265,6 @@ EXPORT_FOR_TESTING std::string prefixToString(PREFIXES prefix)
     }
     case PREFIX_TERA: {
         str = "tera";
-        break;
-    }
-    case PREFIX_UNIT: {
-        /* Should not ask for the string version of this.
-        With the current codebase there is no way to trigger this case. */
-        str = "";
         break;
     }
     case PREFIX_YOCTO: {

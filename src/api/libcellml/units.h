@@ -124,7 +124,7 @@ public:
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &units, int prefix, double exponent=1.0,
+    void addUnit(const std::string &units, double prefix, double exponent,
                  double multiplier=1.0, double offset=0.0);
 
     /**

@@ -205,7 +205,7 @@ TEST(Units, farhenheit) {
     u->setName("fahrenheit");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, libcellml::PREFIX_UNIT, 1.0, 1.8, 32.0);
+    u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, 0.0, 1.0, 1.8, 32.0);
     m.addUnits(u);
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
@@ -232,7 +232,7 @@ TEST(Units, multiple) {
     u1->setName("fahrenheit");
 
     /* Give prefix and exponent their default values. */
-    u1->addUnit(libcellml::STANDARD_UNIT_CELSIUS, libcellml::PREFIX_UNIT, 1.0, 1.8, 32.0);
+    u1->addUnit(libcellml::STANDARD_UNIT_CELSIUS, 0, 1.0, 1.8, 32.0);
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("metres_per_second");
