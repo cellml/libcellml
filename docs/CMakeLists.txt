@@ -14,13 +14,16 @@
 
 if(SPHINX_FOUND)
   set(SPHINX_DOCS_TARGET project_docs)
+
   if(NOT DEFINED SPHINX_THEME)
-    set(SPHINX_THEME alabaster)
+    set(SPHINX_THEME theme)
   endif()
 
   if(NOT DEFINED SPHINX_THEME_DIR)
-    set(SPHINX_THEME_DIR)
+    set(SPHINX_THEME_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   endif()
+
+  string(TIMESTAMP SPHINX_YEAR "%Y")
 
   # configured documentation tools and intermediate build results
   set(BINARY_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/_build")

@@ -169,7 +169,7 @@ private:
     /**
      * @brief Private function to add an equivalent variable to the set for this variable.
      * Add the argument equivalent variable to the set of equivalent variables for this
-     * variable if it is not already present. If the equivalent variable is present, 
+     * variable if it is not already present. If the equivalent variable is present,
      * do nothing.
      * @sa addEquivalence
      * @param equivalentVariable The variable to add to this variable's equivalent
