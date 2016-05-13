@@ -134,6 +134,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
             "<unit prefix=\"micro\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
             "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+            "<unit prefix=\"1.7e310\" units=\"meter\"/>"
             "</units>"
             "</model>";
 
@@ -145,6 +146,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
     u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
     u->addUnit("kelvin");
     u->addUnit("siemens", "milli", -1.0);
+    u->addUnit("meter", "1.7e310");
 
     m.addUnits(u);
 
