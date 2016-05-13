@@ -179,7 +179,9 @@ void Units::addUnit(const std::string &name, const std::string &prefix, double e
         if (prefixDouble != 0.0) {
             u.mPrefix = prefix;
         }
-    } catch(...) {
+    } catch (std::invalid_argument) {
+        u.mPrefix = prefix;
+    } catch (std::out_of_range) {
         u.mPrefix = prefix;
     }
     if (exponent != 1.0) {
@@ -220,13 +222,12 @@ void Units::addUnit(const std::string &name, double prefix, double exponent,
 
 void Units::addUnit(const std::string &name, double exponent)
 {
-    addUnit(name, 0.0, exponent, 1.0, 0.0);
+    addUnit(name, "0.0", exponent, 1.0, 0.0);
 }
 
 void Units::addUnit(const std::string &name)
 {
-    addUnit(name, 0.0, 1.0, 1.0, 0.0);
-
+    addUnit(name, "0.0", 1.0, 1.0, 0.0);
 }
 
 void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
