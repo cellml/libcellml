@@ -27,15 +27,15 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief Map to convert an INTERFACE_TYPES into its string form.
- * An internal map used to convert a Variable INTERFACE_TYPES into its string form.
+ * @brief Map to convert an interface type into its string form.
+ * An internal map used to convert a Variable InterfaceTypes enum class member into its string form.
  */
-std::map<Variable::INTERFACE_TYPES, std::string> interfaceTypeToString =
+std::map<Variable::InterfaceTypes, std::string> interfaceTypeToString =
 {
-    {Variable::INTERFACE_TYPE_NONE, "none"},
-    {Variable::INTERFACE_TYPE_PRIVATE, "private"},
-    {Variable::INTERFACE_TYPE_PUBLIC, "public"},
-    {Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE, "public_and_private"}
+    {Variable::InterfaceTypes::NONE, "none"},
+    {Variable::InterfaceTypes::PRIVATE, "private"},
+    {Variable::InterfaceTypes::PUBLIC, "public"},
+    {Variable::InterfaceTypes::PUBLIC_AND_PRIVATE, "public_and_private"}
 };
 
 typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak variable pointer. */
@@ -125,10 +125,10 @@ void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
     }
 }
 
-std::string Variable::doSerialisation(FORMATS format) const
+std::string Variable::doSerialisation(Formats format) const
 {
     std::string repr = "";
-    if (format == FORMAT_XML) {
+    if (format == Formats::XML) {
         repr += "<variable";
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
@@ -184,7 +184,7 @@ void Variable::setInterfaceType(const std::string &interfaceType)
     mPimpl->mInterfaceType = interfaceType;
 }
 
-void Variable::setInterfaceType(Variable::INTERFACE_TYPES interfaceType)
+void Variable::setInterfaceType(Variable::InterfaceTypes interfaceType)
 {
     auto search = interfaceTypeToString.find(interfaceType);
     assert(search != interfaceTypeToString.end());

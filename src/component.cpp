@@ -144,10 +144,10 @@ size_t Component::variableCount() const
     return mPimpl->mVariables.size();
 }
 
-std::string Component::doSerialisation(FORMATS format) const
+std::string Component::doSerialisation(Formats format) const
 {
     std::string repr = "";
-    if (format == FORMAT_XML) {
+    if (format == Formats::XML) {
         if (isImport()) {
             return repr;
         }
