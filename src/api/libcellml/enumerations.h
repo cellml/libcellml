@@ -48,7 +48,6 @@ enum PREFIXES
     PREFIX_KILO  =   3,
     PREFIX_HECTO =   2,
     PREFIX_DECA  =   1,
-    PREFIX_UNIT  =   0,
     PREFIX_DECI  =  -1,
     PREFIX_CENTI =  -2,
     PREFIX_MILLI =  -3,

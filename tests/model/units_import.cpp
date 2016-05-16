@@ -170,13 +170,13 @@ TEST(UnitsImport, importModify) {
 
     libcellml::UnitsPtr importedUnitsMultiplied = std::make_shared<libcellml::Units>();
     importedUnitsMultiplied->setName("multiplied_import");
-    importedUnitsMultiplied->addUnit("units_in_this_model", libcellml::PREFIX_UNIT, 1.0, 5.6);
+    importedUnitsMultiplied->addUnit("units_in_this_model", 0.0, 1.0, 5.6);
 
     m.addUnits(importedUnitsMultiplied);
 
     libcellml::UnitsPtr importedUnitsOffset = std::make_shared<libcellml::Units>();
     importedUnitsOffset->setName("offset_import");
-    importedUnitsOffset->addUnit("units_in_this_model", libcellml::PREFIX_UNIT, 1.0, 1.0, 76);
+    importedUnitsOffset->addUnit("units_in_this_model", 0, 1.0, 1.0, 76);
 
     m.addUnits(importedUnitsOffset);
 
