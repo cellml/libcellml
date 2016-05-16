@@ -46,10 +46,10 @@ public:
 
     /**
      * @brief Appends the argument to the math string for this component.
-     * Appends the @p mathString to the existing math string for this component.
-     * @param mathString The @c std::string to append for this component.
+     * Appends @p math to the existing math string for this component.
+     * @param math The @c std::string to append for this component.
      */
-    void appendMath(const std::string &mathString);
+    void appendMath(const std::string &math);
 
     /**
      * @brief Get the math string for this component.

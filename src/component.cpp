@@ -17,8 +17,8 @@ limitations under the License.
 #include "libcellml/component.h"
 
 #include <algorithm>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "libcellml/variable.h"
 
@@ -32,7 +32,7 @@ namespace libcellml {
  */
 struct Component::ComponentImpl
 {
-    std::string mMath = "";
+    std::string mMath;
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr> mVariables;
 };
@@ -87,8 +87,8 @@ void Component::setSourceComponent(const ImportPtr &imp, const std::string &name
     setImportReference(name);
 }
 
-void Component::appendMath(const std::string &mathString) {
-    mPimpl->mMath.append(mathString);
+void Component::appendMath(const std::string &math) {
+    mPimpl->mMath.append(math);
 }
 
 std::string Component::getMath() const{
@@ -96,7 +96,7 @@ std::string Component::getMath() const{
 }
 
 void Component::removeMath() {
-    mPimpl->mMath = "";
+    mPimpl->mMath.clear();
 }
 
 void Component::addVariable(const VariablePtr &v)

@@ -4,14 +4,14 @@
 Contributing
 ============
 
-This document covers the process to follow for getting your changes into the :term:`prime repository`.  While there are many types of contribution, this section focuses on contributions made through GitHub and Git, or in other words assets that are managed using the version control system.  It is assumed that :doc:`Setup <dev_setup>` and :doc:`Building <dev_building>` have already been read and followed. 
+This document covers the process to follow for getting your changes into the :term:`prime repository`.  While there are many types of contribution, this section focuses on contributions made through GitHub and Git, or in other words assets that are managed using the version control system.  It is assumed that :doc:`Setup <dev_setup>` and :doc:`Building <dev_building>` have already been read and followed.
 
 .. contents::
 
 Overview
 ========
 
-For any body of work intended for the :term:`prime repository` start with a GitHub issue.  The issue can be used to discuss the topic and clarify any problems related to it.  Once progress has been made towards addressing the issue a pull request is created that references the issue.  
+For any body of work intended for the :term:`prime repository` start with a GitHub issue.  The issue can be used to discuss the topic and clarify any problems related to it.  Once progress has been made towards addressing the issue a pull request is created that references the issue.
 
 Reviewers provide feedback on the changes by adding comments to the pull request or associated commits. The BuildBot build/test procedure will run each time changes are pushed to the pull request's branch, and the results are displayed in the pull request view.
 
@@ -32,6 +32,19 @@ GitHub Issue
 ============
 
 If an issue does not exist for the required work (e.g. implementation of a feature, fixing of a bug), then create a new one.  The issue is the place to discuss the particulars related to the issue, discussions on determining the scope of the issue or clarification of any points that are unclear.
+
+Labels
+------
+
+A GitHub Issue may be assigned labels by the project administrators to help identify its status at a glance. General labels currently used for libCellML are:
+
+* **Bug**: The issue identifies a malfunction in the current codebase.
+* **Feature**: The issue constitutes a request or plan for a new feature.
+* **Needs tests**: The issue requires test(s) to be complete. This may refer to a bug report, contributed code, comments, etc. in the issue.
+* **Needs documentation**: The issue requires documentation to be complete. This may refer to a bug report, contributed code, comments, etc. in the issue.
+* **Needs reviewing**: The issue requires further review from project participants to be complete. This may refer to a bug report, contributed code, comments, etc. in the issue.
+
+In addition, a **Platform** label may be used to identify the issue as specific to a given platform (Windows/Linux/OSX). **Milestone** labels may be used to project when a feature is expected to be complete and/or indicate the priority of a given issue. Higher priority issues will take precedence and therefore be assigned a more immediate (lower) milestone number.
 
 Topic Branch
 ============
@@ -57,7 +70,7 @@ The following Git command line commands show an example of how to create a topic
 Test Driven Development
 =======================
 
-Test driven development entails writing a test that covers the intended functionality (this may require a suite of tests to be written) and no more.  The tests will require some skeleton implementation so that the test(s) can compile but by definition not pass, at least not pass all the tests.  The purpose of this is two-fold: 1. writing the test(s) first sets out the intended design which can be shared through a pull request; and  2. the skeleton implementation will include the documentation clearly describing the intended purpose.  Following this contribution process allows others to comment and make corrections before time is spent on the functional code. 
+Test driven development entails writing a test that covers the intended functionality (this may require a suite of tests to be written) and no more.  The tests will require some skeleton implementation so that the test(s) can compile but by definition not pass, at least not pass all the tests.  The purpose of this is two-fold: 1. writing the test(s) first sets out the intended design which can be shared through a pull request; and  2. the skeleton implementation will include the documentation clearly describing the intended purpose.  Following this contribution process allows others to comment and make corrections before time is spent on the functional code.
 
 It may be necessary to refactor the current design to enable the easiest possible way to add the new feature.  This is a good thing as the quality of the design improves this makes it easier to work with in the future.  Refactoring means improving the code without adding features, and the tests provide validation that the refactored code performs as well as before.
 
@@ -74,7 +87,7 @@ The following Git command line commands show an example of how to add all files,
    git commit -m "Appropiately descriptive message about the changes made."
    git push -u origin issue46
 
-The ``git add`` and ``git commit`` commands should be obvious,  the ``git push`` command sets the local branch ``issue46`` to be linked with the remote branch ``issue46`` in the origin (the default shorthand for your libCellML repository on GitHub) repository, this branch will be created in the origin repository if it doesn't already exist.  
+The ``git add`` and ``git commit`` commands should be obvious,  the ``git push`` command sets the local branch ``issue46`` to be linked with the remote branch ``issue46`` in the origin (the default shorthand for your libCellML repository on GitHub) repository, this branch will be created in the origin repository if it doesn't already exist.
 
 To create a pull request from one GitHub repository to another follow the instructions `here <https://help.github.com/articles/creating-a-pull-request/>`_.
 

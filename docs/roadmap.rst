@@ -50,7 +50,7 @@ This section will specify the environment for the development of libCellML.
 Requirements
 ------------
 
-* Documentation: made available on `readthedocs.org <https://readthedocs.org/>`_. Read the Docs uses `Sphinx <http://sphinx-doc.org/>`_ for generating documentation.
+* Documentation: made available on `readthedocs.io <https://readthedocs.io/>`_. Read the Docs uses `Sphinx <http://sphinx-doc.org/>`_ for generating documentation.
 * Documentation: Is amenable for inclusion in external documentation efforts
 * Development: Agile, test driven development where:
 
