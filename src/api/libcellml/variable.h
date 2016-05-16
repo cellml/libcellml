@@ -140,28 +140,36 @@ public:
 
     /**
      * @brief Get the initial value for this variable.
-     * Get the real number initial value for this variable.
+     * Get the string corresponding to the initial value for this variable.
      * @sa setInitialValue
      */
     std::string getInitialValue() const;
 
     /**
      * @brief Set the interface type for this variable.
+     * Set the interface type for this variable using a string.
+     * @sa getInterfaceType
+     * @param interfaceType The string interface type to set for this variable.
+     */
+    void setInterfaceType(const std::string &interfaceType);
+
+    /**
+     * @brief Set the interface type for this variable.
      * Set the interface type for this variable from the available
      * options in the INTERFACE_TYPES enum.
+     *
+     * @overload
      * @sa getInterfaceType
-     * @param interfaceType The interface type to set for this variable.
+     * @param interfaceType The enum interface type to set for this variable.
      */
     void setInterfaceType(INTERFACE_TYPES interfaceType);
 
     /**
      * @brief Get the interface type for this variable.
-     * Get the interface type for this variable from the available
-     * options in the INTERFACE_TYPES enum.
+     * Get the string corresponding to the interface type for this variable.
      * @sa setInterfaceType
-     * @param interfaceType The interface type to get for this variable.
      */
-    INTERFACE_TYPES getInterfaceType() const;
+    std::string getInterfaceType() const;
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */

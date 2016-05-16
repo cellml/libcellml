@@ -129,8 +129,24 @@ TEST(Variable, getSetInitialValue) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, setInterfaceTypeNone) {
-    const std::string e = "<variable/>";
+TEST(Variable, setInterfaceTypeByInvalidString) {
+    const std::string e = "<variable interface=\"invalid\"/>";
+    libcellml::Variable v;
+    v.setInterfaceType("invalid");
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInterfaceTypeNoneByValidString) {
+    const std::string e = "<variable interface=\"none\"/>";
+    libcellml::Variable v;
+    v.setInterfaceType("none");
+    std::string a = v.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInterfaceTypeNoneByEnum) {
+    const std::string e = "<variable interface=\"none\"/>";
     libcellml::Variable v;
     v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_NONE);
     std::string a = v.serialise(libcellml::FORMAT_XML);
@@ -175,10 +191,10 @@ TEST(Variable, setGetInterfaceTypes) {
     v3.setInterfaceType(interfaceType3);
     v4.setInterfaceType(interfaceType4);
 
-    EXPECT_EQ(interfaceType1, v1.getInterfaceType());
-    EXPECT_EQ(interfaceType2, v2.getInterfaceType());
-    EXPECT_EQ(interfaceType3, v3.getInterfaceType());
-    EXPECT_EQ(interfaceType4, v4.getInterfaceType());
+    EXPECT_EQ("none", v1.getInterfaceType());
+    EXPECT_EQ("private", v2.getInterfaceType());
+    EXPECT_EQ("public", v3.getInterfaceType());
+    EXPECT_EQ("public_and_private", v4.getInterfaceType());
 }
 
 TEST(Variable, addVariable) {
