@@ -90,7 +90,7 @@ TEST(Units, compoundUnitsRaw) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit("ampere", -6);
+    u->addUnit("ampere", -6, 1.0);
     u->addUnit("kelvin");
     u->addUnit("siemens", -3, -1.0);
 
@@ -119,6 +119,34 @@ TEST(Units, compoundUnitsUsingDefines) {
     u->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::PREFIX_MICRO);
     u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
     u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::PREFIX_MILLI, -1.0);
+
+    m.addUnits(u);
+
+    std::string a = m.serialise(libcellml::FORMAT_XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<units name=\"compound_unit\">"
+            "<unit prefix=\"micro\" units=\"ampere\"/>"
+            "<unit units=\"kelvin\"/>"
+            "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+            "<unit prefix=\"1.7e310\" units=\"meter\"/>"
+            "</units>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("compound_unit");
+
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u->addUnit("kelvin");
+    u->addUnit("siemens", "milli", -1.0);
+    u->addUnit("meter", "1.7e310");
 
     m.addUnits(u);
 
@@ -205,7 +233,7 @@ TEST(Units, farhenheit) {
     u->setName("fahrenheit");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, libcellml::PREFIX_UNIT, 1.0, 1.8, 32.0);
+    u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, 0.0, 1.0, 1.8, 32.0);
     m.addUnits(u);
 
     std::string a = m.serialise(libcellml::FORMAT_XML);
@@ -232,7 +260,7 @@ TEST(Units, multiple) {
     u1->setName("fahrenheit");
 
     /* Give prefix and exponent their default values. */
-    u1->addUnit(libcellml::STANDARD_UNIT_CELSIUS, libcellml::PREFIX_UNIT, 1.0, 1.8, 32.0);
+    u1->addUnit(libcellml::STANDARD_UNIT_CELSIUS, 0, 1.0, 1.8, 32.0);
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("metres_per_second");

@@ -87,7 +87,6 @@ TEST(Coverage, prefixToString) {
          "peta",
          "pico",
          "tera",
-         "unit",
          "yocto",
          "yotta",
          "zepto",
@@ -110,7 +109,6 @@ TEST(Coverage, prefixToString) {
          libcellml::PREFIX_PETA,
          libcellml::PREFIX_PICO,
          libcellml::PREFIX_TERA,
-         libcellml::PREFIX_UNIT,
          libcellml::PREFIX_YOCTO,
          libcellml::PREFIX_YOTTA,
          libcellml::PREFIX_ZEPTO,
@@ -146,16 +144,10 @@ TEST(Coverage, variable) {
 namespace libcellml {
 
 std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
-std::string prefixToString(PREFIXES prefix);
 
 }
 
 TEST(Coverage, interfaceTypeToStringNone) {
     std::string s = libcellml::interfaceTypeToString(libcellml::Variable::INTERFACE_TYPE_NONE);
     EXPECT_EQ("none",s);
-}
-
-TEST(Coverage, prefixTypeToStringUnit) {
-    std::string s = libcellml::prefixToString(libcellml::PREFIX_UNIT);
-    EXPECT_EQ("",s);
 }
