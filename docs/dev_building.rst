@@ -19,7 +19,7 @@ The configuration options for the library are detailed in the following table.  
 
 .. include:: dev_configuration_options.rst
 
-.. Select a generator that is appropriate for your system, or let the CMake configuration application 
+.. Select a generator that is appropriate for your system, or let the CMake configuration application
 
 From the command line (bash shell) libCellML can be configured to create an optimised shared object library like so::
 

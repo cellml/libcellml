@@ -31,7 +31,7 @@ Contents:
 
 .. toctree::
    :hidden:
-   
+
    dev_configuration_options
 
 Indices and tables

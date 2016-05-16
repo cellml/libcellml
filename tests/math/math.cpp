@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.Some license of other
+limitations under the License.
 */
 
 #include "gtest/gtest.h"
@@ -19,11 +19,11 @@ limitations under the License.Some license of other
 #include <libcellml>
 
 TEST(Maths, appendAndGetMath) {
-    std::string mathString =
+    std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.appendMath(mathString);
-    EXPECT_EQ(mathString, c.getMath());
+    c.appendMath(math);
+    EXPECT_EQ(math, c.getMath());
 }
 
 TEST(Maths, appendAndSerialiseMathComponent) {
@@ -31,10 +31,10 @@ TEST(Maths, appendAndSerialiseMathComponent) {
     "<component>"
       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
     "</component>";
-    std::string mathString =
+    std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.appendMath(mathString);
+    c.appendMath(math);
     std::string a = c.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
@@ -42,10 +42,10 @@ TEST(Maths, appendAndSerialiseMathComponent) {
 TEST(Maths, appendAndRemoveMathComponent) {
     const std::string e =
     "<component/>";
-    std::string mathString =
+    std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.appendMath(mathString);
+    c.appendMath(math);
     c.removeMath();
     std::string a = c.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
@@ -59,12 +59,12 @@ TEST(Maths, appendAndSerialiseMathModel) {
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
       "</component>"
     "</model>";
-    std::string mathString =
+    std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
-    c->appendMath(mathString);
+    c->appendMath(math);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
 }
@@ -80,7 +80,7 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
       "</component>"
     "</model>";
-    std::string mathString =
+    std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -91,8 +91,8 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     v2->setName("variable2");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMath(mathString);
-    c->appendMath(mathString);
+    c->appendMath(math);
+    c->appendMath(math);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
@@ -108,7 +108,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
       "</component>"
     "</model>";
-    std::string mathString =
+    std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -121,7 +121,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     v2->setInitialValue("-1.0");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMath(mathString);
+    c->appendMath(math);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
@@ -146,7 +146,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
         "</math>"
       "</component>"
     "</model>";
-    std::string mathString =
+    std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
       "<apply><eq/>"
         "<ci>C</ci>"
@@ -167,7 +167,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
     v2->setInitialValue("-1.0");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMath(mathString);
+    c->appendMath(math);
     m.addComponent(c);
     std::string a = m.serialise(libcellml::FORMAT_XML);
     EXPECT_EQ(e, a);
@@ -210,7 +210,7 @@ TEST(Maths, twoComponentsWithMathAndConnection) {
       "</connection>"
     "</model>";
 
-    std::string mathString1 =
+    std::string math1 =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
       "<apply><eq/>"
         "<ci>C1</ci>"
@@ -220,7 +220,7 @@ TEST(Maths, twoComponentsWithMathAndConnection) {
         "</apply>"
       "</apply>"
     "</math>";
-    std::string mathString2 =
+    std::string math2 =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
       "<apply><eq/>"
         "<ci>C2</ci>"
@@ -250,8 +250,8 @@ TEST(Maths, twoComponentsWithMathAndConnection) {
     comp1->addVariable(v12);
     comp2->addVariable(v21);
     comp2->addVariable(v22);
-    comp1->appendMath(mathString1);
-    comp2->appendMath(mathString2);
+    comp1->appendMath(math1);
+    comp2->appendMath(math2);
     m.addComponent(comp1);
     m.addComponent(comp2);
     libcellml::Variable::addEquivalence(v11,v21);
