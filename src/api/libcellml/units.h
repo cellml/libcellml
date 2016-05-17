@@ -119,12 +119,12 @@ public:
      *
      * @overload
      * @param name The name of the unit to add.
-     * @param prefix The prefix for the unit, one of PREFIXES.
+     * @param prefix The prefix for the unit, one of Prefixes.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &name, PREFIXES prefix, double exponent=1.0,
+    void addUnit(const std::string &name, Prefixes prefix, double exponent=1.0,
                  double multiplier=1.0, double offset=0.0);
 
     /**
@@ -174,7 +174,7 @@ public:
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    std::string doSerialisation(FORMATS format) const;
+    std::string doSerialisation(Formats format) const;
 
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
     UnitsImpl* mPimpl; /**< Private member to implementation pointer */

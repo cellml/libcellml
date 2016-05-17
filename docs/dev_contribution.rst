@@ -44,7 +44,7 @@ A GitHub Issue may be assigned labels by the project administrators to help iden
 * **Needs documentation**: The issue requires documentation to be complete. This may refer to a bug report, contributed code, comments, etc. in the issue.
 * **Needs reviewing**: The issue requires further review from project participants to be complete. This may refer to a bug report, contributed code, comments, etc. in the issue.
 
-In addition, a **Platform** label may be used to identify the issue as specific to a given platform (Windows/Linux/OSX). **Milestone** labels may be used to project when a feature is expected to be complete and/or indicate the priority of a given issue. Higher priority issues will take precedence and therefore be assigned a more immediate (lower) milestone number.
+In addition, a **Platform** label may be used to identify the issue as specific to a given platform (Windows/Linux/OS X). **Milestone** labels may be used to project when a feature is expected to be complete and/or indicate the priority of a given issue. Higher priority issues will take precedence and therefore be assigned a more immediate (lower) milestone number.
 
 Topic Branch
 ============

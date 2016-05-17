@@ -22,7 +22,7 @@ limitations under the License.
 TEST(Units, serialise) {
     const std::string e = "";
     libcellml::Units u;
-    std::string a = u.serialise(libcellml::FORMAT_XML);
+    std::string a = u.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -49,7 +49,7 @@ TEST(Units, validName) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", u->getName());
 }
@@ -69,7 +69,7 @@ TEST(Units, invalidName) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
 }
@@ -96,7 +96,7 @@ TEST(Units, compoundUnitsRaw) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -116,13 +116,13 @@ TEST(Units, compoundUnitsUsingDefines) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::PREFIX_MICRO);
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefixes::MICRO);
     u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
-    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::PREFIX_MILLI, -1.0);
+    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefixes::MILLI, -1.0);
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -150,7 +150,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -175,9 +175,9 @@ TEST(Units, multiply) {
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("compound_unit");
 
-    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::PREFIX_MICRO);
+    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefixes::MICRO);
     u1->addUnit(libcellml::STANDARD_UNIT_KELVIN);
-    u1->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::PREFIX_MILLI, -1.0);
+    u1->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefixes::MILLI, -1.0);
 
     m.addUnits(u1);
 
@@ -194,7 +194,7 @@ TEST(Units, multiply) {
 
     m.addUnits(u3);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -213,7 +213,7 @@ TEST(Units, newBaseUnit) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->getName());
 }
@@ -236,7 +236,7 @@ TEST(Units, farhenheit) {
     u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, 0.0, 1.0, 1.8, 32.0);
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("fahrenheit", u->getName());
 }
@@ -270,7 +270,7 @@ TEST(Units, multiple) {
     m.addUnits(u1);
     m.addUnits(u2);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 

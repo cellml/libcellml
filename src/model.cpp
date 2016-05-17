@@ -50,7 +50,7 @@ Model& Model::operator=(Model m)
     return *this;
 }
 
-std::string Model::doSerialisation(FORMATS format) const
+std::string Model::doSerialisation(Formats format) const
 {
     // ImportMap
     typedef std::pair <std::string, std::string> ImportNamePair;
@@ -122,7 +122,7 @@ std::string Model::doSerialisation(FORMATS format) const
     }
 
     std::string repr = "";
-    if (format == FORMAT_XML) {
+    if (format == Formats::XML) {
         repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"";
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";

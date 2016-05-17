@@ -196,14 +196,14 @@ protected:
      * @param format The format to serialise to.
      * @return The string representation of the serialised units.
      */
-    std::string serialiseUnits(FORMATS format) const;
+    std::string serialiseUnits(Formats format) const;
 
     /**
      * @brief Protected serialisation of encapsulated components.
      * @param format The format to serialise to.
      * @return the string representation of the serialised encapsulated components.
      */
-    std::string serialiseEncapsulation(FORMATS format) const;
+    std::string serialiseEncapsulation(Formats format) const;
 
 private:
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
