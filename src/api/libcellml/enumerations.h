@@ -22,42 +22,42 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The FORMATS enum.
+ * @brief The Formats enum class.
  * Enum describing the formats that are available for
  * serialisation.
  */
-enum FORMATS
+enum class Formats
 {
-     FORMAT_XML = 0 /**< XML format for CellML files. */
+     XML = 0 /**< XML format for CellML files. */
 };
 
 /**
- * @brief The PREFIXES enum.
+ * @brief The Prefixes enum class.
  * Enum describing the prefixes that are available for
  * units.
  */
-enum PREFIXES
+enum class Prefixes
 {
-    PREFIX_YOTTA =  24,
-    PREFIX_ZETTA =  21,
-    PREFIX_EXA   =  18,
-    PREFIX_PETA  =  15,
-    PREFIX_TERA  =  12,
-    PREFIX_GIGA  =   9,
-    PREFIX_MEGA  =   6,
-    PREFIX_KILO  =   3,
-    PREFIX_HECTO =   2,
-    PREFIX_DECA  =   1,
-    PREFIX_DECI  =  -1,
-    PREFIX_CENTI =  -2,
-    PREFIX_MILLI =  -3,
-    PREFIX_MICRO =  -6,
-    PREFIX_NANO  =  -9,
-    PREFIX_PICO  = -12,
-    PREFIX_FEMTO = -15,
-    PREFIX_ATTO  = -18,
-    PREFIX_ZEPTO = -21,
-    PREFIX_YOCTO = -24
+    YOTTA =  24,
+    ZETTA =  21,
+    EXA   =  18,
+    PETA  =  15,
+    TERA  =  12,
+    GIGA  =   9,
+    MEGA  =   6,
+    KILO  =   3,
+    HECTO =   2,
+    DECA  =   1,
+    DECI  =  -1,
+    CENTI =  -2,
+    MILLI =  -3,
+    MICRO =  -6,
+    NANO  =  -9,
+    PICO  = -12,
+    FEMTO = -15,
+    ATTO  = -18,
+    ZEPTO = -21,
+    YOCTO = -24
 };
 
 }

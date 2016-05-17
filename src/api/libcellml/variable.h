@@ -39,16 +39,16 @@ public:
     Variable& operator=(Variable n); /**< Assignment operator */
 
     /**
-     * @brief The INTERFACE_TYPES enum.
+     * @brief The InterfaceTypes enum class.
      * Enum describing the interface types that are available for
      * a given variable.
      */
-    enum INTERFACE_TYPES
+    enum class InterfaceTypes
     {
-        INTERFACE_TYPE_NONE,
-        INTERFACE_TYPE_PRIVATE,
-        INTERFACE_TYPE_PUBLIC,
-        INTERFACE_TYPE_PUBLIC_AND_PRIVATE
+        NONE,
+        PRIVATE,
+        PUBLIC,
+        PUBLIC_AND_PRIVATE
     };
 
     /**
@@ -140,28 +140,36 @@ public:
 
     /**
      * @brief Get the initial value for this variable.
-     * Get the real number initial value for this variable.
+     * Get the string corresponding to the initial value for this variable.
      * @sa setInitialValue
      */
     std::string getInitialValue() const;
 
     /**
      * @brief Set the interface type for this variable.
-     * Set the interface type for this variable from the available
-     * options in the INTERFACE_TYPES enum.
+     * Set the interface type for this variable using a string.
      * @sa getInterfaceType
-     * @param interfaceType The interface type to set for this variable.
+     * @param interfaceType The string interface type to set for this variable.
      */
-    void setInterfaceType(INTERFACE_TYPES interfaceType);
+    void setInterfaceType(const std::string &interfaceType);
+
+    /**
+     * @brief Set the interface type for this variable.
+     * Set the interface type for this variable from the available
+     * options in the InterfaceTypes enum class.
+     *
+     * @overload
+     * @sa getInterfaceType
+     * @param interfaceType The enum interface type to set for this variable.
+     */
+    void setInterfaceType(InterfaceTypes interfaceType);
 
     /**
      * @brief Get the interface type for this variable.
-     * Get the interface type for this variable from the available
-     * options in the INTERFACE_TYPES enum.
+     * Get the string corresponding to the interface type for this variable.
      * @sa setInterfaceType
-     * @param interfaceType The interface type to get for this variable.
      */
-    INTERFACE_TYPES getInterfaceType() const;
+    std::string getInterfaceType() const;
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
@@ -177,7 +185,7 @@ private:
      */
     void setEquivalentTo(const VariablePtr &equivalentVariable);
 
-    std::string doSerialisation(FORMATS format) const;
+    std::string doSerialisation(Formats format) const;
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl* mPimpl; /**< Private member to implementation pointer */

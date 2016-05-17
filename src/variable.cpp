@@ -15,9 +15,11 @@ limitations under the License.
 */
 #include "libcellml/variable.h"
 
+#include <algorithm>
+#include <cassert>
+#include <map>
 #include <sstream>
 #include <vector>
-#include <algorithm>
 
 #include "libcellml/units.h"
 
@@ -25,13 +27,16 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief Convert a INTERFACE_TYPES into its string form.
- * Private function to convert a Variable INTERFACE_TYPES into its string form.
- *
- * @param interfaceType The interface type to convert.
- * @return A @c std::string form of the given interface type.
+ * @brief Map to convert an interface type into its string form.
+ * An internal map used to convert a Variable InterfaceTypes enum class member into its string form.
  */
-EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
+std::map<Variable::InterfaceTypes, std::string> interfaceTypeToString =
+{
+    {Variable::InterfaceTypes::NONE, "none"},
+    {Variable::InterfaceTypes::PRIVATE, "private"},
+    {Variable::InterfaceTypes::PUBLIC, "public"},
+    {Variable::InterfaceTypes::PUBLIC_AND_PRIVATE, "public_and_private"}
+};
 
 typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak variable pointer. */
 
@@ -43,8 +48,8 @@ struct Variable::VariableImpl
 {
     std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
-    std::string mInitialValue = ""; /**< Initial value for this Variable.*/
-    INTERFACE_TYPES mInterfaceType = INTERFACE_TYPE_NONE; /**< Interface type for this Variable. Default to none.*/
+    std::string mInitialValue; /**< Initial value for this Variable.*/
+    std::string mInterfaceType; /**< Interface type for this Variable.*/
     UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
 };
 
@@ -120,10 +125,10 @@ void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
     }
 }
 
-std::string Variable::doSerialisation(FORMATS format) const
+std::string Variable::doSerialisation(Formats format) const
 {
     std::string repr = "";
-    if (format == FORMAT_XML) {
+    if (format == Formats::XML) {
         repr += "<variable";
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
@@ -134,8 +139,8 @@ std::string Variable::doSerialisation(FORMATS format) const
         if (getInitialValue().length()) {
             repr += " initial_value=\"" + getInitialValue() + "\"";
         }
-        if (getInterfaceType() != INTERFACE_TYPE_NONE) {
-            repr += " interface=\"" + interfaceTypeToString(getInterfaceType()) + "\"";
+        if (getInterfaceType().length()) {
+            repr += " interface=\"" + getInterfaceType() + "\"";
         }
         repr += "/>";
     }
@@ -174,40 +179,22 @@ std::string Variable::getInitialValue() const
     return mPimpl->mInitialValue;
 }
 
-void Variable::setInterfaceType(Variable::INTERFACE_TYPES interfaceType)
+void Variable::setInterfaceType(const std::string &interfaceType)
 {
     mPimpl->mInterfaceType = interfaceType;
 }
 
-Variable::INTERFACE_TYPES Variable::getInterfaceType() const
+void Variable::setInterfaceType(Variable::InterfaceTypes interfaceType)
 {
-    return mPimpl->mInterfaceType;
+    auto search = interfaceTypeToString.find(interfaceType);
+    assert(search != interfaceTypeToString.end());
+    const std::string interfaceTypeString = search->second;
+    setInterfaceType(interfaceTypeString);
 }
 
-EXPORT_FOR_TESTING std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType)
+std::string Variable::getInterfaceType() const
 {
-    std::string str = "";
-    switch (interfaceType) {
-    case Variable::INTERFACE_TYPE_NONE: {
-        /* Should not ask for the string version of this.
-        With the current codebase there is no way to trigger this case. */
-        str = "none";
-        break;
-    }
-    case Variable::INTERFACE_TYPE_PRIVATE: {
-        str = "private";
-        break;
-    }
-    case Variable::INTERFACE_TYPE_PUBLIC: {
-        str = "public";
-        break;
-    }
-    case Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE: {
-        str = "public_and_private";
-        break;
-    }
-    }
-    return str;
+    return mPimpl->mInterfaceType;
 }
 
 }

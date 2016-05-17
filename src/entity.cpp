@@ -55,12 +55,12 @@ void Entity::swap(Entity &rhs)
     std::swap(this->mParentModel, rhs.mParentModel);
 }
 
-std::string Entity::doSerialisation(FORMATS /* format */) const
+std::string Entity::doSerialisation(Formats /* format */) const
 {
     return "";
 }
 
-std::string Entity::serialise(FORMATS format) const
+std::string Entity::serialise(Formats format) const
 {
     return doSerialisation(format);
 }
