@@ -44,7 +44,7 @@ TEST(ComponentImport, basics) {
     EXPECT_EQ(c->getImport(), imp);
     EXPECT_EQ(c->getImportReference(), "bob");
 
-    EXPECT_EQ(e, c->serialise(libcellml::FORMAT_XML));
+    EXPECT_EQ(e, c->serialise(libcellml::Formats::XML));
 }
 
 TEST(ComponentImport, singleImportA) {
@@ -72,7 +72,7 @@ TEST(ComponentImport, singleImportA) {
 
     m.addComponent(importedComponent);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
    EXPECT_EQ(e, a);
 }
@@ -97,7 +97,7 @@ TEST(ComponentImport, singleImportB) {
     importedComponent->setImportReference("a_component_in_that_model");
     m.addComponent(importedComponent);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -127,7 +127,7 @@ TEST(ComponentImport, nonExistentURL) {
 
     m.addComponent(importedComponent);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
    EXPECT_EQ(e, a);
 }
@@ -186,7 +186,7 @@ TEST(ComponentImport, multipleImport) {
     c3->setSourceComponent(imp2, "cc1");
     m.addComponent(c3);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_TRUE((e1 == a) || (e2 == a));
 }
@@ -233,7 +233,7 @@ TEST(ComponentImport, hierarchicalImport) {
 
     bob->addComponent(i1);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -286,7 +286,7 @@ TEST(ComponentImport, complexImport) {
     angus->setName("angus");
     bob->addComponent(angus);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_EQ(e, a);
 }

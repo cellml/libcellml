@@ -32,7 +32,7 @@ TEST(Coverage, import) {
     // Copy constructor
     libcellml::Import ic(im);
 
-    EXPECT_EQ(e, ic.serialise(libcellml::FORMAT_XML));
+    EXPECT_EQ(e, ic.serialise(libcellml::Formats::XML));
 }
 
 TEST(Coverage, entity) {
@@ -40,7 +40,7 @@ TEST(Coverage, entity) {
 
     libcellml::Entity e, em;
 
-    EXPECT_EQ(ex, e.serialise(libcellml::FORMAT_XML));
+    EXPECT_EQ(ex, e.serialise(libcellml::Formats::XML));
     em = std::move(e);
 
     libcellml::Model m;
@@ -63,7 +63,7 @@ TEST(Coverage, units) {
     // Copy constructor
     libcellml::Units uc(um);
 
-    EXPECT_EQ(e, uc.serialise(libcellml::FORMAT_XML));
+    EXPECT_EQ(e, uc.serialise(libcellml::Formats::XML));
 }
 
 
@@ -92,27 +92,27 @@ TEST(Coverage, prefixToString) {
          "zepto",
          "zetta"
         };
-    std::vector<libcellml::PREFIXES> prefix_enum =
-        {libcellml::PREFIX_ATTO,
-         libcellml::PREFIX_CENTI,
-         libcellml::PREFIX_DECA,
-         libcellml::PREFIX_DECI,
-         libcellml::PREFIX_EXA,
-         libcellml::PREFIX_FEMTO,
-         libcellml::PREFIX_GIGA,
-         libcellml::PREFIX_HECTO,
-         libcellml::PREFIX_KILO,
-         libcellml::PREFIX_MEGA,
-         libcellml::PREFIX_MICRO,
-         libcellml::PREFIX_MILLI,
-         libcellml::PREFIX_NANO,
-         libcellml::PREFIX_PETA,
-         libcellml::PREFIX_PICO,
-         libcellml::PREFIX_TERA,
-         libcellml::PREFIX_YOCTO,
-         libcellml::PREFIX_YOTTA,
-         libcellml::PREFIX_ZEPTO,
-         libcellml::PREFIX_ZETTA
+    std::vector<libcellml::Prefixes> prefix_enum =
+        {libcellml::Prefixes::ATTO,
+         libcellml::Prefixes::CENTI,
+         libcellml::Prefixes::DECA,
+         libcellml::Prefixes::DECI,
+         libcellml::Prefixes::EXA,
+         libcellml::Prefixes::FEMTO,
+         libcellml::Prefixes::GIGA,
+         libcellml::Prefixes::HECTO,
+         libcellml::Prefixes::KILO,
+         libcellml::Prefixes::MEGA,
+         libcellml::Prefixes::MICRO,
+         libcellml::Prefixes::MILLI,
+         libcellml::Prefixes::NANO,
+         libcellml::Prefixes::PETA,
+         libcellml::Prefixes::PICO,
+         libcellml::Prefixes::TERA,
+         libcellml::Prefixes::YOCTO,
+         libcellml::Prefixes::YOTTA,
+         libcellml::Prefixes::ZEPTO,
+         libcellml::Prefixes::ZETTA
         };
     for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); ++i) {
         std::string prefix = prefix_str[i];
@@ -122,7 +122,7 @@ TEST(Coverage, prefixToString) {
 
         m.addUnits(u);
 
-        std::string a = m.serialise(libcellml::FORMAT_XML);
+        std::string a = m.serialise(libcellml::Formats::XML);
         std::size_t found = a.find(prefix);
         EXPECT_NE(std::string::npos, found);
     }
@@ -137,17 +137,5 @@ TEST(Coverage, variable) {
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ(e, vc.serialise(libcellml::FORMAT_XML));
-}
-
-// EXPORT_FOR_TESTING test cases
-namespace libcellml {
-
-std::string interfaceTypeToString(Variable::INTERFACE_TYPES interfaceType);
-
-}
-
-TEST(Coverage, interfaceTypeToStringNone) {
-    std::string s = libcellml::interfaceTypeToString(libcellml::Variable::INTERFACE_TYPE_NONE);
-    EXPECT_EQ("none",s);
+    EXPECT_EQ(e, vc.serialise(libcellml::Formats::XML));
 }

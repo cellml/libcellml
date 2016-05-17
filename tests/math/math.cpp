@@ -35,7 +35,7 @@ TEST(Maths, appendAndSerialiseMathComponent) {
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
     c.appendMath(math);
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -47,7 +47,7 @@ TEST(Maths, appendAndRemoveMathComponent) {
     libcellml::Component c;
     c.appendMath(math);
     c.removeMath();
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -65,7 +65,7 @@ TEST(Maths, appendAndSerialiseMathModel) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
     c->appendMath(math);
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -94,7 +94,7 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     c->appendMath(math);
     c->appendMath(math);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -123,7 +123,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     c->addVariable(v2);
     c->appendMath(math);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -169,7 +169,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
     c->addVariable(v2);
     c->appendMath(math);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -256,6 +256,6 @@ TEST(Maths, twoComponentsWithMathAndConnection) {
     m.addComponent(comp2);
     libcellml::Variable::addEquivalence(v11,v21);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }

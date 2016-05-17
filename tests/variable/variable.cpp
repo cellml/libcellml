@@ -22,7 +22,7 @@ limitations under the License.
 TEST(Variable, serialise) {
     const std::string e = "<variable/>";
     libcellml::Variable v;
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -31,7 +31,7 @@ TEST(Variable, setValidVariableName) {
     const std::string e = "<variable name=\"" + in + "\"/>";
     libcellml::Variable v;
     v.setName(in);
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -40,7 +40,7 @@ TEST(Variable, setInvalidVariableName) {
     const std::string e = "<variable name=\"" + in + "\"/>";
     libcellml::Variable v;
     v.setName(in);
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -71,7 +71,7 @@ TEST(Variable, setUnits) {
     u->setName(in);
     v.setUnits(u);
 
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -85,7 +85,7 @@ TEST(Variable, setUnitsAndName) {
     u->setName("dimensionless");
     v.setUnits(u);
 
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -93,7 +93,7 @@ TEST(Variable, setInitialValueByString) {
     const std::string e = "<variable initial_value=\"0.0\"/>";
     libcellml::Variable v;
     v.setInitialValue("0.0");
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -102,7 +102,7 @@ TEST(Variable, setInitialValueByDouble) {
     libcellml::Variable v;
     double value = 0.0;
     v.setInitialValue(value);
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -112,7 +112,7 @@ TEST(Variable, setInitialValueByReference) {
     v1->setName("referencedVariable");
     libcellml::Variable v2;
     v2.setInitialValue(v1);
-    std::string a = v2.serialise(libcellml::FORMAT_XML);
+    std::string a = v2.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -129,35 +129,51 @@ TEST(Variable, getSetInitialValue) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, setInterfaceTypeNone) {
-    const std::string e = "<variable/>";
+TEST(Variable, setInterfaceTypeByInvalidString) {
+    const std::string e = "<variable interface=\"invalid\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_NONE);
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    v.setInterfaceType("invalid");
+    std::string a = v.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInterfaceTypeNoneByValidString) {
+    const std::string e = "<variable interface=\"none\"/>";
+    libcellml::Variable v;
+    v.setInterfaceType("none");
+    std::string a = v.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, setInterfaceTypeNoneByEnum) {
+    const std::string e = "<variable interface=\"none\"/>";
+    libcellml::Variable v;
+    v.setInterfaceType(libcellml::Variable::InterfaceTypes::NONE);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypePrivate) {
     const std::string e = "<variable interface=\"private\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PRIVATE);
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    v.setInterfaceType(libcellml::Variable::InterfaceTypes::PRIVATE);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypePublic) {
     const std::string e = "<variable interface=\"public\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC);
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    v.setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypePublicAndPrivate) {
     const std::string e = "<variable interface=\"public_and_private\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE);
-    std::string a = v.serialise(libcellml::FORMAT_XML);
+    v.setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC_AND_PRIVATE);
+    std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -166,19 +182,19 @@ TEST(Variable, setGetInterfaceTypes) {
     libcellml::Variable v2;
     libcellml::Variable v3;
     libcellml::Variable v4;
-    libcellml::Variable::INTERFACE_TYPES interfaceType1 = libcellml::Variable::INTERFACE_TYPE_NONE;
-    libcellml::Variable::INTERFACE_TYPES interfaceType2 = libcellml::Variable::INTERFACE_TYPE_PRIVATE;
-    libcellml::Variable::INTERFACE_TYPES interfaceType3 = libcellml::Variable::INTERFACE_TYPE_PUBLIC;
-    libcellml::Variable::INTERFACE_TYPES interfaceType4 = libcellml::Variable::INTERFACE_TYPE_PUBLIC_AND_PRIVATE;
+    libcellml::Variable::InterfaceTypes interfaceType1 = libcellml::Variable::InterfaceTypes::NONE;
+    libcellml::Variable::InterfaceTypes interfaceType2 = libcellml::Variable::InterfaceTypes::PRIVATE;
+    libcellml::Variable::InterfaceTypes interfaceType3 = libcellml::Variable::InterfaceTypes::PUBLIC;
+    libcellml::Variable::InterfaceTypes interfaceType4 = libcellml::Variable::InterfaceTypes::PUBLIC_AND_PRIVATE;
     v1.setInterfaceType(interfaceType1);
     v2.setInterfaceType(interfaceType2);
     v3.setInterfaceType(interfaceType3);
     v4.setInterfaceType(interfaceType4);
 
-    EXPECT_EQ(interfaceType1, v1.getInterfaceType());
-    EXPECT_EQ(interfaceType2, v2.getInterfaceType());
-    EXPECT_EQ(interfaceType3, v3.getInterfaceType());
-    EXPECT_EQ(interfaceType4, v4.getInterfaceType());
+    EXPECT_EQ("none", v1.getInterfaceType());
+    EXPECT_EQ("private", v2.getInterfaceType());
+    EXPECT_EQ("public", v3.getInterfaceType());
+    EXPECT_EQ("public_and_private", v4.getInterfaceType());
 }
 
 TEST(Variable, addVariable) {
@@ -199,7 +215,7 @@ TEST(Variable, addVariable) {
     u->setName("dimensionless");
     v->setUnits(u);
 
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -228,7 +244,7 @@ TEST(Variable, addVariableToUnnamedComponent) {
     v->setName(in);
     c.addVariable(v);
 
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -251,7 +267,7 @@ TEST(Variable, addTwoVariables) {
     v2->setName("variable2");
     c.addVariable(v2);
 
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -283,7 +299,7 @@ TEST(Variable, addVariablesWithAndWithoutNameAndUnits) {
     v1->setUnits(u);
     v3->setUnits(u);
 
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -306,7 +322,7 @@ TEST(Variable, componentWithTwoVariablesWithInitialValues) {
     v2->setInitialValue(-1.0);
     c.addVariable(v2);
 
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -329,7 +345,7 @@ TEST(Variable, removeVariable) {
     c.addVariable(v2);
 
     c.removeVariable("variable1");
-    std::string a = c.serialise(libcellml::FORMAT_XML);
+    std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 
     EXPECT_THROW(c.removeVariable("BAD_NAME"), std::out_of_range);
@@ -398,7 +414,7 @@ TEST(Variable, modelWithComponentWithVariableWithValidName) {
     u->setName("dimensionless");
     v->setUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", v->getName());
 }
@@ -427,7 +443,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
     u->setName("dimensionless");
     v->setUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", v->getName());
 }
@@ -456,7 +472,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsName) {
     u->setName("invalid name");
     v->setUnits(u);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
 }
@@ -488,7 +504,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
     v2->setInitialValue("-1.0");
     c->addVariable(v2);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -519,7 +535,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesOneRefere
     v2->setInitialValue(v1);
     c->addVariable(v2);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 

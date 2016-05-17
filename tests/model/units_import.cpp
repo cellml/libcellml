@@ -35,7 +35,7 @@ TEST(UnitsImport, basics) {
     EXPECT_EQ(u->getImport(), imp);
     EXPECT_EQ(u->getImportReference(), "bob");
 
-    EXPECT_EQ(e, u->serialise(libcellml::FORMAT_XML));
+    EXPECT_EQ(e, u->serialise(libcellml::Formats::XML));
 }
 
 TEST(UnitsImport, importValidName) {
@@ -67,7 +67,7 @@ TEST(UnitsImport, importValidName) {
 
     m.addUnits(importedUnits);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -97,7 +97,7 @@ TEST(UnitsImport, importInvalidName) {
 
     m.addUnits(importedUnits);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -127,7 +127,7 @@ TEST(UnitsImport, nonExistentURL) {
 
     m.addUnits(importedUnits);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -182,7 +182,7 @@ TEST(UnitsImport, importModify) {
 
     libcellml::UnitsPtr importedUnitsPrefixed = std::make_shared<libcellml::Units>();
     importedUnitsPrefixed->setName("prefixed_import");
-    importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::PREFIX_YOTTA);
+    importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::Prefixes::YOTTA);
 
     m.addUnits(importedUnitsPrefixed);
 
@@ -198,7 +198,7 @@ TEST(UnitsImport, importModify) {
 
     m.addUnits(importedUnitsAll);
 
-    std::string a = m.serialise(libcellml::FORMAT_XML);
+    std::string a = m.serialise(libcellml::Formats::XML);
 
     EXPECT_EQ(e, a);
 }
