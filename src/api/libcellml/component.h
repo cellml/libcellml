@@ -76,14 +76,30 @@ public:
     void addVariable(const VariablePtr &v);
 
     /**
-     * @brief Remove the variable with the given name from this component.
+     * @brief Remove the variable with the given @p name from this component.
      * Remove the variable with the given name from this component. If the
      * name is not found then no variable is removed.
      * @sa addVariable
-     * @overload
      * @param name The name of the variable to remove.
      */
     void removeVariable(const std::string &name);
+
+    /**
+     * @brief Remove the variable by the given @p variable pointer from this component.
+     * Remove the variable with the given pointer from this component. If the
+     * variable is not found then no variable is removed.
+     * @sa addVariable
+     *
+     * @overload
+     * @param variable The pointer to the variable to remove.
+     */
+    void removeVariable(const VariablePtr &variable);
+
+    /**
+     * @brief Remove all variables stored in this component.
+     * Clears all variables that have been added to this component.
+     */
+    void removeAllVariables();
 
     /**
      * @brief Get a variable at index.
