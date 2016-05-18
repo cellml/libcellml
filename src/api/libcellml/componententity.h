@@ -78,6 +78,13 @@ public:
     void removeAllUnits();
 
     /**
+     * @brief Get the number of units in the component entity.
+     * Returns the number of units the component entity directly contains.
+     * @return The number of units.
+     */
+    size_t unitsCount() const;
+
+    /**
      * @brief Add a child component to this component entity.
      * Add a copy of the given component as a child component of this component entity.
      * @param c The component to add.

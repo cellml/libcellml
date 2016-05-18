@@ -191,6 +191,11 @@ void ComponentEntity::removeAllUnits()
     mPimpl->mUnits.clear();
 }
 
+size_t ComponentEntity::unitsCount() const
+{
+    return mPimpl->mUnits.size();
+}
+
 void ComponentEntity::addComponent(const ComponentPtr &c)
 {
     doAddComponent(c);

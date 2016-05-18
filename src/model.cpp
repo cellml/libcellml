@@ -127,7 +127,11 @@ std::string Model::doSerialisation(Formats format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
-        repr += ">";
+        bool endTag = false;
+        if (importMap.size() > 0 || componentCount() > 0 || unitsCount() > 0){
+            endTag = true;
+            repr += ">";
+        }
 
         for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
         {
@@ -222,7 +226,11 @@ std::string Model::doSerialisation(Formats format) const
             serialisedComponentMap.push_back(currentComponentPair);
             ++componentMapIndex1;
         }
-        repr += "</model>";
+        if (endTag) {
+            repr += "</model>";
+        } else {
+            repr += "/>";
+        }
     }
 
     return repr;
