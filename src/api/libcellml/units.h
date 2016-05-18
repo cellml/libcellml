@@ -163,6 +163,20 @@ public:
     void addUnit(const std::string &name);
 
     /**
+     * @brief Remove the unit with the given name.
+     * Remove the first unit found that matches the name @p name.  If the
+     * name is not found no unit is removed.
+     * @param name The name of the unit to remove.
+     */
+    void removeUnit(const std::string &name);
+
+    /**
+     * @brief Remove all units stored in this units object.
+     * Clears all units that have been added to this units object.
+     */
+    void removeAllUnits();
+
+    /**
      * @brief Set the source of the units for this Units.
      * Make this Units an imported units by defining an import model
      * from which to extract the named Units from.

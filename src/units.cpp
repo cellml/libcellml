@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include "libcellml/units.h"
 
+#include <algorithm>
 #include <cassert>
 #include <map>
 #include <sstream>
@@ -73,9 +74,16 @@ struct Unit
  */
 struct Units::UnitsImpl
 {
+    std::vector<Unit>::iterator findUnit(const std::string &name);
     bool mBaseUnit = false; /**< Flag to determine if this Units is a base unit or not.*/
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 };
+
+std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &name)
+{
+    return std::find_if(mUnits.begin(), mUnits.end(),
+                        [=](const Unit& u) -> bool { return u.mName == name; });
+}
 
 Units::Units()
     : mPimpl(new UnitsImpl())
@@ -228,6 +236,21 @@ void Units::addUnit(const std::string &name, double exponent)
 void Units::addUnit(const std::string &name)
 {
     addUnit(name, "0.0", 1.0, 1.0, 0.0);
+}
+
+void Units::removeUnit(const std::string &name)
+{
+    auto result = mPimpl->findUnit(name);
+    if (result != mPimpl->mUnits.end()) {
+        mPimpl->mUnits.erase(result);
+    } else {
+        throw std::out_of_range("Named unit not found.");
+    }
+}
+
+void Units::removeAllUnits()
+{
+    mPimpl->mUnits.clear();
 }
 
 void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
