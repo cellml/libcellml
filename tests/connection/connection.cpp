@@ -470,7 +470,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
 
-    v1->removeAllEquivalentVariables();
+    v1->removeAllEquivalences();
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e3, a);
 }
