@@ -150,23 +150,25 @@ std::string Model::doSerialisation(Formats format) const
                 if (variable->equivalentVariableCount() > 0) {
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
-                        VariablePair variablePair = std::make_pair(variable, equivalentVariable);
-                        VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
-                        bool pairFound = false;
-                        for (VariableMapIterator iter = variableMap.begin(); iter < variableMap.end(); ++iter) {
-                            if ((*iter == variablePair) || (*iter == reciprocalVariablePair)) {
-                                pairFound = true;
-                                break;
+                        if (equivalentVariable->hasEquivalentVariable(variable)) {
+                            VariablePair variablePair = std::make_pair(variable, equivalentVariable);
+                            VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
+                            bool pairFound = false;
+                            for (VariableMapIterator iter = variableMap.begin(); iter < variableMap.end(); ++iter) {
+                                if ((*iter == variablePair) || (*iter == reciprocalVariablePair)) {
+                                    pairFound = true;
+                                    break;
+                                }
                             }
-                        }
-                        if (!pairFound) {
-                            // New unique variable equivalence pair found.
-                            variableMap.push_back(variablePair);
-                            // Also create a component map pair corresponding with the variable map pair.
-                            Component* component1 = static_cast<Component*>(variable->getParent());
-                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
-                            ComponentPair componentPair = std::make_pair(component1, component2);
-                            componentMap.push_back(componentPair);
+                            if (!pairFound) {
+                                // New unique variable equivalence pair found.
+                                variableMap.push_back(variablePair);
+                                // Also create a component map pair corresponding with the variable map pair.
+                                Component* component1 = static_cast<Component*>(variable->getParent());
+                                Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                                ComponentPair componentPair = std::make_pair(component1, component2);
+                                componentMap.push_back(componentPair);
+                            }
                         }
                     }
                 }
