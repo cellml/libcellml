@@ -162,15 +162,25 @@ TEST(Units, removeUnitsMethods) {
                 "<unit prefix=\"micro\" units=\"ampere\"/>"
                 "<unit prefix=\"1.7e10\" units=\"meter\"/>"
                 "</units>"
-              "<units name=\"simple_unit\"/>"
+              "<units name=\"simple_unit_2\"/>"
+              "<units name=\"simple_unit_3\"/>"
+              "<units name=\"simple_unit_4\"/>"
             "</model>";
     const std::string e2 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
               "<units name=\"compound_unit\"/>"
-              "<units name=\"simple_unit\"/>"
+              "<units name=\"simple_unit_2\"/>"
+              "<units name=\"simple_unit_3\"/>"
+              "<units name=\"simple_unit_4\"/>"
             "</model>";
     const std::string e3 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+              "<units name=\"compound_unit\"/>"
+              "<units name=\"simple_unit_4\"/>"
+            "</model>";
+    const std::string e4 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
 
@@ -178,8 +188,12 @@ TEST(Units, removeUnitsMethods) {
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
     u1->setName("compound_unit");
-    u2->setName("simple_unit");
+    u2->setName("simple_unit_2");
+    u3->setName("simple_unit_3");
+    u4->setName("simple_unit_4");
 
     u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
     u1->addUnit("kelvin");
@@ -187,6 +201,8 @@ TEST(Units, removeUnitsMethods) {
     u1->addUnit("meter", "1.7e10");
     m.addUnits(u1);
     m.addUnits(u2);
+    m.addUnits(u3);
+    m.addUnits(u4);
 
     u1->removeUnit("siemens");
     u1->removeUnit(libcellml::STANDARD_UNIT_KELVIN);
@@ -197,9 +213,14 @@ TEST(Units, removeUnitsMethods) {
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
 
-    m.removeAllUnits();
+    m.removeUnits("simple_unit_2");
+    m.removeUnits(u3);
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e3, a);
+
+    m.removeAllUnits();
+    std::string a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e4, a);
 }
 
 TEST(Units, multiply) {
