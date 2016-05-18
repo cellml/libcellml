@@ -69,7 +69,7 @@ public:
      * Removes a copy of @p variable1 from the set of equivalent variables for
      * @p variable2 if present. Also removes a copy of @p variable2 from the
      * set of equivalent variables for @p variable1 if present.
-     * @sa addEquivalence
+     * @sa addEquivalence, unsetEquivalentTo, getEquivalentVariable
      * @param variable1 The variable to remove from the equivalent variable set
      * for @p variable2.
      * @param variable2 The variable to remove from the equivalent variable set
@@ -79,7 +79,7 @@ public:
 
     /**
      * @brief Remove all equivalent variables for this variable.
-     * Clears all equivalent variables that have been added to this variable.
+     * Clears all equivalent variables that have been added to the set for this variable.
      */
     void removeAllEquivalences();
 
@@ -198,7 +198,7 @@ private:
      * Add the argument equivalent variable to the set of equivalent variables for this
      * variable if it is not already present. If the equivalent variable is present,
      * do nothing.
-     * @sa addEquivalence
+     * @sa addEquivalence, unsetEquivalentTo
      * @param equivalentVariable The variable to add to this variable's equivalent
      * variable set if not already present.
      */
@@ -209,7 +209,7 @@ private:
      * Remove the argument equivalent variable from the set of equivalent variables for this
      * variable if it is present. If the equivalent variable is not in this variable's set,
      * throw @c std::out_of_range.
-     * @sa setEquivalentTo
+     * @sa removeEquivalence, setEquivalentTo
      * @param equivalentVariable The variable to remove from this variable's equivalent
      * variable set if it is present.
      */

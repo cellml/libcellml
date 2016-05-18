@@ -56,7 +56,7 @@ public:
     /**
      * @brief Remove the units with the given name.
      * Remove the first units found that matches the name @p name.  If the
-     * name is not found no units are removed.
+     * name is not found throw @c std::out_of_range.
      * @param name The name of the units to remove.
      */
     void removeUnits(const std::string &name);
@@ -64,8 +64,7 @@ public:
     /**
      * @brief Remove the units with the given pointer.
      * Remove the first units found with the pointer @p units.  If the
-     * units are not found no units are removed.
-     *
+     * units are not found throw @c std::out_of_range.
      * @overload
      * @param units The pointer to the units to remove.
      */
@@ -103,7 +102,7 @@ public:
     /**
      * @brief Remove the component with the given name.
      * Remove the first component found that matches the name @p name.  If the
-     * name is not found no component is removed.
+     * name is not found throw @c std::out_of_range.
      *
      * @overload
      * @param name The name of the component to remove.
@@ -113,7 +112,7 @@ public:
     /**
      * @brief Remove the component with the given pointer.
      * Remove the first component found with the pointer @p component.  If the
-     * component is not found no component is removed.
+     * component is not found throw @c std::out_of_range.
      *
      * @overload
      * @param component The pointer to the component to remove.

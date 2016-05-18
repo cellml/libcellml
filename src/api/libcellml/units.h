@@ -165,7 +165,7 @@ public:
     /**
      * @brief Remove the unit with the given name.
      * Remove the first unit found that matches the name @p name.  If the
-     * name is not found no unit is removed.
+     * name is not found throw @c std::out_of_range.
      * @param name The name of the unit to remove.
      */
     void removeUnit(const std::string &name);

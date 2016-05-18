@@ -78,7 +78,7 @@ public:
     /**
      * @brief Remove the variable with the given @p name from this component.
      * Remove the variable with the given name from this component. If the
-     * name is not found then no variable is removed.
+     * name is not found then throw @c std::out_of_range.
      * @sa addVariable
      * @param name The name of the variable to remove.
      */
