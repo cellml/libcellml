@@ -477,6 +477,148 @@ TEST(Connection, removeEquivalentVariableMethods) {
     EXPECT_EQ(e3, a);
 }
 
+TEST(Connection, removeVariablesFromConnections) {
+    const std::string e1 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1_1\"/>"
+        "<variable name=\"variable1_2\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+      "<component name=\"component4\">"
+        "<variable name=\"variable4\"/>"
+      "</component>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component4\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component2\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    const std::string e2 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1_1\"/>"
+        "<variable name=\"variable1_2\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+      "<component name=\"component4\"/>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component2\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    const std::string e3 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1_1\"/>"
+        "<variable name=\"variable1_2\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\"/>"
+      "<component name=\"component4\"/>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
+      "</connection>"
+    "</model>";
+    const std::string e4 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\"/>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\"/>"
+      "<component name=\"component4\"/>"
+    "</model>";
+
+    libcellml::Model m;
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1_2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    comp4->setName("component4");
+    v1_1->setName("variable1_1");
+    v1_2->setName("variable1_2");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    comp1->addVariable(v1_1);
+    comp1->addVariable(v1_2);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    comp4->addVariable(v4);
+    m.addComponent(comp1);
+    m.addComponent(comp2);
+    m.addComponent(comp3);
+    m.addComponent(comp4);
+    libcellml::Variable::addEquivalence(v1_1,v2);
+    libcellml::Variable::addEquivalence(v1_2,v2);
+    libcellml::Variable::addEquivalence(v1_1,v3);
+    libcellml::Variable::addEquivalence(v1_1,v4);
+    libcellml::Variable::addEquivalence(v2,v3);
+    std::string a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e1, a);
+
+    comp4->removeVariable(v4);
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e2, a);
+
+    comp3->removeVariable(v3);
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e3, a);
+
+    comp1->removeAllVariables();
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e4, a);
+}
+
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
