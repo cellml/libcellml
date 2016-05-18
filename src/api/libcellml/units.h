@@ -185,6 +185,13 @@ public:
      */
     void setSourceUnits(const ImportPtr &imp, const std::string &name);
 
+    /**
+     * @brief Get the number of units that compose this units.
+     * Returns the number of units contained by this units object.
+     * @return The number of units.
+     */
+    size_t unitCount() const;
+
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
 

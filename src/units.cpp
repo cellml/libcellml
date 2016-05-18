@@ -264,4 +264,9 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
     setImportReference(name);
 }
 
+size_t Units::unitCount() const
+{
+    return mPimpl->mUnits.size();
+}
+
 }

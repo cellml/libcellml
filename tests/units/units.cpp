@@ -154,7 +154,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, removeUnitsMethods) {
+TEST(Units, removeUnitsMethodsAndCount) {
     const std::string e1 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -205,6 +205,7 @@ TEST(Units, removeUnitsMethods) {
     m.addUnits(u3);
     m.addUnits(u4);
 
+    EXPECT_EQ(u1->unitCount(), 4);
     u1->removeUnit("siemens");
     u1->removeUnit(libcellml::STANDARD_UNIT_KELVIN);
     std::string a = m.serialise(libcellml::Formats::XML);
@@ -219,6 +220,7 @@ TEST(Units, removeUnitsMethods) {
     m.removeUnits(u3);
     a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e3, a);
+    EXPECT_EQ(m.unitsCount(), 2);
     EXPECT_THROW(m.removeUnits("gram"), std::out_of_range);
     EXPECT_THROW(m.removeUnits(u5), std::out_of_range);
 
