@@ -87,7 +87,7 @@ public:
     /**
      * @brief Remove the variable by the given @p variable pointer from this component.
      * Remove the variable with the given pointer from this component. If the
-     * variable is not found then no variable is removed.
+     * variable is not found then throw @c std::out_of_range.
      * @sa addVariable
      *
      * @overload

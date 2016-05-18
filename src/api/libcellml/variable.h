@@ -206,7 +206,7 @@ private:
 
     /**
      * @brief Private function to remove an equivalent variable from the set for this variable.
-     * Remove the argument equivalent variable from the set of equivalent variables for this
+     * Remove the @p equivalentVariable from the set of equivalent variables for this
      * variable if it is present. If the equivalent variable is not in this variable's set,
      * throw @c std::out_of_range.
      * @sa removeEquivalence, setEquivalentTo
