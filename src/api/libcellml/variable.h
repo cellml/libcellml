@@ -56,13 +56,32 @@ public:
      * Add a copy of @p variable1 to the set of equivalent variables for
      * @p variable2 if not already present. Also add a copy of @p variable2 to the
      * set of equivalent variables for @p variable1 if not already present.
-     * @sa getEquivalentVariable, setEquivalentTo
+     * @sa removeEquivalence, getEquivalentVariable, setEquivalentTo
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
      * @param variable2 The variable to copy to the equivalent variable set
      * for @p variable1.
      */
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Remove each argument variable to the other's equivalent variable set.
+     * Removes a copy of @p variable1 from the set of equivalent variables for
+     * @p variable2 if present. Also removes a copy of @p variable2 from the
+     * set of equivalent variables for @p variable1 if present.
+     * @sa addEquivalence
+     * @param variable1 The variable to remove from the equivalent variable set
+     * for @p variable2.
+     * @param variable2 The variable to remove from the equivalent variable set
+     * for @p variable1.
+     */
+    static void removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Remove all equivalent variables for this variable.
+     * Clears all equivalent variables that have been added to this variable.
+     */
+    void removeAllEquivalences();
 
     /**
      * @brief Get an equivalent variable at @p index.
@@ -184,6 +203,17 @@ private:
      * variable set if not already present.
      */
     void setEquivalentTo(const VariablePtr &equivalentVariable);
+
+    /**
+     * @brief Private function to remove an equivalent variable from the set for this variable.
+     * Remove the argument equivalent variable from the set of equivalent variables for this
+     * variable if it is present. If the equivalent variable is not in this variable's set,
+     * throw @c std::out_of_range.
+     * @sa setEquivalentTo
+     * @param equivalentVariable The variable to remove from this variable's equivalent
+     * variable set if it is present.
+     */
+    void unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
     std::string doSerialisation(Formats format) const;
 
