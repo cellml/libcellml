@@ -47,11 +47,35 @@ public:
     ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
-     * @brief Add a child Units to this component entity.
-     * Add a copy of the given Units u as a child units of this component entity.
-     * @param u The Units to add.
+     * @brief Add a child units to this component entity.
+     * Add a copy of the given units as a child units of this component entity.
+     * @param units The units to add.
      */
-    void addUnits(const UnitsPtr &u);
+    void addUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Remove the units with the given name.
+     * Remove the first units found that matches the name @p name.  If the
+     * name is not found no units are removed.
+     * @param name The name of the units to remove.
+     */
+    void removeUnits(const std::string &name);
+
+    /**
+     * @brief Remove the units with the given pointer.
+     * Remove the first units found with the pointer @p units.  If the
+     * units are not found no units are removed.
+     *
+     * @overload
+     * @param units The pointer to the units to remove.
+     */
+    void removeUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Remove all units stored in this component entity.
+     * Clears all units that have been added to this component entity.
+     */
+    void removeAllUnits();
 
     /**
      * @brief Add a child component to this component entity.
@@ -78,6 +102,22 @@ public:
      * @param name The name of the component to remove.
      */
     void removeComponent(const std::string &name);
+
+    /**
+     * @brief Remove the component with the given pointer.
+     * Remove the first component found with the pointer @p component.  If the
+     * component is not found no component is removed.
+     *
+     * @overload
+     * @param component The pointer to the component to remove.
+     */
+    void removeComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Remove all components stored in this component entity.
+     * Clears all components that have been added to this component entity.
+     */
+    void removeAllComponents();
 
     /**
      * @brief Tests to see if the component is contained within the Component.

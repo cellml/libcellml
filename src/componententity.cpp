@@ -34,6 +34,9 @@ namespace libcellml {
 struct ComponentEntity::ComponentEntityImpl
 {
     std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
+    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
+    std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
+    std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
     std::vector<ComponentPtr> mComponents;
     std::vector<UnitsPtr> mUnits;
 };
@@ -42,6 +45,24 @@ std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findCo
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
                         [=](const ComponentPtr& c) -> bool { return c->getName() == name; });
+}
+
+std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
+{
+    return std::find_if(mComponents.begin(), mComponents.end(),
+                        [=](const ComponentPtr& c) -> bool { return c == component; });
+}
+
+std::vector<UnitsPtr>::iterator ComponentEntity::ComponentEntityImpl::findUnits(const std::string &name)
+{
+    return std::find_if(mUnits.begin(), mUnits.end(),
+                        [=](const UnitsPtr& u) -> bool { return u->getName() == name; });
+}
+
+std::vector<UnitsPtr>::iterator ComponentEntity::ComponentEntityImpl::findUnits(const UnitsPtr &units)
+{
+    return std::find_if(mUnits.begin(), mUnits.end(),
+                        [=](const UnitsPtr& u) -> bool { return u == units; });
 }
 
 // Interface class Model implementation
@@ -140,9 +161,34 @@ std::string ComponentEntity::serialiseEncapsulation(Formats format) const
     return repr;
 }
 
-void ComponentEntity::addUnits(const UnitsPtr & u)
+void ComponentEntity::addUnits(const UnitsPtr & units)
 {
-    mPimpl->mUnits.push_back(u);
+    mPimpl->mUnits.push_back(units);
+}
+
+void ComponentEntity::removeUnits(const std::string &name)
+{
+    auto result = mPimpl->findUnits(name);
+    if (result != mPimpl->mUnits.end()) {
+        mPimpl->mUnits.erase(result);
+    } else {
+        throw std::out_of_range("Named units not found.");
+    }
+}
+
+void ComponentEntity::removeUnits(const UnitsPtr &units)
+{
+    auto result = mPimpl->findUnits(units);
+    if (result != mPimpl->mUnits.end()) {
+        mPimpl->mUnits.erase(result);
+    } else {
+        throw std::out_of_range("Units pointer not found.");
+    }
+}
+
+void ComponentEntity::removeAllUnits()
+{
+    mPimpl->mUnits.clear();
 }
 
 void ComponentEntity::addComponent(const ComponentPtr &c)
@@ -172,6 +218,21 @@ void ComponentEntity::removeComponent(size_t index)
     } else {
         throw std::out_of_range("Index out of range.");
     }
+}
+
+void ComponentEntity::removeComponent(const ComponentPtr &component)
+{
+    auto result = mPimpl->findComponent(component);
+    if (result != mPimpl->mComponents.end()) {
+        mPimpl->mComponents.erase(result);
+    } else {
+        throw std::out_of_range("Component pointer not found.");
+    }
+}
+
+void ComponentEntity::removeAllComponents()
+{
+    mPimpl->mComponents.clear();
 }
 
 size_t ComponentEntity::componentCount() const
