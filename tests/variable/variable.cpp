@@ -191,10 +191,15 @@ TEST(Variable, setGetInterfaceTypes) {
     v3.setInterfaceType(interfaceType3);
     v4.setInterfaceType(interfaceType4);
 
-    EXPECT_EQ("none", v1.getInterfaceType());
-    EXPECT_EQ("private", v2.getInterfaceType());
-    EXPECT_EQ("public", v3.getInterfaceType());
-    EXPECT_EQ("public_and_private", v4.getInterfaceType());
+    const std::string interfaceTypeString1 = "none";
+    const std::string interfaceTypeString2 = "private";
+    const std::string interfaceTypeString3 = "public";
+    const std::string interfaceTypeString4 = "public_and_private";
+
+    EXPECT_EQ(interfaceTypeString1, v1.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString2, v2.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString3, v3.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString4, v4.getInterfaceType());
 }
 
 TEST(Variable, addVariable) {
