@@ -447,6 +447,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
     comp1->setName("component1");
     comp2->setName("component2");
     comp3->setName("component3");
@@ -469,6 +470,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
     libcellml::Variable::removeEquivalence(v2,v3);
     a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
+    EXPECT_THROW(libcellml::Variable::removeEquivalence(v3,v4), std::out_of_range);
 
     v1->removeAllEquivalences();
     a = m.serialise(libcellml::Formats::XML);

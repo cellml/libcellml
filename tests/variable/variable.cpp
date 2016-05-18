@@ -340,6 +340,7 @@ TEST(Variable, removeVariableMethods) {
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
 
     c.setName(in);
     v1->setName("variable1");
@@ -361,6 +362,7 @@ TEST(Variable, removeVariableMethods) {
     c.removeAllVariables();
     a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
+    EXPECT_THROW(c.removeVariable(v5), std::out_of_range);
 }
 
 TEST(Variable, getVariableMethods) {

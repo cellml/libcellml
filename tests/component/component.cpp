@@ -127,12 +127,14 @@ TEST(Component, addChildrenAndSerialise) {
     EXPECT_EQ(e2, a);
 }
 
-TEST(Component, remove) {
+TEST(Component, removeComponentMethods) {
     const std::string e1 = "<component/><component name=\"child2\"/><encapsulation><component_ref><component_ref component=\"child2\"/></component_ref></encapsulation>";
     const std::string e2 = "<component/><component name=\"child2\"/><component name=\"child1\"/><encapsulation><component_ref><component_ref component=\"child2\"/><component_ref component=\"child1\"/></component_ref></encapsulation>";
+    const std::string e3 = "<component/>";
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
     c2->setName("child2");
     c.addComponent(c1);
@@ -146,12 +148,20 @@ TEST(Component, remove) {
 
     c.addComponent(c1);
     c.addComponent(c1);
+    c.addComponent(c1);
     // Remove the first occurence of "child1".
     c.removeComponent("child1");
+    // Remove the second occurence of "child1".
+    c.removeComponent(c1);
     EXPECT_EQ(2, c.componentCount());
     a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
     EXPECT_THROW(c.removeComponent("child3"), std::out_of_range);
+    EXPECT_THROW(c.removeComponent(c3), std::out_of_range);
+
+    c.removeAllComponents();
+    a = c.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e3, a);
 }
 
 TEST(Component, getComponentMethods) {

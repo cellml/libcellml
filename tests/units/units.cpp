@@ -161,7 +161,7 @@ TEST(Units, removeUnitsMethods) {
               "<units name=\"compound_unit\">"
                 "<unit prefix=\"micro\" units=\"ampere\"/>"
                 "<unit prefix=\"1.7e10\" units=\"meter\"/>"
-                "</units>"
+              "</units>"
               "<units name=\"simple_unit_2\"/>"
               "<units name=\"simple_unit_3\"/>"
               "<units name=\"simple_unit_4\"/>"
@@ -190,6 +190,7 @@ TEST(Units, removeUnitsMethods) {
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
     u1->setName("compound_unit");
     u2->setName("simple_unit_2");
     u3->setName("simple_unit_3");
@@ -208,6 +209,7 @@ TEST(Units, removeUnitsMethods) {
     u1->removeUnit(libcellml::STANDARD_UNIT_KELVIN);
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e1, a);
+    EXPECT_THROW(u1->removeUnit("gram"), std::out_of_range);
 
     u1->removeAllUnits();
     a = m.serialise(libcellml::Formats::XML);
@@ -217,6 +219,8 @@ TEST(Units, removeUnitsMethods) {
     m.removeUnits(u3);
     a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e3, a);
+    EXPECT_THROW(m.removeUnits("gram"), std::out_of_range);
+    EXPECT_THROW(m.removeUnits(u5), std::out_of_range);
 
     m.removeAllUnits();
     a = m.serialise(libcellml::Formats::XML);
