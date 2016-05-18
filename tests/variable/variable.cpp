@@ -359,7 +359,7 @@ TEST(Variable, removeVariableMethods) {
 
     c.addVariable(v4);
     c.removeAllVariables();
-    std::string a = c.serialise(libcellml::Formats::XML);
+    a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
 }
 

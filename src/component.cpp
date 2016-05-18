@@ -95,8 +95,8 @@ std::string Component::getMath() const{
     return mPimpl->mMath;
 }
 
-void Component::removeMath() {
-    mPimpl->mMath.clear();
+void Component::setMath(const std::string &math) {
+    mPimpl->mMath = math;
 }
 
 void Component::addVariable(const VariablePtr &v)

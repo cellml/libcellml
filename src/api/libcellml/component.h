@@ -60,10 +60,12 @@ public:
     std::string getMath() const;
 
     /**
-     * @brief Remove the math string for this component.
-     * Resets the math string for this component to an empty string.
+     * @brief Set the math string for this component.
+     * Sets the math string for this component. If @p math is an empty
+     * string, math will be removed from the component.
+     * @param math The @c std::string to append for this component.
      */
-    void removeMath();
+    void setMath(const std::string &math);
 
     /**
      * @brief Add a variable by reference as part of this component.

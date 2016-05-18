@@ -210,16 +210,16 @@ TEST(Units, removeUnitsMethods) {
     EXPECT_EQ(e1, a);
 
     u1->removeAllUnits();
-    std::string a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
 
     m.removeUnits("simple_unit_2");
     m.removeUnits(u3);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e3, a);
 
     m.removeAllUnits();
-    std::string a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e4, a);
 }
 

@@ -426,7 +426,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
         "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
       "</connection>"
     "</model>";
-    const std::string e2 =
+    const std::string e3 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
       "<component name=\"component1\">"
@@ -467,11 +467,11 @@ TEST(Connection, removeEquivalentVariableMethods) {
     EXPECT_EQ(e1, a);
 
     libcellml::Variable::removeEquivalence(v2,v3);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e2, a);
 
     v1->removeAllEquivalences();
-    std::string a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e3, a);
 }
 
