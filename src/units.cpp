@@ -132,11 +132,12 @@ std::string Units::doSerialisation(Formats format) const
                         "<units units_ref=\"" + getImportReference() + "\" name=\"" + getName() + "\"/>"
                         "</import>";
             } else {
+                bool endTag = false;
                 repr += "<units name=\"" + getName() + "\"";
                 if (isBaseUnit()) {
                     repr += " base_unit=\"yes\"";
-                    repr += "/>";
-                } else {
+                } else if (mPimpl->mUnits.size() > 0) {
+                    endTag = true;
                     repr += ">";
                     for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
                         repr += "<unit";
@@ -156,7 +157,11 @@ std::string Units::doSerialisation(Formats format) const
                         repr += " units=\"" + u.mName + "\"";
                         repr += "/>";
                     }
+                }
+                if (endTag) {
                     repr += "</units>";
+                } else {
+                    repr += "/>";
                 }
             }
         }
