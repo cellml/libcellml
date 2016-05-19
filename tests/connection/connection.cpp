@@ -564,9 +564,6 @@ TEST(Connection, removeVariablesFromConnections) {
       "<connection>"
         "<map_components component_1=\"component1\"/>"
         "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
-      "</connection>"
-      "<connection>"
-        "<map_components component_1=\"component1\"/>"
         "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
       "</connection>"
       "<connection>"
@@ -588,11 +585,8 @@ TEST(Connection, removeVariablesFromConnections) {
         "<map_components component_1=\"component1\"/>"
         "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
         "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
-        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
-      "</connection>"
-      "<connection>"
-        "<map_components component_1=\"component1\"/>"
         "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
       "</connection>"
     "</model>";
     const std::string e5 =
