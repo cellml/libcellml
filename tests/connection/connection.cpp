@@ -478,6 +478,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
 }
 
 TEST(Connection, removeVariablesFromConnections) {
+    // Initial model
     const std::string e1 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -512,6 +513,7 @@ TEST(Connection, removeVariablesFromConnections) {
         "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
       "</connection>"
     "</model>";
+    // Remove variable4
     const std::string e2 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -544,6 +546,7 @@ TEST(Connection, removeVariablesFromConnections) {
         "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
       "</connection>"
     "</model>";
+    // Remove variable3
     const std::string e3 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -571,6 +574,7 @@ TEST(Connection, removeVariablesFromConnections) {
         "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
       "</connection>"
     "</model>";
+    // Remove variable2
     const std::string e4 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -589,6 +593,7 @@ TEST(Connection, removeVariablesFromConnections) {
         "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
       "</connection>"
     "</model>";
+    // Remove all variables from component1 (variable1_1 and variable1_2)
     const std::string e5 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
