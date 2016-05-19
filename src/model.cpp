@@ -128,7 +128,7 @@ std::string Model::doSerialisation(Formats format) const
             repr += " name=\"" + getName() + "\"";
         }
         bool endTag = false;
-        if (importMap.size() > 0 || componentCount() > 0 || unitsCount() > 0){
+        if ((importMap.size() > 0) || (componentCount() > 0) || (unitsCount() > 0)){
             endTag = true;
             repr += ">";
         }

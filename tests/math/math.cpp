@@ -254,7 +254,7 @@ TEST(Maths, twoComponentsWithMathAndConnection) {
     comp2->appendMath(math2);
     m.addComponent(comp1);
     m.addComponent(comp2);
-    libcellml::Variable::addEquivalence(v11,v21);
+    libcellml::Variable::addEquivalence(v11, v21);
 
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
