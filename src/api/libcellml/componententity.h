@@ -55,8 +55,8 @@ public:
 
     /**
      * @brief Remove the units with the given @p name.
-     * Remove the units with the name @p name.  If the
-     * name is not found throw @c std::out_of_range.
+     * Remove the first units found with the name @p name.
+     * If the name is not found throw @c std::out_of_range.
      * @param name The name of the units to remove.
      */
     void removeUnits(const std::string &name);
@@ -78,7 +78,7 @@ public:
 
     /**
      * @brief Get the number of units in the component entity.
-     * Returns the number of units the component entity contains.
+     * Returns the number of units (non-imported) the component entity contains.
      * @return The number of units.
      */
     size_t unitsCount() const;
@@ -222,7 +222,7 @@ public:
 
     /**
      * @brief Get the number of components in the component.
-     * Returns the number of components the component directly contains.
+     * Returns the number of components (non-imported) the component contains.
      * @return The number of components.
      */
     size_t componentCount() const;
