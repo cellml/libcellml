@@ -165,11 +165,20 @@ std::string Model::doSerialisation(Formats format) const
                                 }
                             }
                             if (!pairFound) {
-                                // New unique variable equivalence pair found.
-                                variableMap.push_back(variablePair);
-                                // Also create a component map pair corresponding with the variable map pair.
+                                // Get parent components.
                                 Component* component1 = static_cast<Component*>(variable->getParent());
                                 Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                                // Do not serialise a variable's parent component in a connection if that variable no
+                                // longer exists in that component. Allow serialisation of one componentless variable.
+                                if (component1) {
+                                    if (!component1->hasVariable(variable)) component1 = nullptr;
+                                }
+                                if (component2) {
+                                    if (!component2->hasVariable(equivalentVariable)) component2 = nullptr;
+                                }
+                                // Add new unique variable equivalence pair to the VariableMap.
+                                variableMap.push_back(variablePair);
+                                // Also create a component map pair corresponding with the variable map pair.
                                 ComponentPair componentPair = std::make_pair(component1, component2);
                                 componentMap.push_back(componentPair);
                             }

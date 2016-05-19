@@ -166,6 +166,11 @@ size_t Component::variableCount() const
     return mPimpl->mVariables.size();
 }
 
+bool Component::hasVariable(const VariablePtr &variable)
+{
+    return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
+}
+
 std::string Component::doSerialisation(Formats format) const
 {
     std::string repr = "";

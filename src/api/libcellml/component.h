@@ -155,6 +155,16 @@ public:
      */
     size_t variableCount() const;
 
+    /**
+     * @brief Test whether the argument @p variable is in this component.
+     * Tests whether the argument @p variable exists in the set of this component's
+     * variables. Returns @c true if the @p variable is in this component's
+     * variables and @c false otherwise.
+     * @param variable The variable to check for in this component.
+     * @return @c true if the @p variable is in this component and @c false otherwise.
+     */
+    bool hasVariable(const VariablePtr &variable);
+
 private:
     void doAddComponent(const ComponentPtr &c);
 
