@@ -67,8 +67,8 @@ public:
     /**
      * @brief Remove each argument variable to the other's equivalent variable set.
      * Removes a copy of @p variable1 from the set of equivalent variables for
-     * @p variable2 if present. Also removes a copy of @p variable2 from the
-     * set of equivalent variables for @p variable1 if present.
+     * @p variable2, if present. Also removes a copy of @p variable2 from the
+     * set of equivalent variables for @p variable1, if present.
      * @sa addEquivalence, unsetEquivalentTo, getEquivalentVariable
      * @param variable1 The variable to remove from the equivalent variable set
      * for @p variable2.

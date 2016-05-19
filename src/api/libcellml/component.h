@@ -78,7 +78,9 @@ public:
     /**
      * @brief Remove the variable with the given @p name from this component.
      * Remove the variable with the given name from this component. If the
-     * name is not found then throw @c std::out_of_range.
+     * name is not found then throw @c std::out_of_range. If the named variable to
+     * be removed is in a connection (is equivalent to another variable), this
+     * component will not be serialised in the connection @c map_components.
      * @sa addVariable
      * @param name The name of the variable to remove.
      */
@@ -87,7 +89,9 @@ public:
     /**
      * @brief Remove the variable by the given @p variable pointer from this component.
      * Remove the variable with the given pointer from this component. If the
-     * variable is not found then throw @c std::out_of_range.
+     * variable is not found then throw @c std::out_of_range. If the @p variable to
+     * be removed is in a connection (is equivalent to another variable), this
+     * component will not be serialised in the connection @c map_components.
      * @sa addVariable
      *
      * @overload
@@ -97,7 +101,9 @@ public:
 
     /**
      * @brief Remove all variables stored in this component.
-     * Clears all variables that have been added to this component.
+     * Clears all variables that have been added to this component. If any of the
+     * variables to be removed are in connections (are equivalent to other variables),
+     * this component will not be serialised in the connection @c map_components.
      */
     void removeAllVariables();
 
@@ -106,7 +112,6 @@ public:
      * Returns a const reference to a variable at the index @p index for this
      * component.  If the index is not valid a std::out_of_range
      * exception is thrown.
-     *
      * @param index The index of the variable to return (zero-based).
      * @return A const reference to the variable at the given index.
      */
