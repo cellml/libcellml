@@ -18,11 +18,11 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Maths, appendAndGetMath) {
+TEST(Maths, setAndGetMath) {
     std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.appendMath(math);
+    c.setMath(math);
     EXPECT_EQ(math, c.getMath());
 }
 
@@ -39,14 +39,14 @@ TEST(Maths, appendAndSerialiseMathComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndRemoveMathComponent) {
+TEST(Maths, appendAndResetMathComponent) {
     const std::string e =
     "<component/>";
     std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
     c.appendMath(math);
-    c.removeMath();
+    c.setMath("");
     std::string a = c.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
@@ -254,7 +254,7 @@ TEST(Maths, twoComponentsWithMathAndConnection) {
     comp2->appendMath(math2);
     m.addComponent(comp1);
     m.addComponent(comp2);
-    libcellml::Variable::addEquivalence(v11,v21);
+    libcellml::Variable::addEquivalence(v11, v21);
 
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);

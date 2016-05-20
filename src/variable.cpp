@@ -101,6 +101,17 @@ void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
     variable2->setEquivalentTo(variable1);
 }
 
+void Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
+{
+    variable1->unsetEquivalentTo(variable2);
+    variable2->unsetEquivalentTo(variable1);
+}
+
+void Variable::removeAllEquivalences()
+{
+    mPimpl->mEquivalentVariables.clear();
+}
+
 VariablePtr Variable::getEquivalentVariable(size_t index)
 {
     VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
@@ -122,6 +133,16 @@ void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
     if (!hasEquivalentVariable(equivalentVariable)) {
         VariableWeakPtr weakEquivalentVariable = equivalentVariable;
         mPimpl->mEquivalentVariables.push_back(weakEquivalentVariable);
+    }
+}
+
+void Variable::unsetEquivalentTo(const VariablePtr &equivalentVariable)
+{
+    auto result = mPimpl->findEquivalentVariable(equivalentVariable);
+    if (result != mPimpl->mEquivalentVariables.end()) {
+        mPimpl->mEquivalentVariables.erase(result);
+    } else {
+        throw std::out_of_range("Equivalent variable not found.");
     }
 }
 

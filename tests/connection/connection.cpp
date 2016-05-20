@@ -21,14 +21,14 @@ limitations under the License.
 TEST(Variable, addAndGetEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1, v2);
     EXPECT_EQ(v2, v1->getEquivalentVariable(0));
 }
 
 TEST(Variable, addAndGetEquivalentVariableReciprocal) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1, v2);
     EXPECT_EQ(v1, v2->getEquivalentVariable(0));
 }
 
@@ -36,8 +36,8 @@ TEST(Variable, addTwoEquivalentVariablesAndCount) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
-    libcellml::Variable::addEquivalence(v1,v2);
-    libcellml::Variable::addEquivalence(v1,v3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
     const size_t e = 2;
     size_t a = v1->equivalentVariableCount();
     EXPECT_EQ(e, a);
@@ -46,10 +46,10 @@ TEST(Variable, addTwoEquivalentVariablesAndCount) {
 TEST(Variable, addDuplicateEquivalentVariablesAndCount) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::Variable::addEquivalence(v1,v2);
-    libcellml::Variable::addEquivalence(v1,v2);
-    libcellml::Variable::addEquivalence(v2,v1);
-    libcellml::Variable::addEquivalence(v2,v1);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v1);
+    libcellml::Variable::addEquivalence(v2, v1);
     const size_t e = 1;
     size_t a = v1->equivalentVariableCount();
     EXPECT_EQ(e, a);
@@ -66,7 +66,7 @@ TEST(Variable, hasNoEquivalentVariable) {
 TEST(Variable, hasEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1, v2);
     bool a = v1->hasEquivalentVariable(v2);
     const bool e = true;
     EXPECT_EQ(e, a);
@@ -93,7 +93,7 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     v2->setName("variable2");
     comp1->addVariable(v1);
     m.addComponent(comp1);
-    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1, v2);
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
@@ -126,7 +126,7 @@ TEST(Connection, validConnection) {
     comp2->addVariable(v2);
     m.addComponent(comp1);
     m.addComponent(comp2);
-    libcellml::Variable::addEquivalence(v1,v2);
+    libcellml::Variable::addEquivalence(v1, v2);
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
@@ -171,8 +171,8 @@ TEST(Connection, twoMapVariablesConnection) {
     comp2->addVariable(v22);
     m.addComponent(comp1);
     m.addComponent(comp2);
-    libcellml::Variable::addEquivalence(v11,v21);
-    libcellml::Variable::addEquivalence(v12,v22);
+    libcellml::Variable::addEquivalence(v11, v21);
+    libcellml::Variable::addEquivalence(v12, v22);
 
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
@@ -228,10 +228,10 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
     m.addComponent(comp1);
     m.addComponent(comp2);
 
-    libcellml::Variable::addEquivalence(v23,v13);
-    libcellml::Variable::addEquivalence(v21,v11);
-    libcellml::Variable::addEquivalence(v12,v22);
-    libcellml::Variable::addEquivalence(v13,v23);
+    libcellml::Variable::addEquivalence(v23, v13);
+    libcellml::Variable::addEquivalence(v21, v11);
+    libcellml::Variable::addEquivalence(v12, v22);
+    libcellml::Variable::addEquivalence(v13, v23);
 
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
@@ -317,16 +317,16 @@ TEST(Connection, nineVariablesTenConnections) {
     m.addComponent(comp2);
     m.addComponent(comp3);
 
-    libcellml::Variable::addEquivalence(v11,v21);
-    libcellml::Variable::addEquivalence(v31,v11);
-    libcellml::Variable::addEquivalence(v12,v22);
-    libcellml::Variable::addEquivalence(v32,v12);
-    libcellml::Variable::addEquivalence(v13,v23);
-    libcellml::Variable::addEquivalence(v33,v13);
-    libcellml::Variable::addEquivalence(v31,v23);
-    libcellml::Variable::addEquivalence(v21,v33);
-    libcellml::Variable::addEquivalence(v11,v33);
-    libcellml::Variable::addEquivalence(v33,v23);
+    libcellml::Variable::addEquivalence(v11, v21);
+    libcellml::Variable::addEquivalence(v31, v11);
+    libcellml::Variable::addEquivalence(v12, v22);
+    libcellml::Variable::addEquivalence(v32, v12);
+    libcellml::Variable::addEquivalence(v13, v23);
+    libcellml::Variable::addEquivalence(v33, v13);
+    libcellml::Variable::addEquivalence(v31, v23);
+    libcellml::Variable::addEquivalence(v21, v33);
+    libcellml::Variable::addEquivalence(v11, v33);
+    libcellml::Variable::addEquivalence(v33, v23);
 
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
@@ -373,10 +373,288 @@ TEST(Connection, twoValidConnections) {
     m.addComponent(comp1);
     m.addComponent(comp2);
     m.addComponent(comp3);
-    libcellml::Variable::addEquivalence(v1,v2);
-    libcellml::Variable::addEquivalence(v1,v3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
+}
+
+TEST(Connection, removeEquivalentVariableMethods) {
+    const std::string e1 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component2\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    const std::string e2 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    const std::string e3 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+    "</model>";
+
+    libcellml::Model m;
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    m.addComponent(comp1);
+    m.addComponent(comp2);
+    m.addComponent(comp3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v2, v3);
+    std::string a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e1, a);
+
+    libcellml::Variable::removeEquivalence(v2, v3);
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e2, a);
+    EXPECT_THROW(libcellml::Variable::removeEquivalence(v3, v4), std::out_of_range);
+
+    v1->removeAllEquivalences();
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e3, a);
+}
+
+TEST(Connection, removeVariablesFromConnections) {
+    // Initial model
+    const std::string e1 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1_1\"/>"
+        "<variable name=\"variable1_2\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+      "<component name=\"component4\">"
+        "<variable name=\"variable4\"/>"
+      "</component>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component4\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component2\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    // Remove variable4
+    const std::string e2 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1_1\"/>"
+        "<variable name=\"variable1_2\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\">"
+        "<variable name=\"variable3\"/>"
+      "</component>"
+      "<component name=\"component4\"/>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component2\" component_2=\"component3\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    // Remove variable3
+    const std::string e3 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1_1\"/>"
+        "<variable name=\"variable1_2\"/>"
+      "</component>"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<component name=\"component3\"/>"
+      "<component name=\"component4\"/>"
+      "<connection>"
+        "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component1\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+      "</connection>"
+      "<connection>"
+        "<map_components component_1=\"component2\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
+      "</connection>"
+    "</model>";
+    // Remove variable2
+    const std::string e4 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\">"
+        "<variable name=\"variable1_1\"/>"
+        "<variable name=\"variable1_2\"/>"
+      "</component>"
+      "<component name=\"component2\"/>"
+      "<component name=\"component3\"/>"
+      "<component name=\"component4\"/>"
+      "<connection>"
+        "<map_components component_1=\"component1\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
+        "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+        "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
+      "</connection>"
+    "</model>";
+    // Remove all variables from component1 (variable1_1 and variable1_2)
+    const std::string e5 =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component1\"/>"
+      "<component name=\"component2\"/>"
+      "<component name=\"component3\"/>"
+      "<component name=\"component4\"/>"
+    "</model>";
+
+    libcellml::Model m;
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1_2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    comp4->setName("component4");
+    v1_1->setName("variable1_1");
+    v1_2->setName("variable1_2");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    comp1->addVariable(v1_1);
+    comp1->addVariable(v1_2);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    comp4->addVariable(v4);
+    m.addComponent(comp1);
+    m.addComponent(comp2);
+    m.addComponent(comp3);
+    m.addComponent(comp4);
+    libcellml::Variable::addEquivalence(v1_1, v2);
+    libcellml::Variable::addEquivalence(v1_2, v2);
+    libcellml::Variable::addEquivalence(v1_1, v3);
+    libcellml::Variable::addEquivalence(v1_1, v4);
+    libcellml::Variable::addEquivalence(v2, v3);
+    std::string a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e1, a);
+
+    comp4->removeVariable(v4);
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e2, a);
+
+    comp3->removeVariable("variable3");
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e3, a);
+
+    comp2->removeVariable(v2);
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e4, a);
+
+    comp1->removeAllVariables();
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e5, a);
 }
 
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces) {
@@ -433,8 +711,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     parent->addVariable(v1);
     child1->addVariable(v2);
     child2->addVariable(v3);
-    libcellml::Variable::addEquivalence(v1,v2);
-    libcellml::Variable::addEquivalence(v1,v3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
     v1->setInterfaceType(libcellml::Variable::InterfaceTypes::PRIVATE);
     v2->setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC);
     v3->setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC);
@@ -497,8 +775,8 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     parent->addVariable(v1);
     child1->addVariable(v2);
     child2->addVariable(v3);
-    libcellml::Variable::addEquivalence(v1,v2);
-    libcellml::Variable::addEquivalence(v1,v3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
     v1->setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC);
     v2->setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC);
     v3->setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC);
@@ -543,7 +821,7 @@ TEST(Connection, importedComponentConnection) {
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
     EXPECT_EQ(componentImported->getVariable(0), variableImported);
-    libcellml::Variable::addEquivalence(variableImported,variableBob);
+    libcellml::Variable::addEquivalence(variableImported, variableBob);
     std::string a = m.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }

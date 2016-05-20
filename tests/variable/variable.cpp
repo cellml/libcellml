@@ -191,10 +191,15 @@ TEST(Variable, setGetInterfaceTypes) {
     v3.setInterfaceType(interfaceType3);
     v4.setInterfaceType(interfaceType4);
 
-    EXPECT_EQ("none", v1.getInterfaceType());
-    EXPECT_EQ("private", v2.getInterfaceType());
-    EXPECT_EQ("public", v3.getInterfaceType());
-    EXPECT_EQ("public_and_private", v4.getInterfaceType());
+    const std::string interfaceTypeString1 = "none";
+    const std::string interfaceTypeString2 = "private";
+    const std::string interfaceTypeString3 = "public";
+    const std::string interfaceTypeString4 = "public_and_private";
+
+    EXPECT_EQ(interfaceTypeString1, v1.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString2, v2.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString3, v3.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString4, v4.getInterfaceType());
 }
 
 TEST(Variable, addVariable) {
@@ -326,29 +331,43 @@ TEST(Variable, componentWithTwoVariablesWithInitialValues) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, removeVariable) {
+TEST(Variable, removeVariableMethods) {
     const std::string in = "valid_name";
-    const std::string e =
+    const std::string e1 =
             "<component name=\"" + in + "\">"
                 "<variable name=\"variable2\"/>"
             "</component>";
+    const std::string e2 =
+            "<component name=\"" + in + "\"/>";
 
     libcellml::Component c;
-    c.setName(in);
-
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    v1->setName("variable1");
-    c.addVariable(v1);
-
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+
+    c.setName(in);
+    v1->setName("variable1");
     v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    c.addVariable(v1);
     c.addVariable(v2);
+    c.addVariable(v3);
 
     c.removeVariable("variable1");
+    c.removeVariable(v3);
     std::string a = c.serialise(libcellml::Formats::XML);
-    EXPECT_EQ(e, a);
-
+    EXPECT_EQ(e1, a);
     EXPECT_THROW(c.removeVariable("BAD_NAME"), std::out_of_range);
+
+    c.addVariable(v4);
+    c.removeAllVariables();
+    a = c.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e2, a);
+    EXPECT_THROW(c.removeVariable(v5), std::out_of_range);
 }
 
 TEST(Variable, getVariableMethods) {

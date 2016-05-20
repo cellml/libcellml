@@ -34,6 +34,7 @@ struct Component::ComponentImpl
 {
     std::string mMath;
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
+    std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
     std::vector<VariablePtr> mVariables;
 };
 
@@ -41,6 +42,12 @@ std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const 
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
                         [=](const VariablePtr& v) -> bool { return v->getName() == name; });
+}
+
+std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const VariablePtr &variable)
+{
+    return std::find_if(mVariables.begin(), mVariables.end(),
+                        [=](const VariablePtr& v) -> bool { return v == variable; });
 }
 
 Component::Component()
@@ -95,8 +102,8 @@ std::string Component::getMath() const{
     return mPimpl->mMath;
 }
 
-void Component::removeMath() {
-    mPimpl->mMath.clear();
+void Component::setMath(const std::string &math) {
+    mPimpl->mMath = math;
 }
 
 void Component::addVariable(const VariablePtr &v)
@@ -113,6 +120,21 @@ void Component::removeVariable(const std::string &name)
     } else {
         throw std::out_of_range("Named variable not found.");
     }
+}
+
+void Component::removeVariable(const VariablePtr &variable)
+{
+    auto result = mPimpl->findVariable(variable);
+    if (result != mPimpl->mVariables.end()) {
+        mPimpl->mVariables.erase(result);
+    } else {
+        throw std::out_of_range("Variable pointer not found.");
+    }
+}
+
+void Component::removeAllVariables()
+{
+    mPimpl->mVariables.clear();
 }
 
 VariablePtr Component::getVariable(size_t index)
@@ -142,6 +164,11 @@ const VariablePtr& Component::getVariable(const std::string &name) const
 size_t Component::variableCount() const
 {
     return mPimpl->mVariables.size();
+}
+
+bool Component::hasVariable(const VariablePtr &variable)
+{
+    return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
 }
 
 std::string Component::doSerialisation(Formats format) const
