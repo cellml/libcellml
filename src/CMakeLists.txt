@@ -89,9 +89,12 @@ target_include_directories(cellml
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module>
   $<INSTALL_INTERFACE:include/>
   $<INSTALL_INTERFACE:include/libcellml/module>
+  ${LIBXML2_INCLUDE_DIRS}
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
 
 if(LIBCELLML_UNIT_TESTS)
   target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=LIBCELLML_EXPORT)
