@@ -148,7 +148,7 @@ TEST(Variable, setInterfaceTypeNoneByValidString) {
 TEST(Variable, setInterfaceTypeNoneByEnum) {
     const std::string e = "<variable interface=\"none\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceTypes::NONE);
+    v.setInterfaceType(libcellml::Variable::InterfaceType::NONE);
     std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
@@ -156,7 +156,7 @@ TEST(Variable, setInterfaceTypeNoneByEnum) {
 TEST(Variable, setInterfaceTypePrivate) {
     const std::string e = "<variable interface=\"private\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceTypes::PRIVATE);
+    v.setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
     std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
@@ -164,7 +164,7 @@ TEST(Variable, setInterfaceTypePrivate) {
 TEST(Variable, setInterfaceTypePublic) {
     const std::string e = "<variable interface=\"public\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC);
+    v.setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
     std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
@@ -172,20 +172,20 @@ TEST(Variable, setInterfaceTypePublic) {
 TEST(Variable, setInterfaceTypePublicAndPrivate) {
     const std::string e = "<variable interface=\"public_and_private\"/>";
     libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceTypes::PUBLIC_AND_PRIVATE);
+    v.setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
     std::string a = v.serialise(libcellml::Formats::XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, setGetInterfaceTypes) {
+TEST(Variable, setGetInterfaceType) {
     libcellml::Variable v1;
     libcellml::Variable v2;
     libcellml::Variable v3;
     libcellml::Variable v4;
-    libcellml::Variable::InterfaceTypes interfaceType1 = libcellml::Variable::InterfaceTypes::NONE;
-    libcellml::Variable::InterfaceTypes interfaceType2 = libcellml::Variable::InterfaceTypes::PRIVATE;
-    libcellml::Variable::InterfaceTypes interfaceType3 = libcellml::Variable::InterfaceTypes::PUBLIC;
-    libcellml::Variable::InterfaceTypes interfaceType4 = libcellml::Variable::InterfaceTypes::PUBLIC_AND_PRIVATE;
+    libcellml::Variable::InterfaceType interfaceType1 = libcellml::Variable::InterfaceType::NONE;
+    libcellml::Variable::InterfaceType interfaceType2 = libcellml::Variable::InterfaceType::PRIVATE;
+    libcellml::Variable::InterfaceType interfaceType3 = libcellml::Variable::InterfaceType::PUBLIC;
+    libcellml::Variable::InterfaceType interfaceType4 = libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE;
     v1.setInterfaceType(interfaceType1);
     v2.setInterfaceType(interfaceType2);
     v3.setInterfaceType(interfaceType3);

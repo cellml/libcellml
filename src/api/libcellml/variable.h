@@ -39,11 +39,11 @@ public:
     Variable& operator=(Variable n); /**< Assignment operator */
 
     /**
-     * @brief The InterfaceTypes enum class.
+     * @brief The InterfaceType enum class.
      * Enum describing the interface types that are available for
      * a given variable.
      */
-    enum class InterfaceTypes
+    enum class InterfaceType
     {
         NONE,
         PRIVATE,
@@ -175,13 +175,13 @@ public:
     /**
      * @brief Set the interface type for this variable.
      * Set the interface type for this variable from the available
-     * options in the InterfaceTypes enum class.
+     * options in the InterfaceType enum class.
      *
      * @overload
      * @sa getInterfaceType
      * @param interfaceType The enum interface type to set for this variable.
      */
-    void setInterfaceType(InterfaceTypes interfaceType);
+    void setInterfaceType(InterfaceType interfaceType);
 
     /**
      * @brief Get the interface type for this variable.
