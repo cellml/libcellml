@@ -65,6 +65,7 @@ Component::Component(const Component& rhs)
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mVariables = rhs.mPimpl->mVariables;
+    mPimpl->mMath = rhs.mPimpl->mMath;
 }
 
 Component::Component(Component &&rhs)
@@ -74,10 +75,16 @@ Component::Component(Component &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Component& Component::operator=(Component m)
+Component& Component::operator=(Component c)
 {
-    ComponentEntity::operator= (m);
+    ComponentEntity::operator= (c);
+    c.swap(*this);
     return *this;
+}
+
+void Component::swap(Component &rhs)
+{
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 void Component::doAddComponent(const ComponentPtr &c)

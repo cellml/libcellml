@@ -171,8 +171,9 @@ public:
     bool hasVariable(const VariablePtr &variable);
 
 private:
-    void doAddComponent(const ComponentPtr &c);
+    void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
 
+    void doAddComponent(const ComponentPtr &c);
     std::string doSerialisation(Format format) const;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */

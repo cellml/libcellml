@@ -55,8 +55,11 @@ TEST(Coverage, entity) {
 }
 
 TEST(Coverage, units) {
-    std::string e = "";
+    std::string e = "<units name=\"dimensionless\" base_unit=\"yes\"/>";
     libcellml::Units u, um;
+
+    u.setName("dimensionless");
+    u.setBaseUnit();
 
     um = std::move(u);
 
@@ -129,8 +132,14 @@ TEST(Coverage, prefixToString) {
 }
 
 TEST(Coverage, variable) {
-    std::string e = "<variable/>";
+    std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>";
     libcellml::Variable v, vm;
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    v.setInitialValue(1.0);
+    v.setInterfaceType("public");
+    u->setName("dimensionless");
+    v.setUnits(u);
 
     vm = std::move(v);
 
@@ -138,4 +147,36 @@ TEST(Coverage, variable) {
     libcellml::Variable vc(vm);
 
     EXPECT_EQ(e, vc.serialise(libcellml::Format::XML));
+}
+
+TEST(Coverage, component) {
+    std::string e = "<component name=\"name\"><variable/><1+1=2></component>";
+    libcellml::Component c, cm;
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
+    c.setName("name");
+    c.addVariable(v);
+    c.setMath("<1+1=2>");
+    EXPECT_EQ(e, c.serialise(libcellml::Format::XML));
+
+    cm = std::move(c);
+    EXPECT_EQ(e, cm.serialise(libcellml::Format::XML));
+
+    // Copy constructor
+    libcellml::Component cc(cm);
+    EXPECT_EQ(e, cm.serialise(libcellml::Format::XML));
+}
+
+TEST(Coverage, componentEntity) {
+    const std::string e = "<component/><component/><encapsulation><component_ref><component_ref/></component_ref></encapsulation>";
+    libcellml::Component p, pm;
+    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    p.addComponent(child);
+    EXPECT_EQ(e, p.serialise(libcellml::Format::XML));
+
+    pm = std::move(p);
+    EXPECT_EQ(e, pm.serialise(libcellml::Format::XML));
+
+    libcellml::Component pc(pm);
+    EXPECT_EQ(e, pm.serialise(libcellml::Format::XML));
 }

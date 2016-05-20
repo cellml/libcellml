@@ -74,6 +74,9 @@ Variable::Variable(const Variable& rhs)
     , mPimpl(new VariableImpl())
 {
     mPimpl->mEquivalentVariables = rhs.mPimpl->mEquivalentVariables;
+    mPimpl->mInitialValue = rhs.mPimpl->mInitialValue;
+    mPimpl->mInterfaceType = rhs.mPimpl->mInterfaceType;
+    mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
 Variable::Variable(Variable &&rhs)
@@ -83,10 +86,10 @@ Variable::Variable(Variable &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Variable& Variable::operator=(Variable e)
+Variable& Variable::operator=(Variable v)
 {
-    NamedEntity::operator= (e);
-    e.swap(*this);
+    NamedEntity::operator= (v);
+    v.swap(*this);
     return *this;
 }
 
