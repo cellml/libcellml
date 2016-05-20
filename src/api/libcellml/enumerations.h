@@ -32,11 +32,11 @@ enum class Formats
 };
 
 /**
- * @brief The Prefixes enum class.
+ * @brief The Prefix enum class.
  * Enum describing the prefixes that are available for
  * units.
  */
-enum class Prefixes
+enum class Prefix
 {
     YOTTA =  24,
     ZETTA =  21,

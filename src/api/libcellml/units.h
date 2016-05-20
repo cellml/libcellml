@@ -119,12 +119,12 @@ public:
      *
      * @overload
      * @param name The name of the unit to add.
-     * @param prefix The prefix for the unit, one of Prefixes.
+     * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &name, Prefixes prefix, double exponent=1.0,
+    void addUnit(const std::string &name, Prefix prefix, double exponent=1.0,
                  double multiplier=1.0, double offset=0.0);
 
     /**

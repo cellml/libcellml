@@ -92,27 +92,27 @@ TEST(Coverage, prefixToString) {
          "zepto",
          "zetta"
         };
-    std::vector<libcellml::Prefixes> prefix_enum =
-        {libcellml::Prefixes::ATTO,
-         libcellml::Prefixes::CENTI,
-         libcellml::Prefixes::DECA,
-         libcellml::Prefixes::DECI,
-         libcellml::Prefixes::EXA,
-         libcellml::Prefixes::FEMTO,
-         libcellml::Prefixes::GIGA,
-         libcellml::Prefixes::HECTO,
-         libcellml::Prefixes::KILO,
-         libcellml::Prefixes::MEGA,
-         libcellml::Prefixes::MICRO,
-         libcellml::Prefixes::MILLI,
-         libcellml::Prefixes::NANO,
-         libcellml::Prefixes::PETA,
-         libcellml::Prefixes::PICO,
-         libcellml::Prefixes::TERA,
-         libcellml::Prefixes::YOCTO,
-         libcellml::Prefixes::YOTTA,
-         libcellml::Prefixes::ZEPTO,
-         libcellml::Prefixes::ZETTA
+    std::vector<libcellml::Prefix> prefix_enum =
+        {libcellml::Prefix::ATTO,
+         libcellml::Prefix::CENTI,
+         libcellml::Prefix::DECA,
+         libcellml::Prefix::DECI,
+         libcellml::Prefix::EXA,
+         libcellml::Prefix::FEMTO,
+         libcellml::Prefix::GIGA,
+         libcellml::Prefix::HECTO,
+         libcellml::Prefix::KILO,
+         libcellml::Prefix::MEGA,
+         libcellml::Prefix::MICRO,
+         libcellml::Prefix::MILLI,
+         libcellml::Prefix::NANO,
+         libcellml::Prefix::PETA,
+         libcellml::Prefix::PICO,
+         libcellml::Prefix::TERA,
+         libcellml::Prefix::YOCTO,
+         libcellml::Prefix::YOTTA,
+         libcellml::Prefix::ZEPTO,
+         libcellml::Prefix::ZETTA
         };
     for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); ++i) {
         std::string prefix = prefix_str[i];

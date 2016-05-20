@@ -182,7 +182,7 @@ TEST(UnitsImport, importModify) {
 
     libcellml::UnitsPtr importedUnitsPrefixed = std::make_shared<libcellml::Units>();
     importedUnitsPrefixed->setName("prefixed_import");
-    importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::Prefixes::YOTTA);
+    importedUnitsPrefixed->addUnit("units_in_this_model", libcellml::Prefix::YOTTA);
 
     m.addUnits(importedUnitsPrefixed);
 

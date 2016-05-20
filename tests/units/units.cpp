@@ -116,9 +116,9 @@ TEST(Units, compoundUnitsUsingDefines) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefixes::MICRO);
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefix::MICRO);
     u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
-    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefixes::MILLI, -1.0);
+    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefix::MILLI, -1.0);
 
     m.addUnits(u);
 
@@ -126,7 +126,7 @@ TEST(Units, compoundUnitsUsingDefines) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
+TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -250,9 +250,9 @@ TEST(Units, multiply) {
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("compound_unit");
 
-    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefixes::MICRO);
+    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefix::MICRO);
     u1->addUnit(libcellml::STANDARD_UNIT_KELVIN);
-    u1->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefixes::MILLI, -1.0);
+    u1->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefix::MILLI, -1.0);
 
     m.addUnits(u1);
 
