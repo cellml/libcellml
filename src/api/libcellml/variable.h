@@ -215,7 +215,7 @@ private:
      */
     void unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
-    std::string doSerialisation(Formats format) const;
+    std::string doSerialisation(Format format) const;
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl* mPimpl; /**< Private member to implementation pointer */

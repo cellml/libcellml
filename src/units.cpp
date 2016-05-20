@@ -122,10 +122,10 @@ void Units::swap(Units &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Units::doSerialisation(Formats format) const
+std::string Units::doSerialisation(Format format) const
 {
     std::string repr = "";
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         if (getName().length()) {
             if (isImport()) {
                 repr += "<import xlink:href=\"" + getImport()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"

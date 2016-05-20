@@ -146,10 +146,10 @@ void Variable::unsetEquivalentTo(const VariablePtr &equivalentVariable)
     }
 }
 
-std::string Variable::doSerialisation(Formats format) const
+std::string Variable::doSerialisation(Format format) const
 {
     std::string repr = "";
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         repr += "<variable";
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";

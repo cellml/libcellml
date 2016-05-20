@@ -103,11 +103,11 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string ComponentEntity::serialiseUnits(Formats format) const
+std::string ComponentEntity::serialiseUnits(Format format) const
 {
     std::string repr = "";
 
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         for (std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
             repr += mPimpl->mUnits[i]->serialise(format);;
         }
@@ -116,12 +116,12 @@ std::string ComponentEntity::serialiseUnits(Formats format) const
     return repr;
 }
 
-std::string ComponentEntity::serialiseEncapsulation(Formats format) const
+std::string ComponentEntity::serialiseEncapsulation(Format format) const
 {
     const std::string encaps_tag = "<encapsulation>";
     const std::string encaps_end_tag = "</encapsulation>";
     std::string repr = "";
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         std::string componentName = getName();
         std::string encaps = "";
         if (mPimpl->mComponents.size()) {

@@ -22,11 +22,11 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Formats enum class.
+ * @brief The Format enum class.
  * Enum describing the formats that are available for
  * serialisation.
  */
-enum class Formats
+enum class Format
 {
      XML = 0 /**< XML format for CellML files. */
 };

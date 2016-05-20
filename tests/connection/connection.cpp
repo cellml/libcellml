@@ -94,7 +94,7 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     comp1->addVariable(v1);
     m.addComponent(comp1);
     libcellml::Variable::addEquivalence(v1, v2);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -127,7 +127,7 @@ TEST(Connection, validConnection) {
     m.addComponent(comp1);
     m.addComponent(comp2);
     libcellml::Variable::addEquivalence(v1, v2);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -174,7 +174,7 @@ TEST(Connection, twoMapVariablesConnection) {
     libcellml::Variable::addEquivalence(v11, v21);
     libcellml::Variable::addEquivalence(v12, v22);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -233,7 +233,7 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
     libcellml::Variable::addEquivalence(v12, v22);
     libcellml::Variable::addEquivalence(v13, v23);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -328,7 +328,7 @@ TEST(Connection, nineVariablesTenConnections) {
     libcellml::Variable::addEquivalence(v11, v33);
     libcellml::Variable::addEquivalence(v33, v23);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -375,7 +375,7 @@ TEST(Connection, twoValidConnections) {
     m.addComponent(comp3);
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v1, v3);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -464,16 +464,16 @@ TEST(Connection, removeEquivalentVariableMethods) {
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v1, v3);
     libcellml::Variable::addEquivalence(v2, v3);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
 
     libcellml::Variable::removeEquivalence(v2, v3);
-    a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
     EXPECT_THROW(libcellml::Variable::removeEquivalence(v3, v4), std::out_of_range);
 
     v1->removeAllEquivalences();
-    a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e3, a);
 }
 
@@ -637,23 +637,23 @@ TEST(Connection, removeVariablesFromConnections) {
     libcellml::Variable::addEquivalence(v1_1, v3);
     libcellml::Variable::addEquivalence(v1_1, v4);
     libcellml::Variable::addEquivalence(v2, v3);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
 
     comp4->removeVariable(v4);
-    a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
 
     comp3->removeVariable("variable3");
-    a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e3, a);
 
     comp2->removeVariable(v2);
-    a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e4, a);
 
     comp1->removeAllVariables();
-    a = m.serialise(libcellml::Formats::XML);
+    a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e5, a);
 }
 
@@ -717,7 +717,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
     v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -781,7 +781,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
     v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -822,6 +822,6 @@ TEST(Connection, importedComponentConnection) {
     componentBob->addVariable(variableBob);
     EXPECT_EQ(componentImported->getVariable(0), variableImported);
     libcellml::Variable::addEquivalence(variableImported, variableBob);
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }

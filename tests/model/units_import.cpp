@@ -35,7 +35,7 @@ TEST(UnitsImport, basics) {
     EXPECT_EQ(u->getImport(), imp);
     EXPECT_EQ(u->getImportReference(), "bob");
 
-    EXPECT_EQ(e, u->serialise(libcellml::Formats::XML));
+    EXPECT_EQ(e, u->serialise(libcellml::Format::XML));
 }
 
 TEST(UnitsImport, importValidName) {
@@ -67,7 +67,7 @@ TEST(UnitsImport, importValidName) {
 
     m.addUnits(importedUnits);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -97,7 +97,7 @@ TEST(UnitsImport, importInvalidName) {
 
     m.addUnits(importedUnits);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -127,7 +127,7 @@ TEST(UnitsImport, nonExistentURL) {
 
     m.addUnits(importedUnits);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
 
     EXPECT_EQ(e, a);
 }
@@ -198,7 +198,7 @@ TEST(UnitsImport, importModify) {
 
     m.addUnits(importedUnitsAll);
 
-    std::string a = m.serialise(libcellml::Formats::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
 
     EXPECT_EQ(e, a);
 }

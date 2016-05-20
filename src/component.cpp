@@ -171,10 +171,10 @@ bool Component::hasVariable(const VariablePtr &variable)
     return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
 }
 
-std::string Component::doSerialisation(Formats format) const
+std::string Component::doSerialisation(Format format) const
 {
     std::string repr = "";
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         if (isImport()) {
             return repr;
         }

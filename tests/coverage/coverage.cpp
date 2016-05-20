@@ -32,7 +32,7 @@ TEST(Coverage, import) {
     // Copy constructor
     libcellml::Import ic(im);
 
-    EXPECT_EQ(e, ic.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(e, ic.serialise(libcellml::Format::XML));
 }
 
 TEST(Coverage, entity) {
@@ -40,7 +40,7 @@ TEST(Coverage, entity) {
 
     libcellml::Entity e, em;
 
-    EXPECT_EQ(ex, e.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(ex, e.serialise(libcellml::Format::XML));
     em = std::move(e);
 
     libcellml::Model m;
@@ -63,7 +63,7 @@ TEST(Coverage, units) {
     // Copy constructor
     libcellml::Units uc(um);
 
-    EXPECT_EQ(e, uc.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(e, uc.serialise(libcellml::Format::XML));
 }
 
 
@@ -122,7 +122,7 @@ TEST(Coverage, prefixToString) {
 
         m.addUnits(u);
 
-        std::string a = m.serialise(libcellml::Formats::XML);
+        std::string a = m.serialise(libcellml::Format::XML);
         std::size_t found = a.find(prefix);
         EXPECT_NE(std::string::npos, found);
     }
@@ -137,5 +137,5 @@ TEST(Coverage, variable) {
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ(e, vc.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(e, vc.serialise(libcellml::Format::XML));
 }
