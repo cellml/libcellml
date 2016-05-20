@@ -60,10 +60,12 @@ public:
     std::string getMath() const;
 
     /**
-     * @brief Remove the math string for this component.
-     * Resets the math string for this component to an empty string.
+     * @brief Set the math string for this component.
+     * Sets the math string for this component. If @p math is an empty
+     * string, math will be removed from the component.
+     * @param math The @c std::string to append for this component.
      */
-    void removeMath();
+    void setMath(const std::string &math);
 
     /**
      * @brief Add a variable by reference as part of this component.
@@ -74,21 +76,42 @@ public:
     void addVariable(const VariablePtr &v);
 
     /**
-     * @brief Remove the variable with the given name from this component.
+     * @brief Remove the variable with the given @p name from this component.
      * Remove the variable with the given name from this component. If the
-     * name is not found then no variable is removed.
+     * name is not found then throw @c std::out_of_range. If the named variable to
+     * be removed is in a connection (is equivalent to another variable), this
+     * component will not be serialised in the connection @c map_components.
      * @sa addVariable
-     * @overload
      * @param name The name of the variable to remove.
      */
     void removeVariable(const std::string &name);
+
+    /**
+     * @brief Remove the variable by the given @p variable pointer from this component.
+     * Remove the variable with the given pointer from this component. If the
+     * variable is not found then throw @c std::out_of_range. If the @p variable to
+     * be removed is in a connection (is equivalent to another variable), this
+     * component will not be serialised in the connection @c map_components.
+     * @sa addVariable
+     *
+     * @overload
+     * @param variable The pointer to the variable to remove.
+     */
+    void removeVariable(const VariablePtr &variable);
+
+    /**
+     * @brief Remove all variables stored in this component.
+     * Clears all variables that have been added to this component. If any of the
+     * variables to be removed are in connections (are equivalent to other variables),
+     * this component will not be serialised in the connection @c map_components.
+     */
+    void removeAllVariables();
 
     /**
      * @brief Get a variable at index.
      * Returns a const reference to a variable at the index @p index for this
      * component.  If the index is not valid a std::out_of_range
      * exception is thrown.
-     *
      * @param index The index of the variable to return (zero-based).
      * @return A const reference to the variable at the given index.
      */
@@ -136,6 +159,16 @@ public:
      * @return the number of variables.
      */
     size_t variableCount() const;
+
+    /**
+     * @brief Test whether the argument @p variable is in this component.
+     * Tests whether the argument @p variable exists in the set of this component's
+     * variables. Returns @c true if the @p variable is in this component's
+     * variables and @c false otherwise.
+     * @param variable The variable to check for in this component.
+     * @return @c true if the @p variable is in this component and @c false otherwise.
+     */
+    bool hasVariable(const VariablePtr &variable);
 
 private:
     void doAddComponent(const ComponentPtr &c);

@@ -154,6 +154,81 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefixes) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Units, removeUnitsMethodsAndCount) {
+    const std::string e1 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+              "<units name=\"compound_unit\">"
+                "<unit prefix=\"micro\" units=\"ampere\"/>"
+                "<unit prefix=\"1.7e10\" units=\"meter\"/>"
+              "</units>"
+              "<units name=\"simple_unit_2\"/>"
+              "<units name=\"simple_unit_3\"/>"
+              "<units name=\"simple_unit_4\"/>"
+            "</model>";
+    const std::string e2 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+              "<units name=\"compound_unit\"/>"
+              "<units name=\"simple_unit_2\"/>"
+              "<units name=\"simple_unit_3\"/>"
+              "<units name=\"simple_unit_4\"/>"
+            "</model>";
+    const std::string e3 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+              "<units name=\"compound_unit\"/>"
+              "<units name=\"simple_unit_4\"/>"
+            "</model>";
+    const std::string e4 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    u1->setName("compound_unit");
+    u2->setName("simple_unit_2");
+    u3->setName("simple_unit_3");
+    u4->setName("simple_unit_4");
+
+    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u1->addUnit("kelvin");
+    u1->addUnit("siemens", "milli", -1.0);
+    u1->addUnit("meter", "1.7e10");
+    m.addUnits(u1);
+    m.addUnits(u2);
+    m.addUnits(u3);
+    m.addUnits(u4);
+
+    EXPECT_EQ(u1->unitCount(), 4);
+    u1->removeUnit("siemens");
+    u1->removeUnit(libcellml::STANDARD_UNIT_KELVIN);
+    std::string a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e1, a);
+    EXPECT_THROW(u1->removeUnit("gram"), std::out_of_range);
+
+    u1->removeAllUnits();
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e2, a);
+
+    m.removeUnits("simple_unit_2");
+    m.removeUnits(u3);
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e3, a);
+    EXPECT_EQ(m.unitsCount(), 2);
+    EXPECT_THROW(m.removeUnits("gram"), std::out_of_range);
+    EXPECT_THROW(m.removeUnits(u5), std::out_of_range);
+
+    m.removeAllUnits();
+    a = m.serialise(libcellml::Formats::XML);
+    EXPECT_EQ(e4, a);
+}
+
 TEST(Units, multiply) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

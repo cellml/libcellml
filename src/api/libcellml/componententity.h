@@ -47,11 +47,41 @@ public:
     ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
-     * @brief Add a child Units to this component entity.
-     * Add a copy of the given Units u as a child units of this component entity.
-     * @param u The Units to add.
+     * @brief Add a child units to this component entity.
+     * Add a copy of the given units as a child units of this component entity.
+     * @param units The units to add.
      */
-    void addUnits(const UnitsPtr &u);
+    void addUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Remove the units with the given @p name.
+     * Remove the first units found with the name @p name.
+     * If the name is not found throw @c std::out_of_range.
+     * @param name The name of the units to remove.
+     */
+    void removeUnits(const std::string &name);
+
+    /**
+     * @brief Remove the units with the given pointer.
+     * Remove the units with the pointer @p units. If the
+     * units are not found throw @c std::out_of_range.
+     * @overload
+     * @param units The pointer to the units to remove.
+     */
+    void removeUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Remove all units stored in this component entity.
+     * Clears all units that have been added to this component entity.
+     */
+    void removeAllUnits();
+
+    /**
+     * @brief Get the number of units in the component entity.
+     * Returns the number of units (non-imported) the component entity contains.
+     * @return The number of units.
+     */
+    size_t unitsCount() const;
 
     /**
      * @brief Add a child component to this component entity.
@@ -71,13 +101,29 @@ public:
 
     /**
      * @brief Remove the component with the given name.
-     * Remove the first component found that matches the name @p name.  If the
-     * name is not found no component is removed.
+     * Remove the first component found that matches the name @p name.
+     * If the name is not found throw @c std::out_of_range.
      *
      * @overload
      * @param name The name of the component to remove.
      */
     void removeComponent(const std::string &name);
+
+    /**
+     * @brief Remove the component with the given pointer.
+     * Remove the component with the pointer @p component. If the
+     * component is not found throw @c std::out_of_range.
+     *
+     * @overload
+     * @param component The pointer to the component to remove.
+     */
+    void removeComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Remove all components stored in this component entity.
+     * Clears all components that have been added to this component entity.
+     */
+    void removeAllComponents();
 
     /**
      * @brief Tests to see if the component is contained within the Component.
@@ -176,7 +222,7 @@ public:
 
     /**
      * @brief Get the number of components in the component.
-     * Returns the number of components the component directly contains.
+     * Returns the number of components (non-imported) the component contains.
      * @return The number of components.
      */
     size_t componentCount() const;
