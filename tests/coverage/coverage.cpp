@@ -164,7 +164,7 @@ TEST(Coverage, component) {
 
     // Copy constructor
     libcellml::Component cc(cm);
-    EXPECT_EQ(e, cm.serialise(libcellml::Format::XML));
+    EXPECT_EQ(e, cc.serialise(libcellml::Format::XML));
 }
 
 TEST(Coverage, componentEntity) {
@@ -178,5 +178,5 @@ TEST(Coverage, componentEntity) {
     EXPECT_EQ(e, pm.serialise(libcellml::Format::XML));
 
     libcellml::Component pc(pm);
-    EXPECT_EQ(e, pm.serialise(libcellml::Format::XML));
+    EXPECT_EQ(e, pc.serialise(libcellml::Format::XML));
 }
