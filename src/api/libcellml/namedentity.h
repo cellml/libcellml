@@ -27,6 +27,7 @@ namespace libcellml {
 
 /**
  * @brief The NamedEntity class.
+ *
  * Base class for all nameable libCellML classes.
  */
 class LIBCELLML_EXPORT NamedEntity: public Entity
@@ -40,15 +41,19 @@ public:
 
     /**
      * @brief Set the name for the Entity.
+     *
      * This method sets the name parameter of the Entity.  It does not check
      * the validity of the name.
+     *
      * @param name A string to represent the name.
      */
     void setName(const std::string &name);
 
     /**
      * @brief Get the name of the Entity.
+     *
      * Gets the name of the Entity as a string.
+     *
      * @return @c std::string representation of the Entity name.
      */
     std::string getName() const;

@@ -19,6 +19,7 @@ namespace libcellml {
 
 /**
  * @brief The ImportedEntity::ImportedEntityImpl struct.
+ *
  * The private implementation for the ImportedEntity class.
  */
 struct ImportedEntity::ImportedEntityImpl

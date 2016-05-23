@@ -32,7 +32,7 @@ TEST(Coverage, import) {
     // Copy constructor
     libcellml::Import ic(im);
 
-    EXPECT_EQ(e, ic.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(e, ic.serialise(libcellml::Format::XML));
 }
 
 TEST(Coverage, entity) {
@@ -40,7 +40,7 @@ TEST(Coverage, entity) {
 
     libcellml::Entity e, em;
 
-    EXPECT_EQ(ex, e.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(ex, e.serialise(libcellml::Format::XML));
     em = std::move(e);
 
     libcellml::Model m;
@@ -55,15 +55,18 @@ TEST(Coverage, entity) {
 }
 
 TEST(Coverage, units) {
-    std::string e = "";
+    std::string e = "<units name=\"dimensionless\" base_unit=\"yes\"/>";
     libcellml::Units u, um;
+
+    u.setName("dimensionless");
+    u.setBaseUnit();
 
     um = std::move(u);
 
     // Copy constructor
     libcellml::Units uc(um);
 
-    EXPECT_EQ(e, uc.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(e, uc.serialise(libcellml::Format::XML));
 }
 
 
@@ -92,27 +95,27 @@ TEST(Coverage, prefixToString) {
          "zepto",
          "zetta"
         };
-    std::vector<libcellml::Prefixes> prefix_enum =
-        {libcellml::Prefixes::ATTO,
-         libcellml::Prefixes::CENTI,
-         libcellml::Prefixes::DECA,
-         libcellml::Prefixes::DECI,
-         libcellml::Prefixes::EXA,
-         libcellml::Prefixes::FEMTO,
-         libcellml::Prefixes::GIGA,
-         libcellml::Prefixes::HECTO,
-         libcellml::Prefixes::KILO,
-         libcellml::Prefixes::MEGA,
-         libcellml::Prefixes::MICRO,
-         libcellml::Prefixes::MILLI,
-         libcellml::Prefixes::NANO,
-         libcellml::Prefixes::PETA,
-         libcellml::Prefixes::PICO,
-         libcellml::Prefixes::TERA,
-         libcellml::Prefixes::YOCTO,
-         libcellml::Prefixes::YOTTA,
-         libcellml::Prefixes::ZEPTO,
-         libcellml::Prefixes::ZETTA
+    std::vector<libcellml::Prefix> prefix_enum =
+        {libcellml::Prefix::ATTO,
+         libcellml::Prefix::CENTI,
+         libcellml::Prefix::DECA,
+         libcellml::Prefix::DECI,
+         libcellml::Prefix::EXA,
+         libcellml::Prefix::FEMTO,
+         libcellml::Prefix::GIGA,
+         libcellml::Prefix::HECTO,
+         libcellml::Prefix::KILO,
+         libcellml::Prefix::MEGA,
+         libcellml::Prefix::MICRO,
+         libcellml::Prefix::MILLI,
+         libcellml::Prefix::NANO,
+         libcellml::Prefix::PETA,
+         libcellml::Prefix::PICO,
+         libcellml::Prefix::TERA,
+         libcellml::Prefix::YOCTO,
+         libcellml::Prefix::YOTTA,
+         libcellml::Prefix::ZEPTO,
+         libcellml::Prefix::ZETTA
         };
     for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); ++i) {
         std::string prefix = prefix_str[i];
@@ -122,20 +125,58 @@ TEST(Coverage, prefixToString) {
 
         m.addUnits(u);
 
-        std::string a = m.serialise(libcellml::Formats::XML);
+        std::string a = m.serialise(libcellml::Format::XML);
         std::size_t found = a.find(prefix);
         EXPECT_NE(std::string::npos, found);
     }
 }
 
 TEST(Coverage, variable) {
-    std::string e = "<variable/>";
+    std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>";
     libcellml::Variable v, vm;
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    v.setInitialValue(1.0);
+    v.setInterfaceType("public");
+    u->setName("dimensionless");
+    v.setUnits(u);
 
     vm = std::move(v);
 
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ(e, vc.serialise(libcellml::Formats::XML));
+    EXPECT_EQ(e, vc.serialise(libcellml::Format::XML));
+}
+
+TEST(Coverage, component) {
+    std::string e = "<component name=\"name\"><variable/><1+1=2></component>";
+    libcellml::Component c, cm;
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
+    c.setName("name");
+    c.addVariable(v);
+    c.setMath("<1+1=2>");
+    EXPECT_EQ(e, c.serialise(libcellml::Format::XML));
+
+    cm = std::move(c);
+    EXPECT_EQ(e, cm.serialise(libcellml::Format::XML));
+
+    // Copy constructor
+    libcellml::Component cc(cm);
+    EXPECT_EQ(e, cc.serialise(libcellml::Format::XML));
+}
+
+TEST(Coverage, componentEntity) {
+    const std::string e = "<component/><component/><encapsulation><component_ref><component_ref/></component_ref></encapsulation>";
+    libcellml::Component p, pm;
+    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    p.addComponent(child);
+    EXPECT_EQ(e, p.serialise(libcellml::Format::XML));
+
+    pm = std::move(p);
+    EXPECT_EQ(e, pm.serialise(libcellml::Format::XML));
+
+    libcellml::Component pc(pm);
+    EXPECT_EQ(e, pc.serialise(libcellml::Format::XML));
 }
