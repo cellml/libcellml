@@ -25,16 +25,20 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * Get the version string.
+ * @brief Get the version string.
+ *
  * The version string is in the format x.y.z, where the "."s are literal, and x,y and z represent counting numbers,
  * in which case x is the major version, y the minor version, and z the patch level.
+ *
  *  @return A string to represent the version.
  */
 LIBCELLML_EXPORT const std::string versionString();
 
 /**
- * Get the version number.
+ * @brief Get the version number.
+ *
  * Returns the version of the library as a number.
+ *
  * @return An unsigned int to represent the version.
  */
 LIBCELLML_EXPORT unsigned int version();

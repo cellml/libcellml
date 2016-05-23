@@ -26,6 +26,7 @@ namespace libcellml {
 
 /**
  * @brief The Component::ComponentImpl struct.
+ *
  * This struct is the private implementation struct for the Component class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.
@@ -65,6 +66,7 @@ Component::Component(const Component& rhs)
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mVariables = rhs.mPimpl->mVariables;
+    mPimpl->mMath = rhs.mPimpl->mMath;
 }
 
 Component::Component(Component &&rhs)
@@ -74,10 +76,16 @@ Component::Component(Component &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Component& Component::operator=(Component m)
+Component& Component::operator=(Component c)
 {
-    ComponentEntity::operator= (m);
+    ComponentEntity::operator= (c);
+    c.swap(*this);
     return *this;
+}
+
+void Component::swap(Component &rhs)
+{
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 void Component::doAddComponent(const ComponentPtr &c)
@@ -171,10 +179,10 @@ bool Component::hasVariable(const VariablePtr &variable)
     return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
 }
 
-std::string Component::doSerialisation(Formats format) const
+std::string Component::doSerialisation(Format format) const
 {
     std::string repr = "";
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         if (isImport()) {
             return repr;
         }
