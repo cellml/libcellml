@@ -23,6 +23,7 @@ namespace libcellml {
 
 /**
  * @brief The Format enum class.
+ *
  * Enum describing the formats that are available for
  * serialisation.
  */
@@ -33,6 +34,7 @@ enum class Format
 
 /**
  * @brief The Prefix enum class.
+ *
  * Enum describing the prefixes that are available for
  * units.
  */

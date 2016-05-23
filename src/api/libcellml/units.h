@@ -28,6 +28,7 @@ namespace libcellml {
 /**
  * @file
  * @brief The STANDARD_UNITS.
+ *
  * Strings describing the standard units that are suitable for variable declarations
  * or attached to bare numbers in mathematics.  The list of strings comprises of
  * the SI base units, the SI derived units with special names and symbols, and
@@ -85,24 +86,30 @@ public:
 
     /**
      * @brief Test to determine if Units is a base unit.
+     *
      * Test to determine if Units is a base unit, return @c true if it is
      * a base unit and @c false otherwise.
+     *
      * @return @c true if Units is a base unit, @c false otherwise.
      */
     bool isBaseUnit() const;
 
     /**
      * @brief Set whether this unit is a base unit or not.
+     *
      * Set the base unit flag to signify whether this Units is a base unit
      * or not.  This flag cannot be set if this Units is a compound unit.
+     *
      * @param state Boolean value to set the base unit flag to.
      */
     void setBaseUnit(bool state=true);
 
     /**
      * @brief Add a unit to this Units.
+     *
      * Add a unit as a child of this Units.  This method takes optional arguments
      * exponent, multiplier and offset.
+     *
      * @param name The name of the unit to add.
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
@@ -114,10 +121,12 @@ public:
 
     /**
      * @brief Add a unit to this Units.
+     *
      * Add a unit as a child of this Units.  This method takes optional arguments
      * exponent, multiplier and offset.
      *
      * @overload
+     *
      * @param name The name of the unit to add.
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
@@ -129,10 +138,12 @@ public:
 
     /**
      * @brief Add a unit to this Units.
+     *
      * Add a unit as a child of this Units.  This method takes optional arguments
      * multiplier and offset.
      *
      * @overload
+     *
      * @param name The name of the unit to add.
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
@@ -144,10 +155,12 @@ public:
 
     /**
      * @brief Add a unit to this Units.
+     *
      * Add a unit as a child of this Units. This variant takes the units name
      * and an exponent only.
      *
      * @overload
+     *
      * @param name The name of the unit to add.
      * @param exponent The exponent for the unit.
      */
@@ -155,31 +168,38 @@ public:
 
     /**
      * @brief Add a unit to this Units.
+     *
      * Add a unit as a child of this Units, this variant specified with only a name.
      *
      * @overload
+     *
      * @param name The name of the unit to add.
      */
     void addUnit(const std::string &name);
 
     /**
      * @brief Remove the unit with the given name.
+     *
      * Remove the first unit found that matches the name @p name.  If the
      * name is not found throw @c std::out_of_range.
+     *
      * @param name The name of the unit to remove.
      */
     void removeUnit(const std::string &name);
 
     /**
      * @brief Remove all units stored in this units object.
+     *
      * Clears all units that have been added to this units object.
      */
     void removeAllUnits();
 
     /**
      * @brief Set the source of the units for this Units.
+     *
      * Make this Units an imported units by defining an import model
      * from which to extract the named Units from.
+     *
      * @param imp The import from which the named Units originates.
      * @param name The name of the Units in the imported model to use.
      */
@@ -187,7 +207,9 @@ public:
 
     /**
      * @brief Get the number of units that compose this units.
+     *
      * Returns the number of units contained by this units object.
+     *
      * @return The number of units.
      */
     size_t unitCount() const;

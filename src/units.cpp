@@ -27,6 +27,7 @@ namespace libcellml {
 
 /**
  * @brief Map Prefix to their string forms.
+ *
  * An internal map used to convert a Prefix into its string form.
  */
 std::map<Prefix, std::string> prefixToString =
@@ -55,6 +56,7 @@ std::map<Prefix, std::string> prefixToString =
 
 /**
  * @brief The Unit struct.
+ *
  * An internal structure to capture a unit definition.  The
  * prefix can be expressed using either an integer or an enum.
  * The enum structure member is given preference if both are set.
@@ -70,6 +72,7 @@ struct Unit
 
 /**
  * @brief The Units::UnitsImpl struct.
+ *
  * The private implementation for the Units class.
  */
 struct Units::UnitsImpl

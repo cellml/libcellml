@@ -26,6 +26,7 @@ namespace libcellml {
 
 /**
  * @brief The Component::ComponentImpl struct.
+ *
  * This struct is the private implementation struct for the Component class.  Separating
  * the implementation from the definition allows for greater flexibility when
  * distributing the code.

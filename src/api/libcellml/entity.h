@@ -27,6 +27,7 @@ namespace libcellml {
 
 /**
  * @brief The Entity class.
+ *
  * Base class for all serialisable libCellML classes.
  */
 class LIBCELLML_EXPORT Entity
@@ -40,13 +41,16 @@ public:
 
     /**
      * @brief Serialise entity to @c std::string.
+     *
      * @param format The format to serialise the object to.
+     *
      * @return @c std::string representation of the object.
      */
     std::string serialise(Format format) const;
 
     /**
      * @brief Returns the parent of the CellML Entity.
+     *
      * @return A pointer to the entities parent if it has one,
      * otherwise the null pointer.
      */
@@ -54,6 +58,7 @@ public:
 
     /**
      * @brief Sets the model as the parent of this entity.
+     *
      * Set the parent of the entity to the model given.
      *
      * @param parent A raw pointer to a cellml::Model.
@@ -62,27 +67,33 @@ public:
 
     /**
      * @brief Sets the component as the parent of this entity.
+     *
      * Set the parent of the entity to the component given.
      *
      * @overload
+     *
      * @param parent A raw pointer to a cellml::Component.
      */
     void setParent(Component *parent);
 
     /**
      * @brief Clear the pointer to the parent entity.
+     *
      * Clears the pointer to the parent entity.
      */
     void clearParent();
 
     /**
      * @brief Test to see if the given component is a parent.
+     *
      * Tests the given raw component pointer to determine if the entity or
      * any of its parent entities already has this component as a parent.
      * This allows for a test against creating cycles. If the given component
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
+     *
      * @param c The raw pointer to the component to test against.
+     *
      * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
     bool hasParent(Component *c) const;
@@ -90,8 +101,11 @@ public:
 private:
     /**
      * @brief Virtual serialise method to be implemented by derived classes.
+     *
      * Virtual serialise method for serialising a CellML object to a @c std::string.
+     *
      * @param format The format to serialise the object to.
+     *
      * @return @c std::string representation of the object.
      */
     virtual std::string doSerialisation(Format format) const;

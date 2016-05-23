@@ -27,6 +27,7 @@ namespace libcellml {
 
 /**
  * @brief The ImportedEntity class.
+ *
  * Base class for all importable libCellML classes.
  */
 class LIBCELLML_EXPORT ImportedEntity: public NamedEntity
@@ -40,32 +41,43 @@ public:
 
     /**
      * @brief Test if this entity is an imported entity.
+     *
      * Method to test if this entity is an imported entity.  Returns
      * @c true if the import is not the @c nullptr otherwise return @c false.
+     *
      * @return @c true if the import is not the @c nullptr, @c false otherwise.
      */
     bool isImport() const;
 
     /**
      * @brief Get the import set.
+     *
      * Get the import set, if no import is set @c nullptr is returned.
+     *
      * @sa setImport
+     *
      * @return The shared pointer for the import, if no import is set returns @c nullptr.
      */
     ImportPtr getImport() const;
 
     /**
      * @brief Set the import.
+     *
      * Set the import for the imported entity.  Set to @c nullptr to unset the import.
+     *
      * @sa getImport
+     *
      * @param imp The import to set.
      */
     void setImport(const ImportPtr &imp);
 
     /**
      * @brief Get the import reference.
+     *
      * Get the reference to the entity in the imported model.
+     *
      * @sa setImportReference
+     *
      * @return The reference to the entity in the imported model, the empty
      * string if it is not set.
      */
@@ -73,9 +85,12 @@ public:
 
     /**
      * @brief Set the import reference.
+     *
      * Set the import reference to an entity in the imported model.  The import
      * reference should be a Component or a Unit in the import model.
+     *
      * @sa getImportReference
+     *
      * @param reference The name of the reference to refer to in the import model.
      */
     void setImportReference(const std::string &reference);

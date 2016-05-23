@@ -28,6 +28,7 @@ namespace libcellml {
 
 /**
  * @brief Map to convert an interface type into its string form.
+ *
  * An internal map used to convert a Variable InterfaceType enum class member into its string form.
  */
 std::map<Variable::InterfaceType, std::string> interfaceTypeToString =
@@ -42,6 +43,7 @@ typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak v
 
 /**
  * @brief The Variable::VariableImpl struct.
+ *
  * The private implementation for the Variable class.
  */
 struct Variable::VariableImpl
