@@ -24,6 +24,7 @@ namespace libcellml {
 
 /**
  * @brief The Import class.
+ *
  * The import class is for encapsulating an external CellML Model.
  */
 class LIBCELLML_EXPORT Import: public Entity
@@ -37,15 +38,19 @@ public:
 
     /**
      * @brief Set the source Model.
+     *
      * Set the source Model that this import refers to.
+     *
      * @param reference The reference model.
      */
     void setSource(const std::string &reference);
 
     /**
      * @brief Get the source model.
+     *
      * Get the source model set in this instance.  If no source model
      * is set then return an empty string.
+     *
      * @return The reference to the source model if set otherwise the emtpy string.
      */
     std::string getSource() const;

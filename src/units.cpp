@@ -26,35 +26,37 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief Map Prefixes to their string forms.
- * An internal map used to convert a Prefixes into its string form.
+ * @brief Map Prefix to their string forms.
+ *
+ * An internal map used to convert a Prefix into its string form.
  */
-std::map<Prefixes, std::string> prefixToString =
+std::map<Prefix, std::string> prefixToString =
 {
-    {Prefixes::ATTO, "atto"},
-    {Prefixes::CENTI, "centi"},
-    {Prefixes::DECA, "deca"},
-    {Prefixes::DECI, "deci"},
-    {Prefixes::EXA, "exa"},
-    {Prefixes::FEMTO, "femto"},
-    {Prefixes::GIGA, "giga"},
-    {Prefixes::HECTO, "hecto"},
-    {Prefixes::KILO, "kilo"},
-    {Prefixes::MEGA, "mega"},
-    {Prefixes::MICRO, "micro"},
-    {Prefixes::MILLI, "milli"},
-    {Prefixes::NANO, "nano"},
-    {Prefixes::PETA, "peta"},
-    {Prefixes::PICO, "pico"},
-    {Prefixes::TERA, "tera"},
-    {Prefixes::YOCTO, "yocto"},
-    {Prefixes::YOTTA, "yotta"},
-    {Prefixes::ZEPTO, "zepto"},
-    {Prefixes::ZETTA, "zetta"}
+    {Prefix::ATTO, "atto"},
+    {Prefix::CENTI, "centi"},
+    {Prefix::DECA, "deca"},
+    {Prefix::DECI, "deci"},
+    {Prefix::EXA, "exa"},
+    {Prefix::FEMTO, "femto"},
+    {Prefix::GIGA, "giga"},
+    {Prefix::HECTO, "hecto"},
+    {Prefix::KILO, "kilo"},
+    {Prefix::MEGA, "mega"},
+    {Prefix::MICRO, "micro"},
+    {Prefix::MILLI, "milli"},
+    {Prefix::NANO, "nano"},
+    {Prefix::PETA, "peta"},
+    {Prefix::PICO, "pico"},
+    {Prefix::TERA, "tera"},
+    {Prefix::YOCTO, "yocto"},
+    {Prefix::YOTTA, "yotta"},
+    {Prefix::ZEPTO, "zepto"},
+    {Prefix::ZETTA, "zetta"}
 };
 
 /**
  * @brief The Unit struct.
+ *
  * An internal structure to capture a unit definition.  The
  * prefix can be expressed using either an integer or an enum.
  * The enum structure member is given preference if both are set.
@@ -70,6 +72,7 @@ struct Unit
 
 /**
  * @brief The Units::UnitsImpl struct.
+ *
  * The private implementation for the Units class.
  */
 struct Units::UnitsImpl
@@ -122,10 +125,10 @@ void Units::swap(Units &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Units::doSerialisation(Formats format) const
+std::string Units::doSerialisation(Format format) const
 {
     std::string repr = "";
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         if (getName().length()) {
             if (isImport()) {
                 repr += "<import xlink:href=\"" + getImport()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
@@ -215,7 +218,7 @@ void Units::addUnit(const std::string &name, const std::string &prefix, double e
     mPimpl->mUnits.push_back(u);
 }
 
-void Units::addUnit(const std::string &name, Prefixes prefix, double exponent,
+void Units::addUnit(const std::string &name, Prefix prefix, double exponent,
              double multiplier, double offset)
 {
     auto search = prefixToString.find(prefix);

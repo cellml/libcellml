@@ -28,20 +28,22 @@ namespace libcellml {
 
 /**
  * @brief Map to convert an interface type into its string form.
- * An internal map used to convert a Variable InterfaceTypes enum class member into its string form.
+ *
+ * An internal map used to convert a Variable InterfaceType enum class member into its string form.
  */
-std::map<Variable::InterfaceTypes, std::string> interfaceTypeToString =
+std::map<Variable::InterfaceType, std::string> interfaceTypeToString =
 {
-    {Variable::InterfaceTypes::NONE, "none"},
-    {Variable::InterfaceTypes::PRIVATE, "private"},
-    {Variable::InterfaceTypes::PUBLIC, "public"},
-    {Variable::InterfaceTypes::PUBLIC_AND_PRIVATE, "public_and_private"}
+    {Variable::InterfaceType::NONE, "none"},
+    {Variable::InterfaceType::PRIVATE, "private"},
+    {Variable::InterfaceType::PUBLIC, "public"},
+    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}
 };
 
 typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak variable pointer. */
 
 /**
  * @brief The Variable::VariableImpl struct.
+ *
  * The private implementation for the Variable class.
  */
 struct Variable::VariableImpl
@@ -74,6 +76,9 @@ Variable::Variable(const Variable& rhs)
     , mPimpl(new VariableImpl())
 {
     mPimpl->mEquivalentVariables = rhs.mPimpl->mEquivalentVariables;
+    mPimpl->mInitialValue = rhs.mPimpl->mInitialValue;
+    mPimpl->mInterfaceType = rhs.mPimpl->mInterfaceType;
+    mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
 Variable::Variable(Variable &&rhs)
@@ -83,10 +88,10 @@ Variable::Variable(Variable &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Variable& Variable::operator=(Variable e)
+Variable& Variable::operator=(Variable v)
 {
-    NamedEntity::operator= (e);
-    e.swap(*this);
+    NamedEntity::operator= (v);
+    v.swap(*this);
     return *this;
 }
 
@@ -146,10 +151,10 @@ void Variable::unsetEquivalentTo(const VariablePtr &equivalentVariable)
     }
 }
 
-std::string Variable::doSerialisation(Formats format) const
+std::string Variable::doSerialisation(Format format) const
 {
     std::string repr = "";
-    if (format == Formats::XML) {
+    if (format == Format::XML) {
         repr += "<variable";
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
@@ -205,7 +210,7 @@ void Variable::setInterfaceType(const std::string &interfaceType)
     mPimpl->mInterfaceType = interfaceType;
 }
 
-void Variable::setInterfaceType(Variable::InterfaceTypes interfaceType)
+void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
 {
     auto search = interfaceTypeToString.find(interfaceType);
     assert(search != interfaceTypeToString.end());

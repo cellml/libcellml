@@ -22,7 +22,7 @@ limitations under the License.
 TEST(Component, serialise) {
     const std::string e = "<component/>";
     libcellml::Component c;
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -31,7 +31,7 @@ TEST(Component, validName) {
     const std::string e = "<component name=\"" + in + "\"/>";
     libcellml::Component c;
     c.setName(in);
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", c.getName());
 }
@@ -41,7 +41,7 @@ TEST(Component, invalidName) {
     const std::string e = "<component name=\"" + in + "\"/>";
     libcellml::Component c;
     c.setName(in);
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name -", c.getName());
 }
@@ -52,12 +52,12 @@ TEST(Component, setAndUnsetName) {
     const std::string e = "<component/>";
     libcellml::Component c;
     c.setName(in);
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ("name", c.getName());
     EXPECT_EQ(eName, a);
     c.setName("");
     EXPECT_EQ("", c.getName());
-    a = c.serialise(libcellml::Formats::XML);
+    a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -119,11 +119,11 @@ TEST(Component, addChildrenAndSerialise) {
     c1->setName("child1");
     c2->setName("child2");
 
-    std::string a = c0->serialise(libcellml::Formats::XML);
+    std::string a = c0->serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
 
     c2->addComponent(c3);
-    a = c0->serialise(libcellml::Formats::XML);
+    a = c0->serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
 }
 
@@ -142,7 +142,7 @@ TEST(Component, removeComponentMethods) {
 
     c.removeComponent(0);
     EXPECT_EQ(1, c.componentCount());
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
     EXPECT_THROW(c.removeComponent(1), std::out_of_range);
 
@@ -154,13 +154,13 @@ TEST(Component, removeComponentMethods) {
     // Remove the second occurence of "child1".
     c.removeComponent(c1);
     EXPECT_EQ(2, c.componentCount());
-    a = c.serialise(libcellml::Formats::XML);
+    a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
     EXPECT_THROW(c.removeComponent("child3"), std::out_of_range);
     EXPECT_THROW(c.removeComponent(c3), std::out_of_range);
 
     c.removeAllComponents();
-    a = c.serialise(libcellml::Formats::XML);
+    a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e3, a);
 }
 
@@ -179,7 +179,7 @@ TEST(Component, getComponentMethods) {
     libcellml::ComponentPtr cA = c.getComponent(0);
     cA->setName("childA");
 
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
 
     // Using const version of overloaded method
@@ -205,7 +205,7 @@ TEST(Component, getComponentMethods) {
     libcellml::ComponentPtr cSn = static_cast<const libcellml::Component>(c).getComponent("gus");
     EXPECT_EQ("gus", cSn->getName());
 
-    a = c.serialise(libcellml::Formats::XML);
+    a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
 }
 
@@ -230,7 +230,7 @@ TEST(Component, takeComponentMethods) {
     EXPECT_EQ(0, c.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 
     EXPECT_THROW(c.takeComponent("child4"), std::out_of_range);
@@ -254,20 +254,20 @@ TEST(Component, replaceComponentMethods) {
     c.addComponent(c1);
     c.addComponent(c2);
 
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_orig, a);
     EXPECT_THROW(c.replaceComponent(5, c3), std::out_of_range);
 
     c.replaceComponent(1, c3);
 
-    a = c.serialise(libcellml::Formats::XML);
+    a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_after, a);
 
     EXPECT_THROW(c.replaceComponent("child5", c4), std::out_of_range);
 
     c.replaceComponent("", c4);
 
-    a = c.serialise(libcellml::Formats::XML);
+    a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_post, a);
 }
 
@@ -278,7 +278,7 @@ TEST(Component, constructors) {
 
     c.setName(n);
     c.addComponent(std::make_shared<libcellml::Component>());
-    std::string a = c.serialise(libcellml::Formats::XML);
+    std::string a = c.serialise(libcellml::Format::XML);
 
     EXPECT_EQ(e, a);
 

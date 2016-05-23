@@ -22,21 +22,23 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Formats enum class.
+ * @brief The Format enum class.
+ *
  * Enum describing the formats that are available for
  * serialisation.
  */
-enum class Formats
+enum class Format
 {
      XML = 0 /**< XML format for CellML files. */
 };
 
 /**
- * @brief The Prefixes enum class.
+ * @brief The Prefix enum class.
+ *
  * Enum describing the prefixes that are available for
  * units.
  */
-enum class Prefixes
+enum class Prefix
 {
     YOTTA =  24,
     ZETTA =  21,
