@@ -52,14 +52,14 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
 bool XmlNode::hasElement(const char *elementName)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, (const xmlChar *) elementName)) found = true;
+    if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) found = true;
     return found;
 }
 
 bool XmlNode::hasAttribute(const char *attributeName)
 {
     bool found = false;
-    xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, (const xmlChar *) attributeName);
+    xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
     if (attribute) found = true;
     return found;
 }
