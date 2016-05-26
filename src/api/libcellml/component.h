@@ -210,6 +210,7 @@ private:
 
     void doAddComponent(const ComponentPtr &c);
     std::string doSerialisation(Format format) const;
+    void doDeserialisation(const XmlNodePtr &node);
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl* mPimpl; /**< Private member to implementation pointer */

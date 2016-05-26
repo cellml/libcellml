@@ -23,6 +23,8 @@ limitations under the License.
 
 #include <libcellml/import.h>
 #include <libcellml/variable.h>
+#include <libcellml/xmldoc.h>
+#include <libcellml/xmlnode.h>
 
 namespace libcellml {
 
@@ -243,6 +245,26 @@ std::string Model::doSerialisation(Format format) const
     }
 
     return repr;
+}
+
+void Model::doDeserialisation(const XmlNodePtr &node)
+{
+    if (node->hasElement("model")) {
+        if (node->hasAttribute("name")) {
+            this->setName(node->getAttribute("name"));
+        }
+        XmlNodePtr childNode = node->getChild();
+        while (childNode) {
+            if (childNode->hasElement("component")) {
+                ComponentPtr component = std::make_shared<Component>();
+                component->deserialise(childNode);
+                this->addComponent(component);
+            }
+            childNode = childNode->getNext();
+        }
+    } else {
+        throw std::invalid_argument("Unexpected XML element type.");
+    }
 }
 
 void Model::doAddComponent(const ComponentPtr &c)

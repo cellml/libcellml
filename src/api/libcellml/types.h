@@ -30,6 +30,10 @@ class Units; /**< Forward declaration of Units class. */
 typedef std::shared_ptr<Units> UnitsPtr; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
+class XmlDoc; /**< Forward declaration of XmlDoc class. */
+typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
+class XmlNode; /**< Forward declaration of XmlNode class. */
+typedef std::shared_ptr<XmlNode> XmlNodePtr; /**< Type definition for shared XML node pointer. */
 
 }
 

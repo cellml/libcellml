@@ -21,6 +21,8 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/variable.h"
+#include <libcellml/xmldoc.h>
+#include <libcellml/xmlnode.h>
 
 namespace libcellml {
 
@@ -214,6 +216,17 @@ std::string Component::doSerialisation(Format format) const
         repr += ComponentEntity::serialiseEncapsulation(format);
     }
     return repr;
+}
+
+void Component::doDeserialisation(const XmlNodePtr &node)
+{
+    if (node->hasElement("component")) {
+        if (node->hasAttribute("name")) {
+            this->setName(node->getAttribute("name"));
+        }
+    } else {
+        throw std::invalid_argument("Unexpected XML element type.");
+    }
 }
 
 }

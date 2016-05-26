@@ -27,6 +27,41 @@ TEST(Model, serialise) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Model, deserialise) {
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+    libcellml::Model m;
+    m.deserialise(e, libcellml::Format::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Model, deserialiseNamedModel) {
+    std::string n = "name";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + n + "\"/>";
+    libcellml::Model m;
+    m.deserialise(e, libcellml::Format::XML);
+    EXPECT_EQ(n, m.getName());
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Model, deserialiseNamedModelWithNamedComponent) {
+    std::string mName = "modelName";
+    std::string cName = "componentName";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + mName + "\">"
+              "<component name=\"" + cName + "\"/>"
+            "</model>";
+    libcellml::Model m;
+    m.deserialise(e, libcellml::Format::XML);
+    EXPECT_EQ(mName, m.getName());
+    libcellml::ComponentPtr c = m.getComponent(cName);
+    EXPECT_EQ(cName, c->getName());
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Model, serialiseAllocatePointer) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
     libcellml::Model* m = new libcellml::Model();

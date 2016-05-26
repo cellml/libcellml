@@ -48,6 +48,26 @@ public:
      */
     std::string serialise(Format format) const;
 
+
+    /**
+     * @brief Deserialise entity from a @c std::string.
+     * Parse the @p input @c std::string as a CellML entity.
+     *
+     * @param input The string to deserialise.
+     * @param format The format deserialise the string from.
+     */
+     void deserialise(const std::string &input, Format format);
+
+     /**
+      * @brief Deserialise a given XML node.
+      * Parse the XML node @p node as a CellML entity.
+      *
+      * @overload
+      *
+      * @param node the XmlNode to deserialise.
+      */
+     void deserialise(const XmlNodePtr &node);
+
     /**
      * @brief Returns the parent of the CellML Entity.
      *
@@ -109,6 +129,17 @@ private:
      * @return @c std::string representation of the object.
      */
     virtual std::string doSerialisation(Format format) const;
+
+    /**
+     * @brief Virtual deserialise method to be implemented by derived classes.
+     *
+     * Virtual deserialise method for deserialising a CellML object.
+     *
+     * @param node The XML node to deserialise the object from.
+     *
+     * @return A pointer to the deserialised object if one exists, otherwise @c nullptr.
+     */
+    virtual void doDeserialisation(const XmlNodePtr &node);
 
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
