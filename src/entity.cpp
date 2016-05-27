@@ -18,8 +18,9 @@ limitations under the License.
 
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
-#include "libcellml/xmldoc.h"
-#include "libcellml/xmlnode.h"
+
+#include "xmldoc.h"
+#include "xmlnode.h"
 
 namespace libcellml {
 

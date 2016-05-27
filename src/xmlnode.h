@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_XMLNODE_H
-#define LIBCELLML_LIBCELLML_XMLNODE_H
+#ifndef XMLNODE_H
+#define XMLNODE_H
 
 #include <string>
 #include <libxml/parser.h>
@@ -114,4 +114,4 @@ private:
 
 }
 
-#endif // LIBCELLML_LIBCELLML_XMLNODE_H
+#endif // XMLNODE_H

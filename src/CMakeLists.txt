@@ -59,14 +59,14 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/xmldoc.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/xmlnode.h
   ${CELLML_EXPORT_H}
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module/libcellml
 )
 
 set(HEADER_FILES
   ${LIBCELLML_CONFIG_H}
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
 )
 
 # Only does anything if configuration target is Visual Studio.

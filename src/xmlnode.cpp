@@ -18,7 +18,7 @@ limitations under the License.
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#include "libcellml/xmlnode.h"
+#include "xmlnode.h"
 
 namespace libcellml {
 

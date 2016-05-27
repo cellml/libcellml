@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_XMLDOC_H
-#define LIBCELLML_LIBCELLML_XMLDOC_H
+#ifndef XMLDOC_H
+#define XMLDOC_H
 
 #include <string>
 #include "libcellml/types.h"
@@ -60,4 +60,4 @@ private:
 
 }
 
-#endif // LIBCELLML_LIBCELLML_XMLDOC_H
+#endif // XMLDOC_H
