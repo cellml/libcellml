@@ -58,16 +58,6 @@ public:
      */
      void deserialise(const std::string &input, Format format);
 
-     /**
-      * @brief Deserialise a given XML node.
-      * Parse the XML node @p node as a CellML entity.
-      *
-      * @overload
-      *
-      * @param node the XmlNode to deserialise.
-      */
-     void deserialise(const XmlNodePtr &node);
-
     /**
      * @brief Returns the parent of the CellML Entity.
      *

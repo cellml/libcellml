@@ -57,6 +57,12 @@ Component::Component()
 {
 }
 
+Component::Component(const XmlNodePtr &node)
+    : mPimpl(new ComponentImpl())
+{
+    doDeserialisation(node);
+}
+
 Component::~Component()
 {
     delete mPimpl;

@@ -31,6 +31,7 @@ class LIBCELLML_EXPORT Component: public ComponentEntity
 {
 public:
     Component(); /**< Constructor */
+    Component(const XmlNodePtr &node); /**< XML Constructor */
     ~Component(); /**< Destructor */
     Component(const Component &rhs); /**< Copy constructor */
     Component(Component &&rhs); /**< Move constructor */

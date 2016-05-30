@@ -31,9 +31,10 @@ namespace libcellml {
  * The Model class is for representing a CellML Model.
  */
 class LIBCELLML_EXPORT Model: public ComponentEntity
-{
+{ 
 public:
     Model(); /**< Constructor */
+    Model(const XmlNodePtr &node); /**< XML Constructor */
     ~Model(); /**< Destructor */
     Model(const Model &rhs); /**< Copy constructor */
     Model(Model &&rhs); /**< Move constructor */

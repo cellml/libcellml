@@ -32,6 +32,11 @@ Model::Model()
 {
 }
 
+Model::Model(const XmlNodePtr &node)
+{
+    doDeserialisation(node);
+}
+
 Model::~Model()
 {
 }
@@ -256,8 +261,7 @@ void Model::doDeserialisation(const XmlNodePtr &node)
         XmlNodePtr childNode = node->getChild();
         while (childNode) {
             if (childNode->hasElement("component")) {
-                ComponentPtr component = std::make_shared<Component>();
-                component->deserialise(childNode);
+                ComponentPtr component = std::make_shared<Component>(childNode);
                 this->addComponent(component);
             }
             childNode = childNode->getNext();
