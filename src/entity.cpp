@@ -76,7 +76,7 @@ void Entity::deserialise(const std::string &input, Format format)
 {
     if (format == Format::XML) {
         XmlDocPtr doc = std::make_shared<XmlDoc>();
-        doc->parseString(input);
+        doc->parse(input);
         const XmlNodePtr node = doc->getRootNode();
         doDeserialisation(node);
     } else {

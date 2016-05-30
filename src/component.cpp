@@ -225,7 +225,7 @@ std::string Component::doSerialisation(Format format) const
 
 void Component::doDeserialisation(const XmlNodePtr &node)
 {
-    if (node->hasElement("component")) {
+    if (node->isElementType("component")) {
         if (node->hasAttribute("name")) {
             this->setName(node->getAttribute("name"));
         }

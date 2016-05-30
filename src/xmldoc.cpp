@@ -47,7 +47,7 @@ XmlDoc::~XmlDoc()
     delete mPimpl;
 }
 
-void XmlDoc::parseString(const std::string& input)
+void XmlDoc::parse(const std::string& input)
 {
     if (input.length() > 0) {
         mPimpl->mXmlDocPtr = xmlParseDoc(BAD_CAST input.c_str());

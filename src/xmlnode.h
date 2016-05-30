@@ -48,15 +48,15 @@ public:
     /**
      * @brief Check if this XmlNode is of the named element type.
      *
-     * Checks whether this XmlNode has the argument element name.
+     * Checks whether this XmlNode has the argument element type name.
      * Returns @ true if so, and @c false otherwise.
      *
-     * @param elementName The @c char element name to check for.
+     * @param elementName The @c char element type name to check for.
      *
      * @return @c true if this XmlNode is of the element type
      * specified by the @p elementName and @c false otherwise.
      */
-    bool hasElement(const char *elementName);
+    bool isElementType(const char *elementName);
 
     /**
      * @brief Check if this XmlNode has the specified attribute.

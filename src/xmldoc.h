@@ -41,7 +41,7 @@ public:
      *
      * @param input The @c std::string to parse.
      */
-    void parseString(const std::string& input);
+    void parse(const std::string& input);
 
     /**
      * @brief Get the root XML element of the document.

@@ -254,13 +254,13 @@ std::string Model::doSerialisation(Format format) const
 
 void Model::doDeserialisation(const XmlNodePtr &node)
 {
-    if (node->hasElement("model")) {
+    if (node->isElementType("model")) {
         if (node->hasAttribute("name")) {
             this->setName(node->getAttribute("name"));
         }
         XmlNodePtr childNode = node->getChild();
         while (childNode) {
-            if (childNode->hasElement("component")) {
+            if (childNode->isElementType("component")) {
                 ComponentPtr component = std::make_shared<Component>(childNode);
                 this->addComponent(component);
             }
