@@ -180,6 +180,11 @@ bool Component::hasVariable(const VariablePtr &variable)
     return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
 }
 
+bool Component::hasVariable(const std::string &name)
+{
+    return mPimpl->findVariable(name) != mPimpl->mVariables.end();
+}
+
 std::string Component::doSerialisation(Format format) const
 {
     std::string repr = "";

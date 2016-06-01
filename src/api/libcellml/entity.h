@@ -109,6 +109,12 @@ public:
     bool hasParent(Component *c) const;
 
 protected:
+    /**
+      * @brief Deserialise a given XML node.
+      * Parse the XML node @p node as a CellML entity.
+      *
+      * @param node the XmlNode to deserialise.
+      */
     void deserialiseXmlNode(const XmlNodePtr &node);
 
 private:

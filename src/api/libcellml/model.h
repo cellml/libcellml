@@ -42,6 +42,8 @@ private:
     void doAddComponent(const ComponentPtr &c);
     std::string doSerialisation(Format format) const;
     void doDeserialisation(const XmlNodePtr &node);
+    void deserialiseConnection(const XmlNodePtr &node);
+    void deserialiseEncapsulation(XmlNodePtr &node);
 };
 
 }

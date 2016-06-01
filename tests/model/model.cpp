@@ -62,6 +62,22 @@ TEST(Model, deserialiseNamedModelWithNamedComponent) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Model, deserialiseModelWithTwoComponents) {
+    std::string mName = "modelName";
+    std::string cName1 = "component1";
+    std::string cName2 = "component2";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + mName + "\">"
+              "<component name=\"" + cName1 + "\"/>"
+              "<component name=\"" + cName2 + "\"/>"
+            "</model>";
+    libcellml::Model m;
+    m.deserialise(e, libcellml::Format::XML);
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Model, serialiseAllocatePointer) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
     libcellml::Model* m = new libcellml::Model();

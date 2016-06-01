@@ -84,7 +84,7 @@ void Entity::deserialise(const std::string &input, Format format)
     }
 }
 
-void Entity::deserialiseXmlNode(const XmlNodePtr& node)
+void Entity::deserialiseXmlNode(const XmlNodePtr &node)
 {
     doDeserialisation(node);
 }

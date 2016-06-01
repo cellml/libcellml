@@ -24,6 +24,7 @@ limitations under the License.
 #include <libcellml/import.h>
 #include <libcellml/variable.h>
 #include <libcellml/component.h>
+#include <libcellml/units.h>
 
 #include "xmlnode.h"
 
@@ -261,6 +262,24 @@ void Model::doDeserialisation(const XmlNodePtr &node)
                 component->deserialiseXmlNode(childNode);
                 this->addComponent(component);
             }
+            if (childNode->isElementType("units")) {
+                UnitsPtr units = std::make_shared<Units>();
+                units->deserialiseXmlNode(childNode);
+                this->addUnits(units);
+            }
+            if (childNode->isElementType("import")) {
+                ImportPtr import = std::make_shared<Import>();
+                import->deserialiseXmlNode(childNode);
+                this->addImport(import);
+            }
+            if (childNode->isElementType("encapsulation")) {
+                XmlNodePtr componentRefNode = childNode->getChild();
+                if (!componentRefNode) throw std::invalid_argument("Encapsulation does not contain any component_ref");
+                deserialiseEncapsulation(componentRefNode);
+            }
+            if (childNode->isElementType("connection")) {
+                deserialiseConnection(childNode);
+            }
             childNode = childNode->getNext();
         }
     } else {
@@ -274,6 +293,131 @@ void Model::doAddComponent(const ComponentPtr &c)
     if (!hasParent(c.get())) {
         c->setParent(this);
         ComponentEntity::doAddComponent(c);
+    }
+}
+
+void Model::deserialiseConnection(const XmlNodePtr &node)
+{
+    // Deserialise connection map_components
+    ComponentPtr component1 = nullptr;
+    ComponentPtr component2 = nullptr;
+    VariablePtr variable1 = nullptr;
+    VariablePtr variable2 = nullptr;
+    XmlNodePtr mapComponentsNode = node->getChild();
+    if (!mapComponentsNode) throw std::invalid_argument("Connection does not contain any child elements");
+    if (mapComponentsNode->isElementType("map_components")) {
+        if (mapComponentsNode->hasAttribute("component_1")) {
+            std::string componentName = mapComponentsNode->getAttribute("component_1");
+            if (this->containsComponent(componentName)) {
+                component1 = getComponent(componentName);
+            } else {
+                throw std::invalid_argument("Model does not contain the following component specified in a connection: " + componentName);
+            }
+            if (mapComponentsNode->hasAttribute("component_2")) {
+                std::string componentName = mapComponentsNode->getAttribute("component_2");
+                if (this->containsComponent(componentName)) {
+                    component2 = getComponent(componentName);
+                } else {
+                    throw std::invalid_argument("Model does not contain a the following component specified in a connection: " + componentName);
+                }
+            }
+        } else {
+            throw std::invalid_argument("Connection map_components does not contain a component_1");
+        }
+    } else {
+        throw std::invalid_argument("Connection does not contain a map_components");
+    }
+
+    // Deserialise connection map_variables
+    XmlNodePtr mapVariablesNode = mapComponentsNode->getNext();
+    if (!mapVariablesNode) throw std::invalid_argument("Connection only contains a map_components (no map_variables)");
+    while (mapVariablesNode) {
+        variable1 = nullptr;
+        if (mapVariablesNode->isElementType("map_variables")) {
+            if (mapVariablesNode->hasAttribute("variable_1")) {
+                std::string variableName = mapVariablesNode->getAttribute("variable_1");
+                if (component1->hasVariable(variableName)) {
+                    variable1 = component1->getVariable(variableName);
+                } else {
+                    throw std::invalid_argument("Component '" + component1->getName() + "' does not contain the variable '" + variableName + "'.");
+                }
+                if (mapVariablesNode->hasAttribute("variable_2")) {
+                    variable2 = nullptr;
+                    std::string variableName = mapVariablesNode->getAttribute("variable_2");
+                    if (component2) {
+                        if (component2->hasVariable(variableName)) {
+                            variable2 = component2->getVariable(variableName);
+                        } else {
+                            throw std::invalid_argument("Component '" + component2->getName() + "' does not contain the variable '" + variableName + "'.");
+                        }
+                    } else {
+                        // Create a new variable if a parent component_2 does not exist
+                        variable2 = std::make_shared<Variable>();
+                        variable2->setName(variableName);
+                    }
+                } else {
+                    throw std::invalid_argument("Connection map_variables does not contain a variable_2.");
+                }
+            } else {
+                throw std::invalid_argument("Connection map_variables does not contain a variable_1");
+            }
+        } else {
+            throw std::invalid_argument("Connection does not contain a map_variables");
+        }
+
+        // Set variable equivalences
+        Variable::addEquivalence(variable1, variable2);
+        // Continue on to next map_variables if one exists
+        mapVariablesNode = mapVariablesNode->getNext();
+    }
+}
+
+void Model::deserialiseEncapsulation(XmlNodePtr &parentComponentNode)
+{
+    if (!parentComponentNode) throw std::invalid_argument("Encapsulation does not contain any elements");
+    while (parentComponentNode) {
+        ComponentPtr parentComponent = nullptr;
+        if (parentComponentNode->isElementType("component_ref")) {
+            if (parentComponentNode->hasAttribute("component")) {
+                std::string componentName = parentComponentNode->getAttribute("component");
+                if (this->containsComponent(componentName)) {
+                    parentComponent = getComponent(componentName);
+                } else {
+                    throw std::invalid_argument("Model does not contain the following component specified in an encapsulation: " + componentName);
+                }
+                // Get child components
+                XmlNodePtr childComponentNode = parentComponentNode->getChild();
+                if (!childComponentNode) throw std::invalid_argument("Encapsulation contains no child components");
+                while (childComponentNode) {
+                    ComponentPtr childComponent = nullptr;
+                    if (childComponentNode->isElementType("component_ref")) {
+                        if (childComponentNode->hasAttribute("component")) {
+                            std::string componentName = childComponentNode->getAttribute("component");
+                            if (this->containsComponent(componentName)) {
+                                childComponent = getComponent(componentName);
+                            } else {
+                                throw std::invalid_argument("Model does not contain the following component specified in an encapsulation: " + componentName);
+                            }
+                        } else {
+                            throw std::invalid_argument("Encapsulation component_ref does not contain a component");
+                        }
+                    } else {
+                        throw std::invalid_argument("Encapsulation does not contain a component_ref");
+                    }
+                    // Set parent/child relationship
+                    parentComponent->addComponent(childComponent);
+                    // Deserialise any further children
+                    if (childComponentNode->getChild()) deserialiseEncapsulation(childComponentNode);
+                    childComponentNode = childComponentNode->getNext();
+                }
+            } else {
+                throw std::invalid_argument("Encapsulation component_ref does not contain a component");
+            }
+        } else {
+            throw std::invalid_argument("Encapsulation does not contain a component_ref");
+        }
+        // Get the next parent component at this level
+        parentComponentNode = parentComponentNode->getNext();
     }
 }
 
