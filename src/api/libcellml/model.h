@@ -20,7 +20,6 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/component.h"
 #include "libcellml/componententity.h"
 
 //! Everything in libCellML is in this namespace.
@@ -34,7 +33,6 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 { 
 public:
     Model(); /**< Constructor */
-    Model(const XmlNodePtr &node); /**< XML Constructor */
     ~Model(); /**< Destructor */
     Model(const Model &rhs); /**< Copy constructor */
     Model(Model &&rhs); /**< Move constructor */

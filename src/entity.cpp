@@ -84,6 +84,11 @@ void Entity::deserialise(const std::string &input, Format format)
     }
 }
 
+void Entity::deserialiseXmlNode(const XmlNodePtr& node)
+{
+    doDeserialisation(node);
+}
+
 void *Entity::getParent() const {
     void *parent = 0;
     if (mParentComponent) {

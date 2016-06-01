@@ -108,6 +108,9 @@ public:
      */
     bool hasParent(Component *c) const;
 
+protected:
+    void deserialiseXmlNode(const XmlNodePtr &node);
+
 private:
     /**
      * @brief Virtual serialise method to be implemented by derived classes.

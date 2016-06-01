@@ -31,7 +31,6 @@ class LIBCELLML_EXPORT Component: public ComponentEntity
 {
 public:
     Component(); /**< Constructor */
-    Component(const XmlNodePtr &node); /**< XML Constructor */
     ~Component(); /**< Destructor */
     Component(const Component &rhs); /**< Copy constructor */
     Component(Component &&rhs); /**< Move constructor */
@@ -211,6 +210,8 @@ private:
 
     void doAddComponent(const ComponentPtr &c);
     std::string doSerialisation(Format format) const;
+
+    friend class Model;
     void doDeserialisation(const XmlNodePtr &node);
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */

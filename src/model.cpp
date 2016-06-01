@@ -23,6 +23,7 @@ limitations under the License.
 
 #include <libcellml/import.h>
 #include <libcellml/variable.h>
+#include <libcellml/component.h>
 
 #include "xmlnode.h"
 
@@ -30,11 +31,6 @@ namespace libcellml {
 
 Model::Model()
 {
-}
-
-Model::Model(const XmlNodePtr &node)
-{
-    doDeserialisation(node);
 }
 
 Model::~Model()
@@ -261,7 +257,8 @@ void Model::doDeserialisation(const XmlNodePtr &node)
         XmlNodePtr childNode = node->getChild();
         while (childNode) {
             if (childNode->isElementType("component")) {
-                ComponentPtr component = std::make_shared<Component>(childNode);
+                ComponentPtr component = std::make_shared<Component>();
+                component->deserialiseXmlNode(childNode);
                 this->addComponent(component);
             }
             childNode = childNode->getNext();
