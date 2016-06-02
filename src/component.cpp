@@ -222,16 +222,5 @@ std::string Component::doSerialisation(Format format) const
     return repr;
 }
 
-void Component::doDeserialisation(const XmlNodePtr &node)
-{
-    if (node->isElementType("component")) {
-        if (node->hasAttribute("name")) {
-            this->setName(node->getAttribute("name"));
-        }
-    } else {
-        throw std::invalid_argument("Unexpected XML element type.");
-    }
-}
-
 }
 

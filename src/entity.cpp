@@ -63,30 +63,9 @@ std::string Entity::doSerialisation(Format /* format */) const
     return "";
 }
 
-void Entity::doDeserialisation(const XmlNodePtr& /* node */)
-{
-}
-
 std::string Entity::serialise(Format format) const
 {
     return doSerialisation(format);
-}
-
-void Entity::deserialise(const std::string &input, Format format)
-{
-    if (format == Format::XML) {
-        XmlDocPtr doc = std::make_shared<XmlDoc>();
-        doc->parse(input);
-        const XmlNodePtr node = doc->getRootNode();
-        doDeserialisation(node);
-    } else {
-        throw std::out_of_range("Unrecognised format specified.");
-    }
-}
-
-void Entity::deserialiseXmlNode(const XmlNodePtr &node)
-{
-    doDeserialisation(node);
 }
 
 void *Entity::getParent() const {
