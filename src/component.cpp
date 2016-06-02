@@ -21,7 +21,6 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/variable.h"
-#include "xmlnode.h"
 
 namespace libcellml {
 

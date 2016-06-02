@@ -24,9 +24,6 @@ limitations under the License.
 #include <libcellml/import.h>
 #include <libcellml/variable.h>
 #include <libcellml/component.h>
-#include <libcellml/units.h>
-
-#include "xmlnode.h"
 
 namespace libcellml {
 
@@ -247,6 +244,15 @@ std::string Model::doSerialisation(Format format) const
     }
 
     return repr;
+}
+
+void Model::doAddComponent(const ComponentPtr &c)
+{
+    // Check for cycles.
+    if (!hasParent(c.get())) {
+        c->setParent(this);
+        ComponentEntity::doAddComponent(c);
+    }
 }
 
 }
