@@ -27,25 +27,25 @@ TEST(Model, serialise) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, deserialise) {
+TEST(Model, parse) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
-    libcellml::Model m;
-    m.deserialise(e, libcellml::Format::XML);
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, deserialiseNamedModel) {
+TEST(Model, parseNamedModel) {
     std::string n = "name";
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + n + "\"/>";
-    libcellml::Model m;
-    m.deserialise(e, libcellml::Format::XML);
-    EXPECT_EQ(n, m.getName());
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    EXPECT_EQ(n, model->getName());
+    std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, deserialiseNamedModelWithNamedComponent) {
+TEST(Model, parseNamedModelWithNamedComponent) {
     std::string mName = "modelName";
     std::string cName = "componentName";
     const std::string e =
@@ -53,16 +53,16 @@ TEST(Model, deserialiseNamedModelWithNamedComponent) {
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + mName + "\">"
               "<component name=\"" + cName + "\"/>"
             "</model>";
-    libcellml::Model m;
-    m.deserialise(e, libcellml::Format::XML);
-    EXPECT_EQ(mName, m.getName());
-    libcellml::ComponentPtr c = m.getComponent(cName);
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    EXPECT_EQ(mName, model->getName());
+    libcellml::ComponentPtr c = model->getComponent(cName);
     EXPECT_EQ(cName, c->getName());
-    std::string a = m.serialise(libcellml::Format::XML);
+    std::string a = m->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, deserialiseModelWithTwoComponents) {
+TEST(Model, parseModelWithTwoComponents) {
     std::string mName = "modelName";
     std::string cName1 = "component1";
     std::string cName2 = "component2";
@@ -72,9 +72,9 @@ TEST(Model, deserialiseModelWithTwoComponents) {
               "<component name=\"" + cName1 + "\"/>"
               "<component name=\"" + cName2 + "\"/>"
             "</model>";
-    libcellml::Model m;
-    m.deserialise(e, libcellml::Format::XML);
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
