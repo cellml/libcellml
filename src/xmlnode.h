@@ -44,7 +44,7 @@ public:
      * Sets the @c pImpl of the libXML2 xmlNode attribute
      * for this XmlNode.
      *
-     * @param xmlNodePtr The libXML2 @c xmlNodePtr to set.
+     * @param node The libXML2 @c xmlNodePtr to set.
      */
     void setXmlNode (const xmlNodePtr &node);
 
@@ -109,6 +109,15 @@ public:
      * @return The XmlNodePtr to the next node following this XmlNode.
      */
     XmlNodePtr getNext();
+
+    /**
+     * @brief Convert this XmlNode content into a @c std::string.
+     *
+     * Converts the content in this XmlNode into a @c std::string.
+     *
+     * @return The @c std::string representation of the content for this XmlNode.
+     */
+    std::string convertToString();
 
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */

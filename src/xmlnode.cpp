@@ -90,4 +90,11 @@ XmlNodePtr XmlNode::getNext()
     return nextHandle;
 }
 
+std::string XmlNode::convertToString() {
+    char* content = (char*)xmlNodeGetContent(mPimpl->mXmlNodePtr);
+    std::string contentString = std::string(content);
+    xmlFree(content);
+    return contentString;
+}
+
 }
