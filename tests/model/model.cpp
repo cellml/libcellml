@@ -58,7 +58,7 @@ TEST(Model, parseNamedModelWithNamedComponent) {
     EXPECT_EQ(mName, model->getName());
     libcellml::ComponentPtr c = model->getComponent(cName);
     EXPECT_EQ(cName, c->getName());
-    std::string a = m->serialise(libcellml::Format::XML);
+    std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 

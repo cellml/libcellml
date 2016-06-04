@@ -128,9 +128,23 @@ public:
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
 
     /**
-     * @brief Set the units for this variable.
+     * @brief Set the units by @p name for this variable.
      *
-     * Set the units for this variable. Set to @c nullptr to unset the units.
+     * Set the units for this variable by name. Set to an empty string
+     * to unset the units.
+     *
+     * @sa getUnits
+     *
+     * @param name The name of the units to set.
+     */
+    void setUnits(const std::string &name);
+
+    /**
+     * @brief Set the units for this variable using a @c UnitsPtr.
+     *
+     * Set the units for this variable using the @p units.
+     *
+     * @overload
      *
      * @sa getUnits
      *
@@ -147,7 +161,7 @@ public:
      *
      * @param u The units to get.
      */
-    UnitsPtr getUnits() const;
+    std::string getUnits() const;
 
     /**
      * @brief Set the initial value for this variable using a string.
