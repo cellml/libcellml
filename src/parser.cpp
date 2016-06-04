@@ -237,7 +237,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     if (!mapComponentsNode) throw std::invalid_argument("Connection does not contain any child elements.");
     if (mapComponentsNode->isElementType("map_components")) {
         if (mapComponentsNode->hasAttribute("component_1")) {
-            std::string componentName = mapComponentsNode->getAttribute("component_1.");
+            std::string componentName = mapComponentsNode->getAttribute("component_1");
             if (model->containsComponent(componentName)) {
                 component1 = model->getComponent(componentName);
             } else {
@@ -337,7 +337,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     // Set parent/child relationship.
                     parentComponent->addComponent(childComponent);
                     // Load any further encapsulated children.
-                    if (childComponentNode->getChild()) loadEncapsulation(model, childComponentNode);
+                    //if (childComponentNode->getChild()) loadEncapsulation(model, childComponentNode);
                     childComponentNode = childComponentNode->getNext();
                 }
             } else {
@@ -353,8 +353,8 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
 
 void Parser::loadImport(const ImportPtr &import, const ModelPtr &model, const XmlNodePtr &node)
 {
-    if (node->hasAttribute("xlink:href")) {
-        import->setSource(node->getAttribute("xlink:href"));
+    if (node->hasAttribute("href")) {
+        import->setSource(node->getAttribute("href"));
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
