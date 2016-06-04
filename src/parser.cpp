@@ -171,8 +171,8 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
             double exponent = 1.0;
             double multiplier = 1.0;
             double offset = 0.0;
-            if (childNode->hasAttribute("name")) {
-                name = childNode->getAttribute("name");
+            if (childNode->hasAttribute("units")) {
+                name = childNode->getAttribute("units");
             }
             if (childNode->hasAttribute("prefix")) {
                 prefix = childNode->getAttribute("prefix");
