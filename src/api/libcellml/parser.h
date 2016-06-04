@@ -124,11 +124,13 @@ private:
      * Loads the argument @p import with CellML attributes parsed from
      * the argument XML @p node. Existing objects/attributes with matching
      * names in the @p import will be overwritten by those from the XML @p node.
+     * Any imported components or units will also be added to the @p model.
      *
      * @param import The @c ImportPtr to update.
+     * @param model The @c ModelPtr to add imported components/units to.
      * @param node The @c XmlNodePtr to load the @p import from.
      */
-    void loadImport(const ImportPtr &import, const XmlNodePtr &node);
+    void loadImport(const ImportPtr &import, const ModelPtr &model, const XmlNodePtr &node);
 
     /**
      * @brief Load the @p units with attributes parsed from the XML @p node.

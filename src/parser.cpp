@@ -110,7 +110,7 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
         }
         if (childNode->isElementType("import")) {
             ImportPtr import = std::make_shared<Import>();
-            loadImport(import, childNode);
+            loadImport(import, model, childNode);
         }
         if (childNode->isElementType("encapsulation")) {
             XmlNodePtr componentRefNode = childNode->getChild();
@@ -348,6 +348,37 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
         }
         // Get the next parent component at this level
         parentComponentNode = parentComponentNode->getNext();
+    }
+}
+
+void Parser::loadImport(const ImportPtr &import, const ModelPtr &model, const XmlNodePtr &node)
+{
+    if (node->hasAttribute("xlink:href")) {
+        import->setSource(node->getAttribute("xlink:href"));
+    }
+    XmlNodePtr childNode = node->getChild();
+    while (childNode) {
+        if (childNode->isElementType("component")) {
+            ComponentPtr importedComponent = std::make_shared<Component>();
+            if (childNode->hasAttribute("name")) {
+                importedComponent->setName(childNode->getAttribute("name"));
+            }
+            if (childNode->hasAttribute("component_ref")) {
+                importedComponent->setSourceComponent(import, childNode->getAttribute("component_ref"));
+            }
+            model->addComponent(importedComponent);
+        }
+        if (childNode->isElementType("units")) {
+            UnitsPtr importedUnits = std::make_shared<Units>();
+            if (childNode->hasAttribute("name")) {
+                importedUnits->setName(childNode->getAttribute("name"));
+            }
+            if (childNode->hasAttribute("units_ref")) {
+                importedUnits->setSourceUnits(import, childNode->getAttribute("component_ref"));
+            }
+            model->addUnits(importedUnits);
+        }
+        childNode = childNode->getNext();
     }
 }
 
