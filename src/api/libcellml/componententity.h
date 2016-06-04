@@ -59,10 +59,23 @@ public:
     void addUnits(const UnitsPtr &units);
 
     /**
+     * @brief Remove the units at the given index.
+     *
+     * Remove the units from this component entity at the index @p index.
+     * If the index is not in the range [0, #units], a @c std::out_of_range
+     * exception will be thrown.
+     *
+     * @param index The index of the units to remove (zero-based).
+     */
+    void removeUnits(size_t index);
+
+    /**
      * @brief Remove the units with the given @p name.
      *
      * Remove the first units found with the name @p name.
      * If the name is not found throw @c std::out_of_range.
+     *
+     * @overload
      *
      * @param name The name of the units to remove.
      */
@@ -86,6 +99,127 @@ public:
      * Clears all units that have been added to this component entity.
      */
     void removeAllUnits();
+
+    /**
+     * @brief Tests to see if the units is within this component entity.
+     *
+     * Tests to see if the units with the given name 'name' is contained
+     * within this component entity.  Returns @c true if the units is in
+     * the component entity and @c false otherwise.
+     *
+     * @param name The name of the units to test for existence in
+     * this component entity.
+     *
+     * @return @c true if the named units is in the component entity
+     * and @c false otherwise.
+     */
+    bool hasUnits(const std::string &name) const;
+
+    /**
+     * @brief Get a units at index.
+     *
+     * Returns a const reference to a units at the index @p index.  If the
+     * index is not valid a @c std::out_of_range exception is thrown.
+     *
+     * @param index The index of the Units to return (zero-based).
+     *
+     * @return A const reference to the units at the given index.
+     */
+    const UnitsPtr& getUnits(size_t index) const;
+
+    /**
+     * @brief Get a units at index.
+     *
+     * Returns a reference to a units at the index @p index.  If the index
+     * is not valid a @c std::out_of_range exception is thrown.
+     *
+     * @overload
+     *
+     * @param index The index of the units to return (zero-based).
+     *
+     * @return A reference to the units at the given index.
+     */
+    UnitsPtr getUnits(size_t index);
+
+    /**
+     * @brief Get a units with the given name @p name.
+     *
+     * Returns a const reference to a units with the name @p name.  If the
+     * name is not valid a @c std::out_of_range exception is thrown.
+     *
+     * @overload
+     *
+     * @param name The name of the units to return.
+     *
+     * @return A const reference to the units with the given name.
+     */
+    const UnitsPtr& getUnits(const std::string &name) const;
+
+    /**
+     * @brief Get a units with the given name @p name.
+     *
+     * Returns a reference to a units with the name @p name.  If the name
+     * is not valid a @c std::out_of_range exception is thrown.
+     *
+     * @overload
+     *
+     * @param name The name of the units to return.
+     *
+     * @return A reference to the units with the given name.
+     */
+    UnitsPtr getUnits(const std::string &name);
+
+    /**
+     * @brief Take the units at the given index and return it.
+     *
+     * Removes the units at the given index position and returns it.
+     * If an invalid index is passed to the method a @c std::out_of_range
+     * exception is thrown.
+     *
+     * @param index The index of the units to take (zero-based).
+     *
+     * @return The units at the given index.
+     */
+    UnitsPtr takeUnits(size_t index);
+
+    /**
+     * @brief Take the units with the given name @p name and return it.
+     *
+     * Takes the units with the given name @p name and returns it.
+     * If an invalid name is passed to the method a @c std::out_of_range
+     * exception is thrown.
+     *
+     * @overload
+     *
+     * @param name The name of the units to take.
+     *
+     * @return The Units identified with the given name.
+     */
+    UnitsPtr takeUnits(const std::string &name);
+
+    /**
+     * @brief Replace a units at index.
+     *
+     * Replaces the units at index @p index with @p units.  Index must be a valid index
+     * position.
+     *
+     * @param index Index of the units to replace (zero-based).
+     * @param units The units to use for replacement.
+     */
+    void replaceUnits(size_t index, const UnitsPtr &units);
+
+    /**
+     * @brief Replace a units with the given name.
+     *
+     * Replaces the units with the given name @p name with @p units.  Name must be a valid name
+     * of a units in the component entity, if it isn't a @c std::out_of_range exception is thrown.
+     *
+     * @overload
+     *
+     * @param name The name of the Units to replace.
+     * @param units The units to use for replacement.
+     */
+    void replaceUnits(const std::string &name, const UnitsPtr &units);
 
     /**
      * @brief Get the number of units in the component entity.

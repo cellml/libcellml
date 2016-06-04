@@ -167,6 +167,15 @@ void ComponentEntity::addUnits(const UnitsPtr & units)
     mPimpl->mUnits.push_back(units);
 }
 
+void ComponentEntity::removeUnits(size_t index)
+{
+    if (index < mPimpl->mUnits.size()) {
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
+    } else {
+        throw std::out_of_range("Index out of range.");
+    }
+}
+
 void ComponentEntity::removeUnits(const std::string &name)
 {
     auto result = mPimpl->findUnits(name);
@@ -190,6 +199,64 @@ void ComponentEntity::removeUnits(const UnitsPtr &units)
 void ComponentEntity::removeAllUnits()
 {
     mPimpl->mUnits.clear();
+}
+
+bool ComponentEntity::hasUnits(const std::string &name) const
+{
+    auto result = mPimpl->findUnits(name);
+    return result != mPimpl->mUnits.end();
+}
+
+UnitsPtr ComponentEntity::getUnits(size_t index)
+{
+    return mPimpl->mUnits.at(index);
+}
+
+const UnitsPtr& ComponentEntity::getUnits(size_t index) const
+{
+    return mPimpl->mUnits.at(index);
+}
+
+UnitsPtr ComponentEntity::getUnits(const std::string &name)
+{
+    auto result = mPimpl->findUnits(name);
+    size_t index = result - mPimpl->mUnits.begin();
+    return mPimpl->mUnits.at(index);
+}
+
+const UnitsPtr& ComponentEntity::getUnits(const std::string &name) const
+{
+    auto result = mPimpl->findUnits(name);
+    size_t index = result - mPimpl->mUnits.begin();
+    return mPimpl->mUnits.at(index);
+}
+
+UnitsPtr ComponentEntity::takeUnits(size_t index)
+{
+    UnitsPtr units = mPimpl->mUnits.at(index);
+    removeUnits(index);
+    units->clearParent();
+    return units;
+}
+
+UnitsPtr ComponentEntity::takeUnits(const std::string &name)
+{
+    auto result = mPimpl->findUnits(name);
+    size_t index = result - mPimpl->mUnits.begin();
+    return takeUnits(index);
+}
+
+void ComponentEntity::replaceUnits(size_t index, const UnitsPtr &units)
+{
+    removeUnits(index);
+    mPimpl->mUnits.insert(mPimpl->mUnits.begin() + index, units);
+}
+
+void ComponentEntity::replaceUnits(const std::string &name, const UnitsPtr &units)
+{
+    auto result = mPimpl->findUnits(name);
+    size_t index = result - mPimpl->mUnits.begin();
+    replaceUnits(index, units);
 }
 
 size_t ComponentEntity::unitsCount() const
