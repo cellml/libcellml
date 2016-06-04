@@ -98,7 +98,7 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, validConnection) {
+TEST(Connection, validConnectionAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -128,6 +128,12 @@ TEST(Connection, validConnection) {
     m.addComponent(comp2);
     libcellml::Variable::addEquivalence(v1, v2);
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -237,7 +243,7 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, nineVariablesTenConnections) {
+TEST(Connection, nineVariablesTenConnectionsAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -329,6 +335,12 @@ TEST(Connection, nineVariablesTenConnections) {
     libcellml::Variable::addEquivalence(v33, v23);
 
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -785,7 +797,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, importedComponentConnection) {
+TEST(Connection, importedComponentConnectionAndParse) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -823,5 +835,11 @@ TEST(Connection, importedComponentConnection) {
     EXPECT_EQ(componentImported->getVariable(0), variableImported);
     libcellml::Variable::addEquivalence(variableImported, variableBob);
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }

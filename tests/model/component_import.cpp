@@ -102,7 +102,7 @@ TEST(ComponentImport, singleImportB) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, nonExistentURL) {
+TEST(ComponentImport, nonExistentURLAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -130,9 +130,15 @@ TEST(ComponentImport, nonExistentURL) {
     std::string a = m.serialise(libcellml::Format::XML);
 
    EXPECT_EQ(e, a);
+
+   // Parse
+   libcellml::Parser parser(libcellml::Format::XML);
+   libcellml::ModelPtr model = parser.parseModel(e);
+   a = model->serialise(libcellml::Format::XML);
+   EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, multipleImport) {
+TEST(ComponentImport, multipleImportAndParse) {
 
     const std::string e1 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -189,9 +195,15 @@ TEST(ComponentImport, multipleImport) {
     std::string a = m.serialise(libcellml::Format::XML);
 
     EXPECT_TRUE((e1 == a) || (e2 == a));
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e2);
+    a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e2, a);
 }
 
-TEST(ComponentImport, hierarchicalImport) {
+TEST(ComponentImport, hierarchicalImportAndParse) {
 
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -236,9 +248,15 @@ TEST(ComponentImport, hierarchicalImport) {
     std::string a = m.serialise(libcellml::Format::XML);
 
     EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, complexImport) {
+TEST(ComponentImport, complexImportAndParse) {
 
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -288,6 +306,12 @@ TEST(ComponentImport, complexImport) {
 
     std::string a = m.serialise(libcellml::Format::XML);
 
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 

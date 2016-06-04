@@ -316,7 +316,7 @@ TEST(Units, farhenheit) {
     EXPECT_EQ("fahrenheit", u->getName());
 }
 
-TEST(Units, multiple) {
+TEST(Units, multipleAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -346,6 +346,12 @@ TEST(Units, multiple) {
     m.addUnits(u2);
 
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 

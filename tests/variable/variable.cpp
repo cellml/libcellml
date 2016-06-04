@@ -467,7 +467,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
     EXPECT_EQ("invalid name", v->getName());
 }
 
-TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsName) {
+TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -494,6 +494,12 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsName) {
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
