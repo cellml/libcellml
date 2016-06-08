@@ -840,9 +840,7 @@ TEST(Connection, importedComponentConnectionAndParse) {
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_EQ(1, parser.errorCount());
-    libcellml::EntityErrorPtr err = parser.getError(0);
-    EXPECT_EQ("Variable var not present in component comp", err->serialise());
+    EXPECT_EQ(0, parser.errorCount());
 
     a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
