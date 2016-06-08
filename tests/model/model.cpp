@@ -99,6 +99,40 @@ TEST(Model, parseModelWithComponentHierarchyWaterfall) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Model, parseModelWithMultipleComponentHierarchyWaterfalls) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+
+               "<component name=\"ignatio\"/>"
+               "<component name=\"dave\"/>"
+               "<component name=\"bob\"/>"
+               "<component name=\"angus\"/>"
+               "<component name=\"jackie\"/>"
+
+               "<encapsulation>"
+                 "<component_ref component=\"dave\">"
+                    "<component_ref component=\"bob\">"
+                       "<component_ref component=\"angus\"/>"
+                       "<component_ref component=\"jackie\"/>"
+                    "</component_ref>"
+                 "</component_ref>"
+               "</encapsulation>"
+
+               "<component name=\"mildred\"/>"
+               "<component name=\"sue\"/>"
+
+               "<encapsulation>"
+                 "<component_ref component=\"mildred\">"
+                   "<component_ref component=\"sue\"/>"
+                 "</component_ref>"
+               "</encapsulation>"
+            "</model>";
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    std::string a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
 
 TEST(Model, serialiseAllocatePointer) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
