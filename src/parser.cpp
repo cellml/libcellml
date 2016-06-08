@@ -310,7 +310,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
             if (parentComponentNode->hasAttribute("component")) {
                 std::string componentName = parentComponentNode->getAttribute("component");
                 if (model->containsComponent(componentName)) {
-                    parentComponent = model->getComponent(componentName);
+                    parentComponent = model->takeComponent(componentName);
                 } else {
                     throw std::invalid_argument("Model does not contain the following component specified in an encapsulation: " + componentName + ".");
                 }
@@ -336,8 +336,11 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     // Set parent/child relationship.
                     parentComponent->addComponent(childComponent);
                     // Load any further encapsulated children.
-                    //if (childComponentNode->getChild()) loadEncapsulation(model, childComponentNode);
-                    childComponentNode = childComponentNode->getNext();
+                    if (childComponentNode->getChild()) loadEncapsulation(model, childComponentNode);
+                    // Load an encapsulated component only once through its parent.
+                    model->removeComponent(childComponent);
+                    model->addComponent(parentComponent);
+                    if (childComponentNode) childComponentNode = childComponentNode->getNext();
                 }
             } else {
                 throw std::invalid_argument("Encapsulation component_ref does not contain a component.");

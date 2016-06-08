@@ -319,6 +319,12 @@ bool ComponentEntity::containsComponent(const std::string &name) const
     return result != mPimpl->mComponents.end();
 }
 
+bool ComponentEntity::containsComponent(const ComponentPtr &component) const
+{
+    auto result = mPimpl->findComponent(component);
+    return result != mPimpl->mComponents.end();
+}
+
 ComponentPtr ComponentEntity::getComponent(size_t index)
 {
     return mPimpl->mComponents.at(index);
