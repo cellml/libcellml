@@ -840,6 +840,8 @@ TEST(Connection, importedComponentConnectionAndParse) {
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
+    EXPECT_EQ(0, parser.errorCount());
+
     a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }

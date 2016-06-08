@@ -20,6 +20,7 @@ limitations under the License.
 #include <memory>
 
 namespace libcellml {
+
 class Parser; /**< Forward declaration of Parser class. */
 class Model; /**< Forward declaration of Model class. */
 typedef std::shared_ptr<Model> ModelPtr; /**< Type definition for shared model pointer. */
@@ -31,6 +32,14 @@ class Units; /**< Forward declaration of Units class. */
 typedef std::shared_ptr<Units> UnitsPtr; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
+class XmlNode; /**< Forward declaration of XmlNode class. */
+typedef std::shared_ptr<XmlNode> XmlNodePtr; /**< Type definition for shared XML node pointer. */
+class XmlDoc; /**< Forward declaration of XmlDoc class. */
+typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
+class EntityError; /**< Forward declaration of XmlDoc class. */
+typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared XML doc pointer. */
+class VariableError; /**< Forward declaration of XmlDoc class. */
+typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared XML doc pointer. */
 }
 
 #endif /* LIBCELLML_LIBCELLML_TYPES_H_ */
