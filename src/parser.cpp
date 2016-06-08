@@ -62,7 +62,6 @@ Parser::Parser(Parser &&rhs)
 
 Parser& Parser::operator=(Parser p)
 {
-    Logger::operator =(p);
     p.swap(*this);
     return *this;
 }

@@ -91,9 +91,15 @@ XmlNodePtr XmlNode::getNext()
 }
 
 std::string XmlNode::convertToString() {
-    char* content = (char*)xmlNodeGetContent(mPimpl->mXmlNodePtr);
-    std::string contentString = std::string(content);
-    xmlFree(content);
+    std::string contentString;
+    xmlBufferPtr buffer = xmlBufferCreate();
+    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
+    if (len > 0) {
+        char* content = (char*)buffer->content;
+        contentString = std::string(content);
+        xmlFree(content);
+    }
+    xmlBufferEmpty(buffer);
     return contentString;
 }
 
