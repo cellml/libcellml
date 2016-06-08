@@ -18,13 +18,11 @@ limitations under the License.
 #define XMLDOC_H
 
 #include <string>
+
 #include "libcellml/types.h"
 #include "xmlnode.h"
 
 namespace libcellml {
-
-class XmlDoc; /**< Forward declaration of XmlDoc class. */
-typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
 
 /**
  * @brief The XmlDoc class.

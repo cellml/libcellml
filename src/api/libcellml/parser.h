@@ -22,8 +22,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/types.h"
 #include "libcellml/units.h"
-#include "../xmldoc.h"
-#include "../xmlnode.h"
+#include "libcellml/logger.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
@@ -33,7 +32,7 @@ namespace libcellml {
  *
  * The Parser class is for representing a CellML Parser.
  */
-class LIBCELLML_EXPORT Parser
+class LIBCELLML_EXPORT Parser: public Logger
 { 
 public:
     Parser(Format format); /**< Constructor */

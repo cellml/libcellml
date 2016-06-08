@@ -21,6 +21,8 @@ limitations under the License.
 #include <libcellml/variable.h>
 #include <libcellml/component.h>
 
+#include "xmldoc.h"
+
 namespace libcellml {
 
 /**
@@ -45,19 +47,22 @@ Parser::~Parser()
 }
 
 Parser::Parser(const Parser& rhs)
-    : mPimpl(new ParserImpl())
+    : Logger(rhs)
+    , mPimpl(new ParserImpl())
 {
     mPimpl->mFormat = rhs.mPimpl->mFormat;
 }
 
 Parser::Parser(Parser &&rhs)
-    : mPimpl(rhs.mPimpl)
+    : Logger(std::move(rhs))
+    , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
 Parser& Parser::operator=(Parser p)
 {
+    Logger::operator =(p);
     p.swap(*this);
     return *this;
 }
@@ -268,7 +273,15 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                 if (component1->hasVariable(variableName)) {
                     variable1 = component1->getVariable(variableName);
                 } else {
-                    throw std::invalid_argument("Component '" + component1->getName() + "' does not contain the variable '" + variableName + "'.");
+                    variable1 = std::make_shared<Variable>();
+                    variable1->setName(variableName);
+                    component1->addVariable(variable1);
+                    if (component1->isImport()) {
+                        VariableErrorPtr ve = std::make_shared<VariableError>();
+                        ve->setComponent(component1);
+                        ve->setName(variableName);
+                        addError(ve);
+                    }
                 }
                 if (mapVariablesNode->hasAttribute("variable_2")) {
                     variable2 = nullptr;
@@ -277,7 +290,9 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                         if (component2->hasVariable(variableName)) {
                             variable2 = component2->getVariable(variableName);
                         } else {
-                            throw std::invalid_argument("Component '" + component2->getName() + "' does not contain the variable '" + variableName + "'.");
+                            variable2 = std::make_shared<Variable>();
+                            variable2->setName(variableName);
+                            component2->addVariable(variable2);
                         }
                     } else {
                         // Create a new variable if a parent component_2 does not exist
@@ -336,8 +351,12 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     // Set parent/child relationship.
                     parentComponent->addComponent(childComponent);
                     // Load any further encapsulated children.
-                    //if (childComponentNode->getChild()) loadEncapsulation(model, childComponentNode);
-                    childComponentNode = childComponentNode->getNext();
+                    if (childComponentNode->getChild()) {
+                        loadEncapsulation(model, childComponentNode);
+                    }
+                    if (childComponentNode) {
+                        childComponentNode = childComponentNode->getNext();
+                    }
                 }
             } else {
                 throw std::invalid_argument("Encapsulation component_ref does not contain a component.");
