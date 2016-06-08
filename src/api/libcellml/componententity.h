@@ -282,17 +282,32 @@ public:
     void removeAllComponents();
 
     /**
-     * @brief Tests to see if the component is contained within the Component.
+     * @brief Tests to see if the named component is contained within this component entity.
      *
-     * Tests to see if the component with the given name 'name' is contained
-     * within the Component.  Returns @c true if the component is in the Component and
-     * @c false otherwise.
+     * Tests to see if the component with the given name @p name is contained
+     * within this component entity.  Returns @c true if the component is in the component
+     * entity and @c false otherwise.
      *
-     * @param name The name of the Component to test for existence in the Component.
+     * @param name The component name to test for existence in this component entity.
      *
-     * @return @c true if the named Component is in the model and @c false otherwise.
+     * @return @c true if the named component is in this component entity and @c false otherwise.
      */
     bool containsComponent(const std::string &name) const;
+
+    /**
+     * @brief Tests to see if the component pointer is contained within this component.
+     *
+     * Tests to see if the argument component pointer @p component is contained
+     * within this component entity.  Returns @c true if the component is in the component
+     * entity and @c false otherwise.
+     *
+     * @overload
+     *
+     * @param component The component pointer to test for existence in this component entity.
+     *
+     * @return @c true if the component is in the component entity and @c false otherwise.
+     */
+    bool containsComponent(const ComponentPtr &component) const;
 
     /**
      * @brief Get a component at index.
