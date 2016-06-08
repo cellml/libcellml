@@ -402,7 +402,7 @@ void Parser::loadImport(const ImportPtr &import, const ModelPtr &model, const Xm
                 importedUnits->setName(childNode->getAttribute("name"));
             }
             if (childNode->hasAttribute("units_ref")) {
-                importedUnits->setSourceUnits(import, childNode->getAttribute("component_ref"));
+                importedUnits->setSourceUnits(import, childNode->getAttribute("units_ref"));
             }
             model->addUnits(importedUnits);
         }
