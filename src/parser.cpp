@@ -271,16 +271,19 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                 std::string variableName = mapVariablesNode->getAttribute("variable_1");
                 if (component1->hasVariable(variableName)) {
                     variable1 = component1->getVariable(variableName);
-                } else {
+                } else if (component1->isImport()) {
+                    /*
+                     * With an imported component we are saying that you have entered a contract
+                     * stating this variable exists in the imported component
+                     */
                     variable1 = std::make_shared<Variable>();
                     variable1->setName(variableName);
                     component1->addVariable(variable1);
-                    if (component1->isImport()) {
-                        VariableErrorPtr ve = std::make_shared<VariableError>();
-                        ve->setComponent(component1);
-                        ve->setName(variableName);
-                        addError(ve);
-                    }
+                } else {
+                    VariableErrorPtr ve = std::make_shared<VariableError>();
+                    ve->setComponent(component1);
+                    ve->setName(variableName);
+                    addError(ve);
                 }
                 if (mapVariablesNode->hasAttribute("variable_2")) {
                     variable2 = nullptr;
@@ -288,10 +291,18 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                     if (component2) {
                         if (component2->hasVariable(variableName)) {
                             variable2 = component2->getVariable(variableName);
-                        } else {
+                        } else if (component2->isImport()) {
+                            /*
+                             * As above for component1, variable1.
+                             */
                             variable2 = std::make_shared<Variable>();
                             variable2->setName(variableName);
                             component2->addVariable(variable2);
+                        } else {
+                            VariableErrorPtr ve = std::make_shared<VariableError>();
+                            ve->setComponent(component2);
+                            ve->setName(variableName);
+                            addError(ve);
                         }
                     } else {
                         // Create a new variable if a parent component_2 does not exist
