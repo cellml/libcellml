@@ -19,6 +19,7 @@ limitations under the License.
 #include <libxml/tree.h>
 
 #include "xmlnode.h"
+#include "xmlattribute.h"
 
 namespace libcellml {
 
@@ -70,6 +71,17 @@ std::string XmlNode::getAttribute(const char *attributeName)
     std::string attributeValueString = std::string(attributeValue);
     xmlFree(attributeValue);
     return attributeValueString;
+}
+
+XmlAttributePtr XmlNode::getRootAttribute()
+{
+    xmlAttrPtr attribute = mPimpl->mXmlNodePtr->properties;
+    XmlAttributePtr attributeHandle = nullptr;
+    if (attribute != NULL) {
+        attributeHandle = std::make_shared<XmlAttribute>();
+        attributeHandle->setXmlAttribute(attribute);
+    }
+    return attributeHandle;
 }
 
 XmlNodePtr XmlNode::getChild()
