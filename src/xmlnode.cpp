@@ -107,7 +107,7 @@ std::string XmlNode::convertToString() {
     xmlBufferPtr buffer = xmlBufferCreate();
     int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
     if (len > 0) {
-        char* content = (char*)buffer->content;
+        char* content = reinterpret_cast<char*>(buffer->content);
         contentString = std::string(content);
     }
     xmlBufferFree(buffer);

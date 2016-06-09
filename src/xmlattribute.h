@@ -59,10 +59,19 @@ public:
     bool isAttributeType(const char *attributeName);
 
     /**
+     * @brief Get the type of this XmlAttribute.
+     *
+     * Gets the type of this XmlAttribute and returns it as a @c std::string.
+     *
+     * @return The @c std::string corresponding with the name of this XmlAttribute.
+     */
+    std::string getAttributeType() const;
+
+    /**
      * @brief Get the XmlAttribute immediately following this XmlAttribute.
      *
      * Gets the next XmlAttribute immediately following this XmlAttribute based
-     * on the ordering from the deserialised XmlDoc. If no
+     * on the ordering from the parent XmlNode. If no
      * next attribute exists, returns @c nullptr.
      *
      * @return The XmlAttributePtr to the next attribute following this XmlAttribute.

@@ -56,6 +56,12 @@ bool XmlAttribute::isAttributeType(const char *attributeName)
     return found;
 }
 
+std::string XmlAttribute::getAttributeType() const
+{
+    const char* type = reinterpret_cast<const char*>(mPimpl->mXmlAttributePtr->name);
+    return std::string(type);
+}
+
 XmlAttributePtr XmlAttribute::getNext()
 {
     xmlAttrPtr next = mPimpl->mXmlAttributePtr->next;
