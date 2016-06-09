@@ -878,6 +878,8 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
     EXPECT_EQ(1, parser.errorCount());
 
     EXPECT_EQ("Variable 'variable_angus' not found in component 'component_dave'", parser.getError(0)->serialise());
+    parser.clearErrors();
+    EXPECT_EQ(0, parser.errorCount());
 
     std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);

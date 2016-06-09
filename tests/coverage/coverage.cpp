@@ -200,6 +200,14 @@ TEST(Coverage, componentEntity) {
     EXPECT_EQ(e, pc.serialise(libcellml::Format::XML));
 }
 
+TEST(Coverage, parser) {
+    libcellml::Parser p(libcellml::Format::XML), pm(libcellml::Format::XML), pa(libcellml::Format::XML);
+    pa = p;
+    pm = std::move(p);
+
+    libcellml::Parser pc(pm);
+}
+
 TEST(Coverage, entityError) {
     std::string ex = "";
 
