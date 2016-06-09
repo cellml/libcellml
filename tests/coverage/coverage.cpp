@@ -69,6 +69,25 @@ TEST(Coverage, units) {
     EXPECT_EQ(e, uc.serialise(libcellml::Format::XML));
 }
 
+TEST(Coverage, unitsGetVariations) {
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("a_unit");
+
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    m.addUnits(u);
+
+    libcellml::UnitsPtr un = m.getUnits(0);
+    EXPECT_EQ("a_unit", un->getName());
+    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).getUnits(0);
+    EXPECT_EQ("a_unit", uSn->getName());
+
+    libcellml::UnitsPtr uns = m.getUnits("a_unit");
+    EXPECT_EQ("a_unit", uns->getName());
+    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).getUnits("a_unit");
+    EXPECT_EQ("a_unit", uSns->getName());
+}
 
 TEST(Coverage, prefixToString) {
     libcellml::Model m;
@@ -180,3 +199,26 @@ TEST(Coverage, componentEntity) {
     libcellml::Component pc(pm);
     EXPECT_EQ(e, pc.serialise(libcellml::Format::XML));
 }
+
+TEST(Coverage, entityError) {
+    std::string ex = "";
+
+    libcellml::EntityErrorPtr e = std::make_shared<libcellml::EntityError>();
+
+    EXPECT_EQ(ex, e->serialise());
+}
+
+TEST(Coverage, parserWithEmptyString) {
+    std::string ex = "";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    EXPECT_THROW(p.parseModel(ex), std::invalid_argument);
+}
+
+TEST(Coverage, parserWithNonXmlString) {
+    std::string ex = "Not an xml string.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    EXPECT_THROW(p.parseModel(ex), std::invalid_argument);
+}
+

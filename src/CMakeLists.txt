@@ -38,6 +38,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/import.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/loggererrors.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
@@ -56,6 +57,7 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/import.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/loggererrors.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
