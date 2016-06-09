@@ -97,9 +97,8 @@ std::string XmlNode::convertToString() {
     if (len > 0) {
         char* content = (char*)buffer->content;
         contentString = std::string(content);
-        xmlFree(content);
     }
-    xmlBufferEmpty(buffer);
+    xmlBufferFree(buffer);
     return contentString;
 }
 
