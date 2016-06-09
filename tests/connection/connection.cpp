@@ -845,3 +845,40 @@ TEST(Connection, importedComponentConnectionAndParse) {
     a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
+
+TEST(Connection, componentConnectionAndParseMissingVariable) {
+    const std::string s =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<component name=\"component_dave\">"
+          "<variable name=\"variable_dave\"/>"
+        "</component>"
+        "<component name=\"component_bob\">"
+          "<variable name=\"variable_bob\"/>"
+        "</component>"
+        "<connection>"
+          "<map_components component_1=\"component_dave\" component_2=\"component_bob\"/>"
+          "<map_variables variable_1=\"variable_angus\" variable_2=\"variable_bob\"/>"
+        "</connection>"
+        "</model>";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<component name=\"component_dave\">"
+          "<variable name=\"variable_dave\"/>"
+        "</component>"
+        "<component name=\"component_bob\">"
+          "<variable name=\"variable_bob\"/>"
+        "</component>"
+        "</model>";
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(s);
+    EXPECT_EQ(1, parser.errorCount());
+
+    EXPECT_EQ("Variable 'variable_angus' not found in component 'component_dave'", parser.getError(0)->serialise());
+
+    std::string a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}

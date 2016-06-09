@@ -20,6 +20,7 @@ limitations under the License.
 #include <libcellml/import.h>
 #include <libcellml/variable.h>
 #include <libcellml/component.h>
+#include <libcellml/loggererrors.h>
 
 #include "xmldoc.h"
 
@@ -284,6 +285,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                     ve->setComponent(component1);
                     ve->setName(variableName);
                     addError(ve);
+                    break;
                 }
                 if (mapVariablesNode->hasAttribute("variable_2")) {
                     variable2 = nullptr;

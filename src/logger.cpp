@@ -88,16 +88,4 @@ EntityErrorPtr Logger::getError(size_t index)
     return mPimpl->mErrors.at(index);
 }
 
-std::string EntityError::doSerialisation() const
-{
-    std::string s = "";
-    return s;
-}
-
-std::string VariableError::doSerialisation() const
-{
-    std::string s = "Variable " + getName() + " not found in component " + mComponent->getName();
-    return s;
-}
-
 }
