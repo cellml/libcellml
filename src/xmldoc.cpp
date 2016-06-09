@@ -65,7 +65,6 @@ XmlNodePtr XmlDoc::getRootNode() const
     if (root == NULL) throw std::invalid_argument("XML document empty.");
     XmlNodePtr rootHandle = std::make_shared<XmlNode>();
     rootHandle->setXmlNode(root);
-    //xmlFreeNode(root);
     return rootHandle;
 }
 

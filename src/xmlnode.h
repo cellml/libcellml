@@ -86,6 +86,17 @@ public:
     std::string getAttribute(const char *attributeName);
 
     /**
+     * @brief Get the root attribute for this XmlNode
+     *
+     * Get the XmlAttributePtr corresponding with the first attribute
+     * for this XmlNode.
+     *
+     * @return The @c XmlAttributePtr form of the first attribute
+     * for this xml node
+     */
+    XmlAttributePtr getRootAttribute();
+
+    /**
      * @brief Get the first child for this XmlNode.
      *
      * Gets the first child XmlNode for this XmlNode based on the
