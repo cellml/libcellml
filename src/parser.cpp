@@ -165,7 +165,9 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (node->getAttribute("base_unit") == "no") {
             units->setBaseUnit(false);
         } else {
-            throw std::invalid_argument("Unrecognised base_unit attribute: should be 'yes' or 'no'");
+            UnitsBaseUnitAttributeErrorPtr err = std::make_shared<UnitsBaseUnitAttributeError>();
+            err->setUnits(units);
+            addError(err);
         }
     }
     XmlNodePtr childNode = node->getChild();
@@ -187,7 +189,9 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                 {
                     exponent = std::stod(childNode->getAttribute("exponent"));
                 } catch (std::invalid_argument) {
-                    throw std::invalid_argument("Exponent cannot be converted to a real number in unit: " + name);
+                    UnitsExponentAttributeErrorPtr err = std::make_shared<UnitsExponentAttributeError>();
+                    err->setUnits(units);
+                    addError(err);
                 }
             }
             if (childNode->hasAttribute("multiplier")) {

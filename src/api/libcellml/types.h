@@ -38,10 +38,17 @@ class XmlNode; /**< Forward declaration of XmlNode class. */
 typedef std::shared_ptr<XmlNode> XmlNodePtr; /**< Type definition for shared XML node pointer. */
 class XmlDoc; /**< Forward declaration of XmlDoc class. */
 typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
-class EntityError; /**< Forward declaration of XmlDoc class. */
-typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared XML doc pointer. */
-class VariableError; /**< Forward declaration of XmlDoc class. */
-typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared XML doc pointer. */
+class EntityError; /**< Forward declaration of EntityError class. */
+typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared entity error pointer. */
+class VariableError; /**< Forward declaration of VariableError class. */
+typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared variable error pointer. */
+class UnitsError; /**< Forward declaration of UnitsError class. */
+typedef std::shared_ptr<UnitsError> UnitsErrorPtr; /**< Type definition for shared units error pointer. */
+class UnitsBaseUnitAttributeError; /**< Forward declaration of UnitsBaseUnitAttributeError class. */
+typedef std::shared_ptr<UnitsBaseUnitAttributeError> UnitsBaseUnitAttributeErrorPtr; /**< Type definition for shared units base unit attribute error pointer. */
+class UnitsExponentAttributeError; /**< Forward declaration of UnitsExponentAttributeError class. */
+typedef std::shared_ptr<UnitsExponentAttributeError> UnitsExponentAttributeErrorPtr; /**< Type definition for shared units exponent attribute error pointer. */
+
 }
 
 #endif /* LIBCELLML_LIBCELLML_TYPES_H_ */

@@ -230,3 +230,30 @@ TEST(Coverage, parserWithNonXmlString) {
     EXPECT_THROW(p.parseModel(ex), std::invalid_argument);
 }
 
+TEST(Coverage, parseModelWithNamedComponentWithUnits) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+              "<component name=\"component_name\">"
+                "<units name=\"fahrenheit\">"
+                  "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\" base_unit=\"no\"/>"
+              "</component>"
+            "</model>";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+              "<component name=\"component_name\">"
+                "<units name=\"fahrenheit\">"
+                  "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
+              "</component>"
+            "</model>";
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(in);
+    std::string a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+

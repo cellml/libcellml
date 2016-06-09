@@ -133,7 +133,56 @@ class ImportedEntityError: public NamedEntityError
  */
 class UnitsError: public ImportedEntityError
 {
+public:
+    /**
+     * @brief Set the units for the UnitsError.
+     *
+     * Set the units for the UnitsError.
+     *
+     * @param u A pointer to the units to set.
+     */
+    void setUnits(UnitsPtr u) { mUnits = u; }
 
+    /**
+     * @brief Get the units for the UnitsError.
+     *
+     * Get the units for the UnitsError.
+     *
+     * @return A pointer to the units.
+     */
+    UnitsPtr getUnits() const { return mUnits; }
+
+private:
+    UnitsPtr mUnits;
+};
+
+/**
+ * @brief The UnitsBaseUnitAttributeError class.
+ *
+ * The UnitsBaseUnitAttributeError class.
+ */
+class UnitsBaseUnitAttributeError: public UnitsError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+
+};
+
+/**
+ * @brief The UnitsExponentAttributeError class.
+ *
+ * The UnitsExponentAttributeError class.
+ */
+class UnitsExponentAttributeError: public UnitsError
+{
+public:
+    void setAttributeValue(const std::string& value) { mValue = value; }
+
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+
+private:
+    std::string mValue;
 };
 
 /**
