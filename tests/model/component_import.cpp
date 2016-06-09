@@ -200,7 +200,7 @@ TEST(ComponentImport, multipleImportAndParse) {
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e2);
     a = model->serialise(libcellml::Format::XML);
-    EXPECT_EQ(e2, a);
+    EXPECT_TRUE((e1 == a) || (e2 == a));
 }
 
 TEST(ComponentImport, hierarchicalImportAndParse) {
