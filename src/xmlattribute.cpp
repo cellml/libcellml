@@ -49,17 +49,23 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
     mPimpl->mXmlAttributePtr = attribute;
 }
 
-bool XmlAttribute::isAttributeType(const char *attributeName)
+bool XmlAttribute::isType(const char *attributeName)
 {
     bool found = false;
     if (!xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) found = true;
     return found;
 }
 
-std::string XmlAttribute::getAttributeType() const
+std::string XmlAttribute::getType() const
 {
     const char* type = reinterpret_cast<const char*>(mPimpl->mXmlAttributePtr->name);
     return std::string(type);
+}
+
+std::string XmlAttribute::getValue() const
+{
+    const char* value = reinterpret_cast<const char*>(xmlNodeListGetString(mPimpl->mXmlAttributePtr->doc, mPimpl->mXmlAttributePtr->children, 1));
+    return std::string(value);
 }
 
 XmlAttributePtr XmlAttribute::getNext()

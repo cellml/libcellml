@@ -57,7 +57,7 @@ public:
      * @return @c true if this XmlNode is of the element type
      * specified by the @p elementName and @c false otherwise.
      */
-    bool isElementType(const char *elementName);
+    bool isType(const char *elementName);
 
     /**
      * @brief Check if this XmlNode has the specified attribute.

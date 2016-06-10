@@ -50,7 +50,7 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
     mPimpl->mXmlNodePtr = node;
 }
 
-bool XmlNode::isElementType(const char *elementName)
+bool XmlNode::isType(const char *elementName)
 {
     bool found = false;
     if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) found = true;

@@ -56,7 +56,7 @@ public:
      * @return @c true if this XmlAttribute is of the attribute type
      * specified by the @p attributeName and @c false otherwise.
      */
-    bool isAttributeType(const char *attributeName);
+    bool isType(const char *attributeName);
 
     /**
      * @brief Get the type of this XmlAttribute.
@@ -65,7 +65,16 @@ public:
      *
      * @return The @c std::string corresponding with the name of this XmlAttribute.
      */
-    std::string getAttributeType() const;
+    std::string getType() const;
+
+    /**
+     * @brief Get the value of this XmlAttribute.
+     *
+     * Gets the value of this XmlAttribute and returns it as a @c std::string.
+     *
+     * @return The @c std::string corresponding with the value of this XmlAttribute.
+     */
+    std::string getValue() const;
 
     /**
      * @brief Get the XmlAttribute immediately following this XmlAttribute.

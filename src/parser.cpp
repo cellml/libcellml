@@ -85,7 +85,7 @@ void Parser::updateModel(const ModelPtr &model, const std::string &input)
         XmlDocPtr doc = std::make_shared<XmlDoc>();
         doc->parse(input);
         const XmlNodePtr node = doc->getRootNode();
-        if (node->isElementType("model")) {
+        if (node->isType("model")) {
             loadModel(model, node);
         } else {
             throw std::invalid_argument("Unexpected XML element type (not a model).");
@@ -97,31 +97,37 @@ void Parser::updateModel(const ModelPtr &model, const std::string &input)
 
 void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
 {
-    if (node->hasAttribute("name")) {
-        model->setName(node->getAttribute("name"));
+    XmlAttributePtr attribute = node->getRootAttribute();
+    while (attribute) {
+        if (attribute->isType("name")) {
+            model->setName(node->getAttribute("name"));
+        } else {
+            throw std::invalid_argument("Unrecognised model attribute: " + attribute->getType());
+        }
+        attribute = attribute->getNext();
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
-        if (childNode->isElementType("component")) {
+        if (childNode->isType("component")) {
             ComponentPtr component = std::make_shared<Component>();
             loadComponent(component, childNode);
             model->addComponent(component);
         }
-        if (childNode->isElementType("units")) {
+        if (childNode->isType("units")) {
             UnitsPtr units = std::make_shared<Units>();
             loadUnits(units, childNode);
             model->addUnits(units);
         }
-        if (childNode->isElementType("import")) {
+        if (childNode->isType("import")) {
             ImportPtr import = std::make_shared<Import>();
             loadImport(import, model, childNode);
         }
-        if (childNode->isElementType("encapsulation")) {
+        if (childNode->isType("encapsulation")) {
             XmlNodePtr componentRefNode = childNode->getChild();
             if (!componentRefNode) throw std::invalid_argument("Encapsulation does not contain any component_ref");
             loadEncapsulation(model, componentRefNode);
         }
-        if (childNode->isElementType("connection")) {
+        if (childNode->isType("connection")) {
             loadConnection(model, childNode);
         }
         childNode = childNode->getNext();
@@ -135,17 +141,17 @@ void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
-        if (childNode->isElementType("variable")) {
+        if (childNode->isType("variable")) {
             VariablePtr variable = std::make_shared<Variable>();
             loadVariable(variable, childNode);
             component->addVariable(variable);
         }
-        if (childNode->isElementType("units")) {
+        if (childNode->isType("units")) {
             UnitsPtr units = std::make_shared<Units>();
             loadUnits(units, childNode);
             component->addUnits(units);
         }
-        if (childNode->isElementType("math")) {
+        if (childNode->isType("math")) {
             std::string math = childNode->convertToString();
             component->setMath(math);
         }
@@ -169,7 +175,7 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
-        if (childNode->isElementType("unit")) {
+        if (childNode->isType("unit")) {
             std::string name = "";
             std::string prefix = "";
             double exponent = 1.0;
@@ -239,7 +245,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     // Load the connection map_components.
     XmlNodePtr mapComponentsNode = node->getChild();
     if (!mapComponentsNode) throw std::invalid_argument("Connection does not contain any child elements.");
-    if (mapComponentsNode->isElementType("map_components")) {
+    if (mapComponentsNode->isType("map_components")) {
         if (mapComponentsNode->hasAttribute("component_1")) {
             std::string componentName = mapComponentsNode->getAttribute("component_1");
             if (model->containsComponent(componentName)) {
@@ -267,7 +273,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     if (!mapVariablesNode) throw std::invalid_argument("Connection only contains a map_components (no map_variables).");
     while (mapVariablesNode) {
         variable1 = nullptr;
-        if (mapVariablesNode->isElementType("map_variables")) {
+        if (mapVariablesNode->isType("map_variables")) {
             if (mapVariablesNode->hasAttribute("variable_1")) {
                 std::string variableName = mapVariablesNode->getAttribute("variable_1");
                 if (component1->hasVariable(variableName)) {
@@ -333,7 +339,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
     if (!parentComponentNode) throw std::invalid_argument("Encapsulation does not contain any elements.");
     while (parentComponentNode) {
         ComponentPtr parentComponent = nullptr;
-        if (parentComponentNode->isElementType("component_ref")) {
+        if (parentComponentNode->isType("component_ref")) {
             if (parentComponentNode->hasAttribute("component")) {
                 std::string parentComponentName = parentComponentNode->getAttribute("component");
                 if (model->containsComponent(parentComponentName)) {
@@ -346,7 +352,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                 if (!childComponentNode) throw std::invalid_argument("Encapsulation contains no child components.");
                 while (childComponentNode) {
                     ComponentPtr childComponent = nullptr;
-                    if (childComponentNode->isElementType("component_ref")) {
+                    if (childComponentNode->isType("component_ref")) {
                         if (childComponentNode->hasAttribute("component")) {
                             std::string childComponentName = childComponentNode->getAttribute("component");
                             if (model->containsComponent(childComponentName)) {
@@ -387,7 +393,7 @@ void Parser::loadImport(const ImportPtr &import, const ModelPtr &model, const Xm
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
-        if (childNode->isElementType("component")) {
+        if (childNode->isType("component")) {
             ComponentPtr importedComponent = std::make_shared<Component>();
             if (childNode->hasAttribute("name")) {
                 importedComponent->setName(childNode->getAttribute("name"));
@@ -397,7 +403,7 @@ void Parser::loadImport(const ImportPtr &import, const ModelPtr &model, const Xm
             }
             model->addComponent(importedComponent);
         }
-        if (childNode->isElementType("units")) {
+        if (childNode->isType("units")) {
             UnitsPtr importedUnits = std::make_shared<Units>();
             if (childNode->hasAttribute("name")) {
                 importedUnits->setName(childNode->getAttribute("name"));
