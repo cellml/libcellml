@@ -82,6 +82,7 @@ TEST(Encapsulation, reparentComponent) {
 }
 
 TEST(Encapsulation, hierarchyWaterfall) {
+    const std::string e_parent = "<component name=\"parent_component\"/><component name=\"child1\"/><component name=\"child2\"/><component name=\"child3\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"><component_ref component=\"child2\"><component_ref component=\"child3\"/></component_ref></component_ref></component_ref></encapsulation>";
 
     libcellml::Component parent;
     parent.setName("parent_component");
@@ -95,7 +96,7 @@ TEST(Encapsulation, hierarchyWaterfall) {
     child2->addComponent(child3);
     child1->addComponent(child2);
     parent.addComponent(child1);
-    const std::string e_parent = "<component name=\"parent_component\"/><component name=\"child1\"/><component name=\"child2\"/><component name=\"child3\"/><encapsulation><component_ref component=\"parent_component\"><component_ref component=\"child1\"><component_ref component=\"child2\"><component_ref component=\"child3\"/></component_ref></component_ref></component_ref></encapsulation>";
+
     std::string a_parent = parent.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_parent, a_parent);
 }
@@ -124,3 +125,47 @@ TEST(Encapsulation, hierarchyCircular) {
     a_parent = parent->serialise(libcellml::Format::XML);
     EXPECT_EQ(e_parent_2, a_parent);
 }
+
+TEST(Encapsulation, hierarchyWaterfallAndParse) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"parent_component\"/>"
+            "<component name=\"child1\"/>"
+            "<component name=\"child2\"/>"
+            "<component name=\"child3\"/>"
+            "<encapsulation>"
+            "<component_ref component=\"parent_component\">"
+            "<component_ref component=\"child1\">"
+            "<component_ref component=\"child2\">"
+            "<component_ref component=\"child3\"/>"
+            "</component_ref>"
+            "</component_ref>"
+            "</component_ref>"
+            "</encapsulation>"
+            "</model>";
+
+    libcellml::Model m;
+    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    parent->setName("parent_component");
+    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    child1->setName("child1");
+    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    child2->setName("child2");
+    libcellml::ComponentPtr child3 = std::make_shared<libcellml::Component>();
+    child3->setName("child3");
+
+    child2->addComponent(child3);
+    child1->addComponent(child2);
+    parent->addComponent(child1);
+    m.addComponent(parent);
+
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    libcellml::Parser parser = libcellml::Parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+
+    EXPECT_EQ(e, model->serialise(libcellml::Format::XML));
+}
+

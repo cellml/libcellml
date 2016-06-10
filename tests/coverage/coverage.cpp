@@ -306,6 +306,130 @@ TEST(Coverage, parserWithEmptyEncapsulation) {
     EXPECT_EQ(48, p.getError(0)->serialise().length());
 }
 
+TEST(Coverage, encapsulationParserNoComponentAttribute) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<encapsulation>"
+                "<component_ref></component_ref>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(57, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, encapsulationParserNoComponentRef) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<encapsulation>"
+                "<component_free></component_free>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(47, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, encapsulationParserNoComponent) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<encapsulation>"
+            "<component_ref component=\"bob\">"
+                "<component_ref></component_ref>"
+            "</component_ref>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(2, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+//    EXPECT_EQ("", p.getError(1)->serialise());
+    EXPECT_EQ(82, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, encapsulationParserMissingComponent) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<component name=\"bob\"/>"
+            "<encapsulation>"
+            "<component_ref component=\"bob\">"
+                "<component_ref component=\"dave\"></component_ref>"
+            "</component_ref>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(83, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, encapsulationParserNoComponentChild) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<component name=\"bob\"/>"
+            "<encapsulation>"
+            "<component_ref component=\"bob\">"
+            "</component_ref>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(43, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, encapsulationParserNoChildComponentRef) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<component name=\"bob\"/>"
+            "<encapsulation>"
+            "<component_ref component=\"bob\">"
+            "<component_free/>"
+            "</component_ref>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(47, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, encapsulationParserGrandchild) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<component name=\"bob\"/>"
+            "<encapsulation>"
+            "<component_ref component=\"bob\">"
+            "<component_free/>"
+            "</component_ref>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(47, p.getError(0)->serialise().length());
+}
+
 TEST(Coverage, parserWithEmptyConnection) {
     std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -565,5 +689,29 @@ TEST(Coverage, parserWithConnectionErrorNoMapVariablesType) {
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
     EXPECT_EQ(67, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserInvalidRootNode) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<yodel xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+        "</yodel>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(42, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserModelAttribute) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" game=\"model_name\">"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(57, p.getError(0)->serialise().length());
 }
 
