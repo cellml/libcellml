@@ -66,7 +66,7 @@ public:
      *
      * @return A @c std::string representation of the type.
      */
-    std::string getElementType() const;
+    std::string getType() const;
 
     /**
      * @brief Check if this XmlNode has the specified attribute.

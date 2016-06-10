@@ -57,7 +57,7 @@ bool XmlNode::isType(const char *elementName)
     return found;
 }
 
-std::string XmlNode::getElementType() const
+std::string XmlNode::getType() const
 {
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
 }
