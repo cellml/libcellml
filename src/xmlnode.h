@@ -59,6 +59,15 @@ public:
     bool isElementType(const char *elementName);
 
     /**
+     * @brief Get the type name of the element.
+     *
+     * Get the type name of the element.
+     *
+     * @return A @c std::string representation of the type.
+     */
+    std::string getElementType() const;
+
+    /**
      * @brief Check if this XmlNode has the specified attribute.
      *
      * Checks whether this XmlNode has an attribute of the type

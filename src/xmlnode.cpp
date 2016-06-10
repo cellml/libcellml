@@ -57,6 +57,11 @@ bool XmlNode::isElementType(const char *elementName)
     return found;
 }
 
+std::string XmlNode::getElementType() const
+{
+    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
+}
+
 bool XmlNode::hasAttribute(const char *attributeName)
 {
     bool found = false;
