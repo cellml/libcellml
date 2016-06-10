@@ -101,7 +101,7 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
     XmlAttributePtr attribute = node->getRootAttribute();
     while (attribute) {
         if (attribute->isType("name")) {
-            model->setName(node->getAttribute("name"));
+            model->setName(attribute->getValue());
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
             err->setDescription("Invalid model attribute: '" + attribute->getType() + "' with value: '" + attribute->getValue() + "'.");
@@ -115,17 +115,14 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
             ComponentPtr component = std::make_shared<Component>();
             loadComponent(component, childNode);
             model->addComponent(component);
-        }
-        if (childNode->isType("units")) {
+        } else if (childNode->isType("units")) {
             UnitsPtr units = std::make_shared<Units>();
             loadUnits(units, childNode);
             model->addUnits(units);
-        }
-        if (childNode->isType("import")) {
+        } else if (childNode->isType("import")) {
             ImportPtr import = std::make_shared<Import>();
             loadImport(import, model, childNode);
-        }
-        if (childNode->isType("encapsulation")) {
+        } else if (childNode->isType("encapsulation")) {
             XmlNodePtr componentRefNode = childNode->getChild();
             if (componentRefNode) {
                 loadEncapsulation(model, componentRefNode);
@@ -134,10 +131,10 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
                 err->setDescription("Encapsulation does not contain any component_ref");
                 addError(err);
             }
-
-        }
-        if (childNode->isType("connection")) {
+        } else if (childNode->isType("connection")) {
             loadConnection(model, childNode);
+        } else {
+            throw std::invalid_argument("Unrecognised XML element: " + node->getType());
         }
         childNode = childNode->getNext();
     }
@@ -145,8 +142,14 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
 
 void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node)
 {
-    if (node->hasAttribute("name")) {
-        component->setName(node->getAttribute("name"));
+    XmlAttributePtr attribute = node->getRootAttribute();
+    while (attribute) {
+        if (attribute->isType("name")) {
+            component->setName(attribute->getValue());
+        } else {
+            throw std::invalid_argument("Unrecognised component attribute: " + attribute->getType());
+        }
+        attribute = attribute->getNext();
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
@@ -154,15 +157,15 @@ void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node
             VariablePtr variable = std::make_shared<Variable>();
             loadVariable(variable, childNode);
             component->addVariable(variable);
-        }
-        if (childNode->isType("units")) {
+        } else if (childNode->isType("units")) {
             UnitsPtr units = std::make_shared<Units>();
             loadUnits(units, childNode);
             component->addUnits(units);
-        }
-        if (childNode->isType("math")) {
+        } else if (childNode->isType("math")) {
             std::string math = childNode->convertToString();
             component->setMath(math);
+        } else {
+            throw std::invalid_argument("Unrecognised component element: " + childNode->getType());
         }
         childNode = childNode->getNext();
     }
@@ -170,20 +173,25 @@ void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node
 
 void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
 {
-    if (node->hasAttribute("name")) {
-        units->setName(node->getAttribute("name"));
-    }
-    if (node->hasAttribute("base_unit")) {
-        if (node->getAttribute("base_unit") == "yes") {
-            units->setBaseUnit(true);
-        } else if (node->getAttribute("base_unit") == "no") {
-            units->setBaseUnit(false);
+    XmlAttributePtr attribute = node->getRootAttribute();
+    while (attribute) {
+        if (attribute->isType("name")) {
+            units->setName(attribute->getValue());
+        } else if (attribute->isType("base_unit")) {
+            if (attribute->getValue() == "yes") {
+                units->setBaseUnit(true);
+            } else if (attribute->getValue() == "no") {
+                units->setBaseUnit(false);
+            } else {
+                UnitsBaseUnitAttributeErrorPtr err = std::make_shared<UnitsBaseUnitAttributeError>();
+                err->setUnits(units);
+                err->setValue(node->getAttribute("base_unit"));
+                addError(err);
+            }
         } else {
-            UnitsBaseUnitAttributeErrorPtr err = std::make_shared<UnitsBaseUnitAttributeError>();
-            err->setUnits(units);
-            err->setValue(node->getAttribute("base_unit"));
-            addError(err);
+            throw std::invalid_argument("Unrecognised units attribute: " + attribute->getType());
         }
+        attribute = attribute->getNext();
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
@@ -193,44 +201,46 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
             double exponent = 1.0;
             double multiplier = 1.0;
             double offset = 0.0;
-            if (childNode->hasAttribute("units")) {
-                name = childNode->getAttribute("units");
-            }
-            if (childNode->hasAttribute("prefix")) {
-                prefix = childNode->getAttribute("prefix");
-            }
-            if (childNode->hasAttribute("exponent")) {
-                try
-                {
-                    exponent = std::stod(childNode->getAttribute("exponent"));
-                } catch (std::exception) {
-                    UnitsExponentAttributeErrorPtr err = std::make_shared<UnitsExponentAttributeError>();
-                    err->setUnits(units);
-                    err->setValue(childNode->getAttribute("exponent"));
-                    addError(err);
+            attribute = childNode->getRootAttribute();
+            while (attribute) {
+                if (attribute->isType("units")) {
+                    name = attribute->getValue();
+                } else if (attribute->isType("prefix")) {
+                    prefix = attribute->getValue();
+                } else if (attribute->isType("exponent")) {
+                    try
+                    {
+                        exponent = std::stod(attribute->getValue());
+                    } catch (std::exception) {
+                        UnitsExponentAttributeErrorPtr err = std::make_shared<UnitsExponentAttributeError>();
+                        err->setUnits(units);
+                        err->setValue(attribute->getValue());
+                        addError(err);
+                    }
+                } else if (attribute->isType("multiplier")) {
+                    try
+                    {
+                        multiplier = std::stod(attribute->getValue());
+                    } catch (std::exception) {
+                        UnitsMultiplierAttributeErrorPtr err = std::make_shared<UnitsMultiplierAttributeError>();
+                        err->setUnits(units);
+                        err->setValue(attribute->getValue());
+                        addError(err);
+                    }
+                } else if (attribute->isType("offset")) {
+                    try
+                    {
+                        offset = std::stod(attribute->getValue());
+                    } catch (std::exception) {
+                        UnitsOffsetAttributeErrorPtr err = std::make_shared<UnitsOffsetAttributeError>();
+                        err->setUnits(units);
+                        err->setValue(attribute->getValue());
+                        addError(err);
+                    }
+                } else {
+                    throw std::invalid_argument("Unrecognised unit attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
                 }
-            }
-            if (childNode->hasAttribute("multiplier")) {
-                try
-                {
-                    multiplier = std::stod(childNode->getAttribute("multiplier"));
-                } catch (std::exception) {
-                    UnitsMultiplierAttributeErrorPtr err = std::make_shared<UnitsMultiplierAttributeError>();
-                    err->setUnits(units);
-                    err->setValue(childNode->getAttribute("multiplier"));
-                    addError(err);
-                }
-            }
-            if (childNode->hasAttribute("offset")) {
-                try
-                {
-                    offset = std::stod(childNode->getAttribute("offset"));
-                } catch (std::exception) {
-                    UnitsOffsetAttributeErrorPtr err = std::make_shared<UnitsOffsetAttributeError>();
-                    err->setUnits(units);
-                    err->setValue(childNode->getAttribute("offset"));
-                    addError(err);
-                }
+                attribute = attribute->getNext();
             }
             units->addUnit(name, prefix, exponent, multiplier, offset);
         } else {
@@ -245,17 +255,20 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
 
 void Parser::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
 {
-    if (node->hasAttribute("name")) {
-        variable->setName(node->getAttribute("name"));
-    }
-    if (node->hasAttribute("units")) {
-        variable->setUnits(node->getAttribute("units"));
-    }
-    if (node->hasAttribute("interface")) {
-        variable->setInterfaceType(node->getAttribute("interface"));
-    }
-    if (node->hasAttribute("initial_value")) {
-        variable->setInitialValue(node->getAttribute("initial_value"));
+    XmlAttributePtr attribute = node->getRootAttribute();
+    while (attribute) {
+        if (attribute->isType("name")) {
+            variable->setName(attribute->getValue());
+        } else if (attribute->isType("units")) {
+            variable->setUnits(attribute->getValue());
+        } else if (attribute->isType("interface")) {
+            variable->setInterfaceType(attribute->getValue());
+        } else if (attribute->isType("initial_value")) {
+            variable->setInitialValue(attribute->getValue());
+        } else {
+            throw std::invalid_argument("Unrecognised variable attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
+        }
+        attribute = attribute->getNext();
     }
 }
 
