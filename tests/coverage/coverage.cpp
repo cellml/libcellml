@@ -284,7 +284,286 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
 
     EXPECT_EQ(4, parser.errorCount());
 
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_TRUE(parser.getError(i)->serialise().length() > 0);
+    }
+
     std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
+}
+
+TEST(Coverage, parserWithEmptyEncapsulation) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<encapsulation>"
+            "</encapsulation>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(48, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithEmptyConnection) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<connection>"
+            "</connection>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(47, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithConnectionErrorNoComponent1Existing) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"componentA\">"
+                "<variable name=\"variable1\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_1=\"component1\"/>"
+                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+            "</connection>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(85, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithConnectionErrorNoComponent2Existing) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"component1\">"
+                "<variable name=\"variable1\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
+                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+            "</connection>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(85, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithConnectionErrorNoComponent1) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"componentA\">"
+                "<variable name=\"variable1\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_2=\"componentA\"/>"
+                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+            "</connection>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(57, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithConnectionErrorNoMapComponents) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"componentA\">"
+                "<variable name=\"variable1\"/>"
+            "</component>"
+            "<connection>"
+                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+            "</connection>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(45, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithConnectionErrorNoMapVariables) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"componentA\">"
+                "<variable name=\"variable1\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_2=\"componentA\" component_1=\"componentA\"/>"
+            "</connection>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(61, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, importedComponent2ConnectionAndParse) {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+          "<import xlink:href=\"some-other-model.xml\" "
+              "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+              "<component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>"
+          "</import>"
+          "<component name=\"component_bob\">"
+            "<variable name=\"variable_bob\"/>"
+          "</component>"
+          "<connection>"
+            "<map_components component_2=\"component_in_this_model\" component_1=\"component_bob\"/>"
+            "<map_variables variable_2=\"variable_import\" variable_1=\"variable_bob\"/>"
+          "</connection>"
+        "</model>";
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(e);
+    EXPECT_EQ(0, parser.errorCount());
+}
+
+TEST(Coverage, component2ConnectionVariableMissing) {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"component_bob\">"
+                "<variable name=\"variable_bob\"/>"
+            "</component>"
+            "<component name=\"component_dave\">"
+                "<variable name=\"variable_dave\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
+            "</connection>"
+        "</model>";
+
+    // Parse
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(e);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(65, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, component2InConnectionMissing) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"component_bob\">"
+                "<variable name=\"variable_bob\"/>"
+            "</component>"
+            "<component name=\"component_dave\">"
+                "<variable name=\"variable_dave\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_1=\"component_bob\"/>"
+                "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
+            "</connection>"
+        "</model>";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"component_bob\">"
+                "<variable name=\"variable_bob\"/>"
+            "</component>"
+            "<component name=\"component_dave\">"
+                "<variable name=\"variable_dave\"/>"
+            "</component>"
+        "</model>";
+
+    // Parse
+    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::ModelPtr m = p.parseModel(in);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(e, m->serialise(libcellml::Format::XML));
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(136, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, connectionVariable2Missing) {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"component_bob\">"
+                "<variable name=\"variable_bob\"/>"
+            "</component>"
+            "<component name=\"component_dave\">"
+                "<variable name=\"variable_dave\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<map_variables variable_1=\"variable_bob\"/>"
+            "</connection>"
+        "</model>";
+
+    // Parse
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(e);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(55, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, connectionVariable1Missing) {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"component_bob\">"
+                "<variable name=\"variable_bob\"/>"
+            "</component>"
+            "<component name=\"component_dave\">"
+                "<variable name=\"variable_dave\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<map_variables variable_2=\"variable_dave\"/>"
+            "</connection>"
+        "</model>";
+
+    // Parse
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(e);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(55, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithConnectionErrorNoMapVariablesType) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"component1\">"
+                "<variable name=\"variable1\"/>"
+            "</component>"
+            "<component name=\"component2\">"
+                "<variable name=\"variable2\"/>"
+            "</component>"
+            "<connection>"
+                "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
+                "<map_variabels variable_1=\"variable1\" variable_2=\"variable2\"/>"
+            "</connection>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(67, p.getError(0)->serialise().length());
 }
 
