@@ -55,8 +55,8 @@ protected:
 class EntityElementError: public EntityError
 {
 public:
-    void setElementType(const std::string& element_type) { mElementType = element_type; }
-    std::string getElementType() const { return mElementType; }
+    void setType(const std::string& elementType) { mElementType = elementType; }
+    std::string getType() const { return mElementType; }
     void setParentLabel(const std::string& label) { mLabel = label; }
     std::string getParentLabel() const { return mLabel; }
 
@@ -273,12 +273,20 @@ class ComponentError: public ComponentEntityError
  */
 class ModelError: public ComponentEntityError
 {
+public:
+    void setDescription(const std::string& description) { mDescription = description; }
 
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+
+private:
+    std::string mDescription;
 };
 
 typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared entity error pointer. */
 typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared variable error pointer. */
 typedef std::shared_ptr<UnitsError> UnitsErrorPtr; /**< Type definition for shared units error pointer. */
+typedef std::shared_ptr<ModelError> ModelErrorPtr; /**< Type definition for shared model error pointer. */
 typedef std::shared_ptr<UnitsBaseUnitAttributeError> UnitsBaseUnitAttributeErrorPtr; /**< Type definition for shared units base unit attribute error pointer. */
 typedef std::shared_ptr<UnitsExponentAttributeError> UnitsExponentAttributeErrorPtr; /**< Type definition for shared units exponent attribute error pointer. */
 typedef std::shared_ptr<UnitsMultiplierAttributeError> UnitsMultiplierAttributeErrorPtr; /**< Type definition for shared units multiplier attribute error pointer. */

@@ -13,7 +13,7 @@ std::string EntityError::doSerialisation() const
 
 std::string EntityElementError::doSerialisation() const
 {
-    std::string s = "Invalid element '" + getElementType() + "' found in '" + getParentLabel() + "'";
+    std::string s = "Invalid element '" + getType() + "' found in '" + getParentLabel() + "'";
     return s;
 }
 
@@ -21,6 +21,11 @@ std::string VariableError::doSerialisation() const
 {
     std::string s = "Variable '" + getName() + "' not found in component '" + mComponent->getName() + "'";
     return s;
+}
+
+std::string ModelError::doSerialisation() const
+{
+    return mDescription;
 }
 
 std::string UnitsBaseUnitAttributeError::doSerialisation() const

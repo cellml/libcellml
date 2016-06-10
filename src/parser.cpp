@@ -122,8 +122,13 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
             loadImport(import, model, childNode);
         } else if (childNode->isType("encapsulation")) {
             XmlNodePtr componentRefNode = childNode->getChild();
-            if (!componentRefNode) throw std::invalid_argument("Encapsulation does not contain any component_ref");
-            loadEncapsulation(model, componentRefNode);
+            if (componentRefNode) {
+                loadEncapsulation(model, componentRefNode);
+            } else {
+                ModelErrorPtr err = std::make_shared<ModelError>();
+                err->setDescription("Encapsulation does not contain any component_ref");
+                addError(err);
+            }
         } else if (childNode->isType("connection")) {
             loadConnection(model, childNode);
         } else {
@@ -238,7 +243,7 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
             units->addUnit(name, prefix, exponent, multiplier, offset);
         } else {
             EntityElementErrorPtr err = std::make_shared<EntityElementError>();
-            err->setElementType(childNode->getType());
+            err->setType(childNode->getType());
             err->setParentLabel("element '" + node->getType() + "' with name '" + units->getName() + "'");
             addError(err);
         }
@@ -275,7 +280,10 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     // Load the connection map_components.
     XmlNodePtr mapComponentsNode = node->getChild();
     if (!mapComponentsNode) {
-        throw std::invalid_argument("Connection does not contain any child elements.");
+        ModelErrorPtr err = std::make_shared<ModelError>();
+        err->setDescription("Connection does not contain any child elements.");
+        addError(err);
+        return;
     }
     if (mapComponentsNode->isType("map_components")) {
         if (mapComponentsNode->hasAttribute("component_1")) {
@@ -283,26 +291,42 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
             if (model->containsComponent(componentName)) {
                 component1 = model->getComponent(componentName);
             } else {
-                throw std::invalid_argument("Model does not contain the following component specified in a connection: " + componentName + ".");
+                ModelErrorPtr err = std::make_shared<ModelError>();
+                err->setDescription("Model does not contain the following component specified in a connection: " + componentName + ".");
+                addError(err);
+                return;
             }
             if (mapComponentsNode->hasAttribute("component_2")) {
                 std::string componentName = mapComponentsNode->getAttribute("component_2");
                 if (model->containsComponent(componentName)) {
                     component2 = model->getComponent(componentName);
                 } else {
-                    throw std::invalid_argument("Model does not contain a the following component specified in a connection: " + componentName + ".");
+                    ModelErrorPtr err = std::make_shared<ModelError>();
+                    err->setDescription("Model does not contain the following component specified in a connection: " + componentName + ".");
+                    addError(err);
+                    return;
                 }
             }
         } else {
-            throw std::invalid_argument("Connection map_components does not contain a component_1.");
+            ModelErrorPtr err = std::make_shared<ModelError>();
+            err->setDescription("Connection map_components does not contain a component_1.");
+            addError(err);
+            return;
         }
     } else {
-        throw std::invalid_argument("Connection does not contain a map_components.");
+        ModelErrorPtr err = std::make_shared<ModelError>();
+        err->setDescription("Connection does not contain a map_components.");
+        addError(err);
+        return;
     }
 
     // Load all connection map_variables.
     XmlNodePtr mapVariablesNode = mapComponentsNode->getNext();
-    if (!mapVariablesNode) throw std::invalid_argument("Connection only contains a map_components (no map_variables).");
+    if (!mapVariablesNode) {
+        ModelErrorPtr err = std::make_shared<ModelError>();
+        err->setDescription("Connection only contains a map_components (no map_variables).");
+        addError(err);
+    }
     while (mapVariablesNode) {
         variable1 = nullptr;
         if (mapVariablesNode->isType("map_variables")) {
@@ -343,20 +367,34 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                             ve->setComponent(component2);
                             ve->setName(variableName);
                             addError(ve);
+                            break;
                         }
                     } else {
-                        // Create a new variable if a parent component_2 does not exist
-                        variable2 = std::make_shared<Variable>();
-                        variable2->setName(variableName);
+                        ModelErrorPtr err = std::make_shared<ModelError>();
+                        err->setDescription("Connection does not name a valid component_2 for connection "
+                                            "between variables variable_1='" + variable1->getName() + "' "
+                                            "and variable_2='" + variableName + "'.");
+                        addError(err);
+                        break;
                     }
                 } else {
-                    throw std::invalid_argument("Connection map_variables does not contain a variable_2.");
+                    ModelErrorPtr err = std::make_shared<ModelError>();
+                    err->setDescription("Connection map_variables does not contain a variable_2.");
+                    addError(err);
+                    break;
                 }
             } else {
-                throw std::invalid_argument("Connection map_variables does not contain a variable_1.");
+                ModelErrorPtr err = std::make_shared<ModelError>();
+                err->setDescription("Connection map_variables does not contain a variable_1.");
+                addError(err);
+                break;
             }
         } else {
-            throw std::invalid_argument("Unrecognised connection child- expected a map_variables.");
+            EntityElementErrorPtr err = std::make_shared<EntityElementError>();
+            err->setType(mapVariablesNode->getType());
+            err->setParentLabel("element '" + mapComponentsNode->getType() + "'");
+            addError(err);
+            break;
         }
 
         // Set variable equivalence relationship.
