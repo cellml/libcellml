@@ -63,6 +63,7 @@ Parser::Parser(Parser &&rhs)
 
 Parser& Parser::operator=(Parser p)
 {
+    Logger::operator =(p);
     p.swap(*this);
     return *this;
 }
@@ -170,7 +171,10 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (node->getAttribute("base_unit") == "no") {
             units->setBaseUnit(false);
         } else {
-            throw std::invalid_argument("Unrecognised base_unit attribute: should be 'yes' or 'no'");
+            UnitsBaseUnitAttributeErrorPtr err = std::make_shared<UnitsBaseUnitAttributeError>();
+            err->setUnits(units);
+            err->setValue(node->getAttribute("base_unit"));
+            addError(err);
         }
     }
     XmlNodePtr childNode = node->getChild();
@@ -191,29 +195,41 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                 try
                 {
                     exponent = std::stod(childNode->getAttribute("exponent"));
-                } catch (std::invalid_argument) {
-                    throw std::invalid_argument("Exponent cannot be converted to a real number in unit: " + name);
+                } catch (std::exception) {
+                    UnitsExponentAttributeErrorPtr err = std::make_shared<UnitsExponentAttributeError>();
+                    err->setUnits(units);
+                    err->setValue(childNode->getAttribute("exponent"));
+                    addError(err);
                 }
             }
             if (childNode->hasAttribute("multiplier")) {
                 try
                 {
                     multiplier = std::stod(childNode->getAttribute("multiplier"));
-                } catch (std::invalid_argument) {
-                    throw std::invalid_argument("Multiplier cannot be converted to a real number in unit: " + name);
+                } catch (std::exception) {
+                    UnitsMultiplierAttributeErrorPtr err = std::make_shared<UnitsMultiplierAttributeError>();
+                    err->setUnits(units);
+                    err->setValue(childNode->getAttribute("multiplier"));
+                    addError(err);
                 }
             }
             if (childNode->hasAttribute("offset")) {
                 try
                 {
                     offset = std::stod(childNode->getAttribute("offset"));
-                } catch (std::invalid_argument) {
-                    throw std::invalid_argument("Offset cannot be converted to a real number in unit: " + name);
+                } catch (std::exception) {
+                    UnitsOffsetAttributeErrorPtr err = std::make_shared<UnitsOffsetAttributeError>();
+                    err->setUnits(units);
+                    err->setValue(childNode->getAttribute("offset"));
+                    addError(err);
                 }
             }
             units->addUnit(name, prefix, exponent, multiplier, offset);
         } else {
-            throw std::invalid_argument("Unrecognised child element in units: " + node->getAttribute("name"));
+            EntityElementErrorPtr err = std::make_shared<EntityElementError>();
+            err->setElementType(childNode->getElementType());
+            err->setParentLabel("element '" + node->getElementType() + "' with name '" + units->getName() + "'");
+            addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -244,7 +260,9 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     VariablePtr variable2 = nullptr;
     // Load the connection map_components.
     XmlNodePtr mapComponentsNode = node->getChild();
-    if (!mapComponentsNode) throw std::invalid_argument("Connection does not contain any child elements.");
+    if (!mapComponentsNode) {
+        throw std::invalid_argument("Connection does not contain any child elements.");
+    }
     if (mapComponentsNode->isType("map_components")) {
         if (mapComponentsNode->hasAttribute("component_1")) {
             std::string componentName = mapComponentsNode->getAttribute("component_1");

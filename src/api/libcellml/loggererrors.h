@@ -52,6 +52,21 @@ protected:
     virtual std::string doSerialisation() const;
 };
 
+class EntityElementError: public EntityError
+{
+public:
+    void setElementType(const std::string& element_type) { mElementType = element_type; }
+    std::string getElementType() const { return mElementType; }
+    void setParentLabel(const std::string& label) { mLabel = label; }
+    std::string getParentLabel() const { return mLabel; }
+
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+
+private:
+    std::string mElementType; /**< Element type attribute represented as a @c std::string. */
+    std::string mLabel; /**< Label attribute represented as a @c std::string. */
+};
+
 /**
  * @brief The NamedEntityError class
  *
@@ -133,7 +148,102 @@ class ImportedEntityError: public NamedEntityError
  */
 class UnitsError: public ImportedEntityError
 {
+public:
+    /**
+     * @brief Set the units for the UnitsError.
+     *
+     * Set the units for the UnitsError.
+     *
+     * @param u A pointer to the units to set.
+     */
+    void setUnits(UnitsPtr u) { mUnits = u; }
 
+    /**
+     * @brief Get the units for the UnitsError.
+     *
+     * Get the units for the UnitsError.
+     *
+     * @return A pointer to the units.
+     */
+    UnitsPtr getUnits() const { return mUnits; }
+
+private:
+    UnitsPtr mUnits;
+};
+
+/**
+ * @brief The UnitsAttributeError class.
+ *
+ * The UnitsAttributeError class.
+ */
+class UnitsAttributeError: public UnitsError
+{
+public:
+    /**
+     * @brief Set the value of the attribute.
+     *
+     * Set the value of the attribute.
+     *
+     * @param value The @c std::string value to set.
+     */
+    void setValue(const std::string& value) { mValue = value; }
+
+    /**
+     * @brief Get the value of the attribute.
+     *
+     * Get the value of the attribute.
+     *
+     * @return The @c std::string representation of the value.
+     */
+    std::string getValue() const { return mValue; }
+
+private:
+    std::string mValue;
+};
+
+/**
+ * @brief The UnitsBaseUnitAttributeError class.
+ *
+ * The UnitsBaseUnitAttributeError class.
+ */
+class UnitsBaseUnitAttributeError: public UnitsAttributeError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+
+};
+
+/**
+ * @brief The UnitsExponentAttributeError class.
+ *
+ * The UnitsExponentAttributeError class.
+ */
+class UnitsExponentAttributeError: public UnitsAttributeError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+};
+
+/**
+ * @brief The UnitsMultiplierAttributeError class.
+ *
+ * The UnitsMultiplierAttributeError class.
+ */
+class UnitsMultiplierAttributeError: public UnitsAttributeError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+};
+
+/**
+ * @brief The UnitsOffsetAttributeError class.
+ *
+ * The UnitsOffsetAttributeError class.
+ */
+class UnitsOffsetAttributeError: public UnitsAttributeError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
 };
 
 /**
@@ -165,6 +275,15 @@ class ModelError: public ComponentEntityError
 {
 
 };
+
+typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared entity error pointer. */
+typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared variable error pointer. */
+typedef std::shared_ptr<UnitsError> UnitsErrorPtr; /**< Type definition for shared units error pointer. */
+typedef std::shared_ptr<UnitsBaseUnitAttributeError> UnitsBaseUnitAttributeErrorPtr; /**< Type definition for shared units base unit attribute error pointer. */
+typedef std::shared_ptr<UnitsExponentAttributeError> UnitsExponentAttributeErrorPtr; /**< Type definition for shared units exponent attribute error pointer. */
+typedef std::shared_ptr<UnitsMultiplierAttributeError> UnitsMultiplierAttributeErrorPtr; /**< Type definition for shared units multiplier attribute error pointer. */
+typedef std::shared_ptr<UnitsOffsetAttributeError> UnitsOffsetAttributeErrorPtr; /**< Type definition for shared units offset attribute error pointer. */
+typedef std::shared_ptr<EntityElementError> EntityElementErrorPtr; /**< Type definition for shared entity element error pointer. */
 
 }
 

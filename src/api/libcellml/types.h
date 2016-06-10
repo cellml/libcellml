@@ -38,10 +38,7 @@ class XmlNode; /**< Forward declaration of XmlNode class. */
 typedef std::shared_ptr<XmlNode> XmlNodePtr; /**< Type definition for shared XML node pointer. */
 class XmlDoc; /**< Forward declaration of XmlDoc class. */
 typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
-class EntityError; /**< Forward declaration of XmlDoc class. */
-typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared XML doc pointer. */
-class VariableError; /**< Forward declaration of XmlDoc class. */
-typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared XML doc pointer. */
+
 }
 
 #endif /* LIBCELLML_LIBCELLML_TYPES_H_ */

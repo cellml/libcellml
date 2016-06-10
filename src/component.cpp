@@ -21,6 +21,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/variable.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
@@ -196,6 +197,13 @@ std::string Component::doSerialisation(Format format) const
         std::string componentName = getName();
         if (componentName.length()) {
             repr += " name=\"" + componentName + "\"";
+        }
+        if (unitsCount() > 0) {
+            endTag = true;
+            repr += ">";
+            for (size_t i = 0; i < unitsCount(); ++i) {
+                repr += getUnits(i)->serialise(format);
+            }
         }
         if (variableCount() > 0) {
             endTag = true;

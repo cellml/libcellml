@@ -45,6 +45,54 @@ TEST(Model, parseNamedModel) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Model, parseModelWithNamedComponentWithUnits) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+              "<component name=\"component_name\">"
+                "<units name=\"fahrenheit\">"
+                  "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\" base_unit=\"yes\"/>"
+              "</component>"
+            "</model>";
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    std::string a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Model, parseModelWithNamedComponentWithInvalidBaseUnits) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<component name=\"component_name\">"
+            "<units name=\"fahrenheit\">"
+              "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+            "</units>"
+            "<units name=\"dimensionless\" base_unit=\"joe\"/>"
+          "</component>"
+        "</model>";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<component name=\"component_name\">"
+            "<units name=\"fahrenheit\">"
+              "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+            "</units>"
+            "<units name=\"dimensionless\"/>"
+          "</component>"
+        "</model>";
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(in);
+    std::string a = model->serialise(libcellml::Format::XML);
+
+    EXPECT_EQ(1, parser.errorCount());
+    EXPECT_EQ("Unrecognised base_unit attribute in units 'dimensionless': should be either 'yes' or 'no', and not 'joe'", parser.getError(0)->serialise());
+
+    EXPECT_EQ(e, a);
+}
+
 TEST(Model, parseNamedModelWithNamedComponent) {
     std::string mName = "modelName";
     std::string cName = "componentName";
