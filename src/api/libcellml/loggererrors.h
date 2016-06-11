@@ -41,6 +41,62 @@ public:
      */
     std::string serialise() const { return doSerialisation(); }
 
+    /**
+     * @brief Set the type of this attribute or element entity.
+     *
+     * Set the type of the element or attribute entity.
+     *
+     * @param value The @c std::string value to set.
+     */
+    void setType(const std::string& type) { mType = type; }
+
+    /**
+     * @brief Get the type of this attribute or element entity.
+     *
+     * Get the type of this element or attribute entity.
+     *
+     * @return The @c std::string representation of the type.
+     */
+    std::string getType() const { return mType; }
+
+    /**
+     * @brief Set label referring to the parent of this entity.
+     *
+     * Set a label to give information about the parent of this
+     * element or attribute entity.
+     *
+     * @param value The @c std::string label to set.
+     */
+    void setParentLabel(const std::string& label) { mParentLabel = label; }
+
+    /**
+     * @brief Get a label referring to the parent of this entity.
+     *
+     * Get a label with information about the parent of this
+     * element or attribute entity.
+     *
+     * @return label The @c std::string label.
+     */
+    std::string getParentLabel() const { return mParentLabel; }
+
+    /**
+     * @brief Set the value of the attribute.
+     *
+     * Set the value of the attribute.
+     *
+     * @param value The @c std::string value to set.
+     */
+    void setValue(const std::string& value) { mValue = value; }
+
+    /**
+     * @brief Get the value of the attribute.
+     *
+     * Get the value of the attribute.
+     *
+     * @return The @c std::string representation of the value.
+     */
+    std::string getValue() const { return mValue; }
+
 protected:
     /**
      * @brief Virtual method for serialising error.
@@ -50,21 +106,16 @@ protected:
      * @return @c std::string representation of the object.
      */
     virtual std::string doSerialisation() const;
+
+    std::string mType; /**< Element or attribute type for this entity represented as a @c std::string. */
+    std::string mParentLabel; /**< Parent entity label represented as a @c std::string. */
+    std::string mValue; /**< Attribute value represented as a @c std::string. */
 };
 
 class EntityElementError: public EntityError
 {
-public:
-    void setType(const std::string& elementType) { mElementType = elementType; }
-    std::string getType() const { return mElementType; }
-    void setParentLabel(const std::string& label) { mLabel = label; }
-    std::string getParentLabel() const { return mLabel; }
-
+protected:
     virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-
-private:
-    std::string mElementType; /**< Element type attribute represented as a @c std::string. */
-    std::string mLabel; /**< Label attribute represented as a @c std::string. */
 };
 
 /**
@@ -172,33 +223,25 @@ private:
 };
 
 /**
+ * @brief The UnitsElementError class.
+ *
+ * The UnitsElementError class.
+ */
+class UnitsElementError: public UnitsError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+};
+
+/**
  * @brief The UnitsAttributeError class.
  *
  * The UnitsAttributeError class.
  */
-class UnitsAttributeError: public UnitsError
+class UnitsAttributeError: public UnitsElementError
 {
-public:
-    /**
-     * @brief Set the value of the attribute.
-     *
-     * Set the value of the attribute.
-     *
-     * @param value The @c std::string value to set.
-     */
-    void setValue(const std::string& value) { mValue = value; }
-
-    /**
-     * @brief Get the value of the attribute.
-     *
-     * Get the value of the attribute.
-     *
-     * @return The @c std::string representation of the value.
-     */
-    std::string getValue() const { return mValue; }
-
-private:
-    std::string mValue;
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
 };
 
 /**
@@ -210,7 +253,6 @@ class UnitsBaseUnitAttributeError: public UnitsAttributeError
 {
 protected:
     virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-
 };
 
 /**
@@ -263,7 +305,49 @@ class ComponentEntityError: public ImportedEntityError
  */
 class ComponentError: public ComponentEntityError
 {
+public:
+    /**
+     * @brief Set the component for the @c ComponentError.
+     *
+     * Set the component for this @c ComponentError.
+     *
+     * @param c A pointer to the component to set.
+     */
+    void setComponent(ComponentPtr c) { mComponent = c; }
 
+    /**
+     * @brief Get the component for the @c ComponentError.
+     *
+     * Get the component for this @c ComponentError.
+     *
+     * @return A pointer to the component.
+     */
+    ComponentPtr getComponent() const { return mComponent; }
+
+private:
+    ComponentPtr mComponent;
+};
+
+/**
+ * @brief The ComponentElementError class.
+ *
+ * The ComponentElementError class.
+ */
+class ComponentElementError: public ComponentError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+};
+
+/**
+* @brief The ComponentAttributeError class.
+*
+* The ComponentAttributeError class.
+*/
+class ComponentAttributeError: public ComponentElementError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
 };
 
 /**
@@ -286,7 +370,12 @@ private:
 typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared entity error pointer. */
 typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared variable error pointer. */
 typedef std::shared_ptr<UnitsError> UnitsErrorPtr; /**< Type definition for shared units error pointer. */
+typedef std::shared_ptr<ComponentError> ComponentErrorPtr; /**< Type definition for shared component error pointer. */
+typedef std::shared_ptr<ComponentElementError> ComponentElementErrorPtr; /**< Type definition for shared component element error pointer. */
+typedef std::shared_ptr<ComponentAttributeError> ComponentAttributeErrorPtr; /**< Type definition for shared component attribute error pointer. */
 typedef std::shared_ptr<ModelError> ModelErrorPtr; /**< Type definition for shared model error pointer. */
+typedef std::shared_ptr<UnitsElementError> UnitsElementErrorPtr; /**< Type definition for shared units element error pointer. */
+typedef std::shared_ptr<UnitsAttributeError> UnitsAttributeErrorPtr; /**< Type definition for shared units attribute error pointer. */
 typedef std::shared_ptr<UnitsBaseUnitAttributeError> UnitsBaseUnitAttributeErrorPtr; /**< Type definition for shared units base unit attribute error pointer. */
 typedef std::shared_ptr<UnitsExponentAttributeError> UnitsExponentAttributeErrorPtr; /**< Type definition for shared units exponent attribute error pointer. */
 typedef std::shared_ptr<UnitsMultiplierAttributeError> UnitsMultiplierAttributeErrorPtr; /**< Type definition for shared units multiplier attribute error pointer. */

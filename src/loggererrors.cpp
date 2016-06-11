@@ -23,9 +23,53 @@ std::string VariableError::doSerialisation() const
     return s;
 }
 
+std::string ComponentElementError::doSerialisation() const
+{
+    std::string s;
+    if (getComponent()->getName() != "") {
+        s = "Unrecognised child element '" + getType() + "' found in component '" + getComponent()->getName() + "'.";
+    } else {
+        s = "Unrecognised child element '" + getType() + "' found in unnamed component.";
+    }
+    return s;
+}
+
+std::string ComponentAttributeError::doSerialisation() const
+{
+    std::string s;
+    if (getComponent()->getName() != "") {
+        s = "Unrecognised attribute '" + getType() + "' found in component '" + getComponent()->getName() + "'.";
+    } else {
+        s = "Unrecognised attribute '" + getType() + "' found in unnamed component.";
+    }
+    return s;
+}
+
 std::string ModelError::doSerialisation() const
 {
     return mDescription;
+}
+
+std::string UnitsElementError::doSerialisation() const
+{
+    std::string s;
+    if (getUnits()->getName() != "") {
+        s = "Unrecognised child element '" + getType() + "' for units '" + getUnits()->getName() + "' found in " + getParentLabel() + ".";
+    } else {
+        s = "Unrecognised child element '" + getType() + "' for unnamed units found in " + getParentLabel() + ".";
+    }
+    return s;
+}
+
+std::string UnitsAttributeError::doSerialisation() const
+{
+    std::string s;
+    if (getUnits()->getName() != "") {
+        s = "Unrecognised attribute '" + getType() + "' found in units '" + getUnits()->getName() + "'.";
+    } else {
+        s = "Unrecognised attribute '" + getType() + "' found in unnamed units.";
+    }
+    return s;
 }
 
 std::string UnitsBaseUnitAttributeError::doSerialisation() const
