@@ -91,7 +91,7 @@ XmlAttributePtr XmlNode::getRootAttribute()
 
 XmlNodePtr XmlNode::getChild()
 {
-    xmlNodePtr child = mPimpl->mXmlNodePtr->xmlChildrenNode;
+    xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = std::make_shared<XmlNode>();
     childHandle->setXmlNode(child);
     if (child == NULL) childHandle = nullptr;
@@ -105,6 +105,15 @@ XmlNodePtr XmlNode::getNext()
     nextHandle->setXmlNode(next);
     if (next == NULL) nextHandle = nullptr;
     return nextHandle;
+}
+
+XmlNodePtr XmlNode::getParent()
+{
+    xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
+    XmlNodePtr parentHandle = std::make_shared<XmlNode>();
+    parentHandle->setXmlNode(parent);
+    if (parent == NULL) parentHandle = nullptr;
+    return parentHandle;
 }
 
 std::string XmlNode::convertToString() {

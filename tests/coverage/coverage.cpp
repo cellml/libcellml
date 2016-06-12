@@ -17,7 +17,7 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <libcellml>
-
+#include <iostream>
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
@@ -726,6 +726,73 @@ TEST(Coverage, parserModelElement) {
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(32, p.getError(0)->serialise().length());
+    EXPECT_EQ(54, p.getError(0)->serialise().length());
 }
 
+TEST(Coverage, parserComponentAttributeErrors) {
+    std::string input1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<component lame=\"randy\"/>"
+        "</model>";
+    std::string expectError1 = "Unrecognised attribute 'lame' found in unnamed component.";
+
+    std::string input2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<component name=\"randy\" son=\"stan\"/>"
+        "</model>";
+    std::string expectError2 = "Unrecognised attribute 'son' found in component 'randy'.";
+
+    std::string input3 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<component son=\"stan\" name=\"randy\"/>"
+        "</model>";
+    std::string expectError3 = "Unrecognised attribute 'son' found in component 'randy'.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(input1);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+
+    p.clearErrors();
+    p.parseModel(input2);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+
+    p.clearErrors();
+    p.parseModel(input3);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError3, p.getError(0)->serialise());
+}
+
+TEST(Coverage, parserComponentElementErrors) {
+    std::string input1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<component>"
+            "<son name=\"stan\"/>"
+          "</component>"
+        "</model>";
+    std::string expectError1 = "Unrecognised child element 'son' found in unnamed component.";
+
+    std::string input2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<component name=\"randy\">"
+            "<son name=\"stan\"/>"
+          "</component>"
+        "</model>";
+    std::string expectError2 = "Unrecognised child element 'son' found in component 'randy'.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(input1);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+
+    p.clearErrors();
+    p.parseModel(input2);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+}

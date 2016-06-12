@@ -135,7 +135,7 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
             loadConnection(model, childNode);
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
-            err->setDescription("Invalid model element: '" + childNode->getType() + "'.");
+            err->setDescription("Invalid model element: '" + childNode->getType() + "' in model '" + model->getName() + "'.");
             addError(err);
         }
         childNode = childNode->getNext();
@@ -149,7 +149,10 @@ void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node
         if (attribute->isType("name")) {
             component->setName(attribute->getValue());
         } else {
-            throw std::invalid_argument("Unrecognised component attribute: " + attribute->getType());
+            ComponentAttributeErrorPtr err = std::make_shared<ComponentAttributeError>();
+            err->setType(attribute->getType());
+            err->setComponent(component);
+            addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -167,7 +170,10 @@ void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node
             std::string math = childNode->convertToString();
             component->setMath(math);
         } else {
-            throw std::invalid_argument("Unrecognised component element: " + childNode->getType());
+            ComponentElementErrorPtr err = std::make_shared<ComponentElementError>();
+            err->setType(childNode->getType());
+            err->setComponent(component);
+            addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -191,7 +197,10 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                 addError(err);
             }
         } else {
-            throw std::invalid_argument("Unrecognised units attribute: " + attribute->getType());
+            UnitsAttributeErrorPtr err = std::make_shared<UnitsAttributeError>();
+            err->setType(attribute->getType());
+            err->setUnits(units);
+            addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -246,8 +255,9 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
             }
             units->addUnit(name, prefix, exponent, multiplier, offset);
         } else {
-            EntityElementErrorPtr err = std::make_shared<EntityElementError>();
+            UnitsElementErrorPtr err = std::make_shared<UnitsElementError>();
             err->setType(childNode->getType());
+            err->setUnits(units);
             err->setParentLabel("element '" + node->getType() + "' with name '" + units->getName() + "'");
             addError(err);
         }
