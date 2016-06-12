@@ -715,3 +715,17 @@ TEST(Coverage, parserModelAttribute) {
     EXPECT_EQ(57, p.getError(0)->serialise().length());
 }
 
+TEST(Coverage, parserModelElement) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<uknits/>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(32, p.getError(0)->serialise().length());
+}
+

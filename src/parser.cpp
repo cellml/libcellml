@@ -134,7 +134,9 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
         } else if (childNode->isType("connection")) {
             loadConnection(model, childNode);
         } else {
-            throw std::invalid_argument("Unrecognised XML element: " + node->getType());
+            ModelErrorPtr err = std::make_shared<ModelError>();
+            err->setDescription("Invalid model element: '" + childNode->getType() + "'.");
+            addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -424,7 +426,6 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     err->setDescription("Model does not contain the following component specified in an encapsulation: " + parentComponentName + ".");
                     addError(err);
                     errorOccurred = true;
-//                    throw std::invalid_argument("Model does not contain the following component specified in an encapsulation: " + parentComponentName + ".");
                 }
                 // Get child components
                 XmlNodePtr childComponentNode = parentComponentNode->getChild();
@@ -433,7 +434,6 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     err->setDescription("Encapsulation contains no child components.");
                     addError(err);
                     errorOccurred = true;
-//                    throw std::invalid_argument("Encapsulation contains no child components.");
                 }
                 while (childComponentNode) {
                     ComponentPtr childComponent = nullptr;
@@ -447,21 +447,18 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                                 err->setDescription("Model does not contain the following component specified in an encapsulation: " + childComponentName + ".");
                                 addError(err);
                                 errorOccurred = true;
-//                                throw std::invalid_argument("Model does not contain the following component specified in an encapsulation: " + childComponentName + ".");
                             }
                         } else {
                             ModelErrorPtr err = std::make_shared<ModelError>();
                             err->setDescription("Encapsulation component_ref does not contain a component.");
                             addError(err);
                             errorOccurred = true;
-//                            throw std::invalid_argument("Encapsulation component_ref does not contain a component.");
                         }
                     } else {
                         ModelErrorPtr err = std::make_shared<ModelError>();
                         err->setDescription("Encapsulation does not contain a component_ref.");
                         addError(err);
                         errorOccurred = true;
-//                        throw std::invalid_argument("Encapsulation does not contain a component_ref.");
                     }
                     if (!errorOccurred) {
                         // Set parent/child relationship.
@@ -482,13 +479,11 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                 ModelErrorPtr err = std::make_shared<ModelError>();
                 err->setDescription("Encapsulation component_ref does not contain a component.");
                 addError(err);
-//                throw std::invalid_argument("Encapsulation component_ref does not contain a component.");
             }
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
             err->setDescription("Encapsulation does not contain a component_ref.");
             addError(err);
-//            throw std::invalid_argument("Encapsulation does not contain a component_ref.");
         }
         // Get the next parent component at this level
         parentComponentNode = parentComponentNode->getNext();
