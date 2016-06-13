@@ -53,7 +53,9 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
 bool XmlNode::isType(const char *elementName)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) found = true;
+    if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
+        found = true;
+    }
     return found;
 }
 
@@ -66,7 +68,9 @@ bool XmlNode::hasAttribute(const char *attributeName)
 {
     bool found = false;
     xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
-    if (attribute) found = true;
+    if (attribute) {
+        found = true;
+    }
     return found;
 }
 
@@ -94,7 +98,9 @@ XmlNodePtr XmlNode::getChild()
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = std::make_shared<XmlNode>();
     childHandle->setXmlNode(child);
-    if (child == NULL) childHandle = nullptr;
+    if (child == NULL) {
+        childHandle = nullptr;
+    }
     return childHandle;
 }
 
@@ -103,18 +109,22 @@ XmlNodePtr XmlNode::getNext()
     xmlNodePtr next = mPimpl->mXmlNodePtr->next;
     XmlNodePtr nextHandle = std::make_shared<XmlNode>();
     nextHandle->setXmlNode(next);
-    if (next == NULL) nextHandle = nullptr;
+    if (next == NULL) {
+        nextHandle = nullptr;
+    }
     return nextHandle;
 }
 
-XmlNodePtr XmlNode::getParent()
-{
-    xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
-    XmlNodePtr parentHandle = std::make_shared<XmlNode>();
-    parentHandle->setXmlNode(parent);
-    if (parent == NULL) parentHandle = nullptr;
-    return parentHandle;
-}
+//XmlNodePtr XmlNode::getParent()
+//{
+//    xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
+//    XmlNodePtr parentHandle = std::make_shared<XmlNode>();
+//    parentHandle->setXmlNode(parent);
+//    if (parent == NULL) {
+//        parentHandle = nullptr;
+//    }
+//    return parentHandle;
+//}
 
 std::string XmlNode::convertToString() {
     std::string contentString;

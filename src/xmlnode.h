@@ -137,7 +137,7 @@ public:
      *
      * @return The XmlNodePtr to the parent node for this XmlNode.
      */
-    XmlNodePtr getParent();
+//    XmlNodePtr getParent();
 
     /**
      * @brief Convert this XmlNode content into a @c std::string.
