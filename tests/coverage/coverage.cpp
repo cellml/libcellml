@@ -292,6 +292,41 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Coverage, parseModelInvalidUnitsAttribute) {
+    const std::string in1 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+                "<units name=\"fahrenheit\">"
+                    "<unit poofset=\"2.0\" units=\"celsius\"/>"
+                    "</units>"
+                "<units name=\"dimensionless\" base_unit=\"no\"/>"
+            "</model>";
+    const std::string expectedErrorMessage1 = "Invalid attribute 'poofset' found in units 'fahrenheit'.";
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(in1);
+
+    ASSERT_EQ(1, parser.errorCount());
+
+    EXPECT_EQ(expectedErrorMessage1, parser.getError(0)->serialise());
+
+    const std::string in2 =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+                "<units roofset=\"2.0\">"
+                    "<unit/>"
+                    "</units>"
+                "<units name=\"dimensionless\" base_unit=\"no\"/>"
+            "</model>";
+    const std::string expectedErrorMessage2 = "Invalid attribute 'roofset' found in unnamed units.";
+
+    parser.clearErrors();
+    parser.parseModel(in2);
+
+    ASSERT_EQ(1, parser.errorCount());
+
+    EXPECT_EQ(expectedErrorMessage2, parser.getError(0)->serialise());
+}
+
 TEST(Coverage, parserWithEmptyEncapsulation) {
     std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -729,27 +764,41 @@ TEST(Coverage, parserModelElement) {
     EXPECT_EQ(54, p.getError(0)->serialise().length());
 }
 
+TEST(Coverage, parserUnitsAttributeError) {
+    std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<units name=\"pH\" base_unit=\"yes\" invalid_attribute=\"yes\"/>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(ex);
+    EXPECT_EQ(1, p.errorCount());
+//    EXPECT_EQ("", p.getError(0)->serialise());
+    EXPECT_EQ(58, p.getError(0)->serialise().length());
+}
+
 TEST(Coverage, parserComponentAttributeErrors) {
     std::string input1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
           "<component lame=\"randy\"/>"
         "</model>";
-    std::string expectError1 = "Unrecognised attribute 'lame' found in unnamed component.";
+    std::string expectError1 = "Invalid attribute 'lame' found in unnamed component.";
 
     std::string input2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
           "<component name=\"randy\" son=\"stan\"/>"
         "</model>";
-    std::string expectError2 = "Unrecognised attribute 'son' found in component 'randy'.";
+    std::string expectError2 = "Invalid attribute 'son' found in component 'randy'.";
 
     std::string input3 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
           "<component son=\"stan\" name=\"randy\"/>"
         "</model>";
-    std::string expectError3 = "Unrecognised attribute 'son' found in component 'randy'.";
+    std::string expectError3 = "Invalid attribute 'son' found in component 'randy'.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);
@@ -775,7 +824,7 @@ TEST(Coverage, parserComponentElementErrors) {
             "<son name=\"stan\"/>"
           "</component>"
         "</model>";
-    std::string expectError1 = "Unrecognised child element 'son' found in unnamed component.";
+    std::string expectError1 = "Invalid child element 'son' found in unnamed component.";
 
     std::string input2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -784,7 +833,67 @@ TEST(Coverage, parserComponentElementErrors) {
             "<son name=\"stan\"/>"
           "</component>"
         "</model>";
-    std::string expectError2 = "Unrecognised child element 'son' found in component 'randy'.";
+    std::string expectError2 = "Invalid child element 'son' found in component 'randy'.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(input1);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+
+    p.clearErrors();
+    p.parseModel(input2);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+}
+
+TEST(Coverage, parserVariableAttributeErrors) {
+    std::string input1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<component name=\"randy\">"
+                "<variable lame=\"randy\"/>"
+            "</component>"
+        "</model>";
+    std::string expectError1 = "Invalid attribute 'lame' found in unnamed variable.";
+
+    std::string input2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+            "<component name=\"randy\">"
+                "<variable name=\"randy\" son=\"stan\"/>"
+            "</component>"
+        "</model>";
+    std::string expectError2 = "Invalid attribute 'son' found in variable 'randy'.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(input1);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+
+    p.clearErrors();
+    p.parseModel(input2);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+}
+
+TEST(Coverage, parserUnitsElementErrors) {
+    std::string input1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<units>"
+            "<son name=\"stan\"/>"
+          "</units>"
+        "</model>";
+    std::string expectError1 = "Invalid child element 'son' found in unnamed units.";
+
+    std::string input2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
+          "<units name=\"randy\">"
+            "<son name=\"stan\"/>"
+          "</units>"
+        "</model>";
+    std::string expectError2 = "Invalid child element 'son' found in units 'randy'.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);

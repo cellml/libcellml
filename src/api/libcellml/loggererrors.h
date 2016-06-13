@@ -175,11 +175,51 @@ public:
      */
     void setComponent(ComponentPtr c) { mComponent = c; }
 
+    /**
+     * @brief Set the variable for the VariableError.
+     *
+     * Set the variable for the VariableError.
+     *
+     * @param v A pointer to the variable to set.
+     */
+    void setVariable(VariablePtr v) { mVariable = v; }
+
+    /**
+     * @brief Get the variable the error applies to.
+     *
+     * Get the variable the error applies to.
+     *
+     * @return A pointer
+     */
+    VariablePtr getVariable() const { return mVariable; }
+
 protected:
     virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
 
 private:
-    ComponentPtr mComponent; /**< Pointer to the component. */
+    VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
+    ComponentPtr mComponent; /**< Pointer to the component that the variable belongs to. */
+};
+
+/**
+ * @brief The VariableElementError class.
+ *
+ * The VariableElementError class.
+ */
+class VariableElementError: public VariableError
+{
+
+};
+
+/**
+ * @brief The VariableAttributeError class.
+ *
+ * The VariableAttributeError class.
+ */
+class VariableAttributeError: public VariableElementError
+{
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
 };
 
 /**
@@ -381,6 +421,7 @@ typedef std::shared_ptr<UnitsExponentAttributeError> UnitsExponentAttributeError
 typedef std::shared_ptr<UnitsMultiplierAttributeError> UnitsMultiplierAttributeErrorPtr; /**< Type definition for shared units multiplier attribute error pointer. */
 typedef std::shared_ptr<UnitsOffsetAttributeError> UnitsOffsetAttributeErrorPtr; /**< Type definition for shared units offset attribute error pointer. */
 typedef std::shared_ptr<EntityElementError> EntityElementErrorPtr; /**< Type definition for shared entity element error pointer. */
+typedef std::shared_ptr<VariableAttributeError> VariableAttributeErrorPtr; /**< Type definition for shared variable attribute error pointer. */
 
 }
 

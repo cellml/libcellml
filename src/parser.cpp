@@ -249,7 +249,11 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                         addError(err);
                     }
                 } else {
-                    throw std::invalid_argument("Unrecognised unit attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
+                    UnitsAttributeErrorPtr err = std::make_shared<UnitsAttributeError>();
+                    err->setUnits(units);
+                    err->setType(attribute->getType());
+                    addError(err);
+//                    throw std::invalid_argument("Unrecognised unit attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
                 }
                 attribute = attribute->getNext();
             }
@@ -278,7 +282,10 @@ void Parser::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->getValue());
         } else {
-            throw std::invalid_argument("Unrecognised variable attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
+            VariableAttributeErrorPtr err = std::make_shared<VariableAttributeError>();
+            err->setType(attribute->getType());
+            err->setVariable(variable);
+            addError(err);
         }
         attribute = attribute->getNext();
     }

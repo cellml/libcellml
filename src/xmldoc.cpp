@@ -43,7 +43,9 @@ XmlDoc::XmlDoc()
 
 XmlDoc::~XmlDoc()
 {
-    if (mPimpl->mXmlDocPtr) xmlFreeDoc(mPimpl->mXmlDocPtr);
+    if (mPimpl->mXmlDocPtr) {
+        xmlFreeDoc(mPimpl->mXmlDocPtr);
+    }
     delete mPimpl;
 }
 
@@ -62,7 +64,11 @@ void XmlDoc::parse(const std::string& input)
 XmlNodePtr XmlDoc::getRootNode() const
 {
     xmlNodePtr root = xmlDocGetRootElement(mPimpl->mXmlDocPtr);
-    if (root == NULL) throw std::invalid_argument("XML document empty.");
+//    ASSERT(root != NULL);
+//    if (root == NULL) {
+//        Cannot get here when parsing a string.
+//        throw std::invalid_argument("XML document empty.");
+//    }
     XmlNodePtr rootHandle = std::make_shared<XmlNode>();
     rootHandle->setXmlNode(root);
     return rootHandle;

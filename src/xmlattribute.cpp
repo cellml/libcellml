@@ -52,7 +52,9 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
 bool XmlAttribute::isType(const char *attributeName)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) found = true;
+    if (!xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
+        found = true;
+    }
     return found;
 }
 
@@ -74,7 +76,9 @@ XmlAttributePtr XmlAttribute::getNext()
     xmlAttrPtr next = mPimpl->mXmlAttributePtr->next;
     XmlAttributePtr nextHandle = std::make_shared<XmlAttribute>();
     nextHandle->setXmlAttribute(next);
-    if (next == NULL) nextHandle = nullptr;
+    if (next == NULL) {
+        nextHandle = nullptr;
+    }
     return nextHandle;
 }
 

@@ -171,11 +171,18 @@ std::string Model::doSerialisation(Format format) const
                                 Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
                                 // Do not serialise a variable's parent component in a connection if that variable no
                                 // longer exists in that component. Allow serialisation of one componentless variable.
-                                if (component1) {
-                                    if (!component1->hasVariable(variable)) component1 = nullptr;
-                                }
+
+                                // component1 always has to exist otherwise there is no connection possible.
+                                // Likewise the variable that component1 has always has to exist.
+                                //  if (component1) {
+                                //      if (!component1->hasVariable(variable)) {
+                                //          component1 = nullptr;  // This line is not reachable due to the above considerations.
+                                //      }
+                                //  }
                                 if (component2) {
-                                    if (!component2->hasVariable(equivalentVariable)) component2 = nullptr;
+                                    if (!component2->hasVariable(equivalentVariable)) {
+                                        component2 = nullptr;
+                                    }
                                 }
                                 // Add new unique variable equivalence pair to the VariableMap.
                                 variableMap.push_back(variablePair);

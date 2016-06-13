@@ -98,6 +98,40 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
+    const std::string e =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<connection>"
+        "<map_components component_1=\"component2\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>"
+      "</connection>"
+    "</model>";
+    libcellml::Model m;
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    comp2->addVariable(v2);
+    {
+        // Place comp1 in a different scope.
+        libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+        comp1->setName("component1");
+        comp1->addVariable(v1);
+        m.addComponent(comp1);
+    }
+    m.addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v2);
+    m.removeComponent("component1");
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Connection, validConnectionAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

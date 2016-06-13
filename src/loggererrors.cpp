@@ -2,6 +2,7 @@
 
 #include "libcellml/component.h"
 #include "libcellml/units.h"
+#include "libcellml/variable.h"
 
 namespace libcellml {
 
@@ -27,9 +28,9 @@ std::string ComponentElementError::doSerialisation() const
 {
     std::string s;
     if (getComponent()->getName() != "") {
-        s = "Unrecognised child element '" + getType() + "' found in component '" + getComponent()->getName() + "'.";
+        s = "Invalid child element '" + getType() + "' found in component '" + getComponent()->getName() + "'.";
     } else {
-        s = "Unrecognised child element '" + getType() + "' found in unnamed component.";
+        s = "Invalid child element '" + getType() + "' found in unnamed component.";
     }
     return s;
 }
@@ -38,9 +39,9 @@ std::string ComponentAttributeError::doSerialisation() const
 {
     std::string s;
     if (getComponent()->getName() != "") {
-        s = "Unrecognised attribute '" + getType() + "' found in component '" + getComponent()->getName() + "'.";
+        s = "Invalid attribute '" + getType() + "' found in component '" + getComponent()->getName() + "'.";
     } else {
-        s = "Unrecognised attribute '" + getType() + "' found in unnamed component.";
+        s = "Invalid attribute '" + getType() + "' found in unnamed component.";
     }
     return s;
 }
@@ -54,9 +55,20 @@ std::string UnitsElementError::doSerialisation() const
 {
     std::string s;
     if (getUnits()->getName() != "") {
-        s = "Unrecognised child element '" + getType() + "' for units '" + getUnits()->getName() + "' found in " + getParentLabel() + ".";
+        s = "Invalid child element '" + getType() + "' found in units '" + getUnits()->getName() + "'.";
     } else {
-        s = "Unrecognised child element '" + getType() + "' for unnamed units found in " + getParentLabel() + ".";
+        s = "Invalid child element '" + getType() + "' found in unnamed units.";
+    }
+    return s;
+}
+
+std::string VariableAttributeError::doSerialisation() const
+{
+    std::string s;
+    if (getVariable()->getName() != "") {
+        s = "Invalid attribute '" + getType() + "' found in variable '" + getVariable()->getName() + "'.";
+    } else {
+        s = "Invalid attribute '" + getType() + "' found in unnamed variable.";
     }
     return s;
 }
@@ -65,16 +77,16 @@ std::string UnitsAttributeError::doSerialisation() const
 {
     std::string s;
     if (getUnits()->getName() != "") {
-        s = "Unrecognised attribute '" + getType() + "' found in units '" + getUnits()->getName() + "'.";
+        s = "Invalid attribute '" + getType() + "' found in units '" + getUnits()->getName() + "'.";
     } else {
-        s = "Unrecognised attribute '" + getType() + "' found in unnamed units.";
+        s = "Invalid attribute '" + getType() + "' found in unnamed units.";
     }
     return s;
 }
 
 std::string UnitsBaseUnitAttributeError::doSerialisation() const
 {
-    std::string s = "Unrecognised base_unit attribute in units '" + getUnits()->getName() + "': should be either 'yes' or 'no', and not '" + getValue() + "'";
+    std::string s = "Invalid base_unit attribute in units '" + getUnits()->getName() + "': should be either 'yes' or 'no', and not '" + getValue() + "'";
     return s;
 }
 
