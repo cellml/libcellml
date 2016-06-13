@@ -135,7 +135,11 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
             loadConnection(model, childNode);
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
-            err->setDescription("Invalid model element: '" + childNode->getType() + "' in model '" + model->getName() + "'.");
+            if (model->getName() != "") {
+                err->setDescription("Invalid XML element type '" + childNode->getType() + "' in model '" + model->getName() + "'.");
+            } else {
+                err->setDescription("Invalid XML element type '" + childNode->getType() + "' in unnamed model.");
+            }
             addError(err);
         }
         childNode = childNode->getNext();
@@ -249,11 +253,13 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                         addError(err);
                     }
                 } else {
-                    UnitsAttributeErrorPtr err = std::make_shared<UnitsAttributeError>();
+                    UnitAttributeErrorPtr err = std::make_shared<UnitAttributeError>();
+                    err->setType(childNode->getType());
                     err->setUnits(units);
-                    err->setType(attribute->getType());
+                    if (childNode->hasAttribute("units")) {
+                        err->setUnitName(childNode->getAttribute("units"));
+                    }
                     addError(err);
-//                    throw std::invalid_argument("Unrecognised unit attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
                 }
                 attribute = attribute->getNext();
             }
@@ -367,7 +373,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                 } else {
                     VariableErrorPtr ve = std::make_shared<VariableError>();
                     ve->setComponent(component1);
-                    ve->setName(variableName);
+                    ve->setValue(variableName);
                     addError(ve);
                     errorOccurred = true;
                 }
@@ -387,7 +393,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                         } else {
                             VariableErrorPtr ve = std::make_shared<VariableError>();
                             ve->setComponent(component2);
-                            ve->setName(variableName);
+                            ve->setValue(variableName);
                             addError(ve);
                             errorOccurred = true;
                         }

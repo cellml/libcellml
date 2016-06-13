@@ -20,7 +20,7 @@ std::string EntityElementError::doSerialisation() const
 
 std::string VariableError::doSerialisation() const
 {
-    std::string s = "Variable '" + getName() + "' not found in component '" + mComponent->getName() + "'";
+    std::string s = "Variable '" + getValue() + "' not found in component '" + getComponent()->getName() + "'";
     return s;
 }
 
@@ -80,6 +80,25 @@ std::string UnitsAttributeError::doSerialisation() const
         s = "Invalid attribute '" + getType() + "' found in units '" + getUnits()->getName() + "'.";
     } else {
         s = "Invalid attribute '" + getType() + "' found in unnamed units.";
+    }
+    return s;
+}
+
+std::string UnitAttributeError::doSerialisation() const
+{
+    std::string s;
+    if (getUnits()->getName() != "") {
+        if (getUnitName() != "") {
+            s = "Invalid attribute '" + getType() + "' found in unit '"+ getUnitName() + "' in units '" + getUnits()->getName() + "'.";
+        } else {
+            s = "Invalid attribute '" + getType() + "' found in unnamed unit in units '" + getUnits()->getName() + "'.";
+        }
+    } else {
+        if (getUnitName() != "") {
+            s = "Invalid attribute '" + getType() + "' found in unit '"+ getUnitName() + "' in unnamed units.";
+        } else {
+            s = "Invalid attribute '" + getType() + "' found in unnamed unit in unnamed units.";
+        }
     }
     return s;
 }

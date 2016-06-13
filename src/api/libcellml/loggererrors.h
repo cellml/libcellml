@@ -176,20 +176,29 @@ public:
     void setComponent(ComponentPtr c) { mComponent = c; }
 
     /**
-     * @brief Set the variable for the VariableError.
+     * @brief Get the component for the VariableError.
      *
-     * Set the variable for the VariableError.
+     * Get the component for this VariableError.
      *
-     * @param v A pointer to the variable to set.
+     * @return A pointer to the component.
+     */
+    ComponentPtr getComponent() const { return mComponent; }
+
+    /**
+     * @brief Set the variable for this VariableError.
+     *
+     * Set the variable for this VariableError.
+     *
+     * @param c A pointer to the variable to set.
      */
     void setVariable(VariablePtr v) { mVariable = v; }
 
     /**
-     * @brief Get the variable the error applies to.
+     * @brief Get the variable for this VariableError.
      *
-     * Get the variable the error applies to.
+     * Get the variable for this VariableError.
      *
-     * @return A pointer
+     * @return A pointer to the variable.
      */
     VariablePtr getVariable() const { return mVariable; }
 
@@ -282,6 +291,24 @@ class UnitsAttributeError: public UnitsElementError
 {
 protected:
     virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+};
+
+/**
+ * @brief The UnitAttributeError class.
+ *
+ * The UnitAttributeError class.
+ */
+class UnitAttributeError: public UnitsElementError
+{
+public:
+    void setUnitName(std::string uName) { mUnitName = uName; }
+    std::string getUnitName() const { return mUnitName; }
+
+protected:
+    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+
+private:
+    std::string mUnitName;
 };
 
 /**
@@ -409,6 +436,7 @@ private:
 
 typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared entity error pointer. */
 typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared variable error pointer. */
+typedef std::shared_ptr<VariableAttributeError> VariableAttributeErrorPtr; /**< Type definition for shared variable attribute error pointer. */
 typedef std::shared_ptr<UnitsError> UnitsErrorPtr; /**< Type definition for shared units error pointer. */
 typedef std::shared_ptr<ComponentError> ComponentErrorPtr; /**< Type definition for shared component error pointer. */
 typedef std::shared_ptr<ComponentElementError> ComponentElementErrorPtr; /**< Type definition for shared component element error pointer. */
@@ -416,6 +444,7 @@ typedef std::shared_ptr<ComponentAttributeError> ComponentAttributeErrorPtr; /**
 typedef std::shared_ptr<ModelError> ModelErrorPtr; /**< Type definition for shared model error pointer. */
 typedef std::shared_ptr<UnitsElementError> UnitsElementErrorPtr; /**< Type definition for shared units element error pointer. */
 typedef std::shared_ptr<UnitsAttributeError> UnitsAttributeErrorPtr; /**< Type definition for shared units attribute error pointer. */
+typedef std::shared_ptr<UnitAttributeError> UnitAttributeErrorPtr; /**< Type definition for shared unit attribute error pointer. */
 typedef std::shared_ptr<UnitsBaseUnitAttributeError> UnitsBaseUnitAttributeErrorPtr; /**< Type definition for shared units base unit attribute error pointer. */
 typedef std::shared_ptr<UnitsExponentAttributeError> UnitsExponentAttributeErrorPtr; /**< Type definition for shared units exponent attribute error pointer. */
 typedef std::shared_ptr<UnitsMultiplierAttributeError> UnitsMultiplierAttributeErrorPtr; /**< Type definition for shared units multiplier attribute error pointer. */

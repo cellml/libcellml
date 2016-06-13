@@ -230,6 +230,32 @@ TEST(Coverage, parserWithNonXmlString) {
     EXPECT_THROW(p.parseModel(ex), std::invalid_argument);
 }
 
+TEST(Coverage, parserModelWithInvalidElement) {
+    std::string input1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"bilbo\">"
+            "<hobbit/>"
+        "</model>";
+    std::string expectError1 = "Invalid XML element type 'hobbit' in model 'bilbo'.";
+
+    std::string input2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<hobbit/>"
+        "</model>";
+    std::string expectError2 = "Invalid XML element type 'hobbit' in unnamed model.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(input1);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+
+    p.clearErrors();
+    p.parseModel(input2);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+}
+
 TEST(Coverage, parseModelWithNamedComponentWithUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -262,11 +288,16 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
               "<component name=\"component_name\">"
-                "<units name=\"fahrenheit\">"
-                  "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\"/>"
+                "<units name=\"fahrenheit\" temperature=\"451\">"
+                  "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\"/>"
                   "<bobshouse address=\"34 Rich Lane\"/>"
+                  "<unit GUnit=\"50c\"/>"
                 "</units>"
                 "<units name=\"dimensionless\" base_unit=\"no\"/>"
+                "<units jerry=\"seinfeld\">"
+                  "<unit units=\"friends\" neighbor=\"kramer\"/>"
+                  "<unit george=\"friends\"/>"
+                "</units>"
               "</component>"
             "</model>";
     const std::string e =
@@ -275,6 +306,7 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
               "<component name=\"component_name\">"
                 "<units name=\"fahrenheit\">"
                   "<unit units=\"celsius\"/>"
+                  "<unit units=\"\"/>"
                 "</units>"
                 "<units name=\"dimensionless\"/>"
               "</component>"
@@ -282,7 +314,7 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    EXPECT_EQ(4, parser.errorCount());
+    EXPECT_EQ(10, parser.errorCount());
 
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_TRUE(parser.getError(i)->serialise().length() > 0);
@@ -290,41 +322,6 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
 
     std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
-}
-
-TEST(Coverage, parseModelInvalidUnitsAttribute) {
-    const std::string in1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
-                "<units name=\"fahrenheit\">"
-                    "<unit poofset=\"2.0\" units=\"celsius\"/>"
-                    "</units>"
-                "<units name=\"dimensionless\" base_unit=\"no\"/>"
-            "</model>";
-    const std::string expectedErrorMessage1 = "Invalid attribute 'poofset' found in units 'fahrenheit'.";
-    libcellml::Parser parser(libcellml::Format::XML);
-    parser.parseModel(in1);
-
-    ASSERT_EQ(1, parser.errorCount());
-
-    EXPECT_EQ(expectedErrorMessage1, parser.getError(0)->serialise());
-
-    const std::string in2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
-                "<units roofset=\"2.0\">"
-                    "<unit/>"
-                    "</units>"
-                "<units name=\"dimensionless\" base_unit=\"no\"/>"
-            "</model>";
-    const std::string expectedErrorMessage2 = "Invalid attribute 'roofset' found in unnamed units.";
-
-    parser.clearErrors();
-    parser.parseModel(in2);
-
-    ASSERT_EQ(1, parser.errorCount());
-
-    EXPECT_EQ(expectedErrorMessage2, parser.getError(0)->serialise());
 }
 
 TEST(Coverage, parserWithEmptyEncapsulation) {
@@ -477,6 +474,25 @@ TEST(Coverage, parserWithEmptyConnection) {
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
     EXPECT_EQ(47, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithInvalidVariableAttributes) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"componentA\">"
+                "<variable name=\"quixote\" don=\"true\"/>"
+                "<variable windmill=\"tilted\"/>"
+            "</component>"
+        "</model>";
+    std::string expectError1 = "Invalid attribute 'don' found in variable 'quixote'.";
+    std::string expectError2 = "Invalid attribute 'windmill' found in unnamed variable.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(2, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+    EXPECT_EQ(expectError2, p.getError(1)->serialise());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoComponent1Existing) {
@@ -761,7 +777,7 @@ TEST(Coverage, parserModelElement) {
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(54, p.getError(0)->serialise().length());
+    EXPECT_EQ(56, p.getError(0)->serialise().length());
 }
 
 TEST(Coverage, parserUnitsAttributeError) {
