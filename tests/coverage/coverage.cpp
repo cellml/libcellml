@@ -263,8 +263,9 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
               "<component name=\"component_name\">"
                 "<units name=\"fahrenheit\">"
-                  "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\"/>"
+                  "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\"/>"
                   "<bobshouse address=\"34 Rich Lane\"/>"
+                  "<unit GUnit=\"50c\"/>"
                 "</units>"
                 "<units name=\"dimensionless\" base_unit=\"no\"/>"
               "</component>"
@@ -275,6 +276,7 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
               "<component name=\"component_name\">"
                 "<units name=\"fahrenheit\">"
                   "<unit units=\"celsius\"/>"
+                  "<unit units=\"\"/>"
                 "</units>"
                 "<units name=\"dimensionless\"/>"
               "</component>"
@@ -282,9 +284,10 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    EXPECT_EQ(4, parser.errorCount());
+    EXPECT_EQ(6, parser.errorCount());
 
     for (size_t i = 0; i < parser.errorCount(); ++i) {
+        std::cout << parser.getError(i)->serialise() + "\n";
         EXPECT_TRUE(parser.getError(i)->serialise().length() > 0);
     }
 
@@ -442,6 +445,25 @@ TEST(Coverage, parserWithEmptyConnection) {
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
     EXPECT_EQ(47, p.getError(0)->serialise().length());
+}
+
+TEST(Coverage, parserWithInvalidVariableAttributes) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<component name=\"componentA\">"
+                "<variable name=\"quixote\" don=\"true\"/>"
+                "<variable windmill=\"tilted\"/>"
+            "</component>"
+        "</model>";
+    std::string expectError1 = "Unrecognised attribute 'don' found in variable 'quixote'.";
+    std::string expectError2 = "Unrecognised attribute 'windmill' found in unnamed variable.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(in);
+    EXPECT_EQ(2, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+    EXPECT_EQ(expectError2, p.getError(1)->serialise());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoComponent1Existing) {

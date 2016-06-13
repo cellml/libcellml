@@ -2,6 +2,7 @@
 
 #include "libcellml/component.h"
 #include "libcellml/units.h"
+#include "libcellml/variable.h"
 
 namespace libcellml {
 
@@ -19,7 +20,18 @@ std::string EntityElementError::doSerialisation() const
 
 std::string VariableError::doSerialisation() const
 {
-    std::string s = "Variable '" + getName() + "' not found in component '" + mComponent->getName() + "'";
+    std::string s = "Variable '" + getValue() + "' not found in component '" + getComponent()->getName() + "'";
+    return s;
+}
+
+std::string VariableAttributeError::doSerialisation() const
+{
+    std::string s;
+    if (getVariable()->getName() != "") {
+        s = "Unrecognised attribute '" + getType() + "' found in variable '" + getVariable()->getName() + "'.";
+    } else {
+        s = "Unrecognised attribute '" + getType() + "' found in unnamed variable.";
+    }
     return s;
 }
 
@@ -68,6 +80,25 @@ std::string UnitsAttributeError::doSerialisation() const
         s = "Unrecognised attribute '" + getType() + "' found in units '" + getUnits()->getName() + "'.";
     } else {
         s = "Unrecognised attribute '" + getType() + "' found in unnamed units.";
+    }
+    return s;
+}
+
+std::string UnitAttributeError::doSerialisation() const
+{
+    std::string s;
+    if (getUnits()->getName() != "") {
+        if (getUnitName() != "") {
+            s = "Unrecognised attribute '" + getType() + "' found in unit '"+ getUnitName() + "' in units '" + getUnits()->getName() + "'.";
+        } else {
+            s = "Unrecognised attribute '" + getType() + "' found in unnamed unit in units '" + getUnits()->getName() + "'.";
+        }
+    } else {
+        if (getUnitName() != "") {
+            s = "Unrecognised attribute '" + getType() + "' found in unit '"+ getUnitName() + "' in unnamed units.";
+        } else {
+            s = "Unrecognised attribute '" + getType() + "' found in unnamed unit in unnamed units.";
+        }
     }
     return s;
 }

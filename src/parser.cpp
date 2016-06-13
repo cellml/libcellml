@@ -249,7 +249,13 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                         addError(err);
                     }
                 } else {
-                    throw std::invalid_argument("Unrecognised unit attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
+                    UnitAttributeErrorPtr err = std::make_shared<UnitAttributeError>();
+                    err->setType(childNode->getType());
+                    err->setUnits(units);
+                    if (childNode->hasAttribute("units")) {
+                        err->setUnitName(childNode->getAttribute("units"));
+                    }
+                    addError(err);
                 }
                 attribute = attribute->getNext();
             }
@@ -278,7 +284,10 @@ void Parser::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->getValue());
         } else {
-            throw std::invalid_argument("Unrecognised variable attribute type '" + attribute->getType() + "' with value '" + attribute->getValue() + "'.");
+            VariableAttributeErrorPtr err = std::make_shared<VariableAttributeError>();
+            err->setVariable(variable);
+            err->setType(attribute->getType());
+            addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -360,7 +369,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                 } else {
                     VariableErrorPtr ve = std::make_shared<VariableError>();
                     ve->setComponent(component1);
-                    ve->setName(variableName);
+                    ve->setValue(variableName);
                     addError(ve);
                     errorOccurred = true;
                 }
@@ -380,7 +389,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                         } else {
                             VariableErrorPtr ve = std::make_shared<VariableError>();
                             ve->setComponent(component2);
-                            ve->setName(variableName);
+                            ve->setValue(variableName);
                             addError(ve);
                             errorOccurred = true;
                         }
@@ -436,7 +445,6 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     err->setDescription("Model does not contain the following component specified in an encapsulation: " + parentComponentName + ".");
                     addError(err);
                     errorOccurred = true;
-//                    throw std::invalid_argument("Model does not contain the following component specified in an encapsulation: " + parentComponentName + ".");
                 }
                 // Get child components
                 XmlNodePtr childComponentNode = parentComponentNode->getChild();
@@ -445,7 +453,6 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     err->setDescription("Encapsulation contains no child components.");
                     addError(err);
                     errorOccurred = true;
-//                    throw std::invalid_argument("Encapsulation contains no child components.");
                 }
                 while (childComponentNode) {
                     ComponentPtr childComponent = nullptr;
@@ -459,21 +466,18 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                                 err->setDescription("Model does not contain the following component specified in an encapsulation: " + childComponentName + ".");
                                 addError(err);
                                 errorOccurred = true;
-//                                throw std::invalid_argument("Model does not contain the following component specified in an encapsulation: " + childComponentName + ".");
                             }
                         } else {
                             ModelErrorPtr err = std::make_shared<ModelError>();
                             err->setDescription("Encapsulation component_ref does not contain a component.");
                             addError(err);
                             errorOccurred = true;
-//                            throw std::invalid_argument("Encapsulation component_ref does not contain a component.");
                         }
                     } else {
                         ModelErrorPtr err = std::make_shared<ModelError>();
                         err->setDescription("Encapsulation does not contain a component_ref.");
                         addError(err);
                         errorOccurred = true;
-//                        throw std::invalid_argument("Encapsulation does not contain a component_ref.");
                     }
                     if (!errorOccurred) {
                         // Set parent/child relationship.
@@ -494,13 +498,11 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                 ModelErrorPtr err = std::make_shared<ModelError>();
                 err->setDescription("Encapsulation component_ref does not contain a component.");
                 addError(err);
-//                throw std::invalid_argument("Encapsulation component_ref does not contain a component.");
             }
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
             err->setDescription("Encapsulation does not contain a component_ref.");
             addError(err);
-//            throw std::invalid_argument("Encapsulation does not contain a component_ref.");
         }
         // Get the next parent component at this level
         parentComponentNode = parentComponentNode->getNext();
