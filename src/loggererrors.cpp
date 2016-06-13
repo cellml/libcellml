@@ -66,9 +66,9 @@ std::string UnitsElementError::doSerialisation() const
 {
     std::string s;
     if (getUnits()->getName() != "") {
-        s = "Unrecognised child element '" + getType() + "' for units '" + getUnits()->getName() + "' found in " + getParentLabel() + ".";
+        s = "Unrecognised child element '" + getType() + "' found in units '" + getUnits()->getName() + "'.";
     } else {
-        s = "Unrecognised child element '" + getType() + "' for unnamed units found in " + getParentLabel() + ".";
+        s = "Unrecognised child element '" + getType() + "' found in unnamed units.";
     }
     return s;
 }

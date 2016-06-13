@@ -135,7 +135,11 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
             loadConnection(model, childNode);
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
-            err->setDescription("Unrecognised XML element type in model " + model->getName() + ": " + childNode->getType() + ".");
+            if (model->getName() != "") {
+                err->setDescription("Unrecognised XML element type '" + childNode->getType() + "' in model '" + model->getName() + "'.");
+            } else {
+                err->setDescription("Unrecognised XML element type '" + childNode->getType() + "' in unnamed model.");
+            }
             addError(err);
         }
         childNode = childNode->getNext();

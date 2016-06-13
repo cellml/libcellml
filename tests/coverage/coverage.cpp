@@ -230,6 +230,32 @@ TEST(Coverage, parserWithNonXmlString) {
     EXPECT_THROW(p.parseModel(ex), std::invalid_argument);
 }
 
+TEST(Coverage, parserModelWithInvalidElement) {
+    std::string input1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"bilbo\">"
+            "<hobbit/>"
+        "</model>";
+    std::string expectError1 = "Unrecognised XML element type 'hobbit' in model 'bilbo'.";
+
+    std::string input2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<hobbit/>"
+        "</model>";
+    std::string expectError2 = "Unrecognised XML element type 'hobbit' in unnamed model.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(input1);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+
+    p.clearErrors();
+    p.parseModel(input2);
+    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+}
+
 TEST(Coverage, parseModelWithNamedComponentWithUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -262,12 +288,16 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
               "<component name=\"component_name\">"
-                "<units name=\"fahrenheit\">"
+                "<units name=\"fahrenheit\" temperature=\"451\">"
                   "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\"/>"
                   "<bobshouse address=\"34 Rich Lane\"/>"
                   "<unit GUnit=\"50c\"/>"
                 "</units>"
                 "<units name=\"dimensionless\" base_unit=\"no\"/>"
+                "<units jerry=\"seinfeld\">"
+                  "<unit units=\"friends\" neighbor=\"kramer\"/>"
+                  "<unit george=\"friends\"/>"
+                "</units>"
               "</component>"
             "</model>";
     const std::string e =
@@ -284,10 +314,9 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    EXPECT_EQ(6, parser.errorCount());
+    EXPECT_EQ(10, parser.errorCount());
 
     for (size_t i = 0; i < parser.errorCount(); ++i) {
-        std::cout << parser.getError(i)->serialise() + "\n";
         EXPECT_TRUE(parser.getError(i)->serialise().length() > 0);
     }
 

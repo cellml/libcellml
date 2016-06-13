@@ -107,15 +107,6 @@ XmlNodePtr XmlNode::getNext()
     return nextHandle;
 }
 
-XmlNodePtr XmlNode::getParent()
-{
-    xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
-    XmlNodePtr parentHandle = std::make_shared<XmlNode>();
-    parentHandle->setXmlNode(parent);
-    if (parent == NULL) parentHandle = nullptr;
-    return parentHandle;
-}
-
 std::string XmlNode::convertToString() {
     std::string contentString;
     xmlBufferPtr buffer = xmlBufferCreate();
