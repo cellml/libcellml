@@ -88,7 +88,7 @@ TEST(Model, parseModelWithNamedComponentWithInvalidBaseUnits) {
     std::string a = model->serialise(libcellml::Format::XML);
 
     EXPECT_EQ(1, parser.errorCount());
-    EXPECT_EQ("Unrecognised base_unit attribute in units 'dimensionless': should be either 'yes' or 'no', and not 'joe'", parser.getError(0)->serialise());
+    EXPECT_EQ("Invalid base_unit attribute in units 'dimensionless': should be either 'yes' or 'no', and not 'joe'", parser.getError(0)->serialise());
 
     EXPECT_EQ(e, a);
 }
