@@ -921,3 +921,47 @@ TEST(Coverage, parserUnitsElementErrors) {
     EXPECT_EQ(1, p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
+
+TEST(Coverage, parseInvalidImports) {
+    const std::string input =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+       "<import xlink:href=\"some-other-model.xml\" "
+               "xmlns:xlink=\"http://www.w3.org/1999/xlink\" sauce=\"hollandaise\">"
+           "<units units_ref=\"a_units_in_that_model\" "
+                      "name=\"units_in_this_model\"/>"
+           "<component component_ref=\"a_component_in_that_model\" "
+               "name=\"component_in_this_model\"/>"
+           "<invalid_nonsense/>"
+           "<units units_ruff=\"dog\" name=\"fido\"/>"
+           "<component component_meow=\"cat\" name=\"frank\"/>"
+       "</import>"
+    "</model>";
+    std::string expectError1 = "Invalid attribute 'sauce' found in import from 'some-other-model.xml'.";
+    std::string expectError2 = "Invalid child element 'invalid_nonsense' found in import from 'some-other-model.xml'.";
+    std::string expectError3 = "Invalid attribute 'units_ruff' found in import of units 'fido' from 'some-other-model.xml'.";
+    std::string expectError4 = "Invalid attribute 'component_meow' found in import of component 'frank' from 'some-other-model.xml'.";
+    const std::string output =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+       "<import xlink:href=\"some-other-model.xml\" "
+         "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+         "<component component_ref=\"a_component_in_that_model\" "
+           "name=\"component_in_this_model\"/>"
+       "</import>"
+       "<import xlink:href=\"some-other-model.xml\" "
+         "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+         "<units units_ref=\"a_units_in_that_model\" "
+           "name=\"units_in_this_model\"/>"
+        "</import>"
+    "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::ModelPtr m = p.parseModel(input);
+    EXPECT_EQ(4, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectError2, p.getError(1)->getDescription());
+    EXPECT_EQ(expectError3, p.getError(2)->getDescription());
+    EXPECT_EQ(expectError4, p.getError(3)->getDescription());
+    EXPECT_EQ(output, m->serialise(libcellml::Format::XML));
+}
