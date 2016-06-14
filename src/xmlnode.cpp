@@ -76,9 +76,12 @@ bool XmlNode::hasAttribute(const char *attributeName)
 
 std::string XmlNode::getAttribute(const char *attributeName)
 {
-    char* attributeValue = (char*)xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
-    std::string attributeValueString = std::string(attributeValue);
-    xmlFree(attributeValue);
+    std::string attributeValueString;
+    if (hasAttribute(attributeName)) {
+        char* attributeValue = (char*)xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
+        attributeValueString = std::string(attributeValue);
+        xmlFree(attributeValue);
+    }
     return attributeValueString;
 }
 

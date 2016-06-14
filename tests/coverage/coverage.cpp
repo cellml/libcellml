@@ -213,7 +213,7 @@ TEST(Coverage, entityError) {
 
     libcellml::EntityErrorPtr e = std::make_shared<libcellml::EntityError>();
 
-    EXPECT_EQ(ex, e->serialise());
+    EXPECT_EQ(ex, e->getDescription());
 }
 
 TEST(Coverage, parserWithEmptyString) {
@@ -243,17 +243,17 @@ TEST(Coverage, parserModelWithInvalidElement) {
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
             "<hobbit/>"
         "</model>";
-    std::string expectError2 = "Invalid XML element type 'hobbit' in unnamed model.";
+    std::string expectError2 = "Invalid XML element type 'hobbit' in model ''.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+    EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
 TEST(Coverage, parseModelWithNamedComponentWithUnits) {
@@ -317,7 +317,7 @@ TEST(Coverage, parseModelWithNamedComponentWithInvalidUnits) {
     EXPECT_EQ(10, parser.errorCount());
 
     for (size_t i = 0; i < parser.errorCount(); ++i) {
-        EXPECT_TRUE(parser.getError(i)->serialise().length() > 0);
+        EXPECT_TRUE(parser.getError(i)->getDescription().length() > 0);
     }
 
     std::string a = model->serialise(libcellml::Format::XML);
@@ -335,7 +335,7 @@ TEST(Coverage, parserWithEmptyEncapsulation) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(48, p.getError(0)->serialise().length());
+    EXPECT_EQ(48, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, encapsulationParserNoComponentAttribute) {
@@ -350,7 +350,7 @@ TEST(Coverage, encapsulationParserNoComponentAttribute) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(57, p.getError(0)->serialise().length());
+    EXPECT_EQ(57, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, encapsulationParserNoComponentRef) {
@@ -365,7 +365,7 @@ TEST(Coverage, encapsulationParserNoComponentRef) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(47, p.getError(0)->serialise().length());
+    EXPECT_EQ(47, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, encapsulationParserNoComponent) {
@@ -384,7 +384,7 @@ TEST(Coverage, encapsulationParserNoComponent) {
     EXPECT_EQ(2, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
 //    EXPECT_EQ("", p.getError(1)->serialise());
-    EXPECT_EQ(82, p.getError(0)->serialise().length());
+    EXPECT_EQ(82, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, encapsulationParserMissingComponent) {
@@ -403,7 +403,7 @@ TEST(Coverage, encapsulationParserMissingComponent) {
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(83, p.getError(0)->serialise().length());
+    EXPECT_EQ(83, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, encapsulationParserNoComponentChild) {
@@ -421,7 +421,7 @@ TEST(Coverage, encapsulationParserNoComponentChild) {
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(43, p.getError(0)->serialise().length());
+    EXPECT_EQ(43, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, encapsulationParserNoChildComponentRef) {
@@ -440,7 +440,7 @@ TEST(Coverage, encapsulationParserNoChildComponentRef) {
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(47, p.getError(0)->serialise().length());
+    EXPECT_EQ(47, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, encapsulationParserGrandchild) {
@@ -458,8 +458,8 @@ TEST(Coverage, encapsulationParserGrandchild) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-//    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(47, p.getError(0)->serialise().length());
+//    EXPECT_EQ("", p.getError(0)->getDescription());
+    EXPECT_EQ(47, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserWithEmptyConnection) {
@@ -473,7 +473,7 @@ TEST(Coverage, parserWithEmptyConnection) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(47, p.getError(0)->serialise().length());
+    EXPECT_EQ(47, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserWithInvalidVariableAttributes) {
@@ -486,13 +486,13 @@ TEST(Coverage, parserWithInvalidVariableAttributes) {
             "</component>"
         "</model>";
     std::string expectError1 = "Invalid attribute 'don' found in variable 'quixote'.";
-    std::string expectError2 = "Invalid attribute 'windmill' found in unnamed variable.";
+    std::string expectError2 = "Invalid attribute 'windmill' found in variable ''.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(2, p.errorCount());
-    EXPECT_EQ(expectError1, p.getError(0)->serialise());
-    EXPECT_EQ(expectError2, p.getError(1)->serialise());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectError2, p.getError(1)->getDescription());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoComponent1Existing) {
@@ -511,7 +511,7 @@ TEST(Coverage, parserWithConnectionErrorNoComponent1Existing) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(85, p.getError(0)->serialise().length());
+    EXPECT_EQ(85, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoComponent2Existing) {
@@ -530,7 +530,7 @@ TEST(Coverage, parserWithConnectionErrorNoComponent2Existing) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(85, p.getError(0)->serialise().length());
+    EXPECT_EQ(85, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoComponent1) {
@@ -549,7 +549,7 @@ TEST(Coverage, parserWithConnectionErrorNoComponent1) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(57, p.getError(0)->serialise().length());
+    EXPECT_EQ(57, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoMapComponents) {
@@ -567,8 +567,8 @@ TEST(Coverage, parserWithConnectionErrorNoMapComponents) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-//    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(45, p.getError(0)->serialise().length());
+//    EXPECT_EQ("", p.getError(0)->getDescription());
+    EXPECT_EQ(45, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoMapVariables) {
@@ -586,8 +586,8 @@ TEST(Coverage, parserWithConnectionErrorNoMapVariables) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-//    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(61, p.getError(0)->serialise().length());
+//    EXPECT_EQ("", p.getError(0)->getDescription());
+    EXPECT_EQ(61, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, importedComponent2ConnectionAndParse) {
@@ -633,8 +633,8 @@ TEST(Coverage, component2ConnectionVariableMissing) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(e);
     EXPECT_EQ(1, p.errorCount());
-//    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(65, p.getError(0)->serialise().length());
+//    EXPECT_EQ("", p.getError(0)->getDescription());
+    EXPECT_EQ(66, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, component2InConnectionMissing) {
@@ -669,7 +669,7 @@ TEST(Coverage, component2InConnectionMissing) {
     EXPECT_EQ(1, p.errorCount());
     EXPECT_EQ(e, m->serialise(libcellml::Format::XML));
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(136, p.getError(0)->serialise().length());
+    EXPECT_EQ(136, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, connectionVariable2Missing) {
@@ -693,7 +693,7 @@ TEST(Coverage, connectionVariable2Missing) {
     p.parseModel(e);
     EXPECT_EQ(1, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(55, p.getError(0)->serialise().length());
+    EXPECT_EQ(55, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, connectionVariable1Missing) {
@@ -717,7 +717,7 @@ TEST(Coverage, connectionVariable1Missing) {
     p.parseModel(e);
     EXPECT_EQ(1, p.errorCount());
 //    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(55, p.getError(0)->serialise().length());
+    EXPECT_EQ(55, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserWithConnectionErrorNoMapVariablesType) {
@@ -739,7 +739,7 @@ TEST(Coverage, parserWithConnectionErrorNoMapVariablesType) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(67, p.getError(0)->serialise().length());
+    EXPECT_EQ(97, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserInvalidRootNode) {
@@ -751,7 +751,7 @@ TEST(Coverage, parserInvalidRootNode) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(42, p.getError(0)->serialise().length());
+    EXPECT_EQ(42, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserModelAttribute) {
@@ -763,7 +763,7 @@ TEST(Coverage, parserModelAttribute) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(57, p.getError(0)->serialise().length());
+    EXPECT_EQ(57, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserModelElement) {
@@ -776,8 +776,8 @@ TEST(Coverage, parserModelElement) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-//    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(56, p.getError(0)->serialise().length());
+//    EXPECT_EQ("", p.getError(0)->getDescription());
+    EXPECT_EQ(56, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserUnitsAttributeError) {
@@ -790,8 +790,8 @@ TEST(Coverage, parserUnitsAttributeError) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-//    EXPECT_EQ("", p.getError(0)->serialise());
-    EXPECT_EQ(58, p.getError(0)->serialise().length());
+//    EXPECT_EQ("", p.getError(0)->getDescription());
+    EXPECT_EQ(58, p.getError(0)->getDescription().length());
 }
 
 TEST(Coverage, parserComponentAttributeErrors) {
@@ -800,7 +800,7 @@ TEST(Coverage, parserComponentAttributeErrors) {
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
           "<component lame=\"randy\"/>"
         "</model>";
-    std::string expectError1 = "Invalid attribute 'lame' found in unnamed component.";
+    std::string expectError1 = "Invalid attribute 'lame' found in component ''.";
 
     std::string input2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -819,17 +819,17 @@ TEST(Coverage, parserComponentAttributeErrors) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+    EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input3);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError3, p.getError(0)->serialise());
+    EXPECT_EQ(expectError3, p.getError(0)->getDescription());
 }
 
 TEST(Coverage, parserComponentElementErrors) {
@@ -840,7 +840,7 @@ TEST(Coverage, parserComponentElementErrors) {
             "<son name=\"stan\"/>"
           "</component>"
         "</model>";
-    std::string expectError1 = "Invalid child element 'son' found in unnamed component.";
+    std::string expectError1 = "Invalid child element 'son' found in component ''.";
 
     std::string input2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -854,12 +854,12 @@ TEST(Coverage, parserComponentElementErrors) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+    EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
 TEST(Coverage, parserVariableAttributeErrors) {
@@ -870,7 +870,7 @@ TEST(Coverage, parserVariableAttributeErrors) {
                 "<variable lame=\"randy\"/>"
             "</component>"
         "</model>";
-    std::string expectError1 = "Invalid attribute 'lame' found in unnamed variable.";
+    std::string expectError1 = "Invalid attribute 'lame' found in variable ''.";
 
     std::string input2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -884,12 +884,12 @@ TEST(Coverage, parserVariableAttributeErrors) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+    EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
 TEST(Coverage, parserUnitsElementErrors) {
@@ -900,7 +900,7 @@ TEST(Coverage, parserUnitsElementErrors) {
             "<son name=\"stan\"/>"
           "</units>"
         "</model>";
-    std::string expectError1 = "Invalid child element 'son' found in unnamed units.";
+    std::string expectError1 = "Invalid child element 'son' found in units ''.";
 
     std::string input2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -914,10 +914,10 @@ TEST(Coverage, parserUnitsElementErrors) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError1, p.getError(0)->serialise());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectError2, p.getError(0)->serialise());
+    EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }

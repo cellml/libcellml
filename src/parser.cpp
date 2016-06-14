@@ -91,6 +91,7 @@ void Parser::updateModel(const ModelPtr &model, const std::string &input)
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
             err->setDescription("Unexpected XML element type (not a model).");
+            err->setModel(model);
             addError(err);
         }
     }
@@ -104,7 +105,9 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
             model->setName(attribute->getValue());
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
-            err->setDescription("Invalid model attribute: '" + attribute->getType() + "' with value: '" + attribute->getValue() + "'.");
+            err->setDescription("Invalid model attribute: '" + attribute->getType() +
+                                "' with value: '" + attribute->getValue() + "'.");
+            err->setModel(model);
             addError(err);
         }
         attribute = attribute->getNext();
@@ -129,17 +132,16 @@ void Parser::loadModel(const ModelPtr &model, const XmlNodePtr &node)
             } else {
                 ModelErrorPtr err = std::make_shared<ModelError>();
                 err->setDescription("Encapsulation does not contain any component_ref");
+                err->setModel(model);
                 addError(err);
             }
         } else if (childNode->isType("connection")) {
             loadConnection(model, childNode);
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
-            if (model->getName() != "") {
-                err->setDescription("Invalid XML element type '" + childNode->getType() + "' in model '" + model->getName() + "'.");
-            } else {
-                err->setDescription("Invalid XML element type '" + childNode->getType() + "' in unnamed model.");
-            }
+            err->setDescription("Invalid XML element type '" + childNode->getType() +
+                                "' in model '" + model->getName() + "'.");
+            err->setModel(model);
             addError(err);
         }
         childNode = childNode->getNext();
@@ -153,8 +155,9 @@ void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node
         if (attribute->isType("name")) {
             component->setName(attribute->getValue());
         } else {
-            ComponentAttributeErrorPtr err = std::make_shared<ComponentAttributeError>();
-            err->setType(attribute->getType());
+            ComponentErrorPtr err = std::make_shared<ComponentError>();
+            err->setDescription("Invalid attribute '" + attribute->getType() +
+                                "' found in component '" + node->getAttribute("name") + "'.");
             err->setComponent(component);
             addError(err);
         }
@@ -174,8 +177,9 @@ void Parser::loadComponent(const ComponentPtr &component, const XmlNodePtr &node
             std::string math = childNode->convertToString();
             component->setMath(math);
         } else {
-            ComponentElementErrorPtr err = std::make_shared<ComponentElementError>();
-            err->setType(childNode->getType());
+            ComponentErrorPtr err = std::make_shared<ComponentError>();
+            err->setDescription("Invalid child element '" + childNode->getType() +
+                                "' found in component '" + component->getName() + "'.");
             err->setComponent(component);
             addError(err);
         }
@@ -195,14 +199,16 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
             } else if (attribute->getValue() == "no") {
                 units->setBaseUnit(false);
             } else {
-                UnitsBaseUnitAttributeErrorPtr err = std::make_shared<UnitsBaseUnitAttributeError>();
+                UnitsErrorPtr err = std::make_shared<UnitsError>();
+                err->setDescription("Invalid base_unit attribute in units '" + units->getName() +
+                                    "': should be either 'yes' or 'no', and not '" + attribute->getValue() + "'");
                 err->setUnits(units);
-                err->setValue(node->getAttribute("base_unit"));
                 addError(err);
             }
         } else {
-            UnitsAttributeErrorPtr err = std::make_shared<UnitsAttributeError>();
-            err->setType(attribute->getType());
+            UnitsErrorPtr err = std::make_shared<UnitsError>();
+            err->setDescription("Invalid attribute '" + attribute->getType() +
+                                "' found in units '"+ units->getName() + "'.");
             err->setUnits(units);
             addError(err);
         }
@@ -227,9 +233,11 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                     {
                         exponent = std::stod(attribute->getValue());
                     } catch (std::exception) {
-                        UnitsExponentAttributeErrorPtr err = std::make_shared<UnitsExponentAttributeError>();
+                        UnitsErrorPtr err = std::make_shared<UnitsError>();
+                        err->setDescription("Exponent attribute value '" + attribute->getValue() +
+                                            "' in unit '" + childNode->getAttribute("units") +
+                                            "' from units '" + units->getName() + "' is not convertible to decimal number.");
                         err->setUnits(units);
-                        err->setValue(attribute->getValue());
                         addError(err);
                     }
                 } else if (attribute->isType("multiplier")) {
@@ -237,9 +245,11 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                     {
                         multiplier = std::stod(attribute->getValue());
                     } catch (std::exception) {
-                        UnitsMultiplierAttributeErrorPtr err = std::make_shared<UnitsMultiplierAttributeError>();
+                        UnitsErrorPtr err = std::make_shared<UnitsError>();
+                        err->setDescription("Multiplier attribute value '" + attribute->getValue() +
+                                            "' in unit '" + childNode->getAttribute("units") +
+                                            "' from units '" + units->getName() + "' is not convertible to decimal number.");
                         err->setUnits(units);
-                        err->setValue(attribute->getValue());
                         addError(err);
                     }
                 } else if (attribute->isType("offset")) {
@@ -247,28 +257,29 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
                     {
                         offset = std::stod(attribute->getValue());
                     } catch (std::exception) {
-                        UnitsOffsetAttributeErrorPtr err = std::make_shared<UnitsOffsetAttributeError>();
+                        UnitsErrorPtr err = std::make_shared<UnitsError>();
+                        err->setDescription("Offset attribute value '" + attribute->getValue() +
+                                            "' in unit '" + childNode->getAttribute("units") +
+                                            "' from units '" + units->getName() + "' is not convertible to decimal number.");
                         err->setUnits(units);
-                        err->setValue(attribute->getValue());
                         addError(err);
                     }
                 } else {
-                    UnitAttributeErrorPtr err = std::make_shared<UnitAttributeError>();
-                    err->setType(childNode->getType());
+                    UnitsErrorPtr err = std::make_shared<UnitsError>();
+                    err->setDescription("Invalid attribute '" + attribute->getType() +
+                                        "' found in unit '" + childNode->getAttribute("units") +
+                                        "' from units '" + units->getName() + "'.");
                     err->setUnits(units);
-                    if (childNode->hasAttribute("units")) {
-                        err->setUnitName(childNode->getAttribute("units"));
-                    }
                     addError(err);
                 }
                 attribute = attribute->getNext();
             }
             units->addUnit(name, prefix, exponent, multiplier, offset);
         } else {
-            UnitsElementErrorPtr err = std::make_shared<UnitsElementError>();
-            err->setType(childNode->getType());
+            UnitsErrorPtr err = std::make_shared<UnitsError>();
+            err->setDescription("Invalid child element '" + childNode->getType() +
+                                "' found in units '" + units->getName() + "'.");
             err->setUnits(units);
-            err->setParentLabel("element '" + node->getType() + "' with name '" + units->getName() + "'");
             addError(err);
         }
         childNode = childNode->getNext();
@@ -288,8 +299,9 @@ void Parser::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->getValue());
         } else {
-            VariableAttributeErrorPtr err = std::make_shared<VariableAttributeError>();
-            err->setType(attribute->getType());
+            VariableErrorPtr err = std::make_shared<VariableError>();
+            err->setDescription("Invalid attribute '" + attribute->getType() +
+                                "' found in variable '" + node->getAttribute("name") + "'.");
             err->setVariable(variable);
             addError(err);
         }
@@ -309,6 +321,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     if (!mapComponentsNode) {
         ModelErrorPtr err = std::make_shared<ModelError>();
         err->setDescription("Connection does not contain any child elements.");
+        err->setModel(model);
         addError(err);
         return;
     }
@@ -320,6 +333,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
             } else {
                 ModelErrorPtr err = std::make_shared<ModelError>();
                 err->setDescription("Model does not contain the following component specified in a connection: " + componentName + ".");
+                err->setModel(model);
                 addError(err);
                 return;
             }
@@ -330,6 +344,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                 } else {
                     ModelErrorPtr err = std::make_shared<ModelError>();
                     err->setDescription("Model does not contain the following component specified in a connection: " + componentName + ".");
+                    err->setModel(model);
                     addError(err);
                     return;
                 }
@@ -337,12 +352,14 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
             err->setDescription("Connection map_components does not contain a component_1.");
+            err->setModel(model);
             addError(err);
             return;
         }
     } else {
         ModelErrorPtr err = std::make_shared<ModelError>();
         err->setDescription("Connection does not contain a map_components.");
+        err->setModel(model);
         addError(err);
         return;
     }
@@ -352,6 +369,7 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     if (!mapVariablesNode) {
         ModelErrorPtr err = std::make_shared<ModelError>();
         err->setDescription("Connection only contains a map_components (no map_variables).");
+        err->setModel(model);
         addError(err);
     }
     while (mapVariablesNode) {
@@ -371,10 +389,11 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                     variable1->setName(variableName);
                     component1->addVariable(variable1);
                 } else {
-                    VariableErrorPtr ve = std::make_shared<VariableError>();
-                    ve->setComponent(component1);
-                    ve->setValue(variableName);
-                    addError(ve);
+                    VariableErrorPtr err = std::make_shared<VariableError>();
+                    err->setDescription("Variable '" + variableName +
+                                        "' not found in component '" + component1->getName() + "'.");
+                    err->setComponent(component1);
+                    addError(err);
                     errorOccurred = true;
                 }
                 if (mapVariablesNode->hasAttribute("variable_2")) {
@@ -391,10 +410,11 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                             variable2->setName(variableName);
                             component2->addVariable(variable2);
                         } else {
-                            VariableErrorPtr ve = std::make_shared<VariableError>();
-                            ve->setComponent(component2);
-                            ve->setValue(variableName);
-                            addError(ve);
+                            VariableErrorPtr err = std::make_shared<VariableError>();
+                            err->setDescription("Variable '" + variableName +
+                                                "' not found in component '" + component2->getName() + "'.");
+                            err->setComponent(component2);
+                            addError(err);
                             errorOccurred = true;
                         }
                     } else {
@@ -402,25 +422,29 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                         err->setDescription("Connection does not name a valid component_2 for connection "
                                             "between variables variable_1='" + variable1->getName() + "' "
                                             "and variable_2='" + variableName + "'.");
+                        err->setModel(model);
                         addError(err);
                         errorOccurred = true;
                     }
                 } else {
                     ModelErrorPtr err = std::make_shared<ModelError>();
                     err->setDescription("Connection map_variables does not contain a variable_2.");
+                    err->setModel(model);
                     addError(err);
                     errorOccurred = true;
                 }
             } else {
                 ModelErrorPtr err = std::make_shared<ModelError>();
                 err->setDescription("Connection map_variables does not contain a variable_1.");
+                err->setModel(model);
                 addError(err);
                 errorOccurred = true;
             }
         } else {
-            EntityElementErrorPtr err = std::make_shared<EntityElementError>();
-            err->setType(mapVariablesNode->getType());
-            err->setParentLabel("element '" + mapComponentsNode->getType() + "'");
+            ModelErrorPtr err = std::make_shared<ModelError>();
+            err->setDescription("Invalid element type '" + mapVariablesNode->getType() +
+                                "' found in model connection. Expected a map_variables element.");
+            err->setModel(model);
             addError(err);
             errorOccurred = true;
         }
@@ -447,6 +471,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                 } else {
                     ModelErrorPtr err = std::make_shared<ModelError>();
                     err->setDescription("Model does not contain the following component specified in an encapsulation: " + parentComponentName + ".");
+                    err->setModel(model);
                     addError(err);
                     errorOccurred = true;
                 }
@@ -455,6 +480,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                 if (!childComponentNode) {
                     ModelErrorPtr err = std::make_shared<ModelError>();
                     err->setDescription("Encapsulation contains no child components.");
+                    err->setModel(model);
                     addError(err);
                     errorOccurred = true;
                 }
@@ -468,18 +494,21 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                             } else {
                                 ModelErrorPtr err = std::make_shared<ModelError>();
                                 err->setDescription("Model does not contain the following component specified in an encapsulation: " + childComponentName + ".");
+                                err->setModel(model);
                                 addError(err);
                                 errorOccurred = true;
                             }
                         } else {
                             ModelErrorPtr err = std::make_shared<ModelError>();
                             err->setDescription("Encapsulation component_ref does not contain a component.");
+                            err->setModel(model);
                             addError(err);
                             errorOccurred = true;
                         }
                     } else {
                         ModelErrorPtr err = std::make_shared<ModelError>();
                         err->setDescription("Encapsulation does not contain a component_ref.");
+                        err->setModel(model);
                         addError(err);
                         errorOccurred = true;
                     }
@@ -501,11 +530,13 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
             } else {
                 ModelErrorPtr err = std::make_shared<ModelError>();
                 err->setDescription("Encapsulation component_ref does not contain a component.");
+                err->setModel(model);
                 addError(err);
             }
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
             err->setDescription("Encapsulation does not contain a component_ref.");
+            err->setModel(model);
             addError(err);
         }
         // Get the next parent component at this level
@@ -515,30 +546,75 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
 
 void Parser::loadImport(const ImportPtr &import, const ModelPtr &model, const XmlNodePtr &node)
 {
-    if (node->hasAttribute("href")) {
-        import->setSource(node->getAttribute("href"));
+    XmlAttributePtr attribute = node->getRootAttribute();
+    while (attribute) {
+        if (attribute->isType("href")) {
+            import->setSource(attribute->getValue());
+        } else if (attribute->isType("xlink")) {
+            // Allow xlink attributes but do nothing for them.
+        } else {
+            ImportErrorPtr err = std::make_shared<ImportError>();
+            err->setDescription("Invalid attribute '" + attribute->getType() +
+                                "' found in import from '" + node->getAttribute("href") + "'.");
+            err->setImport(import);
+            addError(err);
+        }
+        attribute = attribute->getNext();
     }
     XmlNodePtr childNode = node->getChild();
     while (childNode) {
         if (childNode->isType("component")) {
             ComponentPtr importedComponent = std::make_shared<Component>();
-            if (childNode->hasAttribute("name")) {
-                importedComponent->setName(childNode->getAttribute("name"));
+            bool errorOccurred = false;
+            XmlAttributePtr attribute = childNode->getRootAttribute();
+            while (attribute) {
+                if (attribute->isType("name")) {
+                    importedComponent->setName(attribute->getValue());
+                } else if (attribute->isType("component_ref")) {
+                    importedComponent->setSourceComponent(import, attribute->getValue());
+                } else {
+                    ImportErrorPtr err = std::make_shared<ImportError>();
+                    err->setDescription("Invalid attribute '" + attribute->getType() +
+                                        "' found in import of component '" + childNode->getAttribute("name") +
+                                        "' from '" + node->getAttribute("href") + "'.");
+                    err->setImport(import);
+                    addError(err);
+                    errorOccurred = true;
+                }
+                attribute = attribute->getNext();
             }
-            if (childNode->hasAttribute("component_ref")) {
-                importedComponent->setSourceComponent(import, childNode->getAttribute("component_ref"));
+            if (!errorOccurred) {
+                model->addComponent(importedComponent);
             }
-            model->addComponent(importedComponent);
-        }
-        if (childNode->isType("units")) {
+        } else if (childNode->isType("units")) {
             UnitsPtr importedUnits = std::make_shared<Units>();
-            if (childNode->hasAttribute("name")) {
-                importedUnits->setName(childNode->getAttribute("name"));
+            bool errorOccurred = false;
+            XmlAttributePtr attribute = childNode->getRootAttribute();
+            while (attribute) {
+                if (attribute->isType("name")) {
+                    importedUnits->setName(attribute->getValue());
+                } else if (attribute->isType("units_ref")) {
+                    importedUnits->setSourceUnits(import, attribute->getValue());
+                } else {
+                    ImportErrorPtr err = std::make_shared<ImportError>();
+                    err->setDescription("Invalid attribute '" + attribute->getType() +
+                                        "' found in import of units '" + childNode->getAttribute("name") +
+                                        "' from '" + node->getAttribute("href") + "'.");
+                    err->setImport(import);
+                    addError(err);
+                    errorOccurred = true;
+                }
+                attribute = attribute->getNext();
             }
-            if (childNode->hasAttribute("units_ref")) {
-                importedUnits->setSourceUnits(import, childNode->getAttribute("units_ref"));
+            if (!errorOccurred) {
+                model->addUnits(importedUnits);
             }
-            model->addUnits(importedUnits);
+        } else {
+            ImportErrorPtr err = std::make_shared<ImportError>();
+            err->setDescription("Invalid child element '" + childNode->getType() +
+                                "' found in import from '" + node->getAttribute("href") + "'.");
+            err->setImport(import);
+            addError(err);
         }
         childNode = childNode->getNext();
     }

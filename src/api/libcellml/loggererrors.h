@@ -33,89 +33,31 @@ class LIBCELLML_EXPORT EntityError
 {
 public:
     /**
-     * @brief Serialise the error message.
+     * @brief Set the description for this entity error.
      *
-     * Serialise the error to a @c std::string.
+     * Set the @c std::string @p description for this entity error as
+     * raised by the parser.
      *
-     * @return A @c std::string representation of the error.
+     * @param description The @c std::string description to set.
      */
-    std::string serialise() const { return doSerialisation(); }
+    void setDescription(const std::string& description) { mDescription = description; }
 
     /**
-     * @brief Set the type of this attribute or element entity.
+     * @brief Get the description for this entity error.
      *
-     * Set the type of the element or attribute entity.
+     * Get the @c std::string description for this entity error as
+     * raised by the parser.
      *
-     * @param value The @c std::string value to set.
+     * @return The @c std::string description of the error.
      */
-    void setType(const std::string& type) { mType = type; }
-
-    /**
-     * @brief Get the type of this attribute or element entity.
-     *
-     * Get the type of this element or attribute entity.
-     *
-     * @return The @c std::string representation of the type.
-     */
-    std::string getType() const { return mType; }
-
-    /**
-     * @brief Set label referring to the parent of this entity.
-     *
-     * Set a label to give information about the parent of this
-     * element or attribute entity.
-     *
-     * @param value The @c std::string label to set.
-     */
-    void setParentLabel(const std::string& label) { mParentLabel = label; }
-
-    /**
-     * @brief Get a label referring to the parent of this entity.
-     *
-     * Get a label with information about the parent of this
-     * element or attribute entity.
-     *
-     * @return label The @c std::string label.
-     */
-    std::string getParentLabel() const { return mParentLabel; }
-
-    /**
-     * @brief Set the value of the attribute.
-     *
-     * Set the value of the attribute.
-     *
-     * @param value The @c std::string value to set.
-     */
-    void setValue(const std::string& value) { mValue = value; }
-
-    /**
-     * @brief Get the value of the attribute.
-     *
-     * Get the value of the attribute.
-     *
-     * @return The @c std::string representation of the value.
-     */
-    std::string getValue() const { return mValue; }
+    std::string getDescription() const { return mDescription; }
 
 protected:
-    /**
-     * @brief Virtual method for serialising error.
-     *
-     * Virtual method for serialising the error to a @c std::string.
-     *
-     * @return @c std::string representation of the object.
-     */
-    virtual std::string doSerialisation() const;
-
-    std::string mType; /**< Element or attribute type for this entity represented as a @c std::string. */
-    std::string mParentLabel; /**< Parent entity label represented as a @c std::string. */
-    std::string mValue; /**< Attribute value represented as a @c std::string. */
+    std::string mDescription; /**< The string descriptin of this entity error raised by the parser. */
 };
 
 class EntityElementError: public EntityError
 {
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
 };
 
 /**
@@ -125,27 +67,6 @@ protected:
  */
 class NamedEntityError: public EntityError
 {
-public:
-    /**
-     * @brief Set the name for the error.
-     *
-     * Method to set the name attribute of the error.
-     *
-     * @param name A @c std::string to represent the name.
-     */
-    void setName(const std::string& name) { mName = name; }
-
-    /**
-     * @brief Get the name of the error.
-     *
-     * Method to get the name attribute of the error.
-     *
-     * @return  @c std::string representation of the error.
-     */
-    std::string getName() const { return mName; }
-
-private:
-    std::string mName; /**< Name attribute represented as a @c std::string. */
 };
 
 /**
@@ -155,7 +76,27 @@ private:
  */
 class ImportError: public EntityError
 {
+public:
+    /**
+     * @brief Set the import for this ImportError.
+     *
+     * Set the import for this ImportError.
+     *
+     * @param c A pointer to the import to set.
+     */
+    void setImport(ImportPtr import) { mImport = import; }
 
+    /**
+     * @brief Get the import for this ImportError.
+     *
+     * Get the import for this ImportError.
+     *
+     * @return A pointer to the import.
+     */
+    ImportPtr getImport() const { return mImport; }
+
+private:
+    ImportPtr mImport; /**< Pointer to the import that the error occurred in. */
 };
 
 /**
@@ -202,33 +143,9 @@ public:
      */
     VariablePtr getVariable() const { return mVariable; }
 
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-
 private:
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
     ComponentPtr mComponent; /**< Pointer to the component that the variable belongs to. */
-};
-
-/**
- * @brief The VariableElementError class.
- *
- * The VariableElementError class.
- */
-class VariableElementError: public VariableError
-{
-
-};
-
-/**
- * @brief The VariableAttributeError class.
- *
- * The VariableAttributeError class.
- */
-class VariableAttributeError: public VariableElementError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
 };
 
 /**
@@ -238,7 +155,6 @@ protected:
  */
 class ImportedEntityError: public NamedEntityError
 {
-
 };
 
 /**
@@ -272,97 +188,12 @@ private:
 };
 
 /**
- * @brief The UnitsElementError class.
- *
- * The UnitsElementError class.
- */
-class UnitsElementError: public UnitsError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
- * @brief The UnitsAttributeError class.
- *
- * The UnitsAttributeError class.
- */
-class UnitsAttributeError: public UnitsElementError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
- * @brief The UnitAttributeError class.
- *
- * The UnitAttributeError class.
- */
-class UnitAttributeError: public UnitsElementError
-{
-public:
-    void setUnitName(std::string uName) { mUnitName = uName; }
-    std::string getUnitName() const { return mUnitName; }
-
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-
-private:
-    std::string mUnitName;
-};
-
-/**
- * @brief The UnitsBaseUnitAttributeError class.
- *
- * The UnitsBaseUnitAttributeError class.
- */
-class UnitsBaseUnitAttributeError: public UnitsAttributeError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
- * @brief The UnitsExponentAttributeError class.
- *
- * The UnitsExponentAttributeError class.
- */
-class UnitsExponentAttributeError: public UnitsAttributeError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
- * @brief The UnitsMultiplierAttributeError class.
- *
- * The UnitsMultiplierAttributeError class.
- */
-class UnitsMultiplierAttributeError: public UnitsAttributeError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
- * @brief The UnitsOffsetAttributeError class.
- *
- * The UnitsOffsetAttributeError class.
- */
-class UnitsOffsetAttributeError: public UnitsAttributeError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
  * @brief The ComponentEntityError class.
  *
  * The ComponentEntityError class.
  */
 class ComponentEntityError: public ImportedEntityError
 {
-
 };
 
 /**
@@ -396,28 +227,6 @@ private:
 };
 
 /**
- * @brief The ComponentElementError class.
- *
- * The ComponentElementError class.
- */
-class ComponentElementError: public ComponentError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
-* @brief The ComponentAttributeError class.
-*
-* The ComponentAttributeError class.
-*/
-class ComponentAttributeError: public ComponentElementError
-{
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
-};
-
-/**
  * @brief The ModelError class.
  *
  * The ModelError class.
@@ -425,32 +234,34 @@ protected:
 class ModelError: public ComponentEntityError
 {
 public:
-    void setDescription(const std::string& description) { mDescription = description; }
+    /**
+     * @brief Set the @p model for the @c ModelError.
+     *
+     * Set the @p model for this @c ModelError.
+     *
+     * @param model A pointer to the model to set.
+     */
+    void setModel(ModelPtr model) { mModel = model; }
 
-protected:
-    virtual std::string doSerialisation() const; /**< Virtual override method for doing serialisation. */
+    /**
+     * @brief Get the model for the @c ModelError.
+     *
+     * Get the model for this @c ModelError.
+     *
+     * @return A pointer to the model.
+     */
+    ModelPtr getModel() const { return mModel; }
 
 private:
-    std::string mDescription;
+    ModelPtr mModel;
 };
 
 typedef std::shared_ptr<EntityError> EntityErrorPtr; /**< Type definition for shared entity error pointer. */
 typedef std::shared_ptr<VariableError> VariableErrorPtr; /**< Type definition for shared variable error pointer. */
-typedef std::shared_ptr<VariableAttributeError> VariableAttributeErrorPtr; /**< Type definition for shared variable attribute error pointer. */
 typedef std::shared_ptr<UnitsError> UnitsErrorPtr; /**< Type definition for shared units error pointer. */
 typedef std::shared_ptr<ComponentError> ComponentErrorPtr; /**< Type definition for shared component error pointer. */
-typedef std::shared_ptr<ComponentElementError> ComponentElementErrorPtr; /**< Type definition for shared component element error pointer. */
-typedef std::shared_ptr<ComponentAttributeError> ComponentAttributeErrorPtr; /**< Type definition for shared component attribute error pointer. */
 typedef std::shared_ptr<ModelError> ModelErrorPtr; /**< Type definition for shared model error pointer. */
-typedef std::shared_ptr<UnitsElementError> UnitsElementErrorPtr; /**< Type definition for shared units element error pointer. */
-typedef std::shared_ptr<UnitsAttributeError> UnitsAttributeErrorPtr; /**< Type definition for shared units attribute error pointer. */
-typedef std::shared_ptr<UnitAttributeError> UnitAttributeErrorPtr; /**< Type definition for shared unit attribute error pointer. */
-typedef std::shared_ptr<UnitsBaseUnitAttributeError> UnitsBaseUnitAttributeErrorPtr; /**< Type definition for shared units base unit attribute error pointer. */
-typedef std::shared_ptr<UnitsExponentAttributeError> UnitsExponentAttributeErrorPtr; /**< Type definition for shared units exponent attribute error pointer. */
-typedef std::shared_ptr<UnitsMultiplierAttributeError> UnitsMultiplierAttributeErrorPtr; /**< Type definition for shared units multiplier attribute error pointer. */
-typedef std::shared_ptr<UnitsOffsetAttributeError> UnitsOffsetAttributeErrorPtr; /**< Type definition for shared units offset attribute error pointer. */
-typedef std::shared_ptr<EntityElementError> EntityElementErrorPtr; /**< Type definition for shared entity element error pointer. */
-typedef std::shared_ptr<VariableAttributeError> VariableAttributeErrorPtr; /**< Type definition for shared variable attribute error pointer. */
+typedef std::shared_ptr<ImportError> ImportErrorPtr; /**< Type definition for shared model error pointer. */
 
 }
 

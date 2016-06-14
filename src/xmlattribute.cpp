@@ -60,12 +60,23 @@ bool XmlAttribute::isType(const char *attributeName)
 
 std::string XmlAttribute::getType() const
 {
-    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name));
+    std::string type;
+    if (mPimpl->mXmlAttributePtr->name) {
+        type = std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name));
+    }
+    return type;
 }
 
 std::string XmlAttribute::getValue() const
 {
-    char* value = reinterpret_cast<char *>(xmlGetNoNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name));
+    char* value;
+    if ((mPimpl->mXmlAttributePtr->name) && (mPimpl->mXmlAttributePtr->parent)) {
+        if ((mPimpl->mXmlAttributePtr->ns) && (mPimpl->mXmlAttributePtr->ns->href)) {
+            value = reinterpret_cast<char *>(xmlGetNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name, mPimpl->mXmlAttributePtr->ns->href));
+        } else {
+            value = reinterpret_cast<char *>(xmlGetNoNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name));
+        }
+    }
     std::string valueString = std::string(value);
     xmlFree(value);
     return valueString;
