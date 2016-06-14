@@ -911,7 +911,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
     libcellml::ModelPtr model = parser.parseModel(s);
     EXPECT_EQ(1, parser.errorCount());
 
-    EXPECT_EQ("Variable 'variable_angus' not found in component 'component_dave'.", parser.getError(0)->getDescription());
+    EXPECT_EQ("Connection variable_1 'variable_angus' not found in component_1 'component_dave'.", parser.getError(0)->getDescription());
     parser.clearErrors();
     EXPECT_EQ(0, parser.errorCount());
 

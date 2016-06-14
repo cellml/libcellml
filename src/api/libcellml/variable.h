@@ -142,24 +142,26 @@ public:
     /**
      * @brief Set the units for this variable using a @c UnitsPtr.
      *
-     * Set the units for this variable using the @p units.
+     * Set the units for this variable as the name associated with the 
+     * argument @p units.
      *
      * @overload
      *
      * @sa getUnits
      *
-     * @param u The units to set.
+     * @param units The @c UnitsPtr to set.
      */
-    void setUnits(const UnitsPtr &u);
+    void setUnits(const UnitsPtr &units);
 
     /**
-     * @brief Get the units for this variable.
+     * @brief Get the name of the units for this variable.
      *
-     * Get the units for this variable.  If no units are set @c nullptr is returned.
+     * Get the name of the units for this variable. If no units are set 
+     * an empty @c std::string is returned.
      *
      * @sa setUnits
      *
-     * @param u The units to get.
+     * @return The @c std::string name of the units for this variable.
      */
     std::string getUnits() const;
 

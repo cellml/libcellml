@@ -201,7 +201,7 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
             } else {
                 UnitsErrorPtr err = std::make_shared<UnitsError>();
                 err->setDescription("Invalid base_unit attribute in units '" + units->getName() +
-                                    "': should be either 'yes' or 'no', and not '" + attribute->getValue() + "'");
+                                    "'. should be either 'yes' or 'no', and not '" + attribute->getValue() + "'");
                 err->setUnits(units);
                 addError(err);
             }
@@ -332,7 +332,9 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                 component1 = model->getComponent(componentName);
             } else {
                 ModelErrorPtr err = std::make_shared<ModelError>();
-                err->setDescription("Model does not contain the following component specified in a connection: " + componentName + ".");
+                err->setDescription("Component '" + componentName +
+                                    "' has been specified as component_1 in a connection but it does not exist in model '"
+                                    + model->getName() + "'.");
                 err->setModel(model);
                 addError(err);
                 return;
@@ -343,7 +345,9 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                     component2 = model->getComponent(componentName);
                 } else {
                     ModelErrorPtr err = std::make_shared<ModelError>();
-                    err->setDescription("Model does not contain the following component specified in a connection: " + componentName + ".");
+                    err->setDescription("Component '" + componentName +
+                                        "' has been specified as component_2 in a connection but it does not exist in model '"
+                                        + model->getName() + "'.");
                     err->setModel(model);
                     addError(err);
                     return;
@@ -390,8 +394,8 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                     component1->addVariable(variable1);
                 } else {
                     VariableErrorPtr err = std::make_shared<VariableError>();
-                    err->setDescription("Variable '" + variableName +
-                                        "' not found in component '" + component1->getName() + "'.");
+                    err->setDescription("Connection variable_1 '" + variableName +
+                                        "' not found in component_1 '" + component1->getName() + "'.");
                     err->setComponent(component1);
                     addError(err);
                     errorOccurred = true;
@@ -411,8 +415,8 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
                             component2->addVariable(variable2);
                         } else {
                             VariableErrorPtr err = std::make_shared<VariableError>();
-                            err->setDescription("Variable '" + variableName +
-                                                "' not found in component '" + component2->getName() + "'.");
+                            err->setDescription("Connection variable_2 '" + variableName +
+                                                "' not found in component_2 '" + component2->getName() + "'.");
                             err->setComponent(component2);
                             addError(err);
                             errorOccurred = true;
@@ -470,7 +474,8 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     parentComponent = model->takeComponent(parentComponentName);
                 } else {
                     ModelErrorPtr err = std::make_shared<ModelError>();
-                    err->setDescription("Model does not contain the following component specified in an encapsulation: " + parentComponentName + ".");
+                    err->setDescription("Model does not contain component '" + parentComponentName +
+                                        "' but it has been specified in an encapsulation.");
                     err->setModel(model);
                     addError(err);
                     errorOccurred = true;
@@ -493,7 +498,8 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                                 childComponent = model->getComponent(childComponentName);
                             } else {
                                 ModelErrorPtr err = std::make_shared<ModelError>();
-                                err->setDescription("Model does not contain the following component specified in an encapsulation: " + childComponentName + ".");
+                                err->setDescription("Model does not contain component '" + childComponentName +
+                                                    "' but it has been specified in an encapsulation.");
                                 err->setModel(model);
                                 addError(err);
                                 errorOccurred = true;

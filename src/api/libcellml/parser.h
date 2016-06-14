@@ -113,7 +113,7 @@ private:
      * will be added to this network.
      *
      * @param model The @c ModelPtr to update.
-     * @param parentComponentNode The parent @c XmlNodePtr to load the encapsulated node into.
+     * @param parentComponentNode The parent @c XmlNodePtr of the encapsulation relationship.
      */
     void loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponentnode);
 

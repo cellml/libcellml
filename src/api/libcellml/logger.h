@@ -47,10 +47,13 @@ public:
     void clearErrors();
 
     /**
-     * @brief addError
-     * @param err
+     * @brief Add an error to the logger.
+     *
+     * Adds the argument @p error to this logger.
+     *
+     * @param error The @c EntityErrorPtr to add.
      */
-    void addError(EntityErrorPtr err);
+    void addError(EntityErrorPtr error);
 
     /**
      * @brief Get the number of errors.
@@ -62,7 +65,7 @@ public:
     size_t errorCount() const;
 
     /**
-     * @brief Get error at index.
+     * @brief Get error at the specified index.
      *
      * Returns a reference to an error at the index @p index.  If the  index
      * is not valid a @c std::out_of_range exception is thrown.

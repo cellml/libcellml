@@ -73,9 +73,9 @@ void Logger::clearErrors()
     mPimpl->mErrors.clear();
 }
 
-void Logger::addError(EntityErrorPtr err)
+void Logger::addError(EntityErrorPtr error)
 {
-    mPimpl->mErrors.push_back(err);
+    mPimpl->mErrors.push_back(error);
 }
 
 size_t Logger::errorCount() const

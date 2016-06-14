@@ -178,9 +178,9 @@ void Variable::setUnits(const std::string &name)
     mPimpl->mUnits = name;
 }
 
-void Variable::setUnits(const UnitsPtr &u)
+void Variable::setUnits(const UnitsPtr &units)
 {
-    mPimpl->mUnits = u->getName();
+    mPimpl->mUnits = units->getName();
 }
 
 std::string Variable::getUnits() const
