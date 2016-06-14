@@ -169,16 +169,8 @@ std::string Model::doSerialisation(Format format) const
                                 // Get parent components.
                                 Component* component1 = static_cast<Component*>(variable->getParent());
                                 Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
-                                // Do not serialise a variable's parent component in a connection if that variable no
-                                // longer exists in that component. Allow serialisation of one componentless variable.
-
-                                // component1 always has to exist otherwise there is no connection possible.
-                                // Likewise the variable that component1 has always has to exist.
-                                //  if (component1) {
-                                //      if (!component1->hasVariable(variable)) {
-                                //          component1 = nullptr;  // This line is not reachable due to the above considerations.
-                                //      }
-                                //  }
+                                // Do not serialise a variable's parent component in a connection if that variable no longer
+                                // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                                 if (component2) {
                                     if (!component2->hasVariable(equivalentVariable)) {
                                         component2 = nullptr;

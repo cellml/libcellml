@@ -84,7 +84,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnits) {
     std::string a = model->serialise(libcellml::Format::XML);
 
     EXPECT_EQ(1, parser.errorCount());
-    EXPECT_EQ("Invalid base_unit attribute in units 'dimensionless': should be either 'yes' or 'no', and not 'joe'", parser.getError(0)->getDescription());
+    EXPECT_EQ("Invalid base_unit attribute in units 'dimensionless'. Should be either 'yes' or 'no', and not 'joe'.", parser.getError(0)->getDescription());
 
     EXPECT_EQ(e, a);
 }
@@ -360,7 +360,7 @@ TEST(Parser, encapsulationWithNoComponent) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(2, p.errorCount());
-    EXPECT_EQ(82, p.getError(0)->getDescription().length());
+    EXPECT_EQ(85, p.getError(0)->getDescription().length());
 }
 
 TEST(Parser, encapsulationWithMissingComponent) {
@@ -378,7 +378,7 @@ TEST(Parser, encapsulationWithMissingComponent) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(83, p.getError(0)->getDescription().length());
+    EXPECT_EQ(86, p.getError(0)->getDescription().length());
 }
 
 TEST(Parser, encapsulationWithNoComponentChild) {
@@ -483,7 +483,7 @@ TEST(Parser, connectionErrorNoComponent1Existing) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(85, p.getError(0)->getDescription().length());
+    EXPECT_EQ(107, p.getError(0)->getDescription().length());
 }
 
 TEST(Parser, connectionErrorNoComponent2Existing) {
@@ -502,7 +502,7 @@ TEST(Parser, connectionErrorNoComponent2Existing) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(85, p.getError(0)->getDescription().length());
+    EXPECT_EQ(107, p.getError(0)->getDescription().length());
 }
 
 TEST(Parser, connectionErrorNoComponent1) {
@@ -603,7 +603,7 @@ TEST(Parser, component2ConnectionVariableMissing) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(e);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(66, p.getError(0)->getDescription().length());
+    EXPECT_EQ(81, p.getError(0)->getDescription().length());
 }
 
 TEST(Parser, component2InConnectionMissing) {

@@ -201,7 +201,7 @@ void Parser::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
             } else {
                 UnitsErrorPtr err = std::make_shared<UnitsError>();
                 err->setDescription("Invalid base_unit attribute in units '" + units->getName() +
-                                    "'. should be either 'yes' or 'no', and not '" + attribute->getValue() + "'");
+                                    "'. Should be either 'yes' or 'no', and not '" + attribute->getValue() + "'.");
                 err->setUnits(units);
                 addError(err);
             }
