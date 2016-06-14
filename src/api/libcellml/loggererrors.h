@@ -35,25 +35,23 @@ public:
     /**
      * @brief Set the description for this entity error.
      *
-     * Set the @c std::string @p description for this entity error as
-     * raised by the parser.
+     * Set the @c std::string @p description for why this entity error was raised.
      *
-     * @param description The @c std::string description to set.
+     * @param description The @c std::string error description to set.
      */
     void setDescription(const std::string& description) { mDescription = description; }
 
     /**
      * @brief Get the description for this entity error.
      *
-     * Get the @c std::string description for this entity error
-     * raised by the parser.
+     * Get the @c std::string description for why this entity error was raised.
      *
      * @return The @c std::string description of the error.
      */
     std::string getDescription() const { return mDescription; }
 
 protected:
-    std::string mDescription; /**< The string description of this entity error raised by the parser. */
+    std::string mDescription; /**< The string description for why this entity error raised. */
 };
 
 /**
@@ -74,20 +72,20 @@ class ImportError: public EntityError
 {
 public:
     /**
-     * @brief Set the @p import for this ImportError.
+     * @brief Set the @p import for this import error.
      *
-     * Set the @c ImportPtr @p import object for this ImportError.
+     * Set the @c ImportPtr @p import object that this import error is relevant to.
      *
-     * @param import A pointer to the import to set.
+     * @param import A pointer to the import that this import error is relevant to.
      */
     void setImport(ImportPtr import) { mImport = import; }
 
     /**
-     * @brief Get the import for this ImportError.
+     * @brief Get the import for this import error.
      *
-     * Get the @c ImportPtr import for this ImportError.
+     * Get the @c ImportPtr import for this import error.
      *
-     * @return A pointer to the import.
+     * @return A pointer to the import this import error was raised on.
      */
     ImportPtr getImport() const { return mImport; }
 
@@ -104,42 +102,42 @@ class VariableError: public NamedEntityError
 {
 public:
     /**
-     * @brief Set the component for the VariableError.
+     * @brief Set the component for this variable error.
      *
-     * Set the @p component this @c VariableError is associated with.
+     * Set the @p component this variable error is associated with.
      * This is likely the parent component the variable is
      * expected to be contained within.
      *
-     * @param component A pointer to the component that this @c VariableError is relevant to.
+     * @param component A pointer to the component that this variable error is relevant to.
      */
     void setComponent(ComponentPtr component) { mComponent = component; }
 
     /**
-     * @brief Get the component for the VariableError.
+     * @brief Get the component for this variable error.
      *
-     * Get the component this @c VariableError is associated with.
+     * Get the component this variable error is associated with.
      * This is likely the parent component the variable is expected
      * to be contained within.
      *
-     * @return A pointer to the component this @VariableError is relevant to.
+     * @return A pointer to the component this variable error is relevant to.
      */
     ComponentPtr getComponent() const { return mComponent; }
 
     /**
-     * @brief Set the variable for this VariableError.
+     * @brief Set the variable for this variable error.
      *
-     * Set the @p variable that this @c VariableError is relevant to.
+     * Set the @p variable that this variable error is relevant to.
      *
-     * @param variable A pointer to the variable this @c VariableError was raised on.
+     * @param variable A pointer to the variable this variable error is relevant to.
      */
     void setVariable(VariablePtr variable) { mVariable = variable; }
 
     /**
-     * @brief Get the variable for this VariableError.
+     * @brief Get the variable for this variable error.
      *
-     * Get the variable that this @c VariableError is relevant to.
+     * Get the variable that this variable error is relevant to.
      *
-     * @return A pointer to the variable this @c VariableError was raised on.
+     * @return A pointer to the variable this variable error was raised on.
      */
     VariablePtr getVariable() const { return mVariable; }
 
@@ -166,20 +164,20 @@ class UnitsError: public ImportedEntityError
 {
 public:
     /**
-     * @brief Set the units for this UnitsError.
+     * @brief Set the units for this units error.
      *
-     * Set the @p units that this @c UnitsError is relevant to.
+     * Set the @p units that this units error is relevant to.
      *
-     * @param units A pointer to the units to set.
+     * @param units A pointer to the units this units error is relevant to.
      */
     void setUnits(UnitsPtr units) { mUnits = units; }
 
     /**
-     * @brief Get the units for this UnitsError.
+     * @brief Get the units for this units error.
      *
-     * Get the units that this @c UnitsError is relevant to.
+     * Get the units that this units error is relevant to.
      *
-     * @return A pointer to the units that this @c UnitsError was raised on.
+     * @return A pointer to the units that this units error was raised on.
      */
     UnitsPtr getUnits() const { return mUnits; }
 
@@ -205,20 +203,20 @@ class ComponentError: public ComponentEntityError
 {
 public:
     /**
-     * @brief Set the component for this @c ComponentError.
+     * @brief Set the component for this component error.
      *
-     * Set the @p component that this @c ComponentError is relevant to.
+     * Set the @p component that this component error is relevant to.
      *
-     * @param component A pointer to the component that this @c ComponentError was raised on.
+     * @param component A pointer to the component that this component error is relevant to.
      */
     void setComponent(ComponentPtr component) { mComponent = component; }
 
     /**
-     * @brief Get the component for this @c ComponentError.
+     * @brief Get the component for this component error.
      *
-     * Get the component that this @c ComponentError is relevant to.
+     * Get the component that this component error is relevant to.
      *
-     * @return A pointer to the component that this @ComponentError was raised on.
+     * @return A pointer to the component that this component error was raised on.
      */
     ComponentPtr getComponent() const { return mComponent; }
 
@@ -235,20 +233,20 @@ class ModelError: public ComponentEntityError
 {
 public:
     /**
-     * @brief Set the @p model for this @c ModelError.
+     * @brief Set the @p model for this model error.
      *
-     * Set the @p model that this @c ModelError is relevant to.
+     * Set the @p model that this model error is relevant to.
      *
-     * @param model A pointer to the model that this @c ModelError was raised on.
+     * @param model A pointer to the model that this model error is relevant to.
      */
     void setModel(ModelPtr model) { mModel = model; }
 
     /**
-     * @brief Get the model for this @c ModelError.
+     * @brief Get the model for this model error.
      *
-     * Get the model that this @c ModelError is relevant to.
+     * Get the model that this model error is relevant to.
      *
-     * @return A pointer to the model that this @c ModelError was raised on.
+     * @return A pointer to the model that this model error was raised on.
      */
     ModelPtr getModel() const { return mModel; }
 
