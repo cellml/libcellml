@@ -56,10 +56,6 @@ protected:
     std::string mDescription; /**< The string description of this entity error raised by the parser. */
 };
 
-class EntityElementError: public EntityError
-{
-};
-
 /**
  * @brief The NamedEntityError class
  *

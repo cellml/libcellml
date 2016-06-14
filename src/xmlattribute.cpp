@@ -69,16 +69,17 @@ std::string XmlAttribute::getType() const
 
 std::string XmlAttribute::getValue() const
 {
-    char* value;
+    std::string valueString;
     if ((mPimpl->mXmlAttributePtr->name) && (mPimpl->mXmlAttributePtr->parent)) {
+        char* value;
         if ((mPimpl->mXmlAttributePtr->ns) && (mPimpl->mXmlAttributePtr->ns->href)) {
             value = reinterpret_cast<char *>(xmlGetNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name, mPimpl->mXmlAttributePtr->ns->href));
         } else {
             value = reinterpret_cast<char *>(xmlGetNoNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name));
         }
+        valueString = std::string(value);
+        xmlFree(value);
     }
-    std::string valueString = std::string(value);
-    xmlFree(value);
     return valueString;
 }
 
