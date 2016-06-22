@@ -74,15 +74,11 @@ XmlDoc::~XmlDoc()
 
 void XmlDoc::parse(const std::string& input)
 {
-    if (input.length() > 0) {
-        xmlParserCtxtPtr context = xmlNewParserCtxt();
-        context->_private = reinterpret_cast<void *> (this);
-        xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-        mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST input.c_str(),"/", NULL, 0);
-        xmlFreeParserCtxt(context);
-    } else {
-        throw std::invalid_argument("XML string empty.");
-    }
+    xmlParserCtxtPtr context = xmlNewParserCtxt();
+    context->_private = reinterpret_cast<void *> (this);
+    xmlSetStructuredErrorFunc(context, structuredErrorCallback);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST input.c_str(),"/", NULL, 0);
+    xmlFreeParserCtxt(context);
 }
 
 XmlNodePtr XmlDoc::getRootNode() const
