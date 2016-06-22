@@ -16,13 +16,35 @@ limitations under the License.
 
 #include <string>
 #include <cstring>
+#include <vector>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <libxml/xmlerror.h>
 
 #include "xmldoc.h"
 #include "xmlnode.h"
 
+
 namespace libcellml {
+
+/**
+ * @brief Callback for errors from the libxml2 context parser.
+ *
+ * Structured callback @c xmlStructuredErrorFunc for errors
+ * from the libxml2 context parser used to parse this document.
+ *
+ * @param userData Private data type used to store the libxml context.
+ *
+ * @param error The @c xmlErrorPtr to the error raised by libxml.
+ */
+void structuredErrorCallback(void *userData, xmlErrorPtr error)
+{
+  std::string errorString = std::string(error->message);
+  errorString.replace(errorString.end()-1, errorString.end(), ".");
+  xmlParserCtxtPtr context = reinterpret_cast<xmlParserCtxtPtr>(userData);
+  XmlDoc *doc = reinterpret_cast<XmlDoc *>(context->_private);
+  doc->addXmlError(errorString);
+}
 
 /**
  * @brief The XmlDoc::XmlDocImpl struct.
@@ -34,6 +56,7 @@ namespace libcellml {
 struct XmlDoc::XmlDocImpl
 {
     xmlDocPtr mXmlDocPtr;
+    std::vector<std::string> mXmlErrors;
 };
 
 XmlDoc::XmlDoc()
@@ -52,10 +75,11 @@ XmlDoc::~XmlDoc()
 void XmlDoc::parse(const std::string& input)
 {
     if (input.length() > 0) {
-        mPimpl->mXmlDocPtr = xmlParseDoc(BAD_CAST input.c_str());
-        if (mPimpl->mXmlDocPtr == NULL) {
-            throw std::invalid_argument("Error parsing XML string: " + input);
-        }
+        xmlParserCtxtPtr context = xmlNewParserCtxt();
+        context->_private = reinterpret_cast<void *> (this);
+        xmlSetStructuredErrorFunc(context, structuredErrorCallback);
+        mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST input.c_str(),"/", NULL, 0);
+        xmlFreeParserCtxt(context);
     } else {
         throw std::invalid_argument("XML string empty.");
     }
@@ -63,10 +87,28 @@ void XmlDoc::parse(const std::string& input)
 
 XmlNodePtr XmlDoc::getRootNode() const
 {
+    if (mPimpl->mXmlDocPtr == NULL) {
+        throw std::invalid_argument("No valid XML Document found.");
+    }
     xmlNodePtr root = xmlDocGetRootElement(mPimpl->mXmlDocPtr);
     XmlNodePtr rootHandle = std::make_shared<XmlNode>();
     rootHandle->setXmlNode(root);
     return rootHandle;
+}
+
+void XmlDoc::addXmlError(const std::string error)
+{
+    mPimpl->mXmlErrors.push_back(error);
+}
+
+size_t XmlDoc::xmlErrorCount() const
+{
+    return mPimpl->mXmlErrors.size();
+}
+
+std::string XmlDoc::getXmlError(size_t index) const
+{
+    return mPimpl->mXmlErrors.at(index);
 }
 
 }

@@ -55,6 +55,38 @@ public:
      */
     XmlNodePtr getRootNode() const;
 
+    /**
+     * @brief Add an @p error raised while parsing this XML document.
+     *
+     * Adds the @p error raise while parsing this XML document to the
+     * list of @c mXmlErrors. These errors will pertain to the ability
+     * of libxml to parse a given document.
+     *
+     * @param error The XML error string to add.
+     */
+    void addXmlError(const std::string error);
+
+    /**
+     * @brief Count the number of XML errors in this document.
+     *
+     * Returns the number of XML errors raised while parsing
+     * this document.
+     *
+     * @return The number of XML errors.
+     */
+    size_t xmlErrorCount() const;
+
+    /**
+     * @brief Get a XML error at index.
+     *
+     * Returns the @c std::string message pertaining to the error
+     * at the @p index raised by libxml during parsing.
+     *
+     * @param index The index of the error to get.
+     * @return The @c std::string form of the XML error.
+     */
+    std::string getXmlError(size_t index) const;
+
 private:
     struct XmlDocImpl; /**< Forward declaration for pImpl idiom. */
     XmlDocImpl* mPimpl; /**< Private member to implementation pointer */

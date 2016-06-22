@@ -23,6 +23,34 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
+TEST(Parser, invalidXMLElements) {
+    std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<fellowship>"
+            "<Dwarf bearded>Gimli</ShortGuy>"
+            "<Hobbit>Frodo</EvenShorterGuy>"
+            "<Wizard>Gandalf</SomeGuyWithAStaff>"
+            "<Elf>"
+        "</fellows>";
+
+    std::string expectError1 = "Specification mandate value for attribute bearded.";
+    std::string expectError2 = "Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.";
+    std::string expectError3 = "Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.";
+    std::string expectError4 = "Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.";
+    std::string expectError5 = "Opening and ending tag mismatch: Elf line 2 and fellows.";
+    std::string expectError6 = "Premature end of data in tag fellowship line 2.";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    EXPECT_THROW(p.parseModel(input), std::invalid_argument);
+    EXPECT_EQ(6, p.errorCount());
+    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectError2, p.getError(1)->getDescription());
+    EXPECT_EQ(expectError3, p.getError(2)->getDescription());
+    EXPECT_EQ(expectError4, p.getError(3)->getDescription());
+    EXPECT_EQ(expectError5, p.getError(4)->getDescription());
+    EXPECT_EQ(expectError6, p.getError(5)->getDescription());
+}
+
 TEST(Parser, parse) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
     libcellml::Parser parser(libcellml::Format::XML);

@@ -85,6 +85,14 @@ void Parser::updateModel(const ModelPtr &model, const std::string &input)
     if (mPimpl->mFormat == Format::XML) {
         XmlDocPtr doc = std::make_shared<XmlDoc>();
         doc->parse(input);
+        // Copy any XML parsing errors into the common error handler.
+        if (doc->xmlErrorCount() > 0) {
+            for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+                EntityErrorPtr err = std::make_shared<EntityError>();
+                err->setDescription(doc->getXmlError(i));
+                addError(err);
+            }
+        }
         const XmlNodePtr node = doc->getRootNode();
         if (node->isType("model")) {
             loadModel(model, node);
