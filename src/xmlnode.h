@@ -19,6 +19,7 @@ limitations under the License.
 
 #include <string>
 #include <libxml/parser.h>
+
 #include "libcellml/types.h"
 #include "xmlattribute.h"
 

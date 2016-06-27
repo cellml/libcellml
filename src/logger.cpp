@@ -18,8 +18,8 @@ limitations under the License.
 
 #include <vector>
 
+#include "libcellml/component.h"
 #include "libcellml/types.h"
-#include <libcellml/component.h>
 
 namespace libcellml {
 

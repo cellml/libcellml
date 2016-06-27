@@ -16,12 +16,11 @@ limitations under the License.
 
 #include "libcellml/parser.h"
 
-#include <libcellml/model.h>
-#include <libcellml/import.h>
-#include <libcellml/variable.h>
-#include <libcellml/component.h>
-#include <libcellml/loggererrors.h>
-
+#include "libcellml/component.h"
+#include "libcellml/import.h"
+#include "libcellml/loggererrors.h"
+#include "libcellml/model.h"
+#include "libcellml/variable.h"
 #include "xmldoc.h"
 
 namespace libcellml {

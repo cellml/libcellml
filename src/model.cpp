@@ -17,13 +17,13 @@ limitations under the License.
 #include "libcellml/model.h"
 
 #include <map>
-#include <vector>
 #include <utility>
+#include <vector>
 #include <stack>
 
-#include <libcellml/import.h>
-#include <libcellml/variable.h>
-#include <libcellml/component.h>
+#include "libcellml/component.h"
+#include "libcellml/import.h"
+#include "libcellml/variable.h"
 
 namespace libcellml {
 

@@ -20,8 +20,8 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "libcellml/variable.h"
 #include "libcellml/units.h"
+#include "libcellml/variable.h"
 
 namespace libcellml {
 

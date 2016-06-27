@@ -14,16 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <string>
 #include <cstring>
-#include <vector>
+#include <string>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
+#include <vector>
 
 #include "xmldoc.h"
 #include "xmlnode.h"
-
 
 namespace libcellml {
 
