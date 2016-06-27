@@ -61,15 +61,6 @@ protected:
 };
 
 /**
- * @brief The NamedEntityError class
- *
- * NamedEntityError class for all nameable loggable errors.
- */
-class NamedEntityError: public EntityError
-{
-};
-
-/**
  * @brief The ImportError class.
  *
  * ImportError class for all import loggable errors.
@@ -126,7 +117,7 @@ private:
  *
  * VariableError class for all variable loggable errors.
  */
-class VariableError: public NamedEntityError
+class VariableError: public EntityError
 {
 public:
     /**
@@ -220,20 +211,11 @@ private:
 };
 
 /**
- * @brief The ImportedEntityError class.
- *
- * The ImportedEntityError class.
- */
-class ImportedEntityError: public NamedEntityError
-{
-};
-
-/**
  * @brief The UnitsError class.
  *
  * The UnitsError class.
  */
-class UnitsError: public ImportedEntityError
+class UnitsError: public EntityError
 {
 public:
     /**
@@ -281,20 +263,11 @@ private:
 };
 
 /**
- * @brief The ComponentEntityError class.
- *
- * The ComponentEntityError class.
- */
-class ComponentEntityError: public ImportedEntityError
-{
-};
-
-/**
  * @brief The ComponentError class.
  *
  * The ComponentError class.
  */
-class ComponentError: public ComponentEntityError
+class ComponentError: public EntityError
 {
 public:
     /**
@@ -346,7 +319,7 @@ private:
  *
  * The ModelError class.
  */
-class ModelError: public ComponentEntityError
+class ModelError: public EntityError
 {
 public:
     /**
