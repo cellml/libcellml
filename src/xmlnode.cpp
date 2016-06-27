@@ -85,7 +85,7 @@ std::string XmlNode::getAttribute(const char *attributeName)
     return attributeValueString;
 }
 
-XmlAttributePtr XmlNode::getRootAttribute()
+XmlAttributePtr XmlNode::getFirstAttribute()
 {
     xmlAttrPtr attribute = mPimpl->mXmlNodePtr->properties;
     XmlAttributePtr attributeHandle = nullptr;
@@ -96,7 +96,7 @@ XmlAttributePtr XmlNode::getRootAttribute()
     return attributeHandle;
 }
 
-XmlNodePtr XmlNode::getChild()
+XmlNodePtr XmlNode::getFirstChild()
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = std::make_shared<XmlNode>();
