@@ -118,12 +118,12 @@ public:
     /**
      * @brief Get a units at the given @p index.
      *
-     * Returns a const reference to a units at the given @p index.  If the
+     * Returns a @c const reference to a units at the given @p index.  If the
      * @p index is not valid a @c std::out_of_range exception is thrown.
      *
      * @param index The index of the units to return (zero-based).
      *
-     * @return A const reference to the units at the given @p index.
+     * @return A @c const reference to the units at the given @p index.
      */
     const UnitsPtr& getUnits(size_t index) const;
 
@@ -144,14 +144,14 @@ public:
     /**
      * @brief Get a units with the given @p name.
      *
-     * Returns a const reference to a units with the given @p name.  If the
+     * Returns a @c const reference to a units with the given @p name.  If the
      * @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the units to return.
      *
-     * @return A const reference to the units with the given @p name.
+     * @return A @c const reference to the units with the given @p name.
      */
     const UnitsPtr& getUnits(const std::string &name) const;
 
@@ -311,12 +311,12 @@ public:
     /**
      * @brief Get a component at the given @p index.
      *
-     * Returns a const reference to a component at the given @p index.  If
+     * Returns a @c const reference to a component at the given @p index.  If
      * the @p index is not valid a @c std::out_of_range exception is thrown.
      *
      * @param index The index of the Component to return (zero-based).
      *
-     * @return A const reference to the Component at the given @p index.
+     * @return A @c const reference to the Component at the given @p index.
      */
     const ComponentPtr& getComponent(size_t index) const;
 
@@ -337,14 +337,14 @@ public:
     /**
      * @brief Get a component with the given @p name.
      *
-     * Returns a const reference to a component with the given @p name.  If the
+     * Returns a @c const reference to a component with the given @p name.  If the
      * @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to return.
      *
-     * @return A const reference to the Component with the given @p name.
+     * @return A @c const reference to the Component with the given @p name.
      */
     const ComponentPtr& getComponent(const std::string &name) const;
 

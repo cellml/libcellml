@@ -470,14 +470,14 @@ void Parser::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
     }
 }
 
-void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponentNode)
+void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &node)
 {
-    while (parentComponentNode) {
+    while (node) {
         bool errorOccurred = false;
         ComponentPtr parentComponent = nullptr;
-        if (parentComponentNode->isType("component_ref")) {
-            if (parentComponentNode->hasAttribute("component")) {
-                std::string parentComponentName = parentComponentNode->getAttribute("component");
+        if (node->isType("component_ref")) {
+            if (node->hasAttribute("component")) {
+                std::string parentComponentName = node->getAttribute("component");
                 if (model->containsComponent(parentComponentName)) {
                     parentComponent = model->takeComponent(parentComponentName);
                 } else {
@@ -489,7 +489,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
                     errorOccurred = true;
                 }
                 // Get child components
-                XmlNodePtr childComponentNode = parentComponentNode->getChild();
+                XmlNodePtr childComponentNode = node->getChild();
                 if (!childComponentNode) {
                     ModelErrorPtr err = std::make_shared<ModelError>();
                     err->setDescription("Encapsulation contains no child components.");
@@ -554,7 +554,7 @@ void Parser::loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponen
             addError(err);
         }
         // Get the next parent component at this level
-        parentComponentNode = parentComponentNode->getNext();
+        node = node->getNext();
     }
 }
 

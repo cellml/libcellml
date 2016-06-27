@@ -53,105 +53,105 @@ public:
      */
     ModelPtr parseModel(const std::string &input);
 
+private:
     /**
-     * @brief Updates an existing model with the attributes from a @c std::string.
+     * @brief Update a @p model with the attributes from a @c std::string.
      *
-     * Updates the argument @p model with CellML entities and attributes
-     * from the argument @p input @c std::string. Any entities, objects,
-     * or attributes of with matching names in the model will be
-     * overwritten by those loaded from the @p input @c std::string.
+     * Update the @p model with entities and attributes
+     * from the @c std::string @p input. Any entities or attributes
+     * in the @p model with names matching those in @p input
+     * will be overwritten.
      *
      * @param model The @c ModelPtr to update.
-     * @param input The string to parse into the @p model.
+     * @param input The string to parse and update the @p model with.
      */
     void updateModel(const ModelPtr &model, const std::string &input);
 
-private:
     /**
-     * @brief Load the @p model with attributes parsed from the XML @p node.
+     * @brief Update the @p model with attributes parsed from @p node.
      *
-     * Loads the argument @p model with attributes and objects parsed from
-     * the argument XML @p node. Existing objects/attributes with matching
-     * names in the @p model will be overwritten by those from the XML @p node.
+     * Update the @p model with attributes and entities parsed from
+     * the XML @p node. Any entities or attributes in @p model with names
+     * matching those in @p node will be overwritten.
      *
      * @param model The @c ModelPtr to update.
-     * @param node The @c XmlNodePtr to load the @p model from.
+     * @param node The @c XmlNodePtr to parse and update the @p model with.
      */
     void loadModel(const ModelPtr &model, const XmlNodePtr &node);
 
     /**
-     * @brief Load the @p component with attributes parsed from the XML @p node.
+     * @brief Update the @p component with attributes parsed from @p node.
      *
-     * Loads the argument @p component with attributes and objects parsed from
-     * the argument XML @p node. Existing objects/attributes with matching
-     * names in the @p component will be overwritten by those from the XML @p node.
+     * Update the @p component with attributes and entities parsed from
+     * the XML @p node. Any entities or attributes in @p component with names
+     * matching those in @p node will be overwritten.
      *
      * @param component The @c ComponentPtr to update.
-     * @param node The @c XmlNodePtr to load the @p component from.
+     * @param node The @c XmlNodePtr to parse and update the @p component with.
      */
     void loadComponent(const ComponentPtr &component, const XmlNodePtr &node);
 
     /**
-     * @brief Load the @p model with attributes parsed from the connection XML @p node.
+     * @brief Update the @p model with a connection parsed from @p node.
      *
-     * Loads the argument @p model with CellML connection information parsed from
-     * the argument XML @p node. If any variable equivalence relationships already
-     * exist in the @p model, the connection information parsed from the XML @p node
-     * will be added to this network.
+     * Update the @p model with connection information parsed from
+     * the XML @p node. Connection information from @p node will be added
+     * to any variable equivalence relationships already existing in @p model.
      *
      * @param model The @c ModelPtr to update.
-     * @param node The @c XmlNodePtr to load the connection from.
+     * @param node The @c XmlNodePtr to parse and update the model with.
      */
     void loadConnection(const ModelPtr &model, const XmlNodePtr &node);
 
     /**
-     * @brief Load the @p model with attributes parsed from the encapsulated XML node.
+     * @brief Update the @p model with an encapsulation parsed from @p node.
      *
-     * Loads the argument @p model with CellML encapsulation information parsed from
-     * the argument XML @p parentComponentNode. If any encapsulation relationships already
-     * exist in the @p model, the encapsulation information parsed from the XML @p node
-     * will be added to this network.
+     * Update the @p model with encapsulation information parsed from
+     * the XML @p node. Encapsulation relationships from @p node will be added
+     * to any encapsulations relationships already in @p model.
      *
      * @param model The @c ModelPtr to update.
-     * @param parentComponentNode The parent @c XmlNodePtr of the encapsulation relationship.
+     * @param node The @c XmlNodePtr to parse and update the model with.
      */
-    void loadEncapsulation(const ModelPtr &model, XmlNodePtr &parentComponentnode);
+    void loadEncapsulation(const ModelPtr &model, XmlNodePtr &node);
 
     /**
-     * @brief Load the @p import with attributes parsed from the XML @p node.
+     * @brief Update the @p import with attributes parsed from @p node and add any imported
+     * components or units it to the @p model.
      *
-     * Loads the argument @p import with CellML attributes parsed from
-     * the argument XML @p node. Existing objects/attributes with matching
-     * names in the @p import will be overwritten by those from the XML @p node.
-     * Any imported components or units will also be added to the @p model.
+     * Update the @p import with attributes parsed from @p node and add any imported
+     * components or units to the @p model. If any attributes exist in @p import
+     * with names matching those in @p node, they will be overwritten. Likewise,
+     * any imported components or units of the same name already in @p model will
+     * be overwritten by those parsed from @p node.
      *
      * @param import The @c ImportPtr to update.
      * @param model The @c ModelPtr to add imported components/units to.
-     * @param node The @c XmlNodePtr to load the @p import from.
+     * @param node The @c XmlNodePtr to parse and update the @p import with.
      */
     void loadImport(const ImportPtr &import, const ModelPtr &model, const XmlNodePtr &node);
 
     /**
-     * @brief Load the @p units with attributes parsed from the XML @p node.
+     * @brief Update the @p units with attributes parsed from @p node.
      *
-     * Loads the argument @p units with CellML attributes parsed from
-     * the argument XML @p node. Existing objects/attributes with matching
-     * names in the @p units will be overwritten by those from the XML @p node.
+     * Update the @p units with parsed from the XML @p node.
+     * Existing attributes in @p units with names
+     * matching those in @p node will be overwritten.
      *
      * @param units The @c UnitsPtr to update.
-     * @param node The @c XmlNodePtr to load the @p units from.
+     * @param node The @c XmlNodePtr to parse and update the @p units with.
      */
     void loadUnits(const UnitsPtr &units, const XmlNodePtr &node);
 
     /**
-     * @brief Load the @p variable with attributes parsed from the XML @p node.
+     * @brief Update the @p variable with attributes parsed from @p node.
      *
-     * Loads the argument @p variable with CellML attributes parsed from
-     * the argument XML @p node. Existing objects/attributes with matching
-     * names in the @p variable will be overwritten by those from the XML @p node.
+     * Update the @p variable with attributes parsed from
+     * the XML @p node. Existing attributes in @p variable with names
+     * matching those in @p node will be overwritten.
      *
      * @param variable The @c VariablePtr to update.
-     * @param node The @c XmlNodePtr to load the @p units from.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
     void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
 

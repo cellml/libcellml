@@ -65,16 +65,30 @@ public:
     size_t errorCount() const;
 
     /**
-     * @brief Get error at the specified index.
+     * @brief Get error at the specified @p index.
      *
-     * Returns a reference to an error at the index @p index.  If the  index
+     * Returns an error at the @p index.  If the @p index
      * is not valid a @c std::out_of_range exception is thrown.
      *
      * @param index The index of the error to return (zero-based).
      *
      * @return A reference to the error at the given index.
      */
-    EntityErrorPtr getError(size_t index) const;
+    EntityErrorPtr getError(size_t index);
+
+    /**
+     * @brief Get a @c const reference to the error at the specified @p index.
+     *
+     * Returns a @c const reference to an error at the @p index. If the @p index
+     * is not valid a @c std::out_of_range exception is thrown.
+     *
+     * @overload
+     *
+     * @param index The index of the error to return (zero-based).
+     *
+     * @return A @c const reference to the error at the given @p index.
+     */
+    const EntityErrorPtr& getError(size_t index) const;
 
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */
