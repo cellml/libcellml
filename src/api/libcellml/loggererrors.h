@@ -96,7 +96,23 @@ public:
      *
      * @return A pointer to the import this import error was raised on.
      */
-    ImportPtr getImport() const
+    ImportPtr getImport()
+    {
+        return mImport;
+    }
+
+    /**
+     * @brief Get a @c const reference to the import for this error.
+     *
+     * Returns a @c const reference to the import that this import
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the import that this
+     * import error was raised on.
+     */
+    const ImportPtr& getImport() const
     {
         return mImport;
     }
@@ -136,7 +152,24 @@ public:
      *
      * @return A pointer to the component this variable error is relevant to.
      */
-    ComponentPtr getComponent() const
+    ComponentPtr getComponent()
+    {
+        return mComponent;
+    }
+
+    /**
+     * @brief Get a @c const reference to the component for this variable error.
+     *
+     * Returns a @c const reference to the component that this variable
+     * error is associated with. This is likely the parent component the
+     * variable is expected to be contained within.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the component that this
+     * variable error is relevant to.
+     */
+    const ComponentPtr& getComponent() const
     {
         return mComponent;
     }
@@ -160,7 +193,23 @@ public:
      *
      * @return A pointer to the variable this variable error was raised on.
      */
-    VariablePtr getVariable() const
+    VariablePtr getVariable()
+    {
+        return mVariable;
+    }
+
+    /**
+     * @brief Get a @c const reference to the variable for this error.
+     *
+     * Returns a @c const reference to the variable that this variable
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the variable that this
+     * variable error was raised on.
+     */
+    const VariablePtr& getVariable() const
     {
         return mVariable;
     }
@@ -206,7 +255,23 @@ public:
      *
      * @return A pointer to the units that this units error was raised on.
      */
-    UnitsPtr getUnits() const
+    UnitsPtr getUnits()
+    {
+        return mUnits;
+    }
+
+    /**
+     * @brief Get a @c const reference to the units for this error.
+     *
+     * Returns a @c const reference to the units that this units
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the units that this
+     * units error was raised on.
+     */
+    const UnitsPtr& getUnits() const
     {
         return mUnits;
     }
@@ -251,7 +316,23 @@ public:
      *
      * @return A pointer to the component that this component error was raised on.
      */
-    ComponentPtr getComponent() const
+    ComponentPtr getComponent()
+    {
+        return mComponent;
+    }
+
+    /**
+     * @brief Get a @c const reference to the component for this error.
+     *
+     * Returns a @c const reference to the component that this component
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the component that this
+     * component error was raised on.
+     */
+    const ComponentPtr& getComponent() const
     {
         return mComponent;
     }
@@ -287,7 +368,23 @@ public:
      *
      * @return A pointer to the model that this model error was raised on.
      */
-    ModelPtr getModel() const
+    ModelPtr getModel()
+    {
+        return mModel;
+    }
+
+    /**
+     * @brief Get a @c const reference to the model for this error.
+     *
+     * Returns a @c const reference to the model that this model
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the model that this
+     * model error was raised on.
+     */
+    const ModelPtr& getModel() const
     {
         return mModel;
     }
