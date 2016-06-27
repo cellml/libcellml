@@ -39,7 +39,10 @@ public:
      *
      * @param description The @c std::string error description to set.
      */
-    void setDescription(const std::string& description) { mDescription = description; }
+    void setDescription(const std::string& description)
+    {
+        mDescription = description;
+    }
 
     /**
      * @brief Get the description for this entity error.
@@ -48,7 +51,10 @@ public:
      *
      * @return The @c std::string description of the error.
      */
-    std::string getDescription() const { return mDescription; }
+    std::string getDescription() const
+    {
+        return mDescription;
+    }
 
 protected:
     std::string mDescription; /**< The string description for why this entity error raised. */
@@ -78,7 +84,10 @@ public:
      *
      * @param import A pointer to the import that this import error is relevant to.
      */
-    void setImport(const ImportPtr import) { mImport = import; }
+    void setImport(const ImportPtr import)
+    {
+        mImport = import;
+    }
 
     /**
      * @brief Get the import for this import error.
@@ -87,7 +96,10 @@ public:
      *
      * @return A pointer to the import this import error was raised on.
      */
-    ImportPtr getImport() const { return mImport; }
+    ImportPtr getImport() const
+    {
+        return mImport;
+    }
 
 private:
     ImportPtr mImport; /**< Pointer to the import that the error occurred in. */
@@ -110,7 +122,10 @@ public:
      *
      * @param component A pointer to the component that this variable error is relevant to.
      */
-    void setComponent(const ComponentPtr component) { mComponent = component; }
+    void setComponent(const ComponentPtr component)
+    {
+        mComponent = component;
+    }
 
     /**
      * @brief Get the component for this variable error.
@@ -121,7 +136,10 @@ public:
      *
      * @return A pointer to the component this variable error is relevant to.
      */
-    ComponentPtr getComponent() const { return mComponent; }
+    ComponentPtr getComponent() const
+    {
+        return mComponent;
+    }
 
     /**
      * @brief Set the variable for this variable error.
@@ -130,7 +148,10 @@ public:
      *
      * @param variable A pointer to the variable this variable error is relevant to.
      */
-    void setVariable(const VariablePtr variable) { mVariable = variable; }
+    void setVariable(const VariablePtr variable)
+    {
+        mVariable = variable;
+    }
 
     /**
      * @brief Get the variable for this variable error.
@@ -139,7 +160,10 @@ public:
      *
      * @return A pointer to the variable this variable error was raised on.
      */
-    VariablePtr getVariable() const { return mVariable; }
+    VariablePtr getVariable() const
+    {
+        return mVariable;
+    }
 
 private:
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
@@ -170,7 +194,10 @@ public:
      *
      * @param units A pointer to the units this units error is relevant to.
      */
-    void setUnits(const UnitsPtr units) { mUnits = units; }
+    void setUnits(const UnitsPtr units)
+    {
+        mUnits = units;
+    }
 
     /**
      * @brief Get the units for this units error.
@@ -179,7 +206,10 @@ public:
      *
      * @return A pointer to the units that this units error was raised on.
      */
-    UnitsPtr getUnits() const { return mUnits; }
+    UnitsPtr getUnits() const
+    {
+        return mUnits;
+    }
 
 private:
     UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
@@ -209,7 +239,10 @@ public:
      *
      * @param component A pointer to the component that this component error is relevant to.
      */
-    void setComponent(const ComponentPtr component) { mComponent = component; }
+    void setComponent(const ComponentPtr component)
+    {
+        mComponent = component;
+    }
 
     /**
      * @brief Get the component for this component error.
@@ -218,7 +251,10 @@ public:
      *
      * @return A pointer to the component that this component error was raised on.
      */
-    ComponentPtr getComponent() const { return mComponent; }
+    ComponentPtr getComponent() const
+    {
+        return mComponent;
+    }
 
 private:
     ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
@@ -239,7 +275,10 @@ public:
      *
      * @param model A pointer to the model that this model error is relevant to.
      */
-    void setModel(const ModelPtr model) { mModel = model; }
+    void setModel(const ModelPtr model)
+    {
+        mModel = model;
+    }
 
     /**
      * @brief Get the model for this model error.
@@ -248,7 +287,10 @@ public:
      *
      * @return A pointer to the model that this model error was raised on.
      */
-    ModelPtr getModel() const { return mModel; }
+    ModelPtr getModel() const
+    {
+        return mModel;
+    }
 
 private:
     ModelPtr mModel;
