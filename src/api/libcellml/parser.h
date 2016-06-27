@@ -113,7 +113,7 @@ private:
      * @param model The @c ModelPtr to update.
      * @param node The @c XmlNodePtr to parse and update the model with.
      */
-    void loadEncapsulation(const ModelPtr &model, XmlNodePtr &node);
+    void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
 
     /**
      * @brief Update the @p import with attributes parsed from @p node and add any imported
