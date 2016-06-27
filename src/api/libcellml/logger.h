@@ -53,7 +53,7 @@ public:
      *
      * @param error The @c EntityErrorPtr to add.
      */
-    void addError(EntityErrorPtr error);
+    void addError(const EntityErrorPtr error);
 
     /**
      * @brief Get the number of errors.
@@ -74,7 +74,7 @@ public:
      *
      * @return A reference to the error at the given index.
      */
-    EntityErrorPtr getError(size_t index);
+    EntityErrorPtr getError(size_t index) const;
 
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */

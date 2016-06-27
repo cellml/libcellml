@@ -44,9 +44,9 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/variable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.cpp
 )
 
 set(API_HEADER_FILES
@@ -71,9 +71,9 @@ set(API_HEADER_FILES
 
 set(HEADER_FILES
   ${LIBCELLML_CONFIG_H}
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
 )
 
 # Only does anything if configuration target is Visual Studio.

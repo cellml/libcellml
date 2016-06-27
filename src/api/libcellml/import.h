@@ -59,7 +59,7 @@ private:
     void swap(Import &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ImportImpl; /**< Forward declaration for pImpl idiom. */
-    ImportImpl* mPimpl; /**< Private member to implementation pointer. */
+    ImportImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 }

@@ -158,7 +158,7 @@ private:
     void swap(Parser &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ParserImpl; /**< Forward declaration for pImpl idiom. */
-    ParserImpl* mPimpl; /**< Private member to implementation pointer. */
+    ParserImpl *mPimpl; /**< Private member to implementation pointer. */
 
 };
 

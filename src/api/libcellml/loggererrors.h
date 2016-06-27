@@ -78,7 +78,7 @@ public:
      *
      * @param import A pointer to the import that this import error is relevant to.
      */
-    void setImport(ImportPtr import) { mImport = import; }
+    void setImport(const ImportPtr import) { mImport = import; }
 
     /**
      * @brief Get the import for this import error.
@@ -110,7 +110,7 @@ public:
      *
      * @param component A pointer to the component that this variable error is relevant to.
      */
-    void setComponent(ComponentPtr component) { mComponent = component; }
+    void setComponent(const ComponentPtr component) { mComponent = component; }
 
     /**
      * @brief Get the component for this variable error.
@@ -130,7 +130,7 @@ public:
      *
      * @param variable A pointer to the variable this variable error is relevant to.
      */
-    void setVariable(VariablePtr variable) { mVariable = variable; }
+    void setVariable(const VariablePtr variable) { mVariable = variable; }
 
     /**
      * @brief Get the variable for this variable error.
@@ -170,7 +170,7 @@ public:
      *
      * @param units A pointer to the units this units error is relevant to.
      */
-    void setUnits(UnitsPtr units) { mUnits = units; }
+    void setUnits(const UnitsPtr units) { mUnits = units; }
 
     /**
      * @brief Get the units for this units error.
@@ -209,7 +209,7 @@ public:
      *
      * @param component A pointer to the component that this component error is relevant to.
      */
-    void setComponent(ComponentPtr component) { mComponent = component; }
+    void setComponent(const ComponentPtr component) { mComponent = component; }
 
     /**
      * @brief Get the component for this component error.
@@ -239,7 +239,7 @@ public:
      *
      * @param model A pointer to the model that this model error is relevant to.
      */
-    void setModel(ModelPtr model) { mModel = model; }
+    void setModel(const ModelPtr model) { mModel = model; }
 
     /**
      * @brief Get the model for this model error.

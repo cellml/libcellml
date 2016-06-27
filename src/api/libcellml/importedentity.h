@@ -99,7 +99,7 @@ private:
     void swap(ImportedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ImportedEntityImpl* mPimpl; /**< Private member to implementation pointer. */
+    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 
 };
 

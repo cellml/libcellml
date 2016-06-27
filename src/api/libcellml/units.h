@@ -220,7 +220,7 @@ private:
     std::string doSerialisation(Format format) const;
 
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl* mPimpl; /**< Private member to implementation pointer */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }

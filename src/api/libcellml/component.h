@@ -228,7 +228,7 @@ private:
     std::string doSerialisation(Format format) const;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentImpl* mPimpl; /**< Private member to implementation pointer */
+    ComponentImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }

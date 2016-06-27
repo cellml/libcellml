@@ -457,7 +457,7 @@ private:
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentEntityImpl* mPimpl; /**< Private member to implementation pointer */
+    ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer */
 
 };
 
