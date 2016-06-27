@@ -59,10 +59,10 @@ public:
     void addUnits(const UnitsPtr &units);
 
     /**
-     * @brief Remove the units at the given index.
+     * @brief Remove the units at the given @p index.
      *
-     * Remove the units from this component entity at the index @p index.
-     * If the index is not in the range [0, #units], a @c std::out_of_range
+     * Remove the units from this component entity at the given @p index.
+     * If the @p index is not in the range [0, #units], a @c std::out_of_range
      * exception will be thrown.
      *
      * @param index The index of the units to remove (zero-based).
@@ -72,7 +72,7 @@ public:
     /**
      * @brief Remove the units with the given @p name.
      *
-     * Remove the first units found with the name @p name.
+     * Remove the first units found with the given @p name.
      * If the name is not found throw @c std::out_of_range.
      *
      * @overload
@@ -103,7 +103,7 @@ public:
     /**
      * @brief Tests to see if the units is within this component entity.
      *
-     * Tests to see if the units with the given name 'name' is contained
+     * Tests to see if the units with the given @c name is contained
      * within this component entity.  Returns @c true if the units is in
      * the component entity and @c false otherwise.
      *
@@ -116,92 +116,92 @@ public:
     bool hasUnits(const std::string &name) const;
 
     /**
-     * @brief Get a units at index.
+     * @brief Get a units at the given @p index.
      *
-     * Returns a const reference to a units at the index @p index.  If the
-     * index is not valid a @c std::out_of_range exception is thrown.
+     * Returns a const reference to a units at the given @p index.  If the
+     * @p index is not valid a @c std::out_of_range exception is thrown.
      *
-     * @param index The index of the Units to return (zero-based).
+     * @param index The index of the units to return (zero-based).
      *
-     * @return A const reference to the units at the given index.
+     * @return A const reference to the units at the given @p index.
      */
     const UnitsPtr& getUnits(size_t index) const;
 
     /**
-     * @brief Get a units at index.
+     * @brief Get a units at the given @p index.
      *
-     * Returns a reference to a units at the index @p index.  If the index
+     * Returns a reference to a units at the given @p index.  If the @p index
      * is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param index The index of the units to return (zero-based).
      *
-     * @return A reference to the units at the given index.
+     * @return A reference to the units at the given @p index.
      */
     UnitsPtr getUnits(size_t index);
 
     /**
-     * @brief Get a units with the given name @p name.
+     * @brief Get a units with the given @p name.
      *
-     * Returns a const reference to a units with the name @p name.  If the
-     * name is not valid a @c std::out_of_range exception is thrown.
+     * Returns a const reference to a units with the given @p name.  If the
+     * @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the units to return.
      *
-     * @return A const reference to the units with the given name.
+     * @return A const reference to the units with the given @p name.
      */
     const UnitsPtr& getUnits(const std::string &name) const;
 
     /**
-     * @brief Get a units with the given name @p name.
+     * @brief Get a units with the given @p name.
      *
-     * Returns a reference to a units with the name @p name.  If the name
+     * Returns a reference to a units with the given @p name.  If the @p name
      * is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the units to return.
      *
-     * @return A reference to the units with the given name.
+     * @return A reference to the units with the given @p name.
      */
     UnitsPtr getUnits(const std::string &name);
 
     /**
-     * @brief Take the units at the given index and return it.
+     * @brief Take the units at the given @p index and return it.
      *
-     * Removes the units at the given index position and returns it.
-     * If an invalid index is passed to the method a @c std::out_of_range
+     * Removes the units at the given @p index position and returns it.
+     * If an invalid @p index is passed to the method a @c std::out_of_range
      * exception is thrown.
      *
      * @param index The index of the units to take (zero-based).
      *
-     * @return The units at the given index.
+     * @return The units at the given @p index.
      */
     UnitsPtr takeUnits(size_t index);
 
     /**
-     * @brief Take the units with the given name @p name and return it.
+     * @brief Take the units with the given @p name and return it.
      *
-     * Takes the units with the given name @p name and returns it.
-     * If an invalid name is passed to the method a @c std::out_of_range
+     * Takes the units with the given @p name and returns it.
+     * If an invalid @p name is passed to the method a @c std::out_of_range
      * exception is thrown.
      *
      * @overload
      *
      * @param name The name of the units to take.
      *
-     * @return The Units identified with the given name.
+     * @return The Units identified with the given @p name.
      */
     UnitsPtr takeUnits(const std::string &name);
 
     /**
-     * @brief Replace a units at index.
+     * @brief Replace a units at the given @p index.
      *
-     * Replaces the units at index @p index with @p units.  Index must be a valid index
-     * position.
+     * Replaces the units at the given @p index with @p units.  If an invalid @p index
+     * is passed to the method a @c std::out_of_range exception is thrown.
      *
      * @param index Index of the units to replace (zero-based).
      * @param units The units to use for replacement.
@@ -209,14 +209,14 @@ public:
     void replaceUnits(size_t index, const UnitsPtr &units);
 
     /**
-     * @brief Replace a units with the given name.
+     * @brief Replace a units with the given @p name.
      *
-     * Replaces the units with the given name @p name with @p units.  Name must be a valid name
-     * of a units in the component entity, if it isn't a @c std::out_of_range exception is thrown.
+     * Replaces the units with the given @p name with @p units. @p name must refer to
+     * a valid name of a units in the component entity, otherwise a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
-     * @param name The name of the Units to replace.
+     * @param name The name of the units to replace.
      * @param units The units to use for replacement.
      */
     void replaceUnits(const std::string &name, const UnitsPtr &units);
@@ -240,21 +240,20 @@ public:
     void addComponent(const ComponentPtr &c);
 
     /**
-     * @brief Remove the component at the given index.
+     * @brief Remove the component at the given @p index.
      *
-     * Remove the component from the model with the index @p index.  If the index is
-     * not in the range [0, #components) a std::out_of_range exception
-     * will be thrown.
+     * Remove the component from the model with the given @p index.  If the @p index is
+     * not in the range [0, #components) a @c std::out_of_range exception will be thrown.
      *
      * @param index The index of the component to remove (zero-based).
      */
     void removeComponent(size_t index);
 
     /**
-     * @brief Remove the component with the given name.
+     * @brief Remove the component with the given @p name.
      *
-     * Remove the first component found that matches the name @p name.
-     * If the name is not found throw @c std::out_of_range.
+     * Remove the first component found that matches the given @p name.
+     * If the @p name is not found throw @c std::out_of_range.
      *
      * @overload
      *
@@ -284,7 +283,7 @@ public:
     /**
      * @brief Tests to see if the named component is contained within this component entity.
      *
-     * Tests to see if the component with the given name @p name is contained
+     * Tests to see if the component with the given @p name is contained
      * within this component entity.  Returns @c true if the component is in the component
      * entity and @c false otherwise.
      *
@@ -310,103 +309,103 @@ public:
     bool containsComponent(const ComponentPtr &component) const;
 
     /**
-     * @brief Get a component at index.
+     * @brief Get a component at the given @p index.
      *
-     * Returns a const reference to a component at the index @p index.  If the
-     * index is not valid a std::out_of_range exception is thrown.
+     * Returns a const reference to a component at the given @p index.  If
+     * the @p index is not valid a @c std::out_of_range exception is thrown.
      *
      * @param index The index of the Component to return (zero-based).
      *
-     * @return A const reference to the Component at the given index.
+     * @return A const reference to the Component at the given @p index.
      */
     const ComponentPtr& getComponent(size_t index) const;
 
     /**
-     * @brief Get a component at index.
+     * @brief Get a component at the given @p index.
      *
-     * Returns a reference to a component at the index @p index.  If the index
-     * is not valid a std::out_of_range exception is thrown.
+     * Returns a reference to a component at the given @p index.  If the @p index
+     * is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param index The index of the Component to return (zero-based).
      *
-     * @return A reference to the Component at the given index.
+     * @return A reference to the Component at the given @p index.
      */
     ComponentPtr getComponent(size_t index);
 
     /**
-     * @brief Get a component with the given name @p name.
+     * @brief Get a component with the given @p name.
      *
-     * Returns a const reference to a component with the name @p name.  If the
-     * name is not valid a std::out_of_range exception is thrown.
+     * Returns a const reference to a component with the given @p name.  If the
+     * @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to return.
      *
-     * @return A const reference to the Component with the given name.
+     * @return A const reference to the Component with the given @p name.
      */
     const ComponentPtr& getComponent(const std::string &name) const;
 
     /**
-     * @brief Get a component with the given name @p name.
+     * @brief Get a component with the given @p name.
      *
-     * Returns a reference to a component with the name @p name.  If the name
-     * is not valid a std::out_of_range exception is thrown.
+     * Returns a reference to a component with the given @p name.  If
+     * the @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to return.
      *
-     * @return A reference to the Component with the given name.
+     * @return A reference to the Component with the given @p name.
      */
     ComponentPtr getComponent(const std::string &name);
 
     /**
-     * @brief Take the component at the given index and return it.
+     * @brief Take the component at the given @p index and return it.
      *
-     * Removes the component at the given index position and returns it.
-     * If an invalid index is passed to the method a std::out_of_range
+     * Removes the component at the given @p index position and returns it.
+     * If an invalid @p index is passed to the method a @c std::out_of_range
      * exception is thrown.
      *
      * @param index The index of the Component to take (zero-based).
      *
-     * @return The Component at the given index.
+     * @return The Component at the given @p index.
      */
     ComponentPtr takeComponent(size_t index);
 
     /**
-     * @brief Take the component with the given name @p name and return it.
+     * @brief Take the component with the given @p name and return it.
      *
-     * Takes the component with the given name @p name and returns it.
-     * If an invalid name is passed to the method a std::out_of_range
+     * Takes the component with the given @p name and returns it.
+     * If an invalid @p name is passed to the method a @c std::out_of_range
      * exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to take.
      *
-     * @return The Component identified with the given name.
+     * @return The Component identified with the given @p name.
      */
     ComponentPtr takeComponent(const std::string &name);
 
     /**
-     * @brief Replace a component at index.
+     * @brief Replace a component at the given @p index.
      *
-     * Replaces the component at index @p index with @p c.  Index must be a valid index
-     * position.
+     * Replaces the component at the @p index with component @p c. @p index must be a
+     * valid index position.
      *
      * @param index Index of the Component to replace (zero-based).
-     * @param c The Component to use for replacement.
+     * @param c The component to be used as a replacement.
      */
     void replaceComponent(size_t index, const ComponentPtr &c);
 
     /**
-     * @brief Replace a component with the given name.
+     * @brief Replace a component with the given @p name.
      *
-     * Replaces the component with the given name @p name with @p c.  Name must be a valid name
-     * of a component in the Component, if it isn't a std::out_of_range exception is thrown.
+     * Replaces the component with the given @p name with @p c. @p name must be a valid name
+     * of a component in the Component, otherwise a @c std::out_of_range exception is thrown.
      *
      * @overload
      *

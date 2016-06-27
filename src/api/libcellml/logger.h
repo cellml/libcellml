@@ -1,5 +1,5 @@
 /*
-Copyright 2016 University of Auckland
+Copyright 2015 University of Auckland
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ limitations under the License.
 #include <string>
 
 #include <libcellml/libcellml_export.h>
-#include <libcellml/types.h>
 #include <libcellml/loggererrors.h>
+#include <libcellml/types.h>
 
 namespace libcellml {
 
@@ -80,11 +80,9 @@ private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct LoggerImpl; /**< Forward declaration for pImpl idiom. */
-    LoggerImpl* mPimpl; /**< Private member to implementation pointer */
+    LoggerImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }
 
 #endif /* LIBCELLML_LIBCELLML_LOGGER_H_ */
-
-
