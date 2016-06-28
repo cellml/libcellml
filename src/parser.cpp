@@ -104,7 +104,7 @@ private:
     /**
      * @brief Update the @p units with attributes parsed from @p node.
      *
-     * Update the @p units with parsed from the XML @p node.
+     * Update the @p units by parsing the XML @p node.
      * Existing attributes in @p units with names
      * matching those in @p node will be overwritten.
      *
@@ -112,6 +112,18 @@ private:
      * @param node The @c XmlNodePtr to parse and update the @p units with.
      */
     void loadUnits(const UnitsPtr &units, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p units with a unit parsed from @p node.
+     *
+     * Update the @p units with a unit parsed from the XML @p node.
+     * If a unit with the same name exists in @p units, it will be
+     * overwritten by the unit from @p node.
+     *
+     * @param units The @c UnitsPtr to update.
+     * @param node The unit @c XmlNodePtr to parse and update the @p units with.
+     */
+    void loadUnit(const UnitsPtr &units, const XmlNodePtr &node);
 
     /**
      * @brief Update the @p variable with attributes parsed from @p node.
@@ -338,64 +350,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
     XmlNodePtr childNode = node->getFirstChild();
     while (childNode) {
         if (childNode->isType("unit")) {
-            std::string name = "";
-            std::string prefix = "";
-            double exponent = 1.0;
-            double multiplier = 1.0;
-            double offset = 0.0;
-            attribute = childNode->getFirstAttribute();
-            while (attribute) {
-                if (attribute->isType("units")) {
-                    name = attribute->getValue();
-                } else if (attribute->isType("prefix")) {
-                    prefix = attribute->getValue();
-                } else if (attribute->isType("exponent")) {
-                    try
-                    {
-                        exponent = std::stod(attribute->getValue());
-                    } catch (std::exception) {
-                        UnitsErrorPtr err = std::make_shared<UnitsError>();
-                        err->setDescription("Exponent attribute value '" + attribute->getValue() +
-                                            "' in unit '" + childNode->getAttribute("units") +
-                                            "' from units '" + units->getName() + "' is not convertible to decimal number.");
-                        err->setUnits(units);
-                        mParser->addError(err);
-                    }
-                } else if (attribute->isType("multiplier")) {
-                    try
-                    {
-                        multiplier = std::stod(attribute->getValue());
-                    } catch (std::exception) {
-                        UnitsErrorPtr err = std::make_shared<UnitsError>();
-                        err->setDescription("Multiplier attribute value '" + attribute->getValue() +
-                                            "' in unit '" + childNode->getAttribute("units") +
-                                            "' from units '" + units->getName() + "' is not convertible to decimal number.");
-                        err->setUnits(units);
-                        mParser->addError(err);
-                    }
-                } else if (attribute->isType("offset")) {
-                    try
-                    {
-                        offset = std::stod(attribute->getValue());
-                    } catch (std::exception) {
-                        UnitsErrorPtr err = std::make_shared<UnitsError>();
-                        err->setDescription("Offset attribute value '" + attribute->getValue() +
-                                            "' in unit '" + childNode->getAttribute("units") +
-                                            "' from units '" + units->getName() + "' is not convertible to decimal number.");
-                        err->setUnits(units);
-                        mParser->addError(err);
-                    }
-                } else {
-                    UnitsErrorPtr err = std::make_shared<UnitsError>();
-                    err->setDescription("Invalid attribute '" + attribute->getType() +
-                                        "' found in unit '" + childNode->getAttribute("units") +
-                                        "' from units '" + units->getName() + "'.");
-                    err->setUnits(units);
-                    mParser->addError(err);
-                }
-                attribute = attribute->getNext();
-            }
-            units->addUnit(name, prefix, exponent, multiplier, offset);
+            loadUnit(units, childNode);
         } else {
             UnitsErrorPtr err = std::make_shared<UnitsError>();
             err->setDescription("Invalid child element '" + childNode->getType() +
@@ -405,6 +360,83 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
         }
         childNode = childNode->getNext();
     }
+}
+
+void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
+{
+    std::string name = "";
+    std::string prefix = "";
+    double exponent = 1.0;
+    double multiplier = 1.0;
+    double offset = 0.0;
+    // A unit should not have any children.
+    if (node->getFirstChild()) {
+        XmlNodePtr childNode = node->getFirstChild();
+        while (childNode) {
+            UnitsErrorPtr err = std::make_shared<UnitsError>();
+            err->setDescription("Invalid child element '" + childNode->getType() +
+                                "' in unit '" + node->getAttribute("units") +
+                                "' from units '" + units->getName() + "'.");
+            err->setUnits(units);
+            mParser->addError(err);
+            childNode = childNode->getNext();
+        }
+    }
+    // Parse the unit attributes.
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    while (attribute) {
+        if (attribute->isType("units")) {
+            name = attribute->getValue();
+        } else if (attribute->isType("prefix")) {
+            prefix = attribute->getValue();
+        } else if (attribute->isType("exponent")) {
+            try
+            {
+                exponent = std::stod(attribute->getValue());
+            } catch (std::exception) {
+                UnitsErrorPtr err = std::make_shared<UnitsError>();
+                err->setDescription("Exponent attribute value '" + attribute->getValue() +
+                                    "' in unit '" + node->getAttribute("units") +
+                                    "' from units '" + units->getName() + "' is not convertible to decimal number.");
+                err->setUnits(units);
+                mParser->addError(err);
+            }
+        } else if (attribute->isType("multiplier")) {
+            try
+            {
+                multiplier = std::stod(attribute->getValue());
+            } catch (std::exception) {
+                UnitsErrorPtr err = std::make_shared<UnitsError>();
+                err->setDescription("Multiplier attribute value '" + attribute->getValue() +
+                                    "' in unit '" + node->getAttribute("units") +
+                                    "' from units '" + units->getName() + "' is not convertible to decimal number.");
+                err->setUnits(units);
+                mParser->addError(err);
+            }
+        } else if (attribute->isType("offset")) {
+            try
+            {
+                offset = std::stod(attribute->getValue());
+            } catch (std::exception) {
+                UnitsErrorPtr err = std::make_shared<UnitsError>();
+                err->setDescription("Offset attribute value '" + attribute->getValue() +
+                                    "' in unit '" + node->getAttribute("units") +
+                                    "' from units '" + units->getName() + "' is not convertible to decimal number.");
+                err->setUnits(units);
+                mParser->addError(err);
+            }
+        } else {
+            UnitsErrorPtr err = std::make_shared<UnitsError>();
+            err->setDescription("Invalid attribute '" + attribute->getType() +
+                                "' found in unit '" + node->getAttribute("units") +
+                                "' from units '" + units->getName() + "'.");
+            err->setUnits(units);
+            mParser->addError(err);
+        }
+        attribute = attribute->getNext();
+    }
+    // Add this unit to the parent units.
+    units->addUnit(name, prefix, exponent, multiplier, offset);
 }
 
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
