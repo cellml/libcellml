@@ -17,13 +17,16 @@ limitations under the License.
 #ifndef XMLNODE_H
 #define XMLNODE_H
 
-#include <string>
 #include <libxml/parser.h>
+#include <memory>
+#include <string>
 
-#include "libcellml/types.h"
 #include "xmlattribute.h"
 
 namespace libcellml {
+
+class XmlNode; /**< Forward declaration of the internal XmlNode class. */
+typedef std::shared_ptr<XmlNode> XmlNodePtr; /**< Type definition for shared XML node pointer. */
 
 /**
  * @brief The XmlNode class.

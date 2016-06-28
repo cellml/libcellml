@@ -17,12 +17,14 @@ limitations under the License.
 #ifndef XMLATTRIBUTE_H
 #define XMLATTRIBUTE_H
 
-#include <string>
 #include <libxml/parser.h>
-
-#include "libcellml/types.h"
+#include <memory>
+#include <string>
 
 namespace libcellml {
+
+class XmlAttribute; /**< Forward declaration of the internal XmlAttribute class. */
+typedef std::shared_ptr<XmlAttribute> XmlAttributePtr; /**< Type definition for shared XML attribute pointer. */
 
 /**
  * @brief The XmlAttribute class.
