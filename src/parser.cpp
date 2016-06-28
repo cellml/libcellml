@@ -136,6 +136,24 @@ private:
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
     void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
+
+    /**
+     * @brief Try to convert and return the unit @p attribute value to a @c double.
+     *
+     * Try to convert the unit @p attribute value to a @c double. Return the new
+     * @c double value if possible. Otherwise, flag an error and return the @p defaultValue.
+     *
+     * @param defaultValue The default value for the unit attribute.
+     * @param attribute The @c XmlAttributePtr with the value to convert.
+     * @param node The @c XmlNodePtr the @p attribute is within.
+     * @param units The units the unit @p attribute is relevant to.
+     *
+     * @return The unit @p attribute value if it can be converted to a @c double;
+     * the @p defaultValue otherwise.
+     *
+     */
+    double convertUnitAttributeValueToDouble(double &defaultValue, const XmlAttributePtr &attribute,
+                                             const XmlNodePtr &node, const UnitsPtr &units);
 };
 
 Parser::Parser(Format format)
@@ -390,41 +408,11 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (attribute->isType("prefix")) {
             prefix = attribute->getValue();
         } else if (attribute->isType("exponent")) {
-            try
-            {
-                exponent = std::stod(attribute->getValue());
-            } catch (std::exception) {
-                UnitsErrorPtr err = std::make_shared<UnitsError>();
-                err->setDescription("Exponent attribute value '" + attribute->getValue() +
-                                    "' in unit '" + node->getAttribute("units") +
-                                    "' from units '" + units->getName() + "' is not convertible to decimal number.");
-                err->setUnits(units);
-                mParser->addError(err);
-            }
+            exponent = convertUnitAttributeValueToDouble(exponent, attribute, node, units);
         } else if (attribute->isType("multiplier")) {
-            try
-            {
-                multiplier = std::stod(attribute->getValue());
-            } catch (std::exception) {
-                UnitsErrorPtr err = std::make_shared<UnitsError>();
-                err->setDescription("Multiplier attribute value '" + attribute->getValue() +
-                                    "' in unit '" + node->getAttribute("units") +
-                                    "' from units '" + units->getName() + "' is not convertible to decimal number.");
-                err->setUnits(units);
-                mParser->addError(err);
-            }
+            multiplier = convertUnitAttributeValueToDouble(multiplier, attribute, node, units);
         } else if (attribute->isType("offset")) {
-            try
-            {
-                offset = std::stod(attribute->getValue());
-            } catch (std::exception) {
-                UnitsErrorPtr err = std::make_shared<UnitsError>();
-                err->setDescription("Offset attribute value '" + attribute->getValue() +
-                                    "' in unit '" + node->getAttribute("units") +
-                                    "' from units '" + units->getName() + "' is not convertible to decimal number.");
-                err->setUnits(units);
-                mParser->addError(err);
-            }
+            offset = convertUnitAttributeValueToDouble(offset, attribute, node, units);
         } else {
             UnitsErrorPtr err = std::make_shared<UnitsError>();
             err->setDescription("Invalid attribute '" + attribute->getType() +
@@ -437,6 +425,28 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     }
     // Add this unit to the parent units.
     units->addUnit(name, prefix, exponent, multiplier, offset);
+}
+
+double Parser::ParserImpl::convertUnitAttributeValueToDouble(double &defaultValue, const XmlAttributePtr &attribute,
+                                                             const XmlNodePtr &node, const UnitsPtr &units)
+{
+    double value = defaultValue;
+    // Try to convert the unit attribute value to double.
+    try
+    {
+        value = std::stod(attribute->getValue());
+    // On failure, flag error and use the default value.
+    } catch (std::exception) {
+        UnitsErrorPtr err = std::make_shared<UnitsError>();
+        err->setDescription("Value '" + attribute->getValue() +
+                            "' of attribute '" + attribute->getType() +
+                            "' in unit '" + node->getAttribute("units") +
+                            "' from units '" + units->getName() +
+                            "' is not convertible to decimal number.");
+        err->setUnits(units);
+        mParser->addError(err);
+    }
+    return value;
 }
 
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
