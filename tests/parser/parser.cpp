@@ -341,7 +341,7 @@ TEST(Parser, emptyEncapsulation) {
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(48, p.getError(0)->getDescription().length());
+    EXPECT_EQ(47, p.getError(0)->getDescription().length());
 }
 
 TEST(Parser, encapsulationWithNoComponentAttribute) {

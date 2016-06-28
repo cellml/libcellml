@@ -231,12 +231,28 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             ImportPtr import = std::make_shared<Import>();
             loadImport(import, model, childNode);
         } else if (childNode->isType("encapsulation")) {
+            // An encapsulation should not have attributes.
+            if (childNode->getFirstAttribute()) {
+                XmlAttributePtr attribute = childNode->getFirstAttribute();
+                while (attribute) {
+                    ModelErrorPtr err = std::make_shared<ModelError>();
+                    err->setDescription("Invalid attribute '" + attribute->getType() +
+                                        "' found in encapsulation.");
+                    err->setModel(model);
+                    mParser->addError(err);
+                    attribute = attribute->getNext();
+                }
+            }
+            // Load encapsulated component_refs.
             XmlNodePtr componentRefNode = childNode->getFirstChild();
             if (componentRefNode) {
-                loadEncapsulation(model, componentRefNode);
+                while (componentRefNode) {
+                    loadEncapsulation(model, componentRefNode);
+                    componentRefNode = componentRefNode->getNext();
+                }
             } else {
                 ModelErrorPtr err = std::make_shared<ModelError>();
-                err->setDescription("Encapsulation does not contain any component_ref");
+                err->setDescription("Encapsulation does not contain a component_ref.");
                 err->setModel(model);
                 mParser->addError(err);
             }
