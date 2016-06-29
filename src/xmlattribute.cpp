@@ -86,10 +86,10 @@ std::string XmlAttribute::getValue() const
 XmlAttributePtr XmlAttribute::getNext()
 {
     xmlAttrPtr next = mPimpl->mXmlAttributePtr->next;
-    XmlAttributePtr nextHandle = std::make_shared<XmlAttribute>();
-    nextHandle->setXmlAttribute(next);
-    if (next == NULL) {
-        nextHandle = nullptr;
+    XmlAttributePtr nextHandle = nullptr;
+    if (next) {
+        nextHandle = std::make_shared<XmlAttribute>();
+        nextHandle->setXmlAttribute(next);
     }
     return nextHandle;
 }

@@ -89,7 +89,7 @@ XmlAttributePtr XmlNode::getFirstAttribute()
 {
     xmlAttrPtr attribute = mPimpl->mXmlNodePtr->properties;
     XmlAttributePtr attributeHandle = nullptr;
-    if (attribute != NULL) {
+    if (attribute) {
         attributeHandle = std::make_shared<XmlAttribute>();
         attributeHandle->setXmlAttribute(attribute);
     }
@@ -99,10 +99,10 @@ XmlAttributePtr XmlNode::getFirstAttribute()
 XmlNodePtr XmlNode::getFirstChild()
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
-    XmlNodePtr childHandle = std::make_shared<XmlNode>();
-    childHandle->setXmlNode(child);
-    if (child == NULL) {
-        childHandle = nullptr;
+    XmlNodePtr childHandle = nullptr;
+    if (child) {
+        childHandle = std::make_shared<XmlNode>();
+        childHandle->setXmlNode(child);
     }
     return childHandle;
 }
@@ -110,10 +110,10 @@ XmlNodePtr XmlNode::getFirstChild()
 XmlNodePtr XmlNode::getNext()
 {
     xmlNodePtr next = mPimpl->mXmlNodePtr->next;
-    XmlNodePtr nextHandle = std::make_shared<XmlNode>();
-    nextHandle->setXmlNode(next);
-    if (next == NULL) {
-        nextHandle = nullptr;
+    XmlNodePtr nextHandle = nullptr;
+    if (next) {
+        nextHandle = std::make_shared<XmlNode>();
+        nextHandle->setXmlNode(next);
     }
     return nextHandle;
 }
