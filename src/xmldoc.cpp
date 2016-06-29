@@ -39,7 +39,10 @@ namespace libcellml {
 void structuredErrorCallback(void *userData, xmlErrorPtr error)
 {
   std::string errorString = std::string(error->message);
-  errorString.replace(errorString.end()-1, errorString.end(), ".");
+  // Swap libxml2 carriage return for a period.
+  if (errorString.substr(errorString.length() - 1) == "\n") {
+      errorString.replace(errorString.end()-1, errorString.end(), ".");
+  }
   xmlParserCtxtPtr context = reinterpret_cast<xmlParserCtxtPtr>(userData);
   XmlDoc *doc = reinterpret_cast<XmlDoc *>(context->_private);
   doc->addXmlError(errorString);
