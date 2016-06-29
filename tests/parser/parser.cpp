@@ -635,6 +635,27 @@ TEST(Parser, importedComponent2Connection) {
     EXPECT_EQ(0, parser.errorCount());
 }
 
+TEST(Parser, validConnectionMapVariablesFirst) {
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+          "<component name=\"robert\">"
+            "<variable name=\"bob\"/>"
+          "</component>"
+          "<component name=\"james\">"
+            "<variable name=\"jimbo\"/>"
+          "</component>"
+          "<connection>"
+            "<map_variables variable_2=\"jimbo\" variable_1=\"bob\"/>"
+            "<map_components component_1=\"robert\" component_2=\"james\"/>"
+          "</connection>"
+        "</model>";
+
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(e);
+    EXPECT_EQ(0, parser.errorCount());
+}
+
 TEST(Parser, component2ConnectionVariableMissing) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
