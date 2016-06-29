@@ -30,7 +30,7 @@ typedef std::shared_ptr<XmlAttribute> XmlAttributePtr; /**< Type definition for 
  * @brief The XmlAttribute class.
  *
  * The XmlAttribute class is a wrapper class for operations on
- * xmlAttribute objects from libXML2.
+ * xmlAttribute objects from libxml2.
  */
 class XmlAttribute
 {
@@ -41,10 +41,10 @@ public:
     /**
      * @brief Set the internal xmlAttribute for this XmlAttribute wrapper.
      *
-     * Sets the @c pImpl of the libXML2 xmlAttribute attribute
+     * Sets the @c pImpl of the libxml2 xmlAttribute attribute
      * for this XmlAttribute.
      *
-     * @param attribute The libXML2 @c xmlAttributePtr to set.
+     * @param attribute The libxml2 @c xmlAttributePtr to set.
      */
     void setXmlAttribute (const xmlAttrPtr &attribute);
 

@@ -32,7 +32,7 @@ typedef std::shared_ptr<XmlNode> XmlNodePtr; /**< Type definition for shared XML
  * @brief The XmlNode class.
  *
  * The XmlNode class is a wrapper class for operations on
- * xmlNode objects from libXML2.
+ * xmlNode objects from libxml2.
  */
 class XmlNode
 {
@@ -43,10 +43,10 @@ public:
     /**
      * @brief Set the internal @c xmlNode for this @c XmlNode wrapper.
      *
-     * Sets the @c pImpl of the libXML2 xmlNode attribute
+     * Sets the @c pImpl of the libxml2 xmlNode attribute
      * for this @c XmlNode.
      *
-     * @param node The libXML2 @c xmlNodePtr to set.
+     * @param node The libxml2 @c xmlNodePtr to set.
      */
     void setXmlNode (const xmlNodePtr &node);
 

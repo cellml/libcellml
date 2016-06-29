@@ -15,10 +15,10 @@ limitations under the License.
 */
 
 #include <cstring>
-#include <string>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
+#include <string>
 #include <vector>
 
 #include "xmldoc.h"

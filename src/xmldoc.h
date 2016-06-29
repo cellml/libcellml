@@ -31,7 +31,7 @@ typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML d
  * @brief The XmlDoc class.
  *
  * The XmlDoc class is a wrapper class for operations on
- * xmlDoc objects from libXML2.
+ * xmlDoc objects from libxml2.
  */
 class XmlDoc
 {
