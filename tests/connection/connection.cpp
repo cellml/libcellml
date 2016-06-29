@@ -905,13 +905,14 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
           "<variable name=\"variable_bob\"/>"
         "</component>"
         "</model>";
+    std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(s);
     EXPECT_EQ(1, parser.errorCount());
 
-    EXPECT_EQ("Connection variable_1 'variable_angus' not found in component_1 'component_dave'.", parser.getError(0)->getDescription());
+    EXPECT_EQ(expectError, parser.getError(0)->getDescription());
     parser.clearErrors();
     EXPECT_EQ(0, parser.errorCount());
 

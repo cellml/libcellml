@@ -462,18 +462,21 @@ TEST(Parser, encapsulationWithGrandchild) {
     EXPECT_EQ(47, p.getError(0)->getDescription().length());
 }
 
-TEST(Parser, parserWithEmptyConnection) {
+TEST(Parser, parserWithEmptyConnections) {
     std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<connection>"
             "</connection>"
+            "<connection/>"
         "</model>";
+    std::string expectedError = "Connection in model 'model_name' does not contain any child elements.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(47, p.getError(0)->getDescription().length());
+    EXPECT_EQ(2, p.errorCount());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError, p.getError(1)->getDescription());
 }
 
 TEST(Parser, invalidVariableAttributes) {
@@ -495,10 +498,10 @@ TEST(Parser, invalidVariableAttributes) {
     EXPECT_EQ(expectError2, p.getError(1)->getDescription());
 }
 
-TEST(Parser, connectionErrorNoComponent1Existing) {
+TEST(Parser, connectionErrorNoComponent2) {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"modelA\">"
             "<component name=\"componentA\">"
                 "<variable name=\"variable1\"/>"
             "</component>"
@@ -507,17 +510,24 @@ TEST(Parser, connectionErrorNoComponent1Existing) {
                 "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError1 = "Connection in model 'modelA' does not have a valid component_2 in a map_components element.";
+    std::string expectedError2 = "Connection in model 'modelA' specifies 'component1' as component_1 but it does not exist in the model.";
+    std::string expectedError3 = "Connection in model 'modelA' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
+    std::string expectedError4 = "Connection in model 'modelA' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(107, p.getError(0)->getDescription().length());
+    EXPECT_EQ(4, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+    EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
+    EXPECT_EQ(expectedError4, p.getError(3)->getDescription());
 }
 
-TEST(Parser, connectionErrorNoComponent2Existing) {
+TEST(Parser, connectionErrorNoComponent2InModel) {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"modelName\">"
             "<component name=\"component1\">"
                 "<variable name=\"variable1\"/>"
             "</component>"
@@ -526,17 +536,20 @@ TEST(Parser, connectionErrorNoComponent2Existing) {
                 "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError1 = "Connection in model 'modelName' specifies 'component2' as component_2 but it does not exist in the model.";
+    std::string expectedError2 = "Connection in model 'modelName' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(107, p.getError(0)->getDescription().length());
+    EXPECT_EQ(2, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
 
 TEST(Parser, connectionErrorNoComponent1) {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"modelName\">"
             "<component name=\"componentA\">"
                 "<variable name=\"variable1\"/>"
             "</component>"
@@ -545,17 +558,22 @@ TEST(Parser, connectionErrorNoComponent1) {
                 "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError1 = "Connection in model 'modelName' does not have a valid component_1 in a map_components element.";
+    std::string expectedError2 = "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
+    std::string expectedError3 = "Variable 'variable2' is specified as variable_2 in a connection but it does not exist in component_2 component 'componentA' of model 'modelName'.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(57, p.getError(0)->getDescription().length());
+    EXPECT_EQ(3, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+    EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
 }
 
 TEST(Parser, connectionErrorNoMapComponents) {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"modelName\">"
             "<component name=\"componentA\">"
                 "<variable name=\"variable1\"/>"
             "</component>"
@@ -563,11 +581,16 @@ TEST(Parser, connectionErrorNoMapComponents) {
                 "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError1 = "Connection in model 'modelName' does not have a map_components element.";
+    std::string expectedError2 = "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
+    std::string expectedError3 = "Connection in model 'modelName' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(45, p.getError(0)->getDescription().length());
+    EXPECT_EQ(3, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+    EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
 }
 
 TEST(Parser, connectionErrorNoMapVariables) {
@@ -581,11 +604,12 @@ TEST(Parser, connectionErrorNoMapVariables) {
                 "<map_components component_2=\"componentA\" component_1=\"componentA\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError = "Connection in model '' does not have a map_variables element.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(61, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
 TEST(Parser, importedComponent2Connection) {
@@ -626,12 +650,13 @@ TEST(Parser, component2ConnectionVariableMissing) {
                 "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError = "Variable 'variable_angus' is specified as variable_2 in a connection but it does not exist in component_2 component 'component_dave' of model ''.";
 
     // Parse
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(e);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(81, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
 TEST(Parser, component2InConnectionMissing) {
@@ -659,13 +684,17 @@ TEST(Parser, component2InConnectionMissing) {
                 "<variable name=\"variable_dave\"/>"
             "</component>"
         "</model>";
+    std::string expectedError1 = "Connection in model '' does not have a valid component_2 in a map_components element.";
+    std::string expectedError2 = "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
 
     // Parse
     libcellml::Parser p(libcellml::Format::XML);
     libcellml::ModelPtr m = p.parseModel(in);
-    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(2, p.errorCount());
     EXPECT_EQ(e, m->serialise(libcellml::Format::XML));
-    EXPECT_EQ(136, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
 }
 
 TEST(Parser, connectionVariable2Missing) {
@@ -683,12 +712,13 @@ TEST(Parser, connectionVariable2Missing) {
                 "<map_variables variable_1=\"variable_bob\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError1 = "Connection in model '' does not have a valid variable_2 in a map_variables element.";
 
     // Parse
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(e);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(55, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
 TEST(Parser, connectionVariable1Missing) {
@@ -706,12 +736,13 @@ TEST(Parser, connectionVariable1Missing) {
                 "<map_variables variable_2=\"variable_dave\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError1 = "Connection in model '' does not have a valid variable_1 in a map_variables element.";
 
     // Parse
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(e);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(55, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
 TEST(Parser, connectionErrorNoMapVariablesType) {
@@ -729,11 +760,14 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
                 "<map_variabels variable_1=\"variable1\" variable_2=\"variable2\"/>"
             "</connection>"
         "</model>";
+    std::string expectedError1 = "Connection in model '' has an invalid child element 'map_variabels'.";
+    std::string expectedError2 = "Connection in model '' does not have a map_variables element.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(97, p.getError(0)->getDescription().length());
+    EXPECT_EQ(2, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
 
 TEST(Parser, invalidRootNode) {
@@ -741,11 +775,12 @@ TEST(Parser, invalidRootNode) {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<yodel xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
         "</yodel>";
+    std::string expectedError1 = "Invalid XML element type (not a model).";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(42, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
 TEST(Parser, invalidModelAttribute) {
