@@ -92,7 +92,7 @@ public:
 
 private:
     struct XmlAttributeImpl; /**< Forward declaration for pImpl idiom. */
-    XmlAttributeImpl* mPimpl; /**< Private member to implementation pointer */
+    XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }

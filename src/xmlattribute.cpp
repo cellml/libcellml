@@ -71,7 +71,7 @@ std::string XmlAttribute::getValue() const
 {
     std::string valueString;
     if ((mPimpl->mXmlAttributePtr->name) && (mPimpl->mXmlAttributePtr->parent)) {
-        char* value;
+        char *value;
         if ((mPimpl->mXmlAttributePtr->ns) && (mPimpl->mXmlAttributePtr->ns->href)) {
             value = reinterpret_cast<char *>(xmlGetNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name, mPimpl->mXmlAttributePtr->ns->href));
         } else {

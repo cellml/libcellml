@@ -785,7 +785,8 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                         if (childComponentNode->getFirstChild()) {
                             loadEncapsulation(model, childComponentNode);
                         }
-                        // Load an encapsulated component only once through its parent.
+                        // A child component is added through its parent component rather than the model,
+                        // so remove it if it exists.
                         model->removeComponent(childComponent);
                     }
                     if (childComponentNode) {

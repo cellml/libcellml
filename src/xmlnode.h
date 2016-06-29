@@ -144,7 +144,7 @@ public:
 
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */
-    XmlNodeImpl* mPimpl; /**< Private member to implementation pointer */
+    XmlNodeImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }
