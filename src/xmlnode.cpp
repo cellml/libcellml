@@ -78,7 +78,7 @@ std::string XmlNode::getAttribute(const char *attributeName)
 {
     std::string attributeValueString;
     if (hasAttribute(attributeName)) {
-        char *attributeValue = (char*)xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
+        char *attributeValue = (char *) xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
         attributeValueString = std::string(attributeValue);
         xmlFree(attributeValue);
     }

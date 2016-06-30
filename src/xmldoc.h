@@ -67,7 +67,7 @@ public:
      *
      * @param error The XML error string to add.
      */
-    void addXmlError(const std::string error);
+    void addXmlError(const std::string &error);
 
     /**
      * @brief Count the number of XML errors in this document.
