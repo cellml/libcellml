@@ -334,14 +334,14 @@ TEST(Parser, emptyEncapsulation) {
     std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
-            "<encapsulation>"
-            "</encapsulation>"
+            "<encapsulation/>"
         "</model>";
+    std::string expectedError = "Encapsulation in model 'model_name' does not contain any child elements.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(47, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
 TEST(Parser, encapsulationWithNoComponentAttribute) {
@@ -349,14 +349,17 @@ TEST(Parser, encapsulationWithNoComponentAttribute) {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<encapsulation>"
-                "<component_ref></component_ref>"
+                "<component_ref/>"
             "</encapsulation>"
         "</model>";
+    std::string expectedError1 = "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref element.";
+    std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(57, p.getError(0)->getDescription().length());
+    EXPECT_EQ(2, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
 
 TEST(Parser, encapsulationWithNoComponentRef) {
@@ -364,14 +367,17 @@ TEST(Parser, encapsulationWithNoComponentRef) {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<encapsulation>"
-                "<component_free></component_free>"
+                "<component_free/>"
             "</encapsulation>"
         "</model>";
+    std::string expectedError1 = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
+    std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(47, p.getError(0)->getDescription().length());
+    EXPECT_EQ(2, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
 
 TEST(Parser, encapsulationWithNoComponent) {
@@ -379,16 +385,21 @@ TEST(Parser, encapsulationWithNoComponent) {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<encapsulation>"
-            "<component_ref component=\"bob\">"
-                "<component_ref></component_ref>"
-            "</component_ref>"
+                "<component_ref component=\"bob\">"
+                    "<component_ref/>"
+                "</component_ref>"
             "</encapsulation>"
         "</model>";
+    std::string expectedError1 = "Encapsulation in model 'model_name' specifies 'bob' as a component in a component_ref but it does not exist in the model.";
+    std::string expectedError2 = "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref that is a child of invalid parent component 'bob'.";
+
+
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(2, p.errorCount());
-    EXPECT_EQ(85, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
 
 TEST(Parser, encapsulationWithMissingComponent) {
@@ -398,15 +409,16 @@ TEST(Parser, encapsulationWithMissingComponent) {
             "<component name=\"bob\"/>"
             "<encapsulation>"
             "<component_ref component=\"bob\">"
-                "<component_ref component=\"dave\"></component_ref>"
+                "<component_ref component=\"dave\"/>"
             "</component_ref>"
             "</encapsulation>"
         "</model>";
+    std::string expectedError1 = "Encapsulation in model 'model_name' specifies 'dave' as a component in a component_ref but it does not exist in the model.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(86, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
 TEST(Parser, encapsulationWithNoComponentChild) {
@@ -415,15 +427,15 @@ TEST(Parser, encapsulationWithNoComponentChild) {
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<component name=\"bob\"/>"
             "<encapsulation>"
-            "<component_ref component=\"bob\">"
-            "</component_ref>"
+              "<component_ref component=\"bob\"/>"
             "</encapsulation>"
         "</model>";
+    std::string expectedError = "Encapsulation in model 'model_name' specifies 'bob' as a parent component_ref but it does not have any children.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(43, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
 TEST(Parser, encapsulationNoChildComponentRef) {
@@ -432,34 +444,39 @@ TEST(Parser, encapsulationNoChildComponentRef) {
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<component name=\"bob\"/>"
             "<encapsulation>"
-            "<component_ref component=\"bob\">"
-            "<component_free/>"
-            "</component_ref>"
+              "<component_ref component=\"bob\">"
+                "<component_free/>"
+              "</component_ref>"
             "</encapsulation>"
         "</model>";
+    std::string expectedError = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(47, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
-TEST(Parser, encapsulationWithGrandchild) {
+TEST(Parser, encapsulationWithNoGrandchildComponentRef) {
     std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<component name=\"bob\"/>"
+            "<component name=\"jim\"/>"
             "<encapsulation>"
-            "<component_ref component=\"bob\">"
-            "<component_free/>"
-            "</component_ref>"
+              "<component_ref component=\"bob\">"
+                "<component_ref component=\"jim\">"
+                  "<component_free/>"
+                "</component_ref>"
+              "</component_ref>"
             "</encapsulation>"
         "</model>";
+    std::string expectedError = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
     EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(47, p.getError(0)->getDescription().length());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
 TEST(Parser, parserWithEmptyConnections) {
