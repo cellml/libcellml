@@ -210,8 +210,9 @@ void Parser::updateModel(const ModelPtr &model, const std::string &input)
     if (mPimpl->mFormat == Format::XML) {
         mPimpl->loadModel(model, input);
     } else {
-        EntityErrorPtr err = std::make_shared<EntityError>();
-        err->setDescription("Invalid model format type (should be XML).");
+        ModelErrorPtr err = std::make_shared<ModelError>();
+        err->setDescription("Parser format is of invalid type to parse a model. A valid parser should be of format type 'XML'.");
+        err->setModel(model);
         addError(err);
     }
 }
@@ -220,7 +221,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
 {
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     doc->parse(input);
-    // Copy any XML parsing errors into the common error handler.
+    // Copy any XML parsing errors into the common parser error handler.
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             EntityErrorPtr err = std::make_shared<EntityError>();
@@ -231,9 +232,11 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     const XmlNodePtr node = doc->getRootNode();
     if (!node->isType("model")) {
         ModelErrorPtr err = std::make_shared<ModelError>();
-        err->setDescription("Invalid XML element type (not a model).");
+        err->setDescription("Model root node is of invalid type '" + node->getType() +
+                            "'. A valid CellML root node should be of type 'model'.");
         err->setModel(model);
         mParser->addError(err);
+        return;
     }
     // Get model attributes.
     XmlAttributePtr attribute = node->getFirstAttribute();
@@ -242,8 +245,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             model->setName(attribute->getValue());
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
-            err->setDescription("Invalid model attribute: '" + attribute->getType() +
-                                "' with value: '" + attribute->getValue() + "'.");
+            err->setDescription("Model '" + node->getAttribute("name") +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setModel(model);
             mParser->addError(err);
         }
@@ -293,8 +296,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             loadConnection(model, childNode);
         } else {
             ModelErrorPtr err = std::make_shared<ModelError>();
-            err->setDescription("Invalid XML element type '" + childNode->getType() +
-                                "' in model '" + model->getName() + "'.");
+            err->setDescription("Model '" + model->getName() +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
             err->setModel(model);
             mParser->addError(err);
         }
@@ -310,8 +313,8 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             component->setName(attribute->getValue());
         } else {
             ComponentErrorPtr err = std::make_shared<ComponentError>();
-            err->setDescription("Invalid attribute '" + attribute->getType() +
-                                "' found in component '" + node->getAttribute("name") + "'.");
+            err->setDescription("Component '" + node->getAttribute("name") +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setComponent(component);
             mParser->addError(err);
         }
@@ -332,8 +335,8 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             component->setMath(math);
         } else {
             ComponentErrorPtr err = std::make_shared<ComponentError>();
-            err->setDescription("Invalid child element '" + childNode->getType() +
-                                "' found in component '" + component->getName() + "'.");
+            err->setDescription("Component '" + component->getName() +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
             err->setComponent(component);
             mParser->addError(err);
         }
@@ -354,15 +357,16 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                 units->setBaseUnit(false);
             } else {
                 UnitsErrorPtr err = std::make_shared<UnitsError>();
-                err->setDescription("Invalid base_unit attribute in units '" + units->getName() +
-                                    "'. Should be either 'yes' or 'no', and not '" + attribute->getValue() + "'.");
+                err->setDescription("Units '" + units->getName() +
+                                    "' has an invalid base_unit attribute value '" + attribute->getValue() +
+                                    "'. Valid options are 'yes' or 'no'.");
                 err->setUnits(units);
                 mParser->addError(err);
             }
         } else {
             UnitsErrorPtr err = std::make_shared<UnitsError>();
-            err->setDescription("Invalid attribute '" + attribute->getType() +
-                                "' found in units '"+ units->getName() + "'.");
+            err->setDescription("Units '" + units->getName() +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setUnits(units);
             mParser->addError(err);
         }
@@ -374,8 +378,8 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             loadUnit(units, childNode);
         } else {
             UnitsErrorPtr err = std::make_shared<UnitsError>();
-            err->setDescription("Invalid child element '" + childNode->getType() +
-                                "' found in units '" + units->getName() + "'.");
+            err->setDescription("Units '" + units->getName() +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
             err->setUnits(units);
             mParser->addError(err);
         }
@@ -395,9 +399,9 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         XmlNodePtr childNode = node->getFirstChild();
         while (childNode) {
             UnitsErrorPtr err = std::make_shared<UnitsError>();
-            err->setDescription("Invalid child element '" + childNode->getType() +
-                                "' in unit '" + node->getAttribute("units") +
-                                "' from units '" + units->getName() + "'.");
+            err->setDescription("Unit '" + node->getAttribute("units") +
+                                "' in units '" + units->getName() +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
             err->setUnits(units);
             mParser->addError(err);
             childNode = childNode->getNext();
@@ -418,9 +422,9 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             offset = convertUnitAttributeValueToDouble(offset, attribute, node, units);
         } else {
             UnitsErrorPtr err = std::make_shared<UnitsError>();
-            err->setDescription("Invalid attribute '" + attribute->getType() +
-                                "' found in unit '" + node->getAttribute("units") +
-                                "' from units '" + units->getName() + "'.");
+            err->setDescription("Unit '" + node->getAttribute("units") +
+                                "' in units '" + units->getName() +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setUnits(units);
             mParser->addError(err);
         }
@@ -441,11 +445,11 @@ double Parser::ParserImpl::convertUnitAttributeValueToDouble(double &defaultValu
     // On failure, flag error and use the default value.
     } catch (std::exception) {
         UnitsErrorPtr err = std::make_shared<UnitsError>();
-        err->setDescription("Value '" + attribute->getValue() +
-                            "' of attribute '" + attribute->getType() +
-                            "' in unit '" + node->getAttribute("units") +
-                            "' from units '" + units->getName() +
-                            "' is not convertible to decimal number.");
+        err->setDescription("Unit '" + node->getAttribute("units") +
+                            "' in units '" + units->getName() +
+                            "' has an attribute '" + attribute->getType() +
+                            "' with a value '" + attribute->getValue() +
+                            "' that cannot be converted to a decimal number.");
         err->setUnits(units);
         mParser->addError(err);
     }
@@ -466,8 +470,8 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             variable->setInitialValue(attribute->getValue());
         } else {
             VariableErrorPtr err = std::make_shared<VariableError>();
-            err->setDescription("Invalid attribute '" + attribute->getType() +
-                                "' found in variable '" + node->getAttribute("name") + "'.");
+            err->setDescription("Variable '" + node->getAttribute("name") +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setVariable(variable);
             mParser->addError(err);
         }
@@ -482,6 +486,18 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     typedef std::vector<NamePair> NamePairMap;
     typedef NamePairMap::const_iterator NameMapIterator;
 
+    // A connection should not have attributes.
+    if (node->getFirstAttribute()) {
+        XmlAttributePtr attribute = node->getFirstAttribute();
+        while (attribute) {
+            ModelErrorPtr err = std::make_shared<ModelError>();
+            err->setDescription("Connection in model '" + model->getName() +
+                                "' has an invalid attribute '" + attribute->getType() + "' .");
+            err->setModel(model);
+            mParser->addError(err);
+            attribute = attribute->getNext();
+        }
+    }
     // Check that the connection node has children.
     XmlNodePtr childNode = node->getFirstChild();
     if (!childNode) {
@@ -896,8 +912,8 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             // Allow xlink attributes but do nothing for them.
         } else {
             ImportErrorPtr err = std::make_shared<ImportError>();
-            err->setDescription("Invalid attribute '" + attribute->getType() +
-                                "' found in import from '" + node->getAttribute("href") + "'.");
+            err->setDescription("Import from '" + node->getAttribute("href") +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setImport(import);
             mParser->addError(err);
         }
@@ -916,9 +932,9 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                     importedComponent->setSourceComponent(import, attribute->getValue());
                 } else {
                     ImportErrorPtr err = std::make_shared<ImportError>();
-                    err->setDescription("Invalid attribute '" + attribute->getType() +
-                                        "' found in import of component '" + childNode->getAttribute("name") +
-                                        "' from '" + node->getAttribute("href") + "'.");
+                    err->setDescription("Import of component '" + childNode->getAttribute("name") +
+                                        "' from '" + node->getAttribute("href") +
+                                        "' has an invalid attribute '" + attribute->getType() + "'.");
                     err->setImport(import);
                     mParser->addError(err);
                     errorOccurred = true;
@@ -939,9 +955,9 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                     importedUnits->setSourceUnits(import, attribute->getValue());
                 } else {
                     ImportErrorPtr err = std::make_shared<ImportError>();
-                    err->setDescription("Invalid attribute '" + attribute->getType() +
-                                        "' found in import of units '" + childNode->getAttribute("name") +
-                                        "' from '" + node->getAttribute("href") + "'.");
+                    err->setDescription("Import of units '" + childNode->getAttribute("name") +
+                                        "' from '" + node->getAttribute("href") +
+                                        "' has an invalid attribute '" + attribute->getType() + "'.");
                     err->setImport(import);
                     mParser->addError(err);
                     errorOccurred = true;
@@ -953,8 +969,8 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             }
         } else {
             ImportErrorPtr err = std::make_shared<ImportError>();
-            err->setDescription("Invalid child element '" + childNode->getType() +
-                                "' found in import from '" + node->getAttribute("href") + "'.");
+            err->setDescription("Import from '" + node->getAttribute("href") +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
             err->setImport(import);
             mParser->addError(err);
         }
