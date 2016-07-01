@@ -16,12 +16,9 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
-#include <libcellml>
 #include <iostream>
-/*
- * The tests in this file are here to catch any branches of code that
- * are not picked up by the main tests testing the API of the library
- */
+#include <libcellml>
+#include <vector>
 
 TEST(Parser, invalidXMLElements) {
     std::string input =
@@ -316,13 +313,25 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
                 "<units name=\"dimensionless\"/>"
               "</component>"
             "</model>";
+    std::vector<std::string> expectedErrors = {
+        "Units 'fahrenheit' has an invalid attribute 'temperature'.",
+        "Unit 'celsius' in units 'fahrenheit' has an attribute 'multiplier' with a value 'Z' that cannot be converted to a decimal number.",
+        "Unit 'celsius' in units 'fahrenheit' has an attribute 'offset' with a value 'MM' that cannot be converted to a decimal number.",
+        "Unit 'celsius' in units 'fahrenheit' has an attribute 'exponent' with a value '35.0E+310' that cannot be converted to a decimal number.",
+        "Unit 'celsius' in units 'fahrenheit' has an invalid attribute 'bill'.",
+        "Units 'fahrenheit' has an invalid child element 'bobshouse'.",
+        "Unit '' in units 'fahrenheit' has an invalid attribute 'GUnit'.",
+        "Units '' has an invalid attribute 'jerry'.",
+        "Unit 'friends' in units '' has an invalid attribute 'neighbor'.",
+        "Unit '' in units '' has an invalid attribute 'george'."
+    };
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(in);
 
     EXPECT_EQ(10, parser.errorCount());
-
     for (size_t i = 0; i < parser.errorCount(); ++i) {
-        EXPECT_TRUE(parser.getError(i)->getDescription().length() > 0);
+        EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
 
     std::string a = model->serialise(libcellml::Format::XML);
