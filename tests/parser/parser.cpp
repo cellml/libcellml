@@ -66,6 +66,28 @@ TEST(Parser, parseNamedModel) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Parser, parseModelWithInvalidAttributeAndGetError) {
+    const std::string mName = "modelName";
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + mName + "\" nonsense=\"oops\"/>";
+    const std::string expectedError = "Model 'modelName' has an invalid attribute 'nonsense'.";
+
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(input);
+
+    EXPECT_EQ(1, parser.errorCount());
+    EXPECT_EQ(expectedError, parser.getError(0)->getDescription());
+
+    // Get ModelError and check.
+    libcellml::ModelErrorPtr modelErrorType1 = std::dynamic_pointer_cast<libcellml::ModelError>(parser.getError(0));
+    EXPECT_EQ(model, modelErrorType1->getModel());
+    // Get const modelError and check.
+    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(parser).getError(0);
+    const libcellml::ModelErrorPtr modelErrorType2 = std::dynamic_pointer_cast<libcellml::ModelError>(entityError);
+    EXPECT_EQ(model, modelErrorType2->getModel());
+}
+
 TEST(Parser, parseModelWithNamedComponentWithUnits) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -83,7 +105,7 @@ TEST(Parser, parseModelWithNamedComponentWithUnits) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnits) {
+TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAndGetError) {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
@@ -104,13 +126,23 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnits) {
             "<units name=\"dimensionless\"/>"
           "</component>"
         "</model>";
+    std::string expectedError1 = "Units 'dimensionless' has an invalid base_unit attribute value 'joe'. Valid options are 'yes' or 'no'.";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(in);
     std::string a = model->serialise(libcellml::Format::XML);
-
-    EXPECT_EQ(1, parser.errorCount());
-    EXPECT_EQ("Units 'dimensionless' has an invalid base_unit attribute value 'joe'. Valid options are 'yes' or 'no'.", parser.getError(0)->getDescription());
     EXPECT_EQ(e, a);
+    EXPECT_EQ(1, parser.errorCount());
+    EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
+
+    libcellml::UnitsPtr unitsExpected = model->getComponent("component_name")->getUnits("dimensionless");
+    // Get UnitsError and check units.
+    libcellml::UnitsErrorPtr unitsErrorType1 = std::dynamic_pointer_cast<libcellml::UnitsError>(parser.getError(0));
+    EXPECT_EQ(unitsExpected, unitsErrorType1->getUnits());
+    // Get const UnitsError and check units.
+    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(parser).getError(0);
+    const libcellml::UnitsErrorPtr unitsErrorType2 = std::dynamic_pointer_cast<libcellml::UnitsError>(entityError);
+    EXPECT_EQ(unitsExpected, unitsErrorType2->getUnits());
 }
 
 TEST(Parser, parseNamedModelWithNamedComponent) {
@@ -128,6 +160,32 @@ TEST(Parser, parseNamedModelWithNamedComponent) {
     EXPECT_EQ(cName, c->getName());
     std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
+}
+
+TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
+    const std::string mName = "modelName";
+    const std::string cName = "componentName";
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + mName + "\">"
+              "<component name=\"" + cName + "\" nonsense=\"oops\"/>"
+            "</model>";
+    const std::string expectedError = "Component 'componentName' has an invalid attribute 'nonsense'.";
+
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(input);
+    libcellml::ComponentPtr component = model->getComponent(cName);
+
+    EXPECT_EQ(1, parser.errorCount());
+    EXPECT_EQ(expectedError, parser.getError(0)->getDescription());
+
+    // Get ComponentError and check.
+    libcellml::ComponentErrorPtr componentErrorType1 = std::dynamic_pointer_cast<libcellml::ComponentError>(parser.getError(0));
+    EXPECT_EQ(component, componentErrorType1->getComponent());
+    // Get const ComponentError and check.
+    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(parser).getError(0);
+    const libcellml::ComponentErrorPtr componentErrorType2 = std::dynamic_pointer_cast<libcellml::ComponentError>(entityError);
+    EXPECT_EQ(component, componentErrorType2->getComponent());
 }
 
 TEST(Parser, parseModelWithTwoComponents) {
@@ -504,7 +562,7 @@ TEST(Parser, parserWithEmptyConnections) {
     EXPECT_EQ(expectedError, p.getError(1)->getDescription());
 }
 
-TEST(Parser, invalidVariableAttributes) {
+TEST(Parser, invalidVariableAttributesAndGetVariableError) {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -517,10 +575,19 @@ TEST(Parser, invalidVariableAttributes) {
     std::string expectError2 = "Variable '' has an invalid attribute 'windmill'.";
 
     libcellml::Parser p(libcellml::Format::XML);
-    p.parseModel(in);
+    libcellml::ModelPtr model = p.parseModel(in);
     EXPECT_EQ(2, p.errorCount());
     EXPECT_EQ(expectError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectError2, p.getError(1)->getDescription());
+
+    libcellml::VariablePtr variableExpected = model->getComponent("componentA")->getVariable("quixote");
+    // Get VariableError and check variable.
+    libcellml::VariableErrorPtr variableErrorType1 = std::dynamic_pointer_cast<libcellml::VariableError>(p.getError(0));
+    EXPECT_EQ(variableExpected, variableErrorType1->getVariable());
+    // Get const VariableError and check variable.
+    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(p).getError(0);
+    const libcellml::VariableErrorPtr variableErrorType2 = std::dynamic_pointer_cast<libcellml::VariableError>(entityError);
+    EXPECT_EQ(variableExpected, variableErrorType2->getVariable());
 }
 
 TEST(Parser, connectionErrorNoComponent2) {
@@ -998,7 +1065,7 @@ TEST(Parser, unitsElementErrors) {
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
-TEST(Parser, invalidImports) {
+TEST(Parser, invalidImportsAndGetError) {
     const std::string input =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -1042,4 +1109,13 @@ TEST(Parser, invalidImports) {
     EXPECT_EQ(expectError3, p.getError(2)->getDescription());
     EXPECT_EQ(expectError4, p.getError(3)->getDescription());
     EXPECT_EQ(output, m->serialise(libcellml::Format::XML));
+
+    // Get ImportError and check.
+    libcellml::ImportPtr import = m->getUnits("units_in_this_model")->getImport();
+    libcellml::ImportErrorPtr importErrorType1 = std::dynamic_pointer_cast<libcellml::ImportError>(p.getError(0));
+    EXPECT_EQ(import, importErrorType1->getImport());
+    // Get const ComponentError and check.
+    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(p).getError(0);
+    const libcellml::ImportErrorPtr importErrorType2 = std::dynamic_pointer_cast<libcellml::ImportError>(entityError);
+    EXPECT_EQ(import, importErrorType2->getImport());
 }

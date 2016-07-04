@@ -32,6 +32,8 @@ namespace libcellml {
 class LIBCELLML_EXPORT EntityError
 {
 public:
+    virtual ~EntityError() {} /**< Virtual destructor to enable dynamic_cast to derived types. */
+
     /**
      * @brief Set the description for this entity error.
      *
