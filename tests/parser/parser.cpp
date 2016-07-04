@@ -768,7 +768,7 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError) {
     EXPECT_EQ(variableExpected, variableErrorType2->getVariable());
 }
 
-TEST(Parser, variableAttributeErrors) {
+TEST(Parser, variableAttributeAndChildErrors) {
     std::string input1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
@@ -782,10 +782,14 @@ TEST(Parser, variableAttributeErrors) {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
             "<component name=\"randy\">"
-                "<variable name=\"randy\" son=\"stan\"/>"
+                "<variable name=\"randy\" son=\"stan\">"
+                    "<daughter name=\"shelly\"/>"
+                "</variable>"
             "</component>"
         "</model>";
-    std::string expectError2 = "Variable 'randy' has an invalid attribute 'son'.";
+    std::string expectError2 = "Variable 'randy' has an invalid child element 'daughter'.";
+    std::string expectError3 = "Variable 'randy' has an invalid attribute 'son'.";
+
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(input1);
@@ -794,8 +798,9 @@ TEST(Parser, variableAttributeErrors) {
 
     p.clearErrors();
     p.parseModel(input2);
-    EXPECT_EQ(1, p.errorCount());
+    EXPECT_EQ(2, p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
+    EXPECT_EQ(expectError3, p.getError(1)->getDescription());
 }
 
 TEST(Parser, emptyConnections) {

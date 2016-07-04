@@ -453,6 +453,18 @@ double Parser::ParserImpl::convertUnitAttributeValueToDouble(double &defaultValu
 
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
 {
+    // A variable should not have any children.
+    if (node->getFirstChild()) {
+        XmlNodePtr childNode = node->getFirstChild();
+        while (childNode) {
+            VariableErrorPtr err = std::make_shared<VariableError>();
+            err->setDescription("Variable '" + node->getAttribute("name") +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
+            err->setVariable(variable);
+            mParser->addError(err);
+            childNode = childNode->getNext();
+        }
+    }
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
         if (attribute->isType("name")) {
