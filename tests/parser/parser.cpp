@@ -260,6 +260,47 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Parser, invalidEncapsulation) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"ringo\">"
+               "<component name=\"dave\"/>"
+               "<component name=\"bob\"/>"
+
+               "<encapsulation relationship=\"friends\">"
+                 "<component_ref component=\"dave\" bogus=\"oops\">"
+                   "<component_ref component=\"bob\" bogus=\"oops\"/>"
+                   "<component_ref enemy=\"ignatio\"/>"
+                 "</component_ref>"
+                 "<component_ref component=\"ignatio\"/>"
+                 "<component_ref>"
+                   "<component_ref/>"
+                 "</component_ref>"
+               "</encapsulation>"
+
+            "</model>";
+
+    std::vector<std::string> expectedErrors = {
+        "Encapsulation in model 'ringo' has an invalid attribute 'relationship'.",
+        "Encapsulation in model 'ringo' has an invalid component_ref attribute 'bogus'.",
+        "Encapsulation in model 'ringo' has an invalid component_ref attribute 'bogus'.",
+        "Encapsulation in model 'ringo' has an invalid component_ref attribute 'enemy'.",
+        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref that is a child of 'dave'.",
+        "Encapsulation in model 'ringo' specifies 'ignatio' as a component in a component_ref but it does not exist in the model.",
+        "Encapsulation in model 'ringo' specifies an invalid parent component_ref that also does not have any children.",
+        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref element.",
+        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref that is a child of an invalid parent component."
+    };
+
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(e);
+
+    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
+    }
+}
+
 TEST(Parser, parser) {
     libcellml::Parser p(libcellml::Format::XML), pm(libcellml::Format::XML), pa(libcellml::Format::XML);
     pa = p;
@@ -349,7 +390,9 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"model_name\">"
               "<component name=\"component_name\">"
                 "<units name=\"fahrenheit\" temperature=\"451\">"
-                  "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\"/>"
+                  "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
+                    "<degrees/>"
+                  "</unit>"
                   "<bobshouse address=\"34 Rich Lane\"/>"
                   "<unit GUnit=\"50c\"/>"
                 "</units>"
@@ -373,6 +416,7 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
             "</model>";
     std::vector<std::string> expectedErrors = {
         "Units 'fahrenheit' has an invalid attribute 'temperature'.",
+        "Unit 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
         "Unit 'celsius' in units 'fahrenheit' has an attribute 'multiplier' with a value 'Z' that cannot be converted to a decimal number.",
         "Unit 'celsius' in units 'fahrenheit' has an attribute 'offset' with a value 'MM' that cannot be converted to a decimal number.",
         "Unit 'celsius' in units 'fahrenheit' has an attribute 'exponent' with a value '35.0E+310' that cannot be converted to a decimal number.",
@@ -387,7 +431,7 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    EXPECT_EQ(10, parser.errorCount());
+    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
@@ -669,20 +713,28 @@ TEST(Parser, connectionErrorNoMapComponents) {
             "<component name=\"componentA\">"
                 "<variable name=\"variable1\"/>"
             "</component>"
-            "<connection>"
-                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+            "<connection name=\"invalid\">"
+                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\" variable_3=\"variable3\">"
+                    "<map_units/>"
+                "</map_variables>"
             "</connection>"
         "</model>";
-    std::string expectedError1 = "Connection in model 'modelName' does not have a map_components element.";
-    std::string expectedError2 = "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
-    std::string expectedError3 = "Connection in model 'modelName' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid.";
+    std::vector<std::string> expectedErrors = {
+        "Connection in model 'modelName' has an invalid attribute 'name'.",
+        "Connection in model 'modelName' has an invalid child element 'map_units' of element 'map_variables'.",
+        "Connection in model 'modelName' has an invalid map_variables attribute 'variable_3'.",
+        "Connection in model 'modelName' does not have a map_components element.",
+        "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.",
+        "Connection in model 'modelName' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid."
+    };
 
-    libcellml::Parser p(libcellml::Format::XML);
-    p.parseModel(in);
-    EXPECT_EQ(3, p.errorCount());
-    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
-    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
-    EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(in);
+
+    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
+    }
 }
 
 TEST(Parser, connectionErrorNoMapVariables) {
@@ -693,15 +745,20 @@ TEST(Parser, connectionErrorNoMapVariables) {
                 "<variable name=\"variable1\"/>"
             "</component>"
             "<connection>"
+                "<map_components component_2=\"componentA\" component_1=\"componentA\" component_3=\"componentA\"/>"
                 "<map_components component_2=\"componentA\" component_1=\"componentA\"/>"
             "</connection>"
         "</model>";
-    std::string expectedError = "Connection in model '' does not have a map_variables element.";
+    std::string expectedError1 = "Connection in model '' has an invalid map_components attribute 'component_3'.";
+    std::string expectedError2 = "Connection in model '' has more than one map_components element.";
+    std::string expectedError3 = "Connection in model '' does not have a map_variables element.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
-    EXPECT_EQ(1, p.errorCount());
-    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
+    EXPECT_EQ(3, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+    EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
 }
 
 TEST(Parser, importedComponent2Connection) {
