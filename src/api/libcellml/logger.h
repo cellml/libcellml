@@ -51,9 +51,9 @@ public:
      *
      * Adds the argument @p error to this logger.
      *
-     * @param error The @c EntityErrorPtr to add.
+     * @param error The @c ErrorPtr to add.
      */
-    void addError(const EntityErrorPtr error);
+    void addError(const ErrorPtr error);
 
     /**
      * @brief Get the number of errors.
@@ -74,7 +74,7 @@ public:
      *
      * @return A reference to the error at the given index.
      */
-    EntityErrorPtr getError(size_t index);
+    ErrorPtr getError(size_t index);
 
     /**
      * @brief Get a @c const reference to the error at the specified @p index.
@@ -88,7 +88,7 @@ public:
      *
      * @return A @c const reference to the error at the given @p index.
      */
-    const EntityErrorPtr& getError(size_t index) const;
+    const ErrorPtr& getError(size_t index) const;
 
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */

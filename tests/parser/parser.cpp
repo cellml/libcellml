@@ -74,10 +74,10 @@ TEST(Parser, moveParser) {
     libcellml::Parser pc(pm);
 }
 
-TEST(Parser, makeEntityError) {
+TEST(Parser, makeError) {
     std::string ex = "";
 
-    libcellml::EntityErrorPtr e = std::make_shared<libcellml::EntityError>();
+    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>();
 
     EXPECT_EQ(ex, e->getDescription());
 }
@@ -173,15 +173,13 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetError) {
 
     EXPECT_EQ(1, parser.errorCount());
     EXPECT_EQ(expectedError, parser.getError(0)->getDescription());
-/*
+
     // Get ModelError and check.
-    libcellml::ModelErrorPtr modelErrorType1 = std::dynamic_pointer_cast<libcellml::ModelError>(parser.getError(0));
-    EXPECT_EQ(model, modelErrorType1->getModel());
+    EXPECT_EQ(model, parser.getError(0)->getModel());
     // Get const modelError and check.
-    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(parser).getError(0);
-    const libcellml::ModelErrorPtr modelErrorType2 = std::dynamic_pointer_cast<libcellml::ModelError>(entityError);
-    EXPECT_EQ(model, modelErrorType2->getModel());
-*/
+    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).getError(0);
+    const libcellml::ModelPtr modelFromError = err->getModel();
+    EXPECT_EQ(model, modelFromError);
 }
 
 TEST(Parser, parseNamedModelWithNamedComponent) {
@@ -249,13 +247,12 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAndGetError) {
     EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
 
     libcellml::UnitsPtr unitsExpected = model->getComponent("component_name")->getUnits("dimensionless");
-    // Get UnitsError and check units.
-    libcellml::UnitsErrorPtr unitsErrorType1 = std::dynamic_pointer_cast<libcellml::UnitsError>(parser.getError(0));
-    EXPECT_EQ(unitsExpected, unitsErrorType1->getUnits());
-    // Get const UnitsError and check units.
-    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(parser).getError(0);
-    const libcellml::UnitsErrorPtr unitsErrorType2 = std::dynamic_pointer_cast<libcellml::UnitsError>(entityError);
-    EXPECT_EQ(unitsExpected, unitsErrorType2->getUnits());
+    // Get units from error and check.
+    EXPECT_EQ(unitsExpected, parser.getError(0)->getUnits());
+    // Get const units from error and check.
+    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).getError(0);
+    const libcellml::UnitsPtr unitsFromError = err->getUnits();
+    EXPECT_EQ(unitsExpected, unitsFromError);
 }
 
 TEST(Parser, unitsAttributeError) {
@@ -319,13 +316,12 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
     EXPECT_EQ(1, parser.errorCount());
     EXPECT_EQ(expectedError, parser.getError(0)->getDescription());
 
-    // Get ComponentError and check.
-    libcellml::ComponentErrorPtr componentErrorType1 = std::dynamic_pointer_cast<libcellml::ComponentError>(parser.getError(0));
-    EXPECT_EQ(component, componentErrorType1->getComponent());
-    // Get const ComponentError and check.
-    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(parser).getError(0);
-    const libcellml::ComponentErrorPtr componentErrorType2 = std::dynamic_pointer_cast<libcellml::ComponentError>(entityError);
-    EXPECT_EQ(component, componentErrorType2->getComponent());
+    // Get component from error and check.
+    EXPECT_EQ(component, parser.getError(0)->getComponent());
+    // Get const component from error and check.
+    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).getError(0);
+    const libcellml::ComponentPtr componentFromError = err->getComponent();
+    EXPECT_EQ(component, componentFromError);
 }
 
 TEST(Parser, componentAttributeErrors) {
@@ -760,13 +756,12 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError) {
     EXPECT_EQ(expectError2, p.getError(1)->getDescription());
 
     libcellml::VariablePtr variableExpected = model->getComponent("componentA")->getVariable("quixote");
-    // Get VariableError and check variable.
-    libcellml::VariableErrorPtr variableErrorType1 = std::dynamic_pointer_cast<libcellml::VariableError>(p.getError(0));
-    EXPECT_EQ(variableExpected, variableErrorType1->getVariable());
-    // Get const VariableError and check variable.
-    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(p).getError(0);
-    const libcellml::VariableErrorPtr variableErrorType2 = std::dynamic_pointer_cast<libcellml::VariableError>(entityError);
-    EXPECT_EQ(variableExpected, variableErrorType2->getVariable());
+    // Get variable from error and check.
+    EXPECT_EQ(variableExpected, p.getError(0)->getVariable());
+    // Get const variable from error and check.
+    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).getError(0);
+    const libcellml::VariablePtr variableFromError = err->getVariable();
+    EXPECT_EQ(variableExpected, variableFromError);
 }
 
 TEST(Parser, variableAttributeAndChildErrors) {
@@ -1172,12 +1167,11 @@ TEST(Parser, invalidImportsAndGetError) {
     EXPECT_EQ(expectError4, p.getError(3)->getDescription());
     EXPECT_EQ(output, m->serialise(libcellml::Format::XML));
 
-    // Get ImportError and check.
     libcellml::ImportPtr import = m->getUnits("units_in_this_model")->getImport();
-    libcellml::ImportErrorPtr importErrorType1 = std::dynamic_pointer_cast<libcellml::ImportError>(p.getError(0));
-    EXPECT_EQ(import, importErrorType1->getImport());
-    // Get const ComponentError and check.
-    const libcellml::EntityErrorPtr entityError = static_cast<const libcellml::Parser>(p).getError(0);
-    const libcellml::ImportErrorPtr importErrorType2 = std::dynamic_pointer_cast<libcellml::ImportError>(entityError);
-    EXPECT_EQ(import, importErrorType2->getImport());
+    // Get import from error and check.
+    EXPECT_EQ(import, p.getError(0)->getImport());
+    // Get const import from error and check.
+    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).getError(0);
+    const libcellml::ImportPtr importFromError = err->getImport();
+    EXPECT_EQ(import, importFromError);
 }
