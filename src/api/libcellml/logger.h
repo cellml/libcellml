@@ -19,8 +19,8 @@ limitations under the License.
 
 #include <string>
 
+#include "libcellml/error.h"
 #include "libcellml/libcellml_export.h"
-#include "libcellml/loggererrors.h"
 #include "libcellml/types.h"
 
 namespace libcellml {

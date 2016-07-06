@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_LOGGERERRORS_H_
-#define LIBCELLML_LIBCELLML_LOGGERERRORS_H_
+#ifndef LIBCELLML_LIBCELLML_ERROR_H_
+#define LIBCELLML_LIBCELLML_ERROR_H_
 
 #include <string>
 
@@ -27,7 +27,7 @@ namespace libcellml {
 /**
  * @brief The Error class
  *
- * Base class for errors used with the logger class.
+ * Base class for errors used with logger derived classes.
  */
 class LIBCELLML_EXPORT Error
 {
@@ -280,6 +280,6 @@ typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error p
 
 }
 
-#endif /* LIBCELLML_LIBCELLML_LOGGERERROS_H_ */
+#endif /* LIBCELLML_LIBCELLML_ERROR_H_ */
 
 
