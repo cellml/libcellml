@@ -85,17 +85,11 @@ TEST(Parser, makeError) {
 
 TEST(Parser, emptyModelString) {
     std::string ex = "";
-    std::vector<std::string> expectedErrors = {
-        "Document is empty.",
-        "Could not get a valid XML root node from the provided input."
-    };
+    std::string expectedError = "Document is empty.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
-    EXPECT_EQ(expectedErrors.size(), p.errorCount());
-    for (size_t i = 0; i < p.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
-    }
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
 TEST(Parser, nonXmlString) {
