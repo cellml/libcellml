@@ -85,12 +85,12 @@ void XmlDoc::parse(const std::string& input)
 
 XmlNodePtr XmlDoc::getRootNode() const
 {
-    if (mPimpl->mXmlDocPtr == nullptr) {
-        throw std::invalid_argument("No valid XML Document found.");
-    }
     xmlNodePtr root = xmlDocGetRootElement(mPimpl->mXmlDocPtr);
-    XmlNodePtr rootHandle = std::make_shared<XmlNode>();
-    rootHandle->setXmlNode(root);
+    XmlNodePtr rootHandle = nullptr;
+    if (root) {
+        rootHandle = std::make_shared<XmlNode>();
+        rootHandle->setXmlNode(root);
+    }
     return rootHandle;
 }
 

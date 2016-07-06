@@ -30,23 +30,23 @@ TEST(Parser, invalidXMLElements) {
             "<Wizard>Gandalf</SomeGuyWithAStaff>"
             "<Elf>"
         "</fellows>";
-
-    std::string expectError1 = "Specification mandate value for attribute bearded.";
-    std::string expectError2 = "Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.";
-    std::string expectError3 = "Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.";
-    std::string expectError4 = "Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.";
-    std::string expectError5 = "Opening and ending tag mismatch: Elf line 2 and fellows.";
-    std::string expectError6 = "Premature end of data in tag fellowship line 2.";
+    std::vector<std::string> expectedErrors = {
+        "Specification mandate value for attribute bearded.",
+        "Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
+        "Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.",
+        "Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.",
+        "Opening and ending tag mismatch: Elf line 2 and fellows.",
+        "Premature end of data in tag fellowship line 2.",
+        "Could not get a valid XML root node from the provided input."
+    };
 
     libcellml::Parser p(libcellml::Format::XML);
-    EXPECT_THROW(p.parseModel(input), std::invalid_argument);
-    EXPECT_EQ(6, p.errorCount());
-    EXPECT_EQ(expectError1, p.getError(0)->getDescription());
-    EXPECT_EQ(expectError2, p.getError(1)->getDescription());
-    EXPECT_EQ(expectError3, p.getError(2)->getDescription());
-    EXPECT_EQ(expectError4, p.getError(3)->getDescription());
-    EXPECT_EQ(expectError5, p.getError(4)->getDescription());
-    EXPECT_EQ(expectError6, p.getError(5)->getDescription());
+    p.parseModel(input);
+
+    EXPECT_EQ(expectedErrors.size(), p.errorCount());
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
+    }
 }
 
 TEST(Parser, parse) {
@@ -85,16 +85,32 @@ TEST(Parser, makeError) {
 
 TEST(Parser, emptyModelString) {
     std::string ex = "";
+    std::vector<std::string> expectedErrors = {
+        "Document is empty.",
+        "Could not get a valid XML root node from the provided input."
+    };
 
     libcellml::Parser p(libcellml::Format::XML);
-    EXPECT_THROW(p.parseModel(ex), std::invalid_argument);
+    p.parseModel(ex);
+    EXPECT_EQ(expectedErrors.size(), p.errorCount());
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
+    }
 }
 
 TEST(Parser, nonXmlString) {
     std::string ex = "Not an xml string.";
+    std::vector<std::string> expectedErrors = {
+        "Start tag expected, '<' not found.",
+        "Could not get a valid XML root node from the provided input."
+    };
 
     libcellml::Parser p(libcellml::Format::XML);
-    EXPECT_THROW(p.parseModel(ex), std::invalid_argument);
+    p.parseModel(ex);
+    EXPECT_EQ(expectedErrors.size(), p.errorCount());
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
+    }
 }
 
 TEST(Parser, invalidRootNode) {
@@ -1178,41 +1194,37 @@ TEST(Parser, invalidImportsAndGetError) {
 }
 
 TEST(Parser, invalidModelWithAllKindsOfErrors) {
+
+    // Check for all kinds of errors.
+    std::vector<bool> foundKind(9, false);
+
+    // Trigger CellML entity errors
     const std::string input =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"starwars\" episode=\"four\">"
        "<import princess=\"leia\"/>"
-       "<units jedi=\"luke\" lightsaber/>"
+       "<units jedi=\"luke\"/>"
        "<component ship=\"falcon\">"
             "<variable pilot=\"han\"/>"
        "</component>"
        "<connection wookie=\"chewie\"/>"
        "<encapsulation yoda=\"green\"/>"
     "</model>";
-
     std::vector<std::string> expectedErrors = {
-        "Specification mandate value for attribute lightsaber.",
         "Model 'starwars' has an invalid attribute 'episode'.",
         "Import from '' has an invalid attribute 'princess'.",
         "Units '' has an invalid attribute 'jedi'.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
         "Connection in model 'starwars' has an invalid attribute 'wookie'.",
-        "Encapsulation in model 'starwars' has an invalid attribute 'yoda'."
+        "Connection in model 'starwars' does not contain any child elements.",
+        "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
+        "Encapsulation in model 'starwars' does not contain any child elements."
     };
 
-    // Parse
+    // Parse and check for CellML errors.
     libcellml::Parser parser(libcellml::Format::XML);
     parser.parseModel(input);
-
-    // Add an undefined error
-    libcellml::ErrorPtr undefinedError = std::make_shared<libcellml::Error>();
-    if (undefinedError->isKind(libcellml::Error::Kind::UNDEFINED)) {
-        parser.addError(undefinedError);
-    }
-
-    // Check that we have all the expected errors.
-    std::vector<bool> foundKind(9, false);
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
@@ -1237,24 +1249,44 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
                 foundKind.at(4) = true;
                 break;
             }
-            case (libcellml::Error::Kind::UNDEFINED): {
+            case (libcellml::Error::Kind::UNITS): {
                 foundKind.at(5) = true;
                 break;
             }
-            case (libcellml::Error::Kind::UNITS): {
-                foundKind.at(6) = true;
-                break;
-            }
             case (libcellml::Error::Kind::VARIABLE): {
-                foundKind.at(7) = true;
-                break;
-            }
-            case (libcellml::Error::Kind::XML): {
-                foundKind.at(8) = true;
+                foundKind.at(6) = true;
                 break;
             }
         }
     }
+
+    // Trigger undefined error
+    libcellml::Parser parser2(libcellml::Format::XML);
+    // Add an undefined error
+    libcellml::ErrorPtr undefinedError = std::make_shared<libcellml::Error>();
+    parser2.addError(undefinedError);
+    EXPECT_EQ(1, parser2.errorCount());
+    if (parser.getError(0)->isKind(libcellml::Error::Kind::UNDEFINED)) {
+        foundKind.at(7) = true;
+    }
+
+    // Trigger an XML error
+    std::string input3 = "jarjarbinks";
+    std::vector<std::string> expectedErrors3 = {
+        "Start tag expected, '<' not found.",
+        "Could not get a valid XML root node from the provided input."
+    };
+    libcellml::Parser parser3(libcellml::Format::XML);
+    parser3.parseModel(input3);
+    EXPECT_EQ(expectedErrors3.size(), parser3.errorCount());
+    for (size_t i = 0; i < parser3.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors3.at(i), parser3.getError(i)->getDescription());
+        if (parser3.getError(i)->isKind(libcellml::Error::Kind::XML)) {
+            foundKind.at(8) = true;
+        }
+    }
+
+    // Check that we've found all the possible error types
     bool foundAllKinds = false;
     if (std::all_of(foundKind.begin(), foundKind.end(), [](bool i) {return i;})) {
         foundAllKinds = true;

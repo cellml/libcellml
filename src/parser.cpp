@@ -225,7 +225,13 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         }
     }
     const XmlNodePtr node = doc->getRootNode();
-    if (!node->isType("model")) {
+    if (!node) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Could not get a valid XML root node from the provided input.");
+        err->setModel(model);
+        mParser->addError(err);
+        return;
+    } else if (!node->isType("model")) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Model root node is of invalid type '" + node->getType() +
                             "'. A valid CellML root node should be of type 'model'.");
