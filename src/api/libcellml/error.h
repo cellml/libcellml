@@ -32,6 +32,30 @@ namespace libcellml {
 class LIBCELLML_EXPORT Error
 {
 public:
+    Error(); /**< Constructor */
+    ~Error(); /**< Destructor */
+    Error(const Error& rhs); /**< Copy constructor */
+    Error(Error &&rhs); /**< Move constructor */
+    Error& operator=(Error rhs); /**< Assignment operator */
+
+    /**
+     * @brief The error Kind enum class.
+     *
+     * Enum to describe the kind of error a given error is.
+     */
+    enum class Kind
+    {
+        COMPONENT,
+        CONNECTION,
+        ENCAPSULATION,
+        IMPORT,
+        MODEL,
+        UNDEFINED,
+        UNITS,
+        VARIABLE,
+        XML
+    };
+
     /**
      * @brief Set the description for this error.
      *
@@ -39,10 +63,7 @@ public:
      *
      * @param description The @c std::string error description to set.
      */
-    void setDescription(const std::string& description)
-    {
-        mDescription = description;
-    }
+    void setDescription(const std::string& description);
 
     /**
      * @brief Get the description for this error.
@@ -51,10 +72,38 @@ public:
      *
      * @return The @c std::string description of the error.
      */
-    std::string getDescription() const
-    {
-        return mDescription;
-    }
+    std::string getDescription() const;
+
+    /**
+     * @brief Set the kind of this error.
+     *
+     * Set the @p kind of this error from the options available in
+     * @c Error::Kind.
+     *
+     * @param kind The @c Error::Kind to set.
+     */
+    void setKind(Kind kind);
+
+    /**
+     * @brief Get the kind of this error.
+     *
+     * Get the @c kind of this error. If no kind has been set for
+     * this error, will return Kind::UNDEFINED.
+     *
+     * @return The @c Error::Kind set for this error.
+     */
+    Kind getKind() const;
+
+    /**
+     * @brief Check whether the kind of this error matches the argument kind.
+     *
+     * Returns @c true if the @p kind matches the the @c Error::Kind for this
+     * error and @c false otherwise.
+     *
+     * @return @c true if the @p kind matches the the @c Error::Kind for this
+     * error and @c false otherwise.
+     */
+    bool isKind(const Kind &kind);
 
     /**
      * @brief Set the component for this component error.
@@ -63,10 +112,7 @@ public:
      *
      * @param component A pointer to the component that this component error is relevant to.
      */
-    void setComponent(const ComponentPtr component)
-    {
-        mComponent = component;
-    }
+    void setComponent(const ComponentPtr &component);
 
     /**
      * @brief Get the component for this error.
@@ -76,10 +122,7 @@ public:
      * @return A pointer to the component that this error was raised on. If no
      * component has been set for this error, return a @c nullptr.
      */
-    ComponentPtr getComponent()
-    {
-        return mComponent;
-    }
+    ComponentPtr getComponent();
 
     /**
      * @brief Get a @c const reference to the component for this error.
@@ -93,10 +136,7 @@ public:
      * error was raised on. If no component has been set for this
      * error, return a @c nullptr.
      */
-    const ComponentPtr& getComponent() const
-    {
-        return mComponent;
-    }
+    const ComponentPtr& getComponent() const;
 
     /**
      * @brief Set the @p import for this error.
@@ -105,10 +145,7 @@ public:
      *
      * @param import A pointer to the import that this error is relevant to.
      */
-    void setImport(const ImportPtr import)
-    {
-        mImport = import;
-    }
+    void setImport(const ImportPtr &import);
 
     /**
      * @brief Get the import for this error.
@@ -118,10 +155,7 @@ public:
      * @return A pointer to the import this error was raised on. If no import
      * has been set for this error, return a @c nullptr.
      */
-    ImportPtr getImport()
-    {
-        return mImport;
-    }
+    ImportPtr getImport();
 
     /**
      * @brief Get a @c const reference to the import for this error.
@@ -135,10 +169,7 @@ public:
      * error was raised on. If no import has been set for this error,
      * return a @c nullptr.
      */
-    const ImportPtr& getImport() const
-    {
-        return mImport;
-    }
+    const ImportPtr& getImport() const;
 
     /**
      * @brief Set the @p model for this error.
@@ -147,10 +178,7 @@ public:
      *
      * @param model A pointer to the model that this error is relevant to.
      */
-    void setModel(const ModelPtr model)
-    {
-        mModel = model;
-    }
+    void setModel(const ModelPtr &model);
 
     /**
      * @brief Get the model for this error.
@@ -160,10 +188,7 @@ public:
      * @return A pointer to the model that this error was raised on.
      * If no model has been set for this error, return a @c nullptr.
      */
-    ModelPtr getModel()
-    {
-        return mModel;
-    }
+    ModelPtr getModel();
 
     /**
      * @brief Get a @c const reference to the model for this error.
@@ -177,10 +202,7 @@ public:
      * error was raised on. If no model has been set for this error,
      * return a @c nullptr.
      */
-    const ModelPtr& getModel() const
-    {
-        return mModel;
-    }
+    const ModelPtr& getModel() const;
 
     /**
      * @brief Set the units for this error.
@@ -189,10 +211,7 @@ public:
      *
      * @param units A pointer to the units this error is relevant to.
      */
-    void setUnits(const UnitsPtr units)
-    {
-        mUnits = units;
-    }
+    void setUnits(const UnitsPtr &units);
 
     /**
      * @brief Get the units for this error.
@@ -202,10 +221,7 @@ public:
      * @return A pointer to the units that this error was raised on.
      * If no units has been set for this error, return a @c nullptr.
      */
-    UnitsPtr getUnits()
-    {
-        return mUnits;
-    }
+    UnitsPtr getUnits();
 
     /**
      * @brief Get a @c const reference to the units for this error.
@@ -219,10 +235,7 @@ public:
      * error was raised on. If no units has been set for this error,
      * return a @c nullptr.
      */
-    const UnitsPtr& getUnits() const
-    {
-        return mUnits;
-    }
+    const UnitsPtr& getUnits() const;
 
     /**
      * @brief Set the variable for this error.
@@ -231,10 +244,7 @@ public:
      *
      * @param variable A pointer to the variable this error is relevant to.
      */
-    void setVariable(const VariablePtr variable)
-    {
-        mVariable = variable;
-    }
+    void setVariable(const VariablePtr &variable);
 
     /**
      * @brief Get the variable for this error.
@@ -244,10 +254,7 @@ public:
      * @return A pointer to the variable this variable error was raised on.
      * If no variable has been set for this error, return a @c nullptr.
      */
-    VariablePtr getVariable()
-    {
-        return mVariable;
-    }
+    VariablePtr getVariable();
 
     /**
      * @brief Get a @c const reference to the variable for this error.
@@ -261,22 +268,14 @@ public:
      * error was raised on. If no variable has been set for this
      * error, return a @c nullptr.
      */
-    const VariablePtr& getVariable() const
-    {
-        return mVariable;
-    }
+    const VariablePtr& getVariable() const;
 
 private:
-    std::string mDescription; /**< The string description for why this entity error raised. */
+    void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
-    ImportPtr mImport; /**< Pointer to the import that the error occurred in. */
-    ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
-    UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
-    VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
+    struct ErrorImpl; /**< Forward declaration for pImpl idiom. */
+    ErrorImpl *mPimpl; /**< Private member to implementation pointer */
 };
-
-typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error pointer. */
 
 }
 

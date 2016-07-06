@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include <algorithm>
 #include <iostream>
 #include <libcellml>
 #include <vector>
@@ -1174,4 +1175,89 @@ TEST(Parser, invalidImportsAndGetError) {
     const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).getError(0);
     const libcellml::ImportPtr importFromError = err->getImport();
     EXPECT_EQ(import, importFromError);
+}
+
+TEST(Parser, invalidModelWithAllKindsOfErrors) {
+    const std::string input =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"starwars\" episode=\"four\">"
+       "<import princess=\"leia\"/>"
+       "<units jedi=\"luke\" lightsaber/>"
+       "<component ship=\"falcon\">"
+            "<variable pilot=\"han\"/>"
+       "</component>"
+       "<connection wookie=\"chewie\"/>"
+       "<encapsulation yoda=\"green\"/>"
+    "</model>";
+
+    std::vector<std::string> expectedErrors = {
+        "Specification mandate value for attribute lightsaber.",
+        "Model 'starwars' has an invalid attribute 'episode'.",
+        "Import from '' has an invalid attribute 'princess'.",
+        "Units '' has an invalid attribute 'jedi'.",
+        "Component '' has an invalid attribute 'ship'.",
+        "Variable '' has an invalid attribute 'pilot'.",
+        "Connection in model 'starwars' has an invalid attribute 'wookie'.",
+        "Encapsulation in model 'starwars' has an invalid attribute 'yoda'."
+    };
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(input);
+
+    // Add an undefined error
+    libcellml::ErrorPtr undefinedError = std::make_shared<libcellml::Error>();
+    if (undefinedError->isKind(libcellml::Error::Kind::UNDEFINED)) {
+        parser.addError(undefinedError);
+    }
+
+    // Check that we have all the expected errors.
+    std::vector<bool> foundKind(9, false);
+    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
+        switch (parser.getError(i)->getKind()) {
+            case (libcellml::Error::Kind::COMPONENT): {
+                foundKind.at(0) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::CONNECTION): {
+                foundKind.at(1) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::ENCAPSULATION): {
+                foundKind.at(2) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::IMPORT): {
+                foundKind.at(3) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::MODEL): {
+                foundKind.at(4) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::UNDEFINED): {
+                foundKind.at(5) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::UNITS): {
+                foundKind.at(6) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::VARIABLE): {
+                foundKind.at(7) = true;
+                break;
+            }
+            case (libcellml::Error::Kind::XML): {
+                foundKind.at(8) = true;
+                break;
+            }
+        }
+    }
+    bool foundAllKinds = false;
+    if (std::all_of(foundKind.begin(), foundKind.end(), [](bool i) {return i;})) {
+        foundAllKinds = true;
+    }
+    EXPECT_TRUE(foundAllKinds);
 }
