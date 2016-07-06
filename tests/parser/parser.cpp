@@ -1266,7 +1266,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
     libcellml::ErrorPtr undefinedError = std::make_shared<libcellml::Error>();
     parser2.addError(undefinedError);
     EXPECT_EQ(1, parser2.errorCount());
-    if (parser.getError(0)->isKind(libcellml::Error::Kind::UNDEFINED)) {
+    if (parser2.getError(0)->isKind(libcellml::Error::Kind::UNDEFINED)) {
         foundKind.at(7) = true;
     }
 

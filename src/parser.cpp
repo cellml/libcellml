@@ -221,6 +221,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription(doc->getXmlError(i));
+            err->setKind(Error::Kind::XML);
             mParser->addError(err);
         }
     }
@@ -228,7 +229,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     if (!node) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Could not get a valid XML root node from the provided input.");
-        err->setModel(model);
+        err->setKind(Error::Kind::XML);
         mParser->addError(err);
         return;
     } else if (!node->isType("model")) {
@@ -236,6 +237,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         err->setDescription("Model root node is of invalid type '" + node->getType() +
                             "'. A valid CellML root node should be of type 'model'.");
         err->setModel(model);
+        err->setKind(Error::Kind::MODEL);
         mParser->addError(err);
         return;
     }
@@ -249,6 +251,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             err->setDescription("Model '" + node->getAttribute("name") +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setModel(model);
+            err->setKind(Error::Kind::MODEL);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -276,6 +279,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                     err->setDescription("Encapsulation in model '" + model->getName() +
                                         "' has an invalid attribute '" + attribute->getType() + "'.");
                     err->setModel(model);
+                    err->setKind(Error::Kind::ENCAPSULATION);
                     mParser->addError(err);
                     attribute = attribute->getNext();
                 }
@@ -291,6 +295,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 err->setDescription("Encapsulation in model '" + model->getName() +
                                     "' does not contain any child elements.");
                 err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
                 mParser->addError(err);
             }
         } else if (childNode->isType("connection")) {
@@ -300,6 +305,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             err->setDescription("Model '" + model->getName() +
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setModel(model);
+            err->setKind(Error::Kind::MODEL);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -317,6 +323,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             err->setDescription("Component '" + node->getAttribute("name") +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setComponent(component);
+            err->setKind(Error::Kind::COMPONENT);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -339,6 +346,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             err->setDescription("Component '" + component->getName() +
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setComponent(component);
+            err->setKind(Error::Kind::COMPONENT);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -362,6 +370,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                                     "' has an invalid base_unit attribute value '" + attribute->getValue() +
                                     "'. Valid options are 'yes' or 'no'.");
                 err->setUnits(units);
+                err->setKind(Error::Kind::UNITS);
                 mParser->addError(err);
             }
         } else {
@@ -369,6 +378,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             err->setDescription("Units '" + units->getName() +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setUnits(units);
+            err->setKind(Error::Kind::UNITS);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -382,6 +392,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             err->setDescription("Units '" + units->getName() +
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setUnits(units);
+            err->setKind(Error::Kind::UNITS);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -405,6 +416,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setUnits(units);
             mParser->addError(err);
+            err->setKind(Error::Kind::UNITS);
             childNode = childNode->getNext();
         }
     }
@@ -427,6 +439,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                                 "' in units '" + units->getName() +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setUnits(units);
+            err->setKind(Error::Kind::UNITS);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -452,6 +465,7 @@ double Parser::ParserImpl::convertUnitAttributeValueToDouble(double &defaultValu
                             "' with a value '" + attribute->getValue() +
                             "' that cannot be converted to a decimal number.");
         err->setUnits(units);
+        err->setKind(Error::Kind::UNITS);
         mParser->addError(err);
     }
     return value;
@@ -467,6 +481,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             err->setDescription("Variable '" + node->getAttribute("name") +
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setVariable(variable);
+            err->setKind(Error::Kind::VARIABLE);
             mParser->addError(err);
             childNode = childNode->getNext();
         }
@@ -486,6 +501,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             err->setDescription("Variable '" + node->getAttribute("name") +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setVariable(variable);
+            err->setKind(Error::Kind::VARIABLE);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -507,6 +523,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             err->setDescription("Connection in model '" + model->getName() +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
             mParser->addError(err);
             attribute = attribute->getNext();
         }
@@ -518,6 +535,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setDescription("Connection in model '" + model->getName() +
                             "' does not contain any child elements.");
         err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
         mParser->addError(err);
         return;
     }
@@ -541,6 +559,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                 "' has an invalid child element '" + grandchildNode->getType() +
                                 "' of element '" + childNode->getType() + "'.");
             err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
             mParser->addError(err);
         }
 
@@ -559,6 +578,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     err->setDescription("Connection in model '" + model->getName() +
                                         "' has an invalid map_components attribute '" + attribute->getType() + "'.");
                     err->setModel(model);
+                    err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
                 }
                 attribute = attribute->getNext();
@@ -569,6 +589,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid component_1 in a map_components element.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
                 component1Missing = true;
             }
@@ -577,6 +598,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid component_2 in a map_components element.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
                 component2Missing = true;
             }
@@ -586,6 +608,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' has more than one map_components element.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
             componentNamePair = std::make_pair(component1Name, component2Name);
@@ -606,6 +629,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     err->setDescription("Connection in model '" + model->getName() +
                                         "' has an invalid map_variables attribute '" + attribute->getType() + "'.");
                     err->setModel(model);
+                    err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
                 }
                 attribute = attribute->getNext();
@@ -616,6 +640,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid variable_1 in a map_variables element.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
                 variable1Missing = true;
             }
@@ -624,6 +649,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid variable_2 in a map_variables element.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
                 variable2Missing = true;
             }
@@ -637,6 +663,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             err->setDescription("Connection in model '" + model->getName() +
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -656,6 +683,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' specifies '" + componentNamePair.first +
                                     "' as component_1 but it does not exist in the model.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
         }
@@ -668,6 +696,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' specifies '" + componentNamePair.second +
                                     "' as component_2 but it does not exist in the model.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
         }
@@ -676,6 +705,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setDescription("Connection in model '" + model->getName() +
                             "' does not have a map_components element.");
         err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
         mParser->addError(err);
     }
 
@@ -699,6 +729,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                             "' is specified as variable_1 in a connection but it does not exist in component_1 component '"
                                             + component1->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
+                        err->setKind(Error::Kind::CONNECTION);
                         mParser->addError(err);
                     }
                 }
@@ -708,6 +739,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' specifies '" + iterPair->first +
                                     "' as variable_1 but the corresponding component_1 is invalid.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
             if (component2) {
@@ -725,6 +757,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                             "' is specified as variable_2 in a connection but it does not exist in component_2 component '"
                                             + component2->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
+                        err->setKind(Error::Kind::CONNECTION);
                         mParser->addError(err);
                     }
                 }
@@ -734,6 +767,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' specifies '" + iterPair->second +
                                     "' as variable_2 but the corresponding component_2 is invalid.");
                 err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
             // Set the variable equivalence relationship for this variable pair.
@@ -746,6 +780,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setDescription("Connection in model '" + model->getName() +
                             "' does not have a map_variables element.");
         err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
         mParser->addError(err);
     }
 }
@@ -771,6 +806,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                             "' specifies '" + parentComponentName +
                                             "' as a component in a component_ref but it does not exist in the model.");
                         err->setModel(model);
+                        err->setKind(Error::Kind::ENCAPSULATION);
                         mParser->addError(err);
                     }
                 } else {
@@ -778,6 +814,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     err->setDescription("Encapsulation in model '" + model->getName() +
                                         "' has an invalid component_ref attribute '" + attribute->getType() + "'.");
                     err->setModel(model);
+                    err->setKind(Error::Kind::ENCAPSULATION);
                     mParser->addError(err);
                 }
                 attribute = attribute->getNext();
@@ -787,6 +824,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 err->setDescription("Encapsulation in model '" + model->getName() +
                                     "' does not have a valid component attribute in a component_ref element.");
                 err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
                 mParser->addError(err);
             }
         } else {
@@ -794,6 +832,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             err->setDescription("Encapsulation in model '" + model->getName() +
                                 "' has an invalid child element '" + parentComponentNode->getType() + "'.");
             err->setModel(model);
+            err->setKind(Error::Kind::ENCAPSULATION);
             mParser->addError(err);
         }
 
@@ -810,6 +849,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                     "' specifies an invalid parent component_ref that also does not have any children.");
             }
             err->setModel(model);
+            err->setKind(Error::Kind::ENCAPSULATION);
             mParser->addError(err);
         }
 
@@ -832,6 +872,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                                 "' specifies '" + childComponentName +
                                                 "' as a component in a component_ref but it does not exist in the model.");
                             err->setModel(model);
+                            err->setKind(Error::Kind::ENCAPSULATION);
                             mParser->addError(err);
                             childComponentMissing = true;
                         }
@@ -840,6 +881,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                         err->setDescription("Encapsulation in model '" + model->getName() +
                                             "' has an invalid component_ref attribute '" + attribute->getType() + "'.");
                         err->setModel(model);
+                        err->setKind(Error::Kind::ENCAPSULATION);
                         mParser->addError(err);
                     }
                     attribute = attribute->getNext();
@@ -859,6 +901,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                             "' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.");
                     }
                     err->setModel(model);
+                    err->setKind(Error::Kind::ENCAPSULATION);
                     mParser->addError(err);
                 }
 
@@ -867,6 +910,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 err->setDescription("Encapsulation in model '" + model->getName() +
                                     "' has an invalid child element '" + childComponentNode->getType() + "'.");
                 err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
                 mParser->addError(err);
             }
 
@@ -908,6 +952,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             err->setDescription("Import from '" + node->getAttribute("href") +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setImport(import);
+            err->setKind(Error::Kind::IMPORT);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -929,6 +974,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                                         "' from '" + node->getAttribute("href") +
                                         "' has an invalid attribute '" + attribute->getType() + "'.");
                     err->setImport(import);
+                    err->setKind(Error::Kind::IMPORT);
                     mParser->addError(err);
                     errorOccurred = true;
                 }
@@ -952,6 +998,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                                         "' from '" + node->getAttribute("href") +
                                         "' has an invalid attribute '" + attribute->getType() + "'.");
                     err->setImport(import);
+                    err->setKind(Error::Kind::IMPORT);
                     mParser->addError(err);
                     errorOccurred = true;
                 }
@@ -965,6 +1012,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             err->setDescription("Import from '" + node->getAttribute("href") +
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setImport(import);
+            err->setKind(Error::Kind::IMPORT);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
