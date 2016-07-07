@@ -1,0 +1,284 @@
+/*
+Copyright 2016 University of Auckland
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#ifndef LIBCELLML_LIBCELLML_ERROR_H_
+#define LIBCELLML_LIBCELLML_ERROR_H_
+
+#include <string>
+
+#include "libcellml/libcellml_export.h"
+#include "libcellml/types.h"
+
+namespace libcellml {
+
+/**
+ * @brief The Error class
+ *
+ * Base class for errors used with logger derived classes.
+ */
+class LIBCELLML_EXPORT Error
+{
+public:
+    Error(); /**< Constructor */
+    ~Error(); /**< Destructor */
+    Error(const Error& rhs); /**< Copy constructor */
+    Error(Error &&rhs); /**< Move constructor */
+    Error& operator=(Error rhs); /**< Assignment operator */
+
+    /**
+     * @brief The error Kind enum class.
+     *
+     * Enum to describe the kind of error a given error is.
+     */
+    enum class Kind
+    {
+        COMPONENT,
+        CONNECTION,
+        ENCAPSULATION,
+        IMPORT,
+        MODEL,
+        UNDEFINED,
+        UNITS,
+        VARIABLE,
+        XML
+    };
+
+    /**
+     * @brief Set the description for this error.
+     *
+     * Set the @c std::string @p description for why this error was raised.
+     *
+     * @param description The @c std::string error description to set.
+     */
+    void setDescription(const std::string& description);
+
+    /**
+     * @brief Get the description for this error.
+     *
+     * Get the @c std::string description for why this error was raised.
+     *
+     * @return The @c std::string description of the error.
+     */
+    std::string getDescription() const;
+
+    /**
+     * @brief Set the kind of this error.
+     *
+     * Set the @p kind of this error from the options available in
+     * @c Error::Kind.
+     *
+     * @param kind The @c Error::Kind to set.
+     */
+    void setKind(Kind kind);
+
+    /**
+     * @brief Get the kind of this error.
+     *
+     * Get the @c kind of this error. If no kind has been set for
+     * this error, will return Kind::UNDEFINED.
+     *
+     * @return The @c Error::Kind set for this error.
+     */
+    Kind getKind() const;
+
+    /**
+     * @brief Check whether the kind of this error matches the argument kind.
+     *
+     * Returns @c true if the @p kind matches the the @c Error::Kind for this
+     * error and @c false otherwise.
+     *
+     * @return @c true if the @p kind matches the the @c Error::Kind for this
+     * error and @c false otherwise.
+     */
+    bool isKind(const Kind &kind);
+
+    /**
+     * @brief Set the component for this component error.
+     *
+     * Set the @p component that this component error is relevant to.
+     *
+     * @param component A pointer to the component that this component error is relevant to.
+     */
+    void setComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Get the component for this error.
+     *
+     * Get the component that this error is relevant to.
+     *
+     * @return A pointer to the component that this error was raised on. If no
+     * component has been set for this error, return a @c nullptr.
+     */
+    ComponentPtr getComponent();
+
+    /**
+     * @brief Get a @c const reference to the component for this error.
+     *
+     * Returns a @c const reference to the component that this
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the component that this
+     * error was raised on. If no component has been set for this
+     * error, return a @c nullptr.
+     */
+    const ComponentPtr& getComponent() const;
+
+    /**
+     * @brief Set the @p import for this error.
+     *
+     * Set the @c ImportPtr @p import object that this error is relevant to.
+     *
+     * @param import A pointer to the import that this error is relevant to.
+     */
+    void setImport(const ImportPtr &import);
+
+    /**
+     * @brief Get the import for this error.
+     *
+     * Get the @c ImportPtr import for this error.
+     *
+     * @return A pointer to the import this error was raised on. If no import
+     * has been set for this error, return a @c nullptr.
+     */
+    ImportPtr getImport();
+
+    /**
+     * @brief Get a @c const reference to the import for this error.
+     *
+     * Returns a @c const reference to the import that this
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the import that this
+     * error was raised on. If no import has been set for this error,
+     * return a @c nullptr.
+     */
+    const ImportPtr& getImport() const;
+
+    /**
+     * @brief Set the @p model for this error.
+     *
+     * Set the @p model that this error is relevant to.
+     *
+     * @param model A pointer to the model that this error is relevant to.
+     */
+    void setModel(const ModelPtr &model);
+
+    /**
+     * @brief Get the model for this error.
+     *
+     * Get the model that this error is relevant to.
+     *
+     * @return A pointer to the model that this error was raised on.
+     * If no model has been set for this error, return a @c nullptr.
+     */
+    ModelPtr getModel();
+
+    /**
+     * @brief Get a @c const reference to the model for this error.
+     *
+     * Returns a @c const reference to the model that this
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the model that this
+     * error was raised on. If no model has been set for this error,
+     * return a @c nullptr.
+     */
+    const ModelPtr& getModel() const;
+
+    /**
+     * @brief Set the units for this error.
+     *
+     * Set the @p units that this error is relevant to.
+     *
+     * @param units A pointer to the units this error is relevant to.
+     */
+    void setUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Get the units for this error.
+     *
+     * Get the units that this error is relevant to.
+     *
+     * @return A pointer to the units that this error was raised on.
+     * If no units has been set for this error, return a @c nullptr.
+     */
+    UnitsPtr getUnits();
+
+    /**
+     * @brief Get a @c const reference to the units for this error.
+     *
+     * Returns a @c const reference to the units that this
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the units that this
+     * error was raised on. If no units has been set for this error,
+     * return a @c nullptr.
+     */
+    const UnitsPtr& getUnits() const;
+
+    /**
+     * @brief Set the variable for this error.
+     *
+     * Set the @p variable that this error is relevant to.
+     *
+     * @param variable A pointer to the variable this error is relevant to.
+     */
+    void setVariable(const VariablePtr &variable);
+
+    /**
+     * @brief Get the variable for this error.
+     *
+     * Get the variable that this error is relevant to.
+     *
+     * @return A pointer to the variable this variable error was raised on.
+     * If no variable has been set for this error, return a @c nullptr.
+     */
+    VariablePtr getVariable();
+
+    /**
+     * @brief Get a @c const reference to the variable for this error.
+     *
+     * Returns a @c const reference to the variable that this
+     * error is relevant to.
+     *
+     * @overload
+     *
+     * @return A @c const reference to the variable that this
+     * error was raised on. If no variable has been set for this
+     * error, return a @c nullptr.
+     */
+    const VariablePtr& getVariable() const;
+
+private:
+    void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */
+
+    struct ErrorImpl; /**< Forward declaration for pImpl idiom. */
+    ErrorImpl *mPimpl; /**< Private member to implementation pointer */
+};
+
+}
+
+#endif /* LIBCELLML_LIBCELLML_ERROR_H_ */
+
+

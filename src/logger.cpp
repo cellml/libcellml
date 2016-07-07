@@ -32,7 +32,7 @@ namespace libcellml {
  */
 struct Logger::LoggerImpl
 {
-    std::vector<EntityErrorPtr> mErrors;
+    std::vector<ErrorPtr> mErrors;
 };
 
 Logger::Logger()
@@ -73,7 +73,7 @@ void Logger::clearErrors()
     mPimpl->mErrors.clear();
 }
 
-void Logger::addError(const EntityErrorPtr error)
+void Logger::addError(const ErrorPtr error)
 {
     mPimpl->mErrors.push_back(error);
 }
@@ -83,12 +83,12 @@ size_t Logger::errorCount() const
     return mPimpl->mErrors.size();
 }
 
-EntityErrorPtr Logger::getError(size_t index)
+ErrorPtr Logger::getError(size_t index)
 {
     return mPimpl->mErrors.at(index);
 }
 
-const EntityErrorPtr& Logger::getError(size_t index) const
+const ErrorPtr& Logger::getError(size_t index) const
 {
     return mPimpl->mErrors.at(index);
 }

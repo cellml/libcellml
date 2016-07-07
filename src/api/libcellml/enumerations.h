@@ -65,4 +65,3 @@ enum class Prefix
 }
 
 #endif /* LIBCELLML_LIBCELLML_ENUMERATIONS_H_ */
-

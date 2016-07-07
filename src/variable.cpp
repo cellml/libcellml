@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "libcellml/units.h"
 
-
 namespace libcellml {
 
 /**

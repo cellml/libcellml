@@ -26,9 +26,9 @@ limitations under the License.
  * This is the source code documentation for the libCellML C++ library.
  */
 #include <libcellml/component.h>
+#include <libcellml/error.h>
 #include <libcellml/import.h>
 #include <libcellml/logger.h>
-#include <libcellml/loggererrors.h>
 #include <libcellml/model.h>
 #include <libcellml/parser.h>
 #include <libcellml/units.h>
