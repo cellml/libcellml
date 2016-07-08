@@ -32,6 +32,7 @@ limitations under the License.
 #include <libcellml/model.h>
 #include <libcellml/parser.h>
 #include <libcellml/units.h>
+#include <libcellml/validator.h>
 #include <libcellml/variable.h>
 #include <libcellml/version.h>
 

@@ -19,6 +19,7 @@ include(math/tests.cmake)
 include(model/tests.cmake)
 include(parser/tests.cmake)
 include(units/tests.cmake)
+include(validator/tests.cmake)
 include(variable/tests.cmake)
 include(version/tests.cmake)
 
