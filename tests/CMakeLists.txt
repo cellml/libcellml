@@ -33,6 +33,7 @@ foreach(TEST ${LIBCELLML_TESTS})
     set(CURRENT_CATEGORY "${CURRENT_CATEGORY}_")
   endif()
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS})
+  target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main)
 
   set_target_properties(${CURRENT_TEST} PROPERTIES
@@ -88,3 +89,5 @@ if(LIBCELLML_MEMCHECK)
     COMMENT "Running memcheck tests")
 endif()
 
+SET(TEST_RESOURCE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/test_resources.h)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test_resources.h.in ${TEST_RESOURCE_HEADER})
