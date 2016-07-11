@@ -297,22 +297,11 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 }
             }
             // Load encapsulated component_refs.
-            XmlNodePtr componentRefNode = childNode->getFirstChild();            
+            XmlNodePtr componentRefNode = childNode->getFirstChild();
             if (componentRefNode) {
                 // This component_ref and its child and sibling elements will be loaded
                 // and error-checked in loadEncapsulation().
                 loadEncapsulation(model, componentRefNode);
-            } else if (childNode->isType("text")) {
-                std::string textNode = childNode->convertToString();
-                // Ignore whitespace when parsing.
-                if (isNotWhitespace(textNode)) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Encapsulation in model '" + model->getName() +
-                                        "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                    err->setModel(model);
-                    err->setKind(Error::Kind::ENCAPSULATION);
-                    mParser->addError(err);
-                }
             } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->getName() +
@@ -486,8 +475,8 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setUnits(units);
                 mParser->addError(err);
                 err->setKind(Error::Kind::UNITS);
-                childNode = childNode->getNext();
             }
+            childNode = childNode->getNext();
         }
     }
     // Parse the unit attributes.
@@ -565,8 +554,8 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
                 err->setVariable(variable);
                 err->setKind(Error::Kind::VARIABLE);
                 mParser->addError(err);
-                childNode = childNode->getNext();
             }
+            childNode = childNode->getNext();
         }
     }
     XmlAttributePtr attribute = node->getFirstAttribute();
@@ -638,7 +627,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         if (childNode->getFirstChild()) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode->isType("text")) {
-                std::string textNode = childNode->convertToString();
+                std::string textNode = grandchildNode->convertToString();
                 // Ignore whitespace when parsing.
                 if (isNotWhitespace(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
@@ -1159,8 +1148,9 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
     }
 }
 
-bool Parser::ParserImpl::isNotWhitespace (std::string &input) {
-   return input.find_first_not_of(" \t\n\v\f\r") == input.npos;
+bool Parser::ParserImpl::isNotWhitespace (std::string &input)
+{
+    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
 }
 
 }

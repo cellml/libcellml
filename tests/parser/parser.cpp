@@ -1292,3 +1292,54 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
     }
     EXPECT_TRUE(foundAllKinds);
 }
+
+TEST(Parser, invalidModelWithTextInAllElements) {
+    const std::string input =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"starwars\">\n"
+       "episode7\n"
+       "<import xlink:href=\"sith.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">kylo</import>\n"
+       "<units name=\"robot\">"
+           "bb-8"
+           "<unit units=\"ball\">rolls</unit>"
+       "</units>\n"
+       "<component name=\"ship\">falcon\n"
+       "    <variable name=\"jedi\">rey</variable>\n"
+       "</component>\n"
+       "<connection>"
+            "finn"
+            "<map_components component_1=\"ship\">"
+                "trooper"
+            "</map_components>"
+       "</connection>\n"
+       "<encapsulation>"
+           "awakens"
+           "<component_ref component=\"ship\">"
+               "force"
+           "</component_ref>"
+       "</encapsulation>\n"
+    "</model>";
+    std::vector<std::string> expectedErrors = {
+        "Model 'starwars' has an invalid non-whitespace child text element '\nepisode7\n'.",
+        "Import from 'sith.xml' has an invalid non-whitespace child text element 'kylo'.",
+        "Units 'robot' has an invalid non-whitespace child text element 'bb-8'.",
+        "Unit 'ball' in units 'robot' has an invalid non-whitespace child text element 'rolls'.",
+        "Component 'ship' has an invalid non-whitespace child text element 'falcon\n    '.",
+        "Variable 'jedi' has an invalid non-whitespace child text element 'rey'.",
+        "Connection in model 'starwars' has an invalid non-whitespace child text element 'finn'.",
+        "Connection in model 'starwars' has an invalid non-whitespace child text element 'trooper'.",
+        "Connection in model 'starwars' does not have a valid component_2 in a map_components element.",
+        "Connection in model 'starwars' does not have a map_variables element.",
+        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
+        "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
+        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'force'."
+    };
+
+    // Parse and check for CellML errors.
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(input);
+    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
+    }
+}
