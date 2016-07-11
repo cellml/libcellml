@@ -27,6 +27,13 @@ TEST(Model, serialise) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Model, setGetId) {
+    const std::string id = "modelID";
+    libcellml::Model m;
+    m.setId(id);
+    EXPECT_EQ(id, m.getId());
+}
+
 TEST(Model, serialiseAllocatePointer) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
     libcellml::Model* m = new libcellml::Model();
@@ -369,4 +376,3 @@ TEST(Model, constructors) {
     EXPECT_EQ("", m2.getName());
 
 }
-
