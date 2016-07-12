@@ -941,6 +941,10 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
                 mParser->addError(err);
+            } else {
+                // Continue to next node if this is whitespace (don't try to parse children of whitespace).
+                parentComponentNode = parentComponentNode->getNext();
+                continue;
             }
         } else {
             ErrorPtr err = std::make_shared<Error>();
