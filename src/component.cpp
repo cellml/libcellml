@@ -192,6 +192,9 @@ std::string Component::doSerialisation(Format format) const
         if (componentName.length()) {
             repr += " name=\"" + componentName + "\"";
         }
+        if (getId().length()) {
+            repr += " id=\"" + getId() + "\"";
+        }
         if (variableCount() > 0) {
             endTag = true;
             repr += ">";
