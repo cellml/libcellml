@@ -128,6 +128,9 @@ std::string Model::doSerialisation(Format format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
+        if (getId().length()) {
+            repr += " id=\"" + getId() + "\"";
+        }
         bool endTag = false;
         if ((importMap.size() > 0) || (componentCount() > 0) || (unitsCount() > 0)){
             endTag = true;
