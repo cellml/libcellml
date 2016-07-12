@@ -258,6 +258,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     while (attribute) {
         if (attribute->isType("name")) {
             model->setName(attribute->getValue());
+        } else if (attribute->isType("id")) {
+            model->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Model '" + node->getAttribute("name") +
@@ -341,6 +343,8 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
     while (attribute) {
         if (attribute->isType("name")) {
             component->setName(attribute->getValue());
+        } else if (attribute->isType("id")) {
+            component->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Component '" + node->getAttribute("name") +
@@ -393,6 +397,8 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
     while (attribute) {
         if (attribute->isType("name")) {
             units->setName(attribute->getValue());
+        } else if (attribute->isType("id")) {
+            units->setId(attribute->getValue());
         } else if (attribute->isType("base_unit")) {
             if (attribute->getValue() == "yes") {
                 units->setBaseUnit(true);
@@ -562,6 +568,8 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     while (attribute) {
         if (attribute->isType("name")) {
             variable->setName(attribute->getValue());
+        } else if (attribute->isType("id")) {
+            variable->setId(attribute->getValue());
         } else if (attribute->isType("units")) {
             variable->setUnits(attribute->getValue());
         } else if (attribute->isType("interface")) {
@@ -1063,6 +1071,8 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
     while (attribute) {
         if (attribute->isType("href")) {
             import->setSource(attribute->getValue());
+        } else if (attribute->isType("id")) {
+            import->setId(attribute->getValue());
         } else if (attribute->isType("xlink")) {
             // Allow xlink attributes but do nothing for them.
         } else {
@@ -1084,6 +1094,8 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             while (attribute) {
                 if (attribute->isType("name")) {
                     importedComponent->setName(attribute->getValue());
+                } else if (attribute->isType("id")) {
+                    importedComponent->setId(attribute->getValue());
                 } else if (attribute->isType("component_ref")) {
                     importedComponent->setSourceComponent(import, attribute->getValue());
                 } else {
@@ -1108,6 +1120,8 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             while (attribute) {
                 if (attribute->isType("name")) {
                     importedUnits->setName(attribute->getValue());
+                } else if (attribute->isType("id")) {
+                    importedUnits->setId(attribute->getValue());
                 } else if (attribute->isType("units_ref")) {
                     importedUnits->setSourceUnits(import, attribute->getValue());
                 } else {

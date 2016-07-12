@@ -32,13 +32,9 @@ TEST(Parser, parseSineModelFromFile) {
     std::stringstream buffer;
     buffer << t.rdbuf();
     std::vector<std::string> expectedErrors = {
-        "Specification mandate value for attribute bearded.",
-        "Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
-        "Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.",
-        "Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.",
-        "Opening and ending tag mismatch: Elf line 2 and fellows.",
-        "Premature end of data in tag fellowship line 2.",
-        "Could not get a valid XML root node from the provided input."
+        " ",
+        " ",
+        " "
     };
 
     libcellml::Parser p(libcellml::Format::XML);
