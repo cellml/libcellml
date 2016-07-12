@@ -62,12 +62,12 @@ public:
     /**
      * @brief Get the document identifier for this entity.
      *
-     * Get the string corresponding with the @c id document identifier for this variable.
+     * Get the string corresponding with the @c id document identifier for this entity.
      * If no @c id has been set, returns an empty string.
      *
      * @sa setId
      *
-     * @return The @c std::string document identifier for this object
+     * @return The @c std::string document identifier for this entity.
      */
     std::string getId() const;
 
