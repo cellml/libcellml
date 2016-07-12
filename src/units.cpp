@@ -131,12 +131,21 @@ std::string Units::doSerialisation(Format format) const
     if (format == Format::XML) {
         if (getName().length()) {
             if (isImport()) {
-                repr += "<import xlink:href=\"" + getImport()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                        "<units units_ref=\"" + getImportReference() + "\" name=\"" + getName() + "\"/>"
-                        "</import>";
+                repr += "<import xlink:href=\"" + getImport()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+                if (getImport()->getId().length()) {
+                    repr += " id=\"" + getImport()->getId() + "\"";
+                }
+                repr += "><units units_ref=\"" + getImportReference() + "\" name=\"" + getName() + "\"";
+                if (getId().length()) {
+                    repr += " id=\"" + getId() + "\"";
+                }
+                repr += "/></import>";
             } else {
                 bool endTag = false;
                 repr += "<units name=\"" + getName() + "\"";
+                if (getId().length()) {
+                    repr += " id=\"" + getId() + "\"";
+                }
                 if (isBaseUnit()) {
                     repr += " base_unit=\"yes\"";
                 } else if (mPimpl->mUnits.size() > 0) {

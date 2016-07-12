@@ -376,3 +376,49 @@ TEST(Model, constructors) {
     EXPECT_EQ("", m2.getName());
 
 }
+
+TEST(Model, setAndCheckIdsAllEntities) {
+    const std::string expected =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"mname\" id=\"mid\">"
+              "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"iid\">"
+                "<units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>"
+              "</import>"
+              "<units name=\"u2name\" id=\"u2id\"/>"
+              "<component name=\"cname\" id=\"cid\">"
+                "<variable name=\"vname\" id=\"vid\" units=\"u1name\"/>"
+              "</component>"
+            "</model>";
+
+    libcellml::Model m;
+    libcellml::ImportPtr i = std::make_shared<libcellml::Import>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+
+    i->setSource("some-other-model.xml");
+    u1->setSourceUnits(i, "a_units_in_that_model");
+
+    m.setName("mname");
+    c->setName("cname");
+    v->setName("vname");
+    u1->setName("u1name");
+    u2->setName("u2name");
+
+    m.setId("mid");
+    i->setId("iid");
+    c->setId("cid");
+    v->setId("vid");
+    u1->setId("u1id");
+    u2->setId("u2id");
+
+    v->setUnits(u1);
+    c->addVariable(v);
+    m.addUnits(u1);
+    m.addUnits(u2);
+    m.addComponent(c);
+
+    std::string actual = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(expected, actual);
+}

@@ -159,6 +159,9 @@ std::string Variable::doSerialisation(Format format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
+        if (getId().length()) {
+            repr += " id=\"" + getId() + "\"";
+        }
         if (getUnits()) {
             repr += " units=\"" + getUnits()->getName() + "\"";
         }
