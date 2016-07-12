@@ -377,4 +377,29 @@ void ComponentEntity::replaceComponent(const std::string &name, const ComponentP
     replaceComponent(index, c);
 }
 
+ComponentPtr ComponentEntity::getEncapsulatedComponent(const std::string &name)
+{
+    ComponentPtr foundComponent = nullptr;
+    if (containsComponent(name)) {
+        foundComponent = getComponent(name);
+    } else {
+        for (size_t i = 0; i < componentCount(); ++i) {
+            foundComponent = getComponent(i)->getEncapsulatedComponent(name);
+            if (foundComponent) {
+                break;
+            }
+        }
+    }
+    return foundComponent;
+}
+
+bool ComponentEntity::containsEncapsulatedComponent(const std::string &name)
+{
+    bool result = false;
+    if (getEncapsulatedComponent(name)) {
+        result = true;
+    }
+    return result;
+}
+
 }

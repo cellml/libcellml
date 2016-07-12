@@ -423,6 +423,9 @@ public:
      */
     size_t componentCount() const;
 
+    ComponentPtr getEncapsulatedComponent(const std::string &name);
+    bool containsEncapsulatedComponent(const std::string &name);
+
 protected:
 
     /**
