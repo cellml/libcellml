@@ -24,7 +24,6 @@ namespace libcellml {
 Entity::Entity()
     : mParentModel(nullptr)
     , mParentComponent(nullptr)
-    , mId("")
 {
 }
 
