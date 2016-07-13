@@ -778,8 +778,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     ComponentPtr component2 = nullptr;
     if (mapComponentsFound) {
         // Now check the objects exist in the model.
-        if (model->containsEncapsulatedComponent(componentNamePair.first)) {
-            component1 = model->getEncapsulatedComponent(componentNamePair.first);
+        if (model->containsComponent(componentNamePair.first)) {
+            component1 = model->getComponent(componentNamePair.first);
         } else {
             if (!component1Missing) {
                 ErrorPtr err = std::make_shared<Error>();
@@ -791,8 +791,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 mParser->addError(err);
             }
         }
-        if (model->containsEncapsulatedComponent(componentNamePair.second)) {
-            component2 = model->getEncapsulatedComponent(componentNamePair.second);
+        if (model->containsComponent(componentNamePair.second)) {
+            component2 = model->getComponent(componentNamePair.second);
         } else {
             if (!component2Missing) {
                 ErrorPtr err = std::make_shared<Error>();

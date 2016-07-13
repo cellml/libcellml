@@ -284,14 +284,17 @@ public:
      * @brief Tests to see if the named component is contained within this component entity.
      *
      * Tests to see if the component with the given @p name is contained
-     * within this component entity.  Returns @c true if the component is in the component
-     * entity and @c false otherwise.
+     * within this component entity. If @p searchEncapsulated is @c true (default) this will also
+     * search through this component's encapsulated components. Returns @c true if the component is
+     * in the component entity and @c false otherwise.
      *
      * @param name The component name to test for existence in this component entity.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the component with the specified @p name. Default value is @c true.
      *
      * @return @c true if the named component is in this component entity and @c false otherwise.
      */
-    bool containsComponent(const std::string &name) const;
+    bool containsComponent(const std::string &name, bool searchEncapsulated=true) const;
 
     /**
      * @brief Tests to see if the component pointer is contained within this component.
@@ -351,16 +354,19 @@ public:
     /**
      * @brief Get a component with the given @p name.
      *
-     * Returns a reference to a component with the given @p name.  If
-     * the @p name is not valid a @c std::out_of_range exception is thrown.
+     * Returns a reference to a component with the given @p name. If @p searchEncapsulated
+     * is @c true (default) this will also search through this component's encapsulated
+     * components. If the @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to return.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the component with the specified @p name. Default value is @c true.
      *
      * @return A reference to the Component with the given @p name.
      */
-    ComponentPtr getComponent(const std::string &name);
+    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated=true);
 
     /**
      * @brief Take the component at the given @p index and return it.
@@ -423,9 +429,6 @@ public:
      */
     size_t componentCount() const;
 
-    ComponentPtr getEncapsulatedComponent(const std::string &name);
-    bool containsEncapsulatedComponent(const std::string &name);
-
 protected:
 
     /**
@@ -457,6 +460,32 @@ protected:
     std::string serialiseEncapsulation(Format format) const;
 
 private:
+    /**
+     * @brief Tests to see if the named component is contained within this component entity.
+     *
+     * Tests to see if the component with the given @p name is contained
+     * within this component entity.  Returns @c true if the component is in the component
+     * entity and @c false otherwise.
+     *
+     * @param name The component name to test for existence in this component entity.
+     *
+     * @return @c true if the named component is in this component entity and @c false otherwise.
+     */
+    bool containsComponentInThis(const std::string &name) const;
+
+    /**
+     * @brief Get a component with the given @p name in this component entity.
+     *
+     * Returns a reference to a component with the given @p name in this
+     * component entity.  If the @p name is not valid a @c std::out_of_range
+     * exception is thrown.
+     *
+     * @param name The name of the Component to return.
+     *
+     * @return A reference to the Component with the given @p name.
+     */
+    ComponentPtr getComponentInThis(const std::string &name);
+
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
