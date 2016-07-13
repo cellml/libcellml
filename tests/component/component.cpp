@@ -328,6 +328,9 @@ TEST(Component, encapsulatedComponentMethods) {
     EXPECT_TRUE(c.containsComponent("comp5"));
     // Get component
     EXPECT_EQ(c4, c.getComponent("comp4"));
+    const libcellml::ComponentPtr constC4 = static_cast<const libcellml::Component>(c).getComponent("comp4");
+    EXPECT_EQ("comp4", constC4->getName());
+    EXPECT_THROW(static_cast<const libcellml::Component>(c).getComponent("comp4new"), std::out_of_range);
     // Replace component
     c.replaceComponent("comp4",c4n);
     c4n->addComponent(c5);

@@ -362,7 +362,7 @@ public:
      *
      * @return A @c const reference to the Component with the given @p name.
      */
-    const ComponentPtr& getComponent(const std::string &name, bool searchEncapsulated=true) const;
+    const ComponentPtr getComponent(const std::string &name, bool searchEncapsulated=true) const;
 
     /**
      * @brief Get a component with the given @p name.

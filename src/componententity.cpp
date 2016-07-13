@@ -391,12 +391,8 @@ ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchE
     return foundComponent;
 }
 
-const ComponentPtr& ComponentEntity::getComponent(const std::string &name, bool searchEncapsulated) const
+const ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchEncapsulated) const
 {
-    (void)searchEncapsulated;
-    return getComponentInThis(name);
-    /*
-    // TODO: need to sort out how to get this going for recursive encapsulation with a const ref.
     if (containsComponentInThis(name)) {
         return getComponentInThis(name);
     } else if (searchEncapsulated) {
@@ -409,7 +405,6 @@ const ComponentPtr& ComponentEntity::getComponent(const std::string &name, bool 
         }
     }
     throw std::out_of_range("Named component not found.");
-    */
 }
 
 ComponentPtr ComponentEntity::takeComponent(size_t index)
