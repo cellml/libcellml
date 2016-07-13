@@ -19,6 +19,7 @@ limitations under the License.
 #include <algorithm>
 #include <iostream>
 #include <libcellml>
+#include <string>
 #include <vector>
 
 TEST(Parser, invalidXMLElements) {
@@ -1342,4 +1343,36 @@ TEST(Parser, invalidModelWithTextInAllElements) {
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
+}
+
+TEST(Parser, parseIds) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" id=\"mid\">"
+            "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
+              "<component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>"
+            "</import>"
+            "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
+              "<units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>"
+            "</import>"
+            "<units name=\"units2\" id=\"u2id\"/>"
+            "<component name=\"component2\" id=\"c2id\">"
+                "<units name=\"units3\" id=\"u3id\"/>"
+                "<variable name=\"variable1\" id=\"vid\"/>"
+            "</component>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::ModelPtr model = p.parseModel(in);
+
+    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ("mid", model->getId());
+    EXPECT_EQ("c1id", model->getComponent("component1")->getId());
+    EXPECT_EQ("i1id", model->getComponent("component1")->getImport()->getId());
+    EXPECT_EQ("u1id", model->getUnits("units1")->getId());
+    EXPECT_EQ("i2id", model->getUnits("units1")->getImport()->getId());
+    EXPECT_EQ("u2id", model->getUnits("units2")->getId());
+    EXPECT_EQ("c2id", model->getComponent("component2")->getId());
+    EXPECT_EQ("u3id", model->getComponent("component2")->getUnits("units3")->getId());
+    EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
 }

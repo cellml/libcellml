@@ -511,8 +511,6 @@ void ComponentEntity::removeComponentInThis(const std::string &name)
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
         mPimpl->mComponents.erase(result);
-    } else {
-        throw std::out_of_range("Named component not found.");
     }
 }
 
@@ -521,8 +519,6 @@ void ComponentEntity::removeComponentInThis(const ComponentPtr &component)
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
         mPimpl->mComponents.erase(result);
-    } else {
-        throw std::out_of_range("Component pointer not found.");
     }
 }
 
