@@ -253,25 +253,32 @@ public:
      * @brief Remove the component with the given @p name.
      *
      * Remove the first component found that matches the given @p name.
+     * If @p searchEncapsulated is @c true (default) this will also
+     * search for the named component through this component's encapsulated components.
      * If the @p name is not found throw @c std::out_of_range.
      *
      * @overload
      *
      * @param name The name of the component to remove.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the component with the specified @p name. Default value is @c true.
      */
-    void removeComponent(const std::string &name);
+    void removeComponent(const std::string &name, bool searchEncapsulated=true);
 
     /**
      * @brief Remove the component with the given pointer.
      *
-     * Remove the component with the pointer @p component. If the
-     * component is not found throw @c std::out_of_range.
+     * Remove the component with the pointer @p component. If @p searchEncapsulated is @c true (default)
+     * this will also search for the component pointer through this component's encapsulated components.
+     * If the component is not found throw @c std::out_of_range.
      *
      * @overload
      *
      * @param component The pointer to the component to remove.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the specified @p component pointer. Default value is @c true.
      */
-    void removeComponent(const ComponentPtr &component);
+    void removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
 
     /**
      * @brief Remove all components stored in this component entity.
@@ -285,8 +292,8 @@ public:
      *
      * Tests to see if the component with the given @p name is contained
      * within this component entity. If @p searchEncapsulated is @c true (default) this will also
-     * search through this component's encapsulated components. Returns @c true if the component is
-     * in the component entity and @c false otherwise.
+     * search for the named component in this component's encapsulated components.
+     * Returns @c true if the component is in the component entity and @c false otherwise.
      *
      * @param name The component name to test for existence in this component entity.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
@@ -300,16 +307,19 @@ public:
      * @brief Tests to see if the component pointer is contained within this component.
      *
      * Tests to see if the argument component pointer @p component is contained
-     * within this component entity.  Returns @c true if the component is in the component
-     * entity and @c false otherwise.
+     * within this component entity. If @p searchEncapsulated is @c true (default) this will also
+     * search for the component pointer in this component's encapsulated components.
+     * Returns @c true if the component is in the component entity and @c false otherwise.
      *
      * @overload
      *
      * @param component The component pointer to test for existence in this component entity.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the specified @p component pointer. Default value is @c true.
      *
      * @return @c true if the component is in the component entity and @c false otherwise.
      */
-    bool containsComponent(const ComponentPtr &component) const;
+    bool containsComponent(const ComponentPtr &component, bool searchEncapsulated=true) const;
 
     /**
      * @brief Get a component at the given @p index.
@@ -340,23 +350,26 @@ public:
     /**
      * @brief Get a component with the given @p name.
      *
-     * Returns a @c const reference to a component with the given @p name.  If the
-     * @p name is not valid a @c std::out_of_range exception is thrown.
+     * Returns a @c const reference to a component with the given @p name. If @p searchEncapsulated
+     * is @c true (default) this will also search for the named component through this component's
+     * encapsulated components. If the @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to return.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the component with the specified @p name. Default value is @c true.
      *
      * @return A @c const reference to the Component with the given @p name.
      */
-    const ComponentPtr& getComponent(const std::string &name) const;
+    const ComponentPtr& getComponent(const std::string &name, bool searchEncapsulated=true) const;
 
     /**
      * @brief Get a component with the given @p name.
      *
      * Returns a reference to a component with the given @p name. If @p searchEncapsulated
-     * is @c true (default) this will also search through this component's encapsulated
-     * components. If the @p name is not valid a @c std::out_of_range exception is thrown.
+     * is @c true (default) this will also search for the named component through this component's
+     * encapsulated components. If the @p name is not valid a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
@@ -384,17 +397,20 @@ public:
     /**
      * @brief Take the component with the given @p name and return it.
      *
-     * Takes the component with the given @p name and returns it.
-     * If an invalid @p name is passed to the method a @c std::out_of_range
+     * Takes the component with the given @p name and returns it. If @p searchEncapsulated
+     * is @c true (default) this will also search for the named component through this component's
+     * encapsulated components. If an invalid @p name is passed to the method a @c std::out_of_range
      * exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to take.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the component with the specified @p name. Default value is @c true.
      *
      * @return The Component identified with the given @p name.
      */
-    ComponentPtr takeComponent(const std::string &name);
+    ComponentPtr takeComponent(const std::string &name, bool searchEncapsulated=true);
 
     /**
      * @brief Replace a component at the given @p index.
@@ -410,15 +426,19 @@ public:
     /**
      * @brief Replace a component with the given @p name.
      *
-     * Replaces the component with the given @p name with @p c. @p name must be a valid name
-     * of a component in the Component, otherwise a @c std::out_of_range exception is thrown.
+     * Replaces the component with the given @p name with @p c. If @p searchEncapsulated
+     * is @c true (default) this will also search for the named component through this component's
+     * encapsulated components. @p name must be a valid name of a component in this component,
+     * otherwise a @c std::out_of_range exception is thrown.
      *
      * @overload
      *
      * @param name The name of the Component to replace.
      * @param c The Component to use for replacement.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for the component with the specified @p name. Default value is @c true.
      */
-    void replaceComponent(const std::string &name, const ComponentPtr &c);
+    void replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
 
     /**
      * @brief Get the number of components in the component.
@@ -461,6 +481,28 @@ protected:
 
 private:
     /**
+     * @brief Remove the component with the given @p name from this component entity.
+     *
+     * Remove the first component found that matches the given @p name from this
+     * component entity. If the @p name is not found throw @c std::out_of_range.
+     *
+     * @param name The name of the component to remove.
+     */
+    void removeComponentInThis(const std::string &name);
+
+    /**
+     * @brief Remove the component with the given pointer from this component entity.
+     *
+     * Remove the component with the pointer @p component from this component entity.
+     * If the component is not found throw @c std::out_of_range.
+     *
+     * @overload
+     *
+     * @param component The pointer to the component to remove.
+     */
+    void removeComponentInThis(const ComponentPtr &component);
+
+    /**
      * @brief Tests to see if the named component is contained within this component entity.
      *
      * Tests to see if the component with the given @p name is contained
@@ -474,6 +516,34 @@ private:
     bool containsComponentInThis(const std::string &name) const;
 
     /**
+     * @brief Tests to see if the component pointer is contained within this component entity.
+     *
+     * Tests to see if the argument component pointer @p component is contained
+     * within this component entity.  Returns @c true if the component is in the component
+     * entity and @c false otherwise.
+     *
+     * @overload
+     *
+     * @param component The component pointer to test for existence in this component entity.
+     *
+     * @return @c true if the component is in the component entity and @c false otherwise.
+     */
+    bool containsComponentInThis(const ComponentPtr &component) const;
+
+    /**
+     * @brief Get a component with the given @p name in this component entity.
+     *
+     * Returns a @c const reference to a component with the given @p name in this
+     * component entity.  If the @p name is not valid a @c std::out_of_range
+     * exception is thrown.
+     *
+     * @param name The name of the Component to return.
+     *
+     * @return A @c const reference to the Component with the given @p name.
+     */
+    const ComponentPtr& getComponentInThis(const std::string &name) const;
+
+    /**
      * @brief Get a component with the given @p name in this component entity.
      *
      * Returns a reference to a component with the given @p name in this
@@ -485,6 +555,32 @@ private:
      * @return A reference to the Component with the given @p name.
      */
     ComponentPtr getComponentInThis(const std::string &name);
+
+    /**
+     * @brief Take the component with the given @p name from this component
+     * entity and return it.
+     *
+     * Takes the component with the given @p name from this component entity
+     * and returns it. If an invalid @p name is passed to the method a @c std::out_of_range
+     * exception is thrown.
+     *
+     * @param name The name of the Component to take.
+     *
+     * @return The Component identified with the given @p name.
+     */
+    ComponentPtr takeComponentInThis(const std::string &name);
+
+    /**
+     * @brief Replace a component with the given @p name in this component entity.
+     *
+     * Replaces the component with the given @p name in this component entity
+     * with @p c. @p name must be a valid name of a component in the Component,
+     * otherwise a @c std::out_of_range exception is thrown.
+     *
+     * @param name The name of the Component to replace.
+     * @param c The Component to use for replacement.
+     */
+    void replaceComponentInThis(const std::string &name, const ComponentPtr &c);
 
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
