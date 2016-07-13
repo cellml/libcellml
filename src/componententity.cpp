@@ -282,8 +282,8 @@ void ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
         componentFound = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
-            if (getComponent(i)->containsComponent(name)) {
-                getComponent(i)->removeComponent(name);
+            if (getComponent(i)->containsComponent(name, searchEncapsulated)) {
+                getComponent(i)->removeComponent(name, searchEncapsulated);
                 componentFound = true;
                 break;
             }
@@ -311,8 +311,8 @@ void ComponentEntity::removeComponent(const ComponentPtr &component, bool search
         componentFound = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
-            if (getComponent(i)->containsComponent(component)) {
-                getComponent(i)->removeComponent(component);
+            if (getComponent(i)->containsComponent(component, searchEncapsulated)) {
+                getComponent(i)->removeComponent(component, searchEncapsulated);
                 componentFound = true;
                 break;
             }
@@ -340,7 +340,7 @@ bool ComponentEntity::containsComponent(const std::string &name, bool searchEnca
         result = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
-            result = getComponent(i)->containsComponent(name);
+            result = getComponent(i)->containsComponent(name, searchEncapsulated);
             if (result) {
                 break;
             }
@@ -356,7 +356,7 @@ bool ComponentEntity::containsComponent(const ComponentPtr &component, bool sear
         result = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
-            result = getComponent(i)->containsComponent(component);
+            result = getComponent(i)->containsComponent(component, searchEncapsulated);
             if (result) {
                 break;
             }
@@ -382,7 +382,7 @@ ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchE
         foundComponent = getComponentInThis(name);
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
-            foundComponent = getComponent(i)->getComponent(name);
+            foundComponent = getComponent(i)->getComponent(name, searchEncapsulated);
             if (foundComponent) {
                 break;
             }
@@ -402,8 +402,8 @@ const ComponentPtr& ComponentEntity::getComponent(const std::string &name, bool 
     } else if (searchEncapsulated) {
         if (containsComponent(name)) {
             for (size_t i = 0; i < componentCount(); ++i) {
-                if (getComponent(i)->containsComponent(name)) {
-                    return getComponent(i)->getComponent(name);
+                if (getComponent(i)->containsComponent(name, searchEncapsulated)) {
+                    return getComponent(i)->getComponent(name, searchEncapsulated);
                 }
             }
         }
@@ -427,7 +427,7 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
         foundComponent = takeComponentInThis(name);
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
-            foundComponent = getComponent(i)->takeComponent(name);
+            foundComponent = getComponent(i)->takeComponent(name, searchEncapsulated);
             if (foundComponent) {
                 break;
             }
@@ -453,8 +453,8 @@ void ComponentEntity::replaceComponent(const std::string &name, const ComponentP
         componentFound = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
-            if (getComponent(i)->containsComponent(name)) {
-                getComponent(i)->replaceComponent(name, component);
+            if (getComponent(i)->containsComponent(name, searchEncapsulated)) {
+                getComponent(i)->replaceComponent(name, component, searchEncapsulated);
                 componentFound = true;
                 break;
             }
