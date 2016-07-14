@@ -202,9 +202,9 @@ TEST(Encapsulation, encapsulatedComponentMethods) {
     const libcellml::ComponentPtr constC4 = static_cast<const libcellml::Component>(c).getComponent("comp4");
     EXPECT_EQ("comp4", constC4->getName());
     EXPECT_FALSE(c.containsComponent("invalid"));
-    EXPECT_THROW(static_cast<const libcellml::Component>(c).getComponent("invalid"), std::out_of_range);
+    EXPECT_THROW(const libcellml::ComponentPtr invalid = static_cast<const libcellml::Component>(c).getComponent("invalid"), std::out_of_range);
     EXPECT_FALSE(c.containsComponent("comp4new"));
-    EXPECT_THROW(static_cast<const libcellml::Component>(c).getComponent("comp4new"), std::out_of_range);
+    EXPECT_THROW(const libcellml::ComponentPtr invalid = static_cast<const libcellml::Component>(c).getComponent("comp4new"), std::out_of_range);
     // Replace component
     c.replaceComponent("comp4",c4n);
     c4n->addComponent(c5);
