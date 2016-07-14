@@ -396,7 +396,7 @@ const ComponentPtr ComponentEntity::getComponent(const std::string &name, bool s
     if (containsComponentInThis(name)) {
         return getComponentInThis(name);
     } else if (searchEncapsulated) {
-        if (containsComponent(name)) {
+        if (containsComponent(name, searchEncapsulated)) {
             for (size_t i = 0; i < componentCount(); ++i) {
                 if (getComponent(i)->containsComponent(name, searchEncapsulated)) {
                     return getComponent(i)->getComponent(name, searchEncapsulated);
