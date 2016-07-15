@@ -83,12 +83,55 @@ void Validator::validateModel(const ModelPtr &model)
     // Check for components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
+        std::vector<std::string> componentRefs;
+        std::vector<std::string> componentImportSources;
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->getComponent(i);
             // Check for duplicate component names in this model.
             std::string componentName = component->getName();
             if (componentName.length()) {
-                //TODO: Check for import components
+                if (component->isImport()) {
+                    // Check for a component_ref.
+                    std::string componentRef = component->getImportReference();
+                    std::string importSource = component->getImport()->getSource();
+                    bool foundImportError = false;
+                    if (!componentRef.length()) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Imported component '" + componentName +
+                                            "' does not have a valid component_ref attribute.");
+                        err->setComponent(component);
+                        err->setKind(Error::Kind::COMPONENT);
+                        addError(err);
+                        foundImportError = true;
+                    }
+                    // Check for a xlink:href.
+                    if (!importSource.length()) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Import of component '" + componentName +
+                                            "' does not have a valid locator xlink:href attribute.");
+                        err->setImport(component->getImport());
+                        err->setKind(Error::Kind::IMPORT);
+                        addError(err);
+                        foundImportError = true;
+                    }
+                    // Check if we already have another import from the same source with the same component_ref.
+                    // (This looks for matching enties at the same position in the source and ref vectors).
+                    if ((componentImportSources.size() > 0) && (!foundImportError)) {
+                        if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
+                         == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Model '" + model->getName() +
+                                                "' contains multiple imported components from '" + importSource +
+                                                "' with the same component_ref attribute '" + componentRef + "'.");
+                            err->setModel(model);
+                            err->setKind(Error::Kind::MODEL);
+                            addError(err);
+                        }
+                    }
+                    // Push back the unique sources and refs.
+                    componentImportSources.push_back(importSource);
+                    componentRefs.push_back(componentRef);
+                }
                 if(std::find(componentNames.begin(), componentNames.end(), componentName) != componentNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Model '" + model->getName() +
@@ -108,7 +151,7 @@ void Validator::validateModel(const ModelPtr &model)
     if (model->unitsCount() > 0) {
         std::vector<std::string> unitsNames;
         std::vector<std::string> unitsRefs;
-        std::vector<std::string> importSources;
+        std::vector<std::string> unitsImportSources;
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             UnitsPtr units = model->getUnits(i);
             std::string unitsName = units->getName();
@@ -139,8 +182,8 @@ void Validator::validateModel(const ModelPtr &model)
                     }
                     // Check if we already have another import from the same source with the same units_ref.
                     // (This looks for matching enties at the same position in the source and ref vectors).
-                    if ((importSources.size() > 0) && (!foundImportError)) {
-                        if ((std::find(importSources.begin(), importSources.end(), importSource) - importSources.begin())
+                    if ((unitsImportSources.size() > 0) && (!foundImportError)) {
+                        if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
                          == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Model '" + model->getName() +
@@ -152,7 +195,7 @@ void Validator::validateModel(const ModelPtr &model)
                         }
                     }
                     // Push back the unique sources and refs.
-                    importSources.push_back(importSource);
+                    unitsImportSources.push_back(importSource);
                     unitsRefs.push_back(unitsRef);
                 }
                 // Check for duplicate units names in this model.

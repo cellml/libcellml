@@ -231,3 +231,50 @@ TEST(Validator, importUnits) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
+
+TEST(Validator, importComponents) {
+    std::vector<std::string> expectedErrors = {
+        "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
+        "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
+        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'."
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    m->setName("model_name");
+
+    // Valid component import
+    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    imp->setSource("some-other-model.xml");
+    libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
+    importedComponent->setName("valid_imported_component_in_this_model");
+    importedComponent->setSourceComponent(imp, "component_in_that_model");
+    m->addComponent(importedComponent);
+    v.validateModel(m);
+    EXPECT_EQ(0, v.errorCount());
+
+    // Invalid component import- missing refs
+    libcellml::ImportPtr imp2 = std::make_shared<libcellml::Import>();
+    libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
+    importedComponent2->setName("invalid_imported_component_in_this_model");
+    importedComponent2->setSourceComponent(imp2, "");
+    m->addComponent(importedComponent2);
+    v.validateModel(m);
+    EXPECT_EQ(2, v.errorCount());
+
+    // Invalid component import - duplicate refs
+    libcellml::ImportPtr imp3 = std::make_shared<libcellml::Import>();
+    imp3->setSource("some-other-model.xml");
+    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
+    importedComponent3->setName("duplicate_imported_component_in_this_model");
+    importedComponent3->setSourceComponent(imp3, "component_in_that_model");
+    m->addComponent(importedComponent3);
+    v.validateModel(m);
+    EXPECT_EQ(3, v.errorCount());
+
+    // Check for expected error messages
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}
