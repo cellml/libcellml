@@ -11,9 +11,16 @@ list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 # Using absolute path relative to this file
 set(${CURRENT_TEST}_SRCS
   ${CMAKE_CURRENT_LIST_DIR}/parser.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/file-parser.cpp
 )
 #set(${CURRENT_TEST}_HDRS
 #  ${CMAKE_CURRENT_LIST_DIR}/<test_header_files.h>
 #)
+
+
+set(CELLML_SINE_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations.xml")
+set(CELLML_SINE_IMPORTS_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations_import.xml")
+set(CELLML_ORD_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/Ohara_Rudy_2011.cellml")
+set(CELLML_INVALID_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/invalid_cellml_2.0.xml")
 
 

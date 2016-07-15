@@ -198,33 +198,22 @@ std::string Component::doSerialisation(Format format) const
             return repr;
         }
         repr += "<component";
-        bool endTag = false;
         std::string componentName = getName();
         if (componentName.length()) {
             repr += " name=\"" + componentName + "\"";
         }
-        if (unitsCount() > 0) {
-            endTag = true;
+        if (getId().length()) {
+            repr += " id=\"" + getId() + "\"";
+        }
+        if ((unitsCount() > 0) || (variableCount() > 0) || (getMath().length())) {
             repr += ">";
             for (size_t i = 0; i < unitsCount(); ++i) {
                 repr += getUnits(i)->serialise(format);
             }
-        }
-        if (variableCount() > 0) {
-            endTag = true;
-            repr += ">";
             for (size_t i = 0; i < variableCount(); ++i) {
                 repr += getVariable(i)->serialise(format);
             }
-        }
-        if (getMath().length()) {
-            if (!endTag) {
-                endTag = true;
-                repr += ">";
-            }
             repr += getMath();
-        }
-        if (endTag) {
             repr += "</component>";
         } else {
             repr += "/>";

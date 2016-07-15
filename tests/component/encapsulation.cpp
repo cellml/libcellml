@@ -169,3 +169,52 @@ TEST(Encapsulation, hierarchyWaterfallAndParse) {
     EXPECT_EQ(e, model->serialise(libcellml::Format::XML));
 }
 
+TEST(Encapsulation, encapsulatedComponentMethods) {
+    const std::string e = "<component/>";
+    libcellml::Component c;
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c4 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c5 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c6 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c4n = std::make_shared<libcellml::Component>();
+
+    c1->setName("comp1");
+    c2->setName("comp2");
+    c3->setName("comp3");
+    c4->setName("comp4");
+    c5->setName("comp5");
+    c6->setName("comp6");
+    c4n->setName("comp4new");
+
+    c.addComponent(c1);
+    c1->addComponent(c2);
+    c2->addComponent(c3);
+    c3->addComponent(c4);
+    c4->addComponent(c5);
+    c5->addComponent(c6);
+
+    // Contains component
+    EXPECT_TRUE(c.containsComponent("comp5"));
+    // Get component
+    EXPECT_EQ(c4, c.getComponent("comp4"));
+    const libcellml::ComponentPtr constC4 = static_cast<const libcellml::Component>(c).getComponent("comp4");
+    EXPECT_EQ("comp4", constC4->getName());
+    EXPECT_FALSE(c.containsComponent("invalid"));
+    EXPECT_THROW(const libcellml::ComponentPtr invalid = static_cast<const libcellml::Component>(c).getComponent("invalid"), std::out_of_range);
+    EXPECT_FALSE(c.containsComponent("comp4new"));
+    EXPECT_THROW(const libcellml::ComponentPtr invalid = static_cast<const libcellml::Component>(c).getComponent("comp4new"), std::out_of_range);
+    // Replace component
+    c.replaceComponent("comp4",c4n);
+    c4n->addComponent(c5);
+    EXPECT_EQ(c4n, c.getComponent("comp4new"));
+    // Take component
+    libcellml::ComponentPtr c6take = c.takeComponent("comp6");
+    EXPECT_EQ(c6, c6take);
+    // Remove component
+    c.removeComponent("comp5");
+    c.removeComponent(c4n);
+    EXPECT_FALSE(c.containsComponent("comp5"));
+    EXPECT_FALSE(c.containsComponent("comp4new"));
+}

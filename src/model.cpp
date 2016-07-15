@@ -54,9 +54,9 @@ Model& Model::operator=(Model m)
 std::string Model::doSerialisation(Format format) const
 {
     // ImportMap
-    typedef std::pair <std::string, std::string> ImportNamePair;
-    typedef std::vector<ImportNamePair>::const_iterator VectorPairIterator;
-    typedef std::map <ImportPtr, std::vector<ImportNamePair> > ImportMap;
+    typedef std::pair <std::string, ComponentPtr> ImportPair;
+    typedef std::vector<ImportPair>::const_iterator VectorPairIterator;
+    typedef std::map <ImportPtr, std::vector<ImportPair> > ImportMap;
     typedef ImportMap::const_iterator ImportMapIterator;
     ImportMap importMap;
     // VariableMap
@@ -82,10 +82,10 @@ std::string Model::doSerialisation(Format format) const
         while (comp) {
             incrementComponent = false;
             if (comp->isImport()) {
-                ImportNamePair pair = std::make_pair(comp->getImportReference(), comp->getName());
+                ImportPair pair = std::make_pair(comp->getImportReference(), comp);
                 ImportPtr imp = comp->getImport();
                 if (!importMap.count(imp)) {
-                    importMap[imp] = std::vector<ImportNamePair>();
+                    importMap[imp] = std::vector<ImportPair>();
                 }
                 importMap[imp].push_back(pair);
                 incrementComponent = true;
@@ -128,6 +128,9 @@ std::string Model::doSerialisation(Format format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
+        if (getId().length()) {
+            repr += " id=\"" + getId() + "\"";
+        }
         bool endTag = false;
         if ((importMap.size() > 0) || (componentCount() > 0) || (unitsCount() > 0)){
             endTag = true;
@@ -136,9 +139,18 @@ std::string Model::doSerialisation(Format format) const
 
         for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
         {
-            repr += "<import xlink:href=\"" + iter->first->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">";
+            repr += "<import xlink:href=\"" + iter->first->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+            if (iter->first->getId().length() > 0) {
+                repr += " id=\"" + iter->first->getId() + "\"";
+            }
+            repr += ">";
             for (VectorPairIterator vectorIter = iter->second.begin(); vectorIter != iter->second.end(); ++vectorIter) {
-                repr += "<component component_ref=\"" + std::get<0>(*vectorIter) + "\" name=\"" + std::get<1>(*vectorIter) + "\"/>";
+                ComponentPtr localComponent = std::get<1>(*vectorIter);
+                repr += "<component component_ref=\"" + std::get<0>(*vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
+                if (localComponent->getId().length() > 0) {
+                    repr += " id=\"" + localComponent->getId() + "\"";
+                }
+                repr += "/>";
             }
             repr += "</import>";
         }

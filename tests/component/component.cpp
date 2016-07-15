@@ -297,4 +297,3 @@ TEST(Component, constructors) {
     EXPECT_EQ("", c2.getName());
 
 }
-

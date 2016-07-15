@@ -19,6 +19,7 @@ limitations under the License.
 #include <algorithm>
 #include <iostream>
 #include <libcellml>
+#include <string>
 #include <vector>
 
 TEST(Parser, invalidXMLElements) {
@@ -1291,4 +1292,87 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
         foundAllKinds = true;
     }
     EXPECT_TRUE(foundAllKinds);
+}
+
+TEST(Parser, invalidModelWithTextInAllElements) {
+    const std::string input =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"starwars\">\n"
+       "episode7\n"
+       "<import xlink:href=\"sith.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">kylo</import>\n"
+       "<units name=\"robot\">"
+           "bb-8"
+           "<unit units=\"ball\">rolls</unit>"
+       "</units>\n"
+       "<component name=\"ship\">falcon\n"
+       "    <variable name=\"jedi\">rey</variable>\n"
+       "</component>\n"
+       "<connection>"
+            "finn"
+            "<map_components component_1=\"ship\">"
+                "trooper"
+            "</map_components>"
+       "</connection>\n"
+       "<encapsulation>"
+           "awakens"
+           "<component_ref component=\"ship\">"
+               "force"
+           "</component_ref>"
+       "</encapsulation>\n"
+    "</model>";
+    std::vector<std::string> expectedErrors = {
+        "Model 'starwars' has an invalid non-whitespace child text element '\nepisode7\n'.",
+        "Import from 'sith.xml' has an invalid non-whitespace child text element 'kylo'.",
+        "Units 'robot' has an invalid non-whitespace child text element 'bb-8'.",
+        "Unit 'ball' in units 'robot' has an invalid non-whitespace child text element 'rolls'.",
+        "Component 'ship' has an invalid non-whitespace child text element 'falcon\n    '.",
+        "Variable 'jedi' has an invalid non-whitespace child text element 'rey'.",
+        "Connection in model 'starwars' has an invalid non-whitespace child text element 'finn'.",
+        "Connection in model 'starwars' has an invalid non-whitespace child text element 'trooper'.",
+        "Connection in model 'starwars' does not have a valid component_2 in a map_components element.",
+        "Connection in model 'starwars' does not have a map_variables element.",
+        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
+        "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
+        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'force'."
+    };
+
+    // Parse and check for CellML errors.
+    libcellml::Parser parser(libcellml::Format::XML);
+    parser.parseModel(input);
+    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
+    }
+}
+
+TEST(Parser, parseIds) {
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" id=\"mid\">"
+            "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
+              "<component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>"
+            "</import>"
+            "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
+              "<units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>"
+            "</import>"
+            "<units name=\"units2\" id=\"u2id\"/>"
+            "<component name=\"component2\" id=\"c2id\">"
+                "<units name=\"units3\" id=\"u3id\"/>"
+                "<variable name=\"variable1\" id=\"vid\"/>"
+            "</component>"
+        "</model>";
+
+    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::ModelPtr model = p.parseModel(in);
+
+    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ("mid", model->getId());
+    EXPECT_EQ("c1id", model->getComponent("component1")->getId());
+    EXPECT_EQ("i1id", model->getComponent("component1")->getImport()->getId());
+    EXPECT_EQ("u1id", model->getUnits("units1")->getId());
+    EXPECT_EQ("i2id", model->getUnits("units1")->getImport()->getId());
+    EXPECT_EQ("u2id", model->getUnits("units2")->getId());
+    EXPECT_EQ("c2id", model->getComponent("component2")->getId());
+    EXPECT_EQ("u3id", model->getComponent("component2")->getUnits("units3")->getId());
+    EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
 }
