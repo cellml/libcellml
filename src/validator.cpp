@@ -70,6 +70,8 @@ void Validator::swap(Validator &rhs)
 
 void Validator::validateModel(const ModelPtr &model)
 {
+    // Clear any pre-existing errors in ths validator instance.
+    clearErrors();
     // Check for a valid name attribute.
     if (!model->getName().length()) {
         ErrorPtr err = std::make_shared<Error>();
@@ -105,12 +107,55 @@ void Validator::validateModel(const ModelPtr &model)
     // Check for units in this model.
     if (model->unitsCount() > 0) {
         std::vector<std::string> unitsNames;
+        std::vector<std::string> unitsRefs;
+        std::vector<std::string> importSources;
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             UnitsPtr units = model->getUnits(i);
-            // Check for duplicate units names in this model.
             std::string unitsName = units->getName();
             if (unitsName.length()) {
-                //TODO: Check for import units
+                if (units->isImport()) {
+                    // Check for a units_ref.
+                    std::string unitsRef = units->getImportReference();
+                    std::string importSource = units->getImport()->getSource();
+                    bool foundImportError = false;
+                    if (!unitsRef.length()) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Imported units '" + unitsName +
+                                            "' does not have a valid units_ref attribute.");
+                        err->setUnits(units);
+                        err->setKind(Error::Kind::UNITS);
+                        addError(err);
+                        foundImportError = true;
+                    }
+                    // Check for a xlink:href.
+                    if (!importSource.length()) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Import of units '" + unitsName +
+                                            "' does not have a valid locator xlink:href attribute.");
+                        err->setImport(units->getImport());
+                        err->setKind(Error::Kind::IMPORT);
+                        addError(err);
+                        foundImportError = true;
+                    }
+                    // Check if we already have another import from the same source with the same units_ref.
+                    // (This looks for matching enties at the same position in the source and ref vectors).
+                    if ((importSources.size() > 0) && (!foundImportError)) {
+                        if ((std::find(importSources.begin(), importSources.end(), importSource) - importSources.begin())
+                         == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Model '" + model->getName() +
+                                                "' contains multiple imported units from '" + importSource +
+                                                "' with the same units_ref attribute '" + unitsRef + "'.");
+                            err->setModel(model);
+                            err->setKind(Error::Kind::MODEL);
+                            addError(err);
+                        }
+                    }
+                    // Push back the unique sources and refs.
+                    importSources.push_back(importSource);
+                    unitsRefs.push_back(unitsRef);
+                }
+                // Check for duplicate units names in this model.
                 if(std::find(unitsNames.begin(), unitsNames.end(), unitsName) != unitsNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Model '" + model->getName() +

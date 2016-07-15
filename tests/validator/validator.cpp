@@ -184,3 +184,50 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces) {
         EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
     }
 }
+
+TEST(Validator, importUnits) {
+    std::vector<std::string> expectedErrors = {
+        "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
+        "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
+        "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'."
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    m->setName("model_name");
+
+    // Valid units import
+    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    imp->setSource("some-other-model.xml");
+    libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
+    importedUnits->setName("valid_imported_units_in_this_model");
+    importedUnits->setSourceUnits(imp, "units_in_that_model");
+    m->addUnits(importedUnits);
+    v.validateModel(m);
+    EXPECT_EQ(0, v.errorCount());
+
+    // Invalid units import- missing refs
+    libcellml::ImportPtr imp2 = std::make_shared<libcellml::Import>();
+    libcellml::UnitsPtr importedUnits2 = std::make_shared<libcellml::Units>();
+    importedUnits2->setName("invalid_imported_units_in_this_model");
+    importedUnits2->setSourceUnits(imp2, "");
+    m->addUnits(importedUnits2);
+    v.validateModel(m);
+    EXPECT_EQ(2, v.errorCount());
+
+    // Invalid units import - duplicate refs
+    libcellml::ImportPtr imp3 = std::make_shared<libcellml::Import>();
+    imp3->setSource("some-other-model.xml");
+    libcellml::UnitsPtr importedUnits3 = std::make_shared<libcellml::Units>();
+    importedUnits3->setName("duplicate_imported_units_in_this_model");
+    importedUnits3->setSourceUnits(imp3, "units_in_that_model");
+    m->addUnits(importedUnits3);
+    v.validateModel(m);
+    EXPECT_EQ(3, v.errorCount());
+
+    // Check for expected error messages
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}
