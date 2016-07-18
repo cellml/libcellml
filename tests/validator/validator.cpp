@@ -278,3 +278,87 @@ TEST(Validator, importComponents) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
+
+TEST(Validator, validMath) {
+    std::string math =
+    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+      "<apply><eq/>"
+        "<ci>C</ci>"
+        "<apply><plus/>"
+          "<ci>A</ci>"
+          "<ci>B</ci>"
+        "</apply>"
+      "</apply>"
+    "</math>";
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ(0, v.errorCount());
+}
+
+TEST(Validator, invalidMathML) {
+    std::string math =
+    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+      "<apply><equals/>"
+        "<ci>Answer</ci>"
+        "<apply><addition/>"
+          "<ci>variable1</ci>"
+          "<ci>variable2</ci>"
+        "</apply>"
+      "</apply>"
+    "</math>";
+    std::vector<std::string> expectedErrors = {
+        "No declaration for element equals.",
+        "No declaration for element addition."
+    };
+    // NOTE: The above erroneous math string will also give an error that returns all the possible
+    //       MathML apply content tags but these are quite verbose. So just explicitly check against the first two.
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ(4, v.errorCount());
+
+    // Check for two expected error messages (see note above).
+    for (size_t i = 0; i < 2; ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}

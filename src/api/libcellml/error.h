@@ -49,6 +49,7 @@ public:
         CONNECTION,
         ENCAPSULATION,
         IMPORT,
+        MATHML,
         MODEL,
         UNDEFINED,
         UNITS,

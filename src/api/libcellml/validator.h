@@ -47,6 +47,7 @@ public:
 private:
 
     void validateComponent(const ComponentPtr &component);
+    void validateMath(const std::string &input);
     void validateUnits(const UnitsPtr &units);
     void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
     bool catchDoubleConversionError(const std::string &input);

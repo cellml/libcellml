@@ -29,6 +29,11 @@ limitations under the License.
 
 namespace libcellml {
 
+/**
+ * @brief The Validator::ValidatorImpl struct.
+ *
+ * The private implementation for the Validator class.
+ */
 struct Validator::ValidatorImpl
 {
 };
@@ -276,7 +281,10 @@ void Validator::validateComponent(const ComponentPtr &component)
             validateVariable(variable, variableNames);
         }
     }
-    // TODO: Maths validation here
+    // Validate math.
+    if (component->getMath().length()) {
+        validateMath(component->getMath());
+    }
 }
 
 void Validator::validateUnits(const UnitsPtr &units)
@@ -343,6 +351,23 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
                 err->setKind(Error::Kind::VARIABLE);
                 addError(err);
             }
+        }
+    }
+}
+
+void Validator::validateMath(const std::string &input)
+{
+    std::string math = input;
+    XmlDocPtr doc = std::make_shared<XmlDoc>();
+    // Parse/validate this with the W3C MathML DTD.
+    doc->parseMathML(math);
+    // Copy any XML parsing or MathML validation errors into the common validator error handler.
+    if (doc->xmlErrorCount() > 0) {
+        for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription(doc->getXmlError(i));
+            err->setKind(Error::Kind::MATHML);
+            addError(err);
         }
     }
 }

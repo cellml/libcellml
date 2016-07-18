@@ -48,6 +48,8 @@ public:
      */
     void parse(const std::string& input);
 
+    void parseMathML(std::string input);
+
     /**
      * @brief Get the root XML element of the document.
      *

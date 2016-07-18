@@ -83,6 +83,18 @@ void XmlDoc::parse(const std::string& input)
     xmlFreeParserCtxt(context);
 }
 
+void XmlDoc::parseMathML(std::string input)
+{
+    // TODO: decide on a place for the DTD (or use PUBLIC).
+    std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"/hpc_atog/dlad004/libcellml/src/dtds/mathml2/mathml2.dtd\">";
+    std::string mathmlString = mathmlDtd + input;
+    xmlParserCtxtPtr context = xmlNewParserCtxt();
+    context->_private = reinterpret_cast<void *> (this);
+    xmlSetStructuredErrorFunc(context, structuredErrorCallback);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST mathmlString.c_str(), "/", NULL, XML_PARSE_DTDVALID);
+    xmlFreeParserCtxt(context);
+}
+
 XmlNodePtr XmlDoc::getRootNode() const
 {
     xmlNodePtr root = xmlDocGetRootElement(mPimpl->mXmlDocPtr);
