@@ -23,7 +23,6 @@ limitations under the License.
 
 #include "libcellml/units.h"
 
-
 namespace libcellml {
 
 /**
@@ -52,7 +51,7 @@ struct Variable::VariableImpl
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
-    UnitsPtr mUnits; /**< A pointer to the Units defined for this Variable.*/
+    std::string mUnits; /**< The name of the units defined for this Variable.*/
 };
 
 std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
@@ -159,8 +158,11 @@ std::string Variable::doSerialisation(Format format) const
         if (getName().length()) {
             repr += " name=\"" + getName() + "\"";
         }
-        if (getUnits()) {
-            repr += " units=\"" + getUnits()->getName() + "\"";
+        if (getId().length()) {
+            repr += " id=\"" + getId() + "\"";
+        }
+        if (getUnits().length()) {
+            repr += " units=\"" + getUnits() + "\"";
         }
         if (getInitialValue().length()) {
             repr += " initial_value=\"" + getInitialValue() + "\"";
@@ -173,12 +175,17 @@ std::string Variable::doSerialisation(Format format) const
     return repr;
 }
 
-void Variable::setUnits(const UnitsPtr &u)
+void Variable::setUnits(const std::string &name)
 {
-    mPimpl->mUnits = u;
+    mPimpl->mUnits = name;
 }
 
-UnitsPtr Variable::getUnits() const
+void Variable::setUnits(const UnitsPtr &units)
+{
+    mPimpl->mUnits = units->getName();
+}
+
+std::string Variable::getUnits() const
 {
     return mPimpl->mUnits;
 }

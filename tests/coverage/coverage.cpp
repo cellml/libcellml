@@ -17,7 +17,7 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <libcellml>
-
+#include <iostream>
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
@@ -69,6 +69,25 @@ TEST(Coverage, units) {
     EXPECT_EQ(e, uc.serialise(libcellml::Format::XML));
 }
 
+TEST(Coverage, unitsGetVariations) {
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("a_unit");
+
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    m.addUnits(u);
+
+    libcellml::UnitsPtr un = m.getUnits(0);
+    EXPECT_EQ("a_unit", un->getName());
+    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).getUnits(0);
+    EXPECT_EQ("a_unit", uSn->getName());
+
+    libcellml::UnitsPtr uns = m.getUnits("a_unit");
+    EXPECT_EQ("a_unit", uns->getName());
+    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).getUnits("a_unit");
+    EXPECT_EQ("a_unit", uSns->getName());
+}
 
 TEST(Coverage, prefixToString) {
     libcellml::Model m;
@@ -179,4 +198,20 @@ TEST(Coverage, componentEntity) {
 
     libcellml::Component pc(pm);
     EXPECT_EQ(e, pc.serialise(libcellml::Format::XML));
+}
+
+TEST(Coverage, error) {
+    libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
+    libcellml::Error e, em;
+    std::string description = "test";
+
+    e.setDescription(description);
+    e.setKind(libcellml::Error::Kind::XML);
+
+    em = std::move(e);
+    // Copy constructor
+    libcellml::Error ec(em);
+
+    EXPECT_EQ(description, ec.getDescription());
+    EXPECT_EQ(libcellml::Error::Kind::XML, ec.getKind());
 }

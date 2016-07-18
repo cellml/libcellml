@@ -132,7 +132,7 @@ TEST(UnitsImport, nonExistentURL) {
     EXPECT_EQ(e, a);
 }
 
-TEST(UnitsImport, importModify) {
+TEST(UnitsImport, importModifyAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -200,6 +200,12 @@ TEST(UnitsImport, importModify) {
 
     std::string a = m.serialise(libcellml::Format::XML);
 
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 

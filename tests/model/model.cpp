@@ -27,6 +27,13 @@ TEST(Model, serialise) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Model, setGetId) {
+    const std::string id = "modelID";
+    libcellml::Model m;
+    m.setId(id);
+    EXPECT_EQ(id, m.getId());
+}
+
 TEST(Model, serialiseAllocatePointer) {
     const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
     libcellml::Model* m = new libcellml::Model();
@@ -370,3 +377,65 @@ TEST(Model, constructors) {
 
 }
 
+TEST(Model, setAndCheckIdsAllEntities) {
+    const std::string expected =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"mname\" id=\"mid\">"
+              "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
+                "<component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>"
+              "</import>"
+              "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
+                "<units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>"
+              "</import>"
+              "<units name=\"u2name\" id=\"u2id\"/>"
+              "<component name=\"c2name\" id=\"c2id\">"
+                "<units name=\"u3name\" id=\"u3id\"/>"
+                "<variable name=\"vname\" id=\"vid\" units=\"u1name\"/>"
+              "</component>"
+            "</model>";
+
+    libcellml::Model m;
+    libcellml::ImportPtr i1 = std::make_shared<libcellml::Import>();
+    libcellml::ImportPtr i2 = std::make_shared<libcellml::Import>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+
+    i1->setSource("some-other-model.xml");
+    c1->setSourceComponent(i1, "a_component_in_that_model");
+
+    i2->setSource("some-other-model.xml");
+    u1->setSourceUnits(i2, "a_units_in_that_model");
+
+    m.setName("mname");
+    c1->setName("c1name");
+    c2->setName("c2name");
+    v->setName("vname");
+    u1->setName("u1name");
+    u2->setName("u2name");
+    u3->setName("u3name");
+
+    m.setId("mid");
+    i1->setId("i1id");
+    i2->setId("i2id");
+    c1->setId("c1id");
+    c2->setId("c2id");
+    v->setId("vid");
+    u1->setId("u1id");
+    u2->setId("u2id");
+    u3->setId("u3id");
+
+    v->setUnits(u1);
+    c2->addVariable(v);
+    c2->addUnits(u3);
+    m.addUnits(u1);
+    m.addUnits(u2);
+    m.addComponent(c1);
+    m.addComponent(c2);
+
+    std::string actual = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(expected, actual);
+}

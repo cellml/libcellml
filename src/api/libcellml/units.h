@@ -19,9 +19,9 @@ limitations under the License.
 
 #include <string>
 
+#include "libcellml/importedentity.h"
 #include "libcellml/libcellml_export.h"
 #include "libcellml/types.h"
-#include "libcellml/importedentity.h"
 
 namespace libcellml {
 
@@ -220,7 +220,7 @@ private:
     std::string doSerialisation(Format format) const;
 
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */
-    UnitsImpl* mPimpl; /**< Private member to implementation pointer */
+    UnitsImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }

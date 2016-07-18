@@ -20,6 +20,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 namespace libcellml {
@@ -58,6 +59,11 @@ Component::Component()
 
 Component::~Component()
 {
+    if (mPimpl) {
+        for (std::vector<VariablePtr>::iterator iter = mPimpl->mVariables.begin(); iter != mPimpl->mVariables.end(); ++iter) {
+            (*iter)->clearParent();
+        }
+    }
     delete mPimpl;
 }
 
@@ -179,6 +185,11 @@ bool Component::hasVariable(const VariablePtr &variable)
     return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
 }
 
+bool Component::hasVariable(const std::string &name)
+{
+    return mPimpl->findVariable(name) != mPimpl->mVariables.end();
+}
+
 std::string Component::doSerialisation(Format format) const
 {
     std::string repr = "";
@@ -187,26 +198,22 @@ std::string Component::doSerialisation(Format format) const
             return repr;
         }
         repr += "<component";
-        bool endTag = false;
         std::string componentName = getName();
         if (componentName.length()) {
             repr += " name=\"" + componentName + "\"";
         }
-        if (variableCount() > 0) {
-            endTag = true;
+        if (getId().length()) {
+            repr += " id=\"" + getId() + "\"";
+        }
+        if ((unitsCount() > 0) || (variableCount() > 0) || (getMath().length())) {
             repr += ">";
+            for (size_t i = 0; i < unitsCount(); ++i) {
+                repr += getUnits(i)->serialise(format);
+            }
             for (size_t i = 0; i < variableCount(); ++i) {
                 repr += getVariable(i)->serialise(format);
             }
-        }
-        if (getMath().length()) {
-            if (!endTag) {
-                endTag = true;
-                repr += ">";
-            }
             repr += getMath();
-        }
-        if (endTag) {
             repr += "</component>";
         } else {
             repr += "/>";

@@ -17,8 +17,8 @@ limitations under the License.
 #ifndef LIBCELLML_LIBCELLML_COMPONENT_H
 #define LIBCELLML_LIBCELLML_COMPONENT_H
 
-#include "libcellml/libcellml_export.h"
 #include "libcellml/componententity.h"
+#include "libcellml/libcellml_export.h"
 
 namespace libcellml {
 
@@ -205,6 +205,22 @@ public:
      */
     bool hasVariable(const VariablePtr &variable);
 
+    /**
+     * @brief Test whether the variable named @p name is in this component.
+     *
+     * Tests whether a variable with the argument @p name exists in the set of this
+     * component's variables. Returns @c true if the named variable is in this
+     * component's variables and @c false otherwise.
+     *
+     * @overload
+     *
+     * @param name The name of the variable to check for in this component.
+     *
+     * @return @c true if a variable named @p name is in this component
+     * and @c false otherwise.
+     */
+    bool hasVariable(const std::string &name);
+
 private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
 
@@ -212,7 +228,7 @@ private:
     std::string doSerialisation(Format format) const;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
-    ComponentImpl* mPimpl; /**< Private member to implementation pointer */
+    ComponentImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }

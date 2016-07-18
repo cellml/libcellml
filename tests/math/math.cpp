@@ -51,7 +51,7 @@ TEST(Maths, appendAndResetMathComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndSerialiseMathModel) {
+TEST(Maths, appendSerialiseAndParseMathModel) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -66,6 +66,12 @@ TEST(Maths, appendAndSerialiseMathModel) {
     m.addComponent(c);
     c->appendMath(math);
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -174,7 +180,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
 }
 
 // 1.xiv.a
-TEST(Maths, twoComponentsWithMathAndConnection) {
+TEST(Maths, twoComponentsWithMathAndConnectionAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -257,5 +263,11 @@ TEST(Maths, twoComponentsWithMathAndConnection) {
     libcellml::Variable::addEquivalence(v11, v21);
 
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }

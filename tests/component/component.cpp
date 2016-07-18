@@ -99,7 +99,7 @@ TEST(Component, contains) {
 
     c.addComponent(c1);
     c.addComponent(c2);
-    EXPECT_TRUE(c.containsComponent("child2"));
+    EXPECT_TRUE(c.containsComponent(c2));
 }
 
 TEST(Component, addChildrenAndSerialise) {
@@ -297,4 +297,3 @@ TEST(Component, constructors) {
     EXPECT_EQ("", c2.getName());
 
 }
-

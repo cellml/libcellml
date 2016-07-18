@@ -20,8 +20,8 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/types.h"
 #include "libcellml/namedentity.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -99,7 +99,7 @@ private:
     void swap(ImportedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
-    ImportedEntityImpl* mPimpl; /**< Private member to implementation pointer. */
+    ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 
 };
 

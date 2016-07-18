@@ -467,7 +467,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
     EXPECT_EQ("invalid name", v->getName());
 }
 
-TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsName) {
+TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -494,6 +494,12 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsName) {
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
@@ -555,6 +561,125 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesOneRefere
     c->addVariable(v2);
 
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse) {
+    const std::string in = "valid_name";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+                "<component name=\"" + in + "\">"
+                    "<variable name=\"variable1\" initial_value=\"1.0\"/>"
+                    "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
+                "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName(in);
+    m.addComponent(c);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    v1->setInitialValue("1.0");
+    c->addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    v2->setInitialValue("-1.0");
+    c->addVariable(v2);
+
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    std::string a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfaces) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+                "<component name=\"valid_name\">"
+                    "<variable name=\"variable1\" interface=\"none\"/>"
+                    "<variable name=\"variable2\" interface=\"public\"/>"
+                    "<variable name=\"variable3\" interface=\"private\"/>"
+                    "<variable name=\"variable4\" interface=\"public_and_private\"/>"
+                "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName("valid_name");
+    m.addComponent(c);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::NONE);
+    c->addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    c->addVariable(v2);
+
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    v3->setName("variable3");
+    v3->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    c->addVariable(v3);
+
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    v4->setName("variable4");
+    v4->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    c->addVariable(v4);
+
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfacesAndParse) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+                "<component name=\"valid_name\">"
+                    "<variable name=\"variable1\" interface=\"none\"/>"
+                    "<variable name=\"variable2\" interface=\"public\"/>"
+                    "<variable name=\"variable3\" interface=\"private\"/>"
+                    "<variable name=\"variable4\" interface=\"public_and_private\"/>"
+                "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName("valid_name");
+    m.addComponent(c);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::NONE);
+    c->addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    v2->setInterfaceType("public");
+    c->addVariable(v2);
+
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    v3->setName("variable3");
+    v3->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    c->addVariable(v3);
+
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    v4->setName("variable4");
+    v4->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    c->addVariable(v4);
+
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 

@@ -19,8 +19,8 @@ limitations under the License.
 
 #include <string>
 
-#include "libcellml/libcellml_export.h"
 #include "libcellml/enumerations.h"
+#include "libcellml/libcellml_export.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -47,6 +47,29 @@ public:
      * @return @c std::string representation of the object.
      */
     std::string serialise(Format format) const;
+
+    /**
+     * @brief Set the @p id document identifier for this entity.
+     *
+     * Set the @p id document identifier for this entity using a @c std::string.
+     *
+     * @sa getId
+     *
+     * @param id The @c std::string document identifier to set.
+     */
+    void setId(const std::string &id);
+
+    /**
+     * @brief Get the document identifier for this entity.
+     *
+     * Get the string corresponding with the @c id document identifier for this entity.
+     * If no @c id has been set, returns an empty string.
+     *
+     * @sa setId
+     *
+     * @return The @c std::string document identifier for this entity.
+     */
+    std::string getId() const;
 
     /**
      * @brief Returns the parent of the CellML Entity.
@@ -114,6 +137,7 @@ private:
 
     Model *mParentModel; /**< Pointer to parent model. */
     Component *mParentComponent; /**< Pointer to component model. */
+    std::string mId; /**< String document identifier for this entity. */
 };
 
 }

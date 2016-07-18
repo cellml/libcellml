@@ -19,15 +19,15 @@ limitations under the License.
 
 #include <string>
 
-#include "libcellml/libcellml_export.h"
-#include "libcellml/component.h"
 #include "libcellml/componententity.h"
+#include "libcellml/libcellml_export.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
  * @brief The Model class.
+ *
  * The Model class is for representing a CellML Model.
  */
 class LIBCELLML_EXPORT Model: public ComponentEntity

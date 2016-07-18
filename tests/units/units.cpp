@@ -223,10 +223,79 @@ TEST(Units, removeUnitsMethodsAndCount) {
     EXPECT_EQ(m.unitsCount(), 2);
     EXPECT_THROW(m.removeUnits("gram"), std::out_of_range);
     EXPECT_THROW(m.removeUnits(u5), std::out_of_range);
+    EXPECT_THROW(m.removeUnits(3), std::out_of_range);
+    EXPECT_EQ(2, m.unitsCount());
+    m.removeUnits(1);
+    EXPECT_EQ(1, m.unitsCount());
 
     m.removeAllUnits();
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e4, a);
+}
+
+TEST(Units, hasUnits) {
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("a_unit");
+
+    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    m.addUnits(u);
+    EXPECT_TRUE(m.hasUnits("a_unit"));
+}
+
+TEST(Units, takeUnits) {
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+
+    u1->setName("a_unit");
+    u2->setName("b_unit");
+    u3->setName("c_unit");
+
+    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    m.addUnits(u1);
+    m.addUnits(u2);
+    m.addUnits(u3);
+
+    libcellml::UnitsPtr u4 = m.takeUnits("b_unit");
+    EXPECT_EQ("b_unit", u4->getName());
+    EXPECT_EQ(2, m.unitsCount());
+
+    libcellml::UnitsPtr u5 = m.takeUnits(1);
+    EXPECT_EQ("c_unit", u5->getName());
+    EXPECT_EQ(1, m.unitsCount());
+}
+
+TEST(Units, replaceUnits) {
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+
+    u1->setName("a_unit");
+    u2->setName("b_unit");
+    u3->setName("c_unit");
+
+    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    m.addUnits(u1);
+    m.addUnits(u2);
+
+    m.replaceUnits("b_unit", u3);
+    EXPECT_EQ(2, m.unitsCount());
+
+    libcellml::UnitsPtr u4 = m.takeUnits(1);
+    EXPECT_EQ("c_unit", u4->getName());
+    EXPECT_EQ(1, m.unitsCount());
+
+    m.replaceUnits(0, u4);
+
+    u1 = m.getUnits(0);
+    EXPECT_EQ("c_unit", u1->getName());
+    EXPECT_EQ(1, m.unitsCount());
 }
 
 TEST(Units, multiply) {
@@ -316,7 +385,7 @@ TEST(Units, farhenheit) {
     EXPECT_EQ("fahrenheit", u->getName());
 }
 
-TEST(Units, multiple) {
+TEST(Units, multipleAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -346,6 +415,12 @@ TEST(Units, multiple) {
     m.addUnits(u2);
 
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 

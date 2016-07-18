@@ -35,12 +35,14 @@ Entity::Entity(const Entity& rhs)
 {
     mParentComponent = rhs.mParentComponent;
     mParentModel = rhs.mParentModel;
+    mId = rhs.mId;
 }
 
 Entity::Entity(Entity &&rhs)
 {
     mParentComponent = std::move(rhs.mParentComponent);
     mParentModel = std::move(rhs.mParentModel);
+    mId = std::move(rhs.mId);
 }
 
 Entity& Entity::operator=(Entity e)
@@ -53,6 +55,7 @@ void Entity::swap(Entity &rhs)
 {
     std::swap(this->mParentComponent, rhs.mParentComponent);
     std::swap(this->mParentModel, rhs.mParentModel);
+    std::swap(this->mId, rhs.mId);
 }
 
 std::string Entity::doSerialisation(Format /* format */) const
@@ -63,6 +66,16 @@ std::string Entity::doSerialisation(Format /* format */) const
 std::string Entity::serialise(Format format) const
 {
     return doSerialisation(format);
+}
+
+void Entity::setId(const std::string &id)
+{
+    mId = id;
+}
+
+std::string Entity::getId() const
+{
+    return mId;
 }
 
 void *Entity::getParent() const {

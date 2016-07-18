@@ -35,13 +35,19 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/import.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/variable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.cpp
 )
 
 set(API_HEADER_FILES
@@ -49,10 +55,13 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/componententity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/error.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/import.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
@@ -63,6 +72,9 @@ set(API_HEADER_FILES
 
 set(HEADER_FILES
   ${LIBCELLML_CONFIG_H}
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
 )
 
 # Only does anything if configuration target is Visual Studio.
@@ -89,9 +101,14 @@ target_include_directories(cellml
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module>
   $<INSTALL_INTERFACE:include/>
   $<INSTALL_INTERFACE:include/libcellml/module>
+  ${LIBXML2_INCLUDE_DIR}
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
+
+target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 
 if(LIBCELLML_UNIT_TESTS)
   target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=LIBCELLML_EXPORT)

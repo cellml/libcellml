@@ -20,8 +20,8 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/libcellml_export.h"
-#include "libcellml/types.h"
 #include "libcellml/namedentity.h"
+#include "libcellml/types.h"
 
 namespace libcellml {
 
@@ -128,26 +128,42 @@ public:
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
 
     /**
-     * @brief Set the units for this variable.
+     * @brief Set the units by @p name for this variable.
      *
-     * Set the units for this variable. Set to @c nullptr to unset the units.
+     * Set the units for this variable by name. Set to an empty string
+     * to unset the units.
      *
      * @sa getUnits
      *
-     * @param u The units to set.
+     * @param name The name of the units to set.
      */
-    void setUnits(const UnitsPtr &u);
+    void setUnits(const std::string &name);
 
     /**
-     * @brief Get the units for this variable.
+     * @brief Set the units for this variable using a @c UnitsPtr.
      *
-     * Get the units for this variable.  If no units are set @c nullptr is returned.
+     * Set the units for this variable as the name associated with the 
+     * argument @p units.
+     *
+     * @overload
+     *
+     * @sa getUnits
+     *
+     * @param units The @c UnitsPtr to set.
+     */
+    void setUnits(const UnitsPtr &units);
+
+    /**
+     * @brief Get the name of the units for this variable.
+     *
+     * Get the name of the units for this variable. If no units are set 
+     * an empty @c std::string is returned.
      *
      * @sa setUnits
      *
-     * @param u The units to get.
+     * @return The @c std::string name of the units for this variable.
      */
-    UnitsPtr getUnits() const;
+    std::string getUnits() const;
 
     /**
      * @brief Set the initial value for this variable using a string.
@@ -265,7 +281,7 @@ private:
     std::string doSerialisation(Format format) const;
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
-    VariableImpl* mPimpl; /**< Private member to implementation pointer */
+    VariableImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 }

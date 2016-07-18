@@ -98,7 +98,41 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, validConnection) {
+TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
+    const std::string e =
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+      "<component name=\"component2\">"
+        "<variable name=\"variable2\"/>"
+      "</component>"
+      "<connection>"
+        "<map_components component_1=\"component2\"/>"
+        "<map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>"
+      "</connection>"
+    "</model>";
+    libcellml::Model m;
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    comp2->addVariable(v2);
+    {
+        // Place comp1 in a different scope.
+        libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+        comp1->setName("component1");
+        comp1->addVariable(v1);
+        m.addComponent(comp1);
+    }
+    m.addComponent(comp2);
+    libcellml::Variable::addEquivalence(v1, v2);
+    m.removeComponent("component1");
+    std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Connection, validConnectionAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -128,6 +162,12 @@ TEST(Connection, validConnection) {
     m.addComponent(comp2);
     libcellml::Variable::addEquivalence(v1, v2);
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -237,7 +277,7 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, nineVariablesTenConnections) {
+TEST(Connection, nineVariablesTenConnectionsAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -329,6 +369,12 @@ TEST(Connection, nineVariablesTenConnections) {
     libcellml::Variable::addEquivalence(v33, v23);
 
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
 
@@ -785,7 +831,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, importedComponentConnection) {
+TEST(Connection, importedComponentConnectionAndParse) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
@@ -823,5 +869,53 @@ TEST(Connection, importedComponentConnection) {
     EXPECT_EQ(componentImported->getVariable(0), variableImported);
     libcellml::Variable::addEquivalence(variableImported, variableBob);
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    EXPECT_EQ(0, parser.errorCount());
+
+    a = model->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Connection, componentConnectionAndParseMissingVariable) {
+    const std::string s =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<component name=\"component_dave\">"
+          "<variable name=\"variable_dave\"/>"
+        "</component>"
+        "<component name=\"component_bob\">"
+          "<variable name=\"variable_bob\"/>"
+        "</component>"
+        "<connection>"
+          "<map_components component_1=\"component_dave\" component_2=\"component_bob\"/>"
+          "<map_variables variable_1=\"variable_angus\" variable_2=\"variable_bob\"/>"
+        "</connection>"
+        "</model>";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<component name=\"component_dave\">"
+          "<variable name=\"variable_dave\"/>"
+        "</component>"
+        "<component name=\"component_bob\">"
+          "<variable name=\"variable_bob\"/>"
+        "</component>"
+        "</model>";
+    std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
+
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(s);
+    EXPECT_EQ(1, parser.errorCount());
+
+    EXPECT_EQ(expectError, parser.getError(0)->getDescription());
+    parser.clearErrors();
+    EXPECT_EQ(0, parser.errorCount());
+
+    std::string a = model->serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 }
