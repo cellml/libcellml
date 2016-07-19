@@ -296,18 +296,22 @@ TEST(Validator, validMath) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
     c->setName("componentName");
     v1->setName("A");
     v2->setName("B");
+    v3->setName("C");
     v1->setInitialValue("1.0");
     v2->setInitialValue("-1.0");
     v1->setUnits("dimensionless");
     v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
 
     c->addVariable(v1);
     c->addVariable(v2);
+    c->addVariable(v3);
     c->setMath(math);
     m->addComponent(c);
 
@@ -315,14 +319,14 @@ TEST(Validator, validMath) {
     EXPECT_EQ(0, v.errorCount());
 }
 
-TEST(Validator, invalidMathML) {
+TEST(Validator, invalidMathMLElements) {
     std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
       "<apply><equals/>"
-        "<ci>Answer</ci>"
+        "<ci>C</ci>"
         "<apply><addition/>"
-          "<ci>variable1</ci>"
-          "<ci>variable2</ci>"
+          "<ci>A</ci>"
+          "<ci>B</ci>"
         "</apply>"
       "</apply>"
     "</math>";
@@ -330,26 +334,28 @@ TEST(Validator, invalidMathML) {
         "No declaration for element equals.",
         "No declaration for element addition."
     };
-    // NOTE: The above erroneous math string will also give an error that returns all the possible
-    //       MathML apply content tags but these are quite verbose. So just explicitly check against the first two.
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
     c->setName("componentName");
     v1->setName("A");
     v2->setName("B");
+    v3->setName("C");
     v1->setInitialValue("1.0");
     v2->setInitialValue("-1.0");
     v1->setUnits("dimensionless");
     v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
 
     c->addVariable(v1);
     c->addVariable(v2);
+    c->addVariable(v3);
     c->setMath(math);
     m->addComponent(c);
 
@@ -358,6 +364,76 @@ TEST(Validator, invalidMathML) {
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}
+
+TEST(Validator, invalidMathMLVariable) {
+    std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+          "<apply><eq/>"
+            "<ci>answer</ci>"
+            "<apply><plus/>"
+              "<ci>A</ci>"
+              "<apply><plus/>"
+                "<bvar>"
+                  "<ci>new_bvar</ci>"
+                "</bvar>"
+                "<apply><plus/>"
+                  "<ci>   </ci>"
+                  "<apply><plus/>"
+                    "<ci><nonsense/></ci>"
+                    "<apply><plus/>"
+                      "<ci/>"
+                      "<bvar>"
+                        "<ci>B</ci>"
+                      "</bvar>"
+                    "</apply>"
+                  "</apply>"
+                "</apply>"
+              "</apply>"
+            "</apply>"
+          "</apply>"
+        "</math>";
+    std::vector<std::string> expectedErrors = {
+        "No declaration for element nonsense.",
+        "Element nonsense is not declared in ci list of possible children.",
+        "MathML in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
+        "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
+        "MathML ci element has a whitespace-only child element.",
+        "MathML ci element has no valid variable."
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("C");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+
+    // Check for two expected error messages (see note above).
+    for (size_t i = 0; i < v.errorCount(); ++i) {
         //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }

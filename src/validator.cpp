@@ -36,11 +36,19 @@ namespace libcellml {
  */
 struct Validator::ValidatorImpl
 {
+public:
+    Validator *mValidator;
+    void validateMath(const std::string &input, const ComponentPtr &component, std::vector<std::string> &variableNames);
+private:
+    void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
+    void validateMathCiNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
+    bool isNotWhitespace(std::string &input);
 };
 
 Validator::Validator()
     : mPimpl(new ValidatorImpl())
 {
+    mPimpl->mValidator = this;
 }
 
 Validator::~Validator()
@@ -52,6 +60,7 @@ Validator::Validator(const Validator& rhs)
     : Logger(rhs)
     , mPimpl(new ValidatorImpl())
 {
+    mPimpl->mValidator = rhs.mPimpl->mValidator;
 }
 
 Validator::Validator(Validator &&rhs)
@@ -61,10 +70,10 @@ Validator::Validator(Validator &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Validator& Validator::operator=(Validator p)
+Validator& Validator::operator=(Validator v)
 {
-    Logger::operator =(p);
-    p.swap(*this);
+    Logger::operator =(v);
+    v.swap(*this);
     return *this;
 }
 
@@ -256,8 +265,8 @@ void Validator::validateComponent(const ComponentPtr &component)
         }
     }
     // Check for variables in this component.
+    std::vector<std::string> variableNames;
     if (component->variableCount() > 0) {
-        std::vector<std::string> variableNames;
         // Check for duplicate variable names and construct vector of valid names in case
         // we have a variable initial_value set by reference.
         for (size_t i = 0; i < component->variableCount(); ++i) {
@@ -281,9 +290,9 @@ void Validator::validateComponent(const ComponentPtr &component)
             validateVariable(variable, variableNames);
         }
     }
-    // Validate math.
+    // Validate math through the private implementation (for XML handling).
     if (component->getMath().length()) {
-        validateMath(component->getMath());
+        mPimpl->validateMath(component->getMath(), component, variableNames);
     }
 }
 
@@ -355,7 +364,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
     }
 }
 
-void Validator::validateMath(const std::string &input)
+void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component, std::vector<std::string> &variableNames)
 {
     std::string math = input;
     XmlDocPtr doc = std::make_shared<XmlDoc>();
@@ -366,9 +375,80 @@ void Validator::validateMath(const std::string &input)
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription(doc->getXmlError(i));
+            err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
-            addError(err);
+            mValidator->addError(err);
         }
+    }
+    XmlNodePtr node = doc->getRootNode();
+    XmlNodePtr nodeCopy(node);
+    std::vector<std::string> bvarNames;
+    // Get the bvar names in this math element.
+    // TODO: may want to do this with XPath instead...
+    gatherMathBvarVariableNames(nodeCopy, bvarNames);
+    // Check that no variable names match new bvar names.
+    for (std::string &variableName : variableNames) {
+        if (std::find(bvarNames.begin(), bvarNames.end(), variableName) != bvarNames.end())
+        {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("MathML in component '" + component->getName() +
+                                "' contains '" + variableName + "' as a bvar ci element but it is already a variable name.");
+            err->setComponent(component);
+            err->setKind(Error::Kind::MATHML);
+            mValidator->addError(err);
+        }
+    }
+    // Iterate through ci elements and units attributes.
+    validateMathCiNodes(node, component, variableNames, bvarNames);
+    // TODO: also need to validate <cn> elements as real numbers with cellml:units
+}
+
+void Validator::ValidatorImpl::validateMathCiNodes(XmlNodePtr &node, const ComponentPtr &component,
+                                                   const std::vector<std::string> &variableNames,  const std::vector<std::string> &bvarNames)
+{
+    // TODO: also need to check for cellml:units (need to add to DTD)
+    XmlNodePtr childNode = node->getFirstChild();
+    if (node->isType("ci")) {
+        if (childNode) {
+            if (childNode->isType("text")) {
+                std::string textNode = childNode->convertToString();
+                if (isNotWhitespace(textNode)) {
+                    // Check whether we can find this text as a variable name in this component.
+                    if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
+                        (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("MathML ci element has the child text '" + textNode +
+                                            "', which does not correspond with any variable names present in component '" + component->getName() +
+                                            "' and is not a variable defined within a bvar element.");
+                        err->setComponent(component);
+                        err->setKind(Error::Kind::MATHML);
+                        mValidator->addError(err);
+                    }
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("MathML ci element has a whitespace-only child element.");
+                    err->setComponent(component);
+                    err->setKind(Error::Kind::MATHML);
+                    mValidator->addError(err);
+                }
+            }
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("MathML ci element has no valid variable.");
+            err->setComponent(component);
+            err->setKind(Error::Kind::MATHML);
+            mValidator->addError(err);
+        }
+    } else {
+        // Check children for ci.
+        if (childNode) {
+            validateMathCiNodes(childNode, component, variableNames, bvarNames);
+        }
+    }
+    // Check siblings for ci.
+    node = node->getNext();
+    if (node) {
+        validateMathCiNodes(node, component, variableNames, bvarNames);
     }
 }
 
@@ -385,6 +465,40 @@ bool Validator::catchDoubleConversionError(const std::string &input)
         (void)value;
     }
     return response;
+}
+
+bool Validator::ValidatorImpl::isNotWhitespace (std::string &input)
+{
+    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
+}
+
+void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
+{
+    XmlNodePtr childNode = node->getFirstChild();
+    if (node->isType("bvar")) {
+        if ((childNode) && (childNode->isType("ci"))) {
+            XmlNodePtr grandchildNode = childNode->getFirstChild();
+            if (grandchildNode) {
+                std::string type = grandchildNode->getType();
+                if (grandchildNode->isType("text")) {
+                    std::string textNode = grandchildNode->convertToString();
+                    if (isNotWhitespace(textNode)) {
+                        bvarNames.push_back(textNode);
+                    }
+                }
+            }
+        }
+    } else {
+        // Check children for bvars.
+        if (childNode) {
+            gatherMathBvarVariableNames(childNode, bvarNames);
+        }
+    }
+    // Check siblings for bvars.
+    node = node->getNext();
+    if (node) {
+        gatherMathBvarVariableNames(node, bvarNames);
+    }
 }
 
 }

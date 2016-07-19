@@ -40,14 +40,15 @@ public:
     ~Validator(); /**< Destructor */
     Validator(const Validator &rhs); /**< Copy constructor */
     Validator(Validator &&rhs); /**< Move constructor */
-    Validator& operator=(Validator p); /**< Assignment operator */
+    Validator& operator=(Validator v); /**< Assignment operator */
+
+    // TODO: proper documentation here and below
 
     void validateModel(const ModelPtr &model);
 
 private:
 
     void validateComponent(const ComponentPtr &component);
-    void validateMath(const std::string &input);
     void validateUnits(const UnitsPtr &units);
     void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
     bool catchDoubleConversionError(const std::string &input);
