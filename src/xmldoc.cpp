@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "xmldoc.h"
+
 #include <cstring>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -21,7 +23,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "xmldoc.h"
+#include "libcellml_config.h"
 #include "xmlnode.h"
 
 namespace libcellml {
@@ -86,7 +88,7 @@ void XmlDoc::parse(const std::string& input)
 void XmlDoc::parseMathML(std::string input)
 {
     // TODO: decide on a place for the DTD (or use PUBLIC).
-    std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"/hpc_atog/dlad004/libcellml/src/dtds/mathml2/mathml2.dtd\">";
+    std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">";
     std::string mathmlString = mathmlDtd + input;
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *> (this);

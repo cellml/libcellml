@@ -1257,6 +1257,8 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
                 foundKind.at(6) = true;
                 break;
             }
+            default:{
+            }
         }
     }
 
