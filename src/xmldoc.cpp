@@ -23,7 +23,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "libcellml_config.h"
+#include "mathml_config.h"
 #include "xmlnode.h"
 
 namespace libcellml {
