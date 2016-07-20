@@ -33,6 +33,12 @@ configure_file(
   ${LIBCELLML_CONFIG_H}
 )
 
+set(MATHML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/mathml_config.h")
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/configure/mathml_config.h.in"
+  ${MATHML_CONFIG_H}
+)
+
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
@@ -75,10 +81,11 @@ set(API_HEADER_FILES
 )
 
 set(HEADER_FILES
-  ${LIBCELLML_CONFIG_H}
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
+  ${LIBCELLML_CONFIG_H}
+  ${MATHML_CONFIG_H}
 )
 
 # Only does anything if configuration target is Visual Studio.

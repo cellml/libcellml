@@ -14,20 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_CONFIG_H
-#define LIBCELLML_LIBCELLML_CONFIG_H
+#ifndef LIBCELLML_MATHML_CONFIG_H
+#define LIBCELLML_MATHML_CONFIG_H
 
 #include <string>
 
 namespace libcellml {
 
-#define LIBCELLML_VERSION_MAJOR @libCellML_VERSION_MAJOR@
-#define LIBCELLML_VERSION_MINOR @libCellML_VERSION_MINOR@
-#define LIBCELLML_VERSION_PATCH @libCellML_VERSION_PATCH@
-
-static unsigned int LIBCELLML_LIBRARY_VERSION=@LIBCELLML_LIBRARY_VERSION@;
-static const std::string LIBCELLML_LIBRARY_VERSION_STRING="@LIBCELLML_LIBRARY_VERSION_STRING@";
+static const std::string LIBCELLML_MATHML_DTD_LOCATION="@LIBCELLML_MATHML_DTD_LOCATION@";
 
 }
 
-#endif /* LIBCELLML_LIBCELLML_CONFIG_H */
+#endif /* LIBCELLML_MATHML_CONFIG_H */
