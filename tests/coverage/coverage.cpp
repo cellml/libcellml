@@ -75,7 +75,7 @@ TEST(Coverage, unitsGetVariations) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("a_unit");
 
-    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     m.addUnits(u);
 
     libcellml::UnitsPtr un = m.getUnits(0);

@@ -24,53 +24,7 @@ limitations under the License.
 #include "libcellml/libcellml_export.h"
 #include "libcellml/types.h"
 
-namespace libcellml {
-
-/**
- * @file
- * @brief The STANDARD_UNITS.
- *
- * Strings describing the standard units that are suitable for variable declarations
- * or attached to bare numbers in mathematics.  The list of strings comprises of
- * the SI base units, the SI derived units with special names and symbols, and
- * some additional units commonly used in the types of biological models likely
- * to be defined using CellML.
- */
-
-const std::string STANDARD_UNIT_AMPERE = "ampere"; /**< Base SI unit ampere. */
-const std::string STANDARD_UNIT_BECQUEREL = "becquerel"; /**< Derived SI unit becquerel. */
-const std::string STANDARD_UNIT_CANDELA = "candela"; /**< Base SI unit candela. */
-const std::string STANDARD_UNIT_CELSIUS = "celsius"; /**< Derived SI unit celsius. */
-const std::string STANDARD_UNIT_COULOMB = "coulomb"; /**< Derived SI unit coulomb. */
-const std::string STANDARD_UNIT_DIMENSIONLESS = "dimensionless"; /**< Convenience unit dimensionless. */
-const std::string STANDARD_UNIT_FARAD = "farad"; /**< Derived SI unit farad. */
-const std::string STANDARD_UNIT_GRAM = "gram"; /**< Convenience unit gram. */
-const std::string STANDARD_UNIT_GRAY = "gray"; /**< Derived SI unit gray. */
-const std::string STANDARD_UNIT_HENRY = "henry"; /**< Derived SI unit henry. */
-const std::string STANDARD_UNIT_HERTZ = "hertz"; /**< Derived SI unit hertz. */
-const std::string STANDARD_UNIT_JOULE = "joule"; /**< Derived SI unit joule. */
-const std::string STANDARD_UNIT_KATAL = "katal"; /**< Derived SI unit katal. */
-const std::string STANDARD_UNIT_KELVIN = "kelvin"; /**< Base SI unit kelvin. */
-const std::string STANDARD_UNIT_KILOGRAM = "kilogram"; /**< Base SI unit kilogram. */
-const std::string STANDARD_UNIT_LITER = "liter"; /**< Convenience unit liter (alternative spelling). */
-const std::string STANDARD_UNIT_LITRE = "litre"; /**< Convenience unit litre. */
-const std::string STANDARD_UNIT_LUMEN = "lumen"; /**< Derived SI unit lumen. */
-const std::string STANDARD_UNIT_LUX = "lux"; /**< Derived SI unit lux. */
-const std::string STANDARD_UNIT_METER = "meter"; /**< Base SI unit meter. */
-const std::string STANDARD_UNIT_METRE = "metre"; /**< Base SI unit metre (alternative spelling). */
-const std::string STANDARD_UNIT_MOLE = "mole"; /**< Base SI unit mole. */
-const std::string STANDARD_UNIT_NEWTON = "newton"; /**< Derived SI unit newton. */
-const std::string STANDARD_UNIT_OHM = "ohm"; /**< Derived SI unit ohm. */
-const std::string STANDARD_UNIT_PASCAL = "pascal"; /**< Derived SI unit pascal. */
-const std::string STANDARD_UNIT_RADIAN = "radian"; /**< Derived SI unit radian. */
-const std::string STANDARD_UNIT_SECOND = "second"; /**< Base SI unit second. */
-const std::string STANDARD_UNIT_SIEMENS = "siemens"; /**< Derived SI unit siemens. */
-const std::string STANDARD_UNIT_SIEVERT = "sievert"; /**< Derived SI unit sievert. */
-const std::string STANDARD_UNIT_STERADIAN = "steradian"; /**< Derived SI unit steradian. */
-const std::string STANDARD_UNIT_TESLA = "tesla"; /**< Derived SI unit tesla. */
-const std::string STANDARD_UNIT_VOLT = "volt"; /**< Derived SI unit volt. */
-const std::string STANDARD_UNIT_WATT = "watt"; /**< Derived SI unit watt. */
-const std::string STANDARD_UNIT_WEBER = "weber"; /**< Derived SI unit weber. */
+namespace libcellml { 
 
 /**
  * @brief The Units class.
@@ -88,44 +42,48 @@ public:
     /**
      * @brief The Standard Unit enum class.
      *
-     * Enum of the possible Standard Unit base units.
+     * Standard units that are suitable for variable declarations
+     * or attached to bare numbers in mathematics.  This list of comprises
+     * the SI base units, the SI derived units with special names and symbols, and
+     * some additional units commonly used in the types of biological models likely
+     * to be defined using CellML.
      */
     enum class StandardUnit
     {
-        AMPERE,
-        BECQUEREL,
-        CANDELA,
-        CELSIUS,
-        COULOMB,
-        DIMENSIONLESS,
-        FARAD,
-        GRAM,
-        GRAY,
-        HENRY,
-        HERTZ,
-        JOULE,
-        KATAL,
-        KELVIN,
-        KILOGRAM,
-        LITER,
-        LITRE,
-        LUMEN,
-        LUX,
-        METER,
-        METRE,
-        MOLE,
-        NEWTON,
-        OHM,
-        PASCAL,
-        RADIAN,
-        SECOND,
-        SIEMENS,
-        SIEVERT,
-        STERADIAN,
-        TESLA,
-        VOLT,
-        WATT,
-        WEBER
+        AMPERE, /**< Base SI unit ampere. */
+        BECQUEREL, /**< Derived SI unit becquerel. */
+        CANDELA, /**< Base SI unit candela. */
+        CELSIUS, /**< Derived SI unit celsius. */
+        COULOMB, /**< Derived SI unit coulomb. */
+        DIMENSIONLESS, /**< Convenience unit dimensionless. */
+        FARAD, /**< Derived SI unit farad. */
+        GRAM, /**< Convenience unit gram. */
+        GRAY, /**< Derived SI unit gray. */
+        HENRY, /**< Derived SI unit henry. */
+        HERTZ, /**< Derived SI unit hertz. */
+        JOULE, /**< Derived SI unit joule. */
+        KATAL,  /**< Derived SI unit katal. */
+        KELVIN, /**< Base SI unit kelvin. */
+        KILOGRAM, /**< Base SI unit kilogram. */
+        LITER, /**< Convenience unit liter (alternative spelling). */
+        LITRE, /**< Convenience unit litre. */
+        LUMEN, /**< Derived SI unit lumen. */
+        LUX, /**< Derived SI unit lux. */
+        METER, /**< Base SI unit meter. */
+        METRE, /**< Base SI unit metre (alternative spelling). */
+        MOLE, /**< Base SI unit mole. */
+        NEWTON, /**< Derived SI unit newton. */
+        OHM, /**< Derived SI unit ohm. */
+        PASCAL, /**< Derived SI unit pascal. */
+        RADIAN, /**< Derived SI unit radian. */
+        SECOND, /**< Base SI unit second. */
+        SIEMENS, /**< Derived SI unit siemens. */
+        SIEVERT, /**< Derived SI unit sievert. */
+        STERADIAN, /**< Derived SI unit steradian. */
+        TESLA, /**< Derived SI unit tesla. */
+        VOLT, /**< Derived SI unit volt. */
+        WATT, /**< Derived SI unit watt. */
+        WEBER /**< Derived SI unit weber. */
     };
 
     /**
@@ -154,7 +112,7 @@ public:
      * Add a unit as a child of this Units.  This method takes optional arguments
      * @p exponent, @p multiplier and @p offset.
      *
-     * @param reference The units reference to add.
+     * @param reference The @c std::string units reference to add.
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
@@ -171,7 +129,7 @@ public:
      *
      * @overload
      *
-     * @param reference The units reference to add.
+     * @param reference The @c std::string units reference to add.
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
@@ -188,7 +146,7 @@ public:
      *
      * @overload
      *
-     * @param reference The units reference to add.
+     * @param reference The @c std::string units reference to add.
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
@@ -200,12 +158,12 @@ public:
     /**
      * @brief Add a unit to this Units.
      *
-     * Add a unit as a child of this Units. This variant takes the units @p reference
-     * and an @p exponent only.
+     * Add a unit as a child of this Units. This variant takes the @c std::string
+     * units @p reference and an @p exponent only.
      *
      * @overload
      *
-     * @param reference The units reference to add.
+     * @param reference The @c std::string units reference to add.
      * @param exponent The exponent for the unit.
      */
     void addUnit(const std::string &reference, double exponent);
@@ -214,23 +172,109 @@ public:
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units, this variant specified with only a
-     * units @p reference.
+     * @c std::string units @p reference.
      *
      * @overload
      *
-     * @param reference The units reference to add.
+     * @param reference The @c std::string units reference to add.
      */
     void addUnit(const std::string &reference);
 
     /**
+     * @brief Add a unit to this Units.
+     *
+     * Add a unit as a child of this Units.  This method takes optional arguments
+     * @p exponent, @p multiplier and @p offset.
+     *
+     * @overload
+     *
+     * @param reference The @c StandardUnit enum units reference to add.
+     * @param prefix The string prefix for the unit.
+     * @param exponent The exponent.
+     * @param multiplier The multiplier.
+     * @param offset The offset.
+     */
+    void addUnit(StandardUnit standardRef, const std::string &prefix, double exponent=1.0,
+                 double multiplier=1.0, double offset=0.0);
+
+    /**
+     * @brief Add a unit to this Units.
+     *
+     * Add a unit as a child of this Units.  This method takes optional arguments
+     * @p exponent, @p multiplier and @p offset.
+     *
+     * @overload
+     *
+     * @param reference The @c StandardUnit enum units reference to add.
+     * @param prefix The prefix for the unit, one of Prefix.
+     * @param exponent The exponent.
+     * @param multiplier The multiplier.
+     * @param offset The offset.
+     */
+    void addUnit(StandardUnit standardRef, Prefix prefix, double exponent=1.0,
+                 double multiplier=1.0, double offset=0.0);
+
+    /**
+     * @brief Add a unit to this Units.
+     *
+     * Add a unit as a child of this Units. This method takes optional arguments
+     * @p multiplier and @p offset.
+     *
+     * @overload
+     *
+     * @param reference The @c StandardUnit enum units reference to add.
+     * @param prefix The prefix for the unit expressed as a double.
+     * @param exponent The exponent.
+     * @param multiplier The multiplier.
+     * @param offset The offset.
+     */
+    void addUnit(StandardUnit standardRef, double prefix, double exponent,
+                 double multiplier=1.0, double offset=0.0);
+
+    /**
+     * @brief Add a unit to this Units.
+     *
+     * Add a unit as a child of this Units. This variant takes the @c StandardUnit enum
+     * units @p reference and an @p exponent only.
+     *
+     * @overload
+     *
+     * @param reference The @c StandardUnit enum units reference to add.
+     * @param exponent The exponent for the unit.
+     */
+    void addUnit(StandardUnit standardRef, double exponent);
+
+    /**
+     * @brief Add a unit to this Units.
+     *
+     * Add a unit as a child of this Units, this variant specified with only a
+     * @c StandardUnit enum units @p reference.
+     *
+     * @overload
+     *
+     * @param reference The @c StandardUnit enum units reference to add.
+     */
+    void addUnit(StandardUnit standardRef);
+
+    /**
      * @brief Remove the unit with the given reference.
      *
-     * Remove the first unit found that matches the reference @p reference.  If the
-     * reference is not found throw @c std::out_of_range.
+     * Remove the first unit found that matches the @c std::string reference @p reference.
+     * If the @p reference is not found throw @c std::out_of_range.
      *
-     * @param reference The units reference to remove.
+     * @param reference The @c std::string units reference to remove.
      */
     void removeUnit(const std::string &reference);
+
+    /**
+     * @brief Remove the unit with the given reference.
+     *
+     * Remove the first unit found that matches @c StandardUnit enum reference @p reference.
+     * If the @p reference is not found throw @c std::out_of_range.
+     *
+     * @param reference The @c StandardUnit enum units reference to remove.
+     */
+    void removeUnit(StandardUnit standardRef);
 
     /**
      * @brief Remove all units stored in this units object.

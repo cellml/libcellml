@@ -116,9 +116,9 @@ TEST(Units, compoundUnitsUsingDefines) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefix::MICRO);
-    u->addUnit(libcellml::STANDARD_UNIT_KELVIN);
-    u->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefix::MILLI, -1.0);
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::KELVIN);
+    u->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
 
     m.addUnits(u);
 
@@ -143,7 +143,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
-    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u->addUnit("kelvin");
     u->addUnit("siemens", "milli", -1.0);
     u->addUnit("meter", "1.7e310");
@@ -196,7 +196,7 @@ TEST(Units, removeUnitsMethodsAndCount) {
     u3->setName("simple_unit_3");
     u4->setName("simple_unit_4");
 
-    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u1->addUnit("kelvin");
     u1->addUnit("siemens", "milli", -1.0);
     u1->addUnit("meter", "1.7e10");
@@ -207,7 +207,7 @@ TEST(Units, removeUnitsMethodsAndCount) {
 
     EXPECT_EQ(u1->unitCount(), 4);
     u1->removeUnit("siemens");
-    u1->removeUnit(libcellml::STANDARD_UNIT_KELVIN);
+    u1->removeUnit(libcellml::Units::StandardUnit::KELVIN);
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
     EXPECT_THROW(u1->removeUnit("gram"), std::out_of_range);
@@ -239,7 +239,7 @@ TEST(Units, hasUnits) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("a_unit");
 
-    u->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     m.addUnits(u);
     EXPECT_TRUE(m.hasUnits("a_unit"));
 }
@@ -255,7 +255,7 @@ TEST(Units, takeUnits) {
     u2->setName("b_unit");
     u3->setName("c_unit");
 
-    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     m.addUnits(u1);
     m.addUnits(u2);
     m.addUnits(u3);
@@ -280,7 +280,7 @@ TEST(Units, replaceUnits) {
     u2->setName("b_unit");
     u3->setName("c_unit");
 
-    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, "micro");
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     m.addUnits(u1);
     m.addUnits(u2);
 
@@ -319,9 +319,9 @@ TEST(Units, multiply) {
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("compound_unit");
 
-    u1->addUnit(libcellml::STANDARD_UNIT_AMPERE, libcellml::Prefix::MICRO);
-    u1->addUnit(libcellml::STANDARD_UNIT_KELVIN);
-    u1->addUnit(libcellml::STANDARD_UNIT_SIEMENS, libcellml::Prefix::MILLI, -1.0);
+    u1->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u1->addUnit(libcellml::Units::StandardUnit::KELVIN);
+    u1->addUnit(libcellml::Units::StandardUnit::SIEMENS, libcellml::Prefix::MILLI, -1.0);
 
     m.addUnits(u1);
 
@@ -377,7 +377,7 @@ TEST(Units, farhenheit) {
     u->setName("fahrenheit");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::STANDARD_UNIT_CELSIUS, 0.0, 1.0, 1.8, 32.0);
+    u->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0.0, 1.0, 1.8, 32.0);
     m.addUnits(u);
 
     std::string a = m.serialise(libcellml::Format::XML);
@@ -404,12 +404,12 @@ TEST(Units, multipleAndParse) {
     u1->setName("fahrenheit");
 
     /* Give prefix and exponent their default values. */
-    u1->addUnit(libcellml::STANDARD_UNIT_CELSIUS, 0, 1.0, 1.8, 32.0);
+    u1->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0, 1.0, 1.8, 32.0);
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("metres_per_second");
-    u2->addUnit(libcellml::STANDARD_UNIT_METRE);
-    u2->addUnit(libcellml::STANDARD_UNIT_SECOND, -1.0);
+    u2->addUnit(libcellml::Units::StandardUnit::METRE);
+    u2->addUnit(libcellml::Units::StandardUnit::SECOND, -1.0);
 
     m.addUnits(u1);
     m.addUnits(u2);
