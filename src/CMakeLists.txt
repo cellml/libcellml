@@ -14,6 +14,8 @@
 
 include(GenerateExportHeader)
 
+set(CLEAN_FILES)
+
 foreach(VERSION_PART libCellML_VERSION_MAJOR libCellML_VERSION_MINOR libCellML_VERSION_PATCH)
   string(LENGTH ${${VERSION_PART}} VERSION_PART_LENGTH)
   if(VERSION_PART_LENGTH EQUAL 1)
@@ -23,13 +25,15 @@ endforeach()
 set(LIBCELLML_LIBRARY_VERSION 0x${libCellML_VERSION_MAJOR_PAD}${libCellML_VERSION_MAJOR}${libCellML_VERSION_MINOR_PAD}${libCellML_VERSION_MINOR}${libCellML_VERSION_PATCH_PAD}${libCellML_VERSION_PATCH})
 set(LIBCELLML_LIBRARY_VERSION_STRING "${libCellML_VERSION_MAJOR}.${libCellML_VERSION_MINOR}.${libCellML_VERSION_PATCH}")
 
-set(CELLML_EXPORT_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/libcellml_export.h")
-set_source_files_properties(${CELLML_EXPORT_H} PROPERTIES GENERATED TRUE)
-set(LIBCELLML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/libcellml_config.h")
+set(LIBCELLML_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/exportdefinitions.h")
+set_source_files_properties(${LIBCELLML_EXPORTDEFINITIONS_H} PROPERTIES GENERATED TRUE)
+set(LIBCELLML_VERSIONCONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/versionconfig.h")
 configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/configure/libcellml_config.h.in"
-  ${LIBCELLML_CONFIG_H}
+  "${CMAKE_CURRENT_SOURCE_DIR}/configure/versionconfig.h.in"
+  ${LIBCELLML_VERSIONCONFIG_H}
 )
+
+list(APPEND CLEAN_FILES ${LIBCELLML_VERSIONCONFIG_H} ${LIBCELLML_EXPORTDEFINITIONS_H})
 
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
@@ -66,12 +70,12 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
-  ${CELLML_EXPORT_H}
+  ${LIBCELLML_EXPORTDEFINITIONS_H}
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module/libcellml
 )
 
 set(HEADER_FILES
-  ${LIBCELLML_CONFIG_H}
+  ${LIBCELLML_VERSIONCONFIG_H}
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
@@ -92,7 +96,7 @@ add_library(cellml
   ${API_HEADER_FILES}
 )
 
-generate_export_header(cellml EXPORT_FILE_NAME ${CELLML_EXPORT_H} BASE_NAME LIBCELLML)
+generate_export_header(cellml EXPORT_FILE_NAME ${LIBCELLML_EXPORTDEFINITIONS_H} BASE_NAME LIBCELLML)
 
 target_include_directories(cellml
   PUBLIC
@@ -163,4 +167,7 @@ install(FILES
 )
 
 install(EXPORT libcellml-targets DESTINATION lib/cmake)
+
+list(APPEND CLEAN_FILES libcellml-exports.cmake)
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}")
 

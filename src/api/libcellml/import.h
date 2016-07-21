@@ -17,7 +17,7 @@ limitations under the License.
 #ifndef LIBCELLML_LIBCELLML_IMPORT_H_
 #define LIBCELLML_LIBCELLML_IMPORT_H_
 
-#include "libcellml/libcellml_export.h"
+#include "libcellml/exportdefinitions.h"
 #include "libcellml/namedentity.h"
 
 namespace libcellml {
