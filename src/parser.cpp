@@ -452,7 +452,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
 
 void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
 {
-    std::string name = "";
+    std::string reference = "";
     std::string prefix = "";
     double exponent = 1.0;
     double multiplier = 1.0;
@@ -466,7 +466,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 // Ignore whitespace when parsing.
                 if (isNotWhitespace(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Unit '" + node->getAttribute("units") +
+                    err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                         "' in units '" + units->getName() +
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
                     err->setUnits(units);
@@ -475,7 +475,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 }
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Unit '" + node->getAttribute("units") +
+                err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
                                     "' has an invalid child element '" + childNode->getType() + "'.");
                 err->setUnits(units);
@@ -489,7 +489,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
         if (attribute->isType("units")) {
-            name = attribute->getValue();
+            reference = attribute->getValue();
         } else if (attribute->isType("prefix")) {
             prefix = attribute->getValue();
         } else if (attribute->isType("exponent")) {
@@ -500,7 +500,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             offset = convertUnitAttributeValueToDouble(offset, attribute, node, units);
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Unit '" + node->getAttribute("units") +
+            err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                 "' in units '" + units->getName() +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setUnits(units);
@@ -510,7 +510,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         attribute = attribute->getNext();
     }
     // Add this unit to the parent units.
-    units->addUnit(name, prefix, exponent, multiplier, offset);
+    units->addUnit(reference, prefix, exponent, multiplier, offset);
 }
 
 double Parser::ParserImpl::convertUnitAttributeValueToDouble(double &defaultValue, const XmlAttributePtr &attribute,
@@ -524,7 +524,7 @@ double Parser::ParserImpl::convertUnitAttributeValueToDouble(double &defaultValu
     // On failure, flag error and use the default value.
     } catch (std::exception) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Unit '" + node->getAttribute("units") +
+        err->setDescription("Unit referencing '" + node->getAttribute("units") +
                             "' in units '" + units->getName() +
                             "' has an attribute '" + attribute->getType() +
                             "' with a value '" + attribute->getValue() +

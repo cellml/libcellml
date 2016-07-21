@@ -55,6 +55,49 @@ std::map<Prefix, std::string> prefixToString =
 };
 
 /**
+ * @brief Map StandardUnit to their string forms.
+ *
+ * An internal map used to convert a standard unit into its string form.
+ */
+std::map<Units::StandardUnit, std::string> standardUnitToString =
+{
+    {Units::StandardUnit::AMPERE, "ampere"},
+    {Units::StandardUnit::BECQUEREL, "becquerel"},
+    {Units::StandardUnit::CANDELA, "candela"},
+    {Units::StandardUnit::CELSIUS, "celsius"},
+    {Units::StandardUnit::COULOMB, "coulomb"},
+    {Units::StandardUnit::DIMENSIONLESS, "dimensionless"},
+    {Units::StandardUnit::FARAD, "farad"},
+    {Units::StandardUnit::GRAM, "gram"},
+    {Units::StandardUnit::GRAY, "gray"},
+    {Units::StandardUnit::HENRY, "henry"},
+    {Units::StandardUnit::HERTZ, "hertz"},
+    {Units::StandardUnit::JOULE, "joule"},
+    {Units::StandardUnit::KATAL, "katal"},
+    {Units::StandardUnit::KELVIN, "kelvin"},
+    {Units::StandardUnit::KILOGRAM, "kilogram"},
+    {Units::StandardUnit::LITER, "liter"},
+    {Units::StandardUnit::LITRE, "litre"},
+    {Units::StandardUnit::LUMEN, "lumen"},
+    {Units::StandardUnit::LUX, "lux"},
+    {Units::StandardUnit::METER, "meter"},
+    {Units::StandardUnit::METRE, "metre"},
+    {Units::StandardUnit::MOLE, "mole"},
+    {Units::StandardUnit::NEWTON, "newton"},
+    {Units::StandardUnit::OHM, "ohm"},
+    {Units::StandardUnit::PASCAL, "pascal"},
+    {Units::StandardUnit::RADIAN, "radian"},
+    {Units::StandardUnit::SECOND, "second"},
+    {Units::StandardUnit::SIEMENS, "siemens"},
+    {Units::StandardUnit::SIEVERT, "sievert"},
+    {Units::StandardUnit::STERADIAN, "steradian"},
+    {Units::StandardUnit::TESLA, "tesla"},
+    {Units::StandardUnit::VOLT, "volt"},
+    {Units::StandardUnit::WATT, "watt"},
+    {Units::StandardUnit::WEBER, "weber"}
+};
+
+/**
  * @brief The Unit struct.
  *
  * An internal structure to capture a unit definition.  The
@@ -63,7 +106,7 @@ std::map<Prefix, std::string> prefixToString =
  */
 struct Unit
 {
-    std::string mName; /**< Name for the unit.*/
+    std::string mReference; /**< Reference to the units for the unit.*/
     std::string mPrefix; /**< String expression of the prefix for the unit.*/
     std::string mExponent; /**< Exponent for the unit.*/
     std::string mMultiplier; /**< Multiplier for the unit.*/
@@ -77,15 +120,15 @@ struct Unit
  */
 struct Units::UnitsImpl
 {
-    std::vector<Unit>::iterator findUnit(const std::string &name);
+    std::vector<Unit>::iterator findUnit(const std::string &reference);
     bool mBaseUnit = false; /**< Flag to determine if this Units is a base unit or not.*/
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 };
 
-std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &name)
+std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const Unit& u) -> bool { return u.mName == name; });
+                        [=](const Unit& u) -> bool { return u.mReference == reference; });
 }
 
 Units::Units()
@@ -166,7 +209,7 @@ std::string Units::doSerialisation(Format format) const
                         if (u.mPrefix.length()) {
                             repr += " prefix=\"" + u.mPrefix + "\"";
                         }
-                        repr += " units=\"" + u.mName + "\"";
+                        repr += " units=\"" + u.mReference + "\"";
                         repr += "/>";
                     }
                 }
@@ -192,11 +235,11 @@ void Units::setBaseUnit(bool state)
     mPimpl->mBaseUnit = state;
 }
 
-void Units::addUnit(const std::string &name, const std::string &prefix, double exponent,
+void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
              double multiplier, double offset)
 {
     Unit u;
-    u.mName = name;
+    u.mReference = reference;
     // Allow all nonzero user-specified prefixes
     try
     {
@@ -227,41 +270,41 @@ void Units::addUnit(const std::string &name, const std::string &prefix, double e
     mPimpl->mUnits.push_back(u);
 }
 
-void Units::addUnit(const std::string &name, Prefix prefix, double exponent,
+void Units::addUnit(const std::string &reference, Prefix prefix, double exponent,
              double multiplier, double offset)
 {
     auto search = prefixToString.find(prefix);
     assert(search != prefixToString.end());
     const std::string prefixString = search->second;
-    addUnit(name, prefixString, exponent, multiplier, offset);
+    addUnit(reference, prefixString, exponent, multiplier, offset);
 }
 
-void Units::addUnit(const std::string &name, double prefix, double exponent,
+void Units::addUnit(const std::string &reference, double prefix, double exponent,
              double multiplier, double offset)
 {
     std::ostringstream strs;
     strs << prefix;
     const std::string prefixString = strs.str();
-    addUnit(name, prefixString, exponent, multiplier, offset);
+    addUnit(reference, prefixString, exponent, multiplier, offset);
 }
 
-void Units::addUnit(const std::string &name, double exponent)
+void Units::addUnit(const std::string &reference, double exponent)
 {
-    addUnit(name, "0.0", exponent, 1.0, 0.0);
+    addUnit(reference, "0.0", exponent, 1.0, 0.0);
 }
 
-void Units::addUnit(const std::string &name)
+void Units::addUnit(const std::string &reference)
 {
-    addUnit(name, "0.0", 1.0, 1.0, 0.0);
+    addUnit(reference, "0.0", 1.0, 1.0, 0.0);
 }
 
-void Units::removeUnit(const std::string &name)
+void Units::removeUnit(const std::string &reference)
 {
-    auto result = mPimpl->findUnit(name);
+    auto result = mPimpl->findUnit(reference);
     if (result != mPimpl->mUnits.end()) {
         mPimpl->mUnits.erase(result);
     } else {
-        throw std::out_of_range("Named unit not found.");
+        throw std::out_of_range("Referenced unit not found.");
     }
 }
 
@@ -279,6 +322,62 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
 size_t Units::unitCount() const
 {
     return mPimpl->mUnits.size();
+}
+
+std::vector<std::string> Units::getUnitValidationErrors(const std::vector<std::string> &unitsNames)
+{
+    // Initialise the returned error vector.
+    std::vector<std::string> errorMessages;
+    // Create a vector list of standard unit and prefix names.
+    std::vector<std::string> standardUnitNames;
+    for (StandardUnit s = StandardUnit::AMPERE; s <= StandardUnit::WEBER; s = StandardUnit(int(s) + 1)) {
+        standardUnitNames.push_back(standardUnitToString.find(s)->second);
+    }
+    std::vector<std::string> prefixNames;
+    for (Prefix p = Prefix::YOTTA; p <= Prefix::YOCTO; p = Prefix(int(p) + 1)) {
+        prefixNames.push_back(prefixToString.find(p)->second);
+    }
+    // Validate each unit on this units.
+    for (size_t i = 0; i < unitCount(); ++i) {
+        Unit unit = mPimpl->mUnits[i];
+        if (unit.mReference.length()) {
+            if ((std::find(unitsNames.begin(), unitsNames.end(), unit.mReference) == unitsNames.end()) &&
+                (std::find(standardUnitNames.begin(), standardUnitNames.end(), unit.mReference) == standardUnitNames.end())) {
+                errorMessages.push_back("Units reference '" + unit.mReference + "' in units '" + getName() +
+                                        "' is not a valid reference to a local units or a standard unit type.");
+            }
+        } else {
+            errorMessages.push_back("Unit in units '" + getName() +
+                                    "' does not have a units reference.");
+        }
+        if (unit.mPrefix.length()) {
+            if (std::find(prefixNames.begin(), prefixNames.end(), unit.mPrefix) == prefixNames.end()) {
+                errorMessages.push_back("Prefix '" + unit.mPrefix + "' of a unit referencing '" + unit.mReference +
+                                        "' in units '" + getName() + "' is not a valid SI prefix.");
+            }
+        }
+        if (unit.mOffset.length()) {
+            if (std::stod(unit.mOffset) != 0.0) {
+                if (unitCount() > 1) {
+                    std::stringstream ss;
+                    ss << (unitCount() - 1);
+                    std::string numSiblings = ss.str();
+                    errorMessages.push_back("Unit referencing '" + unit.mReference +
+                                            "' has an offset of '" + unit.mOffset +
+                                            "' and " + numSiblings +
+                                            " sibling(s) in units '" + getName() +
+                                            "'. A valid unit with a non-zero offset should have no siblings.");
+                }
+                if (std::stod(unit.mExponent) != 1.0) {
+                    errorMessages.push_back("Unit referencing '" + unit.mReference +
+                                            "' has an offset of '" + unit.mOffset +
+                                            "' and an exponent of '" + unit.mExponent +
+                                            "'. A valid unit with a non-zero offset should have no exponent or an exponent with a value of '1'.");
+                }
+            }
+        }
+    }
+    return errorMessages;
 }
 
 }

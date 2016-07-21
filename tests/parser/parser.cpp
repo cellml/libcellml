@@ -538,16 +538,16 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
             "</model>";
     std::vector<std::string> expectedErrors = {
         "Units 'fahrenheit' has an invalid attribute 'temperature'.",
-        "Unit 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
-        "Unit 'celsius' in units 'fahrenheit' has an attribute 'multiplier' with a value 'Z' that cannot be converted to a decimal number.",
-        "Unit 'celsius' in units 'fahrenheit' has an attribute 'offset' with a value 'MM' that cannot be converted to a decimal number.",
-        "Unit 'celsius' in units 'fahrenheit' has an attribute 'exponent' with a value '35.0E+310' that cannot be converted to a decimal number.",
-        "Unit 'celsius' in units 'fahrenheit' has an invalid attribute 'bill'.",
+        "Unit referencing 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
+        "Unit referencing 'celsius' in units 'fahrenheit' has an attribute 'multiplier' with a value 'Z' that cannot be converted to a decimal number.",
+        "Unit referencing 'celsius' in units 'fahrenheit' has an attribute 'offset' with a value 'MM' that cannot be converted to a decimal number.",
+        "Unit referencing 'celsius' in units 'fahrenheit' has an attribute 'exponent' with a value '35.0E+310' that cannot be converted to a decimal number.",
+        "Unit referencing 'celsius' in units 'fahrenheit' has an invalid attribute 'bill'.",
         "Units 'fahrenheit' has an invalid child element 'bobshouse'.",
-        "Unit '' in units 'fahrenheit' has an invalid attribute 'GUnit'.",
+        "Unit referencing '' in units 'fahrenheit' has an invalid attribute 'GUnit'.",
         "Units '' has an invalid attribute 'jerry'.",
-        "Unit 'friends' in units '' has an invalid attribute 'neighbor'.",
-        "Unit '' in units '' has an invalid attribute 'george'."
+        "Unit referencing 'friends' in units '' has an invalid attribute 'neighbor'.",
+        "Unit referencing '' in units '' has an invalid attribute 'george'."
     };
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -1326,7 +1326,7 @@ TEST(Parser, invalidModelWithTextInAllElements) {
         "Model 'starwars' has an invalid non-whitespace child text element '\nepisode7\n'.",
         "Import from 'sith.xml' has an invalid non-whitespace child text element 'kylo'.",
         "Units 'robot' has an invalid non-whitespace child text element 'bb-8'.",
-        "Unit 'ball' in units 'robot' has an invalid non-whitespace child text element 'rolls'.",
+        "Unit referencing 'ball' in units 'robot' has an invalid non-whitespace child text element 'rolls'.",
         "Component 'ship' has an invalid non-whitespace child text element 'falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element 'rey'.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element 'finn'.",

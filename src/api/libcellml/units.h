@@ -18,6 +18,7 @@ limitations under the License.
 #define LIBCELLML_LIBCELLML_UNITS_H
 
 #include <string>
+#include <vector>
 
 #include "libcellml/importedentity.h"
 #include "libcellml/libcellml_export.h"
@@ -85,6 +86,49 @@ public:
     Units& operator=(Units n); /**< Assignment operator */
 
     /**
+     * @brief The Standard Unit enum class.
+     *
+     * Enum of the possible Standard Unit base units.
+     */
+    enum class StandardUnit
+    {
+        AMPERE,
+        BECQUEREL,
+        CANDELA,
+        CELSIUS,
+        COULOMB,
+        DIMENSIONLESS,
+        FARAD,
+        GRAM,
+        GRAY,
+        HENRY,
+        HERTZ,
+        JOULE,
+        KATAL,
+        KELVIN,
+        KILOGRAM,
+        LITER,
+        LITRE,
+        LUMEN,
+        LUX,
+        METER,
+        METRE,
+        MOLE,
+        NEWTON,
+        OHM,
+        PASCAL,
+        RADIAN,
+        SECOND,
+        SIEMENS,
+        SIEVERT,
+        STERADIAN,
+        TESLA,
+        VOLT,
+        WATT,
+        WEBER
+    };
+
+    /**
      * @brief Test to determine if Units is a base unit.
      *
      * Test to determine if Units is a base unit, return @c true if it is
@@ -108,84 +152,85 @@ public:
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * exponent, multiplier and offset.
+     * @p exponent, @p multiplier and @p offset.
      *
-     * @param name The name of the unit to add.
+     * @param reference The units reference to add.
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &name, const std::string &prefix, double exponent=1.0,
+    void addUnit(const std::string &reference, const std::string &prefix, double exponent=1.0,
                  double multiplier=1.0, double offset=0.0);
 
     /**
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * exponent, multiplier and offset.
+     * @p exponent, @p multiplier and @p offset.
      *
      * @overload
      *
-     * @param name The name of the unit to add.
+     * @param reference The units reference to add.
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &name, Prefix prefix, double exponent=1.0,
+    void addUnit(const std::string &reference, Prefix prefix, double exponent=1.0,
                  double multiplier=1.0, double offset=0.0);
 
     /**
      * @brief Add a unit to this Units.
      *
-     * Add a unit as a child of this Units.  This method takes optional arguments
-     * multiplier and offset.
+     * Add a unit as a child of this Units. This method takes optional arguments
+     * @p multiplier and @p offset.
      *
      * @overload
      *
-     * @param name The name of the unit to add.
+     * @param reference The units reference to add.
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
      * @param offset The offset.
      */
-    void addUnit(const std::string &name, double prefix, double exponent,
+    void addUnit(const std::string &reference, double prefix, double exponent,
                  double multiplier=1.0, double offset=0.0);
 
     /**
      * @brief Add a unit to this Units.
      *
-     * Add a unit as a child of this Units. This variant takes the units name
-     * and an exponent only.
+     * Add a unit as a child of this Units. This variant takes the units @p reference
+     * and an @p exponent only.
      *
      * @overload
      *
-     * @param name The name of the unit to add.
+     * @param reference The units reference to add.
      * @param exponent The exponent for the unit.
      */
-    void addUnit(const std::string &name, double exponent);
+    void addUnit(const std::string &reference, double exponent);
 
     /**
      * @brief Add a unit to this Units.
      *
-     * Add a unit as a child of this Units, this variant specified with only a name.
+     * Add a unit as a child of this Units, this variant specified with only a
+     * units @p reference.
      *
      * @overload
      *
-     * @param name The name of the unit to add.
+     * @param reference The units reference to add.
      */
-    void addUnit(const std::string &name);
+    void addUnit(const std::string &reference);
 
     /**
-     * @brief Remove the unit with the given name.
+     * @brief Remove the unit with the given reference.
      *
-     * Remove the first unit found that matches the name @p name.  If the
-     * name is not found throw @c std::out_of_range.
+     * Remove the first unit found that matches the reference @p reference.  If the
+     * reference is not found throw @c std::out_of_range.
      *
-     * @param name The name of the unit to remove.
+     * @param reference The units reference to remove.
      */
-    void removeUnit(const std::string &name);
+    void removeUnit(const std::string &reference);
 
     /**
      * @brief Remove all units stored in this units object.
@@ -213,6 +258,9 @@ public:
      * @return The number of units.
      */
     size_t unitCount() const;
+
+	// TODO: doc
+    std::vector<std::string> getUnitValidationErrors(const std::vector<std::string> &unitsNames);
 
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */

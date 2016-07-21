@@ -224,11 +224,13 @@ void Validator::validateModel(const ModelPtr &model)
                 }
                 unitsNames.push_back(unitsName);
             }
+        }
+        for (size_t i = 0; i < model->unitsCount(); ++i) {
             // Validate units.
-            validateUnits(units);
+            UnitsPtr units = model->getUnits(i);
+            validateUnits(units, unitsNames);
         }
     }
-
 }
 
 void Validator::validateComponent(const ComponentPtr &component)
@@ -260,8 +262,11 @@ void Validator::validateComponent(const ComponentPtr &component)
                 }
                 unitsNames.push_back(unitsName);
             }
+        }
+        for (size_t i = 0; i < component->unitsCount(); ++i) {
             // Validate units.
-            validateUnits(units);
+            UnitsPtr units = component->getUnits(i);
+            validateUnits(units, unitsNames);
         }
     }
     // Check for variables in this component.
@@ -296,7 +301,7 @@ void Validator::validateComponent(const ComponentPtr &component)
     }
 }
 
-void Validator::validateUnits(const UnitsPtr &units)
+void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::string> unitsNames)
 {
     // Check for a valid name attribute.
     if (!units->getName().length()) {
@@ -309,9 +314,17 @@ void Validator::validateUnits(const UnitsPtr &units)
         // TODO: Check that the units is not a Standard Unit. Probably want to convert the
         // STANDARD_UNIT_X types in units.h to a class enum, with a map to strings we can check against.
     }
-    // TODO: validateUnit
-}
+    // Validate each unit in units.
+    std::vector<std::string> unitErrors = units->getUnitValidationErrors(unitsNames);
+    for (size_t i = 0; i < unitErrors.size(); ++i) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(unitErrors[i]);
+        err->setUnits(units);
+        err->setKind(Error::Kind::UNITS);
+        addError(err);
+    }
 
+}
 
 void Validator::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
 {

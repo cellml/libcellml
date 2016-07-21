@@ -49,7 +49,7 @@ public:
 private:
 
     void validateComponent(const ComponentPtr &component);
-    void validateUnits(const UnitsPtr &units);
+    void validateUnits(const UnitsPtr &units, const std::vector<std::string> unitsNames);
     void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
     bool catchDoubleConversionError(const std::string &input);
 

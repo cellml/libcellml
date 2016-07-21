@@ -369,7 +369,7 @@ TEST(Validator, invalidMathMLElements) {
     }
 }
 
-TEST(Validator, invalidMathMLVariable) {
+TEST(Validator, invalidMathMLVariables) {
     std::string math =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
           "<apply><eq/>"
@@ -429,6 +429,43 @@ TEST(Validator, invalidMathMLVariable) {
     c->setMath(math);
     m->addComponent(c);
 
+    v.validateModel(m);
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+
+    // Check for two expected error messages (see note above).
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}
+
+TEST(Validator, parseAndValidateInvalidUnitErrors) {
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"asoiaf\">"
+            "<units name=\"north\"/>"
+            "<units name=\"stark\">"
+                "<unit units=\"volt\"/>"
+                "<unit units=\"north\"/>"
+                "<unit units=\"ned\"/>"
+                "<unit/>"
+                "<unit prefix=\"wolf\" units=\"celsius\"/>"
+                "<unit exponent=\"7.0\" offset=\"-32.0\" units=\"celsius\"/>"
+            "</units>"
+        "</model>";
+    std::vector<std::string> expectedErrors = {
+        "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
+        "Unit in units 'stark' does not have a units reference.",
+        "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid SI prefix.",
+        "Unit referencing 'celsius' has an offset of '-32' and 5 sibling(s) in units 'stark'. A valid unit with a non-zero offset should have no siblings.",
+        "Unit referencing 'celsius' has an offset of '-32' and an exponent of '7'. A valid unit with a non-zero offset should have no exponent or an exponent with a value of '1'."
+    };
+
+    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::ModelPtr m = p.parseModel(input);
+    EXPECT_EQ(0, p.errorCount());
+
+    libcellml::Validator v;
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
