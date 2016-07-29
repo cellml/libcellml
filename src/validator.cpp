@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/validator.h"
 
 #include <algorithm>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -24,10 +25,54 @@ limitations under the License.
 #include "libcellml/import.h"
 #include "libcellml/error.h"
 #include "libcellml/model.h"
+#include "libcellml/units.h"
 #include "libcellml/variable.h"
 #include "xmldoc.h"
 
 namespace libcellml {
+
+/**
+ * @brief Map StandardUnit to their string forms.
+ *
+ * An internal map used to convert a standard unit into its string form.
+ */
+std::map<Units::StandardUnit, const std::string> standardUnitToStringTemp =
+{
+    {Units::StandardUnit::AMPERE, "ampere"},
+    {Units::StandardUnit::BECQUEREL, "becquerel"},
+    {Units::StandardUnit::CANDELA, "candela"},
+    {Units::StandardUnit::CELSIUS, "celsius"},
+    {Units::StandardUnit::COULOMB, "coulomb"},
+    {Units::StandardUnit::DIMENSIONLESS, "dimensionless"},
+    {Units::StandardUnit::FARAD, "farad"},
+    {Units::StandardUnit::GRAM, "gram"},
+    {Units::StandardUnit::GRAY, "gray"},
+    {Units::StandardUnit::HENRY, "henry"},
+    {Units::StandardUnit::HERTZ, "hertz"},
+    {Units::StandardUnit::JOULE, "joule"},
+    {Units::StandardUnit::KATAL, "katal"},
+    {Units::StandardUnit::KELVIN, "kelvin"},
+    {Units::StandardUnit::KILOGRAM, "kilogram"},
+    {Units::StandardUnit::LITER, "liter"},
+    {Units::StandardUnit::LITRE, "litre"},
+    {Units::StandardUnit::LUMEN, "lumen"},
+    {Units::StandardUnit::LUX, "lux"},
+    {Units::StandardUnit::METER, "meter"},
+    {Units::StandardUnit::METRE, "metre"},
+    {Units::StandardUnit::MOLE, "mole"},
+    {Units::StandardUnit::NEWTON, "newton"},
+    {Units::StandardUnit::OHM, "ohm"},
+    {Units::StandardUnit::PASCAL, "pascal"},
+    {Units::StandardUnit::RADIAN, "radian"},
+    {Units::StandardUnit::SECOND, "second"},
+    {Units::StandardUnit::SIEMENS, "siemens"},
+    {Units::StandardUnit::SIEVERT, "sievert"},
+    {Units::StandardUnit::STERADIAN, "steradian"},
+    {Units::StandardUnit::TESLA, "tesla"},
+    {Units::StandardUnit::VOLT, "volt"},
+    {Units::StandardUnit::WATT, "watt"},
+    {Units::StandardUnit::WEBER, "weber"}
+};
 
 /**
  * @brief The Validator::ValidatorImpl struct.
@@ -37,12 +82,14 @@ namespace libcellml {
 struct Validator::ValidatorImpl
 {
 public:
+    // TODO: doc
     Validator *mValidator;
     void validateMath(const std::string &input, const ComponentPtr &component, std::vector<std::string> &variableNames);
 private:
     void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
-    void validateMathCiNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
+    void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
     bool isNotWhitespace(std::string &input);
+    void removeSubstring(std::string &input, std::string &pattern);
 };
 
 Validator::Validator()
@@ -129,7 +176,7 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     // Check if we already have another import from the same source with the same component_ref.
-                    // (This looks for matching enties at the same position in the source and ref vectors).
+                    // (This looks for matching entries at the same position in the source and ref vectors).
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
                         if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
                          == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
@@ -379,22 +426,37 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component, std::vector<std::string> &variableNames)
 {
-    std::string math = input;
     XmlDocPtr doc = std::make_shared<XmlDoc>();
-    // Parse/validate this with the W3C MathML DTD.
-    doc->parseMathML(math);
-    // Copy any XML parsing or MathML validation errors into the common validator error handler.
+    // Parse as XML first.
+    doc->parse(input);
+    // Copy any XML parsing errors into the common validator error handler.
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription(doc->getXmlError(i));
-            err->setComponent(component);
-            err->setKind(Error::Kind::MATHML);
+            err->setKind(Error::Kind::XML);
             mValidator->addError(err);
         }
     }
     XmlNodePtr node = doc->getRootNode();
-    XmlNodePtr nodeCopy(node);
+    if (!node) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Could not get a valid XML root node from the math on component '" + component->getName() + "'.");
+        err->setKind(Error::Kind::XML);
+        err->setComponent(component);
+        mValidator->addError(err);
+        return;
+    } else if (!node->isType("math")) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Math root node is of invalid type '" + node->getType() +
+                            "' on component '" + component->getName() +
+                            "'. A valid math root node should be of type 'math'.");
+        err->setComponent(component);
+        err->setKind(Error::Kind::XML);
+        mValidator->addError(err);
+        return;
+    }
+    XmlNodePtr nodeCopy = node;
     std::vector<std::string> bvarNames;
     // Get the bvar names in this math element.
     // TODO: may want to do this with XPath instead...
@@ -404,42 +466,75 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         if (std::find(bvarNames.begin(), bvarNames.end(), variableName) != bvarNames.end())
         {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("MathML in component '" + component->getName() +
+            err->setDescription("Math in component '" + component->getName() +
                                 "' contains '" + variableName + "' as a bvar ci element but it is already a variable name.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
         }
     }
-    // Iterate through ci elements and units attributes.
-    validateMathCiNodes(node, component, variableNames, bvarNames);
-    // TODO: also need to validate <cn> elements as real numbers with cellml:units
+    // Iterate through ci/cn elements and remove cellml units attributes.
+    XmlNodePtr mathNode = node;
+    validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
+    // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
+    // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
+    // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
+    std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
+    std::string cleanMathml = mathNode->convertToString();
+    removeSubstring(cleanMathml, cellml2NamespaceString);
+
+    // Parse/validate the clean math string with the W3C MathML DTD.
+    XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
+    mathmlDoc->parseMathML(cleanMathml);
+    // Copy any MathML validation errors into the common validator error handler.
+    if (mathmlDoc->xmlErrorCount() > 0) {
+        for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription(mathmlDoc->getXmlError(i));
+            err->setComponent(component);
+            err->setKind(Error::Kind::MATHML);
+            mValidator->addError(err);
+        }
+    }
 }
 
-void Validator::ValidatorImpl::validateMathCiNodes(XmlNodePtr &node, const ComponentPtr &component,
+void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component,
                                                    const std::vector<std::string> &variableNames,  const std::vector<std::string> &bvarNames)
 {
-    // TODO: also need to check for cellml:units (need to add to DTD)
     XmlNodePtr childNode = node->getFirstChild();
-    if (node->isType("ci")) {
+    std::string textNode;
+    std::string nodeType = node->getType();
+    if ((nodeType == "ci") || (nodeType == "cn")) {
         if (childNode) {
             if (childNode->isType("text")) {
-                std::string textNode = childNode->convertToString();
+                textNode = childNode->convertToString();
                 if (isNotWhitespace(textNode)) {
-                    // Check whether we can find this text as a variable name in this component.
-                    if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
-                        (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("MathML ci element has the child text '" + textNode +
-                                            "', which does not correspond with any variable names present in component '" + component->getName() +
-                                            "' and is not a variable defined within a bvar element.");
-                        err->setComponent(component);
-                        err->setKind(Error::Kind::MATHML);
-                        mValidator->addError(err);
+                    if (nodeType == "ci") {
+                        // Check whether we can find this text as a variable name in this component.
+                        if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
+                            (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("MathML ci element has the child text '" + textNode +
+                                                "', which does not correspond with any variable names present in component '" + component->getName() +
+                                                "' and is not a variable defined within a bvar element.");
+                            err->setComponent(component);
+                            err->setKind(Error::Kind::MATHML);
+                            mValidator->addError(err);
+                        }
+                    } else if (nodeType == "cn") {
+                        // Check whether the cn value can be safely coverted to a real number.
+                        if (mValidator->catchDoubleConversionError(textNode)) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("MathML cn element has the value '" + textNode +
+                                                "', which cannot be converted to a real number.");
+                            err->setComponent(component);
+                            err->setKind(Error::Kind::MATHML);
+                            mValidator->addError(err);
+                        }
                     }
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("MathML ci element has a whitespace-only child element.");
+                    err->setDescription("MathML " + nodeType + " element has a whitespace-only child element.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
@@ -447,21 +542,83 @@ void Validator::ValidatorImpl::validateMathCiNodes(XmlNodePtr &node, const Compo
             }
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("MathML ci element has no valid variable.");
+            err->setDescription("MathML " + nodeType + " element has no child.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
         }
+        // Get cellml:units attribute.
+        XmlAttributePtr attribute = node->getFirstAttribute();
+        std::string unitsName;
+        XmlAttributePtr unitsAttribute;
+        while (attribute) {
+            if (attribute->getValue().length() > 0) {
+                if (attribute->isType("units")) {
+                    unitsName = attribute->getValue();
+                    unitsAttribute = attribute;
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Math " + nodeType + " element has an invalid attribute type '" +
+                                        attribute->getType() + "' in the cellml namespace.");
+                    err->setComponent(component);
+                    err->setKind(Error::Kind::MATHML);
+                    mValidator->addError(err);
+                }
+            }
+            attribute = attribute->getNext();
+        }
+        // Check that cellml:units has been set.
+        if (!unitsName.length()) {
+            if (nodeType == "cn") {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Math cn element with the value '" + textNode + "' does not have a cellml:units attribute.");
+                err->setComponent(component);
+                err->setKind(Error::Kind::MATHML);
+                mValidator->addError(err);
+            } else if (node->getParent()->isType("bvar")) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Math bvar ci element with the value '" + textNode +
+                                    "' does not have a valid cellml:units attribute.");
+                err->setComponent(component);
+                err->setKind(Error::Kind::MATHML);
+                mValidator->addError(err);
+            }
+        // Check that a specified units is valid.
+        } else {
+            // Check for a matching units in this component.
+            if (!component->hasUnits(unitsName)) {
+                std::vector<std::string> standardUnitNames;
+                for (Units::StandardUnit s = Units::StandardUnit::AMPERE; s <= Units::StandardUnit::WEBER; s = Units::StandardUnit(int(s) + 1)) {
+                    standardUnitNames.push_back(standardUnitToStringTemp.find(s)->second);
+                }
+                // Check for a matching standard units.
+                if (std::find(standardUnitNames.begin(), standardUnitNames.end(), unitsName) == standardUnitNames.end()) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Math has a " + nodeType + " element with a cellml:units attribute '" + unitsName +
+                                        "' that is not a valid reference to units in component '" +
+                                        component->getName() + "' or a standard unit.");
+                    err->setComponent(component);
+                    err->setKind(Error::Kind::MATHML);
+                    mValidator->addError(err);
+                }
+            }
+        }
+        // Now that we've validated this XML node's cellml:units attribute, remove it from the node.
+        // This is done so we can validate a "clean" MathML string using the MathML DTD. The math
+        // string stored on the component will not be affected.
+        if (unitsAttribute) {
+            unitsAttribute->removeAttribute();
+        }
     } else {
-        // Check children for ci.
+        // Check children for ci/cn elements.
         if (childNode) {
-            validateMathCiNodes(childNode, component, variableNames, bvarNames);
+            validateAndCleanMathCiCnNodes(childNode, component, variableNames, bvarNames);
         }
     }
-    // Check siblings for ci.
+    // Check siblings for ci/cn.
     node = node->getNext();
     if (node) {
-        validateMathCiNodes(node, component, variableNames, bvarNames);
+        validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
     }
 }
 
@@ -480,6 +637,7 @@ bool Validator::catchDoubleConversionError(const std::string &input)
     return response;
 }
 
+// TODO: We also use this in Parser- maybe should be a common method on Logger?
 bool Validator::ValidatorImpl::isNotWhitespace (std::string &input)
 {
     return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
@@ -512,6 +670,14 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
     if (node) {
         gatherMathBvarVariableNames(node, bvarNames);
     }
+}
+
+void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
+  std::string::size_type n = pattern.length();
+  for (std::string::size_type i = input.find(pattern);
+      i != std::string::npos;
+      i = input.find(pattern))
+      input.erase(i, n);
 }
 
 }

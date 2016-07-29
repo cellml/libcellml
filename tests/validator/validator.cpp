@@ -319,6 +319,42 @@ TEST(Validator, validMath) {
     EXPECT_EQ(0, v.errorCount());
 }
 
+TEST(Validator, invalidMath) {
+    std::string math1 =
+            "<math>"
+                "<invalid_xml></not_valid>"
+            "</math>";
+    std::string math2 = "<invalid_math/>";
+
+    std::vector<std::string> expectedErrors = {
+        "Opening and ending tag mismatch: invalid_xml line 1 and not_valid.",
+        "Could not get a valid XML root node from the math on component 'componentName1'.",
+        "Math root node is of invalid type 'invalid_math' on component 'componentName2'. A valid math root node should be of type 'math'."
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+
+    m->setName("modelName");
+    c1->setName("componentName1");
+    c2->setName("componentName2");
+
+    c1->setMath(math1);
+    c2->setMath(math2);
+    m->addComponent(c1);
+    m->addComponent(c2);
+
+    v.validateModel(m);
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}
+
 TEST(Validator, invalidMathMLElements) {
     std::string math =
     "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
@@ -397,12 +433,92 @@ TEST(Validator, invalidMathMLVariables) {
           "</apply>"
         "</math>";
     std::vector<std::string> expectedErrors = {
-        "No declaration for element nonsense.",
-        "Element nonsense is not declared in ci list of possible children.",
-        "MathML in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
+        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
+        "Math bvar ci element with the value 'new_bvar' does not have a valid cellml:units attribute.",
         "MathML ci element has a whitespace-only child element.",
-        "MathML ci element has no valid variable."
+        "MathML ci element has no child.",
+        "Math bvar ci element with the value 'B' does not have a valid cellml:units attribute.",
+        "No declaration for element nonsense.",
+        "Element nonsense is not declared in ci list of possible children."
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("A");
+    v2->setName("B");
+    v3->setName("C");
+    v1->setInitialValue("1.0");
+    v2->setInitialValue("-1.0");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addVariable(v3);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+
+    // Check for expected error messages.
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}
+
+TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
+    std::string math =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+          "<apply><eq/>"
+            "<cn cellml:units=\"invalid\">oops</cn>"
+            "<apply><plus/>"
+              "<ci>A</ci>"
+              "<apply><plus/>"
+                "<bvar>"
+                  "<ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>"
+                "</bvar>"
+                "<apply><plus/>"
+                  "<ci>   </ci>"
+                  "<apply><plus/>"
+                    "<ci>undefined_variable</ci>"
+                    "<apply><plus/>"
+                      "<ci/>"
+                      "<bvar>"
+                        "<ci>B</ci>"
+                      "</bvar>"
+                      "<apply><plus/>"
+                        "<cn>2.0</cn>"
+                      "</apply>"
+                    "</apply>"
+                  "</apply>"
+                "</apply>"
+              "</apply>"
+            "</apply>"
+          "</apply>"
+        "</math>";
+    std::vector<std::string> expectedErrors = {
+        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
+        "MathML cn element has the value 'oops', which cannot be converted to a real number.",
+        "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
+        "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
+        "MathML ci element has a whitespace-only child element.",
+        "MathML ci element has the child text 'undefined_variable', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
+        "MathML ci element has no child.",
+        "Math bvar ci element with the value 'B' does not have a valid cellml:units attribute.",
+        "Math cn element with the value '2.0' does not have a cellml:units attribute.",
+        "Namespace prefix cellml for value on ci is not defined.",
+        "No declaration for attribute cellml:value of element ci."
     };
 
     libcellml::Validator v;
