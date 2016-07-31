@@ -370,6 +370,8 @@ TEST(Validator, invalidMathMLElements) {
         "No declaration for element equals.",
         "No declaration for element addition."
     };
+    // NOTE: The MathML DTD also gives errors that list every possible operator when an
+    //       invalid option is given. We'll just explicitly check the less verbose errors here.
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -548,8 +550,9 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    // Check for two expected error messages (see note above).
-    for (size_t i = 0; i < v.errorCount(); ++i) {
+    // NOTE: We're not checking the exact message of the last error as older versions of
+    //       libxml may not include the namespace in the error message.
+    for (size_t i = 0; i < v.errorCount() - 1; ++i) {
         //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
@@ -585,7 +588,6 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    // Check for two expected error messages (see note above).
     for (size_t i = 0; i < v.errorCount(); ++i) {
         //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
