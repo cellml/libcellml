@@ -18,7 +18,7 @@ limitations under the License.
 
 #include <string>
 
-#include "libcellml_config.h"
+#include "versionconfig.h"
 
 namespace libcellml {
 

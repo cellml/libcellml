@@ -18,7 +18,7 @@ limitations under the License.
 #define LIBCELLML_LIBCELLML_COMPONENT_H
 
 #include "libcellml/componententity.h"
-#include "libcellml/libcellml_export.h"
+#include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
 
