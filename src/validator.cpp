@@ -358,10 +358,23 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
         err->setKind(Error::Kind::UNITS);
         addError(err);
     } else {
-        // TODO: Check that the units is not a Standard Unit. Probably want to convert the
-        // STANDARD_UNIT_X types in units.h to a class enum, with a map to strings we can check against.
+        // Check that the units is not a Standard Unit. Assemble a vector of standard units
+        std::vector<std::string> standardUnitNames;
+        for (Units::StandardUnit s = Units::StandardUnit::AMPERE; s <= Units::StandardUnit::WEBER; s = Units::StandardUnit(int(s) + 1)) {
+            standardUnitNames.push_back(standardUnitToStringTemp.find(s)->second);
+        }
+        // Check for a matching standard units.
+        if (std::find(standardUnitNames.begin(), standardUnitNames.end(), units->getName()) != standardUnitNames.end()) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Units is named '" + units->getName() +
+                                "', which is a protected standard unit name.");
+            err->setUnits(units);
+            err->setKind(Error::Kind::UNITS);
+            addError(err);
+        }
     }
     // Validate each unit in units.
+    // TODO: move unit validation into validator.
     std::vector<std::string> unitErrors = units->getUnitValidationErrors(unitsNames);
     for (size_t i = 0; i < unitErrors.size(); ++i) {
         ErrorPtr err = std::make_shared<Error>();

@@ -562,6 +562,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"asoiaf\">"
+            "<units name=\"ampere\"/>"
             "<units name=\"north\"/>"
             "<units name=\"stark\">"
                 "<unit units=\"volt\"/>"
@@ -573,6 +574,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
             "</units>"
         "</model>";
     std::vector<std::string> expectedErrors = {
+        "Units is named 'ampere', which is a protected standard unit name.",
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "Unit in units 'stark' does not have a units reference.",
         "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid SI prefix.",
