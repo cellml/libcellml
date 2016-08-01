@@ -335,6 +335,28 @@ void Units::addUnit(StandardUnit standardRef)
     addUnit(reference, "0.0", 1.0, 1.0, 0.0);
 }
 
+void Units::getUnit(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset)
+{
+    Unit u = mPimpl->mUnits.at(index);
+    reference = u.mReference;
+    prefix = u.mPrefix;
+    if (u.mExponent.length()) {
+        exponent = std::stod(u.mExponent);
+    } else {
+        exponent = 1.0;
+    }
+    if (u.mMultiplier.length()) {
+        multiplier = std::stod(u.mMultiplier);
+    } else {
+        multiplier = 1.0;
+    }
+    if (u.mOffset.length()) {
+        offset = std::stod(u.mOffset);
+    } else {
+        offset = 0.0;
+    }
+}
+
 void Units::removeUnit(const std::string &reference)
 {
     auto result = mPimpl->findUnit(reference);
@@ -365,62 +387,6 @@ void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
 size_t Units::unitCount() const
 {
     return mPimpl->mUnits.size();
-}
-
-std::vector<std::string> Units::getUnitValidationErrors(const std::vector<std::string> &unitsNames)
-{
-    // Initialise the returned error vector.
-    std::vector<std::string> errorMessages;
-    // Create a vector list of standard unit and prefix names.
-    std::vector<std::string> standardUnitNames;
-    for (StandardUnit s = StandardUnit::AMPERE; s <= StandardUnit::WEBER; s = StandardUnit(int(s) + 1)) {
-        standardUnitNames.push_back(standardUnitToString.find(s)->second);
-    }
-    std::vector<std::string> prefixNames;
-    for (Prefix p = Prefix::YOTTA; p <= Prefix::YOCTO; p = Prefix(int(p) + 1)) {
-        prefixNames.push_back(prefixToString.find(p)->second);
-    }
-    // Validate each unit on this units.
-    for (size_t i = 0; i < unitCount(); ++i) {
-        Unit unit = mPimpl->mUnits[i];
-        if (unit.mReference.length()) {
-            if ((std::find(unitsNames.begin(), unitsNames.end(), unit.mReference) == unitsNames.end()) &&
-                (std::find(standardUnitNames.begin(), standardUnitNames.end(), unit.mReference) == standardUnitNames.end())) {
-                errorMessages.push_back("Units reference '" + unit.mReference + "' in units '" + getName() +
-                                        "' is not a valid reference to a local units or a standard unit type.");
-            }
-        } else {
-            errorMessages.push_back("Unit in units '" + getName() +
-                                    "' does not have a units reference.");
-        }
-        if (unit.mPrefix.length()) {
-            if (std::find(prefixNames.begin(), prefixNames.end(), unit.mPrefix) == prefixNames.end()) {
-                errorMessages.push_back("Prefix '" + unit.mPrefix + "' of a unit referencing '" + unit.mReference +
-                                        "' in units '" + getName() + "' is not a valid SI prefix.");
-            }
-        }
-        if (unit.mOffset.length()) {
-            if (std::stod(unit.mOffset) != 0.0) {
-                if (unitCount() > 1) {
-                    std::stringstream ss;
-                    ss << (unitCount() - 1);
-                    std::string numSiblings = ss.str();
-                    errorMessages.push_back("Unit referencing '" + unit.mReference +
-                                            "' has an offset of '" + unit.mOffset +
-                                            "' and " + numSiblings +
-                                            " sibling(s) in units '" + getName() +
-                                            "'. A valid unit with a non-zero offset should have no siblings.");
-                }
-                if (std::stod(unit.mExponent) != 1.0) {
-                    errorMessages.push_back("Unit referencing '" + unit.mReference +
-                                            "' has an offset of '" + unit.mOffset +
-                                            "' and an exponent of '" + unit.mExponent +
-                                            "'. A valid unit with a non-zero offset should have no exponent or an exponent with a value of '1'.");
-                }
-            }
-        }
-    }
-    return errorMessages;
 }
 
 }

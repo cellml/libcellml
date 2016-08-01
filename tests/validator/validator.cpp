@@ -565,7 +565,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
             "<units name=\"ampere\"/>"
             "<units name=\"north\"/>"
             "<units name=\"stark\">"
-                "<unit units=\"volt\"/>"
+                "<unit units=\"volt\" prefix=\"mega\" multiplier=\"1000.0\"/>"
                 "<unit units=\"north\"/>"
                 "<unit units=\"ned\"/>"
                 "<unit/>"
@@ -577,7 +577,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
         "Units is named 'ampere', which is a protected standard unit name.",
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "Unit in units 'stark' does not have a units reference.",
-        "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid SI prefix.",
+        "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid real number or a SI prefix.",
         "Unit referencing 'celsius' has an offset of '-32' and 5 sibling(s) in units 'stark'. A valid unit with a non-zero offset should have no siblings.",
         "Unit referencing 'celsius' has an offset of '-32' and an exponent of '7'. A valid unit with a non-zero offset should have no exponent or an exponent with a value of '1'."
     };

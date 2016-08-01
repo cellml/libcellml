@@ -256,6 +256,9 @@ public:
      */
     void addUnit(StandardUnit standardRef);
 
+    // TODO: doc
+    void getUnit(size_t index, std::string& name, std::string &prefix, double &exponent, double &multiplier, double &offset);
+
     /**
      * @brief Remove the unit with the given reference.
      *

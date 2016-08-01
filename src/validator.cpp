@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -30,49 +31,6 @@ limitations under the License.
 #include "xmldoc.h"
 
 namespace libcellml {
-
-/**
- * @brief Map StandardUnit to their string forms.
- *
- * An internal map used to convert a standard unit into its string form.
- */
-std::map<Units::StandardUnit, const std::string> standardUnitToStringTemp =
-{
-    {Units::StandardUnit::AMPERE, "ampere"},
-    {Units::StandardUnit::BECQUEREL, "becquerel"},
-    {Units::StandardUnit::CANDELA, "candela"},
-    {Units::StandardUnit::CELSIUS, "celsius"},
-    {Units::StandardUnit::COULOMB, "coulomb"},
-    {Units::StandardUnit::DIMENSIONLESS, "dimensionless"},
-    {Units::StandardUnit::FARAD, "farad"},
-    {Units::StandardUnit::GRAM, "gram"},
-    {Units::StandardUnit::GRAY, "gray"},
-    {Units::StandardUnit::HENRY, "henry"},
-    {Units::StandardUnit::HERTZ, "hertz"},
-    {Units::StandardUnit::JOULE, "joule"},
-    {Units::StandardUnit::KATAL, "katal"},
-    {Units::StandardUnit::KELVIN, "kelvin"},
-    {Units::StandardUnit::KILOGRAM, "kilogram"},
-    {Units::StandardUnit::LITER, "liter"},
-    {Units::StandardUnit::LITRE, "litre"},
-    {Units::StandardUnit::LUMEN, "lumen"},
-    {Units::StandardUnit::LUX, "lux"},
-    {Units::StandardUnit::METER, "meter"},
-    {Units::StandardUnit::METRE, "metre"},
-    {Units::StandardUnit::MOLE, "mole"},
-    {Units::StandardUnit::NEWTON, "newton"},
-    {Units::StandardUnit::OHM, "ohm"},
-    {Units::StandardUnit::PASCAL, "pascal"},
-    {Units::StandardUnit::RADIAN, "radian"},
-    {Units::StandardUnit::SECOND, "second"},
-    {Units::StandardUnit::SIEMENS, "siemens"},
-    {Units::StandardUnit::SIEVERT, "sievert"},
-    {Units::StandardUnit::STERADIAN, "steradian"},
-    {Units::StandardUnit::TESLA, "tesla"},
-    {Units::StandardUnit::VOLT, "volt"},
-    {Units::StandardUnit::WATT, "watt"},
-    {Units::StandardUnit::WEBER, "weber"}
-};
 
 /**
  * @brief The Validator::ValidatorImpl struct.
@@ -348,7 +306,7 @@ void Validator::validateComponent(const ComponentPtr &component)
     }
 }
 
-void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::string> unitsNames)
+void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
     // Check for a valid name attribute.
     if (!units->getName().length()) {
@@ -358,13 +316,8 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
         err->setKind(Error::Kind::UNITS);
         addError(err);
     } else {
-        // Check that the units is not a Standard Unit. Assemble a vector of standard units
-        std::vector<std::string> standardUnitNames;
-        for (Units::StandardUnit s = Units::StandardUnit::AMPERE; s <= Units::StandardUnit::WEBER; s = Units::StandardUnit(int(s) + 1)) {
-            standardUnitNames.push_back(standardUnitToStringTemp.find(s)->second);
-        }
         // Check for a matching standard units.
-        if (std::find(standardUnitNames.begin(), standardUnitNames.end(), units->getName()) != standardUnitNames.end()) {
+        if (isStandardUnitName(units->getName())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units is named '" + units->getName() +
                                 "', which is a protected standard unit name.");
@@ -373,17 +326,78 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
             addError(err);
         }
     }
-    // Validate each unit in units.
-    // TODO: move unit validation into validator.
-    std::vector<std::string> unitErrors = units->getUnitValidationErrors(unitsNames);
-    for (size_t i = 0; i < unitErrors.size(); ++i) {
+    if (units->unitCount() > 0) {
+        // Validate each unit in units.
+        for (size_t i = 0; i < units->unitCount(); ++i) {
+            validateUnitsUnit(i, units, unitsNames);
+        }
+    }
+}
+
+void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames)
+{
+    // Validate the unit at the given index.
+    std::string reference, prefix;
+    double exponent, multiplier, offset;
+    units->getUnit(index, reference, prefix, exponent, multiplier, offset);
+    if (reference.length()) {
+        if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) &&
+            (!isStandardUnitName(reference))) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Units reference '" + reference + "' in units '" + units->getName() +
+                                    "' is not a valid reference to a local units or a standard unit type.");
+            err->setUnits(units);
+            err->setKind(Error::Kind::UNITS);
+            addError(err);
+        }
+    } else {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription(unitErrors[i]);
+        err->setDescription("Unit in units '" + units->getName() +
+                                "' does not have a units reference.");
         err->setUnits(units);
         err->setKind(Error::Kind::UNITS);
         addError(err);
     }
-
+    if (prefix.length()) {
+        // If the prefix is not a real number, check in the list of valid prefix names.
+        if (catchDoubleConversionError(prefix)) {
+            if (!isStandardPrefixName(prefix)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
+                                    "' in units '" + units->getName() +
+                                    "' is not a valid real number or a SI prefix.");
+                err->setUnits(units);
+                err->setKind(Error::Kind::UNITS);
+                addError(err);
+            }
+        }
+    }
+    if (offset != 0.0) {
+        if (units->unitCount() > 1) {
+            std::stringstream ss;
+            ss << "Unit referencing '" << reference << "' has an offset of '" << offset
+               << "' and " << units->unitCount()-1 << " sibling(s) in units '" << units->getName()
+               << "'. A valid unit with a non-zero offset should have no siblings.";
+            std::string description = ss.str();
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription(description);
+            err->setUnits(units);
+            err->setKind(Error::Kind::UNITS);
+            addError(err);
+        }
+        if (exponent != 1.0) {
+            std::stringstream ss;
+            ss << "Unit referencing '" << reference << "' has an offset of '" << offset
+               << "' and an exponent of '" << exponent
+               << "'. A valid unit with a non-zero offset should have no exponent or an exponent with a value of '1'.";
+            std::string description = ss.str();
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription(description);
+            err->setUnits(units);
+            err->setKind(Error::Kind::UNITS);
+            addError(err);
+        }
+    }
 }
 
 void Validator::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
@@ -600,12 +614,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         } else {
             // Check for a matching units in this component.
             if (!component->hasUnits(unitsName)) {
-                std::vector<std::string> standardUnitNames;
-                for (Units::StandardUnit s = Units::StandardUnit::AMPERE; s <= Units::StandardUnit::WEBER; s = Units::StandardUnit(int(s) + 1)) {
-                    standardUnitNames.push_back(standardUnitToStringTemp.find(s)->second);
-                }
                 // Check for a matching standard units.
-                if (std::find(standardUnitNames.begin(), standardUnitNames.end(), unitsName) == standardUnitNames.end()) {
+                if (!mValidator->isStandardUnitName(unitsName)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Math has a " + nodeType + " element with a cellml:units attribute '" + unitsName +
                                         "' that is not a valid reference to units in component '" +
@@ -691,6 +701,36 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
       i != std::string::npos;
       i = input.find(pattern))
       input.erase(i, n);
+}
+
+bool Validator::isStandardUnitName(const std::string &name)
+{
+    bool result = false;
+    std::vector<std::string> standardUnitNames =
+    {
+        "ampere", "becquerel", "candela", "celsius", "coulomb", "dimensionless", "farad", "gram", "gray",
+        "henry", "hertz", "joule", "katal", "kelvin", "kilogram", "liter", "litre", "lumen", "lux",
+        "meter", "metre", "mole", "newton", "ohm", "pascal", "radian", "second", "siemens", "sievert",
+        "steradian", "tesla", "volt", "watt", "weber"
+    };
+    if (std::find(standardUnitNames.begin(), standardUnitNames.end(), name) != standardUnitNames.end()) {
+        result = true;
+    }
+    return result;
+}
+
+bool Validator::isStandardPrefixName(const std::string &name)
+{
+    bool result = false;
+    std::vector<std::string> prefixNames =
+    {
+        "atto", "centi", "deca", "deci", "exa", "femto", "giga", "hecto", "kilo", "mega", "micro", "milli",
+        "nano", "peta", "pico", "tera", "yocto", "yotta", "zepto", "zetta"
+    };
+    if (std::find(prefixNames.begin(), prefixNames.end(), name) != prefixNames.end()) {
+        result = true;
+    }
+    return result;
 }
 
 }
