@@ -302,6 +302,7 @@ void Validator::validateComponent(const ComponentPtr &component)
                                         "'. Valid variable names should be unique to their component.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::COMPONENT);
+                    err->setRule(SpecificationRule::VARIABLE_NAME);
                     addError(err);
                 }
                 variableNames.push_back(variableName);
@@ -432,6 +433,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
         err->setDescription("Variable does not have a valid name attribute.");
         err->setVariable(variable);
         err->setKind(Error::Kind::VARIABLE);
+        err->setRule(SpecificationRule::VARIABLE_NAME);
         addError(err);
     }
     // Check for a valid units attribute.
@@ -441,6 +443,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
                             "' does not have a valid units attribute.");
         err->setVariable(variable);
         err->setKind(Error::Kind::VARIABLE);
+        err->setRule(SpecificationRule::VARIABLE_UNITS);
         addError(err);
     }
     // Check for a valid interface attribute.
@@ -453,6 +456,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
                                 "' has an invalid interface attribute value '" + interfaceType + "'.");
             err->setVariable(variable);
             err->setKind(Error::Kind::VARIABLE);
+            err->setRule(SpecificationRule::VARIABLE_INTERFACE);
             addError(err);
         }
     }
@@ -469,6 +473,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
                                     "'. Initial values must be a real number string or a variable reference.");
                 err->setVariable(variable);
                 err->setKind(Error::Kind::VARIABLE);
+                err->setRule(SpecificationRule::VARIABLE_INITIAL_VALUE);
                 addError(err);
             }
         }

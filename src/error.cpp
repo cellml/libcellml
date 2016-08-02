@@ -224,10 +224,24 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::UNIT_OFFSET, "9.1.2.2"},
     {SpecificationRule::UNIT_MULTIPLIER, "9.1.2.3"},
     {SpecificationRule::UNIT_EXPONENT, "9.1.2.4"},
-
     {SpecificationRule::COMPONENT_NAME, "10.1.1"},
-
-    {SpecificationRule::MAP_VARIABLES_INTERFACE_UNDEFINED, "17.10.9"}
+    {SpecificationRule::COMPONENT_CHILD, "10.1.2"},
+    {SpecificationRule::VARIABLE_ATTRIBUTE, "11.1"},
+    {SpecificationRule::VARIABLE_NAME, "11.1.1.1"},
+    {SpecificationRule::VARIABLE_UNITS, "11.1.1.2"},
+    {SpecificationRule::VARIABLE_INTERFACE, "11.1.2.1"},
+    {SpecificationRule::VARIABLE_INITIAL_VALUE, "11.1.2.2"},
+    {SpecificationRule::ENCAPSULATION_COMPONENT_REF, "12.1.1"},
+    {SpecificationRule::COMPONENT_REF_COMPONENT, "13.1.1"},
+    {SpecificationRule::COMPONENT_REF_CHILD, "13.1.2"},
+    {SpecificationRule::ENCAPSULATION_COMPONENT_REF_CHILD, "13.1.3"}, // Seems to be the same as 12.1.1?
+    {SpecificationRule::CONNECTION_CHILD, "14.1"},
+    {SpecificationRule::CONNECTION_MAP_COMPONENTS, "14.1.1"},
+    {SpecificationRule::CONNECTION_MAP_VARIABLES, "14.1.2"},
+    {SpecificationRule::MAP_COMPONENTS_COMPONENT1, "15.1.1"},
+    {SpecificationRule::MAP_COMPONENTS_COMPONENT2, "15.1.2"},
+    {SpecificationRule::MAP_VARIABLES_VARIABLE1, "16.1.1"},
+    {SpecificationRule::MAP_VARIABLES_VARIABLE1, "16.1.2"}
 };
 
 std::string Error::getSpecificationHeading() const

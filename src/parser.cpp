@@ -281,6 +281,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                                     "' does not contain any child elements.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
+                err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
                 mParser->addError(err);
             }
         } else if (childNode->isType("connection")) {
@@ -350,6 +351,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setComponent(component);
                 err->setKind(Error::Kind::COMPONENT);
+                err->setRule(SpecificationRule::COMPONENT_CHILD);
                 mParser->addError(err);
             }
         } else {
@@ -358,6 +360,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setComponent(component);
             err->setKind(Error::Kind::COMPONENT);
+            err->setRule(SpecificationRule::COMPONENT_CHILD);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -572,6 +575,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setVariable(variable);
             err->setKind(Error::Kind::VARIABLE);
+            err->setRule(SpecificationRule::VARIABLE_ATTRIBUTE);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -606,6 +610,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                             "' does not contain any child elements.");
         err->setModel(model);
         err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::CONNECTION_CHILD);
         mParser->addError(err);
         return;
     }
@@ -633,6 +638,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
                     err->setModel(model);
                     err->setKind(Error::Kind::CONNECTION);
+                    err->setRule(SpecificationRule::CONNECTION_CHILD);
                     mParser->addError(err);
                 }
             } else {
@@ -673,6 +679,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' does not have a valid component_1 in a map_components element.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT1);
                 mParser->addError(err);
                 component1Missing = true;
             }
@@ -682,6 +689,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' does not have a valid component_2 in a map_components element.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT2);
                 mParser->addError(err);
                 component2Missing = true;
             }
@@ -692,6 +700,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' has more than one map_components element.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::CONNECTION_MAP_COMPONENTS);
                 mParser->addError(err);
             }
             componentNamePair = std::make_pair(component1Name, component2Name);
@@ -724,6 +733,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' does not have a valid variable_1 in a map_variables element.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
                 mParser->addError(err);
                 variable1Missing = true;
             }
@@ -733,6 +743,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' does not have a valid variable_2 in a map_variables element.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
                 mParser->addError(err);
                 variable2Missing = true;
             }
@@ -750,6 +761,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::CONNECTION_CHILD);
                 mParser->addError(err);
             }
         } else {
@@ -758,6 +770,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::CONNECTION);
+            err->setRule(SpecificationRule::CONNECTION_CHILD);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -778,6 +791,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' as component_1 but it does not exist in the model.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT1);
                 mParser->addError(err);
             }
         }
@@ -791,6 +805,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' as component_2 but it does not exist in the model.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT2);
                 mParser->addError(err);
             }
         }
@@ -800,6 +815,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                             "' does not have a map_components element.");
         err->setModel(model);
         err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::CONNECTION_MAP_COMPONENTS);
         mParser->addError(err);
     }
 
@@ -824,6 +840,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                             + component1->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
                         err->setKind(Error::Kind::CONNECTION);
+                        err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
                         mParser->addError(err);
                     }
                 }
@@ -834,6 +851,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' as variable_1 but the corresponding component_1 is invalid.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
                 mParser->addError(err);
             }
             if (component2) {
@@ -852,6 +870,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                             + component2->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
                         err->setKind(Error::Kind::CONNECTION);
+                        err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
                         mParser->addError(err);
                     }
                 }
@@ -862,6 +881,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                                     "' as variable_2 but the corresponding component_2 is invalid.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
                 mParser->addError(err);
             }
             // Set the variable equivalence relationship for this variable pair.
@@ -875,6 +895,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                             "' does not have a map_variables element.");
         err->setModel(model);
         err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
         mParser->addError(err);
     }
 }
@@ -901,6 +922,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                             "' as a component in a component_ref but it does not exist in the model.");
                         err->setModel(model);
                         err->setKind(Error::Kind::ENCAPSULATION);
+                        err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT);
                         mParser->addError(err);
                     }
                 } else {
@@ -909,6 +931,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                         "' has an invalid component_ref attribute '" + attribute->getType() + "'.");
                     err->setModel(model);
                     err->setKind(Error::Kind::ENCAPSULATION);
+                    err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT);
                     mParser->addError(err);
                 }
                 attribute = attribute->getNext();
@@ -919,6 +942,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                     "' does not have a valid component attribute in a component_ref element.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
+                err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT);
                 mParser->addError(err);
             }
         } else if (parentComponentNode->isType("text")) {
@@ -930,6 +954,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
+                err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
                 mParser->addError(err);
             } else {
                 // Continue to next node if this is whitespace (don't try to parse children of whitespace).
@@ -942,6 +967,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                 "' has an invalid child element '" + parentComponentNode->getType() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::ENCAPSULATION);
+            err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
             mParser->addError(err);
         }
 
@@ -982,6 +1008,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                                 "' as a component in a component_ref but it does not exist in the model.");
                             err->setModel(model);
                             err->setKind(Error::Kind::ENCAPSULATION);
+                            err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT);
                             mParser->addError(err);
                             childComponentMissing = true;
                         }
@@ -1011,6 +1038,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     }
                     err->setModel(model);
                     err->setKind(Error::Kind::ENCAPSULATION);
+                    err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT);
                     mParser->addError(err);
                 }
 
@@ -1023,6 +1051,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
                     err->setModel(model);
                     err->setKind(Error::Kind::ENCAPSULATION);
+                    err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
                     mParser->addError(err);
                 }
             } else {
@@ -1031,6 +1060,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                                     "' has an invalid child element '" + childComponentNode->getType() + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
+                err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
                 mParser->addError(err);
             }
 
