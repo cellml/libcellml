@@ -340,6 +340,8 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             loadUnits(units, childNode);
             component->addUnits(units);
         } else if (childNode->isType("math")) {
+            // TODO: copy any namespaces declared in parents into the math element
+            //       so math is a valid subdocument.
             std::string math = childNode->convertToString();
             component->setMath(math);
         } else if (childNode->isType("text")) {
