@@ -15,6 +15,7 @@ limitations under the License.
 */
 #include "libcellml/error.h"
 
+#include <map>
 #include <string>
 
 #include "libcellml/types.h"
@@ -30,6 +31,7 @@ struct Error::ErrorImpl
 {
     std::string mDescription; /**< The string description for why this entity error raised. */
     Error::Kind mKind = Error::Kind::UNDEFINED; /**< The Error::Kind enum value for this error. */
+    SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this error. */
     ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
     ImportPtr mImport; /**< Pointer to the import that the error occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
@@ -105,6 +107,16 @@ bool Error::isKind(const Error::Kind &kind)
     return response;
 }
 
+void Error::setRule(SpecificationRule rule)
+{
+    mPimpl->mRule = rule;
+}
+
+SpecificationRule Error::getRule() const
+{
+    return mPimpl->mRule;
+}
+
 void Error::setComponent(const ComponentPtr &component)
 {
     mPimpl->mComponent = component;
@@ -178,6 +190,49 @@ VariablePtr Error::getVariable()
 const VariablePtr& Error::getVariable() const
 {
     return mPimpl->mVariable;
+}
+
+/**
+ * @brief Map SpecificationRules to their section titles.
+ *
+ * An internal map used to convert a SpecificationRule into its heading string.
+ */
+std::map<SpecificationRule, const std::string> ruleToHeading =
+{
+    {SpecificationRule::UNDEFINED, ""},
+    {SpecificationRule::MODEL_ELEMENT, "4.1"},
+    {SpecificationRule::MODEL_NAME, "4.2.1"},
+    {SpecificationRule::MODEL_CHILD, "4.2.2"},
+    {SpecificationRule::IMPORT_HREF, "5.1.1"},
+    {SpecificationRule::IMPORT_CHILD, "5.1.2"},
+    {SpecificationRule::IMPORT_CIRCULAR, "5.1.3"}, // TODO: double-check meaning & implementation.
+    {SpecificationRule::IMPORT_UNITS_NAME, "6.1.1"},
+    {SpecificationRule::IMPORT_UNITS_REF, "6.1.2"},
+    {SpecificationRule::IMPORT_COMPONENT_NAME, "7.1.1"},
+    {SpecificationRule::IMPORT_COMPONENT_REF, "7.1.2"},
+    {SpecificationRule::UNITS_NAME, "8.1.1"},
+    {SpecificationRule::UNITS_MODEL_UNIQUE, "8.1.1.1"},
+    {SpecificationRule::UNITS_COMPONENT_UNIQUE, "8.1.1.2"},
+    {SpecificationRule::UNITS_STANDARD, "8.1.1.3"},
+    {SpecificationRule::UNITS_BASE, "8.1.2"},
+    {SpecificationRule::UNITS_CHILD, "8.1.3"},
+    {SpecificationRule::UNIT_UNITS_REF, "9.1.1"},
+    {SpecificationRule::UNIT_DIGRAPH, "9.1.1.1"}, // Assume we're skipping this for now.
+    {SpecificationRule::UNIT_CIRCULAR_REF, "9.1.1.2"}, // TODO: double-check meaning & implementation.
+    {SpecificationRule::UNIT_ATTRIBUTE, "9.1.2"},
+    {SpecificationRule::UNIT_PREFIX, "9.1.2.1"},
+    {SpecificationRule::UNIT_OFFSET, "9.1.2.2"},
+    {SpecificationRule::UNIT_MULTIPLIER, "9.1.2.3"},
+    {SpecificationRule::UNIT_EXPONENT, "9.1.2.4"},
+
+    {SpecificationRule::COMPONENT_NAME, "10.1.1"},
+
+    {SpecificationRule::MAP_VARIABLES_INTERFACE_UNDEFINED, "17.10.9"}
+};
+
+std::string Error::getSpecificationHeading() const
+{
+    return ruleToHeading.find(mPimpl->mRule)->second;;
 }
 
 }

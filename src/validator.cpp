@@ -97,6 +97,7 @@ void Validator::validateModel(const ModelPtr &model)
         err->setDescription("Model does not have a valid name attribute.");
         err->setModel(model);
         err->setKind(Error::Kind::MODEL);
+        err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
     // Check for components in this model.
@@ -120,6 +121,7 @@ void Validator::validateModel(const ModelPtr &model)
                                             "' does not have a valid component_ref attribute.");
                         err->setComponent(component);
                         err->setKind(Error::Kind::COMPONENT);
+                        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                         addError(err);
                         foundImportError = true;
                     }
@@ -130,6 +132,7 @@ void Validator::validateModel(const ModelPtr &model)
                                             "' does not have a valid locator xlink:href attribute.");
                         err->setImport(component->getImport());
                         err->setKind(Error::Kind::IMPORT);
+                        err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
                         foundImportError = true;
                     }
@@ -144,6 +147,7 @@ void Validator::validateModel(const ModelPtr &model)
                                                 "' with the same component_ref attribute '" + componentRef + "'.");
                             err->setModel(model);
                             err->setKind(Error::Kind::MODEL);
+                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                             addError(err);
                         }
                     }
@@ -186,6 +190,7 @@ void Validator::validateModel(const ModelPtr &model)
                                             "' does not have a valid units_ref attribute.");
                         err->setUnits(units);
                         err->setKind(Error::Kind::UNITS);
+                        err->setRule(SpecificationRule::IMPORT_UNITS_REF);
                         addError(err);
                         foundImportError = true;
                     }
@@ -196,6 +201,7 @@ void Validator::validateModel(const ModelPtr &model)
                                             "' does not have a valid locator xlink:href attribute.");
                         err->setImport(units->getImport());
                         err->setKind(Error::Kind::IMPORT);
+                        err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
                         foundImportError = true;
                     }
@@ -210,6 +216,7 @@ void Validator::validateModel(const ModelPtr &model)
                                                 "' with the same units_ref attribute '" + unitsRef + "'.");
                             err->setModel(model);
                             err->setKind(Error::Kind::MODEL);
+                            err->setRule(SpecificationRule::IMPORT_UNITS_REF);
                             addError(err);
                         }
                     }
@@ -225,6 +232,7 @@ void Validator::validateModel(const ModelPtr &model)
                                         "'. Valid units names should be unique to their model.");
                     err->setModel(model);
                     err->setKind(Error::Kind::MODEL);
+                    err->setRule(SpecificationRule::UNITS_MODEL_UNIQUE);
                     addError(err);
                 }
                 unitsNames.push_back(unitsName);
@@ -246,6 +254,11 @@ void Validator::validateComponent(const ComponentPtr &component)
         err->setDescription("Component does not have a valid name attribute.");
         err->setComponent(component);
         err->setKind(Error::Kind::COMPONENT);
+        if (component->isImport()) {
+            err->setRule(SpecificationRule::IMPORT_COMPONENT_NAME);
+        } else {
+            err->setRule(SpecificationRule::COMPONENT_NAME);
+        }
         addError(err);
     }
     // Check for units in this component.
@@ -263,6 +276,7 @@ void Validator::validateComponent(const ComponentPtr &component)
                                         "'. Valid units names should be unique to their component.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::COMPONENT);
+                    err->setRule(SpecificationRule::UNITS_COMPONENT_UNIQUE);
                     addError(err);
                 }
                 unitsNames.push_back(unitsName);
@@ -314,6 +328,11 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
         err->setDescription("Units does not have a valid name attribute.");
         err->setUnits(units);
         err->setKind(Error::Kind::UNITS);
+        if (units->isImport()) {
+            err->setRule(SpecificationRule::IMPORT_UNITS_NAME);
+        } else {
+            err->setRule(SpecificationRule::UNITS_NAME);
+        }
         addError(err);
     } else {
         // Check for a matching standard units.
@@ -323,6 +342,7 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
                                 "', which is a protected standard unit name.");
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
+            err->setRule(SpecificationRule::UNITS_STANDARD);
             addError(err);
         }
     }
@@ -348,6 +368,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
                                     "' is not a valid reference to a local units or a standard unit type.");
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
+            err->setRule(SpecificationRule::UNIT_UNITS_REF);
             addError(err);
         }
     } else {
@@ -356,6 +377,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
                                 "' does not have a units reference.");
         err->setUnits(units);
         err->setKind(Error::Kind::UNITS);
+        err->setRule(SpecificationRule::UNIT_UNITS_REF);
         addError(err);
     }
     if (prefix.length()) {
@@ -368,6 +390,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
                                     "' is not a valid real number or a SI prefix.");
                 err->setUnits(units);
                 err->setKind(Error::Kind::UNITS);
+                err->setRule(SpecificationRule::UNIT_PREFIX);
                 addError(err);
             }
         }
@@ -383,6 +406,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
             err->setDescription(description);
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
+            err->setRule(SpecificationRule::UNIT_OFFSET);
             addError(err);
         }
         if (exponent != 1.0) {
@@ -395,6 +419,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
             err->setDescription(description);
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
+            err->setRule(SpecificationRule::UNIT_OFFSET);
             addError(err);
         }
     }

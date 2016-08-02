@@ -87,7 +87,6 @@ void XmlDoc::parse(const std::string& input)
 
 void XmlDoc::parseMathML(std::string input)
 {
-    // TODO: decide on a place for the DTD (or use PUBLIC).
     std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">";
     std::string mathmlString = mathmlDtd + input;
     xmlParserCtxtPtr context = xmlNewParserCtxt();

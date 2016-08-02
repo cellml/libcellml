@@ -38,6 +38,7 @@ TEST(Validator, unnamedModel) {
     validator.validateModel(model);
     EXPECT_EQ(1, validator.errorCount());
     EXPECT_EQ(expectedError, validator.getError(0)->getDescription());
+    EXPECT_EQ("4.2.1", validator.getError(0)->getSpecificationHeading());
 }
 
 TEST(Validator, moveCopyValidatorWithUnnamedModel) {

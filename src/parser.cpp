@@ -250,6 +250,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                             "'. A valid CellML root node should be of type 'model'.");
         err->setModel(model);
         err->setKind(Error::Kind::MODEL);
+        err->setRule(SpecificationRule::MODEL_ELEMENT);
         mParser->addError(err);
         return;
     }
@@ -323,6 +324,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::MODEL);
+                err->setRule(SpecificationRule::MODEL_CHILD);
                 mParser->addError(err);
             }
         } else {
@@ -331,6 +333,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::MODEL);
+            err->setRule(SpecificationRule::MODEL_CHILD);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -411,6 +414,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                                     "'. Valid options are 'yes' or 'no'.");
                 err->setUnits(units);
                 err->setKind(Error::Kind::UNITS);
+                err->setRule(SpecificationRule::UNITS_BASE);
                 mParser->addError(err);
             }
         } else {
@@ -436,6 +440,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setUnits(units);
                 err->setKind(Error::Kind::UNITS);
+                err->setRule(SpecificationRule::UNITS_CHILD);
                 mParser->addError(err);
             }
         } else {
@@ -444,6 +449,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
+            err->setRule(SpecificationRule::UNITS_CHILD);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
@@ -505,6 +511,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
+            err->setRule(SpecificationRule::UNIT_ATTRIBUTE);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
@@ -1152,6 +1159,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setImport(import);
                 err->setKind(Error::Kind::IMPORT);
+                err->setRule(SpecificationRule::IMPORT_CHILD);
                 mParser->addError(err);
             }
         } else {
@@ -1160,6 +1168,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                                 "' has an invalid child element '" + childNode->getType() + "'.");
             err->setImport(import);
             err->setKind(Error::Kind::IMPORT);
+            err->setRule(SpecificationRule::IMPORT_CHILD);
             mParser->addError(err);
         }
         childNode = childNode->getNext();
