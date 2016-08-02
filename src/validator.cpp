@@ -46,7 +46,6 @@ public:
 private:
     void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
-    bool isNotWhitespace(std::string &input);
     void removeSubstring(std::string &input, std::string &pattern);
 };
 
@@ -560,7 +559,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         if (childNode) {
             if (childNode->isType("text")) {
                 textNode = childNode->convertToString();
-                if (isNotWhitespace(textNode)) {
+                if (mValidator->isNotWhitespace(textNode)) {
                     if (nodeType == "ci") {
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
@@ -670,27 +669,6 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     }
 }
 
-bool Validator::catchDoubleConversionError(const std::string &input)
-{
-    bool response = false;
-    double value;
-    // Try to convert the input string to double.
-    try
-    {
-        value = std::stod(input);
-    } catch (std::exception) {
-        response = true;
-        (void)value;
-    }
-    return response;
-}
-
-// TODO: We also use this in Parser- maybe should be a common method on Logger?
-bool Validator::ValidatorImpl::isNotWhitespace (std::string &input)
-{
-    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
-}
-
 void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
 {
     XmlNodePtr childNode = node->getFirstChild();
@@ -701,7 +679,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
                 std::string type = grandchildNode->getType();
                 if (grandchildNode->isType("text")) {
                     std::string textNode = grandchildNode->convertToString();
-                    if (isNotWhitespace(textNode)) {
+                    if (mValidator->isNotWhitespace(textNode)) {
                         bvarNames.push_back(textNode);
                     }
                 }

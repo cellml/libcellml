@@ -52,7 +52,6 @@ private:
     void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames);
     void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
     void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
-    bool catchDoubleConversionError(const std::string &input);
 
     bool isStandardUnitName(const std::string &name);
     bool isStandardPrefixName(const std::string &name);

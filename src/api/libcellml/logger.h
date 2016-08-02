@@ -90,6 +90,34 @@ public:
      */
     const ErrorPtr& getError(size_t index) const;
 
+protected:
+    /**
+     * @brief Try to convert the @p input @c std::string to a @c double.
+     *
+     * Try to convert the @p input @c std::string to a @c double. If @p input
+     * cannot be converted using @c std::stod, catch the exception and return
+     * @c true. If @p input can be converted, return @c false.
+     *
+     * @param input The @c std::string value to try to convert to a @c double.
+     *
+     * @return @c true if @p input cannot be converted to a @c double using
+     * @c std::stod and @c false otherwise.
+     *
+     */
+    bool catchDoubleConversionError(const std::string &input);
+
+    /**
+     * @brief Check if the @p input @c std::string has any non-whitespace characters.
+     *
+     * If the @p input @c std::string has any non-whitespace characters, return
+     * @c true, otherwise return @c false.
+     *
+     * @param input The string to check for non-whitespace characters.
+     *
+     * @return @c true if @p input contains non-whitespace characters and @c false otherwise.
+     */
+    bool isNotWhitespace(std::string &input);
+
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */
 
