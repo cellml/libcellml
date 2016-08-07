@@ -42,11 +42,17 @@ struct Validator::ValidatorImpl
 public:
     // TODO: doc
     Validator *mValidator;
+    void validateComponent(const ComponentPtr &component);
+    void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsName);
+private:     
+    void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
+    void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
     void validateMath(const std::string &input, const ComponentPtr &component, std::vector<std::string> &variableNames);
-private:
     void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
     void removeSubstring(std::string &input, std::string &pattern);
+    bool isStandardUnitName(const std::string &name);
+    bool isStandardPrefixName(const std::string &name);
 };
 
 Validator::Validator()
@@ -166,7 +172,7 @@ void Validator::validateModel(const ModelPtr &model)
                 componentNames.push_back(componentName);
             }
             // Validate component.
-            validateComponent(component);
+            mPimpl->validateComponent(component);
         }
     }
     // Check for units in this model.
@@ -240,12 +246,12 @@ void Validator::validateModel(const ModelPtr &model)
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             // Validate units.
             UnitsPtr units = model->getUnits(i);
-            validateUnits(units, unitsNames);
+            mPimpl->validateUnits(units, unitsNames);
         }
     }
 }
 
-void Validator::validateComponent(const ComponentPtr &component)
+void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
     // Check for a valid name attribute.
     if (!component->getName().length()) {
@@ -258,7 +264,7 @@ void Validator::validateComponent(const ComponentPtr &component)
         } else {
             err->setRule(SpecificationRule::COMPONENT_NAME);
         }
-        addError(err);
+        mValidator->addError(err);
     }
     // Check for units in this component.
     if (component->unitsCount() > 0) {
@@ -276,7 +282,7 @@ void Validator::validateComponent(const ComponentPtr &component)
                     err->setComponent(component);
                     err->setKind(Error::Kind::COMPONENT);
                     err->setRule(SpecificationRule::UNITS_COMPONENT_UNIQUE);
-                    addError(err);
+                    mValidator->addError(err);
                 }
                 unitsNames.push_back(unitsName);
             }
@@ -303,7 +309,7 @@ void Validator::validateComponent(const ComponentPtr &component)
                     err->setComponent(component);
                     err->setKind(Error::Kind::COMPONENT);
                     err->setRule(SpecificationRule::VARIABLE_NAME);
-                    addError(err);
+                    mValidator->addError(err);
                 }
                 variableNames.push_back(variableName);
             }
@@ -316,11 +322,11 @@ void Validator::validateComponent(const ComponentPtr &component)
     }
     // Validate math through the private implementation (for XML handling).
     if (component->getMath().length()) {
-        mPimpl->validateMath(component->getMath(), component, variableNames);
+        validateMath(component->getMath(), component, variableNames);
     }
 }
 
-void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
+void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
     // Check for a valid name attribute.
     if (!units->getName().length()) {
@@ -333,7 +339,7 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
         } else {
             err->setRule(SpecificationRule::UNITS_NAME);
         }
-        addError(err);
+        mValidator->addError(err);
     } else {
         // Check for a matching standard units.
         if (isStandardUnitName(units->getName())) {
@@ -343,7 +349,7 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
             err->setRule(SpecificationRule::UNITS_STANDARD);
-            addError(err);
+            mValidator->addError(err);
         }
     }
     if (units->unitCount() > 0) {
@@ -354,7 +360,7 @@ void Validator::validateUnits(const UnitsPtr &units, const std::vector<std::stri
     }
 }
 
-void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames)
+void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
     // Validate the unit at the given index.
     std::string reference, prefix;
@@ -369,7 +375,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
             err->setRule(SpecificationRule::UNIT_UNITS_REF);
-            addError(err);
+            mValidator->addError(err);
         }
     } else {
         ErrorPtr err = std::make_shared<Error>();
@@ -378,11 +384,11 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
         err->setUnits(units);
         err->setKind(Error::Kind::UNITS);
         err->setRule(SpecificationRule::UNIT_UNITS_REF);
-        addError(err);
+        mValidator->addError(err);
     }
     if (prefix.length()) {
         // If the prefix is not a real number, check in the list of valid prefix names.
-        if (catchDoubleConversionError(prefix)) {
+        if (mValidator->catchDoubleConversionError(prefix)) {
             if (!isStandardPrefixName(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
@@ -391,7 +397,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
                 err->setUnits(units);
                 err->setKind(Error::Kind::UNITS);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
-                addError(err);
+                mValidator->addError(err);
             }
         }
     }
@@ -407,7 +413,7 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
             err->setRule(SpecificationRule::UNIT_OFFSET);
-            addError(err);
+            mValidator->addError(err);
         }
         if (exponent != 1.0) {
             std::stringstream ss;
@@ -420,12 +426,12 @@ void Validator::validateUnitsUnit(size_t index, const UnitsPtr &units, const std
             err->setUnits(units);
             err->setKind(Error::Kind::UNITS);
             err->setRule(SpecificationRule::UNIT_OFFSET);
-            addError(err);
+            mValidator->addError(err);
         }
     }
 }
 
-void Validator::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
 {
     // Check for a valid name attribute.
     if (!variable->getName().length()) {
@@ -434,7 +440,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
         err->setVariable(variable);
         err->setKind(Error::Kind::VARIABLE);
         err->setRule(SpecificationRule::VARIABLE_NAME);
-        addError(err);
+        mValidator->addError(err);
     }
     // Check for a valid units attribute.
     if (!variable->getUnits().length()) {
@@ -444,7 +450,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
         err->setVariable(variable);
         err->setKind(Error::Kind::VARIABLE);
         err->setRule(SpecificationRule::VARIABLE_UNITS);
-        addError(err);
+        mValidator->addError(err);
     }
     // Check for a valid interface attribute.
     if (variable->getInterfaceType().length()) {
@@ -457,7 +463,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
             err->setVariable(variable);
             err->setKind(Error::Kind::VARIABLE);
             err->setRule(SpecificationRule::VARIABLE_INTERFACE);
-            addError(err);
+            mValidator->addError(err);
         }
     }
     // Check for a valid initial value attribute.
@@ -466,7 +472,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
         // Check if initial value is a variable reference
         if(!(std::find(variableNames.begin(), variableNames.end(), initialValue) != variableNames.end())) {
             // Otherwise, check that the initial value can be converted to a double
-            if (catchDoubleConversionError(initialValue)) {
+            if (mValidator->catchDoubleConversionError(initialValue)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Variable '" + variable->getName() +
                                     "' has an invalid initial value '" + initialValue +
@@ -474,7 +480,7 @@ void Validator::validateVariable(const VariablePtr &variable, std::vector<std::s
                 err->setVariable(variable);
                 err->setKind(Error::Kind::VARIABLE);
                 err->setRule(SpecificationRule::VARIABLE_INITIAL_VALUE);
-                addError(err);
+                mValidator->addError(err);
             }
         }
     }
@@ -644,7 +650,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             // Check for a matching units in this component.
             if (!component->hasUnits(unitsName)) {
                 // Check for a matching standard units.
-                if (!mValidator->isStandardUnitName(unitsName)) {
+                if (!isStandardUnitName(unitsName)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Math has a " + nodeType + " element with a cellml:units attribute '" + unitsName +
                                         "' that is not a valid reference to units in component '" +
@@ -711,7 +717,7 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
       input.erase(i, n);
 }
 
-bool Validator::isStandardUnitName(const std::string &name)
+bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
 {
     bool result = false;
     std::vector<std::string> standardUnitNames =
@@ -727,7 +733,7 @@ bool Validator::isStandardUnitName(const std::string &name)
     return result;
 }
 
-bool Validator::isStandardPrefixName(const std::string &name)
+bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
 {
     bool result = false;
     std::vector<std::string> prefixNames =

@@ -47,15 +47,6 @@ public:
     void validateModel(const ModelPtr &model);
 
 private:
-
-    void validateComponent(const ComponentPtr &component);
-    void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames);
-    void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
-    void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
-
-    bool isStandardUnitName(const std::string &name);
-    bool isStandardPrefixName(const std::string &name);
-
     void swap(Validator &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ValidatorImpl; /**< Forward declaration for pImpl idiom. */
