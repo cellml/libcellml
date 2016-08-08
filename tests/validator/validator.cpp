@@ -190,7 +190,9 @@ TEST(Validator, importUnits) {
     std::vector<std::string> expectedErrors = {
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'."
+        "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
+        "Imported units does not have a valid name attribute."
+
     };
 
     libcellml::Validator v;
@@ -226,6 +228,15 @@ TEST(Validator, importUnits) {
     v.validateModel(m);
     EXPECT_EQ(3, v.errorCount());
 
+    // Invalid units import - unnamed units
+    libcellml::ImportPtr imp4 = std::make_shared<libcellml::Import>();
+    imp4->setSource("some-other-different-model.xml");
+    libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
+    importedUnits4->setSourceUnits(imp4, "units_in_that_model");
+    m->addUnits(importedUnits4);
+    v.validateModel(m);
+    EXPECT_EQ(4, v.errorCount());
+
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
         //std::cout << v.getError(i)->getDescription() + "\n";
@@ -237,7 +248,8 @@ TEST(Validator, importComponents) {
     std::vector<std::string> expectedErrors = {
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'."
+        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
+        "Imported component does not have a valid name attribute."
     };
 
     libcellml::Validator v;
@@ -272,6 +284,15 @@ TEST(Validator, importComponents) {
     m->addComponent(importedComponent3);
     v.validateModel(m);
     EXPECT_EQ(3, v.errorCount());
+
+    // Invalid component import - unnamed component
+    libcellml::ImportPtr imp4 = std::make_shared<libcellml::Import>();
+    imp4->setSource("some-other-different-model.xml");
+    libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
+    importedComponent4->setSourceComponent(imp4, "component_in_that_model");
+    m->addComponent(importedComponent4);
+    v.validateModel(m);
+    EXPECT_EQ(4, v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {

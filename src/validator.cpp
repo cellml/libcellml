@@ -261,12 +261,13 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     // Check for a valid name attribute.
     if (!component->getName().length()) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Component does not have a valid name attribute.");
         err->setComponent(component);
         err->setKind(Error::Kind::COMPONENT);
         if (component->isImport()) {
+            err->setDescription("Imported component does not have a valid name attribute.");
             err->setRule(SpecificationRule::IMPORT_COMPONENT_NAME);
         } else {
+            err->setDescription("Component does not have a valid name attribute.");
             err->setRule(SpecificationRule::COMPONENT_NAME);
         }
         mValidator->addError(err);
@@ -336,12 +337,13 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
     // Check for a valid name attribute.
     if (!units->getName().length()) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Units does not have a valid name attribute.");
         err->setUnits(units);
         err->setKind(Error::Kind::UNITS);
         if (units->isImport()) {
+            err->setDescription("Imported units does not have a valid name attribute.");
             err->setRule(SpecificationRule::IMPORT_UNITS_NAME);
         } else {
+            err->setDescription("Units does not have a valid name attribute.");
             err->setRule(SpecificationRule::UNITS_NAME);
         }
         mValidator->addError(err);
