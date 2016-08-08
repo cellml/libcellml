@@ -596,3 +596,68 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
+
+TEST(Validator, validateInvalidConnections) {
+    std::vector<std::string> expectedErrors = {
+        "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
+        "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1_2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    comp4->setName("component4");
+    v1_1->setName("variable1_1");
+    v1_2->setName("variable1_2");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    v1_1->setUnits("dimensionless");
+    v1_2->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+    v4->setUnits("dimensionless");
+
+    comp1->addVariable(v1_1);
+    comp1->addVariable(v1_2);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    comp4->addVariable(v4);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+    m->addComponent(comp4);
+
+    // Valid connections.
+    libcellml::Variable::addEquivalence(v1_1, v2);
+    libcellml::Variable::addEquivalence(v1_2, v2);
+    libcellml::Variable::addEquivalence(v1_1, v3);
+    libcellml::Variable::addEquivalence(v1_1, v4);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v1_1, v3);
+    // Make v4 a variable without a parent component.
+    comp4->removeVariable(v4);
+    // Remove all connections on v1_2, leaving dangling reciprocal connections.
+    v1_2->removeAllEquivalences();
+
+    v.validateModel(m);
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        //std::cout << v.getError(i)->getDescription() + "\n";
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
+}

@@ -44,6 +44,7 @@ public:
     Validator *mValidator;
     void validateComponent(const ComponentPtr &component);
     void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsName);
+    void validateConnections(const ModelPtr &model);
 private:     
     void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
     void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
@@ -97,6 +98,8 @@ void Validator::validateModel(const ModelPtr &model)
     // Clear any pre-existing errors in ths validator instance.
     clearErrors();
     // Check for a valid name attribute.
+    // TODO: currently just checking that names exist but should set up a separate
+    //       method that checks if an attribute is a proper CellML Identifier (see 3.1 in the Spec.)
     if (!model->getName().length()) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Model does not have a valid name attribute.");
@@ -249,6 +252,8 @@ void Validator::validateModel(const ModelPtr &model)
             mPimpl->validateUnits(units, unitsNames);
         }
     }
+    // Validate any connections / variable equivalence networks in the model.
+    mPimpl->validateConnections(model);
 }
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
@@ -708,6 +713,52 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
         gatherMathBvarVariableNames(node, bvarNames);
     }
 }
+
+void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
+{
+    // Check the components in this model.
+    if (model->componentCount() > 0) {
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            ComponentPtr component = model->getComponent(i);
+            // Check the variables in this component.
+            for (size_t j = 0; j < component->variableCount(); ++j) {
+                VariablePtr variable = component->getVariable(j);
+                // Check the equivalent variables in this variable.
+                if (variable->equivalentVariableCount() > 0) {
+                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                        VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
+                        // TODO: validate variable interfaces according to 17.10.8
+                        // TODO: add check for cyclical connections (17.10.5)
+                        if (equivalentVariable->hasEquivalentVariable(variable)) {
+                            // Check that the equivalent variable has a valid parent component.
+                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                            if (!component2->hasVariable(equivalentVariable)) {
+                                ErrorPtr err = std::make_shared<Error>();
+                                err->setDescription("Variable '" + equivalentVariable->getName() +
+                                                    "' is an equivalent variable to '" + variable->getName() +
+                                                    "' but has no parent component.");
+                                err->setModel(model);
+                                err->setKind(Error::Kind::CONNECTION);
+                                mValidator->addError(err);
+                            }
+                        } else {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->getName() +
+                                                "' has an equivalent variable '" + equivalentVariable->getName() +
+                                                "'  which does not reciprocally have '" + variable->getName() +
+                                                "' set as an equivalent variable.");
+                            err->setModel(model);
+                            err->setKind(Error::Kind::CONNECTION);
+                            mValidator->addError(err);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// TODO: validateEncapsulations
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
   std::string::size_type n = pattern.length();

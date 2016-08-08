@@ -241,12 +241,12 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::MAP_COMPONENTS_COMPONENT1, "15.1.1"},
     {SpecificationRule::MAP_COMPONENTS_COMPONENT2, "15.1.2"},
     {SpecificationRule::MAP_VARIABLES_VARIABLE1, "16.1.1"},
-    {SpecificationRule::MAP_VARIABLES_VARIABLE1, "16.1.2"}
+    {SpecificationRule::MAP_VARIABLES_VARIABLE1, "16.1.2"},
 };
 
 std::string Error::getSpecificationHeading() const
 {
-    return ruleToHeading.find(mPimpl->mRule)->second;;
+    return ruleToHeading.find(getRule())->second;;
 }
 
 }
