@@ -127,7 +127,14 @@ public:
      */
     SpecificationRule getRule() const;
 
-    // TODO: doc
+    /**
+     * @brief Get the @c std::string heading associated with the @c enum SpecificationRule for this error.
+     *
+     * Get the @c std::string CellML 2.0 Specification heading associated with the @c enum SpecificationRule
+     * for this error. If no rule has been set for this error, will return an empty string.
+     *
+     * @return The @c std::string referencing the CellML 2.0 Specification heading relevant to this error.
+     */
     std::string getSpecificationHeading() const;
 
     /**

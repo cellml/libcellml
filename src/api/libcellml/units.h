@@ -188,7 +188,7 @@ public:
      *
      * @overload
      *
-     * @param reference The @c StandardUnit enum units reference to add.
+     * @param standardRef The @c StandardUnit enum units reference to add.
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
@@ -205,7 +205,7 @@ public:
      *
      * @overload
      *
-     * @param reference The @c StandardUnit enum units reference to add.
+     * @param standardRef The @c StandardUnit enum units reference to add.
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
@@ -222,7 +222,7 @@ public:
      *
      * @overload
      *
-     * @param reference The @c StandardUnit enum units reference to add.
+     * @param standardRef The @c StandardUnit enum units reference to add.
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
@@ -239,7 +239,7 @@ public:
      *
      * @overload
      *
-     * @param reference The @c StandardUnit enum units reference to add.
+     * @param standardRef The @c StandardUnit enum units reference to add.
      * @param exponent The exponent for the unit.
      */
     void addUnit(StandardUnit standardRef, double exponent);
@@ -252,12 +252,24 @@ public:
      *
      * @overload
      *
-     * @param reference The @c StandardUnit enum units reference to add.
+     * @param standardRef The @c StandardUnit enum units reference to add.
      */
     void addUnit(StandardUnit standardRef);
 
-    // TODO: doc
-    void getUnit(size_t index, std::string& name, std::string &prefix, double &exponent, double &multiplier, double &offset);
+    /**
+     * @brief Get the @c unit attributes at the given @p index of this units.
+     *
+     * Get the attributes for the @c unit at the index @p index of this units. If
+     * no attributes are set, default attribute values will be returned.
+     *
+     * @param index The index of the @c unit in this units to get attributes for.
+     * @param reference The @c std::string reference for this @c unit. Defaults to empty string.
+     * @param prefix The prefix for this @c unit. Defaults to empty string.
+     * @param exponent The exponent for this @c unit. Defaults to 1.0.
+     * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
+     * @param offset The offset for this @c unit. Defaults to 0.0.
+     */
+    void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset);
 
     /**
      * @brief Remove the unit with the given reference.
@@ -305,9 +317,6 @@ public:
      * @return The number of units.
      */
     size_t unitCount() const;
-
-	// TODO: doc
-    std::vector<std::string> getUnitValidationErrors(const std::vector<std::string> &unitsNames);
 
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */

@@ -94,7 +94,11 @@ public:
      */
     XmlAttributePtr getNext();
 
-	// TODO: doc
+    /**
+     * @brief Remove this XmlAttribute from its parent XmlNode.
+     *
+     * Remove this XmlAttribute from its parent XmlNode.
+     */
     void removeAttribute();
 
 private:
