@@ -42,8 +42,14 @@ public:
     Validator(Validator &&rhs); /**< Move constructor */
     Validator& operator=(Validator v); /**< Assignment operator */
 
-    // TODO: proper documentation here and below
-
+    /**
+     * @brief Validate the @p model using the CellML 2.0 Specification.
+     *
+     * Validate the given @p model and its encapsulated entities using the
+     * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+     *
+     * @param model The model to validate.
+     */
     void validateModel(const ModelPtr &model);
 
 private:
