@@ -73,6 +73,20 @@ public:
      */
     void validateConnections(const ModelPtr &model);
 
+    /**
+     * @brief Check if the provided @p name is a valid CellML identifier.
+     *
+     * Checks if the provided @p name is a valid CellML identifier according
+     * to the CellML 2.0 specification. This requires a non-zero length Unicode
+     * character sequence containing basic Latin alphanumeric characters or
+     * underscores that does not start with a number.
+     *
+     * @param name The @c std::string name to check the validity of.
+     *
+     * @return @c true if @name is a valid CellML identifier and @c false otherwise.
+     */
+    bool isCellmlIdentifier(const std::string &name);
+
 private:     
     /**
      * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
@@ -213,9 +227,7 @@ void Validator::validateModel(const ModelPtr &model)
     // Clear any pre-existing errors in ths validator instance.
     clearErrors();
     // Check for a valid name attribute.
-    // TODO: currently just checking that names exist but should set up a separate
-    //       method that checks if an attribute is a proper CellML Identifier (see 3.1 in the Spec.)
-    if (!model->getName().length()) {
+    if (!mPimpl->isCellmlIdentifier(model->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Model does not have a valid name attribute.");
         err->setModel(model);
@@ -238,7 +250,7 @@ void Validator::validateModel(const ModelPtr &model)
                     std::string componentRef = component->getImportReference();
                     std::string importSource = component->getImport()->getSource();
                     bool foundImportError = false;
-                    if (!componentRef.length()) {
+                    if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported component '" + componentName +
                                             "' does not have a valid component_ref attribute.");
@@ -249,6 +261,7 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     // Check for a xlink:href.
+                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
                     if (!importSource.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
@@ -307,7 +320,7 @@ void Validator::validateModel(const ModelPtr &model)
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImport()->getSource();
                     bool foundImportError = false;
-                    if (!unitsRef.length()) {
+                    if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported units '" + unitsName +
                                             "' does not have a valid units_ref attribute.");
@@ -318,6 +331,7 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     // Check for a xlink:href.
+                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
                     if (!importSource.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
@@ -374,7 +388,7 @@ void Validator::validateModel(const ModelPtr &model)
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
     // Check for a valid name attribute.
-    if (!component->getName().length()) {
+    if (!isCellmlIdentifier(component->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setComponent(component);
         err->setKind(Error::Kind::COMPONENT);
@@ -450,7 +464,8 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
     // Check for a valid name attribute.
-    if (!units->getName().length()) {
+    // TODO: Check for valid base unit reduction (see 17.3)
+    if (!isCellmlIdentifier(units->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setUnits(units);
         err->setKind(Error::Kind::UNITS);
@@ -488,7 +503,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     std::string reference, prefix;
     double exponent, multiplier, offset;
     units->getUnit(index, reference, prefix, exponent, multiplier, offset);
-    if (reference.length()) {
+    if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) &&
             (!isStandardUnitName(reference))) {
             ErrorPtr err = std::make_shared<Error>();
@@ -502,7 +517,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     } else {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Unit in units '" + units->getName() +
-                                "' does not have a units reference.");
+                            "' does not have a valid units reference.");
         err->setUnits(units);
         err->setKind(Error::Kind::UNITS);
         err->setRule(SpecificationRule::UNIT_UNITS_REF);
@@ -556,7 +571,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
 void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
 {
     // Check for a valid name attribute.
-    if (!variable->getName().length()) {
+    if (!isCellmlIdentifier(variable->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable does not have a valid name attribute.");
         err->setVariable(variable);
@@ -565,7 +580,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         mValidator->addError(err);
     }
     // Check for a valid units attribute.
-    if (!variable->getUnits().length()) {
+    // TODO: Check that this is a standard units or a units in the model.
+    if (!isCellmlIdentifier(variable->getUnits())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable '" + variable->getName() +
                             "' does not have a valid units attribute.");
@@ -752,10 +768,11 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             attribute = attribute->getNext();
         }
         // Check that cellml:units has been set.
-        if (!unitsName.length()) {
+        if (!isCellmlIdentifier(unitsName)) {
             if (nodeType == "cn") {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Math cn element with the value '" + textNode + "' does not have a cellml:units attribute.");
+                err->setDescription("Math cn element with the value '" + textNode +
+                                    "' does not have a valid cellml:units attribute.");
                 err->setComponent(component);
                 err->setKind(Error::Kind::MATHML);
                 mValidator->addError(err);
@@ -911,6 +928,26 @@ bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
     };
     if (std::find(prefixNames.begin(), prefixNames.end(), name) != prefixNames.end()) {
         result = true;
+    }
+    return result;
+}
+
+bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
+{
+    bool result = true;
+    // One or more alphabetic characters.
+    if (name.length() > 0) {
+        // Does not start with numeric character.
+        if (!isdigit(name[0])) {
+            // Basic Latin alphanumeric characters and underscores.
+            if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
+                result = false;
+            }
+        } else {
+            result = false;
+        }
+    } else {
+        result = false;
     }
     return result;
 }
