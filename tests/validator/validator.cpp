@@ -130,7 +130,8 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
     std::vector<std::string> expectedErrors = {
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names should be unique to their component.",
         "Variable does not have a valid name attribute.",
-        "Variable 'margie' does not have a valid units attribute."
+        "Variable 'margie' does not have a valid units attribute.",
+        "Variable 'ransom' has an invalid units reference 'dollars' that does not correspond with a standard unit or units in the variable's parent component or model."
     };
 
     libcellml::Validator validator;
@@ -139,10 +140,12 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
     model->addComponent(c1);
     c1->addVariable(v1);
     c1->addVariable(v2);
     c1->addVariable(v3);
+    c1->addVariable(v4);
 
     model->setName("minnesota");
     c1->setName("fargo");
@@ -151,6 +154,8 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
     v2->setName("margie");
     v2->setUnits("ampere");
     v3->setName("margie");
+    v4->setName("ransom");
+    v4->setUnits("dollars");
     validator.validateModel(model);
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());

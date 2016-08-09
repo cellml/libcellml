@@ -580,7 +580,6 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         mValidator->addError(err);
     }
     // Check for a valid units attribute.
-    // TODO: Check that this is a standard units or a units in the model.
     if (!isCellmlIdentifier(variable->getUnits())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable '" + variable->getName() +
@@ -589,6 +588,21 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         err->setKind(Error::Kind::VARIABLE);
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
+    } else if (!isStandardUnitName(variable->getUnits())) {
+        Component* component = static_cast<Component*>(variable->getParent());
+        if (!component->hasUnits(variable->getUnits())) {
+            Model* model = static_cast<Model*>(component->getParent());
+            if (!model->hasUnits(variable->getUnits())) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Variable '" + variable->getName() +
+                                    "' has an invalid units reference '" + variable->getUnits() +
+                                    "' that does not correspond with a standard unit or units in the variable's parent component or model.");
+                err->setVariable(variable);
+                err->setKind(Error::Kind::VARIABLE);
+                err->setRule(SpecificationRule::VARIABLE_UNITS);
+                mValidator->addError(err);
+            }
+        }
     }
     // Check for a valid interface attribute.
     if (variable->getInterfaceType().length()) {
