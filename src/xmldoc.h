@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef XMLDOC_H
-#define XMLDOC_H
+#pragma once
 
 #include <memory>
 #include <string>
@@ -96,5 +95,3 @@ private:
 };
 
 }
-
-#endif // XMLDOC_H

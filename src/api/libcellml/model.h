@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_MODEL_H_
-#define LIBCELLML_LIBCELLML_MODEL_H_
+#pragma once
 
 #include <string>
 
@@ -45,6 +44,3 @@ private:
 };
 
 }
-
-#endif /* LIBCELLML_LIBCELLML_MODEL_H_ */
-

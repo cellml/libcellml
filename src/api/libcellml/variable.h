@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_VARIABLE_H
-#define LIBCELLML_LIBCELLML_VARIABLE_H
+#pragma once
 
 #include <string>
 
@@ -285,5 +284,3 @@ private:
 };
 
 }
-
-#endif /* LIBCELLML_LIBCELLML_VARIABLE_H */

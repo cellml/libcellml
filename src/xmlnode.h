@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef XMLNODE_H
-#define XMLNODE_H
+#pragma once
 
 #include <libxml/parser.h>
 #include <memory>
@@ -148,5 +147,3 @@ private:
 };
 
 }
-
-#endif // XMLNODE_H
