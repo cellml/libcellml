@@ -15,8 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
-#define LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_
+#pragma once
 
 /**
  * @mainpage libCellML
@@ -34,5 +33,3 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 #include "libcellml/version.h"
-
-#endif  // LIBCELLML_LIBCELLML_MODULE_LIBCELLML_H_

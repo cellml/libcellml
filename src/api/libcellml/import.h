@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_IMPORT_H_
-#define LIBCELLML_LIBCELLML_IMPORT_H_
+#pragma once
 
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/namedentity.h"
@@ -63,5 +62,3 @@ private:
 };
 
 }
-
-#endif /* LIBCELLML_LIBCELLML_IMPORT_H_ */

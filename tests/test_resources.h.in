@@ -1,6 +1,5 @@
 
-#ifndef TEST_RESOURCES_H_
-#define TEST_RESOURCES_H_
+#pragma once
 
 class TestResources
 {
@@ -42,6 +41,3 @@ public:
         return 0;
     }
 };
-
-#endif /* TEST_RESOURCES_H_ */
-

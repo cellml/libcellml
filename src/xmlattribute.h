@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef XMLATTRIBUTE_H
-#define XMLATTRIBUTE_H
+#pragma once
 
 #include <libxml/parser.h>
 #include <memory>
@@ -96,5 +95,3 @@ private:
 };
 
 }
-
-#endif // XMLATTRIBUTE_H
