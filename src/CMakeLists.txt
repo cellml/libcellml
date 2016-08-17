@@ -25,6 +25,8 @@ endforeach()
 set(LIBCELLML_LIBRARY_VERSION 0x${libCellML_VERSION_MAJOR_PAD}${libCellML_VERSION_MAJOR}${libCellML_VERSION_MINOR_PAD}${libCellML_VERSION_MINOR}${libCellML_VERSION_PATCH_PAD}${libCellML_VERSION_PATCH})
 set(LIBCELLML_LIBRARY_VERSION_STRING "${libCellML_VERSION_MAJOR}.${libCellML_VERSION_MINOR}.${libCellML_VERSION_PATCH}")
 
+set(LIBCELLML_MATHML_DTD_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/dtds/mathml2/mathml2.dtd")
+
 set(LIBCELLML_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/exportdefinitions.h")
 set_source_files_properties(${LIBCELLML_EXPORTDEFINITIONS_H} PROPERTIES GENERATED TRUE)
 set(LIBCELLML_VERSIONCONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/versionconfig.h")
@@ -34,6 +36,12 @@ configure_file(
 )
 
 list(APPEND CLEAN_FILES ${LIBCELLML_VERSIONCONFIG_H} ${LIBCELLML_EXPORTDEFINITIONS_H})
+
+set(MATHML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/mathml_config.h")
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/configure/mathml_config.h.in"
+  ${MATHML_CONFIG_H}
+)
 
 set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/component.cpp
@@ -47,6 +55,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/variable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.cpp
@@ -66,8 +75,10 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/specificationrules.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/validator.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
   ${LIBCELLML_EXPORTDEFINITIONS_H}
@@ -79,6 +90,7 @@ set(HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
+  ${MATHML_CONFIG_H}
 )
 
 # Only does anything if configuration target is Visual Studio.

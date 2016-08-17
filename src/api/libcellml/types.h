@@ -20,7 +20,11 @@ limitations under the License.
 
 namespace libcellml {
 
+// Input, output, and error handlers.
 class Parser; /**< Forward declaration of Parser class. */
+class Validator; /**< Forward declaration of Validator class. */
+
+// CellML entities.
 class Model; /**< Forward declaration of Model class. */
 typedef std::shared_ptr<Model> ModelPtr; /**< Type definition for shared model pointer. */
 class Component; /**< Forward declaration of Component class. */

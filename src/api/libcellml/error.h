@@ -19,6 +19,7 @@ limitations under the License.
 #include <string>
 
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/specificationrules.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -48,6 +49,7 @@ public:
         CONNECTION,
         ENCAPSULATION,
         IMPORT,
+        MATHML,
         MODEL,
         UNDEFINED,
         UNITS,
@@ -103,6 +105,36 @@ public:
      * error and @c false otherwise.
      */
     bool isKind(const Kind &kind);
+
+    /**
+     * @brief Set the @c enum SpecificationRule of this error.
+     *
+     * Set the @p rule of this error from the options available in
+     * the @c SpecificationRule @c enum.
+     *
+     * @param rule The @c SpecificationRule to set.
+     */
+    void setRule(SpecificationRule rule);
+
+    /**
+     * @brief Get the @c enum SpecificationRule of this error.
+     *
+     * Get the @c enum @c SpecificationRule value @p rule of this error. If
+     * no rule has been set for this error, will return SpecificationRule::UNDEFINED.
+     *
+     * @return The @c SpecificationRule for this error.
+     */
+    SpecificationRule getRule() const;
+
+    /**
+     * @brief Get the @c std::string heading associated with the @c enum SpecificationRule for this error.
+     *
+     * Get the @c std::string CellML 2.0 Specification heading associated with the @c enum SpecificationRule
+     * for this error. If no rule has been set for this error, will return an empty string.
+     *
+     * @return The @c std::string referencing the CellML 2.0 Specification heading relevant to this error.
+     */
+    std::string getSpecificationHeading() const;
 
     /**
      * @brief Set the component for this component error.

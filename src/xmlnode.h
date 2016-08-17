@@ -132,6 +132,17 @@ public:
     XmlNodePtr getNext();
 
     /**
+     * @brief Get the @c XmlNode parent of this @c XmlNode.
+     *
+     * Gets the parent @c XmlNode of this @c XmlNode based
+     * on the ordering from the deserialised @c XmlDoc. If no
+     * parent node exists, returns @c nullptr.
+     *
+     * @return The @c XmlNodePtr to the parent of this @c XmlNode.
+     */
+    XmlNodePtr getParent();
+
+    /**
      * @brief Convert this @c XmlNode content into a @c std::string.
      *
      * Converts the content in this @c XmlNode (including all children and

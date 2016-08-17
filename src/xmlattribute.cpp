@@ -71,12 +71,7 @@ std::string XmlAttribute::getValue() const
 {
     std::string valueString;
     if ((mPimpl->mXmlAttributePtr->name) && (mPimpl->mXmlAttributePtr->parent)) {
-        char *value;
-        if ((mPimpl->mXmlAttributePtr->ns) && (mPimpl->mXmlAttributePtr->ns->href)) {
-            value = reinterpret_cast<char *>(xmlGetNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name, mPimpl->mXmlAttributePtr->ns->href));
-        } else {
-            value = reinterpret_cast<char *>(xmlGetNoNsProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name));
-        }
+        char *value = reinterpret_cast<char *>(xmlGetProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name));
         valueString = std::string(value);
         xmlFree(value);
     }
@@ -92,6 +87,11 @@ XmlAttributePtr XmlAttribute::getNext()
         nextHandle->setXmlAttribute(next);
     }
     return nextHandle;
+}
+
+void XmlAttribute::removeAttribute()
+{
+    xmlRemoveProp(mPimpl->mXmlAttributePtr);
 }
 
 }

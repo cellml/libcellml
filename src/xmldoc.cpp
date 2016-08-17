@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "xmldoc.h"
+
 #include <cstring>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -21,7 +23,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "xmldoc.h"
+#include "mathml_config.h"
 #include "xmlnode.h"
 
 namespace libcellml {
@@ -80,6 +82,17 @@ void XmlDoc::parse(const std::string& input)
     context->_private = reinterpret_cast<void *> (this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST input.c_str(), "/", NULL, 0);
+    xmlFreeParserCtxt(context);
+}
+
+void XmlDoc::parseMathML(std::string input)
+{
+    std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">";
+    std::string mathmlString = mathmlDtd + input;
+    xmlParserCtxtPtr context = xmlNewParserCtxt();
+    context->_private = reinterpret_cast<void *> (this);
+    xmlSetStructuredErrorFunc(context, structuredErrorCallback);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST mathmlString.c_str(), "/", NULL, XML_PARSE_DTDVALID);
     xmlFreeParserCtxt(context);
 }
 
