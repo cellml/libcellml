@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_MATHML_CONFIG_H
-#define LIBCELLML_MATHML_CONFIG_H
+#pragma once
 
 #include <string>
 
@@ -24,5 +23,3 @@ namespace libcellml {
 static const std::string LIBCELLML_MATHML_DTD_LOCATION="@LIBCELLML_MATHML_DTD_LOCATION@";
 
 }
-
-#endif /* LIBCELLML_MATHML_CONFIG_H */

@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef LIBCELLML_LIBCELLML_SPECIFICATIONRULES_H_
-#define LIBCELLML_LIBCELLML_SPECIFICATIONRULES_H_
+#pragma once
 
 namespace libcellml {
 
@@ -73,5 +72,3 @@ enum class SpecificationRule
 };
 
 }
-
-#endif /* LIBCELLML_LIBCELLML_SPECIFICATIONRULES_H_ */
