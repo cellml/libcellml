@@ -413,7 +413,7 @@ TEST(Variable, modelWithComponentWithVariableWithValidName) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
               "<component name=\"" + in + "\">"
                 "<variable name=\"" + in + "\" units=\"dimensionless\"/>"
               "</component>"
@@ -442,7 +442,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
     const std::string in = "invalid name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
               "<component name=\"" + in + "\">"
                 "<variable name=\"" + in + "\" units=\"dimensionless\"/>"
               "</component>"
@@ -471,7 +471,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
               "<component name=\"" + in + "\">"
                 "<variable name=\"" + in + "\" units=\"invalid name\"/>"
               "</component>"
@@ -506,7 +506,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"" + in + "\">"
                     "<variable name=\"variable1\" initial_value=\"1.0\"/>"
                     "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
@@ -537,7 +537,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesOneRefere
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"" + in + "\">"
                     "<variable name=\"variable1\" initial_value=\"1\"/>"
                     "<variable name=\"variable2\" initial_value=\"variable1\"/>"
@@ -568,7 +568,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse)
     const std::string in = "valid_name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"" + in + "\">"
                     "<variable name=\"variable1\" initial_value=\"1.0\"/>"
                     "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
@@ -600,7 +600,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse)
 TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfaces) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"variable1\" interface=\"none\"/>"
                     "<variable name=\"variable2\" interface=\"public\"/>"
@@ -642,7 +642,7 @@ TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfaces) {
 TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfacesAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"variable1\" interface=\"none\"/>"
                     "<variable name=\"variable2\" interface=\"public\"/>"

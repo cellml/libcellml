@@ -589,7 +589,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
 TEST(Validator, parseAndValidateInvalidUnitErrors) {
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"asoiaf\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">"
             "<units name=\"ampere\"/>"
             "<units name=\"north\"/>"
             "<units name=\"stark\">"

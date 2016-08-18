@@ -75,7 +75,7 @@ TEST(Variable, hasEquivalentVariable) {
 TEST(Connection, componentlessVariableInvalidConnection) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1\"/>"
       "</component>"
@@ -101,7 +101,7 @@ TEST(Connection, componentlessVariableInvalidConnection) {
 TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component2\">"
         "<variable name=\"variable2\"/>"
       "</component>"
@@ -135,7 +135,7 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
 TEST(Connection, validConnectionAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1\"/>"
       "</component>"
@@ -174,7 +174,7 @@ TEST(Connection, validConnectionAndParse) {
 TEST(Connection, twoMapVariablesConnection) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable11\"/>"
         "<variable name=\"variable12\"/>"
@@ -221,7 +221,7 @@ TEST(Connection, twoMapVariablesConnection) {
 TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable11\"/>"
         "<variable name=\"variable12\"/>"
@@ -280,7 +280,7 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
 TEST(Connection, nineVariablesTenConnectionsAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable11\"/>"
         "<variable name=\"variable12\"/>"
@@ -381,7 +381,7 @@ TEST(Connection, nineVariablesTenConnectionsAndParse) {
 TEST(Connection, twoValidConnections) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1\"/>"
       "</component>"
@@ -428,7 +428,7 @@ TEST(Connection, twoValidConnections) {
 TEST(Connection, removeEquivalentVariableMethods) {
     const std::string e1 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1\"/>"
       "</component>"
@@ -453,7 +453,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
     "</model>";
     const std::string e2 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1\"/>"
       "</component>"
@@ -474,7 +474,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
     "</model>";
     const std::string e3 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1\"/>"
       "</component>"
@@ -527,7 +527,7 @@ TEST(Connection, removeVariablesFromConnections) {
     // Initial model
     const std::string e1 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1_1\"/>"
         "<variable name=\"variable1_2\"/>"
@@ -562,7 +562,7 @@ TEST(Connection, removeVariablesFromConnections) {
     // Remove variable4
     const std::string e2 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1_1\"/>"
         "<variable name=\"variable1_2\"/>"
@@ -595,7 +595,7 @@ TEST(Connection, removeVariablesFromConnections) {
     // Remove variable3
     const std::string e3 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1_1\"/>"
         "<variable name=\"variable1_2\"/>"
@@ -623,7 +623,7 @@ TEST(Connection, removeVariablesFromConnections) {
     // Remove variable2
     const std::string e4 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"variable1_1\"/>"
         "<variable name=\"variable1_2\"/>"
@@ -642,7 +642,7 @@ TEST(Connection, removeVariablesFromConnections) {
     // Remove all variables from component1 (variable1_1 and variable1_2)
     const std::string e5 =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\"/>"
       "<component name=\"component2\"/>"
       "<component name=\"component3\"/>"
@@ -706,7 +706,7 @@ TEST(Connection, removeVariablesFromConnections) {
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
 
           "<component name=\"parent\">"
             "<variable name=\"variable1\" interface=\"private\"/>"
@@ -770,7 +770,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterfaces) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
 
           "<component name=\"parent\">"
             "<variable name=\"variable1\" interface=\"public\"/>"
@@ -834,7 +834,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
 TEST(Connection, importedComponentConnectionAndParse) {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
           "<import xlink:href=\"some-other-model.xml\" "
               "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
               "<component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>"
@@ -883,7 +883,7 @@ TEST(Connection, importedComponentConnectionAndParse) {
 TEST(Connection, componentConnectionAndParseMissingVariable) {
     const std::string s =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
         "<component name=\"component_dave\">"
           "<variable name=\"variable_dave\"/>"
         "</component>"
@@ -897,7 +897,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
         "</model>";
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
         "<component name=\"component_dave\">"
           "<variable name=\"variable_dave\"/>"
         "</component>"

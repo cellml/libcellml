@@ -20,7 +20,7 @@ limitations under the License.
 
 
 TEST(Model, serialise) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::Model m;
     std::string a = m.serialise(libcellml::Format::XML);
 
@@ -35,7 +35,7 @@ TEST(Model, setGetId) {
 }
 
 TEST(Model, serialiseAllocatePointer) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::Model* m = new libcellml::Model();
     std::string a = m->serialise(libcellml::Format::XML);
 
@@ -45,7 +45,7 @@ TEST(Model, serialiseAllocatePointer) {
 
 TEST(Model, name) {
     std::string n = "name";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + n + "\"/>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + n + "\"/>";
 
     libcellml::Model m;
     m.setName(n);
@@ -57,8 +57,8 @@ TEST(Model, name) {
 
 TEST(Model, unsetName) {
     std::string n = "name";
-    const std::string eName = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + n + "\"/>";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+    const std::string eName = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + n + "\"/>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
 
     libcellml::Model m;
     m.setName(n);
@@ -72,7 +72,7 @@ TEST(Model, unsetName) {
 
 TEST(Model, invalidName) {
     std::string in = "invalid name";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"" + in + "\"/>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + in + "\"/>";
 
     libcellml::Model m;
     m.setName(in);
@@ -83,7 +83,7 @@ TEST(Model, invalidName) {
 }
 
 TEST(Model, addComponent) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component/></model>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
@@ -94,7 +94,7 @@ TEST(Model, addComponent) {
 
 TEST(Model, addValidNamedComponent) {
     const std::string in = "valid_name";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + in + "\"/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"" + in + "\"/></model>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
@@ -106,7 +106,7 @@ TEST(Model, addValidNamedComponent) {
 
 TEST(Model, addInvalidNamedComponent) {
     const std::string in = "invalid name";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + in + "\"/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"" + in + "\"/></model>";
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
@@ -119,7 +119,7 @@ TEST(Model, addInvalidNamedComponent) {
 TEST(Model, addTwoNamedComponents) {
     const std::string name1 = "component_1";
     const std::string name2 = "component_2";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"" + name1 + "\"/><component name=\"" + name2 + "\"/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"" + name1 + "\"/><component name=\"" + name2 + "\"/></model>";
     libcellml::Model m;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     c1->setName(name1);
@@ -163,8 +163,8 @@ TEST(Model, containsComponent) {
 }
 
 TEST(Model, removeComponent) {
-    const std::string e1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child2\"/></model>";
-    const std::string e2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child2\"/><component name=\"child1\"/></model>";
+    const std::string e1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"child2\"/></model>";
+    const std::string e2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"child2\"/><component name=\"child1\"/></model>";
     libcellml::Model m;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -190,7 +190,7 @@ TEST(Model, removeComponent) {
 }
 
 TEST(Model, getComponentMethods) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"childA\"/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"childA\"/></model>";
     libcellml::Model m;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -212,7 +212,7 @@ TEST(Model, getComponentMethods) {
 }
 
 TEST(Model, takeComponentMethods) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::Model m;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -314,9 +314,9 @@ private:
 //}
 
 TEST(Model, replaceComponent) {
-    const std::string e_orig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child1\"/><component name=\"child2\"/></model>";
-    const std::string e_after = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child1\"/><component name=\"child3\"/></model>";
-    const std::string e_post = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\"><component name=\"child4\"/><component name=\"child3\"/></model>";
+    const std::string e_orig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"child1\"/><component name=\"child2\"/></model>";
+    const std::string e_after = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"child1\"/><component name=\"child3\"/></model>";
+    const std::string e_post = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component name=\"child4\"/><component name=\"child3\"/></model>";
 
     libcellml::Model m;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -354,7 +354,7 @@ TEST(Model, constructors) {
     m.addComponent(std::make_shared<libcellml::Component>());
     std::string a = m.serialise(libcellml::Format::XML);
 
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"my_name\"><component/></model>";
+    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\"><component/></model>";
     EXPECT_EQ(e, a);
 
     //Testing copy constructor
@@ -380,7 +380,7 @@ TEST(Model, constructors) {
 TEST(Model, setAndCheckIdsAllEntities) {
     const std::string expected =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\" name=\"mname\" id=\"mid\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">"
               "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
                 "<component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>"
               "</import>"

@@ -29,7 +29,7 @@ TEST(Units, serialise) {
 TEST(Units, validName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"valid_name\" base_unit=\"yes\"/>"
             "</model>";
 
@@ -57,7 +57,7 @@ TEST(Units, validName) {
 TEST(Units, invalidName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"invalid name\" base_unit=\"yes\"/>"
             "</model>";
 
@@ -77,7 +77,7 @@ TEST(Units, invalidName) {
 TEST(Units, compoundUnitsRaw) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"compound_unit\">"
             "<unit prefix=\"-6\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
@@ -103,7 +103,7 @@ TEST(Units, compoundUnitsRaw) {
 TEST(Units, compoundUnitsUsingDefines) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"compound_unit\">"
             "<unit prefix=\"micro\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
@@ -129,7 +129,7 @@ TEST(Units, compoundUnitsUsingDefines) {
 TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"compound_unit\">"
             "<unit prefix=\"micro\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
@@ -157,7 +157,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
 TEST(Units, removeUnitsMethodsAndCount) {
     const std::string e1 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
               "<units name=\"compound_unit\">"
                 "<unit prefix=\"micro\" units=\"ampere\"/>"
                 "<unit prefix=\"1.7e10\" units=\"meter\"/>"
@@ -168,7 +168,7 @@ TEST(Units, removeUnitsMethodsAndCount) {
             "</model>";
     const std::string e2 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
               "<units name=\"compound_unit\"/>"
               "<units name=\"simple_unit_2\"/>"
               "<units name=\"simple_unit_3\"/>"
@@ -176,13 +176,13 @@ TEST(Units, removeUnitsMethodsAndCount) {
             "</model>";
     const std::string e3 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
               "<units name=\"compound_unit\"/>"
               "<units name=\"simple_unit_4\"/>"
             "</model>";
     const std::string e4 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
 
     libcellml::Model m;
 
@@ -301,7 +301,7 @@ TEST(Units, replaceUnits) {
 TEST(Units, multiply) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"compound_unit\">"
             "<unit prefix=\"micro\" units=\"ampere\"/>"
             "<unit units=\"kelvin\"/>"
@@ -345,7 +345,7 @@ TEST(Units, multiply) {
 TEST(Units, newBaseUnit) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"pH\" base_unit=\"yes\"/>"
             "</model>";
 
@@ -365,7 +365,7 @@ TEST(Units, newBaseUnit) {
 TEST(Units, farhenheit) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"fahrenheit\">"
             "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
             "</units>"
@@ -388,7 +388,7 @@ TEST(Units, farhenheit) {
 TEST(Units, multipleAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
             "<units name=\"fahrenheit\">"
             "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
             "</units>"
