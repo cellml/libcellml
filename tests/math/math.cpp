@@ -54,7 +54,7 @@ TEST(Maths, appendAndResetMathComponent) {
 TEST(Maths, appendSerialiseAndParseMathModel) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component>"
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
       "</component>"
@@ -78,7 +78,7 @@ TEST(Maths, appendSerialiseAndParseMathModel) {
 TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component\">"
         "<variable name=\"variable1\"/>"
         "<variable name=\"variable2\"/>"
@@ -107,7 +107,7 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
 TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component\">"
         "<variable name=\"variable1\" initial_value=\"1.0\"/>"
         "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
@@ -137,7 +137,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
 TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component\">"
         "<variable name=\"A\" initial_value=\"1.0\"/>"
         "<variable name=\"B\" initial_value=\"-1.0\"/>"
@@ -183,7 +183,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
 TEST(Maths, twoComponentsWithMathAndConnectionAndParse) {
     const std::string e =
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/1.2#\">"
+    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
       "<component name=\"component1\">"
         "<variable name=\"A1\"/>"
         "<variable name=\"B1\"/>"
