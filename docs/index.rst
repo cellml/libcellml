@@ -27,6 +27,7 @@ Contents:
    dev_contribution
    dev_review
    dev_coding_standard
+   contributors
    glossary
 
 .. toctree::
