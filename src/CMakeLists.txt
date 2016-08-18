@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
-
 include(GenerateExportHeader)
 
 set(CLEAN_FILES)
@@ -28,7 +27,6 @@ set(LIBCELLML_LIBRARY_VERSION_STRING "${libCellML_VERSION_MAJOR}.${libCellML_VER
 set(LIBCELLML_MATHML_DTD_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/dtds/mathml2/mathml2.dtd")
 
 set(LIBCELLML_EXPORTDEFINITIONS_H "${CMAKE_CURRENT_BINARY_DIR}/api/libcellml/exportdefinitions.h")
-set_source_files_properties(${LIBCELLML_EXPORTDEFINITIONS_H} PROPERTIES GENERATED TRUE)
 set(LIBCELLML_VERSIONCONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/versionconfig.h")
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/configure/versionconfig.h.in"
