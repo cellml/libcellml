@@ -309,15 +309,17 @@ TEST(Validator, importComponents) {
 
 TEST(Validator, validMath) {
     std::string math =
-    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-      "<apply><eq/>"
-        "<ci>C</ci>"
-        "<apply><plus/>"
-          "<ci>A</ci>"
-          "<ci>B</ci>"
-        "</apply>"
-      "</apply>"
-    "</math>";
+            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                "<apply>"
+                    "<eq/>"
+                    "<ci>C</ci>"
+                    "<apply>"
+                        "<plus/>"
+                        "<ci>A</ci>"
+                        "<ci>B</ci>"
+                    "</apply>"
+                "</apply>"
+            "</math>";
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -352,6 +354,7 @@ TEST(Validator, invalidMath) {
             "<math>"
                 "<invalid_xml></not_valid>"
             "</math>";
+
     std::string math2 = "<invalid_math/>";
 
     std::vector<std::string> expectedErrors = {
@@ -385,15 +388,18 @@ TEST(Validator, invalidMath) {
 
 TEST(Validator, invalidMathMLElements) {
     std::string math =
-    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-      "<apply><equals/>"
-        "<ci>C</ci>"
-        "<apply><addition/>"
-          "<ci>A</ci>"
-          "<ci>B</ci>"
-        "</apply>"
-      "</apply>"
-    "</math>";
+            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                "<apply>"
+                    "<equals/>"
+                    "<ci>C</ci>"
+                    "<apply>"
+                        "<addition/>"
+                        "<ci>A</ci>"
+                        "<ci>B</ci>"
+                    "</apply>"
+                "</apply>"
+            "</math>";
+
     std::vector<std::string> expectedErrors = {
         "No declaration for element equals.",
         "No declaration for element addition."
@@ -437,31 +443,38 @@ TEST(Validator, invalidMathMLElements) {
 
 TEST(Validator, invalidMathMLVariables) {
     std::string math =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-          "<apply><eq/>"
-            "<ci>answer</ci>"
-            "<apply><plus/>"
-              "<ci>A</ci>"
-              "<apply><plus/>"
-                "<bvar>"
-                  "<ci>new_bvar</ci>"
-                "</bvar>"
-                "<apply><plus/>"
-                  "<ci>   </ci>"
-                  "<apply><plus/>"
-                    "<ci><nonsense/></ci>"
-                    "<apply><plus/>"
-                      "<ci/>"
-                      "<bvar>"
-                        "<ci>B</ci>"
-                      "</bvar>"
+            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                "<apply>"
+                    "<eq/>"
+                    "<ci>answer</ci>"
+                    "<apply>"
+                        "<plus/>"
+                        "<ci>A</ci>"
+                        "<apply>"
+                            "<plus/>"
+                            "<bvar>"
+                            "<ci>new_bvar</ci>"
+                            "</bvar>"
+                            "<apply>"
+                                "<plus/>"
+                                "<ci>   </ci>"
+                                "<apply>"
+                                    "<plus/>"
+                                    "<ci><nonsense/></ci>"
+                                    "<apply>"
+                                        "<plus/>"
+                                        "<ci/>"
+                                        "<bvar>"
+                                        "<ci>B</ci>"
+                                        "</bvar>"
+                                    "</apply>"
+                                "</apply>"
+                            "</apply>"
+                        "</apply>"
                     "</apply>"
-                  "</apply>"
                 "</apply>"
-              "</apply>"
-            "</apply>"
-          "</apply>"
-        "</math>";
+            "</math>";
+
     std::vector<std::string> expectedErrors = {
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
@@ -509,34 +522,42 @@ TEST(Validator, invalidMathMLVariables) {
 
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
     std::string math =
-        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-          "<apply><eq/>"
-            "<cn cellml:units=\"invalid\">oops</cn>"
-            "<apply><plus/>"
-              "<ci>A</ci>"
-              "<apply><plus/>"
-                "<bvar>"
-                  "<ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>"
-                "</bvar>"
-                "<apply><plus/>"
-                  "<ci>   </ci>"
-                  "<apply><plus/>"
-                    "<ci>undefined_variable</ci>"
-                    "<apply><plus/>"
-                      "<ci/>"
-                      "<bvar>"
-                        "<ci>B</ci>"
-                      "</bvar>"
-                      "<apply><plus/>"
-                        "<cn>2.0</cn>"
-                      "</apply>"
+            "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                "<apply>"
+                    "<eq/>"
+                    "<cn cellml:units=\"invalid\">oops</cn>"
+                    "<apply>"
+                        "<plus/>"
+                        "<ci>A</ci>"
+                        "<apply>"
+                            "<plus/>"
+                            "<bvar>"
+                            "<ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>"
+                            "</bvar>"
+                            "<apply>"
+                                "<plus/>"
+                                "<ci>   </ci>"
+                                "<apply>"
+                                    "<plus/>"
+                                    "<ci>undefined_variable</ci>"
+                                    "<apply>"
+                                        "<plus/>"
+                                        "<ci/>"
+                                        "<bvar>"
+                                        "<ci>B</ci>"
+                                        "</bvar>"
+                                        "<apply>"
+                                            "<plus/>"
+                                            "<cn>2.0</cn>"
+                                        "</apply>"
+                                    "</apply>"
+                                "</apply>"
+                            "</apply>"
+                        "</apply>"
                     "</apply>"
-                  "</apply>"
                 "</apply>"
-              "</apply>"
-            "</apply>"
-          "</apply>"
-        "</math>";
+            "</math>";
+
     std::vector<std::string> expectedErrors = {
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML cn element has the value 'oops', which cannot be converted to a real number.",
@@ -588,19 +609,20 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
 
 TEST(Validator, parseAndValidateInvalidUnitErrors) {
     const std::string input =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">"
-            "<units name=\"ampere\"/>"
-            "<units name=\"north\"/>"
-            "<units name=\"stark\">"
-                "<unit units=\"volt\" prefix=\"mega\" multiplier=\"1000.0\"/>"
-                "<unit units=\"north\"/>"
-                "<unit units=\"ned\"/>"
-                "<unit units=\"king in the north\"/>"
-                "<unit prefix=\"wolf\" units=\"celsius\"/>"
-                "<unit exponent=\"7.0\" offset=\"-32.0\" units=\"celsius\"/>"
-            "</units>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">"
+                "<units name=\"ampere\"/>"
+                "<units name=\"north\"/>"
+                "<units name=\"stark\">"
+                    "<unit units=\"volt\" prefix=\"mega\" multiplier=\"1000.0\"/>"
+                    "<unit units=\"north\"/>"
+                    "<unit units=\"ned\"/>"
+                    "<unit units=\"king in the north\"/>"
+                    "<unit prefix=\"wolf\" units=\"celsius\"/>"
+                    "<unit exponent=\"7.0\" offset=\"-32.0\" units=\"celsius\"/>"
+                "</units>"
+            "</model>";
+
     std::vector<std::string> expectedErrors = {
         "Units is named 'ampere', which is a protected standard unit name.",
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",

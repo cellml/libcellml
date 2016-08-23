@@ -24,13 +24,14 @@ limitations under the License.
 
 TEST(Parser, invalidXMLElements) {
     std::string input =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<fellowship>"
-            "<Dwarf bearded>Gimli</ShortGuy>"
-            "<Hobbit>Frodo</EvenShorterGuy>"
-            "<Wizard>Gandalf</SomeGuyWithAStaff>"
-            "<Elf>"
-        "</fellows>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<fellowship>"
+                "<Dwarf bearded>Gimli</ShortGuy>"
+                "<Hobbit>Frodo</EvenShorterGuy>"
+                "<Wizard>Gandalf</SomeGuyWithAStaff>"
+                "<Elf>"
+            "</fellows>";
+
     std::vector<std::string> expectedErrors = {
         "Specification mandate value for attribute bearded.",
         "Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
@@ -51,7 +52,10 @@ TEST(Parser, invalidXMLElements) {
 }
 
 TEST(Parser, parse) {
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     std::string a = model->serialise(libcellml::Format::XML);
@@ -60,7 +64,10 @@ TEST(Parser, parse) {
 
 TEST(Parser, parseNamedModel) {
     std::string n = "name";
-    const std::string e = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + n + "\"/>";
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     EXPECT_EQ(n, model->getName());
@@ -110,9 +117,10 @@ TEST(Parser, nonXmlString) {
 
 TEST(Parser, invalidRootNode) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<yodel xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-        "</yodel>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<yodel xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+            "</yodel>";
+
     std::string expectedError1 = "Model root node is of invalid type 'yodel'. A valid CellML root node should be of type 'model'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -123,8 +131,9 @@ TEST(Parser, invalidRootNode) {
 
 TEST(Parser, invalidModelAttribute) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" game=\"model_name\"/>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" game=\"model_name\"/>";
+
     std::string expectedError1 = "Model '' has an invalid attribute 'game'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -135,10 +144,11 @@ TEST(Parser, invalidModelAttribute) {
 
 TEST(Parser, invalidModelElement) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<uknits/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<uknits/>"
+            "</model>";
+
     std::string expectedError1 = "Model 'model_name' has an invalid child element 'uknits'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -149,17 +159,19 @@ TEST(Parser, invalidModelElement) {
 
 TEST(Parser, modelWithInvalidElement) {
     std::string input1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"bilbo\">"
-            "<hobbit/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"bilbo\">"
+                "<hobbit/>"
+            "</model>";
+
     std::string expectError1 = "Model 'bilbo' has an invalid child element 'hobbit'.";
 
     std::string input2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<hobbit/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<hobbit/>"
+            "</model>";
+
     std::string expectError2 = "Model '' has an invalid child element 'hobbit'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -174,10 +186,10 @@ TEST(Parser, modelWithInvalidElement) {
 }
 
 TEST(Parser, parseModelWithInvalidAttributeAndGetError) {
-    const std::string mName = "modelName";
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + mName + "\" nonsense=\"oops\"/>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\" nonsense=\"oops\"/>";
+
     const std::string expectedError = "Model 'modelName' has an invalid attribute 'nonsense'.";
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -200,9 +212,10 @@ TEST(Parser, parseNamedModelWithNamedComponent) {
     std::string cName = "componentName";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + mName + "\">"
-              "<component name=\"" + cName + "\"/>"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">"
+                "<component name=\"componentName\"/>"
             "</model>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     EXPECT_EQ(mName, model->getName());
@@ -216,13 +229,14 @@ TEST(Parser, parseModelWithNamedComponentWithUnits) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-              "<component name=\"component_name\">"
-                "<units name=\"fahrenheit\">"
-                  "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                "</units>"
-                "<units name=\"dimensionless\" base_unit=\"yes\"/>"
-              "</component>"
+                "<component name=\"component_name\">"
+                    "<units name=\"fahrenheit\">"
+                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                    "</units>"
+                    "<units name=\"dimensionless\" base_unit=\"yes\"/>"
+                "</component>"
             "</model>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     std::string a = model->serialise(libcellml::Format::XML);
@@ -231,25 +245,27 @@ TEST(Parser, parseModelWithNamedComponentWithUnits) {
 
 TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAndGetError) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<component name=\"component_name\">"
-            "<units name=\"fahrenheit\">"
-              "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-            "</units>"
-            "<units name=\"dimensionless\" base_unit=\"joe\"/>"
-          "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"component_name\">"
+                    "<units name=\"fahrenheit\">"
+                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                    "</units>"
+                    "<units name=\"dimensionless\" base_unit=\"joe\"/>"
+                "</component>"
+            "</model>";
+
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<component name=\"component_name\">"
-            "<units name=\"fahrenheit\">"
-              "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-            "</units>"
-            "<units name=\"dimensionless\"/>"
-          "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"component_name\">"
+                    "<units name=\"fahrenheit\">"
+                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                    "</units>"
+                    "<units name=\"dimensionless\"/>"
+                "</component>"
+            "</model>";
+
     std::string expectedError1 = "Units 'dimensionless' has an invalid base_unit attribute value 'joe'. Valid options are 'yes' or 'no'.";
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -271,10 +287,11 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAndGetError) {
 
 TEST(Parser, unitsAttributeError) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<units name=\"pH\" base_unit=\"yes\" invalid_attribute=\"yes\"/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<units name=\"pH\" base_unit=\"yes\" invalid_attribute=\"yes\"/>"
+            "</model>";
+
     std::string expectedError1 = "Units 'pH' has an invalid attribute 'invalid_attribute'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -285,21 +302,23 @@ TEST(Parser, unitsAttributeError) {
 
 TEST(Parser, unitsElementErrors) {
     std::string input1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<units>"
-            "<son name=\"stan\"/>"
-          "</units>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<units>"
+                    "<son name=\"stan\"/>"
+                "</units>"
+            "</model>";
+
     std::string expectError1 = "Units '' has an invalid child element 'son'.";
 
     std::string input2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<units name=\"randy\">"
-            "<son name=\"stan\"/>"
-          "</units>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<units name=\"randy\">"
+                    "<son name=\"stan\"/>"
+                "</units>"
+            "</model>";
+
     std::string expectError2 = "Units 'randy' has an invalid child element 'son'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -314,13 +333,13 @@ TEST(Parser, unitsElementErrors) {
 }
 
 TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
-    const std::string mName = "modelName";
     const std::string cName = "componentName";
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + mName + "\">"
-              "<component name=\"" + cName + "\" nonsense=\"oops\"/>"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">"
+                "<component name=\"componentName\" nonsense=\"oops\"/>"
             "</model>";
+
     const std::string expectedError = "Component 'componentName' has an invalid attribute 'nonsense'.";
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -341,24 +360,27 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
 
 TEST(Parser, componentAttributeErrors) {
     std::string input1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<component lame=\"randy\"/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component lame=\"randy\"/>"
+            "</model>";
+
     std::string expectError1 = "Component '' has an invalid attribute 'lame'.";
 
     std::string input2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<component name=\"randy\" son=\"stan\"/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"randy\" son=\"stan\"/>"
+            "</model>";
+
     std::string expectError2 = "Component 'randy' has an invalid attribute 'son'.";
 
     std::string input3 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<component son=\"stan\" name=\"randy\"/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component son=\"stan\" name=\"randy\"/>"
+            "</model>";
+
     std::string expectError3 = "Component 'randy' has an invalid attribute 'son'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -379,21 +401,23 @@ TEST(Parser, componentAttributeErrors) {
 
 TEST(Parser, componentElementErrors) {
     std::string input1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<component>"
-            "<son name=\"stan\"/>"
-          "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component>"
+                    "<son name=\"stan\"/>"
+                "</component>"
+            "</model>";
+
     std::string expectError1 = "Component '' has an invalid child element 'son'.";
 
     std::string input2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-          "<component name=\"randy\">"
-            "<son name=\"stan\"/>"
-          "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"randy\">"
+                    "<son name=\"stan\"/>"
+                "</component>"
+            "</model>";
+
     std::string expectError2 = "Component 'randy' has an invalid child element 'son'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -408,15 +432,13 @@ TEST(Parser, componentElementErrors) {
 }
 
 TEST(Parser, parseModelWithTwoComponents) {
-    std::string mName = "modelName";
-    std::string cName1 = "component1";
-    std::string cName2 = "component2";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"" + mName + "\">"
-              "<component name=\"" + cName1 + "\"/>"
-              "<component name=\"" + cName2 + "\"/>"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">"
+                "<component name=\"component1\"/>"
+                "<component name=\"component2\"/>"
             "</model>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     std::string a = model->serialise(libcellml::Format::XML);
@@ -427,17 +449,18 @@ TEST(Parser, parseModelWithComponentHierarchyWaterfall) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-               "<component name=\"dave\"/>"
-               "<component name=\"bob\"/>"
-               "<component name=\"angus\"/>"
-               "<encapsulation>"
-                  "<component_ref component=\"dave\">"
-                     "<component_ref component=\"bob\">"
-                        "<component_ref component=\"angus\"/>"
-                     "</component_ref>"
-                  "</component_ref>"
-               "</encapsulation>"
+                "<component name=\"dave\"/>"
+                "<component name=\"bob\"/>"
+                "<component name=\"angus\"/>"
+                "<encapsulation>"
+                    "<component_ref component=\"dave\">"
+                        "<component_ref component=\"bob\">"
+                            "<component_ref component=\"angus\"/>"
+                        "</component_ref>"
+                    "</component_ref>"
+                "</encapsulation>"
             "</model>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     std::string a = model->serialise(libcellml::Format::XML);
@@ -448,31 +471,28 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-
-               "<component name=\"ignatio\"/>"
-               "<component name=\"dave\"/>"
-               "<component name=\"bob\"/>"
-               "<component name=\"angus\"/>"
-               "<component name=\"jackie\"/>"
-
-               "<encapsulation>"
-                 "<component_ref component=\"dave\">"
-                    "<component_ref component=\"bob\">"
-                       "<component_ref component=\"angus\"/>"
-                       "<component_ref component=\"jackie\"/>"
+                "<component name=\"ignatio\"/>"
+                "<component name=\"dave\"/>"
+                "<component name=\"bob\"/>"
+                "<component name=\"angus\"/>"
+                "<component name=\"jackie\"/>"
+                "<encapsulation>"
+                    "<component_ref component=\"dave\">"
+                        "<component_ref component=\"bob\">"
+                            "<component_ref component=\"angus\"/>"
+                            "<component_ref component=\"jackie\"/>"
+                        "</component_ref>"
                     "</component_ref>"
-                 "</component_ref>"
-               "</encapsulation>"
-
-               "<component name=\"mildred\"/>"
-               "<component name=\"sue\"/>"
-
-               "<encapsulation>"
-                 "<component_ref component=\"mildred\">"
-                   "<component_ref component=\"sue\"/>"
-                 "</component_ref>"
-               "</encapsulation>"
+                "</encapsulation>"
+                "<component name=\"mildred\"/>"
+                "<component name=\"sue\"/>"
+                "<encapsulation>"
+                    "<component_ref component=\"mildred\">"
+                        "<component_ref component=\"sue\"/>"
+                    "</component_ref>"
+                "</encapsulation>"
             "</model>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     std::string a = model->serialise(libcellml::Format::XML);
@@ -483,23 +503,25 @@ TEST(Parser, modelWithNamedComponentWithUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-              "<component name=\"component_name\">"
-                "<units name=\"fahrenheit\">"
-                  "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                "</units>"
-                "<units name=\"dimensionless\" base_unit=\"no\"/>"
-              "</component>"
+                "<component name=\"component_name\">"
+                    "<units name=\"fahrenheit\">"
+                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                    "</units>"
+                    "<units name=\"dimensionless\" base_unit=\"no\"/>"
+                "</component>"
             "</model>";
+
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-              "<component name=\"component_name\">"
-                "<units name=\"fahrenheit\">"
-                  "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                "</units>"
-                "<units name=\"dimensionless\"/>"
-              "</component>"
+                "<component name=\"component_name\">"
+                    "<units name=\"fahrenheit\">"
+                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                    "</units>"
+                    "<units name=\"dimensionless\"/>"
+                "</component>"
             "</model>";
+
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(in);
     std::string a = model->serialise(libcellml::Format::XML);
@@ -510,32 +532,34 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-              "<component name=\"component_name\">"
-                "<units name=\"fahrenheit\" temperature=\"451\">"
-                  "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
-                    "<degrees/>"
-                  "</unit>"
-                  "<bobshouse address=\"34 Rich Lane\"/>"
-                  "<unit GUnit=\"50c\"/>"
-                "</units>"
-                "<units name=\"dimensionless\" base_unit=\"no\"/>"
-                "<units jerry=\"seinfeld\">"
-                  "<unit units=\"friends\" neighbor=\"kramer\"/>"
-                  "<unit george=\"friends\"/>"
-                "</units>"
-              "</component>"
+                "<component name=\"component_name\">"
+                    "<units name=\"fahrenheit\" temperature=\"451\">"
+                        "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
+                            "<degrees/>"
+                        "</unit>"
+                        "<bobshouse address=\"34 Rich Lane\"/>"
+                        "<unit GUnit=\"50c\"/>"
+                    "</units>"
+                    "<units name=\"dimensionless\" base_unit=\"no\"/>"
+                    "<units jerry=\"seinfeld\">"
+                        "<unit units=\"friends\" neighbor=\"kramer\"/>"
+                        "<unit george=\"friends\"/>"
+                    "</units>"
+                "</component>"
             "</model>";
+
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-              "<component name=\"component_name\">"
-                "<units name=\"fahrenheit\">"
-                  "<unit units=\"celsius\"/>"
-                  "<unit units=\"\"/>"
-                "</units>"
-                "<units name=\"dimensionless\"/>"
-              "</component>"
+                "<component name=\"component_name\">"
+                    "<units name=\"fahrenheit\">"
+                        "<unit units=\"celsius\"/>"
+                        "<unit units=\"\"/>"
+                    "</units>"
+                    "<units name=\"dimensionless\"/>"
+                "</component>"
             "</model>";
+
     std::vector<std::string> expectedErrors = {
         "Units 'fahrenheit' has an invalid attribute 'temperature'.",
         "Unit referencing 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
@@ -564,10 +588,11 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
 
 TEST(Parser, emptyEncapsulation) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<encapsulation/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<encapsulation/>"
+            "</model>";
+
     std::string expectedError = "Encapsulation in model 'model_name' does not contain any child elements.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -578,12 +603,13 @@ TEST(Parser, emptyEncapsulation) {
 
 TEST(Parser, encapsulationWithNoComponentAttribute) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<encapsulation>"
-                "<component_ref/>"
-            "</encapsulation>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<encapsulation>"
+                    "<component_ref/>"
+                "</encapsulation>"
+            "</model>";
+
     std::string expectedError1 = "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref element.";
     std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
 
@@ -596,12 +622,13 @@ TEST(Parser, encapsulationWithNoComponentAttribute) {
 
 TEST(Parser, encapsulationWithNoComponentRef) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<encapsulation>"
-                "<component_free/>"
-            "</encapsulation>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<encapsulation>"
+                    "<component_free/>"
+                "</encapsulation>"
+            "</model>";
+
     std::string expectedError1 = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
     std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
 
@@ -614,14 +641,15 @@ TEST(Parser, encapsulationWithNoComponentRef) {
 
 TEST(Parser, encapsulationWithNoComponent) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<encapsulation>"
-                "<component_ref component=\"bob\">"
-                    "<component_ref/>"
-                "</component_ref>"
-            "</encapsulation>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<encapsulation>"
+                    "<component_ref component=\"bob\">"
+                        "<component_ref/>"
+                    "</component_ref>"
+                "</encapsulation>"
+            "</model>";
+
     std::string expectedError1 = "Encapsulation in model 'model_name' specifies 'bob' as a component in a component_ref but it does not exist in the model.";
     std::string expectedError2 = "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref that is a child of invalid parent component 'bob'.";
 
@@ -636,15 +664,16 @@ TEST(Parser, encapsulationWithNoComponent) {
 
 TEST(Parser, encapsulationWithMissingComponent) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<component name=\"bob\"/>"
-            "<encapsulation>"
-            "<component_ref component=\"bob\">"
-                "<component_ref component=\"dave\"/>"
-            "</component_ref>"
-            "</encapsulation>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"bob\"/>"
+                "<encapsulation>"
+                    "<component_ref component=\"bob\">"
+                        "<component_ref component=\"dave\"/>"
+                    "</component_ref>"
+                "</encapsulation>"
+            "</model>";
+
     std::string expectedError1 = "Encapsulation in model 'model_name' specifies 'dave' as a component in a component_ref but it does not exist in the model.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -655,13 +684,14 @@ TEST(Parser, encapsulationWithMissingComponent) {
 
 TEST(Parser, encapsulationWithNoComponentChild) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<component name=\"bob\"/>"
-            "<encapsulation>"
-              "<component_ref component=\"bob\"/>"
-            "</encapsulation>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"bob\"/>"
+                "<encapsulation>"
+                    "<component_ref component=\"bob\"/>"
+                "</encapsulation>"
+            "</model>";
+
     std::string expectedError = "Encapsulation in model 'model_name' specifies 'bob' as a parent component_ref but it does not have any children.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -672,15 +702,16 @@ TEST(Parser, encapsulationWithNoComponentChild) {
 
 TEST(Parser, encapsulationNoChildComponentRef) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<component name=\"bob\"/>"
-            "<encapsulation>"
-              "<component_ref component=\"bob\">"
-                "<component_free/>"
-              "</component_ref>"
-            "</encapsulation>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"bob\"/>"
+                "<encapsulation>"
+                    "<component_ref component=\"bob\">"
+                        "<component_free/>"
+                    "</component_ref>"
+                "</encapsulation>"
+            "</model>";
+
     std::string expectedError = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -691,18 +722,19 @@ TEST(Parser, encapsulationNoChildComponentRef) {
 
 TEST(Parser, encapsulationWithNoGrandchildComponentRef) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<component name=\"bob\"/>"
-            "<component name=\"jim\"/>"
-            "<encapsulation>"
-              "<component_ref component=\"bob\">"
-                "<component_ref component=\"jim\">"
-                  "<component_free/>"
-                "</component_ref>"
-              "</component_ref>"
-            "</encapsulation>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"bob\"/>"
+                "<component name=\"jim\"/>"
+                "<encapsulation>"
+                    "<component_ref component=\"bob\">"
+                        "<component_ref component=\"jim\">"
+                            "<component_free/>"
+                        "</component_ref>"
+                    "</component_ref>"
+                "</encapsulation>"
+            "</model>";
+
     std::string expectedError = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -715,20 +747,18 @@ TEST(Parser, invalidEncapsulations) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"ringo\">"
-               "<component name=\"dave\"/>"
-               "<component name=\"bob\"/>"
-
-               "<encapsulation relationship=\"friends\">"
-                 "<component_ref component=\"dave\" bogus=\"oops\">"
-                   "<component_ref component=\"bob\" bogus=\"oops\"/>"
-                   "<component_ref enemy=\"ignatio\"/>"
-                 "</component_ref>"
-                 "<component_ref component=\"ignatio\"/>"
-                 "<component_ref>"
-                   "<component_ref/>"
-                 "</component_ref>"
-               "</encapsulation>"
-
+                "<component name=\"dave\"/>"
+                "<component name=\"bob\"/>"
+                "<encapsulation relationship=\"friends\">"
+                    "<component_ref component=\"dave\" bogus=\"oops\">"
+                        "<component_ref component=\"bob\" bogus=\"oops\"/>"
+                        "<component_ref enemy=\"ignatio\"/>"
+                    "</component_ref>"
+                    "<component_ref component=\"ignatio\"/>"
+                    "<component_ref>"
+                        "<component_ref/>"
+                    "</component_ref>"
+                "</encapsulation>"
             "</model>";
 
     std::vector<std::string> expectedErrors = {
@@ -754,13 +784,14 @@ TEST(Parser, invalidEncapsulations) {
 
 TEST(Parser, invalidVariableAttributesAndGetVariableError) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"componentA\">"
-                "<variable name=\"quixote\" don=\"true\"/>"
-                "<variable windmill=\"tilted\"/>"
-            "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"componentA\">"
+                    "<variable name=\"quixote\" don=\"true\"/>"
+                    "<variable windmill=\"tilted\"/>"
+                "</component>"
+            "</model>";
+
     std::string expectError1 = "Variable 'quixote' has an invalid attribute 'don'.";
     std::string expectError2 = "Variable '' has an invalid attribute 'windmill'.";
 
@@ -782,23 +813,25 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError) {
 
 TEST(Parser, variableAttributeAndChildErrors) {
     std::string input1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<component name=\"randy\">"
-                "<variable lame=\"randy\"/>"
-            "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"randy\">"
+                    "<variable lame=\"randy\"/>"
+                "</component>"
+            "</model>";
+
     std::string expectError1 = "Variable '' has an invalid attribute 'lame'.";
 
     std::string input2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<component name=\"randy\">"
-                "<variable name=\"randy\" son=\"stan\">"
-                    "<daughter name=\"shelly\"/>"
-                "</variable>"
-            "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"randy\">"
+                    "<variable name=\"randy\" son=\"stan\">"
+                        "<daughter name=\"shelly\"/>"
+                    "</variable>"
+                "</component>"
+            "</model>";
+
     std::string expectError2 = "Variable 'randy' has an invalid child element 'daughter'.";
     std::string expectError3 = "Variable 'randy' has an invalid attribute 'son'.";
 
@@ -817,12 +850,13 @@ TEST(Parser, variableAttributeAndChildErrors) {
 
 TEST(Parser, emptyConnections) {
     std::string ex =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-            "<connection>"
-            "</connection>"
-            "<connection/>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<connection>"
+                "</connection>"
+                "<connection/>"
+            "</model>";
+
     std::string expectedError = "Connection in model 'model_name' does not contain any child elements.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -834,16 +868,17 @@ TEST(Parser, emptyConnections) {
 
 TEST(Parser, connectionErrorNoComponent2) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelA\">"
-            "<component name=\"componentA\">"
-                "<variable name=\"variable1\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_1=\"component1\"/>"
-                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelA\">"
+                "<component name=\"componentA\">"
+                    "<variable name=\"variable1\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_1=\"component1\"/>"
+                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+                "</connection>"
+            "</model>";
+
     std::string expectedError1 = "Connection in model 'modelA' does not have a valid component_2 in a map_components element.";
     std::string expectedError2 = "Connection in model 'modelA' specifies 'component1' as component_1 but it does not exist in the model.";
     std::string expectedError3 = "Connection in model 'modelA' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
@@ -860,16 +895,17 @@ TEST(Parser, connectionErrorNoComponent2) {
 
 TEST(Parser, connectionErrorNoComponent2InModel) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">"
-            "<component name=\"component1\">"
-                "<variable name=\"variable1\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
-                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">"
+                "<component name=\"component1\">"
+                    "<variable name=\"variable1\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
+                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+                "</connection>"
+            "</model>";
+
     std::string expectedError1 = "Connection in model 'modelName' specifies 'component2' as component_2 but it does not exist in the model.";
     std::string expectedError2 = "Connection in model 'modelName' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid.";
 
@@ -892,6 +928,7 @@ TEST(Parser, connectionErrorNoComponent1) {
                 "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
             "</connection>"
         "</model>";
+
     std::string expectedError1 = "Connection in model 'modelName' does not have a valid component_1 in a map_components element.";
     std::string expectedError2 = "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
     std::string expectedError3 = "Variable 'variable2' is specified as variable_2 in a connection but it does not exist in component_2 component 'componentA' of model 'modelName'.";
@@ -906,17 +943,18 @@ TEST(Parser, connectionErrorNoComponent1) {
 
 TEST(Parser, connectionErrorNoMapComponents) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">"
-            "<component name=\"componentA\">"
-                "<variable name=\"variable1\"/>"
-            "</component>"
-            "<connection name=\"invalid\">"
-                "<map_variables variable_1=\"variable1\" variable_2=\"variable2\" variable_3=\"variable3\">"
-                    "<map_units/>"
-                "</map_variables>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelName\">"
+                "<component name=\"componentA\">"
+                    "<variable name=\"variable1\"/>"
+                "</component>"
+                "<connection name=\"invalid\">"
+                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\" variable_3=\"variable3\">"
+                        "<map_units/>"
+                    "</map_variables>"
+                "</connection>"
+            "</model>";
+
     std::vector<std::string> expectedErrors = {
         "Connection in model 'modelName' has an invalid attribute 'name'.",
         "Connection in model 'modelName' has an invalid child element 'map_units' of element 'map_variables'.",
@@ -937,16 +975,17 @@ TEST(Parser, connectionErrorNoMapComponents) {
 
 TEST(Parser, connectionErrorNoMapVariables) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"componentA\">"
-                "<variable name=\"variable1\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_2=\"componentA\" component_1=\"componentA\" component_3=\"componentA\"/>"
-                "<map_components component_2=\"componentA\" component_1=\"componentA\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"componentA\">"
+                    "<variable name=\"variable1\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_2=\"componentA\" component_1=\"componentA\" component_3=\"componentA\"/>"
+                    "<map_components component_2=\"componentA\" component_1=\"componentA\"/>"
+                "</connection>"
+            "</model>";
+
     std::string expectedError1 = "Connection in model '' has an invalid map_components attribute 'component_3'.";
     std::string expectedError2 = "Connection in model '' has more than one map_components element.";
     std::string expectedError3 = "Connection in model '' does not have a map_variables element.";
@@ -961,20 +1000,19 @@ TEST(Parser, connectionErrorNoMapVariables) {
 
 TEST(Parser, importedComponent2Connection) {
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-          "<import xlink:href=\"some-other-model.xml\" "
-              "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-              "<component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>"
-          "</import>"
-          "<component name=\"component_bob\">"
-            "<variable name=\"variable_bob\"/>"
-          "</component>"
-          "<connection>"
-            "<map_components component_2=\"component_in_this_model\" component_1=\"component_bob\"/>"
-            "<map_variables variable_2=\"variable_import\" variable_1=\"variable_bob\"/>"
-          "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                    "<component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>"
+                "</import>"
+                "<component name=\"component_bob\">"
+                    "<variable name=\"variable_bob\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_2=\"component_in_this_model\" component_1=\"component_bob\"/>"
+                    "<map_variables variable_2=\"variable_import\" variable_1=\"variable_bob\"/>"
+                "</connection>"
+            "</model>";
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
@@ -984,19 +1022,19 @@ TEST(Parser, importedComponent2Connection) {
 
 TEST(Parser, validConnectionMapVariablesFirst) {
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-          "<component name=\"robert\">"
-            "<variable name=\"bob\"/>"
-          "</component>"
-          "<component name=\"james\">"
-            "<variable name=\"jimbo\"/>"
-          "</component>"
-          "<connection>"
-            "<map_variables variable_2=\"jimbo\" variable_1=\"bob\"/>"
-            "<map_components component_1=\"robert\" component_2=\"james\"/>"
-          "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"robert\">"
+                    "<variable name=\"bob\"/>"
+                "</component>"
+                "<component name=\"james\">"
+                    "<variable name=\"jimbo\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_variables variable_2=\"jimbo\" variable_1=\"bob\"/>"
+                    "<map_components component_1=\"robert\" component_2=\"james\"/>"
+                "</connection>"
+            "</model>";
 
     libcellml::Parser parser(libcellml::Format::XML);
     parser.parseModel(e);
@@ -1005,19 +1043,20 @@ TEST(Parser, validConnectionMapVariablesFirst) {
 
 TEST(Parser, component2ConnectionVariableMissing) {
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"component_bob\">"
-                "<variable name=\"variable_bob\"/>"
-            "</component>"
-            "<component name=\"component_dave\">"
-                "<variable name=\"variable_dave\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
-                "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"component_bob\">"
+                    "<variable name=\"variable_bob\"/>"
+                "</component>"
+                "<component name=\"component_dave\">"
+                    "<variable name=\"variable_dave\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                    "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
+                "</connection>"
+            "</model>";
+
     std::string expectedError = "Variable 'variable_angus' is specified as variable_2 in a connection but it does not exist in component_2 component 'component_dave' of model ''.";
 
     // Parse
@@ -1029,29 +1068,31 @@ TEST(Parser, component2ConnectionVariableMissing) {
 
 TEST(Parser, component2InConnectionMissing) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"component_bob\">"
-                "<variable name=\"variable_bob\"/>"
-            "</component>"
-            "<component name=\"component_dave\">"
-                "<variable name=\"variable_dave\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_1=\"component_bob\"/>"
-                "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"component_bob\">"
+                    "<variable name=\"variable_bob\"/>"
+                "</component>"
+                "<component name=\"component_dave\">"
+                    "<variable name=\"variable_dave\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_1=\"component_bob\"/>"
+                    "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
+                "</connection>"
+            "</model>";
+
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"component_bob\">"
-                "<variable name=\"variable_bob\"/>"
-            "</component>"
-            "<component name=\"component_dave\">"
-                "<variable name=\"variable_dave\"/>"
-            "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"component_bob\">"
+                    "<variable name=\"variable_bob\"/>"
+                "</component>"
+                "<component name=\"component_dave\">"
+                    "<variable name=\"variable_dave\"/>"
+                "</component>"
+            "</model>";
+
     std::string expectedError1 = "Connection in model '' does not have a valid component_2 in a map_components element.";
     std::string expectedError2 = "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
 
@@ -1067,19 +1108,20 @@ TEST(Parser, component2InConnectionMissing) {
 
 TEST(Parser, connectionVariable2Missing) {
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"component_bob\">"
-                "<variable name=\"variable_bob\"/>"
-            "</component>"
-            "<component name=\"component_dave\">"
-                "<variable name=\"variable_dave\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
-                "<map_variables variable_1=\"variable_bob\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"component_bob\">"
+                    "<variable name=\"variable_bob\"/>"
+                "</component>"
+                "<component name=\"component_dave\">"
+                    "<variable name=\"variable_dave\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                    "<map_variables variable_1=\"variable_bob\"/>"
+                "</connection>"
+            "</model>";
+
     std::string expectedError1 = "Connection in model '' does not have a valid variable_2 in a map_variables element.";
 
     // Parse
@@ -1091,19 +1133,20 @@ TEST(Parser, connectionVariable2Missing) {
 
 TEST(Parser, connectionVariable1Missing) {
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"component_bob\">"
-                "<variable name=\"variable_bob\"/>"
-            "</component>"
-            "<component name=\"component_dave\">"
-                "<variable name=\"variable_dave\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
-                "<map_variables variable_2=\"variable_dave\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"component_bob\">"
+                    "<variable name=\"variable_bob\"/>"
+                "</component>"
+                "<component name=\"component_dave\">"
+                    "<variable name=\"variable_dave\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                    "<map_variables variable_2=\"variable_dave\"/>"
+                "</connection>"
+            "</model>";
+
     std::string expectedError1 = "Connection in model '' does not have a valid variable_1 in a map_variables element.";
 
     // Parse
@@ -1115,19 +1158,20 @@ TEST(Parser, connectionVariable1Missing) {
 
 TEST(Parser, connectionErrorNoMapVariablesType) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-            "<component name=\"component1\">"
-                "<variable name=\"variable1\"/>"
-            "</component>"
-            "<component name=\"component2\">"
-                "<variable name=\"variable2\"/>"
-            "</component>"
-            "<connection>"
-                "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
-                "<map_variabels variable_1=\"variable1\" variable_2=\"variable2\"/>"
-            "</connection>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"component1\">"
+                    "<variable name=\"variable1\"/>"
+                "</component>"
+                "<component name=\"component2\">"
+                    "<variable name=\"variable2\"/>"
+                "</component>"
+                "<connection>"
+                    "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
+                    "<map_variabels variable_1=\"variable1\" variable_2=\"variable2\"/>"
+                "</connection>"
+            "</model>";
+
     std::string expectedError1 = "Connection in model '' has an invalid child element 'map_variabels'.";
     std::string expectedError2 = "Connection in model '' does not have a map_variables element.";
 
@@ -1140,19 +1184,16 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
 
 TEST(Parser, invalidImportsAndGetError) {
     const std::string input =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-       "<import xlink:href=\"some-other-model.xml\" "
-               "xmlns:xlink=\"http://www.w3.org/1999/xlink\" sauce=\"hollandaise\">"
-           "<units units_ref=\"a_units_in_that_model\" "
-                      "name=\"units_in_this_model\"/>"
-           "<component component_ref=\"a_component_in_that_model\" "
-               "name=\"component_in_this_model\"/>"
-           "<invalid_nonsense/>"
-           "<units units_ruff=\"dog\" name=\"fido\"/>"
-           "<component component_meow=\"cat\" name=\"frank\"/>"
-       "</import>"
-    "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" sauce=\"hollandaise\">"
+                    "<units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>"
+                    "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
+                    "<invalid_nonsense/>"
+                    "<units units_ruff=\"dog\" name=\"fido\"/>"
+                    "<component component_meow=\"cat\" name=\"frank\"/>"
+                "</import>"
+            "</model>";
 
     std::string expectError1 = "Import from 'some-other-model.xml' has an invalid attribute 'sauce'.";
     std::string expectError2 = "Import from 'some-other-model.xml' has an invalid child element 'invalid_nonsense'.";
@@ -1160,19 +1201,15 @@ TEST(Parser, invalidImportsAndGetError) {
     std::string expectError4 = "Import of component 'frank' from 'some-other-model.xml' has an invalid attribute 'component_meow'.";
 
     const std::string output =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-       "<import xlink:href=\"some-other-model.xml\" "
-         "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-         "<component component_ref=\"a_component_in_that_model\" "
-           "name=\"component_in_this_model\"/>"
-       "</import>"
-       "<import xlink:href=\"some-other-model.xml\" "
-         "xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-         "<units units_ref=\"a_units_in_that_model\" "
-           "name=\"units_in_this_model\"/>"
-        "</import>"
-    "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                    "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
+                "</import>"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+                    "<units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>"
+                "</import>"
+            "</model>";
 
     libcellml::Parser p(libcellml::Format::XML);
     libcellml::ModelPtr m = p.parseModel(input);
@@ -1200,16 +1237,17 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
 
     // Trigger CellML entity errors
     const std::string input =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\" episode=\"four\">"
-       "<import princess=\"leia\"/>"
-       "<units jedi=\"luke\"/>"
-       "<component ship=\"falcon\">"
-            "<variable pilot=\"han\"/>"
-       "</component>"
-       "<connection wookie=\"chewie\"/>"
-       "<encapsulation yoda=\"green\"/>"
-    "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\" episode=\"four\">"
+                "<import princess=\"leia\"/>"
+                "<units jedi=\"luke\"/>"
+                "<component ship=\"falcon\">"
+                    "<variable pilot=\"han\"/>"
+                "</component>"
+                "<connection wookie=\"chewie\"/>"
+                "<encapsulation yoda=\"green\"/>"
+            "</model>";
+
     std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid attribute 'episode'.",
         "Import from '' has an invalid attribute 'princess'.",
@@ -1298,30 +1336,31 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
 
 TEST(Parser, invalidModelWithTextInAllElements) {
     const std::string input =
-    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\">\n"
-       "episode7\n"
-       "<import xlink:href=\"sith.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">kylo</import>\n"
-       "<units name=\"robot\">"
-           "bb-8"
-           "<unit units=\"ball\">rolls</unit>"
-       "</units>\n"
-       "<component name=\"ship\">falcon\n"
-       "    <variable name=\"jedi\">rey</variable>\n"
-       "</component>\n"
-       "<connection>"
-            "finn"
-            "<map_components component_1=\"ship\">"
-                "trooper"
-            "</map_components>"
-       "</connection>\n"
-       "<encapsulation>"
-           "awakens"
-           "<component_ref component=\"ship\">"
-               "force"
-           "</component_ref>"
-       "</encapsulation>\n"
-    "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\">\n"
+                "episode7\n"
+                "<import xlink:href=\"sith.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">kylo</import>\n"
+                "<units name=\"robot\">"
+                    "bb-8"
+                    "<unit units=\"ball\">rolls</unit>"
+                "</units>\n"
+                "<component name=\"ship\">falcon\n"
+                    "    <variable name=\"jedi\">rey</variable>\n"
+                "</component>\n"
+                "<connection>"
+                    "finn"
+                    "<map_components component_1=\"ship\">"
+                        "trooper"
+                    "</map_components>"
+                "</connection>\n"
+                "<encapsulation>"
+                    "awakens"
+                    "<component_ref component=\"ship\">"
+                        "force"
+                    "</component_ref>"
+                "</encapsulation>\n"
+            "</model>";
+
     std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid non-whitespace child text element '\nepisode7\n'.",
         "Import from 'sith.xml' has an invalid non-whitespace child text element 'kylo'.",
@@ -1349,20 +1388,20 @@ TEST(Parser, invalidModelWithTextInAllElements) {
 
 TEST(Parser, parseIds) {
     const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
-            "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
-              "<component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>"
-            "</import>"
-            "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
-              "<units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>"
-            "</import>"
-            "<units name=\"units2\" id=\"u2id\"/>"
-            "<component name=\"component2\" id=\"c2id\">"
-                "<units name=\"units3\" id=\"u3id\"/>"
-                "<variable name=\"variable1\" id=\"vid\"/>"
-            "</component>"
-        "</model>";
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
+                    "<component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>"
+                "</import>"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
+                    "<units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>"
+                "</import>"
+                "<units name=\"units2\" id=\"u2id\"/>"
+                "<component name=\"component2\" id=\"c2id\">"
+                    "<units name=\"units3\" id=\"u3id\"/>"
+                    "<variable name=\"variable1\" id=\"vid\"/>"
+                "</component>"
+            "</model>";
 
     libcellml::Parser p(libcellml::Format::XML);
     libcellml::ModelPtr model = p.parseModel(in);
