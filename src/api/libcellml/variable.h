@@ -101,7 +101,7 @@ public:
      *
      * @return The equivalent variable at the given index.
      */
-    VariablePtr getEquivalentVariable(size_t index);
+    VariablePtr getEquivalentVariable(size_t index) const;
 
     /**
      * @brief Get the number of equivalent variables for this variable.
@@ -124,7 +124,7 @@ public:
      * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
      * and @c false otherwise.
      */
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     /**
      * @brief Set the units by @p name for this variable.

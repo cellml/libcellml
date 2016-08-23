@@ -75,16 +75,16 @@ struct Variable::VariableImpl
      */
     void unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
-    std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
+    std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
     std::string mUnits; /**< The name of the units defined for this Variable.*/
 };
 
-std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
+std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
                         [=](VariableWeakPtr variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
@@ -146,7 +146,7 @@ void Variable::removeAllEquivalences()
     mPimpl->mEquivalentVariables.clear();
 }
 
-VariablePtr Variable::getEquivalentVariable(size_t index)
+VariablePtr Variable::getEquivalentVariable(size_t index) const
 {
     VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
     return weakEquivalentVariable.lock();
@@ -157,12 +157,12 @@ size_t Variable::equivalentVariableCount() const
     return mPimpl->mEquivalentVariables.size();
 }
 
-bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable)
+bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     return mPimpl->hasEquivalentVariable(equivalentVariable);
 }
 
-bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable)
+bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     return findEquivalentVariable(equivalentVariable) != mEquivalentVariables.end();
 }

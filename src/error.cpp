@@ -98,7 +98,7 @@ Error::Kind Error::getKind() const
     return mPimpl->mKind;
 }
 
-bool Error::isKind(const Error::Kind &kind)
+bool Error::isKind(const Error::Kind &kind) const
 {
     bool response = false;
     if (mPimpl->mKind == kind) {
