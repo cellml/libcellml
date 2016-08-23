@@ -20,25 +20,34 @@ limitations under the License.
 
 namespace libcellml {
 
+struct NamedEntity::NamedEntityImpl
+{
+    std::string mName; /**< Entity name represented as a std::string. */
+};
+
+
 NamedEntity::NamedEntity()
-    : mName("")
+    : mPimpl(new NamedEntityImpl())
 {
 }
 
 NamedEntity::~NamedEntity()
 {
+    delete mPimpl;
 }
 
 NamedEntity::NamedEntity(const NamedEntity& rhs)
     : Entity(rhs)
+    , mPimpl(new NamedEntityImpl())
 {
-    mName = rhs.mName;
+    mPimpl->mName = rhs.mPimpl->mName;
 }
 
 NamedEntity::NamedEntity(NamedEntity &&rhs)
     : Entity(std::move(rhs))
+    , mPimpl(rhs.mPimpl)
 {
-    mName = std::move(rhs.mName);
+    rhs.mPimpl = nullptr;
 }
 
 NamedEntity& NamedEntity::operator=(NamedEntity n)
@@ -48,17 +57,17 @@ NamedEntity& NamedEntity::operator=(NamedEntity n)
     return *this;
 }
 
+void NamedEntity::swap(NamedEntity &rhs)
+{
+    std::swap(this->mPimpl, rhs.mPimpl);
+}
+
 void NamedEntity::setName(const std::string &name) {
-    mName = name;
+    mPimpl->mName = name;
 }
 
 std::string NamedEntity::getName() const {
-    return mName;
-}
-
-void NamedEntity::swap(NamedEntity &rhs)
-{
-    std::swap(this->mName, rhs.mName);
+    return mPimpl->mName;
 }
 
 }

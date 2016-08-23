@@ -289,11 +289,11 @@ TEST(Component, constructors) {
     // Testing move assignment for component
     c2 = std::move(c1);
     EXPECT_EQ("my_name", c2.getName());
-    EXPECT_EQ("", c1.getName());
+    // EXPECT_EQ("", c1.getName());  c1 is now dead (contains a nullptr).
 
     // Testing move constructor for component
     libcellml::Component c3 = std::move(c2);
     EXPECT_EQ("my_name", c3.getName());
-    EXPECT_EQ("", c2.getName());
+    // EXPECT_EQ("", c2.getName()); c2 is now dead (contains a nullptr).
 
 }
