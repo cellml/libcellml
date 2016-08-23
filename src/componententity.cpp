@@ -203,8 +203,7 @@ void ComponentEntity::removeAllUnits()
 
 bool ComponentEntity::hasUnits(const std::string &name) const
 {
-    auto result = mPimpl->findUnits(name);
-    return result != mPimpl->mUnits.end();
+    return mPimpl->findUnits(name) != mPimpl->mUnits.end();
 }
 
 UnitsPtr ComponentEntity::getUnits(size_t index)
@@ -219,16 +218,12 @@ const UnitsPtr& ComponentEntity::getUnits(size_t index) const
 
 UnitsPtr ComponentEntity::getUnits(const std::string &name)
 {
-    auto result = mPimpl->findUnits(name);
-    size_t index = result - mPimpl->mUnits.begin();
-    return mPimpl->mUnits.at(index);
+    return mPimpl->mUnits.at(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
 }
 
 const UnitsPtr& ComponentEntity::getUnits(const std::string &name) const
 {
-    auto result = mPimpl->findUnits(name);
-    size_t index = result - mPimpl->mUnits.begin();
-    return mPimpl->mUnits.at(index);
+    return mPimpl->mUnits.at(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
 }
 
 UnitsPtr ComponentEntity::takeUnits(size_t index)
@@ -241,9 +236,7 @@ UnitsPtr ComponentEntity::takeUnits(size_t index)
 
 UnitsPtr ComponentEntity::takeUnits(const std::string &name)
 {
-    auto result = mPimpl->findUnits(name);
-    size_t index = result - mPimpl->mUnits.begin();
-    return takeUnits(index);
+    return takeUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
 }
 
 void ComponentEntity::replaceUnits(size_t index, const UnitsPtr &units)
@@ -254,9 +247,7 @@ void ComponentEntity::replaceUnits(size_t index, const UnitsPtr &units)
 
 void ComponentEntity::replaceUnits(const std::string &name, const UnitsPtr &units)
 {
-    auto result = mPimpl->findUnits(name);
-    size_t index = result - mPimpl->mUnits.begin();
-    replaceUnits(index, units);
+    replaceUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin(), units);
 }
 
 size_t ComponentEntity::unitsCount() const
@@ -463,42 +454,32 @@ void ComponentEntity::replaceComponent(const std::string &name, const ComponentP
 // Begin private component methods.
 ComponentPtr ComponentEntity::takeComponentInThis(const std::string &name)
 {
-    auto result = mPimpl->findComponent(name);
-    size_t index = result - mPimpl->mComponents.begin();
-    return takeComponent(index);
+    return takeComponent(mPimpl->findComponent(name) - mPimpl->mComponents.begin());
 }
 
 void ComponentEntity::replaceComponentInThis(const std::string &name, const ComponentPtr &component)
 {
-    auto result = mPimpl->findComponent(name);
-    size_t index = result - mPimpl->mComponents.begin();
-    replaceComponent(index, component);
+    replaceComponent(mPimpl->findComponent(name) - mPimpl->mComponents.begin(), component);
 }
 
 bool ComponentEntity::containsComponentInThis(const ComponentPtr &component) const
 {
-    auto result = mPimpl->findComponent(component);
-    return result != mPimpl->mComponents.end();
+    return mPimpl->findComponent(component) != mPimpl->mComponents.end();
 }
 
 bool ComponentEntity::containsComponentInThis(const std::string &name) const
 {
-    auto result = mPimpl->findComponent(name);
-    return result != mPimpl->mComponents.end();
+    return mPimpl->findComponent(name) != mPimpl->mComponents.end();
 }
 
 ComponentPtr ComponentEntity::getComponentInThis(const std::string &name)
 {
-    auto result = mPimpl->findComponent(name);
-    size_t index = result - mPimpl->mComponents.begin();
-    return mPimpl->mComponents.at(index);
+    return mPimpl->mComponents.at(mPimpl->findComponent(name) - mPimpl->mComponents.begin());
 }
 
 const ComponentPtr& ComponentEntity::getComponentInThis(const std::string &name) const
 {
-    auto result = mPimpl->findComponent(name);
-    size_t index = result - mPimpl->mComponents.begin();
-    return mPimpl->mComponents.at(index);
+    return mPimpl->mComponents.at(mPimpl->findComponent(name) - mPimpl->mComponents.begin());
 }
 
 void ComponentEntity::removeComponentInThis(const std::string &name)
