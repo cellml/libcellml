@@ -249,34 +249,6 @@ public:
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    /**
-     * @brief Private function to add an equivalent variable to the set for this variable.
-     *
-     * Add the argument equivalent variable to the set of equivalent variables for this
-     * variable if it is not already present. If the equivalent variable is present,
-     * do nothing.
-     *
-     * @sa addEquivalence, unsetEquivalentTo
-     *
-     * @param equivalentVariable The variable to add to this variable's equivalent
-     * variable set if not already present.
-     */
-    void setEquivalentTo(const VariablePtr &equivalentVariable);
-
-    /**
-     * @brief Private function to remove an equivalent variable from the set for this variable.
-     *
-     * Remove the @p equivalentVariable from the set of equivalent variables for this
-     * variable if it is present. If the equivalent variable is not in this variable's set,
-     * throw @c std::out_of_range.
-     *
-     * @sa removeEquivalence, setEquivalentTo
-     *
-     * @param equivalentVariable The variable to remove from this variable's equivalent
-     * variable set if it is present.
-     */
-    void unsetEquivalentTo(const VariablePtr &equivalentVariable);
-
     std::string doSerialisation(Format format) const;
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
