@@ -163,16 +163,12 @@ const VariablePtr& Component::getVariable(size_t index) const
 
 VariablePtr Component::getVariable(const std::string &name)
 {
-    auto result = mPimpl->findVariable(name);
-    size_t index = result - mPimpl->mVariables.begin();
-    return mPimpl->mVariables.at(index);
+    return mPimpl->mVariables.at(mPimpl->findVariable(name) - mPimpl->mVariables.begin());
 }
 
 const VariablePtr& Component::getVariable(const std::string &name) const
 {
-    auto result = mPimpl->findVariable(name);
-    size_t index = result - mPimpl->mVariables.begin();
-    return mPimpl->mVariables.at(index);
+    return mPimpl->mVariables.at(mPimpl->findVariable(name) - mPimpl->mVariables.begin());
 }
 
 size_t Component::variableCount() const
