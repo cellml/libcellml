@@ -156,6 +156,8 @@ struct ComponentEntity::ComponentEntityImpl
     void removeComponent(size_t index);
     void removeComponent(const ComponentPtr &component, bool searchEncapsulated);
 
+    std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
+    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
     std::vector<ComponentPtr>::const_iterator findComponent(const std::string &name) const;
     std::vector<ComponentPtr>::const_iterator findComponent(const ComponentPtr &component) const;
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
@@ -163,6 +165,18 @@ struct ComponentEntity::ComponentEntityImpl
     std::vector<ComponentPtr> mComponents;
     std::vector<UnitsPtr> mUnits;
 };
+
+std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
+{
+    return std::find_if(mComponents.begin(), mComponents.end(),
+                        [=](const ComponentPtr& c) -> bool { return c->getName() == name; });
+}
+
+std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
+{
+    return std::find_if(mComponents.begin(), mComponents.end(),
+                        [=](const ComponentPtr& c) -> bool { return c == component; });
+}
 
 std::vector<ComponentPtr>::const_iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name) const
 {
