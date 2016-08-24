@@ -169,7 +169,11 @@ TEST(Coverage, variable) {
 }
 
 TEST(Coverage, component) {
-    std::string e = "<component name=\"name\"><variable/><1+1=2></component>";
+    std::string e =
+            "<component name=\"name\">"
+                "<variable/>"
+                "<1+1=2>"
+            "</component>";
     libcellml::Component c, cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
@@ -187,7 +191,14 @@ TEST(Coverage, component) {
 }
 
 TEST(Coverage, componentEntity) {
-    const std::string e = "<component/><component/><encapsulation><component_ref><component_ref/></component_ref></encapsulation>";
+    const std::string e =
+            "<component/>"
+            "<component/>"
+            "<encapsulation>"
+                "<component_ref>"
+                    "<component_ref/>"
+                "</component_ref>"
+            "</encapsulation>";
     libcellml::Component p, pm;
     libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
     p.addComponent(child);
