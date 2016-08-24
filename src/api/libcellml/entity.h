@@ -134,9 +134,8 @@ private:
 
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    Model *mParentModel; /**< Pointer to parent model. */
-    Component *mParentComponent; /**< Pointer to component model. */
-    std::string mId; /**< String document identifier for this entity. */
+    struct EntityImpl;
+    EntityImpl* mPimpl;
 };
 
 }

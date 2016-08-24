@@ -44,14 +44,14 @@ TEST(Coverage, entity) {
     em = std::move(e);
 
     libcellml::Model m;
-    e.setParent(&m);
+    em.setParent(&m);
 
-    EXPECT_EQ(&m, e.getParent());
+    EXPECT_EQ(&m, em.getParent());
 
     libcellml::Component c;
-    e.setParent(&c);
+    em.setParent(&c);
 
-    EXPECT_EQ(&c, e.getParent());
+    EXPECT_EQ(&c, em.getParent());
 }
 
 TEST(Coverage, units) {

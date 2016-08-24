@@ -21,28 +21,37 @@ limitations under the License.
 
 namespace libcellml {
 
-Entity::Entity()
-    : mParentModel(nullptr)
-    , mParentComponent(nullptr)
+struct Entity::EntityImpl
 {
+    Model *mParentModel; /**< Pointer to parent model. */
+    Component *mParentComponent; /**< Pointer to component model. */
+    std::string mId; /**< String document identifier for this entity. */
+};
+
+Entity::Entity()
+    : mPimpl(new EntityImpl())
+{
+    mPimpl->mParentModel = nullptr;
+    mPimpl->mParentComponent = nullptr;
 }
 
 Entity::~Entity()
 {
+    delete mPimpl;
 }
 
 Entity::Entity(const Entity& rhs)
+    : mPimpl(new EntityImpl())
 {
-    mParentComponent = rhs.mParentComponent;
-    mParentModel = rhs.mParentModel;
-    mId = rhs.mId;
+    mPimpl->mParentComponent = rhs.mPimpl->mParentComponent;
+    mPimpl->mParentModel = rhs.mPimpl->mParentModel;
+    mPimpl->mId = rhs.mPimpl->mId;
 }
 
 Entity::Entity(Entity &&rhs)
+    : mPimpl(rhs.mPimpl)
 {
-    mParentComponent = std::move(rhs.mParentComponent);
-    mParentModel = std::move(rhs.mParentModel);
-    mId = std::move(rhs.mId);
+    rhs.mPimpl = nullptr;
 }
 
 Entity& Entity::operator=(Entity e)
@@ -53,9 +62,7 @@ Entity& Entity::operator=(Entity e)
 
 void Entity::swap(Entity &rhs)
 {
-    std::swap(this->mParentComponent, rhs.mParentComponent);
-    std::swap(this->mParentModel, rhs.mParentModel);
-    std::swap(this->mId, rhs.mId);
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 std::string Entity::doSerialisation(Format /* format */) const
@@ -70,44 +77,44 @@ std::string Entity::serialise(Format format) const
 
 void Entity::setId(const std::string &id)
 {
-    mId = id;
+    mPimpl->mId = id;
 }
 
 std::string Entity::getId() const
 {
-    return mId;
+    return mPimpl->mId;
 }
 
 void *Entity::getParent() const {
     void *parent = 0;
-    if (mParentComponent) {
-        parent = mParentComponent;
-    } else if (mParentModel) {
-        parent = mParentModel;
+    if (mPimpl->mParentComponent) {
+        parent = mPimpl->mParentComponent;
+    } else if (mPimpl->mParentModel) {
+        parent = mPimpl->mParentModel;
     }
     return parent;
 }
 
 void Entity::setParent(Component *parent) {
-    mParentComponent = parent;
+    mPimpl->mParentComponent = parent;
 }
 
 void Entity::setParent(Model *parent) {
-    mParentModel = parent;
+    mPimpl->mParentModel = parent;
 }
 
 void Entity::clearParent() {
-    mParentComponent = nullptr;
-    mParentModel = nullptr;
+    mPimpl->mParentComponent = nullptr;
+    mPimpl->mParentModel = nullptr;
 }
 
 bool Entity::hasParent(Component *c) const
 {
     bool hasParent = false;
-    if (mParentComponent == c) {
+    if (mPimpl->mParentComponent == c) {
         hasParent = true;
-    } else if (mParentComponent) {
-        hasParent = mParentComponent->hasParent(c);
+    } else if (mPimpl->mParentComponent) {
+        hasParent = mPimpl->mParentComponent->hasParent(c);
     }
 
     return hasParent;
