@@ -77,6 +77,7 @@ struct Variable::VariableImpl
 
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
+    std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
     std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
@@ -85,6 +86,12 @@ struct Variable::VariableImpl
 };
 
 std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
+                        [=](VariableWeakPtr variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+}
+
+std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
 {
     return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
                         [=](VariableWeakPtr variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
