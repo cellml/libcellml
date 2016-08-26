@@ -202,7 +202,7 @@ public:
      *
      * @return @c true if the @p variable is in this component and @c false otherwise.
      */
-    bool hasVariable(const VariablePtr &variable);
+    bool hasVariable(const VariablePtr &variable) const;
 
     /**
      * @brief Test whether the variable named @p name is in this component.
@@ -218,7 +218,7 @@ public:
      * @return @c true if a variable named @p name is in this component
      * and @c false otherwise.
      */
-    bool hasVariable(const std::string &name);
+    bool hasVariable(const std::string &name) const;
 
 private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */

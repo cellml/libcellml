@@ -104,7 +104,7 @@ public:
      * @return @c true if the @p kind matches the the @c Error::Kind for this
      * error and @c false otherwise.
      */
-    bool isKind(const Kind &kind);
+    bool isKind(const Kind &kind) const;
 
     /**
      * @brief Set the @c enum SpecificationRule of this error.

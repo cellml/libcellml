@@ -101,7 +101,7 @@ public:
      *
      * @return The equivalent variable at the given index.
      */
-    VariablePtr getEquivalentVariable(size_t index);
+    VariablePtr getEquivalentVariable(size_t index) const;
 
     /**
      * @brief Get the number of equivalent variables for this variable.
@@ -124,7 +124,7 @@ public:
      * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
      * and @c false otherwise.
      */
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable);
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     /**
      * @brief Set the units by @p name for this variable.
@@ -248,34 +248,6 @@ public:
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
-
-    /**
-     * @brief Private function to add an equivalent variable to the set for this variable.
-     *
-     * Add the argument equivalent variable to the set of equivalent variables for this
-     * variable if it is not already present. If the equivalent variable is present,
-     * do nothing.
-     *
-     * @sa addEquivalence, unsetEquivalentTo
-     *
-     * @param equivalentVariable The variable to add to this variable's equivalent
-     * variable set if not already present.
-     */
-    void setEquivalentTo(const VariablePtr &equivalentVariable);
-
-    /**
-     * @brief Private function to remove an equivalent variable from the set for this variable.
-     *
-     * Remove the @p equivalentVariable from the set of equivalent variables for this
-     * variable if it is present. If the equivalent variable is not in this variable's set,
-     * throw @c std::out_of_range.
-     *
-     * @sa removeEquivalence, setEquivalentTo
-     *
-     * @param equivalentVariable The variable to remove from this variable's equivalent
-     * variable set if it is present.
-     */
-    void unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
     std::string doSerialisation(Format format) const;
 

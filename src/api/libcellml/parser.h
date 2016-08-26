@@ -53,18 +53,6 @@ public:
     ModelPtr parseModel(const std::string &input);
 
 private:
-    /**
-     * @brief Update a @p model with the attributes from a @c std::string.
-     *
-     * Update the @p model with entities and attributes
-     * from the @c std::string @p input. Any entities or attributes
-     * in the @p model with names matching those in @p input
-     * will be overwritten.
-     *
-     * @param model The @c ModelPtr to update.
-     * @param input The string to parse and update the @p model with.
-     */
-    void updateModel(const ModelPtr &model, const std::string &input);
 
     void swap(Parser &rhs); /**< Swap method required for C++ 11 move semantics. */
 

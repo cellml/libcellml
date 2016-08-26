@@ -176,12 +176,12 @@ size_t Component::variableCount() const
     return mPimpl->mVariables.size();
 }
 
-bool Component::hasVariable(const VariablePtr &variable)
+bool Component::hasVariable(const VariablePtr &variable) const
 {
     return mPimpl->findVariable(variable) != mPimpl->mVariables.end();
 }
 
-bool Component::hasVariable(const std::string &name)
+bool Component::hasVariable(const std::string &name) const
 {
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
