@@ -35,9 +35,9 @@ configure_file(
 
 list(APPEND CLEAN_FILES ${LIBCELLML_VERSIONCONFIG_H} ${LIBCELLML_EXPORTDEFINITIONS_H})
 
-set(MATHML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/mathml_config.h")
+set(MATHML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/mathmlconfig.h")
 configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/configure/mathml_config.h.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/configure/mathmlconfig.h.in"
   ${MATHML_CONFIG_H}
 )
 
