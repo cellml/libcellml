@@ -35,9 +35,9 @@ bool canConvertToDouble(const std::string &candidate)
     return canConvert;
 }
 
-bool EXPORT_FOR_TESTING hasNonWhitespaceCharacters(const std::string &/*input*/)
+bool EXPORT_FOR_TESTING hasNonWhitespaceCharacters(const std::string &input)
 {
-    return false;
+    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;;
 }
 
 }

@@ -248,7 +248,7 @@ TEST(Coverage, canConvertToDouble) {
 
 TEST(Coverage, hasNonWhitespaceCharacters) {
     EXPECT_TRUE(libcellml::hasNonWhitespaceCharacters(" bob"));
-    EXPECT_TRUE(libcellml::hasNonWhitespaceCharacters(" \n\n\t"));
+    EXPECT_FALSE(libcellml::hasNonWhitespaceCharacters(" \n\n\t"));
 
-    EXPECT_FALSE(libcellml::hasNonWhitespaceCharacters("bob_rules"));
+    EXPECT_TRUE(libcellml::hasNonWhitespaceCharacters("bob_rules"));
 }
