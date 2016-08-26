@@ -90,6 +90,9 @@ TEST(Coverage, unitsGetVariations) {
     EXPECT_EQ("a_unit", uns->getName());
     libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).getUnits("a_unit");
     EXPECT_EQ("a_unit", uSns->getName());
+
+    EXPECT_EQ(nullptr, m.getUnits("b_unit"));
+    EXPECT_EQ(nullptr, m.getUnits(4));
 }
 
 TEST(Coverage, prefixToString) {
