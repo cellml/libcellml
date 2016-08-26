@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "utilities.h"
 
+#include <stdexcept>
+
 namespace libcellml {
 
 bool canConvertToDouble(const std::string &candidate)
