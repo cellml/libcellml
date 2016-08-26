@@ -407,6 +407,19 @@ TEST(Variable, getVariableMethods) {
     const libcellml::VariablePtr vMethod4 = static_cast<const libcellml::Component>(c).getVariable(3);
     std::string a4 = vMethod4->getName();
     EXPECT_EQ("variable4", a4);
+
+    // Get invalid index
+    EXPECT_THROW(static_cast<const libcellml::Component>(c).getVariable(-3), std::out_of_range);
+    EXPECT_EQ(c.getVariable(7), nullptr);
+    try {
+        c.getVariable(14);
+    } catch (const std::out_of_range& e) {
+        EXPECT_EQ("Index out of range.", std::string(e.what()));
+    }
+
+    // Get non-existent variable by string
+    EXPECT_EQ(c.getVariable("notreal"), nullptr);
+    EXPECT_THROW(static_cast<const libcellml::Component>(c).getVariable("doesntexist"), std::out_of_range);
 }
 
 TEST(Variable, modelWithComponentWithVariableWithValidName) {

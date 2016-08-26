@@ -67,27 +67,13 @@ public:
      * @brief Get error at the specified @p index.
      *
      * Returns an error at the @p index.  If the @p index
-     * is not valid a @c std::out_of_range exception is thrown.
+     * is not valid a @c nullptr is returned.
      *
      * @param index The index of the error to return (zero-based).
      *
-     * @return A reference to the error at the given index.
+     * @return A reference to the error at the given index on success, @c nullptr otherwise.
      */
-    ErrorPtr getError(size_t index);
-
-    /**
-     * @brief Get a @c const reference to the error at the specified @p index.
-     *
-     * Returns a @c const reference to an error at the @p index. If the @p index
-     * is not valid a @c std::out_of_range exception is thrown.
-     *
-     * @overload
-     *
-     * @param index The index of the error to return (zero-based).
-     *
-     * @return A @c const reference to the error at the given @p index.
-     */
-    const ErrorPtr& getError(size_t index) const;
+    ErrorPtr getError(size_t index) const;
 
 protected:
     /**

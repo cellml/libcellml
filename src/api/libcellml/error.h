@@ -153,21 +153,7 @@ public:
      * @return A pointer to the component that this error was raised on. If no
      * component has been set for this error, return a @c nullptr.
      */
-    ComponentPtr getComponent();
-
-    /**
-     * @brief Get a @c const reference to the component for this error.
-     *
-     * Returns a @c const reference to the component that this
-     * error is relevant to.
-     *
-     * @overload
-     *
-     * @return A @c const reference to the component that this
-     * error was raised on. If no component has been set for this
-     * error, return a @c nullptr.
-     */
-    const ComponentPtr& getComponent() const;
+    ComponentPtr getComponent() const;
 
     /**
      * @brief Set the @p import for this error.
@@ -186,21 +172,7 @@ public:
      * @return A pointer to the import this error was raised on. If no import
      * has been set for this error, return a @c nullptr.
      */
-    ImportPtr getImport();
-
-    /**
-     * @brief Get a @c const reference to the import for this error.
-     *
-     * Returns a @c const reference to the import that this
-     * error is relevant to.
-     *
-     * @overload
-     *
-     * @return A @c const reference to the import that this
-     * error was raised on. If no import has been set for this error,
-     * return a @c nullptr.
-     */
-    const ImportPtr& getImport() const;
+    ImportPtr getImport() const;
 
     /**
      * @brief Set the @p model for this error.
@@ -219,21 +191,7 @@ public:
      * @return A pointer to the model that this error was raised on.
      * If no model has been set for this error, return a @c nullptr.
      */
-    ModelPtr getModel();
-
-    /**
-     * @brief Get a @c const reference to the model for this error.
-     *
-     * Returns a @c const reference to the model that this
-     * error is relevant to.
-     *
-     * @overload
-     *
-     * @return A @c const reference to the model that this
-     * error was raised on. If no model has been set for this error,
-     * return a @c nullptr.
-     */
-    const ModelPtr& getModel() const;
+    ModelPtr getModel() const;
 
     /**
      * @brief Set the units for this error.
@@ -252,21 +210,7 @@ public:
      * @return A pointer to the units that this error was raised on.
      * If no units has been set for this error, return a @c nullptr.
      */
-    UnitsPtr getUnits();
-
-    /**
-     * @brief Get a @c const reference to the units for this error.
-     *
-     * Returns a @c const reference to the units that this
-     * error is relevant to.
-     *
-     * @overload
-     *
-     * @return A @c const reference to the units that this
-     * error was raised on. If no units has been set for this error,
-     * return a @c nullptr.
-     */
-    const UnitsPtr& getUnits() const;
+    UnitsPtr getUnits() const;
 
     /**
      * @brief Set the variable for this error.
@@ -285,21 +229,7 @@ public:
      * @return A pointer to the variable this variable error was raised on.
      * If no variable has been set for this error, return a @c nullptr.
      */
-    VariablePtr getVariable();
-
-    /**
-     * @brief Get a @c const reference to the variable for this error.
-     *
-     * Returns a @c const reference to the variable that this
-     * error is relevant to.
-     *
-     * @overload
-     *
-     * @return A @c const reference to the variable that this
-     * error was raised on. If no variable has been set for this
-     * error, return a @c nullptr.
-     */
-    const VariablePtr& getVariable() const;
+    VariablePtr getVariable() const;
 
 private:
     void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */
