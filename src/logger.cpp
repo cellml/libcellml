@@ -103,9 +103,4 @@ bool Logger::catchDoubleConversionError(const std::string &input)
     return response;
 }
 
-bool Logger::isNotWhitespace (std::string &input)
-{
-    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
-}
-
 }

@@ -28,6 +28,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
+#include "utilities.h"
 #include "xmldoc.h"
 
 namespace libcellml {
@@ -722,7 +723,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         if (childNode) {
             if (childNode->isType("text")) {
                 textNode = childNode->convertToString();
-                if (mValidator->isNotWhitespace(textNode)) {
+                if (hasNonWhitespaceCharacters(textNode)) {
                     if (nodeType == "ci") {
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
@@ -843,7 +844,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
                 std::string type = grandchildNode->getType();
                 if (grandchildNode->isType("text")) {
                     std::string textNode = grandchildNode->convertToString();
-                    if (mValidator->isNotWhitespace(textNode)) {
+                    if (hasNonWhitespaceCharacters(textNode)) {
                         bvarNames.push_back(textNode);
                     }
                 }

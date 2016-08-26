@@ -91,18 +91,6 @@ protected:
      */
     bool catchDoubleConversionError(const std::string &input);
 
-    /**
-     * @brief Check if the @p input @c std::string has any non-whitespace characters.
-     *
-     * If the @p input @c std::string has any non-whitespace characters, return
-     * @c true, otherwise return @c false.
-     *
-     * @param input The string to check for non-whitespace characters.
-     *
-     * @return @c true if @p input contains non-whitespace characters and @c false otherwise.
-     */
-    bool isNotWhitespace(std::string &input);
-
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */
 
