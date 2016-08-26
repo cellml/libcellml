@@ -256,7 +256,7 @@ TEST(Component, getComponentMethods) {
     // Can do this as we just have a const pointer
     cS->setName("gus");
     EXPECT_EQ("gus", cS->getName());
-    EXPECT_THROW(c.getComponent(4), std::out_of_range);
+    EXPECT_EQ(nullptr, c.getComponent(4));
 
     libcellml::ComponentPtr cAr = c.getComponent("gus");
     EXPECT_EQ("gus", cAr->getName());

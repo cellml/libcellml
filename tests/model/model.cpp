@@ -262,7 +262,7 @@ TEST(Model, getComponentMethods) {
     cB->setName("gus");
     EXPECT_EQ("gus", cB->getName());
 
-    EXPECT_THROW(m.getComponent(4), std::out_of_range);
+    EXPECT_EQ(nullptr, m.getComponent(4));
 }
 
 TEST(Model, takeComponentMethods) {

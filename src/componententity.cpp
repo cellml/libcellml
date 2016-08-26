@@ -226,9 +226,13 @@ UnitsPtr ComponentEntity::getUnits(const std::string &name) const
 
 UnitsPtr ComponentEntity::takeUnits(size_t index)
 {
-    UnitsPtr units = mPimpl->mUnits.at(index);
-    removeUnits(index);
-    units->clearParent();
+    UnitsPtr units = nullptr;
+    if (index < mPimpl->mUnits.size()) {
+        units = mPimpl->mUnits.at(index);
+        removeUnits(index);
+        units->clearParent();
+    }
+
     return units;
 }
 

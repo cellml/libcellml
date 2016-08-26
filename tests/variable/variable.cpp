@@ -409,17 +409,12 @@ TEST(Variable, getVariableMethods) {
     EXPECT_EQ("variable4", a4);
 
     // Get invalid index
-    EXPECT_THROW(static_cast<const libcellml::Component>(c).getVariable(-3), std::out_of_range);
-    EXPECT_EQ(c.getVariable(7), nullptr);
-    try {
-        c.getVariable(14);
-    } catch (const std::out_of_range& e) {
-        EXPECT_EQ("Index out of range.", std::string(e.what()));
-    }
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getVariable(-3));
+    EXPECT_EQ(nullptr, c.getVariable(7));
 
     // Get non-existent variable by string
-    EXPECT_EQ(c.getVariable("notreal"), nullptr);
-    EXPECT_THROW(static_cast<const libcellml::Component>(c).getVariable("doesntexist"), std::out_of_range);
+    EXPECT_EQ(nullptr, c.getVariable("notreal"));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getVariable("doesntexist"));
 }
 
 TEST(Variable, modelWithComponentWithVariableWithValidName) {
