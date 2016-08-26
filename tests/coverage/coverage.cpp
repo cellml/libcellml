@@ -234,11 +234,21 @@ TEST(Coverage, canConvertToDouble) {
     // Valid arguments.
     EXPECT_TRUE(libcellml::canConvertToDouble("1.0"));
     EXPECT_TRUE(libcellml::canConvertToDouble("1.0x"));
+    EXPECT_TRUE(libcellml::canConvertToDouble("1x.0x"));
     EXPECT_TRUE(libcellml::canConvertToDouble("INF"));
 
     // Invalid argument.
+    EXPECT_FALSE(libcellml::canConvertToDouble("sa1.0"));
+    EXPECT_FALSE(libcellml::canConvertToDouble("x1.0"));
     EXPECT_FALSE(libcellml::canConvertToDouble("ARGHHH"));
     // Out of range.
     EXPECT_FALSE(libcellml::canConvertToDouble("9.999e99999999"));
 
+}
+
+TEST(Coverage, hasNonWhitespaceCharacters) {
+    EXPECT_TRUE(libcellml::hasNonWhitespaceCharacters(" bob"));
+    EXPECT_TRUE(libcellml::hasNonWhitespaceCharacters(" \n\n\t"));
+
+    EXPECT_FALSE(libcellml::hasNonWhitespaceCharacters("bob_rules"));
 }

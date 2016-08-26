@@ -35,4 +35,9 @@ bool canConvertToDouble(const std::string &candidate)
     return canConvert;
 }
 
+bool EXPORT_FOR_TESTING hasNonWhitespaceCharacters(const std::string &/*input*/)
+{
+    return false;
+}
+
 }
