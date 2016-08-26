@@ -88,19 +88,4 @@ ErrorPtr Logger::getError(size_t index) const
     return mPimpl->mErrors.at(index);
 }
 
-bool Logger::catchDoubleConversionError(const std::string &input)
-{
-    bool response = false;
-    double value;
-    // Try to convert the input string to double.
-    try
-    {
-        value = std::stod(input);
-    } catch (std::exception) {
-        response = true;
-        (void)value;
-    }
-    return response;
-}
-
 }

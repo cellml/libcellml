@@ -475,7 +475,9 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (attribute->isType("prefix")) {
             prefix = attribute->getValue();
         } else if (attribute->isType("exponent")) {
-            if (mParser->catchDoubleConversionError(attribute->getValue())) {
+            if (canConvertToDouble(attribute->getValue())) {
+                exponent = std::stod(attribute->getValue());
+            } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
@@ -485,11 +487,11 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setKind(Error::Kind::UNITS);
                 err->setRule(SpecificationRule::UNIT_EXPONENT);
                 mParser->addError(err);
-            } else {
-                exponent = std::stod(attribute->getValue());
             }
         } else if (attribute->isType("multiplier")) {
-            if (mParser->catchDoubleConversionError(attribute->getValue())) {
+            if (canConvertToDouble(attribute->getValue())) {
+                multiplier = std::stod(attribute->getValue());
+            } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
@@ -499,11 +501,11 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setKind(Error::Kind::UNITS);
                 err->setRule(SpecificationRule::UNIT_MULTIPLIER);
                 mParser->addError(err);
-            } else {
-                multiplier = std::stod(attribute->getValue());
             }
         } else if (attribute->isType("offset")) {
-            if (mParser->catchDoubleConversionError(attribute->getValue())) {
+            if (canConvertToDouble(attribute->getValue())) {
+                offset = std::stod(attribute->getValue());
+            } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
@@ -513,8 +515,6 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setKind(Error::Kind::UNITS);
                 err->setRule(SpecificationRule::UNIT_OFFSET);
                 mParser->addError(err);
-            } else {
-                offset = std::stod(attribute->getValue());
             }
         } else {
             ErrorPtr err = std::make_shared<Error>();
