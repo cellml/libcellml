@@ -142,7 +142,7 @@ public:
      * @brief Get a variable with the given name @p name.
      *
      * Returns a reference to a variable with the name @p name for this
-     * component.  If the name is not found the @c nullptr is returned.
+     * component.  If the name is not found a @c nullptr is returned.
      *
      * @overload
      *
