@@ -526,7 +526,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     }
     if (prefix.length()) {
         // If the prefix is not a real number, check in the list of valid prefix names.
-        if (!canConvertToDouble(prefix)) {
+        if (!convertToDouble(prefix)) {
             if (!isStandardPrefixName(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
@@ -625,7 +625,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         // Check if initial value is a variable reference
         if(!(std::find(variableNames.begin(), variableNames.end(), initialValue) != variableNames.end())) {
             // Otherwise, check that the initial value can be converted to a double
-            if (!canConvertToDouble(initialValue)) {
+            if (!convertToDouble(initialValue)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Variable '" + variable->getName() +
                                     "' has an invalid initial value '" + initialValue +
@@ -738,7 +738,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         }
                     } else if (nodeType == "cn") {
                         // Check whether the cn value can be safely coverted to a real number.
-                        if (!canConvertToDouble(textNode)) {
+                        if (!convertToDouble(textNode)) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("MathML cn element has the value '" + textNode +
                                                 "', which cannot be converted to a real number.");

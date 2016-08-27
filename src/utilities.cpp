@@ -20,24 +20,25 @@ limitations under the License.
 
 namespace libcellml {
 
-bool canConvertToDouble(const std::string &candidate)
+bool convertToDouble(const std::string &candidate, double *value)
 {
     bool canConvert = false;
     // Try to convert the input string to double.
     try
     {
-        std::stod(candidate);
+        double tmp = std::stod(candidate);
+        if (value) {
+            *value = tmp;
+        }
         canConvert = true;
-    } catch (std::invalid_argument) {
-        canConvert = false;
-    } catch (std::out_of_range) {
+    } catch (...) {
         canConvert = false;
     }
 
     return canConvert;
 }
 
-bool EXPORT_FOR_TESTING hasNonWhitespaceCharacters(const std::string &input)
+bool hasNonWhitespaceCharacters(const std::string &input)
 {
     return input.find_first_not_of(" \t\n\v\f\r") != input.npos;;
 }

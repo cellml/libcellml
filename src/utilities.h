@@ -27,15 +27,17 @@ namespace libcellml {
  *
  * Try to convert the @p candidate @c std::string to a @c double. If @p candidate
  * cannot be converted using @c std::stod, catch the exception and return
- * @c false. If @p input can be converted, return @c true.
+ * @c false. If @p input can be converted, return @c true.  The value of the
+ * converted candidate will be set to @p value.
  *
  * @param candidate The @c std::string value to try to convert to a @c double.
+ * @param value The @c double value of the candidate if valid.
  *
  * @return @c false if @p input cannot be converted to a @c double using
  * @c std::stod and @c true otherwise.
  *
  */
-bool EXPORT_FOR_TESTING canConvertToDouble(const std::string &candidate);
+bool convertToDouble(const std::string &candidate, double *value=nullptr);
 
 /**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.
@@ -47,7 +49,7 @@ bool EXPORT_FOR_TESTING canConvertToDouble(const std::string &candidate);
  *
  * @return @c true if @p input contains non-whitespace characters and @c false otherwise.
  */
-bool EXPORT_FOR_TESTING hasNonWhitespaceCharacters(const std::string &input);
+bool hasNonWhitespaceCharacters(const std::string &input);
 
 
 }

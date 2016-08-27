@@ -19,8 +19,6 @@ limitations under the License.
 #include <libcellml>
 #include <iostream>
 
-#include <../utilities.h>
-
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
@@ -231,28 +229,4 @@ TEST(Coverage, error) {
 
     EXPECT_EQ(description, ec.getDescription());
     EXPECT_EQ(libcellml::Error::Kind::XML, ec.getKind());
-}
-
-TEST(Coverage, canConvertToDouble) {
-    // Valid arguments.
-    EXPECT_TRUE(libcellml::canConvertToDouble("1.0"));
-    EXPECT_TRUE(libcellml::canConvertToDouble("1.0x"));
-    EXPECT_TRUE(libcellml::canConvertToDouble("1x.0x"));
-    // This is true on OS X with clang and GNU/Linux with gcc but not Windows with VS.
-    //EXPECT_TRUE(libcellml::canConvertToDouble("INF"));
-
-    // Invalid argument.
-    EXPECT_FALSE(libcellml::canConvertToDouble("sa1.0"));
-    EXPECT_FALSE(libcellml::canConvertToDouble("x1.0"));
-    EXPECT_FALSE(libcellml::canConvertToDouble("ARGHHH"));
-    // Out of range.
-    EXPECT_FALSE(libcellml::canConvertToDouble("9.999e99999999"));
-
-}
-
-TEST(Coverage, hasNonWhitespaceCharacters) {
-    EXPECT_TRUE(libcellml::hasNonWhitespaceCharacters(" bob"));
-    EXPECT_FALSE(libcellml::hasNonWhitespaceCharacters(" \n\n\t"));
-
-    EXPECT_TRUE(libcellml::hasNonWhitespaceCharacters("bob_rules"));
 }
