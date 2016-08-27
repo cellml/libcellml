@@ -268,7 +268,7 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param offset The offset for this @c unit. Defaults to 0.0.
      */
-    void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset);
+    void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
      * @brief Remove the unit with the given reference.

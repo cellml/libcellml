@@ -36,7 +36,6 @@ namespace libcellml {
  */
 struct Parser::ParserImpl
 {
-public:
     Format mFormat;
     Parser *mParser;
 
@@ -52,7 +51,19 @@ public:
      */
     void loadModel(const ModelPtr &model, const std::string &input);
 
-private:
+    /**
+     * @brief Update a @p model with the attributes from a @c std::string.
+     *
+     * Update the @p model with entities and attributes
+     * from the @c std::string @p input. Any entities or attributes
+     * in the @p model with names matching those in @p input
+     * will be overwritten.
+     *
+     * @param model The @c ModelPtr to update.
+     * @param input The string to parse and update the @p model with.
+     */
+    void updateModel(const ModelPtr &model, const std::string &input);
+
     /**
      * @brief Update the @p component with attributes parsed from @p node.
      *
@@ -184,14 +195,14 @@ void Parser::swap(Parser &rhs)
 ModelPtr Parser::parseModel(const std::string &input)
 {
     ModelPtr model = std::make_shared<Model>();
-    updateModel(model, input);
+    mPimpl->updateModel(model, input);
     return model;
 }
 
-void Parser::updateModel(const ModelPtr &model, const std::string &input)
+void Parser::ParserImpl::updateModel(const ModelPtr &model, const std::string &input)
 {
-    if (mPimpl->mFormat == Format::XML) {
-        mPimpl->loadModel(model, input);
+    if (mFormat == Format::XML) {
+        loadModel(model, input);
     }
 }
 

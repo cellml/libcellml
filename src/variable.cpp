@@ -47,12 +47,49 @@ typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak v
  */
 struct Variable::VariableImpl
 {
+    /**
+     * @brief Private function to add an equivalent variable to the set for this variable.
+     *
+     * Add the argument equivalent variable to the set of equivalent variables for this
+     * variable if it is not already present. If the equivalent variable is present,
+     * do nothing.
+     *
+     * @sa addEquivalence, unsetEquivalentTo
+     *
+     * @param equivalentVariable The variable to add to this variable's equivalent
+     * variable set if not already present.
+     */
+    void setEquivalentTo(const VariablePtr &equivalentVariable);
+
+    /**
+     * @brief Private function to remove an equivalent variable from the set for this variable.
+     *
+     * Remove the @p equivalentVariable from the set of equivalent variables for this
+     * variable if it is present. If the equivalent variable is not in this variable's set,
+     * throw @c std::out_of_range.
+     *
+     * @sa removeEquivalence, setEquivalentTo
+     *
+     * @param equivalentVariable The variable to remove from this variable's equivalent
+     * variable set if it is present.
+     */
+    void unsetEquivalentTo(const VariablePtr &equivalentVariable);
+
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
+
     std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
+    std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
     std::string mInitialValue; /**< Initial value for this Variable.*/
     std::string mInterfaceType; /**< Interface type for this Variable.*/
     std::string mUnits; /**< The name of the units defined for this Variable.*/
 };
+
+std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
+                        [=](VariableWeakPtr variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+}
 
 std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
 {
@@ -101,14 +138,14 @@ void Variable::swap(Variable &rhs)
 
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    variable1->setEquivalentTo(variable2);
-    variable2->setEquivalentTo(variable1);
+    variable1->mPimpl->setEquivalentTo(variable2);
+    variable2->mPimpl->setEquivalentTo(variable1);
 }
 
 void Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    variable1->unsetEquivalentTo(variable2);
-    variable2->unsetEquivalentTo(variable1);
+    variable1->mPimpl->unsetEquivalentTo(variable2);
+    variable2->mPimpl->unsetEquivalentTo(variable1);
 }
 
 void Variable::removeAllEquivalences()
@@ -116,7 +153,7 @@ void Variable::removeAllEquivalences()
     mPimpl->mEquivalentVariables.clear();
 }
 
-VariablePtr Variable::getEquivalentVariable(size_t index)
+VariablePtr Variable::getEquivalentVariable(size_t index) const
 {
     VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
     return weakEquivalentVariable.lock();
@@ -127,24 +164,29 @@ size_t Variable::equivalentVariableCount() const
     return mPimpl->mEquivalentVariables.size();
 }
 
-bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable)
+bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
-    return mPimpl->findEquivalentVariable(equivalentVariable) != mPimpl->mEquivalentVariables.end();
+    return mPimpl->hasEquivalentVariable(equivalentVariable);
 }
 
-void Variable::setEquivalentTo(const VariablePtr &equivalentVariable)
+bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    return findEquivalentVariable(equivalentVariable) != mEquivalentVariables.end();
+}
+
+void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
     if (!hasEquivalentVariable(equivalentVariable)) {
         VariableWeakPtr weakEquivalentVariable = equivalentVariable;
-        mPimpl->mEquivalentVariables.push_back(weakEquivalentVariable);
+        mEquivalentVariables.push_back(weakEquivalentVariable);
     }
 }
 
-void Variable::unsetEquivalentTo(const VariablePtr &equivalentVariable)
+void Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
 {
-    auto result = mPimpl->findEquivalentVariable(equivalentVariable);
-    if (result != mPimpl->mEquivalentVariables.end()) {
-        mPimpl->mEquivalentVariables.erase(result);
+    auto result = findEquivalentVariable(equivalentVariable);
+    if (result != mEquivalentVariables.end()) {
+        mEquivalentVariables.erase(result);
     } else {
         throw std::out_of_range("Equivalent variable not found.");
     }
