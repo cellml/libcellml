@@ -36,7 +36,6 @@ foreach(TEST ${LIBCELLML_TESTS})
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS})
   target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main)
-  target_compile_definitions(${CURRENT_TEST} PRIVATE EXPORT_FOR_TESTING=)
 
   set_target_properties(${CURRENT_TEST} PROPERTIES
     CXX_STANDARD 11

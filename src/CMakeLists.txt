@@ -126,12 +126,6 @@ target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
 
 target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 
-if(LIBCELLML_UNIT_TESTS)
-  target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=LIBCELLML_EXPORT)
-else()
-  target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=)
-endif()
-
 set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11
   CXX_STANDARD_REQUIRED ON
