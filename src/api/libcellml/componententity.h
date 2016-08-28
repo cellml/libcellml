@@ -16,8 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/importedentity.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/importedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
