@@ -24,6 +24,7 @@ limitations under the License.
 #include "libcellml/import.h"
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
+#include "utilities.h"
 #include "xmldoc.h"
 
 namespace libcellml {
@@ -300,7 +301,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         } else if (childNode->isType("text")) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
-            if (mParser->isNotWhitespace(textNode)) {
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Model '" + model->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -358,7 +359,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
         } else if (childNode->isType("text")) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
-            if (mParser->isNotWhitespace(textNode)) {
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Component '" + component->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -420,7 +421,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
         } else if (childNode->isType("text")) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
-            if (mParser->isNotWhitespace(textNode)) {
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Units '" + units->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -456,7 +457,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             if (childNode->isType("text")) {
                 std::string textNode = childNode->convertToString();
                 // Ignore whitespace when parsing.
-                if (mParser->isNotWhitespace(textNode)) {
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                         "' in units '" + units->getName() +
@@ -485,7 +486,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (attribute->isType("prefix")) {
             prefix = attribute->getValue();
         } else if (attribute->isType("exponent")) {
-            if (mParser->catchDoubleConversionError(attribute->getValue())) {
+            if (!convertToDouble(attribute->getValue(), &exponent)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
@@ -495,11 +496,9 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setKind(Error::Kind::UNITS);
                 err->setRule(SpecificationRule::UNIT_EXPONENT);
                 mParser->addError(err);
-            } else {
-                exponent = std::stod(attribute->getValue());
             }
         } else if (attribute->isType("multiplier")) {
-            if (mParser->catchDoubleConversionError(attribute->getValue())) {
+            if (!convertToDouble(attribute->getValue(), &multiplier)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
@@ -509,11 +508,9 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setKind(Error::Kind::UNITS);
                 err->setRule(SpecificationRule::UNIT_MULTIPLIER);
                 mParser->addError(err);
-            } else {
-                multiplier = std::stod(attribute->getValue());
             }
         } else if (attribute->isType("offset")) {
-            if (mParser->catchDoubleConversionError(attribute->getValue())) {
+            if (!convertToDouble(attribute->getValue(), &offset)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
@@ -523,8 +520,6 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setKind(Error::Kind::UNITS);
                 err->setRule(SpecificationRule::UNIT_OFFSET);
                 mParser->addError(err);
-            } else {
-                offset = std::stod(attribute->getValue());
             }
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -551,7 +546,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             if (childNode->isType("text")) {
                 std::string textNode = childNode->convertToString();
                 // Ignore whitespace when parsing.
-                if (mParser->isNotWhitespace(textNode)) {
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Variable '" + node->getAttribute("name") +
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -645,7 +640,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             if (grandchildNode->isType("text")) {
                 std::string textNode = grandchildNode->convertToString();
                 // Ignore whitespace when parsing.
-                if (mParser->isNotWhitespace(textNode)) {
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Connection in model '" + model->getName() +
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -768,7 +763,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         } else if (childNode->isType("text")) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
-            if (mParser->isNotWhitespace(textNode)) {
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -961,7 +956,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         } else if (parentComponentNode->isType("text")) {
             std::string textNode = parentComponentNode->convertToString();
             // Ignore whitespace when parsing.
-            if (mParser->isNotWhitespace(textNode)) {
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -1058,7 +1053,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             } else if (childComponentNode->isType("text")) {
                 std::string textNode = childComponentNode->convertToString();
                 // Ignore whitespace when parsing.
-                if (mParser->isNotWhitespace(textNode)) {
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Encapsulation in model '" + model->getName() +
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
@@ -1179,7 +1174,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
         } else if (childNode->isType("text")) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
-            if (mParser->isNotWhitespace(textNode)) {
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Import from '" + node->getAttribute("href") +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");

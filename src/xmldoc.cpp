@@ -17,13 +17,14 @@ limitations under the License.
 #include "xmldoc.h"
 
 #include <cstring>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xmlerror.h>
 #include <string>
 #include <vector>
 
-#include "mathml_config.h"
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/xmlerror.h>
+
+#include "mathmlconfig.h"
 #include "xmlnode.h"
 
 namespace libcellml {

@@ -85,32 +85,6 @@ struct ComponentEntity::ComponentEntityImpl
     bool containsComponentInThis(const ComponentPtr &component) const;
 
     /**
-     * @brief Get a component with the given @p name in this component entity.
-     *
-     * Returns a @c const reference to a component with the given @p name in this
-     * component entity.  If the @p name is not valid a @c std::out_of_range
-     * exception is thrown.
-     *
-     * @param name The name of the Component to return.
-     *
-     * @return A @c const reference to the Component with the given @p name.
-     */
-    const ComponentPtr& getComponentInThis(const std::string &name) const;
-
-    /**
-     * @brief Get a component with the given @p name in this component entity.
-     *
-     * Returns a reference to a component with the given @p name in this
-     * component entity.  If the @p name is not valid a @c std::out_of_range
-     * exception is thrown.
-     *
-     * @param name The name of the Component to return.
-     *
-     * @return A reference to the Component with the given @p name.
-     */
-    ComponentPtr getComponentInThis(const std::string &name);
-
-    /**
      * @brief Take the component with the given @p name from this component
      * entity and return it.
      *
@@ -141,10 +115,8 @@ struct ComponentEntity::ComponentEntityImpl
     bool containsComponent(const std::string &name, bool searchEncapsulated) const;
     bool containsComponent(const ComponentPtr &component, bool searchEncapsulated) const;
 
-    ComponentPtr getComponent(size_t index);
-    const ComponentPtr& getComponent(size_t index) const;
-    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated);
-    const ComponentPtr getComponent(const std::string &name, bool searchEncapsulated) const;
+    ComponentPtr getComponent(size_t index) const;
+    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated) const;
 
     ComponentPtr takeComponent(size_t index);
     ComponentPtr takeComponent(const std::string &name, bool searchEncapsulated);
@@ -342,31 +314,33 @@ bool ComponentEntity::hasUnits(const std::string &name) const
     return mPimpl->findUnits(name) != mPimpl->mUnits.end();
 }
 
-UnitsPtr ComponentEntity::getUnits(size_t index)
+UnitsPtr ComponentEntity::getUnits(size_t index) const
 {
-    return mPimpl->mUnits.at(index);
+    if (index < mPimpl->mUnits.size()) {
+        return mPimpl->mUnits.at(index);
+    }
+    return nullptr;
 }
 
-const UnitsPtr& ComponentEntity::getUnits(size_t index) const
+UnitsPtr ComponentEntity::getUnits(const std::string &name) const
 {
-    return mPimpl->mUnits.at(index);
-}
+    auto result = mPimpl->findUnits(name);
+    if (result == mPimpl->mUnits.end()) {
+        return nullptr;
+    }
 
-UnitsPtr ComponentEntity::getUnits(const std::string &name)
-{
-    return mPimpl->mUnits.at(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
-}
-
-const UnitsPtr& ComponentEntity::getUnits(const std::string &name) const
-{
-    return mPimpl->mUnits.at(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
+    return *result;
 }
 
 UnitsPtr ComponentEntity::takeUnits(size_t index)
 {
-    UnitsPtr units = mPimpl->mUnits.at(index);
-    removeUnits(index);
-    units->clearParent();
+    UnitsPtr units = nullptr;
+    if (index < mPimpl->mUnits.size()) {
+        units = mPimpl->mUnits.at(index);
+        removeUnits(index);
+        units->clearParent();
+    }
+
     return units;
 }
 
@@ -401,6 +375,15 @@ void ComponentEntity::doAddComponent(const ComponentPtr &c)
     mPimpl->mComponents.push_back(c);
 }
 
+void ComponentEntity::ComponentEntityImpl::removeComponent(size_t index)
+{
+    if (index < mComponents.size()) {
+        mComponents.erase(mComponents.begin() + index);
+    } else {
+        throw std::out_of_range("Index out of range.");
+    }
+}
+
 void ComponentEntity::removeComponent(const std::string &name, bool searchEncapsulated)
 {
     mPimpl->removeComponent(name, searchEncapsulated);
@@ -418,50 +401,29 @@ void ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 
 void ComponentEntity::ComponentEntityImpl::removeComponent(const std::string &name, bool searchEncapsulated)
 {
-    bool componentFound = false;
     if (containsComponentInThis(name)) {
         removeComponentInThis(name);
-        componentFound = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
             if (getComponent(i)->containsComponent(name, searchEncapsulated)) {
                 getComponent(i)->removeComponent(name, searchEncapsulated);
-                componentFound = true;
                 break;
             }
         }
-    }
-    if (!componentFound) {
-        throw std::out_of_range("Named component not found.");
-    }
-}
-
-void ComponentEntity::ComponentEntityImpl::removeComponent(size_t index)
-{
-    if (index < mComponents.size()) {
-        mComponents.erase(mComponents.begin() + index);
-    } else {
-        throw std::out_of_range("Index out of range.");
     }
 }
 
 void ComponentEntity::ComponentEntityImpl::removeComponent(const ComponentPtr &component, bool searchEncapsulated)
 {
-    bool componentFound = false;
     if (containsComponentInThis(component)) {
         removeComponentInThis(component);
-        componentFound = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
             if (getComponent(i)->containsComponent(component, searchEncapsulated)) {
                 getComponent(i)->removeComponent(component, searchEncapsulated);
-                componentFound = true;
                 break;
             }
         }
-    }
-    if (!componentFound) {
-        throw std::out_of_range("Component pointer not found.");
     }
 }
 
@@ -503,6 +465,7 @@ bool ComponentEntity::ComponentEntityImpl::containsComponent(const std::string &
             }
         }
     }
+
     return result;
 }
 
@@ -519,44 +482,34 @@ bool ComponentEntity::ComponentEntityImpl::containsComponent(const ComponentPtr 
             }
         }
     }
+
     return result;
 }
 
-ComponentPtr ComponentEntity::getComponent(size_t index)
+ComponentPtr ComponentEntity::getComponent(size_t index) const
 {
-    return mPimpl->getComponent(index);
+    if (index < mPimpl->mComponents.size()) {
+        return mPimpl->mComponents.at(index);
+    }
+
+    return nullptr;
 }
 
-const ComponentPtr& ComponentEntity::getComponent(size_t index) const
-{
-    return mPimpl->mComponents.at(index);
-}
-
-ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchEncapsulated)
+ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchEncapsulated) const
 {
     return mPimpl->getComponent(name, searchEncapsulated);
 }
 
-const ComponentPtr ComponentEntity::getComponent(const std::string &name, bool searchEncapsulated) const
-{
-    return static_cast<const libcellml::ComponentEntity::ComponentEntityImpl *>(mPimpl)->getComponent(name, searchEncapsulated);
-}
-
-ComponentPtr ComponentEntity::ComponentEntityImpl::getComponent(size_t index)
+ComponentPtr ComponentEntity::ComponentEntityImpl::getComponent(size_t index) const
 {
     return mComponents.at(index);
 }
 
-const ComponentPtr& ComponentEntity::ComponentEntityImpl::getComponent(size_t index) const
-{
-    return mComponents.at(index);
-}
-
-ComponentPtr ComponentEntity::ComponentEntityImpl::getComponent(const std::string &name, bool searchEncapsulated)
+ComponentPtr ComponentEntity::ComponentEntityImpl::getComponent(const std::string &name, bool searchEncapsulated) const
 {
     ComponentPtr foundComponent = nullptr;
     if (containsComponentInThis(name)) {
-        foundComponent = getComponentInThis(name);
+        foundComponent = *findComponent(name);
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
             foundComponent = getComponent(i)->getComponent(name, searchEncapsulated);
@@ -565,41 +518,20 @@ ComponentPtr ComponentEntity::ComponentEntityImpl::getComponent(const std::strin
             }
         }
     }
+
     return foundComponent;
-}
-
-const ComponentPtr ComponentEntity::ComponentEntityImpl::getComponent(const std::string &name, bool searchEncapsulated) const
-{
-    if (containsComponent(name, searchEncapsulated)) {
-        if (containsComponentInThis(name)) {
-            return getComponentInThis(name);
-        } else if (searchEncapsulated) {
-            for (size_t i = 0; i < componentCount(); ++i) {
-                if (getComponent(i)->containsComponent(name, searchEncapsulated)) {
-                    return getComponent(i)->getComponent(name, searchEncapsulated);
-                }
-            }
-        }
-    }
-    throw std::out_of_range("Named component not found.");
-}
-
-ComponentPtr ComponentEntity::takeComponent(size_t index)
-{
-    return mPimpl->takeComponent(index);
-}
-
-ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool searchEncapsulated)
-{
-    return mPimpl->takeComponent(name, searchEncapsulated);
 }
 
 ComponentPtr ComponentEntity::ComponentEntityImpl::takeComponent(size_t index)
 {
-    ComponentPtr c = mComponents.at(index);
-    removeComponent(index);
-    c->clearParent();
-    return c;
+    ComponentPtr component = nullptr;
+    if (index < mComponents.size()) {
+        component = mComponents.at(index);
+        removeComponent(index);
+        component->clearParent();
+    }
+
+    return component;
 }
 
 ComponentPtr ComponentEntity::ComponentEntityImpl::takeComponent(const std::string &name, bool searchEncapsulated)
@@ -615,10 +547,18 @@ ComponentPtr ComponentEntity::ComponentEntityImpl::takeComponent(const std::stri
             }
         }
     }
-    if (!foundComponent) {
-        throw std::out_of_range("Named component not found.");
-    }
+
     return foundComponent;
+}
+
+ComponentPtr ComponentEntity::takeComponent(size_t index)
+{
+    return mPimpl->takeComponent(index);
+}
+
+ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool searchEncapsulated)
+{
+    return mPimpl->takeComponent(name, searchEncapsulated);
 }
 
 void ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
@@ -639,21 +579,15 @@ void ComponentEntity::ComponentEntityImpl::replaceComponent(size_t index, const 
 
 void ComponentEntity::ComponentEntityImpl::replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated)
 {
-    bool componentFound = false;
     if (containsComponentInThis(name)) {
         replaceComponentInThis(name, component);
-        componentFound = true;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount(); ++i) {
             if (getComponent(i)->containsComponent(name, searchEncapsulated)) {
                 getComponent(i)->replaceComponent(name, component, searchEncapsulated);
-                componentFound = true;
                 break;
             }
         }
-    }
-    if (!componentFound) {
-        throw std::out_of_range("Named component not found.");
     }
 }
 
@@ -676,16 +610,6 @@ bool ComponentEntity::ComponentEntityImpl::containsComponentInThis(const Compone
 bool ComponentEntity::ComponentEntityImpl::containsComponentInThis(const std::string &name) const
 {
     return findComponent(name) != mComponents.end();
-}
-
-ComponentPtr ComponentEntity::ComponentEntityImpl::getComponentInThis(const std::string &name)
-{
-    return mComponents.at(findComponent(name) - mComponents.begin());
-}
-
-const ComponentPtr& ComponentEntity::ComponentEntityImpl::getComponentInThis(const std::string &name) const
-{
-    return mComponents.at(findComponent(name) - mComponents.begin());
 }
 
 void ComponentEntity::ComponentEntityImpl::removeComponentInThis(const std::string &name)

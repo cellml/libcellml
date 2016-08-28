@@ -19,8 +19,8 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "libcellml/importedentity.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/importedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml { 

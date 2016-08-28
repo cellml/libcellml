@@ -195,12 +195,16 @@ TEST(Component, removeComponentMethods) {
     EXPECT_EQ(2, c.componentCount());
     a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
-    EXPECT_THROW(c.removeComponent("child3"), std::out_of_range);
-    EXPECT_THROW(c.removeComponent(c3), std::out_of_range);
+
+    // Expect no change
+    c.removeComponent("child3");
+    c.removeComponent(c3);
+    EXPECT_EQ(2, c.componentCount());
 
     c.removeAllComponents();
     a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e3, a);
+    EXPECT_EQ(0, c.componentCount());
 }
 
 TEST(Component, getComponentMethods) {
@@ -252,7 +256,7 @@ TEST(Component, getComponentMethods) {
     // Can do this as we just have a const pointer
     cS->setName("gus");
     EXPECT_EQ("gus", cS->getName());
-    EXPECT_THROW(c.getComponent(4), std::out_of_range);
+    EXPECT_EQ(nullptr, c.getComponent(4));
 
     libcellml::ComponentPtr cAr = c.getComponent("gus");
     EXPECT_EQ("gus", cAr->getName());
@@ -287,7 +291,7 @@ TEST(Component, takeComponentMethods) {
     libcellml::ComponentPtr c02 = c.takeComponent(1);
     EXPECT_EQ(1, c.componentCount());
 
-    EXPECT_THROW(c.takeComponent(4), std::out_of_range);
+    EXPECT_EQ(c.takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->getName());
 
@@ -297,8 +301,6 @@ TEST(Component, takeComponentMethods) {
     EXPECT_EQ("child1", c01->getName());
     std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
-
-    EXPECT_THROW(c.takeComponent("child4"), std::out_of_range);
 }
 
 TEST(Component, replaceComponentMethods) {
@@ -355,7 +357,8 @@ TEST(Component, replaceComponentMethods) {
     a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_after, a);
 
-    EXPECT_THROW(c.replaceComponent("child5", c4), std::out_of_range);
+    // Try to replace non-existent child.
+    c.replaceComponent("child5", c4);
 
     c.replaceComponent("", c4);
 

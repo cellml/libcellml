@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <libcellml>
 #include <iostream>
+
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
@@ -87,6 +88,9 @@ TEST(Coverage, unitsGetVariations) {
     EXPECT_EQ("a_unit", uns->getName());
     libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).getUnits("a_unit");
     EXPECT_EQ("a_unit", uSns->getName());
+
+    EXPECT_EQ(nullptr, m.getUnits("b_unit"));
+    EXPECT_EQ(nullptr, m.getUnits(4));
 }
 
 TEST(Coverage, prefixToString) {

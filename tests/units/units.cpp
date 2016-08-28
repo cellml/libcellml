@@ -270,6 +270,10 @@ TEST(Units, takeUnits) {
     libcellml::UnitsPtr u5 = m.takeUnits(1);
     EXPECT_EQ("c_unit", u5->getName());
     EXPECT_EQ(1, m.unitsCount());
+
+    EXPECT_EQ(nullptr, m.takeUnits(7));
+
+    EXPECT_EQ(nullptr, m.takeUnits("d_unit"));
 }
 
 TEST(Units, replaceUnits) {

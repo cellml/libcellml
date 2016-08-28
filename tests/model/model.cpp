@@ -217,6 +217,7 @@ TEST(Model, removeComponent) {
     m.addComponent(c1);
     m.addComponent(c2);
 
+    EXPECT_EQ(2, m.componentCount());
     m.removeComponent(0);
     EXPECT_EQ(1, m.componentCount());
     std::string a = m.serialise(libcellml::Format::XML);
@@ -225,12 +226,16 @@ TEST(Model, removeComponent) {
 
     m.addComponent(c1);
     m.addComponent(c1);
+
     // Remove the first occurence of "child1".
     m.removeComponent("child1");
     EXPECT_EQ(2, m.componentCount());
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
-    EXPECT_THROW(m.removeComponent("child3"), std::out_of_range);
+
+    // Expect no change to model.
+    m.removeComponent("child3");
+    EXPECT_EQ(2, m.componentCount());
 }
 
 TEST(Model, getComponentMethods) {
@@ -257,7 +262,7 @@ TEST(Model, getComponentMethods) {
     cB->setName("gus");
     EXPECT_EQ("gus", cB->getName());
 
-    EXPECT_THROW(m.getComponent(4), std::out_of_range);
+    EXPECT_EQ(nullptr, m.getComponent(4));
 }
 
 TEST(Model, takeComponentMethods) {
@@ -276,7 +281,7 @@ TEST(Model, takeComponentMethods) {
     libcellml::ComponentPtr c02 = m.takeComponent(1);
     EXPECT_EQ(1, m.componentCount());
 
-    EXPECT_THROW(m.takeComponent(4), std::out_of_range);
+    EXPECT_EQ(m.takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->getName());
 
@@ -287,7 +292,10 @@ TEST(Model, takeComponentMethods) {
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e, a);
 
-    EXPECT_THROW(m.takeComponent("child4"), std::out_of_range);
+    // Expect no change.
+    EXPECT_EQ(0, m.componentCount());
+    m.takeComponent("child4");
+    EXPECT_EQ(0, m.componentCount());
 }
 
 static int count = 0;
@@ -408,7 +416,9 @@ TEST(Model, replaceComponent) {
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_after, a);
 
-    EXPECT_THROW(m.replaceComponent("child5", c4), std::out_of_range);
+    // Nothing happens when trying to replace a component that doesn't match
+    // the given name.
+    m.replaceComponent("child5", c4);
 
     m.replaceComponent("child1", c4);
 
