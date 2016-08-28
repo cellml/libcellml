@@ -127,60 +127,30 @@ public:
     /**
      * @brief Get a variable at index.
      *
-     * Returns a const reference to a variable at the index @p index for this
-     * component.  If the index is not valid a std::out_of_range
-     * exception is thrown.
-     *
-     * @param index The index of the variable to return (zero-based).
-     *
-     * @return A const reference to the variable at the given index.
-     */
-    const VariablePtr& getVariable(size_t index) const;
-
-    /**
-     * @brief Get a variable at index.
-     *
      * Returns a reference to a variable at the index @p index for this
-     * component. If the index is not valid a std::out_of_range exception
-     * is thrown.
+     * component. If the index is not valid a @c nullptr is returned.
      *
      * @overload
      *
      * @param index The index of the variable to return (zero-based).
      *
-     * @return A reference to the variable at the given index.
+     * @return A reference to the variable at the given index on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(size_t index);
-
-    /**
-     * @brief Get a variable with the given name @p name.
-     *
-     * Returns a const reference to a variable with the name @p name for this
-     * component.  If the name is not valid a std::out_of_range exception
-     * is thrown.
-     *
-     * @overload
-     *
-     * @param name The name of the variable to return.
-     *
-     * @return A const reference to the variable with the given name.
-     */
-    const VariablePtr& getVariable(const std::string &name) const;
+    VariablePtr getVariable(size_t index) const;
 
     /**
      * @brief Get a variable with the given name @p name.
      *
      * Returns a reference to a variable with the name @p name for this
-     * component.  If the name is not valid a std::out_of_range exception
-     * is thrown.
+     * component.  If the name is not found a @c nullptr is returned.
      *
      * @overload
      *
      * @param name The name of the variable to return.
      *
-     * @return A reference to the Variable with the given name.
+     * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(const std::string &name);
+    VariablePtr getVariable(const std::string &name) const;
 
     /**
      * @brief Get the number of variables in the component.

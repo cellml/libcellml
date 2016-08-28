@@ -24,7 +24,7 @@ limitations under the License.
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
 
-#include "mathml_config.h"
+#include "mathmlconfig.h"
 #include "xmlnode.h"
 
 namespace libcellml {

@@ -28,6 +28,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
+#include "utilities.h"
 #include "xmldoc.h"
 
 namespace libcellml {
@@ -525,7 +526,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     }
     if (prefix.length()) {
         // If the prefix is not a real number, check in the list of valid prefix names.
-        if (mValidator->catchDoubleConversionError(prefix)) {
+        if (!convertToDouble(prefix)) {
             if (!isStandardPrefixName(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
@@ -624,7 +625,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         // Check if initial value is a variable reference
         if(!(std::find(variableNames.begin(), variableNames.end(), initialValue) != variableNames.end())) {
             // Otherwise, check that the initial value can be converted to a double
-            if (mValidator->catchDoubleConversionError(initialValue)) {
+            if (!convertToDouble(initialValue)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Variable '" + variable->getName() +
                                     "' has an invalid initial value '" + initialValue +
@@ -722,7 +723,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         if (childNode) {
             if (childNode->isType("text")) {
                 textNode = childNode->convertToString();
-                if (mValidator->isNotWhitespace(textNode)) {
+                if (hasNonWhitespaceCharacters(textNode)) {
                     if (nodeType == "ci") {
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
@@ -737,7 +738,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         }
                     } else if (nodeType == "cn") {
                         // Check whether the cn value can be safely coverted to a real number.
-                        if (mValidator->catchDoubleConversionError(textNode)) {
+                        if (!convertToDouble(textNode)) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("MathML cn element has the value '" + textNode +
                                                 "', which cannot be converted to a real number.");
@@ -843,7 +844,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
                 std::string type = grandchildNode->getType();
                 if (grandchildNode->isType("text")) {
                     std::string textNode = grandchildNode->convertToString();
-                    if (mValidator->isNotWhitespace(textNode)) {
+                    if (hasNonWhitespaceCharacters(textNode)) {
                         bvarNames.push_back(textNode);
                     }
                 }

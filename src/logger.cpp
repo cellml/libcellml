@@ -83,34 +83,9 @@ size_t Logger::errorCount() const
     return mPimpl->mErrors.size();
 }
 
-ErrorPtr Logger::getError(size_t index)
+ErrorPtr Logger::getError(size_t index) const
 {
     return mPimpl->mErrors.at(index);
-}
-
-const ErrorPtr& Logger::getError(size_t index) const
-{
-    return mPimpl->mErrors.at(index);
-}
-
-bool Logger::catchDoubleConversionError(const std::string &input)
-{
-    bool response = false;
-    double value;
-    // Try to convert the input string to double.
-    try
-    {
-        value = std::stod(input);
-    } catch (std::exception) {
-        response = true;
-        (void)value;
-    }
-    return response;
-}
-
-bool Logger::isNotWhitespace (std::string &input)
-{
-    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
 }
 
 }

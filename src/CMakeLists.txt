@@ -35,9 +35,9 @@ configure_file(
 
 list(APPEND CLEAN_FILES ${LIBCELLML_VERSIONCONFIG_H} ${LIBCELLML_EXPORTDEFINITIONS_H})
 
-set(MATHML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/mathml_config.h")
+set(MATHML_CONFIG_H "${CMAKE_CURRENT_BINARY_DIR}/mathmlconfig.h")
 configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/configure/mathml_config.h.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/configure/mathmlconfig.h.in"
   ${MATHML_CONFIG_H}
 )
 
@@ -53,6 +53,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/variable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/version.cpp
@@ -85,6 +86,7 @@ set(API_HEADER_FILES
 
 set(HEADER_FILES
   ${LIBCELLML_VERSIONCONFIG_H}
+  ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlattribute.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmldoc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/xmlnode.h
@@ -123,12 +125,6 @@ target_include_directories(cellml
 target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
 
 target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
-
-if(LIBCELLML_UNIT_TESTS)
-  target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=LIBCELLML_EXPORT)
-else()
-  target_compile_definitions(cellml PRIVATE EXPORT_FOR_TESTING=)
-endif()
 
 set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11

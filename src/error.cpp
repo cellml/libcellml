@@ -123,12 +123,7 @@ void Error::setComponent(const ComponentPtr &component)
     mPimpl->mComponent = component;
 }
 
-ComponentPtr Error::getComponent()
-{
-    return mPimpl->mComponent;
-}
-
-const ComponentPtr& Error::getComponent() const
+ComponentPtr Error::getComponent() const
 {
     return mPimpl->mComponent;
 }
@@ -138,12 +133,7 @@ void Error::setImport(const ImportPtr &import)
     mPimpl->mImport = import;
 }
 
-ImportPtr Error::getImport()
-{
-    return mPimpl->mImport;
-}
-
-const ImportPtr& Error::getImport() const
+ImportPtr Error::getImport() const
 {
     return mPimpl->mImport;
 }
@@ -153,12 +143,7 @@ void Error::setModel(const ModelPtr &model)
     mPimpl->mModel = model;
 }
 
-ModelPtr Error::getModel()
-{
-    return mPimpl->mModel;
-}
-
-const ModelPtr& Error::getModel() const
+ModelPtr Error::getModel() const
 {
     return mPimpl->mModel;
 }
@@ -168,12 +153,7 @@ void Error::setUnits(const UnitsPtr &units)
     mPimpl->mUnits = units;
 }
 
-UnitsPtr Error::getUnits()
-{
-    return mPimpl->mUnits;
-}
-
-const UnitsPtr& Error::getUnits() const
+UnitsPtr Error::getUnits() const
 {
     return mPimpl->mUnits;
 }
@@ -183,12 +163,7 @@ void Error::setVariable(const VariablePtr &variable)
     mPimpl->mVariable = variable;
 }
 
-VariablePtr Error::getVariable()
-{
-    return mPimpl->mVariable;
-}
-
-const VariablePtr& Error::getVariable() const
+VariablePtr Error::getVariable() const
 {
     return mPimpl->mVariable;
 }
