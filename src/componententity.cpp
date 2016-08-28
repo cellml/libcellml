@@ -85,32 +85,6 @@ struct ComponentEntity::ComponentEntityImpl
     bool containsComponentInThis(const ComponentPtr &component) const;
 
     /**
-     * @brief Get a component with the given @p name in this component entity.
-     *
-     * Returns a @c const reference to a component with the given @p name in this
-     * component entity.  If the @p name is not valid a @c std::out_of_range
-     * exception is thrown.
-     *
-     * @param name The name of the Component to return.
-     *
-     * @return A @c const reference to the Component with the given @p name.
-     */
-    const ComponentPtr& getComponentInThis(const std::string &name) const;
-
-    /**
-     * @brief Get a component with the given @p name in this component entity.
-     *
-     * Returns a reference to a component with the given @p name in this
-     * component entity.  If the @p name is not valid a @c std::out_of_range
-     * exception is thrown.
-     *
-     * @param name The name of the Component to return.
-     *
-     * @return A reference to the Component with the given @p name.
-     */
-    ComponentPtr getComponentInThis(const std::string &name);
-
-    /**
      * @brief Take the component with the given @p name from this component
      * entity and return it.
      *
@@ -636,16 +610,6 @@ bool ComponentEntity::ComponentEntityImpl::containsComponentInThis(const Compone
 bool ComponentEntity::ComponentEntityImpl::containsComponentInThis(const std::string &name) const
 {
     return findComponent(name) != mComponents.end();
-}
-
-ComponentPtr ComponentEntity::ComponentEntityImpl::getComponentInThis(const std::string &name)
-{
-    return mComponents.at(findComponent(name) - mComponents.begin());
-}
-
-const ComponentPtr& ComponentEntity::ComponentEntityImpl::getComponentInThis(const std::string &name) const
-{
-    return mComponents.at(findComponent(name) - mComponents.begin());
 }
 
 void ComponentEntity::ComponentEntityImpl::removeComponentInThis(const std::string &name)
