@@ -17,11 +17,11 @@ limitations under the License.
 #include "xmldoc.h"
 
 #include <cstring>
+#include <string>
+#include <vector>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
-#include <string>
-#include <vector>
 
 #include "mathml_config.h"
 #include "xmlnode.h"
