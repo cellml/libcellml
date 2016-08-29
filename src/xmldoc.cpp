@@ -77,7 +77,7 @@ XmlDoc::~XmlDoc()
     delete mPimpl;
 }
 
-void XmlDoc::parse(const std::string& input)
+void XmlDoc::parse(const std::string &input)
 {
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *> (this);
@@ -86,7 +86,7 @@ void XmlDoc::parse(const std::string& input)
     xmlFreeParserCtxt(context);
 }
 
-void XmlDoc::parseMathML(std::string input)
+void XmlDoc::parseMathML(const std::string &input)
 {
     std::string mathmlDtd = "<!DOCTYPE math SYSTEM \"" + LIBCELLML_MATHML_DTD_LOCATION + "\">";
     std::string mathmlString = mathmlDtd + input;

@@ -40,7 +40,6 @@ namespace libcellml {
  */
 struct Validator::ValidatorImpl
 {
-public:
     Validator *mValidator;
 
     /**
@@ -88,7 +87,6 @@ public:
      */
     bool isCellmlIdentifier(const std::string &name);
 
-private:     
     /**
      * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
      *

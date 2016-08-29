@@ -72,8 +72,8 @@ std::string XmlAttribute::getValue() const
 {
     std::string valueString;
     if ((mPimpl->mXmlAttributePtr->name) && (mPimpl->mXmlAttributePtr->parent)) {
-        char *value = reinterpret_cast<char *>(xmlGetProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name));
-        valueString = std::string(value);
+        xmlChar *value = xmlGetProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name);
+        valueString = std::string(reinterpret_cast<const char *>(value));
         xmlFree(value);
     }
     return valueString;

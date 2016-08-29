@@ -80,8 +80,8 @@ std::string XmlNode::getAttribute(const char *attributeName)
 {
     std::string attributeValueString;
     if (hasAttribute(attributeName)) {
-        char *attributeValue = (char *) xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
-        attributeValueString = std::string(attributeValue);
+        xmlChar *attributeValue = xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
+        attributeValueString = std::string(reinterpret_cast<const char *>(attributeValue));
         xmlFree(attributeValue);
     }
     return attributeValueString;
@@ -136,8 +136,7 @@ std::string XmlNode::convertToString() {
     xmlBufferPtr buffer = xmlBufferCreate();
     int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
     if (len > 0) {
-        const char *content = reinterpret_cast<const char *>(buffer->content);
-        contentString = std::string(content);
+        contentString = std::string(reinterpret_cast<const char *>(buffer->content));
     }
     xmlBufferFree(buffer);
     return contentString;
