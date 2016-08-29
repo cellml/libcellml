@@ -392,6 +392,36 @@ TEST(Units, farhenheit) {
     EXPECT_EQ("fahrenheit", u->getName());
 }
 
+TEST(Units, getUnit) {
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("fahrenheit");
+
+    /* Give prefix and exponent their default values. */
+    u->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0.0, 1.0, 1.8, 32.0);
+    m.addUnits(u);
+
+    std::string reference, prefix;
+    double exponent, multiplier, offset;
+    u->getUnit(0, reference, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("celsius", reference);
+    EXPECT_EQ("", prefix);
+    EXPECT_DOUBLE_EQ(1.0, exponent);
+    EXPECT_DOUBLE_EQ(1.8, multiplier);
+    EXPECT_DOUBLE_EQ(32.0, offset);
+
+    u->addUnit("NewUnit", 4.0, 1.05, 17.0, -999.9999);
+    u->getUnit(1, reference, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("NewUnit", reference);
+    EXPECT_EQ("4.0", prefix);
+    EXPECT_DOUBLE_EQ(1.05, exponent);
+    EXPECT_DOUBLE_EQ(17, multiplier);
+    EXPECT_DOUBLE_EQ(-999.9999, offset);
+
+    u->getUnit(2, reference, prefix, exponent, multiplier, offset);
+}
+
 TEST(Units, multipleAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
