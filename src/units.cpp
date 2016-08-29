@@ -19,10 +19,10 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <map>
-#include <sstream>
 #include <vector>
 
 #include "libcellml/import.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -254,19 +254,13 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
         u.mPrefix = prefix;
     }
     if (exponent != 1.0) {
-        std::ostringstream strs;
-        strs << exponent;
-        u.mExponent = strs.str();
+        u.mExponent = convertDoubleToString(exponent);
     }
     if (multiplier != 1.0) {
-        std::ostringstream strs;
-        strs << multiplier;
-        u.mMultiplier = strs.str();
+        u.mMultiplier = convertDoubleToString(multiplier);
     }
     if (offset != 0.0) {
-        std::ostringstream strs;
-        strs << offset;
-        u.mOffset = strs.str();
+        u.mOffset = convertDoubleToString(offset);
     }
     mPimpl->mUnits.push_back(u);
 }
@@ -283,9 +277,7 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
 void Units::addUnit(const std::string &reference, double prefix, double exponent,
                     double multiplier, double offset)
 {
-    std::ostringstream strs;
-    strs << prefix;
-    const std::string prefixString = strs.str();
+    const std::string prefixString = convertDoubleToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, offset);
 }
 
@@ -318,9 +310,7 @@ void Units::addUnit(StandardUnit standardRef, double prefix, double exponent,
                     double multiplier, double offset)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    std::ostringstream strs;
-    strs << prefix;
-    const std::string prefixString = strs.str();
+    const std::string prefixString = convertDoubleToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, offset);
 }
 
