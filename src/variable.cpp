@@ -23,6 +23,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/units.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -156,8 +157,13 @@ void Variable::removeAllEquivalences()
 
 VariablePtr Variable::getEquivalentVariable(size_t index) const
 {
-    VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
-    return weakEquivalentVariable.lock();
+    VariablePtr equivalentVariable = nullptr;
+    if (index < mPimpl->mEquivalentVariables.size()) {
+        VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
+        equivalentVariable = weakEquivalentVariable.lock();
+    }
+
+    return equivalentVariable;
 }
 
 size_t Variable::equivalentVariableCount() const
@@ -188,8 +194,6 @@ void Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVari
     auto result = findEquivalentVariable(equivalentVariable);
     if (result != mEquivalentVariables.end()) {
         mEquivalentVariables.erase(result);
-    } else {
-        throw std::out_of_range("Equivalent variable not found.");
     }
 }
 
@@ -240,9 +244,7 @@ void Variable::setInitialValue(const std::string &initialValue)
 
 void Variable::setInitialValue(double initialValue)
 {
-    std::ostringstream strs;
-    strs << initialValue;
-    mPimpl->mInitialValue = strs.str();
+    mPimpl->mInitialValue = convertDoubleToString(initialValue);
 }
 
 void Variable::setInitialValue(const VariablePtr &v)
