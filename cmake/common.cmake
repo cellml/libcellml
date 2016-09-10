@@ -38,6 +38,8 @@ endfunction()
 
 function(HIDE_DISTRACTING_VARIABLES)
   mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
+  mark_as_advanced(CMAKE_CODEBLOCKS_EXECUTABLE)
+  mark_as_advanced(QT_QMAKE_EXECUTABLE)
   if(APPLE)
     mark_as_advanced(CMAKE_OSX_ARCHITECTURES)
     mark_as_advanced(CMAKE_OSX_DEPLOYMENT_TARGET)
