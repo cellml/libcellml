@@ -208,14 +208,8 @@ TEST(Units, removeUnitsMethodsAndCount) {
     m.addUnits(u3);
     m.addUnits(u4);
 
-    EXPECT_EQ(u1->unitCount(), 4);
-    u1->removeUnit("siemens");
-    u1->removeUnit(libcellml::Units::StandardUnit::KELVIN);
-    std::string a = m.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e1, a);
-    EXPECT_THROW(u1->removeUnit("gram"), std::out_of_range);
-
     u1->removeAllUnits();
+    std::string a = m.serialise(libcellml::Format::XML);
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
 
@@ -223,10 +217,10 @@ TEST(Units, removeUnitsMethodsAndCount) {
     m.removeUnits(u3);
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e3, a);
-    EXPECT_EQ(m.unitsCount(), 2);
-    EXPECT_THROW(m.removeUnits("gram"), std::out_of_range);
-    EXPECT_THROW(m.removeUnits(u5), std::out_of_range);
-    EXPECT_THROW(m.removeUnits(3), std::out_of_range);
+    EXPECT_EQ(2, m.unitsCount());
+    m.removeUnits("gram");
+    m.removeUnits(u5);
+    m.removeUnits(3);
     EXPECT_EQ(2, m.unitsCount());
     m.removeUnits(1);
     EXPECT_EQ(1, m.unitsCount());
@@ -414,12 +408,57 @@ TEST(Units, getUnit) {
     u->addUnit("NewUnit", 4.0, 1.05, 17.0, -999.9999);
     u->getUnit(1, reference, prefix, exponent, multiplier, offset);
     EXPECT_EQ("NewUnit", reference);
-    EXPECT_EQ("4.0", prefix);
+    EXPECT_EQ("4", prefix);
     EXPECT_DOUBLE_EQ(1.05, exponent);
     EXPECT_DOUBLE_EQ(17, multiplier);
     EXPECT_DOUBLE_EQ(-999.9999, offset);
 
+    // Get non-existent unit.
     u->getUnit(2, reference, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("", reference);
+    EXPECT_EQ("", prefix);
+    EXPECT_DOUBLE_EQ(1, exponent);
+    EXPECT_DOUBLE_EQ(1, multiplier);
+    EXPECT_DOUBLE_EQ(0, offset);
+
+    u->addUnit("daves", "house");
+    u->getUnit(2, reference, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("daves", reference);
+    EXPECT_EQ("house", prefix);
+
+    u->getUnit("daves", prefix, exponent, multiplier, offset);
+    EXPECT_EQ("daves", reference);
+    EXPECT_EQ("house", prefix);
+
+    u->getUnit(libcellml::Units::StandardUnit::CELSIUS, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("", prefix);
+    EXPECT_DOUBLE_EQ(1.0, exponent);
+    EXPECT_DOUBLE_EQ(1.8, multiplier);
+    EXPECT_DOUBLE_EQ(32.0, offset);
+}
+
+TEST(Units, removeUnit) {
+    libcellml::Units u;
+
+    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
+    u.addUnit("kelvin");
+    u.addUnit("siemens", "milli", -1.0);
+    u.addUnit("meter", "1.7e10");
+
+    EXPECT_EQ(4, u.unitCount());
+    u.removeUnit("siemens");
+    u.removeUnit(libcellml::Units::StandardUnit::KELVIN);
+    u.removeUnit(1);
+    EXPECT_EQ(1, u.unitCount());
+
+    // Remove non-existent unit
+    u.removeUnit("gram");
+    u.removeUnit(libcellml::Units::StandardUnit::BECQUEREL);
+    u.removeUnit(3);
+    EXPECT_EQ(1, u.unitCount());
+
+    u.removeAllUnits();
+    EXPECT_EQ(0, u.unitCount());
 }
 
 TEST(Units, multipleAndParse) {

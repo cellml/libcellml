@@ -71,11 +71,11 @@ if(LIBCELLML_COVERAGE)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests")
 
-  add_custom_target(coverage-branches
+  add_custom_target(coverage_branches
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -k -b -r ${GCOV_ANALYSIS_PATH} --gcov-filter=${GCOV_PREFIX_PATH}/.* --filter=${GCOV_PREFIX_PATH}.* --gcov-executable=${GCOV_EXE}
     DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Running coverage tests with html output")
+    COMMENT "Running coverage tests with branches output")
 endif()
 
 if(LIBCELLML_MEMCHECK)
