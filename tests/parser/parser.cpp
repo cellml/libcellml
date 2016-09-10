@@ -356,6 +356,9 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
     libcellml::Error *rawErr = err.get();
     const libcellml::ComponentPtr componentFromError = static_cast<const libcellml::Error*>(rawErr)->getComponent();
     EXPECT_EQ(component, componentFromError);
+
+    // Get non-existent error
+    EXPECT_EQ(nullptr, parser.getError(1));
 }
 
 TEST(Parser, componentAttributeErrors) {
