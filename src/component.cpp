@@ -131,8 +131,6 @@ void Component::removeVariable(const std::string &name)
     auto result = mPimpl->findVariable(name);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
-    } else {
-        throw std::out_of_range("Named variable not found.");
     }
 }
 
@@ -141,8 +139,6 @@ void Component::removeVariable(const VariablePtr &variable)
     auto result = mPimpl->findVariable(variable);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
-    } else {
-        throw std::out_of_range("Variable pointer not found.");
     }
 }
 
@@ -153,19 +149,21 @@ void Component::removeAllVariables()
 
 VariablePtr Component::getVariable(size_t index) const
 {
+    VariablePtr variable = nullptr;
     if (index < mPimpl->mVariables.size()) {
-        return mPimpl->mVariables.at(index);
+        variable = mPimpl->mVariables.at(index);
     }
-    return nullptr;
+    return variable;
 }
 
 VariablePtr Component::getVariable(const std::string &name) const
 {
+    VariablePtr variable = nullptr;
     auto result = mPimpl->findVariable(name);
-    if (result == mPimpl->mVariables.end()) {
-        return nullptr;
+    if (result != mPimpl->mVariables.end()) {
+        variable = *result;
     }
-    return *result;
+    return variable;
 }
 
 size_t Component::variableCount() const

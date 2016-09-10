@@ -310,20 +310,21 @@ bool ComponentEntity::hasUnits(const std::string &name) const
 
 UnitsPtr ComponentEntity::getUnits(size_t index) const
 {
+    UnitsPtr units = nullptr;
     if (index < mPimpl->mUnits.size()) {
-        return mPimpl->mUnits.at(index);
+        units = mPimpl->mUnits.at(index);
     }
-    return nullptr;
+    return units;
 }
 
 UnitsPtr ComponentEntity::getUnits(const std::string &name) const
 {
+    UnitsPtr units = nullptr;
     auto result = mPimpl->findUnits(name);
-    if (result == mPimpl->mUnits.end()) {
-        return nullptr;
+    if (result != mPimpl->mUnits.end()) {
+        units = *result;
     }
-
-    return *result;
+    return units;
 }
 
 UnitsPtr ComponentEntity::takeUnits(size_t index)
@@ -345,8 +346,10 @@ UnitsPtr ComponentEntity::takeUnits(const std::string &name)
 
 void ComponentEntity::replaceUnits(size_t index, const UnitsPtr &units)
 {
-    removeUnits(index);
-    mPimpl->mUnits.insert(mPimpl->mUnits.begin() + index, units);
+    if (index < mPimpl->mUnits.size()) {
+        removeUnits(index);
+        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + index, units);
+    }
 }
 
 void ComponentEntity::replaceUnits(const std::string &name, const UnitsPtr &units)
@@ -373,8 +376,6 @@ void ComponentEntity::ComponentEntityImpl::removeComponent(size_t index)
 {
     if (index < mComponents.size()) {
         mComponents.erase(mComponents.begin() + index);
-    } else {
-        throw std::out_of_range("Index out of range.");
     }
 }
 
@@ -567,8 +568,10 @@ void ComponentEntity::replaceComponent(const std::string &name, const ComponentP
 
 void ComponentEntity::ComponentEntityImpl::replaceComponent(size_t index, const ComponentPtr &c)
 {
-    removeComponent(index);
-    mComponents.insert(mComponents.begin() + index, c);
+    if (index < mComponents.size()) {
+        removeComponent(index);
+        mComponents.insert(mComponents.begin() + index, c);
+    }
 }
 
 void ComponentEntity::ComponentEntityImpl::replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated)
