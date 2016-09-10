@@ -297,6 +297,10 @@ TEST(Units, replaceUnits) {
     u1 = m.getUnits(0);
     EXPECT_EQ("c_unit", u1->getName());
     EXPECT_EQ(1, m.unitsCount());
+
+    // Replace non-existent units.
+    m.replaceUnits("d_unit", u2);
+    m.replaceUnits(5, u1);
 }
 
 TEST(Units, multiply) {

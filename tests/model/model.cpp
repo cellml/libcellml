@@ -222,7 +222,7 @@ TEST(Model, removeComponent) {
     EXPECT_EQ(1, m.componentCount());
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
-    EXPECT_THROW(m.removeComponent(1), std::out_of_range);
+    m.removeComponent(1);
 
     m.addComponent(c1);
     m.addComponent(c1);
@@ -409,8 +409,11 @@ TEST(Model, replaceComponent) {
 
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_orig, a);
-    EXPECT_THROW(m.replaceComponent(5, c3), std::out_of_range);
 
+    // Attempt to replace non-existent component.
+    m.replaceComponent(5, c3);
+
+    // Replace existing component.
     m.replaceComponent(1, c3);
 
     a = m.serialise(libcellml::Format::XML);

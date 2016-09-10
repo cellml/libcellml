@@ -183,7 +183,7 @@ TEST(Component, removeComponentMethods) {
     EXPECT_EQ(1, c.componentCount());
     std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
-    EXPECT_THROW(c.removeComponent(1), std::out_of_range);
+    c.removeComponent(1);
 
     c.addComponent(c1);
     c.addComponent(c1);
@@ -271,6 +271,8 @@ TEST(Component, getComponentMethods) {
     libcellml::ComponentPtr cBB = cB->getComponent(0);
     cBB->setName("childB");
 
+    EXPECT_EQ(nullptr, c.getComponent(3));
+
     libcellml::ComponentPtr cSn = static_cast<const libcellml::Component>(c).getComponent("gus");
     EXPECT_EQ("gus", cSn->getName());
 
@@ -350,7 +352,7 @@ TEST(Component, replaceComponentMethods) {
 
     std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_orig, a);
-    EXPECT_THROW(c.replaceComponent(5, c3), std::out_of_range);
+    c.replaceComponent(5, c3);
 
     c.replaceComponent(1, c3);
 
