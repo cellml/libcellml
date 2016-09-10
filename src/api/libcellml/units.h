@@ -271,10 +271,44 @@ public:
     void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
+     * @brief getUnit
+     *
+     * @overload
+     *
+     * @param reference
+     * @param prefix
+     * @param exponent
+     * @param multiplier
+     * @param offset
+     */
+    void getUnit(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
+
+    /**
+     * @brief getUnit
+     *
+     * @overload
+     *
+     * @param standardRef
+     * @param prefix
+     * @param exponent
+     * @param multiplier
+     * @param offset
+     */
+    void getUnit(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
+
+    /**
+     * @brief removeUnit
+     * @param index
+     */
+    void removeUnit(size_t index);
+
+    /**
      * @brief Remove the unit with the given reference.
      *
      * Remove the first unit found that matches the @c std::string reference @p reference.
      * If the @p reference is not found throw @c std::out_of_range.
+     *
+     * @overload
      *
      * @param reference The @c std::string units reference to remove.
      */
@@ -285,6 +319,8 @@ public:
      *
      * Remove the first unit found that matches @c StandardUnit enum reference @p reference.
      * If the @p reference is not found throw @c std::out_of_range.
+     *
+     * @overload
      *
      * @param reference The @c StandardUnit enum units reference to remove.
      */

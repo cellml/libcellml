@@ -326,9 +326,27 @@ void Units::addUnit(StandardUnit standardRef)
     addUnit(reference, "0.0", 1.0, 1.0, 0.0);
 }
 
+void Units::getUnit(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, double &offset) const
+{
+    std::string dummyReference;
+    const std::string reference = standardUnitToString.find(standardRef)->second;
+    auto result = mPimpl->findUnit(reference);
+    getUnit(result - mPimpl->mUnits.begin(), dummyReference, prefix, exponent, multiplier, offset);
+}
+
+void Units::getUnit(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const
+{
+    std::string dummyReference;
+    auto result = mPimpl->findUnit(reference);
+    getUnit(result - mPimpl->mUnits.begin(), dummyReference, prefix, exponent, multiplier, offset);
+}
+
 void Units::getUnit(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const
 {
-    Unit u = mPimpl->mUnits.at(index);
+    Unit u;
+    if (index < mPimpl->mUnits.size()) {
+        u = mPimpl->mUnits.at(index);
+    }
     reference = u.mReference;
     prefix = u.mPrefix;
     if (u.mExponent.length()) {
@@ -353,8 +371,13 @@ void Units::removeUnit(const std::string &reference)
     auto result = mPimpl->findUnit(reference);
     if (result != mPimpl->mUnits.end()) {
         mPimpl->mUnits.erase(result);
-    } else {
-        throw std::out_of_range("Referenced unit not found.");
+    }
+}
+
+void Units::removeUnit(size_t index)
+{
+    if (index < mPimpl->mUnits.size()) {
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
     }
 }
 

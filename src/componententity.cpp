@@ -279,8 +279,6 @@ void ComponentEntity::removeUnits(size_t index)
 {
     if (index < mPimpl->mUnits.size()) {
         mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
-    } else {
-        throw std::out_of_range("Index out of range.");
     }
 }
 
@@ -289,8 +287,6 @@ void ComponentEntity::removeUnits(const std::string &name)
     auto result = mPimpl->findUnits(name);
     if (result != mPimpl->mUnits.end()) {
         mPimpl->mUnits.erase(result);
-    } else {
-        throw std::out_of_range("Named units not found.");
     }
 }
 
@@ -299,8 +295,6 @@ void ComponentEntity::removeUnits(const UnitsPtr &units)
     auto result = mPimpl->findUnits(units);
     if (result != mPimpl->mUnits.end()) {
         mPimpl->mUnits.erase(result);
-    } else {
-        throw std::out_of_range("Units pointer not found.");
     }
 }
 

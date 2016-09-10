@@ -130,8 +130,6 @@ public:
      * Returns a reference to a variable at the index @p index for this
      * component. If the index is not valid a @c nullptr is returned.
      *
-     * @overload
-     *
      * @param index The index of the variable to return (zero-based).
      *
      * @return A reference to the variable at the given index on success, @c nullptr otherwise.
