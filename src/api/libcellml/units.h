@@ -271,7 +271,7 @@ public:
     void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
-     * @brief Get the @c unit attributes for the given reference @p reference.
+     * @brief Get the @c unit attributes for the given @p reference.
      *
      * Get the attributes for the first @c unit that matches the reference @p reference. If
      * no attributes are set, default attribute values will be returned.
@@ -287,7 +287,7 @@ public:
     void getUnit(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
-     * @brief Get the @c unit attributes for the given reference @p standardRef.
+     * @brief Get the @c unit attributes for the given @p standardRef.
      *
      * Get the attributes for the first @c unit that matches the reference @p standardRef. If
      * no attributes are set, default attribute values will be returned.
@@ -303,7 +303,7 @@ public:
     void getUnit(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
-     * @brief Remove the unit at the given index @p index.
+     * @brief Remove the unit at the given @p index.
      *
      * Removes the unit at the given @p index position.
      * @p index must be in the range [0, #unit).
