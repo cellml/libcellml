@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <stdexcept>
 #include <iomanip>
+#include <limits>
 #include <sstream>
 
 namespace libcellml {
