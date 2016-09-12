@@ -67,9 +67,10 @@ public:
      * @brief Get error at the specified @p index.
      *
      * Returns an error at the @p index.  If the @p index
-     * is not valid a @c nullptr is returned.
+     * is not valid a @c nullptr is returned, the valid range for the @p index
+     * is [0, #errors).
      *
-     * @param index The index of the error to return (zero-based).
+     * @param index The index of the error to return.
      *
      * @return A reference to the error at the given index on success, @c nullptr otherwise.
      */

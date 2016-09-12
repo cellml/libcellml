@@ -63,7 +63,7 @@ public:
      * Remove the units from this component entity at the given @p index.
      * @p index must be in the range [0, #units).
      *
-     * @param index The index of the units to remove (zero-based).
+     * @param index The index of the units to remove.
      */
     void removeUnits(size_t index);
 
@@ -115,11 +115,12 @@ public:
      * @brief Get a units at the given @p index.
      *
      * Returns a reference to a units at the given @p index.  If the @p index
-     * is not valid a @c nullptr is returned.
+     * is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, #units).
      *
      * @overload
      *
-     * @param index The index of the units to return (zero-based).
+     * @param index The index of the units to return.
      *
      * @return A reference to the units at the given @p index on success, @c nullptr otherwise.
      */
@@ -145,7 +146,7 @@ public:
      * Removes the units at the given @p index position and returns it.
      * @p index must be in the range [0, #units).
      *
-     * @param index The index of the units to take (zero-based).
+     * @param index The index of the units to take.
      *
      * @return A reference to the units at the given @p index if the index is valid, @c nullptr otherwise.
      */
@@ -161,7 +162,7 @@ public:
      *
      * @param name The name of the units to take.
      *
-     * @return A reference to the units identified with the given @p name if found, @c nullptr otherwise
+     * @return A reference to the units identified with the given @p name if found, @c nullptr otherwise.
      */
     UnitsPtr takeUnits(const std::string &name);
 
@@ -171,7 +172,7 @@ public:
      * Replaces the units at the given @p index with @p units.
      * @p index must be in the range [0, #units).
      *
-     * @param index Index of the units to replace (zero-based).
+     * @param index Index of the units to replace.
      * @param units The units to use for replacement.
      */
     void replaceUnits(size_t index, const UnitsPtr &units);
@@ -212,7 +213,7 @@ public:
      * Remove the component with the given @p index. @p index must
      * be in the range [0, #components).
      *
-     * @param index The index of the component to remove (zero-based).
+     * @param index The index of the component to remove.
      */
     void removeComponent(size_t index);
 
@@ -294,7 +295,7 @@ public:
      *
      * @overload
      *
-     * @param index The index of the Component to return (zero-based).
+     * @param index The index of the Component to return.
      *
      * @return The Component at the given @p index on success, @c nullptr on failure.
      */

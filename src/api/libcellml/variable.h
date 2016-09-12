@@ -95,9 +95,9 @@ public:
      * @brief Get an equivalent variable at @p index.
      *
      * Returns the equivalent variable at the index @p index for this
-     * variable.
+     * variable. The index must be in the range [0, #equivalentVariables).
      *
-     * @param index The index of the variable to return (zero-based).
+     * @param index The index of the variable to return.
      *
      * @return The equivalent variable at the given index.
      */
