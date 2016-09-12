@@ -38,7 +38,7 @@ struct ComponentEntity::ComponentEntityImpl
      * @brief Remove the component with the given @p name from this component entity.
      *
      * Remove the first component found that matches the given @p name from this
-     * component entity. If the @p name is not found throw @c std::out_of_range.
+     * component entity.
      *
      * @param name The name of the component to remove.
      */
@@ -48,7 +48,6 @@ struct ComponentEntity::ComponentEntityImpl
      * @brief Remove the component with the given pointer from this component entity.
      *
      * Remove the component with the pointer @p component from this component entity.
-     * If the component is not found throw @c std::out_of_range.
      *
      * @overload
      *
@@ -89,8 +88,7 @@ struct ComponentEntity::ComponentEntityImpl
      * entity and return it.
      *
      * Takes the component with the given @p name from this component entity
-     * and returns it. If an invalid @p name is passed to the method a @c std::out_of_range
-     * exception is thrown.
+     * and returns it.
      *
      * @param name The name of the Component to take.
      *
@@ -102,8 +100,7 @@ struct ComponentEntity::ComponentEntityImpl
      * @brief Replace a component with the given @p name in this component entity.
      *
      * Replaces the component with the given @p name in this component entity
-     * with @p c. @p name must be a valid name of a component in the Component,
-     * otherwise a @c std::out_of_range exception is thrown.
+     * with @p c.
      *
      * @param name The name of the Component to replace.
      * @param c The Component to use for replacement.

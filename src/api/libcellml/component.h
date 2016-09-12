@@ -89,8 +89,7 @@ public:
     /**
      * @brief Remove the variable with the given @p name from this component.
      *
-     * Remove the variable with the given name from this component. If the
-     * name is not found then throw @c std::out_of_range. If the named variable to
+     * Remove the variable with the given name from this component. If the named variable to
      * be removed is in a connection (is equivalent to another variable), this
      * component will not be serialised in the connection @c map_components.
      *
@@ -103,10 +102,10 @@ public:
     /**
      * @brief Remove the variable by the given @p variable pointer from this component.
      *
-     * Remove the variable with the given pointer from this component. If the
-     * variable is not found then throw @c std::out_of_range. If the @p variable to
+     * Remove the variable with the given pointer from this component. If the @p variable to
      * be removed is in a connection (is equivalent to another variable), this
      * component will not be serialised in the connection @c map_components.
+     *
      * @sa addVariable
      *
      * @overload

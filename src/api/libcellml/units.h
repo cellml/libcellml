@@ -271,34 +271,44 @@ public:
     void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
-     * @brief getUnit
+     * @brief Get the @c unit attributes for the given reference @p reference.
+     *
+     * Get the attributes for the first @c unit that matches the reference @p reference. If
+     * no attributes are set, default attribute values will be returned.
      *
      * @overload
      *
-     * @param reference
-     * @param prefix
-     * @param exponent
-     * @param multiplier
-     * @param offset
+     * @param reference The @c std::string reference for the @c unit attributes to get.
+     * @param prefix The prefix for this @c unit. Defaults to empty string.
+     * @param exponent The exponent for this @c unit. Defaults to 1.0.
+     * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
+     * @param offset The offset for this @c unit. Defaults to 0.0.
      */
     void getUnit(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
-     * @brief getUnit
+     * @brief Get the @c unit attributes for the given reference @p standardRef.
+     *
+     * Get the attributes for the first @c unit that matches the reference @p standardRef. If
+     * no attributes are set, default attribute values will be returned.
      *
      * @overload
      *
-     * @param standardRef
-     * @param prefix
-     * @param exponent
-     * @param multiplier
-     * @param offset
+     * @param standardRef The @c StandardUnit enum unit reference attributes to get.
+     * @param prefix The prefix for this @c unit. Defaults to empty string.
+     * @param exponent The exponent for this @c unit. Defaults to 1.0.
+     * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
+     * @param offset The offset for this @c unit. Defaults to 0.0.
      */
     void getUnit(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
 
     /**
-     * @brief removeUnit
-     * @param index
+     * @brief Remove the unit at the given index @p index.
+     *
+     * Removes the unit at the given @p index position.
+     * @p index must be in the range [0, #unit).
+     *
+     * @param index The index of the unit to remove.
      */
     void removeUnit(size_t index);
 
@@ -306,11 +316,10 @@ public:
      * @brief Remove the unit with the given reference.
      *
      * Remove the first unit found that matches the @c std::string reference @p reference.
-     * If the @p reference is not found throw @c std::out_of_range.
      *
      * @overload
      *
-     * @param reference The @c std::string units reference to remove.
+     * @param reference The @c std::string unit reference of the unit to remove.
      */
     void removeUnit(const std::string &reference);
 
@@ -318,11 +327,10 @@ public:
      * @brief Remove the unit with the given reference.
      *
      * Remove the first unit found that matches @c StandardUnit enum reference @p reference.
-     * If the @p reference is not found throw @c std::out_of_range.
      *
      * @overload
      *
-     * @param reference The @c StandardUnit enum units reference to remove.
+     * @param standardRef The @c StandardUnit enum unit reference of the unit to remove.
      */
     void removeUnit(StandardUnit standardRef);
 
