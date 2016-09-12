@@ -441,6 +441,33 @@ TEST(Units, getUnit) {
     EXPECT_DOUBLE_EQ(32.0, offset);
 }
 
+TEST(Units, multipleUnitUsingStandardRef) {
+    libcellml::Units u;
+
+    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
+    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "milli");
+    u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
+    u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+
+    EXPECT_EQ(4, u.unitCount());
+
+    u.removeUnit(libcellml::Units::StandardUnit::AMPERE);
+
+    EXPECT_EQ(3, u.unitCount());
+
+    std::string prefix, reference;
+    double exponent, multiplier, offset;
+    u.getUnit(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("milli", prefix);
+    u.getUnit(0, reference, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("milli", prefix);
+    u.getUnit(1, reference, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("centi", prefix);
+    u.getUnit(2, reference, prefix, exponent, multiplier, offset);
+    EXPECT_EQ("micro", prefix);
+
+}
+
 TEST(Units, removeUnit) {
     libcellml::Units u;
 
