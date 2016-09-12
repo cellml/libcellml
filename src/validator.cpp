@@ -501,7 +501,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     // Validate the unit at the given index.
     std::string reference, prefix;
     double exponent, multiplier, offset;
-    units->getUnit(index, reference, prefix, exponent, multiplier, offset);
+    units->getUnitAttributes(index, reference, prefix, exponent, multiplier, offset);
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) &&
             (!isStandardUnitName(reference))) {

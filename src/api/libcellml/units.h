@@ -259,7 +259,8 @@ public:
      * @brief Get the @c unit attributes at the given @p index of this units.
      *
      * Get the attributes for the @c unit at the index @p index of this units. If
-     * no attributes are set, default attribute values will be returned.
+     * no attributes are set, default attribute values will be returned. The index must
+     * be in the range [0, #unit).
      *
      * @param index The index of the @c unit in this units to get attributes for.
      * @param reference The @c std::string reference for this @c unit. Defaults to empty string.
@@ -268,7 +269,8 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param offset The offset for this @c unit. Defaults to 0.0.
      */
-    void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
+    void getUnitAttributes(size_t index, std::string& reference, std::string &prefix, double &exponent,
+                           double &multiplier, double &offset) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p reference.
@@ -284,7 +286,8 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param offset The offset for this @c unit. Defaults to 0.0.
      */
-    void getUnit(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
+    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier,
+                           double &offset) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p standardRef.
@@ -300,7 +303,8 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param offset The offset for this @c unit. Defaults to 0.0.
      */
-    void getUnit(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
+    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier,
+                           double &offset) const;
 
     /**
      * @brief Remove the unit at the given @p index.
