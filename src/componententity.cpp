@@ -36,8 +36,6 @@ struct ComponentEntity::ComponentEntityImpl
 {
     std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
     std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
-    std::vector<ComponentPtr>::const_iterator findComponent(const std::string &name) const;
-    std::vector<ComponentPtr>::const_iterator findComponent(const ComponentPtr &component) const;
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
     std::vector<ComponentPtr> mComponents;
@@ -51,18 +49,6 @@ std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findCo
 }
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
-{
-    return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr& c) -> bool { return c == component; });
-}
-
-std::vector<ComponentPtr>::const_iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name) const
-{
-    return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr& c) -> bool { return c->getName() == name; });
-}
-
-std::vector<ComponentPtr>::const_iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component) const
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
                         [=](const ComponentPtr& c) -> bool { return c == component; });

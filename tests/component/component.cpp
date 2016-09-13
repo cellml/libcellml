@@ -92,14 +92,17 @@ TEST(Component, contains) {
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c21 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
     c2->setName("child2");
+    c2->addComponent(c21);
 
     EXPECT_FALSE(c.containsComponent("child1"));
 
     c.addComponent(c1);
     c.addComponent(c2);
     EXPECT_TRUE(c.containsComponent(c2));
+    EXPECT_TRUE(c.containsComponent(c21));
 }
 
 TEST(Component, addChildrenAndSerialise) {
