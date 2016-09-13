@@ -64,8 +64,10 @@ public:
      * @p index must be in the range [0, #units).
      *
      * @param index The index of the units to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnits(size_t index);
+    bool removeUnits(size_t index);
 
     /**
      * @brief Remove the units with the given @p name.
@@ -75,8 +77,10 @@ public:
      * @overload
      *
      * @param name The name of the units to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnits(const std::string &name);
+    bool removeUnits(const std::string &name);
 
     /**
      * @brief Remove the units with the given pointer.
@@ -86,8 +90,10 @@ public:
      * @overload
      *
      * @param units The pointer to the units to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnits(const UnitsPtr &units);
+    bool removeUnits(const UnitsPtr &units);
 
     /**
      * @brief Remove all units stored in this component entity.
@@ -174,8 +180,10 @@ public:
      *
      * @param index Index of the units to replace.
      * @param units The units to use for replacement.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void replaceUnits(size_t index, const UnitsPtr &units);
+    bool replaceUnits(size_t index, const UnitsPtr &units);
 
     /**
      * @brief Replace a units with the given @p name.
@@ -186,8 +194,10 @@ public:
      *
      * @param name The name of the units to replace.
      * @param units The units to use for replacement.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void replaceUnits(const std::string &name, const UnitsPtr &units);
+    bool replaceUnits(const std::string &name, const UnitsPtr &units);
 
     /**
      * @brief Get the number of units in the component entity.
@@ -214,8 +224,10 @@ public:
      * be in the range [0, #components).
      *
      * @param index The index of the component to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeComponent(size_t index);
+    bool removeComponent(size_t index);
 
     /**
      * @brief Remove the component with the given @p name.
@@ -229,8 +241,10 @@ public:
      * @param name The name of the component to remove.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the component with the specified @p name. Default value is @c true.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeComponent(const std::string &name, bool searchEncapsulated=true);
+    bool removeComponent(const std::string &name, bool searchEncapsulated=true);
 
     /**
      * @brief Remove the component with the given pointer.
@@ -243,8 +257,10 @@ public:
      * @param component The pointer to the component to remove.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the specified @p component pointer. Default value is @c true.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
+    bool removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
 
     /**
      * @brief Remove all components stored in this component entity.
@@ -355,8 +371,10 @@ public:
      *
      * @param index Index of the Component to replace.
      * @param c The component to be used as a replacement.
+     *
+     * @return True if the component was replaced, false otherwise.
      */
-    void replaceComponent(size_t index, const ComponentPtr &c);
+    bool replaceComponent(size_t index, const ComponentPtr &c);
 
     /**
      * @brief Replace a component with the given @p name.
@@ -372,8 +390,10 @@ public:
      * @param c The Component to use for replacement.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the component with the specified @p name. Default value is @c true.
+     *
+     * @return True if the component was replaced, false otherwise.
      */
-    void replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
+    bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
 
     /**
      * @brief Get the number of components in the component.

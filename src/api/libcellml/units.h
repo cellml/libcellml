@@ -313,8 +313,10 @@ public:
      * @p index must be in the range [0, #unit).
      *
      * @param index The index of the unit to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnit(size_t index);
+    bool removeUnit(size_t index);
 
     /**
      * @brief Remove the unit with the given reference.
@@ -324,8 +326,10 @@ public:
      * @overload
      *
      * @param reference The @c std::string unit reference of the unit to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnit(const std::string &reference);
+    bool removeUnit(const std::string &reference);
 
     /**
      * @brief Remove the unit with the given reference.
@@ -335,8 +339,10 @@ public:
      * @overload
      *
      * @param standardRef The @c StandardUnit enum unit reference of the unit to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnit(StandardUnit standardRef);
+    bool removeUnit(StandardUnit standardRef);
 
     /**
      * @brief Remove all units stored in this units object.

@@ -228,13 +228,13 @@ TEST(Model, removeComponent) {
     m.addComponent(c1);
 
     // Remove the first occurence of "child1".
-    m.removeComponent("child1");
+    EXPECT_TRUE(m.removeComponent("child1"));
     EXPECT_EQ(2, m.componentCount());
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
 
     // Expect no change to model.
-    m.removeComponent("child3");
+    EXPECT_FALSE(m.removeComponent("child3"));
     EXPECT_EQ(2, m.componentCount());
 }
 
@@ -286,6 +286,7 @@ TEST(Model, takeComponentMethods) {
     EXPECT_EQ("child2", c02->getName());
 
     libcellml::ComponentPtr c01 = m.takeComponent("child1");
+    EXPECT_NE(nullptr, c01);
     EXPECT_EQ(0, m.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
@@ -294,7 +295,7 @@ TEST(Model, takeComponentMethods) {
 
     // Expect no change.
     EXPECT_EQ(0, m.componentCount());
-    m.takeComponent("child4");
+    EXPECT_EQ(nullptr, m.takeComponent("child4"));
     EXPECT_EQ(0, m.componentCount());
 }
 
@@ -411,19 +412,19 @@ TEST(Model, replaceComponent) {
     EXPECT_EQ(e_orig, a);
 
     // Attempt to replace non-existent component.
-    m.replaceComponent(5, c3);
+    EXPECT_FALSE(m.replaceComponent(5, c3));
 
     // Replace existing component.
-    m.replaceComponent(1, c3);
+    EXPECT_TRUE(m.replaceComponent(1, c3));
 
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_after, a);
 
     // Nothing happens when trying to replace a component that doesn't match
     // the given name.
-    m.replaceComponent("child5", c4);
+    EXPECT_FALSE(m.replaceComponent("child5", c4));
 
-    m.replaceComponent("child1", c4);
+    EXPECT_TRUE(m.replaceComponent("child1", c4));
 
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_post, a);

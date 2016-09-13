@@ -366,25 +366,33 @@ void Units::getUnitAttributes(size_t index, std::string &reference, std::string 
     }
 }
 
-void Units::removeUnit(const std::string &reference)
+bool Units::removeUnit(const std::string &reference)
 {
+    bool status = false;
     auto result = mPimpl->findUnit(reference);
     if (result != mPimpl->mUnits.end()) {
         mPimpl->mUnits.erase(result);
+        status = true;
     }
+
+    return status;
 }
 
-void Units::removeUnit(size_t index)
+bool Units::removeUnit(size_t index)
 {
+    bool status = false;
     if (index < mPimpl->mUnits.size()) {
         mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
+        status = true;
     }
+
+    return status;
 }
 
-void Units::removeUnit(StandardUnit standardRef)
+bool Units::removeUnit(StandardUnit standardRef)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    removeUnit(reference);
+    return removeUnit(reference);
 }
 
 void Units::removeAllUnits()

@@ -96,8 +96,10 @@ public:
      * @sa addVariable
      *
      * @param name The name of the variable to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeVariable(const std::string &name);
+    bool removeVariable(const std::string &name);
 
     /**
      * @brief Remove the variable by the given @p variable pointer from this component.
@@ -111,8 +113,10 @@ public:
      * @overload
      *
      * @param variable The pointer to the variable to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeVariable(const VariablePtr &variable);
+    bool removeVariable(const VariablePtr &variable);
 
     /**
      * @brief Remove all variables stored in this component.

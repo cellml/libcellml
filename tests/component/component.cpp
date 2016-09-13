@@ -189,16 +189,16 @@ TEST(Component, removeComponentMethods) {
     c.addComponent(c1);
     c.addComponent(c1);
     // Remove the first occurence of "child1".
-    c.removeComponent("child1");
+    EXPECT_TRUE(c.removeComponent("child1"));
     // Remove the second occurence of "child1".
-    c.removeComponent(c1);
+    EXPECT_TRUE(c.removeComponent(c1));
     EXPECT_EQ(2, c.componentCount());
     a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
 
     // Expect no change
-    c.removeComponent("child3");
-    c.removeComponent(c3);
+    EXPECT_FALSE(c.removeComponent("child3"));
+    EXPECT_FALSE(c.removeComponent(c3));
     EXPECT_EQ(2, c.componentCount());
 
     c.removeAllComponents();
@@ -352,17 +352,17 @@ TEST(Component, replaceComponentMethods) {
 
     std::string a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_orig, a);
-    c.replaceComponent(5, c3);
+    EXPECT_FALSE(c.replaceComponent(5, c3));
 
-    c.replaceComponent(1, c3);
+    EXPECT_TRUE(c.replaceComponent(1, c3));
 
     a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_after, a);
 
     // Try to replace non-existent child.
-    c.replaceComponent("child5", c4);
+    EXPECT_FALSE(c.replaceComponent("child5", c4));
 
-    c.replaceComponent("", c4);
+    EXPECT_TRUE(c.replaceComponent("", c4));
 
     a = c.serialise(libcellml::Format::XML);
     EXPECT_EQ(e_post, a);

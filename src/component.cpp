@@ -126,20 +126,28 @@ void Component::addVariable(const VariablePtr &v)
     v->setParent(this);
 }
 
-void Component::removeVariable(const std::string &name)
+bool Component::removeVariable(const std::string &name)
 {
+    bool status = false;
     auto result = mPimpl->findVariable(name);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
+        status = true;
     }
+
+    return status;
 }
 
-void Component::removeVariable(const VariablePtr &variable)
+bool Component::removeVariable(const VariablePtr &variable)
 {
+    bool status = false;
     auto result = mPimpl->findVariable(variable);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
+        status = true;
     }
+
+    return status;
 }
 
 void Component::removeAllVariables()
@@ -153,6 +161,7 @@ VariablePtr Component::getVariable(size_t index) const
     if (index < mPimpl->mVariables.size()) {
         variable = mPimpl->mVariables.at(index);
     }
+
     return variable;
 }
 
@@ -163,6 +172,7 @@ VariablePtr Component::getVariable(const std::string &name) const
     if (result != mPimpl->mVariables.end()) {
         variable = *result;
     }
+
     return variable;
 }
 

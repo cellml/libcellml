@@ -160,6 +160,8 @@ TEST(Units, removeUnitsMethodsAndCount) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<units name=\"compound_unit\">"
                     "<unit prefix=\"micro\" units=\"ampere\"/>"
+                    "<unit units=\"kelvin\"/>"
+                    "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
                     "<unit prefix=\"1.7e10\" units=\"meter\"/>"
                 "</units>"
                 "<units name=\"simple_unit_2\"/>"
@@ -208,21 +210,25 @@ TEST(Units, removeUnitsMethodsAndCount) {
     m.addUnits(u3);
     m.addUnits(u4);
 
-    u1->removeAllUnits();
     std::string a = m.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e1, a);
+
+    u1->removeAllUnits();
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
 
-    m.removeUnits("simple_unit_2");
-    m.removeUnits(u3);
+    EXPECT_TRUE(m.removeUnits("simple_unit_2"));
+    EXPECT_TRUE(m.removeUnits(u3));
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e3, a);
     EXPECT_EQ(2, m.unitsCount());
-    m.removeUnits("gram");
-    m.removeUnits(u5);
-    m.removeUnits(3);
+
+    EXPECT_FALSE(m.removeUnits("gram"));
+    EXPECT_FALSE(m.removeUnits(u5));
+    EXPECT_FALSE(m.removeUnits(3));
     EXPECT_EQ(2, m.unitsCount());
-    m.removeUnits(1);
+
+    EXPECT_TRUE(m.removeUnits(1));
     EXPECT_EQ(1, m.unitsCount());
 
     m.removeAllUnits();
@@ -285,22 +291,22 @@ TEST(Units, replaceUnits) {
     m.addUnits(u1);
     m.addUnits(u2);
 
-    m.replaceUnits("b_unit", u3);
+    EXPECT_TRUE(m.replaceUnits("b_unit", u3));
     EXPECT_EQ(2, m.unitsCount());
 
     libcellml::UnitsPtr u4 = m.takeUnits(1);
     EXPECT_EQ("c_unit", u4->getName());
     EXPECT_EQ(1, m.unitsCount());
 
-    m.replaceUnits(0, u4);
+    EXPECT_TRUE(m.replaceUnits(0, u4));
 
     u1 = m.getUnits(0);
     EXPECT_EQ("c_unit", u1->getName());
     EXPECT_EQ(1, m.unitsCount());
 
     // Replace non-existent units.
-    m.replaceUnits("d_unit", u2);
-    m.replaceUnits(5, u1);
+    EXPECT_FALSE(m.replaceUnits("d_unit", u2));
+    EXPECT_FALSE(m.replaceUnits(5, u1));
 }
 
 TEST(Units, multiply) {
@@ -477,15 +483,15 @@ TEST(Units, removeUnit) {
     u.addUnit("meter", "1.7e10");
 
     EXPECT_EQ(4, u.unitCount());
-    u.removeUnit("siemens");
-    u.removeUnit(libcellml::Units::StandardUnit::KELVIN);
-    u.removeUnit(1);
+    EXPECT_TRUE(u.removeUnit("siemens"));
+    EXPECT_TRUE(u.removeUnit(libcellml::Units::StandardUnit::KELVIN));
+    EXPECT_TRUE(u.removeUnit(1));
     EXPECT_EQ(1, u.unitCount());
 
     // Remove non-existent unit
-    u.removeUnit("gram");
-    u.removeUnit(libcellml::Units::StandardUnit::BECQUEREL);
-    u.removeUnit(3);
+    EXPECT_FALSE(u.removeUnit("gram"));
+    EXPECT_FALSE(u.removeUnit(libcellml::Units::StandardUnit::BECQUEREL));
+    EXPECT_FALSE(u.removeUnit(3));
     EXPECT_EQ(1, u.unitCount());
 
     u.removeAllUnits();
