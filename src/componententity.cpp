@@ -253,8 +253,7 @@ UnitsPtr ComponentEntity::takeUnits(const std::string &name)
 bool ComponentEntity::replaceUnits(size_t index, const UnitsPtr &units)
 {
     bool status = false;
-    if (index < mPimpl->mUnits.size()) {
-        removeUnits(index);
+    if (removeUnits(index)) {
         mPimpl->mUnits.insert(mPimpl->mUnits.begin() + index, units);
         status = true;
     }
@@ -421,8 +420,7 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
 bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
 {
     bool status = false;
-    if (index < mPimpl->mComponents.size()) {
-        removeComponent(index);
+    if (removeComponent(index)) {
         mPimpl->mComponents.insert(mPimpl->mComponents.begin() + index, c);
         status = true;
     }
