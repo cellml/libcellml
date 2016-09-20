@@ -23,6 +23,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/units.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -66,15 +67,16 @@ struct Variable::VariableImpl
      * @brief Private function to remove an equivalent variable from the set for this variable.
      *
      * Remove the @p equivalentVariable from the set of equivalent variables for this
-     * variable if it is present. If the equivalent variable is not in this variable's set,
-     * throw @c std::out_of_range.
+     * variable if it is present.
      *
      * @sa removeEquivalence, setEquivalentTo
      *
      * @param equivalentVariable The variable to remove from this variable's equivalent
      * variable set if it is present.
+     *
+     * @return True if the @p equivalentVariable is removed from set of equivalent variables, false otherwise.
      */
-    void unsetEquivalentTo(const VariablePtr &equivalentVariable);
+    bool unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
@@ -143,10 +145,12 @@ void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
     variable2->mPimpl->setEquivalentTo(variable1);
 }
 
-void Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
+bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    variable1->mPimpl->unsetEquivalentTo(variable2);
-    variable2->mPimpl->unsetEquivalentTo(variable1);
+    bool equivalence_1 = variable1->mPimpl->unsetEquivalentTo(variable2);
+    bool equivalence_2 = variable2->mPimpl->unsetEquivalentTo(variable1);
+
+    return equivalence_1 && equivalence_2;
 }
 
 void Variable::removeAllEquivalences()
@@ -156,8 +160,13 @@ void Variable::removeAllEquivalences()
 
 VariablePtr Variable::getEquivalentVariable(size_t index) const
 {
-    VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
-    return weakEquivalentVariable.lock();
+    VariablePtr equivalentVariable = nullptr;
+    if (index < mPimpl->mEquivalentVariables.size()) {
+        VariableWeakPtr weakEquivalentVariable = mPimpl->mEquivalentVariables.at(index);
+        equivalentVariable = weakEquivalentVariable.lock();
+    }
+
+    return equivalentVariable;
 }
 
 size_t Variable::equivalentVariableCount() const
@@ -183,14 +192,16 @@ void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariab
     }
 }
 
-void Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
+bool Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
 {
+    bool status = false;
     auto result = findEquivalentVariable(equivalentVariable);
     if (result != mEquivalentVariables.end()) {
         mEquivalentVariables.erase(result);
-    } else {
-        throw std::out_of_range("Equivalent variable not found.");
+        status = true;
     }
+
+    return status;
 }
 
 std::string Variable::doSerialisation(Format format) const
@@ -240,9 +251,7 @@ void Variable::setInitialValue(const std::string &initialValue)
 
 void Variable::setInitialValue(double initialValue)
 {
-    std::ostringstream strs;
-    strs << initialValue;
-    mPimpl->mInitialValue = strs.str();
+    mPimpl->mInitialValue = convertDoubleToString(initialValue);
 }
 
 void Variable::setInitialValue(const VariablePtr &v)

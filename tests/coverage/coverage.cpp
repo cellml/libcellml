@@ -151,6 +151,7 @@ TEST(Coverage, prefixToString) {
         std::string a = m.serialise(libcellml::Format::XML);
         std::size_t found = a.find(prefix);
         EXPECT_NE(std::string::npos, found);
+        m.removeAllUnits();
     }
 }
 

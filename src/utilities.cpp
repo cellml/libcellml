@@ -17,6 +17,9 @@ limitations under the License.
 #include "utilities.h"
 
 #include <stdexcept>
+#include <iomanip>
+#include <limits>
+#include <sstream>
 
 namespace libcellml {
 
@@ -41,6 +44,13 @@ bool convertToDouble(const std::string &candidate, double *value)
 bool hasNonWhitespaceCharacters(const std::string &input)
 {
     return input.find_first_not_of(" \t\n\v\f\r") != input.npos;;
+}
+
+std::string convertDoubleToString(double value)
+{
+    std::ostringstream strs;
+    strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    return strs.str();
 }
 
 }

@@ -45,9 +45,16 @@ public:
      *
      * @param input The @c std::string to parse.
      */
-    void parse(const std::string& input);
+    void parse(const std::string &input);
 
-    void parseMathML(std::string input);
+    /**
+     * @brief Parse an XML string as MathML.
+     *
+     * Parses the @p input @c std::string as a MathML string.
+     *
+     * @param input The @c std::string to parse.
+     */
+    void parseMathML(const std::string &input);
 
     /**
      * @brief Get the root XML element of the document.

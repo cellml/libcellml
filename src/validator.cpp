@@ -40,7 +40,6 @@ namespace libcellml {
  */
 struct Validator::ValidatorImpl
 {
-public:
     Validator *mValidator;
 
     /**
@@ -88,7 +87,6 @@ public:
      */
     bool isCellmlIdentifier(const std::string &name);
 
-private:     
     /**
      * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
      *
@@ -503,7 +501,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     // Validate the unit at the given index.
     std::string reference, prefix;
     double exponent, multiplier, offset;
-    units->getUnit(index, reference, prefix, exponent, multiplier, offset);
+    units->getUnitAttributes(index, reference, prefix, exponent, multiplier, offset);
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) &&
             (!isStandardUnitName(reference))) {

@@ -85,7 +85,11 @@ size_t Logger::errorCount() const
 
 ErrorPtr Logger::getError(size_t index) const
 {
-    return mPimpl->mErrors.at(index);
+    ErrorPtr err = nullptr;
+    if (index < mPimpl->mErrors.size()) {
+        err = mPimpl->mErrors.at(index);
+    }
+    return err;
 }
 
 }

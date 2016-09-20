@@ -59,7 +59,7 @@ public:
      * @p variable2 if not already present. Also add a copy of @p variable2 to the
      * set of equivalent variables for @p variable1 if not already present.
      *
-     * @sa removeEquivalence, getEquivalentVariable, setEquivalentTo
+     * @sa removeEquivalence, getEquivalentVariable
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
@@ -75,14 +75,16 @@ public:
      * @p variable2, if present. Also removes a copy of @p variable2 from the
      * set of equivalent variables for @p variable1, if present.
      *
-     * @sa addEquivalence, unsetEquivalentTo, getEquivalentVariable
+     * @sa addEquivalence, getEquivalentVariable
      *
      * @param variable1 The variable to remove from the equivalent variable set
      * for @p variable2.
      * @param variable2 The variable to remove from the equivalent variable set
      * for @p variable1.
+     *
+     * @return True if the equivalence was removed, false otherwise.
      */
-    static void removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
+    static bool removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Remove all equivalent variables for this variable.
@@ -95,9 +97,9 @@ public:
      * @brief Get an equivalent variable at @p index.
      *
      * Returns the equivalent variable at the index @p index for this
-     * variable.
+     * variable. The index must be in the range [0, #equivalentVariables).
      *
-     * @param index The index of the variable to return (zero-based).
+     * @param index The index of the variable to return.
      *
      * @return The equivalent variable at the given index.
      */

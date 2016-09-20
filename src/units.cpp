@@ -19,10 +19,10 @@ limitations under the License.
 #include <algorithm>
 #include <cassert>
 #include <map>
-#include <sstream>
 #include <vector>
 
 #include "libcellml/import.h"
+#include "utilities.h"
 
 namespace libcellml {
 
@@ -254,19 +254,13 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
         u.mPrefix = prefix;
     }
     if (exponent != 1.0) {
-        std::ostringstream strs;
-        strs << exponent;
-        u.mExponent = strs.str();
+        u.mExponent = convertDoubleToString(exponent);
     }
     if (multiplier != 1.0) {
-        std::ostringstream strs;
-        strs << multiplier;
-        u.mMultiplier = strs.str();
+        u.mMultiplier = convertDoubleToString(multiplier);
     }
     if (offset != 0.0) {
-        std::ostringstream strs;
-        strs << offset;
-        u.mOffset = strs.str();
+        u.mOffset = convertDoubleToString(offset);
     }
     mPimpl->mUnits.push_back(u);
 }
@@ -283,9 +277,7 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
 void Units::addUnit(const std::string &reference, double prefix, double exponent,
                     double multiplier, double offset)
 {
-    std::ostringstream strs;
-    strs << prefix;
-    const std::string prefixString = strs.str();
+    const std::string prefixString = convertDoubleToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, offset);
 }
 
@@ -318,9 +310,7 @@ void Units::addUnit(StandardUnit standardRef, double prefix, double exponent,
                     double multiplier, double offset)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    std::ostringstream strs;
-    strs << prefix;
-    const std::string prefixString = strs.str();
+    const std::string prefixString = convertDoubleToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, offset);
 }
 
@@ -336,9 +326,27 @@ void Units::addUnit(StandardUnit standardRef)
     addUnit(reference, "0.0", 1.0, 1.0, 0.0);
 }
 
-void Units::getUnit(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const
+void Units::getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, double &offset) const
 {
-    Unit u = mPimpl->mUnits.at(index);
+    std::string dummyReference;
+    const std::string reference = standardUnitToString.find(standardRef)->second;
+    auto result = mPimpl->findUnit(reference);
+    getUnitAttributes(result - mPimpl->mUnits.begin(), dummyReference, prefix, exponent, multiplier, offset);
+}
+
+void Units::getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const
+{
+    std::string dummyReference;
+    auto result = mPimpl->findUnit(reference);
+    getUnitAttributes(result - mPimpl->mUnits.begin(), dummyReference, prefix, exponent, multiplier, offset);
+}
+
+void Units::getUnitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const
+{
+    Unit u;
+    if (index < mPimpl->mUnits.size()) {
+        u = mPimpl->mUnits.at(index);
+    }
     reference = u.mReference;
     prefix = u.mPrefix;
     if (u.mExponent.length()) {
@@ -358,20 +366,33 @@ void Units::getUnit(size_t index, std::string &reference, std::string &prefix, d
     }
 }
 
-void Units::removeUnit(const std::string &reference)
+bool Units::removeUnit(const std::string &reference)
 {
+    bool status = false;
     auto result = mPimpl->findUnit(reference);
     if (result != mPimpl->mUnits.end()) {
         mPimpl->mUnits.erase(result);
-    } else {
-        throw std::out_of_range("Referenced unit not found.");
+        status = true;
     }
+
+    return status;
 }
 
-void Units::removeUnit(StandardUnit standardRef)
+bool Units::removeUnit(size_t index)
+{
+    bool status = false;
+    if (index < mPimpl->mUnits.size()) {
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
+        status = true;
+    }
+
+    return status;
+}
+
+bool Units::removeUnit(StandardUnit standardRef)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    removeUnit(reference);
+    return removeUnit(reference);
 }
 
 void Units::removeAllUnits()

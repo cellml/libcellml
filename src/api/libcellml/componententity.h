@@ -61,36 +61,39 @@ public:
      * @brief Remove the units at the given @p index.
      *
      * Remove the units from this component entity at the given @p index.
-     * If the @p index is not in the range [0, #units], a @c std::out_of_range
-     * exception will be thrown.
+     * @p index must be in the range [0, #units).
      *
-     * @param index The index of the units to remove (zero-based).
+     * @param index The index of the units to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnits(size_t index);
+    bool removeUnits(size_t index);
 
     /**
      * @brief Remove the units with the given @p name.
      *
      * Remove the first units found with the given @p name.
-     * If the name is not found throw @c std::out_of_range.
      *
      * @overload
      *
      * @param name The name of the units to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnits(const std::string &name);
+    bool removeUnits(const std::string &name);
 
     /**
      * @brief Remove the units with the given pointer.
      *
-     * Remove the units with the pointer @p units. If the
-     * units are not found throw @c std::out_of_range.
+     * Remove the units with the pointer @p units.
      *
      * @overload
      *
      * @param units The pointer to the units to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnits(const UnitsPtr &units);
+    bool removeUnits(const UnitsPtr &units);
 
     /**
      * @brief Remove all units stored in this component entity.
@@ -118,11 +121,12 @@ public:
      * @brief Get a units at the given @p index.
      *
      * Returns a reference to a units at the given @p index.  If the @p index
-     * is not valid a @c nullptr is returned.
+     * is not valid a @c nullptr is returned, the range of valid values for the
+     * index is [0, #units).
      *
      * @overload
      *
-     * @param index The index of the units to return (zero-based).
+     * @param index The index of the units to return.
      *
      * @return A reference to the units at the given @p index on success, @c nullptr otherwise.
      */
@@ -146,53 +150,54 @@ public:
      * @brief Take the units at the given @p index and return it.
      *
      * Removes the units at the given @p index position and returns it.
-     * If an invalid @p index is passed to the method a @c std::out_of_range
-     * exception is thrown.
+     * @p index must be in the range [0, #units).
      *
-     * @param index The index of the units to take (zero-based).
+     * @param index The index of the units to take.
      *
-     * @return The units at the given @p index.
+     * @return A reference to the units at the given @p index if the index is valid, @c nullptr otherwise.
      */
     UnitsPtr takeUnits(size_t index);
 
     /**
      * @brief Take the units with the given @p name and return it.
      *
-     * Takes the units with the given @p name and returns it.
-     * If an invalid @p name is passed to the method a @c std::out_of_range
-     * exception is thrown.
+     * Takes the first occurence of the units with the given name @p name and returns it.
+     * If no units with name @p name is found then a @c nullptr is returned.
      *
      * @overload
      *
      * @param name The name of the units to take.
      *
-     * @return The Units identified with the given @p name.
+     * @return A reference to the units identified with the given @p name if found, @c nullptr otherwise.
      */
     UnitsPtr takeUnits(const std::string &name);
 
     /**
      * @brief Replace a units at the given @p index.
      *
-     * Replaces the units at the given @p index with @p units.  If an invalid @p index
-     * is passed to the method a @c std::out_of_range exception is thrown.
+     * Replaces the units at the given @p index with @p units.
+     * @p index must be in the range [0, #units).
      *
-     * @param index Index of the units to replace (zero-based).
+     * @param index Index of the units to replace.
      * @param units The units to use for replacement.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void replaceUnits(size_t index, const UnitsPtr &units);
+    bool replaceUnits(size_t index, const UnitsPtr &units);
 
     /**
      * @brief Replace a units with the given @p name.
      *
-     * Replaces the units with the given @p name with @p units. @p name must refer to
-     * a valid name of a units in the component entity, otherwise a @c std::out_of_range exception is thrown.
+     * Replaces the units with the given @p name with @p units.
      *
      * @overload
      *
      * @param name The name of the units to replace.
      * @param units The units to use for replacement.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void replaceUnits(const std::string &name, const UnitsPtr &units);
+    bool replaceUnits(const std::string &name, const UnitsPtr &units);
 
     /**
      * @brief Get the number of units in the component entity.
@@ -215,12 +220,14 @@ public:
     /**
      * @brief Remove the component at the given @p index.
      *
-     * Remove the component from the model with the given @p index.  If the @p index is
-     * not in the range [0, #components) a @c std::out_of_range exception will be thrown.
+     * Remove the component with the given @p index. @p index must
+     * be in the range [0, #components).
      *
-     * @param index The index of the component to remove (zero-based).
+     * @param index The index of the component to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeComponent(size_t index);
+    bool removeComponent(size_t index);
 
     /**
      * @brief Remove the component with the given @p name.
@@ -228,30 +235,32 @@ public:
      * Remove the first component found that matches the given @p name.
      * If @p searchEncapsulated is @c true (default) this will also
      * search for the named component through this component's encapsulated components.
-     * If the @p name is not found throw @c std::out_of_range.
      *
      * @overload
      *
      * @param name The name of the component to remove.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the component with the specified @p name. Default value is @c true.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeComponent(const std::string &name, bool searchEncapsulated=true);
+    bool removeComponent(const std::string &name, bool searchEncapsulated=true);
 
     /**
      * @brief Remove the component with the given pointer.
      *
      * Remove the component with the pointer @p component. If @p searchEncapsulated is @c true (default)
      * this will also search for the component pointer through this component's encapsulated components.
-     * If the component is not found throw @c std::out_of_range.
      *
      * @overload
      *
      * @param component The pointer to the component to remove.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the specified @p component pointer. Default value is @c true.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
+    bool removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
 
     /**
      * @brief Remove all components stored in this component entity.
@@ -297,12 +306,12 @@ public:
     /**
      * @brief Get a component at the given @p index.
      *
-     * Returns a reference to a component at the given @p index.  If the @p index
-     * is not valid a @c nullptr is returned.
+     * Returns a reference to a component at the given @p index.  @p index must
+     * be in the range [0, #components).
      *
      * @overload
      *
-     * @param index The index of the Component to return (zero-based).
+     * @param index The index of the Component to return.
      *
      * @return The Component at the given @p index on success, @c nullptr on failure.
      */
@@ -329,12 +338,11 @@ public:
      * @brief Take the component at the given @p index and return it.
      *
      * Removes the component at the given @p index position and returns it.
-     * If an invalid @p index is passed to the method a @c std::out_of_range
-     * exception is thrown.
+     * @p index must be in the range [0, #components).
      *
-     * @param index The index of the Component to take (zero-based).
+     * @param index The index of the Component to take.
      *
-     * @return The Component at the given @p index.
+     * @return The Component at the given @p index, @c nullptr on failure.
      */
     ComponentPtr takeComponent(size_t index);
 
@@ -343,8 +351,7 @@ public:
      *
      * Takes the component with the given @p name and returns it. If @p searchEncapsulated
      * is @c true (default) this will also search for the named component through this component's
-     * encapsulated components. If an invalid @p name is passed to the method a @c std::out_of_range
-     * exception is thrown.
+     * encapsulated components.
      *
      * @overload
      *
@@ -352,20 +359,22 @@ public:
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the component with the specified @p name. Default value is @c true.
      *
-     * @return The Component identified with the given @p name.
+     * @return The Component identified with the given @p name, @c nullptr on failure.
      */
     ComponentPtr takeComponent(const std::string &name, bool searchEncapsulated=true);
 
     /**
      * @brief Replace a component at the given @p index.
      *
-     * Replaces the component at the @p index with component @p c. @p index must be a
-     * valid index position.
+     * Replaces the component at the @p index with component @p c. @p index must be in
+     * the range [0, #components).
      *
-     * @param index Index of the Component to replace (zero-based).
+     * @param index Index of the Component to replace.
      * @param c The component to be used as a replacement.
+     *
+     * @return True if the component was replaced, false otherwise.
      */
-    void replaceComponent(size_t index, const ComponentPtr &c);
+    bool replaceComponent(size_t index, const ComponentPtr &c);
 
     /**
      * @brief Replace a component with the given @p name.
@@ -381,8 +390,10 @@ public:
      * @param c The Component to use for replacement.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the component with the specified @p name. Default value is @c true.
+     *
+     * @return True if the component was replaced, false otherwise.
      */
-    void replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
+    bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
 
     /**
      * @brief Get the number of components in the component.

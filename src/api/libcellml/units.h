@@ -259,7 +259,8 @@ public:
      * @brief Get the @c unit attributes at the given @p index of this units.
      *
      * Get the attributes for the @c unit at the index @p index of this units. If
-     * no attributes are set, default attribute values will be returned.
+     * no attributes are set, default attribute values will be returned. The index must
+     * be in the range [0, #unit).
      *
      * @param index The index of the @c unit in this units to get attributes for.
      * @param reference The @c std::string reference for this @c unit. Defaults to empty string.
@@ -268,27 +269,80 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param offset The offset for this @c unit. Defaults to 0.0.
      */
-    void getUnit(size_t index, std::string& reference, std::string &prefix, double &exponent, double &multiplier, double &offset) const;
+    void getUnitAttributes(size_t index, std::string& reference, std::string &prefix, double &exponent,
+                           double &multiplier, double &offset) const;
+
+    /**
+     * @brief Get the @c unit attributes for the given @p reference.
+     *
+     * Get the attributes for the first @c unit that matches the reference @p reference. If
+     * no attributes are set, default attribute values will be returned.
+     *
+     * @overload
+     *
+     * @param reference The @c std::string reference for the @c unit attributes to get.
+     * @param prefix The prefix for this @c unit. Defaults to empty string.
+     * @param exponent The exponent for this @c unit. Defaults to 1.0.
+     * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
+     * @param offset The offset for this @c unit. Defaults to 0.0.
+     */
+    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier,
+                           double &offset) const;
+
+    /**
+     * @brief Get the @c unit attributes for the given @p standardRef.
+     *
+     * Get the attributes for the first @c unit that matches the reference @p standardRef. If
+     * no attributes are set, default attribute values will be returned.
+     *
+     * @overload
+     *
+     * @param standardRef The @c StandardUnit enum unit reference attributes to get.
+     * @param prefix The prefix for this @c unit. Defaults to empty string.
+     * @param exponent The exponent for this @c unit. Defaults to 1.0.
+     * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
+     * @param offset The offset for this @c unit. Defaults to 0.0.
+     */
+    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier,
+                           double &offset) const;
+
+    /**
+     * @brief Remove the unit at the given @p index.
+     *
+     * Removes the unit at the given @p index position.
+     * @p index must be in the range [0, #unit).
+     *
+     * @param index The index of the unit to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
+     */
+    bool removeUnit(size_t index);
 
     /**
      * @brief Remove the unit with the given reference.
      *
      * Remove the first unit found that matches the @c std::string reference @p reference.
-     * If the @p reference is not found throw @c std::out_of_range.
      *
-     * @param reference The @c std::string units reference to remove.
+     * @overload
+     *
+     * @param reference The @c std::string unit reference of the unit to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnit(const std::string &reference);
+    bool removeUnit(const std::string &reference);
 
     /**
      * @brief Remove the unit with the given reference.
      *
      * Remove the first unit found that matches @c StandardUnit enum reference @p reference.
-     * If the @p reference is not found throw @c std::out_of_range.
      *
-     * @param reference The @c StandardUnit enum units reference to remove.
+     * @overload
+     *
+     * @param standardRef The @c StandardUnit enum unit reference of the unit to remove.
+     *
+     * @return True if the units were replaced, false otherwise.
      */
-    void removeUnit(StandardUnit standardRef);
+    bool removeUnit(StandardUnit standardRef);
 
     /**
      * @brief Remove all units stored in this units object.

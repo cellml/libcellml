@@ -40,6 +40,17 @@ namespace libcellml {
 bool convertToDouble(const std::string &candidate, double *value=nullptr);
 
 /**
+ * @brief Convert a @c double to @c std::string format.
+ *
+ * Convert the @p value to @c std::string representation.
+ *
+ * @param value The @c double value number to convert.
+ *
+ * @return @c std::string representation of the @p value.
+ */
+std::string convertDoubleToString(double value);
+
+/**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.
  *
  * If the @p input @c std::string has any non-whitespace characters, return
@@ -50,6 +61,5 @@ bool convertToDouble(const std::string &candidate, double *value=nullptr);
  * @return @c true if @p input contains non-whitespace characters and @c false otherwise.
  */
 bool hasNonWhitespaceCharacters(const std::string &input);
-
 
 }

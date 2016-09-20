@@ -86,7 +86,7 @@ std::string Entity::getId() const
 }
 
 void *Entity::getParent() const {
-    void *parent = 0;
+    void *parent = nullptr;
     if (mPimpl->mParentComponent) {
         parent = mPimpl->mParentComponent;
     } else if (mPimpl->mParentModel) {

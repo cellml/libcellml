@@ -761,7 +761,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             mapVariablesFound = true;
 
         } else if (childNode->isType("text")) {
-            std::string textNode = childNode->convertToString();
+            const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
@@ -954,7 +954,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 mParser->addError(err);
             }
         } else if (parentComponentNode->isType("text")) {
-            std::string textNode = parentComponentNode->convertToString();
+            const std::string textNode = parentComponentNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
@@ -1005,7 +1005,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 XmlAttributePtr attribute = childComponentNode->getFirstAttribute();
                 while (attribute) {
                     if (attribute->isType("component")) {
-                        std::string childComponentName = attribute->getValue();
+                        const std::string childComponentName = attribute->getValue();
                         if (model->containsComponent(childComponentName)) {
                             childComponent = model->getComponent(childComponentName);
                             foundChildComponent = true;
@@ -1051,7 +1051,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 }
 
             } else if (childComponentNode->isType("text")) {
-                std::string textNode = childComponentNode->convertToString();
+                const std::string textNode = childComponentNode->convertToString();
                 // Ignore whitespace when parsing.
                 if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
@@ -1172,7 +1172,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                 model->addUnits(importedUnits);
             }
         } else if (childNode->isType("text")) {
-            std::string textNode = childNode->convertToString();
+            const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
