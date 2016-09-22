@@ -48,7 +48,9 @@ public:
      *
      * @return The @c std::string representation of the model.
      */
-    std::string printModel(ModelPtr model);
+    std::string printModel(ModelPtr model) const;
+
+    std::string printUnits(UnitsPtr units) const;
 
 private:
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
