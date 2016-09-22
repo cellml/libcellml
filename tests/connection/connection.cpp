@@ -516,10 +516,10 @@ TEST(Connection, removeEquivalentVariableMethods) {
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
 
-    libcellml::Variable::removeEquivalence(v2, v3);
+    EXPECT_TRUE(libcellml::Variable::removeEquivalence(v2, v3));
     a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e2, a);
-    libcellml::Variable::removeEquivalence(v3, v4);
+    EXPECT_FALSE(libcellml::Variable::removeEquivalence(v3, v4));
 
     v1->removeAllEquivalences();
     a = m.serialise(libcellml::Format::XML);

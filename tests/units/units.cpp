@@ -396,7 +396,7 @@ TEST(Units, farhenheit) {
     EXPECT_EQ("fahrenheit", u->getName());
 }
 
-TEST(Units, getUnit) {
+TEST(Units, getUnitAttributes) {
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();

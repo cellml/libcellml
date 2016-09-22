@@ -73,8 +73,10 @@ struct Variable::VariableImpl
      *
      * @param equivalentVariable The variable to remove from this variable's equivalent
      * variable set if it is present.
+     *
+     * @return True if the @p equivalentVariable is removed from set of equivalent variables, false otherwise.
      */
-    void unsetEquivalentTo(const VariablePtr &equivalentVariable);
+    bool unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
@@ -143,10 +145,12 @@ void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &v
     variable2->mPimpl->setEquivalentTo(variable1);
 }
 
-void Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
+bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    variable1->mPimpl->unsetEquivalentTo(variable2);
-    variable2->mPimpl->unsetEquivalentTo(variable1);
+    bool equivalence_1 = variable1->mPimpl->unsetEquivalentTo(variable2);
+    bool equivalence_2 = variable2->mPimpl->unsetEquivalentTo(variable1);
+
+    return equivalence_1 && equivalence_2;
 }
 
 void Variable::removeAllEquivalences()
@@ -188,12 +192,16 @@ void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariab
     }
 }
 
-void Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
+bool Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVariable)
 {
+    bool status = false;
     auto result = findEquivalentVariable(equivalentVariable);
     if (result != mEquivalentVariables.end()) {
         mEquivalentVariables.erase(result);
+        status = true;
     }
+
+    return status;
 }
 
 std::string Variable::doSerialisation(Format format) const

@@ -218,11 +218,11 @@ TEST(Model, removeComponent) {
     m.addComponent(c2);
 
     EXPECT_EQ(2, m.componentCount());
-    m.removeComponent(0);
+    EXPECT_TRUE(m.removeComponent(0));
     EXPECT_EQ(1, m.componentCount());
     std::string a = m.serialise(libcellml::Format::XML);
     EXPECT_EQ(e1, a);
-    m.removeComponent(1);
+    EXPECT_FALSE(m.removeComponent(1));
 
     m.addComponent(c1);
     m.addComponent(c1);
