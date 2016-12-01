@@ -37,7 +37,9 @@ TEST(Model, printEmptyModelAllocatePointer) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::Model* m = new libcellml::Model();
-    std::string a = m->serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
 
     EXPECT_EQ(e, a);
     delete m;
@@ -46,14 +48,18 @@ TEST(Model, printEmptyModelAllocatePointer) {
 TEST(Printer, printEmptyUnits) {
     const std::string e = "";
     libcellml::Units u;
-    std::string a = u.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printUnits(u);
     EXPECT_EQ(e, a);
 }
 
 TEST(Printer, printEmptyVariable) {
     const std::string e = "<variable/>";
     libcellml::Variable v;
-    std::string a = v.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -70,9 +76,11 @@ TEST(Printer, printEncapsulation) {
     libcellml::Component parent;
     libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
     parent.addComponent(child);
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = child->serialise(libcellml::Format::XML);
+    std::string a_child = printer.printComponent(child);
     EXPECT_EQ(e_child, a_child);
 }
 
@@ -91,9 +99,11 @@ TEST(Printer, printEncapsulationWithNames) {
     libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
     child->setName("child_component");
     parent.addComponent(child);
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = child->serialise(libcellml::Format::XML);
+    std::string a_child = printer.printComponent(child);
     EXPECT_EQ(e_child, a_child);
 }
 

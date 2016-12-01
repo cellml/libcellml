@@ -37,7 +37,9 @@ TEST(Model, name) {
 
     EXPECT_EQ("name", m.getName());
 
-    EXPECT_EQ(e, m.serialise(libcellml::Format::XML));
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Model, unsetName) {
@@ -52,11 +54,15 @@ TEST(Model, unsetName) {
     libcellml::Model m;
     m.setName(n);
     EXPECT_EQ("name", m.getName());
-    EXPECT_EQ(eName, m.serialise(libcellml::Format::XML));
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(eName, a);
 
     m.setName("");
     EXPECT_EQ("", m.getName());
-    EXPECT_EQ(e, m.serialise(libcellml::Format::XML));
+    a = printer.printModel(m);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Model, invalidName) {
@@ -70,7 +76,9 @@ TEST(Model, invalidName) {
 
     EXPECT_EQ("invalid name", m.getName());
 
-    EXPECT_EQ(e, m.serialise(libcellml::Format::XML));
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Model, addComponent) {
@@ -83,8 +91,9 @@ TEST(Model, addComponent) {
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::Format::XML);
 
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -100,8 +109,9 @@ TEST(Model, addValidNamedComponent) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::Format::XML);
 
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -117,8 +127,9 @@ TEST(Model, addInvalidNamedComponent) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     c->setName(in);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::Format::XML);
 
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -141,8 +152,9 @@ TEST(Model, addTwoNamedComponents) {
     // once the component is added, we should be able to change the handle to the component and have those changes
     // reflected in the model? Yes we are using shared pointers.
     c2->setName(name2); // so should this give an error? Nope
-    std::string a = m.serialise(libcellml::Format::XML);
 
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -199,7 +211,9 @@ TEST(Model, removeComponent) {
     EXPECT_EQ(2, m.componentCount());
     EXPECT_TRUE(m.removeComponent(0));
     EXPECT_EQ(1, m.componentCount());
-    std::string a = m.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
     EXPECT_FALSE(m.removeComponent(1));
 
@@ -209,7 +223,7 @@ TEST(Model, removeComponent) {
     // Remove the first occurence of "child1".
     EXPECT_TRUE(m.removeComponent("child1"));
     EXPECT_EQ(2, m.componentCount());
-    a = m.serialise(libcellml::Format::XML);
+    a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change to model.
@@ -232,7 +246,8 @@ TEST(Model, getComponentMethods) {
     libcellml::ComponentPtr cA = m.getComponent(0);
     cA->setName("childA");
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Using const version of overloaded method
@@ -269,7 +284,9 @@ TEST(Model, takeComponentMethods) {
     EXPECT_EQ(0, m.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
-    std::string a = m.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Expect no change.
@@ -387,7 +404,8 @@ TEST(Model, replaceComponent) {
     m.addComponent(c1);
     m.addComponent(c2);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e_orig, a);
 
     // Attempt to replace non-existent component.
@@ -396,7 +414,7 @@ TEST(Model, replaceComponent) {
     // Replace existing component.
     EXPECT_TRUE(m.replaceComponent(1, c3));
 
-    a = m.serialise(libcellml::Format::XML);
+    a = printer.printModel(m);
     EXPECT_EQ(e_after, a);
 
     // Nothing happens when trying to replace a component that doesn't match
@@ -405,22 +423,24 @@ TEST(Model, replaceComponent) {
 
     EXPECT_TRUE(m.replaceComponent("child1", c4));
 
-    a = m.serialise(libcellml::Format::XML);
+    a = printer.printModel(m);
     EXPECT_EQ(e_post, a);
 }
 
 TEST(Model, constructors) {
-    const std::string n = "my_name";
-    libcellml::Model m, m1, m2;
-    m.setName(n);
-    m.addComponent(std::make_shared<libcellml::Component>());
-    std::string a = m.serialise(libcellml::Format::XML);
-
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\">"
                 "<component/>"
             "</model>";
+    const std::string n = "my_name";
+
+    libcellml::Model m, m1, m2;
+    m.setName(n);
+    m.addComponent(std::make_shared<libcellml::Component>());
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
 
     EXPECT_EQ(e, a);
 
@@ -503,6 +523,7 @@ TEST(Model, setAndCheckIdsAllEntities) {
     m.addComponent(c1);
     m.addComponent(c2);
 
-    std::string actual = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string actual = printer.printModel(m);
     EXPECT_EQ(expected, actual);
 }

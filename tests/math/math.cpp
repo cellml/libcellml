@@ -35,7 +35,9 @@ TEST(Maths, appendAndSerialiseMathComponent) {
 
     libcellml::Component c;
     c.appendMath(math);
-    std::string a = c.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -47,7 +49,9 @@ TEST(Maths, appendAndResetMathComponent) {
     libcellml::Component c;
     c.appendMath(math);
     c.setMath("");
-    std::string a = c.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -66,13 +70,15 @@ TEST(Maths, appendSerialiseAndParseMathModel) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
     c->appendMath(math);
-    std::string a = m.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
-    a = model->serialise(libcellml::Format::XML);
+    a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -102,7 +108,9 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     c->appendMath(math);
     c->appendMath(math);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -132,7 +140,9 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     c->addVariable(v2);
     c->appendMath(math);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -184,7 +194,9 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
     c->addVariable(v2);
     c->appendMath(math);
     m.addComponent(c);
-    std::string a = m.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -280,12 +292,13 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse) {
     m.addComponent(comp2);
     libcellml::Variable::addEquivalence(v11, v21);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
-    a = model->serialise(libcellml::Format::XML);
+    a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }

@@ -44,7 +44,9 @@ TEST(ComponentImport, basics) {
     EXPECT_EQ(c->getImport(), imp);
     EXPECT_EQ(c->getImportReference(), "bob");
 
-    EXPECT_EQ(e, c->serialise(libcellml::Format::XML));
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printComponent(c);
+    EXPECT_EQ(e, a);
 }
 
 TEST(ComponentImport, singleImportA) {
@@ -71,9 +73,9 @@ TEST(ComponentImport, singleImportA) {
 
     m.addComponent(importedComponent);
 
-    std::string a = m.serialise(libcellml::Format::XML);
-
-   EXPECT_EQ(e, a);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(e, a);
 }
 
 TEST(ComponentImport, singleImportB) {
@@ -95,8 +97,8 @@ TEST(ComponentImport, singleImportB) {
     importedComponent->setImportReference("a_component_in_that_model");
     m.addComponent(importedComponent);
 
-    std::string a = m.serialise(libcellml::Format::XML);
-
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -124,15 +126,15 @@ TEST(ComponentImport, nonExistentURLAndParse) {
 
     m.addComponent(importedComponent);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
+    EXPECT_EQ(e, a);
 
-   EXPECT_EQ(e, a);
-
-   // Parse
-   libcellml::Parser parser(libcellml::Format::XML);
-   libcellml::ModelPtr model = parser.parseModel(e);
-   a = model->serialise(libcellml::Format::XML);
-   EXPECT_EQ(e, a);
+    // Parse
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(e);
+    a = printer.printModel(model);
+    EXPECT_EQ(e, a);
 }
 
 TEST(ComponentImport, multipleImportAndParse) {
@@ -180,14 +182,14 @@ TEST(ComponentImport, multipleImportAndParse) {
     c3->setSourceComponent(imp2, "cc1");
     m.addComponent(c3);
 
-    std::string a = m.serialise(libcellml::Format::XML);
-
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_TRUE((e1 == a) || (e2 == a));
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e2);
-    a = model->serialise(libcellml::Format::XML);
+    a = printer.printModel(model);
     EXPECT_TRUE((e1 == a) || (e2 == a));
 }
 
@@ -232,14 +234,14 @@ TEST(ComponentImport, hierarchicalImportAndParse) {
 
     bob->addComponent(i1);
 
-    std::string a = m.serialise(libcellml::Format::XML);
-
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
-    a = model->serialise(libcellml::Format::XML);
+    a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -290,14 +292,14 @@ TEST(ComponentImport, complexImportAndParse) {
     angus->setName("angus");
     bob->addComponent(angus);
 
-    std::string a = m.serialise(libcellml::Format::XML);
-
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
-    a = model->serialise(libcellml::Format::XML);
+    a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 

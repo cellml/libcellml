@@ -138,6 +138,11 @@ std::string Printer::printUnits(UnitsPtr units) const
     return repr;
 }
 
+std::string Printer::printUnits(Units units) const
+{
+    return printUnits(std::shared_ptr<Units>(std::shared_ptr<Units>{}, &units));
+}
+
 std::string Printer::printComponent(ComponentPtr component) const
 {
     std::string repr = "";
@@ -173,6 +178,11 @@ std::string Printer::printComponent(ComponentPtr component) const
     return repr;
 }
 
+std::string Printer::printComponent(Component component) const
+{
+    return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+}
+
 std::string Printer::printVariable(VariablePtr variable) const
 {
     std::string repr = "";
@@ -201,6 +211,11 @@ std::string Printer::printVariable(VariablePtr variable) const
         repr += "/>";
     }
     return repr;
+}
+
+std::string Printer::printVariable(Variable variable) const
+{
+    return printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable>{}, &variable));
 }
 
 std::string Printer::printModel(ModelPtr model) const

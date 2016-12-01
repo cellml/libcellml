@@ -56,9 +56,15 @@ public:
 
     std::string printUnits(UnitsPtr units) const;
 
+    std::string printUnits(Units units) const;
+
     std::string printVariable(VariablePtr variable) const;
 
+    std::string printVariable(Variable variable) const;
+
     std::string printComponent(ComponentPtr component) const;
+
+    std::string printComponent(Component component) const;
 
 private:
     std::string printEncapsulation(ComponentPtr component) const;
