@@ -23,6 +23,30 @@ limitations under the License.
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
  */
+TEST(Coverage, import) {
+    std::string e = "";
+    libcellml::Import i, im;
+
+    im = std::move(i);
+
+    // Copy constructor
+    libcellml::Import ic(im);
+
+    const std::string a = ic.getId();
+    EXPECT_EQ(e, a);
+}
+
+TEST(Coverage, printer) {
+    libcellml::Printer p(libcellml::Format::XML), pm(libcellml::Format::XML);
+
+    pm = std::move(p);
+
+    // Copy constructor
+    libcellml::Printer pc(pm);
+
+    size_t error_count = pc.errorCount();
+    EXPECT_EQ(0, error_count);
+}
 
 TEST(Coverage, units) {
     std::string e = "<units name=\"dimensionless\" base_unit=\"yes\"/>";
