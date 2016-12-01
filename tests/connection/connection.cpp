@@ -96,7 +96,7 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     libcellml::Variable::addEquivalence(v1, v2);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -131,7 +131,7 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
     libcellml::Variable::addEquivalence(v1, v2);
     m.removeComponent("component1");
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -219,7 +219,7 @@ TEST(Connection, twoMapVariablesConnection) {
     libcellml::Variable::addEquivalence(v12, v22);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -279,7 +279,7 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
     libcellml::Variable::addEquivalence(v13, v23);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -430,7 +430,7 @@ TEST(Connection, twoValidConnections) {
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v1, v3);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -777,7 +777,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -838,7 +838,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -930,6 +930,6 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
     EXPECT_EQ(0, parser.errorCount());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }

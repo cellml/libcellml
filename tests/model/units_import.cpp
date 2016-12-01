@@ -36,7 +36,7 @@ TEST(UnitsImport, basics) {
     EXPECT_EQ(u->getImportReference(), "bob");
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printUnits(u);
+    const std::string a = printer.printUnits(u);
     EXPECT_EQ(e, a);
 }
 
@@ -69,7 +69,7 @@ TEST(UnitsImport, importValidName) {
     m.addUnits(importedUnits);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -98,7 +98,7 @@ TEST(UnitsImport, importInvalidName) {
     m.addUnits(importedUnits);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -127,7 +127,7 @@ TEST(UnitsImport, nonExistentURL) {
     m.addUnits(importedUnits);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 

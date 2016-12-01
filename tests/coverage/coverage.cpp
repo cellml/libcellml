@@ -37,7 +37,7 @@ TEST(Coverage, units) {
     libcellml::Units uc(um);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printUnits(uc);
+    const std::string a = printer.printUnits(uc);
     EXPECT_EQ(e, a);
 }
 
@@ -120,7 +120,7 @@ TEST(Coverage, prefixToString) {
 
         m.addUnits(u);
 
-        std::string a = printer.printModel(m);
+        const std::string a = printer.printModel(m);
         std::size_t found = a.find(prefix);
         EXPECT_NE(std::string::npos, found);
         m.removeAllUnits();
@@ -143,7 +143,7 @@ TEST(Coverage, variable) {
     libcellml::Variable vc(vm);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(vc);
+    const std::string a = printer.printVariable(vc);
     EXPECT_EQ(e, a);
 }
 

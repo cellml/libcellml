@@ -25,7 +25,7 @@ TEST(Variable, setValidVariableName) {
     libcellml::Variable v;
     v.setName(in);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -35,7 +35,7 @@ TEST(Variable, setInvalidVariableName) {
     libcellml::Variable v;
     v.setName(in);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -44,7 +44,7 @@ TEST(Variable, getValidVariableName) {
     const std::string e = in;
     libcellml::Variable v;
     v.setName(in);
-    std::string a = v.getName();
+    const std::string a = v.getName();
     EXPECT_EQ(e, a);
 }
 
@@ -53,7 +53,7 @@ TEST(Variable, getInvalidVariableName) {
     const std::string e = in;
     libcellml::Variable v;
     v.setName(in);
-    std::string a = v.getName();
+    const std::string a = v.getName();
     EXPECT_EQ(e, a);
 }
 
@@ -67,7 +67,7 @@ TEST(Variable, setUnits) {
     v.setUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -82,7 +82,7 @@ TEST(Variable, setUnitsAndName) {
     v.setUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -91,7 +91,7 @@ TEST(Variable, setInitialValueByString) {
     libcellml::Variable v;
     v.setInitialValue("0.0");
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -101,7 +101,7 @@ TEST(Variable, setInitialValueByDouble) {
     double value = 0.0;
     v.setInitialValue(value);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -112,7 +112,7 @@ TEST(Variable, setInitialValueByReference) {
     libcellml::Variable v2;
     v2.setInitialValue(v1);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v2);
+    const std::string a = printer.printVariable(v2);
     EXPECT_EQ(e, a);
 }
 
@@ -125,7 +125,7 @@ TEST(Variable, getSetInitialValue) {
     libcellml::Variable v;
     std::string e = "0.0";
     v.setInitialValue(e);
-    std::string a = v.getInitialValue();
+    const std::string a = v.getInitialValue();
     EXPECT_EQ(e, a);
 }
 
@@ -134,7 +134,7 @@ TEST(Variable, setInterfaceTypeByInvalidString) {
     libcellml::Variable v;
     v.setInterfaceType("invalid");
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -143,7 +143,7 @@ TEST(Variable, setInterfaceTypeNoneByValidString) {
     libcellml::Variable v;
     v.setInterfaceType("none");
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -152,7 +152,7 @@ TEST(Variable, setInterfaceTypeNoneByEnum) {
     libcellml::Variable v;
     v.setInterfaceType(libcellml::Variable::InterfaceType::NONE);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -161,7 +161,7 @@ TEST(Variable, setInterfaceTypePrivate) {
     libcellml::Variable v;
     v.setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -170,7 +170,7 @@ TEST(Variable, setInterfaceTypePublic) {
     libcellml::Variable v;
     v.setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -179,7 +179,7 @@ TEST(Variable, setInterfaceTypePublicAndPrivate) {
     libcellml::Variable v;
     v.setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 
@@ -227,7 +227,7 @@ TEST(Variable, addVariable) {
     v->setUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -257,7 +257,7 @@ TEST(Variable, addVariableToUnnamedComponent) {
     c.addVariable(v);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -281,7 +281,7 @@ TEST(Variable, addTwoVariables) {
     c.addVariable(v2);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -314,7 +314,7 @@ TEST(Variable, addVariablesWithAndWithoutNameAndUnits) {
     v3->setUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -338,7 +338,7 @@ TEST(Variable, componentWithTwoVariablesWithInitialValues) {
     c.addVariable(v2);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -454,7 +454,7 @@ TEST(Variable, modelWithComponentWithVariableWithValidName) {
     v->setUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", v->getName());
 }
@@ -484,7 +484,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
     v->setUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", v->getName());
 }
@@ -553,7 +553,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
     c->addVariable(v2);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -585,7 +585,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesOneRefere
     c->addVariable(v2);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -619,7 +619,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse)
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -662,7 +662,7 @@ TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfaces) {
     c->addVariable(v4);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -707,6 +707,6 @@ TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfacesAndParse) {
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }

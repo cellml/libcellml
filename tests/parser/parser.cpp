@@ -59,7 +59,7 @@ TEST(Parser, parse) {
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -74,7 +74,7 @@ TEST(Parser, parseNamedModel) {
     EXPECT_EQ(n, model->getName());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -226,7 +226,7 @@ TEST(Parser, parseNamedModelWithNamedComponent) {
     EXPECT_EQ(cName, c->getName());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -246,7 +246,7 @@ TEST(Parser, parseModelWithNamedComponentWithUnits) {
     libcellml::ModelPtr model = parser.parseModel(e);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -279,7 +279,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAndGetError) {
     libcellml::ModelPtr model = parser.parseModel(in);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
     EXPECT_EQ(1, parser.errorCount());
     EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
@@ -455,7 +455,7 @@ TEST(Parser, parseModelWithTwoComponents) {
     libcellml::ModelPtr model = parser.parseModel(e);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -479,7 +479,7 @@ TEST(Parser, parseModelWithComponentHierarchyWaterfall) {
     libcellml::ModelPtr model = parser.parseModel(e);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -513,7 +513,7 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
     libcellml::ModelPtr model = parser.parseModel(e);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -544,7 +544,7 @@ TEST(Parser, modelWithNamedComponentWithUnits) {
     libcellml::ModelPtr model = parser.parseModel(in);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -603,7 +603,7 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
     }
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
@@ -1121,7 +1121,7 @@ TEST(Parser, component2InConnectionMissing) {
     EXPECT_EQ(2, p.errorCount());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
@@ -1242,7 +1242,7 @@ TEST(Parser, invalidImportsAndGetError) {
     EXPECT_EQ(expectError4, p.getError(3)->getDescription());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(output, a);
 
     libcellml::ImportPtr import = m->getUnits("units_in_this_model")->getImport();

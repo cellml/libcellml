@@ -43,7 +43,7 @@ TEST(Units, validName) {
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", u->getName());
 }
@@ -64,7 +64,7 @@ TEST(Units, invalidName) {
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
 }
@@ -92,7 +92,7 @@ TEST(Units, compoundUnitsRaw) {
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -119,7 +119,7 @@ TEST(Units, compoundUnitsUsingDefines) {
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -148,7 +148,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -349,7 +349,7 @@ TEST(Units, multiply) {
     m.addUnits(u3);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -369,7 +369,7 @@ TEST(Units, newBaseUnit) {
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->getName());
 }
@@ -393,7 +393,7 @@ TEST(Units, farhenheit) {
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("fahrenheit", u->getName());
 }

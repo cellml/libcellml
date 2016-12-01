@@ -27,7 +27,7 @@ TEST(Printer, printEmptyModel) {
 
     libcellml::Printer p(libcellml::Format::XML);
 
-    std::string a = p.printModel(m);
+    const std::string a = p.printModel(m);
 
     EXPECT_EQ(e, a);
 }
@@ -39,7 +39,7 @@ TEST(Model, printEmptyModelAllocatePointer) {
     libcellml::Model* m = new libcellml::Model();
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
 
     EXPECT_EQ(e, a);
     delete m;
@@ -50,7 +50,7 @@ TEST(Printer, printEmptyUnits) {
     libcellml::Units u;
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printUnits(u);
+    const std::string a = printer.printUnits(u);
     EXPECT_EQ(e, a);
 }
 
@@ -59,7 +59,7 @@ TEST(Printer, printEmptyVariable) {
     libcellml::Variable v;
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printVariable(v);
+    const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
 

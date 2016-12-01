@@ -26,7 +26,7 @@ TEST(Component, validName) {
     c.setName(in);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", c.getName());
 }
@@ -38,7 +38,7 @@ TEST(Component, invalidName) {
     c.setName(in);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name -", c.getName());
 }
@@ -309,7 +309,7 @@ TEST(Component, takeComponentMethods) {
     EXPECT_EQ("child1", c01->getName());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -393,7 +393,7 @@ TEST(Component, constructors) {
     c.addComponent(std::make_shared<libcellml::Component>());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 
     // Testing assignment for component

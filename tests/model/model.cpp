@@ -38,7 +38,7 @@ TEST(Model, name) {
     EXPECT_EQ("name", m.getName());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -77,7 +77,7 @@ TEST(Model, invalidName) {
     EXPECT_EQ("invalid name", m.getName());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -93,7 +93,7 @@ TEST(Model, addComponent) {
     m.addComponent(c);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -111,7 +111,7 @@ TEST(Model, addValidNamedComponent) {
     m.addComponent(c);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -129,7 +129,7 @@ TEST(Model, addInvalidNamedComponent) {
     m.addComponent(c);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -154,7 +154,7 @@ TEST(Model, addTwoNamedComponents) {
     c2->setName(name2); // so should this give an error? Nope
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -247,7 +247,7 @@ TEST(Model, getComponentMethods) {
     cA->setName("childA");
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Using const version of overloaded method
@@ -286,7 +286,7 @@ TEST(Model, takeComponentMethods) {
     EXPECT_EQ("child1", c01->getName());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Expect no change.
@@ -440,7 +440,7 @@ TEST(Model, constructors) {
     m.addComponent(std::make_shared<libcellml::Component>());
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
 
     EXPECT_EQ(e, a);
 

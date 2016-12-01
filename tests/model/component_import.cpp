@@ -45,7 +45,7 @@ TEST(ComponentImport, basics) {
     EXPECT_EQ(c->getImportReference(), "bob");
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -74,7 +74,7 @@ TEST(ComponentImport, singleImportA) {
     m.addComponent(importedComponent);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -98,7 +98,7 @@ TEST(ComponentImport, singleImportB) {
     m.addComponent(importedComponent);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 

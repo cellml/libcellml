@@ -37,7 +37,7 @@ TEST(Maths, appendAndSerialiseMathComponent) {
     c.appendMath(math);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -51,7 +51,7 @@ TEST(Maths, appendAndResetMathComponent) {
     c.setMath("");
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printComponent(c);
+    const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
 
@@ -110,7 +110,7 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     m.addComponent(c);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -142,7 +142,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     m.addComponent(c);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -196,7 +196,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
     m.addComponent(c);
 
     libcellml::Printer printer(libcellml::Format::XML);
-    std::string a = printer.printModel(m);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
