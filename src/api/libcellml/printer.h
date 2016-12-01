@@ -50,23 +50,114 @@ public:
      */
     std::string printModel(ModelPtr model) const;
 
+    /**
+     * @brief Serialise the model to @c std::string.
+     *
+     * Serialise the given @p model to a std::string.
+     *
+     * @overload
+     *
+     * @param model The model to serialise.
+     *
+     * @return The @c std::string representation of the model.
+     */
     std::string printModel(Model model) const;
 
+    /**
+     * @brief Serialise the model to @c std::string.
+     *
+     * Serialise the given @p model to a std::string.
+     *
+     * @overload
+     *
+     * @param model The model to serialise.
+     *
+     * @return The @c std::string representation of the model.
+     */
     std::string printModel(Model *model) const;
 
+    /**
+     * @brief Serialise the units to @c std::string.
+     *
+     * Serialise the given @p units to a std::string.
+     *
+     * @param units The units to serialise.
+     *
+     * @return The @c std::string representation of the units.
+     */
     std::string printUnits(UnitsPtr units) const;
 
+    /**
+     * @brief Serialise the units to @c std::string.
+     *
+     * Serialise the given @p units to a std::string.
+     *
+     * @overload
+     *
+     * @param units The units to serialise.
+     *
+     * @return The @c std::string representation of the units.
+     */
     std::string printUnits(Units units) const;
 
+    /**
+     * @brief Serialise the variable to @c std::string.
+     *
+     * Serialise the given @p variable to a std::string.
+     *
+     * @param variable The variable to serialise.
+     *
+     * @return The @c std::string representation of the variable.
+     */
     std::string printVariable(VariablePtr variable) const;
 
+    /**
+     * @brief Serialise the variable to @c std::string.
+     *
+     * Serialise the given @p variable to a std::string.
+     *
+     * @overload
+     *
+     * @param variable The variable to serialise.
+     *
+     * @return The @c std::string representation of the variable.
+     */
     std::string printVariable(Variable variable) const;
 
+    /**
+     * @brief Serialise the component to @c std::string.
+     *
+     * Serialise the given @p component to a std::string.
+     *
+     * @param component The component to serialise.
+     *
+     * @return The @c std::string representation of the component.
+     */
     std::string printComponent(ComponentPtr component) const;
 
+    /**
+     * @brief Serialise the component to @c std::string.
+     *
+     * Serialise the given @p component to a std::string.
+     *
+     * @overload
+     *
+     * @param component The component to serialise.
+     *
+     * @return The @c std::string representation of the component.
+     */
     std::string printComponent(Component component) const;
 
 private:
+    /**
+     * @brief Serialise the component encapsulation to @c std::string.
+     *
+     * Serialise the given @p component encapsulation to a std::string.
+     *
+     * @param component The component encapsulation to serialise.
+     *
+     * @return The @c std::string representation of the component encapsulation.
+     */
     std::string printEncapsulation(ComponentPtr component) const;
 
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
