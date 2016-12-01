@@ -19,13 +19,6 @@ limitations under the License.
 #include <libcellml>
 
 
-TEST(Variable, serialise) {
-    const std::string e = "<variable/>";
-    libcellml::Variable v;
-    std::string a = v.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e, a);
-}
-
 TEST(Variable, setValidVariableName) {
     const std::string in = "valid_name";
     const std::string e = "<variable name=\"valid_name\"/>";

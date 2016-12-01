@@ -196,7 +196,6 @@ private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     void doAddComponent(const ComponentPtr &c);
-    std::string doSerialisation(Format format) const;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl *mPimpl; /**< Private member to implementation pointer */

@@ -191,38 +191,5 @@ bool Component::hasVariable(const std::string &name) const
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
 
-std::string Component::doSerialisation(Format format) const
-{
-    std::string repr = "";
-    if (format == Format::XML) {
-        if (isImport()) {
-            return repr;
-        }
-        repr += "<component";
-        std::string componentName = getName();
-        if (componentName.length()) {
-            repr += " name=\"" + componentName + "\"";
-        }
-        if (getId().length()) {
-            repr += " id=\"" + getId() + "\"";
-        }
-        if ((unitsCount() > 0) || (variableCount() > 0) || (getMath().length())) {
-            repr += ">";
-            for (size_t i = 0; i < unitsCount(); ++i) {
-                repr += getUnits(i)->serialise(format);
-            }
-            for (size_t i = 0; i < variableCount(); ++i) {
-                repr += getVariable(i)->serialise(format);
-            }
-            repr += getMath();
-            repr += "</component>";
-        } else {
-            repr += "/>";
-        }
-        repr += ComponentEntity::serialiseEncapsulation(format);
-    }
-    return repr;
-}
-
 }
 

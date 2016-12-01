@@ -416,24 +416,6 @@ protected:
      */
     virtual void doAddComponent(const ComponentPtr &c);
 
-    /**
-     * @brief Protected units serialisation.
-     *
-     * @param format The format to serialise to.
-     *
-     * @return The string representation of the serialised units.
-     */
-    std::string serialiseUnits(Format format) const;
-
-    /**
-     * @brief Protected serialisation of encapsulated components.
-     *
-     * @param format The format to serialise to.
-     *
-     * @return the string representation of the serialised encapsulated components.
-     */
-    std::string serialiseEncapsulation(Format format) const;
-
 private:
 
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */

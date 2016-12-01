@@ -19,13 +19,6 @@ limitations under the License.
 #include <libcellml>
 
 
-TEST(Units, serialise) {
-    const std::string e = "";
-    libcellml::Units u;
-    std::string a = u.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e, a);
-}
-
 TEST(Units, validName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

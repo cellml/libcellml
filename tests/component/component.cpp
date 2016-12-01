@@ -19,13 +19,6 @@ limitations under the License.
 #include <libcellml>
 
 
-TEST(Component, serialise) {
-    const std::string e = "<component/>";
-    libcellml::Component c;
-    std::string a = c.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e, a);
-}
-
 TEST(Component, validName) {
     const std::string in = "valid_name";
     const std::string e = "<component name=\"" + in + "\"/>";

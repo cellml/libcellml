@@ -19,45 +19,7 @@ limitations under the License.
 #include <libcellml>
 
 #include <iostream>
-TEST(Encapsulation, serialise) {
-    const std::string e_parent =
-            "<component/>"
-            "<component/>"
-            "<encapsulation>"
-                "<component_ref>"
-                    "<component_ref/>"
-                "</component_ref>"
-            "</encapsulation>";
-    const std::string e_child = "<component/>";
-    libcellml::Component parent;
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
-    parent.addComponent(child);
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = child->serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_child, a_child);
-}
 
-TEST(Encapsulation, serialiseWithNames) {
-    const std::string e_parent =
-            "<component name=\"parent_component\"/>"
-            "<component name=\"child_component\"/>"
-            "<encapsulation>"
-                "<component_ref component=\"parent_component\">"
-                    "<component_ref component=\"child_component\"/>"
-                "</component_ref>"
-            "</encapsulation>";
-    const std::string e_child= "<component name=\"child_component\"/>";
-    libcellml::Component parent;
-    parent.setName("parent_component");
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
-    child->setName("child_component");
-    parent.addComponent(child);
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = child->serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_child, a_child);
-}
 
 TEST(Encapsulation, reparentComponent) {
     const std::string e_parent_1 =

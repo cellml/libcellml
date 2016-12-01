@@ -138,6 +138,71 @@ std::string Printer::printUnits(UnitsPtr units) const
     return repr;
 }
 
+std::string Printer::printComponent(ComponentPtr component) const
+{
+    std::string repr = "";
+    if (mPimpl->mFormat == Format::XML) {
+        if (component->isImport()) {
+            return repr;
+        }
+        repr += "<component";
+        std::string componentName = component->getName();
+        if (componentName.length()) {
+            repr += " name=\"" + componentName + "\"";
+        }
+        if (component->getId().length()) {
+            repr += " id=\"" + component->getId() + "\"";
+        }
+        size_t variable_count = component->variableCount();
+        size_t units_count = component->unitsCount();
+        if ((units_count > 0) || (variable_count > 0) || (component->getMath().length())) {
+            repr += ">";
+            for (size_t i = 0; i < units_count; ++i) {
+                repr += printUnits(component->getUnits(i));
+            }
+            for (size_t i = 0; i < variable_count; ++i) {
+                repr += printVariable(component->getVariable(i));
+            }
+            repr += component->getMath();
+            repr += "</component>";
+        } else {
+            repr += "/>";
+        }
+        repr += printEncapsulation(component);
+    }
+    return repr;
+}
+
+std::string Printer::printVariable(VariablePtr variable) const
+{
+    std::string repr = "";
+    if (mPimpl->mFormat == Format::XML) {
+        repr += "<variable";
+        std::string name = variable->getName();
+        std::string id = variable->getId();
+        std::string units = variable->getUnits();
+        std::string intial_value = variable->getInitialValue();
+        std::string interface_type = variable->getInterfaceType();
+        if (name.length()) {
+            repr += " name=\"" + name + "\"";
+        }
+        if (id.length()) {
+            repr += " id=\"" + id + "\"";
+        }
+        if (units.length()) {
+            repr += " units=\"" + units + "\"";
+        }
+        if (intial_value.length()) {
+            repr += " initial_value=\"" + intial_value + "\"";
+        }
+        if (interface_type.length()) {
+            repr += " interface=\"" + interface_type + "\"";
+        }
+        repr += "/>";
+    }
+    return repr;
+}
+
 std::string Printer::printModel(ModelPtr model) const
 {
     // ImportMap
@@ -248,7 +313,7 @@ std::string Printer::printModel(ModelPtr model) const
 
         // Serialise components of the model, imported components have already been dealt with at this point.
         for (size_t i = 0; i < model->componentCount(); ++i) {
-            repr += model->getComponent(i)->serialise(mPimpl->mFormat);
+            repr += printComponent(model->getComponent(i));
             // Build unique variable equivalence pairs (VariableMap) for connections.
             ComponentPtr component = model->getComponent(i);
             for (size_t j = 0; j < component->variableCount(); ++j) {
@@ -343,6 +408,63 @@ std::string Printer::printModel(ModelPtr model) const
         }
     }
 
+    return repr;
+}
+
+std::string Printer::printModel(Model model) const
+{
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, &model));
+}
+
+std::string Printer::printModel(Model *model) const
+{
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
+}
+
+std::string Printer::printEncapsulation(ComponentPtr component) const
+{
+    const std::string encaps_tag = "<encapsulation>";
+    const std::string encaps_end_tag = "</encapsulation>";
+    std::string repr = "";
+    if (mPimpl->mFormat == Format::XML) {
+        std::string componentName = component->getName();
+        std::string encaps = "";
+        size_t component_count = component->componentCount();
+        if (component_count) {
+            encaps += encaps_tag;
+            encaps += "<component_ref";
+            if (componentName.length()) {
+                encaps += " component=\"" + componentName + "\"";
+            }
+            encaps += ">";
+        }
+        for (size_t i = 0; i != component_count; ++i) {
+            ComponentPtr encapsulated_component = component->getComponent(i);
+            std::string comp = printComponent(encapsulated_component);
+            std::size_t found = comp.find(encaps_tag);
+            if (found == std::string::npos) {
+                encaps += "<component_ref";
+                if (encapsulated_component->getName().length()) {
+                    encaps += " component=\"" + encapsulated_component->getName() + "\"";
+                }
+                encaps += "/>";
+            } else {
+                std::string encaps_part = comp.substr(found);
+                comp = comp.substr(0, found);
+                found = encaps_part.find(encaps_tag);
+                encaps_part.replace(found, encaps_tag.length(), "");
+                found = encaps_part.find(encaps_end_tag);
+                encaps_part.replace(found, encaps_end_tag.length(), "");
+                encaps += encaps_part;
+            }
+            repr += comp;
+        }
+
+        if (component_count) {
+            encaps += "</component_ref>" + encaps_end_tag;
+        }
+        repr += encaps;
+    }
     return repr;
 }
 

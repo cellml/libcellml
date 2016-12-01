@@ -65,16 +65,6 @@ void Entity::swap(Entity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Entity::doSerialisation(Format /* format */) const
-{
-    return "";
-}
-
-std::string Entity::serialise(Format format) const
-{
-    return doSerialisation(format);
-}
-
 void Entity::setId(const std::string &id)
 {
     mPimpl->mId = id;

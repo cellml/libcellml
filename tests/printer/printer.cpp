@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <libcellml>
 
+
 TEST(Printer, printEmptyModel) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -30,3 +31,70 @@ TEST(Printer, printEmptyModel) {
 
     EXPECT_EQ(e, a);
 }
+
+TEST(Model, printEmptyModelAllocatePointer) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+    libcellml::Model* m = new libcellml::Model();
+    std::string a = m->serialise(libcellml::Format::XML);
+
+    EXPECT_EQ(e, a);
+    delete m;
+}
+
+TEST(Printer, printEmptyUnits) {
+    const std::string e = "";
+    libcellml::Units u;
+    std::string a = u.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Printer, printEmptyVariable) {
+    const std::string e = "<variable/>";
+    libcellml::Variable v;
+    std::string a = v.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Printer, printEncapsulation) {
+    const std::string e_parent =
+            "<component/>"
+            "<component/>"
+            "<encapsulation>"
+                "<component_ref>"
+                    "<component_ref/>"
+                "</component_ref>"
+            "</encapsulation>";
+    const std::string e_child = "<component/>";
+    libcellml::Component parent;
+    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    parent.addComponent(child);
+    std::string a_parent = parent.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e_parent, a_parent);
+    std::string a_child = child->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e_child, a_child);
+}
+
+TEST(Printer, printEncapsulationWithNames) {
+    const std::string e_parent =
+            "<component name=\"parent_component\"/>"
+            "<component name=\"child_component\"/>"
+            "<encapsulation>"
+                "<component_ref component=\"parent_component\">"
+                    "<component_ref component=\"child_component\"/>"
+                "</component_ref>"
+            "</encapsulation>";
+    const std::string e_child= "<component name=\"child_component\"/>";
+    libcellml::Component parent;
+    parent.setName("parent_component");
+    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
+    child->setName("child_component");
+    parent.addComponent(child);
+    std::string a_parent = parent.serialise(libcellml::Format::XML);
+    EXPECT_EQ(e_parent, a_parent);
+    std::string a_child = child->serialise(libcellml::Format::XML);
+    EXPECT_EQ(e_child, a_child);
+}
+
+

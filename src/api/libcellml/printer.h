@@ -50,9 +50,19 @@ public:
      */
     std::string printModel(ModelPtr model) const;
 
+    std::string printModel(Model model) const;
+
+    std::string printModel(Model *model) const;
+
     std::string printUnits(UnitsPtr units) const;
 
+    std::string printVariable(VariablePtr variable) const;
+
+    std::string printComponent(ComponentPtr component) const;
+
 private:
+    std::string printEncapsulation(ComponentPtr component) const;
+
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
