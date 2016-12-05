@@ -169,63 +169,6 @@ void Units::swap(Units &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Units::doSerialisation(Format format) const
-{
-    std::string repr = "";
-    if (format == Format::XML) {
-        if (getName().length()) {
-            if (isImport()) {
-                repr += "<import xlink:href=\"" + getImport()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-                if (getImport()->getId().length()) {
-                    repr += " id=\"" + getImport()->getId() + "\"";
-                }
-                repr += "><units units_ref=\"" + getImportReference() + "\" name=\"" + getName() + "\"";
-                if (getId().length()) {
-                    repr += " id=\"" + getId() + "\"";
-                }
-                repr += "/></import>";
-            } else {
-                bool endTag = false;
-                repr += "<units name=\"" + getName() + "\"";
-                if (getId().length()) {
-                    repr += " id=\"" + getId() + "\"";
-                }
-                if (isBaseUnit()) {
-                    repr += " base_unit=\"yes\"";
-                } else if (mPimpl->mUnits.size() > 0) {
-                    endTag = true;
-                    repr += ">";
-                    for (std::vector<Unit>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
-                        repr += "<unit";
-                        Unit u = mPimpl->mUnits[i];
-                        if (u.mExponent.length()) {
-                            repr += " exponent=\"" + u.mExponent + "\"";
-                        }
-                        if (u.mMultiplier.length()) {
-                            repr += " multiplier=\"" + u.mMultiplier + "\"";
-                        }
-                        if (u.mOffset.length()) {
-                            repr += " offset=\"" + u.mOffset + "\"";
-                        }
-                        if (u.mPrefix.length()) {
-                            repr += " prefix=\"" + u.mPrefix + "\"";
-                        }
-                        repr += " units=\"" + u.mReference + "\"";
-                        repr += "/>";
-                    }
-                }
-                if (endTag) {
-                    repr += "</units>";
-                } else {
-                    repr += "/>";
-                }
-            }
-        }
-    }
-
-    return repr;
-}
-
 bool Units::isBaseUnit() const
 {
     return mPimpl->mBaseUnit;

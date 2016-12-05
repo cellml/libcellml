@@ -40,7 +40,6 @@ public:
 
 private:
     void doAddComponent(const ComponentPtr &c);
-    std::string doSerialisation(Format format) const;
 };
 
 }

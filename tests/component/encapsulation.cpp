@@ -19,45 +19,7 @@ limitations under the License.
 #include <libcellml>
 
 #include <iostream>
-TEST(Encapsulation, serialise) {
-    const std::string e_parent =
-            "<component/>"
-            "<component/>"
-            "<encapsulation>"
-                "<component_ref>"
-                    "<component_ref/>"
-                "</component_ref>"
-            "</encapsulation>";
-    const std::string e_child = "<component/>";
-    libcellml::Component parent;
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
-    parent.addComponent(child);
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = child->serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_child, a_child);
-}
 
-TEST(Encapsulation, serialiseWithNames) {
-    const std::string e_parent =
-            "<component name=\"parent_component\"/>"
-            "<component name=\"child_component\"/>"
-            "<encapsulation>"
-                "<component_ref component=\"parent_component\">"
-                    "<component_ref component=\"child_component\"/>"
-                "</component_ref>"
-            "</encapsulation>";
-    const std::string e_child= "<component name=\"child_component\"/>";
-    libcellml::Component parent;
-    parent.setName("parent_component");
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
-    child->setName("child_component");
-    parent.addComponent(child);
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = child->serialise(libcellml::Format::XML);
-    EXPECT_EQ(e_child, a_child);
-}
 
 TEST(Encapsulation, reparentComponent) {
     const std::string e_parent_1 =
@@ -119,18 +81,20 @@ TEST(Encapsulation, reparentComponent) {
     parent.addComponent(child1);
     parent.addComponent(child2);
     parent.addComponent(child3);
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent_1, a_parent);
 
     // what do we expect this to achieve? The addition of child3 to child2
     child2->addComponent(child3);
 
-    a_parent = parent.serialise(libcellml::Format::XML);
+    a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent_2, a_parent);
 
     // Now we have two 'child2's and three 'child3's with a hierarchical encapsulation
     parent.addComponent(child2);
-    a_parent = parent.serialise(libcellml::Format::XML);
+    a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_re_add, a_parent);
 
     // option 2: add child3 as a child of child2 and remove it as a child of parent_component
@@ -168,7 +132,8 @@ TEST(Encapsulation, hierarchyWaterfall) {
     child1->addComponent(child2);
     parent.addComponent(child1);
 
-    std::string a_parent = parent.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent, a_parent);
 }
 
@@ -202,15 +167,17 @@ TEST(Encapsulation, hierarchyCircular) {
 
     parent->addComponent(child1);
     child1->addComponent(parent);
-    std::string a_parent = parent->serialise(libcellml::Format::XML);
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent_1, a_parent);
 
     child1->addComponent(child2);
-    a_parent = parent->serialise(libcellml::Format::XML);
+    a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent_2, a_parent);
 
     child2->addComponent(parent);
-    a_parent = parent->serialise(libcellml::Format::XML);
+    a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent_2, a_parent);
 }
 
@@ -248,13 +215,15 @@ TEST(Encapsulation, hierarchyWaterfallAndParse) {
     parent->addComponent(child1);
     m.addComponent(parent);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     libcellml::Parser parser = libcellml::Parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
 
-    EXPECT_EQ(e, model->serialise(libcellml::Format::XML));
+    a = printer.printModel(model);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Encapsulation, encapsulatedComponentMethods) {

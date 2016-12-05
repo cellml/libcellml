@@ -53,7 +53,6 @@ public:
     ModelPtr parseModel(const std::string &input);
 
 private:
-
     void swap(Parser &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ParserImpl; /**< Forward declaration for pImpl idiom. */

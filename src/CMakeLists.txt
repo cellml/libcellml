@@ -52,6 +52,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
@@ -74,6 +75,7 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/specificationrules.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
@@ -130,7 +132,8 @@ set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
-  VISIBILITY_INLINES_HIDDEN 1)
+  VISIBILITY_INLINES_HIDDEN 1
+  DEBUG_POSTFIX d)
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)

@@ -23,7 +23,6 @@ limitations under the License.
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
  */
-
 TEST(Coverage, import) {
     std::string e = "";
     libcellml::Import i, im;
@@ -33,26 +32,20 @@ TEST(Coverage, import) {
     // Copy constructor
     libcellml::Import ic(im);
 
-    EXPECT_EQ(e, ic.serialise(libcellml::Format::XML));
+    const std::string a = ic.getId();
+    EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, entity) {
-    std::string ex = "";
+TEST(Coverage, printer) {
+    libcellml::Printer p(libcellml::Format::XML), pm(libcellml::Format::XML);
 
-    libcellml::Entity e, em;
+    pm = std::move(p);
 
-    EXPECT_EQ(ex, e.serialise(libcellml::Format::XML));
-    em = std::move(e);
+    // Copy constructor
+    libcellml::Printer pc(pm);
 
-    libcellml::Model m;
-    em.setParent(&m);
-
-    EXPECT_EQ(&m, em.getParent());
-
-    libcellml::Component c;
-    em.setParent(&c);
-
-    EXPECT_EQ(&c, em.getParent());
+    size_t error_count = pc.errorCount();
+    EXPECT_EQ(0, error_count);
 }
 
 TEST(Coverage, units) {
@@ -67,7 +60,9 @@ TEST(Coverage, units) {
     // Copy constructor
     libcellml::Units uc(um);
 
-    EXPECT_EQ(e, uc.serialise(libcellml::Format::XML));
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printUnits(uc);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Coverage, unitsGetVariations) {
@@ -95,6 +90,7 @@ TEST(Coverage, unitsGetVariations) {
 
 TEST(Coverage, prefixToString) {
     libcellml::Model m;
+    libcellml::Printer printer(libcellml::Format::XML);
 
     std::vector<std::string> prefix_str =
         {"atto",
@@ -148,7 +144,7 @@ TEST(Coverage, prefixToString) {
 
         m.addUnits(u);
 
-        std::string a = m.serialise(libcellml::Format::XML);
+        const std::string a = printer.printModel(m);
         std::size_t found = a.find(prefix);
         EXPECT_NE(std::string::npos, found);
         m.removeAllUnits();
@@ -170,7 +166,9 @@ TEST(Coverage, variable) {
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ(e, vc.serialise(libcellml::Format::XML));
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printVariable(vc);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Coverage, component) {
@@ -185,35 +183,19 @@ TEST(Coverage, component) {
     c.setName("name");
     c.addVariable(v);
     c.setMath("<1+1=2>");
-    EXPECT_EQ(e, c.serialise(libcellml::Format::XML));
+
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printComponent(c);
+    EXPECT_EQ(e, a);
 
     cm = std::move(c);
-    EXPECT_EQ(e, cm.serialise(libcellml::Format::XML));
+    a = printer.printComponent(cm);
+    EXPECT_EQ(e, a);
 
     // Copy constructor
     libcellml::Component cc(cm);
-    EXPECT_EQ(e, cc.serialise(libcellml::Format::XML));
-}
-
-TEST(Coverage, componentEntity) {
-    const std::string e =
-            "<component/>"
-            "<component/>"
-            "<encapsulation>"
-                "<component_ref>"
-                    "<component_ref/>"
-                "</component_ref>"
-            "</encapsulation>";
-    libcellml::Component p, pm;
-    libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
-    p.addComponent(child);
-    EXPECT_EQ(e, p.serialise(libcellml::Format::XML));
-
-    pm = std::move(p);
-    EXPECT_EQ(e, pm.serialise(libcellml::Format::XML));
-
-    libcellml::Component pc(pm);
-    EXPECT_EQ(e, pc.serialise(libcellml::Format::XML));
+    a = printer.printComponent(cc);
+    EXPECT_EQ(e, a);
 }
 
 TEST(Coverage, error) {
