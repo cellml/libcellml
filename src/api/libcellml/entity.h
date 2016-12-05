@@ -27,7 +27,7 @@ namespace libcellml {
 /**
  * @brief The Entity class.
  *
- * Base class for all serialisable libCellML classes.
+ * Base class for all libCellML core classes.
  */
 class LIBCELLML_EXPORT Entity
 {
@@ -37,15 +37,6 @@ public:
     Entity(const Entity &rhs); /**< Copy constructor */
     Entity(Entity &&rhs); /**< Move constructor */
     Entity& operator=(Entity e); /**< Assignment operator */
-
-    /**
-     * @brief Serialise entity to @c std::string.
-     *
-     * @param format The format to serialise the object to.
-     *
-     * @return @c std::string representation of the object.
-     */
-    std::string serialise(Format format) const;
 
     /**
      * @brief Set the @p id document identifier for this entity.
@@ -121,17 +112,6 @@ public:
     bool hasParent(Component *c) const;
 
 private:
-    /**
-     * @brief Virtual serialise method to be implemented by derived classes.
-     *
-     * Virtual serialise method for serialising a CellML object to a @c std::string.
-     *
-     * @param format The format to serialise the object to.
-     *
-     * @return @c std::string representation of the object.
-     */
-    virtual std::string doSerialisation(Format format) const;
-
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct EntityImpl;

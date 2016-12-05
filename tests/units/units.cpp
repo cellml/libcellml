@@ -19,13 +19,6 @@ limitations under the License.
 #include <libcellml>
 
 
-TEST(Units, serialise) {
-    const std::string e = "";
-    libcellml::Units u;
-    std::string a = u.serialise(libcellml::Format::XML);
-    EXPECT_EQ(e, a);
-}
-
 TEST(Units, validName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -49,7 +42,8 @@ TEST(Units, validName) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", u->getName());
 }
@@ -69,7 +63,8 @@ TEST(Units, invalidName) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
 }
@@ -96,7 +91,8 @@ TEST(Units, compoundUnitsRaw) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -122,7 +118,8 @@ TEST(Units, compoundUnitsUsingDefines) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -150,7 +147,8 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -210,16 +208,17 @@ TEST(Units, removeUnitsMethodsAndCount) {
     m.addUnits(u3);
     m.addUnits(u4);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
 
     u1->removeAllUnits();
-    a = m.serialise(libcellml::Format::XML);
+    a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
     EXPECT_TRUE(m.removeUnits("simple_unit_2"));
     EXPECT_TRUE(m.removeUnits(u3));
-    a = m.serialise(libcellml::Format::XML);
+    a = printer.printModel(m);
     EXPECT_EQ(e3, a);
     EXPECT_EQ(2, m.unitsCount());
 
@@ -232,7 +231,7 @@ TEST(Units, removeUnitsMethodsAndCount) {
     EXPECT_EQ(1, m.unitsCount());
 
     m.removeAllUnits();
-    a = m.serialise(libcellml::Format::XML);
+    a = printer.printModel(m);
     EXPECT_EQ(e4, a);
 }
 
@@ -349,7 +348,8 @@ TEST(Units, multiply) {
 
     m.addUnits(u3);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -368,7 +368,8 @@ TEST(Units, newBaseUnit) {
 
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->getName());
 }
@@ -391,7 +392,8 @@ TEST(Units, farhenheit) {
     u->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0.0, 1.0, 1.8, 32.0);
     m.addUnits(u);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("fahrenheit", u->getName());
 }
@@ -527,13 +529,14 @@ TEST(Units, multipleAndParse) {
     m.addUnits(u1);
     m.addUnits(u2);
 
-    std::string a = m.serialise(libcellml::Format::XML);
+    libcellml::Printer printer(libcellml::Format::XML);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
-    a = model->serialise(libcellml::Format::XML);
+    a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 

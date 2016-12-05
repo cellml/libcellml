@@ -6,7 +6,7 @@ set(CURRENT_TEST model)
 #    ctest -R <category-label>
 # which will run the tests matching this category-label.
 # Can be left empty (or just not set)
-set(${CURRENT_TEST}_CATEGORY api)
+set(${CURRENT_TEST}_CATEGORY entities)
 list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 # Using absolute path relative to this file
 set(${CURRENT_TEST}_SRCS

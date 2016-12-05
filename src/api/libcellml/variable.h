@@ -251,8 +251,6 @@ public:
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    std::string doSerialisation(Format format) const;
-
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl *mPimpl; /**< Private member to implementation pointer */
 };

@@ -104,64 +104,6 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string ComponentEntity::serialiseUnits(Format format) const
-{
-    std::string repr = "";
-
-    if (format == Format::XML) {
-        for (std::vector<UnitsPtr>::size_type i = 0; i != mPimpl->mUnits.size(); ++i) {
-            repr += mPimpl->mUnits[i]->serialise(format);;
-        }
-    }
-
-    return repr;
-}
-
-std::string ComponentEntity::serialiseEncapsulation(Format format) const
-{
-    const std::string encaps_tag = "<encapsulation>";
-    const std::string encaps_end_tag = "</encapsulation>";
-    std::string repr = "";
-    if (format == Format::XML) {
-        std::string componentName = getName();
-        std::string encaps = "";
-        if (mPimpl->mComponents.size()) {
-            encaps += encaps_tag;
-            encaps += "<component_ref";
-            if (componentName.length()) {
-                encaps += " component=\"" + componentName + "\"";
-            }
-            encaps += ">";
-        }
-        for (std::vector<Component>::size_type i = 0; i != mPimpl->mComponents.size(); ++i) {
-            std::string comp = mPimpl->mComponents[i]->serialise(format);
-            std::size_t found = comp.find(encaps_tag);
-            if (found == std::string::npos) {
-                encaps += "<component_ref";
-                if (mPimpl->mComponents[i]->getName().length()) {
-                    encaps += " component=\"" + mPimpl->mComponents[i]->getName() + "\"";
-                }
-                encaps += "/>";
-            } else {
-                std::string encaps_part = comp.substr(found);
-                comp = comp.substr(0, found);
-                found = encaps_part.find(encaps_tag);
-                encaps_part.replace(found, encaps_tag.length(), "");
-                found = encaps_part.find(encaps_end_tag);
-                encaps_part.replace(found, encaps_end_tag.length(), "");
-                encaps += encaps_part;
-            }
-            repr += comp;
-        }
-
-        if (mPimpl->mComponents.size()) {
-            encaps += "</component_ref>" + encaps_end_tag;
-        }
-        repr += encaps;
-    }
-    return repr;
-}
-
 void ComponentEntity::addUnits(const UnitsPtr & units)
 {
     mPimpl->mUnits.push_back(units);

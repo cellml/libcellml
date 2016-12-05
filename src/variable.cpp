@@ -204,31 +204,6 @@ bool Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVari
     return status;
 }
 
-std::string Variable::doSerialisation(Format format) const
-{
-    std::string repr = "";
-    if (format == Format::XML) {
-        repr += "<variable";
-        if (getName().length()) {
-            repr += " name=\"" + getName() + "\"";
-        }
-        if (getId().length()) {
-            repr += " id=\"" + getId() + "\"";
-        }
-        if (getUnits().length()) {
-            repr += " units=\"" + getUnits() + "\"";
-        }
-        if (getInitialValue().length()) {
-            repr += " initial_value=\"" + getInitialValue() + "\"";
-        }
-        if (getInterfaceType().length()) {
-            repr += " interface=\"" + getInterfaceType() + "\"";
-        }
-        repr += "/>";
-    }
-    return repr;
-}
-
 void Variable::setUnits(const std::string &name)
 {
     mPimpl->mUnits = name;

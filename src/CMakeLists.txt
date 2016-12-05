@@ -52,6 +52,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/parser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/units.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/utilities.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/validator.cpp
@@ -74,6 +75,7 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/parser.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/printer.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/specificationrules.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/types.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/units.h
@@ -138,6 +140,7 @@ set_target_properties(cellml PROPERTIES
   VERSION ${libCellML_VERSION}
   INTERFACE_libCellML_MAJOR_VERSION ${libCellML_VERSION_MAJOR}
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR})
+)
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
@@ -178,7 +181,8 @@ install(FILES
 )
 
 include(CMakePackageConfigHelpers)
-set(LIBCELLML_CONFIG_VERSION_FILE "${PROJECT_BINARY_DIR}/libcellml/libcellml-config-version.cmake")
+set(BUILD_TREE_CONFIG_DIR ${PROJECT_BINARY_DIR})
+set(LIBCELLML_CONFIG_VERSION_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config-version.cmake")
 write_basic_package_version_file(
   ${LIBCELLML_CONFIG_VERSION_FILE}
   VERSION ${libCellML_VERSION}
@@ -186,29 +190,30 @@ write_basic_package_version_file(
 )
 list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_VERSION_FILE})
 
-set(LIBCELLML_TARGETS_FILE "${PROJECT_BINARY_DIR}/libcellml/libcellml-targets.cmake")
+set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
 export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
 list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
 
-set(LIBCELLML_CONFIG_CMAKE_FILE "${PROJECT_BINARY_DIR}/libcellml/libcellml-config.cmake")
+set(LIBCELLML_CONFIG_CMAKE_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config.cmake")
 configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml-config.cmake"
   ${LIBCELLML_CONFIG_CMAKE_FILE}
   COPYONLY
 )
 list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_CMAKE_FILE})
 
-set(ConfigPackageLocation lib/cmake/libcellml)
+set(ConfigPackageLocation lib/cmake)
 install(EXPORT libcellml-targets
-    FILE libcellml-targets.cmake
-    DESTINATION ${ConfigPackageLocation})
+  FILE libcellml-targets.cmake
+  DESTINATION ${ConfigPackageLocation}
+)
 
 install(
-    FILES
-      ${LIBCELLML_CONFIG_CMAKE_FILE}
-      ${LIBCELLML_CONFIG_VERSION_FILE}
-    DESTINATION ${ConfigPackageLocation}
-    COMPONENT Devel
-    )
+  FILES
+    ${LIBCELLML_CONFIG_CMAKE_FILE}
+    ${LIBCELLML_CONFIG_VERSION_FILE}
+  DESTINATION ${ConfigPackageLocation}
+  COMPONENT Devel
+)
 
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}")
 
