@@ -83,6 +83,9 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/variable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/version.h
   ${LIBCELLML_EXPORTDEFINITIONS_H}
+)
+
+set(MODULE_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module/libcellml
 )
 
@@ -133,7 +136,11 @@ set_target_properties(cellml PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
-  DEBUG_POSTFIX d)
+  DEBUG_POSTFIX d
+  VERSION ${libCellML_VERSION}
+  INTERFACE_libCellML_MAJOR_VERSION ${libCellML_VERSION_MAJOR}
+  COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
+)
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
@@ -157,8 +164,6 @@ if(LIBCELLML_COVERAGE)
   set_directory_properties(${GCOV_ANALYSIS_PATH} PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${GCOV_CLEAN_FILES}")
 endif()
 
-export(TARGETS cellml FILE libcellml-exports.cmake)
-
 install(TARGETS cellml EXPORT libcellml-targets
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
@@ -175,8 +180,40 @@ install(FILES
   DESTINATION include/libcellml/module
 )
 
-install(EXPORT libcellml-targets DESTINATION lib/cmake)
+include(CMakePackageConfigHelpers)
+set(BUILD_TREE_CONFIG_DIR ${PROJECT_BINARY_DIR})
+set(LIBCELLML_CONFIG_VERSION_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config-version.cmake")
+write_basic_package_version_file(
+  ${LIBCELLML_CONFIG_VERSION_FILE}
+  VERSION ${libCellML_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_VERSION_FILE})
 
-list(APPEND CLEAN_FILES libcellml-exports.cmake)
+set(LIBCELLML_TARGETS_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-targets.cmake")
+export(EXPORT libcellml-targets FILE ${LIBCELLML_TARGETS_FILE})
+list(APPEND CLEAN_FILES ${LIBCELLML_TARGETS_FILE})
+
+set(LIBCELLML_CONFIG_CMAKE_FILE "${BUILD_TREE_CONFIG_DIR}/libcellml-config.cmake")
+configure_file("${PROJECT_SOURCE_DIR}/cmake/libcellml-config.cmake"
+  ${LIBCELLML_CONFIG_CMAKE_FILE}
+  COPYONLY
+)
+list(APPEND CLEAN_FILES ${LIBCELLML_CONFIG_CMAKE_FILE})
+
+set(ConfigPackageLocation lib/cmake)
+install(EXPORT libcellml-targets
+  FILE libcellml-targets.cmake
+  DESTINATION ${ConfigPackageLocation}
+)
+
+install(
+  FILES
+    ${LIBCELLML_CONFIG_CMAKE_FILE}
+    ${LIBCELLML_CONFIG_VERSION_FILE}
+  DESTINATION ${ConfigPackageLocation}
+  COMPONENT Devel
+)
+
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}")
 
