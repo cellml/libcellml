@@ -23,7 +23,7 @@ TEST(Units, validName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"valid_name\" base_unit=\"yes\"/>"
+                "<units name=\"valid_name\"/>"
             "</model>";
 
     libcellml::Model m;
@@ -52,7 +52,7 @@ TEST(Units, invalidName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"invalid name\" base_unit=\"yes\"/>"
+                "<units name=\"invalid name\"/>"
             "</model>";
 
     libcellml::Model m;
@@ -317,7 +317,7 @@ TEST(Units, multiply) {
                     "<unit units=\"kelvin\"/>"
                     "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
                 "</units>"
-                "<units name=\"valid_name\" base_unit=\"yes\"/>"
+                "<units name=\"valid_name\"/>"
                 "<units name=\"multiplied\">"
                     "<unit units=\"compound_unit\"/>"
                     "<unit units=\"valid_name\"/>"
@@ -357,7 +357,7 @@ TEST(Units, newBaseUnit) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"pH\" base_unit=\"yes\"/>"
+                "<units name=\"pH\"/>"
             "</model>";
 
     libcellml::Model m;

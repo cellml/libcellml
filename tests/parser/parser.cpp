@@ -238,7 +238,7 @@ TEST(Parser, parseModelWithNamedComponentWithUnits) {
                     "<units name=\"fahrenheit\">"
                         "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
                     "</units>"
-                    "<units name=\"dimensionless\" base_unit=\"yes\"/>"
+                    "<units name=\"dimensionless\"/>"
                 "</component>"
             "</model>";
 
@@ -250,55 +250,11 @@ TEST(Parser, parseModelWithNamedComponentWithUnits) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAndGetError) {
-    const std::string in =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\" base_unit=\"joe\"/>"
-                "</component>"
-            "</model>";
-
-    const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
-            "</model>";
-
-    const std::string expectedError1 = "Units 'dimensionless' has an invalid base_unit attribute value 'joe'. Valid options are 'yes' or 'no'.";
-
-    libcellml::Parser parser(libcellml::Format::XML);
-    libcellml::ModelPtr model = parser.parseModel(in);
-
-    libcellml::Printer printer(libcellml::Format::XML);
-    const std::string a = printer.printModel(model);
-    EXPECT_EQ(e, a);
-    EXPECT_EQ(1, parser.errorCount());
-    EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
-
-    libcellml::UnitsPtr unitsExpected = model->getComponent("component_name")->getUnits("dimensionless");
-    // Get units from error and check.
-    EXPECT_EQ(unitsExpected, parser.getError(0)->getUnits());
-    // Get const units from error and check.
-    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).getError(0);
-    libcellml::Error *rawErr = err.get();
-    const libcellml::UnitsPtr unitsFromError = static_cast<const libcellml::Error*>(rawErr)->getUnits();
-    EXPECT_EQ(unitsExpected, unitsFromError);
-}
-
 TEST(Parser, unitsAttributeError) {
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<units name=\"pH\" base_unit=\"yes\" invalid_attribute=\"yes\"/>"
+                "<units name=\"pH\" invalid_attribute=\"yes\"/>"
             "</model>";
 
     const std::string expectedError1 = "Units 'pH' has an invalid attribute 'invalid_attribute'.";
@@ -525,7 +481,7 @@ TEST(Parser, modelWithNamedComponentWithUnits) {
                     "<units name=\"fahrenheit\">"
                         "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
                     "</units>"
-                    "<units name=\"dimensionless\" base_unit=\"no\"/>"
+                    "<units name=\"dimensionless\"/>"
                 "</component>"
             "</model>";
 
@@ -560,7 +516,7 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
                         "<bobshouse address=\"34 Rich Lane\"/>"
                         "<unit GUnit=\"50c\"/>"
                     "</units>"
-                    "<units name=\"dimensionless\" base_unit=\"no\"/>"
+                    "<units name=\"dimensionless\"/>"
                     "<units jerry=\"seinfeld\">"
                         "<unit units=\"friends\" neighbor=\"kramer\"/>"
                         "<unit george=\"friends\"/>"
