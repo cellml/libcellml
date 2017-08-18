@@ -49,7 +49,7 @@ TEST(Coverage, printer) {
 }
 
 TEST(Coverage, units) {
-    std::string e = "<units name=\"dimensionless\" base_unit=\"yes\"/>";
+    std::string e = "<units name=\"dimensionless\"/>";
     libcellml::Units u, um;
 
     u.setName("dimensionless");
