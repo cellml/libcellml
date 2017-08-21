@@ -53,7 +53,6 @@ TEST(Coverage, units) {
     libcellml::Units u, um;
 
     u.setName("dimensionless");
-    u.setBaseUnit();
 
     um = std::move(u);
 

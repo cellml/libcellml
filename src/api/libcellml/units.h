@@ -89,21 +89,13 @@ public:
      * @brief Test to determine if Units is a base unit.
      *
      * Test to determine if Units is a base unit, return @c true if it is
-     * a base unit and @c false otherwise.
+     * a base unit and @c false otherwise. A unit is an "irreducible unit"
+     * or "base unit" for the model by virtue of the fact that it is not
+     * derived from any other unit(s).
      *
      * @return @c true if Units is a base unit, @c false otherwise.
      */
     bool isBaseUnit() const;
-
-    /**
-     * @brief Set whether this unit is a base unit or not.
-     *
-     * Set the base unit flag to signify whether this Units is a base unit
-     * or not.  This flag cannot be set if this Units is a compound unit.
-     *
-     * @param state Boolean value to set the base unit flag to.
-     */
-    void setBaseUnit(bool state=true);
 
     /**
      * @brief Add a unit to this Units.

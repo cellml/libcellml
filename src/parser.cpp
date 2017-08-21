@@ -389,21 +389,6 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             units->setName(attribute->getValue());
         } else if (attribute->isType("id")) {
             units->setId(attribute->getValue());
-        } else if (attribute->isType("base_unit")) {
-            if (attribute->getValue() == "yes") {
-                units->setBaseUnit(true);
-            } else if (attribute->getValue() == "no") {
-                units->setBaseUnit(false);
-            } else {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Units '" + units->getName() +
-                                    "' has an invalid base_unit attribute value '" + attribute->getValue() +
-                                    "'. Valid options are 'yes' or 'no'.");
-                err->setUnits(units);
-                err->setKind(Error::Kind::UNITS);
-                err->setRule(SpecificationRule::UNITS_BASE);
-                mParser->addError(err);
-            }
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units '" + units->getName() +

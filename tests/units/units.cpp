@@ -31,15 +31,6 @@ TEST(Units, validName) {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();;
     u->setName("valid_name");
 
-    /* Base unit is false by default */
-    EXPECT_FALSE(u->isBaseUnit());
-    u->setBaseUnit();
-    EXPECT_TRUE(u->isBaseUnit());
-    u->setBaseUnit(false);
-    EXPECT_FALSE(u->isBaseUnit());
-    u->setBaseUnit(true);
-    EXPECT_TRUE(u->isBaseUnit());
-
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
@@ -59,7 +50,6 @@ TEST(Units, invalidName) {
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("invalid name");
-    u->setBaseUnit();
 
     m.addUnits(u);
 
@@ -337,7 +327,6 @@ TEST(Units, multiply) {
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("valid_name");
-    u2->setBaseUnit();
 
     m.addUnits(u2);
 
@@ -364,7 +353,6 @@ TEST(Units, newBaseUnit) {
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("pH");
-    u->setBaseUnit();
 
     m.addUnits(u);
 
@@ -372,6 +360,17 @@ TEST(Units, newBaseUnit) {
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->getName());
+}
+
+TEST(Units, isBaseUnit) {
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("pH");
+
+    EXPECT_TRUE(u->isBaseUnit());
+
+    u->addUnit("Candela");
+
+    EXPECT_FALSE(u->isBaseUnit());
 }
 
 TEST(Units, farhenheit) {

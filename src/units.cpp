@@ -122,7 +122,6 @@ struct Unit
 struct Units::UnitsImpl
 {
     std::vector<Unit>::iterator findUnit(const std::string &reference);
-    bool mBaseUnit = false; /**< Flag to determine if this Units is a base unit or not.*/
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 };
 
@@ -146,7 +145,6 @@ Units::Units(const Units& rhs)
     : ImportedEntity(rhs)
     , mPimpl(new UnitsImpl())
 {
-    mPimpl->mBaseUnit = rhs.mPimpl->mBaseUnit;
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
@@ -171,12 +169,7 @@ void Units::swap(Units &rhs)
 
 bool Units::isBaseUnit() const
 {
-    return mPimpl->mBaseUnit;
-}
-
-void Units::setBaseUnit(bool state)
-{
-    mPimpl->mBaseUnit = state;
+    return unitCount() == 0;
 }
 
 void Units::addUnit(const std::string &reference, const std::string &prefix, double exponent,
