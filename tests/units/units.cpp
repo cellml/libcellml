@@ -23,22 +23,13 @@ TEST(Units, validName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"valid_name\" base_unit=\"yes\"/>"
+                "<units name=\"valid_name\"/>"
             "</model>";
 
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();;
     u->setName("valid_name");
-
-    /* Base unit is false by default */
-    EXPECT_FALSE(u->isBaseUnit());
-    u->setBaseUnit();
-    EXPECT_TRUE(u->isBaseUnit());
-    u->setBaseUnit(false);
-    EXPECT_FALSE(u->isBaseUnit());
-    u->setBaseUnit(true);
-    EXPECT_TRUE(u->isBaseUnit());
 
     m.addUnits(u);
 
@@ -52,14 +43,13 @@ TEST(Units, invalidName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"invalid name\" base_unit=\"yes\"/>"
+                "<units name=\"invalid name\"/>"
             "</model>";
 
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("invalid name");
-    u->setBaseUnit();
 
     m.addUnits(u);
 
@@ -317,7 +307,7 @@ TEST(Units, multiply) {
                     "<unit units=\"kelvin\"/>"
                     "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
                 "</units>"
-                "<units name=\"valid_name\" base_unit=\"yes\"/>"
+                "<units name=\"valid_name\"/>"
                 "<units name=\"multiplied\">"
                     "<unit units=\"compound_unit\"/>"
                     "<unit units=\"valid_name\"/>"
@@ -337,7 +327,6 @@ TEST(Units, multiply) {
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("valid_name");
-    u2->setBaseUnit();
 
     m.addUnits(u2);
 
@@ -357,14 +346,13 @@ TEST(Units, newBaseUnit) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"pH\" base_unit=\"yes\"/>"
+                "<units name=\"pH\"/>"
             "</model>";
 
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("pH");
-    u->setBaseUnit();
 
     m.addUnits(u);
 
@@ -372,6 +360,17 @@ TEST(Units, newBaseUnit) {
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->getName());
+}
+
+TEST(Units, isBaseUnit) {
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("pH");
+
+    EXPECT_TRUE(u->isBaseUnit());
+
+    u->addUnit("Candela");
+
+    EXPECT_FALSE(u->isBaseUnit());
 }
 
 TEST(Units, farhenheit) {
@@ -539,4 +538,3 @@ TEST(Units, multipleAndParse) {
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
-

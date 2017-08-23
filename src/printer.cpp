@@ -100,9 +100,7 @@ std::string Printer::printUnits(UnitsPtr units) const
                 if (units->getId().length()) {
                     repr += " id=\"" + units->getId() + "\"";
                 }
-                if (units->isBaseUnit()) {
-                    repr += " base_unit=\"yes\"";
-                } else if (units->unitCount() > 0) {
+                if (units->unitCount() > 0) {
                     endTag = true;
                     repr += ">";
                     for (size_t i = 0; i < units->unitCount(); ++i) {
