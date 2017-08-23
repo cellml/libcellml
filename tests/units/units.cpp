@@ -388,7 +388,7 @@ TEST(Units, farhenheit) {
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0.0, 1.0, 1.8);
+    u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
@@ -401,10 +401,10 @@ TEST(Units, getUnitAttributes) {
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("fahrenheit");
+    u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0.0, 1.0, 1.8);
+    u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
     std::string reference, prefix;
@@ -438,7 +438,7 @@ TEST(Units, getUnitAttributes) {
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes(libcellml::Units::StandardUnit::CELSIUS, prefix, exponent, multiplier);
+    u->getUnitAttributes("celsius", prefix, exponent, multiplier);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
@@ -514,7 +514,7 @@ TEST(Units, multipleAndParse) {
     u1->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u1->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0, 1.0, 1.8);
+    u1->addUnit("celsius", 0, 1.0, 1.8);
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("metres_per_second");
