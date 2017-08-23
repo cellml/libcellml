@@ -182,7 +182,7 @@ TEST(UnitsImport, importModifyAndParse) {
 
     libcellml::UnitsPtr importedUnitsAll = std::make_shared<libcellml::Units>();
     importedUnitsAll->setName("all_import");
-    importedUnitsAll->addUnit("units_in_this_model", -17, -4.0, -1.3, -99);
+    importedUnitsAll->addUnit("units_in_this_model", -17, -4.0, -1.3);
 
     m.addUnits(importedUnitsAll);
 

@@ -101,22 +101,21 @@ public:
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * @p exponent, @p multiplier and @p offset.
+     * @p exponent, and @p multiplier.
      *
      * @param reference The @c std::string units reference to add.
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param offset The offset.
      */
     void addUnit(const std::string &reference, const std::string &prefix, double exponent=1.0,
-                 double multiplier=1.0, double offset=0.0);
+                 double multiplier=1.0);
 
     /**
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * @p exponent, @p multiplier and @p offset.
+     * @p exponent, and @p multiplier.
      *
      * @overload
      *
@@ -124,16 +123,15 @@ public:
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param offset The offset.
      */
     void addUnit(const std::string &reference, Prefix prefix, double exponent=1.0,
-                 double multiplier=1.0, double offset=0.0);
+                 double multiplier=1.0);
 
     /**
      * @brief Add a unit to this Units.
      *
-     * Add a unit as a child of this Units. This method takes optional arguments
-     * @p multiplier and @p offset.
+     * Add a unit as a child of this Units. This method takes an optional argument
+     * @p multiplier.
      *
      * @overload
      *
@@ -141,10 +139,9 @@ public:
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param offset The offset.
      */
     void addUnit(const std::string &reference, double prefix, double exponent,
-                 double multiplier=1.0, double offset=0.0);
+                 double multiplier=1.0);
 
     /**
      * @brief Add a unit to this Units.
@@ -175,7 +172,7 @@ public:
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * @p exponent, @p multiplier and @p offset.
+     * @p exponent, and @p multiplier.
      *
      * @overload
      *
@@ -183,16 +180,15 @@ public:
      * @param prefix The string prefix for the unit.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param offset The offset.
      */
     void addUnit(StandardUnit standardRef, const std::string &prefix, double exponent=1.0,
-                 double multiplier=1.0, double offset=0.0);
+                 double multiplier=1.0);
 
     /**
      * @brief Add a unit to this Units.
      *
      * Add a unit as a child of this Units.  This method takes optional arguments
-     * @p exponent, @p multiplier and @p offset.
+     * @p exponent, and @p multiplier.
      *
      * @overload
      *
@@ -200,16 +196,15 @@ public:
      * @param prefix The prefix for the unit, one of Prefix.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param offset The offset.
      */
     void addUnit(StandardUnit standardRef, Prefix prefix, double exponent=1.0,
-                 double multiplier=1.0, double offset=0.0);
+                 double multiplier=1.0);
 
     /**
      * @brief Add a unit to this Units.
      *
-     * Add a unit as a child of this Units. This method takes optional arguments
-     * @p multiplier and @p offset.
+     * Add a unit as a child of this Units. This method takes an optional argument
+     * @p multiplier.
      *
      * @overload
      *
@@ -217,10 +212,9 @@ public:
      * @param prefix The prefix for the unit expressed as a double.
      * @param exponent The exponent.
      * @param multiplier The multiplier.
-     * @param offset The offset.
      */
     void addUnit(StandardUnit standardRef, double prefix, double exponent,
-                 double multiplier=1.0, double offset=0.0);
+                 double multiplier=1.0);
 
     /**
      * @brief Add a unit to this Units.
@@ -259,10 +253,9 @@ public:
      * @param prefix The prefix for this @c unit. Defaults to empty string.
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
-     * @param offset The offset for this @c unit. Defaults to 0.0.
      */
     void getUnitAttributes(size_t index, std::string& reference, std::string &prefix, double &exponent,
-                           double &multiplier, double &offset) const;
+                           double &multiplier) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p reference.
@@ -276,10 +269,8 @@ public:
      * @param prefix The prefix for this @c unit. Defaults to empty string.
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
-     * @param offset The offset for this @c unit. Defaults to 0.0.
      */
-    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier,
-                           double &offset) const;
+    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p standardRef.
@@ -293,10 +284,8 @@ public:
      * @param prefix The prefix for this @c unit. Defaults to empty string.
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
-     * @param offset The offset for this @c unit. Defaults to 0.0.
      */
-    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier,
-                           double &offset) const;
+    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier) const;
 
     /**
      * @brief Remove the unit at the given @p index.
