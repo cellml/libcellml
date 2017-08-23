@@ -378,7 +378,7 @@ TEST(Units, farhenheit) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<units name=\"fahrenheit\">"
-                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                 "</units>"
             "</model>";
 
@@ -503,8 +503,8 @@ TEST(Units, multipleAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"fahrenheit\">"
-                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                 "</units>"
                 "<units name=\"metres_per_second\">"
                     "<unit units=\"metre\"/>"
@@ -515,7 +515,7 @@ TEST(Units, multipleAndParse) {
     libcellml::Model m;
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    u1->setName("fahrenheit");
+    u1->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
     u1->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0, 1.0, 1.8, 32.0);

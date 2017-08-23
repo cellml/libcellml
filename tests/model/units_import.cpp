@@ -141,9 +141,6 @@ TEST(UnitsImport, importModifyAndParse) {
                 "<units name=\"multiplied_import\">"
                     "<unit multiplier=\"5.6\" units=\"units_in_this_model\"/>"
                 "</units>"
-                "<units name=\"offset_import\">"
-                    "<unit offset=\"76\" units=\"units_in_this_model\"/>"
-                "</units>"
                 "<units name=\"prefixed_import\">"
                     "<unit prefix=\"yotta\" units=\"units_in_this_model\"/>"
                 "</units>"
@@ -151,7 +148,7 @@ TEST(UnitsImport, importModifyAndParse) {
                     "<unit exponent=\"3\" units=\"units_in_this_model\"/>"
                 "</units>"
                 "<units name=\"all_import\">"
-                    "<unit exponent=\"-4\" multiplier=\"-1.3\" offset=\"-99\" prefix=\"-17\" units=\"units_in_this_model\"/>"
+                    "<unit exponent=\"-4\" multiplier=\"-1.3\" prefix=\"-17\" units=\"units_in_this_model\"/>"
                 "</units>"
             "</model>";
 
@@ -170,12 +167,6 @@ TEST(UnitsImport, importModifyAndParse) {
     importedUnitsMultiplied->addUnit("units_in_this_model", 0.0, 1.0, 5.6);
 
     m.addUnits(importedUnitsMultiplied);
-
-    libcellml::UnitsPtr importedUnitsOffset = std::make_shared<libcellml::Units>();
-    importedUnitsOffset->setName("offset_import");
-    importedUnitsOffset->addUnit("units_in_this_model", 0, 1.0, 1.0, 76);
-
-    m.addUnits(importedUnitsOffset);
 
     libcellml::UnitsPtr importedUnitsPrefixed = std::make_shared<libcellml::Units>();
     importedUnitsPrefixed->setName("prefixed_import");
