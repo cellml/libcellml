@@ -86,6 +86,16 @@ TEST(Units, compoundUnitsRaw) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Units, addUnitsVariations) {
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("compound_unit");
+
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::KELVIN, 0.001, 2.0, 5.5);
+
+    EXPECT_EQ(2, u->unitCount());
+}
+
 TEST(Units, compoundUnitsUsingDefines) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
