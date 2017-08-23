@@ -538,4 +538,3 @@ TEST(Units, multipleAndParse) {
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
-

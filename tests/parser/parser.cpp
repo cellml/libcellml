@@ -297,6 +297,34 @@ TEST(Parser, unitsElementErrors) {
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
+TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetError) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<component name=\"component_name\">"
+                    "<units name=\"unit_name\" base_unit=\"yes\"/>"
+                "</component>"
+            "</model>";
+
+    const std::string expectedError1 = "Units 'unit_name' has an invalid attribute 'base_unit'.";
+
+    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::ModelPtr model = parser.parseModel(in);
+
+    EXPECT_EQ(1, parser.errorCount());
+    EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
+
+    libcellml::UnitsPtr unitsExpected = model->getComponent("component_name")->getUnits("unit_name");
+
+    // Get units from error and check.
+    EXPECT_EQ(unitsExpected, parser.getError(0)->getUnits());
+
+    // Get const units from error and check.
+    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).getError(0);
+    const libcellml::UnitsPtr unitsFromError = err->getUnits();
+    EXPECT_EQ(unitsExpected, unitsFromError);
+}
+
 TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
     const std::string cName = "componentName";
     const std::string input =
