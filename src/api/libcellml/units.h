@@ -52,7 +52,6 @@ public:
         AMPERE, /**< Base SI unit ampere. */
         BECQUEREL, /**< Derived SI unit becquerel. */
         CANDELA, /**< Base SI unit candela. */
-        CELSIUS, /**< Derived SI unit celsius. */
         COULOMB, /**< Derived SI unit coulomb. */
         DIMENSIONLESS, /**< Convenience unit dimensionless. */
         FARAD, /**< Derived SI unit farad. */

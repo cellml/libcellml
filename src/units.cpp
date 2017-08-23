@@ -65,7 +65,6 @@ std::map<Units::StandardUnit, const std::string> standardUnitToString =
     {Units::StandardUnit::AMPERE, "ampere"},
     {Units::StandardUnit::BECQUEREL, "becquerel"},
     {Units::StandardUnit::CANDELA, "candela"},
-    {Units::StandardUnit::CELSIUS, "celsius"},
     {Units::StandardUnit::COULOMB, "coulomb"},
     {Units::StandardUnit::DIMENSIONLESS, "dimensionless"},
     {Units::StandardUnit::FARAD, "farad"},
