@@ -183,7 +183,7 @@ TEST(Encapsulation, hierarchyCircular) {
 
 TEST(Encapsulation, hierarchyWaterfallAndParse) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"parent_component\"/>"
                 "<component name=\"child1\"/>"

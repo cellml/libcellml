@@ -432,7 +432,7 @@ TEST(Variable, getVariableMethods) {
 TEST(Variable, modelWithComponentWithVariableWithValidName) {
     const std::string in = "valid_name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"valid_name\" units=\"dimensionless\"/>"
@@ -462,7 +462,7 @@ TEST(Variable, modelWithComponentWithVariableWithValidName) {
 TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
     const std::string in = "invalid name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"invalid name\">"
                     "<variable name=\"invalid name\" units=\"dimensionless\"/>"
@@ -492,7 +492,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName) {
 TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse) {
     const std::string in = "valid_name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"valid_name\" units=\"invalid name\"/>"
@@ -528,7 +528,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse) {
 TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
     const std::string in = "valid_name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"variable1\" initial_value=\"1.0\"/>"
@@ -560,7 +560,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValues) {
 TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesOneReferenced) {
     const std::string in = "valid_name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"variable1\" initial_value=\"1\"/>"
@@ -592,7 +592,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesOneRefere
 TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse) {
     const std::string in = "valid_name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"variable1\" initial_value=\"1.0\"/>"
@@ -625,7 +625,7 @@ TEST(Variable, modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse)
 
 TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfaces) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"variable1\" interface=\"none\"/>"
@@ -668,7 +668,7 @@ TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfaces) {
 
 TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfacesAndParse) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"valid_name\">"
                     "<variable name=\"variable1\" interface=\"none\"/>"

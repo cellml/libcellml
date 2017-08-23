@@ -4844,7 +4844,7 @@ void XmlUnitTestResultPrinter::PrintXmlUnitTest(std::ostream* stream,
                                                 const UnitTest& unit_test) {
   const std::string kTestsuites = "testsuites";
 
-  *stream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+  *stream << "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n";
   *stream << "<" << kTestsuites;
 
   OutputXmlAttribute(stream, kTestsuites, "tests",
