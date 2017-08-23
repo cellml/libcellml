@@ -475,8 +475,8 @@ TEST(Model, setAndCheckIdsAllEntities) {
                     "<units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>"
                 "</import>"
                 "<units name=\"u2name\" id=\"u2id\"/>"
+                "<units name=\"u3name\" id=\"u3id\"/>"
                 "<component name=\"c2name\" id=\"c2id\">"
-                    "<units name=\"u3name\" id=\"u3id\"/>"
                     "<variable name=\"vname\" id=\"vid\" units=\"u1name\"/>"
                 "</component>"
             "</model>";
@@ -517,9 +517,9 @@ TEST(Model, setAndCheckIdsAllEntities) {
 
     v->setUnits(u1);
     c2->addVariable(v);
-    c2->addUnits(u3);
     m.addUnits(u1);
     m.addUnits(u2);
+    m.addUnits(u3);
     m.addComponent(c1);
     m.addComponent(c2);
 

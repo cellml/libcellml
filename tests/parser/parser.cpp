@@ -301,8 +301,8 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<units name=\"unit_name\" base_unit=\"yes\"/>"
                 "<component name=\"component_name\">"
-                    "<units name=\"unit_name\" base_unit=\"yes\"/>"
                 "</component>"
             "</model>";
 
@@ -314,7 +314,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     EXPECT_EQ(1, parser.errorCount());
     EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
 
-    libcellml::UnitsPtr unitsExpected = model->getComponent("component_name")->getUnits("unit_name");
+    libcellml::UnitsPtr unitsExpected = model->getUnits("unit_name");
 
     // Get units from error and check.
     EXPECT_EQ(unitsExpected, parser.getError(0)->getUnits());
@@ -1406,8 +1406,8 @@ TEST(Parser, parseIds) {
                     "<units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>"
                 "</import>"
                 "<units name=\"units2\" id=\"u2id\"/>"
+                "<units name=\"units3\" id=\"u3id\"/>"
                 "<component name=\"component2\" id=\"c2id\">"
-                    "<units name=\"units3\" id=\"u3id\"/>"
                     "<variable name=\"variable1\" id=\"vid\"/>"
                 "</component>"
             "</model>";
@@ -1423,6 +1423,6 @@ TEST(Parser, parseIds) {
     EXPECT_EQ("i2id", model->getUnits("units1")->getImport()->getId());
     EXPECT_EQ("u2id", model->getUnits("units2")->getId());
     EXPECT_EQ("c2id", model->getComponent("component2")->getId());
-    EXPECT_EQ("u3id", model->getComponent("component2")->getUnits("units3")->getId());
+    EXPECT_EQ("u3id", model->getUnits("units3")->getId());
     EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
 }

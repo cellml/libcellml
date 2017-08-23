@@ -400,33 +400,6 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         }
         mValidator->addError(err);
     }
-    // Check for units in this component.
-    if (component->unitsCount() > 0) {
-        std::vector<std::string> unitsNames;
-        for (size_t i = 0; i < component->unitsCount(); ++i) {
-            UnitsPtr units = component->getUnits(i);
-            // Check for duplicate units names in this component.
-            std::string unitsName = units->getName();
-            if (unitsName.length()) {
-                if(std::find(unitsNames.begin(), unitsNames.end(), unitsName) != unitsNames.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->getName() +
-                                        "' contains multiple units with the name '" + unitsName +
-                                        "'. Valid units names should be unique to their component.");
-                    err->setComponent(component);
-                    err->setKind(Error::Kind::COMPONENT);
-                    err->setRule(SpecificationRule::UNITS_COMPONENT_UNIQUE);
-                    mValidator->addError(err);
-                }
-                unitsNames.push_back(unitsName);
-            }
-        }
-        for (size_t i = 0; i < component->unitsCount(); ++i) {
-            // Validate units.
-            UnitsPtr units = component->getUnits(i);
-            validateUnits(units, unitsNames);
-        }
-    }
     // Check for variables in this component.
     std::vector<std::string> variableNames;
     if (component->variableCount() > 0) {
@@ -589,18 +562,16 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->getUnits())) {
         Component* component = static_cast<Component*>(variable->getParent());
-        if (!component->hasUnits(variable->getUnits())) {
-            Model* model = static_cast<Model*>(component->getParent());
-            if (!model->hasUnits(variable->getUnits())) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Variable '" + variable->getName() +
-                                    "' has an invalid units reference '" + variable->getUnits() +
-                                    "' that does not correspond with a standard unit or units in the variable's parent component or model.");
-                err->setVariable(variable);
-                err->setKind(Error::Kind::VARIABLE);
-                err->setRule(SpecificationRule::VARIABLE_UNITS);
-                mValidator->addError(err);
-            }
+        Model* model = static_cast<Model*>(component->getParent());
+        if (model && !model->hasUnits(variable->getUnits())) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Variable '" + variable->getName() +
+                                "' has an invalid units reference '" + variable->getUnits() +
+                                "' that does not correspond with a standard unit or units in the variable's parent component or model.");
+            err->setVariable(variable);
+            err->setKind(Error::Kind::VARIABLE);
+            err->setRule(SpecificationRule::VARIABLE_UNITS);
+            mValidator->addError(err);
         }
     }
     // Check for a valid interface attribute.
@@ -800,7 +771,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         } else {
             // Check for a matching units in this component.
-            if (!component->hasUnits(unitsName)) {
+            Model* model = static_cast<Model*>(component->getParent());
+            if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
                     ErrorPtr err = std::make_shared<Error>();

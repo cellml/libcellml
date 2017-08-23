@@ -80,7 +80,7 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits) {
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
     libcellml::UnitsPtr units = std::make_shared<libcellml::Units>();
     model->addComponent(component);
-    component->addUnits(units);
+    model->addUnits(units);
     validator.validateModel(model);
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
@@ -108,8 +108,8 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits) {
     model->addComponent(c2);
     model->addUnits(u1);
     model->addUnits(u2);
-    c1->addUnits(u3);
-    c1->addUnits(u4);
+    model->addUnits(u3);
+    model->addUnits(u4);
 
     model->setName("multiplicity");
     c1->setName("michael");
