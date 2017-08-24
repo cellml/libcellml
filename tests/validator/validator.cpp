@@ -91,9 +91,8 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits) {
 
 TEST(Validator, modelWithDuplicateComponentsAndUnits) {
     std::vector<std::string> expectedErrors = {
-        "Component 'michael' contains multiple units with the name 'batman'. Valid units names should be unique to their component.",
-        "Model 'multiplicity' contains multiple components with the name 'michael'. Valid component names should be unique to their model.",
-        "Model 'multiplicity' contains multiple units with the name 'keaton'. Valid units names should be unique to their model."
+        "Model 'multiplicity' contains multiple components with the name 'michael'. Valid component names must be unique to their model.",
+        "Model 'multiplicity' contains multiple units with the name 'keaton'. Valid units names must be unique to their model."
     };
 
     libcellml::Validator validator;
@@ -102,22 +101,16 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits) {
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
     model->addComponent(c1);
     model->addComponent(c2);
     model->addUnits(u1);
     model->addUnits(u2);
-    model->addUnits(u3);
-    model->addUnits(u4);
 
     model->setName("multiplicity");
     c1->setName("michael");
     c2->setName("michael");
     u1->setName("keaton");
     u2->setName("keaton");
-    u3->setName("batman");
-    u4->setName("batman");
     validator.validateModel(model);
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
@@ -128,7 +121,7 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits) {
 
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
     std::vector<std::string> expectedErrors = {
-        "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names should be unique to their component.",
+        "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "Variable does not have a valid name attribute.",
         "Variable 'margie' does not have a valid units attribute.",
         "Variable 'ransom' has an invalid units reference 'dollars' that does not correspond with a standard unit or units in the variable's parent component or model."

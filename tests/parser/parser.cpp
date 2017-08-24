@@ -230,16 +230,15 @@ TEST(Parser, parseNamedModelWithNamedComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, parseModelWithNamedComponentWithUnits) {
+TEST(Parser, parseModelWithUnitsAndNamedComponent) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheit\">"
+                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
+                "<component name=\"component_name\"/>"
             "</model>";
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -501,27 +500,23 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, modelWithNamedComponentWithUnits) {
+TEST(Parser, modelWithUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheit\">"
+                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
             "</model>";
 
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheit\">"
+                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
             "</model>";
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -532,36 +527,32 @@ TEST(Parser, modelWithNamedComponentWithUnits) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
+TEST(Parser, modelWithInvalidUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\" temperature=\"451\">"
-                        "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
-                            "<degrees/>"
-                        "</unit>"
-                        "<bobshouse address=\"34 Rich Lane\"/>"
-                        "<unit GUnit=\"50c\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                    "<units jerry=\"seinfeld\">"
-                        "<unit units=\"friends\" neighbor=\"kramer\"/>"
-                        "<unit george=\"friends\"/>"
-                    "</units>"
-                "</component>"
+                "<units name=\"fahrenheit\" temperature=\"451\">"
+                    "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
+                        "<degrees/>"
+                    "</unit>"
+                    "<bobshouse address=\"34 Rich Lane\"/>"
+                    "<unit GUnit=\"50c\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
+                "<units jerry=\"seinfeld\">"
+                    "<unit units=\"friends\" neighbor=\"kramer\"/>"
+                    "<unit george=\"friends\"/>"
+                "</units>"
             "</model>";
 
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit units=\"celsius\"/>"
-                        "<unit units=\"\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheit\">"
+                    "<unit units=\"celsius\"/>"
+                    "<unit units=\"\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
             "</model>";
 
     std::vector<std::string> expectedErrors = {

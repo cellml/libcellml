@@ -294,7 +294,7 @@ void Validator::validateModel(const ModelPtr &model)
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Model '" + model->getName() +
                                         "' contains multiple components with the name '" + componentName +
-                                        "'. Valid component names should be unique to their model.");
+                                        "'. Valid component names must be unique to their model.");
                     err->setModel(model);
                     err->setKind(Error::Kind::MODEL);
                     addError(err);
@@ -365,7 +365,7 @@ void Validator::validateModel(const ModelPtr &model)
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Model '" + model->getName() +
                                         "' contains multiple units with the name '" + unitsName +
-                                        "'. Valid units names should be unique to their model.");
+                                        "'. Valid units names must be unique to their model.");
                     err->setModel(model);
                     err->setKind(Error::Kind::MODEL);
                     err->setRule(SpecificationRule::UNITS_MODEL_UNIQUE);
@@ -412,7 +412,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Component '" + component->getName() +
                                         "' contains multiple variables with the name '" + variableName +
-                                        "'. Valid variable names should be unique to their component.");
+                                        "'. Valid variable names must be unique to their component.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::COMPONENT);
                     err->setRule(SpecificationRule::VARIABLE_NAME);
