@@ -39,9 +39,9 @@ public:
     Model& operator=(Model m); /**< Assignment operator */
 
     /**
-     * @brief Add a child units to this component entity.
+     * @brief Add a child units to this model.
      *
-     * Add a copy of the given units as a child units of this component entity.
+     * Add a copy of the given units as a child units of this model.
      *
      * @param units The units to add.
      */
@@ -50,7 +50,7 @@ public:
     /**
      * @brief Remove the units at the given @p index.
      *
-     * Remove the units from this component entity at the given @p index.
+     * Remove the units from this model at the given @p index.
      * @p index must be in the range [0, #units).
      *
      * @param index The index of the units to remove.
@@ -86,23 +86,23 @@ public:
     bool removeUnits(const UnitsPtr &units);
 
     /**
-     * @brief Remove all units stored in this component entity.
+     * @brief Remove all units stored in this model.
      *
-     * Clears all units that have been added to this component entity.
+     * Clears all units that have been added to this model.
      */
     void removeAllUnits();
 
     /**
-     * @brief Tests to see if the units is within this component entity.
+     * @brief Tests to see if the units is within this model.
      *
      * Tests to see if the units with the given @c name is contained
      * within this component entity.  Returns @c true if the units is in
-     * the component entity and @c false otherwise.
+     * the model and @c false otherwise.
      *
      * @param name The name of the units to test for existence in
-     * this component entity.
+     * this model.
      *
-     * @return @c true if the named units is in the component entity
+     * @return @c true if the named units is in the model
      * and @c false otherwise.
      */
     bool hasUnits(const std::string &name) const;
@@ -190,9 +190,9 @@ public:
     bool replaceUnits(const std::string &name, const UnitsPtr &units);
 
     /**
-     * @brief Get the number of units in the component entity.
+     * @brief Get the number of units in the model.
      *
-     * Returns the number of units (non-imported) the component entity contains.
+     * Returns the number of units (non-imported) the model contains.
      *
      * @return The number of units.
      */
