@@ -86,6 +86,16 @@ TEST(Units, compoundUnitsRaw) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Units, addUnitsVariations) {
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("compound_unit");
+
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
+    u->addUnit(libcellml::Units::StandardUnit::KELVIN, 0.001, 2.0, 5.5);
+
+    EXPECT_EQ(2, u->unitCount());
+}
+
 TEST(Units, compoundUnitsUsingDefines) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -377,75 +387,71 @@ TEST(Units, farhenheit) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"fahrenheit\">"
-                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                 "</units>"
             "</model>";
 
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("fahrenheit");
+    u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0.0, 1.0, 1.8, 32.0);
+    u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
     libcellml::Printer printer(libcellml::Format::XML);
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("fahrenheit", u->getName());
+    EXPECT_EQ("fahrenheitish", u->getName());
 }
 
 TEST(Units, getUnitAttributes) {
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("fahrenheit");
+    u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0.0, 1.0, 1.8, 32.0);
+    u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
     std::string reference, prefix;
-    double exponent, multiplier, offset;
-    u->getUnitAttributes(0, reference, prefix, exponent, multiplier, offset);
+    double exponent, multiplier;
+    u->getUnitAttributes(0, reference, prefix, exponent, multiplier);
     EXPECT_EQ("celsius", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
-    EXPECT_DOUBLE_EQ(32.0, offset);
 
-    u->addUnit("NewUnit", 4.0, 1.05, 17.0, -999.9999);
-    u->getUnitAttributes(1, reference, prefix, exponent, multiplier, offset);
+    u->addUnit("NewUnit", 4.0, 1.05, 17.0);
+    u->getUnitAttributes(1, reference, prefix, exponent, multiplier);
     EXPECT_EQ("NewUnit", reference);
     EXPECT_EQ("4", prefix);
     EXPECT_DOUBLE_EQ(1.05, exponent);
     EXPECT_DOUBLE_EQ(17, multiplier);
-    EXPECT_DOUBLE_EQ(-999.9999, offset);
-
+ \
     // Get non-existent unit.
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, offset);
+    u->getUnitAttributes(2, reference, prefix, exponent, multiplier);
     EXPECT_EQ("", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1, exponent);
     EXPECT_DOUBLE_EQ(1, multiplier);
-    EXPECT_DOUBLE_EQ(0, offset);
 
     u->addUnit("daves", "house");
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, offset);
+    u->getUnitAttributes(2, reference, prefix, exponent, multiplier);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes("daves", prefix, exponent, multiplier, offset);
+    u->getUnitAttributes("daves", prefix, exponent, multiplier);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes(libcellml::Units::StandardUnit::CELSIUS, prefix, exponent, multiplier, offset);
+    u->getUnitAttributes("celsius", prefix, exponent, multiplier);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
-    EXPECT_DOUBLE_EQ(32.0, offset);
 }
 
 TEST(Units, multipleUnitUsingStandardRef) {
@@ -463,14 +469,14 @@ TEST(Units, multipleUnitUsingStandardRef) {
     EXPECT_EQ(3, u.unitCount());
 
     std::string prefix, reference;
-    double exponent, multiplier, offset;
-    u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, offset);
+    double exponent, multiplier;
+    u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(0, reference, prefix, exponent, multiplier, offset);
+    u.getUnitAttributes(0, reference, prefix, exponent, multiplier);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(1, reference, prefix, exponent, multiplier, offset);
+    u.getUnitAttributes(1, reference, prefix, exponent, multiplier);
     EXPECT_EQ("centi", prefix);
-    u.getUnitAttributes(2, reference, prefix, exponent, multiplier, offset);
+    u.getUnitAttributes(2, reference, prefix, exponent, multiplier);
     EXPECT_EQ("micro", prefix);
 
 }
@@ -503,8 +509,8 @@ TEST(Units, multipleAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"fahrenheit\">"
-                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                 "</units>"
                 "<units name=\"metres_per_second\">"
                     "<unit units=\"metre\"/>"
@@ -515,10 +521,10 @@ TEST(Units, multipleAndParse) {
     libcellml::Model m;
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    u1->setName("fahrenheit");
+    u1->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u1->addUnit(libcellml::Units::StandardUnit::CELSIUS, 0, 1.0, 1.8, 32.0);
+    u1->addUnit("celsius", 0, 1.0, 1.8);
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("metres_per_second");

@@ -619,7 +619,6 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
                     "<unit units=\"ned\"/>"
                     "<unit units=\"king in the north\"/>"
                     "<unit prefix=\"wolf\" units=\"celsius\"/>"
-                    "<unit exponent=\"7.0\" offset=\"-32.0\" units=\"celsius\"/>"
                 "</units>"
             "</model>";
 
@@ -628,8 +627,6 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "Unit in units 'stark' does not have a valid units reference.",
         "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid real number or a SI prefix.",
-        "Unit referencing 'celsius' has an offset of '-32' and 5 sibling(s) in units 'stark'. A valid unit with a non-zero offset should have no siblings.",
-        "Unit referencing 'celsius' has an offset of '-32' and an exponent of '7'. A valid unit with a non-zero offset should have no exponent or an exponent with a value of '1'."
     };
 
     libcellml::Parser p(libcellml::Format::XML);

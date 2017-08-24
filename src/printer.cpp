@@ -105,17 +105,14 @@ std::string Printer::printUnits(UnitsPtr units) const
                     repr += ">";
                     for (size_t i = 0; i < units->unitCount(); ++i) {
                         std::string reference, prefix;
-                        double exponent, multiplier, offset;
-                        units->getUnitAttributes(i, reference, prefix, exponent, multiplier, offset);
+                        double exponent, multiplier;
+                        units->getUnitAttributes(i, reference, prefix, exponent, multiplier);
                         repr += "<unit";
                         if (exponent != 1.0) {
                             repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
                         }
                         if (multiplier != 1.0) {
                             repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
-                        }
-                        if (offset != 0.0) {
-                            repr += " offset=\"" + convertDoubleToString(offset) + "\"";
                         }
                         if (prefix != "") {
                             repr += " prefix=\"" + prefix + "\"";

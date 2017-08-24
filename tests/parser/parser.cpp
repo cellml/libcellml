@@ -235,8 +235,8 @@ TEST(Parser, parseModelWithNamedComponentWithUnits) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
                 "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                    "<units name=\"fahrenheitish\">"
+                        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                     "</units>"
                     "<units name=\"dimensionless\"/>"
                 "</component>"
@@ -507,7 +507,7 @@ TEST(Parser, modelWithNamedComponentWithUnits) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
                 "<component name=\"component_name\">"
                     "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                     "</units>"
                     "<units name=\"dimensionless\"/>"
                 "</component>"
@@ -518,7 +518,7 @@ TEST(Parser, modelWithNamedComponentWithUnits) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
                 "<component name=\"component_name\">"
                     "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                     "</units>"
                     "<units name=\"dimensionless\"/>"
                 "</component>"
@@ -538,7 +538,7 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
                 "<component name=\"component_name\">"
                     "<units name=\"fahrenheit\" temperature=\"451\">"
-                        "<unit multiplier=\"Z\" offset=\"MM\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
+                        "<unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
                             "<degrees/>"
                         "</unit>"
                         "<bobshouse address=\"34 Rich Lane\"/>"
@@ -568,7 +568,6 @@ TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
         "Units 'fahrenheit' has an invalid attribute 'temperature'.",
         "Unit referencing 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
         "Unit referencing 'celsius' in units 'fahrenheit' has a multiplier with the value 'Z' that cannot be converted to a decimal number.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an offset with the value 'MM' that cannot be converted to a decimal number.",
         "Unit referencing 'celsius' in units 'fahrenheit' has an exponent with the value '35.0E+310' that cannot be converted to a decimal number.",
         "Unit referencing 'celsius' in units 'fahrenheit' has an invalid attribute 'bill'.",
         "Units 'fahrenheit' has an invalid child element 'bobshouse'.",
