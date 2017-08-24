@@ -559,7 +559,6 @@ TEST(Parser, modelWithInvalidUnits) {
         "Units 'fahrenheit' has an invalid attribute 'temperature'.",
         "Unit referencing 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
         "Unit referencing 'celsius' in units 'fahrenheit' has a multiplier with the value 'Z' that cannot be converted to a decimal number.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an offset with the value 'MM' that cannot be converted to a decimal number.",
         "Unit referencing 'celsius' in units 'fahrenheit' has an exponent with the value '35.0E+310' that cannot be converted to a decimal number.",
         "Unit referencing 'celsius' in units 'fahrenheit' has an invalid attribute 'bill'.",
         "Units 'fahrenheit' has an invalid child element 'bobshouse'.",

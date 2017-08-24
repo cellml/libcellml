@@ -430,7 +430,6 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     std::string prefix = "";
     double exponent = 1.0;
     double multiplier = 1.0;
-    double offset = 0.0;
     // A unit should not have any children.
     if (node->getFirstChild()) {
         XmlNodePtr childNode = node->getFirstChild();
@@ -490,18 +489,6 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setRule(SpecificationRule::UNIT_MULTIPLIER);
                 mParser->addError(err);
             }
-        } else if (attribute->isType("offset")) {
-            if (!convertToDouble(attribute->getValue(), &offset)) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Unit referencing '" + node->getAttribute("units") +
-                                    "' in units '" + units->getName() +
-                                    "' has an offset with the value '" + attribute->getValue() +
-                                    "' that cannot be converted to a decimal number.");
-                err->setUnits(units);
-                err->setKind(Error::Kind::UNITS);
-                err->setRule(SpecificationRule::UNIT_OFFSET);
-                mParser->addError(err);
-            }
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Unit referencing '" + node->getAttribute("units") +
@@ -515,7 +502,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         attribute = attribute->getNext();
     }
     // Add this unit to the parent units.
-    units->addUnit(reference, prefix, exponent, multiplier, offset);
+    units->addUnit(reference, prefix, exponent, multiplier);
 }
 
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)

@@ -473,8 +473,8 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
 {
     // Validate the unit at the given index.
     std::string reference, prefix;
-    double exponent, multiplier, offset;
-    units->getUnitAttributes(index, reference, prefix, exponent, multiplier, offset);
+    double exponent, multiplier;
+    units->getUnitAttributes(index, reference, prefix, exponent, multiplier);
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) &&
             (!isStandardUnitName(reference))) {
@@ -508,34 +508,6 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
             }
-        }
-    }
-    if (offset != 0.0) {
-        if (units->unitCount() > 1) {
-            std::stringstream ss;
-            ss << "Unit referencing '" << reference << "' has an offset of '" << offset
-               << "' and " << units->unitCount()-1 << " sibling(s) in units '" << units->getName()
-               << "'. A valid unit with a non-zero offset should have no siblings.";
-            std::string description = ss.str();
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(description);
-            err->setUnits(units);
-            err->setKind(Error::Kind::UNITS);
-            err->setRule(SpecificationRule::UNIT_OFFSET);
-            mValidator->addError(err);
-        }
-        if (exponent != 1.0) {
-            std::stringstream ss;
-            ss << "Unit referencing '" << reference << "' has an offset of '" << offset
-               << "' and an exponent of '" << exponent
-               << "'. A valid unit with a non-zero offset should have no exponent or an exponent with a value of '1'.";
-            std::string description = ss.str();
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(description);
-            err->setUnits(units);
-            err->setKind(Error::Kind::UNITS);
-            err->setRule(SpecificationRule::UNIT_OFFSET);
-            mValidator->addError(err);
         }
     }
 }
