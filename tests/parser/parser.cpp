@@ -962,7 +962,6 @@ TEST(Parser, connectionErrorNoMapComponents) {
         "Connection in model 'modelName' has an invalid attribute 'name'.",
         "Connection in model 'modelName' has an invalid child element 'map_units' of element 'map_variables'.",
         "Connection in model 'modelName' has an invalid map_variables attribute 'variable_3'.",
-        "Connection in model 'modelName' does not have a map_components element.",
         "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.",
         "Connection in model 'modelName' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid."
     };
@@ -983,14 +982,12 @@ TEST(Parser, connectionErrorNoMapVariables) {
                 "<component name=\"componentA\">"
                     "<variable name=\"variable1\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_2=\"componentA\" component_1=\"componentA\" component_3=\"componentA\"/>"
-                    "<map_components component_2=\"componentA\" component_1=\"componentA\"/>"
-                "</connection>"
+                "<connection component_2=\"componentA\" component_1=\"componentA\" component_3=\"componentA\"/>"
+                "<connection component_2=\"componentA\" component_1=\"componentA\"/>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model '' has an invalid map_components attribute 'component_3'.";
-    const std::string expectedError2 = "Connection in model '' has more than one map_components element.";
+    const std::string expectedError1 = "Connection in model '' does not have a map_variables element.";
+    const std::string expectedError2 = "Connection in model '' does not have a map_variables element.";
     const std::string expectedError3 = "Connection in model '' does not have a map_variables element.";
 
     libcellml::Parser p(libcellml::Format::XML);
@@ -1011,8 +1008,7 @@ TEST(Parser, importedComponent2Connection) {
                 "<component name=\"component_bob\">"
                     "<variable name=\"variable_bob\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_2=\"component_in_this_model\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_in_this_model\" component_1=\"component_bob\"/>"
                     "<map_variables variable_2=\"variable_import\" variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1033,9 +1029,8 @@ TEST(Parser, validConnectionMapVariablesFirst) {
                 "<component name=\"james\">"
                     "<variable name=\"jimbo\"/>"
                 "</component>"
-                "<connection>"
+                "<connection component_1=\"robert\" component_2=\"james\"/>"
                     "<map_variables variable_2=\"jimbo\" variable_1=\"bob\"/>"
-                    "<map_components component_1=\"robert\" component_2=\"james\"/>"
                 "</connection>"
             "</model>";
 
@@ -1054,8 +1049,7 @@ TEST(Parser, component2ConnectionVariableMissing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_dave\" component_1=\"component_bob\"/>"
                     "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1079,8 +1073,7 @@ TEST(Parser, component2InConnectionMissing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_1=\"component_bob\"/>"
+                "<connection component_1=\"component_bob\"/>"
                     "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1096,8 +1089,7 @@ TEST(Parser, component2InConnectionMissing) {
                 "</component>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model '' does not have a valid component_2 in a map_components element.";
-    const std::string expectedError2 = "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
+    const std::string expectedError1 = "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
 
     // Parse
     libcellml::Parser p(libcellml::Format::XML);
@@ -1108,8 +1100,6 @@ TEST(Parser, component2InConnectionMissing) {
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
-    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
-
 }
 
 TEST(Parser, connectionVariable2Missing) {
@@ -1122,8 +1112,7 @@ TEST(Parser, connectionVariable2Missing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_dave\" component_1=\"component_bob\"/>"
                     "<map_variables variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1147,8 +1136,7 @@ TEST(Parser, connectionVariable1Missing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_dave\" component_1=\"component_bob\"/>"
                     "<map_variables variable_2=\"variable_dave\"/>"
                 "</connection>"
             "</model>";
@@ -1172,8 +1160,7 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
                 "<component name=\"component2\">"
                     "<variable name=\"variable2\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
+                "<connection component_1=\"component1\"  component_2=\"component2\"/>"
                     "<map_variabels variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
             "</model>";
@@ -1358,9 +1345,6 @@ TEST(Parser, invalidModelWithTextInAllElements) {
                 "</component>\n"
                 "<connection>"
                     "finn"
-                    "<map_components component_1=\"ship\">"
-                        "trooper"
-                    "</map_components>"
                 "</connection>\n"
                 "<encapsulation>"
                     "awakens"
@@ -1379,7 +1363,6 @@ TEST(Parser, invalidModelWithTextInAllElements) {
         "Variable 'jedi' has an invalid non-whitespace child text element 'rey'.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element 'finn'.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element 'trooper'.",
-        "Connection in model 'starwars' does not have a valid component_2 in a map_components element.",
         "Connection in model 'starwars' does not have a map_variables element.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
         "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
