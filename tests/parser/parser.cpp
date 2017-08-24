@@ -234,7 +234,7 @@ TEST(Parser, parseModelWithUnitsAndNamedComponent) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<units name=\"fahrenheit\">"
+                "<units name=\"fahrenheitish\">"
                     "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                 "</units>"
                 "<units name=\"dimensionless\"/>"
@@ -504,8 +504,8 @@ TEST(Parser, modelWithUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<units name=\"fahrenheit\">"
-                    "<unit multiplier=\"1.8\" offset=\"32\" units=\"celsius\"/>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                 "</units>"
                 "<units name=\"dimensionless\"/>"
             "</model>";
@@ -513,7 +513,7 @@ TEST(Parser, modelWithUnits) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<units name=\"fahrenheit\">"
+                "<units name=\"fahrenheitish\">"
                     "<unit multiplier=\"1.8\" units=\"celsius\"/>"
                 "</units>"
                 "<units name=\"dimensionless\"/>"
@@ -531,7 +531,7 @@ TEST(Parser, modelWithInvalidUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<units name=\"fahrenheit\" temperature=\"451\">"
+                "<units name=\"fahrenheitish\" temperature=\"451\">"
                     "<unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
                         "<degrees/>"
                     "</unit>"
@@ -548,7 +548,7 @@ TEST(Parser, modelWithInvalidUnits) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<units name=\"fahrenheit\">"
+                "<units name=\"fahrenheitish\">"
                     "<unit units=\"celsius\"/>"
                     "<unit units=\"\"/>"
                 "</units>"
@@ -556,13 +556,13 @@ TEST(Parser, modelWithInvalidUnits) {
             "</model>";
 
     std::vector<std::string> expectedErrors = {
-        "Units 'fahrenheit' has an invalid attribute 'temperature'.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has a multiplier with the value 'Z' that cannot be converted to a decimal number.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an exponent with the value '35.0E+310' that cannot be converted to a decimal number.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an invalid attribute 'bill'.",
-        "Units 'fahrenheit' has an invalid child element 'bobshouse'.",
-        "Unit referencing '' in units 'fahrenheit' has an invalid attribute 'GUnit'.",
+        "Units 'fahrenheitish' has an invalid attribute 'temperature'.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid child element 'degrees'.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has a multiplier with the value 'Z' that cannot be converted to a decimal number.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has an exponent with the value '35.0E+310' that cannot be converted to a decimal number.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid attribute 'bill'.",
+        "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
+        "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
         "Units '' has an invalid attribute 'jerry'.",
         "Unit referencing 'friends' in units '' has an invalid attribute 'neighbor'.",
         "Unit referencing '' in units '' has an invalid attribute 'george'."

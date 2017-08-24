@@ -197,9 +197,8 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::UNIT_CIRCULAR_REF, "9.1.1.2"}, // TODO: double-check meaning & implementation.
     {SpecificationRule::UNIT_ATTRIBUTE, "9.1.2"},
     {SpecificationRule::UNIT_PREFIX, "9.1.2.1"},
-    {SpecificationRule::UNIT_OFFSET, "9.1.2.2"},
-    {SpecificationRule::UNIT_MULTIPLIER, "9.1.2.3"},
-    {SpecificationRule::UNIT_EXPONENT, "9.1.2.4"},
+    {SpecificationRule::UNIT_MULTIPLIER, "9.1.2.2"},
+    {SpecificationRule::UNIT_EXPONENT, "9.1.2.3"},
     {SpecificationRule::COMPONENT_NAME, "10.1.1"},
     {SpecificationRule::COMPONENT_CHILD, "10.1.2"},
     {SpecificationRule::VARIABLE_ATTRIBUTE, "11.1"},
