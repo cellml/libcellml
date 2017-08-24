@@ -42,7 +42,7 @@ TEST(UnitsImport, basics) {
 
 TEST(UnitsImport, importValidName) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
                     "<units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>"
@@ -75,7 +75,7 @@ TEST(UnitsImport, importValidName) {
 
 TEST(UnitsImport, importInvalidName) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
                     "<units units_ref=\"a units in that model\" name=\"units_in_this_model\"/>"
@@ -104,7 +104,7 @@ TEST(UnitsImport, importInvalidName) {
 
 TEST(UnitsImport, nonExistentURL) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
                     "<units units_ref=\"per_mole\" name=\"noble_per_mole\"/>"
@@ -133,7 +133,7 @@ TEST(UnitsImport, nonExistentURL) {
 
 TEST(UnitsImport, importModifyAndParse) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
                     "<units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>"

@@ -21,7 +21,7 @@ limitations under the License.
 
 TEST(Printer, printEmptyModel) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
 
@@ -34,7 +34,7 @@ TEST(Printer, printEmptyModel) {
 
 TEST(Model, printEmptyModelAllocatePointer) {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::Model* m = new libcellml::Model();
 
