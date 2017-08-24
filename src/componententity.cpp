@@ -36,9 +36,9 @@ struct ComponentEntity::ComponentEntityImpl
 {
     std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
     std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
+    std::vector<ComponentPtr> mComponents;
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-    std::vector<ComponentPtr> mComponents;
     std::vector<UnitsPtr> mUnits;
 };
 
@@ -52,18 +52,6 @@ std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findCo
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
                         [=](const ComponentPtr& c) -> bool { return c == component; });
-}
-
-std::vector<UnitsPtr>::iterator ComponentEntity::ComponentEntityImpl::findUnits(const std::string &name)
-{
-    return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr& u) -> bool { return u->getName() == name; });
-}
-
-std::vector<UnitsPtr>::iterator ComponentEntity::ComponentEntityImpl::findUnits(const UnitsPtr &units)
-{
-    return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr& u) -> bool { return u == units; });
 }
 
 // Interface class Model implementation
@@ -102,115 +90,6 @@ ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
 void ComponentEntity::swap(ComponentEntity &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
-}
-
-void ComponentEntity::addUnits(const UnitsPtr & units)
-{
-    mPimpl->mUnits.push_back(units);
-}
-
-bool ComponentEntity::removeUnits(size_t index)
-{
-    bool status = false;
-    if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
-        status = true;
-    }
-
-    return status;
-}
-
-bool ComponentEntity::removeUnits(const std::string &name)
-{
-    bool status = false;
-    auto result = mPimpl->findUnits(name);
-    if (result != mPimpl->mUnits.end()) {
-        mPimpl->mUnits.erase(result);
-        status = true;
-    }
-
-    return status;
-}
-
-bool ComponentEntity::removeUnits(const UnitsPtr &units)
-{
-    bool status = false;
-    auto result = mPimpl->findUnits(units);
-    if (result != mPimpl->mUnits.end()) {
-        mPimpl->mUnits.erase(result);
-        status = true;
-    }
-
-    return status;
-}
-
-void ComponentEntity::removeAllUnits()
-{
-    mPimpl->mUnits.clear();
-}
-
-bool ComponentEntity::hasUnits(const std::string &name) const
-{
-    return mPimpl->findUnits(name) != mPimpl->mUnits.end();
-}
-
-UnitsPtr ComponentEntity::getUnits(size_t index) const
-{
-    UnitsPtr units = nullptr;
-    if (index < mPimpl->mUnits.size()) {
-        units = mPimpl->mUnits.at(index);
-    }
-
-    return units;
-}
-
-UnitsPtr ComponentEntity::getUnits(const std::string &name) const
-{
-    UnitsPtr units = nullptr;
-    auto result = mPimpl->findUnits(name);
-    if (result != mPimpl->mUnits.end()) {
-        units = *result;
-    }
-
-    return units;
-}
-
-UnitsPtr ComponentEntity::takeUnits(size_t index)
-{
-    UnitsPtr units = nullptr;
-    if (index < mPimpl->mUnits.size()) {
-        units = mPimpl->mUnits.at(index);
-        removeUnits(index);
-        units->clearParent();
-    }
-
-    return units;
-}
-
-UnitsPtr ComponentEntity::takeUnits(const std::string &name)
-{
-    return takeUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
-}
-
-bool ComponentEntity::replaceUnits(size_t index, const UnitsPtr &units)
-{
-    bool status = false;
-    if (removeUnits(index)) {
-        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + index, units);
-        status = true;
-    }
-
-    return status;
-}
-
-bool ComponentEntity::replaceUnits(const std::string &name, const UnitsPtr &units)
-{
-    return replaceUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin(), units);
-}
-
-size_t ComponentEntity::unitsCount() const
-{
-    return mPimpl->mUnits.size();
 }
 
 void ComponentEntity::addComponent(const ComponentPtr &c)

@@ -154,12 +154,8 @@ std::string Printer::printComponent(ComponentPtr component) const
             repr += " id=\"" + component->getId() + "\"";
         }
         size_t variable_count = component->variableCount();
-        size_t units_count = component->unitsCount();
-        if ((units_count > 0) || (variable_count > 0) || (component->getMath().length())) {
+        if ((variable_count > 0) || (component->getMath().length())) {
             repr += ">";
-            for (size_t i = 0; i < units_count; ++i) {
-                repr += printUnits(component->getUnits(i));
-            }
             for (size_t i = 0; i < variable_count; ++i) {
                 repr += printVariable(component->getVariable(i));
             }

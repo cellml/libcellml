@@ -48,7 +48,6 @@ enum class SpecificationRule
     UNIT_CIRCULAR_REF,
     UNIT_ATTRIBUTE,
     UNIT_PREFIX,
-    UNIT_OFFSET,
     UNIT_MULTIPLIER,
     UNIT_EXPONENT,
     COMPONENT_NAME,
