@@ -347,10 +347,6 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             VariablePtr variable = std::make_shared<Variable>();
             loadVariable(variable, childNode);
             component->addVariable(variable);
-        } else if (childNode->isType("units")) {
-            UnitsPtr units = std::make_shared<Units>();
-            loadUnits(units, childNode);
-            component->addUnits(units);
         } else if (childNode->isType("math")) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.

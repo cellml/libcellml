@@ -230,16 +230,15 @@ TEST(Parser, parseNamedModelWithNamedComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, parseModelWithNamedComponentWithUnits) {
+TEST(Parser, parseModelWithUnitsAndNamedComponent) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheitish\">"
-                        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
+                "<component name=\"component_name\"/>"
             "</model>";
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -301,8 +300,8 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<units name=\"unit_name\" base_unit=\"yes\"/>"
                 "<component name=\"component_name\">"
-                    "<units name=\"unit_name\" base_unit=\"yes\"/>"
                 "</component>"
             "</model>";
 
@@ -314,7 +313,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     EXPECT_EQ(1, parser.errorCount());
     EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
 
-    libcellml::UnitsPtr unitsExpected = model->getComponent("component_name")->getUnits("unit_name");
+    libcellml::UnitsPtr unitsExpected = model->getUnits("unit_name");
 
     // Get units from error and check.
     EXPECT_EQ(unitsExpected, parser.getError(0)->getUnits());
@@ -501,27 +500,23 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, modelWithNamedComponentWithUnits) {
+TEST(Parser, modelWithUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
             "</model>";
 
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
             "</model>";
 
     libcellml::Parser parser(libcellml::Format::XML);
@@ -532,46 +527,42 @@ TEST(Parser, modelWithNamedComponentWithUnits) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Parser, modelWithNamedComponentWithInvalidUnits) {
+TEST(Parser, modelWithInvalidUnits) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\" temperature=\"451\">"
-                        "<unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
-                            "<degrees/>"
-                        "</unit>"
-                        "<bobshouse address=\"34 Rich Lane\"/>"
-                        "<unit GUnit=\"50c\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                    "<units jerry=\"seinfeld\">"
-                        "<unit units=\"friends\" neighbor=\"kramer\"/>"
-                        "<unit george=\"friends\"/>"
-                    "</units>"
-                "</component>"
+                "<units name=\"fahrenheitish\" temperature=\"451\">"
+                    "<unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">"
+                        "<degrees/>"
+                    "</unit>"
+                    "<bobshouse address=\"34 Rich Lane\"/>"
+                    "<unit GUnit=\"50c\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
+                "<units jerry=\"seinfeld\">"
+                    "<unit units=\"friends\" neighbor=\"kramer\"/>"
+                    "<unit george=\"friends\"/>"
+                "</units>"
             "</model>";
 
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<component name=\"component_name\">"
-                    "<units name=\"fahrenheit\">"
-                        "<unit units=\"celsius\"/>"
-                        "<unit units=\"\"/>"
-                    "</units>"
-                    "<units name=\"dimensionless\"/>"
-                "</component>"
+                "<units name=\"fahrenheitish\">"
+                    "<unit units=\"celsius\"/>"
+                    "<unit units=\"\"/>"
+                "</units>"
+                "<units name=\"dimensionless\"/>"
             "</model>";
 
     std::vector<std::string> expectedErrors = {
-        "Units 'fahrenheit' has an invalid attribute 'temperature'.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an invalid child element 'degrees'.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has a multiplier with the value 'Z' that cannot be converted to a decimal number.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an exponent with the value '35.0E+310' that cannot be converted to a decimal number.",
-        "Unit referencing 'celsius' in units 'fahrenheit' has an invalid attribute 'bill'.",
-        "Units 'fahrenheit' has an invalid child element 'bobshouse'.",
-        "Unit referencing '' in units 'fahrenheit' has an invalid attribute 'GUnit'.",
+        "Units 'fahrenheitish' has an invalid attribute 'temperature'.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid child element 'degrees'.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has a multiplier with the value 'Z' that cannot be converted to a decimal number.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has an exponent with the value '35.0E+310' that cannot be converted to a decimal number.",
+        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid attribute 'bill'.",
+        "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
+        "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
         "Units '' has an invalid attribute 'jerry'.",
         "Unit referencing 'friends' in units '' has an invalid attribute 'neighbor'.",
         "Unit referencing '' in units '' has an invalid attribute 'george'."
@@ -1405,8 +1396,8 @@ TEST(Parser, parseIds) {
                     "<units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>"
                 "</import>"
                 "<units name=\"units2\" id=\"u2id\"/>"
+                "<units name=\"units3\" id=\"u3id\"/>"
                 "<component name=\"component2\" id=\"c2id\">"
-                    "<units name=\"units3\" id=\"u3id\"/>"
                     "<variable name=\"variable1\" id=\"vid\"/>"
                 "</component>"
             "</model>";
@@ -1422,6 +1413,6 @@ TEST(Parser, parseIds) {
     EXPECT_EQ("i2id", model->getUnits("units1")->getImport()->getId());
     EXPECT_EQ("u2id", model->getUnits("units2")->getId());
     EXPECT_EQ("c2id", model->getComponent("component2")->getId());
-    EXPECT_EQ("u3id", model->getComponent("component2")->getUnits("units3")->getId());
+    EXPECT_EQ("u3id", model->getUnits("units3")->getId());
     EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
 }
