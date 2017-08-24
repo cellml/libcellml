@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "libcellml/model.h"
 
+#include <algorithm>
 #include <map>
 #include <stack>
 #include <utility>
