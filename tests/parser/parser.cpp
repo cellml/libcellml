@@ -1007,7 +1007,7 @@ TEST(Parser, importedComponent2Connection) {
                 "<component name=\"component_bob\">"
                     "<variable name=\"variable_bob\"/>"
                 "</component>"
-                "<connection component_2=\"component_in_this_model\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_in_this_model\" component_1=\"component_bob\">"
                     "<map_variables variable_2=\"variable_import\" variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1028,7 +1028,7 @@ TEST(Parser, validConnectionMapVariablesFirst) {
                 "<component name=\"james\">"
                     "<variable name=\"jimbo\"/>"
                 "</component>"
-                "<connection component_1=\"robert\" component_2=\"james\"/>"
+                "<connection component_1=\"robert\" component_2=\"james\">"
                     "<map_variables variable_2=\"jimbo\" variable_1=\"bob\"/>"
                 "</connection>"
             "</model>";
@@ -1048,7 +1048,7 @@ TEST(Parser, component2ConnectionVariableMissing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_dave\" component_1=\"component_bob\">"
                     "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1072,7 +1072,7 @@ TEST(Parser, component2InConnectionMissing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection component_1=\"component_bob\"/>"
+                "<connection component_1=\"component_bob\">"
                     "<map_variables variable_2=\"variable_angus\" variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1111,7 +1111,7 @@ TEST(Parser, connectionVariable2Missing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_dave\" component_1=\"component_bob\">"
                     "<map_variables variable_1=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
@@ -1135,7 +1135,7 @@ TEST(Parser, connectionVariable1Missing) {
                 "<component name=\"component_dave\">"
                     "<variable name=\"variable_dave\"/>"
                 "</component>"
-                "<connection component_2=\"component_dave\" component_1=\"component_bob\"/>"
+                "<connection component_2=\"component_dave\" component_1=\"component_bob\">"
                     "<map_variables variable_2=\"variable_dave\"/>"
                 "</connection>"
             "</model>";
@@ -1159,7 +1159,7 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
                 "<component name=\"component2\">"
                     "<variable name=\"variable2\"/>"
                 "</component>"
-                "<connection component_1=\"component1\"  component_2=\"component2\"/>"
+                "<connection component_1=\"component1\"  component_2=\"component2\">"
                     "<map_variabels variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
             "</model>";
