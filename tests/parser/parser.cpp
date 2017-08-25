@@ -1339,6 +1339,9 @@ TEST(Parser, invalidModelWithTextInAllElements) {
                 "</component>\n"
                 "<connection>"
                     "finn"
+                    "<map_variables>"
+                        "trooper"
+                    "</map_variables>"
                 "</connection>\n"
                 "<encapsulation>"
                     "awakens"
@@ -1358,7 +1361,11 @@ TEST(Parser, invalidModelWithTextInAllElements) {
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element 'finn'.",
-        "Connection in model 'starwars' does not have a map_variables element.",
+        "Connection in model 'starwars' has an invalid non-whitespace child text element 'trooper'.",
+        "Connection in model 'starwars' does not have a valid variable_1 in a map_variables element.",
+        "Connection in model 'starwars' does not have a valid variable_2 in a map_variables element.",
+        "Connection in model 'starwars' specifies '' as variable_1 but the corresponding component_1 is invalid.",
+        "Connection in model 'starwars' specifies '' as variable_2 but the corresponding component_2 is invalid.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
         "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'force'."
