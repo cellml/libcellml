@@ -845,18 +845,19 @@ TEST(Parser, emptyConnections) {
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
-                "<connection>"
-                "</connection>"
                 "<connection/>"
             "</model>";
 
-    const std::string expectedError = "Connection in model 'model_name' does not contain any child elements.";
+    const std::string expectedError1 = "Connection in model 'model_name' does not have a valid component_1 in a connection element.";
+    const std::string expectedError2 = "Connection in model 'model_name' does not have a valid component_2 in a connection element.";
+    const std::string expectedError3 = "Connection in model 'model_name' must contain one or more 'map_variables' elements.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(ex);
-    EXPECT_EQ(2, p.errorCount());
-    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
-    EXPECT_EQ(expectedError, p.getError(1)->getDescription());
+    EXPECT_EQ(3, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+    EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
 }
 
 TEST(Parser, connectionErrorNoComponent2) {
@@ -866,13 +867,12 @@ TEST(Parser, connectionErrorNoComponent2) {
                 "<component name=\"componentA\">"
                     "<variable name=\"variable1\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_1=\"component1\"/>"
+                "<connection component_1=\"component1\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model 'modelA' does not have a valid component_2 in a map_components element.";
+    const std::string expectedError1 = "Connection in model 'modelA' does not have a valid component_2 in a connection element.";
     const std::string expectedError2 = "Connection in model 'modelA' specifies 'component1' as component_1 but it does not exist in the model.";
     const std::string expectedError3 = "Connection in model 'modelA' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
     const std::string expectedError4 = "Connection in model 'modelA' specifies 'variable2' as variable_2 but the corresponding component_2 is invalid.";
@@ -893,8 +893,7 @@ TEST(Parser, connectionErrorNoComponent2InModel) {
                 "<component name=\"component1\">"
                     "<variable name=\"variable1\"/>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_1=\"component1\"  component_2=\"component2\"/>"
+                "<connection  component_1=\"component1\"  component_2=\"component2\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
             "</model>";
@@ -916,13 +915,12 @@ TEST(Parser, connectionErrorNoComponent1) {
             "<component name=\"componentA\">"
                 "<variable name=\"variable1\"/>"
             "</component>"
-            "<connection>"
-                "<map_components component_2=\"componentA\"/>"
+            "<connection  component_2=\"componentA\">"
                 "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
             "</connection>"
         "</model>";
 
-    const std::string expectedError1 = "Connection in model 'modelName' does not have a valid component_1 in a map_components element.";
+    const std::string expectedError1 = "Connection in model 'modelName' does not have a valid component_1 in a connection element.";
     const std::string expectedError2 = "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.";
     const std::string expectedError3 = "Variable 'variable2' is specified as variable_2 in a connection but it does not exist in component_2 component 'componentA' of model 'modelName'.";
 
@@ -949,7 +947,9 @@ TEST(Parser, connectionErrorNoMapComponents) {
             "</model>";
 
     std::vector<std::string> expectedErrors = {
-        "Connection in model 'modelName' has an invalid attribute 'name'.",
+        "Connection in model 'modelName' has an invalid connection attribute 'name'.",
+        "Connection in model 'modelName' does not have a valid component_1 in a connection element.",
+        "Connection in model 'modelName' does not have a valid component_2 in a connection element.",
         "Connection in model 'modelName' has an invalid child element 'map_units' of element 'map_variables'.",
         "Connection in model 'modelName' has an invalid map_variables attribute 'variable_3'.",
         "Connection in model 'modelName' specifies 'variable1' as variable_1 but the corresponding component_1 is invalid.",
@@ -976,9 +976,9 @@ TEST(Parser, connectionErrorNoMapVariables) {
                 "<connection component_2=\"componentA\" component_1=\"componentA\"/>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model '' does not have a map_variables element.";
-    const std::string expectedError2 = "Connection in model '' does not have a map_variables element.";
-    const std::string expectedError3 = "Connection in model '' does not have a map_variables element.";
+    const std::string expectedError1 = "Connection in model '' has an invalid connection attribute 'component_3'.";
+    const std::string expectedError2 = "Connection in model '' must contain one or more 'map_variables' elements.";
+    const std::string expectedError3 = "Connection in model '' must contain one or more 'map_variables' elements.";
 
     libcellml::Parser p(libcellml::Format::XML);
     p.parseModel(in);
@@ -1079,7 +1079,8 @@ TEST(Parser, component2InConnectionMissing) {
                 "</component>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
+    const std::string expectedError1 = "Connection in model '' does not have a valid component_2 in a connection element.";
+    const std::string expectedError2 = "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
 
     // Parse
     libcellml::Parser p(libcellml::Format::XML);
@@ -1090,6 +1091,7 @@ TEST(Parser, component2InConnectionMissing) {
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
 
 TEST(Parser, connectionVariable2Missing) {
@@ -1240,8 +1242,10 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
         "Units '' has an invalid attribute 'jedi'.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
-        "Connection in model 'starwars' has an invalid attribute 'wookie'.",
-        "Connection in model 'starwars' does not contain any child elements.",
+        "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
+        "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
+        "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
+        "Connection in model 'starwars' must contain one or more 'map_variables' elements.",
         "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
         "Encapsulation in model 'starwars' does not contain any child elements."
     };
@@ -1351,8 +1355,9 @@ TEST(Parser, invalidModelWithTextInAllElements) {
         "Unit referencing 'ball' in units 'robot' has an invalid non-whitespace child text element 'rolls'.",
         "Component 'ship' has an invalid non-whitespace child text element 'falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element 'rey'.",
+        "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
+        "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element 'finn'.",
-        "Connection in model 'starwars' has an invalid non-whitespace child text element 'trooper'.",
         "Connection in model 'starwars' does not have a map_variables element.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
         "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
