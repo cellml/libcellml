@@ -238,7 +238,7 @@ public:
     /**
      * @brief Get the number of components in the component.
      *
-     * Returns the number of components (non-imported) the component contains.
+     * Returns the number of components the component contains.
      *
      * @return The number of components.
      */

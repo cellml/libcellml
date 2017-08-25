@@ -192,7 +192,7 @@ public:
     /**
      * @brief Get the number of units in the model.
      *
-     * Returns the number of units (non-imported) the model contains.
+     * Returns the number of units the model contains.
      *
      * @return The number of units.
      */
