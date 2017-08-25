@@ -124,7 +124,9 @@ TEST(UnitsImport, nonExistentURL) {
 
     EXPECT_EQ(importedUnits->getImport(), imp);
 
+    EXPECT_EQ(0, m.unitsCount());
     m.addUnits(importedUnits);
+    EXPECT_EQ(1, m.unitsCount());
 
     libcellml::Printer printer(libcellml::Format::XML);
     const std::string a = printer.printModel(m);
@@ -195,5 +197,8 @@ TEST(UnitsImport, importModifyAndParse) {
     libcellml::ModelPtr model = parser.parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    // check units count
+    EXPECT_EQ(5, model->unitsCount());
 }
 
