@@ -71,7 +71,9 @@ TEST(ComponentImport, singleImportA) {
 
     EXPECT_EQ(importedComponent->getImport(), imp);
 
+    EXPECT_EQ(0, m.componentCount());
     m.addComponent(importedComponent);
+    EXPECT_EQ(1, m.componentCount());
 
     libcellml::Printer printer(libcellml::Format::XML);
     const std::string a = printer.printModel(m);
@@ -124,7 +126,9 @@ TEST(ComponentImport, nonExistentURLAndParse) {
 
     EXPECT_EQ(importedComponent->getImport(), imp);
 
+    EXPECT_EQ(0, m.componentCount());
     m.addComponent(importedComponent);
+    EXPECT_EQ(1, m.componentCount());
 
     libcellml::Printer printer(libcellml::Format::XML);
     std::string a = printer.printModel(m);
@@ -133,6 +137,7 @@ TEST(ComponentImport, nonExistentURLAndParse) {
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
+    EXPECT_EQ(1, model->componentCount());
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
@@ -189,6 +194,7 @@ TEST(ComponentImport, multipleImportAndParse) {
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e2);
+    EXPECT_EQ(3, model->componentCount());
     a = printer.printModel(model);
     EXPECT_TRUE((e1 == a) || (e2 == a));
 }
@@ -232,7 +238,9 @@ TEST(ComponentImport, hierarchicalImportAndParse) {
 
     EXPECT_TRUE(i1->isImport());
 
+    EXPECT_EQ(0, bob->componentCount());
     bob->addComponent(i1);
+    EXPECT_EQ(1, bob->componentCount());
 
     libcellml::Printer printer(libcellml::Format::XML);
     std::string a = printer.printModel(m);
@@ -241,6 +249,7 @@ TEST(ComponentImport, hierarchicalImportAndParse) {
     // Parse
     libcellml::Parser parser(libcellml::Format::XML);
     libcellml::ModelPtr model = parser.parseModel(e);
+    EXPECT_EQ(1, model->componentCount());
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
@@ -301,5 +310,11 @@ TEST(ComponentImport, complexImportAndParse) {
     libcellml::ModelPtr model = parser.parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    // check component counts
+    const libcellml::ComponentPtr constDave = model->getComponent("dave");
+    EXPECT_EQ(1, constDave->componentCount());
+    const libcellml::ComponentPtr constBob = constDave->getComponent("bob");
+    EXPECT_EQ(2, constBob->componentCount());
 }
 
