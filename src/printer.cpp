@@ -366,7 +366,7 @@ std::string Printer::printModel(ModelPtr model) const
             Component* currentComponent2 = iterPair->second;
             ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
             ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
-            // Check whether this set of map_components has already been serialised.
+            // Check whether this set of connections has already been serialised.
             bool pairFound = false;
             for (ComponentMapIterator serialisedIterPair = serialisedComponentMap.begin(); serialisedIterPair < serialisedComponentMap.end(); ++serialisedIterPair) {
                 if ((*serialisedIterPair == currentComponentPair) || (*serialisedIterPair == reciprocalCurrentComponentPair)) {
@@ -380,7 +380,7 @@ std::string Printer::printModel(ModelPtr model) const
                 continue;
             }
             // Serialise out the new connection.
-            std::string connection = "<connection><map_components";
+            std::string connection = "<connection";
             if (currentComponent1) {
                 connection += " component_1=\"" + currentComponent1->getName() + "\"";
             }
@@ -388,7 +388,7 @@ std::string Printer::printModel(ModelPtr model) const
                 connection += " component_2=\"" + currentComponent2->getName() + "\"";
             }
             VariablePair variablePair = variableMap.at(componentMapIndex1);
-            connection += "/><map_variables variable_1=\"" + variablePair.first->getName() + "\""
+            connection += "><map_variables variable_1=\"" + variablePair.first->getName() + "\""
                                         + " variable_2=\"" + variablePair.second->getName() + "\"/>";
             // Check for subsequent variable equivalence pairs with the same parent components.
             int componentMapIndex2 = componentMapIndex1 + 1;

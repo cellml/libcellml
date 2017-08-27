@@ -565,25 +565,62 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     typedef std::vector<NamePair> NamePairMap;
     typedef NamePairMap::const_iterator NameMapIterator;
 
-    // A connection should not have attributes.
-    if (node->getFirstAttribute()) {
-        XmlAttributePtr attribute = node->getFirstAttribute();
-        while (attribute) {
+    // Initialise name pairs and flags.
+    NamePair componentNamePair, variableNamePair;
+    NamePairMap variableNameMap;
+    bool mapVariablesFound = false;
+    bool component1Missing = false;
+    bool component2Missing = false;
+    bool variable1Missing = false;
+    bool variable2Missing = false;
+
+    // Check connection for component_{1, 2} attributes and get the name pair.
+    std::string component1Name = "";
+    std::string component2Name = "";
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    while (attribute) {
+        if (attribute->isType("component_1")) {
+            component1Name = attribute->getValue();
+        } else if (attribute->isType("component_2")) {
+            component2Name = attribute->getValue();
+        } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Connection in model '" + model->getName() +
-                                "' has an invalid attribute '" + attribute->getType() + "'.");
+                                "' has an invalid connection attribute '" + attribute->getType() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::CONNECTION);
             mParser->addError(err);
-            attribute = attribute->getNext();
         }
+        attribute = attribute->getNext();
     }
-    // Check that the connection node has children.
+    // Check that we found both components.
+    if (!component1Name.length()) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Connection in model '" + model->getName() +
+                            "' does not have a valid component_1 in a connection element.");
+        err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT1);
+        mParser->addError(err);
+        component1Missing = true;
+    }
+    if (!component2Name.length()) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Connection in model '" + model->getName() +
+                            "' does not have a valid component_2 in a connection element.");
+        err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT2);
+        mParser->addError(err);
+        component2Missing = true;
+    }
+    componentNamePair = std::make_pair(component1Name, component2Name);
+
     XmlNodePtr childNode = node->getFirstChild();
     if (!childNode) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() +
-                            "' does not contain any child elements.");
+                            "' must contain one or more 'map_variables' elements.");
         err->setModel(model);
         err->setKind(Error::Kind::CONNECTION);
         err->setRule(SpecificationRule::CONNECTION_CHILD);
@@ -591,15 +628,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         return;
     }
 
-    // Initialise name pairs and flags.
-    NamePair componentNamePair, variableNamePair;
-    NamePairMap variableNameMap;
-    bool mapComponentsFound = false;
-    bool mapVariablesFound = false;
-    bool component1Missing = false;
-    bool component2Missing = false;
-    bool variable1Missing = false;
-    bool variable2Missing = false;
     // Iterate over connection child XML nodes.
     while (childNode) {
         // Connection map XML nodes should not have further children.
@@ -628,62 +656,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
         }
 
-        // Check for a valid map_components and get the name pair.
-        if (childNode->isType("map_components")) {
-            std::string component1Name = "";
-            std::string component2Name = "";
-            XmlAttributePtr attribute = childNode->getFirstAttribute();
-            while (attribute) {
-                if (attribute->isType("component_1")) {
-                    component1Name = attribute->getValue();
-                } else if (attribute->isType("component_2")) {
-                    component2Name = attribute->getValue();
-                } else {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Connection in model '" + model->getName() +
-                                        "' has an invalid map_components attribute '" + attribute->getType() + "'.");
-                    err->setModel(model);
-                    err->setKind(Error::Kind::CONNECTION);
-                    mParser->addError(err);
-                }
-                attribute = attribute->getNext();
-            }
-            // Check that we found both components.
-            if (!component1Name.length()) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() +
-                                    "' does not have a valid component_1 in a map_components element.");
-                err->setModel(model);
-                err->setKind(Error::Kind::CONNECTION);
-                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT1);
-                mParser->addError(err);
-                component1Missing = true;
-            }
-            if (!component2Name.length()) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() +
-                                    "' does not have a valid component_2 in a map_components element.");
-                err->setModel(model);
-                err->setKind(Error::Kind::CONNECTION);
-                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT2);
-                mParser->addError(err);
-                component2Missing = true;
-            }
-            // We should only have one map_components per connection.
-            if (mapComponentsFound) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() +
-                                    "' has more than one map_components element.");
-                err->setModel(model);
-                err->setKind(Error::Kind::CONNECTION);
-                err->setRule(SpecificationRule::CONNECTION_MAP_COMPONENTS);
-                mParser->addError(err);
-            }
-            componentNamePair = std::make_pair(component1Name, component2Name);
-            mapComponentsFound = true;
-
-        // Check for a valid map_variables and add the name pair to the variableNameMap.
-        } else if (childNode->isType("map_variables")) {
+        if (childNode->isType("map_variables")) {
             std::string variable1Name = "";
             std::string variable2Name = "";
             XmlAttributePtr attribute = childNode->getFirstAttribute();
@@ -752,50 +725,40 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         childNode = childNode->getNext();
     }
 
-    // If we have a map_components, check that the components exist in the model.
+    // If we have a component name pair, check that the components exist in the model.
     ComponentPtr component1 = nullptr;
     ComponentPtr component2 = nullptr;
-    if (mapComponentsFound) {
-        // Now check the objects exist in the model.
-        if (model->containsComponent(componentNamePair.first)) {
-            component1 = model->getComponent(componentNamePair.first);
-        } else {
-            if (!component1Missing) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() +
-                                    "' specifies '" + componentNamePair.first +
-                                    "' as component_1 but it does not exist in the model.");
-                err->setModel(model);
-                err->setKind(Error::Kind::CONNECTION);
-                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT1);
-                mParser->addError(err);
-            }
-        }
-        if (model->containsComponent(componentNamePair.second)) {
-            component2 = model->getComponent(componentNamePair.second);
-        } else {
-            if (!component2Missing) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() +
-                                    "' specifies '" + componentNamePair.second +
-                                    "' as component_2 but it does not exist in the model.");
-                err->setModel(model);
-                err->setKind(Error::Kind::CONNECTION);
-                err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT2);
-                mParser->addError(err);
-            }
-        }
+    // Now check the objects exist in the model.
+    if (model->containsComponent(componentNamePair.first)) {
+        component1 = model->getComponent(componentNamePair.first);
     } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Connection in model '" + model->getName() +
-                            "' does not have a map_components element.");
-        err->setModel(model);
-        err->setKind(Error::Kind::CONNECTION);
-        err->setRule(SpecificationRule::CONNECTION_MAP_COMPONENTS);
-        mParser->addError(err);
+        if (!component1Missing) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Connection in model '" + model->getName() +
+                                "' specifies '" + componentNamePair.first +
+                                "' as component_1 but it does not exist in the model.");
+            err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
+            err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT1);
+            mParser->addError(err);
+        }
+    }
+    if (model->containsComponent(componentNamePair.second)) {
+        component2 = model->getComponent(componentNamePair.second);
+    } else {
+        if (!component2Missing) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Connection in model '" + model->getName() +
+                                "' specifies '" + componentNamePair.second +
+                                "' as component_2 but it does not exist in the model.");
+            err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
+            err->setRule(SpecificationRule::MAP_COMPONENTS_COMPONENT2);
+            mParser->addError(err);
+        }
     }
 
-    // If we have a map_variables, check that the variables exist in the map_components.
+    // If we have a map_variables, check that the variables exist in the named components.
     if (mapVariablesFound) {
         for (NameMapIterator iterPair = variableNameMap.begin(); iterPair < variableNameMap.end(); ++iterPair) {
             VariablePtr variable1 = nullptr;

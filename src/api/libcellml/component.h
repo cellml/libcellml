@@ -91,7 +91,7 @@ public:
      *
      * Remove the variable with the given name from this component. If the named variable to
      * be removed is in a connection (is equivalent to another variable), this
-     * component will not be serialised in the connection @c map_components.
+     * component will not be serialised in the connection.
      *
      * @sa addVariable
      *
@@ -106,7 +106,7 @@ public:
      *
      * Remove the variable with the given pointer from this component. If the @p variable to
      * be removed is in a connection (is equivalent to another variable), this
-     * component will not be serialised in the connection @c map_components.
+     * component will not be serialised in the connection.
      *
      * @sa addVariable
      *
@@ -123,7 +123,7 @@ public:
      *
      * Clears all variables that have been added to this component. If any of the
      * variables to be removed are in connections (are equivalent to other variables),
-     * this component will not be serialised in the connection @c map_components.
+     * this component will not be serialised in the connection.
      */
     void removeAllVariables();
 

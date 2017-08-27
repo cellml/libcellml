@@ -7131,56 +7131,45 @@ http://www.cellml.org/
             </apply>
         </math>
     </component>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="INaL"/>
+    <connection component_1="intracellular_ions" component_2="INaL">
         <map_variables variable_1="INaL" variable_2="INaL"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="membrane"/>
+    <connection component_1="intracellular_ions" component_2="membrane">
         <map_variables variable_1="Istim" variable_2="Istim"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="trans_flux"/>
+    <connection component_1="intracellular_ions" component_2="trans_flux">
         <map_variables variable_1="cajsr" variable_2="cajsr"/>
         <map_variables variable_1="cansr" variable_2="cansr"/>
         <map_variables variable_1="Jtr" variable_2="Jtr"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="SERCA"/>
+    <connection component_1="intracellular_ions" component_2="SERCA">
         <map_variables variable_1="cai" variable_2="cai"/>
         <map_variables variable_1="cansr" variable_2="cansr"/>
         <map_variables variable_1="Jup" variable_2="Jup"/>
     </connection>
-    <connection>
-        <map_components component_1="SERCA" component_2="environment"/>
+    <connection component_1="SERCA" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
     </connection>
-    <connection>
-        <map_components component_1="SERCA" component_2="CaMK"/>
+    <connection component_1="SERCA" component_2="CaMK">
         <map_variables variable_1="KmCaMK" variable_2="KmCaMK"/>
         <map_variables variable_1="CaMKa" variable_2="CaMKa"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="ryr"/>
+    <connection component_1="intracellular_ions" component_2="ryr">
         <map_variables variable_1="cajsr" variable_2="cajsr"/>
         <map_variables variable_1="Jrel" variable_2="Jrel"/>
     </connection>
-    <connection>
-        <map_components component_1="ICaL" component_2="ryr"/>
+    <connection component_1="ICaL" component_2="ryr">
         <map_variables variable_1="ICaL" variable_2="ICaL"/>
     </connection>
-    <connection>
-        <map_components component_1="ryr" component_2="CaMK"/>
+    <connection component_1="ryr" component_2="CaMK">
         <map_variables variable_1="KmCaMK" variable_2="KmCaMK"/>
         <map_variables variable_1="CaMKa" variable_2="CaMKa"/>
     </connection>
-    <connection>
-        <map_components component_1="ryr" component_2="environment"/>
+    <connection component_1="ryr" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="diff"/>
+    <connection component_1="intracellular_ions" component_2="diff">
         <map_variables variable_1="cai" variable_2="cai"/>
         <map_variables variable_1="cass" variable_2="cass"/>
         <map_variables variable_1="nai" variable_2="nai"/>
@@ -7191,92 +7180,74 @@ http://www.cellml.org/
         <map_variables variable_1="Jdiff" variable_2="Jdiff"/>
         <map_variables variable_1="JdiffNa" variable_2="JdiffNa"/>
     </connection>
-    <connection>
-        <map_components component_1="IpCa" component_2="membrane"/>
+    <connection component_1="IpCa" component_2="membrane">
         <map_variables variable_1="IpCa" variable_2="IpCa"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="IpCa"/>
+    <connection component_1="intracellular_ions" component_2="IpCa">
         <map_variables variable_1="cai" variable_2="cai"/>
         <map_variables variable_1="IpCa" variable_2="IpCa"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="ICab"/>
+    <connection component_1="extracellular" component_2="ICab">
         <map_variables variable_1="cao" variable_2="cao"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="ICab"/>
+    <connection component_1="intracellular_ions" component_2="ICab">
         <map_variables variable_1="cai" variable_2="cai"/>
         <map_variables variable_1="ICab" variable_2="ICab"/>
     </connection>
-    <connection>
-        <map_components component_1="ICab" component_2="membrane"/>
+    <connection component_1="ICab" component_2="membrane">
         <map_variables variable_1="vffrt" variable_2="vffrt"/>
         <map_variables variable_1="vfrt" variable_2="vfrt"/>
         <map_variables variable_1="ICab" variable_2="ICab"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="INab"/>
+    <connection component_1="extracellular" component_2="INab">
         <map_variables variable_1="nao" variable_2="nao"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="INab"/>
+    <connection component_1="intracellular_ions" component_2="INab">
         <map_variables variable_1="nai" variable_2="nai"/>
         <map_variables variable_1="INab" variable_2="INab"/>
     </connection>
-    <connection>
-        <map_components component_1="INab" component_2="membrane"/>
+    <connection component_1="INab" component_2="membrane">
         <map_variables variable_1="vffrt" variable_2="vffrt"/>
         <map_variables variable_1="vfrt" variable_2="vfrt"/>
         <map_variables variable_1="INab" variable_2="INab"/>
     </connection>
-    <connection>
-        <map_components component_1="IKb" component_2="membrane"/>
+    <connection component_1="IKb" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="IKb" variable_2="IKb"/>
     </connection>
-    <connection>
-        <map_components component_1="IKb" component_2="environment"/>
+    <connection component_1="IKb" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
     </connection>
-    <connection>
-        <map_components component_1="IKb" component_2="reversal_potentials"/>
+    <connection component_1="IKb" component_2="reversal_potentials">
         <map_variables variable_1="EK" variable_2="EK"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="IKb"/>
+    <connection component_1="intracellular_ions" component_2="IKb">
         <map_variables variable_1="IKb" variable_2="IKb"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="INaK"/>
+    <connection component_1="intracellular_ions" component_2="INaK">
         <map_variables variable_1="ki" variable_2="ki"/>
         <map_variables variable_1="nai" variable_2="nai"/>
         <map_variables variable_1="INaK" variable_2="INaK"/>
     </connection>
-    <connection>
-        <map_components component_1="INaK" component_2="membrane"/>
+    <connection component_1="INaK" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="INaK" variable_2="INaK"/>
     </connection>
-    <connection>
-        <map_components component_1="INaK" component_2="environment"/>
+    <connection component_1="INaK" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
     </connection>
-    <connection>
-        <map_components component_1="INaK" component_2="physical_constants"/>
+    <connection component_1="INaK" component_2="physical_constants">
         <map_variables variable_1="R" variable_2="R"/>
         <map_variables variable_1="T" variable_2="T"/>
         <map_variables variable_1="F" variable_2="F"/>
         <map_variables variable_1="zna" variable_2="zna"/>
         <map_variables variable_1="zk" variable_2="zk"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="INaK"/>
+    <connection component_1="extracellular" component_2="INaK">
         <map_variables variable_1="nao" variable_2="nao"/>
         <map_variables variable_1="ko" variable_2="ko"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="INaCa_i"/>
+    <connection component_1="intracellular_ions" component_2="INaCa_i">
         <map_variables variable_1="cai" variable_2="cai"/>
         <map_variables variable_1="nai" variable_2="nai"/>
         <map_variables variable_1="nass" variable_2="nass"/>
@@ -7284,135 +7255,108 @@ http://www.cellml.org/
         <map_variables variable_1="INaCa_i" variable_2="INaCa_i"/>
         <map_variables variable_1="INaCa_ss" variable_2="INaCa_ss"/>
     </connection>
-    <connection>
-        <map_components component_1="INaCa_i" component_2="membrane"/>
+    <connection component_1="INaCa_i" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="INaCa_i" variable_2="INaCa_i"/>
         <map_variables variable_1="INaCa_ss" variable_2="INaCa_ss"/>
     </connection>
-    <connection>
-        <map_components component_1="INaCa_i" component_2="environment"/>
+    <connection component_1="INaCa_i" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
     </connection>
-    <connection>
-        <map_components component_1="INaCa_i" component_2="physical_constants"/>
+    <connection component_1="INaCa_i" component_2="physical_constants">
         <map_variables variable_1="R" variable_2="R"/>
         <map_variables variable_1="T" variable_2="T"/>
         <map_variables variable_1="F" variable_2="F"/>
         <map_variables variable_1="zna" variable_2="zna"/>
         <map_variables variable_1="zca" variable_2="zca"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="INaCa_i"/>
+    <connection component_1="extracellular" component_2="INaCa_i">
         <map_variables variable_1="nao" variable_2="nao"/>
         <map_variables variable_1="cao" variable_2="cao"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="IKs"/>
+    <connection component_1="intracellular_ions" component_2="IKs">
         <map_variables variable_1="cai" variable_2="cai"/>
         <map_variables variable_1="IKs" variable_2="IKs"/>
     </connection>
-    <connection>
-        <map_components component_1="IK1" component_2="membrane"/>
+    <connection component_1="IK1" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="IK1" variable_2="IK1"/>
     </connection>
-    <connection>
-        <map_components component_1="IK1" component_2="environment"/>
+    <connection component_1="IK1" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="IKs" component_2="membrane"/>
+    <connection component_1="IKs" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="IKs" variable_2="IKs"/>
     </connection>
-    <connection>
-        <map_components component_1="IKs" component_2="environment"/>
+    <connection component_1="IKs" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="IK1" component_2="reversal_potentials"/>
+    <connection component_1="IK1" component_2="reversal_potentials">
         <map_variables variable_1="EK" variable_2="EK"/>
     </connection>
-    <connection>
-        <map_components component_1="IKs" component_2="reversal_potentials"/>
+    <connection component_1="IKs" component_2="reversal_potentials">
         <map_variables variable_1="EKs" variable_2="EKs"/>
     </connection>
-    <connection>
-        <map_components component_1="Ito" component_2="membrane"/>
+    <connection component_1="Ito" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="Ito" variable_2="Ito"/>
     </connection>
-    <connection>
-        <map_components component_1="INaL" component_2="membrane"/>
+    <connection component_1="INaL" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="INaL" variable_2="INaL"/>
     </connection>
-    <connection>
-        <map_components component_1="IKr" component_2="membrane"/>
+    <connection component_1="IKr" component_2="membrane">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="IKr" variable_2="IKr"/>
     </connection>
-    <connection>
-        <map_components component_1="IKr" component_2="environment"/>
+    <connection component_1="IKr" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="INaL" component_2="reversal_potentials"/>
+    <connection component_1="INaL" component_2="reversal_potentials">
         <map_variables variable_1="ENa" variable_2="ENa"/>
     </connection>
-    <connection>
-        <map_components component_1="Ito" component_2="reversal_potentials"/>
+    <connection component_1="Ito" component_2="reversal_potentials">
         <map_variables variable_1="EK" variable_2="EK"/>
     </connection>
-    <connection>
-        <map_components component_1="INaL" component_2="CaMK"/>
+    <connection component_1="INaL" component_2="CaMK">
         <map_variables variable_1="KmCaMK" variable_2="KmCaMK"/>
         <map_variables variable_1="CaMKa" variable_2="CaMKa"/>
     </connection>
-    <connection>
-        <map_components component_1="Ito" component_2="CaMK"/>
+    <connection component_1="Ito" component_2="CaMK">
         <map_variables variable_1="KmCaMK" variable_2="KmCaMK"/>
         <map_variables variable_1="CaMKa" variable_2="CaMKa"/>
     </connection>
-    <connection>
-        <map_components component_1="INaL" component_2="INa"/>
+    <connection component_1="INaL" component_2="INa">
         <map_variables variable_1="tm" variable_2="tm"/>
     </connection>
-    <connection>
-        <map_components component_1="INaL" component_2="environment"/>
+    <connection component_1="INaL" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="ICaL" component_2="environment"/>
+    <connection component_1="ICaL" component_2="environment">
         <map_variables variable_1="celltype" variable_2="celltype"/>
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="ICaL" component_2="CaMK"/>
+    <connection component_1="ICaL" component_2="CaMK">
         <map_variables variable_1="KmCaMK" variable_2="KmCaMK"/>
         <map_variables variable_1="CaMKa" variable_2="CaMKa"/>
     </connection>
-    <connection>
-        <map_components component_1="CaMK" component_2="environment"/>
+    <connection component_1="CaMK" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="membrane" component_2="environment"/>
+    <connection component_1="membrane" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="ICaL" component_2="physical_constants"/>
+    <connection component_1="ICaL" component_2="physical_constants">
         <map_variables variable_1="R" variable_2="R"/>
         <map_variables variable_1="T" variable_2="T"/>
         <map_variables variable_1="F" variable_2="F"/>
     </connection>
-    <connection>
-        <map_components component_1="membrane" component_2="ICaL"/>
+    <connection component_1="membrane" component_2="ICaL">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="vffrt" variable_2="vffrt"/>
         <map_variables variable_1="vfrt" variable_2="vfrt"/>
@@ -7420,20 +7364,17 @@ http://www.cellml.org/
         <map_variables variable_1="ICaNa" variable_2="ICaNa"/>
         <map_variables variable_1="ICaK" variable_2="ICaK"/>
     </connection>
-    <connection>
-        <map_components component_1="membrane" component_2="physical_constants"/>
+    <connection component_1="membrane" component_2="physical_constants">
         <map_variables variable_1="R" variable_2="R"/>
         <map_variables variable_1="T" variable_2="T"/>
         <map_variables variable_1="F" variable_2="F"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="physical_constants"/>
+    <connection component_1="intracellular_ions" component_2="physical_constants">
         <map_variables variable_1="R" variable_2="R"/>
         <map_variables variable_1="T" variable_2="T"/>
         <map_variables variable_1="F" variable_2="F"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="ICaL"/>
+    <connection component_1="intracellular_ions" component_2="ICaL">
         <map_variables variable_1="cass" variable_2="cass"/>
         <map_variables variable_1="nass" variable_2="nass"/>
         <map_variables variable_1="kss" variable_2="kss"/>
@@ -7441,93 +7382,74 @@ http://www.cellml.org/
         <map_variables variable_1="ICaK" variable_2="ICaK"/>
         <map_variables variable_1="ICaL" variable_2="ICaL"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="IK1"/>
+    <connection component_1="extracellular" component_2="IK1">
         <map_variables variable_1="ko" variable_2="ko"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="IK1"/>
+    <connection component_1="intracellular_ions" component_2="IK1">
         <map_variables variable_1="IK1" variable_2="IK1"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="ICaL"/>
+    <connection component_1="extracellular" component_2="ICaL">
         <map_variables variable_1="nao" variable_2="nao"/>
         <map_variables variable_1="ko" variable_2="ko"/>
         <map_variables variable_1="cao" variable_2="cao"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="IKr"/>
+    <connection component_1="extracellular" component_2="IKr">
         <map_variables variable_1="ko" variable_2="ko"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="IKr"/>
+    <connection component_1="intracellular_ions" component_2="IKr">
         <map_variables variable_1="IKr" variable_2="IKr"/>
     </connection>
-    <connection>
-        <map_components component_1="reversal_potentials" component_2="physical_constants"/>
+    <connection component_1="reversal_potentials" component_2="physical_constants">
         <map_variables variable_1="R" variable_2="R"/>
         <map_variables variable_1="T" variable_2="T"/>
         <map_variables variable_1="F" variable_2="F"/>
     </connection>
-    <connection>
-        <map_components component_1="reversal_potentials" component_2="IKr"/>
+    <connection component_1="reversal_potentials" component_2="IKr">
         <map_variables variable_1="EK" variable_2="EK"/>
     </connection>
-    <connection>
-        <map_components component_1="reversal_potentials" component_2="INa"/>
+    <connection component_1="reversal_potentials" component_2="INa">
         <map_variables variable_1="ENa" variable_2="ENa"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="INa"/>
+    <connection component_1="intracellular_ions" component_2="INa">
         <map_variables variable_1="INa" variable_2="INa"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="Ito"/>
+    <connection component_1="intracellular_ions" component_2="Ito">
         <map_variables variable_1="Ito" variable_2="Ito"/>
     </connection>
-    <connection>
-        <map_components component_1="membrane" component_2="INa"/>
+    <connection component_1="membrane" component_2="INa">
         <map_variables variable_1="v" variable_2="v"/>
         <map_variables variable_1="INa" variable_2="INa"/>
     </connection>
-    <connection>
-        <map_components component_1="CaMK" component_2="INa"/>
+    <connection component_1="CaMK" component_2="INa">
         <map_variables variable_1="KmCaMK" variable_2="KmCaMK"/>
         <map_variables variable_1="CaMKa" variable_2="CaMKa"/>
     </connection>
-    <connection>
-        <map_components component_1="Ito" component_2="environment"/>
+    <connection component_1="Ito" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
         <map_variables variable_1="celltype" variable_2="celltype"/>
     </connection>
-    <connection>
-        <map_components component_1="INa" component_2="environment"/>
+    <connection component_1="INa" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="CaMK"/>
+    <connection component_1="intracellular_ions" component_2="CaMK">
         <map_variables variable_1="cass" variable_2="cass"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="cell_geometry"/>
+    <connection component_1="intracellular_ions" component_2="cell_geometry">
         <map_variables variable_1="Acap" variable_2="Acap"/>
         <map_variables variable_1="vmyo" variable_2="vmyo"/>
         <map_variables variable_1="vss" variable_2="vss"/>
         <map_variables variable_1="vnsr" variable_2="vnsr"/>
         <map_variables variable_1="vjsr" variable_2="vjsr"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="environment"/>
+    <connection component_1="intracellular_ions" component_2="environment">
         <map_variables variable_1="time" variable_2="time"/>
         <map_variables variable_1="celltype" variable_2="celltype"/>
     </connection>
-    <connection>
-        <map_components component_1="intracellular_ions" component_2="reversal_potentials"/>
+    <connection component_1="intracellular_ions" component_2="reversal_potentials">
         <map_variables variable_1="nai" variable_2="nai"/>
         <map_variables variable_1="ki" variable_2="ki"/>
     </connection>
-    <connection>
-        <map_components component_1="extracellular" component_2="reversal_potentials"/>
+    <connection component_1="extracellular" component_2="reversal_potentials">
         <map_variables variable_1="nao" variable_2="nao"/>
         <map_variables variable_1="ko" variable_2="ko"/>
     </connection>

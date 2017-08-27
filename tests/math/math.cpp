@@ -235,8 +235,7 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse) {
                         "</apply>"
                     "</math>"
                 "</component>"
-                "<connection>"
-                    "<map_components component_1=\"component1\" component_2=\"component2\"/>"
+                "<connection component_1=\"component1\" component_2=\"component2\">"
                     "<map_variables variable_1=\"A1\" variable_2=\"A2\"/>"
                 "</connection>"
             "</model>";
