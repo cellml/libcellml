@@ -26,9 +26,16 @@ limitations under the License.
 // generated with test resource locations
 #include "test_resources.h"
 
-static int countImportedComponents(libcellml::ModelPtr model)
+static size_t countImportedChildren(libcellml::ComponentPtr parent)
 {
-    return -1;
+    size_t numberImportedChildren = 0;
+    for (size_t n = 0; n < parent->componentCount();  ++n)
+    {
+        libcellml::ComponentPtr c = parent->getComponent(n);
+        if (c->isImport()) ++numberImportedChildren;
+        numberImportedChildren += countImportedChildren(c);
+    }
+    return numberImportedChildren;
 }
 
 TEST(ResolveImports, parseSineModelFromFile) {
@@ -42,7 +49,14 @@ TEST(ResolveImports, parseSineModelFromFile) {
 
     EXPECT_EQ(0, p.errorCount());
 
-    EXPECT_EQ(0, countImportedComponents(model));
+    size_t nImportedComponents = 0;
+    for (size_t n = 0; n < model->componentCount();  ++n)
+    {
+        libcellml::ComponentPtr c = model->getComponent(n);
+        if (c->isImport()) ++nImportedComponents;
+        nImportedComponents += countImportedChildren(c);
+    }
+    EXPECT_EQ(0, nImportedComponents);
 }
 
 TEST(ResolveImports, parseSineImportsModelFromFile) {
@@ -55,5 +69,12 @@ TEST(ResolveImports, parseSineImportsModelFromFile) {
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(0, p.errorCount());
 
-    EXPECT_EQ(3, countImportedComponents(model));
+    size_t nImportedComponents = 0;
+    for (size_t n = 0; n < model->componentCount();  ++n)
+    {
+        libcellml::ComponentPtr c = model->getComponent(n);
+        if (c->isImport()) ++nImportedComponents;
+        nImportedComponents += countImportedChildren(c);
+    }
+    EXPECT_EQ(3, nImportedComponents);
 }
