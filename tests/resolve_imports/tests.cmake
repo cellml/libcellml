@@ -19,6 +19,7 @@ set(${CURRENT_TEST}_SRCS
 
 set(CELLML_SINE_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations.xml")
 set(CELLML_SINE_IMPORTS_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations_import.xml")
+set(CELLML_COMPLEX_IMPORT_HIERARCHY_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/complex_imports.xml")
 set(CELLML_ORD_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/Ohara_Rudy_2011.cellml")
 set(CELLML_INVALID_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/invalid_cellml_2.0.xml")
 

@@ -182,3 +182,31 @@ TEST(ResolveImports, resolveSineImportsModelFromFile) {
     resolveImportedComponents(model, sineModelLocation);
     EXPECT_EQ(0, countUnresolvedImportedComponents(model));
 }
+
+TEST(ResolveImports, resolveComplexImportsModelFromFile) {
+    std::string modelLocation = TestResources::getLocation(
+                TestResources::CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE);
+    std::ifstream t(modelLocation);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    EXPECT_EQ(0, p.errorCount());
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        std::cout << p.getError(i)->getDescription() << std::endl;
+    }
+
+    size_t nImportedComponents = 0;
+    for (size_t n = 0; n < model->componentCount();  ++n)
+    {
+        libcellml::ComponentPtr c = model->getComponent(n);
+        if (c->isImport()) ++nImportedComponents;
+        nImportedComponents += countImportedChildren(c);
+    }
+    EXPECT_EQ(3, nImportedComponents);
+
+    EXPECT_EQ(3, countUnresolvedImportedComponents(model));
+    resolveImportedComponents(model, modelLocation);
+    EXPECT_EQ(0, countUnresolvedImportedComponents(model));
+}
