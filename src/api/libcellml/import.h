@@ -54,6 +54,36 @@ public:
      */
     std::string getSource() const;
 
+    /**
+     * @brief Provide the model used to resolve this import.
+     *
+     * Uses the provided model to resolve this import, which should correspond
+     * to the @c source identified by this import.
+     *
+     * @param model The model to use in resolving this import.
+     */
+    void resolveImport(libcellml::ModelPtr model);
+
+    /**
+     * @brief Get the resolving model.
+     *
+     * Get the model which has been assigned to resolve this import. If no model
+     * has been assigned then return the @c nullptr.
+     * @return
+     */
+    libcellml::ModelPtr getResolvingModel() const;
+
+    /**
+     * @brief Test is this import is resolved.
+     *
+     * Method to test if this import has been resolved, i.e., the source model has
+     * been assigned. Returns @c true if the import is resolved otherwise returns
+     * @c false.
+     *
+     * @return @c true if the import has been resolved, @c false otherwise.
+     */
+    bool isResolved() const;
+
 private:
     void swap(Import &rhs); /**< Swap method required for C++ 11 move semantics. */
 

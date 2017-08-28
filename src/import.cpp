@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "libcellml/import.h"
+#include "libcellml/model.h"
 
 namespace libcellml {
 
@@ -26,11 +27,13 @@ namespace libcellml {
 struct Import::ImportImpl
 {
     std::string mReference;
+    libcellml::ModelPtr mSourceModel;
 };
 
 Import::Import()
     : mPimpl(new ImportImpl())
 {
+    mPimpl->mSourceModel = nullptr;
 }
 
 Import::~Import()
@@ -43,6 +46,7 @@ Import::Import(const Import& rhs)
     , mPimpl(new ImportImpl())
 {
     mPimpl->mReference = rhs.mPimpl->mReference;
+    mPimpl->mSourceModel = rhs.mPimpl->mSourceModel;
 }
 
 Import::Import(Import &&rhs)
@@ -72,6 +76,21 @@ void Import::setSource(const std::string &reference)
 std::string Import::getSource() const
 {
     return mPimpl->mReference;
+}
+
+void Import::resolveImport(ModelPtr model)
+{
+    mPimpl->mSourceModel = model;
+}
+
+ModelPtr Import::getResolvingModel() const
+{
+    return mPimpl->mSourceModel;
+}
+
+bool Import::isResolved() const
+{
+    return mPimpl->mSourceModel != nullptr;
 }
 
 }
