@@ -36,19 +36,19 @@ public:
     Import& operator=(Import m); /**< Assignment operator */
 
     /**
-     * @brief Set the source Model.
+     * @brief Set the source Model's URL.
      *
-     * Set the source Model that this import refers to.
+     * Set the source Model's URL that this import refers to.
      *
-     * @param reference The reference model.
+     * @param reference The referenced model's URL.
      */
     void setSource(const std::string &reference);
 
     /**
-     * @brief Get the source model.
+     * @brief Get the source model's URL.
      *
-     * Get the source model set in this instance.  If no source model
-     * is set then return an empty string.
+     * Get the source model's URL set in this instance. If no source model
+     * URL is set then return an empty string.
      *
      * @return The reference to the source model if set otherwise the emtpy string.
      */
@@ -69,7 +69,8 @@ public:
      *
      * Get the model which has been assigned to resolve this import. If no model
      * has been assigned then return the @c nullptr.
-     * @return
+     *
+     * @return The model used to resolve this import.
      */
     libcellml::ModelPtr getResolvingModel() const;
 
