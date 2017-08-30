@@ -2,8 +2,8 @@
   
 
   <component name="sin" id="sin">
-    <variable name="x" interface="public_and_private"/>
-    <variable id="sin" name="sin" interface="public_and_private"/>
+    <variable name="x" units="dimensionless" interface="public_and_private"/>
+    <variable id="sin" units="dimensionless" name="sin" interface="public_and_private"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply id="actual_sin"><eq/>
         <ci>sin</ci>
