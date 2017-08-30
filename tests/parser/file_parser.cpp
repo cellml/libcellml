@@ -96,6 +96,7 @@ TEST(Parser, parseOrdModelFromFile) {
 }
 
 TEST(Parser, parseComplexEncapsulationModelFromFile) {
+    // This test resulted from https://github.com/cellml/libcellml/issues/170
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE));
     std::stringstream buffer;
@@ -105,8 +106,5 @@ TEST(Parser, parseComplexEncapsulationModelFromFile) {
     p.parseModel(buffer.str());
 
     EXPECT_EQ(0, p.errorCount());
-    for (size_t i = 0; i < p.errorCount(); ++i) {
-        std::cout << p.getError(i)->getDescription() << std::endl;
-    }
 }
 
