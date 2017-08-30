@@ -95,3 +95,16 @@ TEST(Parser, parseOrdModelFromFile) {
     EXPECT_EQ("public", a);
 }
 
+TEST(Parser, parseComplexEncapsulationModelFromFile) {
+    // This test resulted from https://github.com/cellml/libcellml/issues/170
+    std::ifstream t(TestResources::getLocation(
+                    TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p(libcellml::Format::XML);
+    p.parseModel(buffer.str());
+
+    EXPECT_EQ(0, p.errorCount());
+}
+

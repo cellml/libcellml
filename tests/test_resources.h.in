@@ -12,7 +12,8 @@ public:
         CELLML_SINE_MODEL_RESOURCE = 2,
         CELLML_SINE_IMPORTS_MODEL_RESOURCE = 3,
         CELLML_ORD_MODEL_RESOURCE = 4,
-        CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE = 5
+        CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE = 5,
+        CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE = 6
     };
 
     TestResources()
@@ -34,6 +35,9 @@ public:
         if (resourceName == TestResources::CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE)
         {
             return "@CELLML_COMPLEX_IMPORT_HIERARCHY_MODEL_RESOURCE@";
+        if (resourceName == TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE)
+        {
+            return "@CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE@";
         }
         if (resourceName == TestResources::CELLML_INVALID_MODEL_RESOURCE)
         {
