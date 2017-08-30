@@ -35,6 +35,7 @@ public:
         if (resourceName == TestResources::CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE)
         {
             return "@CELLML_COMPLEX_IMPORT_HIERARCHY_MODEL_RESOURCE@";
+        }
         if (resourceName == TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE)
         {
             return "@CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE@";
