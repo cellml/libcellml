@@ -913,18 +913,21 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         // Get first child of this parent component_ref.
         XmlNodePtr childComponentNode = parentComponentNode->getFirstChild();
         if (!childComponentNode) {
-            ErrorPtr err = std::make_shared<Error>();
-            if (parentComponent) {
-                err->setDescription("Encapsulation in model '" + model->getName() +
-                                    "' specifies '" + parentComponent->getName() +
-                                    "' as a parent component_ref but it does not have any children.");
-            } else {
-                err->setDescription("Encapsulation in model '" + model->getName() +
-                                    "' specifies an invalid parent component_ref that also does not have any children.");
+            XmlNodePtr grandParentComponentNode = parentComponentNode->getParent();
+            if (grandParentComponentNode->getType() == "encapsulation") {
+                ErrorPtr err = std::make_shared<Error>();
+                if (parentComponent) {
+                    err->setDescription("Encapsulation in model '" + model->getName() +
+                                        "' specifies '" + parentComponent->getName() +
+                                        "' as a parent component_ref but it does not have any children.");
+                } else {
+                    err->setDescription("Encapsulation in model '" + model->getName() +
+                                        "' specifies an invalid parent component_ref that also does not have any children.");
+                }
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                mParser->addError(err);
             }
-            err->setModel(model);
-            err->setKind(Error::Kind::ENCAPSULATION);
-            mParser->addError(err);
         }
 
         // Loop over encapsulated children.
