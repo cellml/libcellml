@@ -71,7 +71,7 @@ static size_t countUnresolvedComponents(libcellml::ComponentPtr component)
     for (size_t n = 0; n < component->componentCount();  ++n)
     {
         libcellml::ComponentPtr c = component->getComponent(n);
-        count += countUnresolvedC(c);
+        count += countUnresolvedComponents(c);
     }
     return count;
 }
@@ -101,7 +101,6 @@ static void resolveComponent(libcellml::ComponentPtr component,
         if (! imp->isResolved())
         {
             std::string url = resolvePath(imp->getSource(), baseFile);
-            std::cout << "URL: " << url << std::endl;
             std::ifstream t(url);
             std::stringstream buffer;
             buffer << t.rdbuf();
@@ -120,10 +119,11 @@ static void resolveComponent(libcellml::ComponentPtr component,
 static void resolveComponents(libcellml::ComponentPtr component,
                               const std::string& baseFile)
 {
+    resolveComponent(component, baseFile);
     for (size_t n = 0; n < component->componentCount();  ++n)
     {
         libcellml::ComponentPtr c = component->getComponent(n);
-        resolveComponent(c, baseFile);
+        resolveComponents(c, baseFile);
     }
 }
 
@@ -193,9 +193,6 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
     libcellml::Parser p(libcellml::Format::XML);
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(0, p.errorCount());
-    for (size_t i = 0; i < p.errorCount(); ++i) {
-        std::cout << p.getError(i)->getDescription() << std::endl;
-    }
 
     size_t nImportedComponents = 0;
     for (size_t n = 0; n < model->componentCount();  ++n)
@@ -204,9 +201,9 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
         if (c->isImport()) ++nImportedComponents;
         nImportedComponents += countImportedChildren(c);
     }
-    EXPECT_EQ(3, nImportedComponents);
+    EXPECT_EQ(8, nImportedComponents);
 
-    EXPECT_EQ(3, countUnresolvedImportedComponents(model));
+    EXPECT_EQ(8, countUnresolvedImportedComponents(model));
     resolveImportedComponents(model, modelLocation);
     EXPECT_EQ(0, countUnresolvedImportedComponents(model));
 }
