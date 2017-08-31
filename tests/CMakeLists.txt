@@ -92,5 +92,4 @@ if(LIBCELLML_MEMCHECK)
     COMMENT "Running memcheck tests")
 endif()
 
-SET(TEST_RESOURCE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/test_resources.h)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/test_resources.h.in ${TEST_RESOURCE_HEADER})
+include(test_resources.cmake)
