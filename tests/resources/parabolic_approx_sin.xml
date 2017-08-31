@@ -2,15 +2,15 @@
   
 
   <component name="sin" id="sin">
-    <variable id="x" name="x" interface="public_and_private"/>
-    <variable id="sin" name="sin" interface="public_and_private"/>
-    <variable name="k2_oPi" interface="public_and_private"/>
-    <variable name="k2Pi" interface="public_and_private"/>
-    <variable name="kPi_2" interface="public_and_private"/>
-    <variable name="kPi" interface="public_and_private"/>
-    <variable name="kPi_32" interface="public_and_private"/>
-    <variable name="z" interface="public_and_private"/>
-    <variable name="C" interface="public_and_private"/>
+    <variable id="x" units="dimensionless" name="x" interface="public_and_private"/>
+    <variable id="sin" units="dimensionless" name="sin" interface="public_and_private"/>
+    <variable units="dimensionless" name="k2_oPi" interface="public_and_private"/>
+    <variable units="dimensionless" name="k2Pi" interface="public_and_private"/>
+    <variable units="dimensionless" name="kPi_2" interface="public_and_private"/>
+    <variable units="dimensionless" name="kPi" interface="public_and_private"/>
+    <variable units="dimensionless" name="kPi_32" interface="public_and_private"/>
+    <variable units="dimensionless" name="z" interface="public_and_private"/>
+    <variable units="dimensionless" name="C" interface="public_and_private"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply id="k2_oPi"><eq/>
         <ci>k2_oPi</ci>
