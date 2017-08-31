@@ -221,7 +221,7 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
 
 std::string Error::getSpecificationHeading() const
 {
-    return ruleToHeading.find(getRule())->second;;
+    return ruleToHeading.find(getRule())->second;
 }
 
 }
