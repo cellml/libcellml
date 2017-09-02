@@ -20,5 +20,30 @@ limitations under the License.
 
 TEST(When, create) {
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    EXPECT_NE(nullptr, w);
 }
 
+TEST(When, order) {
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    w->setOrder(1);
+
+    EXPECT_EQ(1, w->getOrder());
+}
+
+TEST(When, condition) {
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    w->setCondition("<some mathml type string for condition.>");
+
+    EXPECT_EQ("<some mathml type string for condition.>", w->getCondition());
+}
+
+TEST(When, value) {
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    w->setCondition("<some mathml type string for value.>");
+
+    EXPECT_EQ("<some mathml type string for value.>", w->getCondition());
+}

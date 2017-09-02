@@ -160,6 +160,17 @@ private:
      */
     std::string printEncapsulation(ComponentPtr component) const;
 
+    /**
+     * @brief Serialise the when to @c std::string.
+     *
+     * Serialise the given @p when to a std::string.
+     *
+     * @param when The when to serialise.
+     *
+     * @return The @c std::string representation of the when.
+     */
+    std::string printWhen(WhenPtr when) const;
+
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */

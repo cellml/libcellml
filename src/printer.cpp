@@ -27,6 +27,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
+#include "libcellml/when.h"
 
 #include "utilities.h"
 
@@ -172,6 +173,18 @@ std::string Printer::printComponent(ComponentPtr component) const
 std::string Printer::printComponent(Component component) const
 {
     return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+}
+
+std::string Printer::printWhen(WhenPtr when) const
+{
+    std::string repr = "";
+    if (mPimpl->mFormat == Format::XML) {
+        std::string id = when->getId();
+        if (id.length()) {
+            repr += " id=\"" + id + "\"";
+        }
+    }
+    return repr;
 }
 
 std::string Printer::printVariable(VariablePtr variable) const

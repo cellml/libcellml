@@ -37,6 +37,61 @@ public:
     When(When &&rhs); /**< Move constructor */
     When& operator=(When n); /**< Assignment operator */
 
+    /**
+     * @brief Set the order for this when.
+     *
+     * Sets the order that for this when.
+     *
+     * @param order The order to set.
+     */
+    void setOrder(int order);
+
+    /**
+     * @brief Get the order for this when.
+     *
+     * Returns the order of this when.
+     *
+     * @return The order.
+     */
+    int getOrder() const;
+
+    /**
+     * @brief Set the condition term for this when.
+     *
+     * Set the MathML string as the condition term for this when.
+     *
+     * @param value The @c std::string MathML string of the condition to set.
+     */
+    void setCondition(const std::string& condition);
+
+    /**
+     * @brief Get the condition term for this when.
+     *
+     * Get the MathML string as the condition term for this when.
+     *
+     * @return The @c std::string MathML string of the condition.
+     */
+    std::string getCondition() const;
+
+    /**
+     * @brief Set the value term for this when.
+     *
+     * Set the MathML string as the value term for this when.
+     *
+     * @param value The @c std::string MathML string of the value to set.
+     */
+    void setValue(const std::string& value);
+
+    /**
+     * @brief Get the MathML value term for this when.
+     *
+     * Get the @c std::string MathML string that represents the value for
+     * this when.
+     *
+     * @return The @c std::string MathML string of the value.
+     */
+    std::string getValue() const;
+
 private:
     void swap(When &rhs); /**< Swap method required for C++ 11 move semantics. */
 
