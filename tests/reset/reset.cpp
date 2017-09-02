@@ -1,4 +1,3 @@
-
 /*
 Copyright libCellML Contributors
 
@@ -15,25 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#pragma once
+#include "gtest/gtest.h"
 
-/**
- * @mainpage libCellML
- *
- * \section intro_sec Introduction
- *
- * This is the source code documentation for the libCellML C++ library.
- */
-#include "libcellml/component.h"
-#include "libcellml/error.h"
-#include "libcellml/import.h"
-#include "libcellml/logger.h"
-#include "libcellml/model.h"
-#include "libcellml/parser.h"
-#include "libcellml/printer.h"
-#include "libcellml/reset.h"
-#include "libcellml/units.h"
-#include "libcellml/validator.h"
-#include "libcellml/variable.h"
-#include "libcellml/version.h"
-#include "libcellml/when.h"
+#include <libcellml>
+
+TEST(Reset, create) {
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    EXPECT_NE(nullptr, r);
+}
+
