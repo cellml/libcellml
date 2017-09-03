@@ -24,3 +24,136 @@ TEST(Reset, create) {
     EXPECT_NE(nullptr, r);
 }
 
+TEST(Reset, order) {
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    r->setOrder(1);
+
+    EXPECT_EQ(1, r->getOrder());
+}
+
+TEST(Reset, addAndCountChildren) {
+    libcellml::Reset r;
+    libcellml::WhenPtr child1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr child2 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr child3 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr child4 = std::make_shared<libcellml::When>();
+
+    EXPECT_EQ(0, r.whenCount());
+
+    r.addWhen(child1);
+    r.addWhen(child2);
+    r.addWhen(child3);
+    r.addWhen(child4);
+    EXPECT_EQ(4, r.whenCount());
+
+    r.addWhen(child3);
+    EXPECT_EQ(5, r.whenCount());
+}
+
+TEST(Reset, contains) {
+    libcellml::Reset r;
+    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+
+    EXPECT_FALSE(r.containsWhen(w1));
+
+    r.addWhen(w1);
+    r.addWhen(w2);
+    EXPECT_TRUE(r.containsWhen(w1));
+    EXPECT_TRUE(r.containsWhen(w2));
+}
+
+TEST(Reset, removeWhenMethods) {
+    libcellml::Reset r;
+    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
+    r.addWhen(w1);
+    r.addWhen(w2);
+
+    EXPECT_TRUE(r.removeWhen(0));
+    EXPECT_EQ(1, r.whenCount());
+
+    EXPECT_FALSE(r.removeWhen(1));
+
+    r.addWhen(w1);
+    r.addWhen(w1);
+    r.addWhen(w1);
+    r.removeWhen(w1);
+    r.removeWhen(w1);
+    EXPECT_EQ(2, r.whenCount());
+
+    // Expect no change
+    EXPECT_FALSE(r.removeWhen(w3));
+    EXPECT_EQ(2, r.whenCount());
+
+    r.removeAllWhens();
+    EXPECT_EQ(0, r.whenCount());
+}
+
+TEST(Reset, getWhenMethods) {
+    libcellml::Reset r;
+    libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
+
+    r.addWhen(c1);
+    r.addWhen(c2);
+
+    libcellml::WhenPtr cA = r.getWhen(0);
+
+    // Using const version of overloaded method
+    const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).getWhen(0);
+    EXPECT_EQ(0, cS->getOrder());
+
+    // Can do this as we just have a const pointer
+    EXPECT_EQ(nullptr, r.getWhen(4));
+}
+
+TEST(Reset, takeWhenMethods) {
+    libcellml::Reset r;
+    libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
+
+    r.addWhen(c1);
+    r.addWhen(c2);
+
+    libcellml::WhenPtr c02 = r.takeWhen(1);
+    EXPECT_EQ(1, r.whenCount());
+    EXPECT_EQ(0, c02->getOrder());
+
+    EXPECT_EQ(nullptr, r.takeWhen(4));
+}
+
+TEST(Reset, replaceWhenMethods) {
+    libcellml::Reset r;
+    libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr c3 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr c4 = std::make_shared<libcellml::When>();
+
+    r.addWhen(c1);
+    r.addWhen(c2);
+
+    EXPECT_FALSE(r.replaceWhen(5, c3));
+
+    EXPECT_TRUE(r.replaceWhen(1, c3));
+}
+
+TEST(Reset, constructors) {
+    libcellml::Reset r, r1, r2;
+
+    r.addWhen(std::make_shared<libcellml::When>());
+
+    // Testing assignment for Reset
+    r1 = r;
+    EXPECT_EQ(1, r1.whenCount());
+
+    // Testing move assignment for Reset
+    r2 = std::move(r1);
+    EXPECT_EQ(1, r2.whenCount());
+
+    // Testing move constructor for Reset
+    libcellml::Reset r3 = std::move(r2);
+    EXPECT_EQ(1, r3.whenCount());
+}
