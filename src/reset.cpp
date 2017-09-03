@@ -31,6 +31,7 @@ namespace libcellml {
 struct Reset::ResetImpl
 {
     int mOrder; /**< An integer for determining relative order.*/
+    VariablePtr mVariable; /**< .*/
     std::vector<WhenPtr>::iterator findWhen(const WhenPtr &when);
     std::vector<WhenPtr> mWhens;
 };
@@ -56,6 +57,7 @@ Reset::Reset(const Reset& rhs)
     , mPimpl(new ResetImpl())
 {
     mPimpl->mOrder = rhs.mPimpl->mOrder;
+    mPimpl->mVariable = rhs.mPimpl->mVariable;
     mPimpl->mWhens = rhs.mPimpl->mWhens;
 }
 
@@ -76,6 +78,16 @@ Reset& Reset::operator=(Reset e)
 void Reset::swap(Reset &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
+}
+
+void Reset::setVariable(VariablePtr variable)
+{
+    mPimpl->mVariable = variable;
+}
+
+VariablePtr Reset::getVariable() const
+{
+    return mPimpl->mVariable;
 }
 
 void Reset::setOrder(int order)

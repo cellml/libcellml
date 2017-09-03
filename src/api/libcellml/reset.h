@@ -38,9 +38,27 @@ public:
     Reset& operator=(Reset n); /**< Assignment operator */
 
     /**
+     * @brief Set the variable for this reset.
+     *
+     * Sets the variable for this reset.
+     *
+     * @param variable The variable to set.
+     */
+    void setVariable(VariablePtr variable);
+
+    /**
+     * @brief Get the variable for this reset.
+     *
+     * Returns the variable of this reset.
+     *
+     * @return The variable.
+     */
+    VariablePtr getVariable() const;
+
+    /**
      * @brief Set the order for this reset.
      *
-     * Sets the order that for this reset.
+     * Sets the order for this reset.
      *
      * @param order The order to set.
      */
