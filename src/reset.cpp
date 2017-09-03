@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "libcellml/reset.h"
 
+#include <algorithm>
 #include <vector>
 
 #include <libcellml/when.h>
