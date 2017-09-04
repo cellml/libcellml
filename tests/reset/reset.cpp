@@ -157,3 +157,123 @@ TEST(Reset, constructors) {
     libcellml::Reset r3 = std::move(r2);
     EXPECT_EQ(1, r3.whenCount());
 }
+
+TEST(Reset, printResetWithVariable) {
+    std::string e = "<reset variable=\"A\"/>";
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
+    v->setName("A");
+
+    r->setVariable(v);
+
+    libcellml::Printer p(libcellml::Format::XML);
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, printResetWithOrder) {
+    std::string e = "<reset order=\"1\"/>";
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    r->setOrder(1);
+
+    libcellml::Printer p(libcellml::Format::XML);
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, printResetWithOrderAndVariable) {
+    std::string e = "<reset variable=\"B\" order=\"1\"/>";
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
+    v->setName("B");
+
+    r->setVariable(v);
+    r->setOrder(1);
+
+    libcellml::Printer p(libcellml::Format::XML);
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, printResetWithWhen) {
+    std::string e = "<reset>"
+                        "<when/>"
+                    "</reset>";
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    r->addWhen(w);
+
+    libcellml::Printer p(libcellml::Format::XML);
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, printResetWithMultipleWhens) {
+    std::string e = "<reset>"
+                        "<when/>"
+                        "<when/>"
+                        "<when/>"
+                    "</reset>";
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
+
+    r->addWhen(w1);
+    r->addWhen(w2);
+    r->addWhen(w3);
+
+    libcellml::Printer p(libcellml::Format::XML);
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, printResetWithMultipleWhensWithValues) {
+    std::string e = "<reset variable=\"A\">"
+                        "<when order=\"2\">"
+                            "<math  xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some mathml"
+                            "</math>"
+                        "</when>"
+                        "<when order=\"1\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>";
+
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+
+    w1->setOrder(2);
+    w1->setCondition("some mathml");
+
+    w2->setOrder(1);
+    w2->setCondition("some condition in mathml");
+    w2->setValue("some value in mathml");
+
+    r->addWhen(w1);
+    r->addWhen(w2);
+
+    libcellml::Printer p(libcellml::Format::XML);
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}
+

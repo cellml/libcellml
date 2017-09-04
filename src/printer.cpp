@@ -25,6 +25,7 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/import.h"
 #include "libcellml/model.h"
+#include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
@@ -173,6 +174,23 @@ std::string Printer::printComponent(ComponentPtr component) const
 std::string Printer::printComponent(Component component) const
 {
     return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+}
+
+std::string Printer::printReset(ResetPtr reset) const
+{
+    std::string repr = "";
+    if (mPimpl->mFormat == Format::XML) {
+        std::string id = reset->getId();
+        if (id.length()) {
+            repr += " id=\"" + id + "\"";
+        }
+    }
+    return repr;
+}
+
+std::string Printer::printReset(Reset reset) const
+{
+    return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
 }
 
 std::string Printer::printWhen(WhenPtr when) const

@@ -148,6 +148,28 @@ public:
      */
     std::string printComponent(Component component) const;
 
+    /**
+     * @brief Serialise the reset to @c std::string.
+     *
+     * Serialise the given @p reset to a std::string.
+     *
+     * @param reset The reset to serialise.
+     * @return  The @c std::string representation of the reset.
+     */
+    std::string printReset(ResetPtr reset) const;
+
+    /**
+     * @brief Serialise the reset to @c std::string.
+     *
+     * Serialise the given @p reset to a std::string.
+     *
+     * @overload
+     *
+     * @param reset The reset to serialise.
+     * @return The @c std::string representation of the reset.
+     */
+    std::string printReset(Reset reset) const;
+
 private:
     /**
      * @brief Serialise the component encapsulation to @c std::string.
