@@ -88,6 +88,21 @@ public:
     void addVariable(const VariablePtr &v);
 
     /**
+     * @brief Remove the variable by the given @p variable pointer from this component.
+     *
+     * Remove the variable with the given pointer from this component. If the @p variable to
+     * be removed is in a connection (is equivalent to another variable), this
+     * component will not be serialised in the connection.
+     *
+     * @sa addVariable
+     *
+     * @param index The index of the variable to remove.
+     *
+     * @return True if the variable was removed, false otherwise.
+     */
+    bool removeVariable(size_t index);
+
+    /**
      * @brief Remove the variable with the given @p name from this component.
      *
      * Remove the variable with the given name from this component. If the named variable to
@@ -96,9 +111,11 @@ public:
      *
      * @sa addVariable
      *
+     * @overload
+     *
      * @param name The name of the variable to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the variable was removed, false otherwise.
      */
     bool removeVariable(const std::string &name);
 
@@ -115,7 +132,7 @@ public:
      *
      * @param variable The pointer to the variable to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the vairable was removed, false otherwise.
      */
     bool removeVariable(const VariablePtr &variable);
 
