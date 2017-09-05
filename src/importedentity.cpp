@@ -42,23 +42,20 @@ ImportedEntity::~ImportedEntity()
 }
 
 ImportedEntity::ImportedEntity(const ImportedEntity& rhs)
-    : NamedEntity(rhs)
-    , mPimpl(new ImportedEntityImpl())
+    : mPimpl(new ImportedEntityImpl())
 {
     mPimpl->mImport = rhs.mPimpl->mImport;
     mPimpl->mImportReference = rhs.mPimpl->mImportReference;
 }
 
 ImportedEntity::ImportedEntity(ImportedEntity &&rhs)
-    : NamedEntity(std::move(rhs))
-    , mPimpl(rhs.mPimpl)
+    : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
 ImportedEntity& ImportedEntity::operator=(ImportedEntity e)
 {
-    NamedEntity::operator= (e);
     e.swap(*this);
     return *this;
 }

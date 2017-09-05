@@ -69,6 +69,7 @@ Component::~Component()
 
 Component::Component(const Component& rhs)
     : ComponentEntity(rhs)
+    , ImportedEntity(rhs)
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mVariables = rhs.mPimpl->mVariables;
@@ -77,6 +78,7 @@ Component::Component(const Component& rhs)
 
 Component::Component(Component &&rhs)
     : ComponentEntity(std::move(rhs))
+    , ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -85,6 +87,7 @@ Component::Component(Component &&rhs)
 Component& Component::operator=(Component c)
 {
     ComponentEntity::operator= (c);
+    ImportedEntity::operator = (c);
     c.swap(*this);
     return *this;
 }

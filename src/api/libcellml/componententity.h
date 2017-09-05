@@ -17,7 +17,7 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/exportdefinitions.h"
-#include "libcellml/importedentity.h"
+#include "libcellml/namedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
@@ -28,7 +28,7 @@ class Component;
  *
  * The interface class for managing Components.
  */
-class LIBCELLML_EXPORT ComponentEntity: public ImportedEntity
+class LIBCELLML_EXPORT ComponentEntity: public NamedEntity
 {
 public:
     /**
