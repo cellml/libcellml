@@ -57,8 +57,7 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml) {
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     xmlDocPtr doc = xmlCtxtReadDoc(context, BAD_CAST e.c_str(), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
-    EXPECT_NE(nullptr, doc);
-    xmlFreeDoc(doc);
+    EXPECT_EQ(nullptr, doc);
 }
 
 
