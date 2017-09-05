@@ -29,7 +29,7 @@ namespace libcellml {
  * @brief The Units class.
  * Class for Units.
  */
-class LIBCELLML_EXPORT Units: public ImportedEntity
+class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
 public:
     Units(); /**< Constructor */
