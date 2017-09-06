@@ -112,5 +112,5 @@ if (LIBCELLML_UNIT_TESTS)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
 
+# Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
-
