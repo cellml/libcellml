@@ -110,6 +110,10 @@ TEST(Parser, parseComplexEncapsulationModelFromFile) {
 
 TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
     // This test resulted from https://github.com/cellml/libcellml/issues/183
+
+    std::string e1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>a1</ci>\n\t\t\t\t<apply><plus/>\n\t\t\t\t\t<ci>b1</ci>\n\t\t\t\t\t<ci>c1</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math>";
+    std::string e2 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>b2</ci>\n\t\t\t\t<apply><times/>\n\t\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n\t\t\t\t\t<ci>d</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math>\n\t\t<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>d</ci>\n\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n\t\t\t</apply>\n\t\t</math>";
+
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE));
     std::stringstream buffer;
@@ -118,9 +122,6 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
     libcellml::Parser p(libcellml::Format::XML);
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(0, p.errorCount());
-
-    std::string e1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>a1</ci>\n\t\t\t\t<apply><plus/>\n\t\t\t\t\t<ci>b1</ci>\n\t\t\t\t\t<ci>c1</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math>";
-    std::string e2 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>b2</ci>\n\t\t\t\t<apply><times/>\n\t\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n\t\t\t\t\t<ci>d</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math>\n\t\t<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>d</ci>\n\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n\t\t\t</apply>\n\t\t</math>";
 
     std::string a = model->getComponent("c1")->getMath();
     EXPECT_EQ(e1, a);
