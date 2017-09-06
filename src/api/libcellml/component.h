@@ -132,7 +132,7 @@ public:
      *
      * @param variable The pointer to the variable to remove.
      *
-     * @return True if the vairable was removed, false otherwise.
+     * @return True if the variable was removed, false otherwise.
      */
     bool removeVariable(const VariablePtr &variable);
 
