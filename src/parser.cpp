@@ -351,7 +351,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
             std::string math = childNode->convertToString();
-            component->setMath(math);
+            component->appendMath(math);
         } else if (childNode->isType("text")) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
