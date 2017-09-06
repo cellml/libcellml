@@ -22,22 +22,40 @@ include_directories(${PYTHON_INCLUDE_PATH})
 # Create empty flags
 set(CMAKE_SWIG_FLAGS "")
 
-# Enable cpp
-set_source_files_properties(../interface/cellml.i PROPERTIES CPLUSPLUS ON)
-set_source_files_properties(../interface/cellml.i PROPERTIES SWIG_FLAGS "-includeall")
+# Include source dir and binary dir
+include_directories(${PROJECT_BINARY_DIR}/src/api/)
+include_directories(${PROJECT_SOURCE_DIR}/src/api)
 
-# Include source dir
-#include_directories(${PROJECT_SOURCE_DIR})
-#include_directories(${PROJECT_SOURCE_DIR}/api/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set(SWIG_INTERFACE_SRCS
+    __init__.i
+    ../interface/entity.i
+    ../interface/enumerations.i
+    ../interface/importedentity.i
+    ../interface/namedentity.i
+    ../interface/units.i
+)
+set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES CPLUSPLUS ON)
+#set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES SWIG_FLAGS "-includeall")
+
+set(CMAKE_SWIG_OUTDIR libcellml)
 
 # Add library
-swig_add_library(cellml
-    LANGUAGE python
-    SOURCES ../interface/cellml.i)
+foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
+    get_filename_component(MODULE_NAME ${SWIG_INTERFACE_SRC} NAME_WE)
+    if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.7)
+        swig_add_library(${MODULE_NAME}
+            LANGUAGE python
+            SOURCES ${SWIG_INTERFACE_SRC})
+    else ()
+        swig_add_module(${MODULE_NAME} python ${SWIG_INTERFACE_SRC})
+    endif ()
+    swig_link_libraries(${MODULE_NAME} ${PYTHON_LIBRARIES} cellml)
+    set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})
+#    message(STATUS "swig_generated_file_fullname: ${swig_generated_file_fullname}")
+    set_target_properties(${MODULE_TARGET} PROPERTIES
+        CXX_STANDARD 11
+        CXX_STANDARD_REQUIRED ON
+        CXX_VISIBILITY_PRESET hidden)
+endforeach()
 
-# Link with Python libraries
-swig_link_libraries(cellml cellml ${PYTHON_LIBRARIES})
-
-# Link with CellML libraries
-#swig_link_libraries(cellml libcellml)
+set(ADDITIONAL_MAKE_CLEAN_FILES libcellml)
