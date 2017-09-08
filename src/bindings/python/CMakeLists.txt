@@ -12,20 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-# Based on an example from
-#  http://www.swig.org/Doc3.0/Introduction.html#Introduction_build_system
-
 # Add python package and header directories
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_PATH})
 
-# Create empty flags
-set(CMAKE_SWIG_FLAGS "")
-
 # Include source dir and binary dir
-include_directories(${PROJECT_BINARY_DIR}/src/api/)
 include_directories(${PROJECT_SOURCE_DIR}/src/api)
+include_directories(${PROJECT_BINARY_DIR}/src/api/)
 
+# Add swig interface files
 set(SWIG_INTERFACE_SRCS
     __init__.i
     ../interface/entity.i
@@ -34,12 +29,14 @@ set(SWIG_INTERFACE_SRCS
     ../interface/namedentity.i
     ../interface/units.i
 )
-set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES CPLUSPLUS ON)
-#set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES SWIG_FLAGS "-includeall")
 
+# Configure for C++
+set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES CPLUSPLUS ON)
+
+# Set output path (relative to current in build dir)
 set(CMAKE_SWIG_OUTDIR libcellml)
 
-# Add library
+# Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
     get_filename_component(MODULE_NAME ${SWIG_INTERFACE_SRC} NAME_WE)
     if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.7)
@@ -55,7 +52,23 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
     set_target_properties(${MODULE_TARGET} PROPERTIES
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
-        CXX_VISIBILITY_PRESET hidden)
+        CXX_VISIBILITY_PRESET hidden
+        #LIBRARY_OUTPUT_DIRECTORY bin
+        )
 endforeach()
 
-set(ADDITIONAL_MAKE_CLEAN_FILES libcellml)
+# Copy Python tests
+add_custom_target(copyTests ALL
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${PROJECT_SOURCE_DIR}/src/bindings/python/test.py
+            ${CMAKE_CURRENT_BINARY_DIR}/test.py
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${PROJECT_SOURCE_DIR}/src/bindings/python/tests
+            ${CMAKE_CURRENT_BINARY_DIR}/tests
+    )
+add_dependencies(copyTests ${SWIG_MODULE___init___REAL_NAME})
+
+# Add new paths to make clean
+set_directory_properties(PROPERTIES  
+    ADDITIONAL_MAKE_CLEAN_FILES "libcellml;tests;test.py") 
+
