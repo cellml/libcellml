@@ -1,5 +1,5 @@
 #
-# Tests the entity class
+# Tests the NamedEntity class
 #
 import unittest
 class TestNamedEntity(unittest.TestCase):
