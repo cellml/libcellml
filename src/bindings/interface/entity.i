@@ -1,4 +1,5 @@
 %module(package="libcellml") entity
+%include "std_string.i"
 
 #define LIBCELLML_EXPORT
 
