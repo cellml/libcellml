@@ -18,8 +18,8 @@ The library is intended to be lightweight and focused purely in dealing with Cel
 some of the convenience methods/objects that we might expect will not be part of libCellML.
 For example, in our current thoughts, libCellML would not be concerned with the actual mechanics of
 resolving and retrieving external resources - calling applications would be required to resolve and
-retrieve import URL's and provide the serialised documents to libCellML in the form of strings for
-instantiation as part of the CellML 1.1/1.2 hierarchical model description.
+retrieve import URLs and provide the serialised documents to libCellML in the form of strings for
+instantiation as part of the CellML hierarchical model description.
 
 Example code will be provided which demonstrates how such tasks can be achieved using standard tools,
 i.e., libcurl for C/C++ and requests for Python to resolve and retrieve imported models.
