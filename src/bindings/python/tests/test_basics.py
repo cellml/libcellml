@@ -3,6 +3,6 @@
 #
 import unittest
 class TestBasics(unittest.TestCase):
-    def test_import(self):
+    def test_basics(self):
         import libcellml
         
