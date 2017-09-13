@@ -19,13 +19,15 @@ class TestNamedEntity(unittest.TestCase):
         # Test access to inherited methods
         x = ImportedEntity()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertIs(x.getId(), '')
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
         
         # Test own methods
         x = ImportedEntity()
         self.assertFalse(x.isImport())
-        self.assertEqual(x.getImportReference(), '')
-        self.assertIsNone(x.getImport()) #TODO: Need class import!
+        self.assertIs(x.getImportReference(), '')
+        self.assertIsNone(x.getImport())
+        #TODO: Test when values are set!
+        #TODO: Test setters!
         
