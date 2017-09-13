@@ -29,6 +29,7 @@ class TestEntity(unittest.TestCase):
         x = Entity()
         self.assertIsNone(x.getParent())
         x.clearParent()
+        
         #TODO Models and components        
     
 

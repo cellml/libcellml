@@ -24,6 +24,8 @@ include_directories(${PROJECT_BINARY_DIR}/src/api/)
 # Note: These filenames double as (generated .so file) module names!
 set(SWIG_INTERFACE_SRCS
     __init__.i
+    ../interface/component.i
+    ../interface/componententity.i
     ../interface/entity.i
     ../interface/enumerations.i
     ../interface/imports.i
