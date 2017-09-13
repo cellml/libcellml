@@ -3,9 +3,9 @@
 # can be imported.
 #
 import unittest
-class TestNamedEntity(unittest.TestCase):
+class TestImportedEntity(unittest.TestCase):
 
-    def test_named_entity(self):
+    def test_imported_entity(self):
     
         from libcellml.importedentity import ImportedEntity
         
@@ -24,10 +24,26 @@ class TestNamedEntity(unittest.TestCase):
         self.assertEqual(x.getId(), idx)
         
         # Test own methods
+        reference = 'hello'
         x = ImportedEntity()
         self.assertFalse(x.isImport())
         self.assertIs(x.getImportReference(), '')
         self.assertIsNone(x.getImport())
-        #TODO: Test when values are set!
-        #TODO: Test setters!
+        x.setImportReference(reference)
+        self.assertEqual(x.getImportReference(), reference)
+        self.assertFalse(x.isImport())
+        
+        from libcellml.imports import Import
+        source = 'yellow'
+        y = Import()
+        y.setSource(source)
+        x.setImport(y)
+        self.assertTrue(x.isImport())
+        self.assertIsNotNone(x.getImport(), y)
+        self.assertIsInstance(x.getImport(), Import)
+        self.assertEqual(x.getImport().getSource(), source)
+        x.setImport(None)
+        self.assertIsNone(x.getImport())
+        self.assertFalse(x.isImport())
+        
         

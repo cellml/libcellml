@@ -11,6 +11,11 @@
 # - Run a specific set of tests
 #       $ python run test1 test2 etc.
 #
+# - Run tests with more output
+#       $ python run -v
+#   or
+#       $ python run --verbose
+#
 # How to write tests
 # ------------------
 # - All tests must be inside the 'test' folder, with names like `test*.py`.
@@ -29,13 +34,22 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 # All tests
 TEST = os.path.join(ROOT, 'tests')
 
+# Set verbosity
+args = sys.argv[1:]
+verbosity = 1
+for x in ['-v', '--verbose']:
+    try:
+        args.remove(x)
+        verbosity = 1000
+    except ValueError:
+        pass
+
 # Load selected tests or discover all
 loader = unittest.TestLoader()
-tests = sys.argv[1:]
-if tests:
+if args:
     # Load selected tests
     # Make sure test module names start with 'test.'
-    tests = [x if x[:5] == '.test' else 'test.' + x for x in tests]
+    tests = [x if x[:5] == '.test' else 'test.' + x for x in args]
     suite = loader.loadTestsFromNames(tests)
 else:
     # Discover all tests
@@ -43,4 +57,4 @@ else:
     suite = loader.discover(TEST)
 
 # Run!
-unittest.TextTestRunner().run(suite)
+unittest.TextTestRunner(verbosity=verbosity).run(suite)
