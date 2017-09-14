@@ -15,7 +15,7 @@
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 
-option(LIBCELLML_PYTHON "Build Python wrappers" ON)
-if(LIBCELLML_PYTHON)
+option(LIBCELLML_BINDINGS_PYTHON "Build Python wrappers" ON)
+if(LIBCELLML_BINDINGS_PYTHON)
     add_subdirectory(python)
 endif()
