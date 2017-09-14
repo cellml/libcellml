@@ -25,7 +25,7 @@ namespace libcellml {
  */
 struct ImportedEntity::ImportedEntityImpl
 {
-    ImportPtr mImport;
+    ImportSourcePtr mImport;
     std::string mImportReference;
 };
 
@@ -73,14 +73,14 @@ bool ImportedEntity::isImport() const
     return mPimpl->mImport != nullptr;
 }
 
-ImportPtr ImportedEntity::getImport() const
+ImportSourcePtr ImportedEntity::getImportSource() const
 {
     return mPimpl->mImport;
 }
 
-void ImportedEntity::setImport(const ImportPtr &imp)
+void ImportedEntity::setImportSource(const ImportSourcePtr &import)
 {
-    mPimpl->mImport = imp;
+    mPimpl->mImport = import;
 }
 
 std::string ImportedEntity::getImportReference() const

@@ -101,20 +101,20 @@ struct Parser::ParserImpl
     void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
 
     /**
-     * @brief Update the @p import with attributes parsed from @p node and add any imported
+     * @brief Update the @p import source with attributes parsed from @p node and add any imported
      * components or units it to the @p model.
      *
-     * Update the @p import with attributes parsed from @p node and add any imported
-     * components or units to the @p model. If any attributes exist in @p import
+     * Update the @p import source with attributes parsed from @p node and add any imported
+     * components or units to the @p model. If any attributes exist in @p import source
      * with names matching those in @p node, they will be overwritten. Likewise,
      * any imported components or units of the same name already in @p model will
      * be overwritten by those parsed from @p node.
      *
-     * @param import The @c ImportPtr to update.
+     * @param import The @c ImportSourcePtr to update.
      * @param model The @c ModelPtr to add imported components/units to.
-     * @param node The @c XmlNodePtr to parse and update the @p import with.
+     * @param node The @c XmlNodePtr to parse and update the @p import source with.
      */
-    void loadImport(const ImportPtr &import, const ModelPtr &model, const XmlNodePtr &node);
+    void loadImport(const ImportSourcePtr &import, const ModelPtr &model, const XmlNodePtr &node);
 
     /**
      * @brief Update the @p units with attributes parsed from @p node.
@@ -265,7 +265,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             loadUnits(units, childNode);
             model->addUnits(units);
         } else if (childNode->isType("import")) {
-            ImportPtr import = std::make_shared<Import>();
+            ImportSourcePtr import = std::make_shared<ImportSource>();
             loadImport(import, model, childNode);
         } else if (childNode->isType("encapsulation")) {
             // An encapsulation should not have attributes.
@@ -1031,7 +1031,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
     }
 }
 
-void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &model, const XmlNodePtr &node)
+void Parser::ParserImpl::loadImport(const ImportSourcePtr &import, const ModelPtr &model, const XmlNodePtr &node)
 {
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
@@ -1045,7 +1045,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Import from '" + node->getAttribute("href") +
                                 "' has an invalid attribute '" + attribute->getType() + "'.");
-            err->setImport(import);
+            err->setImportSource(import);
             err->setKind(Error::Kind::IMPORT);
             mParser->addError(err);
         }
@@ -1069,7 +1069,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                     err->setDescription("Import of component '" + childNode->getAttribute("name") +
                                         "' from '" + node->getAttribute("href") +
                                         "' has an invalid attribute '" + attribute->getType() + "'.");
-                    err->setImport(import);
+                    err->setImportSource(import);
                     err->setKind(Error::Kind::IMPORT);
                     mParser->addError(err);
                     errorOccurred = true;
@@ -1095,7 +1095,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                     err->setDescription("Import of units '" + childNode->getAttribute("name") +
                                         "' from '" + node->getAttribute("href") +
                                         "' has an invalid attribute '" + attribute->getType() + "'.");
-                    err->setImport(import);
+                    err->setImportSource(import);
                     err->setKind(Error::Kind::IMPORT);
                     mParser->addError(err);
                     errorOccurred = true;
@@ -1112,7 +1112,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Import from '" + node->getAttribute("href") +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                err->setImport(import);
+                err->setImportSource(import);
                 err->setKind(Error::Kind::IMPORT);
                 err->setRule(SpecificationRule::IMPORT_CHILD);
                 mParser->addError(err);
@@ -1121,7 +1121,7 @@ void Parser::ParserImpl::loadImport(const ImportPtr &import, const ModelPtr &mod
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Import from '" + node->getAttribute("href") +
                                 "' has an invalid child element '" + childNode->getType() + "'.");
-            err->setImport(import);
+            err->setImportSource(import);
             err->setKind(Error::Kind::IMPORT);
             err->setRule(SpecificationRule::IMPORT_CHILD);
             mParser->addError(err);

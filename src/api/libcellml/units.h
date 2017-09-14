@@ -23,7 +23,7 @@ limitations under the License.
 #include "libcellml/importedentity.h"
 #include "libcellml/types.h"
 
-namespace libcellml { 
+namespace libcellml {
 
 /**
  * @brief The Units class.
@@ -337,10 +337,10 @@ public:
      * Make this Units an imported units by defining an import model
      * from which to extract the named Units from.
      *
-     * @param imp The import from which the named Units originates.
+     * @param import The import source from which the named Units originates.
      * @param name The name of the Units in the imported model to use.
      */
-    void setSourceUnits(const ImportPtr &imp, const std::string &name);
+    void setSourceUnits(const ImportSourcePtr &import, const std::string &name);
 
     /**
      * @brief Get the number of units that compose this units.

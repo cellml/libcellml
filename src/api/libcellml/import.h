@@ -22,23 +22,23 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Import class.
+ * @brief The ImportSource class.
  *
- * The import class is for encapsulating an external CellML Model.
+ * The import source class is for encapsulating an external CellML Model.
  */
-class LIBCELLML_EXPORT Import: public Entity
+class LIBCELLML_EXPORT ImportSource: public Entity
 {
 public:
-    Import(); /**< Constructor */
-    ~Import(); /**< Destructor */
-    Import(const Import &rhs); /**< Copy constructor */
-    Import(Import &&rhs); /**< Move constructor */
-    Import& operator=(Import m); /**< Assignment operator */
+    ImportSource(); /**< Constructor */
+    ~ImportSource(); /**< Destructor */
+    ImportSource(const ImportSource &rhs); /**< Copy constructor */
+    ImportSource(ImportSource &&rhs); /**< Move constructor */
+    ImportSource& operator=(ImportSource m); /**< Assignment operator */
 
     /**
      * @brief Set the source Model.
      *
-     * Set the source Model that this import refers to.
+     * Set the source Model that this import source refers to.
      *
      * @param reference The reference model.
      */
@@ -55,10 +55,10 @@ public:
     std::string getSource() const;
 
 private:
-    void swap(Import &rhs); /**< Swap method required for C++ 11 move semantics. */
+    void swap(ImportSource &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    struct ImportImpl; /**< Forward declaration for pImpl idiom. */
-    ImportImpl *mPimpl; /**< Private member to implementation pointer. */
+    struct ImportSourceImpl; /**< Forward declaration for pImpl idiom. */
+    ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
 }

@@ -482,8 +482,8 @@ TEST(Model, setAndCheckIdsAllEntities) {
             "</model>";
 
     libcellml::Model m;
-    libcellml::ImportPtr i1 = std::make_shared<libcellml::Import>();
-    libcellml::ImportPtr i2 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();

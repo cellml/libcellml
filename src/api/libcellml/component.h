@@ -41,10 +41,10 @@ public:
      * Make this component an imported component by defining an import model
      * from which to extract the named component from.
      *
-     * @param imp The import from which the named component originates.
+     * @param import The import source from which the named component originates.
      * @param name The name of the component in the imported model to use.
      */
-    void setSourceComponent(const ImportPtr &imp, const std::string &name);
+    void setSourceComponent(const ImportSourcePtr &import, const std::string &name);
 
     /**
      * @brief Appends the argument to the math string for this component.

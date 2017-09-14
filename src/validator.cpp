@@ -247,7 +247,7 @@ void Validator::validateModel(const ModelPtr &model)
                 if (component->isImport()) {
                     // Check for a component_ref.
                     std::string componentRef = component->getImportReference();
-                    std::string importSource = component->getImport()->getSource();
+                    std::string importSource = component->getImportSource()->getSource();
                     bool foundImportError = false;
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -265,7 +265,7 @@ void Validator::validateModel(const ModelPtr &model)
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
                                             "' does not have a valid locator xlink:href attribute.");
-                        err->setImport(component->getImport());
+                        err->setImportSource(component->getImportSource());
                         err->setKind(Error::Kind::IMPORT);
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
@@ -317,7 +317,7 @@ void Validator::validateModel(const ModelPtr &model)
                 if (units->isImport()) {
                     // Check for a units_ref.
                     std::string unitsRef = units->getImportReference();
-                    std::string importSource = units->getImport()->getSource();
+                    std::string importSource = units->getImportSource()->getSource();
                     bool foundImportError = false;
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -335,7 +335,7 @@ void Validator::validateModel(const ModelPtr &model)
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
                                             "' does not have a valid locator xlink:href attribute.");
-                        err->setImport(units->getImport());
+                        err->setImportSource(units->getImportSource());
                         err->setKind(Error::Kind::IMPORT);
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);

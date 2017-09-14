@@ -1208,13 +1208,13 @@ TEST(Parser, invalidImportsAndGetError) {
     const std::string a = printer.printModel(m);
     EXPECT_EQ(output, a);
 
-    libcellml::ImportPtr import = m->getUnits("units_in_this_model")->getImport();
+    libcellml::ImportSourcePtr import = m->getUnits("units_in_this_model")->getImportSource();
     // Get import from error and check.
-    EXPECT_EQ(import, p.getError(0)->getImport());
+    EXPECT_EQ(import, p.getError(0)->getSourceImport());
     // Get const import from error and check.
     const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).getError(0);
     libcellml::Error *rawErr = err.get();
-    const libcellml::ImportPtr importFromError = static_cast<const libcellml::Error*>(rawErr)->getImport();
+    const libcellml::ImportSourcePtr importFromError = static_cast<const libcellml::Error*>(rawErr)->getSourceImport();
     EXPECT_EQ(import, importFromError);
 }
 
@@ -1403,9 +1403,9 @@ TEST(Parser, parseIds) {
     EXPECT_EQ(0, p.errorCount());
     EXPECT_EQ("mid", model->getId());
     EXPECT_EQ("c1id", model->getComponent("component1")->getId());
-    EXPECT_EQ("i1id", model->getComponent("component1")->getImport()->getId());
+    EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
     EXPECT_EQ("u1id", model->getUnits("units1")->getId());
-    EXPECT_EQ("i2id", model->getUnits("units1")->getImport()->getId());
+    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->getId());
     EXPECT_EQ("u2id", model->getUnits("units2")->getId());
     EXPECT_EQ("c2id", model->getComponent("component2")->getId());
     EXPECT_EQ("u3id", model->getUnits("units3")->getId());
