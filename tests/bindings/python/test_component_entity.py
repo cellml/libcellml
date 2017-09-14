@@ -2,7 +2,9 @@
 # Tests the ComponentEntity class
 #
 import unittest
-class TestComponentEntity(unittest.TestCase):
+
+
+class ComponentEntityTestCase(unittest.TestCase):
 
     def test_component_entity(self):
     
@@ -36,6 +38,17 @@ class TestComponentEntity(unittest.TestCase):
         # Test own methods
         #TODO Components etc.
     
+
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ComponentEntityTestCase))
+    return tests
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+
 
         
         

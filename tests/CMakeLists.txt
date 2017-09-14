@@ -8,6 +8,8 @@ set_target_properties(gtest gtest_main PROPERTIES FOLDER gtest)
 mark_as_advanced(gtest_disable_pthreads)
 mark_as_advanced(gtest_force_shared_crt)
 
+add_subdirectory(bindings)
+
 # Any tests included here must append the test name
 # to the LIBCELLML_TESTS list.  Any source files for the
 # test must be set to <test_name>_SRCS, likewise for
@@ -100,26 +102,3 @@ if(LIBCELLML_MEMCHECK)
 endif()
 
 include(test_resources.cmake)
-
-#
-# Bindings
-#
-
-# Copy Python unit tests
-if (LIBCELLML_UNIT_TESTS)
-    add_custom_target(test_bindings_python ALL
-        COMMAND ${CMAKE_COMMAND} -E copy
-                ${PROJECT_SOURCE_DIR}/tests/test_bindings_python.py
-                ${PROJECT_BINARY_DIR}/tests/test_bindings_python.py
-                #${CMAKE_CURRENT_BINARY_DIR}/test.py
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${PROJECT_SOURCE_DIR}/tests/bindings/python
-                ${PROJECT_BINARY_DIR}/tests/bindings/python
-        )
-    #add_dependencies(copyTests ${SWIG_MODULE___init___REAL_NAME})
-    # Add test files to 'make clean'
-    set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
-        "${PROJECT_BINARY_DIR}/tests/test_bindings_python.py"
-        "${PROJECT_BINARY_DIR}/tests/bindings/"
-        )
-endif()

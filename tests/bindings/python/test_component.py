@@ -1,8 +1,10 @@
 #
 # Tests the Component class
-#
+
 import unittest
-class TestComponent(unittest.TestCase):
+
+
+class ComponentTestCase(unittest.TestCase):
 
     def test_component(self):
     
@@ -40,6 +42,13 @@ class TestComponent(unittest.TestCase):
         #TODO Models, components etc.
     
 
-        
-        
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ComponentTestCase))
+    return tests
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
         
