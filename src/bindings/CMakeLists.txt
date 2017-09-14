@@ -14,6 +14,7 @@
 
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
+mark_as_advanced(SWIG_EXECUTABLE)
 
 option(LIBCELLML_BINDINGS_PYTHON "Build Python wrappers" ON)
 if(LIBCELLML_BINDINGS_PYTHON)
