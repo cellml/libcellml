@@ -15,7 +15,18 @@ class TestComponent(unittest.TestCase):
         z = Component(y)
         del(y,z)
         
-        # Test entity basics
+        # Test inheritance
+        x = Component()
+        from libcellml.componententity import ComponentEntity
+        self.assertIsInstance(x, ComponentEntity)
+        from libcellml.importedentity import ImportedEntity
+        self.assertIsInstance(x, ImportedEntity)
+        from libcellml.namedentity import NamedEntity
+        self.assertIsInstance(x, NamedEntity)
+        from libcellml.entity import Entity
+        self.assertIsInstance(x, Entity)
+        
+        # Test access to inherited methods
         x = Component()
         idx = 'test'
         self.assertEqual(x.getId(), '')
