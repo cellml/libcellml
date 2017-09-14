@@ -2,6 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
+%import "types.i"
 %import "std_string.i"
 
 %{
