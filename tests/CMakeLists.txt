@@ -100,3 +100,26 @@ if(LIBCELLML_MEMCHECK)
 endif()
 
 include(test_resources.cmake)
+
+#
+# Bindings
+#
+
+# Copy Python unit tests
+if (LIBCELLML_UNIT_TESTS)
+    add_custom_target(test_bindings_python ALL
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${PROJECT_SOURCE_DIR}/tests/test_bindings_python.py
+                ${PROJECT_BINARY_DIR}/tests/test_bindings_python.py
+                #${CMAKE_CURRENT_BINARY_DIR}/test.py
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/tests/bindings/python
+                ${PROJECT_BINARY_DIR}/tests/bindings/python
+        )
+    #add_dependencies(copyTests ${SWIG_MODULE___init___REAL_NAME})
+    # Add test files to 'make clean'
+    set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        "${PROJECT_BINARY_DIR}/tests/test_bindings_python.py"
+        "${PROJECT_BINARY_DIR}/tests/bindings/"
+        )
+endif()
