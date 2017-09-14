@@ -128,9 +128,9 @@ ComponentPtr Error::getComponent() const
     return mPimpl->mComponent;
 }
 
-void Error::setImportSource(const ImportSourcePtr &import)
+void Error::setImportSource(const ImportSourcePtr &importSource)
 {
-    mPimpl->mImportSource = import;
+    mPimpl->mImportSource = importSource;
 }
 
 ImportSourcePtr Error::getSourceImport() const

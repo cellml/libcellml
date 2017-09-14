@@ -68,9 +68,9 @@ public:
      *
      * @sa getImportSource
      *
-     * @param import The import source to set.
+     * @param importSource The import source to set.
      */
-    void setImportSource(const ImportSourcePtr &import);
+    void setImportSource(const ImportSourcePtr &importSource);
 
     /**
      * @brief Get the import reference.

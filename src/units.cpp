@@ -326,9 +326,9 @@ void Units::removeAllUnits()
     mPimpl->mUnits.clear();
 }
 
-void Units::setSourceUnits(const ImportSourcePtr &import, const std::string &name)
+void Units::setSourceUnits(const ImportSourcePtr &importSource, const std::string &name)
 {
-    setImportSource(import);
+    setImportSource(importSource);
     setImportReference(name);
 }
 

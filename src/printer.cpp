@@ -241,11 +241,11 @@ std::string Printer::printModel(ModelPtr model) const
             incrementComponent = false;
             if (comp->isImport()) {
                 ImportPair pair = std::make_pair(comp->getImportReference(), comp);
-                ImportSourcePtr imp = comp->getImportSource();
-                if (!importMap.count(imp)) {
-                    importMap[imp] = std::vector<ImportPair>();
+                ImportSourcePtr importSource = comp->getImportSource();
+                if (!importMap.count(importSource)) {
+                    importMap[importSource] = std::vector<ImportPair>();
                 }
-                importMap[imp].push_back(pair);
+                importMap[importSource].push_back(pair);
                 incrementComponent = true;
             } else if (comp->componentCount()) {
                 // If the current component is a model component

@@ -158,13 +158,13 @@ public:
     /**
      * @brief Set the @p import source for this error.
      *
-     * Set the @c ImportSourcePtr @p import source object that this error is
+     * Set the @c ImportSourcePtr @p importSource object that this error is
      * relevant to.
      *
-     * @param import A pointer to the import source that this error is relevant
-     * to.
+     * @param importSource A pointer to the import source that this error is
+     * relevant to.
      */
-    void setImportSource(const ImportSourcePtr &import);
+    void setImportSource(const ImportSourcePtr &importSource);
 
     /**
      * @brief Get the import source for this error.

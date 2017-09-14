@@ -337,10 +337,10 @@ public:
      * Make this Units an imported units by defining an import model
      * from which to extract the named Units from.
      *
-     * @param import The import source from which the named Units originates.
+     * @param importSource The import source from which the named Units originates.
      * @param name The name of the Units in the imported model to use.
      */
-    void setSourceUnits(const ImportSourcePtr &import, const std::string &name);
+    void setSourceUnits(const ImportSourcePtr &importSource, const std::string &name);
 
     /**
      * @brief Get the number of units that compose this units.
