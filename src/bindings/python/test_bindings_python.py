@@ -31,8 +31,13 @@ import unittest
 # Current directory
 ROOT = os.path.abspath(os.path.dirname(__file__))
 
-# All tests
-TEST = os.path.join(ROOT, 'tests')
+# Path to tests
+TESTS = os.path.join(ROOT, 'bindings', 'python')
+
+# Path to python modules
+MODULES = os.path.abspath(os.path.join(ROOT, '..', 'src', 'bindings','python'))
+if MODULES not in sys.path:
+    sys.path.append(MODULES)
 
 # Set verbosity
 args = sys.argv[1:]
@@ -54,7 +59,7 @@ if args:
 else:
     # Discover all tests
     loader = unittest.TestLoader()
-    suite = loader.discover(TEST)
+    suite = loader.discover(TESTS)
 
 # Run!
 unittest.TextTestRunner(verbosity=verbosity).run(suite)

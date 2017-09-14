@@ -61,18 +61,24 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
         )
 endforeach()
 
-# Copy Python tests
-add_custom_target(copyTests ALL
-    COMMAND ${CMAKE_COMMAND} -E copy
-            ${PROJECT_SOURCE_DIR}/src/bindings/python/test.py
-            ${CMAKE_CURRENT_BINARY_DIR}/test.py
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${PROJECT_SOURCE_DIR}/src/bindings/python/tests
-            ${CMAKE_CURRENT_BINARY_DIR}/tests
-    )
-add_dependencies(copyTests ${SWIG_MODULE___init___REAL_NAME})
+# Copy Python unit tests
+if (LIBCELLML_UNIT_TESTS)
+    add_custom_target(copyTests ALL
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${PROJECT_SOURCE_DIR}/src/bindings/python/test_bindings_python.py
+                ${PROJECT_BINARY_DIR}/tests/test_bindings_python.py
+                #${CMAKE_CURRENT_BINARY_DIR}/test.py
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/src/bindings/python/tests
+                ${PROJECT_BINARY_DIR}/tests/bindings/python
+        )
+    add_dependencies(copyTests ${SWIG_MODULE___init___REAL_NAME})
+    # Add test files to 'make clean'
+    set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        "tests"
+        "test.py")
+endif()
 
 # Add new paths to make clean
-set_directory_properties(PROPERTIES  
-    ADDITIONAL_MAKE_CLEAN_FILES "libcellml;tests;test.py") 
+set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "libcellml")
 
