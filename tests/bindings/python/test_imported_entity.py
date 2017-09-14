@@ -3,7 +3,9 @@
 # can be imported.
 #
 import unittest
-class TestImportedEntity(unittest.TestCase):
+
+
+class ImportedEntityTestCase(unittest.TestCase):
 
     def test_imported_entity(self):
     
@@ -53,4 +55,15 @@ class TestImportedEntity(unittest.TestCase):
         self.assertIsNone(x.getImport())
         self.assertFalse(x.isImport())
         
+
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ImportedEntityTestCase))
+    return tests
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+
         

@@ -2,7 +2,9 @@
 # Tests the entity class
 #
 import unittest
-class TestEntity(unittest.TestCase):
+
+
+class EntityTestCase(unittest.TestCase):
 
     def test_entity(self):
     
@@ -33,6 +35,13 @@ class TestEntity(unittest.TestCase):
         #TODO Models and components        
     
 
-        
-        
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(EntityTestCase))
+    return tests
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
         
