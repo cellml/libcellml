@@ -21,7 +21,7 @@ limitations under the License.
 #include <map>
 #include <vector>
 
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 #include "utilities.h"
 
 namespace libcellml {

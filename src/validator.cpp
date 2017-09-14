@@ -23,8 +23,8 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
-#include "libcellml/import.h"
 #include "libcellml/error.h"
+#include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"

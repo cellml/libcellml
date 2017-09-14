@@ -23,7 +23,7 @@ limitations under the License.
 
 #include "libcellml/enumerations.h"
 #include "libcellml/component.h"
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
