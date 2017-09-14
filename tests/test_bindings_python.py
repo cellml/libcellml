@@ -11,11 +11,6 @@
 # - Run a specific set of tests
 #       $ python run test1 test2 etc.
 #
-# - Run tests with more output
-#       $ python run -v
-#   or
-#       $ python run --verbose
-#
 # How to write tests
 # ------------------
 # - All tests must be inside the 'test' folder, with names like `test*.py`.
@@ -41,13 +36,13 @@ if MODULES not in sys.path:
 
 # Set verbosity
 args = sys.argv[1:]
-verbosity = 1
-for x in ['-v', '--verbose']:
-    try:
-        args.remove(x)
-        verbosity = 1000
-    except ValueError:
-        pass
+verbosity = 2
+#for x in ['-v', '--verbose']:
+#    try:
+#        args.remove(x)
+#        verbosity = 1000
+#    except ValueError:
+#        pass
 
 # Load selected tests or discover all
 loader = unittest.TestLoader()
