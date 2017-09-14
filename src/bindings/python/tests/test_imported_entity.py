@@ -16,6 +16,13 @@ class TestImportedEntity(unittest.TestCase):
         z = ImportedEntity(y)
         del(y,z)
         
+        # Test inheritance
+        x = ImportedEntity()
+        from libcellml.namedentity import NamedEntity
+        self.assertIsInstance(x, NamedEntity)
+        from libcellml.entity import Entity
+        self.assertIsInstance(x, Entity)
+
         # Test access to inherited methods
         x = ImportedEntity()
         idx = 'test'
