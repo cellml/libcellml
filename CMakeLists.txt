@@ -147,6 +147,3 @@ endif()
 # Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
 
-# Add bindings
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/bindings)
-
