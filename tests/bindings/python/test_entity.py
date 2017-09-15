@@ -3,11 +3,9 @@
 #
 import unittest
 
-
 class EntityTestCase(unittest.TestCase):
 
     def test_entity(self):
-    
         from libcellml.entity import Entity
         
         # Test create/copy/destroy
@@ -33,15 +31,7 @@ class EntityTestCase(unittest.TestCase):
         x.clearParent()
         
         #TODO Models and components        
-    
-
-def suite():
-    #import ImportTestCase
-    tests = unittest.TestSuite()
-    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(EntityTestCase))
-    return tests
-
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-        
+    unittest.main()
+

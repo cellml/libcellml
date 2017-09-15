@@ -1,22 +1,21 @@
 #
-# Tests the Component class
-
+# Tests the Model class
+#
 import unittest
+class ModelTestCase(unittest.TestCase):
 
-class ComponentTestCase(unittest.TestCase):
-
-    def test_component(self):
-        from libcellml.component import Component
+    def test_model(self):
+        from libcellml.model import Model
         
         # Test create/copy/destroy
-        x = Component()
+        x = Model()
         del(x)
-        y = Component()
-        z = Component(y)
+        y = Model()
+        z = Model(y)
         del(y,z)
         
         # Test inheritance
-        x = Component()
+        x = Model()
         from libcellml.componententity import ComponentEntity
         self.assertIsInstance(x, ComponentEntity)
         from libcellml.importedentity import ImportedEntity
@@ -27,17 +26,25 @@ class ComponentTestCase(unittest.TestCase):
         self.assertIsInstance(x, Entity)
         
         # Test access to inherited methods
-        x = Component()
+        x = Model()
         idx = 'test'
         self.assertEqual(x.getId(), '')
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
-        y = Component(x)
+        y = Model(x)
         self.assertEqual(y.getId(), idx)
         del(x, y)
         
         # Test own methods
         #TODO Models, components etc.
+
+        print('actually running the test')
+        import sys
+        sys.exit(1)
+
+        
+        self.assertTrue(False)
+        
 
 if __name__ == '__main__':
     unittest.main()
