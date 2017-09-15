@@ -18,7 +18,7 @@ include_directories(${PYTHON_INCLUDE_PATH})
 
 # Include source dir and binary dir
 include_directories(${PROJECT_SOURCE_DIR}/src/api)
-include_directories(${PROJECT_BINARY_DIR}/src/api/)
+include_directories(${PROJECT_BINARY_DIR}/src/api)
 
 # Add swig interface files
 # Note: These filenames double as (generated .so file) module names!
@@ -38,7 +38,7 @@ set(SWIG_INTERFACE_SRCS
 set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES CPLUSPLUS ON)
 
 # Set output path (relative to current in build dir)
-set(CMAKE_SWIG_OUTDIR libcellml)
+set(CMAKE_SWIG_OUTDIR ${CMAKE_CFG_INTDIR}/libcellml)
 
 # Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
@@ -52,7 +52,6 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
     endif ()
     swig_link_libraries(${MODULE_NAME} ${PYTHON_LIBRARIES} cellml)
     set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})
-#    message(STATUS "swig_generated_file_fullname: ${swig_generated_file_fullname}")
     set_target_properties(${MODULE_TARGET} PROPERTIES
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON

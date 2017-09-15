@@ -14,8 +14,14 @@ foreach(_TEST ${TEST_SRCS})
     string(SUBSTRING ${_TEST_NAME} 5 -1 _TEST_NAME)
     set(_TEST_NAME python_test_${_TEST_NAME})
     add_test(NAME ${_TEST_NAME} COMMAND ${PYTHON_EXECUTABLE} ${_TEST})
-    set_tests_properties(${_TEST_NAME} PROPERTIES
-        ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
+	if (WIN32)
+		set_tests_properties(${_TEST_NAME} PROPERTIES
+			ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:_entity>\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
+	else ()
+		set_tests_properties(${_TEST_NAME} PROPERTIES
+			ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
+	endif ()
+
     set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/${_TEST}c
         ${CMAKE_CURRENT_BINARY_DIR}/${_TEST})
