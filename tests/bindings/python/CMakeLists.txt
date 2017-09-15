@@ -5,6 +5,7 @@ set(TEST_SRCS
     test_component_entity.py
     test_entity.py
     test_imported_entity.py
+    test_model.py
     test_named_entity.py)
 
 foreach(_TEST ${TEST_SRCS})

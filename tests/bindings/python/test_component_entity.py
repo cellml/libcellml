@@ -3,11 +3,9 @@
 #
 import unittest
 
-
 class ComponentEntityTestCase(unittest.TestCase):
 
     def test_component_entity(self):
-    
         from libcellml.componententity import ComponentEntity
         
         # Test create/copy/destroy
@@ -37,19 +35,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         
         # Test own methods
         #TODO Components etc.
-    
-
-def suite():
-    #import ImportTestCase
-    tests = unittest.TestSuite()
-    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ComponentEntityTestCase))
-    return tests
-
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
+    unittest.main()
 
-
-        
-        
-        
