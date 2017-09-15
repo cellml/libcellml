@@ -9,5 +9,8 @@
 #include "libcellml/componententity.h"
 %}
 
+%ignore libcellml::ComponentEntity::ComponentEntity(ComponentEntity &&);
+%ignore libcellml::ComponentEntity::operator =;
+
 %include "libcellml/types.h"
 %include "libcellml/componententity.h"
