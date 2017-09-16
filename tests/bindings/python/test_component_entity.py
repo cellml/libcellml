@@ -1,6 +1,7 @@
 #
 # Tests the ComponentEntity class
 #
+import sys
 import unittest
 
 class ComponentEntityTestCase(unittest.TestCase):

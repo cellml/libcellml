@@ -1,6 +1,7 @@
 #
 # Tests the NamedEntity class
 #
+import sys
 import unittest
 
 class NamedEntityTestCase(unittest.TestCase):
