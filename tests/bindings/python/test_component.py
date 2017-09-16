@@ -1,6 +1,6 @@
 #
 # Tests the Component class
-
+import sys
 import unittest
 
 class ComponentTestCase(unittest.TestCase):

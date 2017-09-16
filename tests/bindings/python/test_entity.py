@@ -1,6 +1,7 @@
 #
 # Tests the entity class
 #
+import sys
 import unittest
 
 class EntityTestCase(unittest.TestCase):

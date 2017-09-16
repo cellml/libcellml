@@ -2,6 +2,7 @@
 # Tests the ImportedEntity class, which is the base class for all entities that
 # can be imported.
 #
+import sys
 import unittest
 
 class ImportedEntityTestCase(unittest.TestCase):
