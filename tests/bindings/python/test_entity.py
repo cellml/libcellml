@@ -33,5 +33,6 @@ class EntityTestCase(unittest.TestCase):
         #TODO Models and components        
 
 if __name__ == '__main__':
-    unittest.main()
+    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
+    sys.exit(not success)
 

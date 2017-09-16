@@ -42,22 +42,30 @@ set(CMAKE_SWIG_OUTDIR ${CMAKE_CFG_INTDIR}/libcellml)
 
 # Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
-    get_filename_component(MODULE_NAME ${SWIG_INTERFACE_SRC} NAME_WE)
-    if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.7)
-        swig_add_library(${MODULE_NAME}
-            LANGUAGE python
-            SOURCES ${SWIG_INTERFACE_SRC})
-    else ()
-        swig_add_module(${MODULE_NAME} python ${SWIG_INTERFACE_SRC})
+  get_filename_component(MODULE_NAME ${SWIG_INTERFACE_SRC} NAME_WE)
+  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.7)
+    swig_add_library(${MODULE_NAME}
+      LANGUAGE python
+      SOURCES ${SWIG_INTERFACE_SRC})
+  else ()
+    swig_add_module(${MODULE_NAME} python ${SWIG_INTERFACE_SRC})
+  endif ()
+  swig_link_libraries(${MODULE_NAME} ${PYTHON_LIBRARIES} cellml)
+  set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})
+  # Disable use of Debug Python libraries when not present on Windows
+  # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
+  if (WIN32)
+    if (NOT PYTHON_DEBUG_LIBRARY)
+      target_compile_definitions(${MODULE_TARGET} PRIVATE $<$<CONFIG:Debug>:SWIG_PYTHON_INTERPRETER_NO_DEBUG>)
     endif ()
-    swig_link_libraries(${MODULE_NAME} ${PYTHON_LIBRARIES} cellml)
-    set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})
-    set_target_properties(${MODULE_TARGET} PROPERTIES
-        CXX_STANDARD 11
-        CXX_STANDARD_REQUIRED ON
-        CXX_VISIBILITY_PRESET hidden
-        #LIBRARY_OUTPUT_DIRECTORY bin
-        )
+  endif ()
+  set_target_properties(${MODULE_TARGET} PROPERTIES
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON
+    CXX_VISIBILITY_PRESET hidden
+    FOLDER bindings/python
+    #LIBRARY_OUTPUT_DIRECTORY bin
+  )
 endforeach()
 
 # Add new paths to make clean

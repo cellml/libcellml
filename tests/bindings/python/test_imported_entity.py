@@ -54,5 +54,6 @@ class ImportedEntityTestCase(unittest.TestCase):
         self.assertFalse(x.isImport())
 
 if __name__ == '__main__':
-    unittest.main()
+    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
+    sys.exit(not success)
 

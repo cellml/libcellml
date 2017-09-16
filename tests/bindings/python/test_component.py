@@ -40,5 +40,6 @@ class ComponentTestCase(unittest.TestCase):
         #TODO Models, components etc.
 
 if __name__ == '__main__':
-    unittest.main()
+    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
+    sys.exit(not success)
 
