@@ -37,5 +37,6 @@ class NamedEntityTestCase(unittest.TestCase):
         self.assertEqual(y.getName(), name)
 
 if __name__ == '__main__':
-    unittest.main()
-        
+    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
+    sys.exit(not success)
+
