@@ -146,4 +146,3 @@ endif()
 
 # Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
-
