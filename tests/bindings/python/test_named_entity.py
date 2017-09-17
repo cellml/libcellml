@@ -39,13 +39,5 @@ class NamedEntityTestCase(unittest.TestCase):
         self.assertEqual(y.getName(), name)
 
 
-def suite():
-    #import ImportTestCase
-    tests = unittest.TestSuite()
-    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(NamedEntityTestCase))
-    return tests
-
-
 if __name__ == '__main__':
-    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
-    sys.exit(not success)
+    unittest.main()

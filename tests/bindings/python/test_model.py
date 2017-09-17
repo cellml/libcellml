@@ -42,13 +42,5 @@ class ModelTestCase(unittest.TestCase):
         #TODO Models, components etc.
         
 
-def suite():
-    #import ImportTestCase
-    tests = unittest.TestSuite()
-    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ModelTestCase))
-    return tests
-
-
 if __name__ == '__main__':
-    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
-    sys.exit(not success)
+    unittest.main()

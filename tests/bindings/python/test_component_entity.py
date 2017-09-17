@@ -39,13 +39,5 @@ class ComponentEntityTestCase(unittest.TestCase):
         #TODO Components etc.
 
 
-def suite():
-    #import ImportTestCase
-    tests = unittest.TestSuite()
-    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ComponentEntityTestCase))
-    return tests
-
-
 if __name__ == '__main__':
-    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
-    sys.exit(not success)
+    unittest.main()
