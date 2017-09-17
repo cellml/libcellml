@@ -4,6 +4,7 @@
 import sys
 import unittest
 
+
 class EntityTestCase(unittest.TestCase):
 
     def test_entity(self):
@@ -33,7 +34,14 @@ class EntityTestCase(unittest.TestCase):
         
         #TODO Models and components        
 
+
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(EntityTestCase))
+    return tests
+
+
 if __name__ == '__main__':
     success = unittest.TextTestRunner().run(suite()).wasSuccessful()
     sys.exit(not success)
-

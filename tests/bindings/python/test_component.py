@@ -3,6 +3,7 @@
 import sys
 import unittest
 
+
 class ComponentTestCase(unittest.TestCase):
 
     def test_component(self):
@@ -39,7 +40,14 @@ class ComponentTestCase(unittest.TestCase):
         # Test own methods
         #TODO Models, components etc.
 
+
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ComponentTestCase))
+    return tests
+
+
 if __name__ == '__main__':
     success = unittest.TextTestRunner().run(suite()).wasSuccessful()
     sys.exit(not success)
-

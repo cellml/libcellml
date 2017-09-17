@@ -1,7 +1,10 @@
 #
 # Tests the Model class
 #
+import sys
 import unittest
+
+
 class ModelTestCase(unittest.TestCase):
 
     def test_model(self):
@@ -37,15 +40,15 @@ class ModelTestCase(unittest.TestCase):
         
         # Test own methods
         #TODO Models, components etc.
-
-        print('actually running the test')
-        import sys
-        sys.exit(1)
-
         
-        self.assertTrue(False)
-        
+
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ModelTestCase))
+    return tests
+
 
 if __name__ == '__main__':
-    unittest.main()
-
+    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
+    sys.exit(not success)
