@@ -4,6 +4,7 @@
 import sys
 import unittest
 
+
 class ComponentEntityTestCase(unittest.TestCase):
 
     def test_component_entity(self):
@@ -37,7 +38,14 @@ class ComponentEntityTestCase(unittest.TestCase):
         # Test own methods
         #TODO Components etc.
 
+
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ComponentEntityTestCase))
+    return tests
+
+
 if __name__ == '__main__':
     success = unittest.TextTestRunner().run(suite()).wasSuccessful()
     sys.exit(not success)
-

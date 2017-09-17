@@ -5,6 +5,7 @@
 import sys
 import unittest
 
+
 class ImportedEntityTestCase(unittest.TestCase):
 
     def test_imported_entity(self):
@@ -53,8 +54,15 @@ class ImportedEntityTestCase(unittest.TestCase):
         x.setImport(None)
         self.assertIsNone(x.getImport())
         self.assertFalse(x.isImport())
+        
+
+def suite():
+    #import ImportTestCase
+    tests = unittest.TestSuite()
+    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(ImportedEntityTestCase))
+    return tests
+
 
 if __name__ == '__main__':
     success = unittest.TextTestRunner().run(suite()).wasSuccessful()
     sys.exit(not success)
-
