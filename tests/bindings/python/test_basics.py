@@ -31,13 +31,5 @@ class BasicsTestCase(unittest.TestCase):
         from libcellml.importedentity import ImportedEntity
 
 
-def suite():
-    #import ImportTestCase
-    tests = unittest.TestSuite()
-    tests.addTests(unittest.TestLoader().loadTestsFromTestCase(BasicsTestCase))
-    return tests
-
-
 if __name__ == '__main__':
-    success = unittest.TextTestRunner().run(suite()).wasSuccessful()
-    sys.exit(not success)
+    unittest.main()
