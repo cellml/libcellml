@@ -4,6 +4,7 @@ set(TEST_SRCS
   test_component.py
   test_component_entity.py
   test_entity.py
+  test_import_source.py
   test_imported_entity.py
   test_model.py
   test_named_entity.py)

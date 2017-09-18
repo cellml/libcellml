@@ -28,8 +28,9 @@ set(SWIG_INTERFACE_SRCS
     ../interface/componententity.i
     ../interface/entity.i
     ../interface/enumerations.i
-    ../interface/imports.i
+    ../interface/importsource.i
     ../interface/importedentity.i
+    ../interface/model.i
     ../interface/namedentity.i
     ../interface/units.i
 )
