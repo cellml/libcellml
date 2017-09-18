@@ -4,7 +4,6 @@
 import sys
 import unittest
 
-
 class EntityTestCase(unittest.TestCase):
 
     def test_entity(self):
@@ -31,9 +30,25 @@ class EntityTestCase(unittest.TestCase):
         x = Entity()
         self.assertIsNone(x.getParent())
         x.clearParent()
+        from libcellml.model import Model
+        from libcellml.component import Component
+        m = Model()
+        x.setParent(m)
+        #TODO: This method might be moved out of entity!
+        #TODO: If not, this needs a workaround!
+        #self.assertIs(x.getParent(), m)
         
-        #TODO Models and components        
-
+        c = Component()
+        x.setParent(c)
+        #self.assertIs(x.getParent(), c) #TODO
+        self.assertTrue(x.hasParent(c))
+        x.setParent(None)
+        #self.assertIsNone(x.getParent()) #TODO
+        c2 = Component()
+        c2.setParent(c)
+        x.setParent(c2)
+        self.assertTrue(x.hasParent(c))
+        
 
 if __name__ == '__main__':
     unittest.main()

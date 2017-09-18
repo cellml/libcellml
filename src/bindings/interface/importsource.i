@@ -1,4 +1,4 @@
-%module(package="libcellml") imports    // 'import' is a Python keyword!
+%module(package="libcellml") importsource
 
 #define LIBCELLML_EXPORT
 

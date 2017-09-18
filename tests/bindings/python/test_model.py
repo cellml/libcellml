@@ -4,7 +4,6 @@
 import sys
 import unittest
 
-
 class ModelTestCase(unittest.TestCase):
 
     def test_model(self):

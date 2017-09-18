@@ -42,7 +42,7 @@ class ImportedEntityTestCase(unittest.TestCase):
         self.assertEqual(x.getImportReference(), reference)
         self.assertFalse(x.isImport())
         
-        from libcellml.imports import Import
+        from libcellml.importsource import Import
         source = 'yellow'
         y = Import()
         y.setSource(source)
