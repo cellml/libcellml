@@ -36,7 +36,23 @@ class ComponentEntityTestCase(unittest.TestCase):
         del(x, y)
         
         # Test own methods
-        #TODO Components etc.
+        
+        # Test removing a component
+        x = ComponentEntity()
+        self.assertEqual(x.componentCount(), 0)
+        self.assertFalse(x.removeComponent('aaa'))
+        self.assertFalse(x.removeComponent('aaa', True))
+        self.assertFalse(x.removeComponent('aaa', False))
+        #TODO self.assertFalse(x.removeComponent('aaa', 'hello'))
+        self.assertEqual(x.componentCount(), 0)
+        from libcellml.component import Component
+        y = Component()
+        self.assertFalse(x.removeComponent(y))
+        self.assertFalse(x.removeComponent(y, True))
+        self.assertFalse(x.removeComponent(y, False))
+        #TODO self.assertFalse(x.removeComponent(y, 'hi'))
+        self.assertEqual(x.componentCount(), 0)
+        
 
 
 if __name__ == '__main__':
