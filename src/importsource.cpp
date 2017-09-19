@@ -25,7 +25,7 @@ namespace libcellml {
  */
 struct ImportSource::ImportSourceImpl
 {
-    std::string mReference;
+    std::string mSource;
 };
 
 ImportSource::ImportSource()
@@ -42,7 +42,7 @@ ImportSource::ImportSource(const ImportSource& rhs)
     : Entity(rhs)
     , mPimpl(new ImportSourceImpl())
 {
-    mPimpl->mReference = rhs.mPimpl->mReference;
+    mPimpl->mSource = rhs.mPimpl->mSource;
 }
 
 ImportSource::ImportSource(ImportSource &&rhs)
@@ -64,14 +64,14 @@ void ImportSource::swap(ImportSource &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void ImportSource::setSource(const std::string &reference)
+void ImportSource::setSource(const std::string &source)
 {
-    mPimpl->mReference = reference;
+    mPimpl->mSource = source;
 }
 
 std::string ImportSource::getSource() const
 {
-    return mPimpl->mReference;
+    return mPimpl->mSource;
 }
 
 }
