@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
+#
+# Note: Most tests are just here to check if the calling signatures and
+# return types are converted ok.
+# Some tests check if the state of the objects has changed, not as a
+# test of function (which is tested in the C++ tests), but as a check
+# to see if the underlying methods have been called correctly.
+#
+
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
 mark_as_advanced(SWIG_EXECUTABLE)
