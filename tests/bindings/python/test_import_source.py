@@ -1,5 +1,5 @@
 #
-# Tests the Import class. #TODO Will be renamed
+# Tests the Import class bindings. #TODO Will be renamed
 #
 import sys
 import unittest

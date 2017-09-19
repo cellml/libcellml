@@ -33,6 +33,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/model.i
     ../interface/namedentity.i
     ../interface/units.i
+    ../interface/variable.i
 )
 
 # Configure for C++

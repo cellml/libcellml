@@ -1,9 +1,8 @@
 #
-# Tests the NamedEntity class
+# Tests the NamedEntity class bindings
 #
 import sys
 import unittest
-
 
 class NamedEntityTestCase(unittest.TestCase):
 
