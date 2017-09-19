@@ -16,43 +16,73 @@ class EntityTestCase(unittest.TestCase):
         z = Entity(y)
         del(y,z)
         
-        # Test id
+        # Test own methods
+
+        # std::string getId()
         x = Entity()
-        idx = 'test'
         self.assertEqual(x.getId(), '')
+
+        # void setId(const std::string &id)        
+        idx = 'test'
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
+        
+        # copy constructor
         y = Entity(x)
         self.assertEqual(y.getId(), idx)
         del(x, y)
         
-        # Test parent
-        x = Entity()
-        self.assertIsNone(x.getParent())
-        x.clearParent()
-        from libcellml.model import Model
-        from libcellml.component import Component
-        m = Model()
-        x.setParent(m)
+        # void* getParent
         #TODO: This method might be moved out of entity!
         #TODO: If not, this needs a workaround!
-        #self.assertIs(x.getParent(), m)
+        x = Entity()
+        self.assertIsNone(x.getParent())
+        del(x)
         
-        name = 'p'
+        # void setParent(Model *parent)
+        from libcellml.model import Model
+        m = Model()
+        x = Entity()
+        x.setParent(m)
+        self.assertIsNotNone(x.getParent())
+        #TODO: Check equivalence
+        del(x, m)
+        
+        # void setParent(Component *parent)
+        from libcellml.component import Component
         c = Component()
-        c.setName(name)        
+        x = Entity()
         x.setParent(c)
-        #TODO See above
-        #self.assertEqual(x.getParent().getName(), name)
-        self.assertTrue(x.hasParent(c))
-        x.setParent(None)
-        #TODO See above
-        #self.assertIsNone(x.getParent())
-        c2 = Component()
-        c2.setParent(c)
-        x.setParent(c2)
-        self.assertTrue(x.hasParent(c))
+        self.assertIsNotNone(x.getParent())
+        #TODO: Check equivalence
+        del(x, c)
         
+        # void clearParent()
+        x = Entity()
+        self.assertIsNone(x.getParent())
+        x.setParent(Model())
+        self.assertIsNotNone(x.getParent())
+        x.clearParent()
+        self.assertIsNone(x.getParent())
+        x.setParent(Component())
+        self.assertIsNotNone(x.getParent())
+        x.clearParent()
+        self.assertIsNone(x.getParent())
+        del(x)
+
+        # bool hasParent(Componet* c)
+        x = Entity()
+        c = Component()
+        self.assertFalse(x.hasParent(c))
+        x.setParent(c)
+        self.assertTrue(x.hasParent(c))
+        x.clearParent()
+        self.assertFalse(x.hasParent(c))
+        d = Component()
+        d.setParent(c)
+        x.setParent(d)
+        self.assertTrue(x.hasParent(d))
+        self.assertTrue(x.hasParent(c))
 
 if __name__ == '__main__':
     unittest.main()
