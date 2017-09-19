@@ -21,14 +21,23 @@ class ImportTestCase(unittest.TestCase):
         from libcellml.entity import Entity
         self.assertIsInstance(x, Entity)
 
-        # Test methods
-        source = 'the-source'
+        # Test own methods
+        
+        # void setSource(const std::string &reference)
         x = Import()
-        self.assertEqual(x.getSource(), '') #TODO Should be None?
+        x.setSource('')
+        x.setSource('hello')
+        x.setSource('')
+        del(x)
+        
+        # std::string getSource()
+        source = 'cheers'
+        x = Import()
+        self.assertEqual(x.getSource(), '')
         x.setSource(source)
         self.assertEqual(x.getSource(), source)
-        x.setSource('') #TODO Should be None?
+        x.setSource('')        
         self.assertEqual(x.getSource(), '')
-
+        
 if __name__ == '__main__':
     unittest.main()
