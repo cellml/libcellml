@@ -1,5 +1,5 @@
 #
-# Tests the entity class
+# Tests the entity class bindings
 #
 import sys
 import unittest
@@ -38,12 +38,16 @@ class EntityTestCase(unittest.TestCase):
         #TODO: If not, this needs a workaround!
         #self.assertIs(x.getParent(), m)
         
+        name = 'p'
         c = Component()
+        c.setName(name)        
         x.setParent(c)
-        #self.assertIs(x.getParent(), c) #TODO
+        #TODO See above
+        #self.assertEqual(x.getParent().getName(), name)
         self.assertTrue(x.hasParent(c))
         x.setParent(None)
-        #self.assertIsNone(x.getParent()) #TODO
+        #TODO See above
+        #self.assertIsNone(x.getParent())
         c2 = Component()
         c2.setParent(c)
         x.setParent(c2)

@@ -1,45 +1,42 @@
 #
-# Tests the Model class bindings
+# Tests the Variable class bindings
 #
 import sys
 import unittest
 
-class ModelTestCase(unittest.TestCase):
+class VariableTestCase(unittest.TestCase):
 
-    def test_model(self):
-        from libcellml.model import Model
+    def test_variable(self):
+        from libcellml.variable import Variable
         
         # Test create/copy/destroy
-        x = Model()
+        x = Variable()
         del(x)
-        y = Model()
-        z = Model(y)
+        y = Variable()
+        z = Variable(y)
         del(y,z)
         
         # Test inheritance
-        x = Model()
-        from libcellml.componententity import ComponentEntity
-        self.assertIsInstance(x, ComponentEntity)
-        from libcellml.importedentity import ImportedEntity
-        self.assertIsInstance(x, ImportedEntity)
+        x = Variable()
         from libcellml.namedentity import NamedEntity
         self.assertIsInstance(x, NamedEntity)
         from libcellml.entity import Entity
         self.assertIsInstance(x, Entity)
         
         # Test access to inherited methods
-        x = Model()
+        x = Variable()
         idx = 'test'
         self.assertEqual(x.getId(), '')
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
-        y = Model(x)
+        y = Variable(x)
         self.assertEqual(y.getId(), idx)
         del(x, y)
         
         # Test own methods
-        #TODO Models, components etc.
+        #TODO
         
 
+        
 if __name__ == '__main__':
     unittest.main()

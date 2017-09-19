@@ -1,8 +1,8 @@
 #
-# Tests the Component class
+# Tests the Component class bindings
+#
 import sys
 import unittest
-
 
 class ComponentTestCase(unittest.TestCase):
 
@@ -38,8 +38,63 @@ class ComponentTestCase(unittest.TestCase):
         del(x, y)
         
         # Test own methods
-        #TODO Models, components etc.
 
+        # void setSourceComponent(const ImportPtr& imp,
+        #   const std::string &name)
+        from libcellml.importsource import Import
+        x = Component()
+        i = Import()
+        i.setSource('bonjour')
+        x.setSourceComponent(i, 'camembert')
+        self.assertEqual(x.getImport().getSource(), 'bonjour')
+        self.assertEqual(x.getImportReference(), 'camembert')
+        del(x, i)
+
+        # appendMath(const std::string &math)
+        x = Component()
+        x.appendMath('More maths')
+        x.appendMath(' please!')
+        
+        # std::string getMath()
+        self.assertEqual(x.getMath(), 'More maths please!')
+        x = Component()
+        self.assertEqual(x.getMath(), '')
+        
+        # void setMath(const std::string &math)
+        x.setMath('bonjour')
+        self.assertEqual(x.getMath(), 'bonjour')
+        x.setMath('hola')
+        self.assertEqual(x.getMath(), 'hola')
+
+        # void addVariable(const VariablePtr &v)
+        #TODO
+        
+        # bool removeVariable(const std::string &name)
+        #TODO
+        
+        # bool removeVariable(const VariablePtr &variable)
+        #TODO
+        
+        # void removeAllVariables()
+        #TODO
+        
+        # VariablePtr getVariable(size_t index)
+        #TODO
+        
+        # VariablePtr getVariable(const std::string &name)
+        #TODO
+        
+        # size_t variableCount()
+        #TODO
+        
+        # bool hasVariable(const VariablePtr &variable)
+        #TODO
+        
+        # bool hasVariable(const std::string &name)
+        #TODO
+        
+if __name__ == '__main__':
+    unittest.main()
 
 if __name__ == '__main__':
     unittest.main()

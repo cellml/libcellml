@@ -7,7 +7,9 @@ set(TEST_SRCS
   test_import_source.py
   test_imported_entity.py
   test_model.py
-  test_named_entity.py)
+  test_named_entity.py
+  test_variable.py
+)
 
 foreach(_TEST ${TEST_SRCS})
   file(COPY ${_TEST} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
