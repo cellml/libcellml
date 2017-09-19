@@ -5,6 +5,11 @@
 %import "types.i"
 %import "importedentity.i"
 
+#if defined(SWIGPYTHON)
+    %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }
+    %typemap(in) bool { $1 = PyObject_IsTrue($input); }
+#endif
+
 %{
 #include "libcellml/componententity.h"
 %}
