@@ -30,30 +30,54 @@ class ImportedEntityTestCase(unittest.TestCase):
         self.assertIs(x.getId(), '')
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
+        del(x, idx)
         
         # Test own methods
-        reference = 'hello'
+        
+        # void setImport(const ImportPtr &imp)
+        from libcellml.importsource import Import
+        x = ImportedEntity()
+        x.setImport(Import())
+        x.setImport(None)
+        del(x)
+        
+        # bool isImport()
         x = ImportedEntity()
         self.assertFalse(x.isImport())
-        self.assertIs(x.getImportReference(), '')
-        self.assertIsNone(x.getImport())
-        x.setImportReference(reference)
-        self.assertEqual(x.getImportReference(), reference)
-        self.assertFalse(x.isImport())
-        
-        from libcellml.importsource import Import
-        source = 'yellow'
-        y = Import()
-        y.setSource(source)
-        x.setImport(y)
+        x.setImport(Import())
         self.assertTrue(x.isImport())
-        self.assertIsNotNone(x.getImport(), y)
-        self.assertIsInstance(x.getImport(), Import)
-        self.assertEqual(x.getImport().getSource(), source)
         x.setImport(None)
-        self.assertIsNone(x.getImport())
         self.assertFalse(x.isImport())
+        del(x)
+
+        # ImportPtr getImport()
+        i = Import()
+        source = 'hello'
+        i.setSource(source)
+        x = ImportedEntity()
+        self.assertIsNone(x.getImport())
+        x.setImport(i)
+        self.assertIsNotNone(x.getImport())
+        self.assertEqual(x.getImport().getSource(), source)
+        del(x, i, source)
         
+        # void setImportReference(const std::string &reference)
+        r = 'yes'
+        x = ImportedEntity()
+        x.setImportReference('')
+        x.setImportReference(r)
+        x.setImportReference('')
+        del(r, x)
+        
+        # std::string getImportReference()
+        r = 'yes'
+        x = ImportedEntity()
+        self.assertEqual(x.getImportReference(), '')
+        x.setImportReference(r)
+        self.assertEqual(x.getImportReference(), r)
+        x.setImportReference('')
+        self.assertEqual(x.getImportReference(), '')
+        del(r, x)        
 
 if __name__ == '__main__':
     unittest.main()
