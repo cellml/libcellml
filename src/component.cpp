@@ -102,9 +102,9 @@ void Component::doAddComponent(const ComponentPtr &c)
     }
 }
 
-void Component::setSourceComponent(const ImportPtr &imp, const std::string &name)
+void Component::setSourceComponent(const ImportSourcePtr &importSource, const std::string &name)
 {
-    setImport(imp);
+    setImportSource(importSource);
     setImportReference(name);
 }
 

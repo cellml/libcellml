@@ -49,26 +49,28 @@ public:
     bool isImport() const;
 
     /**
-     * @brief Get the import set.
+     * @brief Get the import source.
      *
-     * Get the import set, if no import is set @c nullptr is returned.
+     * Get the import source, if no import source is set @c nullptr is returned.
      *
-     * @sa setImport
+     * @sa setImportSource
      *
-     * @return The shared pointer for the import, if no import is set returns @c nullptr.
+     * @return The shared pointer for the import source, if no import source is
+     * set returns @c nullptr.
      */
-    ImportPtr getImport() const;
+    ImportSourcePtr getImportSource() const;
 
     /**
-     * @brief Set the import.
+     * @brief Set the import source.
      *
-     * Set the import for the imported entity.  Set to @c nullptr to unset the import.
+     * Set the import source for the imported entity.  Set to @c nullptr to
+     * unset the import source.
      *
-     * @sa getImport
+     * @sa getImportSource
      *
-     * @param imp The import to set.
+     * @param importSource The import source to set.
      */
-    void setImport(const ImportPtr &imp);
+    void setImportSource(const ImportSourcePtr &importSource);
 
     /**
      * @brief Get the import reference.

@@ -156,23 +156,25 @@ public:
     ComponentPtr getComponent() const;
 
     /**
-     * @brief Set the @p import for this error.
+     * @brief Set the @p import source for this error.
      *
-     * Set the @c ImportPtr @p import object that this error is relevant to.
+     * Set the @c ImportSourcePtr @p importSource object that this error is
+     * relevant to.
      *
-     * @param import A pointer to the import that this error is relevant to.
+     * @param importSource A pointer to the import source that this error is
+     * relevant to.
      */
-    void setImport(const ImportPtr &import);
+    void setImportSource(const ImportSourcePtr &importSource);
 
     /**
-     * @brief Get the import for this error.
+     * @brief Get the import source for this error.
      *
-     * Get the @c ImportPtr import for this error.
+     * Get the @c ImportSourcePtr import source for this error.
      *
-     * @return A pointer to the import this error was raised on. If no import
-     * has been set for this error, return a @c nullptr.
+     * @return A pointer to the import source this error was raised on. If no
+     * import source has been set for this error, return a @c nullptr.
      */
-    ImportPtr getImport() const;
+    ImportSourcePtr getSourceImport() const;
 
     /**
      * @brief Set the @p model for this error.

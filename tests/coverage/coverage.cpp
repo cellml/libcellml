@@ -25,12 +25,12 @@ limitations under the License.
  */
 TEST(Coverage, import) {
     std::string e = "";
-    libcellml::Import i, im;
+    libcellml::ImportSource i, im;
 
     im = std::move(i);
 
     // Copy constructor
-    libcellml::Import ic(im);
+    libcellml::ImportSource ic(im);
 
     const std::string a = ic.getId();
     EXPECT_EQ(e, a);

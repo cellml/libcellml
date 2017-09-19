@@ -21,7 +21,7 @@ limitations under the License.
 #include <map>
 #include <vector>
 
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 #include "utilities.h"
 
 namespace libcellml {
@@ -326,9 +326,9 @@ void Units::removeAllUnits()
     mPimpl->mUnits.clear();
 }
 
-void Units::setSourceUnits(const ImportPtr &imp, const std::string &name)
+void Units::setSourceUnits(const ImportSourcePtr &importSource, const std::string &name)
 {
-    setImport(imp);
+    setImportSource(importSource);
     setImportReference(name);
 }
 

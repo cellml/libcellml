@@ -23,7 +23,7 @@ limitations under the License.
 
 #include "libcellml/enumerations.h"
 #include "libcellml/component.h"
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
@@ -85,9 +85,9 @@ std::string Printer::printUnits(UnitsPtr units) const
     if (mPimpl->mFormat == Format::XML) {
         if (units->getName().length()) {
             if (units->isImport()) {
-                repr += "<import xlink:href=\"" + units->getImport()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-                if (units->getImport()->getId().length()) {
-                    repr += " id=\"" + units->getImport()->getId() + "\"";
+                repr += "<import xlink:href=\"" + units->getImportSource()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+                if (units->getImportSource()->getId().length()) {
+                    repr += " id=\"" + units->getImportSource()->getId() + "\"";
                 }
                 repr += "><units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
                 if (units->getId().length()) {
@@ -214,7 +214,7 @@ std::string Printer::printModel(ModelPtr model) const
     // ImportMap
     typedef std::pair <std::string, ComponentPtr> ImportPair;
     typedef std::vector<ImportPair>::const_iterator VectorPairIterator;
-    typedef std::map <ImportPtr, std::vector<ImportPair> > ImportMap;
+    typedef std::map <ImportSourcePtr, std::vector<ImportPair> > ImportMap;
     typedef ImportMap::const_iterator ImportMapIterator;
     ImportMap importMap;
     // VariableMap
@@ -241,11 +241,11 @@ std::string Printer::printModel(ModelPtr model) const
             incrementComponent = false;
             if (comp->isImport()) {
                 ImportPair pair = std::make_pair(comp->getImportReference(), comp);
-                ImportPtr imp = comp->getImport();
-                if (!importMap.count(imp)) {
-                    importMap[imp] = std::vector<ImportPair>();
+                ImportSourcePtr importSource = comp->getImportSource();
+                if (!importMap.count(importSource)) {
+                    importMap[importSource] = std::vector<ImportPair>();
                 }
-                importMap[imp].push_back(pair);
+                importMap[importSource].push_back(pair);
                 incrementComponent = true;
             } else if (comp->componentCount()) {
                 // If the current component is a model component
