@@ -28,15 +28,24 @@ class NamedEntityTestCase(unittest.TestCase):
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
         
-        # Test name
+        # Test own methods
+        
+        # void setName(const std::string &name)
+        name = 'testo'
+        x = NamedEntity()
+        x.setName(name)
+        x.setName('')
+        del(x, name)
+        
+        # std::string getName()
         name = 'testo'
         x = NamedEntity()
         self.assertEqual(x.getName(), '')
         x.setName(name)
         self.assertEqual(x.getName(), name)
-        y = NamedEntity(x)
-        self.assertEqual(y.getName(), name)
-
+        x.setName('')
+        self.assertEqual(x.getName(), '')
+        del(x, name)
 
 if __name__ == '__main__':
     unittest.main()
