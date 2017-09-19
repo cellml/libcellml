@@ -24,7 +24,10 @@ namespace libcellml {
 /**
  * @brief The ImportSource class.
  *
- * The import source class is for encapsulating an external CellML Model.
+ * The import source class is for defining a location at which a CellML model
+ * is expected to be obtainable (the `source`). The import source also acts as
+ * a handle to indicate that imported entities originate from the same instance of
+ * that imported source.
  */
 class LIBCELLML_EXPORT ImportSource: public Entity
 {
@@ -36,21 +39,21 @@ public:
     ImportSource& operator=(ImportSource m); /**< Assignment operator */
 
     /**
-     * @brief Set the source Model.
+     * @brief Set the imported model source.
      *
-     * Set the source Model that this import source refers to.
+     * Set the imported model source that this import source refers to.
      *
-     * @param reference The reference model.
+     * @param source The source of the model as a @c std::string.
      */
-    void setSource(const std::string &reference);
+    void setSource(const std::string &source);
 
     /**
-     * @brief Get the source model.
+     * @brief Get the imported model source.
      *
-     * Get the source model set in this instance.  If no source model
+     * Get the imported model source set in this instance.  If no imported source
      * is set then return an empty string.
      *
-     * @return The reference to the source model if set otherwise the emtpy string.
+     * @return The imported model source as a @c std::string, if set, otherwise the empty string.
      */
     std::string getSource() const;
 
