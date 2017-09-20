@@ -245,14 +245,14 @@ public:
      *
      * @overload
      *
-     * @param c1 The Component to replace.
-     * @param c2 The Component to use for replacement.
+     * @param oldComponent The Component to replace.
+     * @param newComponent The Component to use for replacement.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
-     * components for @p c1. Default value is @c true.
+     * components for @p oldComponent. Default value is @c true.
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(const ComponentPtr &c1, const ComponentPtr &c2, bool searchEncapsulated=true);
+    bool replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated=true);
 
     /**
      * @brief Get the number of components in the component.
