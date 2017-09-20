@@ -126,6 +126,17 @@ void Component::addVariable(const VariablePtr &v)
     v->setParent(this);
 }
 
+bool Component::removeVariable(size_t index)
+{
+    bool status = false;
+    if (index < mPimpl->mVariables.size()) {
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + index);
+        status = true;
+    }
+
+    return status;
+}
+
 bool Component::removeVariable(const std::string &name)
 {
     bool status = false;

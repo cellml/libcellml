@@ -89,6 +89,24 @@ public:
     /**
      * @brief Remove the variable with the given @p name from this component.
      *
+     * Remove the variable at the given index from this component.
+     * If the index is not valid @c false is returned, the valid
+     * range for the index is [0, #variables).
+     * If the named variable to be removed is in a connection (is equivalent to
+     * another variable), this component will not be serialised in the
+     * connection.
+     *
+     * @sa addVariable
+     *
+     * @param index The index of the variable to remove.
+     *
+     * @return True if the variable was removed, false otherwise.
+     */
+    bool removeVariable(size_t index);
+    
+    /**
+     * @brief Remove the variable with the given @p name from this component.
+     *
      * Remove the variable with the given name from this component. If the named variable to
      * be removed is in a connection (is equivalent to another variable), this
      * component will not be serialised in the connection.
@@ -97,7 +115,7 @@ public:
      *
      * @param name The name of the variable to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the variable was removed, false otherwise.
      */
     bool removeVariable(const std::string &name);
 
@@ -114,7 +132,7 @@ public:
      *
      * @param variable The pointer to the variable to remove.
      *
-     * @return True if the units were replaced, false otherwise.
+     * @return True if the variable was removed, false otherwise.
      */
     bool removeVariable(const VariablePtr &variable);
 
