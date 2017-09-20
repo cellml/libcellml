@@ -374,7 +374,7 @@ TEST(Variable, removeVariableMethods) {
     std::string a = printer.printComponent(c);
     EXPECT_EQ(e1, a);
     EXPECT_FALSE(c.removeVariable("BAD_NAME"));
-    
+
     c.addVariable(v4);
     c.removeAllVariables();
     a = printer.printComponent(c);
