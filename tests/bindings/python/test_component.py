@@ -144,6 +144,8 @@ class ComponentTestCase(unittest.TestCase):
         name = 'green'
         v.setName(name)
         self.assertIsNone(c.getVariable(0))
+        self.assertIsNone(c.getVariable(1))
+        self.assertIsNone(c.getVariable(-1))
         c.addVariable(v)
         self.assertIsNone(c.getVariable(1))
         self.assertIsNotNone(c.getVariable(0))
