@@ -190,6 +190,20 @@ public:
     bool replaceUnits(const std::string &name, const UnitsPtr &units);
 
     /**
+     * @brief Replace a units with another units.
+     *
+     * Replaces one units with another.
+     *
+     * @overload
+     *
+     * @param oldUnits The units to be replaced.
+     * @param newUnits The units to use for replacement.
+     *
+     * @return True if the units were replaced, false otherwise.
+     */
+    bool replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits);
+
+    /**
      * @brief Get the number of units in the model.
      *
      * Returns the number of units the model contains.

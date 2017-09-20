@@ -306,6 +306,12 @@ TEST(Units, replaceUnits) {
     // Replace non-existent units.
     EXPECT_FALSE(m.replaceUnits("d_unit", u2));
     EXPECT_FALSE(m.replaceUnits(5, u1));
+
+    // Replace with pointers
+    EXPECT_FALSE(m.replaceUnits(u2, u1));
+    EXPECT_TRUE(m.replaceUnits(u1, u2));
+    EXPECT_FALSE(m.replaceUnits(u1, u2));
+    EXPECT_TRUE(m.replaceUnits(u2, u1));
 }
 
 TEST(Units, multiply) {
