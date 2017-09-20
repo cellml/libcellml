@@ -317,6 +317,9 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertTrue(x.replaceComponent('a', b, a))
         del(x, a, b)
         
+        #TODO replaceComponent(const ComponentPtr &c1, const ComponentPtr &c2,
+        #   bool searchEncapsulated = true)
+        
         # size_t componentCount()
         x = ComponentEntity()
         self.assertEqual(x.componentCount(), 0)
