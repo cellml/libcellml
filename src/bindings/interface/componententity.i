@@ -12,7 +12,7 @@
 
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::ComponentEntity {
-        ComponentPtr getComponent(long index) {
+        ComponentPtr getComponent(long index) const {
             if(index < 0) return nullptr;
             return $self->getComponent(size_t(index));
         }
