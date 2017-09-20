@@ -87,12 +87,12 @@ public:
     void addVariable(const VariablePtr &v);
 
     /**
-     * @brief Remove the variable with the given @p name from this component.
+     * @brief Remove the variable at the given @p index from this component.
      *
      * Remove the variable at the given index from this component.
      * If the index is not valid @c false is returned, the valid
      * range for the index is [0, #variables).
-     * If the named variable to be removed is in a connection (is equivalent to
+     * If the variable to be removed is in a connection (is equivalent to
      * another variable), this component will not be serialised in the
      * connection.
      *
