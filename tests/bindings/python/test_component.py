@@ -148,6 +148,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertIsNone(c.getVariable(-1))
         c.addVariable(v)
         self.assertIsNone(c.getVariable(1))
+        self.assertIsNone(c.getVariable(-1))
         self.assertIsNotNone(c.getVariable(0))
         self.assertEqual(c.getVariable(0).getName(), name)
         del(c, v, name)

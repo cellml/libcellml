@@ -50,6 +50,8 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertFalse(x.removeComponent(-1))
         y = Component()
         x.addComponent(y)
+        self.assertFalse(x.removeComponent(1))
+        self.assertFalse(x.removeComponent(-1))        
         self.assertTrue(x.removeComponent(0))
         del(x, y)
         
@@ -169,6 +171,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertIsNone(x.getComponent(-1))
         x.addComponent(y)
         self.assertIsNone(x.getComponent(1))
+        self.assertIsNone(x.getComponent(-1))
         self.assertIsNotNone(x.getComponent(0), y)
         self.assertEqual(x.getComponent(0).getName(), name)
         
@@ -215,6 +218,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertIsNone(x.takeComponent(-1))
         x.addComponent(y)
         self.assertIsNone(x.takeComponent(1))
+        self.assertIsNone(x.takeComponent(-1))
         self.assertIsNotNone(x.takeComponent(0), y)
         self.assertIsNone(x.takeComponent(0), y)
         x.addComponent(y)
@@ -294,6 +298,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertTrue(x.containsComponent(a))
         self.assertFalse(x.containsComponent(b))
         self.assertFalse(x.replaceComponent(1, b))
+        self.assertFalse(x.replaceComponent(-1, b))
         self.assertTrue(x.replaceComponent(0, b))
         self.assertTrue(x.containsComponent(b))
         self.assertFalse(x.containsComponent(a))
