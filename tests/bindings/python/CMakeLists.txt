@@ -8,6 +8,7 @@ set(TEST_SRCS
   test_imported_entity.py
   test_model.py
   test_named_entity.py
+  test_units.py
   test_variable.py
 )
 
