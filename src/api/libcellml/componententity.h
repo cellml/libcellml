@@ -236,6 +236,25 @@ public:
     bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
 
     /**
+     * @brief Replace the given component.
+     *
+     * Replaces the given component @p c1 with @p c2. If @p searchEncapsulated
+     * is @c true (default) this will also search for the component through this component's
+     * encapsulated components. If @p c1 is not found in the components children then no replacement
+     * is made.
+     *
+     * @overload
+     *
+     * @param c1 The Component to replace.
+     * @param c2 The Component to use for replacement.
+     * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
+     * components for @p c1. Default value is @c true.
+     *
+     * @return True if the component was replaced, false otherwise.
+     */
+    bool replaceComponent(const ComponentPtr &c1, const ComponentPtr &c2, bool searchEncapsulated=true);
+
+    /**
      * @brief Get the number of components in the component.
      *
      * Returns the number of components the component contains.
