@@ -238,9 +238,9 @@ public:
     /**
      * @brief Replace the given component.
      *
-     * Replaces the given component @p c1 with @p c2. If @p searchEncapsulated
+     * Replaces the given component @p oldComponent with @p newComponent. If @p searchEncapsulated
      * is @c true (default) this will also search for the component through this component's
-     * encapsulated components. If @p c1 is not found in the components children then no replacement
+     * encapsulated components. If @p oldComponent is not found in the components children then no replacement
      * is made.
      *
      * @overload
