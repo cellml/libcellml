@@ -358,6 +358,7 @@ TEST(Component, replaceComponentMethods) {
     c.addComponent(c1);
     c.addComponent(c2);
 
+    // Test replace by index
     libcellml::Printer printer(libcellml::Format::XML);
     std::string a = printer.printComponent(c);
     EXPECT_EQ(e_orig, a);
@@ -368,6 +369,7 @@ TEST(Component, replaceComponentMethods) {
     a = printer.printComponent(c);
     EXPECT_EQ(e_after, a);
 
+    // Test replace by name
     // Try to replace non-existent child.
     EXPECT_FALSE(c.replaceComponent("child5", c4));
 
@@ -375,6 +377,12 @@ TEST(Component, replaceComponentMethods) {
 
     a = printer.printComponent(c);
     EXPECT_EQ(e_post, a);
+    
+    // Test replace by ptr
+    EXPECT_FALSE(c.replaceComponent(c1, c2));
+    EXPECT_TRUE(c.replaceComponent(c4, c1));
+    a = printer.printComponent(c);
+    EXPECT_EQ(e_after, a);
 }
 
 TEST(Component, constructors) {
