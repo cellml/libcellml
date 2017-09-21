@@ -204,6 +204,11 @@ bool Model::replaceUnits(const std::string &name, const UnitsPtr &units)
     return replaceUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin(), units);
 }
 
+bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
+{
+    return replaceUnits(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin(), newUnits);
+}
+
 size_t Model::unitsCount() const
 {
     return mPimpl->mUnits.size();
