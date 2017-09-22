@@ -7,7 +7,8 @@ import unittest
 class NamedEntityTestCase(unittest.TestCase):
 
     def test_named_entity(self):
-        from libcellml.namedentity import NamedEntity
+        import libcellml
+        from libcellml import NamedEntity
         
         # Test create/copy/destroy
         x = NamedEntity()
@@ -18,8 +19,7 @@ class NamedEntityTestCase(unittest.TestCase):
 
         # Test inheritance
         x = NamedEntity()
-        from libcellml.entity import Entity
-        self.assertIsInstance(x, Entity)
+        self.assertIsInstance(x, libcellml.Entity)
 
         # Test access to inherited methods
         x = NamedEntity()

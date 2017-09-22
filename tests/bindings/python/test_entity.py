@@ -7,7 +7,7 @@ import unittest
 class EntityTestCase(unittest.TestCase):
 
     def test_entity(self):
-        from libcellml.entity import Entity
+        from libcellml import Entity
         
         # Test create/copy/destroy
         x = Entity()
@@ -40,7 +40,7 @@ class EntityTestCase(unittest.TestCase):
         del(x)
         
         # void setParent(Model *parent)
-        from libcellml.model import Model
+        from libcellml import Model
         m = Model()
         x = Entity()
         x.setParent(m)
@@ -49,7 +49,7 @@ class EntityTestCase(unittest.TestCase):
         del(x, m)
         
         # void setParent(Component *parent)
-        from libcellml.component import Component
+        from libcellml import Component
         c = Component()
         x = Entity()
         x.setParent(c)

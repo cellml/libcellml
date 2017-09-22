@@ -1,6 +1,5 @@
 
 set(TEST_SRCS
-  test_basics.py
   test_component.py
   test_component_entity.py
   test_entity.py

@@ -7,7 +7,8 @@ import unittest
 class VariableTestCase(unittest.TestCase):
 
     def test_variable(self):
-        from libcellml.variable import Variable
+        import libcellml
+        from libcellml import Variable
         
         # Test create/copy/destroy
         x = Variable()
@@ -18,10 +19,8 @@ class VariableTestCase(unittest.TestCase):
         
         # Test inheritance
         x = Variable()
-        from libcellml.namedentity import NamedEntity
-        self.assertIsInstance(x, NamedEntity)
-        from libcellml.entity import Entity
-        self.assertIsInstance(x, Entity)
+        self.assertIsInstance(x, libcellml.NamedEntity)
+        self.assertIsInstance(x, libcellml.Entity)
         
         # Test access to inherited methods
         x = Variable()
@@ -189,6 +188,11 @@ class VariableTestCase(unittest.TestCase):
         v.setInterfaceType(Variable.InterfaceType_PRIVATE)
         v.setInterfaceType(Variable.InterfaceType_PUBLIC)
         v.setInterfaceType(Variable.InterfaceType_PUBLIC_AND_PRIVATE)
+        del(v)
+
+        # void setInterfaceType(const std::string &interfaceType)
+        v = Variable()
+        v.setInterfaceType('not an interface type')
         del(v)
         
         # std::string getInterfaceType()

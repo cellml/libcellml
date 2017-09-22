@@ -8,7 +8,8 @@ import unittest
 class ImportedEntityTestCase(unittest.TestCase):
 
     def test_imported_entity(self):
-        from libcellml.importedentity import ImportedEntity
+        import libcellml
+        from libcellml import ImportedEntity
         
         # Test create/copy/destroy
         x = ImportedEntity()
@@ -19,10 +20,8 @@ class ImportedEntityTestCase(unittest.TestCase):
         
         # Test inheritance
         x = ImportedEntity()
-        from libcellml.namedentity import NamedEntity
-        self.assertIsInstance(x, NamedEntity)
-        from libcellml.entity import Entity
-        self.assertIsInstance(x, Entity)
+        self.assertIsInstance(x, libcellml.NamedEntity)
+        self.assertIsInstance(x, libcellml.Entity)
 
         # Test access to inherited methods
         x = ImportedEntity()
@@ -35,23 +34,23 @@ class ImportedEntityTestCase(unittest.TestCase):
         # Test own methods
         
         # void setImport(const ImportPtr &imp)
-        from libcellml.importsource import Import
+        from libcellml import ImportSource
         x = ImportedEntity()
-        x.setImport(Import())
+        x.setImport(ImportSource())
         x.setImport(None)
         del(x)
         
         # bool isImport()
         x = ImportedEntity()
         self.assertFalse(x.isImport())
-        x.setImport(Import())
+        x.setImport(ImportSource())
         self.assertTrue(x.isImport())
         x.setImport(None)
         self.assertFalse(x.isImport())
         del(x)
 
         # ImportPtr getImport()
-        i = Import()
+        i = ImportSource()
         source = 'hello'
         i.setSource(source)
         x = ImportedEntity()
