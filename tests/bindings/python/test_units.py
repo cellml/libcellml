@@ -35,7 +35,11 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(y.getId(), idx)
         del(x, y)
         
+        # Test built-in units
+        #TODO
+        
         # Test own methods
+        
         #bool isBaseUnit()
         # void addUnit(const std::string &reference, const std::string &prefix,
         #   double exponent=1.0, double multiplier=1.0)
