@@ -134,7 +134,7 @@ class VariableTestCase(unittest.TestCase):
         del(v, name)
         
         # void setUnits(const UnitsPtr &units)
-        from libcellml.units import Units
+        from libcellml import Units
         name = 'tiger'
         u = Units()
         u.setName(name)
@@ -174,20 +174,20 @@ class VariableTestCase(unittest.TestCase):
         
         # InterfaceType
         self.assertNotEqual(
-            Variable.InterfaceType_NONE,
-            Variable.InterfaceType_PRIVATE,
+            Variable.InterfaceType.NONE,
+            Variable.InterfaceType.PRIVATE,
             )
         self.assertNotEqual(
-            Variable.InterfaceType_PUBLIC,
-            Variable.InterfaceType_PUBLIC_AND_PRIVATE,
+            Variable.InterfaceType.PUBLIC,
+            Variable.InterfaceType.PUBLIC_AND_PRIVATE,
             )
         
         # void setInterfaceType(InterfaceType interfaceType)
         v = Variable()
-        v.setInterfaceType(Variable.InterfaceType_NONE)
-        v.setInterfaceType(Variable.InterfaceType_PRIVATE)
-        v.setInterfaceType(Variable.InterfaceType_PUBLIC)
-        v.setInterfaceType(Variable.InterfaceType_PUBLIC_AND_PRIVATE)
+        v.setInterfaceType(Variable.InterfaceType.NONE)
+        v.setInterfaceType(Variable.InterfaceType.PRIVATE)
+        v.setInterfaceType(Variable.InterfaceType.PUBLIC)
+        v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
         del(v)
 
         # void setInterfaceType(const std::string &interfaceType)
@@ -198,13 +198,13 @@ class VariableTestCase(unittest.TestCase):
         # std::string getInterfaceType()
         v = Variable()
         self.assertEqual(v.getInterfaceType(), '')
-        v.setInterfaceType(Variable.InterfaceType_NONE)
+        v.setInterfaceType(Variable.InterfaceType.NONE)
         self.assertEqual(v.getInterfaceType(), 'none')
-        v.setInterfaceType(Variable.InterfaceType_PRIVATE)
+        v.setInterfaceType(Variable.InterfaceType.PRIVATE)
         self.assertEqual(v.getInterfaceType(), 'private')
-        v.setInterfaceType(Variable.InterfaceType_PUBLIC)
+        v.setInterfaceType(Variable.InterfaceType.PUBLIC)
         self.assertEqual(v.getInterfaceType(), 'public')
-        v.setInterfaceType(Variable.InterfaceType_PUBLIC_AND_PRIVATE)
+        v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
         self.assertEqual(v.getInterfaceType(), 'public_and_private')
         del(v)
         
