@@ -7,7 +7,8 @@ import unittest
 class ModelTestCase(unittest.TestCase):
 
     def test_model(self):
-        from libcellml.model import Model
+        import libcellml
+        from libcellml import Model
         
         # Test create/copy/destroy
         x = Model()
@@ -18,14 +19,10 @@ class ModelTestCase(unittest.TestCase):
         
         # Test inheritance
         x = Model()
-        from libcellml.componententity import ComponentEntity
-        self.assertIsInstance(x, ComponentEntity)
-        from libcellml.importedentity import ImportedEntity
-        self.assertIsInstance(x, ImportedEntity)
-        from libcellml.namedentity import NamedEntity
-        self.assertIsInstance(x, NamedEntity)
-        from libcellml.entity import Entity
-        self.assertIsInstance(x, Entity)
+        self.assertIsInstance(x, libcellml.ComponentEntity)
+        self.assertIsInstance(x, libcellml.ImportedEntity)
+        self.assertIsInstance(x, libcellml.NamedEntity)
+        self.assertIsInstance(x, libcellml.Entity)
         
         # Test access to inherited methods
         x = Model()
@@ -40,7 +37,7 @@ class ModelTestCase(unittest.TestCase):
         # Test own methods
         
         # void addUnits(const UnitsPtr &units)
-        from libcellml.units import Units
+        from libcellml import Units
         m = Model()
         u = Units()
         m.addUnits(u)

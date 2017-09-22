@@ -1,30 +1,30 @@
 #
-# Tests the Import class bindings. #TODO Will be renamed
+# Tests the ImportSource class bindings.
 #
 import sys
 import unittest
 
-class ImportTestCase(unittest.TestCase):
+class ImportSourceTestCase(unittest.TestCase):
 
-    def test_import(self):
-        from libcellml.importsource import Import
+    def test_import_source(self):
+        import libcellml
+        from libcellml import ImportSource
 
         # Test create/copy/destroy
-        x = Import()
+        x = ImportSource()
         del(x)
-        y = Import()
-        z = Import(y)
+        y = ImportSource()
+        z = ImportSource(y)
         del(y,z)
         
         # Test inheritance
-        x = Import()
-        from libcellml.entity import Entity
-        self.assertIsInstance(x, Entity)
+        x = ImportSource()
+        self.assertIsInstance(x, libcellml.Entity)
 
         # Test own methods
         
         # void setSource(const std::string &reference)
-        x = Import()
+        x = ImportSource()
         x.setSource('')
         x.setSource('hello')
         x.setSource('')
@@ -32,7 +32,7 @@ class ImportTestCase(unittest.TestCase):
         
         # std::string getSource()
         source = 'cheers'
-        x = Import()
+        x = ImportSource()
         self.assertEqual(x.getSource(), '')
         x.setSource(source)
         self.assertEqual(x.getSource(), source)

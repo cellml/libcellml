@@ -7,7 +7,8 @@ import unittest
 class ComponentTestCase(unittest.TestCase):
 
     def test_component(self):
-        from libcellml.component import Component
+        import libcellml
+        from libcellml import Component
         
         # Test create/copy/destroy
         x = Component()
@@ -18,14 +19,10 @@ class ComponentTestCase(unittest.TestCase):
         
         # Test inheritance
         x = Component()
-        from libcellml.componententity import ComponentEntity
-        self.assertIsInstance(x, ComponentEntity)
-        from libcellml.importedentity import ImportedEntity
-        self.assertIsInstance(x, ImportedEntity)
-        from libcellml.namedentity import NamedEntity
-        self.assertIsInstance(x, NamedEntity)
-        from libcellml.entity import Entity
-        self.assertIsInstance(x, Entity)
+        self.assertIsInstance(x, libcellml.ComponentEntity)
+        self.assertIsInstance(x, libcellml.ImportedEntity)
+        self.assertIsInstance(x, libcellml.NamedEntity)
+        self.assertIsInstance(x, libcellml.Entity)
         
         # Test access to inherited methods
         x = Component()
@@ -41,9 +38,9 @@ class ComponentTestCase(unittest.TestCase):
 
         # void setSourceComponent(const ImportPtr& imp,
         #   const std::string &name)
-        from libcellml.importsource import Import
+        from libcellml import ImportSource
         x = Component()
-        i = Import()
+        i = ImportSource()
         i.setSource('bonjour')
         x.setSourceComponent(i, 'camembert')
         self.assertEqual(x.getImport().getSource(), 'bonjour')
@@ -68,7 +65,7 @@ class ComponentTestCase(unittest.TestCase):
         del(x)
 
         # void addVariable(const VariablePtr &v)
-        from libcellml.variable import Variable
+        from libcellml import Variable
         c = Component()
         v = Variable()
         c.addVariable(v)

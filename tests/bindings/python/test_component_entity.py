@@ -7,7 +7,8 @@ import unittest
 class ComponentEntityTestCase(unittest.TestCase):
 
     def test_component_entity(self):
-        from libcellml.componententity import ComponentEntity
+        import libcellml
+        from libcellml import ComponentEntity
         
         # Test create/copy/destroy
         x = ComponentEntity()
@@ -18,12 +19,9 @@ class ComponentEntityTestCase(unittest.TestCase):
 
         # Test inheritance
         x = ComponentEntity()
-        from libcellml.importedentity import ImportedEntity
-        self.assertIsInstance(x, ImportedEntity)
-        from libcellml.namedentity import NamedEntity
-        self.assertIsInstance(x, NamedEntity)
-        from libcellml.entity import Entity
-        self.assertIsInstance(x, Entity)
+        self.assertIsInstance(x, libcellml.ImportedEntity)
+        self.assertIsInstance(x, libcellml.NamedEntity)
+        self.assertIsInstance(x, libcellml.Entity)
 
         # Test access to inherited methods
         idx = 'test'
@@ -37,7 +35,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         # Test own methods
 
         # void addComponent(const ComponentPtr &c)
-        from libcellml.component import Component
+        from libcellml import Component
         x = ComponentEntity()
         y = Component()
         x.addComponent(y)
