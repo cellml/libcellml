@@ -33,7 +33,8 @@ class ValidatorTestCase(unittest.TestCase):
         # Test own methods
         
         # void validateModel(const ModelPtr &model)
-        #TODO
+        v = Validator()
+        v.validateModel(libcellml.Model())
         
 if __name__ == '__main__':
     unittest.main()
