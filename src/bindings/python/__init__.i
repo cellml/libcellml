@@ -12,8 +12,10 @@ from libcellml.importsource import Import as ImportSource #TODO
 from libcellml.logger import Logger
 from libcellml.model import Model
 from libcellml.namedentity import NamedEntity
+from libcellml.parser import Parser
 from libcellml.printer import Printer
 from libcellml.units import Units
+#from libcellml.validator import Validator
 from libcellml.variable import Variable
 
 class InterfaceType:
