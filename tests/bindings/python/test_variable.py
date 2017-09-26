@@ -207,6 +207,6 @@ class VariableTestCase(unittest.TestCase):
         v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
         self.assertEqual(v.getInterfaceType(), 'public_and_private')
         del(v)
-        
+
 if __name__ == '__main__':
     unittest.main()

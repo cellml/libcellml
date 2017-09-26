@@ -199,28 +199,86 @@ class UnitsTestCase(unittest.TestCase):
         #   std::string &prefix, double &exponent, double &multiplier)
         u = Units()
         x = u.getUnitAttributes(0)
-        self.assertEqual(len(x), 4)
-        
-        
+        self.assertIsInstance(x, list)
+        self.assertEqual(x, ['', '', 1.0, 1.0])
+        u.addUnit('blabla', 'hello', 1.2, 3.4)
+        x = u.getUnitAttributes(0)
+        self.assertIsInstance(x, list)
+        self.assertEqual(x, ['blabla', 'hello', 1.2, 3.4])
+        x = u.getUnitAttributes(1)
+        self.assertIsInstance(x, list)
+        self.assertEqual(x, ['', '', 1.0, 1.0])
+        del(u, x)
         
         # void getUnitAttributes(const std::string &reference,
-        #   std::string &prefix, double &exponent, double &multiplier)
+        #   std::string &prefix, double &exponent, double &multiplier) const;
+        u = Units()
+        x = u.getUnitAttributes('newton')
+        self.assertIsInstance(x, list)
+        self.assertEqual(x, ['newton', '', 1.0, 1.0])
+        u.addUnit('few', 'bars', 4.3, 2.1)
+        x = u.getUnitAttributes('newton')
+        self.assertIsInstance(x, list)
+        self.assertEqual(x, ['newton', '', 1.0, 1.0])
+        x = u.getUnitAttributes('few')
+        self.assertIsInstance(x, list)
+        self.assertEqual(x, ['few', 'bars', 4.3, 2.1])
+        del(u, x)
         
+        # This method conflicts with getUnitAttributes(size_t, ...)
         # void getUnitAttributes(StandardUnit standardRef, std::string &prefix,
-        #   double &exponent, double &multiplier)
+        #   double &exponent, double &multiplier) const;
         
         # bool removeUnit(size_t index)
+        u = Units()
+        self.assertFalse(u.removeUnit(0))
+        self.assertFalse(u.removeUnit(1))
+        self.assertFalse(u.removeUnit(-1))
+        u.addUnit('hello')
+        self.assertFalse(u.removeUnit(1))
+        self.assertFalse(u.removeUnit(-1))
+        self.assertTrue(u.removeUnit(0))
+        self.assertFalse(u.removeUnit(0))
+        del(u)
         
         # bool removeUnit(const std::string &reference)
-        
+        u = Units()
+        self.assertFalse(u.removeUnit('hello'))
+        u.addUnit('hello')
+        self.assertFalse(u.removeUnit('hi'))
+        self.assertTrue(u.removeUnit('hello'))
+        self.assertFalse(u.removeUnit('hello'))
+        del(u)
+
+        # This method conflicts with removeUnit(size_t)        
         # bool removeUnit(StandardUnit standardRef)
         
+        # size_t unitCount()
+        u = Units()
+        self.assertEqual(u.unitCount(), 0)
+        u.addUnit('')
+        self.assertEqual(u.unitCount(), 1)
+        u.addUnit('')
+        self.assertEqual(u.unitCount(), 2)
+        del(u)
+        
         # void removeAllUnits()
+        u = Units()
+        self.assertEqual(u.unitCount(), 0)
+        u.addUnit('')
+        self.assertEqual(u.unitCount(), 1)
+        u.addUnit('')
+        self.assertEqual(u.unitCount(), 2)
+        u.removeAllUnits()
+        self.assertEqual(u.unitCount(), 0)
+        del(u)
         
         # void setSourceUnits(const ImportPtr &imp, const std::string &name)
-        
-        # size_t unitCount()
-
+        from libcellml import ImportSource
+        i = ImportSource()
+        u = Units()
+        u.setSourceUnits(i, 'hello')
+        del(u, i)
 
 if __name__ == '__main__':
     unittest.main()
