@@ -14,6 +14,7 @@ set(TEST_SRCS
   test_units.py
   test_variable.py
   test_validator.py
+  test_version.py
 )
 
 foreach(_TEST ${TEST_SRCS})

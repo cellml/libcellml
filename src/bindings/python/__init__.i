@@ -17,6 +17,7 @@ from libcellml.printer import Printer
 from libcellml.units import Units
 from libcellml.validator import Validator
 from libcellml.variable import Variable
+from libcellml.version import version, versionString
 
 class Kind:
     COMPONENT = Error.Kind_COMPONENT
