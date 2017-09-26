@@ -29,6 +29,53 @@ class ErrorTestCase(unittest.TestCase):
         self.assertIsInstance(Error.Kind.VARIABLE, int)
         self.assertIsInstance(Error.Kind.XML, int)
         
+        # Test SpecificationRule enum
+        from libcellml import SpecificationRule
+        self.assertIsInstance(SpecificationRule.UNDEFINED, int)
+        self.assertIsInstance(SpecificationRule.MODEL_ELEMENT, int)
+        self.assertIsInstance(SpecificationRule.MODEL_NAME, int)
+        self.assertIsInstance(SpecificationRule.MODEL_CHILD, int)
+        self.assertIsInstance(SpecificationRule.IMPORT_HREF, int)
+        self.assertIsInstance(SpecificationRule.IMPORT_CHILD, int)
+        self.assertIsInstance(SpecificationRule.IMPORT_CIRCULAR, int)
+        self.assertIsInstance(SpecificationRule.IMPORT_UNITS_NAME, int)
+        self.assertIsInstance(SpecificationRule.IMPORT_UNITS_REF, int)
+        self.assertIsInstance(SpecificationRule.IMPORT_COMPONENT_NAME, int)
+        self.assertIsInstance(SpecificationRule.IMPORT_COMPONENT_REF, int)
+        self.assertIsInstance(SpecificationRule.UNITS_NAME, int)
+        self.assertIsInstance(SpecificationRule.UNITS_MODEL_UNIQUE, int)
+        self.assertIsInstance(SpecificationRule.UNITS_COMPONENT_UNIQUE, int)
+        self.assertIsInstance(SpecificationRule.UNITS_STANDARD, int)
+        self.assertIsInstance(SpecificationRule.UNITS_BASE, int)
+        self.assertIsInstance(SpecificationRule.UNITS_CHILD, int)
+        self.assertIsInstance(SpecificationRule.UNIT_UNITS_REF, int)
+        self.assertIsInstance(SpecificationRule.UNIT_DIGRAPH, int)
+        self.assertIsInstance(SpecificationRule.UNIT_CIRCULAR_REF, int)
+        self.assertIsInstance(SpecificationRule.UNIT_ATTRIBUTE, int)
+        self.assertIsInstance(SpecificationRule.UNIT_PREFIX, int)
+        self.assertIsInstance(SpecificationRule.UNIT_MULTIPLIER, int)
+        self.assertIsInstance(SpecificationRule.UNIT_EXPONENT, int)
+        self.assertIsInstance(SpecificationRule.COMPONENT_NAME, int)
+        self.assertIsInstance(SpecificationRule.COMPONENT_CHILD, int)
+        self.assertIsInstance(SpecificationRule.VARIABLE_ATTRIBUTE, int)
+        self.assertIsInstance(SpecificationRule.VARIABLE_NAME, int)
+        self.assertIsInstance(SpecificationRule.VARIABLE_UNITS, int)
+        self.assertIsInstance(SpecificationRule.VARIABLE_INTERFACE, int)
+        self.assertIsInstance(SpecificationRule.VARIABLE_INITIAL_VALUE, int)
+        self.assertIsInstance(SpecificationRule.ENCAPSULATION_COMPONENT_REF,
+            int)
+        self.assertIsInstance(SpecificationRule.COMPONENT_REF_COMPONENT, int)
+        self.assertIsInstance(SpecificationRule.COMPONENT_REF_CHILD, int)
+        self.assertIsInstance(
+            SpecificationRule.ENCAPSULATION_COMPONENT_REF_CHILD, int)
+        self.assertIsInstance(SpecificationRule.CONNECTION_CHILD, int)
+        self.assertIsInstance(SpecificationRule.CONNECTION_MAP_COMPONENTS, int)
+        self.assertIsInstance(SpecificationRule.CONNECTION_MAP_VARIABLES, int)
+        self.assertIsInstance(SpecificationRule.MAP_COMPONENTS_COMPONENT1, int)
+        self.assertIsInstance(SpecificationRule.MAP_COMPONENTS_COMPONENT2, int)
+        self.assertIsInstance(SpecificationRule.MAP_VARIABLES_VARIABLE1, int)
+        self.assertIsInstance(SpecificationRule.MAP_VARIABLES_VARIABLE2, int)
+        
         # Test methods
         
         # void setDescription(const std::string& description)
@@ -64,30 +111,104 @@ class ErrorTestCase(unittest.TestCase):
         del(e)
 
         # void setRule(SpecificationRule rule)
+        e = Error()
+        e.setRule(SpecificationRule.MAP_VARIABLES_VARIABLE2)
+        del(e)
 
         # SpecificationRule getRule()
+        e = Error()
+        self.assertEqual(e.getRule(), SpecificationRule.UNDEFINED)
+        del(e)
 
         # std::string getSpecificationHeading()
+        e = Error()
+        self.assertEqual('', e.getSpecificationHeading())
+        del(e)
 
         # void setComponent(const ComponentPtr &component)
+        from libcellml import Component
+        e = Error()
+        e.setComponent(Component())
+        del(e)
 
         # ComponentPtr getComponent()
+        e = Error()
+        self.assertIsNone(e.getComponent())
+        name = 'cellml'
+        c = Component()
+        c.setName(name)
+        e.setComponent(c)
+        self.assertIsInstance(e.getComponent(), Component)
+        self.assertEqual(e.getComponent().getName(), name)
+        del(e, c, name)
 
-        # void setImport(const ImportPtr &import)
+        # void setImportSource(const ImportSourcePtr &import)
+        from libcellml import ImportSource
+        e = Error()
+        e.setImport(ImportSource())
+        del(e)
 
-        # ImportPtr getImport()
+        # ImportSourcePtr getImportSource()
+        e = Error()
+        self.assertIsNone(e.getComponent())
+        name = 'uri'
+        i = ImportSource()
+        i.setId(name)
+        e.setImport(i)
+        self.assertIsInstance(e.getImport(), ImportSource)
+        self.assertEqual(e.getImport().getId(), name)
+        del(e, i, name)
 
         # void setModel(const ModelPtr &model)
+        from libcellml import Model
+        e = Error()
+        e.setModel(Model())
+        del(e)
 
         # ModelPtr getModel()
-
+        e = Error()
+        self.assertIsNone(e.getModel())
+        name = 'moodle'
+        m = Model()
+        m.setName(name)
+        e.setModel(m)
+        self.assertIsInstance(e.getModel(), Model)
+        self.assertEqual(e.getModel().getName(), name)
+        del(e, m, name)
+        
         # void setUnits(const UnitsPtr &units)
+        from libcellml import Units
+        e = Error()
+        e.setUnits(Units())
+        del(e)
         
         # UnitsPtr getUnits()
+        e = Error()
+        self.assertIsNone(e.getUnits())
+        name = 'furlong'
+        u = Units()
+        u.setName(name)
+        e.setUnits(u)
+        self.assertIsInstance(e.getUnits(), Units)
+        self.assertEqual(e.getUnits().getName(), name)
+        del(e, u, name)
 
         # void setVariable(const VariablePtr &variable)
+        from libcellml import Variable
+        e = Error()
+        e.setVariable(Variable())
+        del(e)
 
         # VariablePtr getVariable()
+        e = Error()
+        self.assertIsNone(e.getVariable())
+        name = 'var'
+        v = Variable()
+        v.setName(name)
+        e.setVariable(v)
+        self.assertIsInstance(e.getVariable(), Variable)
+        self.assertEqual(e.getVariable().getName(), name)
+        del(e, v, name)
 
 if __name__ == '__main__':
     unittest.main()
