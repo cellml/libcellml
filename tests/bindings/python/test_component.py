@@ -15,7 +15,7 @@ class ComponentTestCase(unittest.TestCase):
         del(x)
         y = Component()
         z = Component(y)
-        del(y,z)
+        del(y, z)
         
         # Test inheritance
         x = Component()
@@ -32,7 +32,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertEqual(x.getId(), idx)
         y = Component(x)
         self.assertEqual(y.getId(), idx)
-        del(x, y)
+        del(x, y, idx)
         
         # Test own methods
 

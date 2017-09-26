@@ -16,7 +16,7 @@ class ImportedEntityTestCase(unittest.TestCase):
         del(x)
         y = ImportedEntity()
         z = ImportedEntity(y)
-        del(y,z)
+        del(y, z)
         
         # Test inheritance
         x = ImportedEntity()

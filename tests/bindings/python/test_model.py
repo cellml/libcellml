@@ -15,7 +15,7 @@ class ModelTestCase(unittest.TestCase):
         del(x)
         y = Model()
         z = Model(y)
-        del(y,z)
+        del(y, z)
         
         # Test inheritance
         x = Model()
@@ -32,7 +32,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual(x.getId(), idx)
         y = Model(x)
         self.assertEqual(y.getId(), idx)
-        del(x, y)
+        del(x, y, idx)
         
         # Test own methods
         

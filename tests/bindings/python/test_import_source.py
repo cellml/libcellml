@@ -15,7 +15,7 @@ class ImportSourceTestCase(unittest.TestCase):
         del(x)
         y = ImportSource()
         z = ImportSource(y)
-        del(y,z)
+        del(y, z)
         
         # Test inheritance
         x = ImportSource()

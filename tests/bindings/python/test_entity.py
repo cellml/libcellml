@@ -14,7 +14,7 @@ class EntityTestCase(unittest.TestCase):
         del(x)
         y = Entity()
         z = Entity(y)
-        del(y,z)
+        del(y, z)
         
         # Test own methods
 
@@ -30,7 +30,7 @@ class EntityTestCase(unittest.TestCase):
         # copy constructor
         y = Entity(x)
         self.assertEqual(y.getId(), idx)
-        del(x, y)
+        del(x, y, idx)
         
         # void* getParent
         #TODO: This method might be moved out of entity!

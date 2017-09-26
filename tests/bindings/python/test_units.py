@@ -15,7 +15,7 @@ class UnitsTestCase(unittest.TestCase):
         del(x)
         y = Units()
         z = Units(y)
-        del(y,z)
+        del(y, z)
         
         # Test inheritance
         x = Units()
@@ -31,7 +31,7 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(x.getId(), idx)
         y = Units(x)
         self.assertEqual(y.getId(), idx)
-        del(x, y)
+        del(x, y, idx)
         
         # Test standard units
         u = Units()

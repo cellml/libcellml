@@ -15,7 +15,7 @@ class LoggerTestCase(unittest.TestCase):
         del(x)
         y = Logger()
         z = Logger(y)
-        del(y,z)
+        del(y, z)
         
         # Test methods
         #TODO

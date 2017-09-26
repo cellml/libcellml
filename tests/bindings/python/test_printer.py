@@ -11,13 +11,27 @@ class PrinterTestCase(unittest.TestCase):
         from libcellml import Printer
         
         # Test create/copy/destroy
-        #x = Printer()
-        #del(x)
-        #y = Printer()
-        #z = Printer(y)
-        #del(y,z)
+        '''
+        x = Printer()
+        del(x)
+        y = Printer()
+        z = Printer(y)
+        del(y, z)
         
-        # Test methods
+        # Test inheritance
+        x = Printer()
+        self.assertIsInstance(x, libcellml.Logger)
+
+        # Test access to inherited methods
+        idx = 'test'
+        self.assertIsNone(x.getError(0))
+        self.assertEqual(x.errorCount(), 0)
+        x.addError(libcellml.Error())
+        self.assertEqual(x.errorCount(), 1)
+        del(x, idx)
+        '''
+        
+        # Test own methods
         #TODO
         
         # std::string printModel(ModelPtr model)

@@ -9,9 +9,11 @@ set(TEST_SRCS
   test_logger.py
   test_model.py
   test_named_entity.py
+  test_parser.py
   test_printer.py
   test_units.py
   test_variable.py
+  test_validator.py
 )
 
 foreach(_TEST ${TEST_SRCS})
