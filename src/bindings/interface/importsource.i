@@ -9,7 +9,7 @@
 #include "libcellml/importsource.h"
 %}
 
-%ignore libcellml::ImportSource::ImportSource(Import &&);
+%ignore libcellml::ImportSource::ImportSource(ImportSource &&);
 %ignore libcellml::ImportSource::operator =;
 
 %include "libcellml/types.h"
