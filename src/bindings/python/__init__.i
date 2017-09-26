@@ -3,18 +3,18 @@
 //TODO: http://www.swig.org/Doc1.3/Python.html#Python_nn65
 
 %pythoncode %{
-from libcellml.entity import Entity
-from libcellml.namedentity import NamedEntity
-from libcellml.importedentity import ImportedEntity
-from libcellml.componententity import ComponentEntity
-from libcellml.model import Model
 from libcellml.component import Component
-from libcellml.variable import Variable
-from libcellml.units import Units
+from libcellml.componententity import ComponentEntity
+from libcellml.entity import Entity
+from libcellml.error import Error
+from libcellml.importedentity import ImportedEntity
 from libcellml.importsource import Import as ImportSource #TODO
-from libcellml.entity import Entity
-from libcellml.entity import Entity
-from libcellml.entity import Entity
+from libcellml.logger import Logger
+from libcellml.model import Model
+from libcellml.namedentity import NamedEntity
+from libcellml.printer import Printer
+from libcellml.units import Units
+from libcellml.variable import Variable
 
 class InterfaceType:
     NONE = Variable.InterfaceType_NONE
