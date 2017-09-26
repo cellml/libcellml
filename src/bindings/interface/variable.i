@@ -5,16 +5,6 @@
 %import "types.i"
 %import "namedentity.i"
 
-/*TODO
-enum class InterfaceType
-    {
-        NONE,
-        PRIVATE,
-        PUBLIC,
-        PUBLIC_AND_PRIVATE
-    };
-*/
-
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {

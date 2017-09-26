@@ -69,6 +69,28 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.WATT)
         u.addUnit(Units.StandardUnit.WEBER)
         
+        # Test prefixes
+        u.addUnit('test', Units.Prefix.YOTTA)
+        u.addUnit('test', Units.Prefix.ZETTA)
+        u.addUnit('test', Units.Prefix.EXA)
+        u.addUnit('test', Units.Prefix.PETA)
+        u.addUnit('test', Units.Prefix.TERA)
+        u.addUnit('test', Units.Prefix.GIGA)
+        u.addUnit('test', Units.Prefix.MEGA)
+        u.addUnit('test', Units.Prefix.KILO)
+        u.addUnit('test', Units.Prefix.HECTO)
+        u.addUnit('test', Units.Prefix.DECA)
+        u.addUnit('test', Units.Prefix.DECI)
+        u.addUnit('test', Units.Prefix.CENTI)
+        u.addUnit('test', Units.Prefix.MILLI)
+        u.addUnit('test', Units.Prefix.MICRO)
+        u.addUnit('test', Units.Prefix.NANO)
+        u.addUnit('test', Units.Prefix.PICO)
+        u.addUnit('test', Units.Prefix.FEMTO)
+        u.addUnit('test', Units.Prefix.ATTO)
+        u.addUnit('test', Units.Prefix.ZEPTO)
+        u.addUnit('test', Units.Prefix.YOCTO)
+
         # Test own methods
         
         # bool isBaseUnit()
@@ -76,40 +98,127 @@ class UnitsTestCase(unittest.TestCase):
         self.assertTrue(u.isBaseUnit())
         u.addUnit(Units.StandardUnit.NEWTON)
         self.assertFalse(u.isBaseUnit())
-        
+        del(u)
         
         # void addUnit(const std::string &reference, const std::string &prefix,
         #   double exponent=1.0, double multiplier=1.0)
+        u = Units()
+        u.addUnit('a', 'b')
+        u.addUnit('a', 'b', 2.0)
+        u.addUnit('a', 'b', -1)
+        u.addUnit('a', 'b', 0)
+        u.addUnit('a', 'b', 3, 3)
+        u.addUnit('a', 'b', 0.1, -1.2)
+        del(u)
+        
         # void addUnit(const std::string &reference, Prefix prefix,
         #   double exponent=1.0, double multiplier=1.0)
+        u = Units()
+        u.addUnit('a', Units.Prefix.YOTTA)
+        u.addUnit('a', Units.Prefix.YOTTA, -1)
+        u.addUnit('a', Units.Prefix.YOTTA, 2.3)
+        u.addUnit('a', Units.Prefix.YOTTA, -1, 3)
+        u.addUnit('a', Units.Prefix.YOTTA, -1, 2.3)
+        u.addUnit('a', Units.Prefix.YOTTA, 1.2, 3.4)
+        del(u)
+        
         # void addUnit(const std::string &reference, double prefix,
         #   double exponent, double multiplier=1.0)
+        u = Units()
+        u.addUnit('a', 1.2, -1)
+        u.addUnit('a', 1.2, 2.3)
+        u.addUnit('a', 1.2, -1, 3)
+        u.addUnit('a', 1.2, -1, 2.3)
+        u.addUnit('a', 1.2, 1.2, 3.4)
+        #TODO Ints get converted to Prefix enum, not to double!
+        #u.addUnit('a', -1, -1)
+        #u.addUnit('a', -1, 2.3)
+        #u.addUnit('a', -1, -1, 3)
+        #u.addUnit('a', -1, -1, 2.3)
+        #u.addUnit('a', -1, 1.2, 3.4)
+        del(u)
+        
         # void addUnit(const std::string &reference, double exponent)
+        u = Units()
+        u.addUnit('a', 1.0)
+        #TODO Ints get converted to Prefix enum, not to double!
+        #u.addUnit('a', -1)
+        del(u)
+        
         # void addUnit(const std::string &reference)
+        u = Units()
+        u.addUnit('')
+        u.addUnit('a')
+        del(u)
+        
         # void addUnit(StandardUnit standardRef, const std::string &prefix,
         #   double exponent=1.0, double multiplier=1.0)
+        u = Units()
+        u.addUnit(Units.StandardUnit.KATAL, 'pico')
+        u.addUnit(Units.StandardUnit.KATAL, 'pico', 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, 'pico', -1)
+        u.addUnit(Units.StandardUnit.KATAL, 'pico', 1.0, 2.0)
+        u.addUnit(Units.StandardUnit.KATAL, 'pico', 1, 2.0)
+        u.addUnit(Units.StandardUnit.KATAL, 'pico', -1, 2)
+        del(u)
+        
         # void addUnit(StandardUnit standardRef, Prefix prefix,
         #   double exponent=1.0, double multiplier=1.0)
+        u = Units()
+        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO)
+        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1)
+        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0, 2.0)
+        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1, 2.0)
+        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1, 2)
+        del(u)
+        
         # void addUnit(StandardUnit standardRef, double prefix,
         #   double exponent, double multiplier=1.0)
-        # void addUnit(StandardUnit standardRef, double exponent)
-        # void addUnit(StandardUnit standardRef)
+        u = Units()
+        u.addUnit(Units.StandardUnit.KATAL, 1.0, 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0)
+        u.addUnit(Units.StandardUnit.KATAL, 1.0, 1.0, 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0, 1.0)
+        del(u)
         
-        # Test built-in units
-        #TODO
-
+        # void addUnit(StandardUnit standardRef, double exponent)
+        u = Units()
+        u.addUnit(Units.StandardUnit.KATAL, 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, -1.0)
+        u.addUnit(Units.StandardUnit.KATAL, 1)
+        u.addUnit(Units.StandardUnit.KATAL, -1)
+        del(u)
+        
+        # void addUnit(StandardUnit standardRef)
+        u = Units()
+        u.addUnit(Units.StandardUnit.KATAL)
+        del(u)
         
         # void getUnitAttributes(size_t index, std::string& reference,
         #   std::string &prefix, double &exponent, double &multiplier)
+        u = Units()
+        x = u.getUnitAttributes(0)
+        self.assertEqual(len(x), 4)
+        
+        
+        
         # void getUnitAttributes(const std::string &reference,
         #   std::string &prefix, double &exponent, double &multiplier)
+        
         # void getUnitAttributes(StandardUnit standardRef, std::string &prefix,
         #   double &exponent, double &multiplier)
+        
         # bool removeUnit(size_t index)
+        
         # bool removeUnit(const std::string &reference)
+        
         # bool removeUnit(StandardUnit standardRef)
+        
         # void removeAllUnits()
+        
         # void setSourceUnits(const ImportPtr &imp, const std::string &name)
+        
         # size_t unitCount()
 
 
