@@ -102,6 +102,28 @@ del(
     Units.StandardUnit_WEBER,
 )
 
-
-
+import libcellml.enumerations
+class Prefix:
+    YOTTA = libcellml.enumerations.Prefix_YOTTA
+    ZETTA = libcellml.enumerations.Prefix_ZETTA
+    EXA = libcellml.enumerations.Prefix_EXA
+    PETA = libcellml.enumerations.Prefix_PETA
+    TERA = libcellml.enumerations.Prefix_TERA
+    GIGA = libcellml.enumerations.Prefix_GIGA
+    MEGA = libcellml.enumerations.Prefix_MEGA
+    KILO = libcellml.enumerations.Prefix_KILO
+    HECTO = libcellml.enumerations.Prefix_HECTO
+    DECA = libcellml.enumerations.Prefix_DECA
+    DECI = libcellml.enumerations.Prefix_DECI
+    CENTI = libcellml.enumerations.Prefix_CENTI
+    MILLI = libcellml.enumerations.Prefix_MILLI
+    MICRO = libcellml.enumerations.Prefix_MICRO
+    NANO = libcellml.enumerations.Prefix_NANO
+    PICO = libcellml.enumerations.Prefix_PICO
+    FEMTO = libcellml.enumerations.Prefix_FEMTO
+    ATTO = libcellml.enumerations.Prefix_ATTO
+    ZEPTO = libcellml.enumerations.Prefix_ZEPTO
+    YOCTO = libcellml.enumerations.Prefix_YOCTO
+Units.Prefix = Prefix()
+del(Prefix, libcellml.enumerations)
 %}
