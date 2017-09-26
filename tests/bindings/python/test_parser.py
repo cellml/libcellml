@@ -33,7 +33,9 @@ class ParserTestCase(unittest.TestCase):
         # Test own methods
         
         # ModelPtr parseModel(const std::string &input)
-        #TODO
+        p = Parser(libcellml.Format.XML)
+        self.assertIsInstance(p.parseModel('rubbish'), libcellml.Model)
+        del(p)
         
 if __name__ == '__main__':
     unittest.main()
