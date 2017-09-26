@@ -33,31 +33,31 @@ class ImportedEntityTestCase(unittest.TestCase):
         
         # Test own methods
         
-        # void setImport(const ImportPtr &imp)
+        # void setImportSource(const ImportPtr &imp)
         from libcellml import ImportSource
         x = ImportedEntity()
-        x.setImport(ImportSource())
-        x.setImport(None)
+        x.setImportSource(ImportSource())
+        x.setImportSource(None)
         del(x)
         
         # bool isImport()
         x = ImportedEntity()
         self.assertFalse(x.isImport())
-        x.setImport(ImportSource())
+        x.setImportSource(ImportSource())
         self.assertTrue(x.isImport())
-        x.setImport(None)
+        x.setImportSource(None)
         self.assertFalse(x.isImport())
         del(x)
 
-        # ImportPtr getImport()
+        # ImportSourcePtr getImportSource()
         i = ImportSource()
         source = 'hello'
         i.setSource(source)
         x = ImportedEntity()
-        self.assertIsNone(x.getImport())
-        x.setImport(i)
-        self.assertIsNotNone(x.getImport())
-        self.assertEqual(x.getImport().getSource(), source)
+        self.assertIsNone(x.getImportSource())
+        x.setImportSource(i)
+        self.assertIsNotNone(x.getImportSource())
+        self.assertEqual(x.getImportSource().getSource(), source)
         del(x, i, source)
         
         # void setImportReference(const std::string &reference)

@@ -43,7 +43,7 @@ class ComponentTestCase(unittest.TestCase):
         i = ImportSource()
         i.setSource('bonjour')
         x.setSourceComponent(i, 'camembert')
-        self.assertEqual(x.getImport().getSource(), 'bonjour')
+        self.assertEqual(x.getImportSource().getSource(), 'bonjour')
         self.assertEqual(x.getImportReference(), 'camembert')
         del(x, i)
 
@@ -94,7 +94,17 @@ class ComponentTestCase(unittest.TestCase):
         self.assertTrue(c.hasVariable(name))
         del(c, v1, v2, name)
         
-        #TODO: bool removeVariable(size_t index)
+        # bool removeVariable(size_t index)
+        c = Component()
+        self.assertFalse(c.removeVariable(0))
+        self.assertFalse(c.removeVariable(-1))
+        self.assertFalse(c.removeVariable(1))
+        c.addVariable(Variable())
+        self.assertFalse(c.removeVariable(-1))
+        self.assertFalse(c.removeVariable(1))
+        self.assertTrue(c.removeVariable(0))
+        self.assertFalse(c.removeVariable(0))
+        del(c)
         
         # bool removeVariable(const std::string &name)
         c = Component()

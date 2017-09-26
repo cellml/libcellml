@@ -6,11 +6,11 @@
 %import "entity.i"
 
 %{
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 %}
 
-%ignore libcellml::Import::Import(Import &&);
-%ignore libcellml::Import::operator =;
+%ignore libcellml::ImportSource::ImportSource(Import &&);
+%ignore libcellml::ImportSource::operator =;
 
 %include "libcellml/types.h"
-%include "libcellml/import.h"
+%include "libcellml/importsource.h"
