@@ -11,15 +11,14 @@ class ParserTestCase(unittest.TestCase):
         from libcellml import Parser
         
         # Test create/copy/destroy
-        '''
-        x = Parser()
+        x = Parser(libcellml.Format.XML)
         del(x)
-        y = Parser()
+        y = Parser(libcellml.Format.XML)
         z = Parser(y)
         del(y, z)
         
         # Test inheritance
-        x = Parser()
+        x = Parser(libcellml.Format.XML)
         self.assertIsInstance(x, libcellml.Logger)
 
         # Test access to inherited methods
@@ -30,7 +29,6 @@ class ParserTestCase(unittest.TestCase):
         x.addError(libcellml.Error())
         self.assertEqual(x.errorCount(), 1)
         del(x, idx)
-        '''
         
         # Test own methods
         
