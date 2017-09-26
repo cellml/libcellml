@@ -13,4 +13,4 @@
 %ignore libcellml::Validator::operator =;
 
 %include "libcellml/types.h"
-%include "libcellml/parser.h"
+%include "libcellml/validator.h"

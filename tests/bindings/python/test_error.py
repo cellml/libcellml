@@ -18,32 +18,50 @@ class ErrorTestCase(unittest.TestCase):
         del(y,z)
         
         # Test Kind enum
-        #TODO
-        '''
-        COMPONENT,
-        CONNECTION,
-        ENCAPSULATION,
-        IMPORT,
-        MATHML,
-        MODEL,
-        UNDEFINED,
-        UNITS,
-        VARIABLE,
-        XML
-        '''
-  
+        self.assertIsInstance(Error.Kind.COMPONENT, int)
+        self.assertIsInstance(Error.Kind.CONNECTION, int)
+        self.assertIsInstance(Error.Kind.ENCAPSULATION, int)
+        self.assertIsInstance(Error.Kind.IMPORT, int)
+        self.assertIsInstance(Error.Kind.MATHML, int)
+        self.assertIsInstance(Error.Kind.MODEL, int)
+        self.assertIsInstance(Error.Kind.UNDEFINED, int)
+        self.assertIsInstance(Error.Kind.UNITS, int)
+        self.assertIsInstance(Error.Kind.VARIABLE, int)
+        self.assertIsInstance(Error.Kind.XML, int)
+        
         # Test methods
-        #TODO
         
         # void setDescription(const std::string& description)
+        e = Error()
+        e.setDescription('hello')
+        e.setDescription('')
+        del(e)
 
         # std::string getDescription()
+        d = 'hi'
+        e = Error()
+        self.assertEqual(e.getDescription(), '')
+        e.setDescription(d)
+        self.assertEqual(e.getDescription(), d)
+        del(d, e)
 
         # void setKind(Kind kind)
+        e = Error()
+        e.setKind(Error.Kind.CONNECTION)
+        del(e)
 
         # Kind getKind()
+        e = Error()
+        self.assertEqual(e.getKind(), Error.Kind.UNDEFINED)
+        e.setKind(Error.Kind.MATHML)
+        self.assertEqual(e.getKind(), Error.Kind.MATHML)
+        del(e)
 
         # bool isKind(const Kind &kind)
+        e = Error()
+        self.assertTrue(e.isKind(Error.Kind.UNDEFINED))
+        self.assertFalse(e.isKind(Error.Kind.MODEL))
+        del(e)
 
         # void setRule(SpecificationRule rule)
 
