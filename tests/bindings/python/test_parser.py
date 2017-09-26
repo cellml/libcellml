@@ -11,13 +11,27 @@ class ParserTestCase(unittest.TestCase):
         from libcellml import Parser
         
         # Test create/copy/destroy
+        '''
         x = Parser()
         del(x)
         y = Parser()
         z = Parser(y)
-        del(y,z)
-          
-        # Test methods
+        del(y, z)
+        
+        # Test inheritance
+        x = Parser()
+        self.assertIsInstance(x, libcellml.Logger)
+
+        # Test access to inherited methods
+        idx = 'test'
+        self.assertIsNone(x.getError(0))
+        self.assertEqual(x.errorCount(), 0)
+        x.addError(libcellml.Error())
+        self.assertEqual(x.errorCount(), 1)
+        del(x, idx)
+        '''
+        
+        # Test own methods
         
         # ModelPtr parseModel(const std::string &input)
         #TODO

@@ -15,7 +15,7 @@ class ErrorTestCase(unittest.TestCase):
         del(x)
         y = Error()
         z = Error(y)
-        del(y,z)
+        del(y, z)
         
         # Test Kind enum
         self.assertIsInstance(Error.Kind.COMPONENT, int)

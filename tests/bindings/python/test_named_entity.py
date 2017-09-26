@@ -15,7 +15,7 @@ class NamedEntityTestCase(unittest.TestCase):
         del(x)
         y = NamedEntity()
         z = NamedEntity(y)
-        del(y,z)
+        del(y, z)
 
         # Test inheritance
         x = NamedEntity()
@@ -27,6 +27,7 @@ class NamedEntityTestCase(unittest.TestCase):
         self.assertEqual(x.getId(), '')
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
+        del(x, idx)
         
         # Test own methods
         
