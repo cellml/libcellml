@@ -76,7 +76,7 @@ class ImportedEntityTestCase(unittest.TestCase):
         self.assertEqual(x.getImportReference(), r)
         x.setImportReference('')
         self.assertEqual(x.getImportReference(), '')
-        del(r, x)        
+        del(r, x)
 
 if __name__ == '__main__':
     unittest.main()

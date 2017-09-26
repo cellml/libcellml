@@ -38,6 +38,6 @@ class ImportSourceTestCase(unittest.TestCase):
         self.assertEqual(x.getSource(), source)
         x.setSource('')        
         self.assertEqual(x.getSource(), '')
-        
+
 if __name__ == '__main__':
     unittest.main()
