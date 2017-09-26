@@ -180,7 +180,16 @@ class ModelTestCase(unittest.TestCase):
         self.assertFalse(m.replaceUnits('b', a))
         del(m, a, b)
         
-        #TODO bool replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
+        # bool replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
+        m = Model()
+        a = Units()
+        m.addUnits(a)
+        b = Units()
+        self.assertFalse(m.replaceUnits(b, a))
+        self.assertTrue(m.replaceUnits(a, b))
+        self.assertTrue(m.replaceUnits(b, a))
+        self.assertFalse(m.replaceUnits(b, a))
+        del(m, a, b)
         
         # size_t unitsCount()
         m = Model()

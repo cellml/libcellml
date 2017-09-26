@@ -325,8 +325,26 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertTrue(x.replaceComponent('a', b, a))
         del(x, a, b)
         
-        #TODO replaceComponent(const ComponentPtr &c1, const ComponentPtr &c2,
+        # replaceComponent(const ComponentPtr &c1, const ComponentPtr &c2,
         #   bool searchEncapsulated = true)
+        x = ComponentEntity()
+        a = Component()
+        b = Component()
+        self.assertFalse(x.replaceComponent(a, b))
+        self.assertFalse(x.replaceComponent(b, a))
+        x.addComponent(a)
+        self.assertTrue(x.containsComponent(a))
+        self.assertFalse(x.containsComponent(b))
+        self.assertFalse(x.replaceComponent(b, a))
+        self.assertTrue(x.replaceComponent(a, b))
+        self.assertTrue(x.containsComponent(b))
+        self.assertFalse(x.containsComponent(a))
+        self.assertTrue(x.replaceComponent(b, a, True))
+        self.assertTrue(x.replaceComponent(a, b, False))
+        self.assertTrue(x.replaceComponent(b, a, 100))
+        self.assertTrue(x.replaceComponent(a, b, []))
+        self.assertTrue(x.replaceComponent(b, a, 'yes'))
+        self.assertTrue(x.replaceComponent(a, b, a))
         
         # size_t componentCount()
         x = ComponentEntity()

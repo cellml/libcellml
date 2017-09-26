@@ -12,6 +12,10 @@
             if(index < 0) return nullptr;
             return $self->getVariable(size_t(index));
         }
+        bool removeVariable(long index) {
+            if(index < 0) return false;
+            return $self->removeVariable(size_t(index));
+        }
     }
 #endif
 

@@ -8,7 +8,7 @@ from libcellml.componententity import ComponentEntity
 from libcellml.entity import Entity
 from libcellml.error import Error
 from libcellml.importedentity import ImportedEntity
-from libcellml.importsource import Import as ImportSource #TODO
+from libcellml.importsource import ImportSource
 from libcellml.logger import Logger
 from libcellml.model import Model
 from libcellml.namedentity import NamedEntity

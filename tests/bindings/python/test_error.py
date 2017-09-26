@@ -145,7 +145,7 @@ class ErrorTestCase(unittest.TestCase):
         # void setImportSource(const ImportSourcePtr &import)
         from libcellml import ImportSource
         e = Error()
-        e.setImport(ImportSource())
+        e.setImportSource(ImportSource())
         del(e)
 
         # ImportSourcePtr getImportSource()
@@ -154,9 +154,9 @@ class ErrorTestCase(unittest.TestCase):
         name = 'uri'
         i = ImportSource()
         i.setId(name)
-        e.setImport(i)
-        self.assertIsInstance(e.getImport(), ImportSource)
-        self.assertEqual(e.getImport().getId(), name)
+        e.setImportSource(i)
+        self.assertIsInstance(e.getImportSource(), ImportSource)
+        self.assertEqual(e.getImportSource().getId(), name)
         del(e, i, name)
 
         # void setModel(const ModelPtr &model)
