@@ -11,15 +11,14 @@ class PrinterTestCase(unittest.TestCase):
         from libcellml import Printer
         
         # Test create/copy/destroy
-        '''
-        x = Printer()
+        x = Printer(libcellml.Format.XML)
         del(x)
-        y = Printer()
+        y = Printer(libcellml.Format.XML)
         z = Printer(y)
         del(y, z)
         
         # Test inheritance
-        x = Printer()
+        x = Printer(libcellml.Format.XML)
         self.assertIsInstance(x, libcellml.Logger)
 
         # Test access to inherited methods
@@ -30,27 +29,42 @@ class PrinterTestCase(unittest.TestCase):
         x.addError(libcellml.Error())
         self.assertEqual(x.errorCount(), 1)
         del(x, idx)
-        '''
         
         # Test own methods
-        #TODO
         
         # std::string printModel(ModelPtr model)
+        p = Printer(libcellml.Format.XML)
+        self.assertIsInstance(p.printModel(libcellml.Model()), str)
+        del(p)
 
         # std::string printModel(Model model)
+        # This method shadows printModel(ModelPtr) so wasn't added
 
         # std::string printModel(Model *model)
+        # This method shadows printModel(ModelPtr) so wasn't added
 
         # std::string printUnits(UnitsPtr units)
+        p = Printer(libcellml.Format.XML)
+        self.assertIsInstance(p.printUnits(libcellml.Units()), str)
+        del(p)
 
         # std::string printUnits(Units units)
+        # This method shadows printUnits(UnitsPtr) so wasn't added
 
-        # std::string printVariable(VariablePtr variable)
+        # std::string printVariable(VariablePtr variable)\
+        p = Printer(libcellml.Format.XML)
+        self.assertIsInstance(p.printVariable(libcellml.Variable()), str)
+        del(p)
 
+        # This method shadows printVariable(VariablePtr) so wasn't added
         # std::string printVariable(Variable variable)
 
         # std::string printComponent(ComponentPtr component)
+        p = Printer(libcellml.Format.XML)
+        self.assertIsInstance(p.printComponent(libcellml.Component()), str)
+        del(p)
 
+        # This method shadows printComponent(ComponentPtr) so wasn't added
         # std::string printComponent(Component component)
 
 if __name__ == '__main__':

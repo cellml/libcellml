@@ -132,7 +132,7 @@ del(
 
 import libcellml.enumerations
 class Format:
-    XLM = libcellml.enumerations.Format_XML
+    XML = libcellml.enumerations.Format_XML
 Format = Format()
 class Prefix:
     YOTTA = libcellml.enumerations.Prefix_YOTTA

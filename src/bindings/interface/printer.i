@@ -2,6 +2,8 @@
 
 #define LIBCELLML_EXPORT
 
+%include "std_string.i"
+
 %import "types.i"
 %import "logger.i"
 %import "enumerations.i"
