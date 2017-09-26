@@ -26,12 +26,15 @@ set(SWIG_INTERFACE_SRCS
     __init__.i
     ../interface/component.i
     ../interface/componententity.i
+    ../interface/error.i
     ../interface/entity.i
     ../interface/enumerations.i
     ../interface/importsource.i
     ../interface/importedentity.i
+    ../interface/logger.i
     ../interface/model.i
     ../interface/namedentity.i
+    ../interface/printer.i
     ../interface/units.i
     ../interface/variable.i
 )
