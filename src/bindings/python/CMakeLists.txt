@@ -40,6 +40,7 @@ set(SWIG_INTERFACE_SRCS
     ../interface/units.i
     ../interface/validator.i
     ../interface/variable.i
+    ../interface/version.i
 )
 
 # Configure for C++
