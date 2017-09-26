@@ -24,6 +24,7 @@ class ValidatorTestCase(unittest.TestCase):
         # Test access to inherited methods
         idx = 'test'
         self.assertIsNone(x.getError(0))
+        self.assertIsNone(x.getError(-1))
         self.assertEqual(x.errorCount(), 0)
         x.addError(libcellml.Error())
         self.assertEqual(x.errorCount(), 1)
