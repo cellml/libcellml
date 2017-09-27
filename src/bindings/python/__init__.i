@@ -1,4 +1,13 @@
-%module(package="libcellml") __init__
+%define DOCSTRING
+"Python bindings for libCellML
+
+The purpose of libCellML is to create, manipulate, serialise, deserialise,
+ validate and instantiate CellML models. In the first instance, all serialising
+ and deserialising will be to and from standard strings and using the CellML
+ XML format."
+%enddef
+
+%module(package="libcellml", docstring=DOCSTRING) __init__
 
 //TODO: http://www.swig.org/Doc1.3/Python.html#Python_nn65
 
