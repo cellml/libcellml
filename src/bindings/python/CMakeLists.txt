@@ -65,6 +65,7 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
   if (WIN32)
     if (NOT PYTHON_DEBUG_LIBRARY)
+      message(STATUS "On windows without Python debug libaries")
       target_compile_definitions(${MODULE_TARGET} PRIVATE $<$<CONFIG:Debug>:SWIG_PYTHON_INTERPRETER_NO_DEBUG>)
     endif ()
   endif ()
