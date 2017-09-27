@@ -21,11 +21,9 @@
 #
 
 if(LIBCELLML_BINDINGS_PYTHON) # Or any other bindings
-    find_package(SWIG REQUIRED)
+    find_package(SWIG 3 REQUIRED)
     include(${SWIG_USE_FILE})
     mark_as_advanced(SWIG_EXECUTABLE)
-    # Temp: Always show swig version
-    message(STATUS "Found SWIG version ${SWIG_VERSION}")
 endif()
 
 if(LIBCELLML_BINDINGS_PYTHON)
