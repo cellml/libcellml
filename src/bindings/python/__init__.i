@@ -148,6 +148,11 @@ if 'StandardUnit_AMPERE' in dir(Units):
 
 # Import Format and Prefix from enumerations
 from libcellml import enumerations as er
+
+import sys
+sys.stdout.write(str(dir(er)) + '\n')
+del(sys)
+
 class Format:
     XML = er.Format_XML
 Format = Format()
