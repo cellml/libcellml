@@ -43,7 +43,7 @@
 // method removeUnit(ref) and telling swig not to use removeUnit(reference).
 %extend libcellml::Units {
     bool removeUnit(const std::string &ref) {
-        $self->removeUnit(ref);
+        return $self->removeUnit(ref);
     }
 }
 %ignore libcellml::Units::removeUnit(const std::string &reference);
