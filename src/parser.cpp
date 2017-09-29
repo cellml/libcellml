@@ -36,7 +36,6 @@ namespace libcellml {
  */
 struct Parser::ParserImpl
 {
-    Format mFormat;
     Parser *mParser;
 
     /**
@@ -153,10 +152,9 @@ struct Parser::ParserImpl
     void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
 };
 
-Parser::Parser(Format format)
+Parser::Parser()
     : mPimpl(new ParserImpl())
 {
-    mPimpl->mFormat = format;
     mPimpl->mParser = this;
 }
 
@@ -169,7 +167,6 @@ Parser::Parser(const Parser& rhs)
     : Logger(rhs)
     , mPimpl(new ParserImpl())
 {
-    mPimpl->mFormat = rhs.mPimpl->mFormat;
     mPimpl->mParser = rhs.mPimpl->mParser;
 }
 
@@ -201,9 +198,7 @@ ModelPtr Parser::parseModel(const std::string &input)
 
 void Parser::ParserImpl::updateModel(const ModelPtr &model, const std::string &input)
 {
-    if (mFormat == Format::XML) {
-        loadModel(model, input);
-    }
+    loadModel(model, input);
 }
 
 void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &input)

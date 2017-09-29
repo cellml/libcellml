@@ -29,9 +29,9 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
 
     // parse the string using libcellml
-    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 
@@ -49,7 +49,7 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component></model>";
 
     // parse the string using libcellml
-    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
     EXPECT_NE(0, parser.errorCount());
 

@@ -25,7 +25,7 @@ TEST(Printer, printEmptyModel) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
 
-    libcellml::Printer p(libcellml::Format::XML);
+    libcellml::Printer p;
 
     const std::string a = p.printModel(m);
 
@@ -38,7 +38,7 @@ TEST(Model, printEmptyModelAllocatePointer) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
     libcellml::Model* m = new libcellml::Model();
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
 
     EXPECT_EQ(e, a);
@@ -49,7 +49,7 @@ TEST(Printer, printEmptyUnits) {
     const std::string e = "";
     libcellml::Units u;
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printUnits(u);
     EXPECT_EQ(e, a);
 }
@@ -58,7 +58,7 @@ TEST(Printer, printEmptyVariable) {
     const std::string e = "<variable/>";
     libcellml::Variable v;
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printVariable(v);
     EXPECT_EQ(e, a);
 }
@@ -77,7 +77,7 @@ TEST(Printer, printEncapsulation) {
     libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
     parent.addComponent(child);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent, a_parent);
     std::string a_child = printer.printComponent(child);
@@ -100,7 +100,7 @@ TEST(Printer, printEncapsulationWithNames) {
     child->setName("child_component");
     parent.addComponent(child);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent, a_parent);
     std::string a_child = printer.printComponent(child);

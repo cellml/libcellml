@@ -37,7 +37,7 @@ TEST(Coverage, import) {
 }
 
 TEST(Coverage, printer) {
-    libcellml::Printer p(libcellml::Format::XML), pm(libcellml::Format::XML);
+    libcellml::Printer p, pm;
 
     pm = std::move(p);
 
@@ -59,7 +59,7 @@ TEST(Coverage, units) {
     // Copy constructor
     libcellml::Units uc(um);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printUnits(uc);
     EXPECT_EQ(e, a);
 }
@@ -89,7 +89,7 @@ TEST(Coverage, unitsGetVariations) {
 
 TEST(Coverage, prefixToString) {
     libcellml::Model m;
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
 
     std::vector<std::string> prefix_str =
         {"atto",
@@ -165,7 +165,7 @@ TEST(Coverage, variable) {
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printVariable(vc);
     EXPECT_EQ(e, a);
 }
@@ -183,7 +183,7 @@ TEST(Coverage, component) {
     c.addVariable(v);
     c.setMath("<1+1=2>");
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 

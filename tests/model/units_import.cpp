@@ -35,7 +35,7 @@ TEST(UnitsImport, basics) {
     EXPECT_EQ(u->getImportSource(), imp);
     EXPECT_EQ(u->getImportReference(), "bob");
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printUnits(u);
     EXPECT_EQ(e, a);
 }
@@ -68,7 +68,7 @@ TEST(UnitsImport, importValidName) {
 
     m.addUnits(importedUnits);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -97,7 +97,7 @@ TEST(UnitsImport, importInvalidName) {
 
     m.addUnits(importedUnits);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -128,7 +128,7 @@ TEST(UnitsImport, nonExistentURL) {
     m.addUnits(importedUnits);
     EXPECT_EQ(1, m.unitsCount());
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -188,12 +188,12 @@ TEST(UnitsImport, importModifyAndParse) {
 
     m.addUnits(importedUnitsAll);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);

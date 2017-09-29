@@ -32,7 +32,7 @@ TEST(Parser, parseSineModelFromFile) {
     std::stringstream buffer;
     buffer << t.rdbuf();
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     p.parseModel(buffer.str());
 
     EXPECT_EQ(0, p.errorCount());
@@ -44,7 +44,7 @@ TEST(Parser, parseSineImportsModelFromFile) {
     std::stringstream buffer;
     buffer << t.rdbuf();
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     p.parseModel(buffer.str());
 
     EXPECT_EQ(0, p.errorCount());
@@ -61,7 +61,7 @@ TEST(Parser, parseInvalidModelFromFile) {
         "Could not get a valid XML root node from the provided input."
     };
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     p.parseModel(buffer.str());
 
     EXPECT_EQ(expectedErrors.size(), p.errorCount());
@@ -76,7 +76,7 @@ TEST(Parser, parseOrdModelFromFile) {
     std::stringstream buffer;
     buffer << t.rdbuf();
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
     EXPECT_EQ(0, p.errorCount());
@@ -102,7 +102,7 @@ TEST(Parser, parseComplexEncapsulationModelFromFile) {
     std::stringstream buffer;
     buffer << t.rdbuf();
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     p.parseModel(buffer.str());
 
     EXPECT_EQ(0, p.errorCount());
@@ -119,7 +119,7 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
     std::stringstream buffer;
     buffer << t.rdbuf();
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(0, p.errorCount());
 
