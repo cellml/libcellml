@@ -43,7 +43,8 @@ struct Printer::PrinterImpl
 
 Printer::Printer()
     : mPimpl(new PrinterImpl())
-{}
+{
+}
 
 Printer::~Printer()
 {
@@ -53,7 +54,8 @@ Printer::~Printer()
 Printer::Printer(const Printer& rhs)
     : Logger(rhs)
     , mPimpl(new PrinterImpl())
-{}
+{
+}
 
 Printer::Printer(Printer &&rhs)
     : Logger(std::move(rhs))
