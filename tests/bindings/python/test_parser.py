@@ -11,14 +11,14 @@ class ParserTestCase(unittest.TestCase):
         from libcellml import Parser
         
         # Test create/copy/destroy
-        x = Parser(libcellml.Format.XML)
+        x = Parser()
         del(x)
-        y = Parser(libcellml.Format.XML)
+        y = Parser()
         z = Parser(y)
         del(y, z)
         
         # Test inheritance
-        x = Parser(libcellml.Format.XML)
+        x = Parser()
         self.assertIsInstance(x, libcellml.Logger)
 
         # Test access to inherited methods
@@ -33,7 +33,7 @@ class ParserTestCase(unittest.TestCase):
         # Test own methods
         
         # ModelPtr parseModel(const std::string &input)
-        p = Parser(libcellml.Format.XML)
+        p = Parser()
         self.assertIsInstance(p.parseModel('rubbish'), libcellml.Model)
         del(p)
         
