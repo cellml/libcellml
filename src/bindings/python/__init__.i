@@ -6,10 +6,7 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
  and deserialising will be to and from standard strings and using the CellML
  XML format."
 %enddef
-
 %module(package="libcellml", docstring=DOCSTRING) __init__
-
-//TODO: http://www.swig.org/Doc1.3/Python.html#Python_nn65
 
 %pythoncode %{
 from libcellml.component import Component
@@ -123,9 +120,6 @@ convert(enumerations, 'Prefix', [
     'YOCTO',
     ], new_base = Units)
 import libcellml
-convert(enumerations, 'Format', [
-    'XML',
-    ], new_base = libcellml)
 import libcellml.specificationrule
 convert(specificationrule, 'SpecificationRule', [
 'UNDEFINED',

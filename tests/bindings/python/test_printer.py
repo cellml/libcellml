@@ -11,14 +11,14 @@ class PrinterTestCase(unittest.TestCase):
         from libcellml import Printer
         
         # Test create/copy/destroy
-        x = Printer(libcellml.Format.XML)
+        x = Printer()
         del(x)
-        y = Printer(libcellml.Format.XML)
+        y = Printer()
         z = Printer(y)
         del(y, z)
         
         # Test inheritance
-        x = Printer(libcellml.Format.XML)
+        x = Printer()
         self.assertIsInstance(x, libcellml.Logger)
 
         # Test access to inherited methods
@@ -33,7 +33,7 @@ class PrinterTestCase(unittest.TestCase):
         # Test own methods
         
         # std::string printModel(ModelPtr model)
-        p = Printer(libcellml.Format.XML)
+        p = Printer()
         self.assertIsInstance(p.printModel(libcellml.Model()), str)
         del(p)
 
@@ -44,7 +44,7 @@ class PrinterTestCase(unittest.TestCase):
         # This method shadows printModel(ModelPtr) so wasn't added
 
         # std::string printUnits(UnitsPtr units)
-        p = Printer(libcellml.Format.XML)
+        p = Printer()
         self.assertIsInstance(p.printUnits(libcellml.Units()), str)
         del(p)
 
@@ -52,7 +52,7 @@ class PrinterTestCase(unittest.TestCase):
         # This method shadows printUnits(UnitsPtr) so wasn't added
 
         # std::string printVariable(VariablePtr variable)\
-        p = Printer(libcellml.Format.XML)
+        p = Printer()
         self.assertIsInstance(p.printVariable(libcellml.Variable()), str)
         del(p)
 
@@ -60,7 +60,7 @@ class PrinterTestCase(unittest.TestCase):
         # std::string printVariable(Variable variable)
 
         # std::string printComponent(ComponentPtr component)
-        p = Printer(libcellml.Format.XML)
+        p = Printer()
         self.assertIsInstance(p.printComponent(libcellml.Component()), str)
         del(p)
 
