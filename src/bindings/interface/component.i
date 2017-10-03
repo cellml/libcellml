@@ -31,8 +31,8 @@ component in the `importSource`.";
 "Appends `math` to the existing math string for this component.";
 
 %feature("docstring") libcellml::Component::getMath
-"Returns a math string if one has been appended for this component. Returns an
-empty string if math has not been appended (or has been removed).";
+"Returns a math string if one has been created for this component (empty string
+if not).";
 
 %feature("docstring") libcellml::Component::setMath
 "Sets the math string for this component.
@@ -42,17 +42,20 @@ If `math` is an empty string, math will be removed from the component.";
 "Adds variable `v` to this component.";
 
 %feature("docstring") libcellml::Component::getVariable
-"Returns the variable at the given index `index`, or with the given`name`.";
+"Returns a Variable from this component, specified by name or index.";
 
 %feature("docstring") libcellml::Component::hasVariable
-"Tests if `variable` is in this component.";
+"Tests if this component contains a given variable, specified by name or as
+`Variable` object.";
 
 %feature("docstring") libcellml::Component::removeVariable
-"Removes a variable from this component, specified either by name, by index,
-or by passing in the variable object.
+"Removes a variable from this component, specified by name, index, or
+`Variable` object.
 
 If the variable to be removed is in a connection (is equivalent to another
-variable), this component will not be serialised in the connection.";
+variable), this component will not be serialised in the connection.
+
+Returns `True` on success.";
 
 %feature("docstring") libcellml::Component::removeAllVariables
 "Clears all variables that have been added to this component.

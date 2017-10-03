@@ -14,6 +14,21 @@
     }
 #endif
 
+%feature("docstring") libcellml::Logger
+"Base class for all serialisable libCellML classes.";
+
+%feature("docstring") libcellml::Logger::addError
+"Adds an error to this logger.";
+
+%feature("docstring") libcellml::Logger::clearErrors
+"Clears all errors from this logger.";
+
+%feature("docstring") libcellml::Logger::getError
+"Returns the error at the specified `index`.";
+
+%feature("docstring") libcellml::Logger::errorCount
+"Returns the number of errors currently stored in the logger.";
+
 %{
 #include "libcellml/logger.h"
 %}
