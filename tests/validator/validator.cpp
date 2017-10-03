@@ -622,7 +622,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
         "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid real number or a SI prefix.",
     };
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
     EXPECT_EQ(0, p.errorCount());
 
