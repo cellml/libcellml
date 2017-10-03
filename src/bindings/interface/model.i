@@ -27,6 +27,37 @@
     }
 #endif
 
+%feature("docstring") libcellml::Model
+"Represents a CellML model.";
+
+%feature("docstring") libcellml::Model::addUnits
+"Add a copy of the given Units to this model.";
+
+%feature("docstring") libcellml::Model::getUnits
+"Returns a Units object from this Model, specified by index or name.";
+
+%feature("docstring") libcellml::Model::hasUnits
+"Tests to see if this model has the given units, specified by name.";
+
+%feature("docstring") libcellml::Model::removeUnits
+"Removes the Units specified by index, name or Units object.
+
+Returns `True` on success.";
+
+%feature("docstring") libcellml::Model::removeAllUnits
+"Removes all units stored in this model.";
+
+%feature("docstring") libcellml::Model::replaceUnits
+"Replaces a Units object, specified by index, name or Units object, by another
+Units (second argument).
+
+Returns `True` on success.";
+
+%feature("docstring") libcellml::Model::takeUnits
+"Removes and returns the Units specified by index or name.";
+
+%feature("docstring") libcellml::Model::unitsCount
+"Returns the number of units this model contains.";
 
 %{
 #include "libcellml/model.h"

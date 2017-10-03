@@ -46,7 +46,7 @@ A second argument can be given to specify whether or not child components
 should be searched for the component to remove.";
 
 %feature("docstring") libcellml::ComponentEntity::getComponent
-"Returns a component, specified by an index, name, or with a Component object.
+"Returns a component, specified by an index or name.
 
 A second argument can be given to specify whether or not child components
 should be searched for the component to remove.";
@@ -55,21 +55,24 @@ should be searched for the component to remove.";
 "Removes a component, specified by an index, name, or with a Component object.
 
 A second argument can be given to specify whether or not child components
-should be searched for the component to remove.";
+should be searched for the component to remove.
+
+Returns `True` on success.";
 
 %feature("docstring") libcellml::ComponentEntity::removeAllComponents
 "Removes all components that have been added to this entity.";
 
 %feature("docstring") libcellml::ComponentEntity::takeComponent
-"Removes and returns a component, specified by an index, name or with a
-Component object.";
+"Removes and returns a component, specified by an index or name.";
 
 %feature("docstring") libcellml::ComponentEntity::replaceComponent
 "Removes a component, specified by an index, name, or with a Component object,
 and replaces it with the given component object (second argument).
 
 A third argument can be given to specify whether or not child components
-should be searched for the component to remove.";
+should be searched for the component to remove.
+
+Returns `True` on success.";
 
 %feature("docstring") libcellml::ComponentEntity::componentCount
 "Returns the number of components the component contains.  ";
