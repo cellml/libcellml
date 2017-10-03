@@ -12,7 +12,7 @@
 "Returns an ImportSource if this entity is imported, else `None`.";
 
 %feature("docstring") libcellml::ImportedEntity::setImportSource
-"Set the ImportSource for this entity (use `None` to unset).
+"Set the ImportSource for this entity (use `None` to unset).";
 
 %feature("docstring") libcellml::ImportedEntity::getImportReference
 "Returns the reference to the entity in the imported model, or an empty string
