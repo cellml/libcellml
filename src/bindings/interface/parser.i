@@ -8,6 +8,12 @@
 %import "logger.i"
 %import "enumerations.i"
 
+%feature("docstring") libcellml::Parser
+"Can parse Models encoded as XML strings.";
+
+%feature("docstring") libcellml::Parser::parseModel
+"Parses a string and returns a :class:`Model`.";
+
 %{
 #include "libcellml/parser.h"
 %}

@@ -34,6 +34,51 @@
     }
 #endif
 
+%feature("docstring") libcellml::Units
+"Represents a CellML Units definition.";
+
+%feature("docstring") libcellml::Units::addUnit
+"Lets users add a Unit to this definition.
+
+Possible signatures:
+
+ - addUnit(reference, prefix, exponent=1, multiplier=1)
+ - addUnit(reference, exponent)
+ - addUnit(reference)
+
+where `reference` can be a string or a StandardUnits. And `prefix` can be a
+string or Prefix.
+
+In addition, there's a signature
+
+ - addUnit(reference, prefix, exponent, multiplier=1)
+
+where `prefix` is also allowed to be a float.";
+
+%feature("docstring") libcellml::Units::removeUnit
+"Removes the unit specified by index, reference, or StandardUnit.
+
+Only the first matching unit is removed.
+
+`True` is returned on success.";
+
+%feature("docstring") libcellml::Units::removeAllUnits
+"Remove all units stored in this Units object. ";
+
+%feature("docstring") libcellml::Units::isBaseUnit
+"Tests if this is a base unit.";
+
+%feature("docstring") libcellml::Units::getUnitAttributes
+"Returns the attributes of the unit specified by index, reference, or
+StandardUnit.";
+
+%feature("docstring") libcellml::Units::unitCount
+"Returns the number of units contained by this units object.";
+
+%feature("docstring") libcellml::Units::setSourceUnits
+"Makes this Units an imported units by defining an `ImportSource` from which to
+extract the units with the given `name`.";
+
 %{
 #include "libcellml/units.h"
 %}

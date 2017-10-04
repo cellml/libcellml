@@ -42,7 +42,9 @@ If `math` is an empty string, math will be removed from the component.";
 "Adds variable `v` to this component.";
 
 %feature("docstring") libcellml::Component::getVariable
-"Returns a Variable from this component, specified by name or index.";
+"Returns a Variable from this component, specified by name or index.
+
+Only the first matching variable is returned.";
 
 %feature("docstring") libcellml::Component::hasVariable
 "Tests if this component contains a given variable, specified by name or as
@@ -51,6 +53,8 @@ If `math` is an empty string, math will be removed from the component.";
 %feature("docstring") libcellml::Component::removeVariable
 "Removes a variable from this component, specified by name, index, or
 `Variable` object.
+
+Only the first matching variable is removed.
 
 If the variable to be removed is in a connection (is equivalent to another
 variable), this component will not be serialised in the connection.
