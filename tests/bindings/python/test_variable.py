@@ -188,6 +188,10 @@ class VariableTestCase(unittest.TestCase):
         v.setInterfaceType(Variable.InterfaceType.PRIVATE)
         v.setInterfaceType(Variable.InterfaceType.PUBLIC)
         v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
+        self.assertRaises(RuntimeError, v.setInterfaceType,
+            Variable.InterfaceType.NONE - 1)
+        self.assertRaises(RuntimeError, v.setInterfaceType,
+            Variable.InterfaceType.PUBLIC_AND_PRIVATE + 1)
         del(v)
 
         # void setInterfaceType(const std::string &interfaceType)
