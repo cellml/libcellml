@@ -68,6 +68,8 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.VOLT)
         u.addUnit(Units.StandardUnit.WATT)
         u.addUnit(Units.StandardUnit.WEBER)
+        self.assertRaises(RuntimeError, u.addUnit, Units.StandardUnit.AMPERE -1)
+        self.assertRaises(RuntimeError, u.addUnit, Units.StandardUnit.WEBER + 1)
         
         # Test prefixes
         u.addUnit('test', Units.Prefix.YOTTA)
@@ -90,6 +92,8 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('test', Units.Prefix.ATTO)
         u.addUnit('test', Units.Prefix.ZEPTO)
         u.addUnit('test', Units.Prefix.YOCTO)
+        self.assertRaises(RuntimeError, u.addUnit, 'test', Units.Prefix.YOTTA - 1)
+        self.assertRaises(RuntimeError, u.addUnit, 'test', Units.Prefix.YOCTO + 1)
 
         # Test own methods
         
@@ -183,12 +187,8 @@ class UnitsTestCase(unittest.TestCase):
         del(u)
         
         # void addUnit(StandardUnit standardRef, double exponent)
-        u = Units()
-        u.addUnit(Units.StandardUnit.KATAL, 1.0)
-        u.addUnit(Units.StandardUnit.KATAL, -1.0)
-        u.addUnit(Units.StandardUnit.KATAL, 1)
-        u.addUnit(Units.StandardUnit.KATAL, -1)
-        del(u)
+        # Hidden to avoid confusion with addUnit(StandardUnit, Prefix, double,
+        # double)
         
         # void addUnit(StandardUnit standardRef)
         u = Units()

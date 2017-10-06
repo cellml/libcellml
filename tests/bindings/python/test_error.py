@@ -28,6 +28,12 @@ class ErrorTestCase(unittest.TestCase):
         self.assertIsInstance(Error.Kind.UNITS, int)
         self.assertIsInstance(Error.Kind.VARIABLE, int)
         self.assertIsInstance(Error.Kind.XML, int)
+        # Test conversion to enum
+        e = Error()
+        e.setKind(Error.Kind.COMPONENT)
+        self.assertRaises(RuntimeError, e.setKind, Error.Kind.COMPONENT - 1)
+        self.assertRaises(RuntimeError, e.setKind, Error.Kind.XML + 1)
+        del(e)
         
         # Test SpecificationRule enum
         from libcellml import SpecificationRule
@@ -75,6 +81,14 @@ class ErrorTestCase(unittest.TestCase):
         self.assertIsInstance(SpecificationRule.MAP_COMPONENTS_COMPONENT2, int)
         self.assertIsInstance(SpecificationRule.MAP_VARIABLES_VARIABLE1, int)
         self.assertIsInstance(SpecificationRule.MAP_VARIABLES_VARIABLE2, int)
+        # Test conversion to enum
+        e = Error()
+        e.setRule(SpecificationRule.UNDEFINED)
+        self.assertRaises(RuntimeError, e.setRule, 
+            SpecificationRule.UNDEFINED - 1)
+        self.assertRaises(RuntimeError, e.setRule,
+            SpecificationRule.MAP_VARIABLES_VARIABLE2 + 1)
+        del(e)
         
         # Test methods
         

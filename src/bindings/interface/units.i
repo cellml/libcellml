@@ -2,6 +2,7 @@
 
 #define LIBCELLML_EXPORT
 
+%import "types.i"
 %import "enumerations.i"
 %import "importedentity.i"
 
@@ -23,28 +24,19 @@
 %ignore libcellml::Units::getUnitAttributes(StandardUnit standardRef,
  std::string &prefix, double &exponent, double &multiplier) const;
 %ignore libcellml::Units::removeUnit(StandardUnit standardRef);
+// This one causes confusion: addUnit(1, 1.0) --> (StandardUnit, double exp)
+// but: addUnit(1, 1) --> (StandardUnit, Prefix, default=1, default=1)
+%ignore libcellml::Units::addUnit(StandardUnit standardRef, double exponent);
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
         bool removeUnit(long index) {
             if(index < 0) return false;
-            return $self->removeUnit(static_cast<size_t>(index));
+            return $self->removeUnit((size_t)index);
         }
     }
 #endif
-
-%typemap(in) libcellml::Prefix prefix (int val, int ecode) {
-  ecode = SWIG_AsVal(int)($input, &val);
-  if (!SWIG_IsOK(ecode)) {
-    %argument_fail(ecode, "$type", $symname, $argnum);
-  } else {
-    if (val < %static_cast(libcellml::Prefix::YOTTA, int) || %static_cast(libcellml::Prefix::YOCTO, int) < val) {
-      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
-    }
-    $1 = %static_cast(val,$basetype);
-  }
-}
 
 %feature("docstring") libcellml::Units
 "Represents a CellML Units definition.";

@@ -70,7 +70,7 @@ class EntityTestCase(unittest.TestCase):
         self.assertIsNone(x.getParent())
         del(x)
 
-        # bool hasParent(Componet* c)
+        # bool hasParent(Component* c)
         x = Entity()
         c = Component()
         self.assertFalse(x.hasParent(c))
