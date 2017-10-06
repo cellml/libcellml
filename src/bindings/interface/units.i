@@ -29,10 +29,22 @@
     %extend libcellml::Units {
         bool removeUnit(long index) {
             if(index < 0) return false;
-            return $self->removeUnit(size_t(index));
+            return $self->removeUnit(static_cast<size_t>(index));
         }
     }
 #endif
+
+%typemap(in) libcellml::Prefix prefix (int val, int ecode) {
+  ecode = SWIG_AsVal(int)($input, &val);
+  if (!SWIG_IsOK(ecode)) {
+    %argument_fail(ecode, "$type", $symname, $argnum);
+  } else {
+    if (val < %static_cast(libcellml::Prefix::YOTTA, int) || %static_cast(libcellml::Prefix::YOCTO, int) < val) {
+      %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
+    }
+    $1 = %static_cast(val,$basetype);
+  }
+}
 
 %feature("docstring") libcellml::Units
 "Represents a CellML Units definition.";
