@@ -34,6 +34,7 @@ TEST(Parser, invalidXMLElements) {
 
     std::vector<std::string> expectedErrors = {
         "Specification mandate value for attribute bearded.",
+        "Specification mandates value for attribute bearded.",
         "Opening and ending tag mismatch: Dwarf line 2 and ShortGuy.",
         "Opening and ending tag mismatch: Hobbit line 2 and EvenShorterGuy.",
         "Opening and ending tag mismatch: Wizard line 2 and SomeGuyWithAStaff.",
