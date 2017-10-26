@@ -1,5 +1,5 @@
 #
-# Tests the ComponentEntity class
+# Tests the ComponentEntity class bindings
 #
 import sys
 import unittest
