@@ -67,14 +67,16 @@ if(TWAE)
   set(LIBCELLML_TREAT_WARNINGS_AS_ERRORS "${TWAE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 
-# BUILD_TYPE ==> LIBCELLML_BUILD_TYPE
-set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
-set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION})
-if(BUILD_TYPE)
-  set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
-endif()
-if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
-  set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+if (NOT CMAKE_CONFIGURATION_TYPES)
+  # BUILD_TYPE ==> LIBCELLML_BUILD_TYPE
+  set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+  set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION})
+  if(BUILD_TYPE)
+    set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+  endif()
+  if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
+    set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+  endif()
 endif()
 
 # INSTALL_PREFIX ==> LIBCELLML_INSTALL_PREFIX
@@ -107,7 +109,17 @@ hide_distracting_variables()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Find libxml2
-find_package(LibXml2 REQUIRED)
+if (WIN32)
+	find_package(LibXml2 CONFIG QUIET)
+	if (NOT LibXml2_FOUND)
+		message(STATUS "libCellML tests may not run if libxml2.dll is not on the PATH.")
+		find_package(LibXml2 REQUIRED)
+	else ()
+	message(STATUS "Found libXml2 in CONFIG mode.")
+	endif ()
+else ()
+	find_package(LibXml2 REQUIRED)
+endif ()
 
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -118,5 +130,5 @@ if (LIBCELLML_UNIT_TESTS)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
 
+# Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
-

@@ -24,8 +24,6 @@ include(validator/tests.cmake)
 include(variable/tests.cmake)
 include(version/tests.cmake)
 
-set(test_path)
-list(APPEND test_path $ENV{PATH} $<TARGET_FILE_DIR:cellml>)
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
 foreach(TEST ${LIBCELLML_TESTS})
@@ -47,12 +45,18 @@ foreach(TEST ${LIBCELLML_TESTS})
 #    target_warnings_as_errors(${CURRENT_TEST})
 #  endif()
 
-  add_test(${CURRENT_CATEGORY}unit_${CURRENT_TEST} ${CURRENT_TEST})
+  add_test(NAME ${CURRENT_CATEGORY}unit_${CURRENT_TEST} COMMAND ${CURRENT_TEST})
+  if (WIN32)
+    if (TARGET xml2)
+      set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")
+    endif ()
+    set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST} PROPERTIES
+      ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%")
+  endif ()
 
   list(APPEND TEST_LIST ${CURRENT_TEST})
   unset(CURRENT_CATEGORY)
 endforeach()
-
 
 if(LIBCELLML_COVERAGE)
   # Clean away old gcov arc files
