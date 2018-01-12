@@ -11,12 +11,58 @@ This section describes how someone wanting to contribute to the libCellML projec
 Overview
 ========
 
-The libCellML codebase is hosted on GitHub and therefore Git is used to track changes in the codebase.  Before you begin you will need to have a few prerequisites satisfied:
+The libCellML codebase is hosted on GitHub and therefore Git is used to track changes in the codebase.  Before you begin you will need to have a few pre-requisites satisfied:
 
-#. GitHub user account (for the rest of this document we will call our user *andre*)
-#. Git installed
+#. GitHub user account (for the rest of this document we will call our user *andre*).
+#. Git installed.
+#. CMake installed.
+#. Toolchain for building software installed (dependent on the operating system).
 
-This document doesn't cover the process of satisfying these prerequisites, it is left as an exercise for you (Google is your friend).  The remainder of this document assumes that these prerequisites have been met.  This document covers setup from the command line if you are using a GUI like 'GitHub for Windows' then you will need to adjust the commands for the GUI you are using.
+This document provides a brief overview on how to satisfy these pre-requisites but it doesn't go into great detail (Google is your friend) as there are many great resources for acquiring and installing the required software.  In this document we will detail the software that we currently use but please be aware that software is always being updated and the documentation may not reflect the latest available.
+
+Pre-requisite acquisition
+=========================
+
+In this section we cover the retrieval and installation of the pre-requisites.
+
+Git
+---
+
+Creating a GitHub user account is straightforward and can be done `here <https://github.com/join>`_.  Installing a *git* client is particular to each operating system and some pointers are offered below::
+
+* OS-X *git* is pre-installed and availble from the command line.
+* Ubuntu (and other linux distributions) *git* can be installed with the package manager :code:`sudo apt-get install git`.
+* Windows *git* is available from a variety of vendors we commonly use `git for windows <http://gitforwindows.org/>`_, but other popular *git* implementations are:
+
+  * `GitHub Desktop <https://desktop.github.com/>`_
+  * `GitKracken <https://www.gitkraken.com/>`_
+  * `Git SCM <https://git-scm.com/>`_
+
+  The choice is one of personal preference.
+
+CMake
+-----
+
+*CMake* is the cross-platform family of tools designed to build, test and package software.  *CMake* is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice.
+
+Again installation of *CMake* is particular to each operating system.  For Ubuntu (and other linux distributions) *CMake* can be installed with the package manager :code:`sudo apt-get install cmake`.  For OS X and Windows *CMake* provides installation binaries from `here <https://cmake.org/download/>`_ choose the binary appropriate for your operating system and follow the installation instructions.
+
+Toolchain
+---------
+
+The toolchain specifies the compiler that we will use to build *libCellML*, toolchains are highly dependent on the operating system.  When we test *libCellML* we currenly use the *clang* family of compilers on OS X, the *GNU* family of compilers on Ubuntu, and *Microsoft Visual Studio Compilers* on Windows.  We recommend using these compilers on these systems, but feel free to use a different toolchain.  We often use *intel* compilers to build *libCellML* but we don't (at the time of writing) test with them.
+
+The following sub-sections below provide guidance on how to install the recommended toolchain on the major operating systems that *libCellML* supports.
+
+Windows
++++++++
+
+*Microsoft Visual Studio* is available to download from `here <https://www.visualstudio.com/downloads/>`_.  We currently test with version 14 of this software but later versions are known to work.  The *community edition* is more than sufficient for the needs of *libCellML*.  To minimize the size of the installation you may install only the C++ compiler, this component (and it's requirements) is sufficient for building the *libCellML* library.
+
+Setting up the codebase
+=======================
+
+The remainder of this document assumes that the above pre-requisites have been met.  This document covers setup from the command line if you are using a GUI like 'GitHub for Windows' then you will need to adjust the commands for the GUI you are using.
 
 The goal here is to get a working copy of source code, tests, and documentation onto your PC so that you can begin development.  To make this happen you will need to fork the :term:`prime libCellML repository`, make a clone onto your PC, and set up the Git remotes.  In :numref:`fig_devSetup_githubRepos` you can see a pictorial representation of what we are aiming to achieve.
 
@@ -31,7 +77,7 @@ The goal here is to get a working copy of source code, tests, and documentation 
 The four steps to getting set up are detailed below.
 
 Forking your own copy
-=====================
+---------------------
 
 Login to GitHub using your credentials and go to::
 
@@ -48,7 +94,7 @@ Use the fork button to create a libcellml repository under your own account, see
    Fork button for libCellML repository
 
 Clone
-=====
+-----
 
 You now need to clone the libCellML repository to your PC.  You do this by going to your fork (in this example user *andre*'s fork) at::
 
@@ -70,7 +116,7 @@ Now clone the repository::
 Note: Again, don't clone this location substitute your username for *andre*.
 
 Set Git remotes
-===============
+---------------
 
 You now need to setup a read-only remote connection to the prime repository.  Given that you are still in the directory where you cloned the libCellML repository from do the following::
 
