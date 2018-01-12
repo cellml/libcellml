@@ -30,8 +30,8 @@ Git
 
 Creating a GitHub user account is straightforward and can be done `here <https://github.com/join>`_.  Installing a *git* client is particular to each operating system and some pointers are offered below:
 
-* OS-X *git* is pre-installed and availble from the command line.
-* Ubuntu (and other linux distributions) *git* can be installed with the package manager :code:`sudo apt-get install git`.
+* macOS *git* is pre-installed and available from the command line.
+* Ubuntu (and other linux distributions) *git* can be installed using the package manager with the command :code:`sudo apt-get install git`.
 * Windows *git* is available from a variety of vendors we commonly use `git for windows <http://gitforwindows.org/>`_, but other popular *git* implementations are:
 
   - `GitHub Desktop <https://desktop.github.com/>`_
@@ -45,12 +45,12 @@ CMake
 
 *CMake* is the cross-platform family of tools designed to build, test and package software.  *CMake* is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice.
 
-Again installation of *CMake* is particular to each operating system.  For Ubuntu (and other linux distributions) *CMake* can be installed with the package manager :code:`sudo apt-get install cmake`.  For OS X and Windows *CMake* provides installation binaries from `here <https://cmake.org/download/>`_ choose the binary appropriate for your operating system and follow the installation instructions.
+Again installation of *CMake* is particular to each operating system.  For Ubuntu (and other linux distributions) *CMake* can be installed using the package manager with the command :code:`sudo apt-get install cmake`.  For macOS and Windows *CMake* provides installation binaries from `here <https://cmake.org/download/>`_ choose the binary appropriate for your operating system and follow the installation instructions.
 
 Toolchain
 ---------
 
-The toolchain specifies the compiler that we will use to build *libCellML*, toolchains are highly dependent on the operating system.  When we test *libCellML* we currenly use the *clang* family of compilers on OS X, the *GNU* family of compilers on Ubuntu, and *Microsoft Visual Studio Compilers* on Windows.  We recommend using these compilers on these systems, but feel free to use a different toolchain.  We often use *intel* compilers to build *libCellML* but we don't (at the time of writing) test with them.
+The toolchain specifies the compiler that we will use to build *libCellML*, toolchains are highly dependent on the operating system.  When we test *libCellML* we currenly use the *clang* family of compilers on macOS, the *GNU* family of compilers on Ubuntu, and *Microsoft Visual Studio Compilers* on Windows.  We recommend using these compilers on these systems, but feel free to use a different toolchain.  We often use *intel* compilers to build *libCellML* but we don't (at the time of writing) test with them.
 
 The following sub-sections below provide guidance on how to install the recommended toolchain on the major operating systems that *libCellML* supports.
 
