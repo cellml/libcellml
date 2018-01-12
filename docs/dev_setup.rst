@@ -23,22 +23,22 @@ This document provides a brief overview on how to satisfy these pre-requisites b
 Pre-requisite acquisition
 =========================
 
-In this section we cover the retrieval and installation of the pre-requisites.
+In this section we cover the retrieval and installation of pre-requisites.
 
 Git
 ---
 
-Creating a GitHub user account is straightforward and can be done `here <https://github.com/join>`_.  Installing a *git* client is particular to each operating system and some pointers are offered below::
+Creating a GitHub user account is straightforward and can be done `here <https://github.com/join>`_.  Installing a *git* client is particular to each operating system and some pointers are offered below:
 
 * OS-X *git* is pre-installed and availble from the command line.
 * Ubuntu (and other linux distributions) *git* can be installed with the package manager :code:`sudo apt-get install git`.
 * Windows *git* is available from a variety of vendors we commonly use `git for windows <http://gitforwindows.org/>`_, but other popular *git* implementations are:
 
-  * `GitHub Desktop <https://desktop.github.com/>`_
-  * `GitKracken <https://www.gitkraken.com/>`_
-  * `Git SCM <https://git-scm.com/>`_
+  - `GitHub Desktop <https://desktop.github.com/>`_
+  - `GitKracken <https://www.gitkraken.com/>`_
+  - `Git SCM <https://git-scm.com/>`_
 
-  The choice is one of personal preference.
+  The choice of implementation is one of personal preference.
 
 CMake
 -----
