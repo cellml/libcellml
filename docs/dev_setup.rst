@@ -17,6 +17,7 @@ The libCellML codebase is hosted on GitHub and therefore Git is used to track ch
 #. Git.
 #. CMake.
 #. Toolchain for building software (dependent on the operating system).
+#. libXml2.
 
 Pre-requisite acquisition
 =========================
@@ -54,6 +55,11 @@ Windows
 +++++++
 
 *Microsoft Visual Studio* is available to download from `here <https://www.visualstudio.com/downloads/>`_.  We currently test with version 14 of this software but later versions are known to work.  The *community edition* is more than sufficient for the needs of *libCellML*.  To minimize the size of the installation you may install only the C++ compiler, this component (and it's requirements) is sufficient for building the *libCellML* library.
+
+LibXml2
+-------
+
+LibXml2 is already available on Ubuntu and macOS so no further action is required.  However, on Windows we must install LibXml2 ourselves.  The recommended implementation of LibXml2 for use with libCellML is available from `here <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_.
 
 Setting up the codebase
 =======================
