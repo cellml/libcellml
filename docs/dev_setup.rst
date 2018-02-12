@@ -54,7 +54,7 @@ The following sub-sections provide guidance on how to install the recommended to
 Windows
 +++++++
 
-*Microsoft Visual Studio* is available to download from `here <https://www.visualstudio.com/downloads/>`_.  We currently test with version 14 of this software but later versions are known to work.  The *community edition* is more than sufficient for the needs of *libCellML*.  To minimize the size of the installation you may install only the C++ compiler, this component (and it's requirements) is sufficient for building the *libCellML* library.
+*Microsoft Visual Studio* is available to download from `here <https://www.visualstudio.com/downloads/>`_.  We currently test with version 14 of this software but later versions are known to work.  The *community edition* is more than sufficient for the needs of *libCellML*.  To minimize the size of the installation you may install only the C++ compiler, this component (and its requirements) is sufficient for building the *libCellML* library.
 
 LibXml2
 -------
