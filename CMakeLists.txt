@@ -107,7 +107,21 @@ hide_distracting_variables()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Find libxml2
-find_package(LibXml2 REQUIRED)
+set(HAVE_LIBXML2_CONFIG FALSE)
+if (MSVC)
+  # If we want to use config packages (as a backup) on Windows with Visual Studio,
+  # we need to have two find_package calls and explicitly state that
+  # we wish to skip Module mode in the second call.  This does change how we get
+  # information about include paths and such so we need to track how we found
+  # LibXml2.
+  find_package(LibXml2 QUIET)
+  if (NOT LIBXML2_FOUND)
+    find_package(LibXml2 REQUIRED CONFIG)
+    set(HAVE_LIBXML2_CONFIG TRUE)
+  endif ()
+else ()
+  find_package(LibXml2 REQUIRED)
+endif ()
 
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
