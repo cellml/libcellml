@@ -109,15 +109,18 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Find libxml2
 set(HAVE_LIBXML2_CONFIG FALSE)
 if (MSVC)
-  # If we want to use config packages (as a backup) on Windows with Visual Studio,
+  # If we want to use config packages on Windows with Visual Studio,
   # we need to have two find_package calls and explicitly state that
-  # we wish to skip Module mode in the second call.  This does change how we get
-  # information about include paths and such so we need to track how we found
-  # LibXml2.
-  find_package(LibXml2 QUIET)
-  if (NOT LIBXML2_FOUND)
-    find_package(LibXml2 REQUIRED CONFIG)
+  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
+  # is the preferred method so we will try this first quietly.
+  #
+  # This does change how we get information about include paths and such so we
+  # need to track how we found LibXml2.
+  find_package(LibXml2 CONFIG QUIET)
+  if (LIBXML2_FOUND)
     set(HAVE_LIBXML2_CONFIG TRUE)
+  else ()
+    find_package(LibXml2 REQUIRED)
   endif ()
 else ()
   find_package(LibXml2 REQUIRED)
