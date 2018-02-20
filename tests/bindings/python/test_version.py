@@ -11,7 +11,7 @@ class VersionTestCase(unittest.TestCase):
         
         # unsigned int version()
         self.assertIsInstance(libcellml.version(), int)
-        self.assertGreater(libcellml.version, 0)
+        self.assertGreater(libcellml.version(), 0)
         
         # const std::string versionString()
         self.assertIsInstance(libcellml.versionString(), str)
