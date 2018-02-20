@@ -26,6 +26,60 @@ From the command line (bash shell) libCellML can be configured to create an opti
    cd $LIBCELLML_BUILD
    cmake -DBUILD_TYPE=Release $LIBCELLML_SRC
 
+Windows
+-------
+
+When configuring libCellML on Windows, we may need to set the location of the LibXml2 library, which is dependent on the computer's environment settings.  We can set the location of the LibXml2 library when we configure libCellML.  When we configure libCellML, the location of LibXml2 can be specified through the command line by adding the parameter::
+
+   -DLibXml2_DIR="C:/Program Files/libxml2 2.9.6/lib/cmake"
+
+to the configuration command.  This assumes that the recommended LibXml2 binaries have been installed to the default location *C:\Program Files\libxml2 2.9.6*.  Please note that this method will only work with the recommended LibXml2 binaries, LibXml2 binaries from other sources will not work in this way.
+
+Windows CMake-GUI
++++++++++++++++++
+
+When we use the CMake-GUI application on Windows, we first set the location of the source files and the location for the generated build files. :numref:`fig_devBuilding_windowsCMakeGUISourceBuildDirs` shows the source files directory and the build directory set for user *andre*.
+
+.. _fig_devBuilding_windowsCMakeGUISourceBuildDirs:
+
+.. figure:: images/libCellMLBuilding-CMakeGUISourceBuildDirs.png
+   :align: center
+   :alt: CMake-GUI with initial values for source and build directories set.
+
+   CMake-GUI with source and build directores set for user *andre*.
+
+When we press the *Configure* button CMake performs an initial configuration.  This initial configuration is likely to encounter an error because CMake is not able to find LibXml2.  We can see in :numref:`fig_devBuilding_windowsCMakeConfigurationError` that this has happened for user *andre*.
+
+.. _fig_devBuilding_windowsCMakeConfigurationError:
+
+.. figure:: images/libCellMLBuilding-CMakeWindowsConfigurationError.png
+   :align: center
+   :alt: CMake-GUI on Windows showing configuration error after initial configuration attempt.
+   
+   CMake-GUI showing configuration error after initial configuration attempt.
+
+We can resolve this error easily if we set the value of the *LibXml2_DIR* variable to the location of the LibXml2 *cmake* directory. :numref:`fig_devBuilding_windowsCMakeLibXml2DIRNotFound` shows the *LibXml2_DIR* variable with the value of *LibXml2_DIR-NOTFOUND*.
+
+.. _fig_devBuilding_windowsCMakeLibXml2DIRNotFound:
+
+.. figure:: images/libCellMLBuilding-CMakeWindowsLibXml2DIRNotFound.png
+   :align: center
+   :alt: LibXml2_DIR variable with a value of LibXml2_DIR-NOTFOUND.
+   
+   LibXml2_DIR variable with a value of LibXml2_DIR-NOTFOUND.
+
+Setting the value of *LibXml2_DIR* to *C:/Program Files/libxml2 2.9.6/lib/cmake* and configuring again will result in a successful configuration (:numref:`fig_devBuilding_windowsCMakeLibXml2DirSet` shows a successfully configured LibXml2_DIR variable) from which build files may be generated using the *Generate* button.  
+
+.. _fig_devBuilding_windowsCMakeLibXml2DirSet:
+
+.. figure:: images/libCellMLBuilding-CMakeWindowsLibXml2DirSet.png
+   :align: center
+   :alt: LibXml2_DIR variable with a value of *C:/Program Files/libxml2 2.9.6/lib/cmake*.
+   
+   LibXml2_DIR variable with a value of *C:/Program Files/libxml2 2.9.6/lib/cmake*.
+
+If LibXml2 was not installed to *C:/Program Files/libxml2 2.9.6/* you will need to adjust the path to match your situation.
+
 Build
 =====
 
@@ -44,6 +98,3 @@ or using the ctest application::
 for a more verbose output run::
 
    ctest -V
-
-
-

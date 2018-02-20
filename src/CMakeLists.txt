@@ -122,14 +122,17 @@ target_include_directories(cellml
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module>
   $<INSTALL_INTERFACE:include/>
   $<INSTALL_INTERFACE:include/libcellml/module>
-  ${LIBXML2_INCLUDE_DIR}
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
-
-target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
+if(HAVE_LIBXML2_CONFIG)
+  target_link_libraries(cellml PUBLIC xml2)
+else()
+  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR})
+  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
+  target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
+endif()
 
 set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11
