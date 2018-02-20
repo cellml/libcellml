@@ -29,7 +29,7 @@ From the command line (bash shell) libCellML can be configured to create an opti
 Windows
 -------
 
-When configuring libCellML on Windows we may need to set the location of the LibXml2 library, this is dependent on the computers environment settings.  We can set the location of the LibXml2 library when we configure libCellML.  When we configure libCellML the location of LibXml2 can be specified through the command line by adding the parameter::
+When configuring libCellML on Windows, we may need to set the location of the LibXml2 library, which is dependent on the computer's environment settings.  We can set the location of the LibXml2 library when we configure libCellML.  When we configure libCellML, the location of LibXml2 can be specified through the command line by adding the parameter::
 
    -DLibXml2_DIR="C:/Program Files/libxml2 2.9.6/lib/cmake"
 
@@ -38,7 +38,7 @@ to the configuration command.  This assumes that the recommended LibXml2 binarie
 Windows CMake-GUI
 +++++++++++++++++
 
-When we use the CMake-GUI application on Windows we first set the location of the source files and the location for the generated build files. :numref:`fig_devBuilding_windowsCMakeGUISourceBuildDirs` shows the source files directory and the build directory set for user *andre*.
+When we use the CMake-GUI application on Windows, we first set the location of the source files and the location for the generated build files. :numref:`fig_devBuilding_windowsCMakeGUISourceBuildDirs` shows the source files directory and the build directory set for user *andre*.
 
 .. _fig_devBuilding_windowsCMakeGUISourceBuildDirs:
 
