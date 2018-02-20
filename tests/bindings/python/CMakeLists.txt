@@ -18,7 +18,7 @@ set(TEST_SRCS
 )
 
 foreach(_TEST ${TEST_SRCS})
-  file(COPY ${_TEST} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+  configure_file(${_TEST} ${_TEST} COPYONLY)
   get_filename_component(_TEST_NAME ${_TEST} NAME_WE)
   set(_TEST_NAME python_${_TEST_NAME})
   add_test(NAME ${_TEST_NAME} COMMAND ${PYTHON_EXECUTABLE} ${_TEST})

@@ -52,12 +52,12 @@ set(CMAKE_SWIG_OUTDIR ${CMAKE_CFG_INTDIR}/libcellml)
 # Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   get_filename_component(MODULE_NAME ${SWIG_INTERFACE_SRC} NAME_WE)
-  if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.7)
+  if (${CMAKE_VERSION} VERSION_LESS 3.8)
+    swig_add_module(${MODULE_NAME} python ${SWIG_INTERFACE_SRC})
+  else ()
     swig_add_library(${MODULE_NAME}
       LANGUAGE python
       SOURCES ${SWIG_INTERFACE_SRC})
-  else ()
-    swig_add_module(${MODULE_NAME} python ${SWIG_INTERFACE_SRC})
   endif ()
   swig_link_libraries(${MODULE_NAME} ${PYTHON_LIBRARIES} cellml)
   set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})

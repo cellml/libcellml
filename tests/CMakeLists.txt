@@ -63,6 +63,7 @@ foreach(TEST ${LIBCELLML_TESTS})
   unset(CURRENT_CATEGORY)
 endforeach()
 
+
 if(LIBCELLML_COVERAGE)
   # Clean away old gcov arc files
   add_custom_target(clean_coverage
