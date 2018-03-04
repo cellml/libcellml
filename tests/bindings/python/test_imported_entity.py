@@ -10,14 +10,14 @@ class ImportedEntityTestCase(unittest.TestCase):
     def test_imported_entity(self):
         import libcellml
         from libcellml import ImportedEntity
-        
+
         # Test create/copy/destroy
         x = ImportedEntity()
         del(x)
         y = ImportedEntity()
         z = ImportedEntity(y)
         del(y, z)
-        
+
         # Test inheritance
         x = ImportedEntity()
         self.assertIsInstance(x, libcellml.NamedEntity)
@@ -26,20 +26,20 @@ class ImportedEntityTestCase(unittest.TestCase):
         # Test access to inherited methods
         x = ImportedEntity()
         idx = 'test'
-        self.assertIs(x.getId(), '')
+        self.assertEqual(x.getId(), '')
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
         del(x, idx)
-        
+
         # Test own methods
-        
+
         # void setImportSource(const ImportPtr &imp)
         from libcellml import ImportSource
         x = ImportedEntity()
         x.setImportSource(ImportSource())
         x.setImportSource(None)
         del(x)
-        
+
         # bool isImport()
         x = ImportedEntity()
         self.assertFalse(x.isImport())
@@ -59,7 +59,7 @@ class ImportedEntityTestCase(unittest.TestCase):
         self.assertIsNotNone(x.getImportSource())
         self.assertEqual(x.getImportSource().getSource(), source)
         del(x, i, source)
-        
+
         # void setImportReference(const std::string &reference)
         r = 'yes'
         x = ImportedEntity()
@@ -67,7 +67,7 @@ class ImportedEntityTestCase(unittest.TestCase):
         x.setImportReference(r)
         x.setImportReference('')
         del(r, x)
-        
+
         # std::string getImportReference()
         r = 'yes'
         x = ImportedEntity()
