@@ -1,28 +1,29 @@
 #
 # Tests the Units class bindings
 #
-import sys
 import unittest
+
 
 class UnitsTestCase(unittest.TestCase):
 
-    def test_model(self):
-        import libcellml
+    def test_create_destroy(self):
         from libcellml import Units
-        
-        # Test create/copy/destroy
+
         x = Units()
         del(x)
         y = Units()
         z = Units(y)
         del(y, z)
-        
-        # Test inheritance
+
+    def test_inheritance(self):
+        import libcellml
+        from libcellml import Units
+
         x = Units()
         self.assertIsInstance(x, libcellml.ImportedEntity)
         self.assertIsInstance(x, libcellml.NamedEntity)
         self.assertIsInstance(x, libcellml.Entity)
-        
+
         # Test access to inherited methods
         x = Units()
         idx = 'test'
@@ -31,9 +32,10 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(x.getId(), idx)
         y = Units(x)
         self.assertEqual(y.getId(), idx)
-        del(x, y, idx)
-        
-        # Test standard units
+
+    def test_standard_unit(self):
+        from libcellml import Units
+
         u = Units()
         u.addUnit(Units.StandardUnit.AMPERE)
         u.addUnit(Units.StandardUnit.BECQUEREL)
@@ -68,10 +70,15 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.VOLT)
         u.addUnit(Units.StandardUnit.WATT)
         u.addUnit(Units.StandardUnit.WEBER)
-        self.assertRaises(RuntimeError, u.addUnit, Units.StandardUnit.AMPERE -1)
-        self.assertRaises(RuntimeError, u.addUnit, Units.StandardUnit.WEBER + 1)
-        
-        # Test prefixes
+        self.assertRaises(
+            RuntimeError, u.addUnit, Units.StandardUnit.AMPERE - 1)
+        self.assertRaises(
+            RuntimeError, u.addUnit, Units.StandardUnit.WEBER + 1)
+
+    def test_prefix(self):
+        from libcellml import Units
+
+        u = Units()
         u.addUnit('test', Units.Prefix.YOTTA)
         u.addUnit('test', Units.Prefix.ZETTA)
         u.addUnit('test', Units.Prefix.EXA)
@@ -92,18 +99,23 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('test', Units.Prefix.ATTO)
         u.addUnit('test', Units.Prefix.ZEPTO)
         u.addUnit('test', Units.Prefix.YOCTO)
-        self.assertRaises(RuntimeError, u.addUnit, 'test', Units.Prefix.YOTTA - 1)
-        self.assertRaises(RuntimeError, u.addUnit, 'test', Units.Prefix.YOCTO + 1)
+        self.assertRaises(
+            RuntimeError, u.addUnit, 'test', Units.Prefix.YOTTA - 1)
+        self.assertRaises(
+            RuntimeError, u.addUnit, 'test', Units.Prefix.YOCTO + 1)
 
-        # Test own methods
-        
+    def test_is_base_unit(self):
+        from libcellml import Units
+
         # bool isBaseUnit()
         u = Units()
         self.assertTrue(u.isBaseUnit())
         u.addUnit(Units.StandardUnit.NEWTON)
         self.assertFalse(u.isBaseUnit())
-        del(u)
-        
+
+    def test_add_unit(self):
+        from libcellml import Units
+
         # void addUnit(const std::string &reference, const std::string &prefix,
         #   double exponent=1.0, double multiplier=1.0)
         u = Units()
@@ -114,7 +126,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', 'b', 3, 3)
         u.addUnit('a', 'b', 0.1, -1.2)
         del(u)
-        
+
         # void addUnit(const std::string &reference, Prefix prefix,
         #   double exponent=1.0, double multiplier=1.0)
         u = Units()
@@ -125,7 +137,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', Units.Prefix.YOTTA, -1, 2.3)
         u.addUnit('a', Units.Prefix.YOTTA, 1.2, 3.4)
         del(u)
-        
+
         # void addUnit(const std::string &reference, double prefix,
         #   double exponent, double multiplier=1.0)
         u = Units()
@@ -134,27 +146,27 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', 1.2, -1, 3)
         u.addUnit('a', 1.2, -1, 2.3)
         u.addUnit('a', 1.2, 1.2, 3.4)
-        #TODO Ints get converted to Prefix enum, not to double!
-        #u.addUnit('a', -1, -1)
-        #u.addUnit('a', -1, 2.3)
-        #u.addUnit('a', -1, -1, 3)
-        #u.addUnit('a', -1, -1, 2.3)
-        #u.addUnit('a', -1, 1.2, 3.4)
+        # TODO Ints get converted to Prefix enum, not to double!
+        # u.addUnit('a', -1, -1)
+        # u.addUnit('a', -1, 2.3)
+        # u.addUnit('a', -1, -1, 3)
+        # u.addUnit('a', -1, -1, 2.3)
+        # u.addUnit('a', -1, 1.2, 3.4)
         del(u)
-        
+
         # void addUnit(const std::string &reference, double exponent)
         u = Units()
         u.addUnit('a', 1.0)
-        #TODO Ints get converted to Prefix enum, not to double!
-        #u.addUnit('a', -1)
+        # TODO Ints get converted to Prefix enum, not to double!
+        # u.addUnit('a', -1)
         del(u)
-        
+
         # void addUnit(const std::string &reference)
         u = Units()
         u.addUnit('')
         u.addUnit('a')
         del(u)
-        
+
         # void addUnit(StandardUnit standardRef, const std::string &prefix,
         #   double exponent=1.0, double multiplier=1.0)
         u = Units()
@@ -165,7 +177,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, 'pico', 1, 2.0)
         u.addUnit(Units.StandardUnit.KATAL, 'pico', -1, 2)
         del(u)
-        
+
         # void addUnit(StandardUnit standardRef, Prefix prefix,
         #   double exponent=1.0, double multiplier=1.0)
         u = Units()
@@ -176,7 +188,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1, 2.0)
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1, 2)
         del(u)
-        
+
         # void addUnit(StandardUnit standardRef, double prefix,
         #   double exponent, double multiplier=1.0)
         u = Units()
@@ -185,16 +197,19 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, 1.0, 1.0, 1.0)
         u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0, 1.0)
         del(u)
-        
+
         # void addUnit(StandardUnit standardRef, double exponent)
         # Hidden to avoid confusion with addUnit(StandardUnit, Prefix, double,
         # double)
-        
+
         # void addUnit(StandardUnit standardRef)
         u = Units()
         u.addUnit(Units.StandardUnit.KATAL)
         del(u)
-        
+
+    def test_get_unit_attributes(self):
+        from libcellml import Units
+
         # void getUnitAttributes(size_t index, std::string& reference,
         #   std::string &prefix, double &exponent, double &multiplier)
         u = Units()
@@ -209,7 +224,7 @@ class UnitsTestCase(unittest.TestCase):
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['', '', 1.0, 1.0])
         del(u, x)
-        
+
         # void getUnitAttributes(const std::string &reference,
         #   std::string &prefix, double &exponent, double &multiplier) const;
         u = Units()
@@ -224,11 +239,14 @@ class UnitsTestCase(unittest.TestCase):
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['few', 'bars', 4.3, 2.1])
         del(u, x)
-        
+
         # This method conflicts with getUnitAttributes(size_t, ...)
         # void getUnitAttributes(StandardUnit standardRef, std::string &prefix,
         #   double &exponent, double &multiplier) const;
-        
+
+    def test_remove_unit(self):
+        from libcellml import Units
+
         # bool removeUnit(size_t index)
         u = Units()
         self.assertFalse(u.removeUnit(0))
@@ -240,7 +258,7 @@ class UnitsTestCase(unittest.TestCase):
         self.assertTrue(u.removeUnit(0))
         self.assertFalse(u.removeUnit(0))
         del(u)
-        
+
         # bool removeUnit(const std::string &reference)
         u = Units()
         self.assertFalse(u.removeUnit('hello'))
@@ -250,9 +268,12 @@ class UnitsTestCase(unittest.TestCase):
         self.assertFalse(u.removeUnit('hello'))
         del(u)
 
-        # This method conflicts with removeUnit(size_t)        
+        # This method conflicts with removeUnit(size_t)
         # bool removeUnit(StandardUnit standardRef)
-        
+
+    def test_unit_count(self):
+        from libcellml import Units
+
         # size_t unitCount()
         u = Units()
         self.assertEqual(u.unitCount(), 0)
@@ -260,8 +281,10 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(u.unitCount(), 1)
         u.addUnit('')
         self.assertEqual(u.unitCount(), 2)
-        del(u)
-        
+
+    def test_remove_all_units(self):
+        from libcellml import Units
+
         # void removeAllUnits()
         u = Units()
         self.assertEqual(u.unitCount(), 0)
@@ -271,14 +294,15 @@ class UnitsTestCase(unittest.TestCase):
         self.assertEqual(u.unitCount(), 2)
         u.removeAllUnits()
         self.assertEqual(u.unitCount(), 0)
-        del(u)
-        
+
+    def test_set_source_units(self):
+        from libcellml import Units, ImportSource
+
         # void setSourceUnits(const ImportPtr &imp, const std::string &name)
-        from libcellml import ImportSource
         i = ImportSource()
         u = Units()
         u.setSourceUnits(i, 'hello')
-        del(u, i)
+
 
 if __name__ == '__main__':
     unittest.main()
