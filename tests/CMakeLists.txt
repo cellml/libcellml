@@ -8,6 +8,8 @@ set_target_properties(gtest gtest_main PROPERTIES FOLDER gtest)
 mark_as_advanced(gtest_disable_pthreads)
 mark_as_advanced(gtest_force_shared_crt)
 
+add_subdirectory(bindings)
+
 # Any tests included here must append the test name
 # to the LIBCELLML_TESTS list.  Any source files for the
 # test must be set to <test_name>_SRCS, likewise for
