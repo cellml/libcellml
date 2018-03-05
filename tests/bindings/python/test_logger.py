@@ -1,29 +1,30 @@
 #
 # Tests the Error class bindings
 #
-import sys
 import unittest
+
 
 class LoggerTestCase(unittest.TestCase):
 
-    def test_logger(self):
-        import libcellml
+    def test_create_destroy(self):
         from libcellml import Logger
-        
+
         # Test create/copy/destroy
         x = Logger()
         del(x)
         y = Logger()
         z = Logger(y)
         del(y, z)
-        
-        # Test methods
-        
+
+    def test_add_error(self):
+        from libcellml import Logger, Error
+
         # void addError(const ErrorPtr error)
-        from libcellml import Error
         x = Logger()
         x.addError(Error())
-        del(x)
+
+    def test_error_count(self):
+        from libcellml import Logger, Error
 
         # size_t errorCount()
         x = Logger()
@@ -32,8 +33,10 @@ class LoggerTestCase(unittest.TestCase):
         self.assertEqual(x.errorCount(), 1)
         x.addError(Error())
         self.assertEqual(x.errorCount(), 2)
-        del(x)
-        
+
+    def test_get_error(self):
+        from libcellml import Logger, Error
+
         # ErrorPtr getError(size_t index)
         x = Logger()
         self.assertIsNone(x.getError(0))
@@ -45,8 +48,10 @@ class LoggerTestCase(unittest.TestCase):
         self.assertIsNotNone(x.getError(0))
         self.assertIsNone(x.getError(1))
         self.assertEqual(x.getError(0).getKind(), Error.Kind.MODEL)
-        del(x, e)
-        
+
+    def test_clear_errors(self):
+        from libcellml import Logger, Error
+
         # void clearErrors()
         x = Logger()
         self.assertEqual(x.errorCount(), 0)
@@ -55,7 +60,7 @@ class LoggerTestCase(unittest.TestCase):
         self.assertEqual(x.errorCount(), 2)
         x.clearErrors()
         self.assertEqual(x.errorCount(), 0)
-        del(x)
+
 
 if __name__ == '__main__':
     unittest.main()
