@@ -1,15 +1,14 @@
 #
 # Tests the NamedEntity class bindings
 #
-import sys
 import unittest
+
 
 class NamedEntityTestCase(unittest.TestCase):
 
-    def test_named_entity(self):
-        import libcellml
+    def test_create_destroy(self):
         from libcellml import NamedEntity
-        
+
         # Test create/copy/destroy
         x = NamedEntity()
         del(x)
@@ -17,7 +16,10 @@ class NamedEntityTestCase(unittest.TestCase):
         z = NamedEntity(y)
         del(y, z)
 
-        # Test inheritance
+    def test_inheritance(self):
+        import libcellml
+        from libcellml import NamedEntity
+
         x = NamedEntity()
         self.assertIsInstance(x, libcellml.Entity)
 
@@ -27,17 +29,19 @@ class NamedEntityTestCase(unittest.TestCase):
         self.assertEqual(x.getId(), '')
         x.setId(idx)
         self.assertEqual(x.getId(), idx)
-        del(x, idx)
-        
-        # Test own methods
-        
+
+    def test_set_name(self):
+        from libcellml import NamedEntity
+
         # void setName(const std::string &name)
         name = 'testo'
         x = NamedEntity()
         x.setName(name)
         x.setName('')
-        del(x, name)
-        
+
+    def test_get_name(self):
+        from libcellml import NamedEntity
+
         # std::string getName()
         name = 'testo'
         x = NamedEntity()
@@ -46,7 +50,7 @@ class NamedEntityTestCase(unittest.TestCase):
         self.assertEqual(x.getName(), name)
         x.setName('')
         self.assertEqual(x.getName(), '')
-        del(x, name)
+
 
 if __name__ == '__main__':
     unittest.main()
