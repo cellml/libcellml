@@ -27,7 +27,7 @@ In this section, we cover the retrieval and installation of pre-requisites.
 Git
 ---
 
-Creating a GitHub user account is straightforward and can be done `here <https://github.com/join>`_.  Installing a *Git* client is particular to each operating system and some pointers are offered below:
+Creating a GitHub user account is straightforward and can be done `here <https://github.com/join>`__.  Installing a *Git* client is particular to each operating system and some pointers are offered below:
 
 * macOS *Git* is pre-installed and available from the command line.
 * Ubuntu (and other linux distributions) *Git* can be installed using the package manager with the command :code:`sudo apt-get install git`.
@@ -42,7 +42,7 @@ CMake
 
 *CMake* is the cross-platform family of tools designed to build, test and package software.  *CMake* is used to control the software compilation process using simple platform and compiler independent configuration files, and generate native makefiles and workspaces that can be used in the compiler environment of your choice.
 
-Again, installation of *CMake* is particular to each operating system.  For Ubuntu (and other linux distributions), *CMake* can be installed using the package manager with the command :code:`sudo apt-get install cmake`.  For macOS and Windows, *CMake* provides installation binaries from `here <https://cmake.org/download/>`_.  Choose the binary appropriate for your operating system and follow the installation instructions.
+Again, installation of *CMake* is particular to each operating system.  For Ubuntu (and other linux distributions), *CMake* can be installed using the package manager with the command :code:`sudo apt-get install cmake`.  For macOS and Windows, *CMake* provides installation binaries from `here <https://cmake.org/download/>`__.  Choose the binary appropriate for your operating system and follow the installation instructions.
 
 Toolchain
 ---------
@@ -54,12 +54,12 @@ The following sub-sections provide guidance on how to install the recommended to
 Windows
 +++++++
 
-*Microsoft Visual Studio* is available to download from `here <https://www.visualstudio.com/downloads/>`_.  We currently test with version 14 of this software but later versions are known to work.  The *community edition* is more than sufficient for the needs of *libCellML*.  To minimize the size of the installation you may install only the C++ compiler, this component (and its requirements) is sufficient for building the *libCellML* library.
+*Microsoft Visual Studio* is available to download from `here <https://www.visualstudio.com/downloads/>`__.  We currently test with version 14 of this software but later versions are known to work.  The *community edition* is more than sufficient for the needs of *libCellML*.  To minimize the size of the installation you may install only the C++ compiler, this component (and its requirements) is sufficient for building the *libCellML* library.
 
 LibXml2
 -------
 
-LibXml2 is already available on Ubuntu and macOS so no further action is required.  However, on Windows we must install LibXml2 ourselves.  The recommended implementation of LibXml2 for use with libCellML is available from `here <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_.
+LibXml2 is already available on Ubuntu and macOS so no further action is required.  However, on Windows we must install LibXml2 ourselves.  The recommended implementation of LibXml2 for use with libCellML is available from `here <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`__.
 
 Setting up the codebase
 =======================
