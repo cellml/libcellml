@@ -33,7 +33,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT Printer: public Logger
 {
 public:
-    Printer(Format format); /**< Constructor */
+    Printer(); /**< Constructor */
     ~Printer(); /**< Destructor */
     Printer(const Printer &rhs); /**< Copy constructor */
     Printer(Printer &&rhs); /**< Move constructor */

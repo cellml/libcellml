@@ -26,8 +26,6 @@ include(variable/tests.cmake)
 include(version/tests.cmake)
 include(when/tests.cmake)
 
-set(test_path)
-list(APPEND test_path $ENV{PATH} $<TARGET_FILE_DIR:cellml>)
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
 foreach(TEST ${LIBCELLML_TESTS})
@@ -49,7 +47,17 @@ foreach(TEST ${LIBCELLML_TESTS})
 #    target_warnings_as_errors(${CURRENT_TEST})
 #  endif()
 
-  add_test(${CURRENT_CATEGORY}unit_${CURRENT_TEST} ${CURRENT_TEST})
+  add_test(NAME ${CURRENT_CATEGORY}unit_${CURRENT_TEST} COMMAND ${CURRENT_TEST})
+  if(MSVC)
+    if(HAVE_LIBXML2_CONFIG)
+      set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
+        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>\;$<TARGET_FILE_DIR:xml2>")
+	else()
+	  # The libxml2 dll must be on the path otherwise the tests will not be able to run.
+      set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
+        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>")
+	endif()
+  endif()
 
   list(APPEND TEST_LIST ${CURRENT_TEST})
   unset(CURRENT_CATEGORY)

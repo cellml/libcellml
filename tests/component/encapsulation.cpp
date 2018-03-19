@@ -82,7 +82,7 @@ TEST(Encapsulation, reparentComponent) {
     parent.addComponent(child2);
     parent.addComponent(child3);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent_1, a_parent);
 
@@ -132,7 +132,7 @@ TEST(Encapsulation, hierarchyWaterfall) {
     child1->addComponent(child2);
     parent.addComponent(child1);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent, a_parent);
 }
@@ -168,7 +168,7 @@ TEST(Encapsulation, hierarchyCircular) {
     parent->addComponent(child1);
     child1->addComponent(parent);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a_parent = printer.printComponent(parent);
     EXPECT_EQ(e_parent_1, a_parent);
 
@@ -215,11 +215,11 @@ TEST(Encapsulation, hierarchyWaterfallAndParse) {
     parent->addComponent(child1);
     m.addComponent(parent);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
-    libcellml::Parser parser = libcellml::Parser(libcellml::Format::XML);
+    libcellml::Parser parser = libcellml::Parser();
     libcellml::ModelPtr model = parser.parseModel(e);
 
     a = printer.printModel(model);

@@ -26,7 +26,7 @@ limitations under the License.
  */
 #include "libcellml/component.h"
 #include "libcellml/error.h"
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/parser.h"

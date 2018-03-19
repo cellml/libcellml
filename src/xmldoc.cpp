@@ -84,6 +84,7 @@ void XmlDoc::parse(const std::string &input)
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST input.c_str(), "/", NULL, 0);
     xmlFreeParserCtxt(context);
+    xmlSetStructuredErrorFunc(nullptr, nullptr);
 }
 
 void XmlDoc::parseMathML(const std::string &input)
@@ -95,6 +96,7 @@ void XmlDoc::parseMathML(const std::string &input)
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
     mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, BAD_CAST mathmlString.c_str(), "/", NULL, XML_PARSE_DTDVALID);
     xmlFreeParserCtxt(context);
+    xmlSetStructuredErrorFunc(nullptr, nullptr);
 }
 
 XmlNodePtr XmlDoc::getRootNode() const

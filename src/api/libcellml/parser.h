@@ -34,7 +34,7 @@ namespace libcellml {
 class LIBCELLML_EXPORT Parser: public Logger
 { 
 public:
-    Parser(Format format); /**< Constructor */
+    Parser(); /**< Constructor */
     ~Parser(); /**< Destructor */
     Parser(const Parser &rhs); /**< Copy constructor */
     Parser(Parser &&rhs); /**< Move constructor */

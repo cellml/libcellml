@@ -257,4 +257,16 @@ bool ComponentEntity::replaceComponent(const std::string &name, const ComponentP
     return status;
 }
 
+bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated)
+{
+    bool status = replaceComponent(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin(), newComponent);
+    if (searchEncapsulated && !status) {
+        for (size_t i = 0; i < componentCount() && !status; ++i) {
+            status = getComponent(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
+        }
+    }
+
+    return status;
+}
+
 }

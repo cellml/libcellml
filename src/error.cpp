@@ -34,7 +34,7 @@ struct Error::ErrorImpl
     Error::Kind mKind = Error::Kind::UNDEFINED; /**< The Error::Kind enum value for this error. */
     SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this error. */
     ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
-    ImportPtr mImport; /**< Pointer to the import that the error occurred in. */
+    ImportSourcePtr mImportSource; /**< Pointer to the import source that the error occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
     UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
@@ -56,7 +56,7 @@ Error::Error(const Error& rhs)
     mPimpl->mDescription = rhs.mPimpl->mDescription;
     mPimpl->mKind = rhs.mPimpl->mKind;
     mPimpl->mComponent = rhs.mPimpl->mComponent;
-    mPimpl->mImport = rhs.mPimpl->mImport;
+    mPimpl->mImportSource = rhs.mPimpl->mImportSource;
     mPimpl->mModel = rhs.mPimpl->mModel;
     mPimpl->mUnits = rhs.mPimpl->mUnits;
     mPimpl->mVariable = rhs.mPimpl->mVariable;
@@ -128,14 +128,14 @@ ComponentPtr Error::getComponent() const
     return mPimpl->mComponent;
 }
 
-void Error::setImport(const ImportPtr &import)
+void Error::setImportSource(const ImportSourcePtr &importSource)
 {
-    mPimpl->mImport = import;
+    mPimpl->mImportSource = importSource;
 }
 
-ImportPtr Error::getImport() const
+ImportSourcePtr Error::getSourceImport() const
 {
-    return mPimpl->mImport;
+    return mPimpl->mImportSource;
 }
 
 void Error::setModel(const ModelPtr &model)

@@ -14,64 +14,64 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 
 namespace libcellml {
 
 /**
- * @brief The Import::ImportImpl struct.
+ * @brief The ImportSource::ImportSourceImpl struct.
  *
- * The private implementation for the Import class.
+ * The private implementation for the ImportSource class.
  */
-struct Import::ImportImpl
+struct ImportSource::ImportSourceImpl
 {
-    std::string mReference;
+    std::string mSource;
 };
 
-Import::Import()
-    : mPimpl(new ImportImpl())
+ImportSource::ImportSource()
+    : mPimpl(new ImportSourceImpl())
 {
 }
 
-Import::~Import()
+ImportSource::~ImportSource()
 {
     delete mPimpl;
 }
 
-Import::Import(const Import& rhs)
+ImportSource::ImportSource(const ImportSource& rhs)
     : Entity(rhs)
-    , mPimpl(new ImportImpl())
+    , mPimpl(new ImportSourceImpl())
 {
-    mPimpl->mReference = rhs.mPimpl->mReference;
+    mPimpl->mSource = rhs.mPimpl->mSource;
 }
 
-Import::Import(Import &&rhs)
+ImportSource::ImportSource(ImportSource &&rhs)
     : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Import& Import::operator=(Import e)
+ImportSource& ImportSource::operator=(ImportSource e)
 {
     Entity::operator= (e);
     e.swap(*this);
     return *this;
 }
 
-void Import::swap(Import &rhs)
+void ImportSource::swap(ImportSource &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Import::setSource(const std::string &reference)
+void ImportSource::setSource(const std::string &source)
 {
-    mPimpl->mReference = reference;
+    mPimpl->mSource = source;
 }
 
-std::string Import::getSource() const
+std::string ImportSource::getSource() const
 {
-    return mPimpl->mReference;
+    return mPimpl->mSource;
 }
 
 }

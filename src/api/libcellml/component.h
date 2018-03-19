@@ -42,10 +42,10 @@ public:
      * Make this component an imported component by defining an import model
      * from which to extract the named component from.
      *
-     * @param imp The import from which the named component originates.
+     * @param importSource The import source from which the named component originates.
      * @param name The name of the component in the imported model to use.
      */
-    void setSourceComponent(const ImportPtr &imp, const std::string &name);
+    void setSourceComponent(const ImportSourcePtr &importSource, const std::string &name);
 
     /**
      * @brief Appends the argument to the math string for this component.
@@ -88,11 +88,14 @@ public:
     void addVariable(const VariablePtr &v);
 
     /**
-     * @brief Remove the variable by the given @p variable pointer from this component.
+     * @brief Remove the variable at the given @p index from this component.
      *
-     * Remove the variable with the given pointer from this component. If the @p variable to
-     * be removed is in a connection (is equivalent to another variable), this
-     * component will not be serialised in the connection.
+     * Remove the variable at the given index from this component.
+     * If the index is not valid @c false is returned, the valid
+     * range for the index is [0, #variables).
+     * If the variable to be removed is in a connection (is equivalent to
+     * another variable), this component will not be serialised in the
+     * connection.
      *
      * @sa addVariable
      *

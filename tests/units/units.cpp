@@ -33,7 +33,7 @@ TEST(Units, validName) {
 
     m.addUnits(u);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("valid_name", u->getName());
@@ -53,7 +53,7 @@ TEST(Units, invalidName) {
 
     m.addUnits(u);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("invalid name", u->getName());
@@ -81,7 +81,7 @@ TEST(Units, compoundUnitsRaw) {
 
     m.addUnits(u);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -118,7 +118,7 @@ TEST(Units, compoundUnitsUsingDefines) {
 
     m.addUnits(u);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -147,7 +147,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
 
     m.addUnits(u);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -208,7 +208,7 @@ TEST(Units, removeUnitsMethodsAndCount) {
     m.addUnits(u3);
     m.addUnits(u4);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
 
@@ -306,6 +306,12 @@ TEST(Units, replaceUnits) {
     // Replace non-existent units.
     EXPECT_FALSE(m.replaceUnits("d_unit", u2));
     EXPECT_FALSE(m.replaceUnits(5, u1));
+
+    // Replace with pointers
+    EXPECT_FALSE(m.replaceUnits(u2, u1));
+    EXPECT_TRUE(m.replaceUnits(u1, u2));
+    EXPECT_FALSE(m.replaceUnits(u1, u2));
+    EXPECT_TRUE(m.replaceUnits(u2, u1));
 }
 
 TEST(Units, multiply) {
@@ -347,7 +353,7 @@ TEST(Units, multiply) {
 
     m.addUnits(u3);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -366,7 +372,7 @@ TEST(Units, newBaseUnit) {
 
     m.addUnits(u);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("pH", u->getName());
@@ -401,7 +407,7 @@ TEST(Units, farhenheit) {
     u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ("fahrenheitish", u->getName());
@@ -534,12 +540,12 @@ TEST(Units, multipleAndParse) {
     m.addUnits(u1);
     m.addUnits(u2);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Parse
-    libcellml::Parser parser(libcellml::Format::XML);
+    libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);

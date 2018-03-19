@@ -37,7 +37,7 @@ TEST(Model, name) {
 
     EXPECT_EQ("name", m.getName());
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -55,7 +55,7 @@ TEST(Model, unsetName) {
     m.setName(n);
     EXPECT_EQ("name", m.getName());
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(eName, a);
 
@@ -76,7 +76,7 @@ TEST(Model, invalidName) {
 
     EXPECT_EQ("invalid name", m.getName());
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -92,7 +92,7 @@ TEST(Model, addComponent) {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -110,7 +110,7 @@ TEST(Model, addValidNamedComponent) {
     c->setName(in);
     m.addComponent(c);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -128,7 +128,7 @@ TEST(Model, addInvalidNamedComponent) {
     c->setName(in);
     m.addComponent(c);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -153,7 +153,7 @@ TEST(Model, addTwoNamedComponents) {
     // reflected in the model? Yes we are using shared pointers.
     c2->setName(name2); // so should this give an error? Nope
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -212,7 +212,7 @@ TEST(Model, removeComponent) {
     EXPECT_TRUE(m.removeComponent(0));
     EXPECT_EQ(1, m.componentCount());
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
     EXPECT_FALSE(m.removeComponent(1));
@@ -246,7 +246,7 @@ TEST(Model, getComponentMethods) {
     libcellml::ComponentPtr cA = m.getComponent(0);
     cA->setName("childA");
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
@@ -285,7 +285,7 @@ TEST(Model, takeComponentMethods) {
 
     EXPECT_EQ("child1", c01->getName());
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
@@ -404,7 +404,7 @@ TEST(Model, replaceComponent) {
     m.addComponent(c1);
     m.addComponent(c2);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e_orig, a);
 
@@ -439,7 +439,7 @@ TEST(Model, constructors) {
     m.setName(n);
     m.addComponent(std::make_shared<libcellml::Component>());
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printModel(m);
 
     EXPECT_EQ(e, a);
@@ -482,8 +482,8 @@ TEST(Model, setAndCheckIdsAllEntities) {
             "</model>";
 
     libcellml::Model m;
-    libcellml::ImportPtr i1 = std::make_shared<libcellml::Import>();
-    libcellml::ImportPtr i2 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -523,7 +523,7 @@ TEST(Model, setAndCheckIdsAllEntities) {
     m.addComponent(c1);
     m.addComponent(c2);
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     std::string actual = printer.printModel(m);
     EXPECT_EQ(expected, actual);
 }
