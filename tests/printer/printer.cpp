@@ -67,7 +67,7 @@ TEST(Printer, printEmptyComponent) {
     const std::string e = "<component/>";
     libcellml::Component c;
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printComponent(c);
     EXPECT_EQ(e, a);
 }
@@ -76,7 +76,7 @@ TEST(Printer, printEmptyReset) {
     const std::string e = "<reset/>";
     libcellml::Reset r;
 
-    libcellml::Printer printer(libcellml::Format::XML);
+    libcellml::Printer printer;
     const std::string a = printer.printReset(r);
     EXPECT_EQ(e, a);
 }
