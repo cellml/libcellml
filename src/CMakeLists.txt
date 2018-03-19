@@ -46,8 +46,8 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/import.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/model.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/namedentity.cpp
@@ -71,8 +71,8 @@ set(API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/error.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/import.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/model.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/namedentity.h
@@ -126,14 +126,17 @@ target_include_directories(cellml
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/module>
   $<INSTALL_INTERFACE:include/>
   $<INSTALL_INTERFACE:include/libcellml/module>
-  ${LIBXML2_INCLUDE_DIR}
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
-
-target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
+if(HAVE_LIBXML2_CONFIG)
+  target_link_libraries(cellml PUBLIC xml2)
+else()
+  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR})
+  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
+  target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
+endif()
 
 set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11

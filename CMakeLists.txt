@@ -91,6 +91,12 @@ if(BUILD_SHARED)
   set(LIBCELLML_BUILD_SHARED ${BUILD_SHARED} CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 
+# Uninstall target
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+               "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+               IMMEDIATE @ONLY)
+add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+
 # Keep the GUI tidy.
 internalise_cmake_variables()
 hide_distracting_variables()
@@ -101,7 +107,24 @@ hide_distracting_variables()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Find libxml2
-find_package(LibXml2 REQUIRED)
+set(HAVE_LIBXML2_CONFIG FALSE)
+if (MSVC)
+  # If we want to use config packages on Windows with Visual Studio,
+  # we need to have two find_package calls and explicitly state that
+  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
+  # is the preferred method so we will try this first quietly.
+  #
+  # This does change how we get information about include paths and such so we
+  # need to track how we found LibXml2.
+  find_package(LibXml2 CONFIG QUIET)
+  if (LibXml2_FOUND)
+    set(HAVE_LIBXML2_CONFIG TRUE)
+  else ()
+    find_package(LibXml2 REQUIRED)
+  endif ()
+else ()
+  find_package(LibXml2 REQUIRED)
+endif ()
 
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)

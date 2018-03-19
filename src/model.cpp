@@ -23,7 +23,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
-#include "libcellml/import.h"
+#include "libcellml/importsource.h"
 #include "libcellml/variable.h"
 #include "libcellml/units.h"
 
@@ -202,6 +202,11 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 bool Model::replaceUnits(const std::string &name, const UnitsPtr &units)
 {
     return replaceUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin(), units);
+}
+
+bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
+{
+    return replaceUnits(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin(), newUnits);
 }
 
 size_t Model::unitsCount() const

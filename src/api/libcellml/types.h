@@ -31,8 +31,8 @@ class Component; /**< Forward declaration of Component class. */
 typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
 class Error; /**< Forward declaration of Error class. */
 typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error pointer. */
-class Import; /**< Forward declaration of Import class. */
-typedef std::shared_ptr<Import> ImportPtr; /**< Type definition for shared import pointer. */
+class ImportSource; /**< Forward declaration of ImportSource class. */
+typedef std::shared_ptr<ImportSource> ImportSourcePtr; /**< Type definition for shared import source pointer. */
 class Units; /**< Forward declaration of Units class. */
 typedef std::shared_ptr<Units> UnitsPtr; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */

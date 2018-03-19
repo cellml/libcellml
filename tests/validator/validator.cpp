@@ -199,7 +199,7 @@ TEST(Validator, importUnits) {
     m->setName("model_name");
 
     // Valid units import
-    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setSource("some-other-model.xml");
     libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
     importedUnits->setName("valid_imported_units_in_this_model");
@@ -209,7 +209,7 @@ TEST(Validator, importUnits) {
     EXPECT_EQ(0, v.errorCount());
 
     // Invalid units import- missing refs
-    libcellml::ImportPtr imp2 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
     libcellml::UnitsPtr importedUnits2 = std::make_shared<libcellml::Units>();
     importedUnits2->setName("invalid_imported_units_in_this_model");
     importedUnits2->setSourceUnits(imp2, "");
@@ -218,7 +218,7 @@ TEST(Validator, importUnits) {
     EXPECT_EQ(2, v.errorCount());
 
     // Invalid units import - duplicate refs
-    libcellml::ImportPtr imp3 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
     imp3->setSource("some-other-model.xml");
     libcellml::UnitsPtr importedUnits3 = std::make_shared<libcellml::Units>();
     importedUnits3->setName("duplicate_imported_units_in_this_model");
@@ -228,7 +228,7 @@ TEST(Validator, importUnits) {
     EXPECT_EQ(3, v.errorCount());
 
     // Invalid units import - unnamed units
-    libcellml::ImportPtr imp4 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setSource("some-other-different-model.xml");
     libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
@@ -256,7 +256,7 @@ TEST(Validator, importComponents) {
     m->setName("model_name");
 
     // Valid component import
-    libcellml::ImportPtr imp = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setSource("some-other-model.xml");
     libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
     importedComponent->setName("valid_imported_component_in_this_model");
@@ -266,7 +266,7 @@ TEST(Validator, importComponents) {
     EXPECT_EQ(0, v.errorCount());
 
     // Invalid component import- missing refs
-    libcellml::ImportPtr imp2 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
     importedComponent2->setName("invalid_imported_component_in_this_model");
     importedComponent2->setSourceComponent(imp2, "");
@@ -275,7 +275,7 @@ TEST(Validator, importComponents) {
     EXPECT_EQ(2, v.errorCount());
 
     // Invalid component import - duplicate refs
-    libcellml::ImportPtr imp3 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
     imp3->setSource("some-other-model.xml");
     libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
     importedComponent3->setName("duplicate_imported_component_in_this_model");
@@ -285,7 +285,7 @@ TEST(Validator, importComponents) {
     EXPECT_EQ(3, v.errorCount());
 
     // Invalid component import - unnamed component
-    libcellml::ImportPtr imp4 = std::make_shared<libcellml::Import>();
+    libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setSource("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
@@ -622,7 +622,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
         "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid real number or a SI prefix.",
     };
 
-    libcellml::Parser p(libcellml::Format::XML);
+    libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
     EXPECT_EQ(0, p.errorCount());
 
