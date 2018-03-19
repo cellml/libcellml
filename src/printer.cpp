@@ -172,11 +172,9 @@ std::string Printer::printComponent(Component component) const
 std::string Printer::printReset(ResetPtr reset) const
 {
     std::string repr = "";
-    if (mPimpl->mFormat == Format::XML) {
-        std::string id = reset->getId();
-        if (id.length()) {
-            repr += " id=\"" + id + "\"";
-        }
+    std::string id = reset->getId();
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
     }
     return repr;
 }
@@ -189,11 +187,9 @@ std::string Printer::printReset(Reset reset) const
 std::string Printer::printWhen(WhenPtr when) const
 {
     std::string repr = "";
-    if (mPimpl->mFormat == Format::XML) {
-        std::string id = when->getId();
-        if (id.length()) {
-            repr += " id=\"" + id + "\"";
-        }
+    std::string id = when->getId();
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
     }
     return repr;
 }

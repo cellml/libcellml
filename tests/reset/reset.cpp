@@ -167,7 +167,7 @@ TEST(Reset, printResetWithVariable) {
 
     r->setVariable(v);
 
-    libcellml::Printer p(libcellml::Format::XML);
+    libcellml::Printer p;
 
     const std::string a = p.printReset(r);
     EXPECT_EQ(e, a);
@@ -179,7 +179,7 @@ TEST(Reset, printResetWithOrder) {
 
     r->setOrder(1);
 
-    libcellml::Printer p(libcellml::Format::XML);
+    libcellml::Printer p;
 
     const std::string a = p.printReset(r);
     EXPECT_EQ(e, a);
@@ -196,7 +196,7 @@ TEST(Reset, printResetWithOrderAndVariable) {
     r->setVariable(v);
     r->setOrder(1);
 
-    libcellml::Printer p(libcellml::Format::XML);
+    libcellml::Printer p;
 
     const std::string a = p.printReset(r);
     EXPECT_EQ(e, a);
@@ -212,7 +212,7 @@ TEST(Reset, printResetWithWhen) {
 
     r->addWhen(w);
 
-    libcellml::Printer p(libcellml::Format::XML);
+    libcellml::Printer p;
 
     const std::string a = p.printReset(r);
     EXPECT_EQ(e, a);
@@ -234,7 +234,7 @@ TEST(Reset, printResetWithMultipleWhens) {
     r->addWhen(w2);
     r->addWhen(w3);
 
-    libcellml::Printer p(libcellml::Format::XML);
+    libcellml::Printer p;
 
     const std::string a = p.printReset(r);
     EXPECT_EQ(e, a);
@@ -271,7 +271,7 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
     r->addWhen(w1);
     r->addWhen(w2);
 
-    libcellml::Printer p(libcellml::Format::XML);
+    libcellml::Printer p;
 
     const std::string a = p.printReset(r);
     EXPECT_EQ(e, a);
