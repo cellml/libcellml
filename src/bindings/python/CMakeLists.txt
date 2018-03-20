@@ -13,7 +13,7 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 # Add python package and header directories
-find_package(PythonLibs REQUIRED)
+find_package(PythonLibs ${PREFERRED_PYTHON_VERSION} REQUIRED)
 include_directories(${PYTHON_INCLUDE_PATH})
 
 # Include source dir and binary dir
