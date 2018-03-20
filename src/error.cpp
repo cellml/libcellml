@@ -133,7 +133,7 @@ void Error::setImportSource(const ImportSourcePtr &importSource)
     mPimpl->mImportSource = importSource;
 }
 
-ImportSourcePtr Error::getSourceImport() const
+ImportSourcePtr Error::getImportSource() const
 {
     return mPimpl->mImportSource;
 }

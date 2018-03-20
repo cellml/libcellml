@@ -153,6 +153,8 @@ if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
 endif()
 
+add_subdirectory(bindings)
+
 if(LIBCELLML_COVERAGE)
   set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
     LINK_FLAGS "-fprofile-arcs -ftest-coverage")
