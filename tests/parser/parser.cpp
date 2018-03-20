@@ -1216,11 +1216,11 @@ TEST(Parser, invalidImportsAndGetError) {
 
     libcellml::ImportSourcePtr import = m->getUnits("units_in_this_model")->getImportSource();
     // Get import from error and check.
-    EXPECT_EQ(import, p.getError(0)->getSourceImport());
+    EXPECT_EQ(import, p.getError(0)->getImportSource());
     // Get const import from error and check.
     const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).getError(0);
     libcellml::Error *rawErr = err.get();
-    const libcellml::ImportSourcePtr importFromError = static_cast<const libcellml::Error*>(rawErr)->getSourceImport();
+    const libcellml::ImportSourcePtr importFromError = static_cast<const libcellml::Error*>(rawErr)->getImportSource();
     EXPECT_EQ(import, importFromError);
 }
 

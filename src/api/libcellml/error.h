@@ -174,7 +174,7 @@ public:
      * @return A pointer to the import source this error was raised on. If no
      * import source has been set for this error, return a @c nullptr.
      */
-    ImportSourcePtr getSourceImport() const;
+    ImportSourcePtr getImportSource() const;
 
     /**
      * @brief Set the @p model for this error.
