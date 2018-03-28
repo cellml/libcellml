@@ -51,6 +51,17 @@ bool convertToDouble(const std::string &candidate, double *value=nullptr);
 std::string convertDoubleToString(double value);
 
 /**
+ * @brief Convert a @c int to @c std::string format.
+ *
+ * Convert the @p value to @c std::string representation.
+ *
+ * @param value The @c int value of the integer to convert.
+ *
+ * @return @c std::string representation of the @p value.
+ */
+std::string convertIntToString(int value);
+
+/**
  * @brief Check if the @p input @c std::string has any non-whitespace characters.
  *
  * If the @p input @c std::string has any non-whitespace characters, return

@@ -53,4 +53,11 @@ std::string convertDoubleToString(double value)
     return strs.str();
 }
 
+std::string convertIntToString(int value)
+{
+    std::ostringstream strs;
+    strs << value;
+    return strs.str();
+}
+
 }
