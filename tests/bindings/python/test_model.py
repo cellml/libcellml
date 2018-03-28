@@ -21,7 +21,6 @@ class ModelTestCase(unittest.TestCase):
 
         x = Model()
         self.assertIsInstance(x, libcellml.ComponentEntity)
-        self.assertIsInstance(x, libcellml.ImportedEntity)
         self.assertIsInstance(x, libcellml.NamedEntity)
         self.assertIsInstance(x, libcellml.Entity)
 
