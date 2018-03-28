@@ -13,7 +13,7 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 # Add python package and header directories
-find_package(PythonLibs ${PREFERRED_PYTHON_VERSION} REQUIRED)
+find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development REQUIRED)
 include_directories(${PYTHON_INCLUDE_PATH})
 
 # Include source dir and binary dir
@@ -49,6 +49,7 @@ set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES CPLUSPLUS ON)
 # Set output path (relative to current in build dir)
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CFG_INTDIR}/libcellml)
 
+set(SWIG_PYTHON_BINDINGS_TARGETS)
 # Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   get_filename_component(MODULE_NAME ${SWIG_INTERFACE_SRC} NAME_WE)
@@ -59,7 +60,7 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
       LANGUAGE python
       SOURCES ${SWIG_INTERFACE_SRC})
   endif ()
-  swig_link_libraries(${MODULE_NAME} ${PYTHON_LIBRARIES} cellml)
+  swig_link_libraries(${MODULE_NAME} Python::Python cellml)
   set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})
   # Disable use of Debug Python libraries when not present on Windows
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
@@ -76,7 +77,10 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
     FOLDER bindings/python
     #LIBRARY_OUTPUT_DIRECTORY bin
   )
+  list(APPEND SWIG_PYTHON_BINDINGS_TARGETS ${MODULE_TARGET})
 endforeach()
+
+add_custom_target(python_bindings DEPENDS ${SWIG_PYTHON_BINDINGS_TARGETS})
 
 # Add new paths to make clean
 set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "libcellml")

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-find_package(PythonInterp ${PREFERRED_PYTHON_VERSION})
+find_package(Python ${PREFERRED_PYTHON_VERSION})
 
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
