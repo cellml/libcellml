@@ -25,7 +25,6 @@ namespace libcellml {
  */
 struct When::WhenImpl
 {
-    int mOrder; /**< An integer for determining relative order.*/
     std::string mCondition; /**< A string of math for determining the condition for transitioning from False to True.*/
     std::string mValue; /**< A string of math for assigning.*/
 };
@@ -42,15 +41,16 @@ When::~When()
 
 When::When(const When& rhs)
     : Entity(rhs)
+    , OrderedEntity(rhs)
     , mPimpl(new WhenImpl())
 {
-    mPimpl->mOrder = rhs.mPimpl->mOrder;
     mPimpl->mCondition = rhs.mPimpl->mCondition;
     mPimpl->mValue = rhs.mPimpl->mValue;
 }
 
 When::When(When &&rhs)
     : Entity(std::move(rhs))
+    , OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -59,6 +59,7 @@ When::When(When &&rhs)
 When& When::operator=(When e)
 {
     Entity::operator= (e);
+    OrderedEntity::operator= (e);
     e.swap(*this);
     return *this;
 }
@@ -66,16 +67,6 @@ When& When::operator=(When e)
 void When::swap(When &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
-}
-
-void When::setOrder(int order)
-{
-    mPimpl->mOrder = order;
-}
-
-int When::getOrder() const
-{
-    return mPimpl->mOrder;
 }
 
 void When::setCondition(const std::string& condition)

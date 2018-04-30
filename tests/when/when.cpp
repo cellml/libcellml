@@ -24,14 +24,6 @@ TEST(When, create) {
     EXPECT_NE(nullptr, w);
 }
 
-TEST(When, order) {
-    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
-
-    w->setOrder(1);
-
-    EXPECT_EQ(1, w->getOrder());
-}
-
 TEST(When, condition) {
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
@@ -46,4 +38,20 @@ TEST(When, value) {
     w->setCondition("<some mathml type string for value.>");
 
     EXPECT_EQ("<some mathml type string for value.>", w->getCondition());
+}
+
+TEST(When, order) {
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    EXPECT_FALSE(w->isOrderSet());
+
+    w->setOrder(5);
+
+    EXPECT_TRUE(w->isOrderSet());
+    EXPECT_EQ(5, w->getOrder());
+
+    w->unsetOrder();
+
+    EXPECT_FALSE(w->isOrderSet());
+    EXPECT_EQ(5, w->getOrder());
 }

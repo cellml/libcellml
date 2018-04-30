@@ -20,15 +20,16 @@ limitations under the License.
 
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/entity.h"
+#include "libcellml/orderedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
 
 /**
  * @brief The Reset class.
- * Class for Reset.
+ * The Reset class is for describing a CellML reset.
  */
-class LIBCELLML_EXPORT Reset: public Entity
+class LIBCELLML_EXPORT Reset: public Entity, public OrderedEntity
 {
 public:
     Reset(); /**< Constructor */
@@ -56,27 +57,9 @@ public:
     VariablePtr getVariable() const;
 
     /**
-     * @brief Set the order for this reset.
+     * @brief Add a child when to this Reset.
      *
-     * Sets the order for this reset.
-     *
-     * @param order The order to set.
-     */
-    void setOrder(int order);
-
-    /**
-     * @brief Get the order for this reset.
-     *
-     * Returns the order of this reset.
-     *
-     * @return The order.
-     */
-    int getOrder() const;
-
-    /**
-     * @brief Add a child when to this Reset entity.
-     *
-     * Add a copy of the given When as a child When of this Reset entity.
+     * Add a copy of the given @c When as a child When of this @c Reset.
      *
      * @param w The When to add.
      */
@@ -111,7 +94,7 @@ public:
     /**
      * @brief Remove all whens stored in this when entity.
      *
-     * Clears all whens that have been added to this reset entity.
+     * Clears all whens that have been added to this reset.
      */
     void removeAllWhens();
 

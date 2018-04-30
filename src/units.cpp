@@ -157,7 +157,7 @@ Units::Units(Units &&rhs)
 
 Units& Units::operator=(Units e)
 {
-    NamedEntity::operator = (e);
+    NamedEntity::operator= (e);
     ImportedEntity::operator= (e);
     e.swap(*this);
     return *this;

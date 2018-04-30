@@ -20,15 +20,16 @@ limitations under the License.
 
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/entity.h"
+#include "libcellml/orderedentity.h"
 #include "libcellml/types.h"
 
 namespace libcellml {
 
 /**
  * @brief The When class.
- * Class for When.
+ * Class for determining when a reset will occur.
  */
-class LIBCELLML_EXPORT When: public Entity
+class LIBCELLML_EXPORT When: public Entity, public OrderedEntity
 {
 public:
     When(); /**< Constructor */
@@ -38,27 +39,9 @@ public:
     When& operator=(When n); /**< Assignment operator */
 
     /**
-     * @brief Set the order for this when.
-     *
-     * Sets the order that for this when.
-     *
-     * @param order The order to set.
-     */
-    void setOrder(int order);
-
-    /**
-     * @brief Get the order for this when.
-     *
-     * Returns the order of this when.
-     *
-     * @return The order.
-     */
-    int getOrder() const;
-
-    /**
      * @brief Set the condition term for this when.
      *
-     * Set the MathML string as the condition term for this when.
+     * Set the @c std::string MathML string as the condition term for this when.
      *
      * @param value The @c std::string MathML string of the condition to set.
      */
@@ -67,7 +50,7 @@ public:
     /**
      * @brief Get the condition term for this when.
      *
-     * Get the MathML string as the condition term for this when.
+     * Get the @c std::string MathML string as the condition term for this when.
      *
      * @return The @c std::string MathML string of the condition.
      */
@@ -76,7 +59,7 @@ public:
     /**
      * @brief Set the value term for this when.
      *
-     * Set the MathML string as the value term for this when.
+     * Set the @c std::string MathML string as the value term for this when.
      *
      * @param value The @c std::string MathML string of the value to set.
      */

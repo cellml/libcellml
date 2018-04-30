@@ -30,7 +30,7 @@ namespace libcellml {
  */
 struct Reset::ResetImpl
 {
-    int mOrder; /**< An integer for determining relative order.*/
+    int mOrder = 0; /**< An integer for determining relative order.*/
     VariablePtr mVariable; /**< .*/
     std::vector<WhenPtr>::iterator findWhen(const WhenPtr &when);
     std::vector<WhenPtr> mWhens;
@@ -54,6 +54,7 @@ Reset::~Reset()
 
 Reset::Reset(const Reset& rhs)
     : Entity(rhs)
+    , OrderedEntity(rhs)
     , mPimpl(new ResetImpl())
 {
     mPimpl->mOrder = rhs.mPimpl->mOrder;
@@ -63,6 +64,7 @@ Reset::Reset(const Reset& rhs)
 
 Reset::Reset(Reset &&rhs)
     : Entity(std::move(rhs))
+    , OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -71,6 +73,7 @@ Reset::Reset(Reset &&rhs)
 Reset& Reset::operator=(Reset e)
 {
     Entity::operator= (e);
+    OrderedEntity::operator= (e);
     e.swap(*this);
     return *this;
 }
@@ -88,16 +91,6 @@ void Reset::setVariable(VariablePtr variable)
 VariablePtr Reset::getVariable() const
 {
     return mPimpl->mVariable;
-}
-
-void Reset::setOrder(int order)
-{
-    mPimpl->mOrder = order;
-}
-
-int Reset::getOrder() const
-{
-    return mPimpl->mOrder;
 }
 
 void Reset::addWhen(const WhenPtr &when)
@@ -131,7 +124,7 @@ bool Reset::removeWhen(const WhenPtr &when)
 
 void Reset::removeAllWhens()
 {
-
+    mPimpl->mWhens.clear();
 }
 
 bool Reset::containsWhen(const WhenPtr &when) const
@@ -179,7 +172,7 @@ bool Reset::replaceWhen(size_t index, const WhenPtr &when)
 
 size_t Reset::whenCount() const
 {
-    return 1;
+    return mPimpl->mWhens.size();
 }
 
 }

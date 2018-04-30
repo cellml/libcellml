@@ -34,13 +34,16 @@ set(SWIG_INTERFACE_SRCS
     ../interface/logger.i
     ../interface/model.i
     ../interface/namedentity.i
+    ../interface/orderedentity.i
     ../interface/parser.i
     ../interface/printer.i
+    ../interface/reset.i
     ../interface/specificationrule.i
     ../interface/units.i
     ../interface/validator.i
     ../interface/variable.i
     ../interface/version.i
+    ../interface/when.i
 )
 
 # Configure for C++
