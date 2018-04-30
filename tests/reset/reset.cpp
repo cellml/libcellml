@@ -27,9 +27,15 @@ TEST(Reset, create) {
 TEST(Reset, order) {
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
+
+    EXPECT_FALSE(r->isOrderSet());
     r->setOrder(1);
 
     EXPECT_EQ(1, r->getOrder());
+    EXPECT_TRUE(r->isOrderSet());
+
+    r->unsetOrder();
+    EXPECT_FALSE(r->isOrderSet());
 }
 
 TEST(Reset, addAndCountChildren) {
@@ -240,14 +246,35 @@ TEST(Reset, printResetWithMultipleWhens) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Reset, printResetWithWhenWithValueSet) {
+    const std::string e = "<reset>"
+                              "<when>"
+                                  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                      "a value set"
+                                  "</math>"
+                              "</when>"
+                          "</reset>";
+
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    w->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">a value set</math>");
+    r->addWhen(w);
+
+    libcellml::Printer p;
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Reset, printResetWithMultipleWhensWithValues) {
     std::string e = "<reset variable=\"A\">"
                         "<when order=\"2\">"
-                            "<math  xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                                 "some mathml"
                             "</math>"
                         "</when>"
-                        "<when order=\"1\">"
+                        "<when order=\"-1\">"
                             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                                 "some condition in mathml"
                             "</math>"
@@ -260,14 +287,17 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
+    v->setName("A");
     w1->setOrder(2);
-    w1->setCondition("some mathml");
+    w1->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some mathml</math>");
 
-    w2->setOrder(1);
-    w2->setCondition("some condition in mathml");
-    w2->setValue("some value in mathml");
+    w2->setOrder(-1);
+    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some condition in mathml</math>");
+    w2->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some value in mathml</math>");
 
+    r->setVariable(v);
     r->addWhen(w1);
     r->addWhen(w2);
 
@@ -277,3 +307,28 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Reset, printResetWithMultipleWhensWithOrders) {
+    std::string e = "<reset>"
+                        "<when order=\"7\"/>"
+                        "<when order=\"-1\"/>"
+                        "<when order=\"0\"/>"
+                    "</reset>";
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
+
+    r->addWhen(w1);
+    r->addWhen(w2);
+    r->addWhen(w3);
+
+    w1->setOrder(7);
+    w2->setOrder(-1);
+    w3->setOrder(0);
+
+    libcellml::Printer p;
+
+    const std::string a = p.printReset(r);
+    EXPECT_EQ(e, a);
+}

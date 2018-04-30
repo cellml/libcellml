@@ -171,10 +171,27 @@ std::string Printer::printComponent(Component component) const
 
 std::string Printer::printReset(ResetPtr reset) const
 {
-    std::string repr = "";
+    std::string repr = "<reset";
     std::string id = reset->getId();
     if (id.length()) {
         repr += " id=\"" + id + "\"";
+    }
+    VariablePtr variable = reset->getVariable();
+    if (variable) {
+        repr += " variable=\"" + variable->getName() + "\"";
+    }
+    if (reset->isOrderSet()) {
+        repr += " order=\"" + convertIntToString(reset->getOrder()) + "\"";
+    }
+    size_t when_count = reset->whenCount();
+    if (when_count > 0) {
+        repr += ">";
+        for (size_t i = 0; i < when_count; ++i) {
+            repr += printWhen(reset->getWhen(i));
+        }
+        repr += "</reset>";
+    } else {
+        repr += "/>";
     }
     return repr;
 }
@@ -186,10 +203,32 @@ std::string Printer::printReset(Reset reset) const
 
 std::string Printer::printWhen(WhenPtr when) const
 {
-    std::string repr = "";
+    std::string repr = "<when";
     std::string id = when->getId();
     if (id.length()) {
         repr += " id=\"" + id + "\"";
+    }
+    if (when->isOrderSet()) {
+        repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
+    }
+    std::string condition = when->getCondition();
+    size_t condition_length = condition.length();
+    if (condition_length) {
+        repr += ">";
+        repr += condition;
+    }
+    std::string value = when->getValue();
+    size_t value_length = value.length();
+    if (value_length) {
+        if (!condition_length) {
+            repr += ">";
+        }
+        repr += value;
+    }
+    if (condition_length || value_length) {
+        repr += "</when>";
+    } else {
+        repr += "/>";
     }
     return repr;
 }
