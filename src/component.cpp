@@ -205,5 +205,40 @@ bool Component::hasVariable(const std::string &name) const
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
 
+void Component::addReset(const ResetPtr &/*r*/)
+{
+
+}
+
+bool Component::removeReset(size_t /*index*/)
+{
+    return false;
+}
+
+bool Component::removeReset(const ResetPtr &/*reset*/)
+{
+    return false;
+}
+
+void Component::removeAllResets()
+{
+
+}
+
+ResetPtr Component::getReset(size_t /*index*/) const
+{
+    return nullptr;
+}
+
+size_t Component::resetCount() const
+{
+    return 0;
+}
+
+bool Component::hasReset(const ResetPtr &/*reset*/) const
+{
+    return false;
+}
+
 }
 
