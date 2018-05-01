@@ -1417,3 +1417,43 @@ TEST(Parser, parseIds) {
     EXPECT_EQ("u3id", model->getUnits("units3")->getId());
     EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
 }
+
+TEST(Parser, parseResets) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
+                "<component name=\"component2\" id=\"c2id\">"
+                    "<variable name=\"variable1\" id=\"vid\"/>"
+                    "<reset order=\"1\" id=\"rid\">"
+                        "<when order=\"5\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                        "</when>"
+                        "<when order=\"3\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                "</component>"
+            "</model>";
+
+    libcellml::Parser p;
+    libcellml::ModelPtr model = p.parseModel(in);
+
+    libcellml::ComponentPtr c = model->getComponent(0);
+    EXPECT_EQ(1, c->resetCount());
+
+    libcellml::ResetPtr r = c->getReset(0);
+    EXPECT_EQ(2, r->whenCount());
+
+    libcellml::WhenPtr w = r->getWhen(1);
+    EXPECT_EQ(3, w->getOrder());
+}
