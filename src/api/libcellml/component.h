@@ -213,6 +213,89 @@ public:
      */
     bool hasVariable(const std::string &name) const;
 
+    /**
+     * @brief Add a reset by reference as part of this component.
+     *
+     * Add a reset by reference as part of the given component.
+     *
+     * @sa removeReset
+     *
+     * @param r The reset to add.
+     */
+    void addReset(const ResetPtr &r);
+
+    /**
+     * @brief Remove the reset at the given @p index from this component.
+     *
+     * Remove the reset at the given index from this component.
+     * If the index is not valid @c false is returned, the valid
+     * range for the index is [0, #resets).
+     *
+     * @sa addReset
+     *
+     * @param index The index of the reset to remove.
+     *
+     * @return True if the reset was removed, false otherwise.
+     */
+    bool removeReset(size_t index);
+
+    /**
+     * @brief Remove the reset by the given @p reset pointer from this component.
+     *
+     * Remove the reset with the given pointer from this component.
+     *
+     * @sa addReset
+     *
+     * @overload
+     *
+     * @param reset The pointer to the reset to remove.
+     *
+     * @return True if the reset was removed, false otherwise.
+     */
+    bool removeReset(const ResetPtr &reset);
+
+    /**
+     * @brief Remove all resets stored in this component.
+     *
+     * Clears all resets that have been added to this component.
+     */
+    void removeAllResets();
+
+    /**
+     * @brief Get a reset at index.
+     *
+     * Returns a reference to a reset at the index @p index for this
+     * component. If the index is not valid a @c nullptr is returned, the valid
+     * range for the index is [0, #resets).
+     *
+     * @param index The index of the reset to return.
+     *
+     * @return A reference to the reset at the given index on success, @c nullptr otherwise.
+     */
+    ResetPtr getReset(size_t index) const;
+
+    /**
+     * @brief Get the number of resets in the component.
+     *
+     * Returns the number of resets the component contains.
+     *
+     * @return the number of resets.
+     */
+    size_t resetCount() const;
+
+    /**
+     * @brief Test whether the argument @p reset is in this component.
+     *
+     * Tests whether the argument @p reset exists in the set of this component's
+     * resets. Returns @c true if the @p reset is in this component's
+     * resets and @c false otherwise.
+     *
+     * @param reset The reset to check for in this component.
+     *
+     * @return @c true if the @p reset is in this component and @c false otherwise.
+     */
+    bool hasReset(const ResetPtr &reset) const;
+
 private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
 
