@@ -26,7 +26,7 @@ namespace libcellml {
 bool convertToDouble(const std::string &candidate, double *value)
 {
     bool canConvert = false;
-    // Try to convert the input string to double.
+    // Try to convert the candidate string to double.
     try
     {
         double tmp = std::stod(candidate);
@@ -51,6 +51,24 @@ std::string convertDoubleToString(double value)
     std::ostringstream strs;
     strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
     return strs.str();
+}
+
+bool convertToInt(const std::string &candidate, int *value)
+{
+    bool canConvert = false;
+    // Try to convert the candidate string to int.
+    try
+    {
+        int tmp = std::stoi(candidate);
+        if (value) {
+            *value = tmp;
+        }
+        canConvert = true;
+    } catch (...) {
+        canConvert = false;
+    }
+
+    return canConvert;
 }
 
 std::string convertIntToString(int value)

@@ -38,6 +38,8 @@ struct Component::ComponentImpl
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
     std::vector<VariablePtr> mVariables;
+    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
+    std::vector<ResetPtr> mResets;
 };
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
@@ -50,6 +52,12 @@ std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const 
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
                         [=](const VariablePtr& v) -> bool { return v == variable; });
+}
+
+std::vector<ResetPtr>::iterator Component::ComponentImpl::findReset(const ResetPtr &reset)
+{
+    return std::find_if(mResets.begin(), mResets.end(),
+                        [=](const ResetPtr& r) -> bool { return r == reset; });
 }
 
 Component::Component()
@@ -73,6 +81,7 @@ Component::Component(const Component& rhs)
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mVariables = rhs.mPimpl->mVariables;
+    mPimpl->mResets = rhs.mPimpl->mResets;
     mPimpl->mMath = rhs.mPimpl->mMath;
 }
 
@@ -205,39 +214,57 @@ bool Component::hasVariable(const std::string &name) const
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
 
-void Component::addReset(const ResetPtr &/*r*/)
+void Component::addReset(const ResetPtr &r)
 {
-
+    mPimpl->mResets.push_back(r);
 }
 
-bool Component::removeReset(size_t /*index*/)
+bool Component::removeReset(size_t index)
 {
-    return false;
+    bool status = false;
+    if (index < mPimpl->mResets.size()) {
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + index);
+        status = true;
+    }
+
+    return status;
 }
 
-bool Component::removeReset(const ResetPtr &/*reset*/)
+bool Component::removeReset(const ResetPtr &reset)
 {
-    return false;
+    bool status = false;
+    auto result = mPimpl->findReset(reset);
+    if (result != mPimpl->mResets.end()) {
+        mPimpl->mResets.erase(result);
+        status = true;
+    }
+
+    return status;
 }
 
 void Component::removeAllResets()
 {
-
+    mPimpl->mResets.clear();
 }
 
-ResetPtr Component::getReset(size_t /*index*/) const
+ResetPtr Component::getReset(size_t index) const
 {
-    return nullptr;
+    ResetPtr reset = nullptr;
+    if (index < mPimpl->mResets.size()) {
+        reset = mPimpl->mResets.at(index);
+    }
+
+    return reset;
 }
 
 size_t Component::resetCount() const
 {
-    return 0;
+    return mPimpl->mResets.size();
 }
 
-bool Component::hasReset(const ResetPtr &/*reset*/) const
+bool Component::hasReset(const ResetPtr &reset) const
 {
-    return false;
+    return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
 }
