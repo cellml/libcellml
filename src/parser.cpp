@@ -24,6 +24,8 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
+#include "libcellml/reset.h"
+#include "libcellml/when.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -150,6 +152,30 @@ struct Parser::ParserImpl
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
     void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p reset with attributes parsed from the @p node.
+     *
+     * Update the @p reset with attributes parsed from
+     * the XML @p node. Existing attributes in @p reset with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param reset The @c ResetPtr to update.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
+    void loadReset(const ResetPtr &reset, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p when with attributes parsed from the @p node.
+     *
+     * Update the @p when with attributes parsed from
+     * the XML @p node. Existing attributes in @p when with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param when The @c WhenPtr to update.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
+    void loadWhen(const WhenPtr &when, const XmlNodePtr &node);
 };
 
 Parser::Parser()
@@ -342,6 +368,10 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             VariablePtr variable = std::make_shared<Variable>();
             loadVariable(variable, childNode);
             component->addVariable(variable);
+        } else if (childNode->isType("reset")) {
+            ResetPtr reset = std::make_shared<Reset>();
+            loadReset(reset, childNode);
+            component->addReset(reset);
         } else if (childNode->isType("math")) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
@@ -1122,6 +1152,74 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             mParser->addError(err);
         }
         childNode = childNode->getNext();
+    }
+}
+
+void Parser::ParserImpl::loadReset(const ResetPtr &reset, const XmlNodePtr &node)
+{
+    int order = 0;
+    bool orderDefined = false;
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    while (attribute) {
+        if (attribute->isType("order")) {
+            if (convertToInt(attribute->getValue(), &order)) {
+                orderDefined = true;
+            }
+        } else if (attribute->isType("id")) {
+            reset->setId(attribute->getValue());
+        } else {
+        }
+        attribute = attribute->getNext();
+    }
+    XmlNodePtr childNode = node->getFirstChild();
+    while (childNode) {
+        if (childNode->isType("when")) {
+            WhenPtr when = std::make_shared<When>();
+            loadWhen(when, childNode);
+            reset->addWhen(when);
+        }
+        childNode = childNode->getNext();
+    }
+    if (orderDefined) {
+        reset->setOrder(order);
+    }
+}
+
+void Parser::ParserImpl::loadWhen(const WhenPtr &when, const XmlNodePtr &node)
+{
+    int order = 0;
+    bool orderDefined = false;
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    while (attribute) {
+        if (attribute->isType("order")) {
+            if (convertToInt(attribute->getValue(), &order)) {
+                orderDefined = true;
+            }
+        } else if (attribute->isType("id")) {
+            when->setId(attribute->getValue());
+        }
+        attribute = attribute->getNext();
+    }
+
+    bool conditionRead = false;
+    XmlNodePtr childNode = node->getFirstChild();
+    while (childNode) {
+        if (childNode->isType("math")) {
+            // TODO: copy any namespaces declared in parents into the math element
+            //       so math is a valid subdocument.
+            std::string math = childNode->convertToString();
+            if (conditionRead) {
+                when->setValue(math);
+            } else {
+                when->setCondition(math);
+                conditionRead = true;
+            }
+        }
+        childNode = childNode->getNext();
+    }
+
+    if (orderDefined) {
+        when->setOrder(order);
     }
 }
 

@@ -1433,7 +1433,7 @@ TEST(Parser, parseResets) {
                                 "some value in mathml"
                             "</math>"
                         "</when>"
-                        "<when order=\"3\">"
+                        "<when order=\"3\" id=\"wid\">"
                             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                                 "some condition in mathml"
                             "</math>"
@@ -1452,6 +1452,7 @@ TEST(Parser, parseResets) {
     EXPECT_EQ(1, c->resetCount());
 
     libcellml::ResetPtr r = c->getReset(0);
+    EXPECT_EQ(1, r->getOrder());
     EXPECT_EQ(2, r->whenCount());
 
     libcellml::WhenPtr w = r->getWhen(1);

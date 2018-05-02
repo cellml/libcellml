@@ -150,10 +150,18 @@ std::string Printer::printComponent(ComponentPtr component) const
         repr += " id=\"" + component->getId() + "\"";
     }
     size_t variable_count = component->variableCount();
-    if ((variable_count > 0) || (component->getMath().length())) {
+    size_t reset_count = component->resetCount();
+    bool hasChildren = false;
+    if (variable_count > 0 || reset_count > 0 || component->getMath().length()) {
+        hasChildren = true;
+    }
+    if (hasChildren) {
         repr += ">";
         for (size_t i = 0; i < variable_count; ++i) {
             repr += printVariable(component->getVariable(i));
+        }
+        for (size_t i =0; i < reset_count; ++i) {
+            repr += printReset(component->getReset(i));
         }
         repr += component->getMath();
         repr += "</component>";
@@ -173,15 +181,15 @@ std::string Printer::printReset(ResetPtr reset) const
 {
     std::string repr = "<reset";
     std::string id = reset->getId();
-    if (id.length()) {
-        repr += " id=\"" + id + "\"";
-    }
     VariablePtr variable = reset->getVariable();
     if (variable) {
         repr += " variable=\"" + variable->getName() + "\"";
     }
     if (reset->isOrderSet()) {
         repr += " order=\"" + convertIntToString(reset->getOrder()) + "\"";
+    }
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
     }
     size_t when_count = reset->whenCount();
     if (when_count > 0) {
@@ -205,11 +213,11 @@ std::string Printer::printWhen(WhenPtr when) const
 {
     std::string repr = "<when";
     std::string id = when->getId();
-    if (id.length()) {
-        repr += " id=\"" + id + "\"";
-    }
     if (when->isOrderSet()) {
         repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
+    }
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
     }
     std::string condition = when->getCondition();
     size_t condition_length = condition.length();

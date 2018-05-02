@@ -274,7 +274,7 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
                                 "some mathml"
                             "</math>"
                         "</when>"
-                        "<when order=\"-1\">"
+                        "<when order=\"-1\" id=\"wid\">"
                             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                                 "some condition in mathml"
                             "</math>"
@@ -296,6 +296,7 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
     w2->setOrder(-1);
     w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some condition in mathml</math>");
     w2->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some value in mathml</math>");
+    w2->setId("wid");
 
     r->setVariable(v);
     r->addWhen(w1);
@@ -336,17 +337,37 @@ TEST(Reset, addRemoveResetFromComponentMethods) {
     const std::string in = "valid_name";
     const std::string e1 =
             "<component name=\"valid_name\">"
-                "<reset/>"
+                "<variable name=\"V_na\"/>"
+                "<reset variable=\"V_na\">"
+                    "<when order=\"3\"/>"
+                    "<when order=\"0\"/>"
+                "</reset>"
+                "<reset variable=\"V_na\">"
+                    "<when order=\"1\"/>"
+                "</reset>"
             "</component>";
 
     const std::string e2 =
             "<component name=\"valid_name\">"
-                "<reset>"
-                    "<when />"
+                "<variable name=\"V_na\"/>"
+                "<reset variable=\"V_na\">"
+                    "<when order=\"3\"/>"
+                    "<when order=\"0\"/>"
                 "</reset>"
             "</component>";
 
-    const std::string e3 = "<component name=\"valid_name\"/>";
+    const std::string e3 =
+            "<component name=\"valid_name\">"
+                "<variable name=\"V_na\"/>"
+            "</component>";
+
+    const std::string e4 =
+            "<component name=\"valid_name\">"
+                "<variable name=\"V_na\"/>"
+                "<reset variable=\"V_na\">"
+                    "<when order=\"1\"/>"
+                "</reset>"
+            "</component>";
 
     libcellml::Component c;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -394,10 +415,10 @@ TEST(Reset, addRemoveResetFromComponentMethods) {
     c.addReset(r2);
     c.addReset(r3);
 
-    EXPECT_TRUE(c.removeReset(0)); // v1
-    EXPECT_TRUE(c.removeReset(1)); // new index of v3
+    EXPECT_TRUE(c.removeReset(0)); // r1
+    EXPECT_TRUE(c.removeReset(1)); // new index of r3
     a = printer.printComponent(c);
-    EXPECT_EQ(e1, a);
+    EXPECT_EQ(e4, a);
     EXPECT_FALSE(c.removeReset(1));
 }
 
