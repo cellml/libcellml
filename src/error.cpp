@@ -38,6 +38,8 @@ struct Error::ErrorImpl
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
     UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
+    ResetPtr mReset; /**< Pointer to the reset that the error ocurred in. */
+    WhenPtr mWhen; /**< Pointer to the when that the error ocurred in. */
 };
 
 Error::Error()
@@ -55,11 +57,14 @@ Error::Error(const Error& rhs)
 {
     mPimpl->mDescription = rhs.mPimpl->mDescription;
     mPimpl->mKind = rhs.mPimpl->mKind;
+    mPimpl->mRule = rhs.mPimpl->mRule;
     mPimpl->mComponent = rhs.mPimpl->mComponent;
     mPimpl->mImportSource = rhs.mPimpl->mImportSource;
     mPimpl->mModel = rhs.mPimpl->mModel;
     mPimpl->mUnits = rhs.mPimpl->mUnits;
     mPimpl->mVariable = rhs.mPimpl->mVariable;
+    mPimpl->mReset = rhs.mPimpl->mReset;
+    mPimpl->mWhen = rhs.mPimpl->mWhen;
 }
 
 Error::Error(Error &&rhs)
@@ -166,6 +171,26 @@ void Error::setVariable(const VariablePtr &variable)
 VariablePtr Error::getVariable() const
 {
     return mPimpl->mVariable;
+}
+
+void Error::setReset(const ResetPtr &reset)
+{
+    mPimpl->mReset = reset;
+}
+
+ResetPtr Error::getReset() const
+{
+    return mPimpl->mReset;
+}
+
+void Error::setWhen(const WhenPtr &when)
+{
+    mPimpl->mWhen = when;
+}
+
+WhenPtr Error::getWhen() const
+{
+    return mPimpl->mWhen;
 }
 
 /**
