@@ -1357,7 +1357,7 @@ TEST(Parser, invalidModelWithTextInAllElements) {
                 "</encapsulation>\n"
             "</model>";
 
-    const std::vector<const std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid non-whitespace child text element '\nepisode7\n'.",
         "Import from 'sith.xml' has an invalid non-whitespace child text element 'kylo'.",
         "Units 'robot' has an invalid non-whitespace child text element 'bb-8'.",
@@ -1528,7 +1528,7 @@ TEST(Parser, parseResetsWithNumerousErrors) {
                 "</component>"
             "</model>";
 
-    const std::vector<const std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Reset in component 'component2' referencing variable '' has a non-integer order value '1.3'.",
         "Reset in component 'component2' does not reference a variable in the component.",
         "Reset in component 'component2' referencing variable '' does not have an order defined.",
