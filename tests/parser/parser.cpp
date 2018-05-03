@@ -1464,8 +1464,8 @@ TEST(Parser, parseResetsWithNumerousErrors) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
                 "<component name=\"component2\" id=\"c2id\">"
-            "<variable name=\"variable1\" id=\"vid\"/>"
-            "<variable name=\"V_k\" id=\"vid\"/>"
+                    "<variable name=\"variable1\" id=\"vid\"/>"
+                    "<variable name=\"V_k\" id=\"vid\"/>"
                     "<reset order=\"1.3\" id=\"rid\">"
                         "<when order=\"-0\" change=\"$4.50\">"
                             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
@@ -1562,4 +1562,32 @@ TEST(Parser, parseResetsWithNumerousErrors) {
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
+}
+
+TEST(Parser, parseResetsCheckResetObjectCheckWhenObject) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
+                "<component name=\"component2\" id=\"c2id\">"
+                    "<variable name=\"variable1\" id=\"vid\"/>"
+                    "<variable name=\"V_k\" id=\"vid\"/>"
+                    "<reset variable=\"V_k\" order=\"a\" id=\"rid\">"
+                        "<when order=\"5.9\" goods=\"socks\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                "</component>"
+            "</model>";
+
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(in);
+
+    libcellml::ResetPtr resetExpected = model->getComponent(0)->getReset(0);
+    libcellml::WhenPtr whenExpected = resetExpected->getWhen(0);
+
+    EXPECT_EQ(5, parser.errorCount());
+    EXPECT_EQ(resetExpected, parser.getError(1)->getReset());
+    EXPECT_EQ(whenExpected, parser.getError(2)->getWhen());
 }
