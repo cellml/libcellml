@@ -67,7 +67,8 @@ bool convertToInt(const std::string &candidate, int *value)
     try
     {
         int startIndex = 0;
-        if (*candidate.begin() == '-') {
+        if (candidate.length() > 0 &&
+                *candidate.begin() == '-') {
             startIndex = 1;
         }
         if (std::all_of(candidate.begin() + startIndex, candidate.end(), isCellMLIntegerCharacter)) {
