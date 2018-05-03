@@ -51,7 +51,7 @@ public:
      * @brief Remove the units at the given @p index.
      *
      * Remove the units from this model at the given @p index.
-     * @p index must be in the range [0, #units).
+     * @p index must be in the range [0, \#units).
      *
      * @param index The index of the units to remove.
      *
@@ -112,7 +112,7 @@ public:
      *
      * Returns a reference to a units at the given @p index.  If the @p index
      * is not valid a @c nullptr is returned, the range of valid values for the
-     * index is [0, #units).
+     * index is [0, \#units).
      *
      * @overload
      *
@@ -140,7 +140,7 @@ public:
      * @brief Take the units at the given @p index and return it.
      *
      * Removes the units at the given @p index position and returns it.
-     * @p index must be in the range [0, #units).
+     * @p index must be in the range [0, \#units).
      *
      * @param index The index of the units to take.
      *
@@ -166,7 +166,7 @@ public:
      * @brief Replace a units at the given @p index.
      *
      * Replaces the units at the given @p index with @p units.
-     * @p index must be in the range [0, #units).
+     * @p index must be in the range [0, \#units).
      *
      * @param index Index of the units to replace.
      * @param units The units to use for replacement.

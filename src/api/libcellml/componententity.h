@@ -61,7 +61,7 @@ public:
      * @brief Remove the component at the given @p index.
      *
      * Remove the component with the given @p index. @p index must
-     * be in the range [0, #components).
+     * be in the range [0, \#components).
      *
      * @param index The index of the component to remove.
      *
@@ -147,7 +147,7 @@ public:
      * @brief Get a component at the given @p index.
      *
      * Returns a reference to a component at the given @p index.  @p index must
-     * be in the range [0, #components).
+     * be in the range [0, \#components).
      *
      * @overload
      *
@@ -178,7 +178,7 @@ public:
      * @brief Take the component at the given @p index and return it.
      *
      * Removes the component at the given @p index position and returns it.
-     * @p index must be in the range [0, #components).
+     * @p index must be in the range [0, \#components).
      *
      * @param index The index of the Component to take.
      *
@@ -207,7 +207,7 @@ public:
      * @brief Replace a component at the given @p index.
      *
      * Replaces the component at the @p index with component @p c. @p index must be in
-     * the range [0, #components).
+     * the range [0, \#components).
      *
      * @param index Index of the Component to replace.
      * @param c The component to be used as a replacement.
@@ -219,7 +219,7 @@ public:
     /**
      * @brief Replace a component with the given @p name.
      *
-     * Replaces the component with the given @p name with @p c. If @p searchEncapsulated
+     * Replaces the component with the given @p name with @p component. If @p searchEncapsulated
      * is @c true (default) this will also search for the named component through this component's
      * encapsulated components. If @p name is not found in the components children then no replacement
      * is made.
@@ -227,7 +227,7 @@ public:
      * @overload
      *
      * @param name The name of the Component to replace.
-     * @param c The Component to use for replacement.
+     * @param component The Component to use for replacement.
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the component with the specified @p name. Default value is @c true.
      *
