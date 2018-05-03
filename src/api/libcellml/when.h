@@ -43,7 +43,7 @@ public:
      *
      * Set the @c std::string MathML string as the condition term for this when.
      *
-     * @param value The @c std::string MathML string of the condition to set.
+     * @param condition The @c std::string MathML string of the condition to set.
      */
     void setCondition(const std::string& condition);
 
