@@ -92,7 +92,7 @@ public:
      *
      * Remove the variable at the given index from this component.
      * If the index is not valid @c false is returned, the valid
-     * range for the index is [0, #variables).
+     * range for the index is [0, \#variables).
      * If the variable to be removed is in a connection (is equivalent to
      * another variable), this component will not be serialised in the
      * connection.
@@ -153,7 +153,7 @@ public:
      *
      * Returns a reference to a variable at the index @p index for this
      * component. If the index is not valid a @c nullptr is returned, the valid
-     * range for the index is [0, #variables).
+     * range for the index is [0, \#variables).
      *
      * @param index The index of the variable to return.
      *
@@ -229,7 +229,7 @@ public:
      *
      * Remove the reset at the given index from this component.
      * If the index is not valid @c false is returned, the valid
-     * range for the index is [0, #resets).
+     * range for the index is [0, \#resets).
      *
      * @sa addReset
      *
@@ -266,7 +266,7 @@ public:
      *
      * Returns a reference to a reset at the index @p index for this
      * component. If the index is not valid a @c nullptr is returned, the valid
-     * range for the index is [0, #resets).
+     * range for the index is [0, \#resets).
      *
      * @param index The index of the reset to return.
      *

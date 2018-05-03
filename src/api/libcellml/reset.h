@@ -59,9 +59,9 @@ public:
     /**
      * @brief Add a child when to this Reset.
      *
-     * Add a copy of the given @c When as a child When of this @c Reset.
+     * Add a copy of the given @p when as a child @c When of this @c Reset.
      *
-     * @param w The When to add.
+     * @param when The When to add.
      */
     void addWhen(const WhenPtr &when);
 
@@ -69,7 +69,7 @@ public:
      * @brief Remove the when at the given @p index.
      *
      * Remove the when with the given @p index. @p index must
-     * be in the range [0, #whens).
+     * be in the range [0, \#whens).
      *
      * @param index The index of the when to remove.
      *
@@ -117,7 +117,7 @@ public:
      * @brief Get a when at the given @p index.
      *
      * Returns a reference to a when at the given @p index.  @p index must
-     * be in the range [0, #whens).
+     * be in the range [0, \#whens).
      *
      * @overload
      *
@@ -131,7 +131,7 @@ public:
      * @brief Take the when at the given @p index and return it.
      *
      * Removes the when at the given @p index position and returns it.
-     * @p index must be in the range [0, #Whens).
+     * @p index must be in the range [0, \#Whens).
      *
      * @param index The index of the when to take.
      *
@@ -143,7 +143,7 @@ public:
      * @brief Replace a when at the given @p index.
      *
      * Replaces the when at the @p index with when @p when. @p index must be in
-     * the range [0, #whens).
+     * the range [0, \#whens).
      *
      * @param index Index of the when to replace.
      * @param when The when to be used as a replacement.
