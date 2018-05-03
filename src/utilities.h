@@ -56,7 +56,10 @@ std::string convertDoubleToString(double value);
  * Try to convert the @p candidate @c std::string to an @c int. If @p candidate
  * cannot be converted using @c std::stoi, catch the exception and return
  * @c false. If @p candidate can be converted, return @c true.  The value of the
- * converted candidate will be set to @p value.
+ * converted candidate will be set to @p value.   The @p candidate
+ * string may only use the characters '0123456789' and possibly begin with the sign
+ * indicator '-'.  If the string contains any other character that is not in this
+ * set then the candidate string will not be converted and false is returned.
  *
  * @param candidate The @c std::string value to try to convert to an @c int.
  * @param value The @c int value of the candidate if valid.

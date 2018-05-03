@@ -20,6 +20,8 @@ limitations under the License.
 #include <iomanip>
 #include <limits>
 #include <sstream>
+#include <algorithm>
+#include <set>
 
 namespace libcellml {
 
@@ -53,22 +55,33 @@ std::string convertDoubleToString(double value)
     return strs.str();
 }
 
+bool isCellMLIntegerCharacter(char c) {
+    const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    return validIntegerCharacters.find(c) != validIntegerCharacters.end();
+}
+
 bool convertToInt(const std::string &candidate, int *value)
 {
-    bool canConvert = false;
+    bool conversionSuccessful = false;
     // Try to convert the candidate string to int.
     try
     {
-        int tmp = std::stoi(candidate);
-        if (value) {
-            *value = tmp;
+        int startIndex = 0;
+        if (*candidate.begin() == '-') {
+            startIndex = 1;
         }
-        canConvert = true;
+        if (std::all_of(candidate.begin() + startIndex, candidate.end(), isCellMLIntegerCharacter)) {
+            int tmp = std::stoi(candidate);
+            if (value) {
+                *value = tmp;
+                conversionSuccessful = true;
+            }
+        }
     } catch (...) {
-        canConvert = false;
+        conversionSuccessful = false;
     }
 
-    return canConvert;
+    return conversionSuccessful;
 }
 
 std::string convertIntToString(int value)
