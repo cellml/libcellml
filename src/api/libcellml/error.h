@@ -51,9 +51,11 @@ public:
         IMPORT,
         MATHML,
         MODEL,
+        RESET,
         UNDEFINED,
         UNITS,
         VARIABLE,
+        WHEN,
         XML
     };
 
@@ -232,6 +234,44 @@ public:
      * If no variable has been set for this error, return a @c nullptr.
      */
     VariablePtr getVariable() const;
+
+    /**
+     * @brief Set the reset for this error.
+     *
+     * Set the @p reset that this error is relevant to.
+     *
+     * @param reset A pointer to the reset this error is relevant to.
+     */
+    void setReset(const ResetPtr &reset);
+
+    /**
+     * @brief Get the reset for this error.
+     *
+     * Get the reset that this error is relevant to.
+     *
+     * @return A pointer to the reset this reset error was raised on.
+     * If no reset has been set for this error, return a @c nullptr.
+     */
+    ResetPtr getReset() const;
+
+    /**
+     * @brief Set the when for this error.
+     *
+     * Set the @p when that this error is relevant to.
+     *
+     * @param when A pointer to the when this error is relevant to.
+     */
+    void setWhen(const WhenPtr &when);
+
+    /**
+     * @brief Get the when for this error.
+     *
+     * Get the when that this error is relevant to.
+     *
+     * @return A pointer to the when this when error was raised on.
+     * If no when has been set for this error, return a @c nullptr.
+     */
+    WhenPtr getWhen() const;
 
 private:
     void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */

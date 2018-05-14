@@ -73,10 +73,6 @@ public:
      * @brief Get the value of this XmlAttribute.
      *
      * Gets the value of this XmlAttribute and returns it as a @c std::string.
-     * If an optional @p ns namespace argument is supplied, this will return the 
-     * value in the specified namespace if it exists.
-     *
-     * @param ns The namespace to get the attribute value from. Defaults to no namespace.
      *
      * @return The @c std::string corresponding with the value of this XmlAttribute.
      */

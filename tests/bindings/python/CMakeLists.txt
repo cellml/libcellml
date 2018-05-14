@@ -9,19 +9,22 @@ set(TEST_SRCS
   test_logger.py
   test_model.py
   test_named_entity.py
+  test_ordered_entity.py
   test_parser.py
   test_printer.py
+  test_reset.py
   test_units.py
   test_variable.py
   test_validator.py
   test_version.py
+  test_when.py
 )
 
 foreach(_TEST ${TEST_SRCS})
   configure_file(${_TEST} ${_TEST} COPYONLY)
   get_filename_component(_TEST_NAME ${_TEST} NAME_WE)
   set(_TEST_NAME python_${_TEST_NAME})
-  add_test(NAME ${_TEST_NAME} COMMAND ${PYTHON_EXECUTABLE} ${_TEST})
+  add_test(NAME ${_TEST_NAME} COMMAND ${Python_EXECUTABLE} ${_TEST})
   if (WIN32)
     if (TARGET xml2)
       set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")

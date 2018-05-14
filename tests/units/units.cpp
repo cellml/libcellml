@@ -28,7 +28,7 @@ TEST(Units, validName) {
 
     libcellml::Model m;
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();;
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("valid_name");
 
     m.addUnits(u);

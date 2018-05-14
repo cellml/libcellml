@@ -36,6 +36,7 @@
 %ignore libcellml::Printer::printUnits(Units units) const;
 %ignore libcellml::Printer::printVariable(Variable variable) const;
 %ignore libcellml::Printer::printComponent(Component component) const;
+%ignore libcellml::Printer::printReset(Reset reset) const;
 
 %include "libcellml/types.h"
 %include "libcellml/printer.h"

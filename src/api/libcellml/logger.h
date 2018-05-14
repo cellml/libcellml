@@ -68,7 +68,7 @@ public:
      *
      * Returns an error at the @p index.  If the @p index
      * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, #errors).
+     * is [0, \#errors).
      *
      * @param index The index of the error to return.
      *

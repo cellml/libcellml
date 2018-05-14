@@ -22,7 +22,6 @@ class ComponentEntityTestCase(unittest.TestCase):
 
         # Test inheritance
         x = ComponentEntity()
-        self.assertIsInstance(x, libcellml.ImportedEntity)
         self.assertIsInstance(x, libcellml.NamedEntity)
         self.assertIsInstance(x, libcellml.Entity)
 

@@ -1357,7 +1357,7 @@ TEST(Parser, invalidModelWithTextInAllElements) {
                 "</encapsulation>\n"
             "</model>";
 
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid non-whitespace child text element '\nepisode7\n'.",
         "Import from 'sith.xml' has an invalid non-whitespace child text element 'kylo'.",
         "Units 'robot' has an invalid non-whitespace child text element 'bb-8'.",
@@ -1416,4 +1416,178 @@ TEST(Parser, parseIds) {
     EXPECT_EQ("c2id", model->getComponent("component2")->getId());
     EXPECT_EQ("u3id", model->getUnits("units3")->getId());
     EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
+}
+
+TEST(Parser, parseResets) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
+                "<component name=\"component2\" id=\"c2id\">"
+                    "<variable name=\"variable1\" id=\"vid\"/>"
+                    "<reset order=\"1\" id=\"rid\">"
+                        "<when order=\"5\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                        "</when>"
+                        "<when order=\"3\" id=\"wid\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                "</component>"
+            "</model>";
+
+    libcellml::Parser p;
+    libcellml::ModelPtr model = p.parseModel(in);
+
+    libcellml::ComponentPtr c = model->getComponent(0);
+    EXPECT_EQ(1, c->resetCount());
+
+    libcellml::ResetPtr r = c->getReset(0);
+    EXPECT_EQ(1, r->getOrder());
+    EXPECT_EQ(2, r->whenCount());
+
+    libcellml::WhenPtr w = r->getWhen(1);
+    EXPECT_EQ(3, w->getOrder());
+}
+
+TEST(Parser, parseResetsWithNumerousErrors) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
+                "<component name=\"component2\" id=\"c2id\">"
+                    "<variable name=\"variable1\" id=\"vid\"/>"
+                    "<variable name=\"V_k\" id=\"vid\"/>"
+                    "<reset order=\"1.3\" id=\"rid\">"
+                        "<when order=\"-0\" change=\"$4.50\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "extra mathml node"
+                            "</math>"
+                        "</when>"
+                        "<when order=\"3\" id=\"wid\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                        "</when>"
+                        "<when order=\"3\" id=\"wid\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                    "<reset variable=\"I_na\" order=\"2\" id=\"rid\">"
+                        "<when order=\"5.9\" goods=\"socks\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                    "<reset variable=\"I_na\" order=\"2\" id=\"rid\">"
+                        "<when />"
+                    "</reset>"
+                    "<reset id=\"r3id\">"
+                        "<when order=\"\"/>"
+                    "<about>"
+                        "Some description of importance."
+                    "</about>"
+                    "</reset>"
+                    "<reset variable=\"V_k\" order=\"-\" start=\"now\"/>"
+                    "<reset variable=\"variable1\" order=\"0\">"
+                        "non empty whitespace."
+                        "<when order=\"1\">"
+                            "illegal content."
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some value in mathml"
+                            "</math>"
+                            "<variable/>"
+                        "</when>"
+                    "</reset>"
+                "</component>"
+            "</model>";
+
+    const std::vector<std::string> expectedErrors = {
+        "Reset in component 'component2' referencing variable '' has a non-integer order value '1.3'.",
+        "Reset in component 'component2' does not reference a variable in the component.",
+        "Reset in component 'component2' referencing variable '' does not have an order defined.",
+        "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
+        "When in reset referencing variable '' with order '' contains more than two MathML child elements.",
+        "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
+        "Reset in component 'component2' does not reference a variable in the component.",
+        "When in reset referencing variable '' with order '2' has an invalid attribute 'goods'.",
+        "When in reset referencing variable '' with order '2' does not have an order defined.",
+        "When in reset referencing variable '' with order '2' contains only one MathML child element.",
+        "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
+        "Reset in component 'component2' does not reference a variable in the component.",
+        "When in reset referencing variable '' with order '2' does not have an order defined.",
+        "When in reset referencing variable '' with order '2' contains zero MathML child elements.",
+        "Reset in component 'component2' does not reference a variable in the component.",
+        "Reset in component 'component2' referencing variable '' does not have an order defined.",
+        "When in reset referencing variable '' with order '' does not have an order defined.",
+        "When in reset referencing variable '' with order '' contains zero MathML child elements.",
+        "Reset in component 'component2' referencing variable '' has an invalid child element 'about'.",
+        "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value '-'.",
+        "Reset in component 'component2' has an invalid attribute 'start'.",
+        "Reset in component 'component2' referencing variable 'V_k' does not have an order defined.",
+        "Reset in component 'component2' referencing variable 'variable1' has an invalid non-whitespace child text element 'non empty whitespace.'.",
+        "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element 'illegal content.'.",
+        "When in reset referencing variable 'variable1' with order '0' has an invalid child element 'variable'.",
+    };
+
+    libcellml::Parser parser;
+    parser.parseModel(in);
+    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
+    }
+}
+
+TEST(Parser, parseResetsCheckResetObjectCheckWhenObject) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
+                "<component name=\"component2\" id=\"c2id\">"
+                    "<variable name=\"variable1\" id=\"vid\"/>"
+                    "<variable name=\"V_k\" id=\"vid\"/>"
+                    "<reset variable=\"V_k\" order=\"a\" id=\"rid\">"
+                        "<when order=\"5.9\" goods=\"socks\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                "</component>"
+            "</model>";
+
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(in);
+
+    libcellml::ResetPtr resetExpected = model->getComponent(0)->getReset(0);
+    libcellml::WhenPtr whenExpected = resetExpected->getWhen(0);
+
+    EXPECT_EQ(5, parser.errorCount());
+    EXPECT_EQ(resetExpected, parser.getError(1)->getReset());
+    EXPECT_EQ(whenExpected, parser.getError(2)->getWhen());
 }

@@ -16,8 +16,9 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/componententity.h"
+#include "libcellml/importedentity.h"
 
 namespace libcellml {
 
@@ -26,7 +27,7 @@ namespace libcellml {
  *
  * The Component class is for representing a CellML Component.
  */
-class LIBCELLML_EXPORT Component: public ComponentEntity
+class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
 {
 public:
     Component(); /**< Constructor */
@@ -91,7 +92,7 @@ public:
      *
      * Remove the variable at the given index from this component.
      * If the index is not valid @c false is returned, the valid
-     * range for the index is [0, #variables).
+     * range for the index is [0, \#variables).
      * If the variable to be removed is in a connection (is equivalent to
      * another variable), this component will not be serialised in the
      * connection.
@@ -103,7 +104,7 @@ public:
      * @return True if the variable was removed, false otherwise.
      */
     bool removeVariable(size_t index);
-    
+
     /**
      * @brief Remove the variable with the given @p name from this component.
      *
@@ -112,6 +113,8 @@ public:
      * component will not be serialised in the connection.
      *
      * @sa addVariable
+     *
+     * @overload
      *
      * @param name The name of the variable to remove.
      *
@@ -150,7 +153,7 @@ public:
      *
      * Returns a reference to a variable at the index @p index for this
      * component. If the index is not valid a @c nullptr is returned, the valid
-     * range for the index is [0, #variables).
+     * range for the index is [0, \#variables).
      *
      * @param index The index of the variable to return.
      *
@@ -209,6 +212,89 @@ public:
      * and @c false otherwise.
      */
     bool hasVariable(const std::string &name) const;
+
+    /**
+     * @brief Add a reset by reference as part of this component.
+     *
+     * Add a reset by reference as part of the given component.
+     *
+     * @sa removeReset
+     *
+     * @param r The reset to add.
+     */
+    void addReset(const ResetPtr &r);
+
+    /**
+     * @brief Remove the reset at the given @p index from this component.
+     *
+     * Remove the reset at the given index from this component.
+     * If the index is not valid @c false is returned, the valid
+     * range for the index is [0, \#resets).
+     *
+     * @sa addReset
+     *
+     * @param index The index of the reset to remove.
+     *
+     * @return True if the reset was removed, false otherwise.
+     */
+    bool removeReset(size_t index);
+
+    /**
+     * @brief Remove the reset by the given @p reset pointer from this component.
+     *
+     * Remove the reset with the given pointer from this component.
+     *
+     * @sa addReset
+     *
+     * @overload
+     *
+     * @param reset The pointer to the reset to remove.
+     *
+     * @return True if the reset was removed, false otherwise.
+     */
+    bool removeReset(const ResetPtr &reset);
+
+    /**
+     * @brief Remove all resets stored in this component.
+     *
+     * Clears all resets that have been added to this component.
+     */
+    void removeAllResets();
+
+    /**
+     * @brief Get a reset at index.
+     *
+     * Returns a reference to a reset at the index @p index for this
+     * component. If the index is not valid a @c nullptr is returned, the valid
+     * range for the index is [0, \#resets).
+     *
+     * @param index The index of the reset to return.
+     *
+     * @return A reference to the reset at the given index on success, @c nullptr otherwise.
+     */
+    ResetPtr getReset(size_t index) const;
+
+    /**
+     * @brief Get the number of resets in the component.
+     *
+     * Returns the number of resets the component contains.
+     *
+     * @return the number of resets.
+     */
+    size_t resetCount() const;
+
+    /**
+     * @brief Test whether the argument @p reset is in this component.
+     *
+     * Tests whether the argument @p reset exists in the set of this component's
+     * resets. Returns @c true if the @p reset is in this component's
+     * resets and @c false otherwise.
+     *
+     * @param reset The reset to check for in this component.
+     *
+     * @return @c true if the @p reset is in this component and @c false otherwise.
+     */
+    bool hasReset(const ResetPtr &reset) const;
 
 private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */

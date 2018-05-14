@@ -13,8 +13,11 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::ImportedEntity)
 %shared_ptr(libcellml::Model)
 %shared_ptr(libcellml::NamedEntity)
+%shared_ptr(libcellml::OrderedEntity)
+%shared_ptr(libcellml::Reset)
 %shared_ptr(libcellml::Units)
 %shared_ptr(libcellml::Variable)
+%shared_ptr(libcellml::When)
 
 // Shared typemaps
 
