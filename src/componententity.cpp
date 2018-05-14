@@ -63,14 +63,14 @@ ComponentEntity::~ComponentEntity()
 }
 
 ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
-    : ImportedEntity(rhs)
+    : NamedEntity(rhs)
     , mPimpl(new ComponentEntityImpl())
 {
     mPimpl->mComponents = rhs.mPimpl->mComponents;
 }
 
 ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
-    : ImportedEntity(std::move(rhs))
+    : NamedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -78,7 +78,7 @@ ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
 
 ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
 {
-    ImportedEntity::operator= (c);
+    NamedEntity::operator= (c);
     c.swap(*this);
     return *this;
 }

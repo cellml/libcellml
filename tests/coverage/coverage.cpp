@@ -49,7 +49,7 @@ TEST(Coverage, printer) {
 }
 
 TEST(Coverage, units) {
-    std::string e = "<units name=\"dimensionless\"/>";
+    const std::string e = "<units name=\"dimensionless\"/>";
     libcellml::Units u, um;
 
     u.setName("dimensionless");
@@ -61,6 +61,24 @@ TEST(Coverage, units) {
 
     libcellml::Printer printer;
     const std::string a = printer.printUnits(uc);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Coverage, when) {
+    const std::string e = "<reset><when/></reset>";
+    libcellml::When w, wm;
+    libcellml::Reset r;
+
+    wm = std::move(w);
+
+    libcellml::When wc(wm);
+
+
+    libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
+    r.addWhen(wp);
+
+    libcellml::Printer printer;
+    const std::string a = printer.printReset(r);
     EXPECT_EQ(e, a);
 }
 

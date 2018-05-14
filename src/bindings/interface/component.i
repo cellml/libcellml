@@ -70,6 +70,30 @@ other variables), this component will not be serialised in the connection.";
 %feature("docstring") libcellml::Component::variableCount
 "Returns the number of variables the component directly contains.";
 
+%feature("docstring") libcellml::Component::addReset
+"Add a reset `r` to this component.";
+
+%feature("docstring") libcellml::Component::removeReset
+"Remove the reset at the given index from this component.
+If the index is not valid @c false is returned, the valid
+range for the index is [0, #resets).";
+
+%feature("docstring") libcellml::Component::removeAllResets
+"Clears all resets that have been added to this component.";
+
+%feature("docstring") libcellml::Component::getReset
+"Returns a reference to a reset at the index @p index for this
+component. If the index is not valid a @c nullptr is returned, the valid
+range for the index is [0, #resets).";
+
+%feature("docstring") libcellml::Component::resetCount
+"Returns the number of resets the component contains.";
+
+%feature("docstring") libcellml::Component::hasReset
+"Tests whether the argument :param: reset exists in the set of this component's
+resets. Returns True if the :param: reset is in this component's
+resets and False otherwise.";
+
 %{
 #include "libcellml/component.h"
 %}

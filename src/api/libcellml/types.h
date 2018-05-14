@@ -37,5 +37,8 @@ class Units; /**< Forward declaration of Units class. */
 typedef std::shared_ptr<Units> UnitsPtr; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
-
+class When; /**< Forward declaration of When class. */
+typedef std::shared_ptr<When> WhenPtr; /**< Type definition for shared when pointer. */
+class Reset; /**< Forward declaration of Reset class. */
+typedef std::shared_ptr<Reset> ResetPtr; /**< Type definition for shared reset pointer. */
 }

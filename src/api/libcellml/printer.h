@@ -148,6 +148,28 @@ public:
      */
     std::string printComponent(Component component) const;
 
+    /**
+     * @brief Serialise the reset to @c std::string.
+     *
+     * Serialise the given @p reset to a std::string.
+     *
+     * @param reset The reset to serialise.
+     * @return  The @c std::string representation of the reset.
+     */
+    std::string printReset(ResetPtr reset) const;
+
+    /**
+     * @brief Serialise the reset to @c std::string.
+     *
+     * Serialise the given @p reset to a std::string.
+     *
+     * @overload
+     *
+     * @param reset The reset to serialise.
+     * @return The @c std::string representation of the reset.
+     */
+    std::string printReset(Reset reset) const;
+
 private:
     /**
      * @brief Serialise the component encapsulation to @c std::string.
@@ -159,6 +181,17 @@ private:
      * @return The @c std::string representation of the component encapsulation.
      */
     std::string printEncapsulation(ComponentPtr component) const;
+
+    /**
+     * @brief Serialise the when to @c std::string.
+     *
+     * Serialise the given @p when to a std::string.
+     *
+     * @param when The when to serialise.
+     *
+     * @return The @c std::string representation of the when.
+     */
+    std::string printWhen(WhenPtr when) const;
 
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
 
