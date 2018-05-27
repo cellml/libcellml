@@ -126,6 +126,7 @@ SpecificationRule Error::getRule() const
 void Error::setComponent(const ComponentPtr &component)
 {
     mPimpl->mComponent = component;
+    mPimpl->mKind = Error::Kind::COMPONENT;
 }
 
 ComponentPtr Error::getComponent() const
@@ -136,6 +137,7 @@ ComponentPtr Error::getComponent() const
 void Error::setImportSource(const ImportSourcePtr &importSource)
 {
     mPimpl->mImportSource = importSource;
+    mPimpl->mKind = Error::Kind::IMPORT;
 }
 
 ImportSourcePtr Error::getImportSource() const
@@ -146,6 +148,7 @@ ImportSourcePtr Error::getImportSource() const
 void Error::setModel(const ModelPtr &model)
 {
     mPimpl->mModel = model;
+    mPimpl->mKind = Error::Kind::MODEL;
 }
 
 ModelPtr Error::getModel() const
@@ -156,6 +159,7 @@ ModelPtr Error::getModel() const
 void Error::setUnits(const UnitsPtr &units)
 {
     mPimpl->mUnits = units;
+    mPimpl->mKind = Error::Kind::UNITS;
 }
 
 UnitsPtr Error::getUnits() const
@@ -166,6 +170,7 @@ UnitsPtr Error::getUnits() const
 void Error::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;
+    mPimpl->mKind = Error::Kind::VARIABLE;
 }
 
 VariablePtr Error::getVariable() const
@@ -176,6 +181,7 @@ VariablePtr Error::getVariable() const
 void Error::setReset(const ResetPtr &reset)
 {
     mPimpl->mReset = reset;
+    mPimpl->mKind = Error::Kind::RESET;
 }
 
 ResetPtr Error::getReset() const
@@ -186,6 +192,7 @@ ResetPtr Error::getReset() const
 void Error::setWhen(const WhenPtr &when)
 {
     mPimpl->mWhen = when;
+    mPimpl->mKind = Error::Kind::WHEN;
 }
 
 WhenPtr Error::getWhen() const
@@ -201,6 +208,11 @@ WhenPtr Error::getWhen() const
 std::map<SpecificationRule, const std::string> ruleToHeading =
 {
     {SpecificationRule::UNDEFINED, ""},
+    {SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE, "3.1.1"},
+    {SpecificationRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, "3.1.2"},
+    {SpecificationRule::DATA_REPR_IDENTIFIER_ATLEAST1_ALPHANUM, "3.1.3"},
+    {SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM, "3.1.4"},
+    {SpecificationRule::DATA_REPR_IDENTIFIER_IDENTICAL, "3.1.5"},
     {SpecificationRule::MODEL_ELEMENT, "4.1"},
     {SpecificationRule::MODEL_NAME, "4.2.1"},
     {SpecificationRule::MODEL_CHILD, "4.2.2"},
