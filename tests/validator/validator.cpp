@@ -17,18 +17,10 @@ limitations under the License.
 #include "gtest/gtest.h"
 
 #include <libcellml>
-#include <iostream>
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
  */
-
-void printErrors(const libcellml::Validator &v)
-{
-    for (int i = 0; i < v.errorCount(); ++i) {
-        std::cout << v.getError(i)->getDescription() << ", " << v.getError(i)->getSpecificationHeading() << std::endl;
-    }
-}
 
 TEST(Validator, namedModel) {
     libcellml::Validator validator;
@@ -752,4 +744,46 @@ TEST(Validator, validateInvalidConnections) {
         //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
+}
+
+TEST(Validator, resets) {
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
+
+}
+
+TEST(Validator, integerStrings) {
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">"
+                "<component name=\"component\">"
+                    "<variable name=\"variable\" units=\"dimensionless\"/>"
+                    "<reset variable=\"variable\" order=\"1\">"
+                    "</reset>"
+                    "<reset variable=\"variable\" order=\"-1\">"
+                    "</reset>"
+                    "<reset variable=\"variable\" order=\"+1\">"
+                    "</reset>"
+                    "<reset variable=\"variable\" order=\"\">"
+                    "</reset>"
+                    "<reset variable=\"variable\" order=\"-\">"
+                    "</reset>"
+                    "<reset variable=\"variable\" order=\"odd\">"
+                    "</reset>"
+                "</component>"
+            "</model>";
+
+    std::vector<std::string> expectedErrors = {
+    };
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(input);
+    EXPECT_EQ(4, p.errorCount());
+
+    libcellml::Validator v;
+    v.validateModel(m);
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+
 }

@@ -93,4 +93,28 @@ std::string convertIntToString(int value);
  */
 bool hasNonWhitespaceCharacters(const std::string &input);
 
+/**
+ * @brief Test if the @p candidate @c std::string is a valid non-negative CellML integer.
+ *
+ * The candidate string must consist entirely of european numeric characters and it must also be
+ * expressed in base 10 if it is to be considered a non-negative CellML integer.
+ *
+ * @param candidate The string to check if it is a non-negative CellML integer.
+ * @return @c true if the @p candidate is a non-negative CellML integer and @c false otherwise.
+ */
+bool isNonNegativeCellMLInteger(const std::string &candidate);
+
+/**
+ * @brief Test if the @p candidate @c std::string is a valid CellML integer.
+ *
+ * The candidate string must consist of european numeric characters and optionally the
+ * basic Latin hyphen character '-'.  When the integer being represented is negative
+ * the candidate string must start with the '-' character followed by the absolute
+ * value of the integer.
+ *
+ * @param candidate The string to test and determine whether or not it is a CellML integer.
+ * @return @c true if the @p candidate is a CellML integer and @c false otherwise.
+ */
+bool isCellMLInteger(const std::string &candidate);
+
 }

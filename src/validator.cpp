@@ -359,7 +359,7 @@ void Validator::validateModel(const ModelPtr &model)
                                         "' contains multiple units with the name '" + unitsName +
                                         "'. Valid units names must be unique to their model.");
                     err->setModel(model);
-                    err->setRule(SpecificationRule::UNITS_MODEL_UNIQUE);
+                    err->setRule(SpecificationRule::UNITS_NAME_UNIQUE);
                     addError(err);
                 }
                 unitsNames.push_back(unitsName);

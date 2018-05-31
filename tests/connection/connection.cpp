@@ -819,7 +819,7 @@ TEST(Connection, importedComponentConnectionAndParse) {
                     "<component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>"
                 "</import>"
                 "<component name=\"component_bob\">"
-                    "<variable name=\"variable_bob\"/>"
+                    "<variable name=\"variable_bob\" units=\"seconds\"/>"
                 "</component>"
                 "<connection component_1=\"component_in_this_model\" component_2=\"component_bob\">"
                     "<map_variables variable_1=\"variable_import\" variable_2=\"variable_bob\"/>"
@@ -839,6 +839,7 @@ TEST(Connection, importedComponentConnectionAndParse) {
     componentBob->setName("component_bob");
     variableImported->setName("variable_import");
     variableBob->setName("variable_bob");
+    variableBob->setUnits("seconds");
 
     m.addComponent(componentImported);
     m.addComponent(componentBob);
@@ -864,10 +865,10 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"component_dave\">"
-                    "<variable name=\"variable_dave\"/>"
+                    "<variable name=\"variable_dave\" units=\"dimensionless\"/>"
                 "</component>"
                 "<component name=\"component_bob\">"
-                    "<variable name=\"variable_bob\"/>"
+                    "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
                 "<connection component_1=\"component_dave\" component_2=\"component_bob\">"
                     "<map_variables variable_1=\"variable_angus\" variable_2=\"variable_bob\"/>"
@@ -878,10 +879,10 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"component_dave\">"
-                    "<variable name=\"variable_dave\"/>"
+                    "<variable name=\"variable_dave\" units=\"dimensionless\"/>"
                 "</component>"
                 "<component name=\"component_bob\">"
-                    "<variable name=\"variable_bob\"/>"
+                    "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
             "</model>";
 

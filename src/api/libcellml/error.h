@@ -39,6 +39,69 @@ public:
     Error& operator=(Error rhs); /**< Assignment operator */
 
     /**
+     * @brief Constructs an Error for the model.
+     *
+     * Convienence constructor for creating an error for the model.
+     *
+     * @param model The model the error references.
+     */
+    explicit Error(ModelPtr model);
+
+    /**
+     * @brief Constructs an Error for the when.
+     *
+     * Convienence constructor for creating an error for the when.
+     *
+     * @param when The when the error references.
+     */
+    explicit Error(WhenPtr when);
+
+    /**
+     * @brief Constructs an Error for the component.
+     *
+     * Convienence constructor for creating an error for the component.
+     *
+     * @param component The component the error references.
+     */
+    explicit Error(ComponentPtr component);
+
+    /**
+     * @brief Constructs an Error for the import source.
+     *
+     * Convienence constructor for creating an error for the import source.
+     *
+     * @param importSource The import source the error references.
+     */
+    explicit Error(ImportSourcePtr importSource);
+
+    /**
+     * @brief Constructs an Error for the units.
+     *
+     * Convienence constructor for creating an error for the units.
+     *
+     * @param units The units the error references.
+     */
+    explicit Error(UnitsPtr units);
+
+    /**
+     * @brief Constructs an Error for the variable.
+     *
+     * Convienence constructor for creating an error for the variable.
+     *
+     * @param variable The variable the error references.
+     */
+    explicit Error(VariablePtr variable);
+
+    /**
+     * @brief Constructs an Error for the reset.
+     *
+     * Convienence constructor for creating an error for the reset.
+     *
+     * @param reset The reset the error references.
+     */
+    explicit Error(ResetPtr reset);
+
+    /**
      * @brief The error Kind enum class.
      *
      * Enum to describe the kind of error a given error is.
