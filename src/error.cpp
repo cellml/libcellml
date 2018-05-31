@@ -84,6 +84,55 @@ void Error::swap(Error &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
+Error::Error(ModelPtr model)
+    : mPimpl(new ErrorImpl())
+{
+    mPimpl->mModel = model;
+    mPimpl->mKind = Error::Kind::MODEL;
+}
+
+Error::Error(ComponentPtr component)
+    : mPimpl(new ErrorImpl())
+{
+    mPimpl->mComponent = component;
+    mPimpl->mKind = Error::Kind::COMPONENT;
+}
+
+Error::Error(ImportSourcePtr importSource)
+    : mPimpl(new ErrorImpl())
+{
+    mPimpl->mImportSource = importSource;
+    mPimpl->mKind = Error::Kind::IMPORT;
+}
+
+Error::Error(UnitsPtr units)
+    : mPimpl(new ErrorImpl())
+{
+    mPimpl->mUnits = units;
+    mPimpl->mKind = Error::Kind::UNITS;
+}
+
+Error::Error(VariablePtr variable)
+    : mPimpl(new ErrorImpl())
+{
+    mPimpl->mVariable = variable;
+    mPimpl->mKind = Error::Kind::VARIABLE;
+}
+
+Error::Error(ResetPtr reset)
+    : mPimpl(new ErrorImpl())
+{
+    mPimpl->mReset = reset;
+    mPimpl->mKind = Error::Kind::RESET;
+}
+
+Error::Error(WhenPtr when)
+    : mPimpl(new ErrorImpl())
+{
+    mPimpl->mWhen = when;
+    mPimpl->mKind = Error::Kind::WHEN;
+}
+
 void Error::setDescription(const std::string &description)
 {
     mPimpl->mDescription = description;
@@ -213,9 +262,12 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::DATA_REPR_IDENTIFIER_ATLEAST1_ALPHANUM, "3.1.3"},
     {SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM, "3.1.4"},
     {SpecificationRule::DATA_REPR_IDENTIFIER_IDENTICAL, "3.1.5"},
+    {SpecificationRule::DATA_REPR_NNEG_INT_BASE10, "3.2.1"},
+    {SpecificationRule::DATA_REPR_NNEG_INT_EURO_NUM, "3.2.2"},
     {SpecificationRule::MODEL_ELEMENT, "4.1"},
     {SpecificationRule::MODEL_NAME, "4.2.1"},
     {SpecificationRule::MODEL_CHILD, "4.2.2"},
+    {SpecificationRule::MODEL_MORE_THAN_1_ENCAPSULATION, "4.2.3"},
     {SpecificationRule::IMPORT_HREF, "5.1.1"},
     {SpecificationRule::IMPORT_CHILD, "5.1.2"},
     {SpecificationRule::IMPORT_CIRCULAR, "5.1.3"}, // TODO: double-check meaning & implementation.
@@ -224,41 +276,52 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::IMPORT_COMPONENT_NAME, "7.1.1"},
     {SpecificationRule::IMPORT_COMPONENT_REF, "7.1.2"},
     {SpecificationRule::UNITS_NAME, "8.1.1"},
-    {SpecificationRule::UNITS_MODEL_UNIQUE, "8.1.1.1"},
-    {SpecificationRule::UNITS_COMPONENT_UNIQUE, "8.1.1.2"},
-    {SpecificationRule::UNITS_STANDARD, "8.1.1.3"},
-    {SpecificationRule::UNITS_BASE, "8.1.2"},
-    {SpecificationRule::UNITS_CHILD, "8.1.3"},
+    {SpecificationRule::UNITS_NAME_UNIQUE, "8.1.2"},
+    {SpecificationRule::UNITS_STANDARD, "8.1.3"},
+    {SpecificationRule::UNITS_CHILD, "8.1.4"},
     {SpecificationRule::UNIT_UNITS_REF, "9.1.1"},
     {SpecificationRule::UNIT_DIGRAPH, "9.1.1.1"}, // Assume we're skipping this for now.
     {SpecificationRule::UNIT_CIRCULAR_REF, "9.1.1.2"}, // TODO: double-check meaning & implementation.
-    {SpecificationRule::UNIT_ATTRIBUTE, "9.1.2"},
+    {SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE, "9.1.2"},
     {SpecificationRule::UNIT_PREFIX, "9.1.2.1"},
     {SpecificationRule::UNIT_MULTIPLIER, "9.1.2.2"},
     {SpecificationRule::UNIT_EXPONENT, "9.1.2.3"},
     {SpecificationRule::COMPONENT_NAME, "10.1.1"},
     {SpecificationRule::COMPONENT_CHILD, "10.1.2"},
-    {SpecificationRule::VARIABLE_ATTRIBUTE, "11.1"},
     {SpecificationRule::VARIABLE_NAME, "11.1.1.1"},
     {SpecificationRule::VARIABLE_UNITS, "11.1.1.2"},
     {SpecificationRule::VARIABLE_INTERFACE, "11.1.2.1"},
     {SpecificationRule::VARIABLE_INITIAL_VALUE, "11.1.2.2"},
-    {SpecificationRule::ENCAPSULATION_COMPONENT_REF, "12.1.1"},
-    {SpecificationRule::COMPONENT_REF_COMPONENT, "13.1.1"},
-    {SpecificationRule::COMPONENT_REF_CHILD, "13.1.2"},
-    {SpecificationRule::ENCAPSULATION_COMPONENT_REF_CHILD, "13.1.3"}, // Seems to be the same as 12.1.1?
-    {SpecificationRule::CONNECTION_CHILD, "14.1"},
-    {SpecificationRule::CONNECTION_MAP_COMPONENTS, "14.1.1"},
-    {SpecificationRule::CONNECTION_MAP_VARIABLES, "14.1.2"},
-    {SpecificationRule::MAP_COMPONENTS_COMPONENT1, "15.1.1"},
-    {SpecificationRule::MAP_COMPONENTS_COMPONENT2, "15.1.2"},
-    {SpecificationRule::MAP_VARIABLES_VARIABLE1, "16.1.1"},
-    {SpecificationRule::MAP_VARIABLES_VARIABLE1, "16.1.2"},
+    {SpecificationRule::RESET_VARIABLE_REFERENCE, "12.1.1.1"},
+    {SpecificationRule::RESET_ORDER, "12.1.1.2"},
+    {SpecificationRule::RESET_CHILD, "12.1.2"},
+    {SpecificationRule::WHEN_ORDER, "13.1.1"},
+    {SpecificationRule::WHEN_CHILD, "13.1.2"},
+    {SpecificationRule::MATH_MATHML, "14.1.1"},
+    {SpecificationRule::MATH_CHILD, "14.1.2"},
+    {SpecificationRule::MATH_CI_VARIABLE_REFERENCE, "14.1.3"},
+    {SpecificationRule::MATH_CN_UNITS_ATTRIBUTE, "14.1.4"},
+    {SpecificationRule::ENCAPSULATION_COMPONENT_REF, "15.1.1"},
+    {SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE, "16.1.1"},
+    {SpecificationRule::COMPONENT_REF_CHILD, "16.1.2"},
+    {SpecificationRule::COMPONENT_REF_ENCAPSULATION, "16.1.3"}, // Seems to be the same as 12.1.1?
+    {SpecificationRule::CONNECTION_COMPONENT1, "17.1.1"},
+    {SpecificationRule::CONNECTION_COMPONENT2, "17.1.2"},
+    {SpecificationRule::CONNECTION_UNIQUE_TRANSITIVE, "17.1.3"},
+    {SpecificationRule::CONNECTION_MAP_VARIABLES, "17.1.4"},
+    {SpecificationRule::MAP_VARIABLES_VARIABLE1, "18.1.1"},
+    {SpecificationRule::MAP_VARIABLES_VARIABLE2, "18.1.2"},
+    {SpecificationRule::MAP_VARIABLES_UNIQUE, "18.1.3"},
 };
 
 std::string Error::getSpecificationHeading() const
 {
-    return ruleToHeading.find(getRule())->second;
+    std::string heading = "X.Y.Z";
+    auto search = ruleToHeading.find(getRule());
+    if (search != ruleToHeading.end()) {
+        heading = search->second;
+    }
+    return heading;
 }
 
 }

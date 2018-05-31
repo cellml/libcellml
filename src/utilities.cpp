@@ -92,4 +92,25 @@ std::string convertIntToString(int value)
     return strs.str();
 }
 
+bool isEuropeanNumericCharacter(char c) {
+    const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    return validIntegerCharacters.find(c) != validIntegerCharacters.end();
+}
+
+bool isNonNegativeCellMLInteger(const std::string &candidate)
+{
+    if (candidate.length() == 0) {
+        return false;
+    }
+    return std::all_of(candidate.begin(), candidate.end(), isEuropeanNumericCharacter);
+}
+
+bool isCellMLInteger(const std::string &candidate)
+{
+    if (candidate.length() > 0 && *candidate.begin() == '-') {
+        return isNonNegativeCellMLInteger(candidate.substr(1));
+    }
+    return isNonNegativeCellMLInteger(candidate);
+}
+
 }

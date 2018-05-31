@@ -15,6 +15,7 @@ mark_as_advanced(gtest_force_shared_crt)
 include(component/tests.cmake)
 include(connection/tests.cmake)
 include(coverage/tests.cmake)
+include(error/tests.cmake)
 include(math/tests.cmake)
 include(model/tests.cmake)
 include(parser/tests.cmake)
@@ -26,6 +27,9 @@ include(variable/tests.cmake)
 include(version/tests.cmake)
 include(when/tests.cmake)
 
+set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
+set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
+
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
 foreach(TEST ${LIBCELLML_TESTS})
@@ -34,8 +38,8 @@ foreach(TEST ${LIBCELLML_TESTS})
   if(CURRENT_CATEGORY)
     set(CURRENT_CATEGORY "${CURRENT_CATEGORY}_")
   endif()
-  add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS})
-  target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+  add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS} ${TEST_UTILS_SRC} ${TEST_UTILS_HDR})
+  target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main)
 
   set_target_properties(${CURRENT_TEST} PROPERTIES
