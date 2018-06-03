@@ -1176,7 +1176,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             orderDefined = true;
             orderValid = isCellMLInteger(attribute->getValue());
             if (orderValid) {
-                order = std::stoi(attribute->getValue());
+                order = convertToInt(attribute->getValue());
             } else {
                 if (reset->getVariable() != nullptr) {
                     variableName = reset->getVariable()->getName();
@@ -1275,7 +1275,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
         if (attribute->isType("order")) {
             orderValid = isCellMLInteger(attribute->getValue());
             if (orderValid) {
-                order = std::stoi(attribute->getValue());
+                order = convertToInt(attribute->getValue());
             }
         } else if (attribute->isType("id")) {
             when->setId(attribute->getValue());
