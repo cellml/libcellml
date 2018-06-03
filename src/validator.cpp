@@ -915,17 +915,6 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 err->setKind(Error::Kind::MATHML);
                 mValidator->addError(err);
             }
-        } else if (node->getParent()->isType("bvar")) {
-            if (!isCellmlIdentifier(unitsName)) {
-                checkUnitsIsInComponent = true;
-            } else {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Math bvar ci element with the value '" + textNode +
-                                    "' does not have a valid cellml:units attribute.");
-                err->setComponent(component);
-                err->setKind(Error::Kind::MATHML);
-                mValidator->addError(err);
-            }
         }
 
         // Check that a specified units is valid.
