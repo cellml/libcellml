@@ -55,34 +55,9 @@ std::string convertDoubleToString(double value)
     return strs.str();
 }
 
-bool isCellMLIntegerCharacter(char c) {
-    const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    return validIntegerCharacters.find(c) != validIntegerCharacters.end();
-}
-
-bool convertToInt(const std::string &candidate, int *value)
+int convertToInt(const std::string &candidate)
 {
-    bool conversionSuccessful = false;
-    // Try to convert the candidate string to int.
-    try
-    {
-        int startIndex = 0;
-        if (candidate.length() > 0 &&
-                *candidate.begin() == '-') {
-            startIndex = 1;
-        }
-        if (std::all_of(candidate.begin() + startIndex, candidate.end(), isCellMLIntegerCharacter)) {
-            int tmp = std::stoi(candidate);
-            if (value) {
-                *value = tmp;
-                conversionSuccessful = true;
-            }
-        }
-    } catch (...) {
-        conversionSuccessful = false;
-    }
-
-    return conversionSuccessful;
+    return std::stoi(candidate);
 }
 
 std::string convertIntToString(int value)

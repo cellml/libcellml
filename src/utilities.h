@@ -51,24 +51,19 @@ bool convertToDouble(const std::string &candidate, double *value=nullptr);
 std::string convertDoubleToString(double value);
 
 /**
- * @brief Try to convert the @p candidate @c std::string to an @c int.
+ * @brief Convert the @p candidate @c std::string to an @c int.
  *
  * Try to convert the @p candidate @c std::string to an @c int. If @p candidate
- * cannot be converted using @c std::stoi, catch the exception and return
- * @c false. If @p candidate can be converted, return @c true.  The value of the
- * converted candidate will be set to @p value.   The @p candidate
- * string may only use the characters '0123456789' and possibly begin with the sign
- * indicator '-'.  If the string contains any other character that is not in this
- * set then the candidate string will not be converted and false is returned.
+ * cannot be converted using @c std::stoi an exception will be raised.  To
+ * avoid raising an exception the candidate string must be known to be convertible
+ * to an int before calling this function.
  *
  * @param candidate The @c std::string value to try to convert to an @c int.
- * @param value The @c int value of the candidate if valid.
  *
- * @return @c false if @p candiate cannot be converted to an @c int using
- * @c std::stoi and @c true otherwise.
+ * @return The @c int value of the candidate.
  *
  */
-bool convertToInt(const std::string &candidate, int *value=nullptr);
+int convertToInt(const std::string &candidate);
 
 /**
  * @brief Convert a @c int to @c std::string format.
