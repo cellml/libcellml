@@ -482,23 +482,27 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (attribute->isType("prefix")) {
             prefix = attribute->getValue();
         } else if (attribute->isType("exponent")) {
-            if (!convertToDouble(attribute->getValue(), &exponent)) {
+            if (isCellMLReal(attribute->getValue())) {
+                exponent = convertToDouble(attribute->getValue());
+            } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
                                     "' has an exponent with the value '" + attribute->getValue() +
-                                    "' that cannot be converted to a decimal number.");
+                                    "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_EXPONENT);
                 mParser->addError(err);
             }
         } else if (attribute->isType("multiplier")) {
-            if (!convertToDouble(attribute->getValue(), &multiplier)) {
+            if (isCellMLReal(attribute->getValue())) {
+                multiplier = convertToDouble(attribute->getValue());
+            } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
                                     "' has a multiplier with the value '" + attribute->getValue() +
-                                    "' that cannot be converted to a decimal number.");
+                                    "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_MULTIPLIER);
                 mParser->addError(err);
