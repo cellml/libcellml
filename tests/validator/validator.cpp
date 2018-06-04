@@ -457,6 +457,8 @@ TEST(Validator, invalidMathMLElements) {
             "</math>";
 
     std::vector<std::string> expectedErrors = {
+        "Math has a 'equals' element that is not a supported MathML element.",
+        "Math has a 'addition' element that is not a supported MathML element.",
         "No declaration for element equals.",
         "No declaration for element addition."
     };
@@ -488,7 +490,7 @@ TEST(Validator, invalidMathMLElements) {
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(4, v.errorCount());
+    EXPECT_EQ(6, v.errorCount());
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
@@ -532,6 +534,7 @@ TEST(Validator, invalidMathMLVariables) {
             "</math>";
 
     std::vector<std::string> expectedErrors = {
+        "Math has a 'nonsense' element that is not a supported MathML element.",
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
         //"Math bvar ci element with the value 'new_bvar' does not have a valid cellml:units attribute.",
@@ -616,7 +619,6 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
 
     std::vector<std::string> expectedErrors = {
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
-        "MathML cn element has the value 'oops', which cannot be converted to a real number.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
         "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
         "MathML ci element has a whitespace-only child element.",
