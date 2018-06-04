@@ -23,21 +23,21 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief Try to convert the @p candidate @c std::string to a @c double.
+ * @brief Convert the @p candidate @c std::string to a @c double.
  *
- * Try to convert the @p candidate @c std::string to a @c double. If @p candidate
- * cannot be converted using @c std::stod, catch the exception and return
- * @c false. If @p candidate can be converted, return @c true.  The value of the
- * converted candidate will be set to @p value.
+ * Convert the @p candidate @c std::string to a @c double. If @p candidate
+ * cannot be converted using @c std::stod an exception will be raised.  To
+ * avoid raising an exception the candidate string must be known to be convertible
+ * to a double before calling this function.
  *
- * @param candidate The @c std::string value to try to convert to a @c double.
- * @param value The @c double value of the candidate if valid.
+ * @sa isCellMLReal
  *
- * @return @c false if @p candidate cannot be converted to a @c double using
- * @c std::stod and @c true otherwise.
+ * @param candidate The @c std::string value to convert to a @c double.
+ *
+ * @return The @c double value of the candidate.
  *
  */
-bool convertToDouble(const std::string &candidate, double *value=nullptr);
+double convertToDouble(const std::string &candidate);
 
 /**
  * @brief Convert a @c double to @c std::string format.
@@ -53,12 +53,14 @@ std::string convertDoubleToString(double value);
 /**
  * @brief Convert the @p candidate @c std::string to an @c int.
  *
- * Try to convert the @p candidate @c std::string to an @c int. If @p candidate
+ * Convert the @p candidate @c std::string to an @c int. If @p candidate
  * cannot be converted using @c std::stoi an exception will be raised.  To
  * avoid raising an exception the candidate string must be known to be convertible
  * to an int before calling this function.
  *
- * @param candidate The @c std::string value to try to convert to an @c int.
+ * @sa isCellMLInteger
+ *
+ * @param candidate The @c std::string value to convert to an @c int.
  *
  * @return The @c int value of the candidate.
  *
@@ -111,5 +113,20 @@ bool isNonNegativeCellMLInteger(const std::string &candidate);
  * @return @c true if the @p candidate is a CellML integer and @c false otherwise.
  */
 bool isCellMLInteger(const std::string &candidate);
+
+/**
+ * @brief Test if the @p candidate @c std::string is in the form of a CellML real.
+ *
+ * The candidate string must consist of european numeric characters.  It may optionally
+ * have a basic Latin hyphen character '-' to indicate sign.  It may also optianally
+ * use the basic Latin fullstop character '.' to indicate a decimal point.  The candidate
+ * string must represent a number in base 10.  The basic Latin 'e' or 'E' character
+ * may be used to indicate the exponent.  The exponent must be described as a
+ * CellML integer.
+ *
+ * @param candidate The string to test and determine whether or not it is a CellML real.
+ * @return @c true if the @p candidate is a CellML real and @c false otherwise.
+ */
+bool isCellMLReal(const std::string &candidate);
 
 }
