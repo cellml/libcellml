@@ -1082,7 +1082,7 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const std::string &name)
 {
-    const std::vector<const std::string> supportedMathMLElements =
+    const std::vector<std::string> supportedMathMLElements =
     {
         "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
         "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
