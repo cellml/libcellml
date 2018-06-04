@@ -159,6 +159,17 @@ struct Validator::ValidatorImpl
     void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
 
     /**
+     * @brief Traverse the node tree for invalid MathML elements.
+     *
+     * Traverse the Xml node tree checking that all MathML elements are listed in the
+     * supported MathML elements table from the CellML specification 2.0 document.
+     *
+     * @param node The node to check children and sibling nodes.
+     * @param component The component the MathML belongs to.
+     */
+    void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
+
+    /**
      * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
      *
      * Validates CellML variables found in MathML @c ci elements and new variables from @c bvar elements. Validates @c cellml:units
@@ -207,6 +218,17 @@ struct Validator::ValidatorImpl
      * @return @c true if @name is a standard prefix and @c false otherwise.
      */
     bool isStandardPrefixName(const std::string &name);
+
+    /**
+     * @brief Check if the provided @p name is a supported MathML element.
+     *
+     * Checks if the provided @p name is one of the supported MathML elements defined in the table
+     * of supported MathML elements from the CellML specification version 2.0 document.
+     *
+     * @param name The @c std::string name to check against the list of supported MathML elements.
+     * @return @c true if @name is a supported MathML element and @c false otherwise.
+     */
+    bool isSupportedMathMLElement(const std::string &name);
 };
 
 Validator::Validator()
@@ -787,6 +809,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             variableNames.push_back(variableName);
         }
     }
+
+    validateMathMLElements(nodeCopy, component);
     // Get the bvar names in this math element.
     // TODO: may want to do this with XPath instead...
     gatherMathBvarVariableNames(nodeCopy, bvarNames);
@@ -846,16 +870,6 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                             err->setDescription("MathML ci element has the child text '" + textNode +
                                                 "', which does not correspond with any variable names present in component '" + component->getName() +
                                                 "' and is not a variable defined within a bvar element.");
-                            err->setComponent(component);
-                            err->setKind(Error::Kind::MATHML);
-                            mValidator->addError(err);
-                        }
-                    } else if (nodeType == "cn") {
-                        // Check whether the cn value can be safely converted to a real number.
-                        if (!isCellMLReal(textNode)) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("MathML cn element has the value '" + textNode +
-                                                "', which cannot be converted to a real number.");
                             err->setComponent(component);
                             err->setKind(Error::Kind::MATHML);
                             mValidator->addError(err);
@@ -954,6 +968,35 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     }
 }
 
+void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component)
+{
+    XmlNodePtr childNode = node->getFirstChild();
+    if (childNode) {
+        if (!childNode->isType("text") && !isSupportedMathMLElement(childNode->getType())) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Math has a '" + childNode->getType() + "' element" +
+                                " that is not a supported MathML element.");
+            err->setComponent(component);
+            err->setKind(Error::Kind::MATHML);
+            mValidator->addError(err);
+        }
+        validateMathMLElements(childNode, component);
+    }
+
+    XmlNodePtr nextNode = node->getNext();
+    if (nextNode) {
+        if (!nextNode->isType("text") && !isSupportedMathMLElement(nextNode->getType())) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Math has a '" + childNode->getType() + "' element" +
+                                " that is not a supported MathML element.");
+            err->setComponent(component);
+            err->setKind(Error::Kind::MATHML);
+            mValidator->addError(err);
+        }
+        validateMathMLElements(nextNode, component);
+    }
+}
+
 void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
 {
     XmlNodePtr childNode = node->getFirstChild();
@@ -1035,6 +1078,20 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
       i != std::string::npos;
       i = input.find(pattern))
       input.erase(i, n);
+}
+
+bool Validator::ValidatorImpl::isSupportedMathMLElement(const std::string &name)
+{
+    const std::vector<const std::string> supportedMathMLElements =
+    {
+        "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
+        "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
+        "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
+        "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth", "arcsin", "arccos", "arctan", "arcsec", "arccsc",
+        "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
+        "notanumber", "infinity", "true", "false"
+    };
+    return std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), name) != supportedMathMLElements.end();
 }
 
 bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
