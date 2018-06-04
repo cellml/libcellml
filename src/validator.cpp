@@ -852,7 +852,6 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         }
                     } else if (nodeType == "cn") {
                         // Check whether the cn value can be safely converted to a real number.
-                        std::cout << "Check if textNode contains </sep>: " << textNode << std::endl;
                         if (!isCellMLReal(textNode)) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("MathML cn element has the value '" + textNode +

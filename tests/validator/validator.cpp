@@ -653,7 +653,6 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
     m->addComponent(c);
 
     v.validateModel(m);
-    printErrors(v);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
     // NOTE: We're not checking the exact message of the last error as older versions of
@@ -975,4 +974,37 @@ TEST(Validator, whens) {
     for (size_t i = 0; i < expectedErrors.size(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
+}
+
+TEST(Validator, validMathCnElements) {
+    std::string math =
+            "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                "<apply>"
+                    "<eq/>"
+                    "<ci>C</ci>"
+                    "<apply>"
+                        "<plus/>"
+                        "<cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>"
+                        "<cn cellml:units=\"dimensionless\">-9.612</cn>"
+                    "</apply>"
+                "</apply>"
+            "</math>";
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    c->setName("componentName");
+    v1->setName("C");
+    v1->setInitialValue("3.5");
+    v1->setUnits("dimensionless");
+
+    c->addVariable(v1);
+    c->setMath(math);
+    m->addComponent(c);
+
+    v.validateModel(m);
+    EXPECT_EQ(0, v.errorCount());
 }
