@@ -505,6 +505,7 @@ TEST(Validator, invalidMathMLVariables) {
                 "<apply>"
                     "<eq/>"
                     "<ci>answer</ci>"
+                    "<partialdiff/>"
                     "<apply>"
                         "<plus/>"
                         "<ci>A</ci>"
@@ -534,6 +535,7 @@ TEST(Validator, invalidMathMLVariables) {
             "</math>";
 
     std::vector<std::string> expectedErrors = {
+        "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
