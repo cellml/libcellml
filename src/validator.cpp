@@ -987,7 +987,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     if (nextNode) {
         if (!nextNode->isType("text") && !isSupportedMathMLElement(nextNode->getType())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + childNode->getType() + "' element" +
+            err->setDescription("Math has a '" + nextNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
