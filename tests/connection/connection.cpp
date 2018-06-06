@@ -172,6 +172,30 @@ TEST(Connection, validConnectionAndParse) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Connection, parseValidAlternateFormConnection) {
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<connection component_1=\"component1\" component_2=\"component2\">"
+                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+                "</connection>"
+                "<component name=\"component1\">"
+                    "<variable name=\"variable1\" units=\"dimensionless\"/>"
+                "</component>"
+                "<component name=\"component2\">"
+                    "<variable name=\"variable2\" units=\"dimensionless\"/>"
+                "</component>"
+            "</model>";
+
+    // Parse
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(input);
+
+    EXPECT_EQ(0, parser.errorCount());
+    EXPECT_EQ(2, model->componentCount());
+    EXPECT_EQ(1, model->getComponent("component1")->getVariable("variable1")->equivalentVariableCount());
+}
+
 TEST(Connection, twoMapVariablesConnection) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
