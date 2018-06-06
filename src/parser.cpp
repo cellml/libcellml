@@ -277,6 +277,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
     // Get model children (CellML entities).
     XmlNodePtr childNode = node->getFirstChild();
+    std::vector<XmlNodePtr> connectionNodes;
     while (childNode) {
         if (childNode->isType("component")) {
             ComponentPtr component = std::make_shared<Component>();
@@ -319,7 +320,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 mParser->addError(err);
             }
         } else if (childNode->isType("connection")) {
-            loadConnection(model, childNode);
+            connectionNodes.push_back(childNode);
         } else if (childNode->isType("text")) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
@@ -340,6 +341,10 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             mParser->addError(err);
         }
         childNode = childNode->getNext();
+    }
+
+    for (size_t i = 0; i < connectionNodes.size(); ++i) {
+        loadConnection(model, connectionNodes.at(i));
     }
 }
 
