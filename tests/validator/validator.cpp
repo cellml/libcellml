@@ -539,10 +539,8 @@ TEST(Validator, invalidMathMLVariables) {
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
-        //"Math bvar ci element with the value 'new_bvar' does not have a valid cellml:units attribute.",
         "MathML ci element has a whitespace-only child element.",
         "MathML ci element has no child.",
-        //"Math bvar ci element with the value 'B' does not have a valid cellml:units attribute.",
         "No declaration for element nonsense.",
         "Element nonsense is not declared in ci list of possible children."
     };
