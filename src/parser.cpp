@@ -278,6 +278,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     // Get model children (CellML entities).
     XmlNodePtr childNode = node->getFirstChild();
     std::vector<XmlNodePtr> connectionNodes;
+    std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
         if (childNode->isType("component")) {
             ComponentPtr component = std::make_shared<Component>();
@@ -291,16 +292,20 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             ImportSourcePtr importSource = std::make_shared<ImportSource>();
             loadImport(importSource, model, childNode);
         } else if (childNode->isType("encapsulation")) {
-            // An encapsulation should not have attributes.
+            // An encapsulation should not have attributes other than an 'id' attribute.
             if (childNode->getFirstAttribute()) {
                 XmlAttributePtr attribute = childNode->getFirstAttribute();
                 while (attribute) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Encapsulation in model '" + model->getName() +
-                                        "' has an invalid attribute '" + attribute->getType() + "'.");
-                    err->setModel(model);
-                    err->setKind(Error::Kind::ENCAPSULATION);
-                    mParser->addError(err);
+                    if (attribute->isType("id")) {
+                        model->setEncapsulationId(attribute->getValue());
+                    } else {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Encapsulation in model '" + model->getName() +
+                                            "' has an invalid attribute '" + attribute->getType() + "'.");
+                        err->setModel(model);
+                        err->setKind(Error::Kind::ENCAPSULATION);
+                        mParser->addError(err);
+                    }
                     attribute = attribute->getNext();
                 }
             }
@@ -309,7 +314,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             if (componentRefNode) {
                 // This component_ref and its child and sibling elements will be loaded
                 // and error-checked in loadEncapsulation().
-                loadEncapsulation(model, componentRefNode);
+                encapsulationNodes.push_back(componentRefNode);
             } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->getName() +
@@ -343,6 +348,18 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         childNode = childNode->getNext();
     }
 
+    if (encapsulationNodes.size() > 0) {
+        loadEncapsulation(model, encapsulationNodes.at(0));
+        if (encapsulationNodes.size() > 1) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Model '" + model->getName() +
+                                "' has more than one encapsulation element.");
+            err->setModel(model);
+            err->setKind(Error::Kind::ENCAPSULATION);
+            err->setRule(SpecificationRule::MODEL_MORE_THAN_1_ENCAPSULATION);
+            mParser->addError(err);
+        }
+    }
     for (size_t i = 0; i < connectionNodes.size(); ++i) {
         loadConnection(model, connectionNodes.at(i));
     }
@@ -453,6 +470,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     std::string prefix = "";
     double exponent = 1.0;
     double multiplier = 1.0;
+    std::string id = "";
     // A unit should not have any children.
     if (node->getFirstChild()) {
         XmlNodePtr childNode = node->getFirstChild();
@@ -512,6 +530,8 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setRule(SpecificationRule::UNIT_MULTIPLIER);
                 mParser->addError(err);
             }
+        } else if (attribute->isType("id")) {
+            id = attribute->getValue();
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Unit referencing '" + node->getAttribute("units") +
@@ -524,7 +544,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         attribute = attribute->getNext();
     }
     // Add this unit to the parent units.
-    units->addUnit(reference, prefix, exponent, multiplier);
+    units->addUnit(reference, prefix, exponent, multiplier, id);
 }
 
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
@@ -878,6 +898,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
     while (parentComponentNode) {
         ComponentPtr parentComponent = nullptr;
         std::string parentComponentName;
+        std::string encapsulationId = "";
         if (parentComponentNode->isType("component_ref")) {
             // Check for a component in the parent component_ref.
             XmlAttributePtr attribute = parentComponentNode->getFirstAttribute();
@@ -897,6 +918,8 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                         err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                         mParser->addError(err);
                     }
+                } else if (attribute->isType("id")) {
+                    encapsulationId = attribute->getValue();
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Encapsulation in model '" + model->getName() +
@@ -916,6 +939,8 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 err->setKind(Error::Kind::ENCAPSULATION);
                 err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                 mParser->addError(err);
+            } else if (parentComponent) {
+                parentComponent->setEncapsulationId(encapsulationId);
             }
         } else if (parentComponentNode->isType("text")) {
             const std::string textNode = parentComponentNode->convertToString();

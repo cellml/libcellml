@@ -37,6 +37,7 @@ struct ComponentEntity::ComponentEntityImpl
     std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
     std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
     std::vector<ComponentPtr> mComponents;
+    std::string mId;
 };
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
@@ -67,6 +68,7 @@ ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
     , mPimpl(new ComponentEntityImpl())
 {
     mPimpl->mComponents = rhs.mPimpl->mComponents;
+    mPimpl->mId = rhs.mPimpl->mId;
 }
 
 ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
@@ -267,6 +269,16 @@ bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const C
     }
 
     return status;
+}
+
+void ComponentEntity::setEncapsulationId(const std::string &id)
+{
+    mPimpl->mId = id;
+}
+
+std::string ComponentEntity::getEncapsulationId() const
+{
+    return mPimpl->mId;
 }
 
 }

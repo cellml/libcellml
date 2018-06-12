@@ -477,7 +477,7 @@ TEST(Model, setAndCheckIdsAllEntities) {
                 "<units name=\"u2name\" id=\"u2id\"/>"
                 "<units name=\"u3name\" id=\"u3id\"/>"
                 "<component name=\"c2name\" id=\"c2id\">"
-                    "<variable name=\"vname\" id=\"vid\" units=\"u1name\"/>"
+                    "<variable name=\"vname\" units=\"u1name\" id=\"vid\"/>"
                     "<reset id=\"r1id\">"
                         "<when id=\"w1id\"/>"
                     "</reset>"

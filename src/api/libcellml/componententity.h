@@ -263,6 +263,36 @@ public:
      */
     size_t componentCount() const;
 
+    /**
+     * @brief Set the encapsulation Id for this entity.
+     *
+     * The encapsulation Id is placed on the XML element for this entity.
+     * For the @c Model class this is the <encapsulation> element that
+     * is the root element for the models structure.  For the @c Component
+     * class this is the <component_ref> element that references the
+     * component it represents in the structure.
+     *
+     * @sa getEncapsulationId
+     *
+     * @param id
+     */
+    void setEncapsulationId(const std::string &id);
+
+    /**
+     * @brief Get the encapsulation Id for this entity.
+     *
+     * The encapsulation Id is placed on the XML element for this entity.
+     * For the @c Model class this is the <encapsulation> element that
+     * is the root element for the models structure.  For the @c Component
+     * class this is the <component_ref> element that references the
+     * component it represents in the structure.
+     *
+     * @sa setEncapsulationId
+     *
+     * @return The @c std::string of the encapsulation Id.
+     */
+    std::string getEncapsulationId() const;
+
 protected:
 
     /**

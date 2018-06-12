@@ -22,6 +22,8 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include "test_utils.h"
+
 TEST(Parser, invalidXMLElements) {
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -481,6 +483,8 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
                 "<component name=\"bob\"/>"
                 "<component name=\"angus\"/>"
                 "<component name=\"jackie\"/>"
+                "<component name=\"mildred\"/>"
+                "<component name=\"sue\"/>"
                 "<encapsulation>"
                     "<component_ref component=\"dave\">"
                         "<component_ref component=\"bob\">"
@@ -488,10 +492,6 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
                             "<component_ref component=\"jackie\"/>"
                         "</component_ref>"
                     "</component_ref>"
-                "</encapsulation>"
-                "<component name=\"mildred\"/>"
-                "<component name=\"sue\"/>"
-                "<encapsulation>"
                     "<component_ref component=\"mildred\">"
                         "<component_ref component=\"sue\"/>"
                     "</component_ref>"
@@ -758,6 +758,9 @@ TEST(Parser, invalidEncapsulations) {
                         "<component_ref/>"
                     "</component_ref>"
                 "</encapsulation>"
+                "<encapsulation>"
+                    "<component_ref component=\"bob\"/>"
+                "</encapsulation>"
             "</model>";
 
     std::vector<std::string> expectedErrors = {
@@ -769,7 +772,8 @@ TEST(Parser, invalidEncapsulations) {
         "Encapsulation in model 'ringo' specifies 'ignatio' as a component in a component_ref but it does not exist in the model.",
         "Encapsulation in model 'ringo' specifies an invalid parent component_ref that also does not have any children.",
         "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref element.",
-        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref that is a child of an invalid parent component."
+        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.",
+        "Model 'ringo' has more than one encapsulation element.",
     };
 
     libcellml::Parser parser;
@@ -1256,12 +1260,12 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
         "Variable '' has an invalid attribute 'pilot'.",
         "Variable '' is missing a required 'name' attribute.",
         "Variable '' is missing a required 'units' attribute.",
+        "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
+        "Encapsulation in model 'starwars' does not contain any child elements.",
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
         "Connection in model 'starwars' must contain one or more 'map_variables' elements.",
-        "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
-        "Encapsulation in model 'starwars' does not contain any child elements."
     };
 
     // Parse and check for CellML errors.
@@ -1373,6 +1377,9 @@ TEST(Parser, invalidModelWithTextInAllElements) {
         "Component 'ship' has an invalid non-whitespace child text element 'falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element 'rey'.",
         "Variable 'jedi' is missing a required 'units' attribute.",
+        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
+        "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
+        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'force'.",
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element 'finn'.",
@@ -1381,9 +1388,6 @@ TEST(Parser, invalidModelWithTextInAllElements) {
         "Connection in model 'starwars' does not have a valid variable_2 in a map_variables element.",
         "Connection in model 'starwars' specifies '' as variable_1 but the corresponding component_1 is invalid.",
         "Connection in model 'starwars' specifies '' as variable_2 but the corresponding component_2 is invalid.",
-        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
-        "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
-        "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'force'."
     };
 
     // Parse and check for CellML errors.
@@ -1425,6 +1429,72 @@ TEST(Parser, parseIds) {
     EXPECT_EQ("c2id", model->getComponent("component2")->getId());
     EXPECT_EQ("u3id", model->getUnits("units3")->getId());
     EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
+}
+
+TEST(Parser, parseIdsOnEverything) {
+    const std::string in =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"mid\">"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
+                    "<component component_ref=\"a_component_in_that_model\" name=\"component1\" id=\"c1id\"/>"
+                "</import>"
+                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
+                    "<units units_ref=\"a_units_in_that_model\" name=\"units1\" id=\"u1id\"/>"
+                "</import>"
+                "<units name=\"units2\" id=\"u2id\">"
+                    "<unit units=\"second\" id=\"unit1id\"/>"
+                "</units>"
+                "<units name=\"units3\" id=\"u3id\"/>"
+                "<component name=\"component2\" id=\"c2id\">"
+                    "<variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>"
+                    "<reset variable=\"variable1\" order=\"1\" id=\"r1id\">"
+                        "<when order=\"5\" id=\"w1id\">"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math1when1\">"
+                                "<apply><eq/>"
+                                    "<ci>variable1</ci><cn>3.4</cn>"
+                                "</apply>"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math2when2\">"
+                                "<apply><eq/>"
+                                    "<ci>variable1</ci><cn>9.0</cn>"
+                                "</apply>"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                "</component>"
+                "<component name=\"component3\" id=\"c3id\">"
+                    "<variable name=\"variable2\" units=\"ampere\" id=\"c3v2id\"/>"
+                "</component>"
+                "<connection component_1=\"component3\" component_2=\"component2\" id=\"con1id\">"
+                    "<map_variables variable_1=\"variable2\" variable_2=\"variable1\" id=\"map1id\"/>"
+                "</connection>"
+                "<encapsulation id=\"encap1id\">"
+                    "<component_ref component=\"component2\" id=\"cref1id\">"
+                        "<component_ref component=\"component3\" id=\"crefchild1id\">"
+                        "</component_ref>"
+                    "</component_ref>"
+                "</encapsulation>"
+            "</model>";
+
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(in);
+
+    printErrors(parser);
+    EXPECT_EQ(0, parser.errorCount());
+    EXPECT_EQ("mid", model->getId());
+    EXPECT_EQ("c1id", model->getComponent("component1")->getId());
+    EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
+    EXPECT_EQ("u1id", model->getUnits("units1")->getId());
+    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->getId());
+    EXPECT_EQ("u2id", model->getUnits("units2")->getId());
+    EXPECT_EQ("c2id", model->getComponent("component2")->getId());
+    EXPECT_EQ("u3id", model->getUnits("units3")->getId());
+    EXPECT_EQ("v1id", model->getComponent("component2")->getVariable("variable1")->getId());
+    EXPECT_EQ("r1id", model->getComponent("component2")->getReset(0)->getId());
+    EXPECT_EQ("w1id", model->getComponent("component2")->getReset(0)->getWhen(0)->getId());
+
+    libcellml::Printer printer;
+    EXPECT_EQ(in, printer.printModel(model));
 }
 
 TEST(Parser, parseResets) {

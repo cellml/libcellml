@@ -179,14 +179,14 @@ class UnitsTestCase(unittest.TestCase):
         del(u)
 
         # void addUnit(StandardUnit standardRef, Prefix prefix,
-        #   double exponent=1.0, double multiplier=1.0)
+        #   double exponent=1.0, double multiplier=1.0, std::string id='')
         u = Units()
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO)
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0)
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1)
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0, 2.0)
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1, 2.0)
-        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1, 2)
+        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1, 2, 'id')
         del(u)
 
         # void addUnit(StandardUnit standardRef, double prefix,
@@ -195,7 +195,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, 1.0, 1.0)
         u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0)
         u.addUnit(Units.StandardUnit.KATAL, 1.0, 1.0, 1.0)
-        u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0, 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0, 1.0, 'id')
         del(u)
 
         # void addUnit(StandardUnit standardRef, double exponent)
@@ -211,18 +211,18 @@ class UnitsTestCase(unittest.TestCase):
         from libcellml import Units
 
         # void getUnitAttributes(size_t index, std::string& reference,
-        #   std::string &prefix, double &exponent, double &multiplier)
+        #   std::string &prefix, double &exponent, double &multiplier, std::string &id)
         u = Units()
         x = u.getUnitAttributes(0)
         self.assertIsInstance(x, list)
-        self.assertEqual(x, ['', '', 1.0, 1.0])
-        u.addUnit('blabla', 'hello', 1.2, 3.4)
+        self.assertEqual(x, ['', '', 1.0, 1.0, ''])
+        u.addUnit('blabla', 'hello', 1.2, 3.4, 'unitid')
         x = u.getUnitAttributes(0)
         self.assertIsInstance(x, list)
-        self.assertEqual(x, ['blabla', 'hello', 1.2, 3.4])
+        self.assertEqual(x, ['blabla', 'hello', 1.2, 3.4, 'unitid'])
         x = u.getUnitAttributes(1)
         self.assertIsInstance(x, list)
-        self.assertEqual(x, ['', '', 1.0, 1.0])
+        self.assertEqual(x, ['', '', 1.0, 1.0, ''])
         del(u, x)
 
         # void getUnitAttributes(const std::string &reference,
@@ -230,14 +230,14 @@ class UnitsTestCase(unittest.TestCase):
         u = Units()
         x = u.getUnitAttributes('newton')
         self.assertIsInstance(x, list)
-        self.assertEqual(x, ['newton', '', 1.0, 1.0])
-        u.addUnit('few', 'bars', 4.3, 2.1)
+        self.assertEqual(x, ['newton', '', 1.0, 1.0, ''])
+        u.addUnit('few', 'bars', 4.3, 2.1, 'job')
         x = u.getUnitAttributes('newton')
         self.assertIsInstance(x, list)
-        self.assertEqual(x, ['newton', '', 1.0, 1.0])
+        self.assertEqual(x, ['newton', '', 1.0, 1.0, ''])
         x = u.getUnitAttributes('few')
         self.assertIsInstance(x, list)
-        self.assertEqual(x, ['few', 'bars', 4.3, 2.1])
+        self.assertEqual(x, ['few', 'bars', 4.3, 2.1, 'job'])
         del(u, x)
 
         # This method conflicts with getUnitAttributes(size_t, ...)
