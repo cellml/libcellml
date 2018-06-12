@@ -108,7 +108,7 @@ public:
      * @param multiplier The multiplier.
      */
     void addUnit(const std::string &reference, const std::string &prefix, double exponent=1.0,
-                 double multiplier=1.0);
+                 double multiplier=1.0, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -124,7 +124,7 @@ public:
      * @param multiplier The multiplier.
      */
     void addUnit(const std::string &reference, Prefix prefix, double exponent=1.0,
-                 double multiplier=1.0);
+                 double multiplier=1.0, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -140,7 +140,7 @@ public:
      * @param multiplier The multiplier.
      */
     void addUnit(const std::string &reference, double prefix, double exponent,
-                 double multiplier=1.0);
+                 double multiplier=1.0, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -153,7 +153,7 @@ public:
      * @param reference The @c std::string units reference to add.
      * @param exponent The exponent for the unit.
      */
-    void addUnit(const std::string &reference, double exponent);
+    void addUnit(const std::string &reference, double exponent, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -181,7 +181,7 @@ public:
      * @param multiplier The multiplier.
      */
     void addUnit(StandardUnit standardRef, const std::string &prefix, double exponent=1.0,
-                 double multiplier=1.0);
+                 double multiplier=1.0, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -197,7 +197,7 @@ public:
      * @param multiplier The multiplier.
      */
     void addUnit(StandardUnit standardRef, Prefix prefix, double exponent=1.0,
-                 double multiplier=1.0);
+                 double multiplier=1.0, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -213,7 +213,7 @@ public:
      * @param multiplier The multiplier.
      */
     void addUnit(StandardUnit standardRef, double prefix, double exponent,
-                 double multiplier=1.0);
+                 double multiplier=1.0, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -226,7 +226,7 @@ public:
      * @param standardRef The @c StandardUnit enum units reference to add.
      * @param exponent The exponent for the unit.
      */
-    void addUnit(StandardUnit standardRef, double exponent);
+    void addUnit(StandardUnit standardRef, double exponent, const std::string &id="");
 
     /**
      * @brief Add a unit to this Units.
@@ -254,7 +254,7 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      */
     void getUnitAttributes(size_t index, std::string& reference, std::string &prefix, double &exponent,
-                           double &multiplier) const;
+                           double &multiplier, std::string &id) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p reference.
@@ -269,7 +269,7 @@ public:
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      */
-    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier) const;
+    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p standardRef.
@@ -284,7 +284,7 @@ public:
      * @param exponent The exponent for this @c unit. Defaults to 1.0.
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      */
-    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier) const;
+    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
     /**
      * @brief Remove the unit at the given @p index.

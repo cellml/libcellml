@@ -20,6 +20,7 @@ limitations under the License.
 #include <stack>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "libcellml/enumerations.h"
 #include "libcellml/component.h"
@@ -102,9 +103,9 @@ std::string Printer::printUnits(UnitsPtr units) const
                 endTag = true;
                 repr += ">";
                 for (size_t i = 0; i < units->unitCount(); ++i) {
-                    std::string reference, prefix;
+                    std::string reference, prefix, id;
                     double exponent, multiplier;
-                    units->getUnitAttributes(i, reference, prefix, exponent, multiplier);
+                    units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
                     repr += "<unit";
                     if (exponent != 1.0) {
                         repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
@@ -116,6 +117,9 @@ std::string Printer::printUnits(UnitsPtr units) const
                         repr += " prefix=\"" + prefix + "\"";
                     }
                     repr += " units=\"" + reference + "\"";
+                    if (id != "") {
+                        repr += " id=\"" + id + "\"";
+                    }
                     repr += "/>";
                 }
             }
@@ -168,7 +172,11 @@ std::string Printer::printComponent(ComponentPtr component) const
     } else {
         repr += "/>";
     }
-    repr += printEncapsulation(component);
+    // Traverse through children of this component and add them to the representation.
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        repr += printComponent(component->getComponent(i));
+    }
+
     return repr;
 }
 
@@ -253,9 +261,6 @@ std::string Printer::printVariable(VariablePtr variable) const
     if (name.length()) {
         repr += " name=\"" + name + "\"";
     }
-    if (id.length()) {
-        repr += " id=\"" + id + "\"";
-    }
     if (units.length()) {
         repr += " units=\"" + units + "\"";
     }
@@ -265,6 +270,10 @@ std::string Printer::printVariable(VariablePtr variable) const
     if (interface_type.length()) {
         repr += " interface=\"" + interface_type + "\"";
     }
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
+    }
+
     repr += "/>";
     return repr;
 }
@@ -381,10 +390,18 @@ std::string Printer::printModel(ModelPtr model) const
         repr += printUnits(model->getUnits(i));
     }
 
+    std::string componentEncapsulation = "";
     // Serialise components of the model, imported components have already been dealt with at this point.
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        repr += printComponent(model->getComponent(i));
-        // Build unique variable equivalence pairs (VariableMap) for connections.
+        ComponentPtr component = model->getComponent(i);
+        repr += printComponent(component);
+        if (component->componentCount() > 0) {
+            componentEncapsulation += printEncapsulation(component);
+        }
+    }
+
+    // Build unique variable equivalence pairs (VariableMap) for connections.
+    for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->getComponent(i);
         for (size_t j = 0; j < component->variableCount(); ++j) {
             VariablePtr variable = component->getVariable(j);
@@ -471,6 +488,16 @@ std::string Printer::printModel(ModelPtr model) const
         serialisedComponentMap.push_back(currentComponentPair);
         ++componentMapIndex1;
     }
+    if (componentEncapsulation.length() > 0) {
+        repr += "<encapsulation";
+        if (model->getEncapsulationId().length() > 0) {
+            repr += " id=\"" + model->getEncapsulationId() + "\">";
+        } else {
+            repr += ">";
+        }
+        repr += componentEncapsulation;
+        repr += "</encapsulation>";
+    }
     if (endTag) {
         repr += "</model>";
     } else {
@@ -492,46 +519,23 @@ std::string Printer::printModel(Model *model) const
 
 std::string Printer::printEncapsulation(ComponentPtr component) const
 {
-    const std::string encaps_tag = "<encapsulation>";
-    const std::string encaps_end_tag = "</encapsulation>";
-    std::string repr = "";
     std::string componentName = component->getName();
-    std::string encaps = "";
-    size_t component_count = component->componentCount();
-    if (component_count) {
-        encaps += encaps_tag;
-        encaps += "<component_ref";
-        if (componentName.length()) {
-            encaps += " component=\"" + componentName + "\"";
-        }
-        encaps += ">";
+    std::string repr = "<component_ref";
+    if (componentName.length() > 0) {
+        repr += " component=\"" + componentName + "\"";
     }
-    for (size_t i = 0; i != component_count; ++i) {
-        ComponentPtr encapsulated_component = component->getComponent(i);
-        std::string comp = printComponent(encapsulated_component);
-        std::size_t found = comp.find(encaps_tag);
-        if (found == std::string::npos) {
-            encaps += "<component_ref";
-            if (encapsulated_component->getName().length()) {
-                encaps += " component=\"" + encapsulated_component->getName() + "\"";
-            }
-            encaps += "/>";
-        } else {
-            std::string encaps_part = comp.substr(found);
-            comp = comp.substr(0, found);
-            found = encaps_part.find(encaps_tag);
-            encaps_part.replace(found, encaps_tag.length(), "");
-            found = encaps_part.find(encaps_end_tag);
-            encaps_part.replace(found, encaps_end_tag.length(), "");
-            encaps += encaps_part;
-        }
-        repr += comp;
+    size_t componentCount = component->componentCount();
+    if (componentCount > 0) {
+        repr += ">";
+    } else {
+        repr += "/>";
     }
-
-    if (component_count) {
-        encaps += "</component_ref>" + encaps_end_tag;
+    for (size_t i = 0; i < componentCount; ++i) {
+        repr += printEncapsulation(component->getComponent(i));
     }
-    repr += encaps;
+    if (componentCount > 0) {
+        repr += "</component_ref>";
+    }
     return repr;
 }
 
