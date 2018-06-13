@@ -37,6 +37,7 @@ public:
     Variable(const Variable &rhs); /**< Copy constructor */
     Variable(Variable &&rhs); /**< Move constructor */
     Variable& operator=(Variable n); /**< Assignment operator */
+    //friend bool operator<(const Variable& l, const Variable& r); /**< Comparison operator */
 
     /**
      * @brief The InterfaceType enum class.
@@ -67,6 +68,14 @@ public:
      * for @p variable1.
      */
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId="");
+
+    static void setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId);
+    static void setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId);
+
+    static std::string getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
+    static std::string getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Remove each argument variable to the other's equivalent variable set.

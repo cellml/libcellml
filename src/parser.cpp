@@ -633,12 +633,16 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     // Check connection for component_{1, 2} attributes and get the name pair.
     std::string component1Name = "";
     std::string component2Name = "";
+    std::string mappingId = "";
+    std::string connectionId = "";
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
         if (attribute->isType("component_1")) {
             component1Name = attribute->getValue();
         } else if (attribute->isType("component_2")) {
             component2Name = attribute->getValue();
+        } else if (attribute->isType("id")) {
+            connectionId = attribute->getValue();
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Connection in model '" + model->getName() +
@@ -720,6 +724,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable1Name = attribute->getValue();
                 } else if (attribute->isType("variable_2")) {
                     variable2Name = attribute->getValue();
+                } else if (attribute->isType("id")) {
+                    mappingId = attribute->getValue();
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Connection in model '" + model->getName() +
@@ -878,7 +884,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
             // Set the variable equivalence relationship for this variable pair.
             if ((variable1) && (variable2)) {
-                Variable::addEquivalence(variable1, variable2);
+                Variable::addEquivalence(variable1, variable2, mappingId, connectionId);
             }
         }
     } else {
@@ -989,6 +995,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         }
 
         // Loop over encapsulated children.
+        std::string childEncapsulationId = "";
         while (childComponentNode) {
             ComponentPtr childComponent = nullptr;
             if (childComponentNode->isType("component_ref")) {
@@ -1012,6 +1019,8 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                             mParser->addError(err);
                             childComponentMissing = true;
                         }
+                    } else if (attribute->isType("id")) {
+                        childEncapsulationId = attribute->getValue();
                     } else {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Encapsulation in model '" + model->getName() +
@@ -1040,6 +1049,9 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     err->setKind(Error::Kind::ENCAPSULATION);
                     err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                     mParser->addError(err);
+                }
+                if (childComponent) {
+                    childComponent->setEncapsulationId(childEncapsulationId );
                 }
 
             } else if (childComponentNode->isType("text")) {
