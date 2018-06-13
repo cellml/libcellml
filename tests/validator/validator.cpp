@@ -299,7 +299,6 @@ TEST(Validator, importUnits) {
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
@@ -358,7 +357,6 @@ TEST(Validator, importComponents) {
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
@@ -437,7 +435,6 @@ TEST(Validator, invalidMath) {
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
@@ -494,7 +491,6 @@ TEST(Validator, invalidMathMLElements) {
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
@@ -574,7 +570,6 @@ TEST(Validator, invalidMathMLVariables) {
 
     // Check for expected error messages.
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
@@ -660,7 +655,6 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
     // NOTE: We're not checking the exact message of the last error as older versions of
     //       libxml may not include the namespace in the error message.
     for (size_t i = 0; i < v.errorCount() - 1; ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
@@ -697,7 +691,6 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
@@ -762,7 +755,6 @@ TEST(Validator, validateInvalidConnections) {
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        //std::cout << v.getError(i)->getDescription() + "\n";
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
