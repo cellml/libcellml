@@ -78,16 +78,75 @@ struct Variable::VariableImpl
      */
     bool unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
+    /**
+     * @brief Test if the given variable is equivalent to this one.
+     *
+     * The two variables are considered equivalent if this variable holds a valid reference to the
+     * given variable.  Returns @c true if this variable holds a reference to the given variable
+     * and that that reference is a valid reference to the given variable.
+     *
+     * @param equivalentVariable The varialbe to test for equivalence to this one.
+     * @return @c true if the variables are equivalent @c false otherwise.
+     */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
+    /**
+     * @brief Set the equivalent mapping id for this equivalence.
+     *
+     * Record the given id as the mapping id for the equivalence defined with this variable
+     * and the given one.  This id appears in the 'map_variables' element of the model when
+     * serialised.
+     *
+     * To clear an equivalence mapping id set it to the empty string. If the two variables are
+     * not equivalent the mapping id is not set.
+     *
+     * @param equivalentVariable The equivalent variable the id refers to.
+     * @param id @c std::string id to set.
+     */
     void setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id);
 
+    /**
+     * @brief Set the equivalent connection id for this equivalence.
+     *
+     * Record the given id as the connection id for the equivalence defined with this variable
+     * and the given one.  This id appears in the 'connection' element of the model when serialised.
+     *
+     * Where the same component pair has multiple equivalent variables only the last connection id
+     * found in the set will be serialised.
+     *
+     * To clear an equivalence connection id set it to the empty string.  If the two variables are not
+     * equivalent the connection id is not set.
+     *
+     * @param equivalentVariable The equivalent variable the id refers to.
+     * @param id @c std::string id to set.
+     */
     void setEquivalentConnectionId(const VariablePtr &equivalentVariable, const std::string &id);
 
+    /**
+     * @brief Get the equivalent mapping id for this equivalence.
+     *
+     * Get the mapping id set for the equivalence defined by the this variable and the given one.
+     * If no mapping id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param equivalentVariable The variable this variable is equivalent to.
+     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     */
     std::string getEquivalentMappingId(const VariablePtr &equivalentVariable) const;
 
+    /**
+     * @brief Get the equivalent connection id for this equivalence.
+     *
+     * Get the connection id set for the equivalence defined by the this variable and the given one.
+     * If no connection id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param equivalentVariable The variable this variable is equivalent to.
+     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     */
     std::string getEquivalentConnectionId(const VariablePtr &equivalentVariable) const;
-
 
     std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
     std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
@@ -147,14 +206,6 @@ Variable& Variable::operator=(Variable v)
     return *this;
 }
 
-/*bool operator<(const Variable& l, const Variable& r)
-{
-    std::string l_name = l.getName();
-    std::string r_name = r.getName();
-    return std::tie(l_name, l.mPimpl->mUnits, l.mPimpl->mInitialValue, l.mPimpl->mEquivalentVariables)
-            < std::tie(r_name, r.mPimpl->mUnits, r.mPimpl->mInitialValue, r.mPimpl->mEquivalentVariables);
-}
-*/
 void Variable::swap(Variable &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);

@@ -36,13 +36,13 @@ limitations under the License.
 namespace libcellml {
 
 // VariableMap
-typedef std::pair <VariablePtr, VariablePtr> VariablePair;
-typedef std::vector<VariablePair> VariableMap;
-typedef VariableMap::const_iterator VariableMapIterator;
+typedef std::pair <VariablePtr, VariablePtr> VariablePair; /**< Type definition for VariablePtr pair.*/
+typedef std::vector<VariablePair> VariableMap; /**< Type definition for vector of VariablePair.*/
+typedef VariableMap::const_iterator VariableMapIterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
-typedef std::pair <Component*, Component*> ComponentPair;
-typedef std::vector<ComponentPair> ComponentMap;
-typedef ComponentMap::const_iterator ComponentMapIterator;
+typedef std::pair <Component*, Component*> ComponentPair; /**< Type definition for Component pointer pair.*/
+typedef std::vector<ComponentPair> ComponentMap; /**< Type definition for vector of ComponentPair.*/
+typedef ComponentMap::const_iterator ComponentMapIterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
 /**
  * @brief The Printer::PrinterImpl struct.
