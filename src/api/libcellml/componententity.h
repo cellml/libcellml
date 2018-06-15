@@ -267,9 +267,9 @@ public:
      * @brief Set the encapsulation Id for this entity.
      *
      * The encapsulation Id is placed on the XML element for this entity.
-     * For the @c Model class this is the <encapsulation> element that
+     * For the @c Model class this is the 'encapsulation' element that
      * is the root element for the models structure.  For the @c Component
-     * class this is the <component_ref> element that references the
+     * class this is the 'component_ref' element that references the
      * component it represents in the structure.
      *
      * @sa getEncapsulationId
@@ -282,9 +282,9 @@ public:
      * @brief Get the encapsulation Id for this entity.
      *
      * The encapsulation Id is placed on the XML element for this entity.
-     * For the @c Model class this is the <encapsulation> element that
+     * For the @c Model class this is the 'encapsulation' element that
      * is the root element for the models structure.  For the @c Component
-     * class this is the <component_ref> element that references the
+     * class this is the 'component_ref' element that references the
      * component it represents in the structure.
      *
      * @sa setEncapsulationId
