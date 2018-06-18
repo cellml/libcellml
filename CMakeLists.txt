@@ -33,8 +33,8 @@ if(COVERAGE AND COVERAGE_TESTING_AVAILABLE)
   set(LIBCELLML_COVERAGE "${COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 elseif(COVERAGE)
   message(WARNING "Coverage testing requested but gcov or its requirements not found!")
-  unset(COVERAGE CACHE)
 endif()
+unset(COVERAGE CACHE)
 
 # MEMCHECK ==> LIBCELLML_MEMCHECK
 set(_PARAM_ANNOTATION "Enable memcheck testing.")
@@ -45,8 +45,8 @@ if(MEMCHECK AND VALGRIND_TESTING_AVAILABLE)
   set(LIBCELLML_MEMCHECK "${MEMCHECK}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 elseif(MEMCHECK)
   message(WARNING "Memcheck testing requested but valgrind or its requirements not found!")
-  unset(MEMCHECK CACHE)
 endif()
+unset(MEMCHECK CACHE)
 
 # BINDINGS_PYTHON ==> LIBCELLML_BINDINGS_PYTHON
 set(_PARAM_ANNOTATION "Build Python wrappers.")
@@ -54,6 +54,7 @@ set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL ${_PARAM_ANNOTATION})
 if(BINDINGS_PYTHON)
   set(LIBCELLML_BINDINGS_PYTHON "${BINDINGS_PYTHON}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
+unset(BINDINGS_PYTHON CACHE)
 
 # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS
 set(_PARAM_ANNOTATION "Enable libCellML tests.")
@@ -61,8 +62,15 @@ set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION})
 if(UNIT_TESTS)
   set(LIBCELLML_UNIT_TESTS "${UNIT_TESTS}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
+unset(UNIT_TESTS CACHE)
 
 if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
+    if(NOT LIBCELLML_UNIT_TESTS)
+        message(STATUS "Configuration confusion:
+            Memchecking or coverage testing has been requested but unit tests have not.
+            This is not possible so forcing the unit tests to 'on' to make it possible.
+            ")
+    endif()
   set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 
@@ -80,8 +88,15 @@ if(BUILD_TYPE)
   set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
 endif()
 if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
+    if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
+        message(STATUS "Configuration confusion:
+            Release build requested but memchecking or coverage has also been requested.
+            This is not possible so forcing the build type to 'Debug' to make it possible.
+            ")
+    endif()
   set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
 endif()
+unset(BUILD_TYPE CACHE)
 
 # INSTALL_PREFIX ==> LIBCELLML_INSTALL_PREFIX
 set(_PARAM_ANNOTATION "Install path prefix, prepended onto install directories.")
@@ -89,6 +104,7 @@ set(LIBCELLML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOT
 if(INSTALL_PREFIX)
   set(LIBCELLML_INSTALL_PREFIX ${INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
 endif()
+unset(INSTALL_PREFIX CACHE)
 
 # BUILD_SHARED ==> LIBCELLML_BUILD_SHARED
 set(_PARAM_ANNOTATION "Build shared libraries (so, dylib, DLLs).")
@@ -96,6 +112,7 @@ set(LIBCELLML_BUILD_SHARED ON CACHE BOOL ${_PARAM_ANNOTATION})
 if(BUILD_SHARED)
   set(LIBCELLML_BUILD_SHARED ${BUILD_SHARED} CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
+unset(BUILD_SHARED CACHE)
 
 # Uninstall target
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
