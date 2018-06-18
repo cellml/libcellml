@@ -47,7 +47,7 @@ set(SWIG_INTERFACE_SRCS
 set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES CPLUSPLUS ON)
 
 # Set output path (relative to current in build dir)
-set(CMAKE_SWIG_OUTDIR ${CMAKE_CFG_INTDIR}/libcellml)
+set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/libcellml)
 
 # Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
