@@ -95,4 +95,37 @@ private:
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
+/**
+ * @brief Reslove the imported @c Components from the @c Model.
+ *
+ * Resolve the imported @c Components from the given @c Model with reference to the
+ * given @p baseFile.  The resolution is performed recursively through the @c Components
+ * of the @c Model.
+ *
+ * @param model The @c Model to resolve the imported components for.
+ * @param baseFile
+ */
+void LIBCELLML_EXPORT resolveImportedComponents(libcellml::ModelPtr model, const std::string& baseFile);
+
+/**
+ * @brief Count the number of unresolved imported @c Components in the @c Model.
+ *
+ * This function traverses the component heirarchy of the @c Model and counts the total number
+ * of unresolved imported @c Components.
+ *
+ * @param model The @c Model to count the number of unresolved imported @c Components in.
+ * @return The number of unresolved imported @c Components in the @c Model.
+ */
+size_t LIBCELLML_EXPORT unresolvedImportedComponentsCount(libcellml::ModelPtr model);
+
+/**
+ * @brief Count the imported children of the given @c Component.
+ *
+ * Recursivley count the number of imported children from the given @c Component.
+ *
+ * @param parent The @c Component to count the imported children in.
+ * @return The number of imported children the given @c Component has.
+ */
+size_t LIBCELLML_EXPORT importedChildrenCount(libcellml::ComponentPtr parent);
+
 }
