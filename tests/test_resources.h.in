@@ -53,10 +53,6 @@ public:
         {
             return "@CELLML_A_PLUS_B_MODEL_RESOURCE@";
         }
-        if (resourceName == TestResources::CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE)
-        {
-            return "@CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE@";
-        }
         return 0;
     }
 };
