@@ -13,11 +13,19 @@
   </import>
 
   <component name="main" id="main">
+<<<<<<< HEAD
     <variable id="x" name="x" initial_value="0" interface="public_and_private" units="dimensionless"/>
     <variable id="sin" name="sin1" interface="public_and_private" units="dimensionless"/>
     <variable id="deriv_approx" name="sin2" interface="public_and_private" units="dimensionless"/>
     <variable id="deriv_approx_initial_value" name="deriv_approx_initial_value" initial_value="0" interface="public_and_private" units="dimensionless"/>
     <variable id="parabolic_approx" name="sin3" interface="public_and_private" units="dimensionless"/>
+=======
+    <variable id="x" name="x" units="dimensionless" initial_value="0" interface="public_and_private"/>
+    <variable id="sin" name="sin1" units="dimensionless" interface="public_and_private"/>
+    <variable id="deriv_approx" units="dimensionless" name="sin2" interface="public_and_private"/>
+    <variable id="deriv_approx_initial_value" units="dimensionless" name="deriv_approx_initial_value" initial_value="0" interface="public_and_private"/>
+    <variable id="parabolic_approx" name="sin3" units="dimensionless" interface="public_and_private"/>
+>>>>>>> andre/resolve-imports-tests
   </component>
   
   <encapsulation>
