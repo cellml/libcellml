@@ -45,8 +45,6 @@ static size_t countImportedChildren(libcellml::ComponentPtr parent)
     return numberImportedChildren;
 }
 
-static size_t countUnresolvedC(libcellml::ComponentPtr component);
-static size_t countUnresolvedComponents(libcellml::ComponentPtr component);
 static size_t countUnresolvedImportedComponents(libcellml::ModelPtr model);
 
 static size_t countUnresolvedC(libcellml::ComponentPtr component)
@@ -55,9 +53,10 @@ static size_t countUnresolvedC(libcellml::ComponentPtr component)
     if (component->isImport())
     {
         libcellml::ImportSourcePtr imp = component->getImportSource();
-        if (! imp->isResolved()) ++count;
-        else
-        {
+        if (!imp->isResolved()) {
+            ++count;
+        }
+        else {
             libcellml::ModelPtr iModel = imp->getResolvingModel();
             count += countUnresolvedImportedComponents(iModel);
         }
@@ -87,8 +86,6 @@ static size_t countUnresolvedImportedComponents(libcellml::ModelPtr model)
     return count;
 }
 
-static void resolveComponents(libcellml::ComponentPtr component,
-                              const std::string& baseFile);
 static void resolveImportedComponents(libcellml::ModelPtr model,
                                       const std::string& baseFile);
 
@@ -140,6 +137,7 @@ static void resolveImportedComponents(libcellml::ModelPtr model,
 TEST(ResolveImports, resolveSineModelFromFile) {
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_SINE_MODEL_RESOURCE));
+
     std::stringstream buffer;
     buffer << t.rdbuf();
 

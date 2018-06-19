@@ -720,3 +720,72 @@ TEST(Variable, modelWithComponentWithFourNamedVariablesWithInterfacesAndParse) {
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
+
+TEST(Variable, modelWithComponentWithFiveNamedVariablesWithInterfacesAndParse) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"valid_name\">"
+                    "<variable name=\"variable1\" interface=\"none\"/>"
+                    "<variable name=\"variable2\" interface=\"public\"/>"
+                    "<variable name=\"variable3\" interface=\"private\"/>"
+                    "<variable name=\"variable4\" interface=\"public_and_private\"/>"
+                    "<variable name=\"variable5\"/>"
+                "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName("valid_name");
+    m.addComponent(c);
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    v1->setName("variable1");
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::NONE);
+    c->addVariable(v1);
+
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setName("variable2");
+    v2->setInterfaceType("public");
+    c->addVariable(v2);
+
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    v3->setName("variable3");
+    v3->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    c->addVariable(v3);
+
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    v4->setName("variable4");
+    v4->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    c->addVariable(v4);
+
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    v5->setName("variable4");
+    v5->setInterfaceType("other");
+    c->addVariable(v5);
+
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::Printer printer;
+    const std::string a = printer.printModel(model);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Variable, modelUnitsAttributeBeforeNameAttribute) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"valid_name\">"
+                    "<variable units=\"dimensionless\" name=\"variable1\" interface=\"none\"/>"
+                    "<variable id=\"sin\" units=\"dimensionless\" name=\"sin1\" interface=\"public_and_private\"/>"
+                    "<variable id=\"deriv_approx_initial_value\" units=\"dimensionless\" initial_value=\"0\" name=\"deriv_approx_initial_value\" interface=\"public_and_private\"/>"
+                "</component>"
+            "</model>";
+
+    libcellml::Model m;
+
+    libcellml::Parser parser;
+    parser.parseModel(e);
+    EXPECT_EQ(0, parser.errorCount());
+}
