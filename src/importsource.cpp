@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 
 namespace libcellml {
 
@@ -25,12 +26,14 @@ namespace libcellml {
  */
 struct ImportSource::ImportSourceImpl
 {
-    std::string mSource;
+    std::string mReference;
+    libcellml::ModelPtr mSourceModel;
 };
 
 ImportSource::ImportSource()
     : mPimpl(new ImportSourceImpl())
 {
+    mPimpl->mSourceModel = nullptr;
 }
 
 ImportSource::~ImportSource()
@@ -42,7 +45,8 @@ ImportSource::ImportSource(const ImportSource& rhs)
     : Entity(rhs)
     , mPimpl(new ImportSourceImpl())
 {
-    mPimpl->mSource = rhs.mPimpl->mSource;
+    mPimpl->mReference = rhs.mPimpl->mReference;
+    mPimpl->mSourceModel = rhs.mPimpl->mSourceModel;
 }
 
 ImportSource::ImportSource(ImportSource &&rhs)
@@ -64,14 +68,29 @@ void ImportSource::swap(ImportSource &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void ImportSource::setSource(const std::string &source)
+void ImportSource::setSource(const std::string &reference)
 {
-    mPimpl->mSource = source;
+    mPimpl->mReference = reference;
 }
 
 std::string ImportSource::getSource() const
 {
-    return mPimpl->mSource;
+    return mPimpl->mReference;
+}
+
+void ImportSource::resolveImport(ModelPtr model)
+{
+    mPimpl->mSourceModel = model;
+}
+
+ModelPtr ImportSource::getResolvingModel() const
+{
+    return mPimpl->mSourceModel;
+}
+
+bool ImportSource::isResolved() const
+{
+    return mPimpl->mSourceModel != nullptr;
 }
 
 }
