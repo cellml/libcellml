@@ -16,8 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/exportdefinitions.h"
 #include "libcellml/componententity.h"
+#include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 
 namespace libcellml {
@@ -85,7 +85,7 @@ public:
      *
      * @param v The variable to add.
      */
-    void addVariable(const VariablePtr &v);
+    void addVariable(const VariablePtr &variable);
 
     /**
      * @brief Remove the variable at the given @p index from this component.
@@ -222,7 +222,7 @@ public:
      *
      * @param r The reset to add.
      */
-    void addReset(const ResetPtr &r);
+    void addReset(const ResetPtr &reset);
 
     /**
      * @brief Remove the reset at the given @p index from this component.
@@ -299,7 +299,7 @@ public:
 private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    void doAddComponent(const ComponentPtr &c);
+    void doAddComponent(const ComponentPtr &component);
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl *mPimpl; /**< Private member to implementation pointer */

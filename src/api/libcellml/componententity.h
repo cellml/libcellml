@@ -65,7 +65,7 @@ public:
      *
      * @param index The index of the component to remove.
      *
-     * @return True if the component was replaced, false otherwise.
+     * @return True if the component was removed, false otherwise.
      */
     bool removeComponent(size_t index);
 
@@ -82,7 +82,7 @@ public:
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the component with the specified @p name. Default value is @c true.
      *
-     * @return True if the component was replaced, false otherwise.
+     * @return True if the component was removed, false otherwise.
      */
     bool removeComponent(const std::string &name, bool searchEncapsulated=true);
 
@@ -98,7 +98,7 @@ public:
      * @param searchEncapsulated Boolean flag to indicate whether we should also search encapsulated
      * components for the specified @p component pointer. Default value is @c true.
      *
-     * @return True if the component was replaced, false otherwise.
+     * @return True if the component was removed, false otherwise.
      */
     bool removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
 

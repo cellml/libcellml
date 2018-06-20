@@ -45,7 +45,7 @@ public:
      *
      * @param condition The @c std::string MathML string of the condition to set.
      */
-    void setCondition(const std::string& condition);
+    void setCondition(const std::string &condition);
 
     /**
      * @brief Get the condition term for this when.
@@ -63,7 +63,7 @@ public:
      *
      * @param value The @c std::string MathML string of the value to set.
      */
-    void setValue(const std::string& value);
+    void setValue(const std::string &value);
 
     /**
      * @brief Get the MathML value term for this when.
