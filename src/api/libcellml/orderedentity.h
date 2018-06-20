@@ -36,18 +36,18 @@ public:
     OrderedEntity& operator=(OrderedEntity n); /**< Assignment operator */
 
     /**
-     * @brief Set the order for this reset.
+     * @brief Set the order of this entity.
      *
-     * Sets the order for this reset.
+     * Sets the order for this entity.
      *
      * @param order The order to set.
      */
     void setOrder(int order);
 
     /**
-     * @brief Get the order for this reset.
+     * @brief Get the order of this entity.
      *
-     * Returns the order of this reset.
+     * Returns the order of this entity.
      *
      * @return The order.
      */
