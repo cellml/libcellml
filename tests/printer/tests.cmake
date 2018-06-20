@@ -10,7 +10,7 @@ set(${CURRENT_TEST}_CATEGORY io)
 list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 # Using absolute path relative to this file
 set(${CURRENT_TEST}_SRCS
-  ${CMAKE_CURRENT_LIST_DIR}/printer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/printer.cpp
 )
 #set(${CURRENT_TEST}_HDRS
 #  ${CMAKE_CURRENT_LIST_DIR}/<test_header_files.h>

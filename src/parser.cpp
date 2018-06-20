@@ -23,7 +23,9 @@ limitations under the License.
 #include "libcellml/error.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
+#include "libcellml/reset.h"
 #include "libcellml/variable.h"
+#include "libcellml/when.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -150,6 +152,32 @@ struct Parser::ParserImpl
      * @param node The @c XmlNodePtr to parse and update the @p variable with.
      */
     void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p reset with attributes parsed from the @p node.
+     *
+     * Update the @p reset with attributes parsed from
+     * the XML @p node. Existing attributes in @p reset with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param reset The @c ResetPtr to update.
+     * @param component The @c ComponentPtr the reset belongs to.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
+    void loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p when with attributes parsed from the @p node.
+     *
+     * Update the @p when with attributes parsed from
+     * the XML @p node. Existing attributes in @p when with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param when The @c WhenPtr to update.
+     * @param reset The @c ResetPtr the when belongs to.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
+    void loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node);
 };
 
 Parser::Parser()
@@ -342,6 +370,10 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             VariablePtr variable = std::make_shared<Variable>();
             loadVariable(variable, childNode);
             component->addVariable(variable);
+        } else if (childNode->isType("reset")) {
+            ResetPtr reset = std::make_shared<Reset>();
+            loadReset(reset, component, childNode);
+            component->addReset(reset);
         } else if (childNode->isType("math")) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
@@ -1123,6 +1155,218 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         }
         childNode = childNode->getNext();
     }
+}
+
+void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
+{
+    int order = 0;
+    bool orderDefined = false;
+    VariablePtr referencedVariable = nullptr;
+    std::string variableName = "";
+
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    while (attribute) {
+        if (attribute->isType("variable")) {
+            const std::string variableReference = attribute->getValue();
+            referencedVariable = component->getVariable(variableReference);
+            if (referencedVariable == nullptr) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Reset referencing variable '" + variableReference +
+                                    "' is not a valid reference for a variable in component '" + component->getName() + "'.");
+                err->setReset(reset);
+                err->setKind(Error::Kind::RESET);
+                err->setRule(SpecificationRule::RESET_INVALID_VARIABLE_REFERENCE);
+                mParser->addError(err);
+            } else {
+                reset->setVariable(referencedVariable);
+            }
+        } else if (attribute->isType("order")) {
+            if (convertToInt(attribute->getValue(), &order)) {
+                orderDefined = true;
+            } else {
+                if (reset->getVariable() != nullptr) {
+                    variableName = reset->getVariable()->getName();
+                }
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Reset in component '" + component->getName() +
+                                    "' referencing variable '" + variableName +
+                                    "' has a non-integer order value '" + attribute->getValue() + "'.");
+                err->setReset(reset);
+                err->setKind(Error::Kind::RESET);
+                err->setRule(SpecificationRule::RESET_NON_INT_ORDER);
+                mParser->addError(err);
+            }
+        } else if (attribute->isType("id")) {
+            reset->setId(attribute->getValue());
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Reset in component '" + component->getName() +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
+            err->setReset(reset);
+            err->setKind(Error::Kind::RESET);
+            mParser->addError(err);
+        }
+        attribute = attribute->getNext();
+    }
+
+    if (referencedVariable == nullptr) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->getName() +
+                            "' does not reference a variable in the component.");
+        err->setReset(reset);
+        err->setKind(Error::Kind::RESET);
+        mParser->addError(err);
+    }
+
+    if (reset->getVariable() != nullptr) {
+        variableName = reset->getVariable()->getName();
+    }
+    if (orderDefined) {
+        reset->setOrder(order);
+    } else {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->getName() +
+                            "' referencing variable '" + variableName +
+                            "' does not have an order defined.");
+        err->setReset(reset);
+        err->setKind(Error::Kind::RESET);
+        mParser->addError(err);
+    }
+
+    XmlNodePtr childNode = node->getFirstChild();
+    while (childNode) {
+        if (childNode->isType("when")) {
+            WhenPtr when = std::make_shared<When>();
+            loadWhen(when, reset, childNode);
+            reset->addWhen(when);
+        } else if (childNode->isType("text")) {
+            const std::string textNode = childNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Reset in component '" + component->getName() +
+                                    "' referencing variable '" + variableName +
+                                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setReset(reset);
+                err->setKind(Error::Kind::RESET);
+                mParser->addError(err);
+            }
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Reset in component '" + component->getName() +
+                                "' referencing variable '" + variableName +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
+            err->setReset(reset);
+            err->setKind(Error::Kind::RESET);
+            mParser->addError(err);
+        }
+        childNode = childNode->getNext();
+    }
+}
+
+void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node)
+{
+    std::string referencedVariableName = "";
+    VariablePtr referencedVariable = reset->getVariable();
+    if (referencedVariable != nullptr) {
+        referencedVariableName = referencedVariable->getName();
+    }
+    std::string resetOrder = "";
+    if (reset->isOrderSet()) {
+        resetOrder = convertIntToString(reset->getOrder());
+    }
+    int order = 0;
+    bool orderDefined = false;
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    while (attribute) {
+        if (attribute->isType("order")) {
+            if (convertToInt(attribute->getValue(), &order)) {
+                orderDefined = true;
+            }
+        } else if (attribute->isType("id")) {
+            when->setId(attribute->getValue());
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("When in reset referencing variable '" + referencedVariableName +
+                                "' with order '" + resetOrder +
+                                "' has an invalid attribute '" + attribute->getType() + "'.");
+            err->setWhen(when);
+            err->setKind(Error::Kind::WHEN);
+            mParser->addError(err);
+        }
+        attribute = attribute->getNext();
+    }
+
+    if (orderDefined) {
+        when->setOrder(order);
+    } else {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("When in reset referencing variable '" + referencedVariableName +
+                            "' with order '" + resetOrder +
+                            "' does not have an order defined.");
+        err->setWhen(when);
+        err->setKind(Error::Kind::WHEN);
+        mParser->addError(err);
+    }
+
+    size_t mathNodeCount = 0;
+    XmlNodePtr childNode = node->getFirstChild();
+    while (childNode) {
+        if (childNode->isType("math")) {
+            // TODO: copy any namespaces declared in parents into the math element
+            //       so math is a valid subdocument.
+            std::string math = childNode->convertToString();
+            ++mathNodeCount;
+            if (mathNodeCount == 1) {
+                when->setCondition(math);
+            } else if (mathNodeCount == 2) {
+                when->setValue(math);
+            } else {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("When in reset referencing variable '" + referencedVariableName +
+                                    "' with order '" + resetOrder +
+                                    "' contains more than two MathML child elements.");
+                err->setWhen(when);
+                err->setKind(Error::Kind::WHEN);
+                mParser->addError(err);
+            }
+        } else if (childNode->isType("text")) {
+            const std::string textNode = childNode->convertToString();
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("When in reset referencing variable '" + referencedVariableName +
+                                "' with order '" + resetOrder +
+                                "' has an invalid non-whitespace child text element '" + textNode + "'.");
+            err->setWhen(when);
+            err->setKind(Error::Kind::WHEN);
+            mParser->addError(err);
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("When in reset referencing variable '" + referencedVariableName +
+                                "' with order '" + resetOrder +
+                                "' has an invalid child element '" + childNode->getType() + "'.");
+            err->setWhen(when);
+            err->setKind(Error::Kind::WHEN);
+            mParser->addError(err);
+        }
+        childNode = childNode->getNext();
+    }
+
+    if (mathNodeCount == 0 || mathNodeCount == 1) {
+        std::string mathNodeCountString = "zero";
+        std::string plural = "s";
+        if (mathNodeCount == 1) {
+            mathNodeCountString = "only one";
+            plural = "";
+        }
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("When in reset referencing variable '" + referencedVariableName +
+                            "' with order '" + resetOrder +
+                            "' contains " + mathNodeCountString + " MathML child element" + plural + ".");
+        err->setWhen(when);
+        err->setKind(Error::Kind::WHEN);
+        mParser->addError(err);
+    }
+
 }
 
 }

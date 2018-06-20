@@ -38,6 +38,8 @@ struct Component::ComponentImpl
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
     std::vector<VariablePtr> mVariables;
+    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
+    std::vector<ResetPtr> mResets;
 };
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
@@ -50,6 +52,12 @@ std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const 
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
                         [=](const VariablePtr& v) -> bool { return v == variable; });
+}
+
+std::vector<ResetPtr>::iterator Component::ComponentImpl::findReset(const ResetPtr &reset)
+{
+    return std::find_if(mResets.begin(), mResets.end(),
+                        [=](const ResetPtr& r) -> bool { return r == reset; });
 }
 
 Component::Component()
@@ -69,14 +77,17 @@ Component::~Component()
 
 Component::Component(const Component& rhs)
     : ComponentEntity(rhs)
+    , ImportedEntity(rhs)
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mVariables = rhs.mPimpl->mVariables;
+    mPimpl->mResets = rhs.mPimpl->mResets;
     mPimpl->mMath = rhs.mPimpl->mMath;
 }
 
 Component::Component(Component &&rhs)
     : ComponentEntity(std::move(rhs))
+    , ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -85,6 +96,7 @@ Component::Component(Component &&rhs)
 Component& Component::operator=(Component c)
 {
     ComponentEntity::operator= (c);
+    ImportedEntity::operator = (c);
     c.swap(*this);
     return *this;
 }
@@ -94,11 +106,11 @@ void Component::swap(Component &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Component::doAddComponent(const ComponentPtr &c)
+void Component::doAddComponent(const ComponentPtr &component)
 {
-    if (!hasParent(c.get())) {
-        c->setParent(this);
-        ComponentEntity::doAddComponent(c);
+    if (!hasParent(component.get())) {
+        component->setParent(this);
+        ComponentEntity::doAddComponent(component);
     }
 }
 
@@ -120,10 +132,10 @@ void Component::setMath(const std::string &math) {
     mPimpl->mMath = math;
 }
 
-void Component::addVariable(const VariablePtr &v)
+void Component::addVariable(const VariablePtr &variable)
 {
-    mPimpl->mVariables.push_back(v);
-    v->setParent(this);
+    mPimpl->mVariables.push_back(variable);
+    variable->setParent(this);
 }
 
 bool Component::removeVariable(size_t index)
@@ -200,6 +212,59 @@ bool Component::hasVariable(const VariablePtr &variable) const
 bool Component::hasVariable(const std::string &name) const
 {
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
+}
+
+void Component::addReset(const ResetPtr &reset)
+{
+    mPimpl->mResets.push_back(reset);
+}
+
+bool Component::removeReset(size_t index)
+{
+    bool status = false;
+    if (index < mPimpl->mResets.size()) {
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + index);
+        status = true;
+    }
+
+    return status;
+}
+
+bool Component::removeReset(const ResetPtr &reset)
+{
+    bool status = false;
+    auto result = mPimpl->findReset(reset);
+    if (result != mPimpl->mResets.end()) {
+        mPimpl->mResets.erase(result);
+        status = true;
+    }
+
+    return status;
+}
+
+void Component::removeAllResets()
+{
+    mPimpl->mResets.clear();
+}
+
+ResetPtr Component::getReset(size_t index) const
+{
+    ResetPtr reset = nullptr;
+    if (index < mPimpl->mResets.size()) {
+        reset = mPimpl->mResets.at(index);
+    }
+
+    return reset;
+}
+
+size_t Component::resetCount() const
+{
+    return mPimpl->mResets.size();
+}
+
+bool Component::hasReset(const ResetPtr &reset) const
+{
+    return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
 }

@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.5.2)
 
 set(PROJECT_NAME libCellML)
 project(${PROJECT_NAME} VERSION 0.1.0 LANGUAGES CXX)
@@ -27,10 +26,10 @@ include(environmentchecks)
 
 # COVERAGE ==> LIBCELLML_COVERAGE
 set(_PARAM_ANNOTATION "Enable coverage testing.")
-if(COVERAGE_TEST_AVAILABLE)
+if(COVERAGE_TESTING_AVAILABLE)
   set(LIBCELLML_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION})
 endif()
-if(COVERAGE AND COVERAGE_TEST_AVAILABLE)
+if(COVERAGE AND COVERAGE_TESTING_AVAILABLE)
   set(LIBCELLML_COVERAGE "${COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 elseif(COVERAGE)
   message(WARNING "Coverage testing requested but gcov or its requirements not found!")
@@ -142,5 +141,5 @@ if (LIBCELLML_UNIT_TESTS)
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif()
 
+# Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
-

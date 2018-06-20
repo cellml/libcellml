@@ -29,7 +29,7 @@ namespace libcellml {
  * @brief The Units class.
  * Class for Units.
  */
-class LIBCELLML_EXPORT Units: public ImportedEntity
+class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
 public:
     Units(); /**< Constructor */
@@ -245,7 +245,7 @@ public:
      *
      * Get the attributes for the @c unit at the index @p index of this units. If
      * no attributes are set, default attribute values will be returned. The index must
-     * be in the range [0, #unit).
+     * be in the range [0, \#unit).
      *
      * @param index The index of the @c unit in this units to get attributes for.
      * @param reference The @c std::string reference for this @c unit. Defaults to empty string.
@@ -290,7 +290,7 @@ public:
      * @brief Remove the unit at the given @p index.
      *
      * Removes the unit at the given @p index position.
-     * @p index must be in the range [0, #unit).
+     * @p index must be in the range [0, \#unit).
      *
      * @param index The index of the unit to remove.
      *
