@@ -39,125 +39,125 @@ public:
     Reset& operator=(Reset n); /**< Assignment operator */
 
     /**
-     * @brief Set the variable for this reset.
+     * @brief Set the @c Variable for this @c Reset.
      *
-     * Sets the variable for this reset.
+     * Sets the @c Variable for this @c Reset.
      *
-     * @param variable The variable to set.
+     * @param variable The @c Variable to set.
      */
     void setVariable(VariablePtr variable);
 
     /**
-     * @brief Get the variable for this reset.
+     * @brief Get the @c Variable for this @c Reset.
      *
-     * Returns the variable of this reset.
+     * Returns the @c Variable of this @c Reset.
      *
-     * @return The variable.
+     * @return The @c Variable.
      */
     VariablePtr getVariable() const;
 
     /**
-     * @brief Add a child when to this Reset.
+     * @brief Add a child when to this @c Reset.
      *
      * Add a copy of the given @p when as a child @c When of this @c Reset.
      *
-     * @param when The When to add.
+     * @param when The @c When to add.
      */
     void addWhen(const WhenPtr &when);
 
     /**
-     * @brief Remove the when at the given @p index.
+     * @brief Remove the @c When at the given @p index.
      *
-     * Remove the when with the given @p index. @p index must
-     * be in the range [0, \#whens).
+     * Remove the @c When with the given @p index. @p index must
+     * be in the range [0, \#Whens).
      *
-     * @param index The index of the when to remove.
+     * @param index The index of the @c When to remove.
      *
-     * @return True if the when was replaced, false otherwise.
+     * @return True if the @c When was replaced, false otherwise.
      */
     bool removeWhen(size_t index);
 
     /**
-     * @brief Remove the when with the given pointer.
+     * @brief Remove the @c When with the given pointer.
      *
-     * Remove the when with the pointer @p when.
+     * Remove the @c When with the pointer @p when.
      *
      * @overload
      *
-     * @param when The pointer to the when to remove.
-     * Whens for the specified @p When pointer. Default value is @c true.
+     * @param when The pointer to the @c When to remove.
+     * @c Whens for the specified @p when pointer. Default value is @c true.
      *
-     * @return True if the when was replaced, false otherwise.
+     * @return True if the @c When was replaced, false otherwise.
      */
     bool removeWhen(const WhenPtr &when);
 
     /**
-     * @brief Remove all whens stored in this when entity.
+     * @brief Remove all @c Whens stored in this @c Reset.
      *
-     * Clears all whens that have been added to this reset.
+     * Clears all @c Whens that have been added to this @c Reset.
      */
     void removeAllWhens();
 
     /**
-     * @brief Tests to see if the when pointer is contained within this reset.
+     * @brief Tests to see if the @c When pointer is contained within this @c Reset.
      *
-     * Tests to see if the argument when pointer @p when is contained
-     * within this When entity. Returns @c true if the when is in the reset
+     * Tests to see if the argument @c When pointer @p when is contained
+     * within this @c When entity. Returns @c true if the @c When is in the @c Reset
      * entity and @c false otherwise.
      *
      * @overload
      *
-     * @param when The when pointer to test for existence in this reset entity.
+     * @param when The @c When pointer to test for existence in this @c Reset.
      *
-     * @return @c true if the when is in the reset entity and @c false otherwise.
+     * @return @c true if the @c When is in the @c Reset and @c false otherwise.
      */
     bool containsWhen(const WhenPtr &when) const;
 
     /**
-     * @brief Get a when at the given @p index.
+     * @brief Get a @c When at the given @p index.
      *
-     * Returns a reference to a when at the given @p index.  @p index must
-     * be in the range [0, \#whens).
+     * Returns a reference to a @c When at the given @p index.  @p index must
+     * be in the range [0, \#Whens).
      *
      * @overload
      *
-     * @param index The index of the when to return.
+     * @param index The index of the @c When to return.
      *
-     * @return The when at the given @p index on success, @c nullptr on failure.
+     * @return The @c When at the given @p index on success, @c nullptr on failure.
      */
     WhenPtr getWhen(size_t index) const;
 
     /**
-     * @brief Take the when at the given @p index and return it.
+     * @brief Take the @c When at the given @p index and return it.
      *
-     * Removes the when at the given @p index position and returns it.
+     * Removes the @c When at the given @p index position and returns it.
      * @p index must be in the range [0, \#Whens).
      *
-     * @param index The index of the when to take.
+     * @param index The index of the @c When to take.
      *
-     * @return The when at the given @p index, @c nullptr on failure.
+     * @return The @c When at the given @p index, @c nullptr on failure.
      */
     WhenPtr takeWhen(size_t index);
 
     /**
-     * @brief Replace a when at the given @p index.
+     * @brief Replace a @c When at the given @p index.
      *
-     * Replaces the when at the @p index with when @p when. @p index must be in
-     * the range [0, \#whens).
+     * Replaces the @c When at the @p index with @p when. @p index must be in
+     * the range [0, \#Whens).
      *
-     * @param index Index of the when to replace.
-     * @param when The when to be used as a replacement.
+     * @param index Index of the @c When to replace.
+     * @param when The @c When to be used as a replacement.
      *
-     * @return True if the when was replaced, false otherwise.
+     * @return True if the @c When was replaced, false otherwise.
      */
     bool replaceWhen(size_t index, const WhenPtr &when);
 
     /**
-     * @brief Get the number of whens in the reset.
+     * @brief Get the number of @c Whens in the @c Reset.
      *
-     * Returns the number of whens the reset contains.
+     * Returns the number of @c Whens the @c Reset contains.
      *
-     * @return The number of whens.
+     * @return The number of @c Whens.
      */
     size_t whenCount() const;
 
