@@ -162,18 +162,18 @@ std::string Printer::printComponent(ComponentPtr component) const
     if (component->getId().length()) {
         repr += " id=\"" + component->getId() + "\"";
     }
-    size_t variable_count = component->variableCount();
-    size_t reset_count = component->resetCount();
+    size_t variableCount = component->variableCount();
+    size_t resetCount = component->resetCount();
     bool hasChildren = false;
-    if (variable_count > 0 || reset_count > 0 || component->getMath().length()) {
+    if (variableCount > 0 || resetCount > 0 || component->getMath().length()) {
         hasChildren = true;
     }
     if (hasChildren) {
         repr += ">";
-        for (size_t i = 0; i < variable_count; ++i) {
+        for (size_t i = 0; i < variableCount; ++i) {
             repr += printVariable(component->getVariable(i));
         }
-        for (size_t i =0; i < reset_count; ++i) {
+        for (size_t i =0; i < resetCount; ++i) {
             repr += printReset(component->getReset(i));
         }
         repr += component->getMath();

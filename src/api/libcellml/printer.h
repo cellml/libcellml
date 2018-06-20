@@ -40,63 +40,63 @@ public:
     Printer& operator=(Printer p); /**< Assignment operator */
 
     /**
-     * @brief Serialise the model to @c std::string.
+     * @brief Serialise the @c Model to @c std::string.
      *
      * Serialise the given @p model to a std::string.
      *
-     * @param model The model to serialise.
+     * @param model The @c Model to serialise.
      *
-     * @return The @c std::string representation of the model.
+     * @return The @c std::string representation of the @c Model.
      */
     std::string printModel(ModelPtr model) const;
 
     /**
-     * @brief Serialise the model to @c std::string.
+     * @brief Serialise the @c Model to @c std::string.
      *
      * Serialise the given @p model to a std::string.
      *
      * @overload
      *
-     * @param model The model to serialise.
+     * @param model The @c Model to serialise.
      *
-     * @return The @c std::string representation of the model.
+     * @return The @c std::string representation of the @c Model.
      */
     std::string printModel(Model model) const;
 
     /**
-     * @brief Serialise the model to @c std::string.
+     * @brief Serialise the @c Model to @c std::string.
      *
      * Serialise the given @p model to a std::string.
      *
      * @overload
      *
-     * @param model The model to serialise.
+     * @param model The @c Model to serialise.
      *
-     * @return The @c std::string representation of the model.
+     * @return The @c std::string representation of the @c Model.
      */
     std::string printModel(Model *model) const;
 
     /**
-     * @brief Serialise the units to @c std::string.
+     * @brief Serialise the @c Units to @c std::string.
      *
      * Serialise the given @p units to a std::string.
      *
-     * @param units The units to serialise.
+     * @param units The @c Units to serialise.
      *
-     * @return The @c std::string representation of the units.
+     * @return The @c std::string representation of the @c Units.
      */
     std::string printUnits(UnitsPtr units) const;
 
     /**
-     * @brief Serialise the units to @c std::string.
+     * @brief Serialise the @c Units to @c std::string.
      *
      * Serialise the given @p units to a std::string.
      *
      * @overload
      *
-     * @param units The units to serialise.
+     * @param units The @c Units to serialise.
      *
-     * @return The @c std::string representation of the units.
+     * @return The @c std::string representation of the @c Units.
      */
     std::string printUnits(Units units) const;
 
@@ -105,68 +105,68 @@ public:
      *
      * Serialise the given @p variable to a std::string.
      *
-     * @param variable The variable to serialise.
+     * @param variable The @c Variable to serialise.
      *
-     * @return The @c std::string representation of the variable.
+     * @return The @c std::string representation of the @c Variable.
      */
     std::string printVariable(VariablePtr variable) const;
 
     /**
-     * @brief Serialise the variable to @c std::string.
+     * @brief Serialise the @c Variable to @c std::string.
      *
      * Serialise the given @p variable to a std::string.
      *
      * @overload
      *
-     * @param variable The variable to serialise.
+     * @param variable The @c Variable to serialise.
      *
-     * @return The @c std::string representation of the variable.
+     * @return The @c std::string representation of the @c Variable.
      */
     std::string printVariable(Variable variable) const;
 
     /**
-     * @brief Serialise the component to @c std::string.
+     * @brief Serialise the @c Component to @c std::string.
      *
      * Serialise the given @p component to a std::string.
      *
-     * @param component The component to serialise.
+     * @param component The @c Component to serialise.
      *
-     * @return The @c std::string representation of the component.
+     * @return The @c std::string representation of the @c Component.
      */
     std::string printComponent(ComponentPtr component) const;
 
     /**
-     * @brief Serialise the component to @c std::string.
+     * @brief Serialise the @c Component to @c std::string.
      *
      * Serialise the given @p component to a std::string.
      *
      * @overload
      *
-     * @param component The component to serialise.
+     * @param component The @c Component to serialise.
      *
-     * @return The @c std::string representation of the component.
+     * @return The @c std::string representation of the @c Component.
      */
     std::string printComponent(Component component) const;
 
     /**
-     * @brief Serialise the reset to @c std::string.
+     * @brief Serialise the @c Reset to @c std::string.
      *
      * Serialise the given @p reset to a std::string.
      *
-     * @param reset The reset to serialise.
-     * @return  The @c std::string representation of the reset.
+     * @param reset The @c Reset to serialise.
+     * @return  The @c std::string representation of the @c Reset.
      */
     std::string printReset(ResetPtr reset) const;
 
     /**
-     * @brief Serialise the reset to @c std::string.
+     * @brief Serialise the @c Reset to @c std::string.
      *
      * Serialise the given @p reset to a std::string.
      *
      * @overload
      *
-     * @param reset The reset to serialise.
-     * @return The @c std::string representation of the reset.
+     * @param reset The @c Reset to serialise.
+     * @return The @c std::string representation of the @c Reset.
      */
     std::string printReset(Reset reset) const;
 
@@ -183,13 +183,13 @@ private:
     std::string printEncapsulation(ComponentPtr component) const;
 
     /**
-     * @brief Serialise the when to @c std::string.
+     * @brief Serialise a @c When to @c std::string.
      *
      * Serialise the given @p when to a std::string.
      *
-     * @param when The when to serialise.
+     * @param when The @c When to serialise.
      *
-     * @return The @c std::string representation of the when.
+     * @return The @c std::string representation of the @c When.
      */
     std::string printWhen(WhenPtr when) const;
 

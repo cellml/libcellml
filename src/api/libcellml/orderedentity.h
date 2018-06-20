@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
@@ -25,7 +26,7 @@ namespace libcellml {
  *
  * Base class for all nameable libCellML classes.
  */
-class LIBCELLML_EXPORT OrderedEntity
+class LIBCELLML_EXPORT OrderedEntity: public Entity
 {
 public:
     OrderedEntity(); /**< Constructor */
@@ -35,18 +36,18 @@ public:
     OrderedEntity& operator=(OrderedEntity n); /**< Assignment operator */
 
     /**
-     * @brief Set the order for this reset.
+     * @brief Set the order of this entity.
      *
-     * Sets the order for this reset.
+     * Sets the order for this entity.
      *
      * @param order The order to set.
      */
     void setOrder(int order);
 
     /**
-     * @brief Get the order for this reset.
+     * @brief Get the order of this entity.
      *
-     * Returns the order of this reset.
+     * Returns the order of this entity.
      *
      * @return The order.
      */
@@ -60,7 +61,7 @@ public:
     void unsetOrder();
 
     /**
-     * @brief Test to determine of the order is set or unset.
+     * @brief Test to determine whether the order is set or unset.
      *
      * Returns whether the order value is in a set state or not.
      *

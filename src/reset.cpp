@@ -53,8 +53,7 @@ Reset::~Reset()
 }
 
 Reset::Reset(const Reset& rhs)
-    : Entity(rhs)
-    , OrderedEntity(rhs)
+    : OrderedEntity(rhs)
     , mPimpl(new ResetImpl())
 {
     mPimpl->mOrder = rhs.mPimpl->mOrder;
@@ -63,8 +62,7 @@ Reset::Reset(const Reset& rhs)
 }
 
 Reset::Reset(Reset &&rhs)
-    : Entity(std::move(rhs))
-    , OrderedEntity(std::move(rhs))
+    : OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -72,7 +70,6 @@ Reset::Reset(Reset &&rhs)
 
 Reset& Reset::operator=(Reset e)
 {
-    Entity::operator= (e);
     OrderedEntity::operator= (e);
     e.swap(*this);
     return *this;

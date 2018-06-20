@@ -49,13 +49,8 @@ set(SWIG_INTERFACE_SRCS
 # Configure for C++
 set_source_files_properties(${SWIG_INTERFACE_SRCS} PROPERTIES CPLUSPLUS ON)
 
-# CMake 3.11.X does not take a relative path.
-if (CMAKE_VERSION VERSION_GREATER 3.10.3)
-  set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/libcellml)
-else ()
-  # Set output path (relative to current in build dir) SWIG '-outdir' option.
-  set(CMAKE_SWIG_OUTDIR ${CMAKE_CFG_INTDIR}/libcellml)
-endif ()
+# Set output path (relative to current in build dir)
+set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/libcellml)
 
 set(SWIG_PYTHON_BINDINGS_TARGETS)
 # Create bindings for each interface file
