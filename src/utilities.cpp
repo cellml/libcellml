@@ -16,14 +16,13 @@ limitations under the License.
 
 #include "utilities.h"
 
-#include <stdexcept>
+#include <algorithm>
 #include <iomanip>
 #include <limits>
-#include <sstream>
-#include <algorithm>
 #include <set>
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 namespace libcellml {
 
@@ -99,7 +98,7 @@ bool isCellMLBasicReal(const std::string &candidate)
                 numbersOnlyCandidate.erase(decimalOccurences.at(0), 1);
             }
             if (beginsMinus) {
-                numbersOnlyCandidate.erase(0, 1);// = numbersOnlyCandidate.substr(1, std::string::npos);
+                numbersOnlyCandidate.erase(0, 1);
             }
             return std::all_of(numbersOnlyCandidate.begin(), numbersOnlyCandidate.end(), isEuropeanNumericCharacter);
         }

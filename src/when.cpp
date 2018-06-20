@@ -40,8 +40,7 @@ When::~When()
 }
 
 When::When(const When& rhs)
-    : Entity(rhs)
-    , OrderedEntity(rhs)
+    : OrderedEntity(rhs)
     , mPimpl(new WhenImpl())
 {
     mPimpl->mCondition = rhs.mPimpl->mCondition;
@@ -49,8 +48,7 @@ When::When(const When& rhs)
 }
 
 When::When(When &&rhs)
-    : Entity(std::move(rhs))
-    , OrderedEntity(std::move(rhs))
+    : OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -58,7 +56,6 @@ When::When(When &&rhs)
 
 When& When::operator=(When e)
 {
-    Entity::operator= (e);
     OrderedEntity::operator= (e);
     e.swap(*this);
     return *this;

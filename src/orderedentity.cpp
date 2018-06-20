@@ -44,20 +44,23 @@ OrderedEntity::~OrderedEntity()
 }
 
 OrderedEntity::OrderedEntity(const OrderedEntity& rhs)
-    : mPimpl(new OrderedEntityImpl())
+    : Entity(rhs)
+    , mPimpl(new OrderedEntityImpl())
 {
     mPimpl->mOrder = rhs.mPimpl->mOrder;
     mPimpl->mOrderSet = rhs.mPimpl->mOrderSet;
 }
 
 OrderedEntity::OrderedEntity(OrderedEntity &&rhs)
-    : mPimpl(rhs.mPimpl)
+    :  Entity(std::move(rhs))
+    , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
 OrderedEntity& OrderedEntity::operator=(OrderedEntity e)
 {
+    Entity::operator= (e);
     e.swap(*this);
     return *this;
 }

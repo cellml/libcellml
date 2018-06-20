@@ -3,6 +3,7 @@
 #define LIBCELLML_EXPORT
 
 %import "types.i"
+%import "entity.i"
 
 %feature("docstring") libcellml::OrderedEntity
 "Abstract base class for entities that can be ordered relative to others.";
