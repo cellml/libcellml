@@ -61,7 +61,7 @@ public:
     void unsetOrder();
 
     /**
-     * @brief Test to determine of the order is set or unset.
+     * @brief Test to determine whether the order is set or unset.
      *
      * Returns whether the order value is in a set state or not.
      *

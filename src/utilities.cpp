@@ -16,12 +16,12 @@ limitations under the License.
 
 #include "utilities.h"
 
-#include <stdexcept>
+#include <algorithm>
 #include <iomanip>
 #include <limits>
-#include <sstream>
-#include <algorithm>
 #include <set>
+#include <sstream>
+#include <stdexcept>
 
 namespace libcellml {
 

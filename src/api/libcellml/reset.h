@@ -73,7 +73,7 @@ public:
      *
      * @param index The index of the @c When to remove.
      *
-     * @return True if the @c When was replaced, false otherwise.
+     * @return True if the @c When was removed, false otherwise.
      */
     bool removeWhen(size_t index);
 
@@ -85,9 +85,7 @@ public:
      * @overload
      *
      * @param when The pointer to the @c When to remove.
-     * @c Whens for the specified @p when pointer. Default value is @c true.
-     *
-     * @return True if the @c When was replaced, false otherwise.
+     * @return True if the @c When was removed, false otherwise.
      */
     bool removeWhen(const WhenPtr &when);
 
@@ -102,7 +100,7 @@ public:
      * @brief Tests to see if the @c When pointer is contained within this @c Reset.
      *
      * Tests to see if the argument @c When pointer @p when is contained
-     * within this @c When entity. Returns @c true if the @c When is in the @c Reset
+     * within this @c When entity. Returns @c true if the @c When is within this @c Reset
      * entity and @c false otherwise.
      *
      * @overload

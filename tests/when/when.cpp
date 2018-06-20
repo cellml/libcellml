@@ -35,9 +35,9 @@ TEST(When, condition) {
 TEST(When, value) {
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
-    w->setCondition("<some mathml type string for value.>");
+    w->setValue("<some mathml type string for value.>");
 
-    EXPECT_EQ("<some mathml type string for value.>", w->getCondition());
+    EXPECT_EQ("<some mathml type string for value.>", w->getValue());
 }
 
 TEST(When, order) {
