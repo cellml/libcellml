@@ -39,7 +39,7 @@ if not).";
 If `math` is an empty string, math will be removed from the component.";
 
 %feature("docstring") libcellml::Component::addVariable
-"Adds variable `v` to this component.";
+"Adds variable `variable` to this component.";
 
 %feature("docstring") libcellml::Component::getVariable
 "Returns a Variable from this component, specified by name or index.
@@ -71,7 +71,7 @@ other variables), this component will not be serialised in the connection.";
 "Returns the number of variables the component directly contains.";
 
 %feature("docstring") libcellml::Component::addReset
-"Add a reset `r` to this component.";
+"Add a reset `reset` to this component.";
 
 %feature("docstring") libcellml::Component::removeReset
 "Remove the reset at the given index from this component.

@@ -73,7 +73,6 @@ TEST(Coverage, when) {
 
     libcellml::When wc(wm);
 
-
     libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
     r.addWhen(wp);
 
