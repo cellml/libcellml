@@ -29,7 +29,7 @@ namespace libcellml {
  * @brief The When class.
  * Class for determining when a reset will occur.
  */
-class LIBCELLML_EXPORT When: public Entity, public OrderedEntity
+class LIBCELLML_EXPORT When: public OrderedEntity
 {
 public:
     When(); /**< Constructor */

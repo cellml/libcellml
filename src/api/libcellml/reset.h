@@ -29,7 +29,7 @@ namespace libcellml {
  * @brief The Reset class.
  * The Reset class is for describing a CellML reset.
  */
-class LIBCELLML_EXPORT Reset: public Entity, public OrderedEntity
+class LIBCELLML_EXPORT Reset: public OrderedEntity
 {
 public:
     Reset(); /**< Constructor */
