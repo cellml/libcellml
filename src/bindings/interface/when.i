@@ -5,7 +5,6 @@
 %include "std_string.i"
 
 %import "types.i"
-%import "entity.i"
 %import "orderedentity.i"
 
 %feature("docstring") libcellml::When

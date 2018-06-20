@@ -16,6 +16,7 @@ limitations under the License.
 
 #pragma once
 
+#include "libcellml/entity.h"
 #include "libcellml/exportdefinitions.h"
 
 namespace libcellml {
@@ -25,7 +26,7 @@ namespace libcellml {
  *
  * Base class for all nameable libCellML classes.
  */
-class LIBCELLML_EXPORT OrderedEntity
+class LIBCELLML_EXPORT OrderedEntity: public Entity
 {
 public:
     OrderedEntity(); /**< Constructor */
