@@ -83,7 +83,7 @@ public:
      *
      * @sa removeVariable
      *
-     * @param v The variable to add.
+     * @param variable The variable to add.
      */
     void addVariable(const VariablePtr &variable);
 
@@ -220,7 +220,7 @@ public:
      *
      * @sa removeReset
      *
-     * @param r The reset to add.
+     * @param reset The reset to add.
      */
     void addReset(const ResetPtr &reset);
 
