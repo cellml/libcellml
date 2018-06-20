@@ -15,21 +15,6 @@ class ImportedEntityTestCase(unittest.TestCase):
         z = ImportedEntity(y)
         del(x, y, z)
 
-    def test_inheritance(self):
-        import libcellml
-        from libcellml import ImportedEntity
-
-        x = ImportedEntity()
-        self.assertIsInstance(x, libcellml.NamedEntity)
-        self.assertIsInstance(x, libcellml.Entity)
-
-        # Test access to inherited methods
-        x = ImportedEntity()
-        idx = 'test'
-        self.assertEqual(x.getId(), '')
-        x.setId(idx)
-        self.assertEqual(x.getId(), idx)
-
     def test_set_import_source(self):
         from libcellml import ImportedEntity, ImportSource
 

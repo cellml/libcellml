@@ -21,6 +21,11 @@ limitations under the License.
 
 namespace libcellml {
 
+/**
+ * @brief The NamedEntity::NamedEntityImpl struct.
+ *
+ * The private implementation for the NamedEntity class.
+ */
 struct NamedEntity::NamedEntityImpl
 {
     std::string mName; /**< Entity name represented as a std::string. */

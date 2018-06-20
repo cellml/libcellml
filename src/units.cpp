@@ -140,14 +140,16 @@ Units::~Units()
 }
 
 Units::Units(const Units& rhs)
-    : ImportedEntity(rhs)
+    : NamedEntity(rhs)
+    , ImportedEntity(rhs)
     , mPimpl(new UnitsImpl())
 {
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
 Units::Units(Units &&rhs)
-    : ImportedEntity(std::move(rhs))
+    : NamedEntity(std::move(rhs))
+    , ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -155,6 +157,7 @@ Units::Units(Units &&rhs)
 
 Units& Units::operator=(Units e)
 {
+    NamedEntity::operator= (e);
     ImportedEntity::operator= (e);
     e.swap(*this);
     return *this;

@@ -16,17 +16,19 @@ limitations under the License.
 
 #include "utilities.h"
 
-#include <stdexcept>
+#include <algorithm>
 #include <iomanip>
 #include <limits>
+#include <set>
 #include <sstream>
+#include <stdexcept>
 
 namespace libcellml {
 
 bool convertToDouble(const std::string &candidate, double *value)
 {
     bool canConvert = false;
-    // Try to convert the input string to double.
+    // Try to convert the candidate string to double.
     try
     {
         double tmp = std::stod(candidate);
@@ -43,13 +45,50 @@ bool convertToDouble(const std::string &candidate, double *value)
 
 bool hasNonWhitespaceCharacters(const std::string &input)
 {
-    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;;
+    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
 }
 
 std::string convertDoubleToString(double value)
 {
     std::ostringstream strs;
     strs << std::setprecision(std::numeric_limits<double>::digits10) << value;
+    return strs.str();
+}
+
+bool isCellMLIntegerCharacter(char c) {
+    const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    return validIntegerCharacters.find(c) != validIntegerCharacters.end();
+}
+
+bool convertToInt(const std::string &candidate, int *value)
+{
+    bool conversionSuccessful = false;
+    // Try to convert the candidate string to int.
+    try
+    {
+        int startIndex = 0;
+        if (candidate.length() > 0 &&
+                *candidate.begin() == '-') {
+            startIndex = 1;
+        }
+        if (std::all_of(candidate.begin() + startIndex, candidate.end(), isCellMLIntegerCharacter)) {
+            int tmp = std::stoi(candidate);
+            if (value) {
+                *value = tmp;
+                conversionSuccessful = true;
+            }
+        }
+    } catch (...) {
+        conversionSuccessful = false;
+    }
+
+    return conversionSuccessful;
+}
+
+std::string convertIntToString(int value)
+{
+    std::ostringstream strs;
+    strs << value;
     return strs.str();
 }
 

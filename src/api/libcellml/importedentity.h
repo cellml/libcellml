@@ -29,7 +29,7 @@ namespace libcellml {
  *
  * Base class for all importable libCellML classes.
  */
-class LIBCELLML_EXPORT ImportedEntity: public NamedEntity
+class LIBCELLML_EXPORT ImportedEntity
 {
 public:
     ImportedEntity(); /**< Constructor */

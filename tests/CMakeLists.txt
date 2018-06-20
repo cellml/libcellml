@@ -8,8 +8,6 @@ set_target_properties(gtest gtest_main PROPERTIES FOLDER gtest)
 mark_as_advanced(gtest_disable_pthreads)
 mark_as_advanced(gtest_force_shared_crt)
 
-add_subdirectory(bindings)
-
 # Any tests included here must append the test name
 # to the LIBCELLML_TESTS list.  Any source files for the
 # test must be set to <test_name>_SRCS, likewise for
@@ -21,10 +19,12 @@ include(math/tests.cmake)
 include(model/tests.cmake)
 include(parser/tests.cmake)
 include(printer/tests.cmake)
+include(reset/tests.cmake)
 include(units/tests.cmake)
 include(validator/tests.cmake)
 include(variable/tests.cmake)
 include(version/tests.cmake)
+include(when/tests.cmake)
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
@@ -63,6 +63,7 @@ foreach(TEST ${LIBCELLML_TESTS})
   unset(CURRENT_CATEGORY)
 endforeach()
 
+add_subdirectory(bindings)
 
 if(LIBCELLML_COVERAGE)
   # Clean away old gcov arc files
@@ -75,6 +76,9 @@ if(LIBCELLML_COVERAGE)
     DEPENDS clean_coverage ${TEST_LIST}
     COMMAND ctest > /dev/null
     COMMENT "Prepare for coverage tests")
+    if (TARGET python_bindings)
+      add_dependencies(prepare_coverage python_bindings)
+    endif ()
 
   add_custom_target(coverage
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE}

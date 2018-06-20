@@ -21,6 +21,11 @@ limitations under the License.
 
 namespace libcellml {
 
+/**
+ * @brief The Entity::EntityImpl struct.
+ *
+ * The private implementation for the Entity class.
+ */
 struct Entity::EntityImpl
 {
     Model *mParentModel; /**< Pointer to parent model. */

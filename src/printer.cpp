@@ -25,8 +25,10 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
+#include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
+#include "libcellml/when.h"
 
 #include "utilities.h"
 
@@ -147,11 +149,19 @@ std::string Printer::printComponent(ComponentPtr component) const
     if (component->getId().length()) {
         repr += " id=\"" + component->getId() + "\"";
     }
-    size_t variable_count = component->variableCount();
-    if ((variable_count > 0) || (component->getMath().length())) {
+    size_t variableCount = component->variableCount();
+    size_t resetCount = component->resetCount();
+    bool hasChildren = false;
+    if (variableCount > 0 || resetCount > 0 || component->getMath().length()) {
+        hasChildren = true;
+    }
+    if (hasChildren) {
         repr += ">";
-        for (size_t i = 0; i < variable_count; ++i) {
+        for (size_t i = 0; i < variableCount; ++i) {
             repr += printVariable(component->getVariable(i));
+        }
+        for (size_t i =0; i < resetCount; ++i) {
+            repr += printReset(component->getReset(i));
         }
         repr += component->getMath();
         repr += "</component>";
@@ -165,6 +175,70 @@ std::string Printer::printComponent(ComponentPtr component) const
 std::string Printer::printComponent(Component component) const
 {
     return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+}
+
+std::string Printer::printReset(ResetPtr reset) const
+{
+    std::string repr = "<reset";
+    std::string id = reset->getId();
+    VariablePtr variable = reset->getVariable();
+    if (variable) {
+        repr += " variable=\"" + variable->getName() + "\"";
+    }
+    if (reset->isOrderSet()) {
+        repr += " order=\"" + convertIntToString(reset->getOrder()) + "\"";
+    }
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
+    }
+    size_t when_count = reset->whenCount();
+    if (when_count > 0) {
+        repr += ">";
+        for (size_t i = 0; i < when_count; ++i) {
+            repr += printWhen(reset->getWhen(i));
+        }
+        repr += "</reset>";
+    } else {
+        repr += "/>";
+    }
+    return repr;
+}
+
+std::string Printer::printReset(Reset reset) const
+{
+    return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
+}
+
+std::string Printer::printWhen(WhenPtr when) const
+{
+    std::string repr = "<when";
+    std::string id = when->getId();
+    if (when->isOrderSet()) {
+        repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
+    }
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
+    }
+    std::string condition = when->getCondition();
+    size_t condition_length = condition.length();
+    if (condition_length) {
+        repr += ">";
+        repr += condition;
+    }
+    std::string value = when->getValue();
+    size_t value_length = value.length();
+    if (value_length) {
+        if (!condition_length) {
+            repr += ">";
+        }
+        repr += value;
+    }
+    if (condition_length || value_length) {
+        repr += "</when>";
+    } else {
+        repr += "/>";
+    }
+    return repr;
 }
 
 std::string Printer::printVariable(VariablePtr variable) const

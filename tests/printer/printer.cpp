@@ -32,7 +32,7 @@ TEST(Printer, printEmptyModel) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, printEmptyModelAllocatePointer) {
+TEST(Printer, printEmptyModelAllocatePointer) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
@@ -60,6 +60,24 @@ TEST(Printer, printEmptyVariable) {
 
     libcellml::Printer printer;
     const std::string a = printer.printVariable(v);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Printer, printEmptyComponent) {
+    const std::string e = "<component/>";
+    libcellml::Component c;
+
+    libcellml::Printer printer;
+    const std::string a = printer.printComponent(c);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Printer, printEmptyReset) {
+    const std::string e = "<reset/>";
+    libcellml::Reset r;
+
+    libcellml::Printer printer;
+    const std::string a = printer.printReset(r);
     EXPECT_EQ(e, a);
 }
 
@@ -106,5 +124,3 @@ TEST(Printer, printEncapsulationWithNames) {
     std::string a_child = printer.printComponent(child);
     EXPECT_EQ(e_child, a_child);
 }
-
-

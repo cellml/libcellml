@@ -61,7 +61,7 @@ struct Validator::ValidatorImpl
      * @param units The units to validate.
      * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
      */
-    void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsName);
+    void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames);
 
     /**
      * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
