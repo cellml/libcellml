@@ -24,8 +24,8 @@ limitations under the License.
 #include "libcellml/error.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
-#include "libcellml/variable.h"
 #include "libcellml/reset.h"
+#include "libcellml/variable.h"
 #include "libcellml/when.h"
 #include "utilities.h"
 #include "xmldoc.h"
@@ -1305,7 +1305,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
 void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node)
 {
     std::string referencedVariableName = "";
-    VariablePtr referencedVariable =  reset->getVariable();
+    VariablePtr referencedVariable = reset->getVariable();
     if (referencedVariable != nullptr) {
         referencedVariableName = referencedVariable->getName();
     }

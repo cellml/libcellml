@@ -106,11 +106,11 @@ void Component::swap(Component &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Component::doAddComponent(const ComponentPtr &c)
+void Component::doAddComponent(const ComponentPtr &component)
 {
-    if (!hasParent(c.get())) {
-        c->setParent(this);
-        ComponentEntity::doAddComponent(c);
+    if (!hasParent(component.get())) {
+        component->setParent(this);
+        ComponentEntity::doAddComponent(component);
     }
 }
 
@@ -132,10 +132,10 @@ void Component::setMath(const std::string &math) {
     mPimpl->mMath = math;
 }
 
-void Component::addVariable(const VariablePtr &v)
+void Component::addVariable(const VariablePtr &variable)
 {
-    mPimpl->mVariables.push_back(v);
-    v->setParent(this);
+    mPimpl->mVariables.push_back(variable);
+    variable->setParent(this);
 }
 
 bool Component::removeVariable(size_t index)
@@ -214,9 +214,9 @@ bool Component::hasVariable(const std::string &name) const
     return mPimpl->findVariable(name) != mPimpl->mVariables.end();
 }
 
-void Component::addReset(const ResetPtr &r)
+void Component::addReset(const ResetPtr &reset)
 {
-    mPimpl->mResets.push_back(r);
+    mPimpl->mResets.push_back(reset);
 }
 
 bool Component::removeReset(size_t index)

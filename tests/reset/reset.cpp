@@ -136,7 +136,6 @@ TEST(Reset, replaceWhenMethods) {
     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr c3 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr c4 = std::make_shared<libcellml::When>();
 
     r.addWhen(c1);
     r.addWhen(c2);
@@ -165,7 +164,7 @@ TEST(Reset, constructors) {
 }
 
 TEST(Reset, printResetWithVariable) {
-    std::string e = "<reset variable=\"A\"/>";
+    const std::string e = "<reset variable=\"A\"/>";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
@@ -180,7 +179,7 @@ TEST(Reset, printResetWithVariable) {
 }
 
 TEST(Reset, printResetWithOrder) {
-    std::string e = "<reset order=\"1\"/>";
+    const std::string e = "<reset order=\"1\"/>";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     r->setOrder(1);
@@ -192,7 +191,7 @@ TEST(Reset, printResetWithOrder) {
 }
 
 TEST(Reset, printResetWithOrderAndVariable) {
-    std::string e = "<reset variable=\"B\" order=\"1\"/>";
+    const std::string e = "<reset variable=\"B\" order=\"1\"/>";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -209,9 +208,10 @@ TEST(Reset, printResetWithOrderAndVariable) {
 }
 
 TEST(Reset, printResetWithWhen) {
-    std::string e = "<reset>"
-                        "<when/>"
-                    "</reset>";
+    const std::string e =
+            "<reset>"
+                "<when/>"
+            "</reset>";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
@@ -225,11 +225,12 @@ TEST(Reset, printResetWithWhen) {
 }
 
 TEST(Reset, printResetWithMultipleWhens) {
-    std::string e = "<reset>"
-                        "<when/>"
-                        "<when/>"
-                        "<when/>"
-                    "</reset>";
+    const std::string e =
+            "<reset>"
+                "<when/>"
+                "<when/>"
+                "<when/>"
+            "</reset>";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
@@ -247,13 +248,14 @@ TEST(Reset, printResetWithMultipleWhens) {
 }
 
 TEST(Reset, printResetWithWhenWithValueSet) {
-    const std::string e = "<reset>"
-                              "<when>"
-                                  "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                      "a value set"
-                                  "</math>"
-                              "</when>"
-                          "</reset>";
+    const std::string e =
+            "<reset>"
+                "<when>"
+                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                        "a value set"
+                    "</math>"
+                "</when>"
+            "</reset>";
 
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
@@ -268,21 +270,22 @@ TEST(Reset, printResetWithWhenWithValueSet) {
 }
 
 TEST(Reset, printResetWithMultipleWhensWithValues) {
-    std::string e = "<reset variable=\"A\">"
-                        "<when order=\"2\">"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some mathml"
-                            "</math>"
-                        "</when>"
-                        "<when order=\"-1\" id=\"wid\">"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some condition in mathml"
-                            "</math>"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some value in mathml"
-                            "</math>"
-                        "</when>"
-                    "</reset>";
+    const std::string e =
+            "<reset variable=\"A\">"
+                "<when order=\"2\">"
+                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                        "some mathml"
+                    "</math>"
+                "</when>"
+                "<when order=\"-1\" id=\"wid\">"
+                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                        "some condition in mathml"
+                    "</math>"
+                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                        "some value in mathml"
+                    "</math>"
+                "</when>"
+            "</reset>";
 
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
@@ -309,11 +312,12 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
 }
 
 TEST(Reset, printResetWithMultipleWhensWithOrders) {
-    std::string e = "<reset>"
-                        "<when order=\"7\"/>"
-                        "<when order=\"-1\"/>"
-                        "<when order=\"0\"/>"
-                    "</reset>";
+    const std::string e =
+            "<reset>"
+                "<when order=\"7\"/>"
+                "<when order=\"-1\"/>"
+                "<when order=\"0\"/>"
+            "</reset>";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();

@@ -70,6 +70,7 @@ class OrderedEntityTestCase(unittest.TestCase):
         r.addWhen(w1)
         r.addWhen(w2)
         r.addWhen(w3)
+        self.assertEqual(3, r.whenCount())
 
         r.removeAllWhens()
         self.assertEqual(0, r.whenCount())
