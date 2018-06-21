@@ -555,7 +555,7 @@ TEST(Parser, modelWithInvalidUnits) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
                 "<units name=\"fahrenheitish\">"
-                    "<unit units=\"celsius\"/>"
+                    "<unit exponent=\"inf\" units=\"celsius\"/>"
                     "<unit units=\"\"/>"
                 "</units>"
                 "<units name=\"dimensionless\"/>"
@@ -565,7 +565,6 @@ TEST(Parser, modelWithInvalidUnits) {
         "Units 'fahrenheitish' has an invalid attribute 'temperature'.",
         "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid child element 'degrees'.",
         "Unit referencing 'celsius' in units 'fahrenheitish' has a multiplier with the value 'Z' that is not a representation of a CellML real valued number.",
-        "Unit referencing 'celsius' in units 'fahrenheitish' has an exponent with the value '35.0E+310' that is not a representation of a CellML real valued number.",
         "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid attribute 'bill'.",
         "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
         "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
@@ -1680,9 +1679,11 @@ TEST(Parser, unitsWithCellMLRealVariations) {
                 "</units>"
                 "<units name=\"units_invalid_reals\">"
                     "<unit multiplier=\"1.8.0\" exponent=\"4.87f87\" units=\"celsius\"/>"
-                    "<unit multiplier=\"+9.87\" exponent=\"4.87e+87\" units=\"oranges\"/>"
+                    "<unit multiplier=\"+9.87\" exponent=\"4.87e+16\" units=\"oranges\"/>"
                     "<unit multiplier=\"AB8e34\" exponent=\"4.87ee32\" units=\"apples\"/>"
                     "<unit multiplier=\"AB8\" exponent=\"4.87eE32\" units=\"bananas\"/>"
+                    "<unit multiplier=\"e7\" exponent=\"4.87e\" units=\"mangoes\"/>"
+                    "<unit multiplier=\"3.4e7.8\" units=\"fruit\"/>"
                 "</units>"
             "</model>";
 
@@ -1694,9 +1695,11 @@ TEST(Parser, unitsWithCellMLRealVariations) {
                 "</units>"
                 "<units name=\"units_invalid_reals\">"
                     "<unit units=\"celsius\"/>"
-                    "<unit units=\"oranges\"/>"
+                    "<unit exponent=\"4.87e+16\" units=\"oranges\"/>"
                     "<unit units=\"apples\"/>"
                     "<unit units=\"bananas\"/>"
+                    "<unit units=\"mangoes\"/>"
+                    "<unit units=\"fruit\"/>"
                 "</units>"
             "</model>";
 
