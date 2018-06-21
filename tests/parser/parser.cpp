@@ -1708,3 +1708,37 @@ TEST(Parser, unitsWithCellMLRealVariations) {
     EXPECT_EQ(e, a);
 }
 
+TEST(Parser, xmlComments) {
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<!-- THIS COMMENT SHOULD BE IGNORED 1 -->"
+                "<units name=\"fahrenheitish\">"
+                    "<!-- THIS COMMENT SHOULD BE IGNORED 2 -->"
+                    "<unit units=\"kelvin\"><!-- THIS COMMENT SHOULD BE IGNORED 2a --></unit>"
+                "</units>"
+                "<component>"
+                    "<!-- THIS COMMENT SHOULD BE IGNORED 3 -->"
+                    "<variable name=\"stan\" units=\"dimensionless\"/>"
+                    "<variable name=\"V_k\" units=\"dimensionless\"><!-- THIS COMMENT SHOULD BE IGNORED 3a --></variable>"
+                    "<reset variable=\"V_k\" order=\"2\" id=\"rid\">"
+                        "<!-- THIS COMMENT SHOULD BE IGNORED 4 -->"
+                        "<when order=\"5\">"
+                            "<!-- THIS COMMENT SHOULD BE IGNORED 5 -->"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+                                "some condition in mathml"
+                            "</math>"
+                        "</when>"
+                    "</reset>"
+                "</component>"
+            "</model>";
+
+    libcellml::Parser parser;
+    parser.parseModel(input);
+    printErrors(parser);
+
+    EXPECT_EQ(0, parser.errorCount());
+}
