@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
