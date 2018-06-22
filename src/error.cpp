@@ -259,7 +259,7 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::UNDEFINED, ""},
     {SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE, "3.1.1"},
     {SpecificationRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, "3.1.2"},
-    {SpecificationRule::DATA_REPR_IDENTIFIER_ATLEAST1_ALPHANUM, "3.1.3"},
+    {SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM, "3.1.3"},
     {SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM, "3.1.4"},
     {SpecificationRule::DATA_REPR_IDENTIFIER_IDENTICAL, "3.1.5"},
     {SpecificationRule::DATA_REPR_NNEG_INT_BASE10, "3.2.1"},
@@ -267,7 +267,7 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::MODEL_ELEMENT, "4.1"},
     {SpecificationRule::MODEL_NAME, "4.2.1"},
     {SpecificationRule::MODEL_CHILD, "4.2.2"},
-    {SpecificationRule::MODEL_MORE_THAN_1_ENCAPSULATION, "4.2.3"},
+    {SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION, "4.2.3"},
     {SpecificationRule::IMPORT_HREF, "5.1.1"},
     {SpecificationRule::IMPORT_CHILD, "5.1.2"},
     {SpecificationRule::IMPORT_CIRCULAR, "5.1.3"}, // TODO: double-check meaning & implementation.
