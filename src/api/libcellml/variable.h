@@ -69,6 +69,86 @@ public:
     static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
+     * @brief Add each argument variable to the other's equivalent variable set.
+     *
+     * Add a copy of @p variable1 to the set of equivalent variables for
+     * @p variable2 if not already present. Also add a copy of @p variable2 to the
+     * set of equivalent variables for @p variable1 if not already present.  Also set the
+     * mapping id of the equivalence and also optionally the connection id fo the
+     * equivalence.
+     *
+     * @overload
+     *
+     * @param variable1 The variable to copy to the equivalent variable set
+     * for @p variable2.
+     * @param variable2 The variable to copy to the equivalent variable set
+     * for @p variable1.
+     * @param mappingId The @c std::string mapping id.
+     * @param connectionId The @c std::string connection id (optional).
+     */
+    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId="");
+
+    /**
+     * @brief Set the equivalent mapping id for this equivalence.
+     *
+     * Record the given id as the mapping id for the equivalence defined with the given
+     * variables.  The variables are commutative. This id appears in the 'map_variables'
+     * element of the model when serialised.
+     *
+     * To clear an equivalence mapping id set it to the empty string. If the two variables are
+     * not equivalent the mapping id is not set.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     * @param mappingId The @c std::string mapping id.
+     */
+    static void setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId);
+
+    /**
+     * @brief Set the equivalent connection id for this equivalence.
+     *
+     * Record the given id as the connection id for the equivalence defined with the given
+     * variables.  The variables are commutative. This id appears in the 'connection'
+     * element of the model when serialised.
+     *
+     * To clear an equivalence connection id set it to the empty string. If the two variables are
+     * not equivalent the connection id is not set.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable two of the equivalence.
+     * @param connectionId The @c std::string connection id.
+     */
+    static void setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId);
+
+    /**
+     * @brief Get the equivalent mapping id for this equivalence.
+     *
+     * Get the mapping id set for the equivalence defined with the given variables.
+     * The variables are commutative.  If no mapping id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param variable1Variable one of the equivalence.
+     * @param variable2 Variable one of the equivalence.
+     * @return the @c std::string mapping id.
+     */
+    static std::string getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
+     * @brief Get the equivalent connection id for this equivalence.
+     *
+     * Get the connection id set for the equivalence defined with the given variables.
+     * The variables are commutative.  If no connection id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param variable1 Variable one of the equivalence.
+     * @param variable2 Variable one of the equivalence.
+     * @return the @c std::string connection id.
+     */
+    static std::string getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+
+    /**
      * @brief Remove each argument variable to the other's equivalent variable set.
      *
      * Removes a copy of @p variable1 from the set of equivalent variables for

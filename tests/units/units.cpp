@@ -423,38 +423,38 @@ TEST(Units, getUnitAttributes) {
     u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
-    std::string reference, prefix;
+    std::string reference, prefix, id;
     double exponent, multiplier;
-    u->getUnitAttributes(0, reference, prefix, exponent, multiplier);
+    u->getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("celsius", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
 
     u->addUnit("NewUnit", 4.0, 1.05, 17.0);
-    u->getUnitAttributes(1, reference, prefix, exponent, multiplier);
+    u->getUnitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("NewUnit", reference);
     EXPECT_EQ("4", prefix);
     EXPECT_DOUBLE_EQ(1.05, exponent);
     EXPECT_DOUBLE_EQ(17, multiplier);
  \
     // Get non-existent unit.
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier);
+    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1, exponent);
     EXPECT_DOUBLE_EQ(1, multiplier);
 
     u->addUnit("daves", "house");
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier);
+    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes("daves", prefix, exponent, multiplier);
+    u->getUnitAttributes("daves", prefix, exponent, multiplier, id);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes("celsius", prefix, exponent, multiplier);
+    u->getUnitAttributes("celsius", prefix, exponent, multiplier, id);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
@@ -474,15 +474,15 @@ TEST(Units, multipleUnitUsingStandardRef) {
 
     EXPECT_EQ(3, u.unitCount());
 
-    std::string prefix, reference;
+    std::string prefix, reference, id;
     double exponent, multiplier;
-    u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier);
+    u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(0, reference, prefix, exponent, multiplier);
+    u.getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(1, reference, prefix, exponent, multiplier);
+    u.getUnitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("centi", prefix);
-    u.getUnitAttributes(2, reference, prefix, exponent, multiplier);
+    u.getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("micro", prefix);
 
 }

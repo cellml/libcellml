@@ -58,18 +58,30 @@ TEST(Variable, addDuplicateEquivalentVariablesAndCount) {
 TEST(Variable, hasNoEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    bool a = v1->hasEquivalentVariable(v2);
-    const bool e = false;
-    EXPECT_EQ(e, a);
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+
+    libcellml::Model m;
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    m.addComponent(c);
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2));
+
+    c->removeVariable(v2);
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2));
+
+    v2.reset();
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
 }
 
 TEST(Variable, hasEquivalentVariable) {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
-    bool a = v1->hasEquivalentVariable(v2);
-    const bool e = true;
-    EXPECT_EQ(e, a);
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2));
 }
 
 TEST(Connection, componentlessVariableInvalidConnection) {
@@ -170,6 +182,30 @@ TEST(Connection, validConnectionAndParse) {
     libcellml::ModelPtr model = parser.parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
+}
+
+TEST(Connection, parseValidAlternateFormConnection) {
+    const std::string input =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<connection component_1=\"component1\" component_2=\"component2\">"
+                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+                "</connection>"
+                "<component name=\"component1\">"
+                    "<variable name=\"variable1\" units=\"dimensionless\"/>"
+                "</component>"
+                "<component name=\"component2\">"
+                    "<variable name=\"variable2\" units=\"dimensionless\"/>"
+                "</component>"
+            "</model>";
+
+    // Parse
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(input);
+
+    EXPECT_EQ(0, parser.errorCount());
+    EXPECT_EQ(2, model->componentCount());
+    EXPECT_EQ(1, model->getComponent("component1")->getVariable("variable1")->equivalentVariableCount());
 }
 
 TEST(Connection, twoMapVariablesConnection) {
@@ -440,11 +476,11 @@ TEST(Connection, removeEquivalentVariableMethods) {
                 "<connection component_1=\"component1\" component_2=\"component2\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
-                "<connection component_1=\"component1\" component_2=\"component3\">"
+                "<connection component_1=\"component1\" component_2=\"component3\" id=\"con2Id\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
                 "</connection>"
-                "<connection component_1=\"component2\" component_2=\"component3\">"
-                    "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
+                "<connection component_1=\"component2\" component_2=\"component3\" id=\"con1Id\">"
+                    "<map_variables variable_1=\"variable2\" variable_2=\"variable3\" id=\"mapId\"/>"
                 "</connection>"
             "</model>";
 
@@ -463,7 +499,7 @@ TEST(Connection, removeEquivalentVariableMethods) {
                 "<connection component_1=\"component1\" component_2=\"component2\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
-                "<connection component_1=\"component1\" component_2=\"component3\">"
+                "<connection component_1=\"component1\" component_2=\"component3\" id=\"con2Id\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
                 "</connection>"
             "</model>";
@@ -505,7 +541,8 @@ TEST(Connection, removeEquivalentVariableMethods) {
     m.addComponent(comp3);
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v1, v3);
-    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "con2Id");
+    libcellml::Variable::addEquivalence(v2, v3, "mapId", "con1Id");
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
@@ -538,7 +575,7 @@ TEST(Connection, removeVariablesFromConnections) {
                 "<component name=\"component4\">"
                     "<variable name=\"variable4\"/>"
                 "</component>"
-                "<connection component_1=\"component1\" component_2=\"component2\">"
+                "<connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">"
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
                     "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
                 "</connection>"
@@ -546,7 +583,7 @@ TEST(Connection, removeVariablesFromConnections) {
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
                 "</connection>"
                 "<connection component_1=\"component1\" component_2=\"component4\">"
-                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>"
                 "</connection>"
                 "<connection component_1=\"component2\" component_2=\"component3\">"
                     "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
@@ -568,7 +605,7 @@ TEST(Connection, removeVariablesFromConnections) {
                     "<variable name=\"variable3\"/>"
                 "</component>"
                 "<component name=\"component4\"/>"
-                "<connection component_1=\"component1\" component_2=\"component2\">"
+                "<connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">"
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
                     "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
                 "</connection>"
@@ -576,7 +613,7 @@ TEST(Connection, removeVariablesFromConnections) {
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
                 "</connection>"
                 "<connection component_1=\"component1\">"
-                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>"
                 "</connection>"
                 "<connection component_1=\"component2\" component_2=\"component3\">"
                     "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
@@ -596,13 +633,13 @@ TEST(Connection, removeVariablesFromConnections) {
                 "</component>"
                 "<component name=\"component3\"/>"
                 "<component name=\"component4\"/>"
-                "<connection component_1=\"component1\" component_2=\"component2\">"
+                "<connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">"
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
                     "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
                 "</connection>"
                 "<connection component_1=\"component1\">"
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
-                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>"
                 "</connection>"
                 "<connection component_1=\"component2\">"
                     "<map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>"
@@ -620,10 +657,10 @@ TEST(Connection, removeVariablesFromConnections) {
                 "<component name=\"component2\"/>"
                 "<component name=\"component3\"/>"
                 "<component name=\"component4\"/>"
-                "<connection component_1=\"component1\">"
+                "<connection component_1=\"component1\" id=\"conId\">"
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>"
                     "<map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>"
-                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\"/>"
+                    "<map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>"
                     "<map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>"
                 "</connection>"
             "</model>";
@@ -669,8 +706,10 @@ TEST(Connection, removeVariablesFromConnections) {
     m.addComponent(comp4);
     libcellml::Variable::addEquivalence(v1_1, v2);
     libcellml::Variable::addEquivalence(v1_2, v2);
+    libcellml::Variable::setEquivalenceConnectionId(v1_2, v2, "conId");
     libcellml::Variable::addEquivalence(v1_1, v3);
     libcellml::Variable::addEquivalence(v1_1, v4);
+    libcellml::Variable::setEquivalenceMappingId(v1_1, v4, "v11v4Id");
     libcellml::Variable::addEquivalence(v2, v3);
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -706,18 +745,18 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
                 "<component name=\"child2\">"
                     "<variable name=\"variable3\" interface=\"public\"/>"
                 "</component>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent\">"
-                        "<component_ref component=\"child1\"/>"
-                        "<component_ref component=\"child2\"/>"
-                    "</component_ref>"
-                "</encapsulation>"
                 "<connection component_1=\"parent\" component_2=\"child1\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
                 "<connection component_1=\"parent\" component_2=\"child2\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
                 "</connection>"
+                "<encapsulation>"
+                    "<component_ref component=\"parent\">"
+                        "<component_ref component=\"child1\"/>"
+                        "<component_ref component=\"child2\"/>"
+                    "</component_ref>"
+                "</encapsulation>"
             "</model>";
 
     libcellml::Model m;
@@ -752,6 +791,68 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     EXPECT_EQ(e, a);
 }
 
+TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfacesUsingIds) {
+    const std::string e =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+                "<component name=\"parent\">"
+                    "<variable name=\"variable1\" interface=\"private\"/>"
+                "</component>"
+                "<component name=\"child1\">"
+                    "<variable name=\"variable2\" interface=\"public\"/>"
+                "</component>"
+                "<component name=\"child2\">"
+                    "<variable name=\"variable3\" interface=\"public\"/>"
+                "</component>"
+                "<connection component_1=\"parent\" component_2=\"child1\" id=\"con1\">"
+                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
+                "</connection>"
+                "<connection component_1=\"parent\" component_2=\"child2\" id=\"con2\">"
+                    "<map_variables variable_1=\"variable1\" variable_2=\"variable3\" id=\"map1\"/>"
+                "</connection>"
+                "<encapsulation>"
+                    "<component_ref component=\"parent\">"
+                        "<component_ref component=\"child1\"/>"
+                        "<component_ref component=\"child2\"/>"
+                    "</component_ref>"
+                "</encapsulation>"
+            "</model>";
+
+    libcellml::Model m;
+    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    parent->setName("parent");
+    child1->setName("child1");
+    child2->setName("child2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    m.addComponent(parent);
+    parent->addComponent(child1);
+    parent->addComponent(child2);
+    parent->addVariable(v1);
+    child1->addVariable(v2);
+    child2->addVariable(v3);
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::setEquivalenceConnectionId(v1, v2, "con1");
+    libcellml::Variable::setEquivalenceConnectionId(v1, v3, "con2");
+    libcellml::Variable::setEquivalenceMappingId(v1, v3, "map1");
+    v1->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    v2->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    v3->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+
+    libcellml::Printer printer;
+    const std::string a = printer.printModel(m);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterfaces) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -765,18 +866,18 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
                 "<component name=\"child2\">"
                     "<variable name=\"variable3\" interface=\"public\"/>"
                 "</component>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent\">"
-                        "<component_ref component=\"child1\"/>"
-                        "<component_ref component=\"child2\"/>"
-                    "</component_ref>"
-                "</encapsulation>"
                 "<connection component_1=\"parent\" component_2=\"child1\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
                 "</connection>"
                 "<connection component_1=\"parent\" component_2=\"child2\">"
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
                 "</connection>"
+                "<encapsulation>"
+                    "<component_ref component=\"parent\">"
+                        "<component_ref component=\"child1\"/>"
+                        "<component_ref component=\"child2\"/>"
+                    "</component_ref>"
+                "</encapsulation>"
             "</model>";
 
     libcellml::Model m;
@@ -819,7 +920,7 @@ TEST(Connection, importedComponentConnectionAndParse) {
                     "<component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>"
                 "</import>"
                 "<component name=\"component_bob\">"
-                    "<variable name=\"variable_bob\"/>"
+                    "<variable name=\"variable_bob\" units=\"seconds\"/>"
                 "</component>"
                 "<connection component_1=\"component_in_this_model\" component_2=\"component_bob\">"
                     "<map_variables variable_1=\"variable_import\" variable_2=\"variable_bob\"/>"
@@ -839,6 +940,7 @@ TEST(Connection, importedComponentConnectionAndParse) {
     componentBob->setName("component_bob");
     variableImported->setName("variable_import");
     variableBob->setName("variable_bob");
+    variableBob->setUnits("seconds");
 
     m.addComponent(componentImported);
     m.addComponent(componentBob);
@@ -864,10 +966,10 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"component_dave\">"
-                    "<variable name=\"variable_dave\"/>"
+                    "<variable name=\"variable_dave\" units=\"dimensionless\"/>"
                 "</component>"
                 "<component name=\"component_bob\">"
-                    "<variable name=\"variable_bob\"/>"
+                    "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
                 "<connection component_1=\"component_dave\" component_2=\"component_bob\">"
                     "<map_variables variable_1=\"variable_angus\" variable_2=\"variable_bob\"/>"
@@ -878,10 +980,10 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"component_dave\">"
-                    "<variable name=\"variable_dave\"/>"
+                    "<variable name=\"variable_dave\" units=\"dimensionless\"/>"
                 "</component>"
                 "<component name=\"component_bob\">"
-                    "<variable name=\"variable_bob\"/>"
+                    "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
             "</model>";
 

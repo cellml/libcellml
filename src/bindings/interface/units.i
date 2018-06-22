@@ -11,18 +11,20 @@
 
 // Add typemaps to fix string ref inputs (fixes memory leak issues)
 %include "typemaps.i"
-%apply std::string &OUTPUT { std::string& reference };
-%apply std::string &OUTPUT { std::string& prefix };
-%apply double &OUTPUT { double& exponent };
-%apply double &OUTPUT { double& multiplier };
+%apply std::string &OUTPUT { std::string &reference };
+%apply std::string &OUTPUT { std::string &prefix };
+%apply double &OUTPUT { double &exponent };
+%apply double &OUTPUT { double &multiplier };
+%apply std::string &OUTPUT { std::string &id };
 // Add typemaps for reference arguments used to return attributes
 %apply std::string &INPUT { const std::string &reference };
 %apply std::string &INPUT { const std::string &prefix };
+%apply std::string &INPUT { const std::string &id };
 
 // Remove methods which cause conflicts for languages with bad enum support
 // (e.g. Python)
 %ignore libcellml::Units::getUnitAttributes(StandardUnit standardRef,
- std::string &prefix, double &exponent, double &multiplier) const;
+ std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 %ignore libcellml::Units::removeUnit(StandardUnit standardRef);
 // This one causes confusion: addUnit(1, 1.0) --> (StandardUnit, double exp)
 // but: addUnit(1, 1) --> (StandardUnit, Prefix, default=1, default=1)

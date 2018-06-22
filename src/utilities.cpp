@@ -20,27 +20,21 @@ limitations under the License.
 #include <iomanip>
 #include <limits>
 #include <set>
+#include <vector>
+#include <iostream>
 #include <sstream>
-#include <stdexcept>
 
 namespace libcellml {
 
-bool convertToDouble(const std::string &candidate, double *value)
+double convertToDouble(const std::string &candidate)
 {
-    bool canConvert = false;
-    // Try to convert the candidate string to double.
-    try
-    {
-        double tmp = std::stod(candidate);
-        if (value) {
-            *value = tmp;
-        }
-        canConvert = true;
+    double value = 0.0;
+    try {
+        value = std::stod(candidate);
     } catch (...) {
-        canConvert = false;
+        value = std::numeric_limits<double>::infinity();
     }
-
-    return canConvert;
+    return value;
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
@@ -55,34 +49,9 @@ std::string convertDoubleToString(double value)
     return strs.str();
 }
 
-bool isCellMLIntegerCharacter(char c) {
-    const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-    return validIntegerCharacters.find(c) != validIntegerCharacters.end();
-}
-
-bool convertToInt(const std::string &candidate, int *value)
+int convertToInt(const std::string &candidate)
 {
-    bool conversionSuccessful = false;
-    // Try to convert the candidate string to int.
-    try
-    {
-        int startIndex = 0;
-        if (candidate.length() > 0 &&
-                *candidate.begin() == '-') {
-            startIndex = 1;
-        }
-        if (std::all_of(candidate.begin() + startIndex, candidate.end(), isCellMLIntegerCharacter)) {
-            int tmp = std::stoi(candidate);
-            if (value) {
-                *value = tmp;
-                conversionSuccessful = true;
-            }
-        }
-    } catch (...) {
-        conversionSuccessful = false;
-    }
-
-    return conversionSuccessful;
+    return std::stoi(candidate);
 }
 
 std::string convertIntToString(int value)
@@ -90,6 +59,92 @@ std::string convertIntToString(int value)
     std::ostringstream strs;
     strs << value;
     return strs.str();
+}
+
+bool isEuropeanNumericCharacter(char c) {
+    const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    return validIntegerCharacters.find(c) != validIntegerCharacters.end();
+}
+
+bool isNonNegativeCellMLInteger(const std::string &candidate)
+{
+    if (candidate.length() == 0) {
+        return false;
+    }
+    return std::all_of(candidate.begin(), candidate.end(), isEuropeanNumericCharacter);
+}
+
+bool isCellMLInteger(const std::string &candidate)
+{
+    if (candidate.length() > 0 && *candidate.begin() == '-') {
+        return isNonNegativeCellMLInteger(candidate.substr(1));
+    }
+    return isNonNegativeCellMLInteger(candidate);
+}
+
+bool isCellMLExponent(const std::string &candidate)
+{
+    if (candidate.length() > 0 && *candidate.begin() == '+') {
+        return isCellMLInteger(candidate.substr(1));
+    }
+    return isCellMLInteger(candidate);
+}
+
+std::vector<size_t> findOccurences(const std::string &candidate, const std::string &sub)
+{
+    std::vector<size_t> occurences;
+    size_t pos = candidate.find(sub, 0);
+    while(pos != std::string::npos) {
+        occurences.push_back(pos);
+        pos = candidate.find(sub, pos+1);
+    }
+    return occurences;
+}
+
+bool isCellMLBasicReal(const std::string &candidate)
+{
+    if (candidate.length() > 0) {
+        std::vector<size_t> decimalOccurences = findOccurences(candidate, ".");
+        if (decimalOccurences.size() < 2) {
+            bool beginsMinus = *candidate.begin() == '-';
+            std::string numbersOnlyCandidate = candidate;
+            if (decimalOccurences.size() == 1) {
+                numbersOnlyCandidate.erase(decimalOccurences.at(0), 1);
+            }
+            if (beginsMinus) {
+                numbersOnlyCandidate.erase(0, 1);
+            }
+            return std::all_of(numbersOnlyCandidate.begin(), numbersOnlyCandidate.end(), isEuropeanNumericCharacter);
+        }
+    }
+    return false;
+}
+
+bool isCellMLReal(const std::string &candidate)
+{
+    bool isReal = false;
+    if (candidate.length() > 0) {
+        std::string normalisedCandidate = candidate;
+        std::vector<size_t> eOccurences = findOccurences(candidate, "E");
+        for (auto ePos : eOccurences) {
+             normalisedCandidate.replace(ePos, 1, "e");
+        }
+        std::vector<size_t> lowerEOccurences = findOccurences(normalisedCandidate, "e");
+        size_t eIndicatorCount = lowerEOccurences.size();
+        if (eIndicatorCount < 2) {
+            if (eIndicatorCount == 1) {
+                size_t ePos = lowerEOccurences.at(0);
+                std::string significand = normalisedCandidate.substr(0, ePos);
+                std::string exponent = normalisedCandidate.substr(ePos+1, std::string::npos);
+                if (isCellMLBasicReal(significand) && isCellMLExponent(exponent)) {
+                    isReal = true;
+                }
+            } else {
+                isReal = isCellMLBasicReal(normalisedCandidate);
+            }
+        }
+    }
+    return isReal;
 }
 
 }
