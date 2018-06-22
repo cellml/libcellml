@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <map>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -863,6 +864,9 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
                     if (nodeType == "ci") {
+                        // It's fine in MathML to have whitespace around variable names, we will strip it out when looking for
+                        // variable names.
+                        textNode = std::regex_replace(textNode, std::regex("^ +| +$|( ) +"), "$1");
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
                             (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {

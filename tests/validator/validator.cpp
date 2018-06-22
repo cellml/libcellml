@@ -366,7 +366,7 @@ TEST(Validator, validMath) {
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"
-                    "<ci>C</ci>"
+                    "<ci> C </ci>"
                     "<apply>"
                         "<plus/>"
                         "<ci>A</ci>"
