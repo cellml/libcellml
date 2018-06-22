@@ -866,7 +866,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     if (nodeType == "ci") {
                         // It's fine in MathML to have whitespace around variable names, we will strip it out when looking for
                         // variable names.
-                        textNode = std::regex_replace(textNode, std::regex("^ +| +$|( ) +"), "$1");
+                        textNode.erase(textNode.begin(),find_if_not(textNode.begin(),textNode.end(),[](int c){return isspace(c);}));
+                        textNode.erase(find_if_not(textNode.rbegin(),textNode.rend(),[](int c){return isspace(c);}).base(), textNode.end());
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
                             (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
