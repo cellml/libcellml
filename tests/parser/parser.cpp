@@ -1714,6 +1714,7 @@ TEST(Parser, unitsWithCellMLRealVariations) {
 TEST(Parser, xmlComments) {
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<!-- THIS COMMENT SHOULD BE IGNORED 0 -->"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
                 "<!-- THIS COMMENT SHOULD BE IGNORED 1 -->"
                 "<units name=\"fahrenheitish\">"
