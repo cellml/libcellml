@@ -22,7 +22,6 @@ limitations under the License.
 #include <sstream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
@@ -1155,7 +1154,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
         result = false;
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
-        err->setRule(SpecificationRule::DATA_REPR_IDENTIFIER_ATLEAST1_ALPHANUM);
+        err->setRule(SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
         mValidator->addError(err);
     }
     return result;

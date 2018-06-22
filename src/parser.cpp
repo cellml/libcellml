@@ -358,7 +358,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                                 "' has more than one encapsulation element.");
             err->setModel(model);
             err->setKind(Error::Kind::ENCAPSULATION);
-            err->setRule(SpecificationRule::MODEL_MORE_THAN_1_ENCAPSULATION);
+            err->setRule(SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
             mParser->addError(err);
         }
     }

@@ -11,11 +11,11 @@
 
 // Add typemaps to fix string ref inputs (fixes memory leak issues)
 %include "typemaps.i"
-%apply std::string &OUTPUT { std::string& reference };
-%apply std::string &OUTPUT { std::string& prefix };
-%apply double &OUTPUT { double& exponent };
-%apply double &OUTPUT { double& multiplier };
-%apply std::string &OUTPUT { std::string& id };
+%apply std::string &OUTPUT { std::string &reference };
+%apply std::string &OUTPUT { std::string &prefix };
+%apply double &OUTPUT { double &exponent };
+%apply double &OUTPUT { double &multiplier };
+%apply std::string &OUTPUT { std::string &id };
 // Add typemaps for reference arguments used to return attributes
 %apply std::string &INPUT { const std::string &reference };
 %apply std::string &INPUT { const std::string &prefix };
