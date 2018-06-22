@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/1.2#" xmlns:cellml="http://www.cellml.org/cellml/1.2#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin_approximations_import" id="sin_approximations_import">
   <component name="main" id="main">
-    <variable id="x" initial_value="0" name="x" interface="public_and_private"/>
-    <variable id="sin" name="sin1" interface="public_and_private"/>
-    <variable id="deriv_approx" name="sin2" interface="public_and_private"/>
-    <variable id="deriv_approx_initial_value" initial_value="0" name="deriv_approx_initial_value" interface="public_and_private"/>
-    <variable id="parabolic_approx" name="sin3" interface="public_and_private"/>
+    <variable id="x" initial_value="0" name="x" interface="public_and_private" units="dimensionless"/>
+    <variable id="sin" name="sin1" interface="public_and_private" units="dimensionless"/>
+    <variable id="deriv_approx" name="sin2" interface="public_and_private" units="dimensionless"/>
+    <variable id="deriv_approx_initial_value" initial_value="0" name="deriv_approx_initial_value" interface="public_and_private" units="dimensionless"/>
+    <variable id="parabolic_approx" name="sin3" interface="public_and_private" units="dimensionless"/>
   </component>
   <component name="actual_sin" id="sin">
-    <variable name="x" interface="public_and_private"/>
-    <variable id="sin" name="sin" interface="public_and_private"/>
+    <variable name="x" interface="public_and_private" units="dimensionless"/>
+    <variable id="sin" name="sin" interface="public_and_private" units="dimensionless"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply id="actual_sin">
         <eq/>
@@ -21,9 +21,9 @@
     </math>
   </component>
   <component name="deriv_approx_sin" id="sin">
-    <variable id="x" name="x" interface="public_and_private"/>
-    <variable id="sin" initial_value="0" name="sin" interface="public_and_private"/>
-    <variable name="sin_initial_value" interface="public_and_private"/>
+    <variable id="x" name="x" interface="public_and_private" units="dimensionless"/>
+    <variable id="sin" initial_value="0" name="sin" interface="public_and_private" units="dimensionless"/>
+    <variable name="sin_initial_value" interface="public_and_private" units="dimensionless"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply>
         <eq/>
@@ -42,15 +42,15 @@
     </math>
   </component>
   <component name="parabolic_approx_sin" id="sin">
-    <variable id="x" name="x" interface="public_and_private"/>
-    <variable id="sin" name="sin" interface="public_and_private"/>
-    <variable name="k2_oPi" interface="public_and_private"/>
-    <variable name="k2Pi" interface="public_and_private"/>
-    <variable name="kPi_2" interface="public_and_private"/>
-    <variable name="kPi" interface="public_and_private"/>
-    <variable name="kPi_32" interface="public_and_private"/>
-    <variable name="z" interface="public_and_private"/>
-    <variable initial_value="0.75" name="C" interface="public_and_private"/>
+    <variable id="x" name="x" interface="public_and_private" units="dimensionless"/>
+    <variable id="sin" name="sin" interface="public_and_private" units="dimensionless"/>
+    <variable name="k2_oPi" interface="public_and_private" units="dimensionless"/>
+    <variable name="k2Pi" interface="public_and_private" units="dimensionless"/>
+    <variable name="kPi_2" interface="public_and_private" units="dimensionless"/>
+    <variable name="kPi" interface="public_and_private" units="dimensionless"/>
+    <variable name="kPi_32" interface="public_and_private" units="dimensionless"/>
+    <variable name="z" interface="public_and_private" units="dimensionless"/>
+    <variable initial_value="0.75" units="dimensionless" name="C" interface="public_and_private"/>
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <apply id="k2_oPi">
         <eq/>
