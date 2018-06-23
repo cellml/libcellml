@@ -3,7 +3,6 @@
 #define LIBCELLML_EXPORT
 
 %import "types.i"
-%import "entity.i"
 %import "orderedentity.i"
 
 %feature("docstring") libcellml::Reset

@@ -98,7 +98,7 @@ void testSpecificationRule(const libcellml::Error &e)
     case libcellml::SpecificationRule::CONNECTION_MAP_VARIABLES:
         EXPECT_EQ("17.1.4", e.getSpecificationHeading());
         break;
-    case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_ATLEAST1_ALPHANUM:
+    case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM:
         EXPECT_EQ("3.1.3", e.getSpecificationHeading());
         break;
     case libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM:
@@ -170,7 +170,7 @@ void testSpecificationRule(const libcellml::Error &e)
     case libcellml::SpecificationRule::MODEL_ELEMENT:
         EXPECT_EQ("4.1", e.getSpecificationHeading());
         break;
-    case libcellml::SpecificationRule::MODEL_MORE_THAN_1_ENCAPSULATION:
+    case libcellml::SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION:
         EXPECT_EQ("4.2.3", e.getSpecificationHeading());
         break;
     case libcellml::SpecificationRule::MODEL_NAME:
@@ -236,9 +236,6 @@ void testSpecificationRule(const libcellml::Error &e)
     case libcellml::SpecificationRule::WHEN_CHILD:
         EXPECT_EQ("13.1.2", e.getSpecificationHeading());
         break;
-//    case libcellml::SpecificationRule:
-//        EXPECT_EQ("4.1.1", e.getSpecificationHeading());
-//        break;
     case libcellml::SpecificationRule::UNDEFINED:
         EXPECT_EQ("", e.getSpecificationHeading());
         break;
@@ -268,7 +265,7 @@ TEST(Error, specificationRule) {
     testSpecificationRule(e);
     e.setRule(libcellml::SpecificationRule::CONNECTION_MAP_VARIABLES);++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_ATLEAST1_ALPHANUM);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);++count;
     testSpecificationRule(e);
     e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);++count;
     testSpecificationRule(e);
@@ -308,7 +305,7 @@ TEST(Error, specificationRule) {
     testSpecificationRule(e);
     e.setRule(libcellml::SpecificationRule::MODEL_ELEMENT);++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MODEL_MORE_THAN_1_ENCAPSULATION);++count;
+    e.setRule(libcellml::SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);++count;
     testSpecificationRule(e);
     e.setRule(libcellml::SpecificationRule::MODEL_NAME);++count;
     testSpecificationRule(e);
