@@ -235,7 +235,7 @@ TEST(Units, removeUnitsMethodsAndCount) {
     EXPECT_EQ(e4, a);
 }
 
-TEST(Units, hasUnits) {
+TEST(Units, hasUnitsName) {
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -244,6 +244,17 @@ TEST(Units, hasUnits) {
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     m.addUnits(u);
     EXPECT_TRUE(m.hasUnits("a_unit"));
+}
+
+TEST(Units, hasUnitsPtr) {
+    libcellml::Model m;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("a_unit");
+
+    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
+    m.addUnits(u);
+    EXPECT_TRUE(m.hasUnits(u));
 }
 
 TEST(Units, takeUnits) {
