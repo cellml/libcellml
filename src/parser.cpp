@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
@@ -337,6 +336,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 err->setRule(SpecificationRule::MODEL_CHILD);
                 mParser->addError(err);
             }
+        } else if (childNode->isType("comment")) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Model '" + model->getName() +
@@ -356,7 +357,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                                 "' has more than one encapsulation element.");
             err->setModel(model);
             err->setKind(Error::Kind::ENCAPSULATION);
-            err->setRule(SpecificationRule::MODEL_MORE_THAN_1_ENCAPSULATION);
+            err->setRule(SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
             mParser->addError(err);
         }
     }
@@ -408,6 +409,8 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                 err->setRule(SpecificationRule::COMPONENT_CHILD);
                 mParser->addError(err);
             }
+        } else if (childNode->isType("comment")) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Component '" + component->getName() +
@@ -452,6 +455,8 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                 err->setRule(SpecificationRule::UNITS_CHILD);
                 mParser->addError(err);
             }
+        } else if (childNode->isType("comment")) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units '" + units->getName() +
@@ -486,6 +491,8 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                     err->setUnits(units);
                     mParser->addError(err);
                 }
+            } else if (childNode->isType("comment")) {
+                // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
@@ -563,6 +570,8 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
                     err->setVariable(variable);
                     mParser->addError(err);
                 }
+            } else if (childNode->isType("comment")) {
+                // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Variable '" + node->getAttribute("name") +
@@ -704,6 +713,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
                 }
+            } else if (childNode->isType("comment")) {
+                // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
@@ -773,6 +784,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
+        } else if (childNode->isType("comment")) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Connection in model '" + model->getName() +
@@ -1183,6 +1196,8 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                 err->setRule(SpecificationRule::IMPORT_CHILD);
                 mParser->addError(err);
             }
+        } else if (childNode->isType("comment")) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Import from '" + node->getAttribute("href") +
@@ -1289,6 +1304,8 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 err->setRule(SpecificationRule::RESET_CHILD);
                 mParser->addError(err);
             }
+        } else if (childNode->isType("comment")) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Reset in component '" + component->getName() +
@@ -1378,6 +1395,8 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             err->setWhen(when);
             err->setRule(SpecificationRule::WHEN_CHILD);
             mParser->addError(err);
+        } else if (childNode->isType("comment")) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("When in reset referencing variable '" + referencedVariableName +

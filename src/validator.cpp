@@ -18,10 +18,10 @@ limitations under the License.
 
 #include <algorithm>
 #include <map>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
@@ -863,6 +863,10 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
                     if (nodeType == "ci") {
+                        // It's fine in MathML to have whitespace around variable names, we will strip it out when looking for
+                        // variable names.
+                        textNode.erase(textNode.begin(),find_if_not(textNode.begin(),textNode.end(),[](int c){return isspace(c);}));
+                        textNode.erase(find_if_not(textNode.rbegin(),textNode.rend(),[](int c){return isspace(c);}).base(), textNode.end());
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) &&
                             (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
@@ -1150,7 +1154,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
         result = false;
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
-        err->setRule(SpecificationRule::DATA_REPR_IDENTIFIER_ATLEAST1_ALPHANUM);
+        err->setRule(SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
         mValidator->addError(err);
     }
     return result;
