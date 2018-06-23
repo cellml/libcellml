@@ -28,7 +28,13 @@ namespace libcellml {
 
 double convertToDouble(const std::string &candidate)
 {
-    return std::stod(candidate);
+    double value = 0.0;
+    try {
+        value = std::stod(candidate);
+    } catch (...) {
+        value = std::numeric_limits<double>::infinity();
+    }
+    return value;
 }
 
 bool hasNonWhitespaceCharacters(const std::string &input)
@@ -74,6 +80,14 @@ bool isCellMLInteger(const std::string &candidate)
         return isNonNegativeCellMLInteger(candidate.substr(1));
     }
     return isNonNegativeCellMLInteger(candidate);
+}
+
+bool isCellMLExponent(const std::string &candidate)
+{
+    if (candidate.length() > 0 && *candidate.begin() == '+') {
+        return isCellMLInteger(candidate.substr(1));
+    }
+    return isCellMLInteger(candidate);
 }
 
 std::vector<size_t> findOccurences(const std::string &candidate, const std::string &sub)
@@ -122,7 +136,7 @@ bool isCellMLReal(const std::string &candidate)
                 size_t ePos = lowerEOccurences.at(0);
                 std::string significand = normalisedCandidate.substr(0, ePos);
                 std::string exponent = normalisedCandidate.substr(ePos+1, std::string::npos);
-                if (isCellMLBasicReal(significand) && isCellMLInteger(exponent)) {
+                if (isCellMLBasicReal(significand) && isCellMLExponent(exponent)) {
                     isReal = true;
                 }
             } else {
