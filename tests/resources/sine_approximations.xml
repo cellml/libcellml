@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/1.2#" xmlns:cellml="http://www.cellml.org/cellml/1.2#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin_approximations_import" id="sin_approximations_import">
+<?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin_approximations_import" id="sin_approximations_import">
   <component name="main" id="main">
     <variable id="x" initial_value="0" name="x" interface="public_and_private" units="dimensionless"/>
     <variable id="sin" name="sin1" interface="public_and_private" units="dimensionless"/>
