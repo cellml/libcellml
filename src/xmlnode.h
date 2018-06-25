@@ -50,6 +50,15 @@ public:
     void setXmlNode (const xmlNodePtr &node);
 
     /**
+     * @brief Get the namespace of the XML element.
+     *
+     * Get the namespace of the XML element.
+     *
+     * @return A @c std::string representation of the XML namespace.
+     */
+    std::string getNamespace() const;
+
+    /**
      * @brief Check if this @c XmlNode is of the named element type.
      *
      * Checks whether this @c XmlNode has the argument element type name.

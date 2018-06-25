@@ -170,11 +170,17 @@ void testSpecificationRule(const libcellml::Error &e)
     case libcellml::SpecificationRule::MODEL_ELEMENT:
         EXPECT_EQ("4.1", e.getSpecificationHeading());
         break;
+    case libcellml::SpecificationRule::MODEL_INVALID_NAMESPACE:
+        EXPECT_EQ("4.1", e.getSpecificationHeading());
+        break;
     case libcellml::SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION:
         EXPECT_EQ("4.2.3", e.getSpecificationHeading());
         break;
     case libcellml::SpecificationRule::MODEL_NAME:
         EXPECT_EQ("4.2.1", e.getSpecificationHeading());
+        break;
+    case libcellml::SpecificationRule::MODEL_NO_NAMESPACE:
+        EXPECT_EQ("4.1", e.getSpecificationHeading());
         break;
     case libcellml::SpecificationRule::RESET_CHILD:
         EXPECT_EQ("12.1.2", e.getSpecificationHeading());

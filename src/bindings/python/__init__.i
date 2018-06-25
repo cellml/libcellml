@@ -134,6 +134,8 @@ convert(specificationrule, 'SpecificationRule', [
     'DATA_REPR_NNEG_INT_BASE10',
     'DATA_REPR_NNEG_INT_EURO_NUM',
     'MODEL_ELEMENT',
+    'MODEL_NO_NAMESPACE',
+    'MODEL_INVALID_NAMESPACE',
     'MODEL_NAME',
     'MODEL_CHILD',
     'MODEL_MORE_THAN_ONE_ENCAPSULATION',

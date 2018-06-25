@@ -257,6 +257,22 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         err->setRule(SpecificationRule::MODEL_ELEMENT);
         mParser->addError(err);
         return;
+    } else if (node->getNamespace().empty()) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Model root node has no namespace. "
+                            "A valid CellML root node should be in the CellML 2.0 namespace.");
+        err->setModel(model);
+        err->setRule(SpecificationRule::MODEL_NO_NAMESPACE);
+        mParser->addError(err);
+        return;
+    } else if (node->getNamespace().compare("http://www.cellml.org/cellml/2.0#")) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Model root node has an invalid namespace. "
+                            "A valid CellML root node should be in the CellML 2.0 namespace.");
+        err->setModel(model);
+        err->setRule(SpecificationRule::MODEL_INVALID_NAMESPACE);
+        mParser->addError(err);
+        return;
     }
     // Get model attributes.
     XmlAttributePtr attribute = node->getFirstAttribute();
