@@ -265,6 +265,8 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::DATA_REPR_NNEG_INT_BASE10, "3.2.1"},
     {SpecificationRule::DATA_REPR_NNEG_INT_EURO_NUM, "3.2.2"},
     {SpecificationRule::MODEL_ELEMENT, "4.1"},
+    {SpecificationRule::MODEL_NO_NAMESPACE, "4.1"},
+    {SpecificationRule::MODEL_INVALID_NAMESPACE, "4.1"},
     {SpecificationRule::MODEL_NAME, "4.2.1"},
     {SpecificationRule::MODEL_CHILD, "4.2.2"},
     {SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION, "4.2.3"},

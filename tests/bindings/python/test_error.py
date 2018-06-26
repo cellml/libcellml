@@ -47,6 +47,8 @@ class ErrorTestCase(unittest.TestCase):
         self.assertIsInstance(SpecificationRule.DATA_REPR_NNEG_INT_BASE10, int)
         self.assertIsInstance(SpecificationRule.DATA_REPR_NNEG_INT_EURO_NUM, int)
         self.assertIsInstance(SpecificationRule.MODEL_ELEMENT, int)
+        self.assertIsInstance(SpecificationRule.MODEL_NO_NAMESPACE, int)
+        self.assertIsInstance(SpecificationRule.MODEL_INVALID_NAMESPACE, int)
         self.assertIsInstance(SpecificationRule.MODEL_NAME, int)
         self.assertIsInstance(SpecificationRule.MODEL_CHILD, int)
         self.assertIsInstance(SpecificationRule.MODEL_MORE_THAN_ONE_ENCAPSULATION, int)
