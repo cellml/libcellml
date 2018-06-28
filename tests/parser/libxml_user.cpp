@@ -51,7 +51,7 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml) {
     // parse the string using libcellml
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_NE(0, parser.errorCount());
+    EXPECT_NE(0u, parser.errorCount());
 
     // and now parse directly using libxml2
     xmlParserCtxtPtr context = xmlNewParserCtxt();
