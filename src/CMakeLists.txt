@@ -112,16 +112,16 @@ group_source_to_dir_structure(
   ${API_HEADER_FILES}
 )
 
-add_library(cellml
+add_library(${LIBCELLML_LIBRARY}
   ${SOURCE_FILES}
   ${HEADER_FILES}
   ${MODULE_HEADER_FILES}
   ${API_HEADER_FILES}
 )
 
-generate_export_header(cellml EXPORT_FILE_NAME ${LIBCELLML_EXPORTDEFINITIONS_H} BASE_NAME LIBCELLML)
+generate_export_header(${LIBCELLML_LIBRARY} EXPORT_FILE_NAME ${LIBCELLML_EXPORTDEFINITIONS_H} BASE_NAME LIBCELLML)
 
-target_include_directories(cellml
+target_include_directories(${LIBCELLML_LIBRARY}
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/api>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/api>
@@ -133,14 +133,14 @@ target_include_directories(cellml
 )
 
 if(HAVE_LIBXML2_CONFIG)
-  target_link_libraries(cellml PUBLIC xml2)
+  target_link_libraries(${LIBCELLML_LIBRARY} PUBLIC xml2)
 else()
-  target_include_directories(cellml PUBLIC ${LIBXML2_INCLUDE_DIR})
-  target_link_libraries(cellml PUBLIC ${LIBXML2_LIBRARIES})
-  target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
+  target_include_directories(${LIBCELLML_LIBRARY} PUBLIC ${LIBXML2_INCLUDE_DIR})
+  target_link_libraries(${LIBCELLML_LIBRARY} PUBLIC ${LIBXML2_LIBRARIES})
+  target_compile_definitions(${LIBCELLML_LIBRARY} PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
-set_target_properties(cellml PROPERTIES
+set_target_properties(${LIBCELLML_LIBRARY} PROPERTIES
   CXX_STANDARD 11
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
@@ -152,30 +152,30 @@ set_target_properties(cellml PROPERTIES
 )
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-  target_warnings_as_errors(cellml)
+  target_warnings_as_errors(${LIBCELLML_LIBRARY})
 endif()
 
 add_subdirectory(bindings)
 
 if(LIBCELLML_COVERAGE)
-  set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
+  set_target_properties(${LIBCELLML_LIBRARY} PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
     LINK_FLAGS "-fprofile-arcs -ftest-coverage")
 
   # Share some paths with interested parties (tests)
-  set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
+  set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${LIBCELLML_LIBRARY}.dir" PARENT_SCOPE)
   set(GCOV_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
   set(GCOV_BUILD_PREFIX_PATH "${CMAKE_CURRENT_BINARY_DIR}" PARENT_SCOPE)
 
   set(GCOV_CLEAN_FILES)
   foreach(src_file ${SOURCE_FILES})
     get_filename_component(_tmp_file "${src_file}" NAME)
-    list(APPEND GCOV_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir/${_tmp_file}.gcno")
-    list(APPEND GCOV_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir/${_tmp_file}.gcda")
+    list(APPEND GCOV_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${LIBCELLML_LIBRARY}.dir/${_tmp_file}.gcno")
+    list(APPEND GCOV_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/${LIBCELLML_LIBRARY}.dir/${_tmp_file}.gcda")
   endforeach()
   set_directory_properties(${GCOV_ANALYSIS_PATH} PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${GCOV_CLEAN_FILES}")
 endif()
 
-install(TARGETS cellml EXPORT libcellml-targets
+install(TARGETS ${LIBCELLML_LIBRARY} EXPORT libcellml-targets
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib

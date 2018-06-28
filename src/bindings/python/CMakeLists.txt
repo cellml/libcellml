@@ -63,7 +63,7 @@ foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
       LANGUAGE python
       SOURCES ${SWIG_INTERFACE_SRC})
   endif ()
-  swig_link_libraries(${MODULE_NAME} Python::Python cellml)
+  swig_link_libraries(${MODULE_NAME} Python::Python ${LIBCELLML_LIBRARY})
   set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})
   # Disable use of Debug Python libraries when not present on Windows
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
