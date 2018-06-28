@@ -34,7 +34,7 @@ class LIBCELLML_EXPORT Printer: public Logger
 {
 public:
     Printer(); /**< Constructor */
-    ~Printer(); /**< Destructor */
+    ~Printer() override; /**< Destructor */
     Printer(const Printer &rhs); /**< Copy constructor */
     Printer(Printer &&rhs); /**< Move constructor */
     Printer& operator=(Printer p); /**< Assignment operator */

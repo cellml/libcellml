@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT Variable: public NamedEntity
 {
 public:
     Variable(); /**< Constructor */
-    ~Variable(); /**< Destructor */
+    ~Variable() override; /**< Destructor */
     Variable(const Variable &rhs); /**< Copy constructor */
     Variable(Variable &&rhs); /**< Move constructor */
     Variable& operator=(Variable n); /**< Assignment operator */

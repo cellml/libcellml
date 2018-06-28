@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 {
 public:
     Model(); /**< Constructor */
-    ~Model(); /**< Destructor */
+    ~Model() override; /**< Destructor */
     Model(const Model &rhs); /**< Copy constructor */
     Model(Model &&rhs); /**< Move constructor */
     Model& operator=(Model m); /**< Assignment operator */
