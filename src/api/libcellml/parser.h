@@ -32,7 +32,7 @@ namespace libcellml {
  * The Parser class is for representing a CellML Parser.
  */
 class LIBCELLML_EXPORT Parser: public Logger
-{ 
+{
 public:
     Parser(); /**< Constructor */
     ~Parser(); /**< Destructor */

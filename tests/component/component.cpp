@@ -315,7 +315,7 @@ TEST(Component, replaceComponentMethods) {
 
     a = printer.printComponent(c);
     EXPECT_EQ(e_post, a);
-    
+
     // Test replace by ptr
     EXPECT_FALSE(c.replaceComponent(c1, c2));
     EXPECT_TRUE(c.replaceComponent(c4, c1));

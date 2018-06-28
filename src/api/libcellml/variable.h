@@ -223,7 +223,7 @@ public:
     /**
      * @brief Set the units for this variable using a @c UnitsPtr.
      *
-     * Set the units for this variable as the name associated with the 
+     * Set the units for this variable as the name associated with the
      * argument @p units.
      *
      * @overload
@@ -237,7 +237,7 @@ public:
     /**
      * @brief Get the name of the units for this variable.
      *
-     * Get the name of the units for this variable. If no units are set 
+     * Get the name of the units for this variable. If no units are set
      * an empty @c std::string is returned.
      *
      * @sa setUnits

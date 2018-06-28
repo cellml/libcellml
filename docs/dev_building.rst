@@ -55,7 +55,7 @@ When we press the *Configure* button CMake performs an initial configuration.  T
 .. figure:: images/libCellMLBuilding-CMakeWindowsConfigurationError.png
    :align: center
    :alt: CMake-GUI on Windows showing configuration error after initial configuration attempt.
-   
+
    CMake-GUI showing configuration error after initial configuration attempt.
 
 We can resolve this error easily if we set the value of the *LibXml2_DIR* variable to the location of the LibXml2 *cmake* directory. :numref:`fig_devBuilding_windowsCMakeLibXml2DIRNotFound` shows the *LibXml2_DIR* variable with the value of *LibXml2_DIR-NOTFOUND*.
@@ -65,17 +65,17 @@ We can resolve this error easily if we set the value of the *LibXml2_DIR* variab
 .. figure:: images/libCellMLBuilding-CMakeWindowsLibXml2DIRNotFound.png
    :align: center
    :alt: LibXml2_DIR variable with a value of LibXml2_DIR-NOTFOUND.
-   
+
    LibXml2_DIR variable with a value of LibXml2_DIR-NOTFOUND.
 
-Setting the value of *LibXml2_DIR* to *C:/Program Files/libxml2 2.9.6/lib/cmake* and configuring again will result in a successful configuration (:numref:`fig_devBuilding_windowsCMakeLibXml2DirSet` shows a successfully configured LibXml2_DIR variable) from which build files may be generated using the *Generate* button.  
+Setting the value of *LibXml2_DIR* to *C:/Program Files/libxml2 2.9.6/lib/cmake* and configuring again will result in a successful configuration (:numref:`fig_devBuilding_windowsCMakeLibXml2DirSet` shows a successfully configured LibXml2_DIR variable) from which build files may be generated using the *Generate* button.
 
 .. _fig_devBuilding_windowsCMakeLibXml2DirSet:
 
 .. figure:: images/libCellMLBuilding-CMakeWindowsLibXml2DirSet.png
    :align: center
    :alt: LibXml2_DIR variable with a value of *C:/Program Files/libxml2 2.9.6/lib/cmake*.
-   
+
    LibXml2_DIR variable with a value of *C:/Program Files/libxml2 2.9.6/lib/cmake*.
 
 If LibXml2 was not installed to *C:/Program Files/libxml2 2.9.6/* you will need to adjust the path to match your situation.
