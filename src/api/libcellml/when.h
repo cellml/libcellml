@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT When: public OrderedEntity
 {
 public:
     When(); /**< Constructor */
-    ~When(); /**< Destructor */
+    ~When() override; /**< Destructor */
     When(const When &rhs); /**< Copy constructor */
     When(When &&rhs); /**< Move constructor */
     When& operator=(When n); /**< Assignment operator */

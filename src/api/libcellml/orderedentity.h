@@ -30,7 +30,7 @@ class LIBCELLML_EXPORT OrderedEntity: public Entity
 {
 public:
     OrderedEntity(); /**< Constructor */
-    ~OrderedEntity(); /**< Destructor */
+    ~OrderedEntity() override; /**< Destructor */
     OrderedEntity(const OrderedEntity &rhs); /**< Copy constructor */
     OrderedEntity(OrderedEntity &&rhs); /**< Move constructor */
     OrderedEntity& operator=(OrderedEntity n); /**< Assignment operator */

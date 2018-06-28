@@ -36,7 +36,7 @@ class LIBCELLML_EXPORT Validator: public Logger
 {
 public:
     Validator(); /**< Constructor */
-    ~Validator(); /**< Destructor */
+    ~Validator() override; /**< Destructor */
     Validator(const Validator &rhs); /**< Copy constructor */
     Validator(Validator &&rhs); /**< Move constructor */
     Validator& operator=(Validator v); /**< Assignment operator */

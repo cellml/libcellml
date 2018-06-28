@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT Reset: public OrderedEntity
 {
 public:
     Reset(); /**< Constructor */
-    ~Reset(); /**< Destructor */
+    ~Reset() override; /**< Destructor */
     Reset(const Reset &rhs); /**< Copy constructor */
     Reset(Reset &&rhs); /**< Move constructor */
     Reset& operator=(Reset n); /**< Assignment operator */
