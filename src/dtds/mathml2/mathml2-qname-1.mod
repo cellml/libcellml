@@ -2,12 +2,12 @@
 <!-- MathML Qualified Names Module  ........................................ -->
 <!-- file: mathml2-qname-1.mod
 
-     This is the Mathematical Markup Language (MathML) 2.0, an XML 
-     application for describing mathematical notation and capturing 
+     This is the Mathematical Markup Language (MathML) 2.0, an XML
+     application for describing mathematical notation and capturing
      both its structure and content.
 
      Copyright 1998-2000 W3C (MIT, INRIA, Keio), All Rights Reserved.
-     Revision: $Id: mathml2-qname-1.mod,v 1.2 2003/04/08 00:11:16 davidc Exp $ 
+     Revision: $Id: mathml2-qname-1.mod,v 1.2 2003/04/08 00:11:16 davidc Exp $
 
      This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
@@ -23,9 +23,9 @@
      This module is contained in two parts, labeled Section 'A' and 'B':
 
        Section A declares parameter entities to support namespace-
-       qualified names, namespace declarations, and name prefixing 
+       qualified names, namespace declarations, and name prefixing
        for MathML.
-    
+
        Section B declares parameter entities used to provide
        namespace-qualified names for all MathML element types.
 
@@ -39,7 +39,7 @@
 
 <!-- XLink ............... -->
 
-<!ENTITY % XLINK.prefix         "xlink" >		
+<!ENTITY % XLINK.prefix         "xlink" >
 <!ENTITY % XLINK.xmlns "http://www.w3.org/1999/xlink" >
 <!ENTITY % XLINK.xmlns.attrib
      "xmlns:%XLINK.prefix;  CDATA           #FIXED '%XLINK.xmlns;'"
@@ -47,7 +47,7 @@
 
 <!-- W3C XML Schema ............... -->
 
-<!ENTITY % Schema.prefix         "xsi" >		
+<!ENTITY % Schema.prefix         "xsi" >
 <!ENTITY % Schema.xmlns "http://www.w3.org/2001/XMLSchema-instance" >
 <!ENTITY % Schema.xmlns.attrib
      "xmlns:%Schema.prefix;  CDATA           #IMPLIED"
@@ -60,8 +60,8 @@
 <![%MATHML.prefixed;[
 <!ENTITY % MATHML.xmlns.extra.attrib  "" >
 ]]>
-<!ENTITY % MATHML.xmlns.extra.attrib 
-     "%XLINK.xmlns.attrib; 
+<!ENTITY % MATHML.xmlns.extra.attrib
+     "%XLINK.xmlns.attrib;
       %Schema.xmlns.attrib;" >
 
 <![%MATHML.prefixed;[
@@ -78,7 +78,7 @@
 >
 
 <![%NS.prefixed;[
-<!ENTITY % XHTML.xmlns.extra.attrib 
+<!ENTITY % XHTML.xmlns.extra.attrib
      "%MATHML.xmlns.attrib;" >
 ]]>
 <!ENTITY % XHTML.xmlns.extra.attrib

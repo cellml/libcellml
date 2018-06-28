@@ -33,7 +33,7 @@ namespace libcellml {
  * The Validator class is for representing a CellML Validator.
  */
 class LIBCELLML_EXPORT Validator: public Logger
-{ 
+{
 public:
     Validator(); /**< Constructor */
     ~Validator(); /**< Destructor */

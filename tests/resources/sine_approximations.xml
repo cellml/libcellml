@@ -271,7 +271,7 @@
     <map_variables variable_1="x" variable_2="x"/>
   </connection>
   <encapsulation>
-    
+
     <component_ref component="main">
       <component_ref component="actual_sin"/>
       <component_ref component="deriv_approx_sin"/>
