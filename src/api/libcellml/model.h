@@ -213,7 +213,7 @@ public:
     size_t unitsCount() const;
 
 private:
-    void doAddComponent(const ComponentPtr &c);
+    void doAddComponent(const ComponentPtr &c) override;
     void swap(Model &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
