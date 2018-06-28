@@ -72,19 +72,19 @@ TEST(Component, addAndCountChildren) {
     libcellml::ComponentPtr child4 = std::make_shared<libcellml::Component>();
     child4->setName("child4");
 
-    EXPECT_EQ(0, parent.componentCount());
+    EXPECT_EQ(0u, parent.componentCount());
 
     parent.addComponent(child1);
     parent.addComponent(child2);
     parent.addComponent(child3);
     parent.addComponent(child4);
-    EXPECT_EQ(4, parent.componentCount());
+    EXPECT_EQ(4u, parent.componentCount());
 
     child3->addComponent(child4);
     parent.addComponent(child3);
-    EXPECT_EQ(5, parent.componentCount());
+    EXPECT_EQ(5u, parent.componentCount());
 
-    EXPECT_EQ(1, child3->componentCount());
+    EXPECT_EQ(1u, child3->componentCount());
 }
 
 TEST(Component, contains) {
@@ -156,7 +156,7 @@ TEST(Component, removeComponentMethods) {
     c.addComponent(c2);
 
     EXPECT_TRUE(c.removeComponent(0));
-    EXPECT_EQ(1, c.componentCount());
+    EXPECT_EQ(1u, c.componentCount());
 
     libcellml::Printer printer;
     std::string a = printer.printComponent(c);
@@ -170,19 +170,19 @@ TEST(Component, removeComponentMethods) {
     EXPECT_TRUE(c.removeComponent("child1"));
     // Remove the second occurence of "child1".
     EXPECT_TRUE(c.removeComponent(c1));
-    EXPECT_EQ(2, c.componentCount());
+    EXPECT_EQ(2u, c.componentCount());
     a = printer.printComponent(c);
     EXPECT_EQ(e2, a);
 
     // Expect no change
     EXPECT_FALSE(c.removeComponent("child3"));
     EXPECT_FALSE(c.removeComponent(c3));
-    EXPECT_EQ(2, c.componentCount());
+    EXPECT_EQ(2u, c.componentCount());
 
     c.removeAllComponents();
     a = printer.printComponent(c);
     EXPECT_EQ(e3, a);
-    EXPECT_EQ(0, c.componentCount());
+    EXPECT_EQ(0u, c.componentCount());
 }
 
 TEST(Component, getComponentMethods) {
@@ -253,14 +253,14 @@ TEST(Component, takeComponentMethods) {
     c.addComponent(c2);
 
     libcellml::ComponentPtr c02 = c.takeComponent(1);
-    EXPECT_EQ(1, c.componentCount());
+    EXPECT_EQ(1u, c.componentCount());
 
     EXPECT_EQ(c.takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->getName());
 
     libcellml::ComponentPtr c01 = c.takeComponent("child1");
-    EXPECT_EQ(0, c.componentCount());
+    EXPECT_EQ(0u, c.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
 
