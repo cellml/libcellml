@@ -28,7 +28,7 @@ TEST(Validator, namedModel) {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName("awesomeName");
     validator.validateModel(model);
-    EXPECT_EQ(0, validator.errorCount());
+    EXPECT_EQ(0u, validator.errorCount());
 }
 
 TEST(Validator, unnamedModel) {
@@ -36,7 +36,7 @@ TEST(Validator, unnamedModel) {
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     validator.validateModel(model);
-    EXPECT_EQ(2, validator.errorCount());
+    EXPECT_EQ(2u, validator.errorCount());
     EXPECT_EQ(expectedError, validator.getError(1)->getDescription());
     EXPECT_EQ("4.2.1", validator.getError(1)->getSpecificationHeading());
 }
@@ -89,7 +89,7 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading) {
 
     v.validateModel(model);
 
-    EXPECT_EQ(10, v.errorCount());
+    EXPECT_EQ(10u, v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
         EXPECT_EQ(expectedSpecificationHeadings.at(i), v.getError(i)->getSpecificationHeading());
@@ -118,7 +118,7 @@ TEST(Validator, namedModelWithUnnamedComponent) {
     model->setName("awesomeName");
     model->addComponent(component);
     validator.validateModel(model);
-    EXPECT_EQ(2, validator.errorCount());
+    EXPECT_EQ(2u, validator.errorCount());
     EXPECT_EQ(expectedError, validator.getError(1)->getDescription());
 }
 
@@ -267,7 +267,7 @@ TEST(Validator, importUnits) {
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
     v.validateModel(m);
-    EXPECT_EQ(0, v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
 
     // Invalid units import- missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
@@ -276,7 +276,7 @@ TEST(Validator, importUnits) {
     importedUnits2->setSourceUnits(imp2, "");
     m->addUnits(importedUnits2);
     v.validateModel(m);
-    EXPECT_EQ(3, v.errorCount());
+    EXPECT_EQ(3u, v.errorCount());
 
     // Invalid units import - duplicate refs
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
@@ -286,7 +286,7 @@ TEST(Validator, importUnits) {
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
     v.validateModel(m);
-    EXPECT_EQ(4, v.errorCount());
+    EXPECT_EQ(4u, v.errorCount());
 
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
@@ -295,7 +295,7 @@ TEST(Validator, importUnits) {
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
     v.validateModel(m);
-    EXPECT_EQ(6, v.errorCount());
+    EXPECT_EQ(6u, v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -325,7 +325,7 @@ TEST(Validator, importComponents) {
     importedComponent->setSourceComponent(imp, "component_in_that_model");
     m->addComponent(importedComponent);
     v.validateModel(m);
-    EXPECT_EQ(0, v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
 
     // Invalid component import- missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
@@ -334,7 +334,7 @@ TEST(Validator, importComponents) {
     importedComponent2->setSourceComponent(imp2, "");
     m->addComponent(importedComponent2);
     v.validateModel(m);
-    EXPECT_EQ(3, v.errorCount());
+    EXPECT_EQ(3u, v.errorCount());
 
     // Invalid component import - duplicate refs
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
@@ -344,7 +344,7 @@ TEST(Validator, importComponents) {
     importedComponent3->setSourceComponent(imp3, "component_in_that_model");
     m->addComponent(importedComponent3);
     v.validateModel(m);
-    EXPECT_EQ(4, v.errorCount());
+    EXPECT_EQ(4u, v.errorCount());
 
     // Invalid component import - unnamed component
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
@@ -353,7 +353,7 @@ TEST(Validator, importComponents) {
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
     v.validateModel(m);
-    EXPECT_EQ(6, v.errorCount());
+    EXPECT_EQ(6u, v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -400,7 +400,7 @@ TEST(Validator, validMath) {
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(0, v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
 }
 
 TEST(Validator, invalidMath) {
@@ -487,7 +487,7 @@ TEST(Validator, invalidMathMLElements) {
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(6, v.errorCount());
+    EXPECT_EQ(6u, v.errorCount());
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
@@ -684,7 +684,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 
     libcellml::Validator v;
     v.validateModel(m);
@@ -825,7 +825,7 @@ TEST(Validator, integerStrings) {
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(4, p.errorCount());
+    EXPECT_EQ(4u, p.errorCount());
 
     libcellml::Validator v;
     v.validateModel(m);
@@ -1000,5 +1000,5 @@ TEST(Validator, validMathCnElements) {
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(0, v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
 }

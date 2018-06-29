@@ -45,16 +45,16 @@ TEST(Reset, addAndCountChildren) {
     libcellml::WhenPtr child3 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr child4 = std::make_shared<libcellml::When>();
 
-    EXPECT_EQ(0, r.whenCount());
+    EXPECT_EQ(0u, r.whenCount());
 
     r.addWhen(child1);
     r.addWhen(child2);
     r.addWhen(child3);
     r.addWhen(child4);
-    EXPECT_EQ(4, r.whenCount());
+    EXPECT_EQ(4u, r.whenCount());
 
     r.addWhen(child3);
-    EXPECT_EQ(5, r.whenCount());
+    EXPECT_EQ(5u, r.whenCount());
 }
 
 TEST(Reset, contains) {
@@ -79,7 +79,7 @@ TEST(Reset, removeWhenMethods) {
     r.addWhen(w2);
 
     EXPECT_TRUE(r.removeWhen(0));
-    EXPECT_EQ(1, r.whenCount());
+    EXPECT_EQ(1u, r.whenCount());
 
     EXPECT_FALSE(r.removeWhen(1));
 
@@ -88,14 +88,14 @@ TEST(Reset, removeWhenMethods) {
     r.addWhen(w1);
     r.removeWhen(w1);
     r.removeWhen(w1);
-    EXPECT_EQ(2, r.whenCount());
+    EXPECT_EQ(2u, r.whenCount());
 
     // Expect no change
     EXPECT_FALSE(r.removeWhen(w3));
-    EXPECT_EQ(2, r.whenCount());
+    EXPECT_EQ(2u, r.whenCount());
 
     r.removeAllWhens();
-    EXPECT_EQ(0, r.whenCount());
+    EXPECT_EQ(0u, r.whenCount());
 }
 
 TEST(Reset, getWhenMethods) {
@@ -125,7 +125,7 @@ TEST(Reset, takeWhenMethods) {
     r.addWhen(c2);
 
     libcellml::WhenPtr c02 = r.takeWhen(1);
-    EXPECT_EQ(1, r.whenCount());
+    EXPECT_EQ(1u, r.whenCount());
     EXPECT_EQ(0, c02->getOrder());
 
     EXPECT_EQ(nullptr, r.takeWhen(4));
@@ -152,15 +152,15 @@ TEST(Reset, constructors) {
 
     // Testing assignment for Reset
     r1 = r;
-    EXPECT_EQ(1, r1.whenCount());
+    EXPECT_EQ(1u, r1.whenCount());
 
     // Testing move assignment for Reset
     r2 = std::move(r1);
-    EXPECT_EQ(1, r2.whenCount());
+    EXPECT_EQ(1u, r2.whenCount());
 
     // Testing move constructor for Reset
     libcellml::Reset r3 = std::move(r2);
-    EXPECT_EQ(1, r3.whenCount());
+    EXPECT_EQ(1u, r3.whenCount());
 }
 
 TEST(Reset, printResetWithVariable) {
@@ -440,7 +440,7 @@ TEST(Reset, getResetFromComponentMethod) {
     libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
     c.addReset(r4);
 
-    EXPECT_EQ(4, c.resetCount());
+    EXPECT_EQ(4u, c.resetCount());
 
     // Get by index
     libcellml::ResetPtr rMethod1 = c.getReset(1);
