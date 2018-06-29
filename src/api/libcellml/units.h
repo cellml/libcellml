@@ -23,6 +23,14 @@ limitations under the License.
 #include "libcellml/importedentity.h"
 #include "libcellml/types.h"
 
+// MSVC (and some other compilers?) may define PASCAL as __stdcall, resulting in
+// some compilation errors for our StandardUnit enum class below. However, that
+// macro gets defined for backward compatibility, so we can safely undefine it.
+// (See https://stackoverflow.com/questions/2774171/what-is-far-pascal for more
+// information.)
+
+#undef PASCAL
+
 namespace libcellml {
 
 /**
