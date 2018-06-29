@@ -40,7 +40,7 @@ foreach(TEST ${LIBCELLML_TESTS})
   endif()
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS} ${TEST_UTILS_SRC} ${TEST_UTILS_HDR})
   target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-  target_link_libraries(${CURRENT_TEST} ${LIBCELLML_LIBRARY} gtest_main)
+  target_link_libraries(${CURRENT_TEST} cellml gtest_main)
 
   set_target_properties(${CURRENT_TEST} PROPERTIES
     CXX_STANDARD 11
@@ -55,11 +55,11 @@ foreach(TEST ${LIBCELLML_TESTS})
   if(MSVC)
     if(HAVE_LIBXML2_CONFIG)
       set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
-        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:${LIBCELLML_LIBRARY}>\;$<TARGET_FILE_DIR:gtest_main>\;$<TARGET_FILE_DIR:xml2>")
+        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>\;$<TARGET_FILE_DIR:xml2>")
 	else()
 	  # The libxml2 dll must be on the path otherwise the tests will not be able to run.
       set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
-        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:${LIBCELLML_LIBRARY}>\;$<TARGET_FILE_DIR:gtest_main>")
+        PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>")
 	endif()
   endif()
 

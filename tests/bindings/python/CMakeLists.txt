@@ -30,7 +30,7 @@ foreach(_TEST ${TEST_SRCS})
       set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")
     endif ()
     set_tests_properties(${_TEST_NAME} PROPERTIES
-      ENVIRONMENT "PATH=$<TARGET_FILE_DIR:${LIBCELLML_LIBRARY}>\;$<TARGET_FILE_DIR:_entity>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
+      ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:_entity>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
   else ()
     set_tests_properties(${_TEST_NAME} PROPERTIES
       ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
