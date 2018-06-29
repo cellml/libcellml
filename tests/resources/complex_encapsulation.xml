@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model xmlns="http://www.cellml.org/cellml/2.0#" 
-	xmlns:cellml="http://www.cellml.org/cellml/2.0#" 
-	xmlns:xlink="http://www.w3.org/1999/xlink" 
-	name="complex_encapsulation_example" 
+<model xmlns="http://www.cellml.org/cellml/2.0#"
+	xmlns:cellml="http://www.cellml.org/cellml/2.0#"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	name="complex_encapsulation_example"
 	id="complex_encpsulation_example_id">
   <component name="root"/>
   <component name="L1_c1"/>

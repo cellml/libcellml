@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT Model: public ComponentEntity
 {
 public:
     Model(); /**< Constructor */
-    ~Model(); /**< Destructor */
+    ~Model() override; /**< Destructor */
     Model(const Model &rhs); /**< Copy constructor */
     Model(Model &&rhs); /**< Move constructor */
     Model& operator=(Model m); /**< Assignment operator */
@@ -213,7 +213,7 @@ public:
     size_t unitsCount() const;
 
 private:
-    void doAddComponent(const ComponentPtr &c);
+    void doAddComponent(const ComponentPtr &c) override;
     void swap(Model &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */

@@ -35,7 +35,7 @@ TEST(Parser, parseSineModelFromFile) {
     libcellml::Parser p;
     p.parseModel(buffer.str());
 
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 }
 
 TEST(Parser, parseSineImportsModelFromFile) {
@@ -47,7 +47,7 @@ TEST(Parser, parseSineImportsModelFromFile) {
     libcellml::Parser p;
     p.parseModel(buffer.str());
 
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 }
 
 TEST(Parser, parseInvalidModelFromFile) {
@@ -79,7 +79,7 @@ TEST(Parser, parseOrdModelFromFile) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 
     // Test some random values.
     std::string a = model->getComponent("intracellular_ions")->getVariable("BSLmax")->getInitialValue();
@@ -105,7 +105,7 @@ TEST(Parser, parseComplexEncapsulationModelFromFile) {
     libcellml::Parser p;
     p.parseModel(buffer.str());
 
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 }
 
 TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
@@ -121,7 +121,7 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 
     std::string a = model->getComponent("c1")->getMath();
     EXPECT_EQ(e1, a);

@@ -42,7 +42,7 @@ public:
      *
      * Default ComponentEntity destructor.
      */
-    ~ComponentEntity();
+    ~ComponentEntity() override;
 
     ComponentEntity(ComponentEntity &&rhs); /**< Move constructor */
     ComponentEntity(const ComponentEntity &rhs); /**< Copy constructor */
