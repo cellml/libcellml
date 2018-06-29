@@ -119,10 +119,6 @@ add_library(cellml
   ${API_HEADER_FILES}
 )
 
-if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
-    set_target_properties(cellml PROPERTIES PREFIX "lib")
-endif()
-
 generate_export_header(cellml EXPORT_FILE_NAME ${LIBCELLML_EXPORTDEFINITIONS_H} BASE_NAME LIBCELLML)
 
 target_include_directories(cellml
@@ -154,6 +150,13 @@ set_target_properties(cellml PROPERTIES
   INTERFACE_libCellML_MAJOR_VERSION ${libCellML_VERSION_MAJOR}
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
 )
+
+if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+  set_target_properties(cellml PROPERTIES
+    IMPORT_PREFIX "lib"
+    PREFIX "lib"
+  )
+endif()
 
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
