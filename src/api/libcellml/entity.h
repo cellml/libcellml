@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT Entity
 {
 public:
     Entity(); /**< Constructor */
-    ~Entity(); /**< Destructor */
+    virtual ~Entity(); /**< Destructor */
     Entity(const Entity &rhs); /**< Copy constructor */
     Entity(Entity &&rhs); /**< Move constructor */
     Entity& operator=(Entity e); /**< Assignment operator */

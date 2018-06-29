@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT ImportedEntity
 {
 public:
     ImportedEntity(); /**< Constructor */
-    ~ImportedEntity(); /**< Destructor */
+    virtual ~ImportedEntity(); /**< Destructor */
     ImportedEntity(const ImportedEntity &rhs); /**< Copy constructor */
     ImportedEntity(ImportedEntity &&rhs); /**< Move constructor */
     ImportedEntity& operator=(ImportedEntity n); /**< Assignment operator */

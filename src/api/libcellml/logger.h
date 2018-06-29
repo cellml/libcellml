@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT Logger
 {
 public:
     Logger(); /**< Constructor */
-    ~Logger(); /**< Destructor */
+    virtual ~Logger(); /**< Destructor */
     Logger(const Logger &rhs); /**< Copy constructor */
     Logger(Logger &&rhs); /**< Move constructor */
     Logger& operator=(Logger rhs); /**< Assignment operator */

@@ -47,9 +47,9 @@ foreach(TEST ${LIBCELLML_TESTS})
     CXX_STANDARD_REQUIRED ON
     FOLDER tests)
 
-#  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-#    target_warnings_as_errors(${CURRENT_TEST})
-#  endif()
+  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
+    target_warnings_as_errors(${CURRENT_TEST})
+  endif()
 
   add_test(NAME ${CURRENT_CATEGORY}unit_${CURRENT_TEST} COMMAND ${CURRENT_TEST})
   if(MSVC)

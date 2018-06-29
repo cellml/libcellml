@@ -45,7 +45,7 @@ TEST(Coverage, printer) {
     libcellml::Printer pc(pm);
 
     size_t error_count = pc.errorCount();
-    EXPECT_EQ(0, error_count);
+    EXPECT_EQ(0u, error_count);
 }
 
 TEST(Coverage, units) {
