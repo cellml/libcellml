@@ -17,12 +17,6 @@ cmake_minimum_required(VERSION 3.5.2)
 set(PROJECT_NAME libCellML)
 project(${PROJECT_NAME} VERSION 0.1.0 LANGUAGES CXX)
 
-if(UNIX OR CYGWIN OR MINGW)
-    set(LIBCELLML_LIBRARY cellml)
-else()
-    set(LIBCELLML_LIBRARY libcellml)
-endif()
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(common)
 include(environmentchecks)
@@ -155,7 +149,7 @@ else ()
   find_package(LibXml2 REQUIRED)
 endif ()
 
-# libcellml library target
+# cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if (LIBCELLML_UNIT_TESTS)
