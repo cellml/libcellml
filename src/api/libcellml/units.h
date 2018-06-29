@@ -33,7 +33,7 @@ class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
 public:
     Units(); /**< Constructor */
-    ~Units(); /**< Destructor */
+    ~Units() override; /**< Destructor */
     Units(const Units &rhs); /**< Copy constructor */
     Units(Units &&rhs); /**< Move constructor */
     Units& operator=(Units n); /**< Assignment operator */
