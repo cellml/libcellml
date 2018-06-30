@@ -28,7 +28,6 @@ limitations under the License.
 // macro gets defined for backward compatibility, so we can safely undefine it.
 // (See https://stackoverflow.com/questions/2774171/what-is-far-pascal for more
 // information.)
-
 #undef PASCAL
 
 namespace libcellml {
