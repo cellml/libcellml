@@ -22,7 +22,7 @@ namespace libcellml {
  * @brief The SpecificationRule enum class.
  *
  * Enum describing the specification rules that are used
- * for validation. 
+ * for validation.
  */
 enum class SpecificationRule
 {
