@@ -31,7 +31,7 @@ class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
 {
 public:
     Component(); /**< Constructor */
-    ~Component(); /**< Destructor */
+    ~Component() override; /**< Destructor */
     Component(const Component &rhs); /**< Copy constructor */
     Component(Component &&rhs); /**< Move constructor */
     Component& operator=(Component m); /**< Assignment operator */
@@ -299,7 +299,7 @@ public:
 private:
     void swap(Component &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    void doAddComponent(const ComponentPtr &component);
+    void doAddComponent(const ComponentPtr &component) override;
 
     struct ComponentImpl; /**< Forward declaration for pImpl idiom. */
     ComponentImpl *mPimpl; /**< Private member to implementation pointer */

@@ -384,12 +384,12 @@ TEST(Variable, removeVariableMethods) {
     c.addVariable(v1);
     c.addVariable(v2);
     c.addVariable(v3);
-    
+
     EXPECT_TRUE(c.removeVariable(0)); // v1
     EXPECT_TRUE(c.removeVariable(1)); // new index of v3
     a = printer.printComponent(c);
     EXPECT_EQ(e1, a);
-    EXPECT_FALSE(c.removeVariable(1));    
+    EXPECT_FALSE(c.removeVariable(1));
 }
 
 TEST(Variable, getVariableMethods) {
