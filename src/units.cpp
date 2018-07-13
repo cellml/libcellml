@@ -186,9 +186,9 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
         if (prefixDouble != 0.0) {
             u.mPrefix = prefix;
         }
-    } catch (std::invalid_argument) {
+    } catch (std::invalid_argument&) {
         u.mPrefix = prefix;
-    } catch (std::out_of_range) {
+    } catch (std::out_of_range&) {
         u.mPrefix = prefix;
     }
     if (exponent != 1.0) {
