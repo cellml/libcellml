@@ -96,7 +96,7 @@ public:
      * @brief Tests to see if the units is within this model.
      *
      * Tests to see if the units with the given @c name is contained
-     * within this component entity.  Returns @c true if the units is in
+     * within this model.  Returns @c true if the units is in
      * the model and @c false otherwise.
      *
      * @param name The name of the units to test for existence in
@@ -106,6 +106,18 @@ public:
      * and @c false otherwise.
      */
     bool hasUnits(const std::string &name) const;
+
+    /**
+     * @brief Tests to see if the units is within this model.
+     *
+     * Tests to see if the given @c units is contained within this model.
+     * Returns @c true if the units is in the model and @c false otherwise.
+     *
+     * @param units The units to test for existence in this model.
+     *
+     * @return @c true if the units is in the model and @c false otherwise.
+     */
+    bool hasUnits(const UnitsPtr &units) const;
 
     /**
      * @brief Get a units at the given @p index.

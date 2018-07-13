@@ -150,6 +150,11 @@ bool Model::hasUnits(const std::string &name) const
     return mPimpl->findUnits(name) != mPimpl->mUnits.end();
 }
 
+bool Model::hasUnits(const UnitsPtr &units) const
+{
+    return mPimpl->findUnits(units) != mPimpl->mUnits.end();
+}
+
 UnitsPtr Model::getUnits(size_t index) const
 {
     UnitsPtr units = nullptr;
