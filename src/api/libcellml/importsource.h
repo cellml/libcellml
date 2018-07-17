@@ -43,7 +43,7 @@ public:
      *
      * Set the source @c Model's URL that this @c ImportSource refers to.
      *
-     * @param reference The referenced @c Model's URL.
+     * @param source The source @c Model's URL.
      */
     void setSource(const std::string &reference);
 
@@ -53,7 +53,7 @@ public:
      * Get the source @c Model's URL set in this instance. If no source @c Model
      * URL is set then return an empty string.
      *
-     * @return The reference to the source @c Model if set otherwise the emtpy string.
+     * @return The URL of the source @c Model if set otherwise the emtpy string.
      */
     std::string getSource() const;
 
@@ -96,7 +96,7 @@ private:
 };
 
 /**
- * @brief Reslove the imported @c Components from the @c Model.
+ * @brief Resolve the imported @c Components from the @c Model.
  *
  * Resolve the imported @c Components from the given @c Model with reference to the
  * given @p baseFile.  The resolution is performed recursively through the @c Components
