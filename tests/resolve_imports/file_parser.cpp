@@ -94,4 +94,8 @@ TEST(ResolveImports, resolveUnitsImportFromFile) {
     EXPECT_EQ(1u, libcellml::importedUnitsCount(model));
     EXPECT_EQ(1u, libcellml::unresolvedImportedUnitsCount(model));
 
+    libcellml::resolveImportedUnits(model, modelLocation);
+    EXPECT_EQ(1u, libcellml::importedUnitsCount(model));
+    EXPECT_EQ(0u, libcellml::unresolvedImportedUnitsCount(model));
+
 }
