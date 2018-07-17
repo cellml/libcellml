@@ -74,9 +74,9 @@ void ImportSource::swap(ImportSource &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void ImportSource::setSource(const std::string &reference)
+void ImportSource::setSource(const std::string &source)
 {
-    mPimpl->mReference = reference;
+    mPimpl->mReference = source;
 }
 
 std::string ImportSource::getSource() const
@@ -147,6 +147,11 @@ size_t countUnresolvedComponents(libcellml::ComponentPtr component)
     return count;
 }
 
+size_t importedComponentsCount(libcellml::ModelPtr /* model */)
+{
+    return 0;
+}
+
 size_t unresolvedImportedComponentsCount(libcellml::ModelPtr model)
 {
     size_t count = 0;
@@ -198,7 +203,5 @@ void resolveImportedComponents(libcellml::ModelPtr model,
         resolveComponents(c, baseFile);
     }
 }
-
-
 
 }
