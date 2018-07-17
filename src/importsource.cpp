@@ -147,9 +147,19 @@ size_t countUnresolvedComponents(libcellml::ComponentPtr component)
     return count;
 }
 
-size_t importedComponentsCount(libcellml::ModelPtr /* model */)
+size_t importedComponentsCount(libcellml::ModelPtr model)
 {
-    return 0;
+    size_t nImportedComponents = 0;
+    for (size_t n = 0; n < model->componentCount();  ++n)
+    {
+        libcellml::ComponentPtr c = model->getComponent(n);
+        if (c->isImport()) {
+            ++nImportedComponents;
+        }
+        nImportedComponents += libcellml::importedChildrenCount(c);
+    }
+
+    return nImportedComponents;
 }
 
 size_t unresolvedImportedComponentsCount(libcellml::ModelPtr model)
