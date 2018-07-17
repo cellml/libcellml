@@ -103,9 +103,21 @@ private:
  * of the @c Model.
  *
  * @param model The @c Model to resolve the imported components for.
- * @param baseFile
+ * @param baseFile The @c std::string location on local disk of the source for the given @p model.
  */
 void LIBCELLML_EXPORT resolveImportedComponents(libcellml::ModelPtr model, const std::string& baseFile);
+
+/**
+ * @brief Resolve the imported @c Components from the @c Model.
+ *
+ * Resolve the imported @c Components from the given @c Model with reference to the
+ * given @p baseFile.  The resolution is performed recursively through the @c Components
+ * of the @c Model.
+ *
+ * @param model The @c Model to resolve the imported components for.
+ * @param baseFile The @c std::string location on local disk of the source for the given @p model.
+ */
+void LIBCELLML_EXPORT resolveImportedUnits(libcellml::ModelPtr model, const std::string& baseFile);
 
 /**
  * @brief Count the number of imported @c Components in the @c Model.
@@ -119,6 +131,17 @@ void LIBCELLML_EXPORT resolveImportedComponents(libcellml::ModelPtr model, const
 size_t LIBCELLML_EXPORT importedComponentsCount(libcellml::ModelPtr model);
 
 /**
+ * @brief Count the number of imported @c Components in the @c Model.
+ *
+ * This function traverses the component heirarchy of the @c Model and counts the
+ * total number of imported @c Components.
+ *
+ * @param model The @c Model to count the number of imported @c Components in.
+ * @return The number of imported @c Components in the @c Model.
+ */
+size_t LIBCELLML_EXPORT importedUnitsCount(libcellml::ModelPtr model);
+
+/**
  * @brief Count the number of unresolved imported @c Components in the @c Model.
  *
  * This function traverses the component heirarchy of the @c Model and counts the total number
@@ -130,13 +153,14 @@ size_t LIBCELLML_EXPORT importedComponentsCount(libcellml::ModelPtr model);
 size_t LIBCELLML_EXPORT unresolvedImportedComponentsCount(libcellml::ModelPtr model);
 
 /**
- * @brief Count the imported children of the given @c Component.
+ * @brief Count the number of unresolved imported @c Components in the @c Model.
  *
- * Recursivley count the number of imported children from the given @c Component.
+ * This function traverses the component heirarchy of the @c Model and counts the total number
+ * of unresolved imported @c Components.
  *
- * @param parent The @c Component to count the imported children in.
- * @return The number of imported children the given @c Component has.
+ * @param model The @c Model to count the number of unresolved imported @c Components in.
+ * @return The number of unresolved imported @c Components in the @c Model.
  */
-size_t LIBCELLML_EXPORT importedChildrenCount(libcellml::ComponentPtr parent);
+size_t LIBCELLML_EXPORT unresolvedImportedUnitsCount(libcellml::ModelPtr model);
 
 }

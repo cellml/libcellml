@@ -26,6 +26,8 @@ limitations under the License.
 // generated with test resource locations
 #include "test_resources.h"
 
+#include "test_utils.h"
+
 TEST(ResolveImports, resolveSineModelFromFile) {
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_SINE_MODEL_RESOURCE));
@@ -70,18 +72,26 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(0u, p.errorCount());
 
-    size_t nImportedComponents = 0;
-    for (size_t n = 0; n < model->componentCount();  ++n)
-    {
-        libcellml::ComponentPtr c = model->getComponent(n);
-        if (c->isImport()) {
-            ++nImportedComponents;
-        }
-        nImportedComponents += libcellml::importedChildrenCount(c);
-    }
-    EXPECT_EQ(8u, nImportedComponents);
-
+    EXPECT_EQ(8u, libcellml::importedComponentsCount(model));
     EXPECT_EQ(8u, libcellml::unresolvedImportedComponentsCount(model));
+
     libcellml::resolveImportedComponents(model, modelLocation);
     EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
+}
+
+TEST(ResolveImports, resolveUnitsImportFromFile) {
+    std::string modelLocation = TestResources::getLocation(
+                TestResources::CELLML_UNITS_IMPORT_MODEL_RESOURCE);
+    std::ifstream t(modelLocation);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr model = p.parseModel(buffer.str());
+
+    printErrors(p);
+    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(1u, libcellml::importedUnitsCount(model));
+    EXPECT_EQ(1u, libcellml::unresolvedImportedUnitsCount(model));
+
 }
