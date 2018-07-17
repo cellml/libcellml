@@ -36,7 +36,7 @@ TEST(ResolveImports, resolveSineModelFromFile) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 
     size_t nImportedComponents = 0;
     for (size_t n = 0; n < model->componentCount();  ++n)
@@ -47,7 +47,7 @@ TEST(ResolveImports, resolveSineModelFromFile) {
         }
         nImportedComponents += libcellml::importedChildrenCount(c);
     }
-    EXPECT_EQ(0, nImportedComponents);
+    EXPECT_EQ(0u, nImportedComponents);
 }
 
 TEST(ResolveImports, resolveSineImportsModelFromFile) {
@@ -59,7 +59,7 @@ TEST(ResolveImports, resolveSineImportsModelFromFile) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 
     size_t nImportedComponents = 0;
     for (size_t n = 0; n < model->componentCount();  ++n)
@@ -70,11 +70,11 @@ TEST(ResolveImports, resolveSineImportsModelFromFile) {
         }
         nImportedComponents += libcellml::importedChildrenCount(c);
     }
-    EXPECT_EQ(3, nImportedComponents);
+    EXPECT_EQ(3u, nImportedComponents);
 
-    EXPECT_EQ(3, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_EQ(3u, libcellml::unresolvedImportedComponentsCount(model));
     libcellml::resolveImportedComponents(model, sineModelLocation);
-    EXPECT_EQ(0, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
 }
 
 TEST(ResolveImports, resolveComplexImportsModelFromFile) {
@@ -86,7 +86,7 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
-    EXPECT_EQ(0, p.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 
     size_t nImportedComponents = 0;
     for (size_t n = 0; n < model->componentCount();  ++n)
@@ -97,9 +97,9 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
         }
         nImportedComponents += libcellml::importedChildrenCount(c);
     }
-    EXPECT_EQ(8, nImportedComponents);
+    EXPECT_EQ(8u, nImportedComponents);
 
-    EXPECT_EQ(8, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_EQ(8u, libcellml::unresolvedImportedComponentsCount(model));
     libcellml::resolveImportedComponents(model, modelLocation);
-    EXPECT_EQ(0, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
 }
