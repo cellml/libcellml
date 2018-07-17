@@ -15,6 +15,8 @@ public:
         CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE = 5,
         CELLML_A_PLUS_B_MODEL_RESOURCE = 6,
         CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE = 7,
+        CELLML_UNITS_DEFINITIONS_RESOURCE = 8,
+        CELLML_UNITS_IMPORT_MODEL_RESOURCE = 9
     };
 
     TestResources()
@@ -52,6 +54,14 @@ public:
         if (resourceName == TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE)
         {
             return "@CELLML_A_PLUS_B_MODEL_RESOURCE@";
+        }
+        if (resourceName == TestResources::CELLML_UNITS_DEFINITIONS_RESOURCE)
+        {
+            return "@CELLML_UNITS_DEFINITIONS_RESOURCE@";
+        }
+        if (resourceName == TestResources::CELLML_UNITS_IMPORT_MODEL_RESOURCE)
+        {
+            return "@CELLML_UNITS_IMPORT_MODEL_RESOURCE@";
         }
         return 0;
     }

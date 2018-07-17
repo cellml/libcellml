@@ -19,9 +19,10 @@ limitations under the License.
 #include <sstream>
 #include <fstream>
 
-#include "libcellml/model.h"
 #include "libcellml/component.h"
+#include "libcellml/model.h"
 #include "libcellml/parser.h"
+#include "libcellml/units.h"
 
 namespace libcellml {
 
@@ -99,6 +100,18 @@ bool ImportSource::isResolved() const
     return mPimpl->mSourceModel != nullptr;
 }
 
+/**
+ * @brief Resolve the path of the given filename using the given base.
+ *
+ * Resolves the full path to the given @p filename using the @p base.
+ *
+ * This function is only intended to work with local files.  It may not
+ * work with bases that use the 'file://' prefix.
+ *
+ * @param filename The @c std::string relative path from the base path.
+ * @param base The @c std::string location on local disk for determining the full path from.
+ * @return The full path from the @p base location to the @p filename
+ */
 std::string resolvePath(const std::string& filename, const std::string& base)
 {
     // we can be naive here as we know what we are dealing with
@@ -106,6 +119,14 @@ std::string resolvePath(const std::string& filename, const std::string& base)
     return path;
 }
 
+/**
+ * @brief Count the imported children of the given @c Component.
+ *
+ * Recursivley count the number of imported children from the given @c Component.
+ *
+ * @param parent The @c Component to count the imported children in.
+ * @return The number of imported children the given @c Component has.
+ */
 size_t importedChildrenCount(libcellml::ComponentPtr parent)
 {
     size_t numberImportedChildren = 0;
@@ -120,7 +141,7 @@ size_t importedChildrenCount(libcellml::ComponentPtr parent)
     return numberImportedChildren;
 }
 
-size_t countUnresolvedC(libcellml::ComponentPtr component)
+size_t countUnresolvedComponent(libcellml::ComponentPtr component)
 {
     size_t count = 0;
     if (component->isImport()) {
@@ -138,7 +159,7 @@ size_t countUnresolvedC(libcellml::ComponentPtr component)
 
 size_t countUnresolvedComponents(libcellml::ComponentPtr component)
 {
-    size_t count = countUnresolvedC(component);
+    size_t count = countUnresolvedComponent(component);
     for (size_t n = 0; n < component->componentCount();  ++n)
     {
         libcellml::ComponentPtr c = component->getComponent(n);
@@ -174,7 +195,7 @@ size_t unresolvedImportedComponentsCount(libcellml::ModelPtr model)
 }
 
 void resolveComponent(libcellml::ComponentPtr component,
-                             const std::string& baseFile)
+                      const std::string& baseFile)
 {
     if (component->isImport()) {
         libcellml::ImportSourcePtr imp = component->getImportSource();
@@ -194,7 +215,7 @@ void resolveComponent(libcellml::ComponentPtr component,
 }
 
 void resolveComponents(libcellml::ComponentPtr component,
-                              const std::string& baseFile)
+                       const std::string& baseFile)
 {
     resolveComponent(component, baseFile);
     for (size_t n = 0; n < component->componentCount();  ++n)
@@ -204,13 +225,73 @@ void resolveComponents(libcellml::ComponentPtr component,
     }
 }
 
+size_t importedUnitsCount(libcellml::ModelPtr model)
+{
+    size_t nImportedUnits = 0;
+    for (size_t n = 0; n < model->unitsCount();  ++n)
+    {
+        libcellml::UnitsPtr u = model->getUnits(n);
+        if (u->isImport()) {
+            ++nImportedUnits;
+        }
+    }
+
+    return nImportedUnits;
+}
+
+size_t unresolvedImportedUnitsCount(libcellml::ModelPtr model)
+{
+    size_t count = 0;
+    for (size_t m = 0; m < model->unitsCount();  ++m)
+    {
+        libcellml::UnitsPtr u = model->getUnits(m);
+        if (u->isImport()) {
+            libcellml::ImportSourcePtr imp = u->getImportSource();
+            if (!imp->isResolved()) {
+                ++count;
+            }
+        }
+    }
+
+    return count;
+}
+
 void resolveImportedComponents(libcellml::ModelPtr model,
-                                      const std::string& baseFile)
+                               const std::string& baseFile)
 {
     for (size_t n = 0; n < model->componentCount();  ++n)
     {
         libcellml::ComponentPtr c = model->getComponent(n);
         resolveComponents(c, baseFile);
+    }
+}
+
+void resolveUnits(libcellml::UnitsPtr units, const std::string& baseFile)
+{
+    if (units->isImport()) {
+        libcellml::ImportSourcePtr imp = units->getImportSource();
+        if (! imp->isResolved()) {
+            std::string url = resolvePath(imp->getSource(), baseFile);
+            std::ifstream t(url);
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            libcellml::Parser p;
+            libcellml::ModelPtr model = p.parseModel(buffer.str());
+            if (model) {
+                imp->resolveImport(model);
+                resolveImportedUnits(model, url);
+            }
+        }
+    }
+}
+
+void resolveImportedUnits(libcellml::ModelPtr model,
+                          const std::string& baseFile)
+{
+    for (size_t n = 0; n < model->unitsCount();  ++n)
+    {
+        libcellml::UnitsPtr u = model->getUnits(n);
+        resolveUnits(u, baseFile);
     }
 }
 
