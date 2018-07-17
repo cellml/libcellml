@@ -787,5 +787,5 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute) {
 
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(0, parser.errorCount());
+    EXPECT_EQ(0u, parser.errorCount());
 }
