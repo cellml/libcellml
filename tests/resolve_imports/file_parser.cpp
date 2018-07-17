@@ -70,10 +70,11 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
+    printErrors(p);
     EXPECT_EQ(0u, p.errorCount());
 
-    EXPECT_EQ(8u, libcellml::importedComponentsCount(model));
-    EXPECT_EQ(8u, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_EQ(9u, libcellml::importedComponentsCount(model));
+    EXPECT_EQ(9u, libcellml::unresolvedImportedComponentsCount(model));
 
     libcellml::resolveImportedComponents(model, modelLocation);
     EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
