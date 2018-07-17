@@ -43,9 +43,9 @@ public:
      *
      * Set the source @c Model's URL that this @c ImportSource refers to.
      *
-     * @param reference The referenced @c Model's URL.
+     * @param source The referenced @c Model's URL.
      */
-    void setSource(const std::string &reference);
+    void setSource(const std::string &source);
 
     /**
      * @brief Get the source @c Model's URL.
@@ -106,6 +106,17 @@ private:
  * @param baseFile
  */
 void LIBCELLML_EXPORT resolveImportedComponents(libcellml::ModelPtr model, const std::string& baseFile);
+
+/**
+ * @brief Count the number of imported @c Components in the @c Model.
+ *
+ * This function traverses the component heirarchy of the @c Model and counts the
+ * total number of imported @c Components.
+ *
+ * @param model The @c Model to count the number of imported @c Components in.
+ * @return The number of imported @c Components in the @c Model.
+ */
+size_t LIBCELLML_EXPORT importedComponentsCount(libcellml::ModelPtr model);
 
 /**
  * @brief Count the number of unresolved imported @c Components in the @c Model.
