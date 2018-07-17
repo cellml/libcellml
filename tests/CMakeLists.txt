@@ -1,6 +1,6 @@
 
 # include gtest so we can make use of the gtest_main target
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.7.0)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/gtest-1.8.0)
 if(APPLE)
   set_target_properties(gtest gtest_main PROPERTIES MACOSX_RPATH ON)
 endif()
@@ -21,6 +21,7 @@ include(model/tests.cmake)
 include(parser/tests.cmake)
 include(printer/tests.cmake)
 include(reset/tests.cmake)
+include(resolve_imports/tests.cmake)
 include(units/tests.cmake)
 include(validator/tests.cmake)
 include(variable/tests.cmake)

@@ -14,6 +14,7 @@ public:
         CELLML_ORD_MODEL_RESOURCE = 4,
         CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE = 5,
         CELLML_A_PLUS_B_MODEL_RESOURCE = 6,
+        CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE = 7,
     };
 
     TestResources()
@@ -31,6 +32,10 @@ public:
         if (resourceName == TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE)
         {
             return "@CELLML_SINE_IMPORTS_MODEL_RESOURCE@";
+        }
+        if (resourceName == TestResources::CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE)
+        {
+            return "@CELLML_COMPLEX_IMPORT_HIERARCHY_MODEL_RESOURCE@";
         }
         if (resourceName == TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE)
         {
