@@ -51,19 +51,11 @@ TEST(ResolveImports, resolveSineImportsModelFromFile) {
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(0u, p.errorCount());
 
-    size_t nImportedComponents = 0;
-    for (size_t n = 0; n < model->componentCount();  ++n)
-    {
-        libcellml::ComponentPtr c = model->getComponent(n);
-        if (c->isImport()) {
-            ++nImportedComponents;
-        }
-        nImportedComponents += libcellml::importedChildrenCount(c);
-    }
-    EXPECT_EQ(3u, nImportedComponents);
-
+    EXPECT_EQ(3u, libcellml::importedComponentsCount(model));
     EXPECT_EQ(3u, libcellml::unresolvedImportedComponentsCount(model));
+
     libcellml::resolveImportedComponents(model, sineModelLocation);
+    EXPECT_EQ(3u, libcellml::importedComponentsCount(model));
     EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
 }
 
