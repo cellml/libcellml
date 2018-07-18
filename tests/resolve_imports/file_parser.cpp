@@ -74,7 +74,7 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
 
 TEST(ResolveImports, resolveUnitsImportFromFile) {
     std::string modelLocation = TestResources::getLocation(
-                TestResources::CELLML_UNITS_IMPORT_MODEL_RESOURCE);
+        TestResources::CELLML_UNITS_IMPORT_MODEL_RESOURCE);
     std::ifstream t(modelLocation);
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -87,4 +87,23 @@ TEST(ResolveImports, resolveUnitsImportFromFile) {
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);
     EXPECT_FALSE(model->hasUnresolvedImports());
+}
+
+TEST(ResolveImports, resolveImportsFromFileLevel0) {
+    std::string modelLocation = TestResources::getLocation(
+        TestResources::CELLML_IMPORT_LEVEL0_MODEL_RESOURCE);
+    std::ifstream t(modelLocation);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr model = p.parseModel(buffer.str());
+
+    printErrors(p);
+    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(1u, libcellml::unresolvedImportedComponentsCount(model));
+
+    libcellml::resolveImportedComponents(model, modelLocation);
+    EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
+
 }

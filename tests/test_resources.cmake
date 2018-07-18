@@ -8,6 +8,7 @@ set(CELLML_A_PLUS_B_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/a_plus
 set(CELLML_INVALID_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/invalid_cellml_2.0.xml")
 set(CELLML_UNITS_DEFINITIONS_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/units_definitions.cellml")
 set(CELLML_UNITS_IMPORT_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/import_units_model.cellml")
+set(CELLML_IMPORT_LEVEL0_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/level0.cellml")
 
 set(TEST_RESOURCE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/test_resources.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_resources.h.in ${TEST_RESOURCE_HEADER})
