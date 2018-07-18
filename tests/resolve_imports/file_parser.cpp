@@ -26,6 +26,8 @@ limitations under the License.
 // generated with test resource locations
 #include "test_resources.h"
 
+#include "test_utils.h"
+
 TEST(ResolveImports, resolveSineModelFromFile) {
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_SINE_MODEL_RESOURCE));
