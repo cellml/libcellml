@@ -12,7 +12,7 @@
 		<component name="level13_in_level0_3" component_ref="level13_component" />
 	</import>
 	<import xlink:href="level1-3.xml">
-		<component name="level13_in_level0_4" component_ref="level13_component" />
+		<component name="level13_in_level0_4" component_ref="doesnt_exist" />
 	</import>
 	<component name="level0_component">
 		<variable name="v_l0_1" initial_value="1" units="dimensionless" interface="public"/>
