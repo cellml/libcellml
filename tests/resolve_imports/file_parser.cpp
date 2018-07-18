@@ -101,10 +101,36 @@ TEST(ResolveImports, resolveImportsFromFileLevel0) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    printErrors(p);
-    EXPECT_EQ(0u, p.errorCount());
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        std::cout << p.getError(i)->getDescription() << std::endl;
+    }
 
+    EXPECT_EQ(0u, p.errorCount());
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);
     EXPECT_FALSE(model->hasUnresolvedImports());
+
+    //printErrors(p);
+}
+
+TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable) {
+    std::string modelLocation = TestResources::getLocation(
+        TestResources::CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE);
+    std::ifstream t(modelLocation);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr model = p.parseModel(buffer.str());
+
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        std::cout << p.getError(i)->getDescription() << std::endl;
+    }
+
+    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(modelLocation);
+    EXPECT_TRUE(model->hasUnresolvedImports());
+
+    //printErrors(p);
 }

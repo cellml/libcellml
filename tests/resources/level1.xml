@@ -20,20 +20,16 @@
 		<variable name="v_l1_3" initial_value="3" units="dimensionless" interface="public"/>
 		<variable name="v_l1_4" initial_value="4" units="dimensionless" interface="public"/>
 	</component>
-	<connection>
-		<map_components component_1="level1_component" component_2="level2_in_level1_1" />
+	<connection component_1="level1_component" component_2="level2_in_level1_1">
 		<map_variables variable_1="v_l1_1" variable_2="parameter" />
 	</connection>
-	<connection>
-		<map_components component_1="level1_component" component_2="level2_in_level1_2" />
+	<connection component_1="level1_component" component_2="level2_in_level1_2">
 		<map_variables variable_1="v_l1_2" variable_2="parameter" />
 	</connection>
-	<connection>
-		<map_components component_1="level1_component" component_2="level2_in_level1_3" />
+	<connection component_1="level1_component" component_2="level2_in_level1_3">
 		<map_variables variable_1="v_l1_3" variable_2="parameter" />
 	</connection>
-	<connection>
-		<map_components component_1="level1_component" component_2="level2_in_level1_4" />
+	<connection component_1="level1_component" component_2="level2_in_level1_4">
 		<map_variables variable_1="v_l1_4" variable_2="parameter" />
 	</connection>
 
