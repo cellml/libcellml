@@ -20,4 +20,7 @@
 		</math>
 	</component>
     <component name="isnt_imported"/>
+    <import xlink:href="this_file_should_not_exist..._ever!.xml">
+        <component name="also_never_imported" component_ref="not_sure_what_to_look_for"/>
+    </import>
 </model>
