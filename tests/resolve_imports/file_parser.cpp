@@ -99,11 +99,14 @@ TEST(ResolveImports, resolveImportsFromFileLevel0) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    printErrors(p);
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        std::cout << p.getError(i)->getDescription() << std::endl;
+    }
+
     EXPECT_EQ(0u, p.errorCount());
-    EXPECT_EQ(1u, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(modelLocation);
+    EXPECT_FALSE(model->hasUnresolvedImports());
 
-    libcellml::resolveImportedComponents(model, modelLocation);
-    EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
-
+    //printErrors(p);
 }
