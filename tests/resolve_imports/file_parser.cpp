@@ -115,8 +115,7 @@ TEST(ResolveImports, resolveImportsFromFileLevel0) {
     EXPECT_EQ(0u, p.errorCount());
     EXPECT_EQ(1u, libcellml::unresolvedImportedComponentsCount(model));
 
-    libcellml::resolveImportedUnits(model, modelLocation);
-    EXPECT_EQ(1u, libcellml::importedUnitsCount(model));
-    EXPECT_EQ(0u, libcellml::unresolvedImportedUnitsCount(model));
+    libcellml::resolveImportedComponents(model, modelLocation);
+    EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
 
 }
