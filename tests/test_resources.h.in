@@ -17,7 +17,8 @@ public:
         CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE = 7,
         CELLML_UNITS_DEFINITIONS_RESOURCE = 8,
         CELLML_UNITS_IMPORT_MODEL_RESOURCE = 9,
-        CELLML_IMPORT_LEVEL0_MODEL_RESOURCE = 10
+        CELLML_IMPORT_LEVEL0_MODEL_RESOURCE = 10,
+        CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE = 11
     };
 
     TestResources()
@@ -71,6 +72,10 @@ public:
         if (resourceName == TestResources::CELLML_IMPORT_LEVEL0_MODEL_RESOURCE)
         {
             return "@CELLML_IMPORT_LEVEL0_MODEL_RESOURCE@";
+        }
+        if (resourceName == TestResources::CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE)
+        {
+            return "@CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE@";
         }
         return 0;
     }
