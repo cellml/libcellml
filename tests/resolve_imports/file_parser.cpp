@@ -26,8 +26,6 @@ limitations under the License.
 // generated with test resource locations
 #include "test_resources.h"
 
-#include "test_utils.h"
-
 TEST(ResolveImports, resolveSineModelFromFile) {
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_SINE_MODEL_RESOURCE));
@@ -39,7 +37,7 @@ TEST(ResolveImports, resolveSineModelFromFile) {
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
     EXPECT_EQ(0u, p.errorCount());
-    EXPECT_EQ(0u, libcellml::importedComponentsCount(model));
+    EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveSineImportsModelFromFile) {
@@ -53,12 +51,9 @@ TEST(ResolveImports, resolveSineImportsModelFromFile) {
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(0u, p.errorCount());
 
-    EXPECT_EQ(3u, libcellml::importedComponentsCount(model));
-    EXPECT_EQ(3u, libcellml::unresolvedImportedComponentsCount(model));
-
-    libcellml::resolveImportedComponents(model, sineModelLocation);
-    EXPECT_EQ(3u, libcellml::importedComponentsCount(model));
-    EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(sineModelLocation);
+    EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveComplexImportsModelFromFile) {
@@ -70,14 +65,11 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
-    printErrors(p);
     EXPECT_EQ(0u, p.errorCount());
 
-    EXPECT_EQ(9u, libcellml::importedComponentsCount(model));
-    EXPECT_EQ(9u, libcellml::unresolvedImportedComponentsCount(model));
-
-    libcellml::resolveImportedComponents(model, modelLocation);
-    EXPECT_EQ(0u, libcellml::unresolvedImportedComponentsCount(model));
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(modelLocation);
+    EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveUnitsImportFromFile) {
@@ -90,13 +82,9 @@ TEST(ResolveImports, resolveUnitsImportFromFile) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    printErrors(p);
     EXPECT_EQ(0u, p.errorCount());
-    EXPECT_EQ(1u, libcellml::importedUnitsCount(model));
-    EXPECT_EQ(1u, libcellml::unresolvedImportedUnitsCount(model));
 
-    libcellml::resolveImportedUnits(model, modelLocation);
-    EXPECT_EQ(1u, libcellml::importedUnitsCount(model));
-    EXPECT_EQ(0u, libcellml::unresolvedImportedUnitsCount(model));
-
+    EXPECT_TRUE(model->hasUnresolvedImports());
+    model->resolveImports(modelLocation);
+    EXPECT_FALSE(model->hasUnresolvedImports());
 }

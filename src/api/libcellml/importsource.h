@@ -39,15 +39,6 @@ public:
     ImportSource& operator=(ImportSource m); /**< Assignment operator */
 
     /**
-     * @brief Set the source @c Model's URL.
-     *
-     * Set the source @c Model's URL that this @c ImportSource refers to.
-     *
-     * @param source The source @c Model's URL.
-     */
-    void setSource(const std::string &source);
-
-    /**
      * @brief Get the source @c Model's URL.
      *
      * Get the source @c Model's URL set in this instance. If no source @c Model
@@ -55,7 +46,26 @@ public:
      *
      * @return The URL of the source @c Model if set otherwise the emtpy string.
      */
-    std::string getSource() const;
+    std::string getUrl() const;
+
+    /**
+     * @brief Set the source @c Model's URL.
+     *
+     * Set the source @c Model's URL that this @c ImportSource refers to.
+     *
+     * @param source The source @c Model's URL.
+     */
+    void setUrl(const std::string &sourceUrl);
+
+    /**
+     * @brief Get the @c Model that resolves the import.
+     *
+     * Get the @c Model which has been assigned to resolve this @c ImportSource. If no @c Model
+     * has been assigned then return the @c nullptr.
+     *
+     * @return The @c Model used to resolve this @c ImportSource.
+     */
+    libcellml::ModelPtr getModel() const;
 
     /**
      * @brief Provide the @c Model used to resolve this import.
@@ -65,17 +75,7 @@ public:
      *
      * @param model The @c Model to use in resolving this @c ImportSource.
      */
-    void resolveImport(libcellml::ModelPtr model);
-
-    /**
-     * @brief Get the resolving @c Model.
-     *
-     * Get the @c Model which has been assigned to resolve this @c ImportSource. If no @c Model
-     * has been assigned then return the @c nullptr.
-     *
-     * @return The @c Model used to resolve this @c ImportSource.
-     */
-    libcellml::ModelPtr getResolvingModel() const;
+    void setModel(libcellml::ModelPtr model);
 
     /**
      * @brief Test is this @c ImportSource is resolved.
@@ -86,7 +86,7 @@ public:
      *
      * @return @c true if the @c ImportSource has been resolved, @c false otherwise.
      */
-    bool isResolved() const;
+    bool hasModel() const;
 
 private:
     void swap(ImportSource &rhs); /**< Swap method required for C++ 11 move semantics. */
@@ -105,19 +105,18 @@ private:
  * @param model The @c Model to resolve the imported components for.
  * @param baseFile The @c std::string location on local disk of the source for the given @p model.
  */
-void LIBCELLML_EXPORT resolveImportedComponents(libcellml::ModelPtr model, const std::string& baseFile);
+//void LIBCELLML_EXPORT resolveImportedComponents(libcellml::ModelPtr model, const std::string& baseFile);
 
 /**
- * @brief Resolve the imported @c Components from the @c Model.
+ * @brief Resolve the imported @c Units from the @c Model.
  *
- * Resolve the imported @c Components from the given @c Model with reference to the
- * given @p baseFile.  The resolution is performed recursively through the @c Components
- * of the @c Model.
+ * Resolve the imported @c Units from the given @c Model with reference to the
+ * given @p baseFile.
  *
- * @param model The @c Model to resolve the imported components for.
+ * @param model The @c Model to resolve the imported @c Units for.
  * @param baseFile The @c std::string location on local disk of the source for the given @p model.
  */
-void LIBCELLML_EXPORT resolveImportedUnits(libcellml::ModelPtr model, const std::string& baseFile);
+//void LIBCELLML_EXPORT resolveImportedUnits(libcellml::ModelPtr model, const std::string& baseFile);
 
 /**
  * @brief Count the number of imported @c Components in the @c Model.
@@ -128,29 +127,18 @@ void LIBCELLML_EXPORT resolveImportedUnits(libcellml::ModelPtr model, const std:
  * @param model The @c Model to count the number of imported @c Components in.
  * @return The number of imported @c Components in the @c Model.
  */
-size_t LIBCELLML_EXPORT importedComponentsCount(libcellml::ModelPtr model);
+//size_t LIBCELLML_EXPORT importedComponentsCount(libcellml::ModelPtr model);
 
 /**
- * @brief Count the number of imported @c Components in the @c Model.
+ * @brief Count the number of imported @c Units in the @c Model.
  *
- * This function traverses the component heirarchy of the @c Model and counts the
- * total number of imported @c Components.
+ * This function counts the total number of imported @c Components in the
+ * @c Model.
  *
- * @param model The @c Model to count the number of imported @c Components in.
- * @return The number of imported @c Components in the @c Model.
+ * @param model The @c Model to count the number of imported @c Units in.
+ * @return The number of imported @c Units in the @c Model.
  */
-size_t LIBCELLML_EXPORT importedUnitsCount(libcellml::ModelPtr model);
-
-/**
- * @brief Count the number of unresolved imported @c Components in the @c Model.
- *
- * This function traverses the component heirarchy of the @c Model and counts the total number
- * of unresolved imported @c Components.
- *
- * @param model The @c Model to count the number of unresolved imported @c Components in.
- * @return The number of unresolved imported @c Components in the @c Model.
- */
-size_t LIBCELLML_EXPORT unresolvedImportedComponentsCount(libcellml::ModelPtr model);
+//size_t LIBCELLML_EXPORT importedUnitsCount(libcellml::ModelPtr model);
 
 /**
  * @brief Count the number of unresolved imported @c Components in the @c Model.
@@ -161,6 +149,17 @@ size_t LIBCELLML_EXPORT unresolvedImportedComponentsCount(libcellml::ModelPtr mo
  * @param model The @c Model to count the number of unresolved imported @c Components in.
  * @return The number of unresolved imported @c Components in the @c Model.
  */
-size_t LIBCELLML_EXPORT unresolvedImportedUnitsCount(libcellml::ModelPtr model);
+//size_t LIBCELLML_EXPORT unresolvedImportedComponentsCount(libcellml::ModelPtr model);
+
+/**
+ * @brief Count the number of unresolved imported @c Units in the @c Model.
+ *
+ * This function counts the total number of unresolved imported @c Units
+ * in the @c Model.
+ *
+ * @param model The @c Model to count the number of unresolved imported @c Units in.
+ * @return The number of unresolved imported @c Units in the @c Model.
+ */
+//size_t LIBCELLML_EXPORT unresolvedImportedUnitsCount(libcellml::ModelPtr model);
 
 }

@@ -25,11 +25,11 @@ class ImportSourceTestCase(unittest.TestCase):
     def test_set_source(self):
         from libcellml import ImportSource
 
-        # void setSource(const std::string &reference)
+        # void setUrl(const std::string &reference)
         x = ImportSource()
-        x.setSource('')
-        x.setSource('hello')
-        x.setSource('')
+        x.setUrl('')
+        x.setUrl('hello')
+        x.setUrl('')
 
     def test_get_source(self):
         from libcellml import ImportSource
@@ -37,11 +37,11 @@ class ImportSourceTestCase(unittest.TestCase):
         # std::string getSource()
         source = 'cheers'
         x = ImportSource()
-        self.assertEqual(x.getSource(), '')
-        x.setSource(source)
-        self.assertEqual(x.getSource(), source)
-        x.setSource('')
-        self.assertEqual(x.getSource(), '')
+        self.assertEqual(x.getUrl(), '')
+        x.setUrl(source)
+        self.assertEqual(x.getUrl(), source)
+        x.setUrl('')
+        self.assertEqual(x.getUrl(), '')
 
 
 if __name__ == '__main__':

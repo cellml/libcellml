@@ -496,10 +496,10 @@ TEST(Model, setAndCheckIdsAllEntities) {
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
 
-    i1->setSource("some-other-model.xml");
+    i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");
 
-    i2->setSource("some-other-model.xml");
+    i2->setUrl("some-other-model.xml");
     u1->setSourceUnits(i2, "a_units_in_that_model");
 
     m.setName("mname");
