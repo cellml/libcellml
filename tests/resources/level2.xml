@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="level2_model">
+	<component name="level2_component">
+		<variable name="time" units="dimensionless" interface="public"/>
+		<variable name="parameter" units="dimensionless" interface="public"/>
+		<variable name="cosine" units="dimensionless" interface="public" initial_value="0"/>
+		<math xmlns="http://www.w3.org/1998/Math/MathML">
+			<apply><eq/>
+				<apply><diff/>
+					<bvar><ci>time</ci></bvar>
+					<ci>cosine</ci>
+				</apply>
+				<apply><sin/>
+					<apply><times/>
+						<ci>parameter</ci>
+						<ci>time</ci>
+					</apply>
+				</apply>
+			</apply>
+		</math>
+	</component>
+    <component name="isnt_imported"/>
+</model>
