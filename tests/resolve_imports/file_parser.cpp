@@ -26,8 +26,6 @@ limitations under the License.
 // generated with test resource locations
 #include "test_resources.h"
 
-#include "test_utils.h"
-
 TEST(ResolveImports, resolveSineModelFromFile) {
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_SINE_MODEL_RESOURCE));
@@ -101,16 +99,11 @@ TEST(ResolveImports, resolveImportsFromFileLevel0) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    for (size_t i = 0; i < p.errorCount(); ++i) {
-        std::cout << p.getError(i)->getDescription() << std::endl;
-    }
-
     EXPECT_EQ(0u, p.errorCount());
+
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);
     EXPECT_FALSE(model->hasUnresolvedImports());
-
-    //printErrors(p);
 }
 
 TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable) {
@@ -123,14 +116,9 @@ TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    for (size_t i = 0; i < p.errorCount(); ++i) {
-        std::cout << p.getError(i)->getDescription() << std::endl;
-    }
-
     EXPECT_EQ(0u, p.errorCount());
+
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);
     EXPECT_TRUE(model->hasUnresolvedImports());
-
-    //printErrors(p);
 }
