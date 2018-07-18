@@ -1119,7 +1119,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
         if (attribute->isType("href")) {
-            importSource->setSource(attribute->getValue());
+            importSource->setUrl(attribute->getValue());
         } else if (attribute->isType("id")) {
             importSource->setId(attribute->getValue());
         } else if (attribute->isType("xlink")) {

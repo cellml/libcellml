@@ -212,6 +212,26 @@ public:
      */
     size_t unitsCount() const;
 
+    /**
+     * @brief Resolve all imports in this model.
+     *
+     * Resolve all @c Component and @c Units imports by loading the models
+     * from local disk through relative urls.  The @p baseFile is used to determine
+     * the full path to the source model relative to this one.
+     *
+     * @param baseFile The @c std::string location on local disk of the source @c Model.
+     */
+    void resolveImports(const std::string &baseFile);
+
+    /**
+     * @brief Test if this model has unresolved imports.
+     *
+     * Test if this model has unresolved imports.
+     *
+     * @return True if the @c Model has unresolved imports and false otherwise.
+     */
+    bool hasUnresolvedImports() const;
+
 private:
     void doAddComponent(const ComponentPtr &c) override;
     void swap(Model &rhs); /**< Swap method required for C++ 11 move semantics. */

@@ -42,9 +42,9 @@ class ComponentTestCase(unittest.TestCase):
 
         x = Component()
         i = ImportSource()
-        i.setSource('bonjour')
+        i.setUrl('bonjour')
         x.setSourceComponent(i, 'camembert')
-        self.assertEqual(x.getImportSource().getSource(), 'bonjour')
+        self.assertEqual(x.getImportSource().getUrl(), 'bonjour')
         self.assertEqual(x.getImportReference(), 'camembert')
 
     def test_math(self):
