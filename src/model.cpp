@@ -24,7 +24,6 @@ limitations under the License.
 #include <utility>
 #include <vector>
 
-
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/parser.h"
@@ -326,6 +325,15 @@ bool hasUnresolvedComponentImports(libcellml::ComponentPtr component)
     bool unresolvedImports = false;
     if (component->isImport()) {
         unresolvedImports = isUnresolvedImport(component);
+        if (!unresolvedImports) {
+            // Check that the imported component can import all it needs from it's model.
+            libcellml::ImportSourcePtr importedSource = component->getImportSource();
+            if (importedSource->hasModel()) {
+                ModelPtr importedModel = importedSource->getModel();
+                ComponentPtr importedComponent = importedModel->getComponent(component->getImportReference());
+                unresolvedImports = hasUnresolvedComponentImports(importedComponent);
+            }
+        }
     } else {
         unresolvedImports = recurseForUnresolvedComponentImports(component);
     }
@@ -346,6 +354,7 @@ bool Model::hasUnresolvedImports() const
         libcellml::ComponentPtr component = getComponent(n);
         unresolvedImports = hasUnresolvedComponentImports(component);
     }
+
     return unresolvedImports;
 }
 
