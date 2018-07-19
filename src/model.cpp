@@ -247,13 +247,15 @@ void resolveImport(ImportedEntityPtr importedEntity,
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->getUrl(), baseFile);
             std::ifstream t(url);
-            std::stringstream buffer;
-            buffer << t.rdbuf();
-            libcellml::Parser p;
-            libcellml::ModelPtr model = p.parseModel(buffer.str());
-            if (model) {
-                importSource->setModel(model);
-                model->resolveImports(url);
+            if (t.good()) {
+                std::stringstream buffer;
+                buffer << t.rdbuf();
+                libcellml::Parser p;
+                libcellml::ModelPtr model = p.parseModel(buffer.str());
+                if (model) {
+                    importSource->setModel(model);
+                    model->resolveImports(url);
+                }
             }
         }
     }
