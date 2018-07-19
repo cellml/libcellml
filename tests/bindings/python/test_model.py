@@ -105,6 +105,11 @@ class ModelTestCase(unittest.TestCase):
         self.assertFalse(m.hasUnits('hi'))
         self.assertTrue(m.hasUnits(name))
 
+        # bool hasUnits(const UnitsPtr &units)
+        self.assertTrue(m.hasUnits(u))
+        v = Units()
+        self.assertFalse(m.hasUnits(v))
+
     def test_get_units(self):
         from libcellml import Model, Units
 

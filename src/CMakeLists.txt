@@ -151,6 +151,13 @@ set_target_properties(cellml PROPERTIES
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
 )
 
+if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+  set_target_properties(cellml PROPERTIES
+    IMPORT_PREFIX "lib"
+    PREFIX "lib"
+  )
+endif()
+
 if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
   target_warnings_as_errors(cellml)
 endif()
