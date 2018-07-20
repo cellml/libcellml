@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="parabolic_approx_sin" id="parabolic_approx_sin">
-  
+
 
   <component name="sin" id="sin">
     <variable id="x" units="dimensionless" name="x" interface="public_and_private"/>
@@ -47,7 +47,7 @@
           <cn cellml:units="dimensionless">2.0</cn>
         </apply>
       </apply>
-      
+
       <apply id="z"><eq/>
         <ci>z</ci>
         <piecewise>
@@ -110,7 +110,7 @@
           </otherwise>
         </piecewise>
       </apply>
-      
+
       <apply id="sin"><eq/>
         <ci>sin</ci>
         <piecewise>
@@ -178,5 +178,5 @@
       </apply>
     </math>
   </component>
-  
+
 </model>
