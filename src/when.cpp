@@ -66,7 +66,7 @@ void When::swap(When &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void When::setCondition(const std::string& condition)
+void When::setCondition(const std::string &condition)
 {
     mPimpl->mCondition = condition;
 }
@@ -76,7 +76,7 @@ std::string When::getCondition() const
     return mPimpl->mCondition;
 }
 
-void When::setValue(const std::string& value)
+void When::setValue(const std::string &value)
 {
     mPimpl->mValue = value;
 }

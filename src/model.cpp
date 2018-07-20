@@ -236,7 +236,7 @@ typedef std::shared_ptr<ImportedEntity> ImportedEntityPtr;
  * @param base The @c std::string location on local disk for determining the full path from.
  * @return The full path from the @p base location to the @p filename
  */
-std::string resolvePath(const std::string& filename, const std::string& base)
+std::string resolvePath(const std::string &filename, const std::string &base)
 {
     // we can be naive here as we know what we are dealing with
     std::string path = base.substr(0, base.find_last_of('/')+1) + filename;
@@ -244,7 +244,7 @@ std::string resolvePath(const std::string& filename, const std::string& base)
 }
 
 void resolveImport(ImportedEntityPtr importedEntity,
-                   const std::string& baseFile)
+                   const std::string &baseFile)
 {
     if (importedEntity->isImport()) {
         libcellml::ImportSourcePtr importSource = importedEntity->getImportSource();
