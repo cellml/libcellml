@@ -310,7 +310,6 @@ bool recurseForUnresolvedComponentImports(ComponentPtr parentComponent)
         libcellml::ComponentPtr component = parentComponent->getComponent(n);
         unresolvedImports = hasUnresolvedComponentImports(component);
     }
-
     return unresolvedImports;
 }
 
@@ -331,7 +330,6 @@ bool hasUnresolvedComponentImports(libcellml::ComponentPtr component)
     } else {
         unresolvedImports = recurseForUnresolvedComponentImports(component);
     }
-
     return unresolvedImports;
 }
 
@@ -348,7 +346,6 @@ bool Model::hasUnresolvedImports() const
         libcellml::ComponentPtr component = getComponent(n);
         unresolvedImports = hasUnresolvedComponentImports(component);
     }
-
     return unresolvedImports;
 }
 
