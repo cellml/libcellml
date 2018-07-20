@@ -238,7 +238,7 @@ typedef std::shared_ptr<ImportedEntity> ImportedEntityPtr;
  */
 std::string resolvePath(const std::string &filename, const std::string &base)
 {
-    // we can be naive here as we know what we are dealing with
+    // We can be naive here as we know what we are dealing with
     std::string path = base.substr(0, base.find_last_of('/')+1) + filename;
     return path;
 }
@@ -250,12 +250,12 @@ void resolveImport(ImportedEntityPtr importedEntity,
         libcellml::ImportSourcePtr importSource = importedEntity->getImportSource();
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->getUrl(), baseFile);
-            std::ifstream t(url);
-            if (t.good()) {
+            std::ifstream file(url);
+            if (file.good()) {
                 std::stringstream buffer;
-                buffer << t.rdbuf();
-                libcellml::Parser p;
-                libcellml::ModelPtr model = p.parseModel(buffer.str());
+                buffer << file.rdbuf();
+                libcellml::Parser parser;
+                libcellml::ModelPtr model = parser.parseModel(buffer.str());
                 if (model) {
                     importSource->setModel(model);
                     model->resolveImports(url);
@@ -269,7 +269,7 @@ void recurseResolveComponentImports(ComponentPtr component, const std::string &b
 
 void resolveComponentImports(ComponentPtr parentComponent, const std::string &baseFile)
 {
-    for (size_t n = 0; n < parentComponent->componentCount();  ++n)
+    for (size_t n = 0; n < parentComponent->componentCount(); ++n)
     {
         libcellml::ComponentPtr component = parentComponent->getComponent(n);
         recurseResolveComponentImports(component, baseFile);
@@ -287,12 +287,12 @@ void recurseResolveComponentImports(ComponentPtr component, const std::string &b
 
 void Model::resolveImports(const std::string &baseFile)
 {
-    for (size_t n = 0; n < unitsCount();  ++n)
+    for (size_t n = 0; n < unitsCount(); ++n)
     {
         libcellml::UnitsPtr units = getUnits(n);
         resolveImport(units, baseFile);
     }
-    for (size_t n = 0; n < componentCount();  ++n)
+    for (size_t n = 0; n < componentCount(); ++n)
     {
         libcellml::ComponentPtr component = getComponent(n);
         recurseResolveComponentImports(component, baseFile);
@@ -316,7 +316,7 @@ bool hasUnresolvedComponentImports(libcellml::ComponentPtr component);
 bool recurseForUnresolvedComponentImports(ComponentPtr parentComponent)
 {
     bool unresolvedImports = false;
-    for (size_t n = 0; n < parentComponent->componentCount() && !unresolvedImports;  ++n)
+    for (size_t n = 0; n < parentComponent->componentCount() && !unresolvedImports; ++n)
     {
         libcellml::ComponentPtr component = parentComponent->getComponent(n);
         unresolvedImports = hasUnresolvedComponentImports(component);
@@ -349,12 +349,12 @@ bool hasUnresolvedComponentImports(libcellml::ComponentPtr component)
 bool Model::hasUnresolvedImports() const
 {
     bool unresolvedImports = false;
-    for (size_t n = 0; n < unitsCount() && !unresolvedImports;  ++n)
+    for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n)
     {
         libcellml::UnitsPtr units = getUnits(n);
         unresolvedImports = isUnresolvedImport(units);
     }
-    for (size_t n = 0; n < componentCount() && !unresolvedImports;  ++n)
+    for (size_t n = 0; n < componentCount() && !unresolvedImports; ++n)
     {
         libcellml::ComponentPtr component = getComponent(n);
         unresolvedImports = hasUnresolvedComponentImports(component);
