@@ -27,6 +27,8 @@ class Validator; /**< Forward declaration of Validator class. */
 // CellML entities.
 class Model; /**< Forward declaration of Model class. */
 typedef std::shared_ptr<Model> ModelPtr; /**< Type definition for shared model pointer. */
+class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
+typedef std::shared_ptr<ComponentEntity> ComponentEntityPtr; /**< Type definition for shared component entity pointer. */
 class Component; /**< Forward declaration of Component class. */
 typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
 class Error; /**< Forward declaration of Error class. */

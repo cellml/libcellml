@@ -29,7 +29,8 @@ namespace libcellml {
  *
  * The Model class is for representing a CellML Model.
  */
-class LIBCELLML_EXPORT Model: public ComponentEntity
+class LIBCELLML_EXPORT Model: public ComponentEntity,
+                              public std::enable_shared_from_this<Model>
 {
 public:
     Model(); /**< Constructor */
