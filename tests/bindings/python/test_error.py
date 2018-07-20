@@ -108,7 +108,7 @@ class ErrorTestCase(unittest.TestCase):
     def test_set_description(self):
         from libcellml import Error
 
-        # void setDescription(const std::string& description)
+        # void setDescription(const std::string &description)
         e = Error()
         e.setDescription('hello')
         e.setDescription('')

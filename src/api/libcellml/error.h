@@ -129,7 +129,7 @@ public:
      *
      * @param description The @c std::string error description to set.
      */
-    void setDescription(const std::string& description);
+    void setDescription(const std::string &description);
 
     /**
      * @brief Get the description for this error.
