@@ -36,7 +36,7 @@ public:
     ~ImportSource() override; /**< Destructor */
     ImportSource(const ImportSource &rhs); /**< Copy constructor */
     ImportSource(ImportSource &&rhs); /**< Move constructor */
-    ImportSource& operator=(ImportSource m); /**< Assignment operator */
+    ImportSource& operator=(ImportSource rhs); /**< Assignment operator */
 
     /**
      * @brief Get the source @c Model's URL.
@@ -55,7 +55,7 @@ public:
      *
      * @param source The source @c Model's URL.
      */
-    void setUrl(const std::string &sourceUrl);
+    void setUrl(const std::string &url);
 
     /**
      * @brief Get the @c Model that resolves the import.
@@ -78,7 +78,7 @@ public:
     void setModel(libcellml::ModelPtr model);
 
     /**
-     * @brief Test is this @c ImportSource is resolved.
+     * @brief Test if this @c ImportSource is resolved.
      *
      * Method to test if this @c ImportSource has been resolved, i.e., the source @c Model has
      * been assigned. Returns @c true if the @c ImportSource is resolved otherwise returns

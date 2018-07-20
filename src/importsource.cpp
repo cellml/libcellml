@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 #include "libcellml/importsource.h"
-
 #include "libcellml/model.h"
 
 namespace libcellml {
@@ -57,10 +56,10 @@ ImportSource::ImportSource(ImportSource &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-ImportSource& ImportSource::operator=(ImportSource e)
+ImportSource& ImportSource::operator=(ImportSource rhs)
 {
-    Entity::operator= (e);
-    e.swap(*this);
+    Entity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -74,9 +73,9 @@ std::string ImportSource::getUrl() const
     return mPimpl->mUrl;
 }
 
-void ImportSource::setUrl(const std::string &source)
+void ImportSource::setUrl(const std::string &url)
 {
-    mPimpl->mUrl = source;
+    mPimpl->mUrl = url;
 }
 
 ModelPtr ImportSource::getModel() const
