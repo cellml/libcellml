@@ -63,7 +63,7 @@ Printer::~Printer()
     delete mPimpl;
 }
 
-Printer::Printer(const Printer& rhs)
+Printer::Printer(const Printer &rhs)
     : Logger(rhs)
     , mPimpl(new PrinterImpl())
 {

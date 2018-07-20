@@ -242,7 +242,7 @@ Validator::~Validator()
     delete mPimpl;
 }
 
-Validator::Validator(const Validator& rhs)
+Validator::Validator(const Validator &rhs)
     : Logger(rhs)
     , mPimpl(new ValidatorImpl())
 {

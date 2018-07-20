@@ -52,7 +52,7 @@ Error::~Error()
     delete mPimpl;
 }
 
-Error::Error(const Error& rhs)
+Error::Error(const Error &rhs)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mDescription = rhs.mPimpl->mDescription;

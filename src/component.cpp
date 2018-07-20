@@ -45,19 +45,19 @@ struct Component::ComponentImpl
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr& v) -> bool { return v->getName() == name; });
+                        [=](const VariablePtr &v) -> bool { return v->getName() == name; });
 }
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const VariablePtr &variable)
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr& v) -> bool { return v == variable; });
+                        [=](const VariablePtr &v) -> bool { return v == variable; });
 }
 
 std::vector<ResetPtr>::iterator Component::ComponentImpl::findReset(const ResetPtr &reset)
 {
     return std::find_if(mResets.begin(), mResets.end(),
-                        [=](const ResetPtr& r) -> bool { return r == reset; });
+                        [=](const ResetPtr &r) -> bool { return r == reset; });
 }
 
 Component::Component()
@@ -75,7 +75,7 @@ Component::~Component()
     delete mPimpl;
 }
 
-Component::Component(const Component& rhs)
+Component::Component(const Component &rhs)
     : ComponentEntity(rhs)
     , ImportedEntity(rhs)
     , mPimpl(new ComponentImpl())

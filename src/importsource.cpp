@@ -41,7 +41,7 @@ ImportSource::~ImportSource()
     delete mPimpl;
 }
 
-ImportSource::ImportSource(const ImportSource& rhs)
+ImportSource::ImportSource(const ImportSource &rhs)
     : Entity(rhs)
     , mPimpl(new ImportSourceImpl())
 {

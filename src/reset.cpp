@@ -39,7 +39,7 @@ struct Reset::ResetImpl
 std::vector<WhenPtr>::iterator Reset::ResetImpl::findWhen(const WhenPtr &when)
 {
     return std::find_if(mWhens.begin(), mWhens.end(),
-                        [=](const WhenPtr& w) -> bool { return w == when; });
+                        [=](const WhenPtr &w) -> bool { return w == when; });
 }
 
 Reset::Reset()
@@ -52,7 +52,7 @@ Reset::~Reset()
     delete mPimpl;
 }
 
-Reset::Reset(const Reset& rhs)
+Reset::Reset(const Reset &rhs)
     : OrderedEntity(rhs)
     , mPimpl(new ResetImpl())
 {

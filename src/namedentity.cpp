@@ -42,7 +42,7 @@ NamedEntity::~NamedEntity()
     delete mPimpl;
 }
 
-NamedEntity::NamedEntity(const NamedEntity& rhs)
+NamedEntity::NamedEntity(const NamedEntity &rhs)
     : Entity(rhs)
     , mPimpl(new NamedEntityImpl())
 {

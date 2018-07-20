@@ -41,7 +41,7 @@ ImportedEntity::~ImportedEntity()
     delete mPimpl;
 }
 
-ImportedEntity::ImportedEntity(const ImportedEntity& rhs)
+ImportedEntity::ImportedEntity(const ImportedEntity &rhs)
     : mPimpl(new ImportedEntityImpl())
 {
     mPimpl->mImportSource = rhs.mPimpl->mImportSource;
