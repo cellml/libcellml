@@ -49,13 +49,13 @@ struct Model::ModelImpl
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr& u) -> bool { return u->getName() == name; });
+                        [=](const UnitsPtr &u) -> bool { return u->getName() == name; });
 }
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr& u) -> bool { return u == units; });
+                        [=](const UnitsPtr &u) -> bool { return u == units; });
 }
 
 Model::Model()
@@ -68,7 +68,7 @@ Model::~Model()
     delete mPimpl;
 }
 
-Model::Model(const Model& rhs)
+Model::Model(const Model &rhs)
     : ComponentEntity(rhs)
     , mPimpl(new ModelImpl())
 {
@@ -103,7 +103,7 @@ void Model::doAddComponent(const ComponentPtr &c)
     }
 }
 
-void Model::addUnits(const UnitsPtr & units)
+void Model::addUnits(const UnitsPtr &units)
 {
     mPimpl->mUnits.push_back(units);
 }

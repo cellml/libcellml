@@ -127,7 +127,7 @@ struct Units::UnitsImpl
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const Unit& u) -> bool { return u.mReference == reference; });
+                        [=](const Unit &u) -> bool { return u.mReference == reference; });
 }
 
 Units::Units()
@@ -140,7 +140,7 @@ Units::~Units()
     delete mPimpl;
 }
 
-Units::Units(const Units& rhs)
+Units::Units(const Units &rhs)
     : NamedEntity(rhs)
     , ImportedEntity(rhs)
     , mPimpl(new UnitsImpl())

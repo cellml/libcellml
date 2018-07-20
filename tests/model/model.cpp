@@ -320,21 +320,21 @@ struct structure
         std::cout << "structure constructor: " << m_data->id << std::endl;
     }
 
-    structure(const structure& rhs)
+    structure(const structure &rhs)
         : m_data{new big_and_complicated{}}
     {
         std::cout << "structure copy constructor: " << rhs.m_data->id << std::endl;
         m_data->id = rhs.m_data->id;
     }
 
-    structure(structure&& rhs)
+    structure(structure &&rhs)
       : m_data(rhs.m_data)
     {
         std::cout << "structure move constructor: " << m_data->id << std::endl;
         rhs.m_data = nullptr;
     }
 
-    structure &operator=(structure r)
+    structure& operator=(structure r)
     {
         r.swap(*this);
         return *this;

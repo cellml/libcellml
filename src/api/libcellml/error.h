@@ -34,7 +34,7 @@ class LIBCELLML_EXPORT Error
 public:
     Error(); /**< Constructor */
     virtual ~Error(); /**< Destructor */
-    Error(const Error& rhs); /**< Copy constructor */
+    Error(const Error &rhs); /**< Copy constructor */
     Error(Error &&rhs); /**< Move constructor */
     Error& operator=(Error rhs); /**< Assignment operator */
 

@@ -180,7 +180,7 @@ Variable::~Variable()
     delete mPimpl;
 }
 
-Variable::Variable(const Variable& rhs)
+Variable::Variable(const Variable &rhs)
     : NamedEntity(rhs)
     , mPimpl(new VariableImpl())
 {

@@ -39,7 +39,7 @@ When::~When()
     delete mPimpl;
 }
 
-When::When(const When& rhs)
+When::When(const When &rhs)
     : OrderedEntity(rhs)
     , mPimpl(new WhenImpl())
 {

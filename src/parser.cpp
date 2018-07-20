@@ -191,7 +191,7 @@ Parser::~Parser()
     delete mPimpl;
 }
 
-Parser::Parser(const Parser& rhs)
+Parser::Parser(const Parser &rhs)
     : Logger(rhs)
     , mPimpl(new ParserImpl())
 {
