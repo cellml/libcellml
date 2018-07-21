@@ -25,22 +25,22 @@ class Parser; /**< Forward declaration of Parser class. */
 class Validator; /**< Forward declaration of Validator class. */
 
 // CellML entities.
-class Model; /**< Forward declaration of Model class. */
-typedef std::shared_ptr<Model> ModelPtr; /**< Type definition for shared model pointer. */
-class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
-typedef std::shared_ptr<ComponentEntity> ComponentEntityPtr; /**< Type definition for shared component entity pointer. */
 class Component; /**< Forward declaration of Component class. */
 typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
+class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
+typedef std::shared_ptr<ComponentEntity> ComponentEntityPtr; /**< Type definition for shared component entity pointer. */
 class Error; /**< Forward declaration of Error class. */
 typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
 typedef std::shared_ptr<ImportSource> ImportSourcePtr; /**< Type definition for shared import source pointer. */
+class Model; /**< Forward declaration of Model class. */
+typedef std::shared_ptr<Model> ModelPtr; /**< Type definition for shared model pointer. */
+class Reset; /**< Forward declaration of Reset class. */
+typedef std::shared_ptr<Reset> ResetPtr; /**< Type definition for shared reset pointer. */
 class Units; /**< Forward declaration of Units class. */
 typedef std::shared_ptr<Units> UnitsPtr; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
 class When; /**< Forward declaration of When class. */
 typedef std::shared_ptr<When> WhenPtr; /**< Type definition for shared when pointer. */
-class Reset; /**< Forward declaration of Reset class. */
-typedef std::shared_ptr<Reset> ResetPtr; /**< Type definition for shared reset pointer. */
 }
