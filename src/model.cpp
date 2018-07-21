@@ -267,10 +267,8 @@ void resolveImport(ImportedEntityPtr importedEntity,
                 buffer << file.rdbuf();
                 libcellml::Parser parser;
                 libcellml::ModelPtr model = parser.parseModel(buffer.str());
-                if (model) {
-                    importSource->setModel(model);
-                    model->resolveImports(url);
-                }
+                importSource->setModel(model);
+                model->resolveImports(url);
             }
         }
     }
