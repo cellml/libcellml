@@ -233,8 +233,6 @@ size_t Model::unitsCount() const
     return mPimpl->mUnits.size();
 }
 
-typedef std::shared_ptr<ImportedEntity> ImportedEntityPtr;
-
 /**
  * @brief Resolve the path of the given filename using the given base.
  *
