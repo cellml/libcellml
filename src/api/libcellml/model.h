@@ -21,6 +21,10 @@ limitations under the License.
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
+#endif
+
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
 
