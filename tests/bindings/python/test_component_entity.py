@@ -387,6 +387,25 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertTrue(x.removeComponent(0))
         self.assertEqual(x.componentCount(), 0)
 
+    def test_set_encapsulation_id(self):
+        from libcellml import ComponentEntity
+
+        # void setEncapsulationId(const std::string &id);
+        x = ComponentEntity()
+        x.setEncapsulationId('Hello')
+        x.setEncapsulationId('')
+
+    def test_get_encapsulation_id(self):
+        from libcellml import ComponentEntity
+
+        # std::string getEncapsulationId() const;
+        x = ComponentEntity()
+        self.assertEqual(x.getEncapsulationId(), '')
+        x.setEncapsulationId('Hello')
+        self.assertEqual(x.getEncapsulationId(), 'Hello')
+        x.setEncapsulationId('')
+        self.assertEqual(x.getEncapsulationId(), '')
+
 
 if __name__ == '__main__':
     unittest.main()
