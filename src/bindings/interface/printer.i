@@ -23,6 +23,9 @@
 %feature("docstring") libcellml::Printer::printVariable
 "Serialises the given :class:`Variable` to an XML string.";
 
+%feature("docstring") libcellml::Printer::printReset
+"Serialises the given :class:`Reset` to an XML string.";
+
 %{
 #include "libcellml/printer.h"
 %}

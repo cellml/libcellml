@@ -59,6 +59,25 @@ Returns `True` on success.";
 %feature("docstring") libcellml::ComponentEntity::componentCount
 "Returns the number of components the component contains.  ";
 
+%feature("docstring") libcellml::ComponentEntity::getEncapsulationId
+"Returns the encapsulation id for this entity.
+
+The encapsulation Id is placed on the XML element for this entity. For the
+:class:`Model` class this is the ``encapsulation`` element that is the root
+element for the model's structure.  For the :class:`Component` class this is
+the ``component_ref`` element that references the component it represents in
+the structure."
+
+%feature("docstring") libcellml::ComponentEntity::setEncapsulationId
+"Sets the encapsulation id for this entity.
+
+The encapsulation Id is placed on the XML element for this entity. For the
+:class:`Model` class this is the ``encapsulation`` element that is the root
+element for the model's structure.  For the :class:`Component` class this is
+the ``component_ref`` element that references the component it represents in
+the structure."
+
+
 #if defined(SWIGPYTHON)
     // Allow any type of input to be converted to bool
     %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }
