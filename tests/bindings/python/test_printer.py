@@ -72,6 +72,16 @@ class PrinterTestCase(unittest.TestCase):
         # This method shadows printComponent(ComponentPtr) so wasn't added
         # std::string printComponent(Component component)
 
+    def test_print_reset(self):
+        from libcellml import Printer, Reset
+
+        # std::string printReset(ResetPtr reset) const;
+        p = Printer()
+        self.assertIsInstance(p.printReset(Reset()), str)
+
+        # This method shadows printReset(ResetPtr) so wasn't added
+        # std::string printReset(Reset reset) const;
+
 
 if __name__ == '__main__':
     unittest.main()
