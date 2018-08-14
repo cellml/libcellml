@@ -73,6 +73,8 @@ class ImportSourceTestCase(unittest.TestCase):
         self.assertFalse(x.hasModel())
         x.setModel(Model())
         self.assertTrue(x.hasModel())
+        x.setModel(None)
+        self.assertFalse(x.hasModel())
 
 
 if __name__ == '__main__':
