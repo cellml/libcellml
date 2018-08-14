@@ -5,28 +5,6 @@
 %import "types.i"
 %import "componententity.i"
 
-#if defined(SWIGPYTHON)
-    // Treat negative size_t as invalid index (instead of unknown method)
-    %extend libcellml::Model {
-        bool removeUnits(long index) {
-            if(index < 0) return false;
-            return $self->removeUnits(size_t(index));
-        }
-        UnitsPtr getUnits(long index) const {
-            if(index < 0) return nullptr;
-            return $self->getUnits(size_t(index));
-        }
-        UnitsPtr takeUnits(long index) {
-            if(index < 0) return nullptr;
-            return $self->takeUnits(size_t(index));
-        }
-        bool replaceUnits(long index, UnitsPtr &units) {
-            if(index < 0) return false;
-            return $self->replaceUnits(size_t(index), units);
-        }
-    }
-#endif
-
 %feature("docstring") libcellml::Model
 "Represents a CellML model.";
 
@@ -66,6 +44,28 @@ Only the first matching Units is removed and returned.";
 
 %feature("docstring") libcellml::Model::unitsCount
 "Returns the number of units this model contains.";
+
+#if defined(SWIGPYTHON)
+    // Treat negative size_t as invalid index (instead of unknown method)
+    %extend libcellml::Model {
+        bool removeUnits(long index) {
+            if(index < 0) return false;
+            return $self->removeUnits(size_t(index));
+        }
+        UnitsPtr getUnits(long index) const {
+            if(index < 0) return nullptr;
+            return $self->getUnits(size_t(index));
+        }
+        UnitsPtr takeUnits(long index) {
+            if(index < 0) return nullptr;
+            return $self->takeUnits(size_t(index));
+        }
+        bool replaceUnits(long index, UnitsPtr &units) {
+            if(index < 0) return false;
+            return $self->replaceUnits(size_t(index), units);
+        }
+    }
+#endif
 
 %{
 #include "libcellml/model.h"

@@ -5,16 +5,6 @@
 %import "types.i"
 %import "namedentity.i"
 
-#if defined(SWIGPYTHON)
-    // Treat negative size_t as invalid index (instead of unknown method)
-    %extend libcellml::Variable {
-        VariablePtr getEquivalentVariable(long index) {
-            if(index < 0) return nullptr;
-            return $self->getEquivalentVariable(size_t(index));
-        }
-    }
-#endif
-
 %feature("docstring") libcellml::Variable
 "Represents a CellML Variable entity";
 
@@ -61,6 +51,16 @@ reference.";
 %feature("docstring") libcellml::Variable::setInterfaceType
 "Sets this variable's interfacetype to the given type specified as string or
 InterfaceType.";
+
+#if defined(SWIGPYTHON)
+    // Treat negative size_t as invalid index (instead of unknown method)
+    %extend libcellml::Variable {
+        VariablePtr getEquivalentVariable(long index) {
+            if(index < 0) return nullptr;
+            return $self->getEquivalentVariable(size_t(index));
+        }
+    }
+#endif
 
 %{
 #include "libcellml/variable.h"

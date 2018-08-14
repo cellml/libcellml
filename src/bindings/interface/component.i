@@ -5,20 +5,6 @@
 %import "types.i"
 %import "componententity.i"
 
-#if defined(SWIGPYTHON)
-    // Treat negative size_t as invalid index (instead of unknown method)
-    %extend libcellml::Component {
-        VariablePtr getVariable(long index) const {
-            if(index < 0) return nullptr;
-            return $self->getVariable(size_t(index));
-        }
-        bool removeVariable(long index) {
-            if(index < 0) return false;
-            return $self->removeVariable(size_t(index));
-        }
-    }
-#endif
-
 %feature("docstring") libcellml::Component
 "Represents a CellML component.";
 
@@ -93,6 +79,20 @@ range for the index is [0, #resets).";
 "Tests whether the argument :param: reset exists in the set of this component's
 resets. Returns True if the :param: reset is in this component's
 resets and False otherwise.";
+
+#if defined(SWIGPYTHON)
+    // Treat negative size_t as invalid index (instead of unknown method)
+    %extend libcellml::Component {
+        VariablePtr getVariable(long index) const {
+            if(index < 0) return nullptr;
+            return $self->getVariable(size_t(index));
+        }
+        bool removeVariable(long index) {
+            if(index < 0) return false;
+            return $self->removeVariable(size_t(index));
+        }
+    }
+#endif
 
 %{
 #include "libcellml/component.h"

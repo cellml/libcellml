@@ -30,16 +30,6 @@
 // but: addUnit(1, 1) --> (StandardUnit, Prefix, default=1, default=1)
 %ignore libcellml::Units::addUnit(StandardUnit standardRef, double exponent);
 
-#if defined(SWIGPYTHON)
-    // Treat negative size_t as invalid index (instead of unknown method)
-    %extend libcellml::Units {
-        bool removeUnit(long index) {
-            if(index < 0) return false;
-            return $self->removeUnit((size_t)index);
-        }
-    }
-#endif
-
 %feature("docstring") libcellml::Units
 "Represents a CellML Units definition.";
 
@@ -84,6 +74,16 @@ StandardUnit.";
 %feature("docstring") libcellml::Units::setSourceUnits
 "Makes this Units an imported units by defining an `ImportSource` from which to
 extract the units with the given `name`.";
+
+#if defined(SWIGPYTHON)
+    // Treat negative size_t as invalid index (instead of unknown method)
+    %extend libcellml::Units {
+        bool removeUnit(long index) {
+            if(index < 0) return false;
+            return $self->removeUnit((size_t)index);
+        }
+    }
+#endif
 
 %{
 #include "libcellml/units.h"
