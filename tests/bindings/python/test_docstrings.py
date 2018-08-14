@@ -16,7 +16,9 @@ class DocstringTestCase(unittest.TestCase):
             if not root.__doc__:
                 missing.append(prefix)
             prefix += '.'
-            for x in dir(root):
+            # Scan children, using dict instead of dir to avoid inherited
+            # methods.
+            for x in root.__dict__:
                 if x[:1] != '_' and x is not root:
                     child = getattr(root, x)
                     if isinstance(child, (type, types.FunctionType)):
@@ -25,7 +27,9 @@ class DocstringTestCase(unittest.TestCase):
         missing = []
         scan(libcellml, missing)
         if missing:
-            raise Exception('Missing docstrings for: ' + ', '.join(missing))
+            raise Exception(
+                'Missing (' + str(len(missing)) + ') docstrings, for: '
+                + ', '.join(missing))
 
 
 if __name__ == '__main__':
