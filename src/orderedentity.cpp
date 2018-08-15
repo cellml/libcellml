@@ -43,7 +43,7 @@ OrderedEntity::~OrderedEntity()
     delete mPimpl;
 }
 
-OrderedEntity::OrderedEntity(const OrderedEntity& rhs)
+OrderedEntity::OrderedEntity(const OrderedEntity &rhs)
     : Entity(rhs)
     , mPimpl(new OrderedEntityImpl())
 {

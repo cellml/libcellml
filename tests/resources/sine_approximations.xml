@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><model xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink" name="sin_approximations_import" id="sin_approximations_import">
   <component name="main" id="main">
-    <variable id="x" initial_value="0" name="x" interface="public_and_private" units="dimensionless"/>
-    <variable id="sin" name="sin1" interface="public_and_private" units="dimensionless"/>
-    <variable id="deriv_approx" name="sin2" interface="public_and_private" units="dimensionless"/>
-    <variable id="deriv_approx_initial_value" initial_value="0" name="deriv_approx_initial_value" interface="public_and_private" units="dimensionless"/>
-    <variable id="parabolic_approx" name="sin3" interface="public_and_private" units="dimensionless"/>
+    <variable id="x" units="dimensionless" initial_value="0" name="x" interface="public_and_private"/>
+    <variable id="sin" units="dimensionless" name="sin1" interface="public_and_private"/>
+    <variable id="deriv_approx" units="dimensionless" name="sin2" interface="public_and_private"/>
+    <variable id="deriv_approx_initial_value" units="dimensionless" initial_value="0" name="deriv_approx_initial_value" interface="public_and_private"/>
+    <variable id="parabolic_approx" units="dimensionless" name="sin3" interface="public_and_private"/>
   </component>
   <component name="actual_sin" id="sin">
     <variable name="x" interface="public_and_private" units="dimensionless"/>

@@ -210,7 +210,7 @@ class UnitsTestCase(unittest.TestCase):
     def test_get_unit_attributes(self):
         from libcellml import Units
 
-        # void getUnitAttributes(size_t index, std::string& reference,
+        # void getUnitAttributes(size_t index, std::string &reference,
         #   std::string &prefix, double &exponent, double &multiplier, std::string &id)
         u = Units()
         x = u.getUnitAttributes(0)

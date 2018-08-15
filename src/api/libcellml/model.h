@@ -21,6 +21,10 @@ limitations under the License.
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
+#endif
+
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
 
@@ -30,6 +34,9 @@ namespace libcellml {
  * The Model class is for representing a CellML Model.
  */
 class LIBCELLML_EXPORT Model: public ComponentEntity
+#ifndef SWIG
+                            , public std::enable_shared_from_this<Model>
+#endif
 {
 public:
     Model(); /**< Constructor */
@@ -223,6 +230,26 @@ public:
      * @return The number of units.
      */
     size_t unitsCount() const;
+
+    /**
+     * @brief Resolve all imports in this model.
+     *
+     * Resolve all @c Component and @c Units imports by loading the models
+     * from local disk through relative URLs.  The @p baseFile is used to determine
+     * the full path to the source model relative to this one.
+     *
+     * @param baseFile The @c std::string location on local disk of the source @c Model.
+     */
+    void resolveImports(const std::string &baseFile);
+
+    /**
+     * @brief Test if this model has unresolved imports.
+     *
+     * Test if this model has unresolved imports.
+     *
+     * @return True if the @c Model has unresolved imports and false otherwise.
+     */
+    bool hasUnresolvedImports();
 
 private:
     void doAddComponent(const ComponentPtr &c) override;

@@ -934,7 +934,7 @@ TEST(Connection, importedComponentConnectionAndParse) {
     libcellml::VariablePtr variableImported = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr variableBob = std::make_shared<libcellml::Variable>();
 
-    imp->setSource("some-other-model.xml");
+    imp->setUrl("some-other-model.xml");
     componentImported->setName("component_in_this_model");
     componentImported->setSourceComponent(imp, "component_in_that_model");
     componentBob->setName("component_bob");

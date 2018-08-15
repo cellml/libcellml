@@ -36,26 +36,57 @@ public:
     ~ImportSource() override; /**< Destructor */
     ImportSource(const ImportSource &rhs); /**< Copy constructor */
     ImportSource(ImportSource &&rhs); /**< Move constructor */
-    ImportSource& operator=(ImportSource m); /**< Assignment operator */
+    ImportSource& operator=(ImportSource rhs); /**< Assignment operator */
 
     /**
-     * @brief Set the imported model source.
+     * @brief Get the source @c Model's URL.
      *
-     * Set the imported model source that this import source refers to.
+     * Get the source @c Model's URL set in this instance. If no source @c Model
+     * URL is set then return an empty string.
      *
-     * @param source The source of the model as a @c std::string.
+     * @return The URL of the source @c Model if set otherwise the emtpy string.
      */
-    void setSource(const std::string &source);
+    std::string getUrl() const;
 
     /**
-     * @brief Get the imported model source.
+     * @brief Set the source @c Model's URL.
      *
-     * Get the imported model source set in this instance.  If no imported source
-     * is set then return an empty string.
+     * Set the source @c Model's URL that this @c ImportSource refers to.
      *
-     * @return The imported model source as a @c std::string, if set, otherwise the empty string.
+     * @param source The source @c Model's URL.
      */
-    std::string getSource() const;
+    void setUrl(const std::string &url);
+
+    /**
+     * @brief Get the @c Model that resolves the import.
+     *
+     * Get the @c Model which has been assigned to resolve this @c ImportSource. If no @c Model
+     * has been assigned then return the @c nullptr.
+     *
+     * @return The @c Model used to resolve this @c ImportSource.
+     */
+    libcellml::ModelPtr getModel() const;
+
+    /**
+     * @brief Provide the @c Model used to resolve this import.
+     *
+     * Uses the provided @c Model to resolve this @c ImportSource, which should correspond
+     * to the @c ImportSource identified by this import.
+     *
+     * @param model The @c Model to use in resolving this @c ImportSource.
+     */
+    void setModel(libcellml::ModelPtr model);
+
+    /**
+     * @brief Test if this @c ImportSource is resolved.
+     *
+     * Method to test if this @c ImportSource has been resolved, i.e., the source @c Model has
+     * been assigned. Returns @c true if the @c ImportSource is resolved otherwise returns
+     * @c false.
+     *
+     * @return @c true if the @c ImportSource has been resolved, @c false otherwise.
+     */
+    bool hasModel() const;
 
 private:
     void swap(ImportSource &rhs); /**< Swap method required for C++ 11 move semantics. */

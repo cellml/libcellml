@@ -225,6 +225,24 @@ class ModelTestCase(unittest.TestCase):
         self.assertEqual(m.unitsCount(), 0)
         del(m)
 
+    def test_has_unresolved_imports(self):
+        from libcellml import Model, Component, ImportSource
+
+        # bool hasUnresolvedImports();
+        m = Model()
+        self.assertFalse(m.hasUnresolvedImports())
+        c = Component()
+        m.addComponent(c)
+        self.assertFalse(m.hasUnresolvedImports())
+        c.setImportSource(ImportSource())
+        self.assertTrue(m.hasUnresolvedImports())
+
+    def test_resolve_imports(self):
+        from libcellml import Model
+
+        m = Model()
+        m.resolveImports('file.txt')
+
 
 if __name__ == '__main__':
     unittest.main()

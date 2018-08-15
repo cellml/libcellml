@@ -45,7 +45,7 @@ Entity::~Entity()
     delete mPimpl;
 }
 
-Entity::Entity(const Entity& rhs)
+Entity::Entity(const Entity &rhs)
     : mPimpl(new EntityImpl())
 {
     mPimpl->mParentComponent = rhs.mPimpl->mParentComponent;

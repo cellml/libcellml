@@ -40,12 +40,12 @@ class ImportedEntityTestCase(unittest.TestCase):
         # ImportSourcePtr getImportSource()
         i = ImportSource()
         source = 'hello'
-        i.setSource(source)
+        i.setUrl(source)
         x = ImportedEntity()
         self.assertIsNone(x.getImportSource())
         x.setImportSource(i)
         self.assertIsNotNone(x.getImportSource())
-        self.assertEqual(x.getImportSource().getSource(), source)
+        self.assertEqual(x.getImportSource().getUrl(), source)
 
     def test_set_import_reference(self):
         from libcellml import ImportedEntity
