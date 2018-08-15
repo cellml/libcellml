@@ -45,7 +45,7 @@ Logger::~Logger()
     delete mPimpl;
 }
 
-Logger::Logger(const Logger& rhs)
+Logger::Logger(const Logger &rhs)
     : mPimpl(new LoggerImpl())
 {
     mPimpl->mErrors = rhs.mPimpl->mErrors;

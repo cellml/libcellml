@@ -5,32 +5,6 @@
 %import "types.i"
 %import "importedentity.i"
 
-#if defined(SWIGPYTHON)
-    // Allow any type of input to be converted to bool
-    %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }
-    %typemap(in) bool { $1 = PyObject_IsTrue($input) == 1; }
-
-    // Treat negative size_t as invalid index (instead of unknown method)
-    %extend libcellml::ComponentEntity {
-        ComponentPtr getComponent(long index) const {
-            if(index < 0) return nullptr;
-            return $self->getComponent(size_t(index));
-        }
-        bool removeComponent(long index) {
-            if(index < 0) return false;
-            return $self->removeComponent(size_t(index));
-        }
-        ComponentPtr takeComponent(long index) {
-            if(index < 0) return nullptr;
-            return $self->takeComponent(size_t(index));
-        }
-        bool replaceComponent(long index, const ComponentPtr &c) {
-            if(index < 0) return false;
-            return $self->replaceComponent(size_t(index), c);
-        }
-    }
-#endif
-
 %feature("docstring") libcellml::ComponentEntity
 "Abstract class that provides component managing functionality.";
 
@@ -84,6 +58,51 @@ Returns `True` on success.";
 
 %feature("docstring") libcellml::ComponentEntity::componentCount
 "Returns the number of components the component contains.  ";
+
+%feature("docstring") libcellml::ComponentEntity::getEncapsulationId
+"Returns the encapsulation id for this entity.
+
+The encapsulation Id is placed on the XML element for this entity. For the
+:class:`Model` class this is the ``encapsulation`` element that is the root
+element for the model's structure.  For the :class:`Component` class this is
+the ``component_ref`` element that references the component it represents in
+the structure."
+
+%feature("docstring") libcellml::ComponentEntity::setEncapsulationId
+"Sets the encapsulation id for this entity.
+
+The encapsulation Id is placed on the XML element for this entity. For the
+:class:`Model` class this is the ``encapsulation`` element that is the root
+element for the model's structure.  For the :class:`Component` class this is
+the ``component_ref`` element that references the component it represents in
+the structure."
+
+
+#if defined(SWIGPYTHON)
+    // Allow any type of input to be converted to bool
+    %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }
+    %typemap(in) bool { $1 = PyObject_IsTrue($input) == 1; }
+
+    // Treat negative size_t as invalid index (instead of unknown method)
+    %extend libcellml::ComponentEntity {
+        ComponentPtr getComponent(long index) const {
+            if(index < 0) return nullptr;
+            return $self->getComponent(size_t(index));
+        }
+        bool removeComponent(long index) {
+            if(index < 0) return false;
+            return $self->removeComponent(size_t(index));
+        }
+        ComponentPtr takeComponent(long index) {
+            if(index < 0) return nullptr;
+            return $self->takeComponent(size_t(index));
+        }
+        bool replaceComponent(long index, const ComponentPtr &c) {
+            if(index < 0) return false;
+            return $self->replaceComponent(size_t(index), c);
+        }
+    }
+#endif
 
 %{
 #include "libcellml/componententity.h"

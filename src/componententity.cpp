@@ -43,13 +43,13 @@ struct ComponentEntity::ComponentEntityImpl
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr& c) -> bool { return c->getName() == name; });
+                        [=](const ComponentPtr &c) -> bool { return c->getName() == name; });
 }
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const ComponentPtr &component)
 {
     return std::find_if(mComponents.begin(), mComponents.end(),
-                        [=](const ComponentPtr& c) -> bool { return c == component; });
+                        [=](const ComponentPtr &c) -> bool { return c == component; });
 }
 
 // Interface class Model implementation

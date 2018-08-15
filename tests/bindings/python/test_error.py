@@ -108,7 +108,7 @@ class ErrorTestCase(unittest.TestCase):
     def test_set_description(self):
         from libcellml import Error
 
-        # void setDescription(const std::string& description)
+        # void setDescription(const std::string &description)
         e = Error()
         e.setDescription('hello')
         e.setDescription('')
@@ -268,6 +268,46 @@ class ErrorTestCase(unittest.TestCase):
         e.setVariable(v)
         self.assertIsInstance(e.getVariable(), Variable)
         self.assertEqual(e.getVariable().getName(), name)
+
+    def test_set_reset(self):
+        from libcellml import Error, Reset
+
+        # void setReset(const ResetPtr &reset);
+        e = Error()
+        e.setReset(Reset())
+
+    def test_get_reset(self):
+        from libcellml import Error, Reset
+
+        # ResetPtr getReset() const;
+        e = Error()
+        self.assertIsNone(e.getReset())
+        name = 'res'
+        r = Reset()
+        r.setId(name)
+        e.setReset(r)
+        self.assertIsInstance(e.getReset(), Reset)
+        self.assertEqual(e.getReset().getId(), name)
+
+    def test_set_when(self):
+        from libcellml import Error, When
+
+        # void setWhen(const WhenPtr &when);
+        e = Error()
+        e.setWhen(When())
+
+    def test_get_when(self):
+        from libcellml import Error, When
+
+        # WhenPtr getWhen() const;
+        e = Error()
+        self.assertIsNone(e.getWhen())
+        name = 'var'
+        w = When()
+        w.setId(name)
+        e.setWhen(w)
+        self.assertIsInstance(e.getWhen(), When)
+        self.assertEqual(e.getWhen().getId(), name)
 
 
 if __name__ == '__main__':

@@ -63,7 +63,7 @@ Printer::~Printer()
     delete mPimpl;
 }
 
-Printer::Printer(const Printer& rhs)
+Printer::Printer(const Printer &rhs)
     : Logger(rhs)
     , mPimpl(new PrinterImpl())
 {
@@ -93,7 +93,7 @@ std::string Printer::printUnits(UnitsPtr units) const
     std::string repr = "";
     if (units->getName().length()) {
         if (units->isImport()) {
-            repr += "<import xlink:href=\"" + units->getImportSource()->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+            repr += "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
             if (units->getImportSource()->getId().length()) {
                 repr += " id=\"" + units->getImportSource()->getId() + "\"";
             }
@@ -486,7 +486,7 @@ std::string Printer::printModel(ModelPtr model) const
 
     for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
     {
-        repr += "<import xlink:href=\"" + iter->first->getSource() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+        repr += "<import xlink:href=\"" + iter->first->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
         if (iter->first->getId().length() > 0) {
             repr += " id=\"" + iter->first->getId() + "\"";
         }

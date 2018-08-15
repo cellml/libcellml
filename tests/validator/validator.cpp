@@ -261,7 +261,7 @@ TEST(Validator, importUnits) {
 
     // Valid units import
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
-    imp->setSource("some-other-model.xml");
+    imp->setUrl("some-other-model.xml");
     libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
     importedUnits->setName("valid_imported_units_in_this_model");
     importedUnits->setSourceUnits(imp, "units_in_that_model");
@@ -280,7 +280,7 @@ TEST(Validator, importUnits) {
 
     // Invalid units import - duplicate refs
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
-    imp3->setSource("some-other-model.xml");
+    imp3->setUrl("some-other-model.xml");
     libcellml::UnitsPtr importedUnits3 = std::make_shared<libcellml::Units>();
     importedUnits3->setName("duplicate_imported_units_in_this_model");
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
@@ -290,7 +290,7 @@ TEST(Validator, importUnits) {
 
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
-    imp4->setSource("some-other-different-model.xml");
+    imp4->setUrl("some-other-different-model.xml");
     libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
@@ -319,7 +319,7 @@ TEST(Validator, importComponents) {
 
     // Valid component import
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
-    imp->setSource("some-other-model.xml");
+    imp->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
     importedComponent->setName("valid_imported_component_in_this_model");
     importedComponent->setSourceComponent(imp, "component_in_that_model");
@@ -338,7 +338,7 @@ TEST(Validator, importComponents) {
 
     // Invalid component import - duplicate refs
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
-    imp3->setSource("some-other-model.xml");
+    imp3->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
     importedComponent3->setName("duplicate_imported_component_in_this_model");
     importedComponent3->setSourceComponent(imp3, "component_in_that_model");
@@ -348,7 +348,7 @@ TEST(Validator, importComponents) {
 
     // Invalid component import - unnamed component
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
-    imp4->setSource("some-other-different-model.xml");
+    imp4->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);

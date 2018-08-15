@@ -320,21 +320,21 @@ struct structure
         std::cout << "structure constructor: " << m_data->id << std::endl;
     }
 
-    structure(const structure& rhs)
+    structure(const structure &rhs)
         : m_data{new big_and_complicated{}}
     {
         std::cout << "structure copy constructor: " << rhs.m_data->id << std::endl;
         m_data->id = rhs.m_data->id;
     }
 
-    structure(structure&& rhs)
+    structure(structure &&rhs)
       : m_data(rhs.m_data)
     {
         std::cout << "structure move constructor: " << m_data->id << std::endl;
         rhs.m_data = nullptr;
     }
 
-    structure &operator=(structure r)
+    structure& operator=(structure r)
     {
         r.swap(*this);
         return *this;
@@ -496,10 +496,10 @@ TEST(Model, setAndCheckIdsAllEntities) {
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
 
-    i1->setSource("some-other-model.xml");
+    i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");
 
-    i2->setSource("some-other-model.xml");
+    i2->setUrl("some-other-model.xml");
     u1->setSourceUnits(i2, "a_units_in_that_model");
 
     m.setName("mname");

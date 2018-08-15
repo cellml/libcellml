@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "libcellml/importsource.h"
+#include "libcellml/model.h"
 
 namespace libcellml {
 
@@ -25,12 +26,14 @@ namespace libcellml {
  */
 struct ImportSource::ImportSourceImpl
 {
-    std::string mSource;
+    std::string mUrl;
+    libcellml::ModelPtr mModel;
 };
 
 ImportSource::ImportSource()
     : mPimpl(new ImportSourceImpl())
 {
+    mPimpl->mModel = nullptr;
 }
 
 ImportSource::~ImportSource()
@@ -38,11 +41,12 @@ ImportSource::~ImportSource()
     delete mPimpl;
 }
 
-ImportSource::ImportSource(const ImportSource& rhs)
+ImportSource::ImportSource(const ImportSource &rhs)
     : Entity(rhs)
     , mPimpl(new ImportSourceImpl())
 {
-    mPimpl->mSource = rhs.mPimpl->mSource;
+    mPimpl->mUrl = rhs.mPimpl->mUrl;
+    mPimpl->mModel = rhs.mPimpl->mModel;
 }
 
 ImportSource::ImportSource(ImportSource &&rhs)
@@ -52,10 +56,10 @@ ImportSource::ImportSource(ImportSource &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-ImportSource& ImportSource::operator=(ImportSource e)
+ImportSource& ImportSource::operator=(ImportSource rhs)
 {
-    Entity::operator= (e);
-    e.swap(*this);
+    Entity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -64,14 +68,29 @@ void ImportSource::swap(ImportSource &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void ImportSource::setSource(const std::string &source)
+std::string ImportSource::getUrl() const
 {
-    mPimpl->mSource = source;
+    return mPimpl->mUrl;
 }
 
-std::string ImportSource::getSource() const
+void ImportSource::setUrl(const std::string &url)
 {
-    return mPimpl->mSource;
+    mPimpl->mUrl = url;
+}
+
+ModelPtr ImportSource::getModel() const
+{
+    return mPimpl->mModel;
+}
+
+void ImportSource::setModel(ModelPtr model)
+{
+    mPimpl->mModel = model;
+}
+
+bool ImportSource::hasModel() const
+{
+    return mPimpl->mModel != nullptr;
 }
 
 }
