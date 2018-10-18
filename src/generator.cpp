@@ -203,6 +203,22 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
         }
         return c;
     }
+    else if (node->isType("divide"))
+    {
+        auto c = std::make_shared<Division>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isType("power"))
+    {
+        auto c = std::make_shared<Power>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
     else if (node->isType("sin"))
     {
         auto c = std::make_shared<Sine>();

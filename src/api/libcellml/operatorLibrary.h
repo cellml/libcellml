@@ -34,9 +34,6 @@ class ArithmeticOperator : public BinaryOperator
 {
 public:
     ArithmeticOperator(std::string opr);
-    ArithmeticOperator(std::shared_ptr<Representable> arg1,
-            std::shared_ptr<Representable> arg2,
-            std::string opr);
 
     virtual std::string repr() override;
 
@@ -48,39 +45,30 @@ class Addition : public ArithmeticOperator
 {
 public:
     Addition();
-    Addition(std::shared_ptr<Representable> arg1,
-            std::shared_ptr<Representable> arg2);
 };
 
 class Subtraction : public ArithmeticOperator
 {
 public:
     Subtraction();
-    Subtraction(std::shared_ptr<Representable> arg1,
-            std::shared_ptr<Representable> arg2);
 };
 
 class Multiplication : public ArithmeticOperator
 {
 public:
     Multiplication();
-    Multiplication(std::shared_ptr<Representable> arg1,
-            std::shared_ptr<Representable> arg2);
 };
 
 class Division : public ArithmeticOperator
 {
 public:
     Division();
-    Division(std::shared_ptr<Representable> arg1,
-            std::shared_ptr<Representable> arg2);
 };
 
 class Power : public BinaryOperator
 {
 public:
-    Power(std::shared_ptr<Representable> b,
-            std::shared_ptr<Representable> e);
+    Power();
 
     virtual std::string repr() override;
 };
@@ -89,7 +77,6 @@ class UnaryOperator : public Representable
 {
 public:
     UnaryOperator();
-    UnaryOperator(std::shared_ptr<Representable> arg);
 
     std::shared_ptr<Representable> getArg() const {return arg;}
     void setArg(const std::shared_ptr<Representable> a) {arg = a;}
@@ -102,8 +89,6 @@ class STDOperator : public UnaryOperator
 {
 public:
     STDOperator(std::string fun);
-    STDOperator(std::shared_ptr<Representable> arg,
-            std::string fun);
 
     virtual std::string repr() override;
 
@@ -115,21 +100,18 @@ class AbsoluteValue : public STDOperator
 {
 public:
     AbsoluteValue();
-    AbsoluteValue(std::shared_ptr<Representable> arg);
 };
 
 class Sine : public STDOperator
 {
 public:
     Sine();
-    Sine(std::shared_ptr<Representable> arg);
 };
 
 class Cosine : public STDOperator
 {
 public:
     Cosine();
-    Cosine(std::shared_ptr<Representable> arg);
 };
 
 class Variable : public Representable
