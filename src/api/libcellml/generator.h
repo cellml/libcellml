@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <algorithm>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -53,13 +54,12 @@ namespace libcellml {
 class LIBCELLML_EXPORT Generator
 {
 public:
-    std::string parseModel(ModelPtr m);
-    std::string generateCode();
-    void generateCodeToFile(std::string filename);
+    std::string generateCode(ModelPtr m);
+    void writeCodeToFile(std::string filename);
 
 private:
     void findVOI(std::string math);
-    void findVOI2(XmlNodePtr node);
+    void findVOIHelper(XmlNodePtr node);
     void findInitialValues(ComponentPtr c);
     std::shared_ptr<Representable> parseMathML(std::string math);
     std::shared_ptr<Representable> parseNode(XmlNodePtr node);
@@ -72,6 +72,7 @@ private:
     std::string voi;
     std::vector<std::string> states;
     std::unordered_map<std::string,double> initialValues;
+    std::string code = "";
 };
 
 }

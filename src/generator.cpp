@@ -340,7 +340,7 @@ void Generator::findInitialValues(ComponentPtr c)
     }
 }
 
-std::string Generator::parseModel(ModelPtr m)
+std::string Generator::generateCode(ModelPtr m)
 {
     ComponentPtr c = m->getComponent(0);
 
@@ -348,13 +348,30 @@ std::string Generator::parseModel(ModelPtr m)
     findInitialValues(c);
     auto r = parseMathML(c->getMath());
     
-    std::string code;
-    std::ostringstream oss(code);
+    std::string generatedCode;
+    std::ostringstream oss(generatedCode);
     oss << generateInitConsts() << std::endl;
     oss << generateComputeRates(r) << std::endl;
     oss << generateComputeVariables() << std::endl;
 
-    return oss.str();
+    code = oss.str();
+    return code;
+}
+
+void Generator::writeCodeToFile(std::string filename)
+{
+    if (code == "")
+    {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("No code was generated yet, you should call "
+                "Generator::generateCode before calling this method.");
+        addError(err);
+        throw CodeNotGenerated();
+    }
+
+    std::ofstream output(filename);
+    output << code;
+    output.close();
 }
 
 std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
@@ -475,7 +492,7 @@ std::shared_ptr<Representable> Generator::parseMathML(std::string math)
     return parseNode(childNode);
 }
 
-void Generator::findVOI2(XmlNodePtr node)
+void Generator::findVOIHelper(XmlNodePtr node)
 {
     if (node->isType("bvar"))
     {
@@ -486,11 +503,11 @@ void Generator::findVOI2(XmlNodePtr node)
     {
         if (node->getFirstChild())
         {
-            findVOI2(node->getFirstChild());
+            findVOIHelper(node->getFirstChild());
         }
         if (node->getNext())
         {
-            findVOI2(node->getNext());
+            findVOIHelper(node->getNext());
         }
     }
 }
@@ -503,7 +520,7 @@ void Generator::findVOI(std::string math)
     const XmlNodePtr root = mathDoc->getRootNode();
     XmlNodePtr node = root->getFirstChild();
 
-    findVOI2(node);
+    findVOIHelper(node);
 }
 
 }
