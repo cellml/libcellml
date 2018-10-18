@@ -85,7 +85,7 @@ TEST(Generator, generateSimpleModel) {
 
     model->addComponent(component);
 
-    const std::string a = generator.parseModel(model);
+    const std::string a = generator.generateCode(model);
 
     EXPECT_EQ(e, a);
 }
@@ -187,7 +187,7 @@ TEST(Generator, generateComplexModel) {
 
     model->addComponent(component);
 
-    const std::string a = generator.parseModel(model);
+    const std::string a = generator.generateCode(model);
 
     EXPECT_EQ(e, a);
 }
