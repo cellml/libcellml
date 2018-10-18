@@ -467,13 +467,24 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
         }
         return c;
     }
-    else// if (node->isType("cn"))
+    else if (node->isType("cn"))
     {
         double value;
         std::istringstream iss(node->getFirstChild()->convertToString());
         iss >> value;
         auto c = std::make_shared<Constant>(value);
         return c;
+    }
+    else
+    {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Found node of type "
+                + node->getType() +
+                " which is currently not supported by the Generator class.");
+        addError(err);
+        throw UnknownNode();
+
+        return std::make_shared<Constant>(0);
     }
 }
 
