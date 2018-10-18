@@ -369,7 +369,9 @@ TEST(Generator, writeWithoutGenerating) {
         FAIL() << "Expected CodeNotGenerated exception";
     }
     catch (const CodeNotGenerated& e)
-    {}
+    {
+        std::cout << "Caught error: " << e.what() << std::endl;
+    }
 }
 
 TEST(Generator, unknownNode) {
@@ -450,7 +452,9 @@ TEST(Generator, unknownNode) {
         FAIL() << "Expected UnknownNode";
     }
     catch (const UnknownNode& e)
-    {}
+    {
+        std::cout << "Caught error: " << e.what() << std::endl;
+    }
 }
 
 TEST(Generator, divisionAndPower) {
