@@ -40,19 +40,12 @@ namespace libcellml {
 
 struct LIBCELLML_EXPORT CodeNotGenerated : public std::exception
 {
-	const char * what () const throw ()
-    {
-        return "No code was generated yet, you should call "
-               "Generator::generateCode before calling this method.";
-    }
+	const char * what () const throw ();
 };
 
 struct LIBCELLML_EXPORT UnknownNode : public std::exception
 {
-    const char * what () const throw ()
-    {
-        return "Found node of unknown type";
-    }
+    const char * what () const throw ();
 };
 
 class LIBCELLML_EXPORT Generator : public Logger
@@ -65,10 +58,10 @@ private:
     void findVOI(std::string math);
     void findVOIHelper(XmlNodePtr node);
     void findInitialValues(ComponentPtr c);
-    std::shared_ptr<Representable> parseMathML(std::string math);
-    std::shared_ptr<Representable> parseNode(XmlNodePtr node);
+    std::shared_ptr<libcellml::operators::Representable> parseMathML(std::string math);
+    std::shared_ptr<libcellml::operators::Representable> parseNode(XmlNodePtr node);
     std::string generateInitConsts();
-    std::string generateComputeRates(std::shared_ptr<Representable> r);
+    std::string generateComputeRates(std::shared_ptr<libcellml::operators::Representable> r);
     std::string generateComputeVariables();
     std::string generateStateAliases();
     std::string generateVoiAlias();
