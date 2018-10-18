@@ -24,16 +24,16 @@ const std::unordered_map<CXX::types, std::string, EnumClassHash> CXX::returnType
     {types::void_t,"void "},
     {types::double_t, "double "},
     {types::double_ct, "const double "},
-    {types::double_pt, "double* "},
-    {types::double_rt, "double& "}
+    {types::double_pt, "double *"},
+    {types::double_rt, "double &"}
 };
 
 const std::unordered_map<CXX::types, std::string, EnumClassHash> CXX::argTypes = {
     {types::void_t,"void "},
     {types::double_t, "double "},
     {types::double_ct, "const double "},
-    {types::double_pt, "double* "},
-    {types::double_rt, "double& "},
+    {types::double_pt, "double *"},
+    {types::double_rt, "double &"},
 };
 
 template<typename L>
