@@ -3,6 +3,10 @@
 #include <sstream>
 #include <string>
 
+namespace libcellml {
+
+namespace operators {
+
 class Representable
 {
 public:
@@ -151,3 +155,7 @@ public:
 private:
     double value;
 };
+
+}
+
+}

@@ -1,5 +1,9 @@
 #include "libcellml/operatorLibrary.h"
 
+namespace libcellml {
+
+namespace operators {
+
 BinaryOperator::BinaryOperator() :
     arg1(std::shared_ptr<Representable>()),
     arg2(std::shared_ptr<Representable>())
@@ -146,4 +150,8 @@ std::string Constant::repr()
     std::ostringstream oss;
     oss << std::setprecision(16) << value;
     return oss.str();
+}
+
+}
+
 }

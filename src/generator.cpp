@@ -18,6 +18,8 @@ limitations under the License.
 
 namespace libcellml{
 
+using namespace libcellml::operators;
+
 std::string Generator::generateStateAliases()
 {
     std::string s;
@@ -222,7 +224,7 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
     else if (node->isType("ci"))
     {
         auto name = node->getFirstChild()->convertToString();
-        auto c = std::make_shared<::Variable>(name);
+        auto c = std::make_shared<libcellml::operators::Variable>(name);
         if (name != voi and
                 std::find(states.begin(), states.end(), name) == states.end())
         {
@@ -296,6 +298,18 @@ void Generator::findVOI(std::string math)
 
     findVOIHelper(node);
 }
+
+const char * CodeNotGenerated::what () const throw ()
+{
+    return "No code was generated yet, you should call "
+        "Generator::generateCode before calling this method.";
+}
+
+const char * UnknownNode::what () const throw ()
+{
+    return "Found node of unknown type";
+}
+
 
 }
 
