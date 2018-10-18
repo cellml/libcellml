@@ -25,7 +25,7 @@ TEST(Generator, generateSimpleModel) {
     const std::string e =
         "void initConsts(double* constants, double* rates, double* states)\n"
         "{\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    y = -2;\n"
@@ -36,7 +36,7 @@ TEST(Generator, generateSimpleModel) {
         "    const double t = voi;\n"
         "\n"
         "\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    rates[0] = (y + 4);\n"
@@ -92,26 +92,26 @@ TEST(Generator, generateSimpleModel) {
 
 TEST(Generator, generateComplexModel) {
     const std::string e =
-        "void initConsts(double* constants, double* rates, double* states)\n"
+        "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    y = -2;\n"
         "\n"
         "}\n"
-        "void computeRates(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeRates(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    const double t = voi;\n"
         "\n"
         "\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    rates[0] = ((((50 * y) + (y + (y + (y + std::cos(std::abs(std::sin(y))))))) - (t * (t * (t * (t * t))))) - 1);\n"
         "\n"
         "}\n"
-        "void computeVariables(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeVariables(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "}\n";
 
@@ -194,26 +194,26 @@ TEST(Generator, generateComplexModel) {
 
 TEST(Generator, generateComplexModelToFile) {
     const std::string e =
-        "void initConsts(double* constants, double* rates, double* states)\n"
+        "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    y = -2;\n"
         "\n"
         "}\n"
-        "void computeRates(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeRates(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    const double t = voi;\n"
         "\n"
         "\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    rates[0] = ((((50 * y) + (y + (y + (y + std::cos(std::abs(std::sin(y))))))) - (t * (t * (t * (t * t))))) - 1);\n"
         "\n"
         "}\n"
-        "void computeVariables(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeVariables(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "}\n";
 
@@ -368,7 +368,7 @@ TEST(Generator, writeWithoutGenerating) {
         generator.writeCodeToFile("generatedCode.cpp");
         FAIL() << "Expected CodeNotGenerated exception";
     }
-    catch (const CodeNotGenerated& e)
+    catch (const CodeNotGenerated &e)
     {
         std::cout << "Caught error: " << e.what() << std::endl;
     }
@@ -451,7 +451,7 @@ TEST(Generator, unknownNode) {
         generator.generateCode(model);
         FAIL() << "Expected UnknownNode";
     }
-    catch (const UnknownNode& e)
+    catch (const UnknownNode &e)
     {
         std::cout << "Caught error: " << e.what() << std::endl;
     }
@@ -459,26 +459,26 @@ TEST(Generator, unknownNode) {
 
 TEST(Generator, divisionAndPower) {
     const std::string e =
-        "void initConsts(double* constants, double* rates, double* states)\n"
+        "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    y = -2;\n"
         "\n"
         "}\n"
-        "void computeRates(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeRates(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    const double t = voi;\n"
         "\n"
         "\n"
-        "    double& y = *(states + 0);\n"
+        "    double &y = *(states + 0);\n"
         "\n"
         "\n"
         "    rates[0] = (std::pow(y, 2) / 4);\n"
         "\n"
         "}\n"
-        "void computeVariables(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeVariables(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "}\n";
 
