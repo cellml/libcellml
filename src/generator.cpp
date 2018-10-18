@@ -201,7 +201,7 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
         auto s = node->getNext();
         c->setArg1(parseNode(s));
         s = s->getNext();
-        if (not s->getNext())
+        if (!s->getNext())
         {
             c->setArg2(parseNode(s));
         }
@@ -234,7 +234,7 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
         auto s = node->getNext();
         c->setArg1(parseNode(s));
         s = s->getNext();
-        if (not s->getNext())
+        if (!s->getNext())
         {
             c->setArg2(parseNode(s));
         }
@@ -291,7 +291,7 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
     {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
-        if (name != voi and
+        if (name != voi &&
                 std::find(states.begin(), states.end(), name) == states.end())
         {
             states.push_back(name);
