@@ -166,13 +166,13 @@ public:
     STDOperator(std::string fun) :
         UnaryOperator(),
         fun(fun)
-    {};
+    {}
 
     STDOperator(std::shared_ptr<Representable> arg,
             std::string fun) :
         UnaryOperator(arg),
         fun(fun)
-    {};
+    {}
 
     virtual std::string repr() override
     {
@@ -327,7 +327,6 @@ std::string Generator::generateComputeVariables()
         << "{" << std::endl << "}";
     return oss.str();
 }
-
 
 void Generator::findInitialValues(ComponentPtr c)
 {
