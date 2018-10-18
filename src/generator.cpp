@@ -20,7 +20,7 @@ namespace libcellml{
 
 using namespace libcellml::operators;
 
-const std::unordered_map<CXX::types, std::string> CXX::returnTypes = {
+const std::unordered_map<CXX::types, std::string, EnumClassHash> CXX::returnTypes = {
     {types::void_t,"void "},
     {types::double_t, "double "},
     {types::double_ct, "const double "},
@@ -28,7 +28,7 @@ const std::unordered_map<CXX::types, std::string> CXX::returnTypes = {
     {types::double_rt, "double& "}
 };
 
-const std::unordered_map<CXX::types, std::string> CXX::argTypes = {
+const std::unordered_map<CXX::types, std::string, EnumClassHash> CXX::argTypes = {
     {types::void_t,"void "},
     {types::double_t, "double "},
     {types::double_ct, "const double "},
