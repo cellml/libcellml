@@ -20,76 +20,125 @@ namespace libcellml{
 
 using namespace libcellml::operators;
 
+const std::unordered_map<CXX::types, std::string> CXX::returnTypes = {
+    {types::void_t,"void "},
+    {types::double_t, "double "},
+    {types::double_ct, "const double "},
+    {types::double_pt, "double* "},
+    {types::double_rt, "double& "}
+};
+
+const std::unordered_map<CXX::types, std::string> CXX::argTypes = {
+    {types::void_t,"void "},
+    {types::double_t, "double "},
+    {types::double_ct, "const double "},
+    {types::double_pt, "double* "},
+    {types::double_rt, "double& "},
+};
+
+template<typename L>
 std::string Generator::generateStateAliases()
 {
     std::string s;
     std::ostringstream oss(s);
     for (size_t i = 0; i < states.size(); i++)
     {
-        oss << "    double& " << states[i] << " = *(states + " << i
-            << ");" << std::endl;
+        oss << "    "
+            << L::argType(L::types::double_rt) << states[i] << " = " << L::dereferenceOp() << "(states + " << i
+            << ")" << L::instructionDelimiter() << std::endl;
     }
     oss << std::endl;
     return oss.str();
 }
 
+template<typename L>
 std::string Generator::generateVoiAlias()
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << "    const double " << voi << " = voi" << ";" << std::endl;
+    oss << "    "
+        << L::argType(L::types::double_ct) << voi << " = voi" << L::instructionDelimiter() << std::endl;
     oss << std::endl;
     return oss.str();
 }
 
+template<typename L>
 std::string Generator::generateInitConsts()
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << "void initConsts(double* constants, "
-                           "double* rates, "
-                           "double* states)" << std::endl
-        << "{" << std::endl;
+    oss << L::returnType(L::types::void_t) << "initConsts"
+        << L::argListOp()
+        << L::argType(L::types::double_pt)
+        << "constants, "
+        << L::argType(L::types::double_pt)
+        << "rates, "
+        << L::argType(L::types::double_pt)
+        << "states"
+        << L::argListCl() << std::endl
+        << L::funBodyOp() << std::endl;
+
     oss << generateStateAliases() << std::endl;
     for (auto s : initialValues)
     {
         oss << "    " << s.first << " = "
-            << std::setprecision(16) << s.second << ";" << std::endl;
+            << std::setprecision(16) << s.second << L::instructionDelimiter() << std::endl;
     }
-    oss << std::endl << "}";
+    oss << std::endl << L::funBodyCl();
     return oss.str();
 }
 
+template<typename L>
 std::string Generator::generateComputeRates(std::shared_ptr<Representable> r)
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << "void computeRates(double voi, "
-                             "double* constants, "
-                             "double* rates, "
-                             "double* states, "
-                             "double* algebraic)" << std::endl
-        << "{" << std::endl;
+    oss << L::returnType(L::types::void_t) << "computeRates"
+        << L::argListOp()
+        << L::argType(L::types::double_t)
+        << "voi, "
+        << L::argType(L::types::double_pt)
+        << "constants, "
+        << L::argType(L::types::double_pt)
+        << "rates, "
+        << L::argType(L::types::double_pt)
+        << "states, "
+        << L::argType(L::types::double_pt)
+        << "algebraic"
+        << L::argListCl() << std::endl
+        << L::funBodyOp() << std::endl;
+
     oss << generateVoiAlias() << std::endl;
     oss << generateStateAliases() << std::endl;
 
     oss << "    rates[0] = "
         << r->repr() << ";" << std::endl;
 
-    oss << std::endl << "}";
+    oss << std::endl
+        << L::funBodyCl();
     return oss.str();
 }
 
+template<typename L>
 std::string Generator::generateComputeVariables()
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << "void computeVariables(double voi, "
-                                 "double* constants, "
-                                 "double* rates, "
-                                 "double* states, "
-                                 "double* algebraic)" << std::endl
-        << "{" << std::endl << "}";
+    oss << L::returnType(L::types::void_t) << "computeVariables"
+        << L::argListOp()
+        << L::argType(L::types::double_t)
+        << "voi, "
+        << L::argType(L::types::double_pt)
+        << "constants, "
+        << L::argType(L::types::double_pt)
+        << "rates, "
+        << L::argType(L::types::double_pt)
+        << "states, "
+        << L::argType(L::types::double_pt)
+        << "algebraic"
+        << L::argListCl()  << std::endl
+        << L::funBodyOp() << std::endl
+        << L::funBodyCl();
     return oss.str();
 }
 
@@ -105,6 +154,7 @@ void Generator::findInitialValues(ComponentPtr c)
     }
 }
 
+template<typename L>
 std::string Generator::generateCode(ModelPtr m)
 {
     ComponentPtr c = m->getComponent(0);
@@ -115,9 +165,9 @@ std::string Generator::generateCode(ModelPtr m)
     
     std::string generatedCode;
     std::ostringstream oss(generatedCode);
-    oss << generateInitConsts() << std::endl;
-    oss << generateComputeRates(r) << std::endl;
-    oss << generateComputeVariables() << std::endl;
+    oss << generateInitConsts<L>() << std::endl;
+    oss << generateComputeRates<L>(r) << std::endl;
+    oss << generateComputeVariables<L>() << std::endl;
 
     code = oss.str();
     return code;
@@ -325,5 +375,7 @@ const char * UnknownNode::what () const throw ()
 {
     return "Found node of unknown type";
 }
+
+template std::string Generator::generateCode<CXX>(ModelPtr m);
 
 }

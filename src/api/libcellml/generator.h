@@ -34,7 +34,6 @@ limitations under the License.
 #include "../xmldoc.h"
 #include "../xmlnode.h"
 
-
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
 
@@ -48,10 +47,28 @@ struct LIBCELLML_EXPORT UnknownNode : public std::exception
     const char * what () const throw ();
 };
 
+class CXX
+{
+public:
+    enum class types {void_t, double_t, double_ct, double_pt, double_rt};
+    static const std::unordered_map<types, std::string> returnTypes;
+    static const std::unordered_map<types, std::string> argTypes;
+
+    static std::string returnType(types t) {return returnTypes.at(t);}
+    static std::string argType(types t) {return argTypes.at(t);}
+    static std::string argListOp() {return "(";}
+    static std::string argListCl() {return ")";}
+    static std::string funBodyOp() {return "{";}
+    static std::string funBodyCl() {return "}";}
+    static std::string instructionDelimiter() {return ";";}
+    static std::string dereferenceOp() {return "*";}
+};
+
 class LIBCELLML_EXPORT Generator : public Logger
 {
 public:
-    std::string generateCode(ModelPtr m);
+    template <typename L = CXX>
+        std::string generateCode(ModelPtr m);
     void writeCodeToFile(std::string filename);
 
 private:
@@ -60,11 +77,17 @@ private:
     void findInitialValues(ComponentPtr c);
     std::shared_ptr<libcellml::operators::Representable> parseMathML(std::string math);
     std::shared_ptr<libcellml::operators::Representable> parseNode(XmlNodePtr node);
-    std::string generateInitConsts();
-    std::string generateComputeRates(std::shared_ptr<libcellml::operators::Representable> r);
-    std::string generateComputeVariables();
-    std::string generateStateAliases();
-    std::string generateVoiAlias();
+    template <typename L = CXX>
+        std::string generateInitConsts();
+    template <typename L = CXX>
+        std::string generateComputeRates(
+                std::shared_ptr<libcellml::operators::Representable> r);
+    template <typename L = CXX>
+        std::string generateComputeVariables();
+    template <typename L = CXX>
+        std::string generateStateAliases();
+    template <typename L = CXX>
+        std::string generateVoiAlias();
 
     std::string voi;
     std::vector<std::string> states;
