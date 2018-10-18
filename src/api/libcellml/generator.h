@@ -29,25 +29,11 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
+#include "libcellml/operatorLibrary.h"
 #include "libcellml/variable.h"
 #include "../xmldoc.h"
 #include "../xmlnode.h"
 
-class Representable;
-class BinaryOperator;
-class ArithmeticOperator;
-class Addition;
-class Subtraction;
-class Multiplication;
-class Division;
-class Power;
-class UnaryOperator;
-class STDOperator;
-class AbsoluteValue;
-class Sine;
-class Cosine;
-class Variable;
-class Constant;
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
