@@ -23,7 +23,7 @@ using namespace libcellml;
 
 TEST(Generator, generateSimpleModel) {
     const std::string e =
-        "void initConsts(double* constants, double* rates, double* states)\n"
+        "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
@@ -31,7 +31,7 @@ TEST(Generator, generateSimpleModel) {
         "    y = -2;\n"
         "\n"
         "}\n"
-        "void computeRates(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeRates(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    const double t = voi;\n"
         "\n"
@@ -42,7 +42,7 @@ TEST(Generator, generateSimpleModel) {
         "    rates[0] = (y + 4);\n"
         "\n"
         "}\n"
-        "void computeVariables(double voi, double* constants, double* rates, double* states, double* algebraic)\n"
+        "void computeVariables(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "}\n";
 
