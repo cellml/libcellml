@@ -47,12 +47,21 @@ struct LIBCELLML_EXPORT UnknownNode : public std::exception
     const char * what () const throw ();
 };
 
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
+
 class CXX
 {
 public:
     enum class types {void_t, double_t, double_ct, double_pt, double_rt};
-    static const std::unordered_map<types, std::string> returnTypes;
-    static const std::unordered_map<types, std::string> argTypes;
+    static const std::unordered_map<types, std::string, EnumClassHash> returnTypes;
+    static const std::unordered_map<types, std::string, EnumClassHash> argTypes;
 
     static std::string returnType(types t) {return returnTypes.at(t);}
     static std::string argType(types t) {return argTypes.at(t);}
