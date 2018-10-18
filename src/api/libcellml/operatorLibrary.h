@@ -117,7 +117,6 @@ public:
 class Variable : public Representable
 {
 public:
-    Variable() = default;
     Variable(std::string name);
 
     virtual std::string repr() override;
@@ -129,7 +128,6 @@ private:
 class Constant : public Representable
 {
 public:
-    Constant() = default;
     Constant (double val);
 
     virtual std::string repr() override;
