@@ -27,6 +27,7 @@ limitations under the License.
 #include <vector>
 
 #include "libcellml/component.h"
+#include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/variable.h"
 #include "../xmldoc.h"
@@ -51,7 +52,24 @@ class Constant;
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
 
-class LIBCELLML_EXPORT Generator
+struct LIBCELLML_EXPORT CodeNotGenerated : public std::exception
+{
+	const char * what () const throw ()
+    {
+        return "No code was generated yet, you should call "
+               "Generator::generateCode before calling this method.";
+    }
+};
+
+struct LIBCELLML_EXPORT UnknownNode : public std::exception
+{
+    const char * what () const throw ()
+    {
+        return "Found node of unknown type";
+    }
+};
+
+class LIBCELLML_EXPORT Generator : public Logger
 {
 public:
     std::string generateCode(ModelPtr m);
