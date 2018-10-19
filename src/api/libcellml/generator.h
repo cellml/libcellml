@@ -98,10 +98,10 @@ private:
     template <typename L = CXX>
         std::string generateVoiAlias();
 
-    std::string voi;
-    std::vector<std::string> states;
-    std::unordered_map<std::string,double> initialValues;
-    std::string code = "";
+    std::string mVoi;
+    std::vector<std::string> mStates;
+    std::unordered_map<std::string,double> mInitialValues;
+    std::string mCode = "";
 };
 
 }

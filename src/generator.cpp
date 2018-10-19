@@ -41,10 +41,10 @@ std::string Generator::generateStateAliases()
 {
     std::string s;
     std::ostringstream oss(s);
-    for (size_t i = 0; i < states.size(); i++)
+    for (size_t i = 0; i < mStates.size(); i++)
     {
         oss << "    "
-            << L::argType(L::types::double_rt) << states[i] << " = " << L::dereferenceOp() << "(states + " << i
+            << L::argType(L::types::double_rt) << mStates[i] << " = " << L::dereferenceOp() << "(states + " << i
             << ")" << L::instructionDelimiter() << std::endl;
     }
     oss << std::endl;
@@ -57,7 +57,7 @@ std::string Generator::generateVoiAlias()
     std::string s;
     std::ostringstream oss(s);
     oss << "    "
-        << L::argType(L::types::double_ct) << voi << " = voi" << L::instructionDelimiter() << std::endl;
+        << L::argType(L::types::double_ct) << mVoi << " = voi" << L::instructionDelimiter() << std::endl;
     oss << std::endl;
     return oss.str();
 }
@@ -79,7 +79,7 @@ std::string Generator::generateInitConsts()
         << L::funBodyOp() << std::endl;
 
     oss << generateStateAliases() << std::endl;
-    for (auto s : initialValues)
+    for (auto s : mInitialValues)
     {
         oss << "    " << s.first << " = "
             << std::setprecision(16) << s.second << L::instructionDelimiter() << std::endl;
@@ -147,9 +147,9 @@ void Generator::findInitialValues(ComponentPtr c)
     for (std::size_t i = 0; i < c->variableCount(); i++)
     {
         auto v = c->getVariable(i);
-        if (v->getName() != voi)
+        if (v->getName() != mVoi)
         {
-            initialValues[v->getName()] = std::stod(v->getInitialValue());
+            mInitialValues[v->getName()] = std::stod(v->getInitialValue());
         }
     }
 }
@@ -169,13 +169,13 @@ std::string Generator::generateCode(ModelPtr m)
     oss << generateComputeRates<L>(r) << std::endl;
     oss << generateComputeVariables<L>() << std::endl;
 
-    code = oss.str();
-    return code;
+    mCode = oss.str();
+    return mCode;
 }
 
 void Generator::writeCodeToFile(std::string filename)
 {
-    if (code == "")
+    if (mCode == "")
     {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("No code was generated yet, you should call "
@@ -185,7 +185,7 @@ void Generator::writeCodeToFile(std::string filename)
     }
 
     std::ofstream output(filename);
-    output << code;
+    output << mCode;
     output.close();
 }
 
@@ -291,10 +291,10 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
     {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
-        if (name != voi &&
-                std::find(states.begin(), states.end(), name) == states.end())
+        if (name != mVoi &&
+                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
         {
-            states.push_back(name);
+            mStates.push_back(name);
         }
         return c;
     }
@@ -338,7 +338,7 @@ void Generator::findVOIHelper(XmlNodePtr node)
 {
     if (node->isType("bvar"))
     {
-        voi = node->getFirstChild()->getFirstChild()->convertToString();
+        mVoi = node->getFirstChild()->getFirstChild()->convertToString();
         return;
     }
     else
