@@ -56,7 +56,7 @@ struct EnumClassHash
     }
 };
 
-class CXX
+class LIBCELLML_EXPORT CXX
 {
 public:
     enum class types {void_t, double_t, double_ct, double_pt, double_rt};
