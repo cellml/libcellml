@@ -104,6 +104,4 @@ private:
     std::string mCode = "";
 };
 
-extern template std::string Generator::generateCode<CXX>(ModelPtr m);
-
 }
