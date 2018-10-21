@@ -183,7 +183,7 @@ void Generator::findInitialValues(ComponentPtr c)
 }
 
 template<typename L>
-std::string Generator::generateCode(ModelPtr m)
+std::string Generator::doGenerateCode(ModelPtr m)
 {
     ComponentPtr c = m->getComponent(0);
 
@@ -199,6 +199,11 @@ std::string Generator::generateCode(ModelPtr m)
 
     mPimpl->mCode = oss.str();
     return mPimpl->mCode;
+}
+
+std::string Generator::generateCode(ModelPtr m)
+{
+    return doGenerateCode(m);
 }
 
 void Generator::writeCodeToFile(std::string filename)
@@ -404,6 +409,6 @@ const char * UnknownNode::what () const throw ()
     return "Found node of unknown type";
 }
 
-template std::string Generator::generateCode<CXX>(ModelPtr m);
+template std::string Generator::doGenerateCode<CXX>(ModelPtr m);
 
 }
