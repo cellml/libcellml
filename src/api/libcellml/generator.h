@@ -91,8 +91,7 @@ public:
     Generator();
     virtual ~Generator();
 
-    template <typename L = CXX>
-        std::string generateCode(ModelPtr m);
+    std::string generateCode(ModelPtr m);
     void writeCodeToFile(std::string filename);
 
 private:
@@ -101,6 +100,8 @@ private:
     void findInitialValues(ComponentPtr c);
     std::shared_ptr<libcellml::operators::Representable> parseMathML(std::string math);
     std::shared_ptr<libcellml::operators::Representable> parseNode(XmlNodePtr node);
+    template <typename L = CXX>
+        std::string doGenerateCode(ModelPtr m);
     template <typename L = CXX>
         std::string generateInitConsts();
     template <typename L = CXX>
