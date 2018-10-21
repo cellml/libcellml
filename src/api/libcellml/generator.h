@@ -90,6 +90,9 @@ public:
 class LIBCELLML_EXPORT Generator : public Logger
 {
 public:
+    Generator();
+    virtual ~Generator();
+
     template <typename L = CXX>
         std::string generateCode(ModelPtr m);
     void writeCodeToFile(std::string filename);
@@ -112,10 +115,8 @@ private:
     template <typename L = CXX>
         std::string generateVoiAlias();
 
-    std::string mVoi;
-    std::vector<std::string> mStates;
-    std::unordered_map<std::string,double> mInitialValues;
-    std::string mCode = "";
+    struct GeneratorImpl;
+    GeneratorImpl* mPimpl;
 };
 
 }

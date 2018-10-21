@@ -36,15 +36,33 @@ const std::unordered_map<CXX::types, std::string, EnumClassHash> CXX::argTypes =
     {types::double_rt, "double &"},
 };
 
+struct Generator::GeneratorImpl
+{
+    std::string mVoi;
+    std::vector<std::string> mStates;
+    std::unordered_map<std::string,double> mInitialValues;
+    std::string mCode = "";
+};
+
+Generator::Generator()
+    : mPimpl(new GeneratorImpl())
+{
+}
+
+Generator::~Generator()
+{
+    delete mPimpl;
+}
+
 template<typename L>
 std::string Generator::generateStateAliases()
 {
     std::string s;
     std::ostringstream oss(s);
-    for (size_t i = 0; i < mStates.size(); i++)
+    for (size_t i = 0; i < mPimpl->mStates.size(); i++)
     {
         oss << "    "
-            << L::argType(L::types::double_rt) << mStates[i] << " = " << L::dereferenceOp() << "(states + " << i
+            << L::argType(L::types::double_rt) << mPimpl->mStates[i] << " = " << L::dereferenceOp() << "(states + " << i
             << ")" << L::instructionDelimiter() << std::endl;
     }
     oss << std::endl;
@@ -57,7 +75,7 @@ std::string Generator::generateVoiAlias()
     std::string s;
     std::ostringstream oss(s);
     oss << "    "
-        << L::argType(L::types::double_ct) << mVoi << " = voi" << L::instructionDelimiter() << std::endl;
+        << L::argType(L::types::double_ct) << mPimpl->mVoi << " = voi" << L::instructionDelimiter() << std::endl;
     oss << std::endl;
     return oss.str();
 }
@@ -79,7 +97,7 @@ std::string Generator::generateInitConsts()
         << L::funBodyOp() << std::endl;
 
     oss << generateStateAliases() << std::endl;
-    for (auto s : mInitialValues)
+    for (auto s : mPimpl->mInitialValues)
     {
         oss << "    " << s.first << " = "
             << std::setprecision(16) << s.second << L::instructionDelimiter() << std::endl;
@@ -147,9 +165,9 @@ void Generator::findInitialValues(ComponentPtr c)
     for (std::size_t i = 0; i < c->variableCount(); i++)
     {
         auto v = c->getVariable(i);
-        if (v->getName() != mVoi)
+        if (v->getName() != mPimpl->mVoi)
         {
-            mInitialValues[v->getName()] = std::stod(v->getInitialValue());
+            mPimpl->mInitialValues[v->getName()] = std::stod(v->getInitialValue());
         }
     }
 }
@@ -169,13 +187,13 @@ std::string Generator::generateCode(ModelPtr m)
     oss << generateComputeRates<L>(r) << std::endl;
     oss << generateComputeVariables<L>() << std::endl;
 
-    mCode = oss.str();
-    return mCode;
+    mPimpl->mCode = oss.str();
+    return mPimpl->mCode;
 }
 
 void Generator::writeCodeToFile(std::string filename)
 {
-    if (mCode == "")
+    if (mPimpl->mCode == "")
     {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("No code was generated yet, you should call "
@@ -185,7 +203,7 @@ void Generator::writeCodeToFile(std::string filename)
     }
 
     std::ofstream output(filename);
-    output << mCode;
+    output << mPimpl->mCode;
     output.close();
 }
 
@@ -291,10 +309,10 @@ std::shared_ptr<Representable> Generator::parseNode(XmlNodePtr node)
     {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
-        if (name != mVoi &&
-                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
+        if (name != mPimpl->mVoi &&
+                std::find(mPimpl->mStates.begin(), mPimpl->mStates.end(), name) == mPimpl->mStates.end())
         {
-            mStates.push_back(name);
+            mPimpl->mStates.push_back(name);
         }
         return c;
     }
@@ -338,7 +356,7 @@ void Generator::findVOIHelper(XmlNodePtr node)
 {
     if (node->isType("bvar"))
     {
-        mVoi = node->getFirstChild()->getFirstChild()->convertToString();
+        mPimpl->mVoi = node->getFirstChild()->getFirstChild()->convertToString();
         return;
     }
     else
