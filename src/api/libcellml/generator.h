@@ -74,11 +74,9 @@ class LIBCELLML_EXPORT CXX
 {
 public:
     enum class types {void_t, double_t, double_ct, double_pt, double_rt};
-    static const std::unordered_map<types, std::string, EnumClassHash> returnTypes;
-    static const std::unordered_map<types, std::string, EnumClassHash> argTypes;
 
-    static std::string returnType(types t) {return returnTypes.at(t);}
-    static std::string argType(types t) {return argTypes.at(t);}
+    static std::string returnType(types t);
+    static std::string argType(types t);
     static std::string argListOp() {return "(";}
     static std::string argListCl() {return ")";}
     static std::string funBodyOp() {return "{";}

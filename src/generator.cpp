@@ -20,21 +20,31 @@ namespace libcellml{
 
 using namespace libcellml::operators;
 
-const std::unordered_map<CXX::types, std::string, EnumClassHash> CXX::returnTypes = {
-    {types::void_t,"void "},
-    {types::double_t, "double "},
-    {types::double_ct, "const double "},
-    {types::double_pt, "double *"},
-    {types::double_rt, "double &"}
-};
+std::string CXX::returnType(types t)
+{
+    static const std::unordered_map<types, std::string, EnumClassHash> returnTypes = {
+        {types::void_t,"void "},
+        {types::double_t, "double "},
+        {types::double_ct, "const double "},
+        {types::double_pt, "double *"},
+        {types::double_rt, "double &"}
+    };
 
-const std::unordered_map<CXX::types, std::string, EnumClassHash> CXX::argTypes = {
-    {types::void_t,"void "},
-    {types::double_t, "double "},
-    {types::double_ct, "const double "},
-    {types::double_pt, "double *"},
-    {types::double_rt, "double &"},
-};
+    return returnTypes.at(t);
+}
+
+std::string CXX::argType(types t)
+{
+    static const std::unordered_map<types, std::string, EnumClassHash> argTypes = {
+        {types::void_t,"void "},
+        {types::double_t, "double "},
+        {types::double_ct, "const double "},
+        {types::double_pt, "double *"},
+        {types::double_rt, "double &"},
+    };
+
+    return argTypes.at(t);
+}
 
 struct Generator::GeneratorImpl
 {
