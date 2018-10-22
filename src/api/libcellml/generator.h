@@ -29,7 +29,7 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
-#include "libcellml/operatorLibrary.h"
+#include "libcellml/operatorlibrary.h"
 #include "libcellml/variable.h"
 #include "../xmldoc.h"
 #include "../xmlnode.h"
