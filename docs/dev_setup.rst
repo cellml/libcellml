@@ -61,6 +61,10 @@ LibXml2
 
 LibXml2 is already available on Ubuntu and macOS so no further action is required.  However, on Windows we must install LibXml2 ourselves.  The recommended implementation of LibXml2 for use with libCellML is available from `here <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`__.
 
+Python bindings
+---------------
+Optional Python bindings are provided using SWIG. To compile the bindings, a SWIG installation is required, as well as a Python 2 or Python 3 installation (including the development packages on linux systems, e.g. ``python-dev``). Creation of Python bindings can be enabled/disabled using ``ccmake``.
+
 Setting up the codebase
 =======================
 
