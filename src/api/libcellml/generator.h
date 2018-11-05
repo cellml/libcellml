@@ -91,29 +91,11 @@ public:
     Generator();
     virtual ~Generator();
 
-    std::string generateCode(ModelPtr m);
+    template <typename L = CXX>
+        std::string generateCode(ModelPtr m);
     void writeCodeToFile(std::string filename);
 
 private:
-    void findVOI(std::string math);
-    void findVOIHelper(XmlNodePtr node);
-    void findInitialValues(ComponentPtr c);
-    std::shared_ptr<libcellml::operators::Representable> parseMathML(std::string math);
-    std::shared_ptr<libcellml::operators::Representable> parseNode(XmlNodePtr node);
-    template <typename L = CXX>
-        std::string doGenerateCode(ModelPtr m);
-    template <typename L = CXX>
-        std::string generateInitConsts();
-    template <typename L = CXX>
-        std::string generateComputeRates(
-                std::shared_ptr<libcellml::operators::Representable> r);
-    template <typename L = CXX>
-        std::string generateComputeVariables();
-    template <typename L = CXX>
-        std::string generateStateAliases();
-    template <typename L = CXX>
-        std::string generateVoiAlias();
-
     struct GeneratorImpl;
     GeneratorImpl* mPimpl;
 };
