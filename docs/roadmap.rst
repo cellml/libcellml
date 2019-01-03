@@ -20,9 +20,9 @@ Clearly the milestones defined below are to be worked on in numerical order and 
 High level objectives
 =====================
 
-* Focus on CellML 1.2 and beyond.
+* Focus on CellML 2.0 and beyond.
 
-  * The implementation of libCellML should be driven by the requirements for supporting CellML 1.2 and beyond.
+  * The implementation of libCellML should be driven by the requirements for supporting CellML 2.0 and beyond.
   * Implementing support for core+secondary specifications is likely to be a big challenge for libCellML.
 
     * libCellML should be designed to support the core specification with the flexibility for extra restrictions/constraints coming from the secondary specifications.
@@ -30,7 +30,7 @@ High level objectives
     * Secondary specifications may exist for a period of time before they are integrated or consolidated into a new version of CellML (if at all, there is still a lot to learn about how secondary specifications will evolve).
 
   * libCellML should always be able to import earlier CellML version models.
-  * To begin with, libCellML must be able to export CellML 1.2 models to CellML 1.1 (probably using API marked as deprecated from the beginning and removed once Milestone 3 is achieved).
+  * To begin with, libCellML must be able to export CellML 2.0 models to CellML 1.1 (probably using API marked as deprecated from the beginning and removed once Milestone 3 is achieved).
 
 * Develop the libCellML API as work progresses through the milestones outlined below.
 
@@ -88,22 +88,22 @@ Milestone 0: setting up development environment
 Milestone 1: starting to get useful code (timeframe: ? months)
 ==============================================================
 
-#. Create a CellML 1.2 model from scratch and save it to XML
+#. Create a CellML 2.0 model from scratch and save it to XML
 
    #. Create a new model, add imports, components, variables, units and mathematics.
    #. The first test case?
 
-#. Load a CellML 1.2 model, make changes to it and save it.
+#. Load a CellML 2.0 model, make changes to it and save it.
 
    #. Ability to preserve the underlying XML structure/ordering for documents read in and written out.
 
-#. Load a CellML 1.2 model and validate it.
+#. Load a CellML 2.0 model and validate it.
 
    #. This is important to get out early as it will help make sure the normative specification is “complete” and sensible.
    #. It will ensure that we can test models as we work on getting the specification completed (c.f. the error ridden examples from the CellML 1.0 and 1.1 specifications).
    #. It must include proper units validation of the mathematics.
    #. libCellML should have a validation framework based on the core specification and then secondary specifications can add their specific rules.
-   #. For CellML 1.2, this is mainly the mathematics, so the core validation can probably validate a model, but it needs the actual restricted subset of MathML from the secondary specifications to fully validate units consistency.
+   #. For CellML 2.0, this is mainly the mathematics, so the core validation can probably validate a model, but it needs the actual restricted subset of MathML from the secondary specifications to fully validate units consistency.
 
 #. Import CellML 1.0/1.1 models.
 #. Export to CellML 1.1 (and, by extension, CellML 1.0), so that we can still use existing tools (e.g., simulation, annotation, NeSI), preserving model and XML structure/ordering/modularity where possible.
@@ -144,10 +144,10 @@ Milestone 3: functional library for tool developers (timeframe: ? months)
    #. Could be a role for being informed from `SED-ML <http://sed-ml.org/>`_ what solver is to be used and customising the generated code appropriately.
    #. It would be a tool sitting on top of libCellML, not directly part of it.
 
-#. Being able to run simulations with CellML 1.2.
+#. Being able to run simulations with CellML 2.0.
 
    #. While not directly part of libCellML, helping tool developers get to the point where they can execute simulations is critically important.
-   #. CellML 1.2 will not be released until we can do this (in addition to the other requirements above).
+   #. CellML 2.0 will not be released until we can do this (in addition to the other requirements above).
 
 Milestone 4: advanced capabilities (timeframe: ? months)
 ========================================================
