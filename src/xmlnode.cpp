@@ -22,6 +22,8 @@ limitations under the License.
 #include "xmlattribute.h"
 #include "xmlnode.h"
 
+#include "libcellml/namespaces.h"
+
 namespace libcellml {
 
 /**
@@ -54,7 +56,11 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
 bool XmlNode::isType(const char *elementName)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
+    const xmlChar *nsHref = (mPimpl->mXmlNodePtr->ns)?
+                                nullptr:
+                                mPimpl->mXmlNodePtr->ns->href;
+    if (   !xmlStrcmp(nsHref, BAD_CAST CELLML_2_0_NS)
+        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
         found = true;
     }
     return found;
