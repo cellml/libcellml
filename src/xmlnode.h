@@ -50,15 +50,18 @@ public:
     void setXmlNode (const xmlNodePtr &node);
 
     /**
-     * @brief Check if this @c XmlNode is of the named element type.
+     * @brief Check if this @c XmlNode is of the named element type in the
+     * CellML 2.0 namespace.
      *
-     * Checks whether this @c XmlNode has the argument element type name.
+     * Checks whether this @c XmlNode has the argument element type name in
+     * the CellML 2.0 namespace.
      * Returns @ true if so, and @c false otherwise.
      *
      * @param elementName The @c char element type name to check for.
      *
      * @return @c true if this @c XmlNode is of the element type
-     * specified by the @p elementName and @c false otherwise.
+     * specified by the @p attributeName in the CellML 2.0 namespace and
+     * @c false otherwise.
      */
     bool isType(const char *elementName);
 

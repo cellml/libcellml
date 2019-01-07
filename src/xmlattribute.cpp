@@ -50,10 +50,27 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
     mPimpl->mXmlAttributePtr = attribute;
 }
 
+bool XmlAttribute::isType(const char *attributeNamespace, const char *attributeName)
+{
+    bool found = false;
+    const xmlChar *nsHref = (mPimpl->mXmlAttributePtr->ns)?
+                                nullptr:
+                                mPimpl->mXmlAttributePtr->ns->href;
+    if (   !xmlStrcmp(nsHref, BAD_CAST attributeNamespace)
+        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
+        found = true;
+    }
+    return found;
+}
+
 bool XmlAttribute::isType(const char *attributeName)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
+    const xmlChar *nsHref = (mPimpl->mXmlAttributePtr->ns)?
+                                nullptr:
+                                mPimpl->mXmlAttributePtr->ns->href;
+    if (   !xmlStrcmp(nsHref, nullptr)
+        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
         found = true;
     }
     return found;
