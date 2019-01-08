@@ -65,15 +65,7 @@ bool XmlAttribute::isType(const char *attributeNamespace, const char *attributeN
 
 bool XmlAttribute::isType(const char *attributeName)
 {
-    bool found = false;
-    const xmlChar *nsHref = (mPimpl->mXmlAttributePtr->ns)?
-                                nullptr:
-                                mPimpl->mXmlAttributePtr->ns->href;
-    if (   !xmlStrcmp(nsHref, nullptr)
-        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
-        found = true;
-    }
-    return found;
+    return isType(nullptr, attributeName);
 }
 
 std::string XmlAttribute::getType() const

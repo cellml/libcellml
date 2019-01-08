@@ -53,17 +53,22 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
     mPimpl->mXmlNodePtr = node;
 }
 
-bool XmlNode::isType(const char *elementName)
+bool XmlNode::isType(const char *attributeNamespace, const char *elementName)
 {
     bool found = false;
     const xmlChar *nsHref = (mPimpl->mXmlNodePtr->ns)?
                                 nullptr:
                                 mPimpl->mXmlNodePtr->ns->href;
-    if (   !xmlStrcmp(nsHref, BAD_CAST CELLML_2_0_NS)
+    if (   !xmlStrcmp(nsHref, BAD_CAST attributeNamespace)
         && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
         found = true;
     }
     return found;
+}
+
+bool XmlNode::isType(const char *elementName)
+{
+    return isType(CELLML_2_0_NS, elementName);
 }
 
 std::string XmlNode::getType() const
