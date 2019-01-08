@@ -94,6 +94,27 @@ public:
     bool isType(const char *elementName);
 
     /**
+     * @brief Check if this @c XmlNode is a text node.
+     *
+     * Checks whether this @c XmlNode is a text node.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a text node and @c false otherwise.
+     */
+    bool isTextNode();
+
+    /**
+     * @brief Check if this @c XmlNode is a comment node.
+     *
+     * Checks whether this @c XmlNode is a comment node.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a comment node and @c false
+     * otherwise.
+     */
+    bool isCommentNode();
+
+    /**
      * @brief Get the type name of the XML element.
      *
      * Get the type name of the XML element.
