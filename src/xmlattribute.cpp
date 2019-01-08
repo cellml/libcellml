@@ -21,7 +21,7 @@ limitations under the License.
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#include <libcellml/namespaces.h>
+#include "libcellml/namespaces.h"
 
 namespace libcellml {
 
