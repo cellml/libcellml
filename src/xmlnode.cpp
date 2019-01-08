@@ -53,6 +53,14 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
     mPimpl->mXmlNodePtr = node;
 }
 
+std::string XmlNode::getNamespace() const
+{
+    if (!mPimpl->mXmlNodePtr->ns) {
+        return std::string();
+    }
+    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
+}
+
 bool XmlNode::isType(const char *attributeNamespace, const char *elementName)
 {
     bool found = false;
