@@ -856,13 +856,14 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 {
     XmlNodePtr childNode = node->getFirstChild();
     std::string textNode;
-    std::string nodeType = node->getType();
-    if ((nodeType == "ci") || (nodeType == "cn")) {
+    bool ciType = node->isType("ci");
+    bool cnType = node->isType("cn");
+    if (ciType || cnType) {
         if (childNode) {
             if (childNode->isType("text")) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
-                    if (nodeType == "ci") {
+                    if (ciType) {
                         // It's fine in MathML to have whitespace around variable names, we will strip it out when looking for
                         // variable names.
                         textNode.erase(textNode.begin(),find_if_not(textNode.begin(),textNode.end(),[](int c){return isspace(c);}));
@@ -881,7 +882,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     }
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("MathML " + nodeType + " element has a whitespace-only child element.");
+                    err->setDescription("MathML " + node->getType() + " element has a whitespace-only child element.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
@@ -889,7 +890,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             }
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("MathML " + nodeType + " element has no child.");
+            err->setDescription("MathML " + node->getType() + " element has no child.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -905,7 +906,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     unitsAttribute = attribute;
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math " + nodeType + " element has an invalid attribute type '" +
+                    err->setDescription("Math " + node->getType() + " element has an invalid attribute type '" +
                                         attribute->getType() + "' in the cellml namespace.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
@@ -917,13 +918,13 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 
         bool checkUnitsIsInComponent = false;
         // Check that cellml:units has been set.
-        if (nodeType == "ci") {
+        if (ciType) {
             if (unitsAttribute != nullptr) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Math ci element with value '" + textNode +
                                     "' has a cellml:units attribute with name '" + unitsAttribute->getValue() + "'.");
             }
-        } else if (nodeType == "cn") {
+        } else if (cnType) {
             if (isCellmlIdentifier(unitsName)) {
                 checkUnitsIsInComponent = true;
             } else {
@@ -944,7 +945,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math has a " + nodeType + " element with a cellml:units attribute '" + unitsName +
+                    err->setDescription("Math has a " + node->getType() + " element with a cellml:units attribute '" + unitsName +
                                         "' that is not a valid reference to units in component '" +
                                         component->getName() + "' or a standard unit.");
                     err->setComponent(component);
