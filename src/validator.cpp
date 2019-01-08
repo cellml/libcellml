@@ -25,6 +25,7 @@ limitations under the License.
 #include "libcellml/error.h"
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
+#include "libcellml/namespaces.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
@@ -790,7 +791,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         err->setComponent(component);
         mValidator->addError(err);
         return;
-    } else if (!node->isType("math")) {
+    } else if (!node->isType(MATHML_NS, "math")) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Math root node is of invalid type '" + node->getType() +
                             "' on component '" + component->getName() +
@@ -856,11 +857,11 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 {
     XmlNodePtr childNode = node->getFirstChild();
     std::string textNode;
-    bool ciType = node->isType("ci");
-    bool cnType = node->isType("cn");
+    bool ciType = node->isType(MATHML_NS, "ci");
+    bool cnType = node->isType(MATHML_NS, "cn");
     if (ciType || cnType) {
         if (childNode) {
-            if (childNode->isType("text")) {
+            if (childNode->isType(MATHML_NS, "text")) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
                     if (ciType) {
@@ -977,7 +978,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
-        if (!childNode->isType("text") && !isSupportedMathMLElement(childNode->getType())) {
+        if (!childNode->isType(MATHML_NS, "text") && !isSupportedMathMLElement(childNode->getType())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + childNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -990,7 +991,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
     XmlNodePtr nextNode = node->getNext();
     if (nextNode) {
-        if (!nextNode->isType("text") && !isSupportedMathMLElement(nextNode->getType())) {
+        if (!nextNode->isType(MATHML_NS, "text") && !isSupportedMathMLElement(nextNode->getType())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + nextNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -1005,11 +1006,11 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
 {
     XmlNodePtr childNode = node->getFirstChild();
-    if (node->isType("bvar")) {
-        if ((childNode) && (childNode->isType("ci"))) {
+    if (node->isType(MATHML_NS, "bvar")) {
+        if ((childNode) && (childNode->isType(MATHML_NS, "ci"))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
-                if (grandchildNode->isType("text")) {
+                if (grandchildNode->isType(MATHML_NS, "text")) {
                     std::string textNode = grandchildNode->convertToString();
                     if (hasNonWhitespaceCharacters(textNode)) {
                         bvarNames.push_back(textNode);

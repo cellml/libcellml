@@ -22,6 +22,7 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/namespaces.h"
+#include "libcellml/parser.h"
 #include "libcellml/reset.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
@@ -263,7 +264,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     while (attribute) {
         if (attribute->isType("name")) {
             model->setName(attribute->getValue());
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             model->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -295,7 +296,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             if (childNode->getFirstAttribute()) {
                 XmlAttributePtr attribute = childNode->getFirstAttribute();
                 while (attribute) {
-                    if (attribute->isType("id")) {
+                    if (attribute->isType(CMETA_NS, "id")) {
                         model->setEncapsulationId(attribute->getValue());
                     } else {
                         ErrorPtr err = std::make_shared<Error>();
@@ -372,7 +373,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
     while (attribute) {
         if (attribute->isType("name")) {
             component->setName(attribute->getValue());
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             component->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -393,7 +394,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             ResetPtr reset = std::make_shared<Reset>();
             loadReset(reset, component, childNode);
             component->addReset(reset);
-        } else if (childNode->isType("math")) {
+        } else if (childNode->isType(MATHML_NS, "math")) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
             std::string math = childNode->convertToString();
@@ -429,7 +430,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
     while (attribute) {
         if (attribute->isType("name")) {
             units->setName(attribute->getValue());
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             units->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -537,7 +538,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 err->setRule(SpecificationRule::UNIT_MULTIPLIER);
                 mParser->addError(err);
             }
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             id = attribute->getValue();
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -589,7 +590,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         if (attribute->isType("name")) {
             nameAttributePresent = true;
             variable->setName(attribute->getValue());
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             variable->setId(attribute->getValue());
         } else if (attribute->isType("units")) {
             unitsAttributePresent = true;
@@ -650,7 +651,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             component1Name = attribute->getValue();
         } else if (attribute->isType("component_2")) {
             component2Name = attribute->getValue();
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             connectionId = attribute->getValue();
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -735,7 +736,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable1Name = attribute->getValue();
                 } else if (attribute->isType("variable_2")) {
                     variable2Name = attribute->getValue();
-                } else if (attribute->isType("id")) {
+                } else if (attribute->isType(CMETA_NS, "id")) {
                     mappingId = attribute->getValue();
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
@@ -937,7 +938,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                         err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                         mParser->addError(err);
                     }
-                } else if (attribute->isType("id")) {
+                } else if (attribute->isType(CMETA_NS, "id")) {
                     encapsulationId = attribute->getValue();
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
@@ -1032,7 +1033,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                             mParser->addError(err);
                             childComponentMissing = true;
                         }
-                    } else if (attribute->isType("id")) {
+                    } else if (attribute->isType(CMETA_NS, "id")) {
                         childEncapsulationId = attribute->getValue();
                     } else {
                         ErrorPtr err = std::make_shared<Error>();
@@ -1118,9 +1119,9 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
 {
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
-        if (attribute->isType("href")) {
+        if (attribute->isType(XLINK_NS, "href")) {
             importSource->setUrl(attribute->getValue());
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             importSource->setId(attribute->getValue());
         } else if (attribute->isType("xlink")) {
             // Allow xlink attributes but do nothing for them.
@@ -1142,7 +1143,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             while (attribute) {
                 if (attribute->isType("name")) {
                     importedComponent->setName(attribute->getValue());
-                } else if (attribute->isType("id")) {
+                } else if (attribute->isType(CMETA_NS, "id")) {
                     importedComponent->setId(attribute->getValue());
                 } else if (attribute->isType("component_ref")) {
                     importedComponent->setSourceComponent(importSource, attribute->getValue());
@@ -1167,7 +1168,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             while (attribute) {
                 if (attribute->isType("name")) {
                     importedUnits->setName(attribute->getValue());
-                } else if (attribute->isType("id")) {
+                } else if (attribute->isType(CMETA_NS, "id")) {
                     importedUnits->setId(attribute->getValue());
                 } else if (attribute->isType("units_ref")) {
                     importedUnits->setSourceUnits(importSource, attribute->getValue());
@@ -1250,7 +1251,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 err->setRule(SpecificationRule::RESET_ORDER);
                 mParser->addError(err);
             }
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             reset->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -1340,7 +1341,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             if (orderValid) {
                 order = convertToInt(attribute->getValue());
             }
-        } else if (attribute->isType("id")) {
+        } else if (attribute->isType(CMETA_NS, "id")) {
             when->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -1368,7 +1369,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
     size_t mathNodeCount = 0;
     XmlNodePtr childNode = node->getFirstChild();
     while (childNode) {
-        if (childNode->isType("math")) {
+        if (childNode->isType(MATHML_NS, "math")) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
             std::string math = childNode->convertToString();
