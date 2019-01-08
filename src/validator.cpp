@@ -861,7 +861,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     bool cnType = node->isType(MATHML_NS, "cn");
     if (ciType || cnType) {
         if (childNode) {
-            if (childNode->isType(NULL_NS, "text")) {
+            if (childNode->isTextNode()) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
                     if (ciType) {
@@ -978,7 +978,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
-        if (!childNode->isType(NULL_NS, "text") && !isSupportedMathMLElement(childNode)) {
+        if (!childNode->isTextNode() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + childNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -991,7 +991,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
     XmlNodePtr nextNode = node->getNext();
     if (nextNode) {
-        if (!nextNode->isType(NULL_NS, "text") && !isSupportedMathMLElement(nextNode)) {
+        if (!nextNode->isTextNode() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + nextNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -1010,7 +1010,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
         if ((childNode) && (childNode->isType(MATHML_NS, "ci"))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
-                if (grandchildNode->isType(NULL_NS, "text")) {
+                if (grandchildNode->isTextNode()) {
                     std::string textNode = grandchildNode->convertToString();
                     if (hasNonWhitespaceCharacters(textNode)) {
                         bvarNames.push_back(textNode);

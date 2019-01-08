@@ -76,6 +76,16 @@ bool XmlNode::isType(const char *elementName)
     return isType(CELLML_2_0_NS, elementName);
 }
 
+bool XmlNode::isTextNode()
+{
+    return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
+}
+
+bool XmlNode::isCommentNode()
+{
+    return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
+}
+
 std::string XmlNode::getType() const
 {
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
