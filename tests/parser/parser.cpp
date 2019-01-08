@@ -140,6 +140,32 @@ TEST(Parser, invalidRootNode) {
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
+TEST(Parser, noModelNamespace) {
+    const std::string ex =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model/>";
+
+    const std::string expectedError1 = "Model root node is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.";
+
+    libcellml::Parser p;
+    p.parseModel(ex);
+    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+}
+
+TEST(Parser, invalidModelNamespace) {
+    const std::string ex =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
+
+    const std::string expectedError1 = "Model root node is in invalid namespace 'http://www.cellml.org/cellml/1.2#'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.";
+
+    libcellml::Parser p;
+    p.parseModel(ex);
+    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+}
+
 TEST(Parser, invalidModelAttribute) {
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
