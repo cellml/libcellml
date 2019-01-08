@@ -54,8 +54,8 @@ bool XmlAttribute::isType(const char *attributeNamespace, const char *attributeN
 {
     bool found = false;
     const xmlChar *nsHref = (mPimpl->mXmlAttributePtr->ns)?
-                                nullptr:
-                                mPimpl->mXmlAttributePtr->ns->href;
+                                mPimpl->mXmlAttributePtr->ns->href:
+                                nullptr;
     if (   !xmlStrcmp(nsHref, BAD_CAST attributeNamespace)
         && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
         found = true;
