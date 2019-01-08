@@ -991,7 +991,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         XmlNodePtr childComponentNode = parentComponentNode->getFirstChild();
         if (!childComponentNode) {
             XmlNodePtr grandParentComponentNode = parentComponentNode->getParent();
-            if (grandParentComponentNode->getType() == "encapsulation") {
+            if (grandParentComponentNode->isType("encapsulation")) {
                 ErrorPtr err = std::make_shared<Error>();
                 if (parentComponent) {
                     err->setDescription("Encapsulation in model '" + model->getName() +
