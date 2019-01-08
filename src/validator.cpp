@@ -221,15 +221,15 @@ struct Validator::ValidatorImpl
     bool isStandardPrefixName(const std::string &name);
 
     /**
-     * @brief Check if the provided @p name is a supported MathML element.
+     * @brief Check if the provided @p node is a supported MathML element.
      *
-     * Checks if the provided @p name is one of the supported MathML elements defined in the table
+     * Checks if the provided @p node is one of the supported MathML elements defined in the table
      * of supported MathML elements from the CellML specification version 2.0 document.
      *
-     * @param name The @c std::string name to check against the list of supported MathML elements.
-     * @return @c true if @name is a supported MathML element and @c false otherwise.
+     * @param node The @c XmlNode node to check against the list of supported MathML elements.
+     * @return @c true if @node is a supported MathML element and @c false otherwise.
      */
-    bool isSupportedMathMLElement(const std::string &name);
+    bool isSupportedMathMLElement(const XmlNodePtr &node);
 };
 
 Validator::Validator()
@@ -978,7 +978,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
-        if (!childNode->isType(nullptr, "text") && !isSupportedMathMLElement(childNode->getType())) {
+        if (!childNode->isType(nullptr, "text") && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + childNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -991,7 +991,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
     XmlNodePtr nextNode = node->getNext();
     if (nextNode) {
-        if (!nextNode->isType(nullptr, "text") && !isSupportedMathMLElement(nextNode->getType())) {
+        if (!nextNode->isType(nullptr, "text") && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + nextNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -1085,7 +1085,7 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
       input.erase(i, n);
 }
 
-bool Validator::ValidatorImpl::isSupportedMathMLElement(const std::string &name)
+bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
     const std::vector<std::string> supportedMathMLElements =
     {
@@ -1096,7 +1096,8 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const std::string &name)
         "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
         "notanumber", "infinity", "true", "false"
     };
-    return std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), name) != supportedMathMLElements.end();
+    return    !node->getNamespace().compare(MATHML_NS)
+           && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getType()) != supportedMathMLElements.end();
 }
 
 bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
