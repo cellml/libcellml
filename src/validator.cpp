@@ -861,7 +861,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     bool cnType = node->isType(MATHML_NS, "cn");
     if (ciType || cnType) {
         if (childNode) {
-            if (childNode->isType(MATHML_NS, "text")) {
+            if (childNode->isType(nullptr, "text")) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
                     if (ciType) {
@@ -978,7 +978,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
-        if (!childNode->isType(MATHML_NS, "text") && !isSupportedMathMLElement(childNode->getType())) {
+        if (!childNode->isType(nullptr, "text") && !isSupportedMathMLElement(childNode->getType())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + childNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -991,7 +991,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
     XmlNodePtr nextNode = node->getNext();
     if (nextNode) {
-        if (!nextNode->isType(MATHML_NS, "text") && !isSupportedMathMLElement(nextNode->getType())) {
+        if (!nextNode->isType(nullptr, "text") && !isSupportedMathMLElement(nextNode->getType())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + nextNode->getType() + "' element" +
                                 " that is not a supported MathML element.");
@@ -1010,7 +1010,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
         if ((childNode) && (childNode->isType(MATHML_NS, "ci"))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
-                if (grandchildNode->isType(MATHML_NS, "text")) {
+                if (grandchildNode->isType(nullptr, "text")) {
                     std::string textNode = grandchildNode->convertToString();
                     if (hasNonWhitespaceCharacters(textNode)) {
                         bvarNames.push_back(textNode);
