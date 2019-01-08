@@ -21,6 +21,7 @@ limitations under the License.
 namespace libcellml {
 
 static const char *CELLML_2_0_NS = "http://www.cellml.org/cellml/2.0#";
+static const char *CMETA_NS = "http://www.cellml.org/metadata/1.0#";
 static const char *MATHML_NS = "http://www.w3.org/1998/Math/MathML";
 static const char *XLINK_NS = "http://www.w3.org/1999/xlink";
 
