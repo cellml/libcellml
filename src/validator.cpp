@@ -1008,7 +1008,6 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
         if ((childNode) && (childNode->isType("ci"))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
-                std::string type = grandchildNode->getType();
                 if (grandchildNode->isType("text")) {
                     std::string textNode = grandchildNode->convertToString();
                     if (hasNonWhitespaceCharacters(textNode)) {
