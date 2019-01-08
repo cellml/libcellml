@@ -57,8 +57,8 @@ bool XmlNode::isType(const char *attributeNamespace, const char *elementName)
 {
     bool found = false;
     const xmlChar *nsHref = (mPimpl->mXmlNodePtr->ns)?
-                                nullptr:
-                                mPimpl->mXmlNodePtr->ns->href;
+                                mPimpl->mXmlNodePtr->ns->href:
+                                nullptr;
     if (   !xmlStrcmp(nsHref, BAD_CAST attributeNamespace)
         && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
         found = true;
