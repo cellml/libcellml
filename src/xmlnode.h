@@ -67,15 +67,15 @@ public:
      * the given namespace.
      * Returns @ true if so, and @c false otherwise.
      *
-     * @param attributeNamespace The @c char namespace in which the element
+     * @param elementNamespace The @c char namespace in which the element
      * type name is to be defined.
      * @param elementName The @c char element type name to check for.
      *
      * @return @c true if this @c XmlNode is of the element type
-     * specified by the @p attributeName in the namespace @attributeNamespace
+     * specified by the @p elementName in the namespace @elementNamespace
      * and @c false otherwise.
      */
-    bool isType(const char *attributeNamespace, const char *elementName);
+    bool isType(const char *elementNamespace, const char *elementName);
 
     /**
      * @brief Check if this @c XmlNode is of the named element type in the
@@ -88,7 +88,7 @@ public:
      * @param elementName The @c char element type name to check for.
      *
      * @return @c true if this @c XmlNode is of the element type
-     * specified by the @p attributeName in the CellML 2.0 namespace and
+     * specified by the @p elementName in the CellML 2.0 namespace and
      * @c false otherwise.
      */
     bool isType(const char *elementName);
