@@ -48,6 +48,16 @@ public:
     void setXmlAttribute (const xmlAttrPtr &attribute);
 
     /**
+     * @brief Get the namespace of this XmlAttribute.
+     *
+     * Get the namespace of this XmlAttribute.
+     *
+     * @return A @c std::string representation of the XML namespace.
+     */
+
+    std::string getNamespace() const;
+
+    /**
      * @brief Check if this XmlAttribute is of the named attribute type in the
      * given namespace.
      *
