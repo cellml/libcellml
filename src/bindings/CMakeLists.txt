@@ -21,9 +21,6 @@
 #
 
 if(LIBCELLML_BINDINGS_PYTHON) # Or any other bindings
-    if(POLICY CMP0078)
-        cmake_policy(SET CMP0078 OLD)
-    endif()
     find_package(SWIG 3 REQUIRED)
     include(${SWIG_USE_FILE})
     mark_as_advanced(SWIG_EXECUTABLE)
