@@ -15,13 +15,12 @@ limitations under the License.
 */
 
 #include "libcellml/component.h"
+#include "libcellml/units.h"
+#include "libcellml/variable.h"
 
 #include <algorithm>
 #include <string>
 #include <vector>
-
-#include "libcellml/units.h"
-#include "libcellml/variable.h"
 
 namespace libcellml {
 
@@ -268,4 +267,3 @@ bool Component::hasReset(const ResetPtr &reset) const
 }
 
 }
-

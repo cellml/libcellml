@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "utilities.h"
+
+#include "libcellml/importsource.h"
 #include "libcellml/units.h"
 
 #include <algorithm>
 #include <cassert>
 #include <map>
 #include <vector>
-
-#include "libcellml/importsource.h"
-#include "utilities.h"
 
 namespace libcellml {
 

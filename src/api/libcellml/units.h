@@ -16,12 +16,12 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 #include "libcellml/types.h"
+
+#include <string>
+#include <vector>
 
 // MSVC (and some other compilers?) may define PASCAL as __stdcall, resulting in
 // some compilation errors for our StandardUnit enum class below. However, that
