@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "libcellml/component.h"
+
 #include <algorithm>
 #include <string>
 #include <vector>
 
-#include "libcellml/component.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 

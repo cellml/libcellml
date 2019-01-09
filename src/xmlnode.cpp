@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "xmlnode.h"
+
 #include <string>
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
 #include "xmlattribute.h"
-#include "xmlnode.h"
 
 #include "libcellml/namespaces.h"
 
