@@ -74,9 +74,8 @@ This component (and its requirements) is sufficient for building libCellML.
 LibXml2
 -------
 
-`LibXml2 <http://xmlsoft.org/>`_ is already available on `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ and `macOS <https://en.wikipedia.org/wiki/MacOS>`_, so no further action is required.
-However, on `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_, we must install `LibXml2 <http://xmlsoft.org/>`_ ourselves.
-The recommended implementation of `LibXml2 <http://xmlsoft.org/>`_ for use with libCellML is available from `here <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_.
+`LibXml2 <http://xmlsoft.org/>`_ is already installed on `macOS <https://en.wikipedia.org/wiki/MacOS>`_, so no further action is required on that platform.
+On `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_, we must install `LibXml2 <http://xmlsoft.org/>`_ using the recommended implementation available from `here <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_ while on `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ `LibXml2 <http://xmlsoft.org/>`_ can be installed using ``sudo apt install libxml2-dev``.
 
 Python bindings
 ---------------
