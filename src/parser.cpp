@@ -256,11 +256,11 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             std::string nodeNamespace = node->getNamespace();
             if (nodeNamespace.empty())
                 nodeNamespace = "null";
-            err->setDescription("Model root node is in invalid namespace '" + nodeNamespace +
+            err->setDescription("Model element is in invalid namespace '" + nodeNamespace +
                                 "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS +
                                 "'.");
         } else {
-            err->setDescription("Model root node is of invalid type '" + node->getType() +
+            err->setDescription("Model element is of invalid type '" + node->getType() +
                                 "'. A valid CellML root node should be of type 'model'.");
         }
         err->setModel(model);
