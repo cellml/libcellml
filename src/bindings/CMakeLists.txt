@@ -12,21 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-#
-# Note: Most tests are just here to check if the calling signatures and
-# return types are converted ok.
-# Some tests check if the state of the objects has changed, not as a
-# test of function (which is tested in the C++ tests), but as a check
-# to see if the underlying methods have been called correctly.
-#
-
-if(LIBCELLML_BINDINGS_PYTHON) # Or any other bindings
+if(LIBCELLML_BINDINGS_PYTHON) # Or any other bindings that use SWIG.
     if(POLICY CMP0078)
         cmake_policy(SET CMP0078 OLD)
     endif()
     find_package(SWIG 3 REQUIRED)
     include(${SWIG_USE_FILE})
-    mark_as_advanced(SWIG_EXECUTABLE)
 endif()
 
 if(LIBCELLML_BINDINGS_PYTHON)
