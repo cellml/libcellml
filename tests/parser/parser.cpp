@@ -132,7 +132,7 @@ TEST(Parser, invalidRootNode) {
             "<yodel xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
             "</yodel>";
 
-    const std::string expectedError1 = "Model root node is of invalid type 'yodel'. A valid CellML root node should be of type 'model'.";
+    const std::string expectedError1 = "Model element is of invalid type 'yodel'. A valid CellML root node should be of type 'model'.";
 
     libcellml::Parser p;
     p.parseModel(ex);
@@ -145,7 +145,7 @@ TEST(Parser, noModelNamespace) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model/>";
 
-    const std::string expectedError1 = "Model root node is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.";
+    const std::string expectedError1 = "Model element is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.";
 
     libcellml::Parser p;
     p.parseModel(ex);
@@ -158,7 +158,7 @@ TEST(Parser, invalidModelNamespace) {
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/1.2#\"/>";
 
-    const std::string expectedError1 = "Model root node is in invalid namespace 'http://www.cellml.org/cellml/1.2#'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.";
+    const std::string expectedError1 = "Model element is in invalid namespace 'http://www.cellml.org/cellml/1.2#'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.";
 
     libcellml::Parser p;
     p.parseModel(ex);
