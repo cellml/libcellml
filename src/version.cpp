@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "versionconfig.h"
+
 #include "libcellml/version.h"
 
 #include <string>
-
-#include "versionconfig.h"
 
 namespace libcellml {
 
@@ -33,4 +33,3 @@ const std::string versionString()
 }
 
 }
-

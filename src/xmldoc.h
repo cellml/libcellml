@@ -16,10 +16,10 @@ limitations under the License.
 
 #pragma once
 
+#include "xmlnode.h"
+
 #include <memory>
 #include <string>
-
-#include "xmlnode.h"
 
 namespace libcellml {
 

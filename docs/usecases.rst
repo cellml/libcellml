@@ -4,7 +4,7 @@
 Use-cases for libCellML
 =======================
 
-1. **Create:** Create a model from scratch and serialise it to XML (in each case the test is that the serialised model matches manually validated XML documents)
+1. **Create:** create a model from scratch and serialise it to `XML <https://www.w3.org/XML/>`_ (in each case the test is that the serialised model matches manually validated `XML <https://www.w3.org/XML/>`_ documents)
 
    i. an empty model
    #. a model with a valid name
@@ -87,23 +87,22 @@ Use-cases for libCellML
 
       a. model with two components, each containing two variables, maths, and one connection
 
-#. **Modify:** Modify models from 1.
+#. **Modify:** modify models from 1.
 
    i. add {components, units, maths, variables, connections}
    #. remove {components, units, maths, variables, connections}
    #. update {components, units, maths, model attributes, variables, connections}
 
-#. **Load:** Load each of the models from 1 and 2 (new models can be added for this part if required).
+#. **Load:** load each of the models from 1 and 2 (new models can be added for this part if required).
 
-   #. a model with imported components
+   i. a model with imported components
 
       a. a single component
       #. a component with a hierarchy
       #. a component from a non-existent URL
 
-#. **Validate:**  Create, load, and modify models and then validate them (the test is that the models are correctly identified as valid or invalid, and for the case when they are invalid the correct reason is given, covering each rule in the specification).
+#. **Validate:** create, load, and modify models and then validate them (the test is that the models are correctly identified as valid or invalid, and for the case when they are invalid the correct reason is given, covering each rule in the specification).
 
-#. Import CellML 1.0/1.1 models
+#. Import CellML 1.0/1.1 models.
 
-#. Export CellML 1.1 (and by extension CellML 1.0)
-
+#. Export CellML 1.1 (and by extension CellML 1.0).

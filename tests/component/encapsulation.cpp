@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
 
 #include <iostream>
-
-#include "test_utils.h"
 
 TEST(Encapsulation, reparentComponent) {
     const std::string e_parent_1 =

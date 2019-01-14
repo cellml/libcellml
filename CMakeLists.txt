@@ -29,7 +29,7 @@ set(_PARAM_ANNOTATION "Enable coverage testing.")
 if(COVERAGE_TESTING_AVAILABLE)
   set(LIBCELLML_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION})
 endif()
-if(COVERAGE AND COVERAGE_TESTING_AVAILABLE)
+if(DEFINED COVERAGE AND COVERAGE_TESTING_AVAILABLE)
   set(LIBCELLML_COVERAGE "${COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 elseif(COVERAGE)
   message(WARNING "Coverage testing requested but gcov or its requirements not found!")
@@ -41,7 +41,7 @@ set(_PARAM_ANNOTATION "Enable memcheck testing.")
 if(VALGRIND_TESTING_AVAILABLE)
   set(LIBCELLML_MEMCHECK ON CACHE BOOL ${_PARAM_ANNOTATION})
 endif()
-if(MEMCHECK AND VALGRIND_TESTING_AVAILABLE)
+if(DEFINED MEMCHECK AND VALGRIND_TESTING_AVAILABLE)
   set(LIBCELLML_MEMCHECK "${MEMCHECK}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 elseif(MEMCHECK)
   message(WARNING "Memcheck testing requested but valgrind or its requirements not found!")
@@ -50,8 +50,10 @@ unset(MEMCHECK CACHE)
 
 # BINDINGS_PYTHON ==> LIBCELLML_BINDINGS_PYTHON
 set(_PARAM_ANNOTATION "Build Python wrappers.")
-set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL ${_PARAM_ANNOTATION})
-if(BINDINGS_PYTHON)
+if (BINDINGS_AVAILABLE)
+  set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL ${_PARAM_ANNOTATION})
+endif ()
+if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE)
   set(LIBCELLML_BINDINGS_PYTHON "${BINDINGS_PYTHON}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 unset(BINDINGS_PYTHON CACHE)
@@ -59,49 +61,50 @@ unset(BINDINGS_PYTHON CACHE)
 # UNIT_TESTS ==> LIBCELLML_UNIT_TESTS
 set(_PARAM_ANNOTATION "Enable libCellML tests.")
 set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION})
-if(UNIT_TESTS)
+if(DEFINED UNIT_TESTS)
   set(LIBCELLML_UNIT_TESTS "${UNIT_TESTS}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 unset(UNIT_TESTS CACHE)
 
 if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
-    if(NOT LIBCELLML_UNIT_TESTS)
-        message(STATUS "Configuration confusion:
-            Memchecking or coverage testing has been requested but unit tests have not.
-            This is not possible so forcing the unit tests to 'on' to make it possible.
-            ")
-    endif()
-  set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+  if(NOT LIBCELLML_UNIT_TESTS)
+    message(STATUS "Configuration confusion:
+      Memchecking or coverage testing has been requested but unit tests have not.
+      This is not possible so forcing the unit tests to 'on' to make it possible.
+      ")
+    set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
+  endif()
 endif()
 
 # TWAE ==> LIBCELLML_TREAT_WARNINGS_AS_ERRORS -- Note: This excludes third party code, where warnings are never treated as errors.
 set(_PARAM_ANNOTATION "Treat warnings as errors, this setting applies only to compilation units built by this project.")
 set(LIBCELLML_TREAT_WARNINGS_AS_ERRORS ON CACHE BOOL ${_PARAM_ANNOTATION})
-if(TWAE)
+if(DEFINED TWAE)
   set(LIBCELLML_TREAT_WARNINGS_AS_ERRORS "${TWAE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
+unset(TWAE CACHE)
 
 # BUILD_TYPE ==> LIBCELLML_BUILD_TYPE
 set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
 set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION})
-if(BUILD_TYPE)
+if(DEFINED BUILD_TYPE)
   set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
 endif()
-if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
-    if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
-        message(STATUS "Configuration confusion:
-            Release build requested but memchecking or coverage has also been requested.
-            This is not possible so forcing the build type to 'Debug' to make it possible.
-            ")
-    endif()
-  set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
-endif()
 unset(BUILD_TYPE CACHE)
+if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
+  if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Configuration confusion:
+      Release build requested but memchecking or coverage has also been requested.
+      This is not possible so forcing the build type to 'Debug' to make it possible.
+      ")
+    set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+  endif()
+endif()
 
 # INSTALL_PREFIX ==> LIBCELLML_INSTALL_PREFIX
 set(_PARAM_ANNOTATION "Install path prefix, prepended onto install directories.")
 set(LIBCELLML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOTATION})
-if(INSTALL_PREFIX)
+if(DEFINED INSTALL_PREFIX)
   set(LIBCELLML_INSTALL_PREFIX ${INSTALL_PREFIX} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
 endif()
 unset(INSTALL_PREFIX CACHE)
@@ -109,7 +112,7 @@ unset(INSTALL_PREFIX CACHE)
 # BUILD_SHARED ==> LIBCELLML_BUILD_SHARED
 set(_PARAM_ANNOTATION "Build shared libraries (so, dylib, DLLs).")
 set(LIBCELLML_BUILD_SHARED ON CACHE BOOL ${_PARAM_ANNOTATION})
-if(BUILD_SHARED)
+if(DEFINED BUILD_SHARED)
   set(LIBCELLML_BUILD_SHARED ${BUILD_SHARED} CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
 unset(BUILD_SHARED CACHE)

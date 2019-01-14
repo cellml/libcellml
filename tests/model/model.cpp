@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <libcellml>
 
-
 TEST(Model, setGetId) {
     const std::string id = "modelID";
     libcellml::Model m;
