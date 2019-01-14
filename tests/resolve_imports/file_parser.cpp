@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_resources.h"
+
 #include "gtest/gtest.h"
 
 #include <algorithm>
@@ -22,9 +24,6 @@ limitations under the License.
 #include <libcellml>
 #include <sstream>
 #include <vector>
-
-// generated with test resource locations
-#include "test_resources.h"
 
 TEST(ResolveImports, resolveSineModelFromFile) {
     std::ifstream t(TestResources::getLocation(

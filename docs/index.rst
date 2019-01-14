@@ -7,7 +7,6 @@
 libCellML Documentation
 =======================
 
-
 Contents:
 =========
 

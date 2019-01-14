@@ -16,9 +16,10 @@ limitations under the License.
 
 #pragma once
 
-#include <libxml/parser.h>
 #include <memory>
 #include <string>
+
+#include <libxml/parser.h>
 
 namespace libcellml {
 

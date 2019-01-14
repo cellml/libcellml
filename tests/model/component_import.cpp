@@ -317,4 +317,3 @@ TEST(ComponentImport, complexImportAndParse) {
     const libcellml::ComponentPtr constBob = constDave->getComponent("bob");
     EXPECT_EQ(2u, constBob->componentCount());
 }
-

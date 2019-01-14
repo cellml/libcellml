@@ -8,4 +8,3 @@ void printErrors(const libcellml::Validator &v);
 void printErrors(const libcellml::Parser &p);
 
 #endif
-

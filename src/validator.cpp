@@ -14,14 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/validator.h"
-
-#include <algorithm>
-#include <map>
-#include <regex>
-#include <sstream>
-#include <string>
-#include <vector>
+#include "utilities.h"
+#include "xmldoc.h"
 
 #include "libcellml/component.h"
 #include "libcellml/error.h"
@@ -29,10 +23,16 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
+#include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
-#include "utilities.h"
-#include "xmldoc.h"
+
+#include <algorithm>
+#include <map>
+#include <regex>
+#include <sstream>
+#include <string>
+#include <vector>
 
 namespace libcellml {
 
