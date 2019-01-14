@@ -16,9 +16,9 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
 #include "libcellml/exportdefinitions.h"
+
+#include <string>
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
@@ -42,4 +42,4 @@ LIBCELLML_EXPORT const std::string versionString();
  */
 LIBCELLML_EXPORT unsigned int version();
 
-}  // namespace libcellml
+}

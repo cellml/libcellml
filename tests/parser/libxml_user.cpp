@@ -21,6 +21,7 @@ limitations under the License.
 #include <libcellml>
 #include <string>
 #include <vector>
+
 #include <libxml/parser.h>
 
 TEST(Parser, parseValidXmlDirectlyUsingLibxml) {
@@ -59,5 +60,3 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml) {
     xmlFreeParserCtxt(context);
     EXPECT_EQ(nullptr, doc);
 }
-
-

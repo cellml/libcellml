@@ -80,7 +80,7 @@ public:
     /**
      * @brief Test if this @c ImportSource is resolved.
      *
-     * Method to test if this @c ImportSource has been resolved, i.e., the source @c Model has
+     * Method to test if this @c ImportSource has been resolved, i.e. the source @c Model has
      * been assigned. Returns @c true if the @c ImportSource is resolved otherwise returns
      * @c false.
      *

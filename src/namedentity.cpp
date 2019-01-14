@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/namedentity.h"
-
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
+#include "libcellml/namedentity.h"
 
 namespace libcellml {
 
