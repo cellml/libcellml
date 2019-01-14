@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <algorithm>
@@ -21,8 +23,6 @@ limitations under the License.
 #include <libcellml>
 #include <string>
 #include <vector>
-
-#include "test_utils.h"
 
 TEST(Parser, invalidXMLElements) {
     const std::string input =

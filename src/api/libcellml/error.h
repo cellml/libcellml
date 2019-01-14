@@ -16,11 +16,11 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/specificationrules.h"
 #include "libcellml/types.h"
+
+#include <string>
 
 namespace libcellml {
 

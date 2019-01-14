@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 #include "libcellml/error.h"
+#include "libcellml/types.h"
 
 #include <map>
 #include <string>
-
-#include "libcellml/types.h"
 
 namespace libcellml {
 
