@@ -17,6 +17,8 @@ limitations under the License.
 #include "xmlattribute.h"
 #include "xmlnode.h"
 
+#include "libcellml/namespaces.h"
+
 #include <string>
 
 #include <libxml/parser.h>
@@ -51,13 +53,37 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
     mPimpl->mXmlNodePtr = node;
 }
 
-bool XmlNode::isType(const char *elementName)
+std::string XmlNode::getNamespace() const
+{
+    if (!mPimpl->mXmlNodePtr->ns) {
+        return std::string();
+    }
+    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
+}
+
+bool XmlNode::isType(const char *attributeNamespace, const char *elementName)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
+    if (   !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST attributeNamespace)
+        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
         found = true;
     }
     return found;
+}
+
+bool XmlNode::isType(const char *elementName)
+{
+    return isType(CELLML_2_0_NS, elementName);
+}
+
+bool XmlNode::isTextNode()
+{
+    return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
+}
+
+bool XmlNode::isCommentNode()
+{
+    return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
 }
 
 std::string XmlNode::getType() const
