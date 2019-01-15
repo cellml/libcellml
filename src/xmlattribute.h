@@ -49,15 +49,46 @@ public:
     void setXmlAttribute (const xmlAttrPtr &attribute);
 
     /**
-     * @brief Check if this XmlAttribute is of the named attribute type.
+     * @brief Get the namespace of this XmlAttribute.
      *
-     * Checks whether this XmlAttribute has the argument attribute type name.
+     * Get the namespace of this XmlAttribute.
+     *
+     * @return A @c std::string representation of the XML namespace.
+     */
+
+    std::string getNamespace() const;
+
+    /**
+     * @brief Check if this XmlAttribute is of the named attribute type in the
+     * given namespace.
+     *
+     * Checks whether this XmlAttribute has the argument attribute type name in
+     * the given namespace.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @param attributeNamespace The @c char namespace in which the attribute
+     * type name is to be defined.
+     * @param attributeName The @c char attribute type name to check for.
+     *
+     * @return @c true if this XmlAttribute is of the attribute type
+     * specified by the @p attributeName in the namespace @attributeNamespace
+     * and @c false otherwise.
+     */
+    bool isType(const char *attributeNamespace, const char *attributeName);
+
+    /**
+     * @brief Check if this XmlAttribute is of the named attribute type in the
+     * null namespace.
+     *
+     * Checks whether this XmlAttribute has the argument attribute type name in
+     * the null namespace.
      * Returns @ true if so, and @c false otherwise.
      *
      * @param attributeName The @c char attribute type name to check for.
      *
      * @return @c true if this XmlAttribute is of the attribute type
-     * specified by the @p attributeName and @c false otherwise.
+     * specified by the @p attributeName in the null namespace and @c false
+     * otherwise.
      */
     bool isType(const char *attributeName);
 

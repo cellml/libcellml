@@ -21,6 +21,8 @@ limitations under the License.
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+#include "libcellml/namespaces.h"
+
 namespace libcellml {
 
 /**
@@ -50,13 +52,27 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
     mPimpl->mXmlAttributePtr = attribute;
 }
 
-bool XmlAttribute::isType(const char *attributeName)
+std::string XmlAttribute::getNamespace() const
+{
+    if (!mPimpl->mXmlAttributePtr->ns) {
+        return std::string();
+    }
+    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href));
+}
+
+bool XmlAttribute::isType(const char *attributeNamespace, const char *attributeName)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
+    if (   !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST attributeNamespace)
+        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
         found = true;
     }
     return found;
+}
+
+bool XmlAttribute::isType(const char *attributeName)
+{
+    return isType(NULL_NS, attributeName);
 }
 
 std::string XmlAttribute::getType() const

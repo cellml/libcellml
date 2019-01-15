@@ -51,17 +51,69 @@ public:
     void setXmlNode (const xmlNodePtr &node);
 
     /**
-     * @brief Check if this @c XmlNode is of the named element type.
+     * @brief Get the namespace of the XML element.
      *
-     * Checks whether this @c XmlNode has the argument element type name.
+     * Get the namespace of the XML element.
+     *
+     * @return A @c std::string representation of the XML namespace.
+     */
+
+    std::string getNamespace() const;
+
+    /**
+     * @brief Check if this @c XmlNode is of the named element type in the
+     * given namespace.
+     *
+     * Checks whether this @c XmlNode has the argument element type name in
+     * the given namespace.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @param elementNamespace The @c char namespace in which the element
+     * type name is to be defined.
+     * @param elementName The @c char element type name to check for.
+     *
+     * @return @c true if this @c XmlNode is of the element type
+     * specified by the @p elementName in the namespace @elementNamespace
+     * and @c false otherwise.
+     */
+    bool isType(const char *elementNamespace, const char *elementName);
+
+    /**
+     * @brief Check if this @c XmlNode is of the named element type in the
+     * CellML 2.0 namespace.
+     *
+     * Checks whether this @c XmlNode has the argument element type name in
+     * the CellML 2.0 namespace.
      * Returns @ true if so, and @c false otherwise.
      *
      * @param elementName The @c char element type name to check for.
      *
      * @return @c true if this @c XmlNode is of the element type
-     * specified by the @p elementName and @c false otherwise.
+     * specified by the @p elementName in the CellML 2.0 namespace and
+     * @c false otherwise.
      */
     bool isType(const char *elementName);
+
+    /**
+     * @brief Check if this @c XmlNode is a text node.
+     *
+     * Checks whether this @c XmlNode is a text node.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a text node and @c false otherwise.
+     */
+    bool isTextNode();
+
+    /**
+     * @brief Check if this @c XmlNode is a comment node.
+     *
+     * Checks whether this @c XmlNode is a comment node.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a comment node and @c false
+     * otherwise.
+     */
+    bool isCommentNode();
 
     /**
      * @brief Get the type name of the XML element.
