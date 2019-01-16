@@ -75,7 +75,7 @@ bool XmlAttribute::isType(const char *attributeName)
     return isType(NULL_NS, attributeName);
 }
 
-std::string XmlAttribute::getType() const
+std::string XmlAttribute::getName() const
 {
     std::string type;
     if (mPimpl->mXmlAttributePtr->name) {
