@@ -61,38 +61,38 @@ public:
     std::string getNamespace() const;
 
     /**
-     * @brief Check if this @c XmlNode is of the named element type in the
+     * @brief Check if this @c XmlNode is of the named element in the
      * given namespace.
      *
-     * Checks whether this @c XmlNode has the argument element type name in
+     * Checks whether this @c XmlNode has the argument element name in
      * the given namespace.
      * Returns @ true if so, and @c false otherwise.
      *
      * @param elementNamespace The @c char namespace in which the element
-     * type name is to be defined.
-     * @param elementName The @c char element type name to check for.
+     * name is to be defined.
+     * @param elementName The @c char element name to check for.
      *
-     * @return @c true if this @c XmlNode is of the element type
+     * @return @c true if this @c XmlNode is of the element
      * specified by the @p elementName in the namespace @elementNamespace
      * and @c false otherwise.
      */
-    bool isType(const char *elementNamespace, const char *elementName);
+    bool isElement(const char *elementNamespace, const char *elementName);
 
     /**
-     * @brief Check if this @c XmlNode is of the named element type in the
+     * @brief Check if this @c XmlNode is of the named element in the
      * CellML 2.0 namespace.
      *
-     * Checks whether this @c XmlNode has the argument element type name in
+     * Checks whether this @c XmlNode has the argument element name in
      * the CellML 2.0 namespace.
      * Returns @ true if so, and @c false otherwise.
      *
-     * @param elementName The @c char element type name to check for.
+     * @param elementName The @c char element name to check for.
      *
-     * @return @c true if this @c XmlNode is of the element type
+     * @return @c true if this @c XmlNode is of the element
      * specified by the @p elementName in the CellML 2.0 namespace and
      * @c false otherwise.
      */
-    bool isType(const char *elementName);
+    bool isCellmlElement(const char *elementName);
 
     /**
      * @brief Check if this @c XmlNode is a text node.
@@ -116,13 +116,13 @@ public:
     bool isCommentNode();
 
     /**
-     * @brief Get the type name of the XML element.
+     * @brief Get the name of the XML element.
      *
-     * Get the type name of the XML element.
+     * Get the name of the XML element.
      *
-     * @return A @c std::string representation of the XML type name.
+     * @return A @c std::string representation of the XML name.
      */
-    std::string getType() const;
+    std::string getName() const;
 
     /**
      * @brief Check if this @c XmlNode has the specified attribute.

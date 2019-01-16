@@ -93,13 +93,13 @@ public:
     bool isType(const char *attributeName);
 
     /**
-     * @brief Get the type of this XmlAttribute.
+     * @brief Get the name of this XmlAttribute.
      *
-     * Gets the type of this XmlAttribute and returns it as a @c std::string.
+     * Gets the name of this XmlAttribute and returns it as a @c std::string.
      *
      * @return The @c std::string corresponding with the name of this XmlAttribute.
      */
-    std::string getType() const;
+    std::string getName() const;
 
     /**
      * @brief Get the value of this XmlAttribute.
