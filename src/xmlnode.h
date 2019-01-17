@@ -68,15 +68,15 @@ public:
 	 * given namespace with the specified local name.
      * Returns @c true if so, and @c false otherwise.
      *
+     * @param name The @c char element name to check for.
      * @param ns The @c char namespace in which the element
      * node is to be defined.
-     * @param name The @c char element name to check for.
      *
      * @return @c true if this @c XmlNode is an element node in the
 	 * given namespace @p ns with the given local name @p name;
      * and @c false otherwise.
      */
-    bool isElement(const char *ns, const char *name);
+    bool isElement(const char *name, const char *ns);
 
     /**
      * @brief Check if this @c XmlNode is an element node in the

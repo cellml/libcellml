@@ -61,7 +61,7 @@ std::string XmlNode::getNamespace() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
 }
 
-bool XmlNode::isElement(const char *ns, const char *name)
+bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
     if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
@@ -74,7 +74,7 @@ bool XmlNode::isElement(const char *ns, const char *name)
 
 bool XmlNode::isCellmlElement(const char *name)
 {
-    return isElement(CELLML_2_0_NS, name);
+    return isElement(name, CELLML_2_0_NS);
 }
 
 bool XmlNode::isTextNode()
