@@ -65,7 +65,7 @@ public:
      * namespace with the specified local name.
      *
      * Checks whether this @c XmlNode is an element type node in the
-	 * given namespace with the specified local name.
+     * given namespace with the specified local name.
      * Returns @c true if so, and @c false otherwise.
      *
      * @param name The @c char element name to check for.
@@ -73,7 +73,7 @@ public:
      * node is to be defined.
      *
      * @return @c true if this @c XmlNode is an element node in the
-	 * given namespace @p ns with the given local name @p name;
+     * given namespace @p ns with the given local name @p name;
      * and @c false otherwise.
      */
     bool isElement(const char *name, const char *ns);
