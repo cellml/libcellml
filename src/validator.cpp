@@ -791,7 +791,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         err->setComponent(component);
         mValidator->addError(err);
         return;
-    } else if (!node->isElement(MATHML_NS, "math")) {
+    } else if (!node->isElement("math", MATHML_NS)) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Math root node is of invalid type '" + node->getName() +
                             "' on component '" + component->getName() +
@@ -857,8 +857,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 {
     XmlNodePtr childNode = node->getFirstChild();
     std::string textNode;
-    bool ciType = node->isElement(MATHML_NS, "ci");
-    bool cnType = node->isElement(MATHML_NS, "cn");
+    bool ciType = node->isElement("ci", MATHML_NS);
+    bool cnType = node->isElement("cn", MATHML_NS);
     if (ciType || cnType) {
         if (childNode) {
             if (childNode->isTextNode()) {
@@ -1006,8 +1006,8 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
 {
     XmlNodePtr childNode = node->getFirstChild();
-    if (node->isElement(MATHML_NS, "bvar")) {
-        if ((childNode) && (childNode->isElement(MATHML_NS, "ci"))) {
+    if (node->isElement("bvar", MATHML_NS)) {
+        if ((childNode) && (childNode->isElement("ci", MATHML_NS))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
                 if (grandchildNode->isTextNode()) {
