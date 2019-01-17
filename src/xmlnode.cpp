@@ -61,19 +61,20 @@ std::string XmlNode::getNamespace() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
 }
 
-bool XmlNode::isElement(const char *attributeNamespace, const char *elementName)
+bool XmlNode::isElement(const char *ns, const char *name)
 {
     bool found = false;
-    if (   !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST attributeNamespace)
-        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
+    if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
+		&& !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
+        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
         found = true;
     }
     return found;
 }
 
-bool XmlNode::isCellmlElement(const char *elementName)
+bool XmlNode::isCellmlElement(const char *name)
 {
-    return isElement(CELLML_2_0_NS, elementName);
+    return isElement(CELLML_2_0_NS, name);
 }
 
 bool XmlNode::isTextNode()

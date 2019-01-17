@@ -61,38 +61,38 @@ public:
     std::string getNamespace() const;
 
     /**
-     * @brief Check if this @c XmlNode is of the named element in the
-     * given namespace.
+     * @brief Check if this @c XmlNode is an element node in the given
+     * namespace with the specified local name.
      *
-     * Checks whether this @c XmlNode has the argument element name in
-     * the given namespace.
-     * Returns @ true if so, and @c false otherwise.
+     * Checks whether this @c XmlNode is an element type node in the
+	 * given namespace with the specified local name.
+     * Returns @c true if so, and @c false otherwise.
      *
-     * @param elementNamespace The @c char namespace in which the element
-     * name is to be defined.
-     * @param elementName The @c char element name to check for.
+     * @param ns The @c char namespace in which the element
+     * node is to be defined.
+     * @param name The @c char element name to check for.
      *
-     * @return @c true if this @c XmlNode is of the element
-     * specified by the @p elementName in the namespace @elementNamespace
+     * @return @c true if this @c XmlNode is an element node in the
+	 * given namespace @p ns with the given local name @p name;
      * and @c false otherwise.
      */
-    bool isElement(const char *elementNamespace, const char *elementName);
+    bool isElement(const char *ns, const char *name);
 
     /**
-     * @brief Check if this @c XmlNode is of the named element in the
-     * CellML 2.0 namespace.
+     * @brief Check if this @c XmlNode is an element node in the
+     * CellML 2.0 namespace with the given local name.
      *
-     * Checks whether this @c XmlNode has the argument element name in
-     * the CellML 2.0 namespace.
-     * Returns @ true if so, and @c false otherwise.
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 2.0 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
      *
-     * @param elementName The @c char element name to check for.
+     * @param name The @c char element name to check for.
      *
-     * @return @c true if this @c XmlNode is of the element
-     * specified by the @p elementName in the CellML 2.0 namespace and
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 2.0 namespace with the given local name @p name; and
      * @c false otherwise.
      */
-    bool isCellmlElement(const char *elementName);
+    bool isCellmlElement(const char *name);
 
     /**
      * @brief Check if this @c XmlNode is a text node.
