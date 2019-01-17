@@ -902,7 +902,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         XmlAttributePtr unitsAttribute = nullptr;
         while (attribute) {
             if (attribute->getValue().length() > 0) {
-                if (attribute->isType(CELLML_2_0_NS, "units")) {
+                if (attribute->isType("units", CELLML_2_0_NS)) {
                     unitsName = attribute->getValue();
                     unitsAttribute = attribute;
                 } else {

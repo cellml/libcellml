@@ -60,19 +60,14 @@ std::string XmlAttribute::getNamespace() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href));
 }
 
-bool XmlAttribute::isType(const char *attributeNamespace, const char *attributeName)
+bool XmlAttribute::isType(const char *name, const char *ns)
 {
     bool found = false;
-    if (   !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST attributeNamespace)
-        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST attributeName)) {
+    if (   !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
+        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST name)) {
         found = true;
     }
     return found;
-}
-
-bool XmlAttribute::isType(const char *attributeName)
-{
-    return isType(NULL_NS, attributeName);
 }
 
 std::string XmlAttribute::getName() const
