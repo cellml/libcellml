@@ -61,32 +61,33 @@ std::string XmlNode::getNamespace() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
 }
 
-bool XmlNode::isType(const char *attributeNamespace, const char *elementName)
+bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
-    if (   !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST attributeNamespace)
-        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
+    if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
+        && !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
+        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
         found = true;
     }
     return found;
 }
 
-bool XmlNode::isType(const char *elementName)
+bool XmlNode::isCellmlElement(const char *name)
 {
-    return isType(CELLML_2_0_NS, elementName);
+    return isElement(name, CELLML_2_0_NS);
 }
 
-bool XmlNode::isTextNode()
+bool XmlNode::isText()
 {
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
 }
 
-bool XmlNode::isCommentNode()
+bool XmlNode::isComment()
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
 }
 
-std::string XmlNode::getType() const
+std::string XmlNode::getName() const
 {
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
 }
