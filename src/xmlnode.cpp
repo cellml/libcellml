@@ -77,12 +77,12 @@ bool XmlNode::isCellmlElement(const char *name)
     return isElement(name, CELLML_2_0_NS);
 }
 
-bool XmlNode::isTextNode()
+bool XmlNode::isText()
 {
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
 }
 
-bool XmlNode::isCommentNode()
+bool XmlNode::isComment()
 {
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
 }
