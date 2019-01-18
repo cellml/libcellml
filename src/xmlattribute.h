@@ -66,40 +66,24 @@ public:
      * the given namespace.
      * Returns @ true if so, and @c false otherwise.
      *
-     * @param attributeNamespace The @c char namespace in which the attribute
+     * @param ns The @c char namespace in which the attribute
      * type name is to be defined.
-     * @param attributeName The @c char attribute type name to check for.
+     * @param name The @c char attribute type name to check for.
      *
      * @return @c true if this XmlAttribute is of the attribute type
-     * specified by the @p attributeName in the namespace @attributeNamespace
+     * specified by the @p name in the namespace @p ns
      * and @c false otherwise.
      */
-    bool isType(const char *attributeNamespace, const char *attributeName);
+    bool isType(const char *name, const char *ns = "");
 
     /**
-     * @brief Check if this XmlAttribute is of the named attribute type in the
-     * null namespace.
+     * @brief Get the name of this XmlAttribute.
      *
-     * Checks whether this XmlAttribute has the argument attribute type name in
-     * the null namespace.
-     * Returns @ true if so, and @c false otherwise.
-     *
-     * @param attributeName The @c char attribute type name to check for.
-     *
-     * @return @c true if this XmlAttribute is of the attribute type
-     * specified by the @p attributeName in the null namespace and @c false
-     * otherwise.
-     */
-    bool isType(const char *attributeName);
-
-    /**
-     * @brief Get the type of this XmlAttribute.
-     *
-     * Gets the type of this XmlAttribute and returns it as a @c std::string.
+     * Gets the name of this XmlAttribute and returns it as a @c std::string.
      *
      * @return The @c std::string corresponding with the name of this XmlAttribute.
      */
-    std::string getType() const;
+    std::string getName() const;
 
     /**
      * @brief Get the value of this XmlAttribute.

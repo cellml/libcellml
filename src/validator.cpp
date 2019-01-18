@@ -791,9 +791,9 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         err->setComponent(component);
         mValidator->addError(err);
         return;
-    } else if (!node->isType(MATHML_NS, "math")) {
+    } else if (!node->isElement("math", MATHML_NS)) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Math root node is of invalid type '" + node->getType() +
+        err->setDescription("Math root node is of invalid type '" + node->getName() +
                             "' on component '" + component->getName() +
                             "'. A valid math root node should be of type 'math'.");
         err->setComponent(component);
@@ -857,11 +857,11 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 {
     XmlNodePtr childNode = node->getFirstChild();
     std::string textNode;
-    bool ciType = node->isType(MATHML_NS, "ci");
-    bool cnType = node->isType(MATHML_NS, "cn");
+    bool ciType = node->isElement("ci", MATHML_NS);
+    bool cnType = node->isElement("cn", MATHML_NS);
     if (ciType || cnType) {
         if (childNode) {
-            if (childNode->isTextNode()) {
+            if (childNode->isText()) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
                     if (ciType) {
@@ -883,7 +883,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     }
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("MathML " + node->getType() + " element has a whitespace-only child element.");
+                    err->setDescription("MathML " + node->getName() + " element has a whitespace-only child element.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
@@ -891,7 +891,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             }
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("MathML " + node->getType() + " element has no child.");
+            err->setDescription("MathML " + node->getName() + " element has no child.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -902,13 +902,13 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         XmlAttributePtr unitsAttribute = nullptr;
         while (attribute) {
             if (attribute->getValue().length() > 0) {
-                if (attribute->isType(CELLML_2_0_NS, "units")) {
+                if (attribute->isType("units", CELLML_2_0_NS)) {
                     unitsName = attribute->getValue();
                     unitsAttribute = attribute;
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math " + node->getType() + " element has an invalid attribute type '" +
-                                        attribute->getType() + "' in the cellml namespace.");
+                    err->setDescription("Math " + node->getName() + " element has an invalid attribute type '" +
+                                        attribute->getName() + "' in the cellml namespace.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
@@ -946,7 +946,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math has a " + node->getType() + " element with a cellml:units attribute '" + unitsName +
+                    err->setDescription("Math has a " + node->getName() + " element with a cellml:units attribute '" + unitsName +
                                         "' that is not a valid reference to units in component '" +
                                         component->getName() + "' or a standard unit.");
                     err->setComponent(component);
@@ -978,9 +978,9 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
-        if (!childNode->isTextNode() && !isSupportedMathMLElement(childNode)) {
+        if (!childNode->isText() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + childNode->getType() + "' element" +
+            err->setDescription("Math has a '" + childNode->getName() + "' element" +
                                 " that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
@@ -991,9 +991,9 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
     XmlNodePtr nextNode = node->getNext();
     if (nextNode) {
-        if (!nextNode->isTextNode() && !isSupportedMathMLElement(nextNode)) {
+        if (!nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math has a '" + nextNode->getType() + "' element" +
+            err->setDescription("Math has a '" + nextNode->getName() + "' element" +
                                 " that is not a supported MathML element.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
@@ -1006,11 +1006,11 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
 {
     XmlNodePtr childNode = node->getFirstChild();
-    if (node->isType(MATHML_NS, "bvar")) {
-        if ((childNode) && (childNode->isType(MATHML_NS, "ci"))) {
+    if (node->isElement("bvar", MATHML_NS)) {
+        if ((childNode) && (childNode->isElement("ci", MATHML_NS))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
-                if (grandchildNode->isTextNode()) {
+                if (grandchildNode->isText()) {
                     std::string textNode = grandchildNode->convertToString();
                     if (hasNonWhitespaceCharacters(textNode)) {
                         bvarNames.push_back(textNode);
@@ -1097,7 +1097,7 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
         "notanumber", "infinity", "true", "false"
     };
     return    !node->getNamespace().compare(MATHML_NS)
-           && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getType()) != supportedMathMLElements.end();
+           && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getName()) != supportedMathMLElements.end();
 }
 
 bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
