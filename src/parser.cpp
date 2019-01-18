@@ -335,7 +335,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             }
         } else if (childNode->isCellmlElement("connection")) {
             connectionNodes.push_back(childNode);
-        } else if (childNode->isTextNode()) {
+        } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
@@ -346,7 +346,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 err->setRule(SpecificationRule::MODEL_CHILD);
                 mParser->addError(err);
             }
-        } else if (childNode->isCommentNode()) {
+        } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -408,7 +408,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             //       so math is a valid subdocument.
             std::string math = childNode->convertToString();
             component->appendMath(math);
-        } else if (childNode->isTextNode()) {
+        } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
@@ -419,7 +419,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
                 err->setRule(SpecificationRule::COMPONENT_CHILD);
                 mParser->addError(err);
             }
-        } else if (childNode->isCommentNode()) {
+        } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -454,7 +454,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
     while (childNode) {
         if (childNode->isCellmlElement("unit")) {
             loadUnit(units, childNode);
-        } else if (childNode->isTextNode()) {
+        } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
@@ -465,7 +465,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
                 err->setRule(SpecificationRule::UNITS_CHILD);
                 mParser->addError(err);
             }
-        } else if (childNode->isCommentNode()) {
+        } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -490,7 +490,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     if (node->getFirstChild()) {
         XmlNodePtr childNode = node->getFirstChild();
         while (childNode) {
-            if (childNode->isTextNode()) {
+            if (childNode->isText()) {
                 std::string textNode = childNode->convertToString();
                 // Ignore whitespace when parsing.
                 if (hasNonWhitespaceCharacters(textNode)) {
@@ -501,7 +501,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                     err->setUnits(units);
                     mParser->addError(err);
                 }
-            } else if (childNode->isCommentNode()) {
+            } else if (childNode->isComment()) {
                 // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
@@ -570,7 +570,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     if (node->getFirstChild()) {
         XmlNodePtr childNode = node->getFirstChild();
         while (childNode) {
-            if (childNode->isTextNode()) {
+            if (childNode->isText()) {
                 std::string textNode = childNode->convertToString();
                 // Ignore whitespace when parsing.
                 if (hasNonWhitespaceCharacters(textNode)) {
@@ -580,7 +580,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
                     err->setVariable(variable);
                     mParser->addError(err);
                 }
-            } else if (childNode->isCommentNode()) {
+            } else if (childNode->isComment()) {
                 // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
@@ -712,7 +712,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         // Connection map XML nodes should not have further children.
         if (childNode->getFirstChild()) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
-            if (grandchildNode->isTextNode()) {
+            if (grandchildNode->isText()) {
                 std::string textNode = grandchildNode->convertToString();
                 // Ignore whitespace when parsing.
                 if (hasNonWhitespaceCharacters(textNode)) {
@@ -723,7 +723,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
                 }
-            } else if (childNode->isCommentNode()) {
+            } else if (childNode->isComment()) {
                 // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
@@ -783,7 +783,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             variableNameMap.push_back(variableNamePair);
             mapVariablesFound = true;
 
-        } else if (childNode->isTextNode()) {
+        } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
@@ -794,7 +794,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
-        } else if (childNode->isCommentNode()) {
+        } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -971,7 +971,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             } else if (parentComponent) {
                 parentComponent->setEncapsulationId(encapsulationId);
             }
-        } else if (parentComponentNode->isTextNode()) {
+        } else if (parentComponentNode->isText()) {
             const std::string textNode = parentComponentNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
@@ -1077,7 +1077,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     childComponent->setEncapsulationId(childEncapsulationId );
                 }
 
-            } else if (childComponentNode->isTextNode()) {
+            } else if (childComponentNode->isText()) {
                 const std::string textNode = childComponentNode->convertToString();
                 // Ignore whitespace when parsing.
                 if (hasNonWhitespaceCharacters(textNode)) {
@@ -1195,7 +1195,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             if (!errorOccurred) {
                 model->addUnits(importedUnits);
             }
-        } else if (childNode->isTextNode()) {
+        } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
@@ -1206,7 +1206,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                 err->setRule(SpecificationRule::IMPORT_CHILD);
                 mParser->addError(err);
             }
-        } else if (childNode->isCommentNode()) {
+        } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -1302,7 +1302,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             WhenPtr when = std::make_shared<When>();
             loadWhen(when, reset, childNode);
             reset->addWhen(when);
-        } else if (childNode->isTextNode()) {
+        } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
@@ -1314,7 +1314,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 err->setRule(SpecificationRule::RESET_CHILD);
                 mParser->addError(err);
             }
-        } else if (childNode->isCommentNode()) {
+        } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -1396,7 +1396,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
                 err->setRule(SpecificationRule::WHEN_CHILD);
                 mParser->addError(err);
             }
-        } else if (childNode->isTextNode()) {
+        } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("When in reset referencing variable '" + referencedVariableName +
@@ -1405,7 +1405,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             err->setWhen(when);
             err->setRule(SpecificationRule::WHEN_CHILD);
             mParser->addError(err);
-        } else if (childNode->isCommentNode()) {
+        } else if (childNode->isComment()) {
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();

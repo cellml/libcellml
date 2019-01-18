@@ -102,7 +102,7 @@ public:
      *
      * @return @c true if this @c XmlNode is a text node and @c false otherwise.
      */
-    bool isTextNode();
+    bool isText();
 
     /**
      * @brief Check if this @c XmlNode is a comment node.
@@ -113,7 +113,7 @@ public:
      * @return @c true if this @c XmlNode is a comment node and @c false
      * otherwise.
      */
-    bool isCommentNode();
+    bool isComment();
 
     /**
      * @brief Get the name of the XML element.

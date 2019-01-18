@@ -861,7 +861,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     bool cnType = node->isElement("cn", MATHML_NS);
     if (ciType || cnType) {
         if (childNode) {
-            if (childNode->isTextNode()) {
+            if (childNode->isText()) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
                     if (ciType) {
@@ -978,7 +978,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
-        if (!childNode->isTextNode() && !isSupportedMathMLElement(childNode)) {
+        if (!childNode->isText() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + childNode->getName() + "' element" +
                                 " that is not a supported MathML element.");
@@ -991,7 +991,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
     XmlNodePtr nextNode = node->getNext();
     if (nextNode) {
-        if (!nextNode->isTextNode() && !isSupportedMathMLElement(nextNode)) {
+        if (!nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + nextNode->getName() + "' element" +
                                 " that is not a supported MathML element.");
@@ -1010,7 +1010,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
         if ((childNode) && (childNode->isElement("ci", MATHML_NS))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
-                if (grandchildNode->isTextNode()) {
+                if (grandchildNode->isText()) {
                     std::string textNode = grandchildNode->convertToString();
                     if (hasNonWhitespaceCharacters(textNode)) {
                         bvarNames.push_back(textNode);
