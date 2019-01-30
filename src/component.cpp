@@ -198,6 +198,33 @@ VariablePtr Component::getVariable(const std::string &name) const
     return variable;
 }
 
+VariablePtr Component::takeVariable(size_t index)
+{
+    VariablePtr variable = nullptr;
+    variable = getVariable(index);
+    removeVariable(index);
+    //if (index < mPimpl->mVariables.size()) {
+	//variable = mPimpl->mVariables.at(index);
+      //  mPimpl->mVariables.erase(mPimpl->mVariables.begin() + index);
+    //}
+
+    return variable;
+}
+
+VariablePtr Component::takeVariable(const std::string &name)
+{
+    VariablePtr variable = nullptr;
+    variable = getVariable(name);
+    removeVariable(name);
+    //auto result = mPimpl->findVariable(name);
+    //if (result != mPimpl->mVariables.end()) {
+    //    variable = *result;
+    //    mPimpl->mVariables.erase(result);
+    //}
+
+    return variable;
+}
+
 size_t Component::variableCount() const
 {
     return mPimpl->mVariables.size();
