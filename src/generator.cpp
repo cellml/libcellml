@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "libcellml/generator.h"
+#include "libcellml/namespaces.h"
 
 namespace libcellml{
 
@@ -247,11 +248,11 @@ void Generator::writeCodeToFile(std::string filename)
 
 std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr node)
 {
-    if (node->isType("apply"))
+    if (node->isElement("apply", MATHML_NS))
     {
         return parseNode(node->getFirstChild());
     }
-    else if (node->isType("plus"))
+    else if (node->isElement("plus", MATHML_NS))
     {
         auto c = std::make_shared<Addition>();
         auto s = node->getNext();
@@ -276,7 +277,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     }
-    else if (node->isType("minus"))
+    else if (node->isElement("minus", MATHML_NS))
     {
         auto c = std::make_shared<Subtraction>();
         auto s1 = node->getNext();
@@ -284,7 +285,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg2(parseNode(s1->getNext()));
         return c;
     }
-    else if (node->isType("times"))
+    else if (node->isElement("times", MATHML_NS))
     {
         auto c = std::make_shared<Multiplication>();
         auto s = node->getNext();
@@ -309,7 +310,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     }
-    else if (node->isType("divide"))
+    else if (node->isElement("divide", MATHML_NS))
     {
         auto c = std::make_shared<Division>();
         auto s1 = node->getNext();
@@ -317,7 +318,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg2(parseNode(s1->getNext()));
         return c;
     }
-    else if (node->isType("power"))
+    else if (node->isElement("power", MATHML_NS))
     {
         auto c = std::make_shared<Power>();
         auto s1 = node->getNext();
@@ -325,25 +326,25 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg2(parseNode(s1->getNext()));
         return c;
     }
-    else if (node->isType("sin"))
+    else if (node->isElement("sin", MATHML_NS))
     {
         auto c = std::make_shared<Sine>();
         c->setArg(parseNode(node->getNext()));
         return c;
     }
-    else if (node->isType("cos"))
+    else if (node->isElement("cos", MATHML_NS))
     {
         auto c = std::make_shared<Cosine>();
         c->setArg(parseNode(node->getNext()));
         return c;
     }
-    else if (node->isType("abs"))
+    else if (node->isElement("abs", MATHML_NS))
     {
         auto c = std::make_shared<AbsoluteValue>();
         c->setArg(parseNode(node->getNext()));
         return c;
     }
-    else if (node->isType("ci"))
+    else if (node->isElement("ci", MATHML_NS))
     {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
@@ -354,7 +355,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     }
-    else if (node->isType("cn"))
+    else if (node->isElement("cn", MATHML_NS))
     {
         double value;
         std::istringstream iss(node->getFirstChild()->convertToString());
@@ -366,7 +367,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Found node of type "
-                + node->getType() +
+                + node->getName() +
                 " which is currently not supported by the Generator class.");
         mGenerator->addError(err);
         throw UnknownNode();
@@ -392,7 +393,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseMathML(std::string
 
 void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)
 {
-    if (node->isType("bvar"))
+    if (node->isElement("bvar", MATHML_NS))
     {
         mVoi = node->getFirstChild()->getFirstChild()->convertToString();
         return;
