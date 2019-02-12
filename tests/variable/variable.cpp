@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <libcellml>
 
-
 TEST(Variable, setValidVariableName) {
     const std::string in = "valid_name";
     const std::string e = "<variable name=\"valid_name\"/>";

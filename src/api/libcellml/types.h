@@ -45,4 +45,5 @@ class Variable; /**< Forward declaration of Variable class. */
 typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
 class When; /**< Forward declaration of When class. */
 typedef std::shared_ptr<When> WhenPtr; /**< Type definition for shared when pointer. */
+
 }

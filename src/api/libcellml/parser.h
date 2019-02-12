@@ -16,12 +16,12 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
 #include "libcellml/types.h"
 #include "libcellml/units.h"
+
+#include <string>
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {

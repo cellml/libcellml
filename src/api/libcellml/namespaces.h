@@ -14,22 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "versionconfig.h"
+#pragma once
 
-#include "libcellml/version.h"
-
-#include <string>
+/** @file */
 
 namespace libcellml {
 
-unsigned int version()
-{
-    return LIBCELLML_LIBRARY_VERSION;
-}
+const char * const CELLML_2_0_NS = "http://www.cellml.org/cellml/2.0#";
+const char * const MATHML_NS     = "http://www.w3.org/1998/Math/MathML";
+const char * const XLINK_NS      = "http://www.w3.org/1999/xlink";
 
-const std::string versionString()
-{
-    return LIBCELLML_LIBRARY_VERSION_STRING;
-}
+const char * const NULL_NS       = "";
 
 }
