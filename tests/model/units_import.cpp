@@ -201,4 +201,3 @@ TEST(UnitsImport, importModifyAndParse) {
     // check units count
     EXPECT_EQ(5u, model->unitsCount());
 }
-

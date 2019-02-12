@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <libcellml>
 
-
 TEST(Component, validName) {
     const std::string in = "valid_name";
     const std::string e = "<component name=\"" + in + "\"/>";

@@ -16,10 +16,10 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
 #include "libcellml/componententity.h"
 #include "libcellml/exportdefinitions.h"
+
+#include <string>
 
 #ifndef SWIG
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;

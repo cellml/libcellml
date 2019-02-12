@@ -14,24 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "utilities.h"
+
+#include "libcellml/component.h"
+#include "libcellml/enumerations.h"
+#include "libcellml/importsource.h"
+#include "libcellml/model.h"
 #include "libcellml/printer.h"
+#include "libcellml/reset.h"
+#include "libcellml/units.h"
+#include "libcellml/variable.h"
+#include "libcellml/when.h"
 
 #include <map>
 #include <stack>
 #include <utility>
 #include <vector>
 #include <iostream>
-
-#include "libcellml/enumerations.h"
-#include "libcellml/component.h"
-#include "libcellml/importsource.h"
-#include "libcellml/model.h"
-#include "libcellml/reset.h"
-#include "libcellml/units.h"
-#include "libcellml/variable.h"
-#include "libcellml/when.h"
-
-#include "utilities.h"
 
 namespace libcellml {
 
