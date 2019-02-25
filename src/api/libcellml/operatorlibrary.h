@@ -13,7 +13,7 @@ namespace libcellml {
  * is unlikely that they will be used in other parts of the code, so it seems
  * natural to provide logical grouping for them.
  * Also, they have quite common names and having a separate namespace reduces
- * the risk for names clashing. For example, this namespace resolves a clas
+ * the risk for names clashing. For example, this namespace resolves a class
  * between @c libcellml::Variable and what is now @c
  * libcellml::operators::Variable.
  */

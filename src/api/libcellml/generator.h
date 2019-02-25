@@ -70,29 +70,13 @@ struct EnumClassHash
     }
 };
 
-class LIBCELLML_EXPORT CXX
-{
-public:
-    enum class types {void_t, double_t, double_ct, double_pt, double_rt};
-
-    static std::string returnType(types t);
-    static std::string argType(types t);
-    static std::string argListOp() {return "(";}
-    static std::string argListCl() {return ")";}
-    static std::string funBodyOp() {return "{";}
-    static std::string funBodyCl() {return "}";}
-    static std::string instructionDelimiter() {return ";";}
-    static std::string dereferenceOp() {return "*";}
-};
-
 class LIBCELLML_EXPORT Generator : public Logger
 {
 public:
     Generator();
     virtual ~Generator();
 
-    template <typename L = CXX>
-        std::string generateCode(ModelPtr m);
+    std::string generateCode(ModelPtr m);
     void writeCodeToFile(std::string filename);
 
 private:
