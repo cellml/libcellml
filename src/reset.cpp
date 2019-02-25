@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 #include "libcellml/reset.h"
+#include "libcellml/when.h"
 
 #include <algorithm>
 #include <vector>
-
-#include <libcellml/when.h>
 
 namespace libcellml {
 
@@ -173,4 +172,3 @@ size_t Reset::whenCount() const
 }
 
 }
-
