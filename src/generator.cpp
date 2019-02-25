@@ -15,39 +15,16 @@ limitations under the License.
 */
 
 #include "libcellml/generator.h"
+#include "libcellml/namespaces.h"
 
 namespace libcellml{
 
 using namespace libcellml::operators;
 
-std::string CXX::returnType(types t)
-{
-    static const std::unordered_map<types, std::string, EnumClassHash> returnTypes = {
-        {types::void_t,"void "},
-        {types::double_t, "double "},
-        {types::double_ct, "const double "},
-        {types::double_pt, "double *"},
-        {types::double_rt, "double &"}
-    };
-
-    return returnTypes.at(t);
-}
-
-std::string CXX::argType(types t)
-{
-    static const std::unordered_map<types, std::string, EnumClassHash> argTypes = {
-        {types::void_t,"void "},
-        {types::double_t, "double "},
-        {types::double_ct, "const double "},
-        {types::double_pt, "double *"},
-        {types::double_rt, "double &"},
-    };
-
-    return argTypes.at(t);
-}
-
 struct Generator::GeneratorImpl
 {
+    enum class types {void_t, double_t, double_ct, double_pt, double_rt};
+
     Generator* mGenerator;
 
     void findVOI(std::string math);
@@ -55,19 +32,21 @@ struct Generator::GeneratorImpl
     void findInitialValues(ComponentPtr c);
     std::shared_ptr<libcellml::operators::Representable> parseMathML(std::string math);
     std::shared_ptr<libcellml::operators::Representable> parseNode(XmlNodePtr node);
-    template <typename L = CXX>
-        std::string doGenerateCode(ModelPtr m);
-    template <typename L = CXX>
-        std::string generateInitConsts();
-    template <typename L = CXX>
-        std::string generateComputeRates(
-                std::shared_ptr<libcellml::operators::Representable> r);
-    template <typename L = CXX>
-        std::string generateComputeVariables();
-    template <typename L = CXX>
-        std::string generateStateAliases();
-    template <typename L = CXX>
-        std::string generateVoiAlias();
+    std::string doGenerateCode(ModelPtr m);
+    std::string generateInitConsts();
+    std::string generateComputeRates(std::shared_ptr<libcellml::operators::Representable> r);
+    std::string generateComputeVariables();
+    std::string generateStateAliases();
+    std::string generateVoiAlias();
+
+    std::string returnType(types t);
+    std::string argType(types t);
+    std::string argListOp() {return "(";}
+    std::string argListCl() {return ")";}
+    std::string funBodyOp() {return "{";}
+    std::string funBodyCl() {return "}";}
+    std::string instructionDelimiter() {return ";";}
+    std::string dereferenceOp() {return "*";}
 
     std::string mVoi;
     std::vector<std::string> mStates;
@@ -86,7 +65,6 @@ Generator::~Generator()
     delete mPimpl;
 }
 
-template<typename L>
 std::string Generator::GeneratorImpl::generateStateAliases()
 {
     std::string s;
@@ -94,69 +72,66 @@ std::string Generator::GeneratorImpl::generateStateAliases()
     for (size_t i = 0; i < mStates.size(); i++)
     {
         oss << "    "
-            << L::argType(L::types::double_rt) << mStates[i] << " = " << L::dereferenceOp() << "(states + " << i
-            << ")" << L::instructionDelimiter() << std::endl;
+            << argType(types::double_rt) << mStates[i] << " = " << dereferenceOp() << "(states + " << i
+            << ")" << instructionDelimiter() << std::endl;
     }
     oss << std::endl;
     return oss.str();
 }
 
-template<typename L>
 std::string Generator::GeneratorImpl::generateVoiAlias()
 {
     std::string s;
     std::ostringstream oss(s);
     oss << "    "
-        << L::argType(L::types::double_ct) << mVoi << " = voi" << L::instructionDelimiter() << std::endl;
+        << argType(types::double_ct) << mVoi << " = voi" << instructionDelimiter() << std::endl;
     oss << std::endl;
     return oss.str();
 }
 
-template<typename L>
 std::string Generator::GeneratorImpl::generateInitConsts()
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << L::returnType(L::types::void_t) << "initConsts"
-        << L::argListOp()
-        << L::argType(L::types::double_pt)
+    oss << returnType(types::void_t) << "initConsts"
+        << argListOp()
+        << argType(types::double_pt)
         << "constants, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "rates, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "states"
-        << L::argListCl() << std::endl
-        << L::funBodyOp() << std::endl;
+        << argListCl() << std::endl
+        << funBodyOp() << std::endl;
 
     oss << generateStateAliases() << std::endl;
     for (auto s : mInitialValues)
     {
         oss << "    " << s.first << " = "
-            << std::setprecision(16) << s.second << L::instructionDelimiter() << std::endl;
+            << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
     }
-    oss << std::endl << L::funBodyCl();
+    oss << std::endl << funBodyCl();
     return oss.str();
 }
 
-template<typename L>
 std::string Generator::GeneratorImpl::generateComputeRates(std::shared_ptr<Representable> r)
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << L::returnType(L::types::void_t) << "computeRates"
-        << L::argListOp()
-        << L::argType(L::types::double_t)
+    oss << returnType(types::void_t) << "computeRates"
+        << argListOp()
+        << argType(types::double_t)
         << "voi, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "constants, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "rates, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "states, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "algebraic"
-        << L::argListCl() << std::endl
-        << L::funBodyOp() << std::endl;
+        << argListCl() << std::endl
+        << funBodyOp() << std::endl;
 
     oss << generateVoiAlias() << std::endl;
     oss << generateStateAliases() << std::endl;
@@ -165,30 +140,29 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::shared_ptr<Repre
         << r->repr() << ";" << std::endl;
 
     oss << std::endl
-        << L::funBodyCl();
+        << funBodyCl();
     return oss.str();
 }
 
-template<typename L>
 std::string Generator::GeneratorImpl::generateComputeVariables()
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << L::returnType(L::types::void_t) << "computeVariables"
-        << L::argListOp()
-        << L::argType(L::types::double_t)
+    oss << returnType(types::void_t) << "computeVariables"
+        << argListOp()
+        << argType(types::double_t)
         << "voi, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "constants, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "rates, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "states, "
-        << L::argType(L::types::double_pt)
+        << argType(types::double_pt)
         << "algebraic"
-        << L::argListCl()  << std::endl
-        << L::funBodyOp() << std::endl
-        << L::funBodyCl();
+        << argListCl()  << std::endl
+        << funBodyOp() << std::endl
+        << funBodyCl();
     return oss.str();
 }
 
@@ -204,7 +178,6 @@ void Generator::GeneratorImpl::findInitialValues(ComponentPtr c)
     }
 }
 
-template<typename L>
 std::string Generator::GeneratorImpl::doGenerateCode(ModelPtr m)
 {
     ComponentPtr c = m->getComponent(0);
@@ -212,21 +185,46 @@ std::string Generator::GeneratorImpl::doGenerateCode(ModelPtr m)
     findVOI(c->getMath());
     findInitialValues(c);
     auto r = parseMathML(c->getMath());
-    
+
     std::string generatedCode;
     std::ostringstream oss(generatedCode);
-    oss << generateInitConsts<L>() << std::endl;
-    oss << generateComputeRates<L>(r) << std::endl;
-    oss << generateComputeVariables<L>() << std::endl;
+    oss << generateInitConsts() << std::endl;
+    oss << generateComputeRates(r) << std::endl;
+    oss << generateComputeVariables() << std::endl;
 
     mCode = oss.str();
     return mCode;
 }
 
-template <typename L>
+std::string Generator::GeneratorImpl::returnType(types t)
+{
+    static const std::unordered_map<types, std::string, EnumClassHash> returnTypes = {
+        {types::void_t,"void "},
+        {types::double_t, "double "},
+        {types::double_ct, "const double "},
+        {types::double_pt, "double *"},
+        {types::double_rt, "double &"}
+    };
+
+    return returnTypes.at(t);
+}
+
+std::string Generator::GeneratorImpl::argType(types t)
+{
+    static const std::unordered_map<types, std::string, EnumClassHash> argTypes = {
+        {types::void_t,"void "},
+        {types::double_t, "double "},
+        {types::double_ct, "const double "},
+        {types::double_pt, "double *"},
+        {types::double_rt, "double &"},
+    };
+
+    return argTypes.at(t);
+}
+
 std::string Generator::generateCode(ModelPtr m)
 {
-    return mPimpl->doGenerateCode<L>(m);
+    return mPimpl->doGenerateCode(m);
 }
 
 void Generator::writeCodeToFile(std::string filename)
@@ -247,11 +245,11 @@ void Generator::writeCodeToFile(std::string filename)
 
 std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr node)
 {
-    if (node->isType("apply"))
+    if (node->isElement("apply", MATHML_NS))
     {
         return parseNode(node->getFirstChild());
     }
-    else if (node->isType("plus"))
+    else if (node->isElement("plus", MATHML_NS))
     {
         auto c = std::make_shared<Addition>();
         auto s = node->getNext();
@@ -276,7 +274,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     }
-    else if (node->isType("minus"))
+    else if (node->isElement("minus", MATHML_NS))
     {
         auto c = std::make_shared<Subtraction>();
         auto s1 = node->getNext();
@@ -284,7 +282,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg2(parseNode(s1->getNext()));
         return c;
     }
-    else if (node->isType("times"))
+    else if (node->isElement("times", MATHML_NS))
     {
         auto c = std::make_shared<Multiplication>();
         auto s = node->getNext();
@@ -309,7 +307,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     }
-    else if (node->isType("divide"))
+    else if (node->isElement("divide", MATHML_NS))
     {
         auto c = std::make_shared<Division>();
         auto s1 = node->getNext();
@@ -317,7 +315,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg2(parseNode(s1->getNext()));
         return c;
     }
-    else if (node->isType("power"))
+    else if (node->isElement("power", MATHML_NS))
     {
         auto c = std::make_shared<Power>();
         auto s1 = node->getNext();
@@ -325,25 +323,25 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg2(parseNode(s1->getNext()));
         return c;
     }
-    else if (node->isType("sin"))
+    else if (node->isElement("sin", MATHML_NS))
     {
         auto c = std::make_shared<Sine>();
         c->setArg(parseNode(node->getNext()));
         return c;
     }
-    else if (node->isType("cos"))
+    else if (node->isElement("cos", MATHML_NS))
     {
         auto c = std::make_shared<Cosine>();
         c->setArg(parseNode(node->getNext()));
         return c;
     }
-    else if (node->isType("abs"))
+    else if (node->isElement("abs", MATHML_NS))
     {
         auto c = std::make_shared<AbsoluteValue>();
         c->setArg(parseNode(node->getNext()));
         return c;
     }
-    else if (node->isType("ci"))
+    else if (node->isElement("ci", MATHML_NS))
     {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
@@ -354,7 +352,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     }
-    else if (node->isType("cn"))
+    else if (node->isElement("cn", MATHML_NS))
     {
         double value;
         std::istringstream iss(node->getFirstChild()->convertToString());
@@ -366,7 +364,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Found node of type "
-                + node->getType() +
+                + node->getName() +
                 " which is currently not supported by the Generator class.");
         mGenerator->addError(err);
         throw UnknownNode();
@@ -392,7 +390,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseMathML(std::string
 
 void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)
 {
-    if (node->isType("bvar"))
+    if (node->isElement("bvar", MATHML_NS))
     {
         mVoi = node->getFirstChild()->getFirstChild()->convertToString();
         return;
@@ -431,7 +429,5 @@ const char * UnknownNode::what () const throw ()
 {
     return "Found node of unknown type";
 }
-
-template std::string Generator::generateCode<CXX>(ModelPtr m);
 
 }
