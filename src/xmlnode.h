@@ -16,11 +16,12 @@ limitations under the License.
 
 #pragma once
 
-#include <libxml/parser.h>
+#include "xmlattribute.h"
+
 #include <memory>
 #include <string>
 
-#include "xmlattribute.h"
+#include <libxml/parser.h>
 
 namespace libcellml {
 
@@ -50,26 +51,78 @@ public:
     void setXmlNode (const xmlNodePtr &node);
 
     /**
-     * @brief Check if this @c XmlNode is of the named element type.
+     * @brief Get the namespace of the XML element.
      *
-     * Checks whether this @c XmlNode has the argument element type name.
-     * Returns @ true if so, and @c false otherwise.
+     * Get the namespace of the XML element.
      *
-     * @param elementName The @c char element type name to check for.
-     *
-     * @return @c true if this @c XmlNode is of the element type
-     * specified by the @p elementName and @c false otherwise.
+     * @return A @c std::string representation of the XML namespace.
      */
-    bool isType(const char *elementName);
+
+    std::string getNamespace() const;
 
     /**
-     * @brief Get the type name of the XML element.
+     * @brief Check if this @c XmlNode is an element node in the given
+     * namespace with the specified local name.
      *
-     * Get the type name of the XML element.
+     * Checks whether this @c XmlNode is an element type node in the
+     * given namespace with the specified local name.
+     * Returns @c true if so, and @c false otherwise.
      *
-     * @return A @c std::string representation of the XML type name.
+     * @param name The @c char element name to check for.
+     * @param ns The @c char namespace in which the element
+     * node is to be defined.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * given namespace @p ns with the given local name @p name;
+     * and @c false otherwise.
      */
-    std::string getType() const;
+    bool isElement(const char *name, const char *ns);
+
+    /**
+     * @brief Check if this @c XmlNode is an element node in the
+     * CellML 2.0 namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the CellML 2.0 namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * CellML 2.0 namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isCellmlElement(const char *name);
+
+    /**
+     * @brief Check if this @c XmlNode is a text node.
+     *
+     * Checks whether this @c XmlNode is a text node.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a text node and @c false otherwise.
+     */
+    bool isText();
+
+    /**
+     * @brief Check if this @c XmlNode is a comment node.
+     *
+     * Checks whether this @c XmlNode is a comment node.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @return @c true if this @c XmlNode is a comment node and @c false
+     * otherwise.
+     */
+    bool isComment();
+
+    /**
+     * @brief Get the name of the XML element.
+     *
+     * Get the name of the XML element.
+     *
+     * @return A @c std::string representation of the XML name.
+     */
+    std::string getName() const;
 
     /**
      * @brief Check if this @c XmlNode has the specified attribute.

@@ -14,14 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "xmlattribute.h"
 #include "xmlnode.h"
+
+#include "libcellml/namespaces.h"
 
 #include <string>
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-
-#include "xmlattribute.h"
 
 namespace libcellml {
 
@@ -52,16 +53,41 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
     mPimpl->mXmlNodePtr = node;
 }
 
-bool XmlNode::isType(const char *elementName)
+std::string XmlNode::getNamespace() const
+{
+    if (!mPimpl->mXmlNodePtr->ns) {
+        return std::string();
+    }
+    return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
+}
+
+bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
-    if (!xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST elementName)) {
+    if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
+        && !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
+        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
         found = true;
     }
     return found;
 }
 
-std::string XmlNode::getType() const
+bool XmlNode::isCellmlElement(const char *name)
+{
+    return isElement(name, CELLML_2_0_NS);
+}
+
+bool XmlNode::isText()
+{
+    return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;
+}
+
+bool XmlNode::isComment()
+{
+    return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
+}
+
+std::string XmlNode::getName() const
 {
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
 }

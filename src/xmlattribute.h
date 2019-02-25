@@ -16,9 +16,10 @@ limitations under the License.
 
 #pragma once
 
-#include <libxml/parser.h>
 #include <memory>
 #include <string>
+
+#include <libxml/parser.h>
 
 namespace libcellml {
 
@@ -48,26 +49,41 @@ public:
     void setXmlAttribute (const xmlAttrPtr &attribute);
 
     /**
-     * @brief Check if this XmlAttribute is of the named attribute type.
+     * @brief Get the namespace of this XmlAttribute.
      *
-     * Checks whether this XmlAttribute has the argument attribute type name.
-     * Returns @ true if so, and @c false otherwise.
+     * Get the namespace of this XmlAttribute.
      *
-     * @param attributeName The @c char attribute type name to check for.
-     *
-     * @return @c true if this XmlAttribute is of the attribute type
-     * specified by the @p attributeName and @c false otherwise.
+     * @return A @c std::string representation of the XML namespace.
      */
-    bool isType(const char *attributeName);
+
+    std::string getNamespace() const;
 
     /**
-     * @brief Get the type of this XmlAttribute.
+     * @brief Check if this XmlAttribute is of the named attribute type in the
+     * given namespace.
      *
-     * Gets the type of this XmlAttribute and returns it as a @c std::string.
+     * Checks whether this XmlAttribute has the argument attribute type name in
+     * the given namespace.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @param ns The @c char namespace in which the attribute
+     * type name is to be defined.
+     * @param name The @c char attribute type name to check for.
+     *
+     * @return @c true if this XmlAttribute is of the attribute type
+     * specified by the @p name in the namespace @p ns
+     * and @c false otherwise.
+     */
+    bool isType(const char *name, const char *ns = "");
+
+    /**
+     * @brief Get the name of this XmlAttribute.
+     *
+     * Gets the name of this XmlAttribute and returns it as a @c std::string.
      *
      * @return The @c std::string corresponding with the name of this XmlAttribute.
      */
-    std::string getType() const;
+    std::string getName() const;
 
     /**
      * @brief Get the value of this XmlAttribute.

@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "mathmlconfig.h"
 #include "xmldoc.h"
+#include "xmlnode.h"
 
 #include <cstring>
 #include <string>
@@ -23,9 +25,6 @@ limitations under the License.
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xmlerror.h>
-
-#include "mathmlconfig.h"
-#include "xmlnode.h"
 
 namespace libcellml {
 

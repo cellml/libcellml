@@ -18,11 +18,11 @@ limitations under the License.
 
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
 #include <limits>
 #include <set>
-#include <vector>
-#include <iostream>
 #include <sstream>
+#include <vector>
 
 namespace libcellml {
 

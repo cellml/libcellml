@@ -87,4 +87,3 @@ std::string When::getValue() const
 }
 
 }
-

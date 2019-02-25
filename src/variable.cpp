@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "utilities.h"
+
+#include "libcellml/units.h"
 #include "libcellml/variable.h"
 
 #include <algorithm>
@@ -21,9 +24,6 @@ limitations under the License.
 #include <map>
 #include <sstream>
 #include <vector>
-
-#include "libcellml/units.h"
-#include "utilities.h"
 
 namespace libcellml {
 
