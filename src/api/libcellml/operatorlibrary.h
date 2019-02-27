@@ -217,6 +217,34 @@ private:
     double value;
 };
 
+/**
+ * @brief A class representing the derivative of a variable.
+ */
+class Derivative : public Representable
+{
+public:
+    Derivative(std::string variableName);
+    virtual ~Derivative() = default;
+
+    virtual std::string repr() override;
+
+private:
+    std::string variableName;
+};
+
+/**
+ * @brief A class representing an equation (or assignment) between two
+ * quantities.
+ */
+class Equation : public BinaryOperator
+{
+public:
+    Equation();
+    virtual ~Equation() = default;
+
+    virtual std::string repr() override;
+};
+
 }
 
 }
