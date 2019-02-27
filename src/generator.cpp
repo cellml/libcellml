@@ -30,11 +30,11 @@ struct Generator::GeneratorImpl
     void findVOI(std::string math);
     void findVOIHelper(XmlNodePtr node);
     void findInitialValues(ComponentPtr c);
-    std::shared_ptr<libcellml::operators::Representable> parseMathML(std::string math);
+    std::vector<std::shared_ptr<libcellml::operators::Representable>> parseMathML(std::string math);
     std::shared_ptr<libcellml::operators::Representable> parseNode(XmlNodePtr node);
     std::string doGenerateCode(ModelPtr m);
     std::string generateInitConsts();
-    std::string generateComputeRates(std::shared_ptr<libcellml::operators::Representable> r);
+    std::string generateComputeRates(std::vector<std::shared_ptr<libcellml::operators::Representable>> r);
     std::string generateComputeVariables();
     std::string generateStateAliases();
     std::string generateRateAliases();
@@ -131,7 +131,7 @@ std::string Generator::GeneratorImpl::generateInitConsts()
     return oss.str();
 }
 
-std::string Generator::GeneratorImpl::generateComputeRates(std::shared_ptr<Representable> r)
+std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shared_ptr<Representable>> representables)
 {
     std::string s;
     std::ostringstream oss(s);
@@ -154,8 +154,11 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::shared_ptr<Repre
     oss << generateStateAliases() << std::endl;
     oss << generateRateAliases() << std::endl;
 
-    oss << "    "
-        << r->repr() << ";" << std::endl;
+    for (auto r : representables)
+    {
+        oss << "    "
+            << r->repr() << ";" << std::endl;
+    }
 
     oss << std::endl
         << funBodyCl();
@@ -409,16 +412,23 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     }
 }
 
-std::shared_ptr<Representable> Generator::GeneratorImpl::parseMathML(std::string math)
+std::vector<std::shared_ptr<Representable>> Generator::GeneratorImpl::parseMathML(std::string math)
 {
+    std::vector<std::shared_ptr<Representable>> nodes;
+
     XmlDocPtr mathDoc = std::make_shared<XmlDoc>();
     mathDoc->parse(math);
 
     const XmlNodePtr root = mathDoc->getRootNode();
 
     XmlNodePtr childNode = root->getFirstChild();
+    while (childNode)
+    {
+        nodes.push_back(parseNode(childNode));
+        childNode = childNode->getNext();
+    }
 
-    return parseNode(childNode);
+    return nodes;
 }
 
 void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)

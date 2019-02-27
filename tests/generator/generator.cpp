@@ -538,3 +538,102 @@ TEST(Generator, divisionAndPower) {
 
     EXPECT_EQ(e, a);
 }
+
+TEST(Generator, generateModelTwoStates) {
+    const std::string e =
+        "void initConsts(double *constants, double *rates, double *states)\n"
+        "{\n"
+        "    double &y = *(states + 0);\n"
+        "    double &z = *(states + 1);\n"
+        "\n"
+        "\n"
+        "    z = 1;\n"
+        "    y = -2;\n"
+        "\n"
+        "}\n"
+        "void computeRates(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
+        "{\n"
+        "    const double t = voi;\n"
+        "\n"
+        "\n"
+        "    double &y = *(states + 0);\n"
+        "    double &z = *(states + 1);\n"
+        "\n"
+        "\n"
+        "    double &Dy = *(rates + 0);\n"
+        "    double &Dz = *(rates + 1);\n"
+        "\n"
+        "\n"
+        "    Dy = (y + 4);\n"
+        "    Dz = (z - y);\n"
+        "\n"
+        "}\n"
+        "void computeVariables(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
+        "{\n"
+        "}\n";
+
+    const std::string math =
+            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+            "<apply>"
+                "<eq/>"
+                "<apply>"
+                    "<diff/>"
+                    "<bvar>"
+                        "<ci>t</ci>"
+                    "</bvar>"
+                    "<ci>y</ci>"
+                "</apply>"
+                "<apply>"
+                    "<plus/>"
+                    "<ci>y</ci>"
+                    "<cn cellml:units=\"dimensionless\">4</cn>"
+                "</apply>"
+            "</apply>"
+            "<apply>"
+                "<eq/>"
+                "<apply>"
+                    "<diff/>"
+                    "<bvar>"
+                        "<ci>t</ci>"
+                    "</bvar>"
+                    "<ci>z</ci>"
+                "</apply>"
+                "<apply>"
+                    "<minus/>"
+                    "<ci>z</ci>"
+                    "<ci>y</ci>"
+                "</apply>"
+            "</apply>"
+        "</math>";
+
+
+    Generator generator;
+
+    auto model = std::make_shared<Model>();
+    ComponentPtr component = std::make_shared<Component>();
+    VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    VariablePtr var_z = std::make_shared<libcellml::Variable>();
+
+    model->setName("my_model");
+    component->setName("main");
+    var_t->setName("t");
+    var_y->setName("y");
+    var_z->setName("z");
+    var_t->setInitialValue(0);
+    var_y->setInitialValue(-2);
+    var_z->setInitialValue(1);
+    var_t->setUnits("dimensionless");
+    var_y->setUnits("dimensionless");
+    var_z->setUnits("dimensionless");
+    component->addVariable(var_t);
+    component->addVariable(var_y);
+    component->addVariable(var_z);
+    component->setMath(math);
+
+    model->addComponent(component);
+
+    const std::string a = generator.generateCode(model);
+
+    EXPECT_EQ(e, a);
+}
