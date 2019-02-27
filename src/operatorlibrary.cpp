@@ -96,6 +96,30 @@ std::string Constant::repr()
     return oss.str();
 }
 
+Derivative::Derivative (std::string variableName) :
+    variableName(variableName)
+{}
+
+std::string Derivative::repr()
+{
+    std::ostringstream oss;
+    oss << "D" << variableName;
+    return oss.str();
+}
+
+Equation::Equation() :
+    BinaryOperator()
+{}
+
+std::string Equation::repr()
+{
+    std::ostringstream oss;
+    oss << arg1->repr();
+    oss << " = ";
+    oss << arg2->repr();
+    return oss.str();
+}
+
 }
 
 }

@@ -37,6 +37,7 @@ struct Generator::GeneratorImpl
     std::string generateComputeRates(std::shared_ptr<libcellml::operators::Representable> r);
     std::string generateComputeVariables();
     std::string generateStateAliases();
+    std::string generateRateAliases();
     std::string generateVoiAlias();
 
     std::string returnType(types t);
@@ -72,8 +73,24 @@ std::string Generator::GeneratorImpl::generateStateAliases()
     for (size_t i = 0; i < mStates.size(); i++)
     {
         oss << "    "
-            << argType(types::double_rt) << mStates[i] << " = " << dereferenceOp() << "(states + " << i
-            << ")" << instructionDelimiter() << std::endl;
+            << argType(types::double_rt) << mStates[i] << " = "
+            << dereferenceOp() << "(states + " << i << ")"
+            << instructionDelimiter() << std::endl;
+    }
+    oss << std::endl;
+    return oss.str();
+}
+
+std::string Generator::GeneratorImpl::generateRateAliases()
+{
+    std::string s;
+    std::ostringstream oss(s);
+    for (size_t i = 0; i < mStates.size(); i++)
+    {
+        oss << "    "
+            << argType(types::double_rt) << "D" << mStates[i] << " = "
+            << dereferenceOp() << "(rates + " << i << ")"
+            << instructionDelimiter() << std::endl;
     }
     oss << std::endl;
     return oss.str();
@@ -135,8 +152,9 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::shared_ptr<Repre
 
     oss << generateVoiAlias() << std::endl;
     oss << generateStateAliases() << std::endl;
+    oss << generateRateAliases() << std::endl;
 
-    oss << "    rates[0] = "
+    oss << "    "
         << r->repr() << ";" << std::endl;
 
     oss << std::endl
@@ -245,7 +263,15 @@ void Generator::writeCodeToFile(std::string filename)
 
 std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr node)
 {
-    if (node->isElement("apply", MATHML_NS))
+    if (node->isElement("eq", MATHML_NS))
+    {
+        auto c = std::make_shared<Equation>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isElement("apply", MATHML_NS))
     {
         return parseNode(node->getFirstChild());
     }
@@ -345,11 +371,11 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
-        if (name != mVoi &&
-                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
-        {
-            mStates.push_back(name);
-        }
+//        if (name != mVoi &&
+//                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
+//        {
+//            mStates.push_back(name);
+//        }
         return c;
     }
     else if (node->isElement("cn", MATHML_NS))
@@ -358,6 +384,16 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         std::istringstream iss(node->getFirstChild()->convertToString());
         iss >> value;
         auto c = std::make_shared<Constant>(value);
+        return c;
+    }
+    else if (node->isElement("diff", MATHML_NS))
+    {
+        auto name = node->getNext()->getNext()->getFirstChild()->convertToString();
+        auto c = std::make_shared<libcellml::operators::Derivative>(name);
+        if (std::find(mStates.begin(), mStates.end(), name) == mStates.end())
+        {
+            mStates.push_back(name);
+        }
         return c;
     }
     else
@@ -381,9 +417,6 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseMathML(std::string
     const XmlNodePtr root = mathDoc->getRootNode();
 
     XmlNodePtr childNode = root->getFirstChild();
-    childNode = childNode->getFirstChild();
-    childNode = childNode->getNext();
-    childNode = childNode->getNext();
 
     return parseNode(childNode);
 }
