@@ -51,7 +51,7 @@ struct Generator::GeneratorImpl
 
     std::string mVoi;
     std::vector<std::string> mStates;
-    std::unordered_map<std::string,double> mInitialValues;
+    std::map<std::string,double> mInitialValues;
     std::string mCode = "";
 };
 
