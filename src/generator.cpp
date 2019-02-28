@@ -180,9 +180,10 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shar
 
     for (auto r : representables)
     {
+        auto& p = *(static_cast<Equation*>(&*r)->getArg1());
         // Here I assume that the first node is always of type Equation, and use
         // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(*(static_cast<Equation*>(&*r)->getArg1())).hash_code() == typeid(Derivative).hash_code())
+        if (typeid(p).hash_code() == typeid(Derivative).hash_code())
         {
             oss << "    "
                 << r->repr() << ";" << std::endl;
@@ -220,9 +221,10 @@ std::string Generator::GeneratorImpl::generateComputeVariables(std::vector<std::
 
     for (auto r : representables)
     {
+        auto& p = *(static_cast<Equation*>(&*r)->getArg1());
         // Here I assume that the first node is always of type Equation, and use
         // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(*(static_cast<Equation*>(&*r)->getArg1())).hash_code() == typeid(libcellml::operators::Variable).hash_code())
+        if (typeid(p).hash_code() == typeid(libcellml::operators::Variable).hash_code())
         {
             oss << "    "
                 << r->repr() << ";" << std::endl;
