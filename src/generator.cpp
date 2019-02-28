@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <typeinfo>
+
 #include "libcellml/generator.h"
 #include "libcellml/namespaces.h"
 
@@ -35,9 +37,10 @@ struct Generator::GeneratorImpl
     std::string doGenerateCode(ModelPtr m);
     std::string generateInitConsts();
     std::string generateComputeRates(std::vector<std::shared_ptr<libcellml::operators::Representable>> r);
-    std::string generateComputeVariables();
+    std::string generateComputeVariables(std::vector<std::shared_ptr<libcellml::operators::Representable>> r);
     std::string generateStateAliases();
     std::string generateRateAliases();
+    std::string generateAlgebraicAliases();
     std::string generateVoiAlias();
 
     std::string returnType(types t);
@@ -51,6 +54,7 @@ struct Generator::GeneratorImpl
 
     std::string mVoi;
     std::vector<std::string> mStates;
+    std::vector<std::string> mAlgebraic;
     std::map<std::string,double> mInitialValues;
     std::string mCode = "";
 };
@@ -96,6 +100,21 @@ std::string Generator::GeneratorImpl::generateRateAliases()
     return oss.str();
 }
 
+std::string Generator::GeneratorImpl::generateAlgebraicAliases()
+{
+    std::string s;
+    std::ostringstream oss(s);
+    for (size_t i = 0; i < mAlgebraic.size(); i++)
+    {
+        oss << "    "
+            << argType(types::double_rt) << mAlgebraic[i] << " = "
+            << dereferenceOp() << "(algebraic + " << i << ")"
+            << instructionDelimiter() << std::endl;
+    }
+    oss << std::endl;
+    return oss.str();
+}
+
 std::string Generator::GeneratorImpl::generateVoiAlias()
 {
     std::string s;
@@ -124,8 +143,12 @@ std::string Generator::GeneratorImpl::generateInitConsts()
     oss << generateStateAliases() << std::endl;
     for (auto s : mInitialValues)
     {
-        oss << "    " << s.first << " = "
-            << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
+        // Only states get an initial value
+        if (std::find(mStates.begin(), mStates.end(), s.first) != mStates.end())
+        {
+            oss << "    " << s.first << " = "
+                << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
+        }
     }
     oss << std::endl << funBodyCl();
     return oss.str();
@@ -153,11 +176,17 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shar
     oss << generateVoiAlias() << std::endl;
     oss << generateStateAliases() << std::endl;
     oss << generateRateAliases() << std::endl;
+    oss << generateAlgebraicAliases() << std::endl;
 
     for (auto r : representables)
     {
-        oss << "    "
-            << r->repr() << ";" << std::endl;
+        // Here I assume that the first node is always of type Equation, and use
+        // this fact to distinguish ODEs from algebraic equations.
+        if (typeid(*(static_cast<Equation*>(&*r)->getArg1())).hash_code() == typeid(Derivative).hash_code())
+        {
+            oss << "    "
+                << r->repr() << ";" << std::endl;
+        }
     }
 
     oss << std::endl
@@ -165,7 +194,7 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shar
     return oss.str();
 }
 
-std::string Generator::GeneratorImpl::generateComputeVariables()
+std::string Generator::GeneratorImpl::generateComputeVariables(std::vector<std::shared_ptr<Representable>> representables)
 {
     std::string s;
     std::ostringstream oss(s);
@@ -182,7 +211,25 @@ std::string Generator::GeneratorImpl::generateComputeVariables()
         << argType(types::double_pt)
         << "algebraic"
         << argListCl()  << std::endl
-        << funBodyOp() << std::endl
+        << funBodyOp() << std::endl;
+
+    oss << generateVoiAlias() << std::endl;
+    oss << generateStateAliases() << std::endl;
+    oss << generateRateAliases() << std::endl;
+    oss << generateAlgebraicAliases() << std::endl;
+
+    for (auto r : representables)
+    {
+        // Here I assume that the first node is always of type Equation, and use
+        // this fact to distinguish ODEs from algebraic equations.
+        if (typeid(*(static_cast<Equation*>(&*r)->getArg1())).hash_code() == typeid(libcellml::operators::Variable).hash_code())
+        {
+            oss << "    "
+                << r->repr() << ";" << std::endl;
+        }
+    }
+
+    oss << std::endl
         << funBodyCl();
     return oss.str();
 }
@@ -211,7 +258,7 @@ std::string Generator::GeneratorImpl::doGenerateCode(ModelPtr m)
     std::ostringstream oss(generatedCode);
     oss << generateInitConsts() << std::endl;
     oss << generateComputeRates(r) << std::endl;
-    oss << generateComputeVariables() << std::endl;
+    oss << generateComputeVariables(r) << std::endl;
 
     mCode = oss.str();
     return mCode;
@@ -374,11 +421,12 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
-//        if (name != mVoi &&
-//                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
-//        {
-//            mStates.push_back(name);
-//        }
+        // All variables are in mAlgebraic unless they are in mStates already
+        if (name != mVoi &&
+                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
+        {
+            mAlgebraic.push_back(name);
+        }
         return c;
     }
     else if (node->isElement("cn", MATHML_NS))
@@ -393,9 +441,18 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     {
         auto name = node->getNext()->getNext()->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Derivative>(name);
+        // When we find the derivative of a variable, that variable goes in
+        // mStates.
         if (std::find(mStates.begin(), mStates.end(), name) == mStates.end())
         {
             mStates.push_back(name);
+
+            // If it was previously put in mAlgebraic, it must be removed.
+            auto p = std::find(mAlgebraic.begin(), mAlgebraic.end(), name);
+            if (p != mAlgebraic.end())
+            {
+                mAlgebraic.erase(p);
+            }
         }
         return c;
     }
