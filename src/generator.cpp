@@ -329,36 +329,58 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     }
     else if (node->isElement("plus", MATHML_NS))
     {
-        auto c = std::make_shared<Addition>();
-        auto s = node->getNext();
-        c->setArg1(parseNode(s));
-        s = s->getNext();
-        if (!s->getNext())
+        // Unary plus (positive) and binary plus (addition) have the same node
+        // name, so we tell them apart by checking the number of arguments.
+        if (node->getNext()->getNext())
         {
-            c->setArg2(parseNode(s));
+            auto c = std::make_shared<Addition>();
+            auto s = node->getNext();
+            c->setArg1(parseNode(s));
+            s = s->getNext();
+            if (!s->getNext())
+            {
+                c->setArg2(parseNode(s));
+            }
+            else
+            {
+                auto pointer0 = c;
+                while (s->getNext())
+                {
+                    auto pointer1 = std::make_shared<Addition>();
+                    pointer1->setArg1(parseNode(s));
+                    pointer0->setArg2(pointer1);
+                    s = s->getNext();
+                    pointer0 = pointer1;
+                }
+                pointer0->setArg2(parseNode(s));
+            }
+            return c;
         }
         else
         {
-            auto pointer0 = c;
-            while (s->getNext())
-            {
-                auto pointer1 = std::make_shared<Addition>();
-                pointer1->setArg1(parseNode(s));
-                pointer0->setArg2(pointer1);
-                s = s->getNext();
-                pointer0 = pointer1;
-            }
-            pointer0->setArg2(parseNode(s));
+            auto c = std::make_shared<Positive>();
+            c->setArg(parseNode(node->getNext()));
+            return c;
         }
-        return c;
     }
     else if (node->isElement("minus", MATHML_NS))
     {
-        auto c = std::make_shared<Subtraction>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        // Unary minus (negative) and binary minus (subtraction) have the same node
+        // name, so we tell them apart by checking the number of arguments.
+        if (node->getNext()->getNext())
+        {
+            auto c = std::make_shared<Subtraction>();
+            auto s1 = node->getNext();
+            c->setArg1(parseNode(s1));
+            c->setArg2(parseNode(s1->getNext()));
+            return c;
+        }
+        else
+        {
+            auto c = std::make_shared<Negative>();
+            c->setArg(parseNode(node->getNext()));
+            return c;
+        }
     }
     else if (node->isElement("times", MATHML_NS))
     {
@@ -393,6 +415,91 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg2(parseNode(s1->getNext()));
         return c;
     }
+    else if (node->isElement("piecewise", MATHML_NS))
+    {
+        // A piecewise definition can be implemented as the sum of the products
+        // of each piece's expression and its condition.
+        auto c = std::make_shared<Addition>();
+        auto s = node->getFirstChild();
+        c->setArg1(parseNode(s));
+        s = s->getNext();
+        if (!s->getNext())
+        {
+            c->setArg2(parseNode(s));
+        }
+        else
+        {
+            auto pointer0 = c;
+            while (s->getNext())
+            {
+                auto pointer1 = std::make_shared<Addition>();
+                pointer1->setArg1(parseNode(s));
+                pointer0->setArg2(pointer1);
+                s = s->getNext();
+                pointer0 = pointer1;
+            }
+            pointer0->setArg2(parseNode(s));
+        }
+        return c;
+    }
+    else if (node->isElement("piece", MATHML_NS))
+    {
+        // A piece of a piecewise definition can be implemented as the product
+        // of its expression and its condition.
+        auto c = std::make_shared<Multiplication>();
+        auto s1 = node->getFirstChild();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isElement("and", MATHML_NS))
+    {
+        auto c = std::make_shared<And>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isElement("or", MATHML_NS))
+    {
+        auto c = std::make_shared<Or>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isElement("lt", MATHML_NS))
+    {
+        auto c = std::make_shared<Less>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isElement("leq", MATHML_NS))
+    {
+        auto c = std::make_shared<LessOrEqual>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isElement("geq", MATHML_NS))
+    {
+        auto c = std::make_shared<GreaterOrEqual>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
+    else if (node->isElement("gt", MATHML_NS))
+    {
+        auto c = std::make_shared<Greater>();
+        auto s1 = node->getNext();
+        c->setArg1(parseNode(s1));
+        c->setArg2(parseNode(s1->getNext()));
+        return c;
+    }
     else if (node->isElement("power", MATHML_NS))
     {
         auto c = std::make_shared<Power>();
@@ -416,6 +523,12 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     else if (node->isElement("abs", MATHML_NS))
     {
         auto c = std::make_shared<AbsoluteValue>();
+        c->setArg(parseNode(node->getNext()));
+        return c;
+    }
+    else if (node->isElement("not", MATHML_NS))
+    {
+        auto c = std::make_shared<Not>();
         c->setArg(parseNode(node->getNext()));
         return c;
     }

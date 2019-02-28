@@ -39,6 +39,30 @@ Division::Division() :
     ArithmeticOperator(std::string("/"))
 {}
 
+And::And() :
+    ArithmeticOperator(std::string("&&"))
+{}
+
+Or::Or() :
+    ArithmeticOperator(std::string("||"))
+{}
+
+Less::Less() :
+    ArithmeticOperator(std::string("<"))
+{}
+
+LessOrEqual::LessOrEqual() :
+    ArithmeticOperator(std::string("<="))
+{}
+
+GreaterOrEqual::GreaterOrEqual() :
+    ArithmeticOperator(std::string(">="))
+{}
+
+Greater::Greater() :
+    ArithmeticOperator(std::string(">"))
+{}
+
 Power::Power() :
     BinaryOperator()
 {}
@@ -53,6 +77,39 @@ std::string Power::repr()
 UnaryOperator::UnaryOperator() :
     arg(std::shared_ptr<Representable>())
 {}
+
+Positive::Positive() :
+    UnaryOperator()
+{}
+
+std::string Positive::repr()
+{
+    std::ostringstream oss;
+    oss << "+" << "(" << arg->repr() << ")";
+    return oss.str();
+}
+
+Negative::Negative() :
+    UnaryOperator()
+{}
+
+std::string Negative::repr()
+{
+    std::ostringstream oss;
+    oss << "-" << "(" << arg->repr() << ")";
+    return oss.str();
+}
+
+Not::Not() :
+    UnaryOperator()
+{}
+
+std::string Not::repr()
+{
+    std::ostringstream oss;
+    oss << "!" << "(" << arg->repr() << ")";
+    return oss.str();
+}
 
 STDOperator::STDOperator(std::string fun) :
     UnaryOperator(),
