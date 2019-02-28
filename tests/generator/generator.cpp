@@ -21,7 +21,7 @@ limitations under the License.
 using namespace libcellml;
 
 
-TEST(Generator, generateSimpleModel) {
+TEST(Generator, simpleModel) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
@@ -107,7 +107,7 @@ TEST(Generator, generateSimpleModel) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Generator, generateComplexModel) {
+TEST(Generator, complexModel) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
@@ -226,7 +226,7 @@ TEST(Generator, generateComplexModel) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Generator, generateComplexModelToFile) {
+TEST(Generator, complexModelToFile) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
@@ -581,7 +581,7 @@ TEST(Generator, divisionAndPower) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Generator, generateModelTwoStates) {
+TEST(Generator, twoStates) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
@@ -696,7 +696,7 @@ TEST(Generator, generateModelTwoStates) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Generator, generateModelSecondOrder) {
+TEST(Generator, secondOrder) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
@@ -803,7 +803,7 @@ TEST(Generator, generateModelSecondOrder) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Generator, generateModelAlgebraicEquation) {
+TEST(Generator, algebraicEquation) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states)\n"
         "{\n"
