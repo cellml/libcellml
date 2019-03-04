@@ -17,11 +17,13 @@ List of Contributors
 
 The following is a list of contributors (in surname alphabetical order) who have contributed lines of source code to the project on or before the 5/3/2019.
 
- * Robert Blake
- * Michael Clerx
- * Jonathan Cooper
- * Alan Garny
- * David Ladd
- * Gary Mirams
- * David Nickerson
- * Hugh Sorby
+* `Robert Blake <https://github.com/rblake-llnl>`_
+* `Michael Clerx <https://github.com/MichaelClerx>`_
+* `Jonathan Cooper <https://github.com/jonc125>`_
+* `Alan Garny <https://github.com/agarny>`_
+* `David Ladd <https://github.com/dladd>`_
+* `Gary Mirams <https://github.com/mirams>`_
+* `David Nickerson <https://github.com/nickerso>`_
+* `Hugh Sorby <https://github.com/hsorby>`_
+
+For an up-to-date list of contributors see https://github.com/cellml/libcellml/graphs/contributors.
