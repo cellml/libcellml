@@ -15,7 +15,7 @@ List of Funding Organisations
 List of Contributors
 ====================
 
-The following is a list of contributors (in surname alphabetical order) who have contributed lines of source code to the project on or before the 2019-03-05.
+The following is a list of contributors (in surname alphabetical order) who have contributed lines of source code to the project on or before 2019-03-05.
 
 * `Robert Blake <https://github.com/rblake-llnl>`_
 * `Michael Clerx <https://github.com/MichaelClerx>`_
