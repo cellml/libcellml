@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <cmath>
 #include <typeinfo>
 
 #include "libcellml/generator.h"
@@ -522,6 +523,12 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg(parseNode(node->getNext()));
         return c;
     }
+    else if (node->isElement("floor", MATHML_NS))
+    {
+        auto c = std::make_shared<Floor>();
+        c->setArg(parseNode(node->getNext()));
+        return c;
+    }
     else if (node->isElement("abs", MATHML_NS))
     {
         auto c = std::make_shared<AbsoluteValue>();
@@ -552,6 +559,11 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         std::istringstream iss(node->getFirstChild()->convertToString());
         iss >> value;
         auto c = std::make_shared<Constant>(value);
+        return c;
+    }
+    else if (node->isElement("pi", MATHML_NS))
+    {
+        auto c = std::make_shared<Constant>(std::acos(-1));
         return c;
     }
     else if (node->isElement("diff", MATHML_NS))
