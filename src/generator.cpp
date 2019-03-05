@@ -18,6 +18,8 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 #include "libcellml/namespaces.h"
+#include "../xmldoc.h"
+#include "../xmlnode.h"
 
 namespace libcellml{
 
