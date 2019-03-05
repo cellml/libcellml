@@ -14,10 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <cmath>
 #include <typeinfo>
 
 #include "libcellml/generator.h"
 #include "libcellml/namespaces.h"
+#include "../xmldoc.h"
+#include "../xmlnode.h"
 
 #include "xmlnode.h"
 #include "xmldoc.h"
@@ -144,14 +147,11 @@ std::string Generator::GeneratorImpl::generateInitConsts()
         << funBodyOp() << std::endl;
 
     oss << generateStateAliases() << std::endl;
+    oss << generateAlgebraicAliases() << std::endl;
     for (auto s : mInitialValues)
     {
-        // Only states get an initial value
-        if (std::find(mStates.begin(), mStates.end(), s.first) != mStates.end())
-        {
-            oss << "    " << s.first << " = "
-                << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
-        }
+        oss << "    " << s.first << " = "
+            << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
     }
     oss << std::endl << funBodyCl();
     return oss.str();
@@ -523,6 +523,12 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg(parseNode(node->getNext()));
         return c;
     }
+    else if (node->isElement("floor", MATHML_NS))
+    {
+        auto c = std::make_shared<Floor>();
+        c->setArg(parseNode(node->getNext()));
+        return c;
+    }
     else if (node->isElement("abs", MATHML_NS))
     {
         auto c = std::make_shared<AbsoluteValue>();
@@ -541,7 +547,12 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         auto c = std::make_shared<libcellml::operators::Variable>(name);
         // All variables are in mAlgebraic unless they are in mStates already
         if (name != mVoi &&
-                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
+                std::find(mStates.begin(),
+                          mStates.end(),
+                          name) == mStates.end() &&
+                std::find(mAlgebraic.begin(),
+                          mAlgebraic.end(),
+                          name) == mAlgebraic.end())
         {
             mAlgebraic.push_back(name);
         }
@@ -553,6 +564,11 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         std::istringstream iss(node->getFirstChild()->convertToString());
         iss >> value;
         auto c = std::make_shared<Constant>(value);
+        return c;
+    }
+    else if (node->isElement("pi", MATHML_NS))
+    {
+        auto c = std::make_shared<Constant>(std::acos(-1));
         return c;
     }
     else if (node->isElement("diff", MATHML_NS))
@@ -619,7 +635,7 @@ void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)
         {
             findVOIHelper(node->getFirstChild());
         }
-        else if (node->getNext())
+        if (node->getNext())
         {
             findVOIHelper(node->getNext());
         }
