@@ -15,8 +15,7 @@ List of Funding Organisations
 List of Contributors
 ====================
 
-The following is a list of contributors(in surname alphabetical order) who have contributed lines of
-source code to the libCellML project on or before 2019-03-05.
+The following is a list of contributors (in surname alphabetical order) who have contributed lines of source code to the libCellML project on or before 2019-03-06.
 
  * `Ted Ahmadi <https://github.com/TedAhmadi>`_
  * `Robert Blake <https://github.com/rblake-llnl>`_
