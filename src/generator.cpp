@@ -544,7 +544,12 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         auto c = std::make_shared<libcellml::operators::Variable>(name);
         // All variables are in mAlgebraic unless they are in mStates already
         if (name != mVoi &&
-                std::find(mStates.begin(), mStates.end(), name) == mStates.end())
+                std::find(mStates.begin(),
+                          mStates.end(),
+                          name) == mStates.end() &&
+                std::find(mAlgebraic.begin(),
+                          mAlgebraic.end(),
+                          name) == mAlgebraic.end())
         {
             mAlgebraic.push_back(name);
         }
