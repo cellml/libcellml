@@ -458,18 +458,18 @@ TEST(Variable, takeVariableMethods) {
     c.addVariable(v4);
 
     // Take by index
-    libcellml::VariablePtr tv1 = c.takeVariable(0);
-    std::string tvn1 = tv1->getName();
-    EXPECT_EQ("variable1", tvn1);
-    libcellml::VariablePtr gv1 = c.getVariable(0);
-    std::string gvn1 = nMethod2->getName();
-    EXPECT_EQ("variable2", gvn1);
-    tv1 = c.takeVariable(0);
-    tvn1 = vMethod3->getName();
-    EXPECT_EQ("variable2", tvn1);
-    gv1 = c.getVariable(0);
-    gvn1 = nMethod3->getName();
-    EXPECT_EQ("variable3", gvn1);
+    libcellml::VariablePtr tv = c.takeVariable(0);
+    std::string tvn = tv->getName();
+    EXPECT_EQ("variable1", tvn);
+    libcellml::VariablePtr gv = c.getVariable(0);
+    std::string gvn = gv->getName();
+    EXPECT_EQ("variable2", gvn);
+    tv = c.takeVariable(0);
+    tvn = tv->getName();
+    EXPECT_EQ("variable2", tvn);
+    gv = c.getVariable(0);
+    gvn = gv->getName();
+    EXPECT_EQ("variable3", gvn);
 
     // Take by string
     libcellml::VariablePtr tv3 = c.takeVariable("variable3");
@@ -477,8 +477,7 @@ TEST(Variable, takeVariableMethods) {
     EXPECT_EQ("variable3", tvn3);
 
     // Get invalid index
-    EXPECT_EQ(nullptr, c.takeVariable(-3));
-    EXPECT_EQ(nullptr, c.takeVariable(7));
+    EXPECT_EQ(nullptr, c.takeVariable(737));
 
     // Get non-existent variable by string
     EXPECT_EQ(nullptr, c.takeVariable("notreal"));
