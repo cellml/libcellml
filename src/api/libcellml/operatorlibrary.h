@@ -307,6 +307,13 @@ public:
     virtual ~Cosine() = default;
 };
 
+class Floor : public STDOperator
+{
+public:
+    Floor();
+    virtual ~Floor() = default;
+};
+
 /**
  * @brief A class representing variables in an expression.
  */

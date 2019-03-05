@@ -135,6 +135,10 @@ Cosine::Cosine() :
     STDOperator(std::string("cos"))
 {}
 
+Floor::Floor() :
+    STDOperator(std::string("floor"))
+{}
+
 Variable::Variable(std::string name) : name(name)
 {}
 
