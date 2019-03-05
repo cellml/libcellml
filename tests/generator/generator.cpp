@@ -1162,3 +1162,89 @@ TEST(Generator, piecewise2) {
 
     EXPECT_EQ(e, a);
 }
+
+TEST(Generator, floorPi) {
+    const std::string e =
+        "void initConsts(double *constants, double *rates, double *states)\n"
+        "{\n"
+        "    double &y = *(states + 0);\n"
+        "\n"
+        "\n"
+        "    y = -2;\n"
+        "\n"
+        "}\n"
+        "void computeRates(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
+        "{\n"
+        "    const double t = voi;\n"
+        "\n"
+        "\n"
+        "    double &y = *(states + 0);\n"
+        "\n"
+        "\n"
+        "    double &Dy = *(rates + 0);\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "    Dy = std::floor(3.141592653589793);\n"
+        "\n"
+        "}\n"
+        "void computeVariables(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
+        "{\n"
+        "    const double t = voi;\n"
+        "\n"
+        "\n"
+        "    double &y = *(states + 0);\n"
+        "\n"
+        "\n"
+        "    double &Dy = *(rates + 0);\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "}\n";
+
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+            "<apply>"
+                "<eq/>"
+                "<apply>"
+                    "<diff/>"
+                    "<bvar>"
+                        "<ci>t</ci>"
+                    "</bvar>"
+                    "<ci>y</ci>"
+                "</apply>"
+                "<apply>"
+                    "<floor/>"
+                    "<pi/>"
+                "</apply>"
+            "</apply>"
+        "</math>";
+
+    Generator generator;
+
+    auto model = std::make_shared<Model>();
+    ComponentPtr component = std::make_shared<Component>();
+    VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+
+    model->setName("my_model");
+    component->setName("main");
+    var_t->setName("t");
+    var_y->setName("y");
+    var_t->setInitialValue(0);
+    var_y->setInitialValue(-2);
+    var_t->setUnits("dimensionless");
+    var_y->setUnits("dimensionless");
+    component->addVariable(var_t);
+    component->addVariable(var_y);
+    component->setMath(math);
+
+    model->addComponent(component);
+
+    const std::string a = generator.generateCode(model);
+
+    EXPECT_EQ(e, a);
+}
