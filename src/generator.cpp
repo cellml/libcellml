@@ -19,6 +19,9 @@ limitations under the License.
 #include "libcellml/generator.h"
 #include "libcellml/namespaces.h"
 
+#include "xmlnode.h"
+#include "xmldoc.h"
+
 namespace libcellml{
 
 using namespace libcellml::operators;

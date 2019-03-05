@@ -32,8 +32,6 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/operatorlibrary.h"
 #include "libcellml/variable.h"
-#include "../xmldoc.h"
-#include "../xmlnode.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
