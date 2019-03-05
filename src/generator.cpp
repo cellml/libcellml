@@ -144,14 +144,11 @@ std::string Generator::GeneratorImpl::generateInitConsts()
         << funBodyOp() << std::endl;
 
     oss << generateStateAliases() << std::endl;
+    oss << generateAlgebraicAliases() << std::endl;
     for (auto s : mInitialValues)
     {
-        // Only states get an initial value
-        if (std::find(mStates.begin(), mStates.end(), s.first) != mStates.end())
-        {
-            oss << "    " << s.first << " = "
-                << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
-        }
+        oss << "    " << s.first << " = "
+            << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
     }
     oss << std::endl << funBodyCl();
     return oss.str();
