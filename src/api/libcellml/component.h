@@ -179,7 +179,7 @@ public:
      * @brief Take a variable at index.
      *
      * Remove the variable at the given index from this component and
-     * Returns a reference to a variable at the index @p index for this
+     * returns a reference to a variable at the index @p index for this
      * component. If the index is not valid a @c nullptr is returned, the valid
      * range for the index is [0, \#variables).
      *
@@ -193,7 +193,7 @@ public:
      * @brief Take a variable with the given name @p name.
      *
      * Remove the variable with the given name from this component and
-     * Returns a reference to a variable with the name @p name for this
+     * returns a reference to a variable with the name @p name for this
      * component.  If the name is not found a @c nullptr is returned.
      *
      * @overload
