@@ -616,7 +616,7 @@ void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)
         {
             findVOIHelper(node->getFirstChild());
         }
-        else if (node->getNext())
+        if (node->getNext())
         {
             findVOIHelper(node->getNext());
         }
