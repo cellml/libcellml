@@ -47,6 +47,12 @@ variable), this component will not be serialised in the connection.
 
 Returns `True` on success.";
 
+%feature("docstring") libcellml::Component::takeVariable
+"Removes a variable and returns it from this component, specified by name, or
+index.
+
+Returns the `Variable` on success.";
+
 %feature("docstring") libcellml::Component::removeAllVariables
 "Clears all variables that have been added to this component.
 
