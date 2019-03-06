@@ -407,7 +407,7 @@ TEST(Generator, writeWithoutGenerating) {
     auto model = std::make_shared<Model>();
 
     generator.writeCodeToFile("generatedCode.cpp");
-    EXPECT_EQ(1, generator.errorCount());
+    EXPECT_EQ(1u, generator.errorCount());
     EXPECT_EQ("No code was detected. The file 'generatedCode.cpp' was not written to. Please check that Generator::generateCode() is used before Generator::writeCodeToFile().", generator.getError(0)->getDescription());
 }
 
@@ -484,7 +484,7 @@ TEST(Generator, unknownNode) {
     model->addComponent(component);
 
     generator.generateCode(model);
-    EXPECT_EQ(1, generator.errorCount());
+    EXPECT_EQ(1u, generator.errorCount());
     EXPECT_EQ("Found node of type 'unknown' which is currently not supported.", generator.getError(0)->getDescription());
 }
 
