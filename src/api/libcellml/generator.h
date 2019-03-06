@@ -27,11 +27,8 @@ limitations under the License.
 #include <unordered_map>
 #include <vector>
 
-#include "libcellml/component.h"
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
-#include "libcellml/operatorlibrary.h"
-#include "libcellml/variable.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
