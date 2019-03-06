@@ -198,6 +198,24 @@ VariablePtr Component::getVariable(const std::string &name) const
     return variable;
 }
 
+VariablePtr Component::takeVariable(size_t index)
+{
+    VariablePtr variable = nullptr;
+    variable = getVariable(index);
+    removeVariable(index);
+
+    return variable;
+}
+
+VariablePtr Component::takeVariable(const std::string &name)
+{
+    VariablePtr variable = nullptr;
+    variable = getVariable(name);
+    removeVariable(name);
+
+    return variable;
+}
+
 size_t Component::variableCount() const
 {
     return mPimpl->mVariables.size();
