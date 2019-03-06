@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "libcellml/version.h"
+#include <libcellml>
 
 TEST(Version, versionMatch) {
     unsigned int version = libcellml::version();
@@ -9,4 +9,3 @@ TEST(Version, versionMatch) {
     std::string version_string = libcellml::versionString();
     EXPECT_EQ("0.1.0", version_string);
 }
-

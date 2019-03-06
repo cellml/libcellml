@@ -16,8 +16,8 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
-#include <libcellml>
 #include <iostream>
+#include <libcellml>
 
 /*
  * The tests in this file are here to catch any branches of code that

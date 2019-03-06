@@ -176,6 +176,35 @@ public:
     VariablePtr getVariable(const std::string &name) const;
 
     /**
+     * @brief Take a variable at index.
+     *
+     * Remove the variable at the given index from this component and
+     * returns a reference to a variable at the index @p index for this
+     * component. If the index is not valid a @c nullptr is returned, the valid
+     * range for the index is [0, \#variables).
+     *
+     * @param index The index of the variable to return.
+     *
+     * @return A reference to the variable at the given index on success, @c nullptr otherwise.
+     */
+    VariablePtr takeVariable(size_t index);
+
+    /**
+     * @brief Take a variable with the given name @p name.
+     *
+     * Remove the variable with the given name from this component and
+     * returns a reference to a variable with the name @p name for this
+     * component.  If the name is not found a @c nullptr is returned.
+     *
+     * @overload
+     *
+     * @param name The name of the variable to return.
+     *
+     * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
+     */
+    VariablePtr takeVariable(const std::string &name);
+    
+    /**
      * @brief Get the number of variables in the component.
      *
      * Returns the number of variables the component directly contains.
@@ -306,4 +335,3 @@ private:
 };
 
 }
-

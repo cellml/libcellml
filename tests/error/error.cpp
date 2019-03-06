@@ -18,7 +18,6 @@ limitations under the License.
 
 #include <libcellml>
 
-
 TEST(Error, createModelError) {
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(m);
@@ -351,4 +350,3 @@ TEST(Error, specificationRule) {
     testSpecificationRule(e);
     EXPECT_EQ(52u, count);
 }
-
