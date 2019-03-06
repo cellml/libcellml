@@ -18,6 +18,9 @@ limitations under the License.
 
 #include <libcellml>
 
+#include <fstream>
+#include <iostream>
+
 using namespace libcellml;
 
 
@@ -403,15 +406,9 @@ TEST(Generator, writeWithoutGenerating) {
 
     auto model = std::make_shared<Model>();
 
-    try
-    {
-        generator.writeCodeToFile("generatedCode.cpp");
-        FAIL() << "Expected CodeNotGenerated exception";
-    }
-    catch (const CodeNotGenerated &e)
-    {
-        std::cout << "Caught error: " << e.what() << std::endl;
-    }
+    generator.writeCodeToFile("generatedCode.cpp");
+    EXPECT_EQ(1u, generator.errorCount());
+    EXPECT_EQ("No code was detected. The file 'generatedCode.cpp' was not written to. Please check that Generator::generateCode() is used before Generator::writeCodeToFile().", generator.getError(0)->getDescription());
 }
 
 TEST(Generator, unknownNode) {
@@ -486,15 +483,9 @@ TEST(Generator, unknownNode) {
 
     model->addComponent(component);
 
-    try
-    {
-        generator.generateCode(model);
-        FAIL() << "Expected UnknownNode";
-    }
-    catch (const UnknownNode &e)
-    {
-        std::cout << "Caught error: " << e.what() << std::endl;
-    }
+    generator.generateCode(model);
+    EXPECT_EQ(1u, generator.errorCount());
+    EXPECT_EQ("Found node of type 'unknown' which is currently not supported.", generator.getError(0)->getDescription());
 }
 
 TEST(Generator, divisionAndPower) {
