@@ -246,8 +246,7 @@ std::string Generator::GeneratorImpl::generateComputeVariables(std::vector<std::
         auto& p = *(static_cast<Equation*>(&*r)->getArg1());
         // Here I assume that the first node is always of type Equation, and use
         // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(p).hash_code() == typeid(libcellml::operators::Variable).hash_code())
-        {
+        if (typeid(p).hash_code() == typeid(libcellml::operators::Variable).hash_code()) {
             oss << "    "
                 << r->repr() << ";" << std::endl;
         }
@@ -263,8 +262,7 @@ void Generator::GeneratorImpl::findInitialValues(ComponentPtr c)
     for (std::size_t i = 0; i < c->variableCount(); i++)
     {
         auto v = c->getVariable(i);
-        if (v->getName() != mVoi)
-        {
+        if (v->getName() != mVoi) {
             mInitialValues[v->getName()] = std::stod(v->getInitialValue());
         }
     }
@@ -321,8 +319,7 @@ std::string Generator::generateCode(ModelPtr m)
 
 void Generator::writeCodeToFile(std::string filename)
 {
-    if (mPimpl->mCode == "")
-    {
+    if (mPimpl->mCode == "") {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("No code was detected. The file '"
                             + filename + "' was not written to. Please check that Generator::generateCode() is used before Generator::writeCodeToFile().");
@@ -336,34 +333,25 @@ void Generator::writeCodeToFile(std::string filename)
 
 std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr node)
 {
-    if (node->isElement("eq", MATHML_NS))
-    {
+    if (node->isElement("eq", MATHML_NS)) {
         auto c = std::make_shared<Equation>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("apply", MATHML_NS))
-    {
+    } else if (node->isElement("apply", MATHML_NS)) {
         return parseNode(node->getFirstChild());
-    }
-    else if (node->isElement("plus", MATHML_NS))
-    {
+    } else if (node->isElement("plus", MATHML_NS)) {
         // Unary plus (positive) and binary plus (addition) have the same node
         // name, so we tell them apart by checking the number of arguments.
-        if (node->getNext()->getNext())
-        {
+        if (node->getNext()->getNext()) {
             auto c = std::make_shared<Addition>();
             auto s = node->getNext();
             c->setArg1(parseNode(s));
             s = s->getNext();
-            if (!s->getNext())
-            {
+            if (!s->getNext()) {
                 c->setArg2(parseNode(s));
-            }
-            else
-            {
+            } else {
                 auto pointer0 = c;
                 while (s->getNext())
                 {
@@ -376,45 +364,35 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
                 pointer0->setArg2(parseNode(s));
             }
             return c;
-        }
-        else
-        {
+        } else {
             auto c = std::make_shared<Positive>();
             c->setArg(parseNode(node->getNext()));
             return c;
         }
     }
-    else if (node->isElement("minus", MATHML_NS))
-    {
+    else if (node->isElement("minus", MATHML_NS)) {
         // Unary minus (negative) and binary minus (subtraction) have the same node
         // name, so we tell them apart by checking the number of arguments.
-        if (node->getNext()->getNext())
-        {
+        if (node->getNext()->getNext()) {
             auto c = std::make_shared<Subtraction>();
             auto s1 = node->getNext();
             c->setArg1(parseNode(s1));
             c->setArg2(parseNode(s1->getNext()));
             return c;
-        }
-        else
-        {
+        } else {
             auto c = std::make_shared<Negative>();
             c->setArg(parseNode(node->getNext()));
             return c;
         }
     }
-    else if (node->isElement("times", MATHML_NS))
-    {
+    else if (node->isElement("times", MATHML_NS)) {
         auto c = std::make_shared<Multiplication>();
         auto s = node->getNext();
         c->setArg1(parseNode(s));
         s = s->getNext();
-        if (!s->getNext())
-        {
+        if (!s->getNext()) {
             c->setArg2(parseNode(s));
-        }
-        else
-        {
+        } else {
             auto pointer0 = c;
             while (s->getNext())
             {
@@ -427,29 +405,22 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
             pointer0->setArg2(parseNode(s));
         }
         return c;
-    }
-    else if (node->isElement("divide", MATHML_NS))
-    {
+    } else if (node->isElement("divide", MATHML_NS)) {
         auto c = std::make_shared<Division>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("piecewise", MATHML_NS))
-    {
+    } else if (node->isElement("piecewise", MATHML_NS)) {
         // A piecewise definition can be implemented as the sum of the products
         // of each piece's expression and its condition.
         auto c = std::make_shared<Addition>();
         auto s = node->getFirstChild();
         c->setArg1(parseNode(s));
         s = s->getNext();
-        if (!s->getNext())
-        {
+        if (!s->getNext()) {
             c->setArg2(parseNode(s));
-        }
-        else
-        {
+        } else {
             auto pointer0 = c;
             while (s->getNext())
             {
@@ -463,8 +434,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     }
-    else if (node->isElement("piece", MATHML_NS))
-    {
+    else if (node->isElement("piece", MATHML_NS)) {
         // A piece of a piecewise definition can be implemented as the product
         // of its expression and its condition.
         auto c = std::make_shared<Multiplication>();
@@ -472,95 +442,69 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("and", MATHML_NS))
-    {
+    } else if (node->isElement("and", MATHML_NS)) {
         auto c = std::make_shared<And>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("or", MATHML_NS))
-    {
+    } else if (node->isElement("or", MATHML_NS)) {
         auto c = std::make_shared<Or>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("lt", MATHML_NS))
-    {
+    } else if (node->isElement("lt", MATHML_NS)) {
         auto c = std::make_shared<Less>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("leq", MATHML_NS))
-    {
+    } else if (node->isElement("leq", MATHML_NS)) {
         auto c = std::make_shared<LessOrEqual>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("geq", MATHML_NS))
-    {
+    } else if (node->isElement("geq", MATHML_NS)) {
         auto c = std::make_shared<GreaterOrEqual>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("gt", MATHML_NS))
-    {
+    } else if (node->isElement("gt", MATHML_NS)) {
         auto c = std::make_shared<Greater>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("power", MATHML_NS))
-    {
+    } else if (node->isElement("power", MATHML_NS)) {
         auto c = std::make_shared<Power>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
-    }
-    else if (node->isElement("sin", MATHML_NS))
-    {
+    } else if (node->isElement("sin", MATHML_NS)) {
         auto c = std::make_shared<Sine>();
         c->setArg(parseNode(node->getNext()));
         return c;
-    }
-    else if (node->isElement("cos", MATHML_NS))
-    {
+    } else if (node->isElement("cos", MATHML_NS)) {
         auto c = std::make_shared<Cosine>();
         c->setArg(parseNode(node->getNext()));
         return c;
-    }
-    else if (node->isElement("floor", MATHML_NS))
-    {
+    } else if (node->isElement("floor", MATHML_NS)) {
         auto c = std::make_shared<Floor>();
         c->setArg(parseNode(node->getNext()));
         return c;
-    }
-    else if (node->isElement("abs", MATHML_NS))
-    {
+    } else if (node->isElement("abs", MATHML_NS)) {
         auto c = std::make_shared<AbsoluteValue>();
         c->setArg(parseNode(node->getNext()));
         return c;
-    }
-    else if (node->isElement("not", MATHML_NS))
-    {
+    } else if (node->isElement("not", MATHML_NS)) {
         auto c = std::make_shared<Not>();
         c->setArg(parseNode(node->getNext()));
         return c;
-    }
-    else if (node->isElement("ci", MATHML_NS))
-    {
+    } else if (node->isElement("ci", MATHML_NS)) {
         auto name = node->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Variable>(name);
         // All variables are in mAlgebraic unless they are in mStates already
@@ -570,46 +514,34 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
                           name) == mStates.end() &&
                 std::find(mAlgebraic.begin(),
                           mAlgebraic.end(),
-                          name) == mAlgebraic.end())
-        {
+                          name) == mAlgebraic.end()) {
             mAlgebraic.push_back(name);
         }
         return c;
-    }
-    else if (node->isElement("cn", MATHML_NS))
-    {
+    } else if (node->isElement("cn", MATHML_NS)) {
         double value;
         std::istringstream iss(node->getFirstChild()->convertToString());
         iss >> value;
         auto c = std::make_shared<Constant>(value);
         return c;
-    }
-    else if (node->isElement("pi", MATHML_NS))
-    {
+    } else if (node->isElement("pi", MATHML_NS)) {
         auto c = std::make_shared<Constant>(std::acos(-1));
         return c;
-    }
-    else if (node->isElement("diff", MATHML_NS))
-    {
+    } else if (node->isElement("diff", MATHML_NS)) {
         auto name = node->getNext()->getNext()->getFirstChild()->convertToString();
         auto c = std::make_shared<libcellml::operators::Derivative>(name);
         // When we find the derivative of a variable, that variable goes in
         // mStates.
-        if (std::find(mStates.begin(), mStates.end(), name) == mStates.end())
-        {
+        if (std::find(mStates.begin(), mStates.end(), name) == mStates.end()) {
             mStates.push_back(name);
-
             // If it was previously put in mAlgebraic, it must be removed.
             auto p = std::find(mAlgebraic.begin(), mAlgebraic.end(), name);
-            if (p != mAlgebraic.end())
-            {
+            if (p != mAlgebraic.end()) {
                 mAlgebraic.erase(p);
             }
         }
         return c;
-    }
-    else
-    {
+    } else {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Found node of type '"
                 + node->getName() +
@@ -641,19 +573,14 @@ std::vector<std::shared_ptr<Representable>> Generator::GeneratorImpl::parseMathM
 
 void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)
 {
-    if (node->isElement("bvar", MATHML_NS))
-    {
+    if (node->isElement("bvar", MATHML_NS)) {
         mVoi = node->getFirstChild()->getFirstChild()->convertToString();
         return;
-    }
-    else
-    {
-        if (node->getFirstChild())
-        {
+    } else {
+        if (node->getFirstChild()) {
             findVOIHelper(node->getFirstChild());
         }
-        if (node->getNext())
-        {
+        if (node->getNext()) {
             findVOIHelper(node->getNext());
         }
     }
