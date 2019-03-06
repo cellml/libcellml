@@ -1,4 +1,5 @@
-#include "libcellml/operatorlibrary.h"
+
+#include "operatorlibrary.h"
 
 namespace libcellml {
 

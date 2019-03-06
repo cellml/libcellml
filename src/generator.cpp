@@ -14,16 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <cmath>
-#include <typeinfo>
-
 #include "libcellml/generator.h"
+#include "libcellml/component.h"
 #include "libcellml/namespaces.h"
-#include "../xmldoc.h"
-#include "../xmlnode.h"
+#include "libcellml/variable.h"
 
+#include "operatorlibrary.h"
 #include "xmlnode.h"
 #include "xmldoc.h"
+
+#include <cmath>
+#include <typeinfo>
 
 namespace libcellml{
 
