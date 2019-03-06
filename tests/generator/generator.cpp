@@ -18,6 +18,9 @@ limitations under the License.
 
 #include <libcellml>
 
+#include <fstream>
+#include <iostream>
+
 using namespace libcellml;
 
 

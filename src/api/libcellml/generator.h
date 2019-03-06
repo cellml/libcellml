@@ -16,19 +16,10 @@ limitations under the License.
 
 #pragma once
 
-#include <algorithm>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <memory>
-#include <sstream>
 #include <string>
-#include <map>
-#include <unordered_map>
-#include <vector>
 
 #include "libcellml/logger.h"
-#include "libcellml/model.h"
+#include "libcellml/types.h"
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
