@@ -1,4 +1,3 @@
-
 #include "test_utils.h"
 
 #include <iostream>
@@ -18,5 +17,3 @@ void printErrors(const libcellml::Parser &p)
         std::cout << p.getError(i)->getSpecificationHeading() << std::endl;
     }
 }
-
-

@@ -1,5 +1,3 @@
-
-
 Options
 -------
 
@@ -42,4 +40,3 @@ COVERAGE       ON           Enable coverage testing (if available).
 .. ---------------------------------- -------------- -----------------------------------------
 .. LIBCELML_COVERAGE                  COVERAGE       Enable coverage testing. (if available)
 .. ================================== ============== =========================================
-

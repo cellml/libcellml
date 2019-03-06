@@ -13,7 +13,7 @@ namespace libcellml {
  * is unlikely that they will be used in other parts of the code, so it seems
  * natural to provide logical grouping for them.
  * Also, they have quite common names and having a separate namespace reduces
- * the risk for names clashing. For example, this namespace resolves a clas
+ * the risk for names clashing. For example, this namespace resolves a class
  * between @c libcellml::Variable and what is now @c
  * libcellml::operators::Variable.
  */
@@ -111,6 +111,90 @@ public:
     virtual ~Division() = default;
 };
 
+/**
+ * @brief A class representing the logical and.
+ *
+ * Binary logical operators satisfy the requirements of arithmetic operators,
+ * thus it makes sense to re-use the code even though they are not arithmetic
+ * operators in the mathematical sense.
+ */
+class And : public ArithmeticOperator
+{
+public:
+    And();
+    virtual ~And() = default;
+};
+
+/**
+ * @brief A class representing the logical or.
+ *
+ * Binary logical operators satisfy the requirements of arithmetic operators,
+ * thus it makes sense to re-use the code even though they are not arithmetic
+ * operators in the mathematical sense.
+ */
+class Or : public ArithmeticOperator
+{
+public:
+    Or();
+    virtual ~Or() = default;
+};
+
+/**
+ * @brief A class representing the comparison <.
+ *
+ * Binary comparison operators satisfy the requirements of arithmetic operators,
+ * thus it makes sense to re-use the code even though they are not arithmetic
+ * operators in the mathematical sense.
+ */
+class Less : public ArithmeticOperator
+{
+public:
+    Less();
+    virtual ~Less() = default;
+};
+
+/**
+ * @brief A class representing the comparison <=.
+ *
+ * Binary comparison operators satisfy the requirements of arithmetic operators,
+ * thus it makes sense to re-use the code even though they are not arithmetic
+ * operators in the mathematical sense.
+ */
+class LessOrEqual : public ArithmeticOperator
+{
+public:
+    LessOrEqual();
+    virtual ~LessOrEqual() = default;
+};
+
+/**
+ * @brief A class representing the comparison >=.
+ *
+ * Binary comparison operators satisfy the requirements of arithmetic operators,
+ * thus it makes sense to re-use the code even though they are not arithmetic
+ * operators in the mathematical sense.
+ */
+class GreaterOrEqual : public ArithmeticOperator
+{
+public:
+    GreaterOrEqual();
+    virtual ~GreaterOrEqual() = default;
+};
+
+/**
+ * @brief A class representing the comparison >.
+ *
+ * Binary comparison operators satisfy the requirements of arithmetic operators,
+ * thus it makes sense to re-use the code even though they are not arithmetic
+ * operators in the mathematical sense.
+ */
+class Greater : public ArithmeticOperator
+{
+public:
+    Greater();
+    virtual ~Greater() = default;
+};
+
 class Power : public BinaryOperator
 {
 public:
@@ -144,6 +228,42 @@ public:
 
 protected:
     std::shared_ptr<Representable> arg;
+};
+
+/**
+ * @brief A class representing the unary plus operator.
+ */
+class Positive : public UnaryOperator
+{
+public:
+    Positive();
+    virtual ~Positive() = default;
+
+    virtual std::string repr() override;
+};
+
+/**
+ * @brief A class representing the unary minus operator.
+ */
+class Negative : public UnaryOperator
+{
+public:
+    Negative();
+    virtual ~Negative() = default;
+
+    virtual std::string repr() override;
+};
+
+/**
+ * @brief A class representing the logical not.
+ */
+class Not : public UnaryOperator
+{
+public:
+    Not();
+    virtual ~Not() = default;
+
+    virtual std::string repr() override;
 };
 
 /**
@@ -187,6 +307,13 @@ public:
     virtual ~Cosine() = default;
 };
 
+class Floor : public STDOperator
+{
+public:
+    Floor();
+    virtual ~Floor() = default;
+};
+
 /**
  * @brief A class representing variables in an expression.
  */
@@ -215,6 +342,34 @@ public:
 
 private:
     double value;
+};
+
+/**
+ * @brief A class representing the derivative of a variable.
+ */
+class Derivative : public Representable
+{
+public:
+    Derivative(std::string variableName);
+    virtual ~Derivative() = default;
+
+    virtual std::string repr() override;
+
+private:
+    std::string variableName;
+};
+
+/**
+ * @brief A class representing an equation (or assignment) between two
+ * quantities.
+ */
+class Equation : public BinaryOperator
+{
+public:
+    Equation();
+    virtual ~Equation() = default;
+
+    virtual std::string repr() override;
 };
 
 }
