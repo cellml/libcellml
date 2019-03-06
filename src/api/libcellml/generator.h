@@ -36,39 +36,6 @@ limitations under the License.
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
 
-#ifdef _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable: 4275)
-#endif
-struct LIBCELLML_EXPORT CodeNotGenerated : public std::exception
-{
-	const char * what () const throw ();
-};
-#ifdef _MSC_VER
-    #pragma warning(pop)
-#endif
-
-#ifdef _MSC_VER
-    #pragma warning(push)
-    #pragma warning(disable: 4275)
-#endif
-struct LIBCELLML_EXPORT UnknownNode : public std::exception
-{
-    const char * what () const throw ();
-};
-#ifdef _MSC_VER
-    #pragma warning(pop)
-#endif
-
-struct EnumClassHash
-{
-    template <typename T>
-    std::size_t operator()(T t) const
-    {
-        return static_cast<std::size_t>(t);
-    }
-};
-
 class LIBCELLML_EXPORT Generator : public Logger
 {
 public:
