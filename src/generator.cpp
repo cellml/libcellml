@@ -14,17 +14,40 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include <cmath>
-#include <typeinfo>
-
 #include "libcellml/generator.h"
+#include "libcellml/component.h"
+#include "libcellml/model.h"
 #include "libcellml/namespaces.h"
-#include "../xmldoc.h"
-#include "../xmlnode.h"
+#include "libcellml/variable.h"
+
+#include "operatorlibrary.h"
+#include "xmlnode.h"
+#include "xmldoc.h"
+
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <typeinfo>
+#include <map>
+#include <unordered_map>
+#include <vector>
 
 namespace libcellml{
 
 using namespace libcellml::operators;
+
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
 
 struct Generator::GeneratorImpl
 {
@@ -183,8 +206,7 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shar
         auto& p = *(static_cast<Equation*>(&*r)->getArg1());
         // Here I assume that the first node is always of type Equation, and use
         // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(p).hash_code() == typeid(Derivative).hash_code())
-        {
+        if (typeid(p).hash_code() == typeid(Derivative).hash_code()) {
             oss << "    "
                 << r->repr() << ";" << std::endl;
         }
@@ -302,15 +324,14 @@ void Generator::writeCodeToFile(std::string filename)
     if (mPimpl->mCode == "")
     {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("No code was generated yet, you should call "
-                "Generator::generateCode before calling this method.");
+        err->setDescription("No code was detected. The file '"
+                            + filename + "' was not written to. Please check that Generator::generateCode() is used before Generator::writeCodeToFile().");
         addError(err);
-        throw CodeNotGenerated();
+    } else {
+        std::ofstream output(filename);
+        output << mPimpl->mCode;
+        output.close();
     }
-
-    std::ofstream output(filename);
-    output << mPimpl->mCode;
-    output.close();
 }
 
 std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr node)
@@ -590,11 +611,10 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     else
     {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Found node of type "
+        err->setDescription("Found node of type '"
                 + node->getName() +
-                " which is currently not supported by the Generator class.");
+                "' which is currently not supported.");
         mGenerator->addError(err);
-        throw UnknownNode();
 
         return std::make_shared<Constant>(0);
     }
@@ -648,17 +668,6 @@ void Generator::GeneratorImpl::findVOI(std::string math)
     XmlNodePtr node = root->getFirstChild();
 
     findVOIHelper(node);
-}
-
-const char * CodeNotGenerated::what () const throw ()
-{
-    return "No code was generated yet, you should call "
-        "Generator::generateCode before calling this method.";
-}
-
-const char * UnknownNode::what () const throw ()
-{
-    return "Found node of unknown type";
 }
 
 }
