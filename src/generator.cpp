@@ -16,6 +16,7 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 #include "libcellml/component.h"
+#include "libcellml/model.h"
 #include "libcellml/namespaces.h"
 #include "libcellml/variable.h"
 
@@ -23,8 +24,17 @@ limitations under the License.
 #include "xmlnode.h"
 #include "xmldoc.h"
 
+#include <algorithm>
 #include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <memory>
+#include <sstream>
 #include <typeinfo>
+#include <map>
+#include <unordered_map>
+#include <vector>
 
 namespace libcellml{
 
@@ -196,8 +206,7 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shar
         auto& p = *(static_cast<Equation*>(&*r)->getArg1());
         // Here I assume that the first node is always of type Equation, and use
         // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(p).hash_code() == typeid(Derivative).hash_code())
-        {
+        if (typeid(p).hash_code() == typeid(Derivative).hash_code()) {
             oss << "    "
                 << r->repr() << ";" << std::endl;
         }
