@@ -141,7 +141,7 @@ bool Component::removeVariable(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mVariables.size()) {
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + index);
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + long(index));
         status = true;
     }
 
@@ -240,7 +240,7 @@ bool Component::removeReset(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mResets.size()) {
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + index);
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + long(index));
         status = true;
     }
 

@@ -119,7 +119,7 @@ bool ComponentEntity::removeComponent(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + long(index));
         status = true;
     }
 
@@ -212,7 +212,7 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + long(index));
         component->clearParent();
     }
 
@@ -239,7 +239,7 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
 {
     bool status = false;
     if (removeComponent(index)) {
-        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + index, c);
+        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + long(index), c);
         status = true;
     }
 
@@ -248,7 +248,7 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
 
 bool ComponentEntity::replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated)
 {
-    bool status = replaceComponent(mPimpl->findComponent(name) - mPimpl->mComponents.begin(), component);
+    bool status = replaceComponent(size_t(mPimpl->findComponent(name) - mPimpl->mComponents.begin()), component);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
             status = getComponent(i)->replaceComponent(name, component, searchEncapsulated);
@@ -260,7 +260,7 @@ bool ComponentEntity::replaceComponent(const std::string &name, const ComponentP
 
 bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated)
 {
-    bool status = replaceComponent(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin(), newComponent);
+    bool status = replaceComponent(size_t(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin()), newComponent);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
             status = getComponent(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
