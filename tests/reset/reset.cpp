@@ -451,7 +451,7 @@ TEST(Reset, getResetFromComponentMethod) {
     EXPECT_EQ(r4.get(), vMethod2.get());
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(-3));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(42));
     EXPECT_EQ(nullptr, c.getReset(7));
 }
 

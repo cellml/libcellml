@@ -430,7 +430,7 @@ TEST(Variable, getVariableMethods) {
     EXPECT_EQ("variable4", a4);
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getVariable(-3));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getVariable(42));
     EXPECT_EQ(nullptr, c.getVariable(7));
 
     // Get non-existent variable by string
