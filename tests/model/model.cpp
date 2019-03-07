@@ -339,7 +339,7 @@ struct structure
         return *this;
     }
 
-    void swap(structure &r) throw()
+    void swap(structure &r) noexcept
     {
         std::swap(this->m_data, r.m_data);
     }
