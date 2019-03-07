@@ -29,6 +29,7 @@ struct OrderedEntity::OrderedEntityImpl
 {
     int mOrder;
     bool mOrderSet;
+    char padding[3];
 };
 
 OrderedEntity::OrderedEntity()

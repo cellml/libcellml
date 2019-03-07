@@ -30,6 +30,7 @@ namespace libcellml {
 struct Reset::ResetImpl
 {
     int mOrder = 0; /**< An integer for determining relative order.*/
+    char padding[4];
     VariablePtr mVariable; /**< The associated variable for the reset.*/
     std::vector<WhenPtr>::iterator findWhen(const WhenPtr &when);
     std::vector<WhenPtr> mWhens;
