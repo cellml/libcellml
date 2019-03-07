@@ -31,7 +31,7 @@ namespace libcellml {
  *
  * An internal map used to convert a Prefix into its string form.
  */
-std::map<Prefix, const std::string> prefixToString =
+static std::map<Prefix, const std::string> prefixToString =
 {
     {Prefix::ATTO, "atto"},
     {Prefix::CENTI, "centi"},
@@ -60,7 +60,7 @@ std::map<Prefix, const std::string> prefixToString =
  *
  * An internal map used to convert a standard unit into its string form.
  */
-std::map<Units::StandardUnit, const std::string> standardUnitToString =
+static std::map<Units::StandardUnit, const std::string> standardUnitToString =
 {
     {Units::StandardUnit::AMPERE, "ampere"},
     {Units::StandardUnit::BECQUEREL, "becquerel"},
