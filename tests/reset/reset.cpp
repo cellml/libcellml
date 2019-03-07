@@ -45,7 +45,7 @@ TEST(Reset, addAndCountChildren) {
     libcellml::WhenPtr child3 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr child4 = std::make_shared<libcellml::When>();
 
-    EXPECT_EQ(0u, r.whenCount());
+    EXPECT_EQ(size_t(0), r.whenCount());
 
     r.addWhen(child1);
     r.addWhen(child2);
@@ -95,7 +95,7 @@ TEST(Reset, removeWhenMethods) {
     EXPECT_EQ(2u, r.whenCount());
 
     r.removeAllWhens();
-    EXPECT_EQ(0u, r.whenCount());
+    EXPECT_EQ(size_t(0), r.whenCount());
 }
 
 TEST(Reset, getWhenMethods) {

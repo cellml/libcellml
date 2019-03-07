@@ -136,7 +136,7 @@ TEST(Parser, invalidRootNode) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -149,7 +149,7 @@ TEST(Parser, noModelNamespace) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -162,7 +162,7 @@ TEST(Parser, invalidModelNamespace) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -175,7 +175,7 @@ TEST(Parser, invalidModelAttribute) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -190,7 +190,7 @@ TEST(Parser, invalidModelElement) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -213,12 +213,12 @@ TEST(Parser, modelWithInvalidElement) {
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
@@ -232,7 +232,7 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetError) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(input);
 
-    EXPECT_EQ(1u, parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.errorCount());
     EXPECT_EQ(expectedError, parser.getError(0)->getDescription());
 
     // Get ModelError and check.
@@ -294,7 +294,7 @@ TEST(Parser, unitsAttributeError) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -321,12 +321,12 @@ TEST(Parser, unitsElementErrors) {
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
@@ -344,7 +344,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    EXPECT_EQ(1u, parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.errorCount());
     EXPECT_EQ(expectedError1, parser.getError(0)->getDescription());
 
     libcellml::UnitsPtr unitsExpected = model->getUnits("unit_name");
@@ -372,7 +372,7 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
     libcellml::ModelPtr model = parser.parseModel(input);
     libcellml::ComponentPtr component = model->getComponent(cName);
 
-    EXPECT_EQ(1u, parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.errorCount());
     EXPECT_EQ(expectedError, parser.getError(0)->getDescription());
 
     // Get component from error and check.
@@ -414,17 +414,17 @@ TEST(Parser, componentAttributeErrors) {
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input3);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError3, p.getError(0)->getDescription());
 }
 
@@ -451,12 +451,12 @@ TEST(Parser, componentElementErrors) {
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
 }
 
@@ -623,7 +623,7 @@ TEST(Parser, emptyEncapsulation) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
@@ -641,7 +641,7 @@ TEST(Parser, encapsulationWithNoComponentAttribute) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(size_t(2), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
@@ -660,7 +660,7 @@ TEST(Parser, encapsulationWithNoComponentRef) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(size_t(2), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
@@ -681,7 +681,7 @@ TEST(Parser, encapsulationWithNoComponent) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(size_t(2), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
@@ -702,7 +702,7 @@ TEST(Parser, encapsulationWithMissingComponent) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -720,7 +720,7 @@ TEST(Parser, encapsulationWithNoComponentChild) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
@@ -740,7 +740,7 @@ TEST(Parser, encapsulationNoChildComponentRef) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
@@ -763,7 +763,7 @@ TEST(Parser, encapsulationWithNoGrandchildComponentRef) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
@@ -872,12 +872,12 @@ TEST(Parser, variableAttributeAndChildErrors) {
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectError1, p.getError(0)->getDescription());
 
     p.clearErrors();
     p.parseModel(input2);
-    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(size_t(2), p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
     EXPECT_EQ(expectError3, p.getError(1)->getDescription());
 }
@@ -895,7 +895,7 @@ TEST(Parser, emptyConnections) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(3u, p.errorCount());
+    EXPECT_EQ(size_t(3), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
@@ -920,7 +920,7 @@ TEST(Parser, connectionErrorNoComponent2) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(4u, p.errorCount());
+    EXPECT_EQ(size_t(4), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
@@ -944,7 +944,7 @@ TEST(Parser, connectionErrorNoComponent2InModel) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(size_t(2), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
@@ -967,7 +967,7 @@ TEST(Parser, connectionErrorNoComponent1) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(3u, p.errorCount());
+    EXPECT_EQ(size_t(3), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
@@ -1023,7 +1023,7 @@ TEST(Parser, connectionErrorNoMapVariables) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(3u, p.errorCount());
+    EXPECT_EQ(size_t(3), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
@@ -1047,7 +1047,7 @@ TEST(Parser, importedComponent2Connection) {
     // Parse
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
 TEST(Parser, validConnectionMapVariablesFirst) {
@@ -1067,7 +1067,7 @@ TEST(Parser, validConnectionMapVariablesFirst) {
 
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
 TEST(Parser, component2ConnectionVariableMissing) {
@@ -1090,7 +1090,7 @@ TEST(Parser, component2ConnectionVariableMissing) {
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
 
@@ -1126,7 +1126,7 @@ TEST(Parser, component2InConnectionMissing) {
     // Parse
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(in);
-    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(size_t(2), p.errorCount());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -1155,7 +1155,7 @@ TEST(Parser, connectionVariable2Missing) {
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -1179,7 +1179,7 @@ TEST(Parser, connectionVariable1Missing) {
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(size_t(1), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
 }
 
@@ -1203,7 +1203,7 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(size_t(2), p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
@@ -1239,7 +1239,7 @@ TEST(Parser, invalidImportsAndGetError) {
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(4u, p.errorCount());
+    EXPECT_EQ(size_t(4), p.errorCount());
     EXPECT_EQ(expectError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectError3, p.getError(2)->getDescription());
@@ -1338,7 +1338,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
     // Add an undefined error
     libcellml::ErrorPtr undefinedError = std::make_shared<libcellml::Error>();
     parser2.addError(undefinedError);
-    EXPECT_EQ(1u, parser2.errorCount());
+    EXPECT_EQ(size_t(1), parser2.errorCount());
     if (parser2.getError(0)->isKind(libcellml::Error::Kind::UNDEFINED)) {
         foundKind.at(7) = true;
     }
@@ -1444,7 +1444,7 @@ TEST(Parser, parseIds) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(in);
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
     EXPECT_EQ("mid", model->getId());
     EXPECT_EQ("c1id", model->getComponent("component1")->getId());
     EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
@@ -1504,7 +1504,7 @@ TEST(Parser, parseIdsOnEverything) {
     libcellml::ModelPtr model = parser.parseModel(in);
 
     printErrors(parser);
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ("mid", model->getId());
     EXPECT_EQ("c1id", model->getComponent("component1")->getId());
     EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
@@ -1552,11 +1552,11 @@ TEST(Parser, parseResets) {
     libcellml::ModelPtr model = p.parseModel(in);
 
     libcellml::ComponentPtr c = model->getComponent(0);
-    EXPECT_EQ(1u, c->resetCount());
+    EXPECT_EQ(size_t(1), c->resetCount());
 
     libcellml::ResetPtr r = c->getReset(0);
     EXPECT_EQ(1, r->getOrder());
-    EXPECT_EQ(2u, r->whenCount());
+    EXPECT_EQ(size_t(2), r->whenCount());
 
     libcellml::WhenPtr w = r->getWhen(1);
     EXPECT_EQ(3, w->getOrder());
@@ -1691,7 +1691,7 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject) {
     libcellml::ResetPtr resetExpected = model->getComponent(0)->getReset(0);
     libcellml::WhenPtr whenExpected = resetExpected->getWhen(0);
 
-    EXPECT_EQ(6u, parser.errorCount());
+    EXPECT_EQ(size_t(6), parser.errorCount());
     EXPECT_EQ(resetExpected, parser.getError(2)->getReset());
     EXPECT_EQ(whenExpected, parser.getError(3)->getWhen());
 }
@@ -1770,5 +1770,5 @@ TEST(Parser, xmlComments) {
     parser.parseModel(input);
     printErrors(parser);
 
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 }
