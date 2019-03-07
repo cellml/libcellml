@@ -38,7 +38,7 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml) {
 
     // and now parse directly using libxml2
     xmlParserCtxtPtr context = xmlNewParserCtxt();
-    xmlDocPtr doc = xmlCtxtReadDoc(context, BAD_CAST e.c_str(), "/", nullptr, 0);
+    xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     EXPECT_NE(nullptr, doc);
     xmlFreeDoc(doc);
@@ -56,7 +56,7 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml) {
 
     // and now parse directly using libxml2
     xmlParserCtxtPtr context = xmlNewParserCtxt();
-    xmlDocPtr doc = xmlCtxtReadDoc(context, BAD_CAST e.c_str(), "/", nullptr, 0);
+    xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     EXPECT_EQ(nullptr, doc);
 }
