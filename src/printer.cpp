@@ -307,7 +307,7 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
 {
     std::string connections = "";
     ComponentMap serialisedComponentMap;
-    int componentMapIndex1 = 0;
+    size_t componentMapIndex1 = 0;
     for (ComponentMapIterator iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
         Component* currentComponent1 = iterPair->first;
         Component* currentComponent2 = iterPair->second;
@@ -331,7 +331,7 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
         std::string connectionId = Variable::getEquivalenceConnectionId(variablePair.first, variablePair.second);
         mappingVariables += printMapVariables(variablePair);
         // Check for subsequent variable equivalence pairs with the same parent components.
-        int componentMapIndex2 = componentMapIndex1 + 1;
+        size_t componentMapIndex2 = componentMapIndex1 + 1;
         for (ComponentMapIterator iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
             Component* nextComponent1 = iterPair2->first;
             Component* nextComponent2 = iterPair2->second;
