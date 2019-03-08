@@ -26,7 +26,7 @@ using namespace libcellml;
 
 TEST(Generator, simpleModel) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
@@ -114,7 +114,7 @@ TEST(Generator, simpleModel) {
 
 TEST(Generator, complexModel) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
@@ -235,7 +235,7 @@ TEST(Generator, complexModel) {
 
 TEST(Generator, complexModelToFile) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
@@ -490,7 +490,7 @@ TEST(Generator, unknownNode) {
 
 TEST(Generator, divisionAndPower) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
@@ -582,7 +582,7 @@ TEST(Generator, divisionAndPower) {
 
 TEST(Generator, twoStates) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "    double &z = *(states + 1);\n"
@@ -699,7 +699,7 @@ TEST(Generator, twoStates) {
 
 TEST(Generator, secondOrder) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "    double &z = *(states + 1);\n"
@@ -808,7 +808,7 @@ TEST(Generator, secondOrder) {
 
 TEST(Generator, algebraicEquation) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &v = *(states + 0);\n"
         "\n"
@@ -918,7 +918,7 @@ TEST(Generator, algebraicEquation) {
 
 TEST(Generator, piecewise) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
@@ -1058,7 +1058,7 @@ TEST(Generator, piecewise) {
 
 TEST(Generator, piecewise2) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
@@ -1176,7 +1176,7 @@ TEST(Generator, piecewise2) {
 
 TEST(Generator, floorPi) {
     const std::string e =
-        "void initConsts(double *constants, double *rates, double *states)\n"
+        "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
         "{\n"
         "    double &y = *(states + 0);\n"
         "\n"
