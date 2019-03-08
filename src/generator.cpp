@@ -162,7 +162,9 @@ std::string Generator::GeneratorImpl::generateInitConsts()
         << argType(types::double_pt)
         << "rates, "
         << argType(types::double_pt)
-        << "states"
+        << "states, "
+        << argType(types::double_pt)
+        << "algebraic"
         << argListCl() << std::endl
         << funBodyOp() << std::endl;
 
