@@ -92,10 +92,10 @@ Model::Model(Model &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Model& Model::operator=(Model m)
+Model& Model::operator=(Model rhs)
 {
-    ComponentEntity::operator= (m);
-    m.swap(*this);
+    ComponentEntity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -104,12 +104,12 @@ void Model::swap(Model &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Model::doAddComponent(const ComponentPtr &c)
+void Model::doAddComponent(const ComponentPtr &component)
 {
     // Check for cycles.
-    if (!hasParent(c.get())) {
-        c->setParent(this);
-        ComponentEntity::doAddComponent(c);
+    if (!hasParent(component.get())) {
+        component->setParent(this);
+        ComponentEntity::doAddComponent(component);
     }
 }
 
@@ -251,7 +251,7 @@ std::string resolvePath(const std::string &filename, const std::string &base)
     return path;
 }
 
-void resolveImport(ImportedEntityPtr importedEntity,
+void resolveImport(const ImportedEntityPtr &importedEntity,
                    const std::string &baseFile)
 {
     if (importedEntity->isImport()) {
@@ -271,7 +271,8 @@ void resolveImport(ImportedEntityPtr importedEntity,
     }
 }
 
-void resolveComponentImports(ComponentEntityPtr parentComponentEntity, const std::string &baseFile)
+void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
+                             const std::string &baseFile)
 {
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n)
     {
@@ -294,7 +295,7 @@ void Model::resolveImports(const std::string &baseFile)
     resolveComponentImports(shared_from_this(), baseFile);
 }
 
-bool isUnresolvedImport(ImportedEntityPtr importedEntity)
+bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
 {
     bool unresolvedImport = false;
     if (importedEntity->isImport()) {
@@ -306,9 +307,9 @@ bool isUnresolvedImport(ImportedEntityPtr importedEntity)
     return unresolvedImport;
 }
 
-bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity);
+bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity);
 
-bool doHasUnresolvedComponentImports(libcellml::ComponentPtr component)
+bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
     bool unresolvedImports = false;
     if (component->isImport()) {
@@ -328,7 +329,7 @@ bool doHasUnresolvedComponentImports(libcellml::ComponentPtr component)
     return unresolvedImports;
 }
 
-bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity)
+bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity)
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n)
