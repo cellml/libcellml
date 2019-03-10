@@ -55,7 +55,7 @@ public:
      *
      * @param c The component to add.
      */
-    void addComponent(const ComponentPtr &c);
+    void addComponent(const ComponentPtr &component);
 
     /**
      * @brief Remove the component at the given @p index.
@@ -214,7 +214,7 @@ public:
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(size_t index, const ComponentPtr &c);
+    bool replaceComponent(size_t index, const ComponentPtr &component);
 
     /**
      * @brief Replace a component with the given @p name.
@@ -303,7 +303,7 @@ protected:
      *
      * @param c The ComponentPtr to add to the list of components.
      */
-    virtual void doAddComponent(const ComponentPtr &c);
+    virtual void doAddComponent(const ComponentPtr &component);
 
 private:
 
