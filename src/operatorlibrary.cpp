@@ -21,8 +21,8 @@ namespace libcellml {
 namespace operators {
 
 BinaryOperator::BinaryOperator() :
-    arg1(std::shared_ptr<Representable>()),
-    arg2(std::shared_ptr<Representable>())
+    arg1(RepresentablePtr()),
+    arg2(RepresentablePtr())
 {}
 
 ArithmeticOperator::ArithmeticOperator(std::string opr) :
@@ -91,7 +91,7 @@ std::string Power::repr()
 }
 
 UnaryOperator::UnaryOperator() :
-    arg(std::shared_ptr<Representable>())
+    arg(RepresentablePtr())
 {}
 
 Positive::Positive() :
