@@ -30,8 +30,8 @@ public:
     Generator();
     virtual ~Generator();
 
-    std::string generateCode(ModelPtr m);
-    void writeCodeToFile(std::string filename);
+    std::string generateCode(const ModelPtr &model);
+    void writeCodeToFile(const std::string &filename);
 
 private:
     struct GeneratorImpl;
