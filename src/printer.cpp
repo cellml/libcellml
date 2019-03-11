@@ -193,6 +193,38 @@ std::string Printer::printComponent(Component component) const
     return printComponent(ComponentPtr(ComponentPtr{}, &component));
 }
 
+std::string printWhen(const WhenPtr &when)
+{
+    std::string repr = "<when";
+    std::string id = when->getId();
+    if (when->isOrderSet()) {
+        repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
+    }
+    if (id.length()) {
+        repr += " id=\"" + id + "\"";
+    }
+    std::string condition = when->getCondition();
+    size_t condition_length = condition.length();
+    if (condition_length) {
+        repr += ">";
+        repr += condition;
+    }
+    std::string value = when->getValue();
+    size_t value_length = value.length();
+    if (value_length) {
+        if (!condition_length) {
+            repr += ">";
+        }
+        repr += value;
+    }
+    if (condition_length || value_length) {
+        repr += "</when>";
+    } else {
+        repr += "/>";
+    }
+    return repr;
+}
+
 std::string Printer::printReset(const ResetPtr &reset) const
 {
     std::string repr = "<reset";
@@ -223,38 +255,6 @@ std::string Printer::printReset(const ResetPtr &reset) const
 std::string Printer::printReset(Reset reset) const
 {
     return printReset(ResetPtr(ResetPtr{}, &reset));
-}
-
-std::string Printer::printWhen(const WhenPtr &when) const
-{
-    std::string repr = "<when";
-    std::string id = when->getId();
-    if (when->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
-    }
-    if (id.length()) {
-        repr += " id=\"" + id + "\"";
-    }
-    std::string condition = when->getCondition();
-    size_t condition_length = condition.length();
-    if (condition_length) {
-        repr += ">";
-        repr += condition;
-    }
-    std::string value = when->getValue();
-    size_t value_length = value.length();
-    if (value_length) {
-        if (!condition_length) {
-            repr += ">";
-        }
-        repr += value;
-    }
-    if (condition_length || value_length) {
-        repr += "</when>";
-    } else {
-        repr += "/>";
-    }
-    return repr;
 }
 
 std::string Printer::printVariable(const VariablePtr &variable) const
@@ -407,6 +407,31 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
     }
 }
 
+std::string printEncapsulation(const ComponentPtr &component)
+{
+    std::string componentName = component->getName();
+    std::string repr = "<component_ref";
+    if (componentName.length() > 0) {
+        repr += " component=\"" + componentName + "\"";
+    }
+    if (component->getEncapsulationId().length() > 0) {
+        repr += " id=\"" + component->getEncapsulationId() + "\"";
+    }
+    size_t componentCount = component->componentCount();
+    if (componentCount > 0) {
+        repr += ">";
+    } else {
+        repr += "/>";
+    }
+    for (size_t i = 0; i < componentCount; ++i) {
+        repr += printEncapsulation(component->getComponent(i));
+    }
+    if (componentCount > 0) {
+        repr += "</component_ref>";
+    }
+    return repr;
+}
+
 std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
@@ -547,31 +572,6 @@ std::string Printer::printModel(Model model) const
 std::string Printer::printModel(Model *model) const
 {
     return printModel(ModelPtr(ModelPtr{}, model));
-}
-
-std::string Printer::printEncapsulation(const ComponentPtr &component) const
-{
-    std::string componentName = component->getName();
-    std::string repr = "<component_ref";
-    if (componentName.length() > 0) {
-        repr += " component=\"" + componentName + "\"";
-    }
-    if (component->getEncapsulationId().length() > 0) {
-        repr += " id=\"" + component->getEncapsulationId() + "\"";
-    }
-    size_t componentCount = component->componentCount();
-    if (componentCount > 0) {
-        repr += ">";
-    } else {
-        repr += "/>";
-    }
-    for (size_t i = 0; i < componentCount; ++i) {
-        repr += printEncapsulation(component->getComponent(i));
-    }
-    if (componentCount > 0) {
-        repr += "</component_ref>";
-    }
-    return repr;
 }
 
 }
