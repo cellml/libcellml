@@ -69,18 +69,17 @@ class BinaryOperator : public Representable
 {
 public:
     BinaryOperator();
-    BinaryOperator(std::shared_ptr<Representable> arg1,
-            std::shared_ptr<Representable> arg2);
+    BinaryOperator(RepresentablePtr arg1, RepresentablePtr arg2);
     virtual ~BinaryOperator() = default;
 
-    std::shared_ptr<Representable> getArg1() const {return arg1;}
-    void setArg1(const std::shared_ptr<Representable> a1) {arg1 = a1;}
-    std::shared_ptr<Representable> getArg2() const {return arg2;}
-    void setArg2(const std::shared_ptr<Representable> a2) {arg2 = a2;}
+    RepresentablePtr getArg1() const {return arg1;}
+    void setArg1(const RepresentablePtr a1) {arg1 = a1;}
+    RepresentablePtr getArg2() const {return arg2;}
+    void setArg2(const RepresentablePtr a2) {arg2 = a2;}
 
 protected:
-    std::shared_ptr<Representable> arg1;
-    std::shared_ptr<Representable> arg2;
+    RepresentablePtr arg1;
+    RepresentablePtr arg2;
 };
 
 /**
@@ -242,11 +241,11 @@ public:
     UnaryOperator();
     virtual ~UnaryOperator() = default;
 
-    std::shared_ptr<Representable> getArg() const {return arg;}
-    void setArg(const std::shared_ptr<Representable> a) {arg = a;}
+    RepresentablePtr getArg() const {return arg;}
+    void setArg(const RepresentablePtr a) {arg = a;}
 
 protected:
-    std::shared_ptr<Representable> arg;
+    RepresentablePtr arg;
 };
 
 /**

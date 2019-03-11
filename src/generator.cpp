@@ -56,12 +56,12 @@ struct Generator::GeneratorImpl
     void findVOI(const std::string &math);
     void findVOIHelper(const XmlNodePtr &node);
     void findInitialValues(const ComponentPtr &component);
-    std::vector<std::shared_ptr<operators::Representable>> parseMathML(const std::string &math);
-    std::shared_ptr<operators::Representable> parseNode(const XmlNodePtr &node);
+    std::vector<operators::RepresentablePtr> parseMathML(const std::string &math);
+    operators::RepresentablePtr parseNode(const XmlNodePtr &node);
     std::string doGenerateCode(const ModelPtr &model);
     std::string generateInitConsts();
-    std::string generateComputeRates(const std::vector<std::shared_ptr<operators::Representable>> &representables);
-    std::string generateComputeVariables(const std::vector<std::shared_ptr<operators::Representable>> &representables);
+    std::string generateComputeRates(const std::vector<operators::RepresentablePtr> &representables);
+    std::string generateComputeVariables(const std::vector<operators::RepresentablePtr> &representables);
     std::string generateStateAliases();
     std::string generateRateAliases();
     std::string generateAlgebraicAliases();
@@ -177,7 +177,7 @@ std::string Generator::GeneratorImpl::generateInitConsts()
     return oss.str();
 }
 
-std::string Generator::GeneratorImpl::generateComputeRates(const std::vector<std::shared_ptr<operators::Representable>> &representables)
+std::string Generator::GeneratorImpl::generateComputeRates(const std::vector<operators::RepresentablePtr> &representables)
 {
     std::string s;
     std::ostringstream oss(s);
@@ -217,7 +217,7 @@ std::string Generator::GeneratorImpl::generateComputeRates(const std::vector<std
     return oss.str();
 }
 
-std::string Generator::GeneratorImpl::generateComputeVariables(const std::vector<std::shared_ptr<operators::Representable>> &representables)
+std::string Generator::GeneratorImpl::generateComputeVariables(const std::vector<operators::RepresentablePtr> &representables)
 {
     std::string s;
     std::ostringstream oss(s);
@@ -331,7 +331,7 @@ void Generator::writeCodeToFile(const std::string &filename)
     }
 }
 
-std::shared_ptr<operators::Representable> Generator::GeneratorImpl::parseNode(const XmlNodePtr &node)
+operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr &node)
 {
     if (node->isElement("eq", MATHML_NS)) {
         auto c = std::make_shared<operators::Equation>();
@@ -552,9 +552,9 @@ std::shared_ptr<operators::Representable> Generator::GeneratorImpl::parseNode(co
     }
 }
 
-std::vector<std::shared_ptr<operators::Representable>> Generator::GeneratorImpl::parseMathML(const std::string &math)
+std::vector<operators::RepresentablePtr> Generator::GeneratorImpl::parseMathML(const std::string &math)
 {
-    std::vector<std::shared_ptr<operators::Representable>> nodes;
+    std::vector<operators::RepresentablePtr> nodes;
 
     XmlDocPtr mathDoc = std::make_shared<XmlDoc>();
     mathDoc->parse(math);
