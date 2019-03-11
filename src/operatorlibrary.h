@@ -35,6 +35,9 @@ namespace libcellml {
  */
 namespace operators {
 
+class Representable; /**< Forward declaration of the internal Representable class. */
+typedef std::shared_ptr<Representable> RepresentablePtr; /**< Type definition for shared representable pointer. */
+
 /* @brief A common base class for every object that can be represented by a
  * @c Generator instance.
  *

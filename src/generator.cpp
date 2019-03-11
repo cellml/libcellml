@@ -38,8 +38,6 @@ limitations under the License.
 
 namespace libcellml{
 
-using namespace libcellml::operators;
-
 struct EnumClassHash
 {
     template <typename T>
@@ -53,17 +51,17 @@ struct Generator::GeneratorImpl
 {
     enum class types {void_t, double_t, double_ct, double_pt, double_rt};
 
-    Generator* mGenerator;
+    Generator *mGenerator;
 
-    void findVOI(std::string math);
-    void findVOIHelper(XmlNodePtr node);
-    void findInitialValues(ComponentPtr c);
-    std::vector<std::shared_ptr<libcellml::operators::Representable>> parseMathML(std::string math);
-    std::shared_ptr<libcellml::operators::Representable> parseNode(XmlNodePtr node);
-    std::string doGenerateCode(ModelPtr m);
+    void findVOI(const std::string &math);
+    void findVOIHelper(const XmlNodePtr &node);
+    void findInitialValues(const ComponentPtr &component);
+    std::vector<std::shared_ptr<operators::Representable>> parseMathML(const std::string &math);
+    std::shared_ptr<operators::Representable> parseNode(const XmlNodePtr &node);
+    std::string doGenerateCode(const ModelPtr &model);
     std::string generateInitConsts();
-    std::string generateComputeRates(std::vector<std::shared_ptr<libcellml::operators::Representable>> r);
-    std::string generateComputeVariables(std::vector<std::shared_ptr<libcellml::operators::Representable>> r);
+    std::string generateComputeRates(const std::vector<std::shared_ptr<operators::Representable>> &representables);
+    std::string generateComputeVariables(const std::vector<std::shared_ptr<operators::Representable>> &representables);
     std::string generateStateAliases();
     std::string generateRateAliases();
     std::string generateAlgebraicAliases();
@@ -81,7 +79,7 @@ struct Generator::GeneratorImpl
     std::string mVoi;
     std::vector<std::string> mStates;
     std::vector<std::string> mAlgebraic;
-    std::map<std::string,double> mInitialValues;
+    std::map<std::string, double> mInitialValues;
     std::string mCode = "";
 };
 
@@ -179,7 +177,7 @@ std::string Generator::GeneratorImpl::generateInitConsts()
     return oss.str();
 }
 
-std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shared_ptr<Representable>> representables)
+std::string Generator::GeneratorImpl::generateComputeRates(const std::vector<std::shared_ptr<operators::Representable>> &representables)
 {
     std::string s;
     std::ostringstream oss(s);
@@ -203,14 +201,14 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shar
     oss << generateRateAliases() << std::endl;
     oss << generateAlgebraicAliases() << std::endl;
 
-    for (auto r : representables)
+    for (auto representable : representables)
     {
-        auto& p = *(static_cast<Equation*>(&*r)->getArg1());
+        auto& p = *(static_cast<operators::Equation*>(&*representable)->getArg1());
         // Here I assume that the first node is always of type Equation, and use
         // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(p).hash_code() == typeid(Derivative).hash_code()) {
+        if (typeid(p).hash_code() == typeid(operators::Derivative).hash_code()) {
             oss << "    "
-                << r->repr() << ";" << std::endl;
+                << representable->repr() << ";" << std::endl;
         }
     }
 
@@ -219,7 +217,7 @@ std::string Generator::GeneratorImpl::generateComputeRates(std::vector<std::shar
     return oss.str();
 }
 
-std::string Generator::GeneratorImpl::generateComputeVariables(std::vector<std::shared_ptr<Representable>> representables)
+std::string Generator::GeneratorImpl::generateComputeVariables(const std::vector<std::shared_ptr<operators::Representable>> &representables)
 {
     std::string s;
     std::ostringstream oss(s);
@@ -243,14 +241,14 @@ std::string Generator::GeneratorImpl::generateComputeVariables(std::vector<std::
     oss << generateRateAliases() << std::endl;
     oss << generateAlgebraicAliases() << std::endl;
 
-    for (auto r : representables)
+    for (auto representable : representables)
     {
-        auto& p = *(static_cast<Equation*>(&*r)->getArg1());
+        auto& p = *(static_cast<operators::Equation*>(&*representable)->getArg1());
         // Here I assume that the first node is always of type Equation, and use
         // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(p).hash_code() == typeid(libcellml::operators::Variable).hash_code()) {
+        if (typeid(p).hash_code() == typeid(operators::Variable).hash_code()) {
             oss << "    "
-                << r->repr() << ";" << std::endl;
+                << representable->repr() << ";" << std::endl;
         }
     }
 
@@ -259,30 +257,30 @@ std::string Generator::GeneratorImpl::generateComputeVariables(std::vector<std::
     return oss.str();
 }
 
-void Generator::GeneratorImpl::findInitialValues(ComponentPtr c)
+void Generator::GeneratorImpl::findInitialValues(const ComponentPtr &component)
 {
-    for (std::size_t i = 0; i < c->variableCount(); i++)
+    for (std::size_t i = 0; i < component->variableCount(); i++)
     {
-        auto v = c->getVariable(i);
+        auto v = component->getVariable(i);
         if (v->getName() != mVoi) {
             mInitialValues[v->getName()] = std::stod(v->getInitialValue());
         }
     }
 }
 
-std::string Generator::GeneratorImpl::doGenerateCode(ModelPtr m)
+std::string Generator::GeneratorImpl::doGenerateCode(const ModelPtr &model)
 {
-    ComponentPtr c = m->getComponent(0);
+    ComponentPtr component = model->getComponent(0);
 
-    findVOI(c->getMath());
-    findInitialValues(c);
-    auto r = parseMathML(c->getMath());
+    findVOI(component->getMath());
+    findInitialValues(component);
+    auto math = parseMathML(component->getMath());
 
     std::string generatedCode;
     std::ostringstream oss(generatedCode);
     oss << generateInitConsts() << std::endl;
-    oss << generateComputeRates(r) << std::endl;
-    oss << generateComputeVariables(r) << std::endl;
+    oss << generateComputeRates(math) << std::endl;
+    oss << generateComputeVariables(math) << std::endl;
 
     mCode = oss.str();
     return mCode;
@@ -314,12 +312,12 @@ std::string Generator::GeneratorImpl::argType(types t)
     return argTypes.at(t);
 }
 
-std::string Generator::generateCode(ModelPtr m)
+std::string Generator::generateCode(const ModelPtr &model)
 {
-    return mPimpl->doGenerateCode(m);
+    return mPimpl->doGenerateCode(model);
 }
 
-void Generator::writeCodeToFile(std::string filename)
+void Generator::writeCodeToFile(const std::string &filename)
 {
     if (mPimpl->mCode == "") {
         ErrorPtr err = std::make_shared<Error>();
@@ -333,10 +331,10 @@ void Generator::writeCodeToFile(std::string filename)
     }
 }
 
-std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr node)
+std::shared_ptr<operators::Representable> Generator::GeneratorImpl::parseNode(const XmlNodePtr &node)
 {
     if (node->isElement("eq", MATHML_NS)) {
-        auto c = std::make_shared<Equation>();
+        auto c = std::make_shared<operators::Equation>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
@@ -347,7 +345,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         // Unary plus (positive) and binary plus (addition) have the same node
         // name, so we tell them apart by checking the number of arguments.
         if (node->getNext()->getNext()) {
-            auto c = std::make_shared<Addition>();
+            auto c = std::make_shared<operators::Addition>();
             auto s = node->getNext();
             c->setArg1(parseNode(s));
             s = s->getNext();
@@ -357,7 +355,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
                 auto pointer0 = c;
                 while (s->getNext())
                 {
-                    auto pointer1 = std::make_shared<Addition>();
+                    auto pointer1 = std::make_shared<operators::Addition>();
                     pointer1->setArg1(parseNode(s));
                     pointer0->setArg2(pointer1);
                     s = s->getNext();
@@ -367,7 +365,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
             }
             return c;
         } else {
-            auto c = std::make_shared<Positive>();
+            auto c = std::make_shared<operators::Positive>();
             c->setArg(parseNode(node->getNext()));
             return c;
         }
@@ -376,19 +374,19 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         // Unary minus (negative) and binary minus (subtraction) have the same node
         // name, so we tell them apart by checking the number of arguments.
         if (node->getNext()->getNext()) {
-            auto c = std::make_shared<Subtraction>();
+            auto c = std::make_shared<operators::Subtraction>();
             auto s1 = node->getNext();
             c->setArg1(parseNode(s1));
             c->setArg2(parseNode(s1->getNext()));
             return c;
         } else {
-            auto c = std::make_shared<Negative>();
+            auto c = std::make_shared<operators::Negative>();
             c->setArg(parseNode(node->getNext()));
             return c;
         }
     }
     else if (node->isElement("times", MATHML_NS)) {
-        auto c = std::make_shared<Multiplication>();
+        auto c = std::make_shared<operators::Multiplication>();
         auto s = node->getNext();
         c->setArg1(parseNode(s));
         s = s->getNext();
@@ -398,7 +396,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
             auto pointer0 = c;
             while (s->getNext())
             {
-                auto pointer1 = std::make_shared<Multiplication>();
+                auto pointer1 = std::make_shared<operators::Multiplication>();
                 pointer1->setArg1(parseNode(s));
                 pointer0->setArg2(pointer1);
                 s = s->getNext();
@@ -408,7 +406,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         }
         return c;
     } else if (node->isElement("divide", MATHML_NS)) {
-        auto c = std::make_shared<Division>();
+        auto c = std::make_shared<operators::Division>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
@@ -416,7 +414,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     } else if (node->isElement("piecewise", MATHML_NS)) {
         // A piecewise definition can be implemented as the sum of the products
         // of each piece's expression and its condition.
-        auto c = std::make_shared<Addition>();
+        auto c = std::make_shared<operators::Addition>();
         auto s = node->getFirstChild();
         c->setArg1(parseNode(s));
         s = s->getNext();
@@ -426,7 +424,7 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
             auto pointer0 = c;
             while (s->getNext())
             {
-                auto pointer1 = std::make_shared<Addition>();
+                auto pointer1 = std::make_shared<operators::Addition>();
                 pointer1->setArg1(parseNode(s));
                 pointer0->setArg2(pointer1);
                 s = s->getNext();
@@ -439,76 +437,76 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
     else if (node->isElement("piece", MATHML_NS)) {
         // A piece of a piecewise definition can be implemented as the product
         // of its expression and its condition.
-        auto c = std::make_shared<Multiplication>();
+        auto c = std::make_shared<operators::Multiplication>();
         auto s1 = node->getFirstChild();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("and", MATHML_NS)) {
-        auto c = std::make_shared<And>();
+        auto c = std::make_shared<operators::And>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("or", MATHML_NS)) {
-        auto c = std::make_shared<Or>();
+        auto c = std::make_shared<operators::Or>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("lt", MATHML_NS)) {
-        auto c = std::make_shared<Less>();
+        auto c = std::make_shared<operators::Less>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("leq", MATHML_NS)) {
-        auto c = std::make_shared<LessOrEqual>();
+        auto c = std::make_shared<operators::LessOrEqual>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("geq", MATHML_NS)) {
-        auto c = std::make_shared<GreaterOrEqual>();
+        auto c = std::make_shared<operators::GreaterOrEqual>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("gt", MATHML_NS)) {
-        auto c = std::make_shared<Greater>();
+        auto c = std::make_shared<operators::Greater>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("power", MATHML_NS)) {
-        auto c = std::make_shared<Power>();
+        auto c = std::make_shared<operators::Power>();
         auto s1 = node->getNext();
         c->setArg1(parseNode(s1));
         c->setArg2(parseNode(s1->getNext()));
         return c;
     } else if (node->isElement("sin", MATHML_NS)) {
-        auto c = std::make_shared<Sine>();
+        auto c = std::make_shared<operators::Sine>();
         c->setArg(parseNode(node->getNext()));
         return c;
     } else if (node->isElement("cos", MATHML_NS)) {
-        auto c = std::make_shared<Cosine>();
+        auto c = std::make_shared<operators::Cosine>();
         c->setArg(parseNode(node->getNext()));
         return c;
     } else if (node->isElement("floor", MATHML_NS)) {
-        auto c = std::make_shared<Floor>();
+        auto c = std::make_shared<operators::Floor>();
         c->setArg(parseNode(node->getNext()));
         return c;
     } else if (node->isElement("abs", MATHML_NS)) {
-        auto c = std::make_shared<AbsoluteValue>();
+        auto c = std::make_shared<operators::AbsoluteValue>();
         c->setArg(parseNode(node->getNext()));
         return c;
     } else if (node->isElement("not", MATHML_NS)) {
-        auto c = std::make_shared<Not>();
+        auto c = std::make_shared<operators::Not>();
         c->setArg(parseNode(node->getNext()));
         return c;
     } else if (node->isElement("ci", MATHML_NS)) {
         auto name = node->getFirstChild()->convertToString();
-        auto c = std::make_shared<libcellml::operators::Variable>(name);
+        auto c = std::make_shared<operators::Variable>(name);
         // All variables are in mAlgebraic unless they are in mStates already
         if (name != mVoi &&
                 std::find(mStates.begin(),
@@ -524,14 +522,14 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
         double value;
         std::istringstream iss(node->getFirstChild()->convertToString());
         iss >> value;
-        auto c = std::make_shared<Constant>(value);
+        auto c = std::make_shared<operators::Constant>(value);
         return c;
     } else if (node->isElement("pi", MATHML_NS)) {
-        auto c = std::make_shared<Constant>(std::acos(-1));
+        auto c = std::make_shared<operators::Constant>(std::acos(-1));
         return c;
     } else if (node->isElement("diff", MATHML_NS)) {
         auto name = node->getNext()->getNext()->getFirstChild()->convertToString();
-        auto c = std::make_shared<libcellml::operators::Derivative>(name);
+        auto c = std::make_shared<operators::Derivative>(name);
         // When we find the derivative of a variable, that variable goes in
         // mStates.
         if (std::find(mStates.begin(), mStates.end(), name) == mStates.end()) {
@@ -550,13 +548,13 @@ std::shared_ptr<Representable> Generator::GeneratorImpl::parseNode(XmlNodePtr no
                 "' which is currently not supported.");
         mGenerator->addError(err);
 
-        return std::make_shared<Constant>(0);
+        return std::make_shared<operators::Constant>(0);
     }
 }
 
-std::vector<std::shared_ptr<Representable>> Generator::GeneratorImpl::parseMathML(std::string math)
+std::vector<std::shared_ptr<operators::Representable>> Generator::GeneratorImpl::parseMathML(const std::string &math)
 {
-    std::vector<std::shared_ptr<Representable>> nodes;
+    std::vector<std::shared_ptr<operators::Representable>> nodes;
 
     XmlDocPtr mathDoc = std::make_shared<XmlDoc>();
     mathDoc->parse(math);
@@ -573,7 +571,7 @@ std::vector<std::shared_ptr<Representable>> Generator::GeneratorImpl::parseMathM
     return nodes;
 }
 
-void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)
+void Generator::GeneratorImpl::findVOIHelper(const XmlNodePtr &node)
 {
     if (node->isElement("bvar", MATHML_NS)) {
         mVoi = node->getFirstChild()->getFirstChild()->convertToString();
@@ -588,7 +586,7 @@ void Generator::GeneratorImpl::findVOIHelper(XmlNodePtr node)
     }
 }
 
-void Generator::GeneratorImpl::findVOI(std::string math)
+void Generator::GeneratorImpl::findVOI(const std::string &math)
 {
     XmlDocPtr mathDoc = std::make_shared<XmlDoc>();
     mathDoc->parse(math);
