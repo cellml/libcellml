@@ -67,10 +67,10 @@ Reset::Reset(Reset &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Reset& Reset::operator=(Reset e)
+Reset& Reset::operator=(Reset rhs)
 {
-    OrderedEntity::operator= (e);
-    e.swap(*this);
+    OrderedEntity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -79,7 +79,7 @@ void Reset::swap(Reset &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Reset::setVariable(VariablePtr variable)
+void Reset::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;
 }

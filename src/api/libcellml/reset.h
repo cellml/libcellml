@@ -36,7 +36,7 @@ public:
     ~Reset() override; /**< Destructor */
     Reset(const Reset &rhs); /**< Copy constructor */
     Reset(Reset &&rhs); /**< Move constructor */
-    Reset& operator=(Reset n); /**< Assignment operator */
+    Reset& operator=(Reset rhs); /**< Assignment operator */
 
     /**
      * @brief Set the @c Variable for this @c Reset.
@@ -45,7 +45,7 @@ public:
      *
      * @param variable The @c Variable to set.
      */
-    void setVariable(VariablePtr variable);
+    void setVariable(const VariablePtr &variable);
 
     /**
      * @brief Get the @c Variable for this @c Reset.
