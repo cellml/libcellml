@@ -53,7 +53,7 @@ public:
      *
      * Add a copy of the given component as a child component of this component entity.
      *
-     * @param c The component to add.
+     * @param component The component to add.
      */
     void addComponent(const ComponentPtr &component);
 
@@ -210,7 +210,7 @@ public:
      * the range [0, \#components).
      *
      * @param index Index of the Component to replace.
-     * @param c The component to be used as a replacement.
+     * @param component The component to be used as a replacement.
      *
      * @return True if the component was replaced, false otherwise.
      */
@@ -301,7 +301,7 @@ protected:
      * Virtual addComponent method to allow the model and component classes to
      * implement their own versions.
      *
-     * @param c The ComponentPtr to add to the list of components.
+     * @param component The ComponentPtr to add to the list of components.
      */
     virtual void doAddComponent(const ComponentPtr &component);
 
