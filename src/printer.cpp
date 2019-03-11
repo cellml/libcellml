@@ -144,7 +144,7 @@ std::string Printer::printUnits(const UnitsPtr &units) const
 
 std::string Printer::printUnits(Units units) const
 {
-    return printUnits(std::shared_ptr<Units>(std::shared_ptr<Units>{}, &units));
+    return printUnits(UnitsPtr(UnitsPtr{}, &units));
 }
 
 std::string Printer::printComponent(const ComponentPtr &component) const
@@ -190,7 +190,7 @@ std::string Printer::printComponent(const ComponentPtr &component) const
 
 std::string Printer::printComponent(Component component) const
 {
-    return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+    return printComponent(ComponentPtr(ComponentPtr{}, &component));
 }
 
 std::string Printer::printReset(const ResetPtr &reset) const
@@ -222,7 +222,7 @@ std::string Printer::printReset(const ResetPtr &reset) const
 
 std::string Printer::printReset(Reset reset) const
 {
-    return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
+    return printReset(ResetPtr(ResetPtr{}, &reset));
 }
 
 std::string Printer::printWhen(const WhenPtr &when) const
@@ -288,7 +288,7 @@ std::string Printer::printVariable(const VariablePtr &variable) const
 
 std::string Printer::printVariable(Variable variable) const
 {
-    return printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable>{}, &variable));
+    return printVariable(VariablePtr(VariablePtr{}, &variable));
 }
 
 std::string printMapVariables(VariablePair variablePair)
@@ -541,12 +541,12 @@ std::string Printer::printModel(const ModelPtr &model) const
 
 std::string Printer::printModel(Model model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, &model));
+    return printModel(ModelPtr(ModelPtr{}, &model));
 }
 
 std::string Printer::printModel(Model *model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
+    return printModel(ModelPtr(ModelPtr{}, model));
 }
 
 std::string Printer::printEncapsulation(const ComponentPtr &component) const
