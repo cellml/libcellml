@@ -170,7 +170,6 @@ public:
      */
     std::string printReset(Reset reset) const;
 
-private:
     /**
      * @brief Serialise the component encapsulation to @c std::string.
      *
@@ -193,6 +192,7 @@ private:
      */
     std::string printWhen(const WhenPtr &when) const;
 
+private:
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
