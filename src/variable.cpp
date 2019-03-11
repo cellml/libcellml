@@ -199,10 +199,10 @@ Variable::Variable(Variable &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Variable& Variable::operator=(Variable v)
+Variable& Variable::operator=(Variable rhs)
 {
-    NamedEntity::operator= (v);
-    v.swap(*this);
+    NamedEntity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -350,9 +350,9 @@ void Variable::setInitialValue(double initialValue)
     mPimpl->mInitialValue = convertDoubleToString(initialValue);
 }
 
-void Variable::setInitialValue(const VariablePtr &v)
+void Variable::setInitialValue(const VariablePtr &variable)
 {
-    mPimpl->mInitialValue = v->getName();
+    mPimpl->mInitialValue = variable->getName();
 }
 
 std::string Variable::getInitialValue() const
@@ -365,7 +365,7 @@ void Variable::setInterfaceType(const std::string &interfaceType)
     mPimpl->mInterfaceType = interfaceType;
 }
 
-void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
+void Variable::setInterfaceType(InterfaceType interfaceType)
 {
     auto search = interfaceTypeToString.find(interfaceType);
     assert(search != interfaceTypeToString.end());
