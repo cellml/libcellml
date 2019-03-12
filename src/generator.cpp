@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+// Declare _USE_MATH_DEFINES so that MSVC can find M_PI.
+#define _USE_MATH_DEFINES
+
 #include "libcellml/generator.h"
 #include "libcellml/component.h"
 #include "libcellml/model.h"
