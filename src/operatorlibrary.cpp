@@ -21,21 +21,21 @@ namespace libcellml {
 namespace operators {
 
 BinaryOperator::BinaryOperator() :
-    arg1(RepresentablePtr()),
-    arg2(RepresentablePtr())
+    mArg1(RepresentablePtr()),
+    mArg2(RepresentablePtr())
 {}
 
-ArithmeticOperator::ArithmeticOperator(std::string opr) :
+ArithmeticOperator::ArithmeticOperator(std::string op) :
     BinaryOperator(),
-    operatorRepresentation(opr)
+    mOp(op)
 {}
 
 std::string ArithmeticOperator::repr()
 {
     std::ostringstream oss;
-    oss << "(" << arg1->repr();
-    oss << " " << operatorRepresentation << " ";
-    oss << arg2->repr() << ")";
+    oss << "(" << mArg1->repr()
+        << " " << mOp << " "
+        << mArg2->repr() << ")";
     return oss.str();
 }
 
@@ -86,12 +86,12 @@ Power::Power() :
 std::string Power::repr()
 {
     std::ostringstream oss;
-    oss << "std::pow(" << arg1->repr() << ", " << arg2->repr() << ")";
+    oss << "std::pow(" << mArg1->repr() << ", " << mArg2->repr() << ")";
     return oss.str();
 }
 
 UnaryOperator::UnaryOperator() :
-    arg(RepresentablePtr())
+    mArg(RepresentablePtr())
 {}
 
 Positive::Positive() :
@@ -101,7 +101,7 @@ Positive::Positive() :
 std::string Positive::repr()
 {
     std::ostringstream oss;
-    oss << "+" << "(" << arg->repr() << ")";
+    oss << "+" << "(" << mArg->repr() << ")";
     return oss.str();
 }
 
@@ -112,7 +112,7 @@ Negative::Negative() :
 std::string Negative::repr()
 {
     std::ostringstream oss;
-    oss << "-" << "(" << arg->repr() << ")";
+    oss << "-" << "(" << mArg->repr() << ")";
     return oss.str();
 }
 
@@ -123,7 +123,7 @@ Not::Not() :
 std::string Not::repr()
 {
     std::ostringstream oss;
-    oss << "!" << "(" << arg->repr() << ")";
+    oss << "!" << "(" << mArg->repr() << ")";
     return oss.str();
 }
 
@@ -135,7 +135,7 @@ STDOperator::STDOperator(std::string fun) :
 std::string STDOperator::repr()
 {
     std::ostringstream oss;
-    oss << "std::" << fun << "(" << arg->repr() << ")";
+    oss << "std::" << fun << "(" << mArg->repr() << ")";
     return oss.str();
 }
 
@@ -191,9 +191,9 @@ Equation::Equation() :
 std::string Equation::repr()
 {
     std::ostringstream oss;
-    oss << arg1->repr();
+    oss << mArg1->repr();
     oss << " = ";
-    oss << arg2->repr();
+    oss << mArg2->repr();
     return oss.str();
 }
 
