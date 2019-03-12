@@ -16,12 +16,11 @@ limitations under the License.
 
 #pragma once
 
-#include <string>
-
 #include "libcellml/logger.h"
 #include "libcellml/types.h"
 
-//! Everything in libCellML is in this namespace.
+#include <string>
+
 namespace libcellml {
 
 class LIBCELLML_EXPORT Generator : public Logger
@@ -35,7 +34,7 @@ public:
 
 private:
     struct GeneratorImpl;
-    GeneratorImpl* mPimpl;
+    GeneratorImpl *mPimpl;
 };
 
 }

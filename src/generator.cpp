@@ -29,10 +29,10 @@ limitations under the License.
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <typeinfo>
-#include <map>
 #include <unordered_map>
 #include <vector>
 
@@ -49,12 +49,18 @@ struct EnumClassHash
 
 struct Generator::GeneratorImpl
 {
-    enum class types {void_t, double_t, double_ct, double_pt, double_rt};
+    enum class DataType {
+        Void,
+        Double,
+        DoubleCst,
+        DoublePtr,
+        DoubleRef
+    };
 
     Generator *mGenerator;
 
-    void findVOI(const std::string &math);
-    void findVOIHelper(const XmlNodePtr &node);
+    void findVoi(const std::string &math);
+    void findVoiHelper(const XmlNodePtr &node);
     void findInitialValues(const ComponentPtr &component);
     std::vector<operators::RepresentablePtr> parseMathML(const std::string &math);
     operators::RepresentablePtr parseNode(const XmlNodePtr &node);
@@ -67,14 +73,13 @@ struct Generator::GeneratorImpl
     std::string generateAlgebraicAliases();
     std::string generateVoiAlias();
 
-    std::string returnType(types t);
-    std::string argType(types t);
-    std::string argListOp() {return "(";}
-    std::string argListCl() {return ")";}
-    std::string funBodyOp() {return "{";}
-    std::string funBodyCl() {return "}";}
-    std::string instructionDelimiter() {return ";";}
-    std::string dereferenceOp() {return "*";}
+    std::string dataType(DataType dataType);
+    std::string beginArgList() { return "("; }
+    std::string endArgList() { return ")"; }
+    std::string beginFunction() { return "{"; }
+    std::string endFunction() { return "}"; }
+    std::string endInstruction() { return ";"; }
+    std::string dereferenceOp() { return "*"; }
 
     std::string mVoi;
     std::vector<std::string> mStates;
@@ -98,12 +103,11 @@ std::string Generator::GeneratorImpl::generateStateAliases()
 {
     std::string s;
     std::ostringstream oss(s);
-    for (size_t i = 0; i < mStates.size(); i++)
-    {
+    for (size_t i = 0; i < mStates.size(); ++i) {
         oss << "    "
-            << argType(types::double_rt) << mStates[i] << " = "
+            << dataType(DataType::DoubleRef) << mStates[i] << " = "
             << dereferenceOp() << "(states + " << i << ")"
-            << instructionDelimiter() << std::endl;
+            << endInstruction() << std::endl;
     }
     oss << std::endl;
     return oss.str();
@@ -113,12 +117,11 @@ std::string Generator::GeneratorImpl::generateRateAliases()
 {
     std::string s;
     std::ostringstream oss(s);
-    for (size_t i = 0; i < mStates.size(); i++)
-    {
+    for (size_t i = 0; i < mStates.size(); ++i) {
         oss << "    "
-            << argType(types::double_rt) << "D" << mStates[i] << " = "
+            << dataType(DataType::DoubleRef) << "D" << mStates[i] << " = "
             << dereferenceOp() << "(rates + " << i << ")"
-            << instructionDelimiter() << std::endl;
+            << endInstruction() << std::endl;
     }
     oss << std::endl;
     return oss.str();
@@ -128,12 +131,11 @@ std::string Generator::GeneratorImpl::generateAlgebraicAliases()
 {
     std::string s;
     std::ostringstream oss(s);
-    for (size_t i = 0; i < mAlgebraic.size(); i++)
-    {
+    for (size_t i = 0; i < mAlgebraic.size(); ++i) {
         oss << "    "
-            << argType(types::double_rt) << mAlgebraic[i] << " = "
+            << dataType(DataType::DoubleRef) << mAlgebraic[i] << " = "
             << dereferenceOp() << "(algebraic + " << i << ")"
-            << instructionDelimiter() << std::endl;
+            << endInstruction() << std::endl;
     }
     oss << std::endl;
     return oss.str();
@@ -144,7 +146,8 @@ std::string Generator::GeneratorImpl::generateVoiAlias()
     std::string s;
     std::ostringstream oss(s);
     oss << "    "
-        << argType(types::double_ct) << mVoi << " = voi" << instructionDelimiter() << std::endl;
+        << dataType(DataType::DoubleCst) << mVoi << " = voi"
+        << endInstruction() << std::endl;
     oss << std::endl;
     return oss.str();
 }
@@ -153,27 +156,26 @@ std::string Generator::GeneratorImpl::generateInitConsts()
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << returnType(types::void_t) << "initConsts"
-        << argListOp()
-        << argType(types::double_pt)
+    oss << dataType(DataType::Void) << "initConsts"
+        << beginArgList()
+        << dataType(DataType::DoublePtr)
         << "constants, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "rates, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "states, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "algebraic"
-        << argListCl() << std::endl
-        << funBodyOp() << std::endl;
-
-    oss << generateStateAliases() << std::endl;
-    oss << generateAlgebraicAliases() << std::endl;
-    for (auto s : mInitialValues)
-    {
-        oss << "    " << s.first << " = "
-            << std::setprecision(16) << s.second << instructionDelimiter() << std::endl;
+        << endArgList() << std::endl
+        << beginFunction() << std::endl
+        << generateStateAliases() << std::endl
+        << generateAlgebraicAliases() << std::endl;
+    for (auto initialValue : mInitialValues) {
+        oss << "    " << initialValue.first << " = "
+            << std::setprecision(16) << initialValue.second
+            << endInstruction() << std::endl;
     }
-    oss << std::endl << funBodyCl();
+    oss << std::endl << endFunction();
     return oss.str();
 }
 
@@ -181,39 +183,35 @@ std::string Generator::GeneratorImpl::generateComputeRates(const std::vector<ope
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << returnType(types::void_t) << "computeRates"
-        << argListOp()
-        << argType(types::double_t)
+    oss << dataType(DataType::Void) << "computeRates"
+        << beginArgList()
+        << dataType(DataType::Double)
         << "voi, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "constants, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "rates, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "states, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "algebraic"
-        << argListCl() << std::endl
-        << funBodyOp() << std::endl;
-
-    oss << generateVoiAlias() << std::endl;
-    oss << generateStateAliases() << std::endl;
-    oss << generateRateAliases() << std::endl;
-    oss << generateAlgebraicAliases() << std::endl;
-
-    for (auto representable : representables)
-    {
-        auto& p = *(static_cast<operators::Equation*>(&*representable)->getArg1());
-        // Here I assume that the first node is always of type Equation, and use
-        // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(p).hash_code() == typeid(operators::Derivative).hash_code()) {
+        << endArgList() << std::endl
+        << beginFunction() << std::endl
+        << generateVoiAlias() << std::endl
+        << generateStateAliases() << std::endl
+        << generateRateAliases() << std::endl
+        << generateAlgebraicAliases() << std::endl;
+    for (auto representable : representables) {
+        auto &arg1 = *(static_cast<operators::Equation*>(&*representable)->getArg1());
+        // Here, we assume that the first node is always of type Equation and
+        // use this fact to distinguish ODEs from algebraic equations.
+        if (typeid(arg1).hash_code() == typeid(operators::Derivative).hash_code()) {
             oss << "    "
-                << representable->repr() << ";" << std::endl;
+                << representable->repr()
+                << endInstruction() << std::endl;
         }
     }
-
-    oss << std::endl
-        << funBodyCl();
+    oss << std::endl << endFunction();
     return oss.str();
 }
 
@@ -221,49 +219,44 @@ std::string Generator::GeneratorImpl::generateComputeVariables(const std::vector
 {
     std::string s;
     std::ostringstream oss(s);
-    oss << returnType(types::void_t) << "computeVariables"
-        << argListOp()
-        << argType(types::double_t)
+    oss << dataType(DataType::Void) << "computeVariables"
+        << beginArgList()
+        << dataType(DataType::Double)
         << "voi, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "constants, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "rates, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "states, "
-        << argType(types::double_pt)
+        << dataType(DataType::DoublePtr)
         << "algebraic"
-        << argListCl()  << std::endl
-        << funBodyOp() << std::endl;
-
-    oss << generateVoiAlias() << std::endl;
-    oss << generateStateAliases() << std::endl;
-    oss << generateRateAliases() << std::endl;
-    oss << generateAlgebraicAliases() << std::endl;
-
-    for (auto representable : representables)
-    {
-        auto& p = *(static_cast<operators::Equation*>(&*representable)->getArg1());
-        // Here I assume that the first node is always of type Equation, and use
-        // this fact to distinguish ODEs from algebraic equations.
-        if (typeid(p).hash_code() == typeid(operators::Variable).hash_code()) {
+        << endArgList()  << std::endl
+        << beginFunction() << std::endl
+        << generateVoiAlias() << std::endl
+        << generateStateAliases() << std::endl
+        << generateRateAliases() << std::endl
+        << generateAlgebraicAliases() << std::endl;
+    for (auto representable : representables) {
+        auto &arg1 = *(static_cast<operators::Equation*>(&*representable)->getArg1());
+        // Here, we assume that the first node is always of type Equation and
+        // use this fact to distinguish ODEs from algebraic equations.
+        if (typeid(arg1).hash_code() == typeid(operators::Variable).hash_code()) {
             oss << "    "
-                << representable->repr() << ";" << std::endl;
+                << representable->repr()
+                << endInstruction() << std::endl;
         }
     }
-
-    oss << std::endl
-        << funBodyCl();
+    oss << std::endl << endFunction();
     return oss.str();
 }
 
 void Generator::GeneratorImpl::findInitialValues(const ComponentPtr &component)
 {
-    for (std::size_t i = 0; i < component->variableCount(); i++)
-    {
-        auto v = component->getVariable(i);
-        if (v->getName() != mVoi) {
-            mInitialValues[v->getName()] = std::stod(v->getInitialValue());
+    for (std::size_t i = 0; i < component->variableCount(); ++i) {
+        auto variable = component->getVariable(i);
+        if (variable->getName() != mVoi) {
+            mInitialValues[variable->getName()] = std::stod(variable->getInitialValue());
         }
     }
 }
@@ -272,44 +265,31 @@ std::string Generator::GeneratorImpl::doGenerateCode(const ModelPtr &model)
 {
     ComponentPtr component = model->getComponent(0);
 
-    findVOI(component->getMath());
+    findVoi(component->getMath());
     findInitialValues(component);
     auto math = parseMathML(component->getMath());
 
     std::string generatedCode;
     std::ostringstream oss(generatedCode);
-    oss << generateInitConsts() << std::endl;
-    oss << generateComputeRates(math) << std::endl;
-    oss << generateComputeVariables(math) << std::endl;
+    oss << generateInitConsts() << std::endl
+        << generateComputeRates(math) << std::endl
+        << generateComputeVariables(math) << std::endl;
 
     mCode = oss.str();
     return mCode;
 }
 
-std::string Generator::GeneratorImpl::returnType(types t)
+std::string Generator::GeneratorImpl::dataType(DataType dataType)
 {
-    static const std::unordered_map<types, std::string, EnumClassHash> returnTypes = {
-        {types::void_t,"void "},
-        {types::double_t, "double "},
-        {types::double_ct, "const double "},
-        {types::double_pt, "double *"},
-        {types::double_rt, "double &"}
+    static const std::unordered_map<DataType, std::string, EnumClassHash> dataTypes = {
+        { DataType::Void, "void " },
+        { DataType::Double, "double " },
+        { DataType::DoubleCst, "const double " },
+        { DataType::DoublePtr, "double *" },
+        { DataType::DoubleRef, "double &" }
     };
 
-    return returnTypes.at(t);
-}
-
-std::string Generator::GeneratorImpl::argType(types t)
-{
-    static const std::unordered_map<types, std::string, EnumClassHash> argTypes = {
-        {types::void_t,"void "},
-        {types::double_t, "double "},
-        {types::double_ct, "const double "},
-        {types::double_pt, "double *"},
-        {types::double_rt, "double &"},
-    };
-
-    return argTypes.at(t);
+    return dataTypes.at(dataType);
 }
 
 std::string Generator::generateCode(const ModelPtr &model)
@@ -319,11 +299,11 @@ std::string Generator::generateCode(const ModelPtr &model)
 
 void Generator::writeCodeToFile(const std::string &filename)
 {
-    if (mPimpl->mCode == "") {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("No code was detected. The file '"
-                            + filename + "' was not written to. Please check that Generator::generateCode() is used before Generator::writeCodeToFile().");
-        addError(err);
+    if (mPimpl->mCode.empty()) {
+        ErrorPtr error = std::make_shared<Error>();
+        error->setDescription("No code was detected. The file '"
+                              + filename + "' was not written to. Please check that Generator::generateCode() is used before Generator::writeCodeToFile().");
+        addError(error);
     } else {
         std::ofstream output(filename);
         output << mPimpl->mCode;
@@ -334,213 +314,209 @@ void Generator::writeCodeToFile(const std::string &filename)
 operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr &node)
 {
     if (node->isElement("eq", MATHML_NS)) {
-        auto c = std::make_shared<operators::Equation>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Equation>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("apply", MATHML_NS)) {
         return parseNode(node->getFirstChild());
     } else if (node->isElement("plus", MATHML_NS)) {
         // Unary plus (positive) and binary plus (addition) have the same node
-        // name, so we tell them apart by checking the number of arguments.
+        // name, so we tell them apart by checking their number of arguments.
         if (node->getNext()->getNext()) {
-            auto c = std::make_shared<operators::Addition>();
-            auto s = node->getNext();
-            c->setArg1(parseNode(s));
-            s = s->getNext();
-            if (!s->getNext()) {
-                c->setArg2(parseNode(s));
+            auto r = std::make_shared<operators::Addition>();
+            auto n = node->getNext();
+            r->setArg1(parseNode(n));
+            n = n->getNext();
+            if (!n->getNext()) {
+                r->setArg2(parseNode(n));
             } else {
-                auto pointer0 = c;
-                while (s->getNext())
+                auto p0 = r;
+                while (n->getNext())
                 {
-                    auto pointer1 = std::make_shared<operators::Addition>();
-                    pointer1->setArg1(parseNode(s));
-                    pointer0->setArg2(pointer1);
-                    s = s->getNext();
-                    pointer0 = pointer1;
+                    auto p1 = std::make_shared<operators::Addition>();
+                    p1->setArg1(parseNode(n));
+                    p0->setArg2(p1);
+                    n = n->getNext();
+                    p0 = p1;
                 }
-                pointer0->setArg2(parseNode(s));
+                p0->setArg2(parseNode(n));
             }
-            return c;
+            return r;
         } else {
-            auto c = std::make_shared<operators::Positive>();
-            c->setArg(parseNode(node->getNext()));
-            return c;
+            auto r = std::make_shared<operators::Positive>();
+            r->setArg(parseNode(node->getNext()));
+            return r;
         }
     }
     else if (node->isElement("minus", MATHML_NS)) {
         // Unary minus (negative) and binary minus (subtraction) have the same node
         // name, so we tell them apart by checking the number of arguments.
         if (node->getNext()->getNext()) {
-            auto c = std::make_shared<operators::Subtraction>();
-            auto s1 = node->getNext();
-            c->setArg1(parseNode(s1));
-            c->setArg2(parseNode(s1->getNext()));
-            return c;
+            auto r = std::make_shared<operators::Subtraction>();
+            auto n = node->getNext();
+            r->setArg1(parseNode(n));
+            r->setArg2(parseNode(n->getNext()));
+            return r;
         } else {
-            auto c = std::make_shared<operators::Negative>();
-            c->setArg(parseNode(node->getNext()));
-            return c;
+            auto r = std::make_shared<operators::Negative>();
+            r->setArg(parseNode(node->getNext()));
+            return r;
         }
     }
     else if (node->isElement("times", MATHML_NS)) {
-        auto c = std::make_shared<operators::Multiplication>();
-        auto s = node->getNext();
-        c->setArg1(parseNode(s));
-        s = s->getNext();
-        if (!s->getNext()) {
-            c->setArg2(parseNode(s));
+        auto r = std::make_shared<operators::Multiplication>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        n = n->getNext();
+        if (!n->getNext()) {
+            r->setArg2(parseNode(n));
         } else {
-            auto pointer0 = c;
-            while (s->getNext())
+            auto p0 = r;
+            while (n->getNext())
             {
-                auto pointer1 = std::make_shared<operators::Multiplication>();
-                pointer1->setArg1(parseNode(s));
-                pointer0->setArg2(pointer1);
-                s = s->getNext();
-                pointer0 = pointer1;
+                auto p1 = std::make_shared<operators::Multiplication>();
+                p1->setArg1(parseNode(n));
+                p0->setArg2(p1);
+                n = n->getNext();
+                p0 = p1;
             }
-            pointer0->setArg2(parseNode(s));
+            p0->setArg2(parseNode(n));
         }
-        return c;
+        return r;
     } else if (node->isElement("divide", MATHML_NS)) {
-        auto c = std::make_shared<operators::Division>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Division>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("piecewise", MATHML_NS)) {
         // A piecewise definition can be implemented as the sum of the products
         // of each piece's expression and its condition.
-        auto c = std::make_shared<operators::Addition>();
-        auto s = node->getFirstChild();
-        c->setArg1(parseNode(s));
-        s = s->getNext();
-        if (!s->getNext()) {
-            c->setArg2(parseNode(s));
+        auto r = std::make_shared<operators::Addition>();
+        auto n = node->getFirstChild();
+        r->setArg1(parseNode(n));
+        n = n->getNext();
+        if (!n->getNext()) {
+            r->setArg2(parseNode(n));
         } else {
-            auto pointer0 = c;
-            while (s->getNext())
+            auto p0 = r;
+            while (n->getNext())
             {
-                auto pointer1 = std::make_shared<operators::Addition>();
-                pointer1->setArg1(parseNode(s));
-                pointer0->setArg2(pointer1);
-                s = s->getNext();
-                pointer0 = pointer1;
+                auto p1 = std::make_shared<operators::Addition>();
+                p1->setArg1(parseNode(n));
+                p0->setArg2(p1);
+                n = n->getNext();
+                p0 = p1;
             }
-            pointer0->setArg2(parseNode(s));
+            p0->setArg2(parseNode(n));
         }
-        return c;
+        return r;
     }
     else if (node->isElement("piece", MATHML_NS)) {
         // A piece of a piecewise definition can be implemented as the product
         // of its expression and its condition.
-        auto c = std::make_shared<operators::Multiplication>();
-        auto s1 = node->getFirstChild();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Multiplication>();
+        auto n = node->getFirstChild();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("and", MATHML_NS)) {
-        auto c = std::make_shared<operators::And>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::And>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("or", MATHML_NS)) {
-        auto c = std::make_shared<operators::Or>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Or>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("lt", MATHML_NS)) {
-        auto c = std::make_shared<operators::Less>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Less>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("leq", MATHML_NS)) {
-        auto c = std::make_shared<operators::LessOrEqual>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::LessOrEqual>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("geq", MATHML_NS)) {
-        auto c = std::make_shared<operators::GreaterOrEqual>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::GreaterOrEqual>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("gt", MATHML_NS)) {
-        auto c = std::make_shared<operators::Greater>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Greater>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("power", MATHML_NS)) {
-        auto c = std::make_shared<operators::Power>();
-        auto s1 = node->getNext();
-        c->setArg1(parseNode(s1));
-        c->setArg2(parseNode(s1->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Power>();
+        auto n = node->getNext();
+        r->setArg1(parseNode(n));
+        r->setArg2(parseNode(n->getNext()));
+        return r;
     } else if (node->isElement("sin", MATHML_NS)) {
-        auto c = std::make_shared<operators::Sine>();
-        c->setArg(parseNode(node->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Sine>();
+        r->setArg(parseNode(node->getNext()));
+        return r;
     } else if (node->isElement("cos", MATHML_NS)) {
-        auto c = std::make_shared<operators::Cosine>();
-        c->setArg(parseNode(node->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Cosine>();
+        r->setArg(parseNode(node->getNext()));
+        return r;
     } else if (node->isElement("floor", MATHML_NS)) {
-        auto c = std::make_shared<operators::Floor>();
-        c->setArg(parseNode(node->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Floor>();
+        r->setArg(parseNode(node->getNext()));
+        return r;
     } else if (node->isElement("abs", MATHML_NS)) {
-        auto c = std::make_shared<operators::AbsoluteValue>();
-        c->setArg(parseNode(node->getNext()));
-        return c;
+        auto r = std::make_shared<operators::AbsoluteValue>();
+        r->setArg(parseNode(node->getNext()));
+        return r;
     } else if (node->isElement("not", MATHML_NS)) {
-        auto c = std::make_shared<operators::Not>();
-        c->setArg(parseNode(node->getNext()));
-        return c;
+        auto r = std::make_shared<operators::Not>();
+        r->setArg(parseNode(node->getNext()));
+        return r;
     } else if (node->isElement("ci", MATHML_NS)) {
         auto name = node->getFirstChild()->convertToString();
-        auto c = std::make_shared<operators::Variable>(name);
+        auto r = std::make_shared<operators::Variable>(name);
         // All variables are in mAlgebraic unless they are in mStates already
-        if (name != mVoi &&
-                std::find(mStates.begin(),
-                          mStates.end(),
-                          name) == mStates.end() &&
-                std::find(mAlgebraic.begin(),
-                          mAlgebraic.end(),
-                          name) == mAlgebraic.end()) {
+        if (   (name != mVoi)
+            && std::find(mStates.begin(), mStates.end(), name) == mStates.end()
+            && std::find(mAlgebraic.begin(), mAlgebraic.end(), name) == mAlgebraic.end()) {
             mAlgebraic.push_back(name);
         }
-        return c;
+        return r;
     } else if (node->isElement("cn", MATHML_NS)) {
         double value;
         std::istringstream iss(node->getFirstChild()->convertToString());
         iss >> value;
-        auto c = std::make_shared<operators::Constant>(value);
-        return c;
+        auto r = std::make_shared<operators::Constant>(value);
+        return r;
     } else if (node->isElement("pi", MATHML_NS)) {
-        auto c = std::make_shared<operators::Constant>(std::acos(-1));
-        return c;
+        auto r = std::make_shared<operators::Constant>(std::acos(-1));
+        return r;
     } else if (node->isElement("diff", MATHML_NS)) {
         auto name = node->getNext()->getNext()->getFirstChild()->convertToString();
-        auto c = std::make_shared<operators::Derivative>(name);
+        auto r = std::make_shared<operators::Derivative>(name);
         // When we find the derivative of a variable, that variable goes in
         // mStates.
         if (std::find(mStates.begin(), mStates.end(), name) == mStates.end()) {
             mStates.push_back(name);
             // If it was previously put in mAlgebraic, it must be removed.
-            auto p = std::find(mAlgebraic.begin(), mAlgebraic.end(), name);
-            if (p != mAlgebraic.end()) {
-                mAlgebraic.erase(p);
+            auto algebraic = std::find(mAlgebraic.begin(), mAlgebraic.end(), name);
+            if (algebraic != mAlgebraic.end()) {
+                mAlgebraic.erase(algebraic);
             }
         }
-        return c;
+        return r;
     } else {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Found node of type '"
@@ -559,9 +535,7 @@ std::vector<operators::RepresentablePtr> Generator::GeneratorImpl::parseMathML(c
     XmlDocPtr mathDoc = std::make_shared<XmlDoc>();
     mathDoc->parse(math);
 
-    const XmlNodePtr root = mathDoc->getRootNode();
-
-    XmlNodePtr childNode = root->getFirstChild();
+    XmlNodePtr childNode = mathDoc->getRootNode()->getFirstChild();
     while (childNode)
     {
         nodes.push_back(parseNode(childNode));
@@ -571,30 +545,27 @@ std::vector<operators::RepresentablePtr> Generator::GeneratorImpl::parseMathML(c
     return nodes;
 }
 
-void Generator::GeneratorImpl::findVOIHelper(const XmlNodePtr &node)
+void Generator::GeneratorImpl::findVoiHelper(const XmlNodePtr &node)
 {
     if (node->isElement("bvar", MATHML_NS)) {
         mVoi = node->getFirstChild()->getFirstChild()->convertToString();
         return;
     } else {
         if (node->getFirstChild()) {
-            findVOIHelper(node->getFirstChild());
+            findVoiHelper(node->getFirstChild());
         }
         if (node->getNext()) {
-            findVOIHelper(node->getNext());
+            findVoiHelper(node->getNext());
         }
     }
 }
 
-void Generator::GeneratorImpl::findVOI(const std::string &math)
+void Generator::GeneratorImpl::findVoi(const std::string &math)
 {
     XmlDocPtr mathDoc = std::make_shared<XmlDoc>();
     mathDoc->parse(math);
 
-    const XmlNodePtr root = mathDoc->getRootNode();
-    XmlNodePtr node = root->getFirstChild();
-
-    findVOIHelper(node);
+    findVoiHelper(mathDoc->getRootNode()->getFirstChild());
 }
 
 }
