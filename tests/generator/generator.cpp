@@ -1199,7 +1199,7 @@ TEST(Generator, floorPi) {
         "\n"
         "\n"
         "\n"
-        "    Dy = std::floor(3.141592653589793);\n"
+        "    Dy = std::floor(3.1415926535897931);\n"
         "\n"
         "}\n"
         "void computeVariables(double voi, double *constants, double *rates, double *states, double *algebraic)\n"
