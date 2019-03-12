@@ -38,43 +38,43 @@ std::string ArithmeticOperator::repr()
 }
 
 Addition::Addition() :
-    ArithmeticOperator(std::string("+"))
+    ArithmeticOperator("+")
 {}
 
 Subtraction::Subtraction() :
-    ArithmeticOperator(std::string("-"))
+    ArithmeticOperator("-")
 {}
 
 Multiplication::Multiplication() :
-    ArithmeticOperator(std::string("*"))
+    ArithmeticOperator("*")
 {}
 
 Division::Division() :
-    ArithmeticOperator(std::string("/"))
+    ArithmeticOperator("/")
 {}
 
 And::And() :
-    ArithmeticOperator(std::string("&&"))
+    ArithmeticOperator("&&")
 {}
 
 Or::Or() :
-    ArithmeticOperator(std::string("||"))
+    ArithmeticOperator("||")
 {}
 
 Less::Less() :
-    ArithmeticOperator(std::string("<"))
+    ArithmeticOperator("<")
 {}
 
 LessOrEqual::LessOrEqual() :
-    ArithmeticOperator(std::string("<="))
+    ArithmeticOperator("<=")
 {}
 
 GreaterOrEqual::GreaterOrEqual() :
-    ArithmeticOperator(std::string(">="))
+    ArithmeticOperator(">=")
 {}
 
 Greater::Greater() :
-    ArithmeticOperator(std::string(">"))
+    ArithmeticOperator(">")
 {}
 
 Power::Power() :
@@ -128,19 +128,19 @@ std::string StdOperator::repr()
 }
 
 AbsoluteValue::AbsoluteValue() :
-    StdOperator(std::string("abs"))
+    StdOperator("abs")
 {}
 
 Sine::Sine() :
-    StdOperator(std::string("sin"))
+    StdOperator("sin")
 {}
 
 Cosine::Cosine() :
-    StdOperator(std::string("cos"))
+    StdOperator("cos")
 {}
 
 Floor::Floor() :
-    StdOperator(std::string("floor"))
+    StdOperator("floor")
 {}
 
 Variable::Variable(std::string name) : name(name)

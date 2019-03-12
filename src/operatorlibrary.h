@@ -69,7 +69,6 @@ class BinaryOperator : public Representable
 {
 public:
     BinaryOperator();
-    BinaryOperator(RepresentablePtr arg1, RepresentablePtr arg2);
     virtual ~BinaryOperator() = default;
 
     RepresentablePtr getArg1() const { return mArg1; }
