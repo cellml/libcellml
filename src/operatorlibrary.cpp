@@ -22,137 +22,163 @@ namespace libcellml {
 
 namespace operators {
 
-BinaryOperator::BinaryOperator() :
-    mArg1(RepresentablePtr()),
-    mArg2(RepresentablePtr())
-{}
+BinaryOperator::BinaryOperator()
+    : mArg1(RepresentablePtr())
+    , mArg2(RepresentablePtr())
+{
+}
 
-ArithmeticOperator::ArithmeticOperator(std::string op) :
-    BinaryOperator(),
-    mOp(op)
-{}
+ArithmeticOperator::ArithmeticOperator(std::string op)
+    : BinaryOperator()
+    , mOp(op)
+{
+}
 
 std::string ArithmeticOperator::repr()
 {
     return "(" + mArg1->repr() + " " + mOp + " " + mArg2->repr() + ")";
 }
 
-Addition::Addition() :
-    ArithmeticOperator("+")
-{}
+Addition::Addition()
+    : ArithmeticOperator("+")
+{
+}
 
-Subtraction::Subtraction() :
-    ArithmeticOperator("-")
-{}
+Subtraction::Subtraction()
+    : ArithmeticOperator("-")
+{
+}
 
-Multiplication::Multiplication() :
-    ArithmeticOperator("*")
-{}
+Multiplication::Multiplication()
+    : ArithmeticOperator("*")
+{
+}
 
-Division::Division() :
-    ArithmeticOperator("/")
-{}
+Division::Division()
+    : ArithmeticOperator("/")
+{
+}
 
-And::And() :
-    ArithmeticOperator("&&")
-{}
+And::And()
+    : ArithmeticOperator("&&")
+{
+}
 
-Or::Or() :
-    ArithmeticOperator("||")
-{}
+Or::Or()
+    : ArithmeticOperator("||")
+{
+}
 
-Less::Less() :
-    ArithmeticOperator("<")
-{}
+Less::Less()
+    : ArithmeticOperator("<")
+{
+}
 
-LessOrEqual::LessOrEqual() :
-    ArithmeticOperator("<=")
-{}
+LessOrEqual::LessOrEqual()
+    : ArithmeticOperator("<=")
+{
+}
 
-GreaterOrEqual::GreaterOrEqual() :
-    ArithmeticOperator(">=")
-{}
+GreaterOrEqual::GreaterOrEqual()
+    : ArithmeticOperator(">=")
+{
+}
 
-Greater::Greater() :
-    ArithmeticOperator(">")
-{}
+Greater::Greater()
+    : ArithmeticOperator(">")
+{
+}
 
-Power::Power() :
-    BinaryOperator()
-{}
+Power::Power()
+    : BinaryOperator()
+{
+}
 
 std::string Power::repr()
 {
     return "std::pow(" + mArg1->repr() + ", " + mArg2->repr() + ")";
 }
 
-UnaryOperator::UnaryOperator() :
-    mArg(RepresentablePtr())
-{}
+UnaryOperator::UnaryOperator()
+    : mArg(RepresentablePtr())
+{
+}
 
-Positive::Positive() :
-    UnaryOperator()
-{}
+Positive::Positive()
+    : UnaryOperator()
+{
+}
 
 std::string Positive::repr()
 {
     return "+(" + mArg->repr() + ")";
 }
 
-Negative::Negative() :
-    UnaryOperator()
-{}
+Negative::Negative()
+    : UnaryOperator()
+{
+}
 
 std::string Negative::repr()
 {
     return "-(" + mArg->repr() + ")";
 }
 
-Not::Not() :
-    UnaryOperator()
-{}
+Not::Not()
+    : UnaryOperator()
+{
+}
 
 std::string Not::repr()
 {
     return "!(" + mArg->repr() + ")";
 }
 
-StdOperator::StdOperator(std::string function) :
-    UnaryOperator(),
-    mFunction(function)
-{}
+StdOperator::StdOperator(std::string function)
+    : UnaryOperator()
+    , mFunction(function)
+{
+}
 
 std::string StdOperator::repr()
 {
     return "std::" + mFunction + "(" + mArg->repr() + ")";
 }
 
-AbsoluteValue::AbsoluteValue() :
-    StdOperator("abs")
-{}
+AbsoluteValue::AbsoluteValue()
+    : StdOperator("abs")
+{
+}
 
-Sine::Sine() :
-    StdOperator("sin")
-{}
+Sine::Sine()
+    : StdOperator("sin")
+{
+}
 
-Cosine::Cosine() :
-    StdOperator("cos")
-{}
+Cosine::Cosine()
+    : StdOperator("cos")
+{
+}
 
-Floor::Floor() :
-    StdOperator("floor")
-{}
+Floor::Floor()
+    : StdOperator("floor")
+{
+}
 
-Variable::Variable(std::string name) : name(name)
-{}
+Variable::Variable(std::string name)
+    : mName(name)
+{
+}
 
 std::string Variable::repr()
 {
-    return name;
+    return mName;
 }
 
-Constant::Constant (double val) : value(val)
-{}
+Constant::Constant (double value)
+    : mValue(value)
+{
+}
 
 std::string Constant::repr()
 {
@@ -161,22 +187,24 @@ std::string Constant::repr()
     // limitations (e.g. 23.43 ---> 23.430000, 1e-09 ---> 0.000000), as can be
     // seen at https://en.cppreference.com/w/cpp/string/basic_string/to_string.
     std::ostringstream oss;
-    oss << std::setprecision(std::numeric_limits<double>::max_digits10) << value;
+    oss << std::setprecision(std::numeric_limits<double>::max_digits10) << mValue;
     return oss.str();
 }
 
-Derivative::Derivative (std::string variableName) :
-    mVariableName(variableName)
-{}
+Derivative::Derivative (std::string variableName)
+    : mVariableName(variableName)
+{
+}
 
 std::string Derivative::repr()
 {
     return "D" + mVariableName;
 }
 
-Equation::Equation() :
-    BinaryOperator()
-{}
+Equation::Equation()
+    : BinaryOperator()
+{
+}
 
 std::string Equation::repr()
 {
