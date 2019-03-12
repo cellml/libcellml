@@ -329,8 +329,7 @@ operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr
             r->setArg(parseNode(node->getNext()));
             return r;
         }
-    }
-    else if (node->isElement("minus", MATHML_NS)) {
+    } else if (node->isElement("minus", MATHML_NS)) {
         // Unary minus (negative) and binary minus (subtraction) have the same node
         // name, so we tell them apart by checking the number of arguments.
         if (node->getNext()->getNext()) {
@@ -344,8 +343,7 @@ operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr
             r->setArg(parseNode(node->getNext()));
             return r;
         }
-    }
-    else if (node->isElement("times", MATHML_NS)) {
+    } else if (node->isElement("times", MATHML_NS)) {
         auto r = std::make_shared<operators::Multiplication>();
         auto n = node->getNext();
         r->setArg1(parseNode(n));
@@ -391,8 +389,7 @@ operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr
             p0->setArg2(parseNode(n));
         }
         return r;
-    }
-    else if (node->isElement("piece", MATHML_NS)) {
+    } else if (node->isElement("piece", MATHML_NS)) {
         // A piece of a piecewise definition can be implemented as the product
         // of its expression and its condition.
         auto r = std::make_shared<operators::Multiplication>();
