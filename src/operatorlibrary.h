@@ -374,7 +374,7 @@ public:
     virtual std::string repr() override;
 
 private:
-    std::string variableName;
+    std::string mVariableName;
 };
 
 /**

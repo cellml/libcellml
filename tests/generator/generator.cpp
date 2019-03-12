@@ -23,7 +23,6 @@ limitations under the License.
 
 using namespace libcellml;
 
-
 TEST(Generator, simpleModel) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
