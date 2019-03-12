@@ -156,6 +156,10 @@ Constant::Constant (double val) : value(val)
 
 std::string Constant::repr()
 {
+    // Use the C++03 way of converting a double to a std::string rather than the
+    // C++11 way (i.e. std::to_string()). Indeed, the latter has too many
+    // limitations (e.g. 23.43 ---> 23.430000, 1e-09 ---> 0.000000), as can be
+    // seen at https://en.cppreference.com/w/cpp/string/basic_string/to_string.
     std::ostringstream oss;
     oss << std::setprecision(std::numeric_limits<double>::max_digits10) << value;
     return oss.str();
