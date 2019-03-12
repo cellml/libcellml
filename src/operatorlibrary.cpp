@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "operatorlibrary.h"
 
+#include <limits>
+
 namespace libcellml {
 
 namespace operators {
