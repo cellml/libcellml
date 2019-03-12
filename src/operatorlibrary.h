@@ -287,16 +287,16 @@ public:
 /**
  * @brief A class representing operators from the C++ standard library.
  *
- * An @c STDOperator is a unary operator whose representation consists of
+ * An @c StdOperator is a unary operator whose representation consists of
  * the string @c std:: followed by the representation of the operator and a
  * single argument between parentheses.
  * Examples include @c std::sin, @c cos, @c abs, @c tan...
  */
-class STDOperator : public UnaryOperator
+class StdOperator : public UnaryOperator
 {
 public:
-    STDOperator(std::string fun);
-    virtual ~STDOperator() = default;
+    StdOperator(std::string fun);
+    virtual ~StdOperator() = default;
 
     virtual std::string repr() override;
 
@@ -304,28 +304,28 @@ private:
     std::string fun;
 };
 
-class AbsoluteValue : public STDOperator
+class AbsoluteValue : public StdOperator
 {
 public:
     AbsoluteValue();
     virtual ~AbsoluteValue() = default;
 };
 
-class Sine : public STDOperator
+class Sine : public StdOperator
 {
 public:
     Sine();
     virtual ~Sine() = default;
 };
 
-class Cosine : public STDOperator
+class Cosine : public StdOperator
 {
 public:
     Cosine();
     virtual ~Cosine() = default;
 };
 
-class Floor : public STDOperator
+class Floor : public StdOperator
 {
 public:
     Floor();

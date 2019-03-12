@@ -127,12 +127,12 @@ std::string Not::repr()
     return oss.str();
 }
 
-STDOperator::STDOperator(std::string fun) :
+StdOperator::StdOperator(std::string fun) :
     UnaryOperator(),
     fun(fun)
 {}
 
-std::string STDOperator::repr()
+std::string StdOperator::repr()
 {
     std::ostringstream oss;
     oss << "std::" << fun << "(" << mArg->repr() << ")";
@@ -140,19 +140,19 @@ std::string STDOperator::repr()
 }
 
 AbsoluteValue::AbsoluteValue() :
-    STDOperator(std::string("abs"))
+    StdOperator(std::string("abs"))
 {}
 
 Sine::Sine() :
-    STDOperator(std::string("sin"))
+    StdOperator(std::string("sin"))
 {}
 
 Cosine::Cosine() :
-    STDOperator(std::string("cos"))
+    StdOperator(std::string("cos"))
 {}
 
 Floor::Floor() :
-    STDOperator(std::string("floor"))
+    StdOperator(std::string("floor"))
 {}
 
 Variable::Variable(std::string name) : name(name)
