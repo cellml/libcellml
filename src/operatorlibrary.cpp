@@ -28,7 +28,7 @@ BinaryOperator::BinaryOperator()
 {
 }
 
-ArithmeticOperator::ArithmeticOperator(std::string op)
+ArithmeticOperator::ArithmeticOperator(const std::string &op)
     : BinaryOperator()
     , mOp(op)
 {
@@ -134,7 +134,7 @@ std::string Not::repr()
     return "!(" + mArg->repr() + ")";
 }
 
-StdOperator::StdOperator(std::string function)
+StdOperator::StdOperator(const std::string &function)
     : UnaryOperator()
     , mFunction(function)
 {
@@ -165,7 +165,7 @@ Floor::Floor()
 {
 }
 
-Variable::Variable(std::string name)
+Variable::Variable(const std::string &name)
     : mName(name)
 {
 }
@@ -175,7 +175,7 @@ std::string Variable::repr()
     return mName;
 }
 
-Constant::Constant (double value)
+Constant::Constant(double value)
     : mValue(value)
 {
 }
@@ -196,7 +196,7 @@ std::string Constant::repr()
     return repr(mValue);
 }
 
-Derivative::Derivative (std::string variableName)
+Derivative::Derivative(const std::string &variableName)
     : mVariableName(variableName)
 {
 }

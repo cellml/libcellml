@@ -91,7 +91,7 @@ protected:
 class ArithmeticOperator : public BinaryOperator
 {
 public:
-    ArithmeticOperator(std::string op);
+    ArithmeticOperator(const std::string &op);
 
     std::string repr() override;
 
@@ -228,7 +228,7 @@ public:
     UnaryOperator();
 
     RepresentablePtr getArg() const { return mArg; }
-    void setArg(const RepresentablePtr arg) { mArg = arg; }
+    void setArg(const RepresentablePtr &arg) { mArg = arg; }
 
 protected:
     RepresentablePtr mArg;
@@ -278,7 +278,7 @@ public:
 class StdOperator : public UnaryOperator
 {
 public:
-    StdOperator(std::string function);
+    StdOperator(const std::string &function);
 
     std::string repr() override;
 
@@ -316,7 +316,7 @@ public:
 class Variable : public Representable
 {
 public:
-    Variable(std::string name);
+    Variable(const std::string &name);
 
     std::string repr() override;
 
@@ -346,7 +346,7 @@ private:
 class Derivative : public Representable
 {
 public:
-    Derivative(std::string variableName);
+    Derivative(const std::string &variableName);
 
     std::string repr() override;
 
