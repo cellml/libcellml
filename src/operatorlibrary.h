@@ -72,14 +72,14 @@ public:
     BinaryOperator(RepresentablePtr arg1, RepresentablePtr arg2);
     virtual ~BinaryOperator() = default;
 
-    RepresentablePtr getArg1() const {return arg1;}
-    void setArg1(const RepresentablePtr a1) {arg1 = a1;}
-    RepresentablePtr getArg2() const {return arg2;}
-    void setArg2(const RepresentablePtr a2) {arg2 = a2;}
+    RepresentablePtr getArg1() const { return mArg1; }
+    void setArg1(const RepresentablePtr arg1) { mArg1 = arg1; }
+    RepresentablePtr getArg2() const { return mArg2; }
+    void setArg2(const RepresentablePtr arg2) { mArg2 = arg2; }
 
 protected:
-    RepresentablePtr arg1;
-    RepresentablePtr arg2;
+    RepresentablePtr mArg1;
+    RepresentablePtr mArg2;
 };
 
 /**
@@ -92,13 +92,13 @@ protected:
 class ArithmeticOperator : public BinaryOperator
 {
 public:
-    ArithmeticOperator(std::string opr);
+    ArithmeticOperator(std::string op);
     virtual ~ArithmeticOperator() = default;
 
     virtual std::string repr() override;
 
 private:
-    std::string operatorRepresentation;
+    std::string mOp;
 };
 
 class Addition : public ArithmeticOperator
@@ -241,11 +241,11 @@ public:
     UnaryOperator();
     virtual ~UnaryOperator() = default;
 
-    RepresentablePtr getArg() const {return arg;}
-    void setArg(const RepresentablePtr a) {arg = a;}
+    RepresentablePtr getArg() const { return mArg; }
+    void setArg(const RepresentablePtr arg) { mArg = arg; }
 
 protected:
-    RepresentablePtr arg;
+    RepresentablePtr mArg;
 };
 
 /**
