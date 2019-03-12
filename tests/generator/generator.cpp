@@ -21,8 +21,6 @@ limitations under the License.
 #include <fstream>
 #include <iostream>
 
-using namespace libcellml;
-
 TEST(Generator, simpleModel) {
     const std::string e =
         "void initConsts(double *constants, double *rates, double *states, double *algebraic)\n"
@@ -84,13 +82,12 @@ TEST(Generator, simpleModel) {
             "</apply>"
         "</math>";
 
+    libcellml::Generator generator;
 
-    Generator generator;
-
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -205,13 +202,12 @@ TEST(Generator, complexModel) {
             "</apply>"
         "</math>";
 
+    libcellml::Generator generator;
 
-    Generator generator;
-
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -309,12 +305,12 @@ TEST(Generator, complexModelToFile) {
             "</apply>"
         "</math>";
 
-    Generator generator;
+    libcellml::Generator generator;
 
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -401,9 +397,9 @@ TEST(Generator, writeWithoutGenerating) {
             "</apply>"
         "</math>";
 
-    Generator generator;
+    libcellml::Generator generator;
 
-    auto model = std::make_shared<Model>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
 
     generator.writeCodeToFile("generatedCode.cpp");
     EXPECT_EQ(1u, generator.errorCount());
@@ -461,12 +457,12 @@ TEST(Generator, unknownNode) {
             "</apply>"
         "</math>";
 
-    Generator generator;
+    libcellml::Generator generator;
 
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -552,13 +548,12 @@ TEST(Generator, divisionAndPower) {
             "</apply>"
         "</math>";
 
+    libcellml::Generator generator;
 
-    Generator generator;
-
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -664,14 +659,13 @@ TEST(Generator, twoStates) {
             "</apply>"
         "</math>";
 
+    libcellml::Generator generator;
 
-    Generator generator;
-
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
-    VariablePtr var_z = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_z = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -773,14 +767,13 @@ TEST(Generator, secondOrder) {
             "</apply>"
         "</math>";
 
+    libcellml::Generator generator;
 
-    Generator generator;
-
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
-    VariablePtr var_z = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_z = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -884,13 +877,13 @@ TEST(Generator, algebraicEquation) {
             "</apply>"
         "</math>";
 
-    Generator generator;
+    libcellml::Generator generator;
 
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_v = std::make_shared<libcellml::Variable>();
-    VariablePtr var_x = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_x = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -1029,12 +1022,12 @@ TEST(Generator, piecewise) {
             "</apply>"
         "</math>";
 
-    Generator generator;
+    libcellml::Generator generator;
 
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -1147,12 +1140,12 @@ TEST(Generator, piecewise2) {
             "</apply>"
         "</math>";
 
-    Generator generator;
+    libcellml::Generator generator;
 
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
@@ -1235,12 +1228,12 @@ TEST(Generator, floorPi) {
             "</apply>"
         "</math>";
 
-    Generator generator;
+    libcellml::Generator generator;
 
-    auto model = std::make_shared<Model>();
-    ComponentPtr component = std::make_shared<Component>();
-    VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
