@@ -32,11 +32,7 @@ ArithmeticOperator::ArithmeticOperator(std::string op) :
 
 std::string ArithmeticOperator::repr()
 {
-    std::ostringstream oss;
-    oss << "(" << mArg1->repr()
-        << " " << mOp << " "
-        << mArg2->repr() << ")";
-    return oss.str();
+    return "(" + mArg1->repr() + " " + mOp + " " + mArg2->repr() + ")";
 }
 
 Addition::Addition() :
@@ -85,9 +81,7 @@ Power::Power() :
 
 std::string Power::repr()
 {
-    std::ostringstream oss;
-    oss << "std::pow(" << mArg1->repr() << ", " << mArg2->repr() << ")";
-    return oss.str();
+    return "std::pow(" + mArg1->repr() + ", " + mArg2->repr() + ")";
 }
 
 UnaryOperator::UnaryOperator() :
@@ -100,9 +94,7 @@ Positive::Positive() :
 
 std::string Positive::repr()
 {
-    std::ostringstream oss;
-    oss << "+" << "(" << mArg->repr() << ")";
-    return oss.str();
+    return "+(" + mArg->repr() + ")";
 }
 
 Negative::Negative() :
@@ -111,9 +103,7 @@ Negative::Negative() :
 
 std::string Negative::repr()
 {
-    std::ostringstream oss;
-    oss << "-" << "(" << mArg->repr() << ")";
-    return oss.str();
+    return "-(" + mArg->repr() + ")";
 }
 
 Not::Not() :
@@ -122,9 +112,7 @@ Not::Not() :
 
 std::string Not::repr()
 {
-    std::ostringstream oss;
-    oss << "!" << "(" << mArg->repr() << ")";
-    return oss.str();
+    return "!(" + mArg->repr() + ")";
 }
 
 StdOperator::StdOperator(std::string fun) :
@@ -134,9 +122,7 @@ StdOperator::StdOperator(std::string fun) :
 
 std::string StdOperator::repr()
 {
-    std::ostringstream oss;
-    oss << "std::" << fun << "(" << mArg->repr() << ")";
-    return oss.str();
+    return "std::" + fun + "(" + mArg->repr() + ")";
 }
 
 AbsoluteValue::AbsoluteValue() :
@@ -169,7 +155,7 @@ Constant::Constant (double val) : value(val)
 std::string Constant::repr()
 {
     std::ostringstream oss;
-    oss << std::setprecision(16) << value;
+    oss << std::setprecision(std::numeric_limits<double>::max_digits10) << value;
     return oss.str();
 }
 
@@ -179,9 +165,7 @@ Derivative::Derivative (std::string variableName) :
 
 std::string Derivative::repr()
 {
-    std::ostringstream oss;
-    oss << "D" << variableName;
-    return oss.str();
+    return "D" + variableName;
 }
 
 Equation::Equation() :
@@ -190,11 +174,7 @@ Equation::Equation() :
 
 std::string Equation::repr()
 {
-    std::ostringstream oss;
-    oss << mArg1->repr();
-    oss << " = ";
-    oss << mArg2->repr();
-    return oss.str();
+    return mArg1->repr() + " = " + mArg2->repr();
 }
 
 }
