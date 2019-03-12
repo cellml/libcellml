@@ -501,7 +501,7 @@ operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr
         auto r = std::make_shared<operators::Constant>(value);
         return r;
     } else if (node->isElement("pi", MATHML_NS)) {
-        auto r = std::make_shared<operators::Constant>(std::acos(-1));
+        auto r = std::make_shared<operators::Constant>(M_PI);
         return r;
     } else if (node->isElement("diff", MATHML_NS)) {
         auto name = node->getNext()->getNext()->getFirstChild()->convertToString();
