@@ -104,154 +104,135 @@ Generator::~Generator()
 
 std::string Generator::GeneratorImpl::generateStateAliases()
 {
-    std::string s;
-    std::ostringstream oss(s);
+    std::string repr = "";
     for (size_t i = 0; i < mStates.size(); ++i) {
-        oss << "    "
-            << dataType(DataType::DoubleRef) << mStates[i] << " = "
-            << dereferenceOp() << "(states + " << i << ")"
-            << endInstruction() << std::endl;
+        repr +=   "    "
+                + dataType(DataType::DoubleRef) + mStates[i] + " = "
+                + dereferenceOp() + "(states + " + std::to_string(i) + ")"
+                + endInstruction() + "\n";
     }
-    oss << std::endl;
-    return oss.str();
+    return repr + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateRateAliases()
 {
-    std::string s;
-    std::ostringstream oss(s);
+    std::string repr = "";
     for (size_t i = 0; i < mStates.size(); ++i) {
-        oss << "    "
-            << dataType(DataType::DoubleRef) << "D" << mStates[i] << " = "
-            << dereferenceOp() << "(rates + " << i << ")"
-            << endInstruction() << std::endl;
+        repr +=   "    "
+                + dataType(DataType::DoubleRef) + "D" + mStates[i] + " = "
+                + dereferenceOp() + "(rates + " + std::to_string(i) + ")"
+                + endInstruction() + "\n";
     }
-    oss << std::endl;
-    return oss.str();
+    return repr + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateAlgebraicAliases()
 {
-    std::string s;
-    std::ostringstream oss(s);
+    std::string repr = "";
     for (size_t i = 0; i < mAlgebraic.size(); ++i) {
-        oss << "    "
-            << dataType(DataType::DoubleRef) << mAlgebraic[i] << " = "
-            << dereferenceOp() << "(algebraic + " << i << ")"
-            << endInstruction() << std::endl;
+        repr +=   "    "
+                + dataType(DataType::DoubleRef) + mAlgebraic[i] + " = "
+                + dereferenceOp() + "(algebraic + " + std::to_string(i) + ")"
+                + endInstruction() + "\n";
     }
-    oss << std::endl;
-    return oss.str();
+    return repr + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateVoiAlias()
 {
-    std::string s;
-    std::ostringstream oss(s);
-    oss << "    "
-        << dataType(DataType::DoubleCst) << mVoi << " = voi"
-        << endInstruction() << std::endl;
-    oss << std::endl;
-    return oss.str();
+    return   "    "
+           + dataType(DataType::DoubleCst) + mVoi + " = voi"
+           + endInstruction() + "\n\n";
 }
 
 std::string Generator::GeneratorImpl::generateInitConsts()
 {
-    std::string s;
-    std::ostringstream oss(s);
-    oss << dataType(DataType::Void) << "initConsts"
-        << beginArgList()
-        << dataType(DataType::DoublePtr)
-        << "constants, "
-        << dataType(DataType::DoublePtr)
-        << "rates, "
-        << dataType(DataType::DoublePtr)
-        << "states, "
-        << dataType(DataType::DoublePtr)
-        << "algebraic"
-        << endArgList() << std::endl
-        << beginFunction() << std::endl
-        << generateStateAliases() << std::endl
-        << generateAlgebraicAliases() << std::endl;
+    std::string repr =   dataType(DataType::Void) + "initConsts"
+                       + beginArgList()
+                       + dataType(DataType::DoublePtr)
+                       + "constants, "
+                       + dataType(DataType::DoublePtr)
+                       + "rates, "
+                       + dataType(DataType::DoublePtr)
+                       + "states, "
+                       + dataType(DataType::DoublePtr)
+                       + "algebraic"
+                       + endArgList() + "\n"
+                       + beginFunction() + "\n"
+                       + generateStateAliases() + "\n"
+                       + generateAlgebraicAliases() + "\n";
     for (auto initialValue : mInitialValues) {
-        oss << "    " << initialValue.first << " = "
-            << std::setprecision(16) << initialValue.second
-            << endInstruction() << std::endl;
+        repr +=   "    " + initialValue.first + " = "
+                + operators::Constant::repr(initialValue.second)
+                + endInstruction() + "\n";
     }
-    oss << std::endl << endFunction();
-    return oss.str();
+    return repr + "\n" + endFunction();
 }
 
 std::string Generator::GeneratorImpl::generateComputeRates(const std::vector<operators::RepresentablePtr> &representables)
 {
-    std::string s;
-    std::ostringstream oss(s);
-    oss << dataType(DataType::Void) << "computeRates"
-        << beginArgList()
-        << dataType(DataType::Double)
-        << "voi, "
-        << dataType(DataType::DoublePtr)
-        << "constants, "
-        << dataType(DataType::DoublePtr)
-        << "rates, "
-        << dataType(DataType::DoublePtr)
-        << "states, "
-        << dataType(DataType::DoublePtr)
-        << "algebraic"
-        << endArgList() << std::endl
-        << beginFunction() << std::endl
-        << generateVoiAlias() << std::endl
-        << generateStateAliases() << std::endl
-        << generateRateAliases() << std::endl
-        << generateAlgebraicAliases() << std::endl;
+    std::string repr =   dataType(DataType::Void) + "computeRates"
+                       + beginArgList()
+                       + dataType(DataType::Double)
+                       + "voi, "
+                       + dataType(DataType::DoublePtr)
+                       + "constants, "
+                       + dataType(DataType::DoublePtr)
+                       + "rates, "
+                       + dataType(DataType::DoublePtr)
+                       + "states, "
+                       + dataType(DataType::DoublePtr)
+                       + "algebraic"
+                       + endArgList() + "\n"
+                       + beginFunction() + "\n"
+                       + generateVoiAlias() + "\n"
+                       + generateStateAliases() + "\n"
+                       + generateRateAliases() + "\n"
+                       + generateAlgebraicAliases() + "\n";
     for (auto representable : representables) {
         auto &arg1 = *(static_cast<operators::Equation*>(&*representable)->getArg1());
         // Here, we assume that the first node is always of type Equation and
         // use this fact to distinguish ODEs from algebraic equations.
         if (typeid(arg1).hash_code() == typeid(operators::Derivative).hash_code()) {
-            oss << "    "
-                << representable->repr()
-                << endInstruction() << std::endl;
+            repr +=   "    "
+                    + representable->repr()
+                    + endInstruction() + "\n";
         }
     }
-    oss << std::endl << endFunction();
-    return oss.str();
+    return repr + "\n" + endFunction();
 }
 
 std::string Generator::GeneratorImpl::generateComputeVariables(const std::vector<operators::RepresentablePtr> &representables)
 {
-    std::string s;
-    std::ostringstream oss(s);
-    oss << dataType(DataType::Void) << "computeVariables"
-        << beginArgList()
-        << dataType(DataType::Double)
-        << "voi, "
-        << dataType(DataType::DoublePtr)
-        << "constants, "
-        << dataType(DataType::DoublePtr)
-        << "rates, "
-        << dataType(DataType::DoublePtr)
-        << "states, "
-        << dataType(DataType::DoublePtr)
-        << "algebraic"
-        << endArgList()  << std::endl
-        << beginFunction() << std::endl
-        << generateVoiAlias() << std::endl
-        << generateStateAliases() << std::endl
-        << generateRateAliases() << std::endl
-        << generateAlgebraicAliases() << std::endl;
+    std::string repr =   dataType(DataType::Void) + "computeVariables"
+                       + beginArgList()
+                       + dataType(DataType::Double)
+                       + "voi, "
+                       + dataType(DataType::DoublePtr)
+                       + "constants, "
+                       + dataType(DataType::DoublePtr)
+                       + "rates, "
+                       + dataType(DataType::DoublePtr)
+                       + "states, "
+                       + dataType(DataType::DoublePtr)
+                       + "algebraic"
+                       + endArgList()  + "\n"
+                       + beginFunction() + "\n"
+                       + generateVoiAlias() + "\n"
+                       + generateStateAliases() + "\n"
+                       + generateRateAliases() + "\n"
+                       + generateAlgebraicAliases() + "\n";
     for (auto representable : representables) {
         auto &arg1 = *(static_cast<operators::Equation*>(&*representable)->getArg1());
         // Here, we assume that the first node is always of type Equation and
         // use this fact to distinguish ODEs from algebraic equations.
         if (typeid(arg1).hash_code() == typeid(operators::Variable).hash_code()) {
-            oss << "    "
-                << representable->repr()
-                << endInstruction() << std::endl;
+            repr +=   "    "
+                    + representable->repr()
+                    + endInstruction() + "\n";
         }
     }
-    oss << std::endl << endFunction();
-    return oss.str();
+    return repr + "\n" + endFunction();
 }
 
 void Generator::GeneratorImpl::findInitialValues(const ComponentPtr &component)
@@ -272,13 +253,10 @@ std::string Generator::GeneratorImpl::generateCode(const ModelPtr &model)
     findInitialValues(component);
     auto math = parseMathML(component->getMath());
 
-    std::string generatedCode;
-    std::ostringstream oss(generatedCode);
-    oss << generateInitConsts() << std::endl
-        << generateComputeRates(math) << std::endl
-        << generateComputeVariables(math) << std::endl;
+    mCode =   generateInitConsts() + "\n"
+            + generateComputeRates(math) + "\n"
+            + generateComputeVariables(math) + "\n";
 
-    mCode = oss.str();
     return mCode;
 }
 

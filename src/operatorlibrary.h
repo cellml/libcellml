@@ -332,6 +332,8 @@ class Constant : public Representable
 public:
     Constant (double value);
 
+    static std::string repr(double value);
+
     std::string repr() override;
 
 private:
