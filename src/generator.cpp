@@ -314,8 +314,7 @@ operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr
                 r->setArg2(parseNode(n));
             } else {
                 auto p0 = r;
-                while (n->getNext())
-                {
+                while (n->getNext()) {
                     auto p1 = std::make_shared<operators::Addition>();
                     p1->setArg1(parseNode(n));
                     p0->setArg2(p1);
@@ -355,8 +354,7 @@ operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr
             r->setArg2(parseNode(n));
         } else {
             auto p0 = r;
-            while (n->getNext())
-            {
+            while (n->getNext()) {
                 auto p1 = std::make_shared<operators::Multiplication>();
                 p1->setArg1(parseNode(n));
                 p0->setArg2(p1);
@@ -383,8 +381,7 @@ operators::RepresentablePtr Generator::GeneratorImpl::parseNode(const XmlNodePtr
             r->setArg2(parseNode(n));
         } else {
             auto p0 = r;
-            while (n->getNext())
-            {
+            while (n->getNext()) {
                 auto p1 = std::make_shared<operators::Addition>();
                 p1->setArg1(parseNode(n));
                 p0->setArg2(p1);
@@ -512,8 +509,7 @@ std::vector<operators::RepresentablePtr> Generator::GeneratorImpl::parseMathML(c
     mathDoc->parse(math);
 
     XmlNodePtr childNode = mathDoc->getRootNode()->getFirstChild();
-    while (childNode)
-    {
+    while (childNode) {
         nodes.push_back(parseNode(childNode));
         childNode = childNode->getNext();
     }
