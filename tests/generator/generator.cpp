@@ -66,7 +66,7 @@ TEST(Generator, simpleModel) {
         "}\n";
 
     const std::string math =
-       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -76,9 +76,9 @@ TEST(Generator, simpleModel) {
                     "</bvar>"
                     "<ci>y</ci>"
                 "</apply>"
-                   "<plus/>"
-                   "<ci>y</ci>"
-                   "<cn cellml:units=\"dimensionless\">4</cn>"
+                "<plus/>"
+                "<ci>y</ci>"
+                "<cn cellml:units=\"dimensionless\">4</cn>"
             "</apply>"
         "</math>";
 
@@ -152,7 +152,7 @@ TEST(Generator, complexModel) {
         "}\n";
 
     const std::string math =
-       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -254,7 +254,7 @@ TEST(Generator, complexModelToFile) {
         "}\n";
 
     const std::string math =
-       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -345,7 +345,7 @@ TEST(Generator, complexModelToFile) {
 
 TEST(Generator, writeWithoutGenerating) {
     const std::string math =
-       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -405,7 +405,7 @@ TEST(Generator, writeWithoutGenerating) {
 
 TEST(Generator, unknownNode) {
     const std::string math =
-       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -524,7 +524,7 @@ TEST(Generator, divisionAndPower) {
         "}\n";
 
     const std::string math =
-       "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -621,7 +621,7 @@ TEST(Generator, twoStates) {
         "}\n";
 
     const std::string math =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -736,7 +736,7 @@ TEST(Generator, secondOrder) {
         "}\n";
 
     const std::string math =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
@@ -841,7 +841,7 @@ TEST(Generator, algebraicEquation) {
         "}\n";
 
     const std::string math =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
             "<apply>"
                 "<eq/>"
                 "<apply>"
