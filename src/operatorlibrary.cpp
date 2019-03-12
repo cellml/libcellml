@@ -160,12 +160,12 @@ std::string Constant::repr()
 }
 
 Derivative::Derivative (std::string variableName) :
-    variableName(variableName)
+    mVariableName(variableName)
 {}
 
 std::string Derivative::repr()
 {
-    return "D" + variableName;
+    return "D" + mVariableName;
 }
 
 Equation::Equation() :
