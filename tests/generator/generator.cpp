@@ -76,9 +76,11 @@ TEST(Generator, simpleModel) {
                     "</bvar>"
                     "<ci>y</ci>"
                 "</apply>"
-                "<plus/>"
-                "<ci>y</ci>"
-                "<cn cellml:units=\"dimensionless\">4</cn>"
+                "<apply>"
+                    "<plus/>"
+                    "<ci>y</ci>"
+                    "<cn cellml:units=\"dimensionless\">4</cn>"
+                "</apply>"
             "</apply>"
         "</math>";
 
