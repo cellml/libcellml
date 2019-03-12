@@ -64,7 +64,7 @@ struct Generator::GeneratorImpl
     void findInitialValues(const ComponentPtr &component);
     std::vector<operators::RepresentablePtr> parseMathML(const std::string &math);
     operators::RepresentablePtr parseNode(const XmlNodePtr &node);
-    std::string doGenerateCode(const ModelPtr &model);
+    std::string generateCode(const ModelPtr &model);
     std::string generateInitConsts();
     std::string generateComputeRates(const std::vector<operators::RepresentablePtr> &representables);
     std::string generateComputeVariables(const std::vector<operators::RepresentablePtr> &representables);
@@ -261,7 +261,7 @@ void Generator::GeneratorImpl::findInitialValues(const ComponentPtr &component)
     }
 }
 
-std::string Generator::GeneratorImpl::doGenerateCode(const ModelPtr &model)
+std::string Generator::GeneratorImpl::generateCode(const ModelPtr &model)
 {
     ComponentPtr component = model->getComponent(0);
 
@@ -294,7 +294,7 @@ std::string Generator::GeneratorImpl::dataType(DataType dataType)
 
 std::string Generator::generateCode(const ModelPtr &model)
 {
-    return mPimpl->doGenerateCode(model);
+    return mPimpl->generateCode(model);
 }
 
 void Generator::writeCodeToFile(const std::string &filename)
