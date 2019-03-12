@@ -70,7 +70,6 @@ class BinaryOperator : public Representable
 {
 public:
     BinaryOperator();
-    virtual ~BinaryOperator() = default;
 
     RepresentablePtr getArg1() const { return mArg1; }
     void setArg1(const RepresentablePtr arg1) { mArg1 = arg1; }
@@ -93,9 +92,8 @@ class ArithmeticOperator : public BinaryOperator
 {
 public:
     ArithmeticOperator(std::string op);
-    virtual ~ArithmeticOperator() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 
 private:
     std::string mOp;
@@ -105,28 +103,24 @@ class Addition : public ArithmeticOperator
 {
 public:
     Addition();
-    virtual ~Addition() = default;
 };
 
 class Subtraction : public ArithmeticOperator
 {
 public:
     Subtraction();
-    virtual ~Subtraction() = default;
 };
 
 class Multiplication : public ArithmeticOperator
 {
 public:
     Multiplication();
-    virtual ~Multiplication() = default;
 };
 
 class Division : public ArithmeticOperator
 {
 public:
     Division();
-    virtual ~Division() = default;
 };
 
 /**
@@ -140,7 +134,6 @@ class And : public ArithmeticOperator
 {
 public:
     And();
-    virtual ~And() = default;
 };
 
 /**
@@ -154,7 +147,6 @@ class Or : public ArithmeticOperator
 {
 public:
     Or();
-    virtual ~Or() = default;
 };
 
 /**
@@ -168,7 +160,6 @@ class Less : public ArithmeticOperator
 {
 public:
     Less();
-    virtual ~Less() = default;
 };
 
 /**
@@ -182,7 +173,6 @@ class LessOrEqual : public ArithmeticOperator
 {
 public:
     LessOrEqual();
-    virtual ~LessOrEqual() = default;
 };
 
 /**
@@ -196,7 +186,6 @@ class GreaterOrEqual : public ArithmeticOperator
 {
 public:
     GreaterOrEqual();
-    virtual ~GreaterOrEqual() = default;
 };
 
 /**
@@ -210,16 +199,14 @@ class Greater : public ArithmeticOperator
 {
 public:
     Greater();
-    virtual ~Greater() = default;
 };
 
 class Power : public BinaryOperator
 {
 public:
     Power();
-    virtual ~Power() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 };
 
 /**
@@ -239,7 +226,6 @@ class UnaryOperator : public Representable
 {
 public:
     UnaryOperator();
-    virtual ~UnaryOperator() = default;
 
     RepresentablePtr getArg() const { return mArg; }
     void setArg(const RepresentablePtr arg) { mArg = arg; }
@@ -255,9 +241,8 @@ class Positive : public UnaryOperator
 {
 public:
     Positive();
-    virtual ~Positive() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 };
 
 /**
@@ -267,9 +252,8 @@ class Negative : public UnaryOperator
 {
 public:
     Negative();
-    virtual ~Negative() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 };
 
 /**
@@ -279,9 +263,8 @@ class Not : public UnaryOperator
 {
 public:
     Not();
-    virtual ~Not() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 };
 
 /**
@@ -296,9 +279,8 @@ class StdOperator : public UnaryOperator
 {
 public:
     StdOperator(std::string function);
-    virtual ~StdOperator() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 
 private:
     std::string mFunction;
@@ -308,28 +290,24 @@ class AbsoluteValue : public StdOperator
 {
 public:
     AbsoluteValue();
-    virtual ~AbsoluteValue() = default;
 };
 
 class Sine : public StdOperator
 {
 public:
     Sine();
-    virtual ~Sine() = default;
 };
 
 class Cosine : public StdOperator
 {
 public:
     Cosine();
-    virtual ~Cosine() = default;
 };
 
 class Floor : public StdOperator
 {
 public:
     Floor();
-    virtual ~Floor() = default;
 };
 
 /**
@@ -339,12 +317,11 @@ class Variable : public Representable
 {
 public:
     Variable(std::string name);
-    virtual ~Variable() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 
 private:
-    std::string name;
+    std::string mName;
 };
 
 /**
@@ -353,13 +330,12 @@ private:
 class Constant : public Representable
 {
 public:
-    Constant (double val);
-    virtual ~Constant() = default;
+    Constant (double value);
 
-    virtual std::string repr() override;
+    std::string repr() override;
 
 private:
-    double value;
+    double mValue;
 };
 
 /**
@@ -369,9 +345,8 @@ class Derivative : public Representable
 {
 public:
     Derivative(std::string variableName);
-    virtual ~Derivative() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 
 private:
     std::string mVariableName;
@@ -385,9 +360,8 @@ class Equation : public BinaryOperator
 {
 public:
     Equation();
-    virtual ~Equation() = default;
 
-    virtual std::string repr() override;
+    std::string repr() override;
 };
 
 }

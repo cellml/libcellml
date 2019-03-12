@@ -27,7 +27,7 @@ class LIBCELLML_EXPORT Generator : public Logger
 {
 public:
     Generator();
-    virtual ~Generator();
+    ~Generator() override;
 
     std::string generateCode(const ModelPtr &model);
     void writeCodeToFile(const std::string &filename);
