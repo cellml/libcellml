@@ -117,14 +117,14 @@ std::string Not::repr()
     return "!(" + mArg->repr() + ")";
 }
 
-StdOperator::StdOperator(std::string fun) :
+StdOperator::StdOperator(std::string function) :
     UnaryOperator(),
-    fun(fun)
+    mFunction(function)
 {}
 
 std::string StdOperator::repr()
 {
-    return "std::" + fun + "(" + mArg->repr() + ")";
+    return "std::" + mFunction + "(" + mArg->repr() + ")";
 }
 
 AbsoluteValue::AbsoluteValue() :

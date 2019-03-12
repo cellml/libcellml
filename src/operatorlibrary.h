@@ -294,13 +294,13 @@ public:
 class StdOperator : public UnaryOperator
 {
 public:
-    StdOperator(std::string fun);
+    StdOperator(std::string function);
     virtual ~StdOperator() = default;
 
     virtual std::string repr() override;
 
 private:
-    std::string fun;
+    std::string mFunction;
 };
 
 class AbsoluteValue : public StdOperator
