@@ -93,7 +93,6 @@ TEST(Generator, simpleModel) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
@@ -213,7 +212,6 @@ TEST(Generator, complexModel) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
@@ -316,7 +314,6 @@ TEST(Generator, complexModelToFile) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
@@ -468,7 +465,6 @@ TEST(Generator, unknownNode) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
@@ -559,7 +555,6 @@ TEST(Generator, divisionAndPower) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
@@ -672,7 +667,6 @@ TEST(Generator, twoStates) {
     var_t->setName("t");
     var_y->setName("y");
     var_z->setName("z");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_z->setInitialValue(1);
     var_t->setUnits("dimensionless");
@@ -780,7 +774,6 @@ TEST(Generator, secondOrder) {
     var_t->setName("t");
     var_y->setName("y");
     var_z->setName("z");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_z->setInitialValue(1);
     var_t->setUnits("dimensionless");
@@ -890,7 +883,6 @@ TEST(Generator, algebraicEquation) {
     var_t->setName("t");
     var_v->setName("v");
     var_x->setName("x");
-    var_t->setInitialValue(0);
     var_v->setInitialValue(2);
     var_x->setInitialValue(3);
     var_t->setUnits("dimensionless");
@@ -1033,7 +1025,6 @@ TEST(Generator, piecewise) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
@@ -1151,7 +1142,6 @@ TEST(Generator, piecewise2) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
@@ -1239,7 +1229,6 @@ TEST(Generator, floorPi) {
     component->setName("main");
     var_t->setName("t");
     var_y->setName("y");
-    var_t->setInitialValue(0);
     var_y->setInitialValue(-2);
     var_t->setUnits("dimensionless");
     var_y->setUnits("dimensionless");
