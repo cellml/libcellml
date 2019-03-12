@@ -49,6 +49,7 @@ class Representable
 {
 public:
     virtual ~Representable() = default;
+
     virtual std::string repr() = 0;
 };
 
