@@ -88,18 +88,18 @@ TEST(Generator, simpleModel) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
@@ -207,18 +207,18 @@ TEST(Generator, complexModel) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
@@ -309,18 +309,18 @@ TEST(Generator, complexModelToFile) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
@@ -460,18 +460,18 @@ TEST(Generator, unknownNode) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
@@ -550,18 +550,18 @@ TEST(Generator, divisionAndPower) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
@@ -660,23 +660,23 @@ TEST(Generator, twoStates) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_z = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr z = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_z->setName("z");
-    var_y->setInitialValue(-2);
-    var_z->setInitialValue(1);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    var_z->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
-    component->addVariable(var_z);
+    t->setName("t");
+    y->setName("y");
+    z->setName("z");
+    y->setInitialValue(-2);
+    z->setInitialValue(1);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    z->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
+    component->addVariable(z);
     component->setMath(math);
 
     model->addComponent(component);
@@ -767,23 +767,23 @@ TEST(Generator, secondOrder) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_z = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr z = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_z->setName("z");
-    var_y->setInitialValue(-2);
-    var_z->setInitialValue(1);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    var_z->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
-    component->addVariable(var_z);
+    t->setName("t");
+    y->setName("y");
+    z->setName("z");
+    y->setInitialValue(-2);
+    z->setInitialValue(1);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    z->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
+    component->addVariable(z);
     component->setMath(math);
 
     model->addComponent(component);
@@ -876,23 +876,23 @@ TEST(Generator, algebraicEquation) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_v = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_x = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr x = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_v->setName("v");
-    var_x->setName("x");
-    var_v->setInitialValue(2);
-    var_x->setInitialValue(3);
-    var_t->setUnits("dimensionless");
-    var_v->setUnits("dimensionless");
-    var_x->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_v);
-    component->addVariable(var_x);
+    t->setName("t");
+    v->setName("v");
+    x->setName("x");
+    v->setInitialValue(2);
+    x->setInitialValue(3);
+    t->setUnits("dimensionless");
+    v->setUnits("dimensionless");
+    x->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(v);
+    component->addVariable(x);
     component->setMath(math);
 
     model->addComponent(component);
@@ -1020,18 +1020,18 @@ TEST(Generator, piecewise) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
@@ -1137,18 +1137,18 @@ TEST(Generator, piecewise2) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
@@ -1224,18 +1224,18 @@ TEST(Generator, floorPi) {
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var_t = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr var_y = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr t = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr y = std::make_shared<libcellml::Variable>();
 
     model->setName("my_model");
     component->setName("main");
-    var_t->setName("t");
-    var_y->setName("y");
-    var_y->setInitialValue(-2);
-    var_t->setUnits("dimensionless");
-    var_y->setUnits("dimensionless");
-    component->addVariable(var_t);
-    component->addVariable(var_y);
+    t->setName("t");
+    y->setName("y");
+    y->setInitialValue(-2);
+    t->setUnits("dimensionless");
+    y->setUnits("dimensionless");
+    component->addVariable(t);
+    component->addVariable(y);
     component->setMath(math);
 
     model->addComponent(component);
