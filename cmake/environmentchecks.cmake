@@ -14,21 +14,35 @@
 
 find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
-find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
-find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
+find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
 find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
+find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
+find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
+
 find_package(Doxygen)
 find_package(Sphinx)
 find_package(SWIG 3)
 
-if(VALGRIND_EXE AND Python_Interpreter_FOUND)
-  set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run valgrind testing are available.")
-endif()
-if(GCOV_EXE AND FIND_EXE AND Python_Interpreter_FOUND)
+if (CLANG_TIDY_EXE)
+  set(CLANG_TIDY_AVAILABLE TRUE CACHE BOOL "Executable required to perform static analysis is available.")
+endif ()
+
+if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND)
   set(COVERAGE_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run the coverage testing are available.")
 endif()
+
 if (SWIG_EXECUTABLE)
-  set(BINDINGS_AVAILABLE TRUE CACHE BOOL "Executables required to generate bindings are available.")
+  set(BINDINGS_AVAILABLE TRUE CACHE BOOL "Executable required to generate bindings is available.")
 endif ()
-mark_as_advanced(VALGRIND_EXE VALGRIND_TESTING_AVAILABLE GCOV_EXE FIND_EXE COVERAGE_TESTING_AVAILABLE SWIG_EXECUTABLE BINDINGS_AVAILABLE)
+
+if(VALGRIND_EXE AND Python_Interpreter_FOUND)
+  set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executable required to run valgrind testing is available.")
+endif()
+
+mark_as_advanced(
+    CLANG_TIDY_EXE CLANG_TIDY_AVAILABLE
+    FIND_EXE GCOV_EXE COVERAGE_TESTING_AVAILABLE
+    SWIG_EXECUTABLE BINDINGS_AVAILABLE
+    VALGRIND_EXE VALGRIND_TESTING_AVAILABLE
+)
 
