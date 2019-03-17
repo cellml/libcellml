@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-cmake_minimum_required(VERSION 3.5.2)
+cmake_minimum_required(VERSION 3.6)
 
 set(PROJECT_NAME libCellML)
 project(${PROJECT_NAME} VERSION 0.1.0 LANGUAGES CXX)
