@@ -332,7 +332,7 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
         mappingVariables += printMapVariables(variablePair);
         // Check for subsequent variable equivalence pairs with the same parent components.
         int componentMapIndex2 = componentMapIndex1 + 1;
-        for (ComponentMapIterator iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
+        for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
             Component* nextComponent1 = iterPair2->first;
             Component* nextComponent2 = iterPair2->second;
             VariablePair variablePair2 = variableMap.at(componentMapIndex2);
@@ -364,7 +364,7 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
     return connections;
 }
 
-void buildMaps(ModelPtr model, ComponentMap &componentMap, VariableMap &variableMap)
+void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &variableMap)
 {
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->getComponent(i);
@@ -490,7 +490,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         }
         repr += ">";
         for (const auto &vectorIter : iter->second) {
-            ComponentPtr localComponent = std::get<1>(vectorIter);
+            const ComponentPtr &localComponent = std::get<1>(vectorIter);
             repr += "<component component_ref=\"" + std::get<0>(vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
             if (localComponent->getId().length() > 0) {
                 repr += " id=\"" + localComponent->getId() + "\"";

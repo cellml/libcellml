@@ -295,7 +295,7 @@ void Model::resolveImports(const std::string &baseFile)
     resolveComponentImports(shared_from_this(), baseFile);
 }
 
-bool isUnresolvedImport(ImportedEntityPtr importedEntity)
+bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
 {
     bool unresolvedImport = false;
     if (importedEntity->isImport()) {
@@ -307,9 +307,9 @@ bool isUnresolvedImport(ImportedEntityPtr importedEntity)
     return unresolvedImport;
 }
 
-bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity);
+bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity);
 
-bool doHasUnresolvedComponentImports(ComponentPtr component)
+bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
     bool unresolvedImports = false;
     if (component->isImport()) {
@@ -329,7 +329,7 @@ bool doHasUnresolvedComponentImports(ComponentPtr component)
     return unresolvedImports;
 }
 
-bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity)
+bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity)
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n)

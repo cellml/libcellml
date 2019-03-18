@@ -685,10 +685,16 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
                 int whenOrder = when->getOrder();
                 if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->getName() +
-                                        "' " + orderString +
-                                        " " + variableString + variableContinuation +
-                                        " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
+                    err->setDescription(std::string().append("Reset in component '")
+                                                     .append(component->getName())
+                                                     .append("' ")
+                                                     .append(orderString)
+                                                     .append(" ")
+                                                     .append(variableString)
+                                                     .append(variableContinuation)
+                                                     .append(" has multiple whens with order '")
+                                                     .append(convertIntToString(whenOrder))
+                                                     .append("'."));
                     err->setComponent(component);
                     err->setRule(SpecificationRule::RESET_ORDER);
                     mValidator->addError(err);
@@ -1104,7 +1110,7 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
         "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
         "notanumber", "infinity", "true", "false"
     };
-    return    !node->getNamespace().compare(MATHML_NS)
+    return    (node->getNamespace() == MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getName()) != supportedMathMLElements.end();
 }
 
