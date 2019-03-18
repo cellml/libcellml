@@ -46,7 +46,7 @@ class ImportSourceTestCase(unittest.TestCase):
     def test_set_model(self):
         from libcellml import ImportSource, Model
 
-        # void setModel(libcellml::ModelPtr model);
+        # void setModel(const ModelPtr &model);
         x = ImportSource()
         x.setModel(None)
         x.setModel(Model())

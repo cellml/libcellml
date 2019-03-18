@@ -65,7 +65,7 @@ public:
      *
      * @return The @c Model used to resolve this @c ImportSource.
      */
-    libcellml::ModelPtr getModel() const;
+    ModelPtr getModel() const;
 
     /**
      * @brief Provide the @c Model used to resolve this import.

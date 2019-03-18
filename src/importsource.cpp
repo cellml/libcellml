@@ -27,7 +27,7 @@ namespace libcellml {
 struct ImportSource::ImportSourceImpl
 {
     std::string mUrl;
-    libcellml::ModelPtr mModel;
+    ModelPtr mModel;
 };
 
 ImportSource::ImportSource()
