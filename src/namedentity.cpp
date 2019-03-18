@@ -48,7 +48,7 @@ NamedEntity::NamedEntity(const NamedEntity &rhs)
     mPimpl->mName = rhs.mPimpl->mName;
 }
 
-NamedEntity::NamedEntity(NamedEntity &&rhs)
+NamedEntity::NamedEntity(NamedEntity &&rhs) noexcept
     : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

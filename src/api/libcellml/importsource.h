@@ -35,7 +35,7 @@ public:
     ImportSource(); /**< Constructor */
     ~ImportSource() override; /**< Destructor */
     ImportSource(const ImportSource &rhs); /**< Copy constructor */
-    ImportSource(ImportSource &&rhs); /**< Move constructor */
+    ImportSource(ImportSource &&rhs) noexcept; /**< Move constructor */
     ImportSource& operator=(ImportSource rhs); /**< Assignment operator */
 
     /**

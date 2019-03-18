@@ -84,7 +84,7 @@ Component::Component(const Component &rhs)
     mPimpl->mMath = rhs.mPimpl->mMath;
 }
 
-Component::Component(Component &&rhs)
+Component::Component(Component &&rhs) noexcept
     : ComponentEntity(std::move(rhs))
     , ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)

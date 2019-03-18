@@ -35,7 +35,7 @@ public:
     NamedEntity(); /**< Constructor */
     ~NamedEntity() override; /**< Destructor */
     NamedEntity(const NamedEntity &rhs); /**< Copy constructor */
-    NamedEntity(NamedEntity &&rhs); /**< Move constructor */
+    NamedEntity(NamedEntity &&rhs) noexcept; /**< Move constructor */
     NamedEntity& operator=(NamedEntity rhs); /**< Assignment operator */
 
     /**

@@ -44,8 +44,8 @@ public:
      */
     ~ComponentEntity() override;
 
-    ComponentEntity(ComponentEntity &&rhs); /**< Move constructor */
     ComponentEntity(const ComponentEntity &rhs); /**< Copy constructor */
+    ComponentEntity(ComponentEntity &&rhs) noexcept; /**< Move constructor */
     ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**

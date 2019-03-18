@@ -51,7 +51,7 @@ OrderedEntity::OrderedEntity(const OrderedEntity &rhs)
     mPimpl->mOrderSet = rhs.mPimpl->mOrderSet;
 }
 
-OrderedEntity::OrderedEntity(OrderedEntity &&rhs)
+OrderedEntity::OrderedEntity(OrderedEntity &&rhs) noexcept
     :  Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

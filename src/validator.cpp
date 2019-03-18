@@ -250,7 +250,7 @@ Validator::Validator(const Validator &rhs)
     mPimpl->mValidator = rhs.mPimpl->mValidator;
 }
 
-Validator::Validator(Validator &&rhs)
+Validator::Validator(Validator &&rhs) noexcept
     : Logger(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

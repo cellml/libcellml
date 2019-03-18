@@ -148,7 +148,7 @@ Units::Units(const Units &rhs)
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
-Units::Units(Units &&rhs)
+Units::Units(Units &&rhs) noexcept
     : NamedEntity(std::move(rhs))
     , ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)

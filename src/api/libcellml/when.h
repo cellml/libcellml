@@ -35,7 +35,7 @@ public:
     When(); /**< Constructor */
     ~When() override; /**< Destructor */
     When(const When &rhs); /**< Copy constructor */
-    When(When &&rhs); /**< Move constructor */
+    When(When &&rhs) noexcept; /**< Move constructor */
     When& operator=(When rhs); /**< Assignment operator */
 
     /**

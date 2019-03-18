@@ -68,7 +68,7 @@ Printer::Printer(const Printer &rhs)
 {
 }
 
-Printer::Printer(Printer &&rhs)
+Printer::Printer(Printer &&rhs) noexcept
     : Logger(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

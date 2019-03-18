@@ -33,7 +33,7 @@ public:
     Component(); /**< Constructor */
     ~Component() override; /**< Destructor */
     Component(const Component &rhs); /**< Copy constructor */
-    Component(Component &&rhs); /**< Move constructor */
+    Component(Component &&rhs) noexcept; /**< Move constructor */
     Component& operator=(Component rhs); /**< Assignment operator */
 
     /**

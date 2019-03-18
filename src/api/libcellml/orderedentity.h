@@ -32,7 +32,7 @@ public:
     OrderedEntity(); /**< Constructor */
     ~OrderedEntity() override; /**< Destructor */
     OrderedEntity(const OrderedEntity &rhs); /**< Copy constructor */
-    OrderedEntity(OrderedEntity &&rhs); /**< Move constructor */
+    OrderedEntity(OrderedEntity &&rhs) noexcept; /**< Move constructor */
     OrderedEntity& operator=(OrderedEntity rhs); /**< Assignment operator */
 
     /**

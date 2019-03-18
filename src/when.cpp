@@ -47,7 +47,7 @@ When::When(const When &rhs)
     mPimpl->mValue = rhs.mPimpl->mValue;
 }
 
-When::When(When &&rhs)
+When::When(When &&rhs) noexcept
     : OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

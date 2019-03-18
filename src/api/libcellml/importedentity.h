@@ -35,7 +35,7 @@ public:
     ImportedEntity(); /**< Constructor */
     virtual ~ImportedEntity(); /**< Destructor */
     ImportedEntity(const ImportedEntity &rhs); /**< Copy constructor */
-    ImportedEntity(ImportedEntity &&rhs); /**< Move constructor */
+    ImportedEntity(ImportedEntity &&rhs) noexcept; /**< Move constructor */
     ImportedEntity& operator=(ImportedEntity rhs); /**< Assignment operator */
 
     /**

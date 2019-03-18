@@ -66,7 +66,7 @@ Error::Error(const Error &rhs)
     mPimpl->mWhen = rhs.mPimpl->mWhen;
 }
 
-Error::Error(Error &&rhs)
+Error::Error(Error &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;

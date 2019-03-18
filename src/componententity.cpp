@@ -70,7 +70,7 @@ ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
     mPimpl->mEncapsulationId = rhs.mPimpl->mEncapsulationId;
 }
 
-ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
+ComponentEntity::ComponentEntity(ComponentEntity &&rhs) noexcept
     : NamedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

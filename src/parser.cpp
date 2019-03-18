@@ -199,7 +199,7 @@ Parser::Parser(const Parser &rhs)
     mPimpl->mParser = rhs.mPimpl->mParser;
 }
 
-Parser::Parser(Parser &&rhs)
+Parser::Parser(Parser &&rhs) noexcept
     : Logger(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

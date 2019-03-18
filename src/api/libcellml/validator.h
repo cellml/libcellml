@@ -38,7 +38,7 @@ public:
     Validator(); /**< Constructor */
     ~Validator() override; /**< Destructor */
     Validator(const Validator &rhs); /**< Copy constructor */
-    Validator(Validator &&rhs); /**< Move constructor */
+    Validator(Validator &&rhs) noexcept; /**< Move constructor */
     Validator& operator=(Validator rhs); /**< Assignment operator */
 
     /**

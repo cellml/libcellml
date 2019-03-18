@@ -60,7 +60,7 @@ Reset::Reset(const Reset &rhs)
     mPimpl->mWhens = rhs.mPimpl->mWhens;
 }
 
-Reset::Reset(Reset &&rhs)
+Reset::Reset(Reset &&rhs) noexcept
     : OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

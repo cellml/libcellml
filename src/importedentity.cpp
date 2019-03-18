@@ -48,7 +48,7 @@ ImportedEntity::ImportedEntity(const ImportedEntity &rhs)
     mPimpl->mImportReference = rhs.mPimpl->mImportReference;
 }
 
-ImportedEntity::ImportedEntity(ImportedEntity &&rhs)
+ImportedEntity::ImportedEntity(ImportedEntity &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;

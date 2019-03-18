@@ -37,7 +37,7 @@ public:
     Parser(); /**< Constructor */
     ~Parser() override; /**< Destructor */
     Parser(const Parser &rhs); /**< Copy constructor */
-    Parser(Parser &&rhs); /**< Move constructor */
+    Parser(Parser &&rhs) noexcept; /**< Move constructor */
     Parser& operator=(Parser rhs); /**< Assignment operator */
 
     /**

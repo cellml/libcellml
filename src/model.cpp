@@ -82,7 +82,7 @@ Model::Model(const Model &rhs)
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
-Model::Model(Model &&rhs)
+Model::Model(Model &&rhs) noexcept
     : ComponentEntity(std::move(rhs))
 #ifndef SWIG
     , std::enable_shared_from_this<Model>()

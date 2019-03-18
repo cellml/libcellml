@@ -49,7 +49,7 @@ ImportSource::ImportSource(const ImportSource &rhs)
     mPimpl->mModel = rhs.mPimpl->mModel;
 }
 
-ImportSource::ImportSource(ImportSource &&rhs)
+ImportSource::ImportSource(ImportSource &&rhs) noexcept
     : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
