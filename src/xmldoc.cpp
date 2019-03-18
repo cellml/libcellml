@@ -124,4 +124,4 @@ std::string XmlDoc::getXmlError(size_t index) const
     return mPimpl->mXmlErrors.at(index);
 }
 
-}
+} // namespace libcellml

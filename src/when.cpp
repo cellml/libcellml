@@ -86,4 +86,4 @@ std::string When::getValue() const
     return mPimpl->mValue;
 }
 
-}
+} // namespace libcellml

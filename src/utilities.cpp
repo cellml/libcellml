@@ -147,4 +147,4 @@ bool isCellMLReal(const std::string &candidate)
     return isReal;
 }
 
-}
+} // namespace libcellml

@@ -425,4 +425,4 @@ std::string Variable::getEquivalenceConnectionId(const VariablePtr &variable1, c
     return id;
 }
 
-}
+} // namespace libcellml
