@@ -481,11 +481,11 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
 
 void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
 {
-    std::string reference = "";
-    std::string prefix = "";
+    std::string reference;
+    std::string prefix;
     double exponent = 1.0;
     double multiplier = 1.0;
-    std::string id = "";
+    std::string id;
     // A unit should not have any children.
     if (node->getFirstChild()) {
         XmlNodePtr childNode = node->getFirstChild();
@@ -650,10 +650,10 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     bool variable2Missing = false;
 
     // Check connection for component_{1, 2} attributes and get the name pair.
-    std::string component1Name = "";
-    std::string component2Name = "";
-    std::string mappingId = "";
-    std::string connectionId = "";
+    std::string component1Name;
+    std::string component2Name;
+    std::string mappingId;
+    std::string connectionId;
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
         if (attribute->isType("component_1")) {
@@ -737,8 +737,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         }
 
         if (childNode->isCellmlElement("map_variables")) {
-            std::string variable1Name = "";
-            std::string variable2Name = "";
+            std::string variable1Name;
+            std::string variable2Name;
             XmlAttributePtr attribute = childNode->getFirstAttribute();
             while (attribute) {
                 if (attribute->isType("variable_1")) {
@@ -927,7 +927,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
     while (parentComponentNode) {
         ComponentPtr parentComponent = nullptr;
         std::string parentComponentName;
-        std::string encapsulationId = "";
+        std::string encapsulationId;
         if (parentComponentNode->isCellmlElement("component_ref")) {
             // Check for a component in the parent component_ref.
             XmlAttributePtr attribute = parentComponentNode->getFirstAttribute();
@@ -1018,7 +1018,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         }
 
         // Loop over encapsulated children.
-        std::string childEncapsulationId = "";
+        std::string childEncapsulationId;
         while (childComponentNode) {
             ComponentPtr childComponent = nullptr;
             if (childComponentNode->isCellmlElement("component_ref")) {
@@ -1226,7 +1226,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     bool orderDefined = false;
     bool orderValid = false;
     VariablePtr referencedVariable = nullptr;
-    std::string variableName = "";
+    std::string variableName;
 
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
@@ -1331,12 +1331,12 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
 
 void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node)
 {
-    std::string referencedVariableName = "";
+    std::string referencedVariableName;
     VariablePtr referencedVariable = reset->getVariable();
     if (referencedVariable != nullptr) {
         referencedVariableName = referencedVariable->getName();
     }
-    std::string resetOrder = "";
+    std::string resetOrder;
     if (reset->isOrderSet()) {
         resetOrder = convertIntToString(reset->getOrder());
     }

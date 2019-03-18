@@ -19,7 +19,7 @@ limitations under the License.
 #include <libcellml>
 
 TEST(UnitsImport, basics) {
-    const std::string e = "";
+    const std::string e;
 
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");

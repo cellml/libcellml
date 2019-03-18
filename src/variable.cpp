@@ -398,7 +398,7 @@ void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const Va
 
 std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    std::string id = "";
+    std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1))
     {
         std::string id_1 = variable1->mPimpl->getEquivalentMappingId(variable2);
@@ -413,7 +413,7 @@ std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, cons
 
 std::string Variable::getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    std::string id = "";
+    std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1))
     {
         std::string id_1 = variable1->mPimpl->getEquivalentConnectionId(variable2);

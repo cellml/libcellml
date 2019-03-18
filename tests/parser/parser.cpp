@@ -95,7 +95,7 @@ TEST(Parser, moveParser) {
 }
 
 TEST(Parser, makeError) {
-    const std::string ex = "";
+    const std::string ex;
 
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>();
 
@@ -103,7 +103,7 @@ TEST(Parser, makeError) {
 }
 
 TEST(Parser, emptyModelString) {
-    const std::string ex = "";
+    const std::string ex;
     const std::string expectedError = "Document is empty.";
 
     libcellml::Parser p;
