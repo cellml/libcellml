@@ -67,8 +67,8 @@ Component::Component()
 Component::~Component()
 {
     if (mPimpl) {
-        for (std::vector<VariablePtr>::iterator iter = mPimpl->mVariables.begin(); iter != mPimpl->mVariables.end(); ++iter) {
-            (*iter)->clearParent();
+        for (const auto &variable : mPimpl->mVariables) {
+            variable->clearParent();
         }
     }
     delete mPimpl;

@@ -359,7 +359,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         childNode = childNode->getNext();
     }
 
-    if (encapsulationNodes.size() > 0) {
+    if (!encapsulationNodes.empty()) {
         loadEncapsulation(model, encapsulationNodes.at(0));
         if (encapsulationNodes.size() > 1) {
             ErrorPtr err = std::make_shared<Error>();
@@ -371,8 +371,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             mParser->addError(err);
         }
     }
-    for (size_t i = 0; i < connectionNodes.size(); ++i) {
-        loadConnection(model, connectionNodes.at(i));
+    for (const auto &connectionNode : connectionNodes) {
+        loadConnection(model, connectionNode);
     }
 }
 
@@ -636,9 +636,9 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
 void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
 {
     // Define types for variable and component pairs.
-    typedef std::pair <std::string, std::string> NamePair;
-    typedef std::vector<NamePair> NamePairMap;
-    typedef NamePairMap::const_iterator NameMapIterator;
+    using NamePair = std::pair<std::string, std::string>;
+    using NamePairMap = std::vector<NamePair>;
+    using NameMapIterator = NamePairMap::const_iterator;
 
     // Initialise name pairs and flags.
     NamePair componentNamePair, variableNamePair;

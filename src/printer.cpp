@@ -35,13 +35,13 @@ limitations under the License.
 namespace libcellml {
 
 // VariableMap
-typedef std::pair <VariablePtr, VariablePtr> VariablePair; /**< Type definition for VariablePtr pair.*/
-typedef std::vector<VariablePair> VariableMap; /**< Type definition for vector of VariablePair.*/
-typedef VariableMap::const_iterator VariableMapIterator; /**< Type definition of const iterator for vector of VariablePair.*/
+using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition for VariablePtr pair.*/
+using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
+using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
-typedef std::pair <Component*, Component*> ComponentPair; /**< Type definition for Component pointer pair.*/
-typedef std::vector<ComponentPair> ComponentMap; /**< Type definition for vector of ComponentPair.*/
-typedef ComponentMap::const_iterator ComponentMapIterator; /**< Type definition of const iterator for vector of ComponentPair.*/
+using ComponentPair = std::pair<Component*, Component*>; /**< Type definition for Component pointer pair.*/
+using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
+using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
 /**
  * @brief The Printer::PrinterImpl struct.
@@ -121,11 +121,11 @@ std::string Printer::printUnits(const UnitsPtr &units) const
                     if (multiplier != 1.0) {
                         repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
                     }
-                    if (prefix != "") {
+                    if (!prefix.empty()) {
                         repr += " prefix=\"" + prefix + "\"";
                     }
                     repr += " units=\"" + reference + "\"";
-                    if (id != "") {
+                    if (!id.empty()) {
                         repr += " id=\"" + id + "\"";
                     }
                     repr += "/>";
@@ -410,10 +410,9 @@ void buildMaps(ModelPtr model, ComponentMap &componentMap, VariableMap &variable
 std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
-    typedef std::pair <std::string, ComponentPtr> ImportPair;
-    typedef std::vector<ImportPair>::const_iterator VectorPairIterator;
-    typedef std::map <ImportSourcePtr, std::vector<ImportPair> > ImportMap;
-    typedef ImportMap::const_iterator ImportMapIterator;
+    using ImportPair = std::pair<std::string, ComponentPtr>;
+    using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
+    using ImportMapIterator = ImportMap::const_iterator;
     ImportMap importMap;
     VariableMap variableMap;
     ComponentMap componentMap;
@@ -478,7 +477,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         repr += " id=\"" + model->getId() + "\"";
     }
     bool endTag = false;
-    if ((importMap.size() > 0) || (model->componentCount() > 0) || (model->unitsCount() > 0)){
+    if (!importMap.empty() || (model->componentCount() > 0) || (model->unitsCount() > 0)){
         endTag = true;
         repr += ">";
     }
@@ -490,9 +489,9 @@ std::string Printer::printModel(const ModelPtr &model) const
             repr += " id=\"" + iter->first->getId() + "\"";
         }
         repr += ">";
-        for (VectorPairIterator vectorIter = iter->second.begin(); vectorIter != iter->second.end(); ++vectorIter) {
-            ComponentPtr localComponent = std::get<1>(*vectorIter);
-            repr += "<component component_ref=\"" + std::get<0>(*vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
+        for (const auto &vectorIter : iter->second) {
+            ComponentPtr localComponent = std::get<1>(vectorIter);
+            repr += "<component component_ref=\"" + std::get<0>(vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
             if (localComponent->getId().length() > 0) {
                 repr += " id=\"" + localComponent->getId() + "\"";
             }

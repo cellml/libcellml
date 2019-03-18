@@ -318,7 +318,7 @@ void Validator::validateModel(const ModelPtr &model)
                     }
                     // Check if we already have another import from the same source with the same component_ref.
                     // (This looks for matching entries at the same position in the source and ref vectors).
-                    if ((componentImportSources.size() > 0) && (!foundImportError)) {
+                    if (!componentImportSources.empty() && (!foundImportError)) {
                         if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
                          == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
                             ErrorPtr err = std::make_shared<Error>();
@@ -384,7 +384,7 @@ void Validator::validateModel(const ModelPtr &model)
                     }
                     // Check if we already have another import from the same source with the same units_ref.
                     // (This looks for matching enties at the same position in the source and ref vectors).
-                    if ((unitsImportSources.size() > 0) && (!foundImportError)) {
+                    if (!unitsImportSources.empty() && (!foundImportError)) {
                         if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
                          == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
                             ErrorPtr err = std::make_shared<Error>();

@@ -251,7 +251,7 @@ std::string resolvePath(const std::string &filename, const std::string &base)
     return path;
 }
 
-void resolveImport(ImportedEntityPtr importedEntity,
+void resolveImport(const ImportedEntityPtr &importedEntity,
                    const std::string &baseFile)
 {
     if (importedEntity->isImport()) {
@@ -271,7 +271,8 @@ void resolveImport(ImportedEntityPtr importedEntity,
     }
 }
 
-void resolveComponentImports(ComponentEntityPtr parentComponentEntity, const std::string &baseFile)
+void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
+                             const std::string &baseFile)
 {
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n)
     {
