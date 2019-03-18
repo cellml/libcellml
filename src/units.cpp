@@ -31,7 +31,7 @@ namespace libcellml {
  *
  * An internal map used to convert a Prefix into its string form.
  */
-std::map<Prefix, const std::string> prefixToString =
+static std::map<Prefix, const std::string> prefixToString =
 {
     {Prefix::ATTO, "atto"},
     {Prefix::CENTI, "centi"},
