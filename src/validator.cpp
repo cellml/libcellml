@@ -589,8 +589,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->getUnits())) {
-        Component* component = static_cast<Component*>(variable->getParent());
-        Model* model = static_cast<Model*>(component->getParent());
+        auto component = static_cast<Component*>(variable->getParent());
+        auto model = static_cast<Model*>(component->getParent());
         if (model && !model->hasUnits(variable->getUnits())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->getName() +
@@ -941,7 +941,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            Model* model = static_cast<Model*>(component->getParent());
+            auto model = static_cast<Model*>(component->getParent());
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
@@ -1048,7 +1048,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                         // TODO: add check for cyclical connections (17.10.5)
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
                             // Check that the equivalent variable has a valid parent component.
-                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                            auto component2 = static_cast<Component*>(equivalentVariable->getParent());
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
                                 err->setDescription("Variable '" + equivalentVariable->getName() +

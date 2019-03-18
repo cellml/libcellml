@@ -45,8 +45,8 @@ void structuredErrorCallback(void *userData, xmlErrorPtr error)
   if (errorString.substr(errorString.length() - 1) == "\n") {
       errorString.replace(errorString.end() - 1, errorString.end(), ".");
   }
-  xmlParserCtxtPtr context = reinterpret_cast<xmlParserCtxtPtr>(userData);
-  XmlDoc *doc = reinterpret_cast<XmlDoc *>(context->_private);
+  auto context = reinterpret_cast<xmlParserCtxtPtr>(userData);
+  auto doc = reinterpret_cast<XmlDoc *>(context->_private);
   doc->addXmlError(errorString);
 }
 

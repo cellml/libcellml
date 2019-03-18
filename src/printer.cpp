@@ -385,8 +385,8 @@ void buildMaps(ModelPtr model, ComponentMap &componentMap, VariableMap &variable
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            Component* component1 = static_cast<Component*>(variable->getParent());
-                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                            auto component1 = static_cast<Component*>(variable->getParent());
+                            auto component2 = static_cast<Component*>(equivalentVariable->getParent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2) {
