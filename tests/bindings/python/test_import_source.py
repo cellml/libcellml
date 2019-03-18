@@ -55,7 +55,7 @@ class ImportSourceTestCase(unittest.TestCase):
     def test_get_model(self):
         from libcellml import ImportSource, Model
 
-        # libcellml::ModelPtr getModel() const;
+        # ModelPtr getModel() const;
         model = Model()
         model.setName('bert')
         x = ImportSource()
