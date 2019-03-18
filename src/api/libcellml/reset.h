@@ -45,7 +45,7 @@ public:
      *
      * @param variable The @c Variable to set.
      */
-    void setVariable(VariablePtr variable);
+    void setVariable(const VariablePtr &variable);
 
     /**
      * @brief Get the @c Variable for this @c Reset.

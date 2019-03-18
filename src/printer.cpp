@@ -87,7 +87,7 @@ void Printer::swap(Printer &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Printer::printUnits(UnitsPtr units) const
+std::string Printer::printUnits(const UnitsPtr &units) const
 {
     std::string repr = "";
     if (units->getName().length()) {
@@ -147,7 +147,7 @@ std::string Printer::printUnits(Units units) const
     return printUnits(std::shared_ptr<Units>(std::shared_ptr<Units>{}, &units));
 }
 
-std::string Printer::printComponent(ComponentPtr component) const
+std::string Printer::printComponent(const ComponentPtr &component) const
 {
     std::string repr = "";
     if (component->isImport()) {
@@ -193,7 +193,7 @@ std::string Printer::printComponent(Component component) const
     return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
 }
 
-std::string Printer::printReset(ResetPtr reset) const
+std::string Printer::printReset(const ResetPtr &reset) const
 {
     std::string repr = "<reset";
     std::string id = reset->getId();
@@ -225,7 +225,7 @@ std::string Printer::printReset(Reset reset) const
     return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
 }
 
-std::string Printer::printWhen(WhenPtr when) const
+std::string Printer::printWhen(const WhenPtr &when) const
 {
     std::string repr = "<when";
     std::string id = when->getId();
@@ -257,7 +257,7 @@ std::string Printer::printWhen(WhenPtr when) const
     return repr;
 }
 
-std::string Printer::printVariable(VariablePtr variable) const
+std::string Printer::printVariable(const VariablePtr &variable) const
 {
     std::string repr = "";
     repr += "<variable";
@@ -407,7 +407,7 @@ void buildMaps(ModelPtr model, ComponentMap &componentMap, VariableMap &variable
     }
 }
 
-std::string Printer::printModel(ModelPtr model) const
+std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
     typedef std::pair <std::string, ComponentPtr> ImportPair;
@@ -549,7 +549,7 @@ std::string Printer::printModel(Model *model) const
     return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
 }
 
-std::string Printer::printEncapsulation(ComponentPtr component) const
+std::string Printer::printEncapsulation(const ComponentPtr &component) const
 {
     std::string componentName = component->getName();
     std::string repr = "<component_ref";

@@ -79,7 +79,7 @@ void Reset::swap(Reset &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Reset::setVariable(VariablePtr variable)
+void Reset::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;
 }
