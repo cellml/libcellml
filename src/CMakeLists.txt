@@ -152,8 +152,44 @@ set_target_properties(cellml PROPERTIES
 )
 
 if(CLANG_TIDY_EXE)
+  set(CLANG_TIDY_WARNINGS
+    -*
+    bugprone-*
+    cppcoreguidelines-avoid-goto
+    cppcoreguidelines-c-copy-assignment-signature
+    cppcoreguidelines-interfaces-global-init
+    cppcoreguidelines-narrowing-conversions
+    cppcoreguidelines-no-malloc
+    cppcoreguidelines-pro-*
+    cppcoreguidelines-special-member-functions
+    misc-*
+    modernize-*
+    performance-*
+    readability-avoid-const-params-in-decls
+    readability-container-size-empty
+    readability-delete-null-pointer
+    readability-deleted-default
+    readability-else-after-return
+    readability-function-size
+    readability-identifier-naming
+    readability-inconsistent-declaration-parameter-name
+    readability-misleading-indentation
+    readability-misplaced-array-index
+    readability-non-const-parameter
+    readability-redundant-*
+    readability-simplify-*
+    readability-static-*
+    readability-string-compare
+    readability-uniqueptr-delete-release
+    readability-rary-objects
+  )
+  string(REPLACE ";" ","
+         CLANG_TIDY_WARNINGS "${CLANG_TIDY_WARNINGS}")
+  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
+    set(CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${CLANG_TIDY_WARNINGS}")
+  endif()
   set_target_properties(cellml PROPERTIES
-    CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=-*,bugprone-*,cppcoreguidelines-avoid-goto,cppcoreguidelines-c-copy-assignment-signature,cppcoreguidelines-interfaces-global-init,cppcoreguidelines-narrowing-conversions,cppcoreguidelines-no-malloc,cppcoreguidelines-pro-*,cppcoreguidelines-special-member-functions,misc-*,modernize-*,performance-*,readability-avoid-const-params-in-decls,readability-container-size-empty,readability-delete-null-pointer,readability-deleted-default,readability-else-after-return,readability-function-size,readability-identifier-naming,readability-inconsistent-declaration-parameter-name,readability-misleading-indentation,readability-misplaced-array-index,readability-non-const-parameter,readability-redundant-*,readability-simplify-*,readability-static-*,readability-string-compare,readability-uniqueptr-delete-release,readability-rary-objects"
+    CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${CLANG_TIDY_WARNINGS}${CLANG_TIDY_WARNINGS_AS_ERRORS}"
   )
 endif()
 
