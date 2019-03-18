@@ -26,11 +26,11 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <iostream>
 #include <map>
 #include <stack>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 namespace libcellml {
 
@@ -574,4 +574,4 @@ std::string Printer::printEncapsulation(const ComponentPtr &component) const
     return repr;
 }
 
-}
+} // namespace libcellml

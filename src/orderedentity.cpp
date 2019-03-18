@@ -91,4 +91,4 @@ bool OrderedEntity::isOrderSet()
     return mPimpl->mOrderSet;
 }
 
-}
+} // namespace libcellml

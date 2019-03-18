@@ -168,6 +168,7 @@ if(CLANG_TIDY_EXE)
     cppcoreguidelines-pro-type-union-access
     cppcoreguidelines-pro-type-vararg
     cppcoreguidelines-special-member-functions
+    llvm-*
     misc-*
     modernize-*
     performance-*

@@ -93,4 +93,4 @@ bool ImportSource::hasModel() const
     return mPimpl->mModel != nullptr;
 }
 
-}
+} // namespace libcellml

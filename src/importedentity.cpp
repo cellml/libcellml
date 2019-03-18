@@ -90,4 +90,4 @@ void ImportedEntity::setImportReference(const std::string &reference)
     mPimpl->mImportReference = reference;
 }
 
-}
+} // namespace libcellml
