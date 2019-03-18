@@ -255,15 +255,15 @@ void resolveImport(ImportedEntityPtr importedEntity,
                    const std::string &baseFile)
 {
     if (importedEntity->isImport()) {
-        libcellml::ImportSourcePtr importSource = importedEntity->getImportSource();
+        ImportSourcePtr importSource = importedEntity->getImportSource();
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->getUrl(), baseFile);
             std::ifstream file(url);
             if (file.good()) {
                 std::stringstream buffer;
                 buffer << file.rdbuf();
-                libcellml::Parser parser;
-                libcellml::ModelPtr model = parser.parseModel(buffer.str());
+                Parser parser;
+                ModelPtr model = parser.parseModel(buffer.str());
                 importSource->setModel(model);
                 model->resolveImports(url);
             }
@@ -275,7 +275,7 @@ void resolveComponentImports(ComponentEntityPtr parentComponentEntity, const std
 {
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n)
     {
-        libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
+        ComponentPtr component = parentComponentEntity->getComponent(n);
         if (component->isImport()) {
             resolveImport(component, baseFile);
         } else {
@@ -288,7 +288,7 @@ void Model::resolveImports(const std::string &baseFile)
 {
     for (size_t n = 0; n < unitsCount(); ++n)
     {
-        libcellml::UnitsPtr units = getUnits(n);
+        UnitsPtr units = getUnits(n);
         resolveImport(units, baseFile);
     }
     resolveComponentImports(shared_from_this(), baseFile);
@@ -298,7 +298,7 @@ bool isUnresolvedImport(ImportedEntityPtr importedEntity)
 {
     bool unresolvedImport = false;
     if (importedEntity->isImport()) {
-        libcellml::ImportSourcePtr importedSource = importedEntity->getImportSource();
+        ImportSourcePtr importedSource = importedEntity->getImportSource();
         if (!importedSource->hasModel()) {
             unresolvedImport = true;
         }
@@ -308,14 +308,14 @@ bool isUnresolvedImport(ImportedEntityPtr importedEntity)
 
 bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity);
 
-bool doHasUnresolvedComponentImports(libcellml::ComponentPtr component)
+bool doHasUnresolvedComponentImports(ComponentPtr component)
 {
     bool unresolvedImports = false;
     if (component->isImport()) {
         unresolvedImports = isUnresolvedImport(component);
         if (!unresolvedImports) {
             // Check that the imported component can import all it needs from its model.
-            libcellml::ImportSourcePtr importedSource = component->getImportSource();
+            ImportSourcePtr importedSource = component->getImportSource();
             if (importedSource->hasModel()) {
                 ModelPtr importedModel = importedSource->getModel();
                 ComponentPtr importedComponent = importedModel->getComponent(component->getImportReference());
@@ -333,7 +333,7 @@ bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity)
     bool unresolvedImports = false;
     for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n)
     {
-        libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
+        ComponentPtr component = parentComponentEntity->getComponent(n);
         unresolvedImports = doHasUnresolvedComponentImports(component);
     }
     return unresolvedImports;
@@ -344,7 +344,7 @@ bool Model::hasUnresolvedImports()
     bool unresolvedImports = false;
     for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n)
     {
-        libcellml::UnitsPtr units = getUnits(n);
+        UnitsPtr units = getUnits(n);
         unresolvedImports = isUnresolvedImport(units);
     }
     if (!unresolvedImports) {
