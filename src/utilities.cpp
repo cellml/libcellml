@@ -39,7 +39,7 @@ double convertToDouble(const std::string &candidate)
 
 bool hasNonWhitespaceCharacters(const std::string &input)
 {
-    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
+    return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
 std::string convertDoubleToString(double value)
