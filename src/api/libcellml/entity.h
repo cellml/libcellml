@@ -105,11 +105,11 @@ public:
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
      *
-     * @param c The raw pointer to the component to test against.
+     * @param component The raw pointer to the component to test against.
      *
      * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
-    bool hasParent(Component *c) const;
+    bool hasParent(Component *component) const;
 
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */

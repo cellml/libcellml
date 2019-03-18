@@ -104,12 +104,12 @@ void Model::swap(Model &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Model::doAddComponent(const ComponentPtr &c)
+void Model::doAddComponent(const ComponentPtr &component)
 {
     // Check for cycles.
-    if (!hasParent(c.get())) {
-        c->setParent(this);
-        ComponentEntity::doAddComponent(c);
+    if (!hasParent(component.get())) {
+        component->setParent(this);
+        ComponentEntity::doAddComponent(component);
     }
 }
 

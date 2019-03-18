@@ -252,7 +252,7 @@ public:
     bool hasUnresolvedImports();
 
 private:
-    void doAddComponent(const ComponentPtr &c) override;
+    void doAddComponent(const ComponentPtr &component) override;
     void swap(Model &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
