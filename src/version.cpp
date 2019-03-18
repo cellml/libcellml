@@ -32,4 +32,4 @@ const std::string versionString()
     return LIBCELLML_LIBRARY_VERSION_STRING;
 }
 
-}
+} // namespace libcellml

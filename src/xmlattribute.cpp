@@ -106,4 +106,4 @@ void XmlAttribute::removeAttribute()
     xmlRemoveProp(mPimpl->mXmlAttributePtr);
 }
 
-}
+} // namespace libcellml

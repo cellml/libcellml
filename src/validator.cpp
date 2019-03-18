@@ -1177,4 +1177,4 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
     return result;
 }
 
-}
+} // namespace libcellml

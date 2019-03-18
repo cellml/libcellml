@@ -168,4 +168,4 @@ std::string XmlNode::convertToString() {
     return contentString;
 }
 
-}
+} // namespace libcellml
