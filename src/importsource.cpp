@@ -83,7 +83,7 @@ ModelPtr ImportSource::getModel() const
     return mPimpl->mModel;
 }
 
-void ImportSource::setModel(ModelPtr model)
+void ImportSource::setModel(const ModelPtr &model)
 {
     mPimpl->mModel = model;
 }

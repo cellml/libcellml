@@ -52,7 +52,7 @@ public:
      *
      * @param error The @c ErrorPtr to add.
      */
-    void addError(const ErrorPtr error);
+    void addError(const ErrorPtr &error);
 
     /**
      * @brief Get the number of errors.

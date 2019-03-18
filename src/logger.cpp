@@ -72,7 +72,7 @@ void Logger::clearErrors()
     mPimpl->mErrors.clear();
 }
 
-void Logger::addError(const ErrorPtr error)
+void Logger::addError(const ErrorPtr &error)
 {
     mPimpl->mErrors.push_back(error);
 }
