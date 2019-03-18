@@ -250,7 +250,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         err->setKind(Error::Kind::XML);
         mParser->addError(err);
         return;
-    } else if (!node->isCellmlElement("model")) {
+    }
+    if (!node->isCellmlElement("model")) {
         ErrorPtr err = std::make_shared<Error>();
         if (node->getName() == "model") {
             std::string nodeNamespace = node->getNamespace();

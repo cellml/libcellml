@@ -805,7 +805,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         err->setComponent(component);
         mValidator->addError(err);
         return;
-    } else if (!node->isElement("math", MATHML_NS)) {
+    }
+    if (!node->isElement("math", MATHML_NS)) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Math root node is of invalid type '" + node->getName() +
                             "' on component '" + component->getName() +
