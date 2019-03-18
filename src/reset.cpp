@@ -171,4 +171,4 @@ size_t Reset::whenCount() const
     return mPimpl->mWhens.size();
 }
 
-}
+} // namespace libcellml

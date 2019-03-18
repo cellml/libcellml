@@ -75,4 +75,4 @@ std::string NamedEntity::getName() const {
     return mPimpl->mName;
 }
 
-}
+} // namespace libcellml

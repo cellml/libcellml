@@ -91,4 +91,4 @@ ErrorPtr Logger::getError(size_t index) const
     return err;
 }
 
-}
+} // namespace libcellml

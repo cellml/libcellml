@@ -280,4 +280,4 @@ std::string ComponentEntity::getEncapsulationId() const
     return mPimpl->mEncapsulationId;
 }
 
-}
+} // namespace libcellml

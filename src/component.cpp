@@ -284,4 +284,4 @@ bool Component::hasReset(const ResetPtr &reset) const
     return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
-}
+} // namespace libcellml

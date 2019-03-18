@@ -323,4 +323,4 @@ std::string Error::getSpecificationHeading() const
     return heading;
 }
 
-}
+} // namespace libcellml

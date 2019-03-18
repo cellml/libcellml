@@ -114,4 +114,4 @@ bool Entity::hasParent(Component *component) const
     return hasParent;
 }
 
-}
+} // namespace libcellml

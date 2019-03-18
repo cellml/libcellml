@@ -18,8 +18,8 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/parser.h"
-#include "libcellml/variable.h"
 #include "libcellml/units.h"
+#include "libcellml/variable.h"
 
 #include <algorithm>
 #include <fstream>
@@ -346,4 +346,4 @@ bool Model::hasUnresolvedImports()
     return unresolvedImports;
 }
 
-}
+} // namespace libcellml

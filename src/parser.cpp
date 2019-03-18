@@ -1455,4 +1455,4 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
 
 }
 
-}
+} // namespace libcellml

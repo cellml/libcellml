@@ -344,4 +344,4 @@ size_t Units::unitCount() const
     return mPimpl->mUnits.size();
 }
 
-}
+} // namespace libcellml
