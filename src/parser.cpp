@@ -1424,9 +1424,13 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName +
-                                "' with order '" + resetOrder +
-                                "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription(std::string().append("When in reset referencing variable '")
+                                             .append(referencedVariableName)
+                                             .append("' with order '")
+                                             .append(resetOrder)
+                                             .append("' has an invalid child element '")
+                                             .append(childNode->getName())
+                                             .append("'."));
             err->setWhen(when);
             err->setRule(SpecificationRule::WHEN_CHILD);
             mParser->addError(err);
