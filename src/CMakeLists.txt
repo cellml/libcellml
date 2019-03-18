@@ -167,7 +167,6 @@ if(CLANG_TIDY_EXE)
     cppcoreguidelines-pro-type-static-cast-downcast
     cppcoreguidelines-pro-type-union-access
     cppcoreguidelines-pro-type-vararg
-    cppcoreguidelines-slicing
     cppcoreguidelines-special-member-functions
     misc-*
     modernize-*
