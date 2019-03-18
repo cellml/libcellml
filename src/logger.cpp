@@ -50,7 +50,7 @@ Logger::Logger(const Logger &rhs)
     mPimpl->mErrors = rhs.mPimpl->mErrors;
 }
 
-Logger::Logger(Logger &&rhs)
+Logger::Logger(Logger &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;

@@ -42,7 +42,7 @@ public:
     Model(); /**< Constructor */
     ~Model() override; /**< Destructor */
     Model(const Model &rhs); /**< Copy constructor */
-    Model(Model &&rhs); /**< Move constructor */
+    Model(Model &&rhs) noexcept; /**< Move constructor */
     Model& operator=(Model rhs); /**< Assignment operator */
 
     /**

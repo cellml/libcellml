@@ -42,7 +42,7 @@ public:
     Units(); /**< Constructor */
     ~Units() override; /**< Destructor */
     Units(const Units &rhs); /**< Copy constructor */
-    Units(Units &&rhs); /**< Move constructor */
+    Units(Units &&rhs) noexcept; /**< Move constructor */
     Units& operator=(Units rhs); /**< Assignment operator */
 
     /**

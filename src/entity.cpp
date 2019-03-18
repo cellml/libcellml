@@ -52,7 +52,7 @@ Entity::Entity(const Entity &rhs)
     mPimpl->mId = rhs.mPimpl->mId;
 }
 
-Entity::Entity(Entity &&rhs)
+Entity::Entity(Entity &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;

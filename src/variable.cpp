@@ -192,7 +192,7 @@ Variable::Variable(const Variable &rhs)
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
-Variable::Variable(Variable &&rhs)
+Variable::Variable(Variable &&rhs) noexcept
     : NamedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {

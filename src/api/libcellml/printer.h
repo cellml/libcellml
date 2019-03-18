@@ -36,7 +36,7 @@ public:
     Printer(); /**< Constructor */
     ~Printer() override; /**< Destructor */
     Printer(const Printer &rhs); /**< Copy constructor */
-    Printer(Printer &&rhs); /**< Move constructor */
+    Printer(Printer &&rhs) noexcept; /**< Move constructor */
     Printer& operator=(Printer rhs); /**< Assignment operator */
 
     /**

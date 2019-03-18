@@ -35,7 +35,7 @@ public:
     Entity(); /**< Constructor */
     virtual ~Entity(); /**< Destructor */
     Entity(const Entity &rhs); /**< Copy constructor */
-    Entity(Entity &&rhs); /**< Move constructor */
+    Entity(Entity &&rhs) noexcept; /**< Move constructor */
     Entity& operator=(Entity rhs); /**< Assignment operator */
 
     /**

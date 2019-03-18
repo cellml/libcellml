@@ -35,7 +35,7 @@ public:
     Reset(); /**< Constructor */
     ~Reset() override; /**< Destructor */
     Reset(const Reset &rhs); /**< Copy constructor */
-    Reset(Reset &&rhs); /**< Move constructor */
+    Reset(Reset &&rhs) noexcept; /**< Move constructor */
     Reset& operator=(Reset rhs); /**< Assignment operator */
 
     /**
