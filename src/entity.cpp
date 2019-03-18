@@ -102,13 +102,13 @@ void Entity::clearParent() {
     mPimpl->mParentModel = nullptr;
 }
 
-bool Entity::hasParent(Component *c) const
+bool Entity::hasParent(Component *component) const
 {
     bool hasParent = false;
-    if (mPimpl->mParentComponent == c) {
+    if (mPimpl->mParentComponent == component) {
         hasParent = true;
     } else if (mPimpl->mParentComponent) {
-        hasParent = mPimpl->mParentComponent->hasParent(c);
+        hasParent = mPimpl->mParentComponent->hasParent(component);
     }
 
     return hasParent;
