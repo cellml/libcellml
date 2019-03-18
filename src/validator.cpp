@@ -643,7 +643,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     }
 
     std::string variableString;
-    std::string variableContinuation = "";
+    std::string variableContinuation;
     if (reset->getVariable() == nullptr) {
         variableString = "does not reference a variable";
         variableContinuation = ",";

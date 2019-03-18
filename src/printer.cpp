@@ -89,7 +89,7 @@ void Printer::swap(Printer &rhs)
 
 std::string Printer::printUnits(const UnitsPtr &units) const
 {
-    std::string repr = "";
+    std::string repr;
     if (units->getName().length()) {
         if (units->isImport()) {
             repr += "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
@@ -149,7 +149,7 @@ std::string Printer::printUnits(Units units) const
 
 std::string Printer::printComponent(const ComponentPtr &component) const
 {
-    std::string repr = "";
+    std::string repr;
     if (component->isImport()) {
         return repr;
     }
@@ -259,7 +259,7 @@ std::string Printer::printWhen(const WhenPtr &when) const
 
 std::string Printer::printVariable(const VariablePtr &variable) const
 {
-    std::string repr = "";
+    std::string repr;
     repr += "<variable";
     std::string name = variable->getName();
     std::string id = variable->getId();
@@ -305,7 +305,7 @@ std::string printMapVariables(VariablePair variablePair)
 
 std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
 {
-    std::string connections = "";
+    std::string connections;
     ComponentMap serialisedComponentMap;
     int componentMapIndex1 = 0;
     for (ComponentMapIterator iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
@@ -326,7 +326,7 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
             ++componentMapIndex1;
             continue;
         }
-        std::string mappingVariables = "";
+        std::string mappingVariables;
         VariablePair variablePair = variableMap.at(componentMapIndex1);
         std::string connectionId = Variable::getEquivalenceConnectionId(variablePair.first, variablePair.second);
         mappingVariables += printMapVariables(variablePair);
@@ -469,7 +469,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         }
     }
 
-    std::string repr = "";
+    std::string repr;
     repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"";
     if (model->getName().length()) {
         repr += " name=\"" + model->getName() + "\"";
@@ -505,7 +505,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         repr += printUnits(model->getUnits(i));
     }
 
-    std::string componentEncapsulation = "";
+    std::string componentEncapsulation;
     // Serialise components of the model, imported components have already been dealt with at this point.
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->getComponent(i);

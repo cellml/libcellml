@@ -45,7 +45,7 @@ TEST(Printer, printEmptyModelAllocatePointer) {
 }
 
 TEST(Printer, printEmptyUnits) {
-    const std::string e = "";
+    const std::string e;
     libcellml::Units u;
 
     libcellml::Printer printer;
