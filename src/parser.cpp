@@ -1307,9 +1307,13 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Reset in component '" + component->getName() +
-                                    "' referencing variable '" + variableName +
-                                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setDescription(std::string().append("Reset in component '")
+                                                 .append(component->getName())
+                                                 .append("' referencing variable '")
+                                                 .append(variableName)
+                                                 .append("' has an invalid non-whitespace child text element '")
+                                                 .append(textNode)
+                                                 .append("'."));
                 err->setReset(reset);
                 err->setRule(SpecificationRule::RESET_CHILD);
                 mParser->addError(err);
@@ -1354,9 +1358,13 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             when->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName +
-                                "' with order '" + resetOrder +
-                                "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setDescription(std::string().append("When in reset referencing variable '")
+                                             .append(referencedVariableName)
+                                             .append("' with order '")
+                                             .append(resetOrder)
+                                             .append("' has an invalid attribute '")
+                                             .append(attribute->getName())
+                                             .append("'."));
             err->setWhen(when);
             mParser->addError(err);
         }
@@ -1389,9 +1397,11 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
                 when->setValue(math);
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("When in reset referencing variable '" + referencedVariableName +
-                                    "' with order '" + resetOrder +
-                                    "' contains more than two MathML child elements.");
+                err->setDescription(std::string().append("When in reset referencing variable '")
+                                                 .append(referencedVariableName)
+                                                 .append("' with order '")
+                                                 .append(resetOrder)
+                                                 .append("' contains more than two MathML child elements."));
                 err->setWhen(when);
                 err->setRule(SpecificationRule::WHEN_CHILD);
                 mParser->addError(err);
@@ -1399,9 +1409,13 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
         } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName +
-                                "' with order '" + resetOrder +
-                                "' has an invalid non-whitespace child text element '" + textNode + "'.");
+            err->setDescription(std::string().append("When in reset referencing variable '")
+                                             .append(referencedVariableName)
+                                             .append("' with order '")
+                                             .append(resetOrder)
+                                             .append("' has an invalid non-whitespace child text element '")
+                                             .append(textNode)
+                                             .append("'."));
             err->setWhen(when);
             err->setRule(SpecificationRule::WHEN_CHILD);
             mParser->addError(err);
