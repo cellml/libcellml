@@ -322,9 +322,13 @@ void Validator::validateModel(const ModelPtr &model)
                         if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
                          == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported components from '" + importSource +
-                                                "' with the same component_ref attribute '" + componentRef + "'.");
+                            err->setDescription(std::string().append("Model '")
+                                                             .append(model->getName())
+                                                             .append("' contains multiple imported components from '")
+                                                             .append(importSource)
+                                                             .append("' with the same component_ref attribute '")
+                                                             .append(componentRef)
+                                                             .append("'."));
                             err->setModel(model);
                             err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                             addError(err);
@@ -388,9 +392,13 @@ void Validator::validateModel(const ModelPtr &model)
                         if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
                          == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported units from '" + importSource +
-                                                "' with the same units_ref attribute '" + unitsRef + "'.");
+                            err->setDescription(std::string().append("Model '")
+                                                             .append(model->getName())
+                                                             .append("' contains multiple imported units from '")
+                                                             .append(importSource)
+                                                             .append("' with the same units_ref attribute '")
+                                                             .append(unitsRef)
+                                                             .append("'."));
                             err->setModel(model);
                             err->setRule(SpecificationRule::IMPORT_UNITS_REF);
                             addError(err);
