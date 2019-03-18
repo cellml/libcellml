@@ -32,7 +32,7 @@ namespace libcellml {
  *
  * An internal map used to convert a Variable InterfaceType enum class member into its string form.
  */
-static std::map<Variable::InterfaceType, std::string> interfaceTypeToString =
+static std::map<Variable::InterfaceType, const std::string> interfaceTypeToString =
 {
     {Variable::InterfaceType::NONE, "none"},
     {Variable::InterfaceType::PRIVATE, "private"},
