@@ -207,7 +207,6 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
                     double multiplier, const std::string &id)
 {
     auto search = prefixToString.find(prefix);
-    assert(search != prefixToString.end());
     const std::string prefixString = search->second;
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
