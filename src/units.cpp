@@ -156,11 +156,11 @@ Units::Units(Units &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Units& Units::operator=(Units e)
+Units& Units::operator=(Units rhs)
 {
-    NamedEntity::operator= (e);
-    ImportedEntity::operator= (e);
-    e.swap(*this);
+    NamedEntity::operator= (rhs);
+    ImportedEntity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 

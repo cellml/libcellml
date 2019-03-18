@@ -55,10 +55,10 @@ NamedEntity::NamedEntity(NamedEntity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-NamedEntity& NamedEntity::operator=(NamedEntity n)
+NamedEntity& NamedEntity::operator=(NamedEntity rhs)
 {
-    Entity::operator= (n);
-    n.swap(*this);
+    Entity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 

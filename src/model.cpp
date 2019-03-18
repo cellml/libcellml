@@ -92,10 +92,10 @@ Model::Model(Model &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Model& Model::operator=(Model m)
+Model& Model::operator=(Model rhs)
 {
-    ComponentEntity::operator= (m);
-    m.swap(*this);
+    ComponentEntity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 

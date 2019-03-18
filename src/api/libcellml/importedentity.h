@@ -36,7 +36,7 @@ public:
     virtual ~ImportedEntity(); /**< Destructor */
     ImportedEntity(const ImportedEntity &rhs); /**< Copy constructor */
     ImportedEntity(ImportedEntity &&rhs); /**< Move constructor */
-    ImportedEntity& operator=(ImportedEntity n); /**< Assignment operator */
+    ImportedEntity& operator=(ImportedEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Test if this entity is an imported entity.

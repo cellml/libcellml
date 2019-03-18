@@ -36,7 +36,7 @@ public:
     ~Reset() override; /**< Destructor */
     Reset(const Reset &rhs); /**< Copy constructor */
     Reset(Reset &&rhs); /**< Move constructor */
-    Reset& operator=(Reset n); /**< Assignment operator */
+    Reset& operator=(Reset rhs); /**< Assignment operator */
 
     /**
      * @brief Set the @c Variable for this @c Reset.

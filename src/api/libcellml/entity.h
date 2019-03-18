@@ -36,7 +36,7 @@ public:
     virtual ~Entity(); /**< Destructor */
     Entity(const Entity &rhs); /**< Copy constructor */
     Entity(Entity &&rhs); /**< Move constructor */
-    Entity& operator=(Entity e); /**< Assignment operator */
+    Entity& operator=(Entity rhs); /**< Assignment operator */
 
     /**
      * @brief Set the @p id document identifier for this entity.

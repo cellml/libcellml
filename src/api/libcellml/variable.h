@@ -36,7 +36,7 @@ public:
     ~Variable() override; /**< Destructor */
     Variable(const Variable &rhs); /**< Copy constructor */
     Variable(Variable &&rhs); /**< Move constructor */
-    Variable& operator=(Variable n); /**< Assignment operator */
+    Variable& operator=(Variable rhs); /**< Assignment operator */
 
     /**
      * @brief The InterfaceType enum class.

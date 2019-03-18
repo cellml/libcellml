@@ -37,7 +37,7 @@ public:
     ~Printer() override; /**< Destructor */
     Printer(const Printer &rhs); /**< Copy constructor */
     Printer(Printer &&rhs); /**< Move constructor */
-    Printer& operator=(Printer p); /**< Assignment operator */
+    Printer& operator=(Printer rhs); /**< Assignment operator */
 
     /**
      * @brief Serialise the @c Model to @c std::string.
