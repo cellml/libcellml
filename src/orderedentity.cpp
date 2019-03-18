@@ -58,10 +58,10 @@ OrderedEntity::OrderedEntity(OrderedEntity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-OrderedEntity& OrderedEntity::operator=(OrderedEntity e)
+OrderedEntity& OrderedEntity::operator=(OrderedEntity rhs)
 {
-    Entity::operator= (e);
-    e.swap(*this);
+    Entity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 

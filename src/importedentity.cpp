@@ -54,9 +54,9 @@ ImportedEntity::ImportedEntity(ImportedEntity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-ImportedEntity& ImportedEntity::operator=(ImportedEntity e)
+ImportedEntity& ImportedEntity::operator=(ImportedEntity rhs)
 {
-    e.swap(*this);
+    rhs.swap(*this);
     return *this;
 }
 

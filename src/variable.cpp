@@ -199,10 +199,10 @@ Variable::Variable(Variable &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Variable& Variable::operator=(Variable v)
+Variable& Variable::operator=(Variable rhs)
 {
-    NamedEntity::operator= (v);
-    v.swap(*this);
+    NamedEntity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 

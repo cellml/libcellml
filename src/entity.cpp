@@ -58,9 +58,9 @@ Entity::Entity(Entity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Entity& Entity::operator=(Entity e)
+Entity& Entity::operator=(Entity rhs)
 {
-    e.swap(*this);
+    rhs.swap(*this);
     return *this;
 }
 

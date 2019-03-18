@@ -67,10 +67,10 @@ Reset::Reset(Reset &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Reset& Reset::operator=(Reset e)
+Reset& Reset::operator=(Reset rhs)
 {
-    OrderedEntity::operator= (e);
-    e.swap(*this);
+    OrderedEntity::operator= (rhs);
+    rhs.swap(*this);
     return *this;
 }
 

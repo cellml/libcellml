@@ -92,11 +92,11 @@ Component::Component(Component &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Component& Component::operator=(Component c)
+Component& Component::operator=(Component rhs)
 {
-    ComponentEntity::operator= (c);
-    ImportedEntity::operator = (c);
-    c.swap(*this);
+    ComponentEntity::operator= (rhs);
+    ImportedEntity::operator = (rhs);
+    rhs.swap(*this);
     return *this;
 }
 

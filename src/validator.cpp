@@ -257,10 +257,10 @@ Validator::Validator(Validator &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Validator& Validator::operator=(Validator v)
+Validator& Validator::operator=(Validator rhs)
 {
-    Logger::operator =(v);
-    v.swap(*this);
+    Logger::operator =(rhs);
+    rhs.swap(*this);
     return *this;
 }
 

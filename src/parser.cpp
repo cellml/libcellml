@@ -206,10 +206,10 @@ Parser::Parser(Parser &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Parser& Parser::operator=(Parser p)
+Parser& Parser::operator=(Parser rhs)
 {
-    Logger::operator =(p);
-    p.swap(*this);
+    Logger::operator =(rhs);
+    rhs.swap(*this);
     return *this;
 }
 

@@ -43,7 +43,7 @@ public:
     ~Model() override; /**< Destructor */
     Model(const Model &rhs); /**< Copy constructor */
     Model(Model &&rhs); /**< Move constructor */
-    Model& operator=(Model m); /**< Assignment operator */
+    Model& operator=(Model rhs); /**< Assignment operator */
 
     /**
      * @brief Add a child units to this model.

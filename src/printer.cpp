@@ -75,10 +75,10 @@ Printer::Printer(Printer &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Printer& Printer::operator=(Printer p)
+Printer& Printer::operator=(Printer rhs)
 {
-    Logger::operator =(p);
-    p.swap(*this);
+    Logger::operator =(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
