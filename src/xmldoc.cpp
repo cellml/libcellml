@@ -59,7 +59,7 @@ void structuredErrorCallback(void *userData, xmlErrorPtr error)
  */
 struct XmlDoc::XmlDocImpl
 {
-    xmlDocPtr mXmlDocPtr;
+    xmlDocPtr mXmlDocPtr = nullptr;
     std::vector<std::string> mXmlErrors;
 };
 
@@ -81,7 +81,7 @@ void XmlDoc::parse(const std::string &input)
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *> (this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", NULL, 0);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(input.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
 }
@@ -93,7 +93,7 @@ void XmlDoc::parseMathML(const std::string &input)
     xmlParserCtxtPtr context = xmlNewParserCtxt();
     context->_private = reinterpret_cast<void *> (this);
     xmlSetStructuredErrorFunc(context, structuredErrorCallback);
-    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", NULL, XML_PARSE_DTDVALID);
+    mPimpl->mXmlDocPtr = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(mathmlString.c_str()), "/", nullptr, XML_PARSE_DTDVALID);
     xmlFreeParserCtxt(context);
     xmlSetStructuredErrorFunc(nullptr, nullptr);
 }

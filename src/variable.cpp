@@ -40,7 +40,7 @@ std::map<Variable::InterfaceType, std::string> interfaceTypeToString =
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}
 };
 
-typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak variable pointer. */
+using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
 /**
  * @brief The Variable::VariableImpl struct.
