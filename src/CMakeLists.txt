@@ -160,7 +160,14 @@ if(CLANG_TIDY_EXE)
     cppcoreguidelines-interfaces-global-init
     cppcoreguidelines-narrowing-conversions
     cppcoreguidelines-no-malloc
-    cppcoreguidelines-pro-*
+    cppcoreguidelines-pro-bounds-*
+    cppcoreguidelines-pro-type-const-cast
+    cppcoreguidelines-pro-type-cstyle-cast
+    cppcoreguidelines-pro-type-member-init
+    cppcoreguidelines-pro-type-static-cast-downcast
+    cppcoreguidelines-pro-type-union-access
+    cppcoreguidelines-pro-type-vararg
+    cppcoreguidelines-slicing
     cppcoreguidelines-special-member-functions
     misc-*
     modernize-*
