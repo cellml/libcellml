@@ -58,12 +58,7 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &unit
 }
 
 Model::Model()
-#ifndef SWIG
-    : std::enable_shared_from_this<Model>()
-    , mPimpl(new ModelImpl())
-#else
     : mPimpl(new ModelImpl())
-#endif
 {
 }
 
@@ -75,7 +70,7 @@ Model::~Model()
 Model::Model(const Model &rhs)
     : ComponentEntity(rhs)
 #ifndef SWIG
-    , std::enable_shared_from_this<Model>()
+    , std::enable_shared_from_this<Model>(rhs)
 #endif
     , mPimpl(new ModelImpl())
 {
@@ -84,10 +79,7 @@ Model::Model(const Model &rhs)
 
 Model::Model(Model &&rhs) noexcept
     : ComponentEntity(std::move(rhs))
-#ifndef SWIG
-    , std::enable_shared_from_this<Model>()
-#endif
-    ,mPimpl(rhs.mPimpl)
+    , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
