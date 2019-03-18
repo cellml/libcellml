@@ -368,7 +368,6 @@ void Variable::setInterfaceType(const std::string &interfaceType)
 void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
 {
     auto search = interfaceTypeToString.find(interfaceType);
-    assert(search != interfaceTypeToString.end());
     const std::string interfaceTypeString = search->second;
     setInterfaceType(interfaceTypeString);
 }
