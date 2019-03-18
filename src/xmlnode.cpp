@@ -65,8 +65,8 @@ bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
     if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
-        && !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
-        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
+        && !xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns))
+        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name))) {
         found = true;
     }
     return found;
@@ -95,7 +95,7 @@ std::string XmlNode::getName() const
 bool XmlNode::hasAttribute(const char *attributeName)
 {
     bool found = false;
-    xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
+    xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
     if (attribute) {
         found = true;
     }
@@ -106,7 +106,7 @@ std::string XmlNode::getAttribute(const char *attributeName)
 {
     std::string attributeValueString;
     if (hasAttribute(attributeName)) {
-        xmlChar *attributeValue = xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
+        xmlChar *attributeValue = xmlGetProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
         attributeValueString = std::string(reinterpret_cast<const char *>(attributeValue));
         xmlFree(attributeValue);
     }
