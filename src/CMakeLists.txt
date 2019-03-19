@@ -185,6 +185,7 @@ if(CLANG_TIDY_EXE)
     google-readability-namespace-comments
     google-runtime-int
     google-runtime-operator
+    hicpp-*
     llvm-*
     misc-*
     modernize-*
