@@ -154,6 +154,7 @@ public:
      * Serialise the given @p reset to a std::string.
      *
      * @param reset The @c Reset to serialise.
+     *
      * @return  The @c std::string representation of the @c Reset.
      */
     std::string printReset(const ResetPtr &reset) const;
@@ -166,6 +167,7 @@ public:
      * @overload
      *
      * @param reset The @c Reset to serialise.
+     *
      * @return The @c std::string representation of the @c Reset.
      */
     std::string printReset(Reset reset) const;

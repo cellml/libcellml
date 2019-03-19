@@ -350,9 +350,9 @@ void Variable::setInitialValue(double initialValue)
     mPimpl->mInitialValue = convertDoubleToString(initialValue);
 }
 
-void Variable::setInitialValue(const VariablePtr &v)
+void Variable::setInitialValue(const VariablePtr &variable)
 {
-    mPimpl->mInitialValue = v->getName();
+    mPimpl->mInitialValue = variable->getName();
 }
 
 std::string Variable::getInitialValue() const
