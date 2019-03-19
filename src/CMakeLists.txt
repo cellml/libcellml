@@ -168,6 +168,12 @@ if(CLANG_TIDY_EXE)
     cppcoreguidelines-pro-type-union-access
     cppcoreguidelines-pro-type-vararg
     cppcoreguidelines-special-member-functions
+    fuchsia-header-anon-namespaces
+    fuchsia-multiple-inheritance
+    fuchsia-overloaded-operator
+    fuchsia-restrict-system-includes
+    fuchsia-trailing-return
+    fuchsia-virtual-inheritance
     google-build-*
     google-default-arguments
     google-explicit-constructor
