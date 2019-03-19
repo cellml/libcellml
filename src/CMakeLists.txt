@@ -140,33 +140,10 @@ else()
   target_compile_definitions(cellml PUBLIC ${LIBXML2_DEFINITIONS})
 endif()
 
-if(   "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
-   OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
-  set(COMPILE_OPTIONS
-    -Weverything
-    -Wno-c++98-compat
-    -Wno-c++98-compat-pedantic
-    -Wno-documentation
-    -Wno-documentation-unknown-command
-    -Wno-exit-time-destructors
-    -Wno-global-constructors
-    -Wno-gnu-zero-variadic-macro-arguments
-    -Wno-missing-prototypes
-    -Wno-newline-eof
-    -Wno-padded
-    -Wno-reserved-id-macro
-    -Wno-shadow
-    -Wno-switch-enum
-    -Wno-unused-macros
-    -Wno-used-but-marked-unused
-  )
-endif()
-
 set_target_properties(cellml PROPERTIES
   CXX_STANDARD 11
   CXX_STANDARD_REQUIRED ON
   CXX_VISIBILITY_PRESET hidden
-  COMPILE_OPTIONS "${COMPILE_OPTIONS}"
   VISIBILITY_INLINES_HIDDEN 1
   DEBUG_POSTFIX d
   VERSION ${libCellML_VERSION}
@@ -174,56 +151,7 @@ set_target_properties(cellml PROPERTIES
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
 )
 
-if(CLANG_TIDY_EXE)
-  set(CLANG_TIDY_WARNINGS
-    -*
-    bugprone-*
-    cppcoreguidelines-avoid-goto
-    cppcoreguidelines-c-copy-assignment-signature
-    cppcoreguidelines-interfaces-global-init
-    cppcoreguidelines-narrowing-conversions
-    cppcoreguidelines-no-malloc
-    cppcoreguidelines-pro-bounds-*
-    cppcoreguidelines-pro-type-const-cast
-    cppcoreguidelines-pro-type-cstyle-cast
-    cppcoreguidelines-pro-type-member-init
-    cppcoreguidelines-pro-type-static-cast-downcast
-    cppcoreguidelines-pro-type-union-access
-    cppcoreguidelines-pro-type-vararg
-    cppcoreguidelines-special-member-functions
-    fuchsia-header-anon-namespaces
-    fuchsia-multiple-inheritance
-    fuchsia-overloaded-operator
-    fuchsia-restrict-system-includes
-    fuchsia-trailing-return
-    fuchsia-virtual-inheritance
-    google-build-*
-    google-default-arguments
-    google-explicit-constructor
-    google-global-names-in-headers
-    google-objc-*
-    google-readability-braces-around-statements
-    google-readability-casting
-    google-readability-function-size
-    google-readability-namespace-comments
-    google-runtime-int
-    google-runtime-operator
-    hicpp-*
-    llvm-*
-    misc-*
-    modernize-*
-    performance-*
-    readability-*
-  )
-  string(REPLACE ";" ","
-         CLANG_TIDY_WARNINGS "${CLANG_TIDY_WARNINGS}")
-  if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-    set(CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${CLANG_TIDY_WARNINGS}")
-  endif()
-  set_target_properties(cellml PROPERTIES
-    CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${CLANG_TIDY_WARNINGS}${CLANG_TIDY_WARNINGS_AS_ERRORS}"
-  )
-endif()
+configure_clang_and_clang_tidy_settings(cellml)
 
 if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
   set_target_properties(cellml PROPERTIES
