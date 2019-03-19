@@ -168,27 +168,21 @@ if(CLANG_TIDY_EXE)
     cppcoreguidelines-pro-type-union-access
     cppcoreguidelines-pro-type-vararg
     cppcoreguidelines-special-member-functions
+    google-build-*
+    google-default-arguments
+    google-explicit-constructor
+    google-global-names-in-headers
+    google-objc-*
+    google-readability-braces-around-statements
+    google-readability-casting
+    google-readability-function-size
+    google-readability-namespace-comments
+    google-runtime-*
     llvm-*
     misc-*
     modernize-*
     performance-*
-    readability-avoid-const-params-in-decls
-    readability-container-size-empty
-    readability-delete-null-pointer
-    readability-deleted-default
-    readability-else-after-return
-    readability-function-size
-    readability-identifier-naming
-    readability-inconsistent-declaration-parameter-name
-    readability-misleading-indentation
-    readability-misplaced-array-index
-    readability-non-const-parameter
-    readability-redundant-*
-    readability-simplify-*
-    readability-static-*
-    readability-string-compare
-    readability-uniqueptr-delete-release
-    readability-rary-objects
+    readability-*
   )
   string(REPLACE ";" ","
          CLANG_TIDY_WARNINGS "${CLANG_TIDY_WARNINGS}")
