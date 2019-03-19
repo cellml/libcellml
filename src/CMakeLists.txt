@@ -168,6 +168,16 @@ if(CLANG_TIDY_EXE)
     cppcoreguidelines-pro-type-union-access
     cppcoreguidelines-pro-type-vararg
     cppcoreguidelines-special-member-functions
+    google-build-*
+    google-default-arguments
+    google-explicit-constructor
+    google-global-names-in-headers
+    google-objc-*
+    google-readability-braces-around-statements
+    google-readability-casting
+    google-readability-function-size
+    google-readability-namespace-comments
+    google-runtime-*
     llvm-*
     misc-*
     modernize-*
