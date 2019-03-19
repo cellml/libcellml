@@ -90,21 +90,21 @@ void Printer::swap(Printer &rhs)
 std::string Printer::printUnits(const UnitsPtr &units) const
 {
     std::string repr;
-    if (units->getName().length()) {
+    if (!units->getName().empty()) {
         if (units->isImport()) {
             repr += R"(<import xlink:href=")" + units->getImportSource()->getUrl() + R"(" xmlns:xlink="http://www.w3.org/1999/xlink")";
-            if (units->getImportSource()->getId().length()) {
+            if (!units->getImportSource()->getId().empty()) {
                 repr += R"( id=")" + units->getImportSource()->getId() + R"(")";
             }
             repr += R"(><units units_ref=")" + units->getImportReference() + R"(" name=")" + units->getName() + R"(")";
-            if (units->getId().length()) {
+            if (!units->getId().empty()) {
                 repr += R"( id=")" + units->getId() + R"(")";
             }
             repr += "/></import>";
         } else {
             bool endTag = false;
             repr += R"(<units name=")" + units->getName() + R"(")";
-            if (units->getId().length()) {
+            if (!units->getId().empty()) {
                 repr += R"( id=")" + units->getId() + R"(")";
             }
             if (units->unitCount() > 0) {
@@ -155,16 +155,16 @@ std::string Printer::printComponent(const ComponentPtr &component) const
     }
     repr += "<component";
     std::string componentName = component->getName();
-    if (componentName.length()) {
+    if (!componentName.empty()) {
         repr += R"( name=")" + componentName + R"(")";
     }
-    if (component->getId().length()) {
+    if (!component->getId().empty()) {
         repr += R"( id=")" + component->getId() + R"(")";
     }
     size_t variableCount = component->variableCount();
     size_t resetCount = component->resetCount();
     bool hasChildren = false;
-    if (variableCount > 0 || resetCount > 0 || component->getMath().length()) {
+    if (variableCount > 0 || resetCount > 0 || !component->getMath().empty()) {
         hasChildren = true;
     }
     if (hasChildren) {
@@ -204,7 +204,7 @@ std::string Printer::printReset(const ResetPtr &reset) const
     if (reset->isOrderSet()) {
         repr += R"( order=")" + convertIntToString(reset->getOrder()) + R"(")";
     }
-    if (id.length()) {
+    if (!id.empty()) {
         repr += R"( id=")" + id + R"(")";
     }
     size_t when_count = reset->whenCount();
@@ -232,24 +232,22 @@ std::string Printer::printWhen(const WhenPtr &when) const
     if (when->isOrderSet()) {
         repr += R"( order=")" + convertIntToString(when->getOrder()) + R"(")";
     }
-    if (id.length()) {
+    if (!id.empty()) {
         repr += R"( id=")" + id + R"(")";
     }
     std::string condition = when->getCondition();
-    size_t condition_length = condition.length();
-    if (condition_length) {
+    if (!condition.empty()) {
         repr += ">";
         repr += condition;
     }
     std::string value = when->getValue();
-    size_t value_length = value.length();
-    if (value_length) {
-        if (!condition_length) {
+    if (!value.empty()) {
+        if (condition.empty()) {
             repr += ">";
         }
         repr += value;
     }
-    if (condition_length || value_length) {
+    if (!condition.empty() || !value.empty()) {
         repr += "</when>";
     } else {
         repr += "/>";
@@ -264,21 +262,21 @@ std::string Printer::printVariable(const VariablePtr &variable) const
     std::string name = variable->getName();
     std::string id = variable->getId();
     std::string units = variable->getUnits();
-    std::string intial_value = variable->getInitialValue();
-    std::string interface_type = variable->getInterfaceType();
-    if (name.length()) {
+    std::string intialValue = variable->getInitialValue();
+    std::string interfaceType = variable->getInterfaceType();
+    if (!name.empty()) {
         repr += R"( name=")" + name + R"(")";
     }
-    if (units.length()) {
+    if (!units.empty()) {
         repr += R"( units=")" + units + R"(")";
     }
-    if (intial_value.length()) {
-        repr += R"( initial_value=")" + intial_value + R"(")";
+    if (!intialValue.empty()) {
+        repr += R"( initial_value=")" + intialValue + R"(")";
     }
-    if (interface_type.length()) {
-        repr += R"( interface=")" + interface_type + R"(")";
+    if (!interfaceType.empty()) {
+        repr += R"( interface=")" + interfaceType + R"(")";
     }
-    if (id.length()) {
+    if (!id.empty()) {
         repr += R"( id=")" + id + R"(")";
     }
 
@@ -344,10 +342,10 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
         }
         // Serialise out the new connection.
         std::string connection = "<connection";
-        if (currentComponent1) {
+        if (currentComponent1 != nullptr) {
             connection += R"( component_1=")" + currentComponent1->getName() + R"(")";
         }
-        if (currentComponent2) {
+        if (currentComponent2 != nullptr) {
             connection += R"( component_2=")" + currentComponent2->getName() + R"(")";
         }
         if (connectionId.length() > 0) {
@@ -389,7 +387,7 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                             auto component2 = static_cast<Component*>(equivalentVariable->getParent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
-                            if (component2) {
+                            if (component2 != nullptr) {
                                 if (!component2->hasVariable(equivalentVariable)) {
                                     component2 = nullptr;
                                 }
@@ -430,12 +428,12 @@ std::string Printer::printModel(const ModelPtr &model) const
             if (comp->isImport()) {
                 ImportPair pair = std::make_pair(comp->getImportReference(), comp);
                 ImportSourcePtr importSource = comp->getImportSource();
-                if (!importMap.count(importSource)) {
+                if (importMap.count(importSource) == 0u) {
                     importMap[importSource] = std::vector<ImportPair>();
                 }
                 importMap[importSource].push_back(pair);
                 incrementComponent = true;
-            } else if (comp->componentCount()) {
+            } else if (comp->componentCount() != 0u) {
                 // If the current component is a model component
                 // let the 'for' loop take care of the stack.
                 if (modelComponent != comp) {
@@ -471,10 +469,10 @@ std::string Printer::printModel(const ModelPtr &model) const
     std::string repr;
     repr += R"(<?xml version="1.0" encoding="UTF-8"?>
 <model xmlns="http://www.cellml.org/cellml/2.0#")";
-    if (model->getName().length()) {
+    if (!model->getName().empty()) {
         repr += R"( name=")" + model->getName() + R"(")";
     }
-    if (model->getId().length()) {
+    if (!model->getId().empty()) {
         repr += R"( id=")" + model->getId() + R"(")";
     }
     bool endTag = false;

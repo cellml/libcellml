@@ -255,8 +255,9 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         ErrorPtr err = std::make_shared<Error>();
         if (node->getName() == "model") {
             std::string nodeNamespace = node->getNamespace();
-            if (nodeNamespace.empty())
+            if (nodeNamespace.empty()) {
                 nodeNamespace = "null";
+            }
             err->setDescription("Model element is in invalid namespace '" + nodeNamespace +
                                 "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS +
                                 "'.");
@@ -674,7 +675,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         attribute = attribute->getNext();
     }
     // Check that we found both components.
-    if (!component1Name.length()) {
+    if (component1Name.empty()) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() +
                             "' does not have a valid component_1 in a connection element.");
@@ -684,7 +685,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         mParser->addError(err);
         component1Missing = true;
     }
-    if (!component2Name.length()) {
+    if (component2Name.empty()) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() +
                             "' does not have a valid component_2 in a connection element.");
@@ -759,7 +760,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 attribute = attribute->getNext();
             }
             // Check that we found both variables.
-            if (!variable1Name.length()) {
+            if (variable1Name.empty()) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid variable_1 in a map_variables element.");
@@ -769,7 +770,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 mParser->addError(err);
                 variable1Missing = true;
             }
-            if (!variable2Name.length()) {
+            if (variable2Name.empty()) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid variable_2 in a map_variables element.");
@@ -961,7 +962,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 }
                 attribute = attribute->getNext();
             }
-            if ((!parentComponent) && (!parentComponentName.length())) {
+            if ((!parentComponent) && (parentComponentName.empty())) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->getName() +
                                     "' does not have a valid component attribute in a component_ref element.");
@@ -1061,7 +1062,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                         err->setDescription("Encapsulation in model '" + model->getName() +
                                             "' does not have a valid component attribute in a component_ref that is a child of '"
                                             + parentComponent->getName() + "'.");
-                    } else if (parentComponentName.length()) {
+                    } else if (!parentComponentName.empty()) {
                         err->setDescription("Encapsulation in model '" + model->getName() +
                                             "' does not have a valid component attribute in a component_ref that is a child of invalid parent component '"
                                             + parentComponentName + "'.");

@@ -290,7 +290,7 @@ void Validator::validateModel(const ModelPtr &model)
             ComponentPtr component = model->getComponent(i);
             // Check for duplicate component names in this model.
             std::string componentName = component->getName();
-            if (componentName.length()) {
+            if (!componentName.empty()) {
                 if (component->isImport()) {
                     // Check for a component_ref.
                     std::string componentRef = component->getImportReference();
@@ -307,7 +307,7 @@ void Validator::validateModel(const ModelPtr &model)
                     }
                     // Check for a xlink:href.
                     // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
-                    if (!importSource.length()) {
+                    if (importSource.empty()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
                                             "' does not have a valid locator xlink:href attribute.");
@@ -360,7 +360,7 @@ void Validator::validateModel(const ModelPtr &model)
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             UnitsPtr units = model->getUnits(i);
             std::string unitsName = units->getName();
-            if (unitsName.length()) {
+            if (!unitsName.empty()) {
                 if (units->isImport()) {
                     // Check for a units_ref.
                     std::string unitsRef = units->getImportReference();
@@ -377,7 +377,7 @@ void Validator::validateModel(const ModelPtr &model)
                     }
                     // Check for a xlink:href.
                     // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
-                    if (!importSource.length()) {
+                    if (importSource.empty()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
                                             "' does not have a valid locator xlink:href attribute.");
@@ -453,7 +453,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         // we have a variable initial_value set by reference.
         for (size_t i = 0; i < component->variableCount(); ++i) {
             std::string variableName = component->getVariable(i)->getName();
-            if (variableName.length()) {
+            if (!variableName.empty()) {
                 if (std::find(variableNames.begin(), variableNames.end(), variableName) != variableNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Component '" + component->getName() +
@@ -499,7 +499,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         }
     }
     // Validate math through the private implementation (for XML handling).
-    if (component->getMath().length()) {
+    if (!component->getMath().empty()) {
         validateMath(component->getMath(), component);
     }
 }
@@ -562,7 +562,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         err->setRule(SpecificationRule::UNIT_UNITS_REF);
         mValidator->addError(err);
     }
-    if (prefix.length()) {
+    if (!prefix.empty()) {
         // If the prefix is not in the list of valid prefix names, check if it is a real number.
         if (!isStandardPrefixName(prefix)) {
             if (!isCellMLReal(prefix)) {
@@ -599,7 +599,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
     } else if (!isStandardUnitName(variable->getUnits())) {
         auto component = static_cast<Component*>(variable->getParent());
         auto model = static_cast<Model*>(component->getParent());
-        if (model && !model->hasUnits(variable->getUnits())) {
+        if ((model != nullptr) && !model->hasUnits(variable->getUnits())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->getName() +
                                 "' has an invalid units reference '" + variable->getUnits() +
@@ -610,7 +610,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         }
     }
     // Check for a valid interface attribute.
-    if (variable->getInterfaceType().length()) {
+    if (!variable->getInterfaceType().empty()) {
         std::string interfaceType = variable->getInterfaceType();
         if ((interfaceType != "public") && (interfaceType != "private") &&
             (interfaceType != "none") && (interfaceType != "public_and_private")) {
@@ -623,7 +623,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         }
     }
     // Check for a valid initial value attribute.
-    if (variable->getInitialValue().length()) {
+    if (!variable->getInitialValue().empty()) {
         std::string initialValue = variable->getInitialValue();
         // Check if initial value is a variable reference
         if(!(std::find(variableNames.begin(), variableNames.end(), initialValue) != variableNames.end())) {
@@ -1093,11 +1093,10 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 // TODO: validateEncapsulations
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
-  std::string::size_type n = pattern.length();
-  for (std::string::size_type i = input.find(pattern);
-      i != std::string::npos;
-      i = input.find(pattern))
-      input.erase(i, n);
+    std::string::size_type n = pattern.length();
+    for (std::string::size_type i = input.find(pattern); i != std::string::npos; i = input.find(pattern)) {
+        input.erase(i, n);
+    }
 }
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
@@ -1151,7 +1150,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
     // One or more alphabetic characters.
     if (name.length() > 0) {
         // Does not start with numeric character.
-        if (isdigit(name[0])) {
+        if (isdigit(name[0]) != 0) {
             result = false;
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("CellML identifiers must not begin with a European numeric character [0-9].");

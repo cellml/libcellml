@@ -286,12 +286,12 @@ void Units::getUnitAttributes(size_t index, std::string &reference, std::string 
     }
     reference = u.mReference;
     prefix = u.mPrefix;
-    if (u.mExponent.length()) {
+    if (!u.mExponent.empty()) {
         exponent = std::stod(u.mExponent);
     } else {
         exponent = 1.0;
     }
-    if (u.mMultiplier.length()) {
+    if (!u.mMultiplier.empty()) {
         multiplier = std::stod(u.mMultiplier);
     } else {
         multiplier = 1.0;

@@ -54,7 +54,7 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
 
 std::string XmlAttribute::getNamespace() const
 {
-    if (!mPimpl->mXmlAttributePtr->ns) {
+    if (mPimpl->mXmlAttributePtr->ns == nullptr) {
         return std::string();
     }
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href));
@@ -63,8 +63,8 @@ std::string XmlAttribute::getNamespace() const
 bool XmlAttribute::isType(const char *name, const char *ns)
 {
     bool found = false;
-    if (   !xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns))
-        && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name))) {
+    if (   (xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+        && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;
     }
     return found;
@@ -73,7 +73,7 @@ bool XmlAttribute::isType(const char *name, const char *ns)
 std::string XmlAttribute::getName() const
 {
     std::string type;
-    if (mPimpl->mXmlAttributePtr->name) {
+    if (mPimpl->mXmlAttributePtr->name != nullptr) {
         type = std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->name));
     }
     return type;
@@ -82,7 +82,7 @@ std::string XmlAttribute::getName() const
 std::string XmlAttribute::getValue() const
 {
     std::string valueString;
-    if ((mPimpl->mXmlAttributePtr->name) && (mPimpl->mXmlAttributePtr->parent)) {
+    if ((mPimpl->mXmlAttributePtr->name != nullptr) && (mPimpl->mXmlAttributePtr->parent != nullptr)) {
         xmlChar *value = xmlGetProp(mPimpl->mXmlAttributePtr->parent, mPimpl->mXmlAttributePtr->name);
         valueString = std::string(reinterpret_cast<const char *>(value));
         xmlFree(value);
@@ -94,7 +94,7 @@ XmlAttributePtr XmlAttribute::getNext()
 {
     xmlAttrPtr next = mPimpl->mXmlAttributePtr->next;
     XmlAttributePtr nextHandle = nullptr;
-    if (next) {
+    if (next != nullptr) {
         nextHandle = std::make_shared<XmlAttribute>();
         nextHandle->setXmlAttribute(next);
     }
