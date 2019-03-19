@@ -66,7 +66,7 @@ Component::Component()
 
 Component::~Component()
 {
-    if (mPimpl) {
+    if (mPimpl != nullptr) {
         for (const auto &variable : mPimpl->mVariables) {
             variable->clearParent();
         }

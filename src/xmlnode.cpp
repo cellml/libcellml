@@ -55,7 +55,7 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
 
 std::string XmlNode::getNamespace() const
 {
-    if (!mPimpl->mXmlNodePtr->ns) {
+    if (mPimpl->mXmlNodePtr->ns == nullptr) {
         return std::string();
     }
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
@@ -65,8 +65,8 @@ bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
     if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
-        && !xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns))
-        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name))) {
+        && (xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+        && (xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;
     }
     return found;
@@ -96,7 +96,7 @@ bool XmlNode::hasAttribute(const char *attributeName)
 {
     bool found = false;
     xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
-    if (attribute) {
+    if (attribute != nullptr) {
         found = true;
     }
     return found;
@@ -117,7 +117,7 @@ XmlAttributePtr XmlNode::getFirstAttribute()
 {
     xmlAttrPtr attribute = mPimpl->mXmlNodePtr->properties;
     XmlAttributePtr attributeHandle = nullptr;
-    if (attribute) {
+    if (attribute != nullptr) {
         attributeHandle = std::make_shared<XmlAttribute>();
         attributeHandle->setXmlAttribute(attribute);
     }
@@ -128,7 +128,7 @@ XmlNodePtr XmlNode::getFirstChild()
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = nullptr;
-    if (child) {
+    if (child != nullptr) {
         childHandle = std::make_shared<XmlNode>();
         childHandle->setXmlNode(child);
     }
@@ -139,7 +139,7 @@ XmlNodePtr XmlNode::getNext()
 {
     xmlNodePtr next = mPimpl->mXmlNodePtr->next;
     XmlNodePtr nextHandle = nullptr;
-    if (next) {
+    if (next != nullptr) {
         nextHandle = std::make_shared<XmlNode>();
         nextHandle->setXmlNode(next);
     }
@@ -150,7 +150,7 @@ XmlNodePtr XmlNode::getParent()
 {
     xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
     XmlNodePtr parentHandle = nullptr;
-    if (parent) {
+    if (parent != nullptr) {
         parentHandle = std::make_shared<XmlNode>();
         parentHandle->setXmlNode(parent);
     }

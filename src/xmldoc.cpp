@@ -70,7 +70,7 @@ XmlDoc::XmlDoc()
 
 XmlDoc::~XmlDoc()
 {
-    if (mPimpl->mXmlDocPtr) {
+    if (mPimpl->mXmlDocPtr != nullptr) {
         xmlFreeDoc(mPimpl->mXmlDocPtr);
     }
     delete mPimpl;
@@ -102,7 +102,7 @@ XmlNodePtr XmlDoc::getRootNode() const
 {
     xmlNodePtr root = xmlDocGetRootElement(mPimpl->mXmlDocPtr);
     XmlNodePtr rootHandle = nullptr;
-    if (root) {
+    if (root != nullptr) {
         rootHandle = std::make_shared<XmlNode>();
         rootHandle->setXmlNode(root);
     }
