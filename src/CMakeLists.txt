@@ -177,7 +177,8 @@ if(CLANG_TIDY_EXE)
     google-readability-casting
     google-readability-function-size
     google-readability-namespace-comments
-    google-runtime-*
+    google-runtime-int
+    google-runtime-operator
     llvm-*
     misc-*
     modernize-*

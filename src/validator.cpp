@@ -112,7 +112,7 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
+    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames);
 
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
@@ -192,7 +192,7 @@ struct Validator::ValidatorImpl
      * @param input The @c std::string to remove all occurrences of the @p pattern from.
      * @param pattern The @c std::string to remove from the @c std::string @p input.
      */
-    void removeSubstring(std::string &input, std::string &pattern);
+    void removeSubstring(std::string &input, const std::string &pattern);
 
     /**
      * @brief Check if the provided @p name is a standard unit.
@@ -578,7 +578,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     }
 }
 
-void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames)
 {
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(variable->getName())) {
@@ -1092,7 +1092,8 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
 // TODO: validateEncapsulations
 
-void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
+void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
+{
     std::string::size_type n = pattern.length();
     for (std::string::size_type i = input.find(pattern); i != std::string::npos; i = input.find(pattern)) {
         input.erase(i, n);
