@@ -74,7 +74,6 @@ private:
 
     struct OrderedEntityImpl; /**< Forward declaration for pImpl idiom. */
     OrderedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
-
 };
 
 }
