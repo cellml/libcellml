@@ -99,7 +99,7 @@ bool Reset::removeWhen(size_t index)
     bool status = false;
 
     if (index < mPimpl->mWhens.size()) {
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + index);
+        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + int64_t(index));
         status = true;
     }
 
@@ -149,7 +149,7 @@ WhenPtr Reset::takeWhen(size_t index)
     WhenPtr when = nullptr;
     if (index < mPimpl->mWhens.size()) {
         when = mPimpl->mWhens.at(index);
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + index);
+        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + int64_t(index));
     }
 
     return when;
@@ -159,7 +159,7 @@ bool Reset::replaceWhen(size_t index, const WhenPtr &when)
 {
     bool status = false;
     if (removeWhen(index)) {
-        mPimpl->mWhens.insert(mPimpl->mWhens.begin() + index, when);
+        mPimpl->mWhens.insert(mPimpl->mWhens.begin() + int64_t(index), when);
         status = true;
     }
 

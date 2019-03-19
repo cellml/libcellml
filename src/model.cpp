@@ -114,7 +114,7 @@ bool Model::removeUnits(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
         status = true;
     }
 
@@ -195,14 +195,14 @@ UnitsPtr Model::takeUnits(size_t index)
 
 UnitsPtr Model::takeUnits(const std::string &name)
 {
-    return takeUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
+    return takeUnits(size_t(mPimpl->findUnits(name) - mPimpl->mUnits.begin()));
 }
 
 bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 {
     bool status = false;
     if (removeUnits(index)) {
-        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + index, units);
+        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + int64_t(index), units);
         status = true;
     }
 
@@ -211,12 +211,12 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 
 bool Model::replaceUnits(const std::string &name, const UnitsPtr &units)
 {
-    return replaceUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin(), units);
+    return replaceUnits(size_t(mPimpl->findUnits(name) - mPimpl->mUnits.begin()), units);
 }
 
 bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 {
-    return replaceUnits(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin(), newUnits);
+    return replaceUnits(size_t(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
 }
 
 size_t Model::unitsCount() const
