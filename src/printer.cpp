@@ -193,6 +193,36 @@ std::string Printer::printComponent(Component component) const
     return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
 }
 
+std::string printWhen(const WhenPtr &when)
+{
+    std::string repr = "<when";
+    std::string id = when->getId();
+    if (when->isOrderSet()) {
+        repr += R"( order=")" + convertIntToString(when->getOrder()) + R"(")";
+    }
+    if (!id.empty()) {
+        repr += R"( id=")" + id + R"(")";
+    }
+    std::string condition = when->getCondition();
+    if (!condition.empty()) {
+        repr += ">";
+        repr += condition;
+    }
+    std::string value = when->getValue();
+    if (!value.empty()) {
+        if (condition.empty()) {
+            repr += ">";
+        }
+        repr += value;
+    }
+    if (!condition.empty() || !value.empty()) {
+        repr += "</when>";
+    } else {
+        repr += "/>";
+    }
+    return repr;
+}
+
 std::string Printer::printReset(const ResetPtr &reset) const
 {
     std::string repr = "<reset";
@@ -223,36 +253,6 @@ std::string Printer::printReset(const ResetPtr &reset) const
 std::string Printer::printReset(Reset reset) const
 {
     return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
-}
-
-std::string Printer::printWhen(const WhenPtr &when) const
-{
-    std::string repr = "<when";
-    std::string id = when->getId();
-    if (when->isOrderSet()) {
-        repr += R"( order=")" + convertIntToString(when->getOrder()) + R"(")";
-    }
-    if (!id.empty()) {
-        repr += R"( id=")" + id + R"(")";
-    }
-    std::string condition = when->getCondition();
-    if (!condition.empty()) {
-        repr += ">";
-        repr += condition;
-    }
-    std::string value = when->getValue();
-    if (!value.empty()) {
-        if (condition.empty()) {
-            repr += ">";
-        }
-        repr += value;
-    }
-    if (!condition.empty() || !value.empty()) {
-        repr += "</when>";
-    } else {
-        repr += "/>";
-    }
-    return repr;
 }
 
 std::string Printer::printVariable(const VariablePtr &variable) const
@@ -405,6 +405,31 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
     }
 }
 
+std::string printEncapsulation(const ComponentPtr &component)
+{
+    std::string componentName = component->getName();
+    std::string repr = "<component_ref";
+    if (componentName.length() > 0) {
+        repr += R"( component=")" + componentName + R"(")";
+    }
+    if (component->getEncapsulationId().length() > 0) {
+        repr += R"( id=")" + component->getEncapsulationId() + R"(")";
+    }
+    size_t componentCount = component->componentCount();
+    if (componentCount > 0) {
+        repr += ">";
+    } else {
+        repr += "/>";
+    }
+    for (size_t i = 0; i < componentCount; ++i) {
+        repr += printEncapsulation(component->getComponent(i));
+    }
+    if (componentCount > 0) {
+        repr += "</component_ref>";
+    }
+    return repr;
+}
+
 std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
@@ -545,31 +570,6 @@ std::string Printer::printModel(Model model) const
 std::string Printer::printModel(Model *model) const
 {
     return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
-}
-
-std::string Printer::printEncapsulation(const ComponentPtr &component) const
-{
-    std::string componentName = component->getName();
-    std::string repr = "<component_ref";
-    if (componentName.length() > 0) {
-        repr += R"( component=")" + componentName + R"(")";
-    }
-    if (component->getEncapsulationId().length() > 0) {
-        repr += R"( id=")" + component->getEncapsulationId() + R"(")";
-    }
-    size_t componentCount = component->componentCount();
-    if (componentCount > 0) {
-        repr += ">";
-    } else {
-        repr += "/>";
-    }
-    for (size_t i = 0; i < componentCount; ++i) {
-        repr += printEncapsulation(component->getComponent(i));
-    }
-    if (componentCount > 0) {
-        repr += "</component_ref>";
-    }
-    return repr;
 }
 
 } // namespace libcellml
