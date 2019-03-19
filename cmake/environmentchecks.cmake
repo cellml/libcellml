@@ -23,6 +23,25 @@ find_package(Doxygen)
 find_package(Sphinx)
 find_package(SWIG 3)
 
+set(HAVE_LIBXML2_CONFIG FALSE)
+if (MSVC)
+  # If we want to use config packages on Windows with Visual Studio,
+  # we need to have two find_package calls and explicitly state that
+  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
+  # is the preferred method so we will try this first quietly.
+  #
+  # This does change how we get information about include paths and such so we
+  # need to track how we found LibXml2.
+  find_package(LibXml2 CONFIG QUIET)
+  if (LibXml2_FOUND)
+    set(HAVE_LIBXML2_CONFIG TRUE)
+  else ()
+    find_package(LibXml2 REQUIRED)
+  endif ()
+else ()
+  find_package(LibXml2 REQUIRED)
+endif ()
+
 if (CLANG_TIDY_EXE)
   set(CLANG_TIDY_AVAILABLE TRUE CACHE BOOL "Executable required to perform static analysis is available.")
 endif ()
