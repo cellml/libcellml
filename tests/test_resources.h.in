@@ -77,6 +77,6 @@ public:
         {
             return "@CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE@";
         }
-        return nullptr;
+        return 0;
     }
 };
