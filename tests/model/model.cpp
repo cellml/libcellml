@@ -168,7 +168,7 @@ TEST(Model, countComponents) {
 
     m.addComponent(c1);
     m.addComponent(c2);
-    EXPECT_EQ(2u, m.componentCount());
+    EXPECT_EQ(size_t(2), m.componentCount());
 }
 
 TEST(Model, containsComponent) {
@@ -207,9 +207,9 @@ TEST(Model, removeComponent) {
     m.addComponent(c1);
     m.addComponent(c2);
 
-    EXPECT_EQ(2u, m.componentCount());
+    EXPECT_EQ(size_t(2), m.componentCount());
     EXPECT_TRUE(m.removeComponent(0));
-    EXPECT_EQ(1u, m.componentCount());
+    EXPECT_EQ(size_t(1), m.componentCount());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -221,13 +221,13 @@ TEST(Model, removeComponent) {
 
     // Remove the first occurence of "child1".
     EXPECT_TRUE(m.removeComponent("child1"));
-    EXPECT_EQ(2u, m.componentCount());
+    EXPECT_EQ(size_t(2), m.componentCount());
     a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change to model.
     EXPECT_FALSE(m.removeComponent("child3"));
-    EXPECT_EQ(2u, m.componentCount());
+    EXPECT_EQ(size_t(2), m.componentCount());
 }
 
 TEST(Model, getComponentMethods) {
@@ -272,7 +272,7 @@ TEST(Model, takeComponentMethods) {
     m.addComponent(c2);
 
     libcellml::ComponentPtr c02 = m.takeComponent(1);
-    EXPECT_EQ(1u, m.componentCount());
+    EXPECT_EQ(size_t(1), m.componentCount());
 
     EXPECT_EQ(m.takeComponent(4), nullptr);
 
