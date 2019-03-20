@@ -30,7 +30,7 @@ TEST(Validator, namedModel) {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName("awesomeName");
     validator.validateModel(model);
-    EXPECT_EQ(0u, validator.errorCount());
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
 
 TEST(Validator, unnamedModel) {
@@ -269,7 +269,7 @@ TEST(Validator, importUnits) {
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 
     // Invalid units import- missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
@@ -327,7 +327,7 @@ TEST(Validator, importComponents) {
     importedComponent->setSourceComponent(imp, "component_in_that_model");
     m->addComponent(importedComponent);
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 
     // Invalid component import- missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
@@ -402,7 +402,7 @@ TEST(Validator, validMath) {
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 }
 
 TEST(Validator, invalidMath) {
@@ -686,7 +686,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     libcellml::Validator v;
     v.validateModel(m);
@@ -1002,5 +1002,5 @@ TEST(Validator, validMathCnElements) {
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 }

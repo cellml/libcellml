@@ -71,7 +71,7 @@ TEST(ComponentImport, singleImportA) {
 
     EXPECT_EQ(importedComponent->getImportSource(), imp);
 
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
     m.addComponent(importedComponent);
     EXPECT_EQ(1u, m.componentCount());
 
@@ -126,7 +126,7 @@ TEST(ComponentImport, nonExistentURLAndParse) {
 
     EXPECT_EQ(importedComponent->getImportSource(), imp);
 
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
     m.addComponent(importedComponent);
     EXPECT_EQ(1u, m.componentCount());
 
@@ -238,7 +238,7 @@ TEST(ComponentImport, hierarchicalImportAndParse) {
 
     EXPECT_TRUE(i1->isImport());
 
-    EXPECT_EQ(0u, bob->componentCount());
+    EXPECT_EQ(size_t(0), bob->componentCount());
     bob->addComponent(i1);
     EXPECT_EQ(1u, bob->componentCount());
 

@@ -71,7 +71,7 @@ TEST(Component, addAndCountChildren) {
     libcellml::ComponentPtr child4 = std::make_shared<libcellml::Component>();
     child4->setName("child4");
 
-    EXPECT_EQ(0u, parent.componentCount());
+    EXPECT_EQ(size_t(0), parent.componentCount());
 
     parent.addComponent(child1);
     parent.addComponent(child2);
@@ -181,7 +181,7 @@ TEST(Component, removeComponentMethods) {
     c.removeAllComponents();
     a = printer.printComponent(c);
     EXPECT_EQ(e3, a);
-    EXPECT_EQ(0u, c.componentCount());
+    EXPECT_EQ(size_t(0), c.componentCount());
 }
 
 TEST(Component, getComponentMethods) {
@@ -259,7 +259,7 @@ TEST(Component, takeComponentMethods) {
     EXPECT_EQ("child2", c02->getName());
 
     libcellml::ComponentPtr c01 = c.takeComponent("child1");
-    EXPECT_EQ(0u, c.componentCount());
+    EXPECT_EQ(size_t(0), c.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
 
