@@ -51,8 +51,8 @@ TEST(Parser, invalidXMLElements) {
     EXPECT_EQ(expectedErrors.size()-1, p.errorCount());
     for (size_t i = 0; i < p.errorCount(); ++i) {
         if (i == 0) {
-            EXPECT_TRUE(   !p.getError(i)->getDescription().compare(expectedErrors.at(0))
-                        || !p.getError(i)->getDescription().compare(expectedErrors.at(1)));
+            EXPECT_TRUE(   (p.getError(i)->getDescription() != expectedErrors.at(0))
+                        || (p.getError(i)->getDescription() != expectedErrors.at(1)));
         } else {
             EXPECT_EQ(expectedErrors.at(i+1), p.getError(i)->getDescription());
         }
@@ -1047,7 +1047,7 @@ TEST(Parser, importedComponent2Connection) {
     // Parse
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
 TEST(Parser, validConnectionMapVariablesFirst) {
@@ -1067,7 +1067,7 @@ TEST(Parser, validConnectionMapVariablesFirst) {
 
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 }
 
 TEST(Parser, component2ConnectionVariableMissing) {
@@ -1444,7 +1444,7 @@ TEST(Parser, parseIds) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(in);
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
     EXPECT_EQ("mid", model->getId());
     EXPECT_EQ("c1id", model->getComponent("component1")->getId());
     EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
@@ -1504,7 +1504,7 @@ TEST(Parser, parseIdsOnEverything) {
     libcellml::ModelPtr model = parser.parseModel(in);
 
     printErrors(parser);
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ("mid", model->getId());
     EXPECT_EQ("c1id", model->getComponent("component1")->getId());
     EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
@@ -1770,5 +1770,5 @@ TEST(Parser, xmlComments) {
     parser.parseModel(input);
     printErrors(parser);
 
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 }

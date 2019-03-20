@@ -44,7 +44,7 @@ TEST(Reset, addAndCountChildren) {
     libcellml::WhenPtr child3 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr child4 = std::make_shared<libcellml::When>();
 
-    EXPECT_EQ(0u, r.whenCount());
+    EXPECT_EQ(size_t(0), r.whenCount());
 
     r.addWhen(child1);
     r.addWhen(child2);
@@ -94,7 +94,7 @@ TEST(Reset, removeWhenMethods) {
     EXPECT_EQ(2u, r.whenCount());
 
     r.removeAllWhens();
-    EXPECT_EQ(0u, r.whenCount());
+    EXPECT_EQ(size_t(0), r.whenCount());
 }
 
 TEST(Reset, getWhenMethods) {
@@ -109,7 +109,7 @@ TEST(Reset, getWhenMethods) {
 
     // Using const version of overloaded method
     const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).getWhen(0);
-    EXPECT_EQ(0, cS->getOrder());
+    EXPECT_EQ(int(0), cS->getOrder());
 
     // Can do this as we just have a const pointer
     EXPECT_EQ(nullptr, r.getWhen(4));
@@ -125,7 +125,7 @@ TEST(Reset, takeWhenMethods) {
 
     libcellml::WhenPtr c02 = r.takeWhen(1);
     EXPECT_EQ(1u, r.whenCount());
-    EXPECT_EQ(0, c02->getOrder());
+    EXPECT_EQ(int(0), c02->getOrder());
 
     EXPECT_EQ(nullptr, r.takeWhen(4));
 }
@@ -190,7 +190,7 @@ TEST(Reset, printResetWithOrder) {
 }
 
 TEST(Reset, printResetWithOrderAndVariable) {
-    const std::string e = "<reset variable=\"B\" order=\"1\"/>";
+    const std::string e = R"(<reset variable="B" order="1"/>)";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -450,7 +450,7 @@ TEST(Reset, getResetFromComponentMethod) {
     EXPECT_EQ(r4.get(), vMethod2.get());
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(-3));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(42));
     EXPECT_EQ(nullptr, c.getReset(7));
 }
 

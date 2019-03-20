@@ -45,7 +45,7 @@ TEST(Coverage, printer) {
     libcellml::Printer pc(pm);
 
     size_t error_count = pc.errorCount();
-    EXPECT_EQ(0u, error_count);
+    EXPECT_EQ(size_t(0), error_count);
 }
 
 TEST(Coverage, units) {
@@ -168,7 +168,7 @@ TEST(Coverage, prefixToString) {
 }
 
 TEST(Coverage, variable) {
-    std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>";
+    std::string e = R"(<variable units="dimensionless" initial_value="1" interface="public"/>)";
     libcellml::Variable v, vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 

@@ -35,7 +35,7 @@ TEST(ResolveImports, resolveSineModelFromFile) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
@@ -48,7 +48,7 @@ TEST(ResolveImports, resolveSineImportsModelFromFile) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(sineModelLocation);
@@ -64,7 +64,7 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);
@@ -81,7 +81,7 @@ TEST(ResolveImports, resolveUnitsImportFromFile) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);
@@ -98,7 +98,7 @@ TEST(ResolveImports, resolveImportsFromFileLevel0) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);
@@ -115,7 +115,7 @@ TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable) {
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
     model->resolveImports(modelLocation);

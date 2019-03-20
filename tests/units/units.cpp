@@ -518,7 +518,7 @@ TEST(Units, removeUnit) {
     EXPECT_EQ(1u, u.unitCount());
 
     u.removeAllUnits();
-    EXPECT_EQ(0u, u.unitCount());
+    EXPECT_EQ(size_t(0), u.unitCount());
 }
 
 TEST(Units, multipleAndParse) {

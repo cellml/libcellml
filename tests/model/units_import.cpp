@@ -124,7 +124,7 @@ TEST(UnitsImport, nonExistentURL) {
 
     EXPECT_EQ(importedUnits->getImportSource(), imp);
 
-    EXPECT_EQ(0u, m.unitsCount());
+    EXPECT_EQ(size_t(0), m.unitsCount());
     m.addUnits(importedUnits);
     EXPECT_EQ(1u, m.unitsCount());
 

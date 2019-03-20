@@ -164,7 +164,7 @@ TEST(Model, countComponents) {
     c1->setName("child1");
     c2->setName("child2");
 
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
 
     m.addComponent(c1);
     m.addComponent(c2);
@@ -280,7 +280,7 @@ TEST(Model, takeComponentMethods) {
 
     libcellml::ComponentPtr c01 = m.takeComponent("child1");
     EXPECT_NE(nullptr, c01);
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
 
@@ -289,9 +289,9 @@ TEST(Model, takeComponentMethods) {
     EXPECT_EQ(e, a);
 
     // Expect no change.
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
     EXPECT_EQ(nullptr, m.takeComponent("child4"));
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
 }
 
 static int count = 0;
@@ -326,7 +326,7 @@ struct structure
         m_data->id = rhs.m_data->id;
     }
 
-    structure(structure &&rhs)
+    structure(structure &&rhs) noexcept
       : m_data(rhs.m_data)
     {
         std::cout << "structure move constructor: " << m_data->id << std::endl;
@@ -339,7 +339,7 @@ struct structure
         return *this;
     }
 
-    void swap(structure &rhs) throw()
+    void swap(structure &rhs) noexcept
     {
         std::swap(this->m_data, rhs.m_data);
     }
@@ -347,7 +347,7 @@ struct structure
     ~structure()
     {
         std::cout << "structure destructor: ";
-        if (m_data) {
+        if (m_data != nullptr) {
             std::cout << m_data->id << std::endl;
         } else {
             std::cout << std::endl;
