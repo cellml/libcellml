@@ -37,6 +37,8 @@ function(INTERNALISE_CMAKE_VARIABLES)
 endfunction()
 
 function(HIDE_DISTRACTING_VARIABLES)
+  # Mark cache variables that aren't libCellML configuration variables as advanced
+  # to hide them from the user in a CMake GUI.
   mark_as_advanced(CMAKE_CONFIGURATION_TYPES)
   mark_as_advanced(CMAKE_CODEBLOCKS_EXECUTABLE)
   mark_as_advanced(QT_QMAKE_EXECUTABLE)
