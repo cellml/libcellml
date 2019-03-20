@@ -95,12 +95,25 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       -Wno-used-but-marked-unused
     )
 
+  if(NOT "${TARGET}" STREQUAL "cellml")
+    list(APPEND COMPILE_OPTIONS
+      --system-header-prefix=gtest/
+    )
+  endif()
+
     set_target_properties(${TARGET} PROPERTIES
       COMPILE_OPTIONS "${COMPILE_OPTIONS}"
     )
   endif()
 
   if(CLANG_TIDY_EXE)
+    if("${TARGET}" STREQUAL "cellml")
+      set(CPPCOREGUIDELINES_PRO_TYPE_VARARG cppcoreguidelines-pro-type-vararg)
+      set(CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS cppcoreguidelines-special-member-functions)
+      set(HICPP_SPECIAL_MEMBER_FUNCTIONS hicpp-special-member-functions)
+      set(HICPP_VARARG hicpp-vararg)
+    endif()
+
     set(CLANG_TIDY_WARNINGS
       -*
       bugprone-*
@@ -115,8 +128,8 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       cppcoreguidelines-pro-type-member-init
       cppcoreguidelines-pro-type-static-cast-downcast
       cppcoreguidelines-pro-type-union-access
-      cppcoreguidelines-pro-type-vararg
-      cppcoreguidelines-special-member-functions
+      ${CPPCOREGUIDELINES_PRO_TYPE_VARARG}
+      ${CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS}
       fuchsia-header-anon-namespaces
       fuchsia-multiple-inheritance
       fuchsia-overloaded-operator
@@ -134,7 +147,26 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       google-readability-namespace-comments
       google-runtime-int
       google-runtime-operator
-      hicpp-*
+      hicpp-avoid-goto
+      hicpp-braces-around-statements
+      hicpp-deprecated-headers
+      hicpp-exception-baseclass
+      hicpp-explicit-conversions
+      hicpp-function-size
+      hicpp-invalid-access-moved
+      hicpp-member-init
+      hicpp-move-const-arg
+      hicpp-multiway-paths-covered
+      hicpp-named-parameter
+      hicpp-new-delete-operators
+      hicpp-no-*
+      hicpp-noexcept-move
+      hicpp-signed-bitwise
+      ${HICPP_SPECIAL_MEMBER_FUNCTIONS}
+      hicpp-static-assert
+      hicpp-undelegated-constructor
+      hicpp-use-*
+      ${HICPP_VARARG}
       llvm-*
       misc-*
       modernize-*
