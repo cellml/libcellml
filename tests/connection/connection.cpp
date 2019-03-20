@@ -204,8 +204,8 @@ TEST(Connection, parseValidAlternateFormConnection) {
     libcellml::ModelPtr model = parser.parseModel(input);
 
     EXPECT_EQ(size_t(0), parser.errorCount());
-    EXPECT_EQ(2u, model->componentCount());
-    EXPECT_EQ(1u, model->getComponent("component1")->getVariable("variable1")->equivalentVariableCount());
+    EXPECT_EQ(size_t(2), model->componentCount());
+    EXPECT_EQ(size_t(1), model->getComponent("component1")->getVariable("variable1")->equivalentVariableCount());
 }
 
 TEST(Connection, twoMapVariablesConnection) {
@@ -992,7 +992,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
     // Parse
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(s);
-    EXPECT_EQ(1u, parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.errorCount());
 
     EXPECT_EQ(expectError, parser.getError(0)->getDescription());
     parser.clearErrors();
