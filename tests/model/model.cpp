@@ -333,15 +333,15 @@ struct structure
         rhs.m_data = nullptr;
     }
 
-    structure& operator=(structure r)
+    structure& operator=(structure rhs)
     {
-        r.swap(*this);
+        rhs.swap(*this);
         return *this;
     }
 
-    void swap(structure &r) throw()
+    void swap(structure &rhs) throw()
     {
-        std::swap(this->m_data, r.m_data);
+        std::swap(this->m_data, rhs.m_data);
     }
 
     ~structure()
