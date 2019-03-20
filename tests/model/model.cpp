@@ -302,12 +302,12 @@ public:
     big_and_complicated()
         : id(count+101)
     {
-        count++;
+        ++count;
     }
 
     ~big_and_complicated()
     {
-        count--;
+        --count;
     }
 };
 
