@@ -55,6 +55,28 @@ if(DOXYGEN_FOUND)
   add_custom_target(${DOXYGEN_DOCS_TARGET}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/html/code/
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+
+	# These need to be added to the Doxyfile which is generated, but the mechanism for adding (via the set(DOXYGEN_ALIASES)) doesn't seem to work.  Issue logged here: https://gitlab.kitware.com/cmake/cmake/issues/17489
+	
+	# ALIASES                = "cellml2_2=\xrefitem CellML2_2 \"CellML2_2\" \"CellML 2.0: 2. General Matters \"" 
+	# ALIASES				   += "cellml2_3=\xrefitem CellML2_3 \"CellML2_3\" \"CellML 2.0: 3. Data representation \"" 
+	# ALIASES				   += "cellml2_4=\xrefitem CellML2_4 \"CellML2_4\" \"CellML 2.0: 4. Model elements \""
+	# ALIASES				   += "cellml2_5=\xrefitem CellML2_5 \"CellML2_5\" \"CellML 2.0: 5. Import elements \""
+	# ALIASES				   += "cellml2_6=\xrefitem CellML2_6 \"CellML2_6\" \"CellML 2.0: 6. Import-units elements \""
+	# ALIASES				   += "cellml2_7=\xrefitem CellML2_7 \"CellML2_7\" \"CellML 2.0: 7. Import-component elements \""
+	# ALIASES				   += "cellml2_8=\xrefitem CellML2_8 \"CellML2_8\" \"CellML 2.0: 8. Units elements \""
+	# ALIASES				   += "cellml2_9=\xrefitem CellML2_9 \"CellML2_9\" \"CellML 2.0: 9. Unit elements \""
+	# ALIASES				   += "cellml2_10=\xrefitem CellML2_10 \"CellML2_10\" \"CellML 2.0: 10. Component elements \""
+	# ALIASES				   += "cellml2_11=\xrefitem CellML2_11 \"CellML2_11\" \"CellML 2.0: 11. Variable elements \""
+	# ALIASES				   += "cellml2_12=\xrefitem CellML2_12 \"CellML2_12\" \"CellML 2.0: 12. Reset elements \""
+	# ALIASES				   += "cellml2_13=\xrefitem CellML2_13 \"CellML2_13\" \"CellML 2.0: 13. When elements \""
+	# ALIASES				   += "cellml2_14=\xrefitem CellML2_14 \"CellML2_14\" \"CellML 2.0: 14. Math elements \""
+	# ALIASES				   += "cellml2_15=\xrefitem CellML2_15 \"CellML2_15\" \"CellML 2.0: 15. Encapsulation elements \""
+	# ALIASES				   += "cellml2_16=\xrefitem CellML2_16 \"CellML2_16\" \"CellML 2.0: 16. Component-ref elements \""
+	# ALIASES				   += "cellml2_17=\xrefitem CellML2_17 \"CellML2_17\" \"CellML 2.0: 17. Connection elements \""
+	# ALIASES				   += "cellml2_18=\xrefitem CellML2_18 \"CellML2_18\" \"CellML 2.0: 18. Map-variables elements \""
+	# ALIASES				   += "cellml2_19=\xrefitem CellML2_19 \"CellML2_19\" \"CellML 2.0: 19. Interpretation of CellML models \""
+
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif()
