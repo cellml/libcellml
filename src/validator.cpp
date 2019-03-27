@@ -1775,7 +1775,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 						/// @cellml2_17 __TODO__ validate variable interfaces according to 17.10.8
 						/// @cellml2_17 __TODO__ add check for cyclical connections (17.10.5)
 
-
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
                             // Check that the equivalent variable has a valid parent component.
                             Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
@@ -1805,8 +1804,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 }
 
-/// @cellml2_15 __TODO__: No validation exists for encapsulations (15.1.1)
-
 void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
   std::string::size_type n = pattern.length();
   for (std::string::size_type i = input.find(pattern);
@@ -1817,10 +1814,10 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
-	/// @cellml2_14 14.1.2 List of supported MathML elements
+	/// @cellml2_14 14.1.2 Lists the hard-coded supported MathML elements tags
 
 	/// @cellml2_14 14.1.2 __TODO__ Only tests that tag is within hard-coded list.  Does NOT test that the allowable types
-	/// (real or e-notaton) are followed for the cn tag? Add testing for real vs. e-notation tests to cn tags?
+	/// (real, e-notation, constant etc) are followed for the cn tag? Add testing for real vs. e-notation tests to cn tags?
 
     const std::vector<std::string> supportedMathMLElements =
     {

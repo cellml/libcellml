@@ -180,6 +180,9 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     Unit u;
     u.mReference = reference;
     // Allow all nonzero user-specified prefixes
+
+	/// @cellml2_9 9.1.2.1 __TODO__ Unsure that this works as intended as every path leads to u.mPrefix = prefix?
+	/// Note that if(prefixDouble==0.0) then no prefix value is added (but default if not specified is 0.0?! Where is that set?
     try
     {
         double prefixDouble = std::stod(prefix);
@@ -191,9 +194,11 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     } catch (std::out_of_range&) {
         u.mPrefix = prefix;
     }
+	/// @cellml2_9 9.1.2.3 If exponent value != 1.0 then it's saved as a string in the created unit.  If == 1.0 then not saved
     if (exponent != 1.0) {
         u.mExponent = convertDoubleToString(exponent);
     }
+	/// @cellml2_9 9.1.2.2 If multiplier value != 1.0 then it's saved as a string in the created unit.  If == 1.0 then not saved
     if (multiplier != 1.0) {
         u.mMultiplier = convertDoubleToString(multiplier);
     }

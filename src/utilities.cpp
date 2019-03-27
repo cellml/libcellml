@@ -28,6 +28,8 @@ namespace libcellml {
 
 double convertToDouble(const std::string &candidate)
 {
+	/// @cellml2_3 3.5 Function to convert string to double, __NB__ exception defaults silently to infinity.
+	/// 
     double value = 0.0;
     try {
         value = std::stod(candidate);
@@ -51,6 +53,8 @@ std::string convertDoubleToString(double value)
 
 int convertToInt(const std::string &candidate)
 {
+	/// @cellml2_3 3.1.3 Converts a string to an integer.  __NB__ No exception handling at present! 
+	/// Actual use must always be preceded by call to isCellMLInteger(const std::string &candidate) to check.
     return std::stoi(candidate);
 }
 
@@ -62,12 +66,14 @@ std::string convertIntToString(int value)
 }
 
 bool isEuropeanNumericCharacter(char c) {
+	/// @cellml2_3 3.2 Function call checks for CellML base 10 European numerals 
     const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     return validIntegerCharacters.find(c) != validIntegerCharacters.end();
 }
 
 bool isNonNegativeCellMLInteger(const std::string &candidate)
 {
+	/// @cellml2_3 3.2 Function call checks for CellML non-negative integer
     if (candidate.length() == 0) {
         return false;
     }
@@ -76,6 +82,7 @@ bool isNonNegativeCellMLInteger(const std::string &candidate)
 
 bool isCellMLInteger(const std::string &candidate)
 {
+	/// @cellml2_3 3.3 Function call checks for CellML integer
     if (candidate.length() > 0 && *candidate.begin() == '-') {
         return isNonNegativeCellMLInteger(candidate.substr(1));
     }
@@ -84,6 +91,7 @@ bool isCellMLInteger(const std::string &candidate)
 
 bool isCellMLExponent(const std::string &candidate)
 {
+	/// @cellml2_3 3.5.4-5 Function call checks for CellML exponent
     if (candidate.length() > 0 && *candidate.begin() == '+') {
         return isCellMLInteger(candidate.substr(1));
     }
@@ -103,6 +111,7 @@ std::vector<size_t> findOccurences(const std::string &candidate, const std::stri
 
 bool isCellMLBasicReal(const std::string &candidate)
 {
+	/// @cellml2_3 3.4 Function call to check for basic real number strings
     if (candidate.length() > 0) {
         std::vector<size_t> decimalOccurences = findOccurences(candidate, ".");
         if (decimalOccurences.size() < 2) {
@@ -122,6 +131,7 @@ bool isCellMLBasicReal(const std::string &candidate)
 
 bool isCellMLReal(const std::string &candidate)
 {
+	/// @cellml2_3 3.5 Function call to check for real number strings
     bool isReal = false;
     if (candidate.length() > 0) {
         std::string normalisedCandidate = candidate;

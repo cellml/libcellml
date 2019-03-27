@@ -362,6 +362,8 @@ std::string Variable::getInitialValue() const
 
 void Variable::setInterfaceType(const std::string &interfaceType)
 {
+	/// @cellml2_11 11.1.2.1 Sets the interface type to be a copy of the string.  __NB__ No checking
+	/// done that it's one of the allowed types (public/private/public_or_private/none)
     mPimpl->mInterfaceType = interfaceType;
 }
 
