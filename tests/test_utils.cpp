@@ -1,6 +1,19 @@
+#include "test_resources.h"
 #include "test_utils.h"
 
+#include <fstream>
 #include <iostream>
+#include <sstream>
+
+std::string fileContents(const std::string &fileName)
+{
+    std::ifstream file(TestResources::getResourcePath(fileName));
+    std::stringstream buffer;
+
+    buffer << file.rdbuf();
+
+    return buffer.str();
+}
 
 void printErrors(const libcellml::Validator &v)
 {

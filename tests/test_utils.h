@@ -4,6 +4,8 @@
 
 #include <libcellml>
 
+std::string fileContents(const std::string &fileName);
+
 void printErrors(const libcellml::Validator &v);
 void printErrors(const libcellml::Parser &p);
 
