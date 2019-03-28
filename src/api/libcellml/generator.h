@@ -1,4 +1,3 @@
-
 /*
 Copyright libCellML Contributors
 
@@ -17,24 +16,29 @@ limitations under the License.
 
 #pragma once
 
-/**
- * @mainpage libCellML
- *
- * \section intro_sec Introduction
- *
- * This is the source code documentation for the libCellML C++ library.
- */
-#include "libcellml/component.h"
-#include "libcellml/error.h"
-#include "libcellml/generator.h"
-#include "libcellml/importsource.h"
 #include "libcellml/logger.h"
-#include "libcellml/model.h"
-#include "libcellml/parser.h"
-#include "libcellml/printer.h"
-#include "libcellml/reset.h"
-#include "libcellml/units.h"
-#include "libcellml/validator.h"
-#include "libcellml/variable.h"
-#include "libcellml/version.h"
-#include "libcellml/when.h"
+#include "libcellml/types.h"
+
+#include <string>
+
+namespace libcellml {
+
+class LIBCELLML_EXPORT Generator : public Logger
+{
+public:
+    Generator();
+    ~Generator() override;
+
+    size_t constantCount() const;
+    size_t stateCount() const;
+    size_t rateCount() const;
+    size_t algebraicCount() const;
+
+    std::string generateCode(const ModelPtr &model);
+
+private:
+    struct GeneratorImpl;
+    GeneratorImpl *mPimpl;
+};
+
+}
