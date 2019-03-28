@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_resources.h"
+#include "test_utils.h"
 
 #include "gtest/gtest.h"
 
-#include <fstream>
 #include <libcellml>
 
 TEST(Generator, emptyModel) {
@@ -38,23 +37,15 @@ TEST(Generator, emptyModel) {
 }
 
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
-    std::ifstream file(TestResources::getResourcePath("generator/resources/algebraic_eqn_derivative_on_rhs_one_component.cellml"));
-    std::stringstream buffer;
-
-    buffer << file.rdbuf();
-
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(buffer.str());
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    const std::string e = "";
-
     libcellml::Generator generator;
 
-    const std::string a = generator.generateCode(model);
-
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component.out"),
+              generator.generateCode(model));
 
     EXPECT_EQ(size_t(0), generator.constantCount());
     EXPECT_EQ(size_t(0), generator.stateCount());
