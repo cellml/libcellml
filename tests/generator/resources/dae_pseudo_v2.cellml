@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Pseudo DAE v2
+   d(x)/d(t) = cos(y)
+   x(0) = 1
+   y = sin(x)
+   Note: both v1 and v2 ought to generate the exact same code...-->
+    <units name="per_s">
+        <unit exponent="-1" units="second"/>
+    </units>
+    <component name="environment">
+        <variable interface="public" name="t" units="second"/>
+    </component>
+    <component name="my_dae">
+        <variable interface="public" name="t" units="second"/>
+        <variable initial_value="1" name="x" units="dimensionless"/>
+        <variable name="y" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <apply>
+                        <cos/>
+                        <ci>y</ci>
+                    </apply>
+                    <cn cellml:units="per_s">1</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>y</ci>
+                <apply>
+                    <sin/>
+                    <ci>x</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <connection component_1="my_dae" component_2="environment">
+        <map_variables variable_1="t" variable_2="t"/>
+    </connection>
+</model>
