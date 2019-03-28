@@ -1,3 +1,4 @@
+set(TESTS_LOCATION ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CELLML_SINE_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations.xml")
 set(CELLML_SINE_IMPORTS_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/sine_approximations_import.xml")

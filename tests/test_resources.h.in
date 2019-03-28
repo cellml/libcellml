@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <string>
+
 class TestResources
 {
 
@@ -26,6 +28,11 @@ public:
 
     ~TestResources()
     {  }
+
+    static const std::string getResourcePath(const std::string &resourceRelativePath)
+    {
+        return std::string("@TESTS_LOCATION@/")+resourceRelativePath;
+    }
 
     static const char *getLocation(ResourcesName resourceName)
     {
