@@ -643,7 +643,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     using NameMapIterator = NamePairMap::const_iterator;
 
     // Initialise name pairs and flags.
-    NamePair componentNamePair, variableNamePair;
+    NamePair componentNamePair;
+    NamePair variableNamePair;
     NamePairMap variableNameMap;
     bool mapVariablesFound = false;
     bool component1Missing = false;

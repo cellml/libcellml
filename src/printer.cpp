@@ -111,8 +111,11 @@ std::string Printer::printUnits(const UnitsPtr &units) const
                 endTag = true;
                 repr += ">";
                 for (size_t i = 0; i < units->unitCount(); ++i) {
-                    std::string reference, prefix, id;
-                    double exponent, multiplier;
+                    std::string reference;
+                    std::string prefix;
+                    std::string id;
+                    double exponent;
+                    double multiplier;
                     units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
                     repr += "<unit";
                     if (exponent != 1.0) {
