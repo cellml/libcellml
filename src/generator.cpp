@@ -19,12 +19,19 @@ limitations under the License.
 
 #include <vector>
 
+#include <iostream>
 namespace libcellml{
+
+struct GeneratorVariable
+{
+};
+
+typedef std::shared_ptr<GeneratorVariable> GeneratorVariablePtr;
 
 struct Generator::GeneratorImpl
 {
-    std::vector<std::string> mStates;
-    std::vector<std::string> mVariables;
+    std::vector<GeneratorVariablePtr> mStates;
+    std::vector<GeneratorVariablePtr> mVariables;
 };
 
 Generator::Generator()
