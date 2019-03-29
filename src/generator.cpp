@@ -79,10 +79,28 @@ size_t Generator::variableCount() const
     return mPimpl->mVariables.size();
 }
 
-std::string Generator::generateCode(const ModelPtr &model)
+void Generator::analyzeModel(const ModelPtr &model)
 {
     (void) model;
+}
 
+std::string Generator::initializeVariables() const
+{
+    return "";
+}
+
+std::string Generator::computeConstantEquations() const
+{
+    return "";
+}
+
+std::string Generator::computeRateEquations() const
+{
+    return "";
+}
+
+std::string Generator::computeAlgebraicEquations() const
+{
     return "";
 }
 

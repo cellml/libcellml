@@ -36,7 +36,12 @@ public:
     size_t rateCount() const;
     size_t variableCount() const;
 
-    std::string generateCode(const ModelPtr &model);
+    void analyzeModel(const ModelPtr &model);
+
+    std::string initializeVariables() const;
+    std::string computeConstantEquations() const;
+    std::string computeRateEquations() const;
+    std::string computeAlgebraicEquations() const;
 
 private:
     void swap(Generator &rhs); /**< Swap method required for C++ 11 move semantics. */
