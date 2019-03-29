@@ -76,6 +76,8 @@ endfunction()
 function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
   if(   "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
      OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    # The full list of diagnostic flags in Clang can be found at
+    # https://clang.llvm.org/docs/DiagnosticsReference.html
     set(COMPILE_OPTIONS
       -Weverything
       -Wno-c++98-compat
@@ -114,39 +116,65 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       set(HICPP_VARARG hicpp-vararg)
     endif()
 
+    # The full list of Clang-Tidy checks can be found at
+    # https://clang.llvm.org/extra/clang-tidy/checks/list.html
     set(CLANG_TIDY_WARNINGS
       -*
+#      abseil-*
+#      android-*
+#      boost-*
       bugprone-*
+#      cert-*
+      cppcoreguidelines-avoid-c-arrays
       cppcoreguidelines-avoid-goto
+#      cppcoreguidelines-avoid-magic-numbers
       cppcoreguidelines-c-copy-assignment-signature
+      cppcoreguidelines-explicit-virtual-functions
       cppcoreguidelines-interfaces-global-init
+      cppcoreguidelines-macro-usage
       cppcoreguidelines-narrowing-conversions
       cppcoreguidelines-no-malloc
-      cppcoreguidelines-pro-bounds-*
+      cppcoreguidelines-non-private-member-variables-in-classes
+#      cppcoreguidelines-owning-memory
+      cppcoreguidelines-pro-bounds-array-to-pointer-decay
+      cppcoreguidelines-pro-bounds-constant-array-index
+      cppcoreguidelines-pro-bounds-pointer-arithmetic
       cppcoreguidelines-pro-type-const-cast
       cppcoreguidelines-pro-type-cstyle-cast
       cppcoreguidelines-pro-type-member-init
+#      cppcoreguidelines-pro-type-reinterpret-cast
       cppcoreguidelines-pro-type-static-cast-downcast
       cppcoreguidelines-pro-type-union-access
       ${CPPCOREGUIDELINES_PRO_TYPE_VARARG}
+#      cppcoreguidelines-slicing
       ${CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS}
+#      fuchsia-default-arguments
       fuchsia-header-anon-namespaces
       fuchsia-multiple-inheritance
       fuchsia-overloaded-operator
       fuchsia-restrict-system-includes
+#      fuchsia-statically-constructed-objects
       fuchsia-trailing-return
       fuchsia-virtual-inheritance
-      google-build-*
+      google-build-explicit-make-pair
+      google-build-namespaces
+      google-build-using-namespace
       google-default-arguments
       google-explicit-constructor
       google-global-names-in-headers
-      google-objc-*
+      google-objc-avoid-throwing-exception
+      google-objc-function-naming
+      google-objc-global-variable-declaration
+      google-readability-avoid-underscore-in-googletest-name
       google-readability-braces-around-statements
       google-readability-casting
       google-readability-function-size
       google-readability-namespace-comments
+#      google-readability-todo
       google-runtime-int
       google-runtime-operator
+#      google-runtime-references
+      hicpp-avoid-c-arrays
       hicpp-avoid-goto
       hicpp-braces-around-statements
       hicpp-deprecated-headers
@@ -159,19 +187,74 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       hicpp-multiway-paths-covered
       hicpp-named-parameter
       hicpp-new-delete-operators
-      hicpp-no-*
+      hicpp-no-array-decay
+      hicpp-no-assembler
+      hicpp-no-malloc
       hicpp-noexcept-move
       hicpp-signed-bitwise
       ${HICPP_SPECIAL_MEMBER_FUNCTIONS}
       hicpp-static-assert
       hicpp-undelegated-constructor
-      hicpp-use-*
+      hicpp-uppercase-literal-suffix
+      hicpp-use-auto
+      hicpp-use-emplace
+      hicpp-use-equals-default
+      hicpp-use-equals-delete
+      hicpp-use-noexcept
+      hicpp-use-nullptr
+      hicpp-use-override
       ${HICPP_VARARG}
       llvm-*
-      misc-*
+      misc-definitions-in-headers
+      misc-misplaced-const
+      misc-new-delete-overloads
+      misc-non-copyable-objects
+#      misc-non-private-member-variables-in-classes
+      misc-redundant-expression
+      misc-static-assert
+      misc-throw-by-value-catch-by-reference
+      misc-unconventional-assign-operator
+      misc-uniqueptr-reset-release
+      misc-unused-alias-decls
+      misc-unused-parameters
+      misc-unused-using-decls
       modernize-*
+#      mpi-*
+#      objc-*
       performance-*
-      readability-*
+      readability-avoid-const-params-in-decls
+      readability-braces-around-statements
+      readability-const-return-type
+      readability-container-size-empty
+      readability-delete-null-pointer
+      readability-deleted-default
+      readability-else-after-return
+      readability-function-size
+      readability-identifier-naming
+      readability-implicit-bool-conversion
+      readability-inconsistent-declaration-parameter-name
+      readability-isolate-declaration
+#      readability-magic-numbers
+      readability-misleading-indentation
+      readability-misplaced-array-index
+      readability-named-parameter
+      readability-non-const-parameter
+      readability-redundant-control-flow
+      readability-redundant-declaration
+      readability-redundant-function-ptr-dereference
+      readability-redundant-member-init
+      readability-redundant-preprocessor
+      readability-redundant-smartptr-get
+      readability-redundant-string-cstr
+      readability-redundant-string-init
+      readability-simplify-boolean-expr
+      readability-simplify-subscript-expr
+      readability-static-accessed-through-instance
+      readability-static-definition-in-anonymous-namespace
+      readability-string-compare
+      readability-uniqueptr-delete-release
+      readability-uppercase-literal-suffix
+#      zircon-*
     )
     string(REPLACE ";" ","
            CLANG_TIDY_WARNINGS "${CLANG_TIDY_WARNINGS}")
