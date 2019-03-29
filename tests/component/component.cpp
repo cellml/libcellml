@@ -195,7 +195,7 @@ TEST(Component, getComponentMethods) {
             "<component name=\"child3\"/>"
             "<component name=\"gus\"/>"
             "<component name=\"childB\"/>"
-            "<component name=\"child3\"/>";;
+            "<component name=\"child3\"/>";
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -327,7 +327,9 @@ TEST(Component, constructors) {
             "<component name=\"my_name\"/>"
             "<component/>";
     const std::string n = "my_name";
-    libcellml::Component c, c1, c2;
+    libcellml::Component c;
+    libcellml::Component c1;
+    libcellml::Component c2;
 
     c.setName(n);
     c.addComponent(std::make_shared<libcellml::Component>());
