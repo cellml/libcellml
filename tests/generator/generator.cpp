@@ -23,12 +23,12 @@ limitations under the License.
 TEST(Generator, emptyModel) {
     const std::string e = "";
 
-    libcellml::Generator generator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::Generator generator;
 
-    const std::string a = generator.generateCode(model);
+    generator.analyzeModel(model);
 
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(0), generator.errorCount());
 
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.rateCount());
@@ -42,6 +42,10 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     libcellml::Generator generator;
+
+    generator.analyzeModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
 
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.rateCount());
