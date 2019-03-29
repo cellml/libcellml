@@ -30,10 +30,9 @@ TEST(Generator, emptyModel) {
 
     EXPECT_EQ(e, a);
 
-    EXPECT_EQ(size_t(0), generator.constantCount());
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.rateCount());
-    EXPECT_EQ(size_t(0), generator.algebraicCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
 }
 
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
@@ -44,11 +43,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 
     libcellml::Generator generator;
 
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component.out"),
-              generator.generateCode(model));
-
-    EXPECT_EQ(size_t(0), generator.constantCount());
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.rateCount());
-    EXPECT_EQ(size_t(0), generator.algebraicCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
 }

@@ -32,10 +32,9 @@ public:
     Generator(Generator &&rhs); /**< Move constructor */
     Generator& operator=(Generator rhs); /**< Assignment operator */
 
-    size_t constantCount() const;
     size_t stateCount() const;
     size_t rateCount() const;
-    size_t algebraicCount() const;
+    size_t variableCount() const;
 
     std::string generateCode(const ModelPtr &model);
 
