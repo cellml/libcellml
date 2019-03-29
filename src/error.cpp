@@ -253,7 +253,7 @@ WhenPtr Error::getWhen() const
  *
  * An internal map used to convert a SpecificationRule into its heading string.
  */
-static std::map<SpecificationRule, const std::string> ruleToHeading =
+static const std::map<SpecificationRule, const std::string> ruleToHeading =
 {
     {SpecificationRule::UNDEFINED, ""},
     {SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE, "3.1.1"},
