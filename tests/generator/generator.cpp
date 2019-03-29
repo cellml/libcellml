@@ -21,8 +21,6 @@ limitations under the License.
 #include <libcellml>
 
 TEST(Generator, emptyModel) {
-    const std::string e = "";
-
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::Generator generator;
 
