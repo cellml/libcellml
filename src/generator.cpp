@@ -48,6 +48,35 @@ Generator::~Generator()
     delete mPimpl;
 }
 
+Generator::Generator(const Generator &rhs)
+    : Logger(rhs)
+    , mPimpl(new GeneratorImpl())
+{
+    mPimpl->mConstants = rhs.mPimpl->mConstants;
+    mPimpl->mStates = rhs.mPimpl->mStates;
+    mPimpl->mRates = rhs.mPimpl->mRates;
+    mPimpl->mAlgebraic = rhs.mPimpl->mAlgebraic;
+}
+
+Generator::Generator(Generator &&rhs)
+    : Logger(std::move(rhs))
+    , mPimpl(rhs.mPimpl)
+{
+    rhs.mPimpl = nullptr;
+}
+
+Generator& Generator::operator=(Generator rhs)
+{
+    Logger::operator =(rhs);
+    rhs.swap(*this);
+    return *this;
+}
+
+void Generator::swap(Generator &rhs)
+{
+    std::swap(this->mPimpl, rhs.mPimpl);
+}
+
 size_t Generator::constantCount() const
 {
     return mPimpl->mConstants.size();
