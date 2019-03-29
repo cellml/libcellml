@@ -25,16 +25,7 @@ struct Generator::GeneratorImpl
 {
     std::vector<std::string> mStates;
     std::vector<std::string> mVariables;
-
-    std::string generateCode(const ModelPtr &model);
 };
-
-std::string Generator::GeneratorImpl::generateCode(const ModelPtr &model)
-{
-    (void) model;
-
-    return "";
-}
 
 Generator::Generator()
     : mPimpl(new GeneratorImpl())
@@ -90,7 +81,9 @@ size_t Generator::variableCount() const
 
 std::string Generator::generateCode(const ModelPtr &model)
 {
-    return mPimpl->generateCode(model);
+    (void) model;
+
+    return "";
 }
 
 }
