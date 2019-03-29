@@ -23,11 +23,11 @@ limitations under the License.
 
 namespace libcellml {
 
-class LIBCELLML_EXPORT Generator : public Logger
+class LIBCELLML_EXPORT Generator: public Logger
 {
 public:
-    Generator();
-    ~Generator() override;
+    Generator(); /**< Constructor */
+    ~Generator() override; /**< Destructor */
 
     size_t constantCount() const;
     size_t stateCount() const;
