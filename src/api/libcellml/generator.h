@@ -32,11 +32,11 @@ public:
     Generator(Generator &&rhs); /**< Move constructor */
     Generator& operator=(Generator rhs); /**< Assignment operator */
 
+    void analyzeModel(const ModelPtr &model);
+
     size_t stateCount() const;
     size_t rateCount() const;
     size_t variableCount() const;
-
-    void analyzeModel(const ModelPtr &model);
 
     std::string initializeVariables() const;
     std::string computeConstantEquations() const;
