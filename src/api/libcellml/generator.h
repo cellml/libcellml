@@ -28,6 +28,9 @@ class LIBCELLML_EXPORT Generator: public Logger
 public:
     Generator(); /**< Constructor */
     ~Generator() override; /**< Destructor */
+    Generator(const Generator &rhs); /**< Copy constructor */
+    Generator(Generator &&rhs); /**< Move constructor */
+    Generator& operator=(Generator rhs); /**< Assignment operator */
 
     size_t constantCount() const;
     size_t stateCount() const;
@@ -37,6 +40,8 @@ public:
     std::string generateCode(const ModelPtr &model);
 
 private:
+    void swap(Generator &rhs); /**< Swap method required for C++ 11 move semantics. */
+
     struct GeneratorImpl;
     GeneratorImpl *mPimpl;
 };
