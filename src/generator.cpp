@@ -71,6 +71,11 @@ void Generator::swap(Generator &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
+void Generator::analyzeModel(const ModelPtr &model)
+{
+    (void) model;
+}
+
 size_t Generator::stateCount() const
 {
     return mPimpl->mStates.size();
@@ -84,11 +89,6 @@ size_t Generator::rateCount() const
 size_t Generator::variableCount() const
 {
     return mPimpl->mVariables.size();
-}
-
-void Generator::analyzeModel(const ModelPtr &model)
-{
-    (void) model;
 }
 
 std::string Generator::initializeVariables() const
