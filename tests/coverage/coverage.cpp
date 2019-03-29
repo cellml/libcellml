@@ -25,7 +25,8 @@ limitations under the License.
  */
 TEST(Coverage, import) {
     std::string e;
-    libcellml::ImportSource i, im;
+    libcellml::ImportSource i;
+    libcellml::ImportSource im;
 
     im = std::move(i);
 
@@ -37,7 +38,8 @@ TEST(Coverage, import) {
 }
 
 TEST(Coverage, printer) {
-    libcellml::Printer p, pm;
+    libcellml::Printer p;
+    libcellml::Printer pm;
 
     pm = std::move(p);
 
@@ -50,7 +52,8 @@ TEST(Coverage, printer) {
 
 TEST(Coverage, units) {
     const std::string e = "<units name=\"dimensionless\"/>";
-    libcellml::Units u, um;
+    libcellml::Units u;
+    libcellml::Units um;
 
     u.setName("dimensionless");
 
@@ -66,7 +69,8 @@ TEST(Coverage, units) {
 
 TEST(Coverage, when) {
     const std::string e = "<reset><when/></reset>";
-    libcellml::When w, wm;
+    libcellml::When w;
+    libcellml::When wm;
     libcellml::Reset r;
 
     wm = std::move(w);
@@ -169,7 +173,8 @@ TEST(Coverage, prefixToString) {
 
 TEST(Coverage, variable) {
     std::string e = R"(<variable units="dimensionless" initial_value="1" interface="public"/>)";
-    libcellml::Variable v, vm;
+    libcellml::Variable v;
+    libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
     v.setInitialValue(1.0);
@@ -193,7 +198,8 @@ TEST(Coverage, component) {
                 "<variable/>"
                 "<1+1=2>"
             "</component>";
-    libcellml::Component c, cm;
+    libcellml::Component c;
+    libcellml::Component cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
     c.setName("name");
@@ -216,7 +222,8 @@ TEST(Coverage, component) {
 
 TEST(Coverage, error) {
     libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
-    libcellml::Error e, em;
+    libcellml::Error e;
+    libcellml::Error em;
     std::string description = "test";
 
     e.setDescription(description);

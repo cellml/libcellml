@@ -40,6 +40,6 @@ LIBCELLML_EXPORT unsigned int version();
  *
  *  @return A string to represent the version.
  */
-LIBCELLML_EXPORT const std::string versionString();
+LIBCELLML_EXPORT std::string versionString();
 
 }

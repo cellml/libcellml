@@ -292,7 +292,7 @@ std::string Printer::printVariable(Variable variable) const
     return printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable>{}, &variable));
 }
 
-std::string printMapVariables(VariablePair variablePair)
+std::string printMapVariables(const VariablePair &variablePair)
 {
     std::string mapVariables = R"(<map_variables variable_1=")" + variablePair.first->getName() + R"(")"
                                 + R"( variable_2=")" + variablePair.second->getName() + R"(")";
@@ -456,12 +456,12 @@ std::string Printer::printModel(const ModelPtr &model) const
             if (comp->isImport()) {
                 ImportPair pair = std::make_pair(comp->getImportReference(), comp);
                 ImportSourcePtr importSource = comp->getImportSource();
-                if (importMap.count(importSource) == 0u) {
+                if (importMap.count(importSource) == size_t(0)) {
                     importMap[importSource] = std::vector<ImportPair>();
                 }
                 importMap[importSource].push_back(pair);
                 incrementComponent = true;
-            } else if (comp->componentCount() != 0u) {
+            } else if (comp->componentCount() != size_t(0)) {
                 // If the current component is a model component
                 // let the 'for' loop take care of the stack.
                 if (modelComponent != comp) {

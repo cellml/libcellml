@@ -87,7 +87,9 @@ TEST(Parser, parseNamedModel) {
 }
 
 TEST(Parser, moveParser) {
-    libcellml::Parser p, pm, pa;
+    libcellml::Parser p;
+    libcellml::Parser pm;
+    libcellml::Parser pa;
     pa = p;
     pm = std::move(p);
 
