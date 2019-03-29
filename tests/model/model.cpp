@@ -434,7 +434,9 @@ TEST(Model, constructors) {
             "</model>";
     const std::string n = "my_name";
 
-    libcellml::Model m, m1, m2;
+    libcellml::Model m;
+    libcellml::Model m1;
+    libcellml::Model m2;
     m.setName(n);
     m.addComponent(std::make_shared<libcellml::Component>());
 
