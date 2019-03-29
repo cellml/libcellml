@@ -23,10 +23,8 @@ namespace libcellml{
 
 struct Generator::GeneratorImpl
 {
-    std::vector<std::string> mConstants;
     std::vector<std::string> mStates;
-    std::vector<std::string> mRates;
-    std::vector<std::string> mAlgebraic;
+    std::vector<std::string> mVariables;
 
     std::string generateCode(const ModelPtr &model);
 };
@@ -52,10 +50,8 @@ Generator::Generator(const Generator &rhs)
     : Logger(rhs)
     , mPimpl(new GeneratorImpl())
 {
-    mPimpl->mConstants = rhs.mPimpl->mConstants;
     mPimpl->mStates = rhs.mPimpl->mStates;
-    mPimpl->mRates = rhs.mPimpl->mRates;
-    mPimpl->mAlgebraic = rhs.mPimpl->mAlgebraic;
+    mPimpl->mVariables = rhs.mPimpl->mVariables;
 }
 
 Generator::Generator(Generator &&rhs)
@@ -77,11 +73,6 @@ void Generator::swap(Generator &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-size_t Generator::constantCount() const
-{
-    return mPimpl->mConstants.size();
-}
-
 size_t Generator::stateCount() const
 {
     return mPimpl->mStates.size();
@@ -89,12 +80,12 @@ size_t Generator::stateCount() const
 
 size_t Generator::rateCount() const
 {
-    return mPimpl->mRates.size();
+    return stateCount();
 }
 
-size_t Generator::algebraicCount() const
+size_t Generator::variableCount() const
 {
-    return mPimpl->mAlgebraic.size();
+    return mPimpl->mVariables.size();
 }
 
 std::string Generator::generateCode(const ModelPtr &model)
