@@ -20,7 +20,10 @@ limitations under the License.
 
 namespace libcellml {
 
-// Input, output, and error handlers.
+// General classes.
+class Error; /**< Forward declaration of Error class. */
+typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error pointer. */
+class Generator; /**< Forward declaration of Generator class. */
 class Parser; /**< Forward declaration of Parser class. */
 class Validator; /**< Forward declaration of Validator class. */
 
@@ -29,8 +32,6 @@ class Component; /**< Forward declaration of Component class. */
 typedef std::shared_ptr<Component> ComponentPtr; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
 typedef std::shared_ptr<ComponentEntity> ComponentEntityPtr; /**< Type definition for shared component entity pointer. */
-class Error; /**< Forward declaration of Error class. */
-typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error pointer. */
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 typedef std::shared_ptr<ImportedEntity> ImportedEntityPtr; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
@@ -45,8 +46,5 @@ class Variable; /**< Forward declaration of Variable class. */
 typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared variable pointer. */
 class When; /**< Forward declaration of When class. */
 typedef std::shared_ptr<When> WhenPtr; /**< Type definition for shared when pointer. */
-
-// Generator.
-class Generator; /**< Forward declaration of Generator class. */
 
 }
