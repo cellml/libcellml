@@ -30,6 +30,8 @@ typedef std::shared_ptr<GeneratorVariable> GeneratorVariablePtr;
 
 struct Generator::GeneratorImpl
 {
+    bool mWithNames;
+
     std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 };
@@ -74,6 +76,11 @@ void Generator::swap(Generator &rhs)
 void Generator::analyzeModel(const ModelPtr &model)
 {
     (void) model;
+}
+
+void Generator::setWithNames(bool withNames)
+{
+    mPimpl->mWithNames = withNames;
 }
 
 size_t Generator::stateCount() const
