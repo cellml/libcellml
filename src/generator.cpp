@@ -19,7 +19,6 @@ limitations under the License.
 
 #include <vector>
 
-#include <iostream>
 namespace libcellml{
 
 struct GeneratorVariable
