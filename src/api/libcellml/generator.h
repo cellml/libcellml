@@ -34,6 +34,8 @@ public:
 
     void analyzeModel(const ModelPtr &model);
 
+    void setWithNames(bool withNames);
+
     size_t stateCount() const;
     size_t rateCount() const;
     size_t variableCount() const;

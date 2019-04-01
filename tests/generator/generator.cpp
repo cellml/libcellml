@@ -64,4 +64,15 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
               generator.computeRateEquations());
     EXPECT_EQ(emptyString,
               generator.computeAlgebraicEquations());
+
+    generator.setWithNames(true);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_initializeVariables_with_names.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeConstantEquations_with_names.out"),
+              generator.computeConstantEquations());
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeRateEquations_with_names.out"),
+              generator.computeRateEquations());
+    EXPECT_EQ(emptyString,
+              generator.computeAlgebraicEquations());
 }

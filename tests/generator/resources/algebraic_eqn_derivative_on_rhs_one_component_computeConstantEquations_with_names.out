@@ -1,0 +1,4 @@
+double &a = variables[0];
+double &x = variables[1];
+
+x = a;
