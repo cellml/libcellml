@@ -1387,7 +1387,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
         if (attribute->isType("order")) {
             orderValid = isCellMLInteger(attribute->getValue());
 			/// @cellml2_13 13.1.1 Checks that this when has an order attribute which is an integer at 
-			/// load time.  __NB__ does not check for uniqueness
+			/// load time.
             if (orderValid) {
                 order = convertToInt(attribute->getValue());
             }
