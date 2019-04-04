@@ -728,7 +728,7 @@ namespace libcellml {
 		*
 		* @param model The model which may contain variable connections to validate.
 		*/
-		void validateNoCycles(const ModelPtr &model);
+		bool validateNoCycles(const ModelPtr &model);
 
 		/**
 		 * @brief Check if the provided @p name is a valid CellML identifier.
@@ -891,22 +891,40 @@ namespace libcellml {
 		* have equivalent units
 		* Any errors will be logged in the @c Validator.
 		*
+        * @param model The model containing the variables
 		* @param v1 The variable which may contain units.
 		* @param v2 The equivalent variable which may contain units.
+        * @param hints String containing error messages to be passed back to calling function for logging
 		*/
 		bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints);
 
-		//void incrementBaseUnitCount(std::map<std::string, double> &unitmap);
-		void incrementBaseUnitCount(const ModelPtr &model, std::map<std::string,
-			double> &unitmap, const std::string uName,
+        /**
+        * @brief Utility function used by unitsAreEquivalent to compare base units of two varaibles
+        *
+        * @param model The model containing the variables
+        * @param unitmap A list of the exponents of base varaibles.
+        * @param uName String name of the current variable being investigated.
+        * @param standardList Nested map of the conversion between built-in units and the base units they contain
+        * @param uExp Exponent of the current unit in its parent.  
+        */
+		void incrementBaseUnitCount(const ModelPtr &model, std::map<std::string,double> &unitmap, 
+            const std::string uName,
 			const std::map< std::string, std::map<std::string, double>> &standardList,
 			const double uExp);
 
+        /**
+        * @brief Utility function used by unitsAreEquivalent to compare base units of two varaibles
+        *
+        * @param model The model containing the variables
+        * @param unitmap A list of the exponents of base varaibles.
+        * @param uName String name of the current variable being investigated.
+        * @param standardList Nested map of the conversion between built-in units and the base units they contain
+        * @param uExp Exponent of the current unit in its parent.  
+        */
 		void decrementBaseUnitCount(const ModelPtr &model, std::map<std::string,
 			double> &unitmap, const std::string uName,
 			const std::map< std::string, std::map<std::string, double>> &standardList,
 			const double uExp);
-
 	};
 
 Validator::Validator()
@@ -1111,6 +1129,7 @@ void Validator::validateModel(const ModelPtr &model)
     }
     /// @cellml2_4.2.2.2 Validates any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
+    mPimpl->validateNoCycles(model);
 }
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
@@ -1856,11 +1875,100 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 	}
 }
 
-void Validator::ValidatorImpl::validateNoCycles(const ModelPtr &model) {
+bool Validator::ValidatorImpl::validateNoCycles(const ModelPtr &model) {
+
+    /*
+        Test for cycles in the equivalent variable setup.
+    */
 
 
+    struct edge {
+        VariablePtr n1;
+        VariablePtr n2;
+        };
+
+    std::vector<VariablePtr> nodelist;
+    std::vector<edge> edgelist;
+    // Making node2edge map
+    std::map <VariablePtr, std::vector<int> > node2edge;
+    std::map <VariablePtr, std::vector<int> >::iterator it;
+
+    int num = 0;
+    // Set up the list of nodes: only include nodes which have two or more connections
+    if (model->componentCount() > 0) {
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            ComponentPtr component = model->getComponent(i);
+
+            // Check for variables in this component.
+            for (size_t j = 0; j < component->variableCount(); ++j) {
+                VariablePtr variable = component->getVariable(j);
+
+                // Check for equivalent variables in this variable.
+                // Because cycles can only be formed with two or more connections, only save
+                // those variables which have more than one equiv connection with variables 
+                // that in turn have more than one commection
+                if (variable->equivalentVariableCount() >= 2) {
+                    nodelist.push_back(variable);
+                    node2edge.insert(std::pair<VariablePtr, std::vector<int>>(variable, NULL));
+
+                    // if equivalent variables of this one have another neighbour in the list the include that edge
+                    for (size_t k = 0; k < variable->equivalentVariableCount; k++) {
+
+                        VariablePtr equivalent = variable->getEquivalentVariable(k);
+
+                        if (std::find(nodelist.begin(), nodelist.end(), equivalent) != nodelist.end()) {
+                            // Add the edge to the edgelist
+                            edgelist.push_back({ variable,equivalent });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for (size_t e = 0; e < edgelist.size(); e++) {
+        node2edge.at(edgelist[e].n1).push_back(e);
+        node2edge.at(edgelist[e].n2).push_back(e);
+    }
+
+    // Removing nodes connected to only one viable edge, and then ... 
+    // Removing edges connected to only one viable node
+    bool checking = false;
+    VariablePtr node2go;
+    int edge2go;
+    do {
+        checking = false;
+        for (auto n = node2edge.cbegin(); n != node2edge.cend();) {
+            if (n->second.size() < 2) {
+                // remove edge from count of viable edges around other node
+                edge2go = n->second[0];
+                // locating other node on edge to go
+                if (edgelist[edge2go].n1 == n->first)
+                    node2go = edgelist[edge2go].n2;
+                else
+                    node2go = edgelist[edge2go].n1;
+                it = node2edge.find(node2go);
+                node2edge.erase(it);
+                // removing the edge, cannot delete here as will screw up the indicies of the list
+                edgelist[edge2go].n1 = edgelist[edge2go].n2 = NULL;
+                checking = true;
+                // removing this edge too
+                n = node2edge.erase(n);
+            }
+            else {
+                ++n;
+            }
+        }
+    } while (checking);
+
+    // Any edges which remain in the node2edge array will be part of a loop.
+    if (node2edge.size()) {
+        return (true);
+        }
+    else return (false);
 
 }
+
 
 bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model, 
 	const VariablePtr &v1, const VariablePtr &v2, std::string &hints)
@@ -2039,16 +2147,6 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
 	else
 		return;
 		
-	/*
-	for (size_t i = 0; i < u->unitCount(); ++i) {
-		u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
-		// Have to check if myRef is a base unit or not
-		if (!model->getUnits(myRef)->isBaseUnit()) 
-			incrementBaseUnitCount(model, unitmap, myRef);
-		else 
-			unitmap.at(myRef) += myExp;
-	}*/
-
 	if (!u->isBaseUnit()) {
 		for (size_t i = 0; i < u->unitCount(); ++i) {
 			u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
@@ -2099,15 +2197,6 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
 	else {
 		unitmap.at(u->getName()) -= 1.0;
 	}
-
-	/*for (size_t i = 0; i < u->unitCount(); ++i) {
-		u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
-		// Have to check if myRef is a base unit or not
-		if (!model->getUnits(myRef)->isBaseUnit())
-			decrementBaseUnitCount(model, unitmap, myRef, standardList);
-		else
-			unitmap.at(myRef) -= myExp;
-	}*/
 
 }
 

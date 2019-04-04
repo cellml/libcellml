@@ -1481,7 +1481,10 @@ TEST(Validator, validateInvalidConnections) {
     // Remove all connections on v1_2, leaving dangling reciprocal connections.
     v1_2->removeAllEquivalences();
 
+
+    
     v.validateModel(m);
+
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
@@ -1876,29 +1879,29 @@ TEST(Validator, variableEquivalentUnits) {
 	libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
 	libcellml::VariablePtr v14 = std::make_shared<libcellml::Variable>();
 
-	v1->setName("tomayto");
-	v2->setName("tomahto");
-	v3->setName("potayto");
-	v4->setName("potahto");
-	v5->setName("aunty");
-	v6->setName("tante");
-	v7->setName("auntie");
+    v1->setName("tomayto");
+    v2->setName("tomahto");
+    v3->setName("potayto");
+    v4->setName("potahto");
+    v5->setName("aunty");
+    v6->setName("tante");
+    v7->setName("auntie");
 
-	v8->setName("neether");
-	v9->setName("nyther");
+    v8->setName("neether");
+    v9->setName("nyther");
 
-	v10->setName("oom");
-	v11->setName("uncle");
-	v12->setName("oncle");
+    v10->setName("oom");
+    v11->setName("uncle");
+    v12->setName("oncle");
 
-	v13->setName("pjs");
-	v14->setName("pajamas");
+    v13->setName("pjs");
+    v14->setName("pajamas");
 
-	comp1->setName("isay");
-	comp2->setName("yousay");
-	comp3->setName("wesay");
+    comp1->setName("isay");
+    comp2->setName("yousay");
+    comp3->setName("wesay");
 
-	m->setName("callthewholethingoff");
+    m->setName("callthewholethingoff");
 
 	comp1->addVariable(v1);
 	comp2->addVariable(v2);
