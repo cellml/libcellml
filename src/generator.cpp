@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "xmldoc.h"
+
+#include "libcellml/component.h"
 #include "libcellml/generator.h"
 #include "libcellml/model.h"
 
@@ -74,7 +77,52 @@ void Generator::swap(Generator &rhs)
 
 void Generator::analyzeModel(const ModelPtr &model)
 {
-    (void) model;
+    // Determine the order in which equations should be executed by analysing
+    // each of the components in the given model
+
+    static const std::string fromString = "<math";
+    static const std::string toString = R"(<math xmlns:cellml="http://www.cellml.org/cellml/2.0#")";
+    static const size_t fromStringSize = fromString.size();
+    static const size_t toStringSize = toString.size();
+
+    for (size_t i = 0; i < model->componentCount(); ++i) {
+        // Retrieve the math string associated with the given component and add
+        // the CellML namespace to its math element, so that it can then be
+        // parsed without any problems
+
+        ComponentPtr component = model->getComponent(i);
+        XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
+        std::string math = component->getMath();
+        size_t pos = math.find(fromString);
+
+        while (pos != std::string::npos) {
+            math.replace(pos, fromStringSize, toString);
+
+            pos = math.find(fromString, pos + toStringSize);
+        }
+
+        // Parse the math string and generate errors, if any
+
+        mathmlDoc->parse(math);
+
+        if (mathmlDoc->xmlErrorCount() > 0) {
+            // There are errors, so report them
+
+            for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
+                ErrorPtr error = std::make_shared<Error>();
+
+                error->setDescription(mathmlDoc->getXmlError(i));
+                error->setComponent(component);
+                error->setKind(Error::Kind::MATHML);
+
+                addError(error);
+            }
+        } else {
+            // There are no errors, so process our MahtML document
+
+//TODO
+        }
+    }
 }
 
 void Generator::setWithNames(bool withNames)
