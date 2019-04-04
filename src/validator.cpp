@@ -728,7 +728,7 @@ namespace libcellml {
 		*
 		* @param model The model which may contain variable connections to validate.
 		*/
-		bool validateNoCycles(const ModelPtr &model);
+        bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, std::vector<std::string> &hints);
 
 		/**
 		 * @brief Check if the provided @p name is a valid CellML identifier.
@@ -1129,7 +1129,6 @@ void Validator::validateModel(const ModelPtr &model)
     }
     /// @cellml2_4.2.2.2 Validates any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
-    mPimpl->validateNoCycles(model);
 }
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
@@ -1811,6 +1810,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
 	/// @cellml2_17 __TODO__ need checks of 17.1.1-4 as not present here?
 	std::string hints;
+    std::vector<std::string> hintlist;
 
 	// Check the components in this model.
 	if (model->componentCount() > 0) {
@@ -1872,10 +1872,23 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 				}
 			}
 		}
+
+        if (modelVariablesAreCyclic(model, hintlist)) {
+            ErrorPtr err = std::make_shared<Error>();
+            std::string des;
+            for (size_t i = 0; i < hintlist.size(); ++i) {
+                des += hintlist[i] + ", ";
+                }
+            err->setDescription("Cyclic variables exist, "+ std::to_string(hintlist.size())+" loops found. "+des);
+            err->setModel(model);
+            err->setKind(Error::Kind::UNITS);
+            mValidator->addError(err);
+            }
+ 
 	}
 }
 
-bool Validator::ValidatorImpl::validateNoCycles(const ModelPtr &model) {
+bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, std::vector<std::string> &hintlist) {
 
     /*
         Test for cycles in the equivalent variable setup.
@@ -1892,6 +1905,7 @@ bool Validator::ValidatorImpl::validateNoCycles(const ModelPtr &model) {
     // Making node2edge map
     std::map <VariablePtr, std::vector<int> > node2edge;
     std::map <VariablePtr, std::vector<int> >::iterator it;
+    bool loop_found = false;
 
     int num = 0;
     // Set up the list of nodes: only include nodes which have two or more connections
@@ -1912,61 +1926,106 @@ bool Validator::ValidatorImpl::validateNoCycles(const ModelPtr &model) {
                     node2edge.insert(std::pair<VariablePtr, std::vector<int>>(variable, NULL));
 
                     // if equivalent variables of this one have another neighbour in the list the include that edge
-                    for (size_t k = 0; k < variable->equivalentVariableCount; k++) {
-
+                    for (size_t k = 0; k < variable->equivalentVariableCount(); k++) {
                         VariablePtr equivalent = variable->getEquivalentVariable(k);
-
                         if (std::find(nodelist.begin(), nodelist.end(), equivalent) != nodelist.end()) {
                             // Add the edge to the edgelist
                             edgelist.push_back({ variable,equivalent });
+                            }
                         }
                     }
                 }
             }
-        }
-    }
 
-    for (size_t e = 0; e < edgelist.size(); e++) {
-        node2edge.at(edgelist[e].n1).push_back(e);
-        node2edge.at(edgelist[e].n2).push_back(e);
-    }
-
-    // Removing nodes connected to only one viable edge, and then ... 
-    // Removing edges connected to only one viable node
-    bool checking = false;
-    VariablePtr node2go;
-    int edge2go;
-    do {
-        checking = false;
-        for (auto n = node2edge.cbegin(); n != node2edge.cend();) {
-            if (n->second.size() < 2) {
-                // remove edge from count of viable edges around other node
-                edge2go = n->second[0];
-                // locating other node on edge to go
-                if (edgelist[edge2go].n1 == n->first)
-                    node2go = edgelist[edge2go].n2;
-                else
-                    node2go = edgelist[edge2go].n1;
-                it = node2edge.find(node2go);
-                node2edge.erase(it);
-                // removing the edge, cannot delete here as will screw up the indicies of the list
-                edgelist[edge2go].n1 = edgelist[edge2go].n2 = NULL;
-                checking = true;
-                // removing this edge too
-                n = node2edge.erase(n);
+        for (int e = 0; e < edgelist.size(); e++) {
+            node2edge.at(edgelist[e].n1).push_back(e);
+            node2edge.at(edgelist[e].n2).push_back(e);
             }
-            else {
-                ++n;
-            }
-        }
-    } while (checking);
 
-    // Any edges which remain in the node2edge array will be part of a loop.
-    if (node2edge.size()) {
-        return (true);
-        }
-    else return (false);
+        // Removing nodes connected to only one viable edge, and then ... 
+        // Removing edges connected to only one viable node
+        bool checking = false;
+        VariablePtr node2go;
+        int edge2go;
+        do {
+            checking = false;
+            for (auto n = node2edge.cbegin(); n != node2edge.cend();) {
+                if (n->second.size() == 1) {
+                    // remove edge from count of viable edges around other node
+                    edge2go = n->second[0];
+                    // locating other node on edge to go
+                    if (edgelist[edge2go].n1 == n->first)
+                        node2go = edgelist[edge2go].n2;
+                    else
+                        node2go = edgelist[edge2go].n1;
+                    it = node2edge.find(node2go);
+                    node2edge.erase(it);
+                    // removing the edge, cannot delete here as will screw up the indicies of the list
+                    edgelist[edge2go].n1 = edgelist[edge2go].n2 = NULL;
+                    checking = true;
+                    // removing this edge too
+                    n = node2edge.erase(n);
+                    }
+                else {
+                    ++n;
+                    }
+                }
+            } while (checking);
 
+            // Any edges which remain in the node2edge array will be part of a loop.
+            std::vector<int> done_edges;
+            std::vector<VariablePtr> done_nodes;
+            while (node2edge.size()) {
+                // Get starting node
+                VariablePtr myNode = node2edge.begin()->first;
+                // Getting the starting edge
+                auto n2e_it = node2edge.begin();
+                bool closed = false;
+                int myEdge;
+                do {
+                    if (n2e_it->second.size() == 0) // then we have run out of edges attached to this node, not a loop
+                        break;
+                    myEdge = n2e_it->second.back();              
+                    // Getting nextNode at the other end of this edge
+                    VariablePtr nextNode = myNode == edgelist[myEdge].n1 ? edgelist[myEdge].n2 : edgelist[myEdge].n1;
+                    // Removing myEdge from the node2edge list for myNode
+                    n2e_it->second.pop_back();
+                    // Removing myEdge from the node2edge list for nextNode too
+                    auto o_it = node2edge.find(nextNode);
+                    o_it->second.erase(std::remove(o_it->second.begin(), o_it->second.end(), myEdge), o_it->second.end());
+                    // Get next edge
+                    n2e_it = node2edge.find(nextNode);
+                    // Adding myNode to the list
+                    if (std::find(done_nodes.begin(), done_nodes.end(), nextNode) != done_nodes.end()) {
+                        closed = true;
+                        done_nodes.push_back(myNode);
+                        done_nodes.push_back(nextNode);
+                        loop_found = true;
+                        }
+                    else {
+                        done_nodes.push_back(myNode);
+                        myNode = nextNode;
+                        }
+                    } while (!closed);
+
+                    std::string des = "";
+                    for (size_t i = 0; i < done_nodes.size(); ++i) {
+                        des += "'";
+                        des += done_nodes[i]->getName();
+                        des += "'";
+                        if (i != done_nodes.size()-1) des += " <-> ";   
+                        }
+                    hintlist.push_back("Loop: " + des);
+
+                    // If the node2edge list is empty remove the entry
+                    for (auto n2e_it = node2edge.cbegin(); n2e_it != node2edge.cend();) {
+                        if (!n2e_it->second.size()) 
+                            n2e_it = node2edge.erase(n2e_it);    
+                        else ++n2e_it; 
+                    }
+                };
+        }
+    return (loop_found);
 }
 
 

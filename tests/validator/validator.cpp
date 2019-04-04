@@ -1407,7 +1407,8 @@ TEST(Validator, validateInvalidConnections) {
     std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
         "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
-    };
+        "Cyclic variables exist, 1 loops found. Loop: 'variable1_1' <-> 'variable3' <-> 'variable2' <-> 'variable1_1', ",
+        };
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1481,8 +1482,6 @@ TEST(Validator, validateInvalidConnections) {
     // Remove all connections on v1_2, leaving dangling reciprocal connections.
     v1_2->removeAllEquivalences();
 
-
-    
     v.validateModel(m);
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
