@@ -37,8 +37,8 @@ struct Error::ErrorImpl
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
     UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
-    ResetPtr mReset; /**< Pointer to the reset that the error occurred in. */
-    WhenPtr mWhen; /**< Pointer to the when that the error occurred in. */
+    ResetPtr mReset; /**< Pointer to the reset that the error ocurred in. */
+    WhenPtr mWhen; /**< Pointer to the when that the error ocurred in. */
 };
 
 Error::Error()

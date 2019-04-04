@@ -65,7 +65,6 @@ TEST(Model, unsetName) {
 }
 
 TEST(Model, invalidName) {
-	/// @cellml2_4 4.2.1 TEST for model name with space
     std::string in = "invalid name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

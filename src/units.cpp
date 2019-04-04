@@ -180,8 +180,10 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     Unit u;
     u.mReference = reference;
     // Allow all nonzero user-specified prefixes
-	/// @cellml2_9 9.1.2.1 __TODO__ Check that this works as intended as every path leads to u.mPrefix = prefix
-	try
+
+	/// @cellml2_9 9.1.2.1 __TODO__ Unsure that this works as intended as every path leads to u.mPrefix = prefix?
+	/// Note that if(prefixDouble==0.0) then no prefix value is added (but default if not specified is 0.0?! Where is that set?
+    try
     {
         double prefixDouble = std::stod(prefix);
         if (prefixDouble != 0.0) {

@@ -271,7 +271,6 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
 
 void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
-	/// @cellml2_17 KRM Does not overwrite existing, skips silently ...
     if (!hasEquivalentVariable(equivalentVariable)) {
         VariableWeakPtr weakEquivalentVariable = equivalentVariable;
         mEquivalentVariables.push_back(weakEquivalentVariable);
