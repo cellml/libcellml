@@ -89,6 +89,7 @@ void Generator::analyzeModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before analysing it
 
+/*TODO: reenable the validation once it is known to work fine...
     libcellml::Validator validator;
 
     validator.validateModel(model);
@@ -102,6 +103,7 @@ void Generator::analyzeModel(const ModelPtr &model)
 
         return;
     }
+*/
 
     // Determine the order in which equations should be executed by analysing
     // each of the components in the given model
