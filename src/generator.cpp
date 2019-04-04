@@ -19,6 +19,7 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/generator.h"
 #include "libcellml/model.h"
+#include "libcellml/validator.h"
 
 #include <vector>
 
@@ -36,7 +37,16 @@ struct Generator::GeneratorImpl
 
     std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
+
+    void analyzeNode(const XmlNodePtr &node);
 };
+
+void Generator::GeneratorImpl::analyzeNode(const XmlNodePtr &node)
+{
+(void) node;
+
+//TODO
+}
 
 Generator::Generator()
     : mPimpl(new GeneratorImpl())
@@ -77,51 +87,38 @@ void Generator::swap(Generator &rhs)
 
 void Generator::analyzeModel(const ModelPtr &model)
 {
+    // Make sure that the model is valid before analysing it
+
+    libcellml::Validator validator;
+
+    validator.validateModel(model);
+
+    if (validator.errorCount() > 0) {
+        // The model is not valid, so retrieve the validation errors and keep a
+        // copy of them
+
+        for (size_t i = 0; i < validator.errorCount(); ++i)
+            addError(validator.getError(i));
+
+        return;
+    }
+
     // Determine the order in which equations should be executed by analysing
     // each of the components in the given model
 
-    static const std::string fromString = "<math";
-    static const std::string toString = R"(<math xmlns:cellml="http://www.cellml.org/cellml/2.0#")";
-    static const size_t fromStringSize = fromString.size();
-    static const size_t toStringSize = toString.size();
-
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        // Retrieve the math string associated with the given component and add
-        // the CellML namespace to its math element, so that it can then be
-        // parsed without any problems
+        // Retrieve the math string associated with the given component and
+        // analyse it
+        // Note: at this stage, we know the model is valid, so no point in
+        //       validating the math string...
 
         ComponentPtr component = model->getComponent(i);
-        XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
+        XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
         std::string math = component->getMath();
-        size_t pos = math.find(fromString);
 
-        while (pos != std::string::npos) {
-            math.replace(pos, fromStringSize, toString);
+        xmlDoc->parse(math);
 
-            pos = math.find(fromString, pos + toStringSize);
-        }
-
-        // Parse the math string and generate errors, if any
-
-        mathmlDoc->parse(math);
-
-        if (mathmlDoc->xmlErrorCount() > 0) {
-            // There are errors, so report them
-
-            for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
-                ErrorPtr error = std::make_shared<Error>();
-
-                error->setDescription(mathmlDoc->getXmlError(i));
-                error->setComponent(component);
-                error->setKind(Error::Kind::MATHML);
-
-                addError(error);
-            }
-        } else {
-            // There are no errors, so process our MahtML document
-
-//TODO
-        }
+        mPimpl->analyzeNode(xmlDoc->getRootNode());
     }
 }
 
