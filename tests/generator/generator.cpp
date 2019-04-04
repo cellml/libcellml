@@ -24,6 +24,9 @@ static const std::string emptyString;
 
 TEST(Generator, emptyModel) {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+
+    model->setName("emptyModel");
+
     libcellml::Generator generator;
 
     generator.analyzeModel(model);
