@@ -73,12 +73,12 @@ function(GROUP_SOURCE_TO_DIR_STRUCTURE)
   endif()
 endfunction()
 
-function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
+function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
   if(   "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
      OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # The full list of diagnostic flags in Clang can be found at
     # https://clang.llvm.org/docs/DiagnosticsReference.html
-    set(COMPILE_OPTIONS
+    set(_COMPILE_OPTIONS
       -Weverything
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
@@ -97,28 +97,28 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       -Wno-used-but-marked-unused
     )
 
-  if(NOT "${TARGET}" STREQUAL "cellml")
-    list(APPEND COMPILE_OPTIONS
+  if(NOT "${_TARGET}" STREQUAL "cellml")
+    list(APPEND _COMPILE_OPTIONS
       --system-header-prefix=gtest/
     )
   endif()
 
-    set_target_properties(${TARGET} PROPERTIES
-      COMPILE_OPTIONS "${COMPILE_OPTIONS}"
+    set_target_properties(${_TARGET} PROPERTIES
+      COMPILE_OPTIONS "${_COMPILE_OPTIONS}"
     )
   endif()
 
   if(CLANG_TIDY_EXE)
-    if("${TARGET}" STREQUAL "cellml")
-      set(CPPCOREGUIDELINES_PRO_TYPE_VARARG cppcoreguidelines-pro-type-vararg)
-      set(CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS cppcoreguidelines-special-member-functions)
-      set(HICPP_SPECIAL_MEMBER_FUNCTIONS hicpp-special-member-functions)
-      set(HICPP_VARARG hicpp-vararg)
+    if("${_TARGET}" STREQUAL "cellml")
+      set(_CPPCOREGUIDELINES_PRO_TYPE_VARARG cppcoreguidelines-pro-type-vararg)
+      set(_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS cppcoreguidelines-special-member-functions)
+      set(_HICPP_SPECIAL_MEMBER_FUNCTIONS hicpp-special-member-functions)
+      set(_HICPP_VARARG hicpp-vararg)
     endif()
 
     # The full list of Clang-Tidy checks can be found at
     # https://clang.llvm.org/extra/clang-tidy/checks/list.html
-    set(CLANG_TIDY_WARNINGS
+    set(_CLANG_TIDY_WARNINGS
       -*
 #      abseil-*
 #      android-*
@@ -145,9 +145,9 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
 #      cppcoreguidelines-pro-type-reinterpret-cast
       cppcoreguidelines-pro-type-static-cast-downcast
       cppcoreguidelines-pro-type-union-access
-      ${CPPCOREGUIDELINES_PRO_TYPE_VARARG}
+      ${_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
 #      cppcoreguidelines-slicing
-      ${CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS}
+      ${_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS}
 #      fuchsia-default-arguments
       fuchsia-header-anon-namespaces
       fuchsia-multiple-inheritance
@@ -192,7 +192,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       hicpp-no-malloc
       hicpp-noexcept-move
       hicpp-signed-bitwise
-      ${HICPP_SPECIAL_MEMBER_FUNCTIONS}
+      ${_HICPP_SPECIAL_MEMBER_FUNCTIONS}
       hicpp-static-assert
       hicpp-undelegated-constructor
       hicpp-uppercase-literal-suffix
@@ -203,7 +203,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
       hicpp-use-noexcept
       hicpp-use-nullptr
       hicpp-use-override
-      ${HICPP_VARARG}
+      ${_HICPP_VARARG}
       llvm-*
       misc-definitions-in-headers
       misc-misplaced-const
@@ -257,12 +257,12 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS TARGET)
 #      zircon-*
     )
     string(REPLACE ";" ","
-           CLANG_TIDY_WARNINGS "${CLANG_TIDY_WARNINGS}")
+           _CLANG_TIDY_WARNINGS "${_CLANG_TIDY_WARNINGS}")
     if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-      set(CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${CLANG_TIDY_WARNINGS}")
+      set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_WARNINGS}")
     endif()
-    set_target_properties(${TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${CLANG_TIDY_WARNINGS}${CLANG_TIDY_WARNINGS_AS_ERRORS}"
+    set_target_properties(${_TARGET} PROPERTIES
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS}${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
