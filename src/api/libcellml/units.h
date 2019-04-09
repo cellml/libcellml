@@ -36,6 +36,8 @@ namespace libcellml {
  * @brief The Units class.
  * Class for Units.
  */
+
+
 class LIBCELLML_EXPORT Units: public NamedEntity, public ImportedEntity
 {
 public:
@@ -370,6 +372,7 @@ public:
     size_t unitCount() const;
 
 private:
+
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct UnitsImpl; /**< Forward declaration for pImpl idiom. */

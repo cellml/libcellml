@@ -692,6 +692,7 @@ TEST(Parser, encapsulationWithNoComponent) {
 
 TEST(Parser, encapsulationWithMissingComponent) {
 	/// @cellml2_16 16.1.1 Parser TEST for component_ref component must match name within model
+    /// @cellml2_7 7.1.2 Parser TEST for component_ref component must match name within model
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -776,8 +777,9 @@ TEST(Parser, encapsulationWithNoGrandchildComponentRef) {
 }
 
 TEST(Parser, invalidEncapsulations) {
-	/// @cellml2_15 15 Parser TEST encapsulation elements
+	/// @cellml2_15 15.1.1 Parser TEST encapsulation elements
 	/// @cellml2_16 16.1.1-3 Parser TEST component_ref elements
+    /// @cellml2_4 4.2.3 Parser TEST only one encapsulation element allowed
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"ringo\">"
@@ -1036,6 +1038,7 @@ TEST(Parser, connectionErrorNoMapVariables) {
     libcellml::Parser p;
     p.parseModel(in);
     EXPECT_EQ(3u, p.errorCount());
+    
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
@@ -1147,6 +1150,31 @@ TEST(Parser, component2InConnectionMissing) {
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }
 
+//TEST(Parser, connectionComponent1EqualComponent2) {
+//    /// @cellml2_17 17.1.2 Parser TEST Check component1 is not equal to component2 in a connection element
+//    const std::string e =
+//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+//        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"hello\">"
+//        "<component name=\"robert\">"
+//        "<variable name=\"bob\" units=\"dimensionless\"/>"
+//        "</component>"
+//        "<connection component_1=\"robert\" component_2=\"robert\">"
+//        "<map_variables variable_2=\"bob\" variable_1=\"bob\"/>"
+//        "</connection>"
+//        "</model>";
+//
+//    libcellml::Parser parser;
+//    parser.parseModel(e);
+//
+//    std::vector<std::string> errors = {
+//        "Connection in model 'hello' specifies component_1 attribute 'robert' the same as component_2 attribute 'robert'. ", 
+//    };
+//    EXPECT_EQ(1u, parser.errorCount());
+//    for (size_t i = 0; i < parser.errorCount(); ++i) {
+//        EXPECT_EQ(parser.getError(i)->getDescription(), errors[i]);
+//    }
+//}
+
 TEST(Parser, connectionVariable2Missing) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1218,6 +1246,7 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
     EXPECT_EQ(2u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
 }
 
 TEST(Parser, invalidImportsAndGetError) {

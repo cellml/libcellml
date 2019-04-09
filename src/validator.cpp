@@ -111,9 +111,6 @@ limitations under the License.
  }
 
 
- * @cellml2_3 3.2-5 __TODO__ Is validation of numbers required? If so, is there a distinction between integers, floats etc within 
-	the cn tag?
-
 @cellml2_4 {
 	__4. The model element information item__\n
 		_4.1. Top-level of CellML infosets_\n
@@ -925,6 +922,8 @@ namespace libcellml {
 			double> &unitmap, const std::string uName,
 			const std::map< std::string, std::map<std::string, double>> &standardList,
 			const double uExp);
+
+        bool isValidHTML(const std::string &html);
 	};
 
 Validator::Validator()
@@ -966,13 +965,8 @@ void Validator::swap(Validator &rhs)
 
 void Validator::validateModel(const ModelPtr &model)
 {
-	/// @cellml2_4 TODO Check for no more than one encapsulation element
-	/// @cellml2_4 TODO Currently only calls validators for components and units.  Do we need to check for other types and 
-	/// validate them too?
-
     // Clear any pre-existing errors in the validator instance.
     clearErrors();
-
     /// @cellml2_4 4.2.1 Check for a valid name format
     if (!mPimpl->isCellmlIdentifier(model->getName())) {
         ErrorPtr err = std::make_shared<Error>();
@@ -981,6 +975,8 @@ void Validator::validateModel(const ModelPtr &model)
         err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
+    /// @cellml2_4 4.2.3 Checking for unique encapsulation not required as more than one cannot be stored
+    
     /// @cellml2_4 4.2.2 Check for presence of components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
@@ -994,7 +990,7 @@ void Validator::validateModel(const ModelPtr &model)
                 if (component->isImport()) {
                     // Check for a component_ref; assumes imported if the import source is not null
 					/// @cellml2_7 7.1.2 Check that the name of the component given by the component_ref 
-					/// is in a valid format.  Does not check what it refers to though. __TODO__?
+					/// is in a valid format.  NB: Does not check what it refers to.
                     std::string componentRef = component->getImportReference(); 
                     std::string importSource = component->getImportSource()->getUrl(); 
                     bool foundImportError = false;
@@ -1008,8 +1004,7 @@ void Validator::validateModel(const ModelPtr &model)
                         addError(err);
                         foundImportError = true;
                     }
-                    /// @cellml2_7 7.1.2 Check for a xlink:href by checking that the pointer length is not zero
-					/// __TODO__ Check this id against the XLink specs (see CellML Spec 5.1.1).
+                    /// @cellml2_7 7.1.2 Check that a xlink:href attribute is present
                     if (!importSource.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
@@ -1019,9 +1014,18 @@ void Validator::validateModel(const ModelPtr &model)
                         addError(err);
                         foundImportError = true;
                     }
+                    /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
+                    else if (!mPimpl->isValidHTML(importSource)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Import of component '" + componentName +
+                                            "' has invalid characters in the xlink:href attribute. ");
+                        err->setImportSource(component->getImportSource());
+                        err->setRule(SpecificationRule::IMPORT_HREF);
+                        addError(err);
+                        foundImportError = true;
+                    }
                     /// @cellml2_5 5.1.3 Check if we already have another import from the same source with the same component_ref.
-                    /// (This looks for matching entries at the same position in the source and ref vectors).  KRM: need to clarify
-					/// whether twins are permitted (ie: duplicated import to a separate parent?)
+                    /// (This looks for matching entries at the same position in the source and ref vectors).  
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
                         if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
                          == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
@@ -1054,7 +1058,7 @@ void Validator::validateModel(const ModelPtr &model)
             mPimpl->validateComponent(component);
         }
     }
-    /// @cellml2_4 4.2.2.5 Check for presence of units in this model __TODO__ extensive tests to come later ...
+    /// @cellml2_4 4.2.2.5 Check for presence of units in this model 
     if (model->unitsCount() > 0) {
         std::vector<std::string> unitsNames;
         std::vector<std::string> unitsRefs;
@@ -1078,8 +1082,7 @@ void Validator::validateModel(const ModelPtr &model)
                         addError(err);
                         foundImportError = true;
                     }
-                    /// @cellml2_6 6.1.2 Check that a xlink:href is present. __TODO:__ check this id against the XLink spec
-					/// (see CellML Spec 5.1.1).
+                    /// @cellml2_6 6.1.2 Check that a xlink:href is present 
                     if (!importSource.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
@@ -1089,6 +1092,17 @@ void Validator::validateModel(const ModelPtr &model)
                         addError(err);
                         foundImportError = true;
                     }
+                    /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
+                    else if (!mPimpl->isValidHTML(importSource)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Import of units '" + unitsName +
+                                            "' has invalid characters in the xlink:href attribute. ");
+                        err->setImportSource(units->getImportSource());
+                        err->setRule(SpecificationRule::IMPORT_HREF);
+                        addError(err);
+                        foundImportError = true;
+                    }
+
                     /// @cellml2_6 6.1.2 Check if we already have another import from the same source with the same units_ref.
                     /// (This looks for matching enties at the same position in the source and ref vectors).
                     if ((unitsImportSources.size() > 0) && (!foundImportError)) {
@@ -1207,9 +1221,6 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 
 void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
-    /// @cellml2_17 __TODO:__ Check for valid base unit reduction (see 17.3)
-	/// @cellml2_19 19.2 __TODO__ Validate units, to come later
-
 	/// @cellml2_8 8.1.1 check that the units' name field is present
     if (!isCellmlIdentifier(units->getName())) {
         ErrorPtr err = std::make_shared<Error>();
@@ -1224,7 +1235,6 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         mValidator->addError(err);
     } else {
         /// @cellml2_8 8.1.3 Checks for duplicated names in the standard/built-in units.
-		/// __TODO__ 8.1.2: Need to check for duplication against units _not_ on the built-in list?
         if (isStandardUnitName(units->getName())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units is named '" + units->getName() +
@@ -1245,15 +1255,16 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
 void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
     // Validate the unit at the given index.
-	/// @cellml2_19 19.2 __TODO__ Validate base units 
     std::string reference, prefix, id;
     double exponent, multiplier;
+
+    // NB This function silently sets invalid numbers to 1.0, validator calls should give a better error message than that
     units->getUnitAttributes(index, reference, prefix, exponent, multiplier, id);
-	/// @cellml2_9 9.1.1 Checks that the unit element has a units reference
+	/// @cellml2_9 9.1.1 Check that the unit element has a units reference
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) &&
             (!isStandardUnitName(reference))) {
-			/// @cellml2_8 8.1.1 Checks that units point to a standard or local unit base
+			/// @cellml2_8 8.1.1 Check that units point to a standard or local unit base
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units reference '" + reference + "' in units '" + units->getName() +
                                     "' is not a valid reference to a local units or a standard unit type.");
@@ -1270,8 +1281,8 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         mValidator->addError(err);
     }
     if (prefix.length()) {
-        /// cellml2_9 9.1.2.1 Checks the prefix. If the prefix is not in the list of valid prefix names, 
-		/// checks if it is a real number.
+        /// cellml2_9 9.1.2.1 Check the prefix. If the prefix is not in the list of valid prefix names, 
+		/// check that it is a real number.
         if (!isStandardPrefixName(prefix)) {
             if (!isCellMLReal(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
@@ -1284,11 +1295,6 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             }
         }
     }
-
-	/// @cellml2_9 __TODO__ 9.1.2.2: Need to check that multiplier is a real number string
-	/// @cellml2_9 __TODO__ 9.1.2.3: Need to check that the exponent is a real number string
-	/// @cellml2_19 __TODO__ 19.10.6: Need to check that equivalent units are specified for equivalent variables
-
 }
 
 void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
@@ -1499,6 +1505,7 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
     }
 
 	/// @cellml2_13 Check maths value of the input component (? Checks component but returns error based on reset?)
+    /// @cellml2_14 Check maths value of the input component (? Checks component but returns error based on reset?)
     if (when->getValue().length() > 0) {
         validateMath(when->getValue(), component);
     } else {
@@ -1512,7 +1519,6 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
-	/// @cellml2_13 13.1.2 __TODO__ Need to check for minimum of two math elements
 }
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
@@ -1560,6 +1566,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
             variableNames.push_back(variableName);
         }
+      
     }
 
 	/// @cellml2_14 14.1.3 Check that the variables in the MathML are supported, see hard-coded list at
@@ -1624,7 +1631,6 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             if (childNode->isText()) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
-
 					/// @cellml2_14 14.1.3 Check that ci elements reference a variable or bound variable within the same container
                     if (ciType) {
                         // It's fine in MathML to have whitespace around variable names, we will strip it out when looking for
@@ -1644,8 +1650,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         }
                     }
                 } else {
-					/// @cellml2_14 14 Check that names of children are not whitespace only __TODO__ Not explicit in standard?
-					/// ... or is it implied from 14.1.1-2?
+					/// @cellml2_14 14.? Check that names of children are not whitespace only __TODO__ Checking whether this needs to be explicit in specs
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("MathML " + node->getName() + " element has a whitespace-only child element.");
                     err->setComponent(component);
@@ -1686,8 +1691,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 
         bool checkUnitsIsInComponent = false;
         // Check that cellml:units has been set.
-		/// @cellml2_14 __TODO__ Unit checks, do later.  Also need to clarify this error message as not clear? Are ci elements 
-		/// not permitted units?
+		/// @cellml2_14 14.1.3 Check that ci element does not have units __TODO__ Check that this is clear in specification doc
         if (ciType) {
             if (unitsAttribute != nullptr) {
                 ErrorPtr err = std::make_shared<Error>();
@@ -1695,7 +1699,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                                     "' has a cellml:units attribute with name '" + unitsAttribute->getValue() + "'.");
             }
         } else if (cnType) {
-			/// @cellml2_14 141.4 Check that cn elements has a units name
+			/// @cellml2_14 14.1.4 Check that cn elements has a units name
             if (isCellmlIdentifier(unitsName)) {
                 checkUnitsIsInComponent = true;
             } else {
@@ -1778,8 +1782,6 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
 void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
 {
-	/// @cellml2_14 __TODO__ (KRM need to check implications of this gatherMathBvarVariableNames ?)
-
     XmlNodePtr childNode = node->getFirstChild();
     if (node->isElement("bvar", MATHML_NS)) {
         if ((childNode) && (childNode->isElement("ci", MATHML_NS))) {
@@ -1825,7 +1827,19 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 				if (variable->equivalentVariableCount() > 0) {
 					for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
 						VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
-						// TODO: validate variable interfaces according to 17.10.8
+
+                        /// @cellml2_17 17.1.2 Check that we do not have a variable equivalent to itself
+                        if (variable == equivalentVariable) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->getName() +
+                                                "' and an equivalent variable '" + equivalentVariable->getName() +
+                                                "' equal to itself. '"
+                            );
+                            err->setModel(model);
+                            err->setKind(Error::Kind::CONNECTION);
+                            mValidator->addError(err);
+                        }
+						// TODO: validate variable interfaces according to 19.10.8
 						/// @cellml2_17 __TODO__ Validate variable interfaces according to 19.10.8
 						/// @cellml2_19 19.10.6 Validate that equivalent varaible pairs have equivalent units
 						if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
@@ -2254,9 +2268,6 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
 	/// @cellml2_14 14.1.2 Lists the hard-coded supported MathML elements tags
 
-	/// @cellml2_14 14.1.2 __TODO__ Only tests that tag is within hard-coded list.  Does NOT test that the allowable types
-	/// (real, e-notation, constant etc) are followed for the cn tag? Add testing for real vs. e-notation tests to cn tags?
-
     const std::vector<std::string> supportedMathMLElements =
     {
         "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
@@ -2325,13 +2336,28 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
     } else {
         result = false;
         ErrorPtr err = std::make_shared<Error>();
-		/// @cellml2_3 3.1.3 __TODO__ unclear error message? Length only is checked, should specify all rules so doesn't 
-		/// fail a second time
         err->setDescription("CellML identifiers must contain one or more basic Latin alphabetic characters.");
         err->setRule(SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
         mValidator->addError(err);
     }
     return result;
+}
+
+bool Validator::ValidatorImpl::isValidHTML(const std::string &html) {
+
+    /// @cellml2_5 5.1.1 Check string is a valid html attribute according to XLink specs (maybe too restrictive though?)
+    // Allowed characters are ASCII a-z, A-Z, 0-9, as well as #, %, [, ] 
+    // (as taken from: https://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators)
+
+    // "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=";
+    std::string allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890";
+    allowed += "-_./";
+    allowed += "[]#";
+
+    if (html.find_first_not_of(allowed) != std::string::npos) {
+        return (false);
+    }
+    return (true);
 }
 
 }

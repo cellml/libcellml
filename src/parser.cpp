@@ -320,9 +320,6 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 }
             }
             // Load encapsulated component_refs.
-			/// @cellml2_15 15.1.1 __TODO__ Assumes that the only contents of an encapsulation are component_refs? Only loads the 
-			/// first one? If nothing present will raise and error. NB: comment says that error checking and more loading 
-			/// takes place in loadEncapsulation() function.
             XmlNodePtr componentRefNode = childNode->getFirstChild();
             if (componentRefNode) {
                 // This component_ref and its child and sibling elements will be loaded
@@ -529,7 +526,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (attribute->isType("prefix")) {
             prefix = attribute->getValue();
         } else if (attribute->isType("exponent")) {
-			/// @cellml2_9 9.1.2.3 Checks the exponent is a real number string on load
+			/// @cellml2_9 9.1.2.3 Check the exponent is a real number string on load
             if (isCellMLReal(attribute->getValue())) {
                 exponent = convertToDouble(attribute->getValue());
             } else {
@@ -543,7 +540,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 mParser->addError(err);
             }
         } else if (attribute->isType("multiplier")) {
-			/// @cellml2_9 9.1.2.2 Checks the multiplier is a real number string on load
+			/// @cellml2_9 9.1.2.2 Check the multiplier is a real number string on load
             if (isCellMLReal(attribute->getValue())) {
                 multiplier = convertToDouble(attribute->getValue());
             } else {
@@ -707,10 +704,18 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         component2Missing = true;
     }
     componentNamePair = std::make_pair(component1Name, component2Name);
-	/// @cellml2_17 17.1.2 __TODO__ Need to check that component1 != component2
 
-	/// @cellml2_17 17.1.4 Assumes that every element inside the connection is a map_variables one ... and checks is present
-	/// __TODO__ Should also check for 'map_variables' attribute type?
+	/// @cellml2_17 17.1.2 Check that component1 != component2 (removed, should be allowed in parser)
+    //if ((!component1Missing)&&(!component2Missing)&&(component1Name == component2Name)) {
+    //    ErrorPtr err = std::make_shared<Error>();
+    //    err->setDescription("Connection in model '" + model->getName() +
+    //                        "' specifies component_1 attribute '" + component1Name +
+    //                        "' the same as component_2 attribute '" + component2Name + "'. "); 
+    //    err->setModel(model);
+    //    err->setKind(Error::Kind::CONNECTION);
+    //    mParser->addError(err);
+    //}
+
     XmlNodePtr childNode = node->getFirstChild();
     if (!childNode) {
         ErrorPtr err = std::make_shared<Error>();
@@ -798,7 +803,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 variable2Missing = true;
             }
             // We can have multiple map_variables per connection.
-			/// @cellml2_18 18.1.3 __TODO__ pair of variable1 and variable2 added to connection __BUT__ not checked for duplicates
+			/// @cellml2_18 18.1.3 Pair of variable1 and variable2 added to connection but not checked for duplicates
             variableNamePair = std::make_pair(variable1Name, variable2Name);
             variableNameMap.push_back(variableNamePair);
             mapVariablesFound = true;
@@ -946,7 +951,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
         mParser->addError(err);
     }
-	/// @cellml2_17 __TODO__ 17.1.3 Need to check that this infoset does not contain this connection element (component_1 --- component_2) already
+	/// @cellml2_17 17.1.3 Need to check that this infoset does not contain this connection element (component_1 --- component_2) already
 }
 
 void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
@@ -1159,12 +1164,11 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
         if (attribute->isType("href", XLINK_NS)) {
-			/// @cellml2_5 5.1.1 href attribute copied but not validated
             importSource->setUrl(attribute->getValue());
         } else if (attribute->isType("id")) {
             importSource->setId(attribute->getValue());
         } else if (attribute->isType("xlink")) {
-			/// @cellml2_5 __NB__ Ignores 'xlink' attributes at load time
+			/// @cellml2_5 NB Skips loading 'xlink' attributes, no warning raised
             // Allow xlink attributes but do nothing for them.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -1175,7 +1179,6 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         }
         attribute = attribute->getNext();
     }
-	/// @cellml2_5 5.1.1 __TODO__ Presence of href attribute NOT checked at load time
 
     XmlNodePtr childNode = node->getFirstChild();
     while (childNode) {

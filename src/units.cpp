@@ -104,6 +104,7 @@ std::map<Units::StandardUnit, const std::string> standardUnitToString =
  * prefix can be expressed using either an integer or an enum.
  * The enum structure member is given preference if both are set.
  */
+
 struct Unit
 {
     std::string mReference; /**< Reference to the units for the unit.*/
@@ -180,7 +181,7 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     Unit u;
     u.mReference = reference;
     // Allow all nonzero user-specified prefixes
-	/// @cellml2_9 9.1.2.1 __TODO__ Check that this works as intended as every path leads to u.mPrefix = prefix
+	/// @cellml2_9 9.1.2.1 Check that this works as intended as every path leads to u.mPrefix = prefix
 	try
     {
         double prefixDouble = std::stod(prefix);
@@ -193,10 +194,12 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
         u.mPrefix = prefix;
     }
 	/// @cellml2_9 9.1.2.3 If exponent value != 1.0 then it's saved as a string in the created unit.  If == 1.0 then not saved
+    /// Values that make it this far have been filtered already by void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     if (exponent != 1.0) {
         u.mExponent = convertDoubleToString(exponent);
     }
-	/// @cellml2_9 9.1.2.2 If multiplier value != 1.0 then it's saved as a string in the created unit.  If == 1.0 then not saved
+	/// @cellml2_9 9.1.2.2 If multiplier value != 1.0 then it's saved as a string in the created unit.  If == 1.0 then not saved.  Value already
+    /// filtered by void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     if (multiplier != 1.0) {
         u.mMultiplier = convertDoubleToString(multiplier);
     }

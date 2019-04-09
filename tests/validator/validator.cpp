@@ -99,9 +99,6 @@ limitations under the License.
  }
 
 
- * @cellml2_3 3.2-5 __TODO__ Is validation of numbers required? If so, is there a distinction between integers, floats etc within
- the cn tag?
-
  @cellml2_4 {
  __4. The model element information item__\n
  _4.1. Top-level of CellML infosets_\n
@@ -906,17 +903,18 @@ TEST(Validator, importUnits) {
 	/// @cellml2_6 6.1.2 Validate TEST import units has valid units_ref attribute
 	/// @cellml2_6 6.1.1 Validate TEST import units have a valid name
 	/// @cellml2_6 6.1.2 Validate TEST import units have a units_ref unique to this model
-
-	/// @cellml2_6 6.1.1 __TODO__ Validate TEST import units has a name unique in this model
-
+    /// @cellml2_6 6.1.1 Validate TEST import units has a name unique in this model
+    /// @cellml2_5 5.1.1 Validate TEST import element has a valid href formatted attribute __TODO__ This is very restrictive at present, check ...
+	
     std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
         "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
+        "Import of units 'name_for_invalid_import' has invalid characters in the xlink:href attribute. ",
+        "Model 'model_name' contains multiple units with the name 'units_to_be_duplicated'. Valid units names must be unique to their model.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units does not have a valid name attribute."
-
     };
 
     libcellml::Validator v;
@@ -961,6 +959,31 @@ TEST(Validator, importUnits) {
     v.validateModel(m);
     EXPECT_EQ(6u, v.errorCount());
 
+    // Invalid html ref
+    libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
+    imp5->setUrl("not @ valid url");
+    libcellml::UnitsPtr importedUnits5 = std::make_shared<libcellml::Units>();
+    importedUnits5->setName("name_for_invalid_import");
+    importedUnits5->setSourceUnits(imp5, "units_in_that_model");
+    m->addUnits(importedUnits5);
+    v.validateModel(m);
+    EXPECT_EQ(7u, v.errorCount());
+
+    // Duplicated units name
+    libcellml::UnitsPtr manualUnits1 = std::make_shared<libcellml::Units>();
+    manualUnits1->setName("units_to_be_duplicated");
+    manualUnits1->addUnit("dimensionless");
+
+    libcellml::UnitsPtr manualUnits2 = std::make_shared<libcellml::Units>();
+    manualUnits2->setName("units_to_be_duplicated");
+    manualUnits1->addUnit("dimensionless");
+
+    m->addUnits(manualUnits1);
+    m->addUnits(manualUnits2);
+
+    v.validateModel(m);
+    EXPECT_EQ(8u, v.errorCount());
+    
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
@@ -972,9 +995,7 @@ TEST(Validator, importComponents) {
 	/// @cellml2_7 7.1.2 Validate TEST import component must have unique component_ref
 	/// @cellml2_7 7.1.1 Validate TEST import component must have unique name
 	/// @cellml2_5 5.1.1 Validate TEST import has valid href attribute
-
-	/// @cellml2_7 7.1.2 __TODO__ Validate TEST import component component-ref must match name of existing component or import component in infoset
-
+    
     std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
@@ -998,7 +1019,17 @@ TEST(Validator, importComponents) {
     v.validateModel(m);
     EXPECT_EQ(0u, v.errorCount());
 
-    // Invalid component import- missing refs
+    //// Valid component import ??
+    /// @cellml2_7 __TODO__ Unexpected error from this code: Waiting to hear re https://github.com/cellml/libcellml/issues/298
+    //libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
+    //imp5->setUrl("yet-another-other-model.xml");
+    //libcellml::ComponentPtr importedComponent5 = std::make_shared<libcellml::Component>();
+    //importedComponent5->setName("another_valid_imported_component_in_this_model");
+    //importedComponent5->setSourceComponent(imp5, "new_shiny_component_ref");
+    //m->addComponent(importedComponent5);
+    //v.validateModel(m);
+
+    // Invalid component import - missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
     importedComponent2->setName("invalid_imported_component_in_this_model");
@@ -1025,7 +1056,7 @@ TEST(Validator, importComponents) {
     m->addComponent(importedComponent4);
     v.validateModel(m);
     EXPECT_EQ(6u, v.errorCount());
-
+ 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
@@ -1254,6 +1285,15 @@ TEST(Validator, invalidMathMLVariables) {
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
+
+    // TODO: Check whether this should create a validation error or not: see https://github.com/cellml/libcellml/issues/301
+    //c->addVariable(v3);
+    //v.validateModel(m);
+    //// Check for expected error messages.
+    //for (size_t i = 0; i < v.errorCount(); ++i) {
+    //    std::cout << v.getError(i)->getDescription() << std::endl;
+    //}
+
 }
 
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
@@ -1370,12 +1410,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
 	/// @cellml2_8 8.1.3 Validate TEST Units name does not overload a built-in units name
 	/// @cellml2_9 9.1.1 Validate TEST Unit units attribute is valid reference to local or built-in units
 	/// @cellml2_9 9.1.1 Validate TEST Unit units attribute must be valid cellml identifier format
-	/// @cellml2_9 "Unit in units 'stark' does not have a valid units reference.",
 	/// @cellml2_9 9.2.1 Validate TEST Unit prefix must be valid real number or SI prefix
-
-	/// @cellml2_9 9.2.2 __TODO__ Validate TEST Multiplier attribute must be a real number string
-	/// @cellml2_9 9.2.3 __TODO__ Validate TEST Exponent attribute must be a real number string
-
 
     std::vector<std::string> expectedErrors = {
         "Units is named 'ampere', which is a protected standard unit name.",
@@ -1402,7 +1437,7 @@ TEST(Validator, validateInvalidConnections) {
 	/// @cellml2_18 18.1.1 Validate TEST check parent component for variable
 	/// @cellml2_18 Validate TEST reciprocity check of equivalent variables.  See 19.10.3
 	/// @cellml2_19 19.10.3 Validate TEST reciprocity check that equivalence goes both ways
-	/// @cellml2_19 19.10.4 __TODO__ Validate TEST variable equivalence pairs are not duplicated
+
     std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
         "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
@@ -1416,6 +1451,7 @@ TEST(Validator, validateInvalidConnections) {
     libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
 	libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
 	libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp7 = std::make_shared<libcellml::Component>();
 
     libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v1_2 = std::make_shared<libcellml::Variable>();
@@ -1424,6 +1460,7 @@ TEST(Validator, validateInvalidConnections) {
     libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
 	libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
 	libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
     comp1->setName("component1");
@@ -1432,6 +1469,7 @@ TEST(Validator, validateInvalidConnections) {
     comp4->setName("component4");
 	comp5->setName("component5");
 	comp6->setName("component6");
+    comp7->setName("component7");
 
     v1_1->setName("variable1_1");
     v1_2->setName("variable1_2");
@@ -1440,6 +1478,7 @@ TEST(Validator, validateInvalidConnections) {
     v4->setName("variable4");
 	v5->setName("variable5");
 	v6->setName("variable6");
+    v7->setName("variable7");
 
     v1_1->setUnits("dimensionless");
     v1_2->setUnits("dimensionless");
@@ -1448,6 +1487,7 @@ TEST(Validator, validateInvalidConnections) {
     v4->setUnits("dimensionless");
 	v5->setUnits("dimensionless");
 	v6->setUnits("dimensionless");
+    v7->setUnits("dimensionless");
 
     comp1->addVariable(v1_1);
     comp1->addVariable(v1_2);
@@ -1456,12 +1496,14 @@ TEST(Validator, validateInvalidConnections) {
     comp4->addVariable(v4);
 	comp5->addVariable(v5);
 	comp6->addVariable(v6);
+    comp7->addVariable(v7);
     m->addComponent(comp1);
     m->addComponent(comp2);
     m->addComponent(comp3);
     m->addComponent(comp4);
 	m->addComponent(comp5); 
 	m->addComponent(comp6);
+    m->addComponent(comp7);
 
     // Valid connections.
     libcellml::Variable::addEquivalence(v1_1, v2);  
@@ -1484,9 +1526,28 @@ TEST(Validator, validateInvalidConnections) {
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+       EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
+}
 
+TEST(Validator, validateConnectionComponent1NotEqualComponent2) {
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp7 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
+    m->setName("modelName");
+    v7->setName("variable7");
+    v7->setUnits("dimensionless");
+    comp7->setName("component7");
+    comp7->addVariable(v7);
+    m->addComponent(comp7);
+    libcellml::Variable::addEquivalence(v7, v7);          
+    v.validateModel(m);
+
+    /*for (size_t i = 0; i < v.errorCount(); ++i) {
+        std::cout << v.getError(i)->getDescription() << std::endl;
+    }*/
 }
 
 TEST(Validator, validateNoCycles) {
@@ -1710,8 +1771,7 @@ TEST(Validator, validateNoCycles) {
 
 TEST(Validator, integerStrings) {
 
-	/// @cellml2_12 12.1.1.2 Validate TEST order is an integer string (ok: 1, -1; not ok: +1, '', -, string) __TODO__ failure 
-	/// message just says that order is not set, not how to fix it?
+	/// @cellml2_12 12.1.1.2 Validate TEST order is an integer string (ok: 1, -1; not ok: +1, '', -, string)
 
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1868,7 +1928,7 @@ TEST(Validator, resets) {
 	m->addComponent(c);
 
 	// adding reset to second component which does not contain the variable needed
-	/// @cellml2_12 12.1.1.1 __TODO__ Validate TEST that variable attriubte in a reset must be defined within the component parent
+	/// @cellml2_12 12.1.1.1 __TODO__ Validate TEST that variable attribute in a reset must be defined within the component parent
 	/// of that reset
 	libcellml::ModelPtr m2 = std::make_shared<libcellml::Model>();
 	libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -2017,54 +2077,12 @@ TEST(Validator, validMathCnElements) {
     EXPECT_EQ(0u, v.errorCount());
 }
 
-/* ------------------------------------------------------------------------------------------- */
-
 TEST(Validator, importDuplicateInfoset) {
 	/// @cellml2_5 5.1.3 __TODO?__ Validate TEST Check for semantic equivalence between parent and child infoset: you cannot import yourself
 }
 
-TEST(Validator, importComponentRefIsValid) {
-	/// @cellml2_7 7.1.2 __TODO__ Validate TEST Import component element's component_ref element matches
-	/// existing item in this infoset
-}
-
 TEST(Validator, variableEquivalentUnits) {
-	/// @cellml2_19 19.19.6 __TODO__ Validate TEST Check unit reduction is the same for equivalent variables
-	/*
-	libcellml::Validator validator;
-	libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
-	libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-	libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-	libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-	libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-	libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-	model->addComponent(c1);
-	model->addComponent(c2);
-	model->addUnits(u1);
-	model->addUnits(u2);
-
-	model->setName("myModel");
-	c1->setName("c1");
-	c2->setName("c2");
-	u1->setName("u1");
-	u2->setName("u2");
-
-
-	v1->setName("v1");
-	v2->setName("v2");
-	v1->setUnits(u1);
-	v2->setUnits(u2);
-
-	c1->addVariable(v1);
-	c2->addVariable(v2);
-
-	libcellml::Printer p;
-
-	std::cout << p.printModel(model);
-
-	validator.validateModel(model); */
-
+	/// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables
 	
 	std::vector<std::string> expectedErrors = {
 		"Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: kilogram^1.000000, metre^-2.000000, second^-2.000000, ",
@@ -2278,6 +2296,9 @@ TEST(Validator, variableEquivalentUnits) {
 	}
 }
 
+TEST(Validator, connectionWithDuplicateComponents) {
+
+}
 
 
 
