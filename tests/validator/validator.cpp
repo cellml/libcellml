@@ -1104,6 +1104,7 @@ TEST(Validator, validMath) {
 
     v.validateModel(m);
     EXPECT_EQ(0u, v.errorCount());
+
 }
 
 TEST(Validator, invalidMath) {
@@ -1244,6 +1245,7 @@ TEST(Validator, invalidMathMLVariables) {
             "</math>";
 
     std::vector<std::string> expectedErrors = {
+        "Component 'componentName' contains multiple variables with the name 'C'. Valid variable names must be unique to their component.",
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
@@ -1275,9 +1277,9 @@ TEST(Validator, invalidMathMLVariables) {
     c->addVariable(v1);
     c->addVariable(v2);
     c->addVariable(v3);
+    c->addVariable(v3);
     c->setMath(math);
     m->addComponent(c);
-
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
@@ -1285,15 +1287,6 @@ TEST(Validator, invalidMathMLVariables) {
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
-
-    // TODO: Check whether this should create a validation error or not: see https://github.com/cellml/libcellml/issues/301
-    //c->addVariable(v3);
-    //v.validateModel(m);
-    //// Check for expected error messages.
-    //for (size_t i = 0; i < v.errorCount(); ++i) {
-    //    std::cout << v.getError(i)->getDescription() << std::endl;
-    //}
-
 }
 
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
@@ -1532,22 +1525,26 @@ TEST(Validator, validateInvalidConnections) {
 
 TEST(Validator, validateConnectionComponent1NotEqualComponent2) {
 
-    libcellml::Validator v;
+    std::vector<std::string> expectedErrors = {
+        "Variable 'doppelganger' has an equivalent variable 'doppelganger' equal to itself. ",
+    };
+    libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr comp7 = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     m->setName("modelName");
-    v7->setName("variable7");
-    v7->setUnits("dimensionless");
-    comp7->setName("component7");
-    comp7->addVariable(v7);
-    m->addComponent(comp7);
-    libcellml::Variable::addEquivalence(v7, v7);          
-    v.validateModel(m);
+    v->setName("doppelganger");
+    v->setUnits("dimensionless");
+    c->setName("bucket");
+    c->addVariable(v);
+    m->addComponent(c);
+    libcellml::Variable::addEquivalence(v, v);          
+    validator.validateModel(m);
 
-    /*for (size_t i = 0; i < v.errorCount(); ++i) {
-        std::cout << v.getError(i)->getDescription() << std::endl;
-    }*/
+    EXPECT_EQ(1u, validator.errorCount());
+    for (size_t i = 0; i < validator.errorCount(); ++i) {
+        EXPECT_EQ(validator.getError(i)->getDescription(), expectedErrors[i]);
+    }
 }
 
 TEST(Validator, validateNoCycles) {
@@ -1703,10 +1700,10 @@ TEST(Validator, validateNoCycles) {
     libcellml::Variable::addEquivalence(v3, v6);    // Loop formed: 2, 4, 3, 6, 8, 2 
 
     libcellml::Variable::addEquivalence(v6, v7);    
+    
+    // NB Attached loops (ie: a-b-c-a and b-c-d-b) *are* detected and handled but return too many variations of the loop 
+    // (eg a-b-c-d, a-b-c, b-c-d, etc) to be viable as a hard-coded test, so have broken the attachment here.
     // libcellml::Variable::addEquivalence(v3, v7);    // Second attached loop: 3, 6, 7 
-
-    // NB Attached loops (ie: a-b-c-a and b-c-d-b) are detected and handled but return too many variations of the loop 
-    // (eg a-b-c-d, a-b-c, b-c-d, etc) to be viable as a hard-coded test here.
 
     libcellml::Variable::addEquivalence(v9, v5); 
     libcellml::Variable::addEquivalence(v5, v1_2);
@@ -1730,7 +1727,7 @@ TEST(Validator, validateNoCycles) {
     // Two loops are present, split error message at "Loop":
     // Check that one loop contains 'variable6' <-> 'variable8' <-> 'variable2' <-> 'variable4' <-> 'variable3' <-> 'variable6',
     // Check that the other contains 'variable1_2' <-> 'variable9' <-> 'variable5' <-> 'variable1_2',
-
+    // "Cyclic variables exist, 2 loops found (Variable(Component)). Loop: 'variable4'(in 'component4') <-> 'variable3'(in 'component3') <-> 'variable6'(in 'component6') <-> 'variable8'(in 'component8') <-> '...
     if (v.errorCount() == 1) {
         size_t pos = 0;
         std::string split = "Loop: ";

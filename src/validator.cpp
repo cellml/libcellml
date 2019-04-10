@@ -1832,8 +1832,8 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                         if (variable == equivalentVariable) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Variable '" + variable->getName() +
-                                                "' and an equivalent variable '" + equivalentVariable->getName() +
-                                                "' equal to itself. '"
+                                                "' has an equivalent variable '" + equivalentVariable->getName() +
+                                                "' equal to itself. "
                             );
                             err->setModel(model);
                             err->setKind(Error::Kind::CONNECTION);
@@ -1890,7 +1890,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
             for (size_t i = 0; i < hintlist.size(); ++i) {
                 des += hintlist[i] + ", ";
                 }
-            err->setDescription("Cyclic variables exist, "+ std::to_string(hintlist.size())+" loops found. "+des);
+            err->setDescription("Cyclic variables exist, "+ std::to_string(hintlist.size())+" loops found (Variable(Component)). "+des);
             err->setModel(model);
             err->setKind(Error::Kind::UNITS);
             mValidator->addError(err);
@@ -1953,7 +1953,7 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
             node2edge.at(edgelist[e].n2).push_back(e);
             }
         // Removing nodes connected to only one viable edge, and then ... 
-        // Removing edges connected to only one viable node
+        // Removing edges connected to only one viable node ... and then ... rinse and repeat
         bool checking = false;
         VariablePtr otherfriend;
         int edge2go;
@@ -2044,8 +2044,8 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
                     std::string des = "";
                     for (size_t i = 0; i < done_nodes.size(); ++i) {
                         des += "'";
-                        des += done_nodes[i]->getName();
-                        des += "'";
+                        Component* parent = static_cast<Component*>(done_nodes[i]->getParent());
+                        des += done_nodes[i]->getName()+" ("+parent->getName()+")'";
                         if (i != done_nodes.size()-1) des += " <-> ";   
                         }
                     hintlist.push_back("Loop: " + des);
