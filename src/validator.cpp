@@ -975,7 +975,7 @@ void Validator::validateModel(const ModelPtr &model)
         err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
-    /// @cellml2_4 4.2.3 Checking for unique encapsulation not required as more than one cannot be stored
+    /// @cellml2_4 4.2.3 Check for unique encapsulation is not required as more than one cannot be stored
     
     /// @cellml2_4 4.2.2 Check for presence of components in this model.
     if (model->componentCount() > 0) {
@@ -1024,18 +1024,26 @@ void Validator::validateModel(const ModelPtr &model)
                         addError(err);
                         foundImportError = true;
                     }
-                    /// @cellml2_5 5.1.3 Check if we already have another import from the same source with the same component_ref.
-                    /// (This looks for matching entries at the same position in the source and ref vectors).  
+                    /// @cellml2_5 5.1.3 Check if we already have another import from the same source with the same component_ref. 
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
-                        if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
-                         == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
+                        // Check for presence of import source and component_ref
+                        ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 
+                            - componentImportSources.begin();
+                        ptrdiff_t foundRefAt = find(componentRefs.begin(), componentRefs.end(), componentRef) 
+                            - componentRefs.begin();
+
+                        // Check that they occur at the same point in the list, *and* that we're not out of range
+                        // "unsigned" used here to prevent mismatch warning at build time
+                        if((unsigned (foundSourceAt) < componentImportSources.size()) && 
+                            (unsigned (foundRefAt) < componentRefs.size()) &&            
+                            (foundRefAt == foundSourceAt)) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported components from '" + importSource +
-                                                "' with the same component_ref attribute '" + componentRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                            addError(err);
+                                err->setDescription("Model '" + model->getName() +
+                                                    "' contains multiple imported components from '" + importSource +
+                                                    "' with the same component_ref attribute '" + componentRef + "'.");
+                                err->setModel(model);
+                                err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+                                addError(err);
                         }
                     }
                     // Push back the unique sources and refs.
