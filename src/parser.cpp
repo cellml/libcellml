@@ -936,7 +936,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
             // Set the variable equivalence relationship for this variable pair.
 			/// @cellml2_18 18.1.3 Other than overwriting in the map (see void Variable::VariableImpl::setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id) 
-			/// is the condition for no duplicated mappings tested anywhere? __TODO__
+			/// the condition for no duplicated mappings is not tested anywhere
             if ((variable1) && (variable2)) {
                 Variable::addEquivalence(variable1, variable2, mappingId, connectionId);
             }

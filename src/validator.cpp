@@ -1149,7 +1149,7 @@ void Validator::validateModel(const ModelPtr &model)
             mPimpl->validateUnits(units, unitsNames);
         }
     }
-    /// @cellml2_4.2.2.2 Validates any connections / variable equivalence networks in the model.
+    /// @cellml2_4 4.2.2.2 Validates any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
 }
 
@@ -1253,7 +1253,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         }
     }
     if (units->unitCount() > 0) {
-        /// @cellml2_8 Validates each unit in units.
+        /// @cellml2_8 8.1.4 Validates each unit in units.
         for (size_t i = 0; i < units->unitCount(); ++i) {
             validateUnitsUnit(i, units, unitsNames);
         }
@@ -1290,13 +1290,13 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     }
     if (prefix.length()) {
         /// cellml2_9 9.1.2.1 Check the prefix. If the prefix is not in the list of valid prefix names, 
-		/// check that it is a real number.
+		/// check that it is an integer.
         if (!isStandardPrefixName(prefix)) {
-            if (!isCellMLReal(prefix)) {
+            if (!isCellMLInteger(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
                                     "' in units '" + units->getName() +
-                                    "' is not a valid real number or a SI prefix.");
+                                    "' is not a valid integer or a SI prefix.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
@@ -1498,7 +1498,7 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
-	/// @cellml2_13 13.1.2 Check maths condition of the input component (? Checks component but returns error based on reset?)
+	/// @cellml2_13 13.1.2 13.? Check maths condition of the input component (? Checks component but returns error based on reset?)
     if (when->getCondition().length() > 0) {
         validateMath(when->getCondition(), component);
     } else {
@@ -1512,8 +1512,8 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
-	/// @cellml2_13 Check maths value of the input component (? Checks component but returns error based on reset?)
-    /// @cellml2_14 Check maths value of the input component (? Checks component but returns error based on reset?)
+	/// @cellml2_13 13.? Check maths value of the input component (? Checks component but returns error based on reset?)
+    /// @cellml2_14 14.? Check maths value of the input component (? Checks component but returns error based on reset?)
     if (when->getValue().length() > 0) {
         validateMath(when->getValue(), component);
     } else {
@@ -1584,7 +1584,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Get the bvar names in this math element.
     // TODO: may want to do this with XPath instead...
 	/// @cellml2_14 __TODO__ Change to XPath instead? 
-	/// @cellml2_14 Check that there are no duplicates between bound (bvar) and unbound variable names
+	/// @cellml2_14 14.? Check that there are no duplicates between bound (bvar) and unbound variable names
     gatherMathBvarVariableNames(nodeCopy, bvarNames);
     // Check that no variable names match new bvar names.
     for (std::string &variableName : variableNames) {
@@ -1606,12 +1606,11 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
 	/// and remove the CellML namespace.  While the removeSubstring() approach for removing the cellml namespace before 
 	/// validating with the MathML DTD is not ideal, libxml does not appear to have a better way to remove a namespace 
 	/// declaration from the tree.
-
     std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
     std::string cleanMathml = mathNode->convertToString();
     removeSubstring(cleanMathml, cellml2NamespaceString);
 
-	/// @cellml2_14 Check 'clean/unitless' math string against W3C MathML 
+	/// @cellml2_14 14.? Check 'clean/unitless' math string against W3C MathML 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
     mathmlDoc->parseMathML(cleanMathml);
@@ -1863,7 +1862,9 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 							mValidator->addError(err);
 						}
 
-						/// @cellml2_18 18.1.3 __TODO__ check that connections do not duplicate varible pairs (19.10.4)
+						/// @cellml2_18 18.1.3 Don't need to check that connections do not duplicate variable pairs (19.10.4)
+                        /// as duplicates are not stored (?).
+
 						if (equivalentVariable->hasEquivalentVariable(variable)) {
 							// Check that the equivalent variable has a valid parent component.
 							Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
