@@ -181,11 +181,11 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     Unit u;
     u.mReference = reference;
     // Allow all nonzero user-specified prefixes
-	/// @cellml2_9 9.1.2.1 Check that this works as intended as every path leads to u.mPrefix = prefix
+	/// @cellml2_9 9.1.2.1 Check prefix field for integers otherwise save as string
 	try
     {
-        double prefixDouble = std::stod(prefix);
-        if (prefixDouble != 0.0) {
+        int prefixInt = std::stoi(prefix);
+        if (prefixInt != 0) {
             u.mPrefix = prefix;
         }
     } catch (std::invalid_argument&) {
