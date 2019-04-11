@@ -227,12 +227,12 @@ void Units::addUnit(const std::string &reference, int prefix, double exponent,
 
 void Units::addUnit(const std::string &reference, double exponent, const std::string &id)
 {
-    addUnit(reference, "0.0", exponent, 1.0, id);
+    addUnit(reference, "0", exponent, 1.0, id);
 }
 
 void Units::addUnit(const std::string &reference)
 {
-    addUnit(reference, "0.0", 1.0, 1.0, "");
+    addUnit(reference, "0", 1.0, 1.0, "");
 }
 
 void Units::addUnit(StandardUnit standardRef, const std::string &prefix, double exponent,

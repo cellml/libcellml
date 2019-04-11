@@ -2313,10 +2313,6 @@ TEST(Validator, variableEquivalentUnits) {
 	}
 }
 
-TEST(Validator, validHTMLForImports) {
-
-}
-
 
 
 

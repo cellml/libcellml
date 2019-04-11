@@ -1029,9 +1029,9 @@ void Validator::validateModel(const ModelPtr &model)
                     /// @cellml2_5 5.1.3 Check if we already have another import from the same source with the same component_ref. 
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
                         // Check for presence of import source and component_ref
-                        ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 
+                        std::ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 
                             - componentImportSources.begin();
-                        ptrdiff_t foundRefAt = find(componentRefs.begin(), componentRefs.end(), componentRef) 
+                        std::ptrdiff_t foundRefAt = find(componentRefs.begin(), componentRefs.end(), componentRef) 
                             - componentRefs.begin();
 
                         // Check that they occur at the same point in the list, *and* that we're not out of range
@@ -1928,7 +1928,6 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
     std::map <VariablePtr, std::vector<int> > node2edge;
     std::map <VariablePtr, std::vector<int> >::iterator it, otherfriend_it;
     bool loop_found = false;
-    int num = 0;
 
     // Set up the list of nodes: only include nodes which have two or more connections
     if (model->componentCount() > 0) {
@@ -1945,7 +1944,7 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
                 // that in turn have more than one commection
                 if (variable->equivalentVariableCount() >= 2) {
                     nodelist.push_back(variable);
-                    node2edge.insert(std::pair<VariablePtr, std::vector<int>>(variable, NULL));
+                    node2edge.insert(std::pair<VariablePtr, std::vector<int>>(variable, {})); // empty vector instead of NULL
 
                     // if equivalent variables of this one have another neighbour in the list the include that edge
                     for (size_t k = 0; k < variable->equivalentVariableCount(); k++) {
@@ -1959,9 +1958,9 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
                 }
             }
 
-        for (int e = 0; e < edgelist.size(); e++) {
-            node2edge.at(edgelist[e].n1).push_back(e);
-            node2edge.at(edgelist[e].n2).push_back(e);
+        for (size_t e = 0; e < edgelist.size(); e++) {
+            node2edge.at(edgelist[e].n1).push_back(int (e));
+            node2edge.at(edgelist[e].n2).push_back(int (e));
             }
         // Removing nodes connected to only one viable edge, and then ... 
         // Removing edges connected to only one viable node ... and then ... rinse and repeat
