@@ -2179,7 +2179,6 @@ TEST(Validator, variableEquivalentUnits) {
 	m->addComponent(comp2);
 	m->addComponent(comp3);
 
-	
 	libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
 	u1->setName("testunit1");
 	u1->addUnit("metre");
@@ -2194,14 +2193,14 @@ TEST(Validator, variableEquivalentUnits) {
 
 	libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
 	u4->setName("testunit4");
-	u4->addUnit("metre", 1.0, -1.0, 1.0); // prefix, exp, mult
-	u4->addUnit("kilogram", 1.0, 1.0, 1.0);
-	u4->addUnit("second", 1.0, -2.0, 1.0);
+	u4->addUnit("metre", 0, -1.0, 1.0); // prefix, exp, mult
+	u4->addUnit("kilogram", 0, 1.0, 1.0);
+	u4->addUnit("second", 0, -2.0, 1.0);
 
 	libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
 	u5->setName("testunit5");
-	u5->addUnit("metre", 1.0, -2.0, 1.0);
-	u5->addUnit("meter", 1.0, 2.0, 1.0);
+	u5->addUnit("metre", 0, -2.0, 1.0);
+	u5->addUnit("meter", 0, 2.0, 1.0);
 
 	libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
 	u6->setName("testunit6");
@@ -2213,19 +2212,19 @@ TEST(Validator, variableEquivalentUnits) {
 
 	libcellml::UnitsPtr u8 = std::make_shared<libcellml::Units>();
 	u8->setName("testunit8");
-	u8->addUnit("newton", 1, 1, 1);
-	u8->addUnit("pascal", 1, -1, 1);
-	u8->addUnit("sievert", 1, -1, 1);
+	u8->addUnit("newton", 0, 1, 1);
+	u8->addUnit("pascal", 0, -1, 1);
+	u8->addUnit("sievert", 0, -1, 1);
 
 	libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
 	u9->setName("testunit9");
-	u9->addUnit("second", 1, 2, 1);
-	u9->addUnit("radian", 1, -4, 1);
-	u9->addUnit("steradian", 1, 2, 1);
+	u9->addUnit("second", 0, 2, 1);
+	u9->addUnit("radian", 0, -4, 1);
+	u9->addUnit("steradian", 0, 2, 1);
 
 	libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
 	u10->setName("testunit10");
-	u10->addUnit("gram", 1, 1, 1000.0);
+	u10->addUnit("gram", 0, 1, 1000.0);
 
 	libcellml::UnitsPtr u11 = std::make_shared<libcellml::Units>();
 	u11->setName("testunit11");
@@ -2237,13 +2236,13 @@ TEST(Validator, variableEquivalentUnits) {
 
 	libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
 	u13->setName("testunit13");
-	u13->addUnit("testunit2", 1.0, 2.0, 1.0);
-	u13->addUnit("testunit8", 1.0, 2.0, 1.0);
+	u13->addUnit("testunit2", 0, 2.0, 1.0);
+	u13->addUnit("testunit8", 0, 2.0, 1.0);
 
 	libcellml::UnitsPtr u14 = std::make_shared<libcellml::Units>();
 	u14->setName("testunit14");
-	u14->addUnit("testunit1", 1.0, 1.0, 1.0);
-	u14->addUnit("testunit9", 1.0, 2.0, 1.0);
+	u14->addUnit("testunit1", 0, 1.0, 1.0);
+	u14->addUnit("testunit9", 0, 2.0, 1.0);
 
 	v1->setUnits(u1);
 	v2->setUnits(u2);
@@ -2312,10 +2311,6 @@ TEST(Validator, variableEquivalentUnits) {
 	for (size_t i = 0; i < validator.errorCount(); ++i) {
 		EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
 	}
-}
-
-TEST(Validator, connectionWithDuplicateComponents) {
-
 }
 
 
