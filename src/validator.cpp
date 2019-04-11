@@ -17,6 +17,8 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
+#include <libxml/uri.h>
+
 #include "libcellml/component.h"
 #include "libcellml/error.h"
 #include "libcellml/importsource.h"
@@ -1018,7 +1020,7 @@ void Validator::validateModel(const ModelPtr &model)
                     else if (!mPimpl->isValidHTML(importSource)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
-                                            "' has invalid characters in the xlink:href attribute. ");
+                                            "' has an invalid URI in the href attribute, '" + importSource + "'. ");
                         err->setImportSource(component->getImportSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
@@ -1104,7 +1106,7 @@ void Validator::validateModel(const ModelPtr &model)
                     else if (!mPimpl->isValidHTML(importSource)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
-                                            "' has invalid characters in the xlink:href attribute. ");
+                                            "' has an invalid URI in the href attribute, '" + importSource + "'. ");
                         err->setImportSource(units->getImportSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
@@ -2354,16 +2356,8 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 
 bool Validator::ValidatorImpl::isValidHTML(const std::string &html) {
 
-    /// @cellml2_5 5.1.1 Check string is a valid html attribute according to XLink specs (maybe too restrictive though?)
-    // Allowed characters are ASCII a-z, A-Z, 0-9, as well as #, %, [, ] 
-    // (as taken from: https://www.w3.org/TR/2001/REC-xlink-20010627/#link-locators)
-
-    // "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=";
-    std::string allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890";
-    allowed += "-_./";
-    allowed += "[]#";
-
-    if (html.find_first_not_of(allowed) != std::string::npos) {
+    /// @cellml2_5 5.1.1 Check string is a valid html attribute according to XLink specs, but using libxml2 
+    if (xmlParseURI(html.c_str()) == NULL) {
         return (false);
     }
     return (true);

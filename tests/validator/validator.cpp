@@ -911,7 +911,7 @@ TEST(Validator, importUnits) {
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
         "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
-        "Import of units 'name_for_invalid_import' has invalid characters in the xlink:href attribute. ",
+        "Import of units 'name_for_invalid_import' has an invalid URI in the href attribute, 'not @ valid url'. ",
         "Model 'model_name' contains multiple units with the name 'units_to_be_duplicated'. Valid units names must be unique to their model.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units does not have a valid name attribute."
@@ -2311,6 +2311,10 @@ TEST(Validator, variableEquivalentUnits) {
 	for (size_t i = 0; i < validator.errorCount(); ++i) {
 		EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
 	}
+}
+
+TEST(Validator, validHTMLForImports) {
+
 }
 
 
