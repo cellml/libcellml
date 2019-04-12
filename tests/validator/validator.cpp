@@ -663,7 +663,7 @@ limitations under the License.
  */
 
 TEST(Validator, namedModel) {
-	/// @cellml2_4 4.2.1 Validate TEST model name format
+    /// @cellml2_4 4.2.1 Validate TEST model name format
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName("awesomeName");
@@ -672,7 +672,7 @@ TEST(Validator, namedModel) {
 }
 
 TEST(Validator, unnamedModel) {
-	/// @cellml2_4 4.2.1 Validate TEST mode name format
+    /// @cellml2_4 4.2.1 Validate TEST mode name format
     std::string expectedError = "Model does not have a valid name attribute.";
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -683,7 +683,7 @@ TEST(Validator, unnamedModel) {
 }
 
 TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading) {
-	/// @cellml2_10 10.1.1 Validate TEST component name format
+    /// @cellml2_10 10.1.1 Validate TEST component name format
     std::vector<std::string> expectedErrors = {
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Model does not have a valid name attribute.",
@@ -753,7 +753,7 @@ TEST(Validator, moveCopyValidatorWithUnnamedModel) {
 }
 
 TEST(Validator, namedModelWithUnnamedComponent) {
-	/// @cellml2_10 10.1.1 Validate TEST component name is not empty
+    /// @cellml2_10 10.1.1 Validate TEST component name is not empty
     std::string expectedError = "Component does not have a valid name attribute.";
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -766,8 +766,8 @@ TEST(Validator, namedModelWithUnnamedComponent) {
 }
 
 TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits) {
-	/// @cellml2_4 4.2.1 Validate TEST unnamed model with unnamed units
-	/// @cellml2_8 8.1.1 Validate TEST unnamed units in model
+    /// @cellml2_4 4.2.1 Validate TEST unnamed model with unnamed units
+    /// @cellml2_8 8.1.1 Validate TEST unnamed units in model
     std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
@@ -792,8 +792,8 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits) {
 }
 
 TEST(Validator, modelWithDuplicateComponentsAndUnits) {
-	/// @cellml2_8 8.1.2 Validate TEST Valid units names must be unique to the model
-	/// @cellml2_10 10.1.1 Validate TEST Valid names must be unique to the model
+    /// @cellml2_8 8.1.2 Validate TEST Valid units names must be unique to the model
+    /// @cellml2_10 10.1.1 Validate TEST Valid names must be unique to the model
     std::vector<std::string> expectedErrors = {
         "Model 'multiplicity' contains multiple components with the name 'michael'. Valid component names must be unique to their model.",
         "Model 'multiplicity' contains multiple units with the name 'keaton'. Valid units names must be unique to their model."
@@ -824,11 +824,11 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits) {
 }
 
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
-	/// @cellml2_11 11.1.1.1 Validate TEST variable names must be unique to their component
-	/// @cellml2_11 11.1.1.1 Validate TEST variable name must be valid
-	/// @cellml2_8 8.1.1 Validate TEST units name must be valid
-	/// @cellml2_11 11.1.1.2 Validate TEST variable units name is a valid reference  
-	/// @cellml2_19 19.7.1 Validate TEST variable units name is a valid reference
+    /// @cellml2_11 11.1.1.1 Validate TEST variable names must be unique to their component
+    /// @cellml2_11 11.1.1.1 Validate TEST variable name must be valid
+    /// @cellml2_8 8.1.1 Validate TEST units name must be valid
+    /// @cellml2_11 11.1.1.2 Validate TEST variable units name is a valid reference  
+    /// @cellml2_19 19.7.1 Validate TEST variable units name is a valid reference
 
     std::vector<std::string> expectedErrors = {
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
@@ -870,8 +870,8 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
 }
 
 TEST(Validator, invalidVariableInitialValuesAndInterfaces) {
-	/// @cellml2_11 11.1.2.1 Validate TEST variable interface value is valid
-	/// @cellml2_11 11.1.2.2 Validate TEST initial_value attrbute is real number string or variable reference
+    /// @cellml2_11 11.1.2.1 Validate TEST variable interface value is valid
+    /// @cellml2_11 11.1.2.2 Validate TEST initial_value attrbute is real number string or variable reference
     std::vector<std::string> expectedErrors = {
         "Variable 'candidate' has an invalid interface attribute value 'orange'.",
         "Variable 'candidate' has an invalid initial value 'trump'. Initial values must be a real number string or a variable reference."
@@ -900,12 +900,12 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces) {
 }
 
 TEST(Validator, importUnits) {
-	/// @cellml2_6 6.1.2 Validate TEST import units has valid units_ref attribute
-	/// @cellml2_6 6.1.1 Validate TEST import units have a valid name
-	/// @cellml2_6 6.1.2 Validate TEST import units have a units_ref unique to this model
+    /// @cellml2_6 6.1.2 Validate TEST import units has valid units_ref attribute
+    /// @cellml2_6 6.1.1 Validate TEST import units have a valid name
+    /// @cellml2_6 6.1.2 Validate TEST import units have a units_ref unique to this model
     /// @cellml2_6 6.1.1 Validate TEST import units has a name unique in this model
-    /// @cellml2_5 5.1.1 Validate TEST import element has a valid href formatted attribute __TODO__ This is very restrictive at present, check ...
-	
+    /// @cellml2_5 5.1.1 Validate TEST import element has a valid href formatted attribute TODO This is very restrictive at present, check ...
+    
     std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
@@ -991,10 +991,10 @@ TEST(Validator, importUnits) {
 }
 
 TEST(Validator, importComponents) {
-	/// @cellml2_7 7.1.1 Validate TEST import component must have valid name format
-	/// @cellml2_7 7.1.2 Validate TEST import component must have unique component_ref
-	/// @cellml2_7 7.1.1 Validate TEST import component must have unique name
-	/// @cellml2_5 5.1.1 Validate TEST import has valid href attribute
+    /// @cellml2_7 7.1.1 Validate TEST import component must have valid name format
+    /// @cellml2_7 7.1.2 Validate TEST import component must have unique component_ref
+    /// @cellml2_7 7.1.1 Validate TEST import component must have unique name
+    /// @cellml2_5 5.1.1 Validate TEST import has valid href attribute
     
     std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -1085,7 +1085,7 @@ TEST(Validator, importComponents) {
 }
 
 TEST(Validator, validMath) {
-	/// @cellml2_14 14.1 Validate TEST valid maths input works
+    /// @cellml2_14 14.1 Validate TEST valid maths input works
     std::string math =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
@@ -1129,9 +1129,9 @@ TEST(Validator, validMath) {
 }
 
 TEST(Validator, invalidMath) {
-	/// @cellml2_14 14.1.2 Validate TEST mismatch opening and closing tags
-	/// @cellml2_14 14.1.1 Validate TEST valid XML root node for math on a component
-	/// @cellml2_14 14.1.1 Validate TEST root node type is of type math
+    /// @cellml2_14 14.1.2 Validate TEST mismatch opening and closing tags
+    /// @cellml2_14 14.1.1 Validate TEST valid XML root node for math on a component
+    /// @cellml2_14 14.1.1 Validate TEST root node type is of type math
     std::string math1 =
             "<math>"
                 "<invalid_xml></not_valid>"
@@ -1168,7 +1168,7 @@ TEST(Validator, invalidMath) {
 }
 
 TEST(Validator, invalidMathMLElements) {
-	/// @cellml2_14 14.1.2 Validate TEST maths elements are supported MathML elements
+    /// @cellml2_14 14.1.2 Validate TEST maths elements are supported MathML elements
     std::string math =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
@@ -1225,11 +1225,11 @@ TEST(Validator, invalidMathMLElements) {
 }
 
 TEST(Validator, invalidMathMLVariables) {
-	/// @cellml2_14 14.1.2 Validate TEST math elements are supported MathML elements
-	/// @cellml2_14 14.1.3 Validate TEST ci children point to valid variables in this component
-	/// @cellml2_14 14.1.3 Validate TEST check for duplicate names between bound variables and variables in this component
-	/// @cellml2_14 14.1.3 Validate TEST check for empty ci element or whitespace only 
-	/// @cellml2_14 14.1.3 Validate TEST check that ci variables have been declared
+    /// @cellml2_14 14.1.2 Validate TEST math elements are supported MathML elements
+    /// @cellml2_14 14.1.3 Validate TEST ci children point to valid variables in this component
+    /// @cellml2_14 14.1.3 Validate TEST check for duplicate names between bound variables and variables in this component
+    /// @cellml2_14 14.1.3 Validate TEST check for empty ci element or whitespace only 
+    /// @cellml2_14 14.1.3 Validate TEST check that ci variables have been declared
 
     std::string math =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
@@ -1348,16 +1348,16 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
                 "</apply>"
             "</math>";
 
-	/// @cellml2_14 14.1.3 Validate TEST check for duplication between bound variable name and variable name in the same component
-	/// @cellml2_14 14.1.4 Validate TEST check for valid units reference inside cn
-	/// @cellml2_14 14.1.2 Validate TEST check for valid type specification (ie: real, e-notation)
-	/// @cellml2_14 14.1.3 Validate TEST check for whitespace only ci element
-	/// @cellml2_14 14.1.3 Validate TEST ci has valid variable reference in ths component
-	/// @cellml2_14 14.1.3 Validate TEST ci is not empty
-	/// @cellml2_14 14.1.3 Validate TEST ci units has valid name
-	/// @cellml2_14 14.1.4 Validate TEST cn units are specified
-	/// @cellml2_14 "Namespace prefix cellml for value on ci is not defined."
-	/// @cellml2_14 "No declaration for attribute cellml:value of element ci."
+    /// @cellml2_14 14.1.3 Validate TEST check for duplication between bound variable name and variable name in the same component
+    /// @cellml2_14 14.1.4 Validate TEST check for valid units reference inside cn
+    /// @cellml2_14 14.1.2 Validate TEST check for valid type specification (ie: real, e-notation)
+    /// @cellml2_14 14.1.3 Validate TEST check for whitespace only ci element
+    /// @cellml2_14 14.1.3 Validate TEST ci has valid variable reference in ths component
+    /// @cellml2_14 14.1.3 Validate TEST ci is not empty
+    /// @cellml2_14 14.1.3 Validate TEST ci units has valid name
+    /// @cellml2_14 14.1.4 Validate TEST cn units are specified
+    /// @cellml2_14 "Namespace prefix cellml for value on ci is not defined."
+    /// @cellml2_14 "No declaration for attribute cellml:value of element ci."
 
     std::vector<std::string> expectedErrors = {
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
@@ -1421,10 +1421,10 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
                 "</units>"
             "</model>";
 
-	/// @cellml2_8 8.1.3 Validate TEST Units name does not overload a built-in units name
-	/// @cellml2_9 9.1.1 Validate TEST Unit units attribute is valid reference to local or built-in units
-	/// @cellml2_9 9.1.1 Validate TEST Unit units attribute must be valid cellml identifier format
-	/// @cellml2_9 9.2.1 Validate TEST Unit prefix must be valid real number or SI prefix
+    /// @cellml2_8 8.1.3 Validate TEST Units name does not overload a built-in units name
+    /// @cellml2_9 9.1.1 Validate TEST Unit units attribute is valid reference to local or built-in units
+    /// @cellml2_9 9.1.1 Validate TEST Unit units attribute must be valid cellml identifier format
+    /// @cellml2_9 9.2.1 Validate TEST Unit prefix must be valid real number or SI prefix
 
     std::vector<std::string> expectedErrors = {
         "Units is named 'ampere', which is a protected standard unit name.",
@@ -1448,9 +1448,9 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
 }
 
 TEST(Validator, validateInvalidConnections) {
-	/// @cellml2_18 18.1.1 Validate TEST check parent component for variable
-	/// @cellml2_18 Validate TEST reciprocity check of equivalent variables.  See 19.10.3
-	/// @cellml2_19 19.10.3 Validate TEST reciprocity check that equivalence goes both ways
+    /// @cellml2_18 18.1.1 Validate TEST check parent component for variable
+    /// @cellml2_18 Validate TEST reciprocity check of equivalent variables.  See 19.10.3
+    /// @cellml2_19 19.10.3 Validate TEST reciprocity check that equivalence goes both ways
 
     std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
@@ -1463,8 +1463,8 @@ TEST(Validator, validateInvalidConnections) {
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
-	libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
-	libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp7 = std::make_shared<libcellml::Component>();
 
     libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
@@ -1472,8 +1472,8 @@ TEST(Validator, validateInvalidConnections) {
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
@@ -1481,8 +1481,8 @@ TEST(Validator, validateInvalidConnections) {
     comp2->setName("component2");
     comp3->setName("component3");
     comp4->setName("component4");
-	comp5->setName("component5");
-	comp6->setName("component6");
+    comp5->setName("component5");
+    comp6->setName("component6");
     comp7->setName("component7");
 
     v1_1->setName("variable1_1");
@@ -1490,8 +1490,8 @@ TEST(Validator, validateInvalidConnections) {
     v2->setName("variable2");
     v3->setName("variable3");
     v4->setName("variable4");
-	v5->setName("variable5");
-	v6->setName("variable6");
+    v5->setName("variable5");
+    v6->setName("variable6");
     v7->setName("variable7");
 
     v1_1->setUnits("dimensionless");
@@ -1499,8 +1499,8 @@ TEST(Validator, validateInvalidConnections) {
     v2->setUnits("dimensionless");
     v3->setUnits("dimensionless");
     v4->setUnits("dimensionless");
-	v5->setUnits("dimensionless");
-	v6->setUnits("dimensionless");
+    v5->setUnits("dimensionless");
+    v6->setUnits("dimensionless");
     v7->setUnits("dimensionless");
 
     comp1->addVariable(v1_1);
@@ -1508,15 +1508,15 @@ TEST(Validator, validateInvalidConnections) {
     comp2->addVariable(v2);
     comp3->addVariable(v3);
     comp4->addVariable(v4);
-	comp5->addVariable(v5);
-	comp6->addVariable(v6);
+    comp5->addVariable(v5);
+    comp6->addVariable(v6);
     comp7->addVariable(v7);
     m->addComponent(comp1);
     m->addComponent(comp2);
     m->addComponent(comp3);
     m->addComponent(comp4);
-	m->addComponent(comp5); 
-	m->addComponent(comp6);
+    m->addComponent(comp5); 
+    m->addComponent(comp6);
     m->addComponent(comp7);
 
     // Valid connections.
@@ -1526,12 +1526,12 @@ TEST(Validator, validateInvalidConnections) {
     // libcellml::Variable::addEquivalence(v1_1, v3);  // !! creates cycle with v1_1, v2, v3
     libcellml::Variable::addEquivalence(v1_1, v4);
     libcellml::Variable::addEquivalence(v2, v3);    
-	libcellml::Variable::addEquivalence(v5, v6);	// valid here but duplicated below
+    libcellml::Variable::addEquivalence(v5, v6);	// valid here but duplicated below
 
-	// Not valid connections
-	libcellml::Variable::addEquivalence(v6, v5);    // duplicated above, does not overwrite, skips silently
+    // Not valid connections
+    libcellml::Variable::addEquivalence(v6, v5);    // duplicated above, does not overwrite, skips silently
     
-	// Make v4 a variable without a parent component.
+    // Make v4 a variable without a parent component.
     comp4->removeVariable(v4);
     // Remove all connections on v1_2, leaving dangling reciprocal connections.
     v1_2->removeAllEquivalences();
@@ -1570,7 +1570,7 @@ TEST(Validator, validateConnectionComponent1NotEqualComponent2) {
 
 TEST(Validator, validateNoCyclesSimple) {
     /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles - simple test
-    /// @cellml2_19 19.10.5 __TODO__ Can two sibling variables in the same component be equivalent to one variable in another?
+    /// @cellml2_19 19.10.5 TODO Can two sibling variables in the same component be equivalent to one variable in another?
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1639,7 +1639,7 @@ TEST(Validator, validateNoCyclesSimple) {
 
 TEST(Validator, validateNoCyclesComplicated) {
     /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles, complicated example
-    /// @cellml2_19 19.10.5 __TODO__ Can two sibling variables in the same component be equivalent to one variable in another?
+    /// @cellml2_19 19.10.5 TODO Can two sibling variables in the same component be equivalent to one variable in another?
  
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1858,7 +1858,7 @@ TEST(Validator, validateNoCyclesComplicated) {
 
 TEST(Validator, integerStrings) {
 
-	/// @cellml2_12 12.1.1.2 Validate TEST order is an integer string (ok: 1, -1; not ok: +1, '', -, string)
+    /// @cellml2_12 12.1.1.2 Validate TEST order is an integer string (ok: 1, -1; not ok: +1, '', -, string)
 
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1934,13 +1934,13 @@ TEST(Validator, integerStrings) {
 }
 
 TEST(Validator, resets) {
-	/// @cellml2_12 12.1.1.2 Validate TEST Resets in a component have duplicated order values
-	/// @cellml2_12 12.1.1.1 Validate TEST Reset does not reference a variable
-	/// @cellml2_12 12.1.1.1-2 Validate TEST Reset does not have an order or reference a variable
-	/// @cellml2_12 12.1.2 Validate TEST Reset does not contain when item
-	/// @cellml2_12 12.1.1.1 and 12.1.2 Validate TEST Reset without order also missing child when
-	/// @cellml2_12 12.1.1.1-2 Validate TEST Reset without order does not reference a variable
-	/// @cellml2_12 12.1.1.1-2 and 12.1.2 Validate TEST Reset without order, variable and any child whens
+    /// @cellml2_12 12.1.1.2 Validate TEST Resets in a component have duplicated order values
+    /// @cellml2_12 12.1.1.1 Validate TEST Reset does not reference a variable
+    /// @cellml2_12 12.1.1.1-2 Validate TEST Reset does not have an order or reference a variable
+    /// @cellml2_12 12.1.2 Validate TEST Reset does not contain when item
+    /// @cellml2_12 12.1.1.1 and 12.1.2 Validate TEST Reset without order also missing child when
+    /// @cellml2_12 12.1.1.1-2 Validate TEST Reset without order does not reference a variable
+    /// @cellml2_12 12.1.1.1-2 and 12.1.2 Validate TEST Reset without order, variable and any child whens
 
     std::vector<std::string> expectedErrors1 = {
         "Component 'comp' contains multiple resets with order '300'.",
@@ -2011,48 +2011,48 @@ TEST(Validator, resets) {
     c->addReset(r5);
     c->addReset(r7);
 
-	m->setName("main");
-	m->addComponent(c);
+    m->setName("main");
+    m->addComponent(c);
 
-	// adding reset to second component which does not contain the variable needed
-	/// @cellml2_12 12.1.1.1 __TODO__ Validate TEST that variable attribute in a reset must be defined within the component parent
-	/// of that reset
-	libcellml::ModelPtr m2 = std::make_shared<libcellml::Model>();
-	libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-	libcellml::VariablePtr var2 = std::make_shared<libcellml::Variable>();
-	libcellml::ResetPtr r8 = std::make_shared<libcellml::Reset>();
-	libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
+    // adding reset to second component which does not contain the variable needed
+    /// @cellml2_12 12.1.1.1 TODO Validate TEST that variable attribute in a reset must be defined within the component parent
+    /// of that reset
+    libcellml::ModelPtr m2 = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr var2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r8 = std::make_shared<libcellml::Reset>();
+    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
 
-	w3->setOrder(20);
-	w3->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-	w3->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
+    w3->setOrder(20);
+    w3->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
+    w3->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
 
-	var2->setName("var2");
-	var2->setUnits("metre");
+    var2->setName("var2");
+    var2->setUnits("metre");
 
-	libcellml::Validator v1;
+    libcellml::Validator v1;
 
-	v1.validateModel(m);
-	EXPECT_EQ(expectedErrors1.size(), v1.errorCount());
-	for (size_t i = 0; i < expectedErrors1.size(); ++i) {
-		EXPECT_EQ(expectedErrors1.at(i), v1.getError(i)->getDescription());
-	}
-	/* TODO This should fail but doesn't because we're not checking resets properly ...*/
-	/// @cellml2_12 12.1.1 __TODO__ Validate that reset variable exists in component.  Code to check commented out here
-	/*r8->setOrder(20);
-	r8->addWhen(w3);
-	r8->setVariable(var); // not inside this component ...
+    v1.validateModel(m);
+    EXPECT_EQ(expectedErrors1.size(), v1.errorCount());
+    for (size_t i = 0; i < expectedErrors1.size(); ++i) {
+        EXPECT_EQ(expectedErrors1.at(i), v1.getError(i)->getDescription());
+    }
+    /* TODO This should fail but doesn't because we're not checking resets properly ...*/
+    /// @cellml2_12 12.1.1 TODO Validate that reset variable exists in component.  Code to check commented out here
+    /*r8->setOrder(20);
+    r8->addWhen(w3);
+    r8->setVariable(var); // not inside this component ...
 
-	c2->addVariable(var2);
-	c2->addReset(r8); 
-	c2->setName("comp2");
+    c2->addVariable(var2);
+    c2->addReset(r8); 
+    c2->setName("comp2");
 
-	m2->setName("main2");
-	m2->addComponent(c2);
+    m2->setName("main2");
+    m2->addComponent(c2);
 
-   	libcellml::Validator v2;
-	v2.validateModel(m2);
-	EXPECT_EQ(1u, v2.errorCount());*/
+    libcellml::Validator v2;
+    v2.validateModel(m2);
+    EXPECT_EQ(1u, v2.errorCount());*/
 
 }
 
@@ -2068,15 +2068,15 @@ TEST(Validator, whens) {
         "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML condition set.",
     };
 
-	/// @cellml2_13 13.1.1 Validate TEST When item has an order
-	/// @cellml2_12 12.1.1 Validate TEST When item has a reset which references a variable
-	/// @cellml2_13 13.1.2 Validate TEST When item has a reset which references a variable, contains a MathML condition
-	/// @cellml2_13 13.1.2 Validate TEST When item has a reset which references a variable, contains a MathML value
-	/// @cellml2_12 12.1.2 Validate TEST Reset item has an order
-	/// @cellml2_12 12.1.2 Validate TEST Reset item has duplicated order values
-	/// @cellml2_13 13.1.2 Validate TEST Reset item references a when which does not have a MathML value 
-	/// @cellml2_13 13.1.2 Validate TEST Reset item references a when which does not have a MathML condition
-	/// @cellml2_13 13.1.1 Validate TEST When item has unique order amongst siblings
+    /// @cellml2_13 13.1.1 Validate TEST When item has an order
+    /// @cellml2_12 12.1.1 Validate TEST When item has a reset which references a variable
+    /// @cellml2_13 13.1.2 Validate TEST When item has a reset which references a variable, contains a MathML condition
+    /// @cellml2_13 13.1.2 Validate TEST When item has a reset which references a variable, contains a MathML value
+    /// @cellml2_12 12.1.2 Validate TEST Reset item has an order
+    /// @cellml2_12 12.1.2 Validate TEST Reset item has duplicated order values
+    /// @cellml2_13 13.1.2 Validate TEST Reset item references a when which does not have a MathML value 
+    /// @cellml2_13 13.1.2 Validate TEST Reset item references a when which does not have a MathML condition
+    /// @cellml2_13 13.1.1 Validate TEST When item has unique order amongst siblings
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -2143,7 +2143,7 @@ TEST(Validator, validMathCnElements) {
                 "</apply>"
             "</math>";
 
-	/// @cellml2_14 14.1.4 Validate TEST Tests that valid ci entries pass the tests
+    /// @cellml2_14 14.1.4 Validate TEST Tests that valid ci entries pass the tests
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -2165,41 +2165,41 @@ TEST(Validator, validMathCnElements) {
 }
 
 TEST(Validator, importDuplicateInfoset) {
-	/// @cellml2_5 5.1.3 __TODO?__ Validate TEST Check for semantic equivalence between parent and child infoset: you cannot import yourself
+    /// @cellml2_5 5.1.3 __TODO?__ Validate TEST Check for semantic equivalence between parent and child infoset: you cannot import yourself
 }
 
 TEST(Validator, variableEquivalentUnits) {
-	/// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables
-	
-	std::vector<std::string> expectedErrors = {
-		"Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: kilogram^1.000000, metre^-2.000000, second^-2.000000, ",
-		"Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'potayto' with non-matching units of 'testunit3'. The mismatch is: kilogram^-1.000000, metre^2.000000, second^2.000000, ",
-		"Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1.000000, ",
-		"Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. The mismatch is: metre^-1.000000, "
-	};
+    /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables
+    
+    std::vector<std::string> expectedErrors = {
+        "Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: kilogram^1.000000, metre^-2.000000, second^-2.000000, ",
+        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'potayto' with non-matching units of 'testunit3'. The mismatch is: kilogram^-1.000000, metre^2.000000, second^2.000000, ",
+        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1.000000, ",
+        "Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. The mismatch is: metre^-1.000000, "
+    };
 
-	libcellml::Validator validator;
-	libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-	libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-	libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-	libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
 
-	libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v9 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v9 = std::make_shared<libcellml::Variable>();
 
-	libcellml::VariablePtr v10 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v10 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
 
-	libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
-	libcellml::VariablePtr v14 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v14 = std::make_shared<libcellml::Variable>();
 
     v1->setName("tomayto");
     v2->setName("tomahto");
@@ -2225,161 +2225,161 @@ TEST(Validator, variableEquivalentUnits) {
 
     m->setName("callthewholethingoff");
 
-	comp1->addVariable(v1);
-	comp2->addVariable(v2);
-	comp1->addVariable(v3);
-	comp2->addVariable(v4);
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp1->addVariable(v3);
+    comp2->addVariable(v4);
 
-	comp1->addVariable(v5);
-	comp2->addVariable(v6);
-	comp3->addVariable(v7);
+    comp1->addVariable(v5);
+    comp2->addVariable(v6);
+    comp3->addVariable(v7);
 
-	comp2->addVariable(v8);
-	comp3->addVariable(v9);
+    comp2->addVariable(v8);
+    comp3->addVariable(v9);
 
-	comp2->addVariable(v10);
-	comp3->addVariable(v11);
+    comp2->addVariable(v10);
+    comp3->addVariable(v11);
 
-	comp1->addVariable(v12);
-	comp2->addVariable(v13);
-	comp3->addVariable(v14);
+    comp1->addVariable(v12);
+    comp2->addVariable(v13);
+    comp3->addVariable(v14);
 
-	m->addComponent(comp1);
-	m->addComponent(comp2);
-	m->addComponent(comp3);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
 
-	libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-	u1->setName("testunit1");
-	u1->addUnit("metre");
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("testunit1");
+    u1->addUnit("metre");
 
-	libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-	u2->setName("testunit2");
-	u2->addUnit("meter");
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("testunit2");
+    u2->addUnit("meter");
 
-	libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-	u3->setName("testunit3");
-	u3->addUnit("pascal");
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    u3->setName("testunit3");
+    u3->addUnit("pascal");
 
-	libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
-	u4->setName("testunit4");
-	u4->addUnit("metre", 0, -1.0, 1.0); // prefix, exp, mult
-	u4->addUnit("kilogram", 0, 1.0, 1.0);
-	u4->addUnit("second", 0, -2.0, 1.0);
+    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    u4->setName("testunit4");
+    u4->addUnit("metre", 0, -1.0, 1.0); // prefix, exp, mult
+    u4->addUnit("kilogram", 0, 1.0, 1.0);
+    u4->addUnit("second", 0, -2.0, 1.0);
 
-	libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
-	u5->setName("testunit5");
-	u5->addUnit("metre", 0, -2.0, 1.0);
-	u5->addUnit("meter", 0, 2.0, 1.0);
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    u5->setName("testunit5");
+    u5->addUnit("metre", 0, -2.0, 1.0);
+    u5->addUnit("meter", 0, 2.0, 1.0);
 
-	libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
-	u6->setName("testunit6");
-	u6->addUnit("dimensionless");
+    libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
+    u6->setName("testunit6");
+    u6->addUnit("dimensionless");
 
-	libcellml::UnitsPtr u7 = std::make_shared<libcellml::Units>();
-	u7->setName("testunit7");
-	u7->addUnit("steradian");
+    libcellml::UnitsPtr u7 = std::make_shared<libcellml::Units>();
+    u7->setName("testunit7");
+    u7->addUnit("steradian");
 
-	libcellml::UnitsPtr u8 = std::make_shared<libcellml::Units>();
-	u8->setName("testunit8");
-	u8->addUnit("newton", 0, 1, 1);
-	u8->addUnit("pascal", 0, -1, 1);
-	u8->addUnit("sievert", 0, -1, 1);
+    libcellml::UnitsPtr u8 = std::make_shared<libcellml::Units>();
+    u8->setName("testunit8");
+    u8->addUnit("newton", 0, 1, 1);
+    u8->addUnit("pascal", 0, -1, 1);
+    u8->addUnit("sievert", 0, -1, 1);
 
-	libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
-	u9->setName("testunit9");
-	u9->addUnit("second", 0, 2, 1);
-	u9->addUnit("radian", 0, -4, 1);
-	u9->addUnit("steradian", 0, 2, 1);
+    libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
+    u9->setName("testunit9");
+    u9->addUnit("second", 0, 2, 1);
+    u9->addUnit("radian", 0, -4, 1);
+    u9->addUnit("steradian", 0, 2, 1);
 
-	libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
-	u10->setName("testunit10");
-	u10->addUnit("gram", 0, 1, 1000.0);
+    libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
+    u10->setName("testunit10");
+    u10->addUnit("gram", 0, 1, 1000.0);
 
-	libcellml::UnitsPtr u11 = std::make_shared<libcellml::Units>();
-	u11->setName("testunit11");
-	u11->addUnit("kilogram");
+    libcellml::UnitsPtr u11 = std::make_shared<libcellml::Units>();
+    u11->setName("testunit11");
+    u11->addUnit("kilogram");
 
-	libcellml::UnitsPtr u12 = std::make_shared<libcellml::Units>();
-	u12->setName("testunit12");
-	u12->addUnit("gram", "kilo", 1.0, 1.0);
+    libcellml::UnitsPtr u12 = std::make_shared<libcellml::Units>();
+    u12->setName("testunit12");
+    u12->addUnit("gram", "kilo", 1.0, 1.0);
 
-	libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
-	u13->setName("testunit13");
-	u13->addUnit("testunit2", 0, 2.0, 1.0);
-	u13->addUnit("testunit8", 0, 2.0, 1.0);
+    libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
+    u13->setName("testunit13");
+    u13->addUnit("testunit2", 0, 2.0, 1.0);
+    u13->addUnit("testunit8", 0, 2.0, 1.0);
 
-	libcellml::UnitsPtr u14 = std::make_shared<libcellml::Units>();
-	u14->setName("testunit14");
-	u14->addUnit("testunit1", 0, 1.0, 1.0);
-	u14->addUnit("testunit9", 0, 2.0, 1.0);
+    libcellml::UnitsPtr u14 = std::make_shared<libcellml::Units>();
+    u14->setName("testunit14");
+    u14->addUnit("testunit1", 0, 1.0, 1.0);
+    u14->addUnit("testunit9", 0, 2.0, 1.0);
 
-	v1->setUnits(u1);
-	v2->setUnits(u2);
-	v3->setUnits(u3);
-	v4->setUnits(u4);
-	v5->setUnits(u5);
-	v6->setUnits(u6);
-	v7->setUnits(u7);
-	v8->setUnits(u8);
-	v9->setUnits(u9);
-	v10->setUnits(u10);
-	v11->setUnits(u11);
-	v12->setUnits(u12);
-	v13->setUnits(u13);
-	v14->setUnits(u14);
+    v1->setUnits(u1);
+    v2->setUnits(u2);
+    v3->setUnits(u3);
+    v4->setUnits(u4);
+    v5->setUnits(u5);
+    v6->setUnits(u6);
+    v7->setUnits(u7);
+    v8->setUnits(u8);
+    v9->setUnits(u9);
+    v10->setUnits(u10);
+    v11->setUnits(u11);
+    v12->setUnits(u12);
+    v13->setUnits(u13);
+    v14->setUnits(u14);
 
-	m->addUnits(u1);
-	m->addUnits(u2);
-	m->addUnits(u3);
-	m->addUnits(u4);
-	m->addUnits(u5);
-	m->addUnits(u6);
-	m->addUnits(u7);
-	m->addUnits(u8);
-	m->addUnits(u9);
-	m->addUnits(u10);
-	m->addUnits(u11);
-	m->addUnits(u12);
-	m->addUnits(u13);
-	m->addUnits(u14);
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+    m->addUnits(u4);
+    m->addUnits(u5);
+    m->addUnits(u6);
+    m->addUnits(u7);
+    m->addUnits(u8);
+    m->addUnits(u9);
+    m->addUnits(u10);
+    m->addUnits(u11);
+    m->addUnits(u12);
+    m->addUnits(u13);
+    m->addUnits(u14);
 
-	// This one is fine : metre vs meter
-	libcellml::Variable::addEquivalence(v1, v2);
+    // This one is fine : metre vs meter
+    libcellml::Variable::addEquivalence(v1, v2);
 
-	// This one is NOT fine: metre vs pascal
-	libcellml::Variable::addEquivalence(v2, v3);
+    // This one is NOT fine: metre vs pascal
+    libcellml::Variable::addEquivalence(v2, v3);
 
-	// This one is fine: pascal vs kg/(m.s^2)
-	libcellml::Variable::addEquivalence(v3, v4);
+    // This one is fine: pascal vs kg/(m.s^2)
+    libcellml::Variable::addEquivalence(v3, v4);
 
-	// This one is fine: m^2/m^2 vs dimensionless
-	libcellml::Variable::addEquivalence(v5, v6);
-	
-	// This one is fine: dimensionless vs steradians
-	libcellml::Variable::addEquivalence(v6, v7);
+    // This one is fine: m^2/m^2 vs dimensionless
+    libcellml::Variable::addEquivalence(v5, v6);
+    
+    // This one is fine: dimensionless vs steradians
+    libcellml::Variable::addEquivalence(v6, v7);
 
-	// This one is fine but complicated: newton/(siever.pascal) = second^2.radian^3.steradian^-4
-	libcellml::Variable::addEquivalence(v8, v9);	
+    // This one is fine but complicated: newton/(siever.pascal) = second^2.radian^3.steradian^-4
+    libcellml::Variable::addEquivalence(v8, v9);	
 
-	// Fine: testing the multipliers 1000*grams = 1*kilograms 
-	// ** NB multipliers not tested!
-	libcellml::Variable::addEquivalence(v10, v11);
+    // Fine: testing the multipliers 1000*grams = 1*kilograms 
+    // ** NB multipliers not tested!
+    libcellml::Variable::addEquivalence(v10, v11);
 
-	// Fine: testing prefix kilo*gram = kilogram
-	// ** NB multipliers not tested!
-	libcellml::Variable::addEquivalence(v10, v12); 
+    // Fine: testing prefix kilo*gram = kilogram
+    // ** NB multipliers not tested!
+    libcellml::Variable::addEquivalence(v10, v12); 
 
-	// Off by (meter)^1: super-complicated nested units
-	libcellml::Variable::addEquivalence(v13, v14);
+    // Off by (meter)^1: super-complicated nested units
+    libcellml::Variable::addEquivalence(v13, v14);
 
-	validator.validateModel(m);
+    validator.validateModel(m);
 
-	EXPECT_EQ(4u, validator.errorCount());
+    EXPECT_EQ(4u, validator.errorCount());
 
-	// Check for expected error messages
-	for (size_t i = 0; i < validator.errorCount(); ++i) {
-		EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
-	}
+    // Check for expected error messages
+    for (size_t i = 0; i < validator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+    }
 }
 
 
