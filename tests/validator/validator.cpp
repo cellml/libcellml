@@ -1568,8 +1568,77 @@ TEST(Validator, validateConnectionComponent1NotEqualComponent2) {
     }
 }
 
-TEST(Validator, validateNoCycles) {
-    /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles
+TEST(Validator, validateNoCyclesSimple) {
+    /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles - simple test
+    /// @cellml2_19 19.10.5 __TODO__ Can two sibling variables in the same component be equivalent to one variable in another?
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+  
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+   
+    libcellml::Variable::addEquivalence(v1, v2); 
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v3, v1); 
+   
+    v.validateModel(m);
+    EXPECT_EQ(1u, v.errorCount());
+
+    if (v.errorCount() == 1) {
+        size_t pos = 0;
+        std::string split = "Loop: ";
+        std::string msg = v.getError(0)->getDescription();
+        std::vector<std::string> split_msg;
+
+        while ((pos = msg.find(split)) != std::string::npos) {
+            split_msg.push_back(msg.substr(0, pos));
+            msg.erase(0, pos + split.length());
+        }
+        split_msg.push_back(msg);
+
+        EXPECT_EQ(3u, split_msg.size());
+
+        if (split_msg.size() == 3) {
+            int found = 0;
+            if (split_msg[1].find("variable1") &&
+                split_msg[1].find("variable2") &&
+                split_msg[1].find("variable3")) {
+                found++;
+            }
+            EXPECT_EQ(2u, found);
+        }
+    }   
+}
+
+
+TEST(Validator, validateNoCyclesComplicated) {
+    /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles, complicated example
     /// @cellml2_19 19.10.5 __TODO__ Can two sibling variables in the same component be equivalent to one variable in another?
  
     libcellml::Validator v;
@@ -1761,7 +1830,7 @@ TEST(Validator, validateNoCycles) {
         }
         split_msg.push_back(msg);
 
-        EXPECT_EQ(split_msg.size(), 3);
+        EXPECT_EQ(3u, split_msg.size());
 
         if (split_msg.size() == 3) {
         // Check that we have each of the variables present in the two loops
@@ -1782,7 +1851,7 @@ TEST(Validator, validateNoCycles) {
                 || ((split_msg[2].find("variable9")) && (split_msg[2].find("variable5")) && (split_msg[2].find("variable1_2")))) {
                 found++;
             }
-            EXPECT_EQ(found, 2);
+            EXPECT_EQ(2u, found);
         }
     }
 }
