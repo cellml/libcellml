@@ -17,8 +17,6 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
-#include <libxml/uri.h>
-
 #include "libcellml/component.h"
 #include "libcellml/error.h"
 #include "libcellml/importsource.h"
@@ -29,6 +27,8 @@ limitations under the License.
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
+
+#include <libxml/uri.h>
 
 #include <algorithm>
 #include <iostream>
