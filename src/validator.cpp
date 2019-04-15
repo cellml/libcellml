@@ -2165,23 +2165,39 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     hints = "";
     
     if (!(v1->getUnits() == "dimensionless")) {
-        if (model->hasUnits(v1->getUnits())) {
+        if (model->hasUnits(v1->getUnits())) {  
             u1 = model->getUnits(v1->getUnits());
-
             incrementBaseUnitCount(model, unitmap, u1->getName(), standardList, 1);
         }
+        else if ( unitmap.find(v1->getUnits()) != unitmap.end() ) {  
+            // Then is an existing base unit: is it ever possible to get here?
+            unitmap.at(v1->getUnits()) += 1.0;
+        }
+        else if (isStandardUnitName(v1->getUnits())) {
+            incrementBaseUnitCount(model, unitmap, v1->getUnits(), standardList, 1);
+        }
         else {
-            return false;
+            // Empty unit, add to base list: is it ever possible to get here?
+            unitmap.emplace(std::pair<std::string,double>(v1->getUnits(),1.0));
         }
     }
+
     // Remove same units from second unit to compare
     if (!(v2->getUnits() == "dimensionless")) {
-        if (model->hasUnits(v2->getUnits())) {
+        if ( model->hasUnits(v2->getUnits())) {
             u2 = model->getUnits(v2->getUnits());
             decrementBaseUnitCount(model, unitmap, u2->getName(), standardList, 1);
         }
+        else if ( unitmap.find(v2->getUnits()) != unitmap.end() ) {  
+            // Then is an existing base unit: is it ever possible to get here?
+            unitmap.at(v2->getUnits()) -= 1.0;
+        }
+        else if (isStandardUnitName(v2->getUnits())) {
+            decrementBaseUnitCount(model, unitmap, v2->getUnits(), standardList, 1);
+        }
         else {
-            return false;
+            // empty unit, add to base list: is it ever possible to get here?
+            unitmap.emplace(std::pair<std::string,double>(v1->getUnits(),-1.0));
         }
     }
     // Remove "dimensionless" from testing
@@ -2205,29 +2221,38 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
     std::string myRef, myPre, myId;
     double myExp, myMult;
     std::map<std::string, double> myBase;
+
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr uRef = std::make_shared<libcellml::Units>();
 
-    if (model->hasUnits(uName))
+    if (model->hasUnits(uName)) {
         u = model->getUnits(uName);
-    else
-        return;
-        
-    if (!u->isBaseUnit()) {
-        for (size_t i = 0; i < u->unitCount(); ++i) {
-            u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
+        if (!u->isBaseUnit()) {
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
 
-            if (!isStandardUnitName(myRef))
-                incrementBaseUnitCount(model, unitmap, myRef, standardList,uExp*myExp);
-            else {
-                myBase = standardList.at(myRef);
-                for (const auto &iter : myBase) {
-                    unitmap.at(iter.first) += iter.second*myExp*uExp;
+                if (!isStandardUnitName(myRef))
+                    incrementBaseUnitCount(model, unitmap, myRef, standardList, uExp*myExp);
+                else {
+                    myBase = standardList.at(myRef);
+                    for (const auto &iter : myBase) {
+                        unitmap.at(iter.first) += iter.second*myExp*uExp;
+                    }
                 }
             }
+        } else if (unitmap.find(uName) != unitmap.end()) {
+            // Then is an existing base unit
+            unitmap.at(uName) += uExp;
+        } else {
+            // Empty unit, add to base list
+            unitmap.emplace(std::pair<std::string, double>(uName, uExp));
         }
-    }
-    else {
-        unitmap.at(u->getName()) += 1.0;
+    } 
+    else if (isStandardUnitName(uName)) {
+        myBase = standardList.at(uName);
+        for (const auto &iter : myBase) {
+            unitmap.at(iter.first) += iter.second*uExp;
+        }        
     }
 }
 
@@ -2240,29 +2265,36 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
     std::map<std::string, double> myBase;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
-    if (model->hasUnits(uName))
+    if (model->hasUnits(uName)) {
         u = model->getUnits(uName);
-    else
-        return;
 
-    if (!u->isBaseUnit()) {
-        for (size_t i = 0; i < u->unitCount(); ++i) {
-            u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
+        if (!u->isBaseUnit()) {
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
 
-            if (!isStandardUnitName(myRef))
-                decrementBaseUnitCount(model, unitmap, myRef, standardList, myExp*uExp);
-            else {
-                myBase = standardList.at(myRef);
-                for (const auto &iter : myBase) {
-                    unitmap.at(iter.first) -= iter.second*myExp*uExp;
+                if (!isStandardUnitName(myRef))
+                    decrementBaseUnitCount(model, unitmap, myRef, standardList, myExp*uExp);
+                else {
+                    myBase = standardList.at(myRef);
+                    for (const auto &iter : myBase) {
+                        unitmap.at(iter.first) -= iter.second*myExp*uExp;
+                    }
                 }
             }
+        } else if (unitmap.find(uName) != unitmap.end()) {
+            // Then is an existing base unit
+            unitmap.at(uName) -= uExp;
+        } else {
+            // Empty unit, add to base list
+            unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
         }
     }
-    else {
-        unitmap.at(u->getName()) -= 1.0;
-    }
-
+    else if (isStandardUnitName(uName)) {
+        myBase = standardList.at(uName);
+        for (const auto &iter : myBase) {
+            unitmap.at(iter.first) -= iter.second*uExp;
+        }        
+    }  
 }
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {

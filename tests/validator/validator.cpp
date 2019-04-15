@@ -823,6 +823,32 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits) {
     }
 }
 
+TEST(Validator, unitsWithPrefixOutOfRange) {
+    // int limit is 18,446,744,073,709,551,615
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    m->setName("myModel");
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName("myComponent");
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName("myVariable");
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    u->setName("myUnits");
+    u->addUnit("second", "18446744073709551616");
+
+    v->setUnits(u);
+    c->addVariable(v);
+    m->addComponent(c);
+    m->addUnits(u);
+
+    validator.validateModel(m);
+    // This does not throw any errors as they're caught in the stoi function.  Only here to give complete
+    // test coverage. 
+    EXPECT_EQ(0u, validator.errorCount());
+}
+
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
     /// @cellml2_11 11.1.1.1 Validate TEST variable names must be unique to their component
     /// @cellml2_11 11.1.1.1 Validate TEST variable name must be valid
@@ -1004,6 +1030,7 @@ TEST(Validator, importComponents) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component does not have a valid name attribute.",
         "Model 'model_name' contains multiple imported components from 'yet-another-other-model.xml' with the same component_ref attribute 'new_shiny_component_ref'.",
+        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute, 'not @ valid url'. ",
     };
 
     libcellml::Validator v;
@@ -1077,6 +1104,16 @@ TEST(Validator, importComponents) {
     m->addComponent(importedComponent7);
     v.validateModel(m);
     EXPECT_EQ(7u, v.errorCount());
+
+    // Iinvalid: component_ref is not valid html
+    libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
+    imp8->setUrl("not @ valid url"); // source used before
+    libcellml::ComponentPtr importedComponent8 = std::make_shared<libcellml::Component>();
+    importedComponent8->setName("a_bad_imported_component");
+    importedComponent8->setSourceComponent(imp8, "component_in_some_model");
+    m->addComponent(importedComponent8);
+    v.validateModel(m);
+    EXPECT_EQ(8u, v.errorCount());
  
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -1636,7 +1673,6 @@ TEST(Validator, validateNoCyclesSimple) {
     }   
 }
 
-
 TEST(Validator, validateNoCyclesComplicated) {
     /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles, complicated example
     /// @cellml2_19 19.10.5 TODO Can two sibling variables in the same component be equivalent to one variable in another?
@@ -2166,6 +2202,70 @@ TEST(Validator, validMathCnElements) {
 
 TEST(Validator, importDuplicateInfoset) {
     /// @cellml2_5 5.1.3 __TODO?__ Validate TEST Check for semantic equivalence between parent and child infoset: you cannot import yourself
+}
+
+TEST(Validator, setUnitsWithNoChildUnit) {
+
+    std::vector<std::string> expectedErrors = {
+        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'apple'. The mismatch is: apple^9.000000, ",
+        "Variable 'v2' has units of 'apple' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. The mismatch is: apple^-9.000000, ",
+        "Variable 'v2' has units of 'apple' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: apple^1.000000, metre^-3.000000, ",
+        "Variable 'v3' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'apple'. The mismatch is: apple^-1.000000, metre^3.000000, ",
+    };
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    m->setName("m");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+    
+    v1->setName("v1");
+    v2->setName("v2");
+    v3->setName("v3");
+
+    libcellml::UnitsPtr uApple = std::make_shared<libcellml::Units>();
+    uApple->setName("apple");
+
+    libcellml::UnitsPtr uBanana = std::make_shared<libcellml::Units>();
+    uBanana->setName("banana");
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("bushell_of_apples"); 
+    u1->addUnit("apple", 0, 10.0, 1.0);
+
+    v1->setUnits(u1);
+    v2->setUnits("apple");
+    v3->setUnits("litre");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+    c3->addVariable(v3);
+
+    m->addComponent(c1);
+    m->addComponent(c2);
+    m->addComponent(c3);
+    m->addUnits(u1);
+    m->addUnits(uApple);
+    m->addUnits(uBanana);
+   
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v3, v2);
+    
+    validator.validateModel(m);
+
+    EXPECT_EQ(4u, validator.errorCount());
+
+    for (size_t i = 0; i < validator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+    }
 }
 
 TEST(Validator, variableEquivalentUnits) {
