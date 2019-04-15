@@ -1851,7 +1851,7 @@ TEST(Validator, validateNoCyclesComplicated) {
                 || ((split_msg[2].find("variable9")) && (split_msg[2].find("variable5")) && (split_msg[2].find("variable1_2")))) {
                 found++;
             }
-            EXPECT_EQ(2u, found);
+            EXPECT_EQ(2, found);
         }
     }
 }
