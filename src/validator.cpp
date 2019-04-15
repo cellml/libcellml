@@ -2355,9 +2355,12 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 bool Validator::ValidatorImpl::isValidHTML(const std::string &html) {
 
     /// @cellml2_5 5.1.1 Check string is a valid html attribute according to XLink specs, but using libxml2 
-    if (xmlParseURI(html.c_str()) == NULL) {
+    const char *uri = html.c_str();
+    if (xmlParseURI(uri) == NULL) {
+        delete[] uri;
         return false;
     }
+    delete[] uri;
     return true;
 }
 
