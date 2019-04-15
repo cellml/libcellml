@@ -1622,16 +1622,16 @@ TEST(Validator, validateNoCyclesSimple) {
         }
         split_msg.push_back(msg);
 
-        EXPECT_EQ(3u, split_msg.size());
+        EXPECT_EQ(2u, split_msg.size());
 
-        if (split_msg.size() == 3) {
+        if (split_msg.size() == 2) {
             int found = 0;
             if (split_msg[1].find("variable1") &&
                 split_msg[1].find("variable2") &&
                 split_msg[1].find("variable3")) {
                 found++;
             }
-            EXPECT_EQ(2u, found);
+            EXPECT_EQ(1u, found);
         }
     }   
 }
