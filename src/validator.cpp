@@ -2176,10 +2176,6 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         else if (isStandardUnitName(v1->getUnits())) {
             incrementBaseUnitCount(model, unitmap, v1->getUnits(), standardList, 1);
         }
-        else {
-            // Empty unit, add to base list: is it ever possible to get here?
-            unitmap.emplace(std::pair<std::string,double>(v1->getUnits(),1.0));
-        }
     }
 
     // Remove same units from second unit to compare
@@ -2189,15 +2185,11 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
             decrementBaseUnitCount(model, unitmap, u2->getName(), standardList, 1);
         }
         else if ( unitmap.find(v2->getUnits()) != unitmap.end() ) {  
-            // Then is an existing base unit: is it ever possible to get here?
+            // Then is an existing base unit
             unitmap.at(v2->getUnits()) -= 1.0;
         }
         else if (isStandardUnitName(v2->getUnits())) {
             decrementBaseUnitCount(model, unitmap, v2->getUnits(), standardList, 1);
-        }
-        else {
-            // empty unit, add to base list: is it ever possible to get here?
-            unitmap.emplace(std::pair<std::string,double>(v1->getUnits(),-1.0));
         }
     }
     // Remove "dimensionless" from testing

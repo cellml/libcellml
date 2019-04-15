@@ -2207,20 +2207,31 @@ TEST(Validator, importDuplicateInfoset) {
 TEST(Validator, setUnitsWithNoChildUnit) {
 
     std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'apple'. The mismatch is: apple^9.000000, ",
-        "Variable 'v2' has units of 'apple' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. The mismatch is: apple^-9.000000, ",
-        "Variable 'v2' has units of 'apple' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: apple^1.000000, metre^-3.000000, ",
-        "Variable 'v3' has units of 'litre' and an equivalent variable 'v2' with non-matching units of 'apple'. The mismatch is: apple^-1.000000, metre^3.000000, ",
+        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10.000000, banana^-5.000000, ",
+        "Variable 'v4' has units of 'gram' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: kilogram^1.000000, metre^-3.000000, ",
+        "Variable 'v7' has units of 'apple' and an equivalent variable 'v8' with non-matching units of 'banana'. The mismatch is: apple^1.000000, banana^-1.000000, ",
+        "Variable 'v2' has units of 'bunch_of_bananas' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. The mismatch is: apple^-10.000000, banana^5.000000, ",
+        "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1.000000, second^-1.000000, ",
+        "Variable 'v8' has units of 'banana' and an equivalent variable 'v7' with non-matching units of 'apple'. The mismatch is: apple^-1.000000, banana^1.000000, ",
+        "Variable 'v3' has units of 'litre' and an equivalent variable 'v4' with non-matching units of 'gram'. The mismatch is: kilogram^-1.000000, metre^3.000000, ",
+        "Variable 'v6' has units of 'second' and an equivalent variable 'v5' with non-matching units of 'metre'. The mismatch is: metre^-1.000000, second^1.000000, ",
     };
 
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();
 
     m->setName("m");
     c1->setName("c1");
@@ -2230,6 +2241,11 @@ TEST(Validator, setUnitsWithNoChildUnit) {
     v1->setName("v1");
     v2->setName("v2");
     v3->setName("v3");
+    v4->setName("v4");
+    v5->setName("v5");
+    v6->setName("v6");
+    v7->setName("v7");
+    v8->setName("v8");
 
     libcellml::UnitsPtr uApple = std::make_shared<libcellml::Units>();
     uApple->setName("apple");
@@ -2241,27 +2257,54 @@ TEST(Validator, setUnitsWithNoChildUnit) {
     u1->setName("bushell_of_apples"); 
     u1->addUnit("apple", 0, 10.0, 1.0);
 
-    v1->setUnits(u1);
-    v2->setUnits("apple");
-    v3->setUnits("litre");
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("bunch_of_bananas");
+    u2->addUnit("banana", 0, 5.0, 1.0);
+
+    //libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
+    //u6->setName("big_barrel"); 
+    //u6->addUnit("litre", 0, 1.0, 1000.0);
+
+    v1->setUnits(u1); // bushell of apples - testing user-defined base units
+    v2->setUnits(u2); // bunch of bananas - testing user-defined base units
+    
+    v3->setUnits("litre"); // testing standard units which are not base units
+    v4->setUnits("gram");
+
+    v5->setUnits("metre"); // testing built-in base units
+    v6->setUnits("second");
+
+    v7->setUnits("apple");
+    v8->setUnits("banana");
 
     c1->addVariable(v1);
     c2->addVariable(v2);
     c3->addVariable(v3);
 
+    c1->addVariable(v4);
+    c2->addVariable(v5);
+    c3->addVariable(v6);
+
+    c1->addVariable(v7);
+    c2->addVariable(v8);
+
     m->addComponent(c1);
     m->addComponent(c2);
     m->addComponent(c3);
+
     m->addUnits(u1);
+    m->addUnits(u2);
     m->addUnits(uApple);
     m->addUnits(uBanana);
-   
+       
     libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Variable::addEquivalence(v3, v2);
-    
+    libcellml::Variable::addEquivalence(v3, v4);
+    libcellml::Variable::addEquivalence(v5, v6);
+    libcellml::Variable::addEquivalence(v7, v8);
+
     validator.validateModel(m);
 
-    EXPECT_EQ(4u, validator.errorCount());
+    EXPECT_EQ(8u, validator.errorCount());
 
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
