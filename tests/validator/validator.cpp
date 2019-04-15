@@ -1625,13 +1625,13 @@ TEST(Validator, validateNoCyclesSimple) {
         EXPECT_EQ(2u, split_msg.size());
 
         if (split_msg.size() == 2) {
-            unsigned int found = 0;
+            bool found = false;
             if (split_msg[1].find("variable1") &&
                 split_msg[1].find("variable2") &&
                 split_msg[1].find("variable3")) {
-                found++;
+                found = true;
             }
-            EXPECT_EQ(1u, found);
+            EXPECT_TRUE(found);
         }
     }   
 }
