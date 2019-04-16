@@ -2206,6 +2206,8 @@ TEST(Validator, importDuplicateInfoset) {
 
 TEST(Validator, setUnitsWithNoChildUnit) {
 
+    /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, user-defined base variables
+
     std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10.000000, banana^-5.000000, ",
         "Variable 'v4' has units of 'gram' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: kilogram^1.000000, metre^-3.000000, ",
@@ -2319,8 +2321,7 @@ TEST(Validator, setUnitsWithNoChildUnit) {
 }
 
 TEST(Validator, variableEquivalentUnits) {
-    /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables
-    
+    /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, built-in base variables  
     std::vector<std::string> expectedErrors = {
         "Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: kilogram^1.000000, metre^-2.000000, second^-2.000000, ",
         "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'potayto' with non-matching units of 'testunit3'. The mismatch is: kilogram^-1.000000, metre^2.000000, second^2.000000, ",

@@ -2376,7 +2376,6 @@ bool Validator::ValidatorImpl::isValidHTML(const std::string &html) {
     if ( ptr == NULL ) {
         return false;
     }
-    delete ptr;
     return true;
 }
 
