@@ -2232,6 +2232,7 @@ TEST(Validator, setUnitsWithNoChildUnit) {
     libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v9 = std::make_shared<libcellml::Variable>();
 
     m->setName("m");
     c1->setName("c1");
@@ -2246,6 +2247,7 @@ TEST(Validator, setUnitsWithNoChildUnit) {
     v6->setName("v6");
     v7->setName("v7");
     v8->setName("v8");
+    v9->setName("v9");
 
     libcellml::UnitsPtr uApple = std::make_shared<libcellml::Units>();
     uApple->setName("apple");
@@ -2261,9 +2263,9 @@ TEST(Validator, setUnitsWithNoChildUnit) {
     u2->setName("bunch_of_bananas");
     u2->addUnit("banana", 0, 5.0, 1.0);
 
-    //libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
-    //u6->setName("big_barrel"); 
-    //u6->addUnit("litre", 0, 1.0, 1000.0);
+    libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
+    u9->setName("big_barrel"); 
+    u9->addUnit("metre", 0, 3.0, 1.0);
 
     v1->setUnits(u1); // bushell of apples - testing user-defined base units
     v2->setUnits(u2); // bunch of bananas - testing user-defined base units
@@ -2277,6 +2279,8 @@ TEST(Validator, setUnitsWithNoChildUnit) {
     v7->setUnits("apple");
     v8->setUnits("banana");
 
+    v9->setUnits(u9);
+
     c1->addVariable(v1);
     c2->addVariable(v2);
     c3->addVariable(v3);
@@ -2287,6 +2291,7 @@ TEST(Validator, setUnitsWithNoChildUnit) {
 
     c1->addVariable(v7);
     c2->addVariable(v8);
+    c3->addVariable(v9);
 
     m->addComponent(c1);
     m->addComponent(c2);
@@ -2294,13 +2299,15 @@ TEST(Validator, setUnitsWithNoChildUnit) {
 
     m->addUnits(u1);
     m->addUnits(u2);
+    m->addUnits(u9);
     m->addUnits(uApple);
     m->addUnits(uBanana);
        
-    libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Variable::addEquivalence(v3, v4);
-    libcellml::Variable::addEquivalence(v5, v6);
-    libcellml::Variable::addEquivalence(v7, v8);
+    libcellml::Variable::addEquivalence(v1, v2); // bushell of apples != bunch of bananas
+    libcellml::Variable::addEquivalence(v3, v4); // litre != gram
+    libcellml::Variable::addEquivalence(v5, v6); // metre != second
+    libcellml::Variable::addEquivalence(v7, v8); // apple != banana
+    libcellml::Variable::addEquivalence(v3, v9); // litre = big_barrel (excluding multipliers)
 
     validator.validateModel(m);
 

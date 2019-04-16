@@ -1973,11 +1973,9 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
                 if (onefriend->second.size() == 1) {
                     // remove edge from count of viable edges around other node
                     edge2go = onefriend->second[0];
+
                     // locating other node on edge to go
-                    if (edgelist[edge2go].n1 == onefriend->first)
-                        otherfriend = edgelist[edge2go].n2;
-                    else
-                        otherfriend = edgelist[edge2go].n1;
+                    otherfriend = edgelist[edge2go].n1 == onefriend->first ? edgelist[edge2go].n2 : edgelist[edge2go].n1;
 
                     otherfriend_it = node2edge.find(otherfriend);
                     if (otherfriend_it != node2edge.end()) {
@@ -2226,16 +2224,14 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                 if (!isStandardUnitName(myRef))
                     incrementBaseUnitCount(model, unitmap, myRef, standardList, uExp*myExp);
                 else {
+                    // Increments base unit counts for standard unit powers
                     myBase = standardList.at(myRef);
                     for (const auto &iter : myBase) {
                         unitmap.at(iter.first) += iter.second*myExp*uExp;
                     }
                 }
             }
-        } else if (unitmap.find(uName) != unitmap.end()) {
-            // Then is an existing base unit
-            unitmap.at(uName) += uExp;
-        } else {
+        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant 
             // Empty unit, add to base list
             unitmap.emplace(std::pair<std::string, double>(uName, uExp));
         }
@@ -2272,11 +2268,8 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                         unitmap.at(iter.first) -= iter.second*myExp*uExp;
                     }
                 }
-            }
-        } else if (unitmap.find(uName) != unitmap.end()) {
-            // Then is an existing base unit
-            unitmap.at(uName) -= uExp;
-        } else {
+            } 
+        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant?
             // Empty unit, add to base list
             unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
         }
