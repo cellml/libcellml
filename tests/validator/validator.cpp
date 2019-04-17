@@ -954,7 +954,7 @@ TEST(Validator, importUnits) {
     importedUnits->setName("valid_imported_units_in_this_model");
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(0u, v.errorCount());
 
     // Invalid units import- missing refs
@@ -963,7 +963,7 @@ TEST(Validator, importUnits) {
     importedUnits2->setName("invalid_imported_units_in_this_model");
     importedUnits2->setSourceUnits(imp2, "");
     m->addUnits(importedUnits2);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(3u, v.errorCount());
 
     // Invalid units import - duplicate refs
@@ -973,7 +973,7 @@ TEST(Validator, importUnits) {
     importedUnits3->setName("duplicate_imported_units_in_this_model");
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(4u, v.errorCount());
 
     // Invalid units import - unnamed units
@@ -982,17 +982,17 @@ TEST(Validator, importUnits) {
     libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(6u, v.errorCount());
 
-    // Invalid html ref
+    // Invalid html ref 
     libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
     imp5->setUrl("not @ valid url");
     libcellml::UnitsPtr importedUnits5 = std::make_shared<libcellml::Units>();
     importedUnits5->setName("name_for_invalid_import");
     importedUnits5->setSourceUnits(imp5, "units_in_that_model");
     m->addUnits(importedUnits5);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(7u, v.errorCount());
 
     // Duplicated units name
@@ -1007,7 +1007,7 @@ TEST(Validator, importUnits) {
     m->addUnits(manualUnits1);
     m->addUnits(manualUnits2);
 
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(8u, v.errorCount());
     
     // Check for expected error messages
@@ -1044,7 +1044,7 @@ TEST(Validator, importComponents) {
     importedComponent->setName("valid_imported_component_in_this_model");
     importedComponent->setSourceComponent(imp, "component_in_that_model");
     m->addComponent(importedComponent);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(0u, v.errorCount());
 
     // Another valid component import 
@@ -1054,7 +1054,7 @@ TEST(Validator, importComponents) {
     importedComponent5->setName("another_valid_imported_component_in_this_model");
     importedComponent5->setSourceComponent(imp5, "new_shiny_component_ref");
     m->addComponent(importedComponent5);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(0u, v.errorCount());
 
     // Invalid component import - missing refs
@@ -1063,7 +1063,7 @@ TEST(Validator, importComponents) {
     importedComponent2->setName("invalid_imported_component_in_this_model");
     importedComponent2->setSourceComponent(imp2, "");
     m->addComponent(importedComponent2);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(3u, v.errorCount());
 
     // Invalid component import - duplicate refs
@@ -1073,7 +1073,7 @@ TEST(Validator, importComponents) {
     importedComponent3->setName("duplicate_imported_component_in_this_model");
     importedComponent3->setSourceComponent(imp3, "component_in_that_model");
     m->addComponent(importedComponent3);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(4u, v.errorCount());
 
     // Invalid component import - unnamed component
@@ -1082,7 +1082,7 @@ TEST(Validator, importComponents) {
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(6u, v.errorCount());
 
     // Invalid: duplicating component_ref and source
@@ -1092,7 +1092,7 @@ TEST(Validator, importComponents) {
     importedComponent6->setName("another_duplicate_imported_component");
     importedComponent6->setSourceComponent(imp6, "new_shiny_component_ref");
     m->addComponent(importedComponent6);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(7u, v.errorCount());
 
     // Valid: duplicate component_ref from a different source
@@ -1102,17 +1102,17 @@ TEST(Validator, importComponents) {
     importedComponent7->setName("a_good_imported_component");
     importedComponent7->setSourceComponent(imp7, "component_in_that_model");
     m->addComponent(importedComponent7);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(7u, v.errorCount());
 
-    // Iinvalid: component_ref is not valid html
+    // Invalid: component_ref is not valid html
     libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
     imp8->setUrl("not @ valid url"); // source used before
     libcellml::ComponentPtr importedComponent8 = std::make_shared<libcellml::Component>();
     importedComponent8->setName("a_bad_imported_component");
     importedComponent8->setSourceComponent(imp8, "component_in_some_model");
     m->addComponent(importedComponent8);
-    v.validateModel(m);
+    v.validateModel(m); // mem error
     EXPECT_EQ(8u, v.errorCount());
  
     // Check for expected error messages

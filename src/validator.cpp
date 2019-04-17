@@ -972,7 +972,7 @@ void Validator::validateModel(const ModelPtr &model)
     if (!mPimpl->isCellmlIdentifier(model->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Model does not have a valid name attribute.");
-        err->setModel(model); 
+        err->setModel(model);
         err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
@@ -1016,15 +1016,20 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
-                    else if (xmlParseURI(importSource.c_str()) == NULL) { 
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Import of component '" + componentName +
-                                            "' has an invalid URI in the href attribute, '" + importSource + "'. ");
-                        err->setImportSource(component->getImportSource());
-                        err->setRule(SpecificationRule::IMPORT_HREF);
-                        addError(err);
-                        foundImportError = true;
+                    else {
+                        xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
+                        if (URIPtr == NULL) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Import of component '" + componentName +
+                                                "' has an invalid URI in the href attribute, '" + importSource + "'. ");
+                            err->setImportSource(component->getImportSource());
+                            err->setRule(SpecificationRule::IMPORT_HREF);
+                            addError(err);
+                            foundImportError = true;
+                        }
+                        else xmlFreeURI(URIPtr);
                     }
+                    
                     /// @cellml2_5 5.1.3 Check if we already have another import from the same source with the same component_ref. 
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
                         // Check for presence of import source and component_ref
@@ -1102,14 +1107,18 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
-                    else if (xmlParseURI(importSource.c_str()) == NULL) { 
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Import of units '" + unitsName +
-                                            "' has an invalid URI in the href attribute, '" + importSource + "'. ");
-                        err->setImportSource(units->getImportSource());
-                        err->setRule(SpecificationRule::IMPORT_HREF);
-                        addError(err);
-                        foundImportError = true;
+                    else {
+                        xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
+                        if (URIPtr == NULL) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Import of units '" + unitsName +
+                                                "' has an invalid URI in the href attribute, '" + importSource + "'. ");
+                            err->setImportSource(units->getImportSource());
+                            err->setRule(SpecificationRule::IMPORT_HREF);
+                            addError(err);
+                            foundImportError = true;
+                        } 
+                        else xmlFreeURI(URIPtr);
                     }
                     /// @cellml2_6 6.1.2 Check if we already have another import from the same source with the same units_ref.
                     /// (This looks for matching enties at the same position in the source and ref vectors).
