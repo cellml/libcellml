@@ -151,9 +151,7 @@ public:
      * @param multiplier The multiplier.
      * @param id The optional @c std::string id to set for this unit.
      */
-    //void addUnit(const std::string &reference, int prefix, double exponent,
-    //             double multiplier=1.0, const std::string &id="");
-    void addUnit(const std::string &reference, double prefix, double exponent,
+    void addUnit(const std::string &reference, int prefix, double exponent,
                  double multiplier=1.0, const std::string &id="");
 
     /**
@@ -230,9 +228,7 @@ public:
      * @param multiplier The multiplier.
      * @param id The optional @c std::string id to set for this unit.
      */
-    //void addUnit(StandardUnit standardRef, int prefix, double exponent,
-    //             double multiplier=1.0, const std::string &id="");
-    void addUnit(StandardUnit standardRef, double prefix, double exponent,
+    void addUnit(StandardUnit standardRef, int prefix, double exponent,
                  double multiplier=1.0, const std::string &id="");
 
     /**
