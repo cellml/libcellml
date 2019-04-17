@@ -925,7 +925,6 @@ struct Validator::ValidatorImpl
         const std::map< std::string, std::map<std::string, double>> &standardList,
         const double uExp);
 
-    bool isValidHTML(const char *html);
 };
 
 Validator::Validator()
@@ -973,7 +972,7 @@ void Validator::validateModel(const ModelPtr &model)
     if (!mPimpl->isCellmlIdentifier(model->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Model does not have a valid name attribute.");
-        err->setModel(model);
+        err->setModel(model); 
         err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
@@ -982,7 +981,7 @@ void Validator::validateModel(const ModelPtr &model)
     /// @cellml2_4 4.2.2 Check for presence of components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
-        std::vector<std::string> componentRefs;
+        std::vector<std::string> componentRefs;  
         std::vector<std::string> componentImportSources;
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->getComponent(i);
@@ -995,7 +994,6 @@ void Validator::validateModel(const ModelPtr &model)
                     /// is in a valid format.  NB: Does not check what it refers to.
                     std::string componentRef = component->getImportReference(); 
                     std::string importSource = component->getImportSource()->getUrl(); 
-                    const char* importHTML = importSource.c_str();
                     bool foundImportError = false;
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         
@@ -1018,7 +1016,7 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
-                    else if (!mPimpl->isValidHTML(importHTML)) {
+                    else if (xmlParseURI(importSource.c_str()) == NULL) { 
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
                                             "' has an invalid URI in the href attribute, '" + importSource + "'. ");
@@ -1082,7 +1080,6 @@ void Validator::validateModel(const ModelPtr &model)
                     /// @cellml2_6 6.1.2 Check for a units_ref in this import units instance
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImportSource()->getUrl();
-                    const char* importHTML = importSource.c_str();
                     bool foundImportError = false;
                     /// @cellml2_6 6.1.2 Check that the name given by the units_ref matches the naming specifications
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
@@ -1105,7 +1102,7 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
-                    else if (!mPimpl->isValidHTML(importHTML)) {
+                    else if (xmlParseURI(importSource.c_str()) == NULL) { 
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
                                             "' has an invalid URI in the href attribute, '" + importSource + "'. ");
@@ -2368,12 +2365,6 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
         mValidator->addError(err);
     }
     return result;
-}
-
-bool Validator::ValidatorImpl::isValidHTML(const char *html) {
-
-    /// @cellml2_5 5.1.1 Check string is a valid html attribute according to XLink specs, but using libxml2 
-    return xmlParseURI(html) != NULL;
 }
 
 }
