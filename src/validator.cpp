@@ -1030,7 +1030,7 @@ void Validator::validateModel(const ModelPtr &model)
                         else xmlFreeURI(URIPtr);
                     }
                     
-                    /// @cellml2_5 5.1.3 Check if we already have another import from the same source with the same component_ref. 
+                    /// @cellml2_7 7.1.1 Check if we already have another import from the same source with the same component_ref. 
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
                         // Check for presence of import source and component_ref
                         std::ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 

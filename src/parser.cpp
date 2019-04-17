@@ -1181,6 +1181,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
     }
 
     XmlNodePtr childNode = node->getFirstChild();
+    /// @cellml2_5 5.2.1-2 PARSER Checks importchildren are "component" or "units" only
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = std::make_shared<Component>();
