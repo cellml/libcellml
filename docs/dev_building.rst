@@ -14,8 +14,11 @@ To this end, create a build directory that is not the ``LIBCELLML_SRC`` director
 A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``.
 The variable ``LIBCELLML_BUILD`` shall be used to refer to the build directory.
 
-Configuration
+Configuration 
 =============
+
+Linux and MacOS
+---------------
 
 The libCellML library uses the `CMake <https://cmake.org/>`_ build configuration tool to configure the library.
 Version 3.2 or greater of `CMake <https://cmake.org/>`_ is required to configure libCellML.
@@ -43,14 +46,15 @@ When we configure libCellML, the location of `LibXml2 <http://xmlsoft.org/>`_ ca
   -DLibXml2_DIR="C:\Program Files\libxml2 2.9.6\lib\cmake"
 
 to the configuration command.
-This assumes that the recommended `LibXml2 <http://xmlsoft.org/>`_ binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.
-Please note that this method will only work with the recommended `LibXml2 <http://xmlsoft.org/>`_ binaries, `LibXml2 <http://xmlsoft.org/>`_ binaries from other sources will not work in this way.
+This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that this method will _only_ work with the 64-bit `LibXml2 <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_ installer provided from the OpenCMISS repository; other sources or precompiled 32-bit binaries will not work.
 
 Windows CMake-GUI
 +++++++++++++++++
 
 When we use the CMake-GUI application on `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_, we first set the location of the source files and the location for the generated build files.
 :numref:`fig_devBuilding_windowsCMakeGUISourceBuildDirs` shows the source files directory and the build directory set for user *andre*.
+
+Note that the COVERAGE and MEMCHECK options should be set to OFF for a Windows build; these options will only run on Linux.
 
 .. _fig_devBuilding_windowsCMakeGUISourceBuildDirs:
 
@@ -95,6 +99,8 @@ Setting the value of ``LibXml2_DIR`` to ``C:\Program Files\libxml2 2.9.6\lib\cma
 
 If `LibXml2 <http://xmlsoft.org/>`_ was not installed to ``C:\Program Files\libxml2 2.9.6``, you will need to adjust the path to match your situation.
 
+Note: If pushing the *Configure* button your path to the LibXml2 directory is lost and CMake continues to return an error about it, it could be that your LibXml2 is a 32-bit version.  Please make sure to download and run the *.exe installer from the `provided 64-bit installer <https://github.com/OpenCMISS-Dependencies/libxml2/releases/>`_ instead.   
+
 Build
 =====
 
@@ -114,3 +120,14 @@ or using the `ctest <https://cmake.org/cmake/help/latest/manual/ctest.1.html>`_ 
 For a more verbose output, run::
 
   ctest -V
+
+Build in Windows and Visual Studio
+----------------------------------
+
+1. Before starting to build you may need to also download and install `Graphvis <https://graphviz.gitlab.io/_pages/Download/Download_windows.html>`_ and add it to your PATH.
+2. Restart your computer to initialise your Doxygen installation
+3. Open your Visual Studio and open the solution *.sln file which was created by CMake.
+
+
+
+
