@@ -1391,9 +1391,8 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
             }
             else {
                 try {
-                    int test;
-                    test = std::stoi(prefix);
-                    test = 0;  // here to prevent declared-but-not-used errors
+                    int test = std::stoi(prefix);
+                    (void)test;
                 }
                 catch (std::out_of_range&) {
                     ErrorPtr err = std::make_shared<Error>();
