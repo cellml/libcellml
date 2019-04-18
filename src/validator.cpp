@@ -925,6 +925,23 @@ struct Validator::ValidatorImpl
         const std::map< std::string, std::map<std::string, double>> &standardList,
         const double uExp);
 
+    /**
+    * @brief Checks dependency heirarchies of units in the model 
+    *
+    * @param model The model containing the units to be tested
+    */
+    void validateNoUnitsAreCyclic(const ModelPtr &model);
+
+    /**
+    * @brief Utility function called recursively by validateNoUnitsAreCyclic
+    *
+    * @param model The model containing the units to be tested
+    * @param parent The current Units pointer to test
+    * @param history A vector of the chained dependencies.  Cyclic variables exist where the first and 
+    *                last units are equal.
+    */
+    void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                            std::vector<std::string> &history);
 };
 
 Validator::Validator()
@@ -1030,7 +1047,7 @@ void Validator::validateModel(const ModelPtr &model)
                         else xmlFreeURI(URIPtr);
                     }
                     
-                    /// @cellml2_7 7.1.1 Check if we already have another import from the same source with the same component_ref. 
+                    /// @cellml2_7 __REMOVE THIS?__ Check if we already have another import from the same source with the same component_ref. 
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
                         // Check for presence of import source and component_ref
                         std::ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 
@@ -1152,14 +1169,75 @@ void Validator::validateModel(const ModelPtr &model)
             }
         }
         for (size_t i = 0; i < model->unitsCount(); ++i) {
-            /// @cellml2_4 4.2.2.5 Validates units in this model
-            /// @cellml2_8 Validates units in this model
+            /// @cellml2_4 4.2.2.5 Validate units in this model
+            /// @cellml2_8 Validate units in this model
             UnitsPtr units = model->getUnits(i);
             mPimpl->validateUnits(units, unitsNames);
         }
     }
-    /// @cellml2_4 4.2.2.2 Validates any connections / variable equivalence networks in the model.
+
+    /// @cellml2_9 9.1.1.2 Validate that unit definitions are not cyclic
+    // Have to have this out of the if statement so that we only test checked units
+    if(model->unitsCount() > 0)
+        mPimpl->validateNoUnitsAreCyclic(model);
+
+    /// @cellml2_4 4.2.2.2 Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
+}
+
+void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model) {
+
+    std::vector<std::string> history;
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        // Test each units' dependencies for presence of self in tree
+        UnitsPtr u = model->getUnits(i);
+        history.push_back(u->getName());
+        checkUnitForCycles(model, u, history); 
+        // Have to delete this each time to prevent reinitialisation with previous base variables
+        std::vector<std::string>().swap(history);
+    }
+}
+
+void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent, 
+                                                  std::vector<std::string> &history) {
+    if (parent->isBaseUnit()) return;
+
+    // Recursive function to check for self-referencing in unit definitions
+    std::string ref, id, prefix;
+    double exp, mult;
+
+    // Take history, and copy it for each new branch
+    for (size_t i = 0; i < parent->unitCount(); ++i) {
+        parent->getUnitAttributes(i, ref, prefix, exp, mult, id);
+        if (std::find(history.begin(), history.end(), ref) != history.end()) {
+            history.push_back(ref);
+            // Print to error output *only* when the first and last units are the same
+            // otherwise we get lasso shapes reported 
+            if (history.front() == history.back()) {
+                ErrorPtr err = std::make_shared<Error>();
+                std::string des = "'";
+                for (size_t i = 0; i < history.size() - 1; ++i) {
+                    des += history[i] + "' -> '";
+                }
+                des += history[history.size() - 1]+"'";
+                err->setDescription("Cyclic units exist: " + des);
+                err->setModel(model);
+                err->setKind(Error::Kind::UNITS);
+                mValidator->addError(err);
+            }
+        }
+        else {
+            // Step into dependencies if they are not built-in units
+            if (model->hasUnits(ref)) {
+                UnitsPtr child = model->getUnits(ref);
+                history.push_back(ref);
+                // Making a copy of the history vector to this point
+                std::vector<std::string> child_history(history);
+                checkUnitForCycles(model, child, child_history);
+                std::vector<std::string>().swap(child_history);
+            } 
+        }
+    }
 }
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
@@ -1275,7 +1353,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     std::string reference, prefix, id;
     double exponent, multiplier;
 
-    // NB This function silently sets invalid numbers to 1.0, validator calls should give a better error message than that
+    // TODO This function silently sets invalid numbers to 1.0, maybe should give a better error message?
     units->getUnitAttributes(index, reference, prefix, exponent, multiplier, id);
     /// @cellml2_9 9.1.1 Check that the unit element has a units reference
     if (isCellmlIdentifier(reference)) {
@@ -1301,6 +1379,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         /// cellml2_9 9.1.2.1 Check the prefix. If the prefix is not in the list of valid prefix names, 
         /// check that it is an integer.
         if (!isStandardPrefixName(prefix)) {
+
             if (!isCellMLInteger(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
@@ -1309,6 +1388,20 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
+            }
+            else {
+                try {
+                    int test = std::stoi(prefix);
+                }
+                catch (std::out_of_range&) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
+                                        "' in units '" + units->getName() +
+                                        "' is out of the integer range.");
+                    err->setUnits(units);
+                    err->setRule(SpecificationRule::UNIT_PREFIX);
+                    mValidator->addError(err);
+                }
             }
         }
     }

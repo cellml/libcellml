@@ -844,9 +844,10 @@ TEST(Validator, unitsWithPrefixOutOfRange) {
     m->addUnits(u);
 
     validator.validateModel(m);
-    // This does not throw any errors as they're caught in the stoi function.  Only here to give complete
-    // test coverage. 
-    EXPECT_EQ(0u, validator.errorCount());
+    
+    EXPECT_EQ(1u, validator.errorCount());
+    EXPECT_EQ("Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.",
+              validator.getError(0)->getDescription());
 }
 
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
@@ -1044,7 +1045,7 @@ TEST(Validator, importComponents) {
     importedComponent->setName("valid_imported_component_in_this_model");
     importedComponent->setSourceComponent(imp, "component_in_that_model");
     m->addComponent(importedComponent);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(0u, v.errorCount());
 
     // Another valid component import 
@@ -1054,7 +1055,7 @@ TEST(Validator, importComponents) {
     importedComponent5->setName("another_valid_imported_component_in_this_model");
     importedComponent5->setSourceComponent(imp5, "new_shiny_component_ref");
     m->addComponent(importedComponent5);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(0u, v.errorCount());
 
     // Invalid component import - missing refs
@@ -1063,17 +1064,17 @@ TEST(Validator, importComponents) {
     importedComponent2->setName("invalid_imported_component_in_this_model");
     importedComponent2->setSourceComponent(imp2, "");
     m->addComponent(importedComponent2);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
 
-    // Invalid component import - duplicate refs
+    // Invalid component import - duplicate refs  TODO but is this allowed after all ?? #280, #298
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
     imp3->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
     importedComponent3->setName("duplicate_imported_component_in_this_model");
     importedComponent3->setSourceComponent(imp3, "component_in_that_model");
     m->addComponent(importedComponent3);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(4u, v.errorCount());
 
     // Invalid component import - unnamed component
@@ -1082,17 +1083,17 @@ TEST(Validator, importComponents) {
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(6u, v.errorCount());
 
-    // Invalid: duplicating component_ref and source
+    // Invalid: duplicating component_ref and source TODO but is this allowed after all ?? #280, #298
     libcellml::ImportSourcePtr imp6 = std::make_shared<libcellml::ImportSource>();
     imp6->setUrl("yet-another-other-model.xml");
     libcellml::ComponentPtr importedComponent6 = std::make_shared<libcellml::Component>();
     importedComponent6->setName("another_duplicate_imported_component");
     importedComponent6->setSourceComponent(imp6, "new_shiny_component_ref");
     m->addComponent(importedComponent6);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(7u, v.errorCount());
 
     // Valid: duplicate component_ref from a different source
@@ -1102,7 +1103,7 @@ TEST(Validator, importComponents) {
     importedComponent7->setName("a_good_imported_component");
     importedComponent7->setSourceComponent(imp7, "component_in_that_model");
     m->addComponent(importedComponent7);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(7u, v.errorCount());
 
     // Invalid: component_ref is not valid html
@@ -1112,7 +1113,7 @@ TEST(Validator, importComponents) {
     importedComponent8->setName("a_bad_imported_component");
     importedComponent8->setSourceComponent(imp8, "component_in_some_model");
     m->addComponent(importedComponent8);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(8u, v.errorCount());
  
     // Check for expected error messages
@@ -2533,6 +2534,102 @@ TEST(Validator, variableEquivalentUnits) {
     }
 }
 
+//TEST(Validator, validateRecursiveImports) {
+//    // We allow duplicated content of models, components, units, etc as long as they have different names
+//    /// @cellml2_5 5.1.3 Checking that the importing parent and the imported child have different names
+//
+//    libcellml::Validator v;
+//    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+//    m->setName("grandma");
+//
+//    // Valid component import
+//    libcellml::ImportSourcePtr imp1 = std::make_shared<libcellml::ImportSource>();
+//    imp1->setUrl("someone-else.xml");
+//    libcellml::ComponentPtr importedComponent1 = std::make_shared<libcellml::Component>();
+//    importedComponent1->setName("child_of_someone_else");
+//    importedComponent1->setSourceComponent(imp1, "component_of_someone_else");
+//    m->addComponent(importedComponent1);
+//    v.validateModel(m); 
+//    EXPECT_EQ(0u, v.errorCount());
+//
+//    // Valid component import
+//    libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
+//    imp2->setUrl("someone-else.xml");
+//    libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
+//    importedComponent2->setName("child_of_someone_else");
+//    importedComponent2->setSourceComponent(imp2, "component_of_someone_else");
+//    m->addComponent(importedComponent2);
+//    v.validateModel(m); 
+//    EXPECT_EQ(0u, v.errorCount());
+//
+//
+//
+//
+//}
+
+TEST(Validator, validateNoCyclesUnits) {
+    /// @cellml2_9 9.1.1.1-2 TEST Cyclic definitions in units
+    std::vector<std::string> expectedErrors = {
+        "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
+        "Cyclic units exist: 'father' -> 'grandfather' -> 'brotherFromAnotherMother' -> 'father'",
+        "Cyclic units exist: 'brotherFromAnotherMother' -> 'father' -> 'grandfather' -> 'brotherFromAnotherMother'",
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
+
+    m->setName("model");
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+    m->addUnits(u4);    
+    m->addUnits(u5);
+    m->addUnits(u6);
+
+    u1->setName("grandfather"); // base unit
+
+    u2->setName("father"); // first generation
+    u2->addUnit("grandfather", 0.0, 1.0, 1.0);
+
+    u3->setName("mother"); // first generation
+    u3->addUnit("grandfather", 0.0, 1.0, 1.0);
+
+    u4->setName("brotherFromAnotherMother"); // second generation
+    u4->addUnit("father", 0.0, 1.0, 1.0);
+
+    // second generation depending on both first gen children, still valid, no loops because of directionality
+    u5->setName("childOfIncest_ButThatsOKApparently"); 
+    u5->addUnit("mother", 0.0, 1.0, 1.0);
+    u5->addUnit("father", 0.0, 1.0, 1.0);
+
+    u6->setName("sisterFromAnotherMister"); // second generation
+    u6->addUnit("mother", 0.0, 1.0, 1.0);
+
+    v.validateModel(m);
+    EXPECT_EQ(0u, v.errorCount());
+    
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1
+    u1->addUnit("brotherFromAnotherMother", 0.0, 1.0, 1.0);
+    v.validateModel(m);
+
+    EXPECT_EQ(3u, v.errorCount());
+    for (size_t i = 0; i < v.errorCount(); i++) {
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }   
+}
 
 
 
