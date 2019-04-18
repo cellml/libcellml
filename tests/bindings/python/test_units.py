@@ -1,6 +1,6 @@
 #
 # Tests the Units class bindings
-# 
+#
 import unittest
 
 
@@ -138,15 +138,15 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', Units.Prefix.YOTTA, 1.2, 3.4)
         del(u)
 
-        # void addUnit(const std::string &reference, int prefix,
+        # void addUnit(const std::string &reference, double prefix,
         #   double exponent, double multiplier=1.0)
         u = Units()
-        u.addUnit('a', 2, -1)
-        u.addUnit('a', 2, 2.3)
-        u.addUnit('a', 2, -1, 3)
-        u.addUnit('a', 2, -1, 2.3)
-        u.addUnit('a', 2, 1.2, 3.4)
-        # TODO Ints get converted to Prefix enum, not to double! Prefix must be int or string
+        u.addUnit('a', 1.2, -1)
+        u.addUnit('a', 1.2, 2.3)
+        u.addUnit('a', 1.2, -1, 3)
+        u.addUnit('a', 1.2, -1, 2.3)
+        u.addUnit('a', 1.2, 1.2, 3.4)
+        # TODO Ints get converted to Prefix enum, not to double!
         # u.addUnit('a', -1, -1)
         # u.addUnit('a', -1, 2.3)
         # u.addUnit('a', -1, -1, 3)
@@ -189,13 +189,13 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1, 2, 'id')
         del(u)
 
-        # void addUnit(StandardUnit standardRef, int prefix,
+        # void addUnit(StandardUnit standardRef, double prefix,
         #   double exponent, double multiplier=1.0)
         u = Units()
-        u.addUnit(Units.StandardUnit.KATAL, 1, 1.0)
-        u.addUnit(Units.StandardUnit.KATAL, -1, -1.0)
-        u.addUnit(Units.StandardUnit.KATAL, 1, 1.0, 1.0)
-        u.addUnit(Units.StandardUnit.KATAL, -1, -1.0, 1.0, 'id')
+        u.addUnit(Units.StandardUnit.KATAL, 1.0, 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0)
+        u.addUnit(Units.StandardUnit.KATAL, 1.0, 1.0, 1.0)
+        u.addUnit(Units.StandardUnit.KATAL, -1.0, -1.0, 1.0, 'id')
         del(u)
 
         # void addUnit(StandardUnit standardRef, double exponent)

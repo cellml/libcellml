@@ -218,7 +218,9 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
-void Units::addUnit(const std::string &reference, int prefix, double exponent,
+//void Units::addUnit(const std::string &reference, int prefix, double exponent,
+//                    double multiplier, const std::string &id)
+void Units::addUnit(const std::string &reference, double prefix, double exponent,
                     double multiplier, const std::string &id)
 {
     //const std::string prefixString = convertIntToString(prefix);
@@ -251,7 +253,9 @@ void Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent,
    addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
-void Units::addUnit(StandardUnit standardRef, int prefix, double exponent,
+//void Units::addUnit(StandardUnit standardRef, int prefix, double exponent,
+//                    double multiplier, const std::string &id)
+void Units::addUnit(StandardUnit standardRef, double prefix, double exponent,
                     double multiplier, const std::string &id)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
