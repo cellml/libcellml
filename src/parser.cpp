@@ -305,19 +305,19 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         } else if (childNode->isCellmlElement("encapsulation")) {
             // An encapsulation should not have attributes other than an 'id' attribute.
             if (childNode->getFirstAttribute()) {
-                XmlAttributePtr attribute = childNode->getFirstAttribute();
-                while (attribute) {
-                    if (attribute->isType("id")) {
-                        model->setEncapsulationId(attribute->getValue());
+                XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+                while (childAttribute) {
+                    if (childAttribute->isType("id")) {
+                        model->setEncapsulationId(childAttribute->getValue());
                     } else {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Encapsulation in model '" + model->getName() +
-                                            "' has an invalid attribute '" + attribute->getName() + "'.");
+                                            "' has an invalid attribute '" + childAttribute->getName() + "'.");
                         err->setModel(model);
                         err->setKind(Error::Kind::ENCAPSULATION);
                         mParser->addError(err);
                     }
-                    attribute = attribute->getNext();
+                    childAttribute = childAttribute->getNext();
                 }
             }
             // Load encapsulated component_refs.
@@ -742,23 +742,23 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         if (childNode->isCellmlElement("map_variables")) {
             std::string variable1Name;
             std::string variable2Name;
-            XmlAttributePtr attribute = childNode->getFirstAttribute();
-            while (attribute) {
-                if (attribute->isType("variable_1")) {
-                    variable1Name = attribute->getValue();
-                } else if (attribute->isType("variable_2")) {
-                    variable2Name = attribute->getValue();
-                } else if (attribute->isType("id")) {
-                    mappingId = attribute->getValue();
+            XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            while (childAttribute) {
+                if (childAttribute->isType("variable_1")) {
+                    variable1Name = childAttribute->getValue();
+                } else if (childAttribute->isType("variable_2")) {
+                    variable2Name = childAttribute->getValue();
+                } else if (childAttribute->isType("id")) {
+                    mappingId = childAttribute->getValue();
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Connection in model '" + model->getName() +
-                                        "' has an invalid map_variables attribute '" + attribute->getName() + "'.");
+                                        "' has an invalid map_variables attribute '" + childAttribute->getName() + "'.");
                     err->setModel(model);
                     err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
                 }
-                attribute = attribute->getNext();
+                childAttribute = childAttribute->getNext();
             }
             // Check that we found both variables.
             if (variable1Name.empty()) {
@@ -1151,24 +1151,24 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = std::make_shared<Component>();
             bool errorOccurred = false;
-            XmlAttributePtr attribute = childNode->getFirstAttribute();
-            while (attribute) {
-                if (attribute->isType("name")) {
-                    importedComponent->setName(attribute->getValue());
-                } else if (attribute->isType("id")) {
-                    importedComponent->setId(attribute->getValue());
-                } else if (attribute->isType("component_ref")) {
-                    importedComponent->setSourceComponent(importSource, attribute->getValue());
+            XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            while (childAttribute) {
+                if (childAttribute->isType("name")) {
+                    importedComponent->setName(childAttribute->getValue());
+                } else if (childAttribute->isType("id")) {
+                    importedComponent->setId(childAttribute->getValue());
+                } else if (childAttribute->isType("component_ref")) {
+                    importedComponent->setSourceComponent(importSource, childAttribute->getValue());
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Import of component '" + childNode->getAttribute("name") +
                                         "' from '" + node->getAttribute("href") +
-                                        "' has an invalid attribute '" + attribute->getName() + "'.");
+                                        "' has an invalid attribute '" + childAttribute->getName() + "'.");
                     err->setImportSource(importSource);
                     mParser->addError(err);
                     errorOccurred = true;
                 }
-                attribute = attribute->getNext();
+                childAttribute = childAttribute->getNext();
             }
             if (!errorOccurred) {
                 model->addComponent(importedComponent);
@@ -1176,24 +1176,24 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         } else if (childNode->isCellmlElement("units")) {
             UnitsPtr importedUnits = std::make_shared<Units>();
             bool errorOccurred = false;
-            XmlAttributePtr attribute = childNode->getFirstAttribute();
-            while (attribute) {
-                if (attribute->isType("name")) {
-                    importedUnits->setName(attribute->getValue());
-                } else if (attribute->isType("id")) {
-                    importedUnits->setId(attribute->getValue());
-                } else if (attribute->isType("units_ref")) {
-                    importedUnits->setSourceUnits(importSource, attribute->getValue());
+            XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            while (childAttribute) {
+                if (childAttribute->isType("name")) {
+                    importedUnits->setName(childAttribute->getValue());
+                } else if (childAttribute->isType("id")) {
+                    importedUnits->setId(childAttribute->getValue());
+                } else if (childAttribute->isType("units_ref")) {
+                    importedUnits->setSourceUnits(importSource, childAttribute->getValue());
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Import of units '" + childNode->getAttribute("name") +
                                         "' from '" + node->getAttribute("href") +
-                                        "' has an invalid attribute '" + attribute->getName() + "'.");
+                                        "' has an invalid attribute '" + childAttribute->getName() + "'.");
                     err->setImportSource(importSource);
                     mParser->addError(err);
                     errorOccurred = true;
                 }
-                attribute = attribute->getNext();
+                childAttribute = childAttribute->getNext();
             }
             if (!errorOccurred) {
                 model->addUnits(importedUnits);

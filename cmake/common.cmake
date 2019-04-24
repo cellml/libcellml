@@ -91,7 +91,6 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -Wno-newline-eof
       -Wno-padded
       -Wno-reserved-id-macro
-      -Wno-shadow
       -Wno-switch-enum
       -Wno-unused-macros
       -Wno-used-but-marked-unused
