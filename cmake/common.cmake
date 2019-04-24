@@ -89,8 +89,6 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -Wno-missing-prototypes
       -Wno-padded
       -Wno-reserved-id-macro
-      -Wno-unused-macros
-      -Wno-used-but-marked-unused
     )
 
   if(NOT "${_TARGET}" STREQUAL "cellml")
