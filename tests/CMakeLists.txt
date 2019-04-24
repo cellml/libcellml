@@ -48,7 +48,7 @@ foreach(TEST ${LIBCELLML_TESTS})
     CXX_STANDARD_REQUIRED ON
     FOLDER tests)
 
-  configure_clang_and_clang_tidy(${CURRENT_TEST})
+  configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
 
   if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
     target_warnings_as_errors(${CURRENT_TEST})
