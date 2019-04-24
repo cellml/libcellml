@@ -1302,36 +1302,33 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
         switch (parser.getError(i)->getKind()) {
-            case (libcellml::Error::Kind::COMPONENT): {
-                foundKind.at(0) = true;
-                break;
-            }
-            case (libcellml::Error::Kind::CONNECTION): {
-                foundKind.at(1) = true;
-                break;
-            }
-            case (libcellml::Error::Kind::ENCAPSULATION): {
-                foundKind.at(2) = true;
-                break;
-            }
-            case (libcellml::Error::Kind::IMPORT): {
-                foundKind.at(3) = true;
-                break;
-            }
-            case (libcellml::Error::Kind::MODEL): {
-                foundKind.at(4) = true;
-                break;
-            }
-            case (libcellml::Error::Kind::UNITS): {
-                foundKind.at(5) = true;
-                break;
-            }
-            case (libcellml::Error::Kind::VARIABLE): {
-                foundKind.at(6) = true;
-                break;
-            }
-            default:{
-            }
+        case libcellml::Error::Kind::COMPONENT:
+            foundKind.at(0) = true;
+            break;
+        case (libcellml::Error::Kind::CONNECTION):
+            foundKind.at(1) = true;
+            break;
+        case (libcellml::Error::Kind::ENCAPSULATION):
+            foundKind.at(2) = true;
+            break;
+        case (libcellml::Error::Kind::IMPORT):
+            foundKind.at(3) = true;
+            break;
+        case (libcellml::Error::Kind::MODEL):
+            foundKind.at(4) = true;
+            break;
+        case (libcellml::Error::Kind::UNITS):
+            foundKind.at(5) = true;
+            break;
+        case (libcellml::Error::Kind::VARIABLE):
+            foundKind.at(6) = true;
+            break;
+        case libcellml::Error::Kind::MATHML:
+        case libcellml::Error::Kind::RESET:
+        case libcellml::Error::Kind::UNDEFINED:
+        case libcellml::Error::Kind::WHEN:
+        case libcellml::Error::Kind::XML:
+            break;
         }
     }
 
