@@ -86,9 +86,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -Wno-documentation-unknown-command
       -Wno-exit-time-destructors
       -Wno-global-constructors
-      -Wno-gnu-zero-variadic-macro-arguments
       -Wno-missing-prototypes
-      -Wno-newline-eof
       -Wno-padded
       -Wno-reserved-id-macro
       -Wno-switch-enum
