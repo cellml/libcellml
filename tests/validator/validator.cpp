@@ -14,10 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_resources.h"
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
 
+#include <fstream>
 #include <libcellml>
 
 /*
@@ -2534,39 +2536,6 @@ TEST(Validator, variableEquivalentUnits) {
     }
 }
 
-//TEST(Validator, validateRecursiveImports) {
-//    // We allow duplicated content of models, components, units, etc as long as they have different names
-//    /// @cellml2_5 5.1.3 Checking that the importing parent and the imported child have different names
-//
-//    libcellml::Validator v;
-//    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-//    m->setName("grandma");
-//
-//    // Valid component import
-//    libcellml::ImportSourcePtr imp1 = std::make_shared<libcellml::ImportSource>();
-//    imp1->setUrl("someone-else.xml");
-//    libcellml::ComponentPtr importedComponent1 = std::make_shared<libcellml::Component>();
-//    importedComponent1->setName("child_of_someone_else");
-//    importedComponent1->setSourceComponent(imp1, "component_of_someone_else");
-//    m->addComponent(importedComponent1);
-//    v.validateModel(m); 
-//    EXPECT_EQ(0u, v.errorCount());
-//
-//    // Valid component import
-//    libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
-//    imp2->setUrl("someone-else.xml");
-//    libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
-//    importedComponent2->setName("child_of_someone_else");
-//    importedComponent2->setSourceComponent(imp2, "component_of_someone_else");
-//    m->addComponent(importedComponent2);
-//    v.validateModel(m); 
-//    EXPECT_EQ(0u, v.errorCount());
-//
-//
-//
-//
-//}
-
 TEST(Validator, validateNoCyclesUnits) {
     /// @cellml2_9 9.1.1.1-2 TEST Cyclic definitions in units
     std::vector<std::string> expectedErrors = {
@@ -2630,6 +2599,25 @@ TEST(Validator, validateNoCyclesUnits) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }   
 }
+
+//TEST(Validator, recursiveFileImport) {
+//    std::ifstream t(TestResources::getLocation(
+//        TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+//    std::stringstream buffer;
+//    buffer << t.rdbuf();
+//
+//    libcellml::Parser parser;
+//    libcellml::ModelPtr model = parser.parseModel(buffer.str());
+//    libcellml::Validator validator;
+//
+//    // Parser should not return errors from reading the file
+//    EXPECT_EQ(0u, parser.errorCount());
+//
+//    // Validator should catch self-import ... but doesn't know the original filename it came from?
+//    validator.validateModel(model);
+//    printErrors(validator); // no errors returned yet
+//}
+
 
 
 
