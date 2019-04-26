@@ -18,8 +18,8 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/parser.h"
-#include "libcellml/variable.h"
 #include "libcellml/units.h"
+#include "libcellml/variable.h"
 
 #include <algorithm>
 #include <fstream>
@@ -87,14 +87,14 @@ Model::Model(Model &&rhs)
 #ifndef SWIG
     , std::enable_shared_from_this<Model>()
 #endif
-    ,mPimpl(rhs.mPimpl)
+    , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Model& Model::operator=(Model m)
+Model &Model::operator=(Model m)
 {
-    ComponentEntity::operator= (m);
+    ComponentEntity::operator=(m);
     m.swap(*this);
     return *this;
 }
@@ -247,7 +247,7 @@ size_t Model::unitsCount() const
 std::string resolvePath(const std::string &filename, const std::string &base)
 {
     // We can be naive here as we know what we are dealing with
-    std::string path = base.substr(0, base.find_last_of('/')+1) + filename;
+    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
     return path;
 }
 
@@ -273,8 +273,7 @@ void resolveImport(ImportedEntityPtr importedEntity,
 
 void resolveComponentImports(ComponentEntityPtr parentComponentEntity, const std::string &baseFile)
 {
-    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n)
-    {
+    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
         libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
         if (component->isImport()) {
             resolveImport(component, baseFile);
@@ -286,8 +285,7 @@ void resolveComponentImports(ComponentEntityPtr parentComponentEntity, const std
 
 void Model::resolveImports(const std::string &baseFile)
 {
-    for (size_t n = 0; n < unitsCount(); ++n)
-    {
+    for (size_t n = 0; n < unitsCount(); ++n) {
         libcellml::UnitsPtr units = getUnits(n);
         resolveImport(units, baseFile);
     }
@@ -331,8 +329,7 @@ bool doHasUnresolvedComponentImports(libcellml::ComponentPtr component)
 bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity)
 {
     bool unresolvedImports = false;
-    for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n)
-    {
+    for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n) {
         libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
         unresolvedImports = doHasUnresolvedComponentImports(component);
     }
@@ -342,8 +339,7 @@ bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity)
 bool Model::hasUnresolvedImports()
 {
     bool unresolvedImports = false;
-    for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n)
-    {
+    for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
         libcellml::UnitsPtr units = getUnits(n);
         unresolvedImports = isUnresolvedImport(units);
     }
@@ -353,4 +349,4 @@ bool Model::hasUnresolvedImports()
     return unresolvedImports;
 }
 
-}
+} // namespace libcellml
