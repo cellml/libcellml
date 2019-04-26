@@ -18,18 +18,20 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Maths, setAndGetMath) {
+TEST(Maths, setAndGetMath)
+{
     std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
     c.setMath(math);
     EXPECT_EQ(math, c.getMath());
 }
 
-TEST(Maths, appendAndSerialiseMathComponent) {
+TEST(Maths, appendAndSerialiseMathComponent)
+{
     const std::string e =
-            "<component>"
-                "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
-            "</component>";
+        "<component>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
+        "</component>";
 
     std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
 
@@ -41,7 +43,8 @@ TEST(Maths, appendAndSerialiseMathComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendAndResetMathComponent) {
+TEST(Maths, appendAndResetMathComponent)
+{
     const std::string e = "<component/>";
 
     std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
@@ -55,14 +58,15 @@ TEST(Maths, appendAndResetMathComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, appendSerialiseAndParseMathModel) {
+TEST(Maths, appendSerialiseAndParseMathModel)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
-                "</component>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
+        "</component>"
+        "</model>";
 
     std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
 
@@ -82,17 +86,18 @@ TEST(Maths, appendSerialiseAndParseMathModel) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
+TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component\">"
-                    "<variable name=\"variable1\"/>"
-                    "<variable name=\"variable2\"/>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
-                "</component>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"component\">"
+        "<variable name=\"variable1\"/>"
+        "<variable name=\"variable2\"/>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
+        "</component>"
+        "</model>";
 
     std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
 
@@ -114,16 +119,17 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
+TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component\">"
-                    "<variable name=\"variable1\" initial_value=\"1.0\"/>"
-                    "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
-                "</component>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"component\">"
+        "<variable name=\"variable1\" initial_value=\"1.0\"/>"
+        "<variable name=\"variable2\" initial_value=\"-1.0\"/>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
+        "</component>"
+        "</model>";
 
     std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
 
@@ -147,39 +153,40 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
 }
 
 // 1.xiii.a
-TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
+TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component\">"
-                    "<variable name=\"A\" initial_value=\"1.0\"/>"
-                    "<variable name=\"B\" initial_value=\"-1.0\"/>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                        "<apply>"
-                            "<eq/>"
-                            "<ci>C</ci>"
-                            "<apply>"
-                                "<plus/>"
-                                "<ci>A</ci>"
-                                "<ci>B</ci>"
-                            "</apply>"
-                        "</apply>"
-                    "</math>"
-                "</component>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"component\">"
+        "<variable name=\"A\" initial_value=\"1.0\"/>"
+        "<variable name=\"B\" initial_value=\"-1.0\"/>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<apply>"
+        "<eq/>"
+        "<ci>C</ci>"
+        "<apply>"
+        "<plus/>"
+        "<ci>A</ci>"
+        "<ci>B</ci>"
+        "</apply>"
+        "</apply>"
+        "</math>"
+        "</component>"
+        "</model>";
 
     std::string math =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                "<apply>"
-                    "<eq/>"
-                    "<ci>C</ci>"
-                    "<apply>"
-                        "<plus/>"
-                        "<ci>A</ci>"
-                        "<ci>B</ci>"
-                    "</apply>"
-                "</apply>"
-            "</math>";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<apply>"
+        "<eq/>"
+        "<ci>C</ci>"
+        "<apply>"
+        "<plus/>"
+        "<ci>A</ci>"
+        "<ci>B</ci>"
+        "</apply>"
+        "</apply>"
+        "</math>";
 
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -201,70 +208,71 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
 }
 
 // 1.xiv.a
-TEST(Maths, twoComponentsWithMathAndConnectionAndParse) {
+TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component1\">"
-                    "<variable name=\"A1\"/>"
-                    "<variable name=\"B1\"/>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                        "<apply>"
-                            "<eq/>"
-                            "<ci>C1</ci>"
-                            "<apply>"
-                                "<plus/>"
-                                "<ci>A1</ci>"
-                                "<ci>B1</ci>"
-                            "</apply>"
-                        "</apply>"
-                    "</math>"
-                "</component>"
-                "<component name=\"component2\">"
-                    "<variable name=\"A2\"/>"
-                    "<variable name=\"B2\"/>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                        "<apply>"
-                            "<eq/>"
-                            "<ci>C2</ci>"
-                            "<apply>"
-                                "<plus/>"
-                                "<ci>A2</ci>"
-                                "<ci>B2</ci>"
-                            "</apply>"
-                        "</apply>"
-                    "</math>"
-                "</component>"
-                "<connection component_1=\"component1\" component_2=\"component2\">"
-                    "<map_variables variable_1=\"A1\" variable_2=\"A2\"/>"
-                "</connection>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"component1\">"
+        "<variable name=\"A1\"/>"
+        "<variable name=\"B1\"/>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<apply>"
+        "<eq/>"
+        "<ci>C1</ci>"
+        "<apply>"
+        "<plus/>"
+        "<ci>A1</ci>"
+        "<ci>B1</ci>"
+        "</apply>"
+        "</apply>"
+        "</math>"
+        "</component>"
+        "<component name=\"component2\">"
+        "<variable name=\"A2\"/>"
+        "<variable name=\"B2\"/>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<apply>"
+        "<eq/>"
+        "<ci>C2</ci>"
+        "<apply>"
+        "<plus/>"
+        "<ci>A2</ci>"
+        "<ci>B2</ci>"
+        "</apply>"
+        "</apply>"
+        "</math>"
+        "</component>"
+        "<connection component_1=\"component1\" component_2=\"component2\">"
+        "<map_variables variable_1=\"A1\" variable_2=\"A2\"/>"
+        "</connection>"
+        "</model>";
 
     std::string math1 =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                "<apply>"
-                    "<eq/>"
-                    "<ci>C1</ci>"
-                    "<apply>"
-                        "<plus/>"
-                        "<ci>A1</ci>"
-                        "<ci>B1</ci>"
-                    "</apply>"
-                "</apply>"
-            "</math>";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<apply>"
+        "<eq/>"
+        "<ci>C1</ci>"
+        "<apply>"
+        "<plus/>"
+        "<ci>A1</ci>"
+        "<ci>B1</ci>"
+        "</apply>"
+        "</apply>"
+        "</math>";
 
     std::string math2 =
-            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                "<apply>"
-                    "<eq/>"
-                    "<ci>C2</ci>"
-                    "<apply>"
-                        "<plus/>"
-                        "<ci>A2</ci>"
-                        "<ci>B2</ci>"
-                    "</apply>"
-                "</apply>"
-            "</math>";
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "<apply>"
+        "<eq/>"
+        "<ci>C2</ci>"
+        "<apply>"
+        "<plus/>"
+        "<ci>A2</ci>"
+        "<ci>B2</ci>"
+        "</apply>"
+        "</apply>"
+        "</math>";
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
