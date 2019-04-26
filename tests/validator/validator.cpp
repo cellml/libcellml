@@ -14,12 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_resources.h"
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
 
-#include <fstream>
 #include <libcellml>
 
 /*
@@ -2600,23 +2598,6 @@ TEST(Validator, validateNoCyclesUnits) {
     }   
 }
 
-//TEST(Validator, recursiveFileImport) {
-//    std::ifstream t(TestResources::getLocation(
-//        TestResources::CELLML_RECURSIVE_FILE_IMPORT));
-//    std::stringstream buffer;
-//    buffer << t.rdbuf();
-//
-//    libcellml::Parser parser;
-//    libcellml::ModelPtr model = parser.parseModel(buffer.str());
-//    libcellml::Validator validator;
-//
-//    // Parser should not return errors from reading the file
-//    EXPECT_EQ(0u, parser.errorCount());
-//
-//    // Validator should catch self-import ... but doesn't know the original filename it came from?
-//    validator.validateModel(model);
-//    printErrors(validator); // no errors returned yet
-//}
 
 
 
