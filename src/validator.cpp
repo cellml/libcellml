@@ -47,6 +47,15 @@ struct Validator::ValidatorImpl
     Validator *mValidator;
 
     /**
+    * @brief Validate that there are no self-imports from a file.
+    *
+    * If the Model was created by parsing a file, check that no other imported entity refers
+    * to that original filename.  Any errors will be logged in the @c Validator.
+    *
+    */
+    void validateModelImport(const ModelPtr &model);
+
+    /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
      *
      * Validate the given @p component and its encapsulated entities using
@@ -281,6 +290,16 @@ void Validator::validateModel(const ModelPtr &model)
         err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
+
+    // Check for self-importing file recursion in this model.
+    std::string modelSourceFilename("");
+    std::string modelSourcePath("");
+    if (model->isImportedFromFile()) {
+        // Get a list of all filenames which will be imported
+        modelSourceFilename = model->getImportFilename();
+        modelSourcePath = model->getImportPath();
+    }
+
     // Check for components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
@@ -296,6 +315,7 @@ void Validator::validateModel(const ModelPtr &model)
                     std::string componentRef = component->getImportReference();
                     std::string importSource = component->getImportSource()->getUrl();
                     bool foundImportError = false;
+                    
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported component '" + componentName +
@@ -316,6 +336,22 @@ void Validator::validateModel(const ModelPtr &model)
                         addError(err);
                         foundImportError = true;
                     }
+
+                    // Check whether the import source is the same as the file which model creation file
+                    if ((model->isImportedFromFile()) && (importSource == modelSourceFilename)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Imported component '" + componentName +
+                                            "' with reference '" + componentRef +
+                                            "' has a source file '" + importSource +
+                                            "' which references the importing model file '" + modelSourceFilename +
+                                            "'."
+                        );
+                        err->setComponent(component);
+                        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+                        addError(err);
+                        foundImportError = true;
+                    }
+
                     // Check if we already have another import from the same source with the same component_ref.
                     // (This looks for matching entries at the same position in the source and ref vectors).
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
@@ -362,6 +398,7 @@ void Validator::validateModel(const ModelPtr &model)
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImportSource()->getUrl();
                     bool foundImportError = false;
+
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported units '" + unitsName +
@@ -382,6 +419,21 @@ void Validator::validateModel(const ModelPtr &model)
                         addError(err);
                         foundImportError = true;
                     }
+
+                    if ((model->isImportedFromFile()) && (importSource == modelSourceFilename)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Imported units '" + unitsName +
+                                            "' with reference '" + unitsRef +
+                                            "' has a source file '" + importSource +
+                                            "' which references the importing model file '" + modelSourceFilename +
+                                            "'."
+                        );
+                        err->setUnits(units);
+                        err->setRule(SpecificationRule::IMPORT_UNITS_REF);
+                        addError(err);
+                        foundImportError = true;
+                    }
+
                     // Check if we already have another import from the same source with the same units_ref.
                     // (This looks for matching enties at the same position in the source and ref vectors).
                     if ((unitsImportSources.size() > 0) && (!foundImportError)) {
@@ -423,6 +475,11 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 }
 
+
+void Validator::ValidatorImpl::validateModelImport(const ModelPtr &model) {
+
+
+}
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
     // Check for a valid name attribute.

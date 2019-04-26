@@ -1008,19 +1008,26 @@ TEST(Validator, validMathCnElements) {
 }
 
 TEST(Validator, recursiveFileImport) {
-    std::ifstream t(TestResources::getLocation(
-        TestResources::CELLML_RECURSIVE_FILE_IMPORT));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
+    std::vector<std::string> expectedErrors = {
+        "Imported component 'duplicating_the_beach' with reference 'beach' has a source file 'recursive_import.cellml' "
+        "which references the importing model file 'recursive_import.cellml'.",
+        "Imported units 'sandiness' with reference 'zandigheid' has a source file 'recursive_import.cellml' which "
+        "references the importing model file 'recursive_import.cellml'.",
+    };
 
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(buffer.str());
-    libcellml::Validator validator;
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+    libcellml::Validator v;
 
     // Parser should not return errors from reading the file
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(0u, p.errorCount());
 
-    // Validator should catch self-import ... but doesn't know the original filename it came from?
-    validator.validateModel(model);
-    printErrors(validator); // no errors returned yet
+    // Validator should catch self-import and report
+    v.validateModel(m);
+    EXPECT_EQ(2u, v.errorCount());
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors[i], v.getError(i)->getDescription());
+    }
+
 }
