@@ -163,3 +163,15 @@ endif()
 
 # Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
+
+# Format our code
+if(CLANG_FORMAT_EXE)
+    file(GLOB_RECURSE FILES_TO_FORMAT "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/src/api/libcellml/module/*"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
+                                      "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h")
+    list(FILTER FILES_TO_FORMAT EXCLUDE REGEX "^.*/gtest.h$")
+
+    execute_process(COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT})
+endif()
