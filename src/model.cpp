@@ -376,4 +376,11 @@ void Model::setImportLocation(std::string filename) {
     mPimpl->importLocation = filename;
 }
 
+std::string Model::getImportLocation() {
+    if(isImportedFromFile()) 
+        return mPimpl->importLocation;
+    return "";
+}
+
+
 }

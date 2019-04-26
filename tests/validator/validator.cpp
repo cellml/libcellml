@@ -1010,14 +1010,15 @@ TEST(Validator, validMathCnElements) {
 TEST(Validator, recursiveFileImport) {
     std::vector<std::string> expectedErrors = {
         "Imported component 'duplicating_the_beach' with reference 'beach' has a source file 'recursive_import.cellml' "
-        "which references the importing model file 'recursive_import.cellml'.",
+        "which references the importing model file 'recursive_import.cellml' in the same directory.",
         "Imported units 'sandiness' with reference 'zandigheid' has a source file 'recursive_import.cellml' which "
-        "references the importing model file 'recursive_import.cellml'.",
+        "references the importing model file 'recursive_import.cellml' in the same directory.",
     };
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModelFromFile(
-        TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+        TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT)
+    );
     libcellml::Validator v;
 
     // Parser should not return errors from reading the file
@@ -1029,5 +1030,41 @@ TEST(Validator, recursiveFileImport) {
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors[i], v.getError(i)->getDescription());
     }
+ }
+
+TEST(Validator, specifiedFileIsMissing) {
+    std::vector<std::string> expectedErrors = {};
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF)
+    );
+    libcellml::Validator v;
+
+    // Parser should not return errors from reading the file
+    EXPECT_EQ(0u, p.errorCount());
+    
+    // Validator should catch reference to non-existent files?
+    v.validateModel(m);
+    printErrors(v);   
+}
+
+TEST(Validator, sameFilenameDifferentDirectories) {
+    // The imported file (buried_recursive_import.cellml) contains a reference to another file of the same name, 
+    // but in a separate directory (recursive_dir/buried_recursive_import.cellml)-> ie: not a recursive import,
+    // even though the file names are the same.
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH)
+    );
+    libcellml::Validator v;
+
+    // Parser should not return errors from reading the file
+    EXPECT_EQ(0u, p.errorCount());
+
+    // Validator should skip same name in different directory 
+    v.validateModel(m);
+    EXPECT_EQ(0u, v.errorCount());
 
 }

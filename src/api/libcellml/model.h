@@ -278,6 +278,17 @@ public:
     */
     std::string getImportPath();
 
+    /**
+    * @brief Returns the string of original file name and path from which the Model was created, if present
+    *
+    * Returns the string of original file name and path from which the Model was created, if present; or 
+    * an empty string if not
+    *
+    * @return Returns the string of original file name and path from which the Model was created, 
+    * if present; or an empty string if not
+    */
+    std::string getImportLocation();
+
 
     /**
     * @brief Set the @p importFilename from which the Model was originally created, including full path
