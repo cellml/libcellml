@@ -18,11 +18,12 @@ limitations under the License.
 
 #include <libcellml>
 
+static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
+
 TEST(Maths, setAndGetMath) {
-    std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
     libcellml::Component c;
-    c.setMath(math);
-    EXPECT_EQ(math, c.getMath());
+    c.setMath(emptyMath);
+    EXPECT_EQ(emptyMath, c.getMath());
 }
 
 TEST(Maths, appendAndSerialiseMathComponent) {
@@ -31,10 +32,8 @@ TEST(Maths, appendAndSerialiseMathComponent) {
                 "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>"
             "</component>";
 
-    std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
-
     libcellml::Component c;
-    c.appendMath(math);
+    c.appendMath(emptyMath);
 
     libcellml::Printer printer;
     const std::string a = printer.printComponent(c);
@@ -44,10 +43,8 @@ TEST(Maths, appendAndSerialiseMathComponent) {
 TEST(Maths, appendAndResetMathComponent) {
     const std::string e = "<component/>";
 
-    std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
-
     libcellml::Component c;
-    c.appendMath(math);
+    c.appendMath(emptyMath);
     c.setMath("");
 
     libcellml::Printer printer;
@@ -64,12 +61,10 @@ TEST(Maths, appendSerialiseAndParseMathModel) {
                 "</component>"
             "</model>";
 
-    std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
-
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
-    c->appendMath(math);
+    c->appendMath(emptyMath);
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -94,8 +89,6 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
                 "</component>"
             "</model>";
 
-    std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
-
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -105,8 +98,8 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     v2->setName("variable2");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMath(math);
-    c->appendMath(math);
+    c->appendMath(emptyMath);
+    c->appendMath(emptyMath);
     m.addComponent(c);
 
     libcellml::Printer printer;
@@ -125,8 +118,6 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
                 "</component>"
             "</model>";
 
-    std::string math = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>";
-
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -138,7 +129,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     v2->setInitialValue("-1.0");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMath(math);
+    c->appendMath(emptyMath);
     m.addComponent(c);
 
     libcellml::Printer printer;
@@ -167,8 +158,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath) {
                     "</math>"
                 "</component>"
             "</model>";
-
-    std::string math =
+    const std::string math =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"
@@ -239,8 +229,7 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse) {
                     "<map_variables variable_1=\"A1\" variable_2=\"A2\"/>"
                 "</connection>"
             "</model>";
-
-    std::string math1 =
+    const std::string math1 =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"
@@ -252,8 +241,7 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse) {
                     "</apply>"
                 "</apply>"
             "</math>";
-
-    std::string math2 =
+    const std::string math2 =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"

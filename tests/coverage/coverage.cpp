@@ -24,7 +24,7 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 TEST(Coverage, import) {
-    std::string e = "";
+    const std::string e = "";
     libcellml::ImportSource i, im;
 
     im = std::move(i);
@@ -108,7 +108,7 @@ TEST(Coverage, prefixToString) {
     libcellml::Model m;
     libcellml::Printer printer;
 
-    std::vector<std::string> prefix_str =
+    std::vector<std::string> prefixString =
         {"atto",
          "centi",
          "deca",
@@ -130,7 +130,7 @@ TEST(Coverage, prefixToString) {
          "zepto",
          "zetta"
         };
-    std::vector<libcellml::Prefix> prefix_enum =
+    std::vector<libcellml::Prefix> prefixEnum =
         {libcellml::Prefix::ATTO,
          libcellml::Prefix::CENTI,
          libcellml::Prefix::DECA,
@@ -152,23 +152,22 @@ TEST(Coverage, prefixToString) {
          libcellml::Prefix::ZEPTO,
          libcellml::Prefix::ZETTA
         };
-    for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); ++i) {
-        std::string prefix = prefix_str[i];
+    for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
         libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
         u->setName("abcdefg");
-        u->addUnit("empty", prefix_enum[i]);
+        u->addUnit("empty", prefixEnum[i]);
 
         m.addUnits(u);
 
         const std::string a = printer.printModel(m);
-        std::size_t found = a.find(prefix);
+        std::size_t found = a.find(prefixString[i]);
         EXPECT_NE(std::string::npos, found);
         m.removeAllUnits();
     }
 }
 
 TEST(Coverage, variable) {
-    std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>";
+    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>";
     libcellml::Variable v, vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
@@ -188,7 +187,7 @@ TEST(Coverage, variable) {
 }
 
 TEST(Coverage, component) {
-    std::string e =
+    const std::string e =
             "<component name=\"name\">"
                 "<variable/>"
                 "<1+1=2>"
@@ -217,7 +216,7 @@ TEST(Coverage, component) {
 TEST(Coverage, error) {
     libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
     libcellml::Error e, em;
-    std::string description = "test";
+    const std::string description = "test";
 
     e.setDescription(description);
     e.setKind(libcellml::Error::Kind::XML);

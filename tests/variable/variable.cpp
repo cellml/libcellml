@@ -347,7 +347,6 @@ TEST(Variable, removeVariableMethods) {
             "<component name=\"valid_name\">"
                 "<variable name=\"variable2\"/>"
             "</component>";
-
     const std::string e2 = "<component name=\"valid_name\"/>";
 
     libcellml::Component c;
@@ -411,22 +410,22 @@ TEST(Variable, getVariableMethods) {
 
     // Get by string
     libcellml::VariablePtr vMethod1 = c.getVariable("variable1");
-    std::string a1 = vMethod1->getName();
+    const std::string a1 = vMethod1->getName();
     EXPECT_EQ("variable1", a1);
 
     // Get by index
     libcellml::VariablePtr vMethod2 = c.getVariable(1);
-    std::string a2 = vMethod2->getName();
+    const std::string a2 = vMethod2->getName();
     EXPECT_EQ("variable2", a2);
 
     // Get const by string
     const libcellml::VariablePtr vMethod3 = static_cast<const libcellml::Component>(c).getVariable("variable3");
-    std::string a3 = vMethod3->getName();
+    const std::string a3 = vMethod3->getName();
     EXPECT_EQ("variable3", a3);
 
     // Get const by index
     const libcellml::VariablePtr vMethod4 = static_cast<const libcellml::Component>(c).getVariable(3);
-    std::string a4 = vMethod4->getName();
+    const std::string a4 = vMethod4->getName();
     EXPECT_EQ("variable4", a4);
 
     // Get invalid index
@@ -473,7 +472,7 @@ TEST(Variable, takeVariableMethods) {
 
     // Take by string
     libcellml::VariablePtr tv3 = c.takeVariable("variable3");
-    std::string tvn3 = tv3->getName();
+    const std::string tvn3 = tv3->getName();
     EXPECT_EQ("variable3", tvn3);
 
     // Get invalid index

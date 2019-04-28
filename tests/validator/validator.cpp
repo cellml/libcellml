@@ -34,7 +34,7 @@ TEST(Validator, namedModel) {
 }
 
 TEST(Validator, unnamedModel) {
-    std::string expectedError = "Model does not have a valid name attribute.";
+    const std::string expectedError = "Model does not have a valid name attribute.";
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     validator.validateModel(model);
@@ -113,7 +113,7 @@ TEST(Validator, moveCopyValidatorWithUnnamedModel) {
 }
 
 TEST(Validator, namedModelWithUnnamedComponent) {
-    std::string expectedError = "Component does not have a valid name attribute.";
+    const std::string expectedError = "Component does not have a valid name attribute.";
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
@@ -364,7 +364,7 @@ TEST(Validator, importComponents) {
 }
 
 TEST(Validator, validMath) {
-    std::string math =
+    const std::string math =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"
@@ -406,14 +406,12 @@ TEST(Validator, validMath) {
 }
 
 TEST(Validator, invalidMath) {
-    std::string math1 =
+    const std::string math1 =
             "<math>"
                 "<invalid_xml></not_valid>"
             "</math>";
-
-    std::string math2 = "<invalid_math/>";
-
-    std::vector<std::string> expectedErrors = {
+    const std::string math2 = "<invalid_math/>";
+    const std::vector<std::string> expectedErrors = {
         "Opening and ending tag mismatch: invalid_xml line 1 and not_valid.",
         "Could not get a valid XML root node from the math on component 'componentName1'.",
         "Math root node is of invalid type 'invalid_math' on component 'componentName2'. A valid math root node should be of type 'math'."
@@ -442,7 +440,7 @@ TEST(Validator, invalidMath) {
 }
 
 TEST(Validator, invalidMathMLElements) {
-    std::string math =
+    const std::string math =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<equals/>"
@@ -454,8 +452,7 @@ TEST(Validator, invalidMathMLElements) {
                     "</apply>"
                 "</apply>"
             "</math>";
-
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Math has a 'equals' element that is not a supported MathML element.",
         "Math has a 'addition' element that is not a supported MathML element.",
         "No declaration for element equals.",
@@ -498,7 +495,7 @@ TEST(Validator, invalidMathMLElements) {
 }
 
 TEST(Validator, invalidMathMLVariables) {
-    std::string math =
+    const std::string math =
             "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"
@@ -531,8 +528,7 @@ TEST(Validator, invalidMathMLVariables) {
                     "</apply>"
                 "</apply>"
             "</math>";
-
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
@@ -577,7 +573,7 @@ TEST(Validator, invalidMathMLVariables) {
 }
 
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
-    std::string math =
+    const std::string math =
             "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"
@@ -613,8 +609,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
                     "</apply>"
                 "</apply>"
             "</math>";
-
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
         "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
@@ -973,7 +968,7 @@ TEST(Validator, whens) {
 }
 
 TEST(Validator, validMathCnElements) {
-    std::string math =
+    const std::string math =
             "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
                 "<apply>"
                     "<eq/>"
