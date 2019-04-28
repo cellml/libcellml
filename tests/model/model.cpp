@@ -26,7 +26,7 @@ TEST(Model, setGetId) {
 }
 
 TEST(Model, name) {
-    std::string n = "name";
+    const std::string n = "name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>";
@@ -34,7 +34,7 @@ TEST(Model, name) {
     libcellml::Model m;
     m.setName(n);
 
-    EXPECT_EQ("name", m.getName());
+    EXPECT_EQ(n, m.getName());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -42,7 +42,7 @@ TEST(Model, name) {
 }
 
 TEST(Model, unsetName) {
-    std::string n = "name";
+    const std::string n = "name";
     const std::string eName =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>";
@@ -52,7 +52,7 @@ TEST(Model, unsetName) {
 
     libcellml::Model m;
     m.setName(n);
-    EXPECT_EQ("name", m.getName());
+    EXPECT_EQ(n, m.getName());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -65,15 +65,15 @@ TEST(Model, unsetName) {
 }
 
 TEST(Model, invalidName) {
-    std::string in = "invalid name";
+    const std::string n = "invalid name";
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"invalid name\"/>";
 
     libcellml::Model m;
-    m.setName(in);
+    m.setName(n);
 
-    EXPECT_EQ("invalid name", m.getName());
+    EXPECT_EQ(n, m.getName());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -191,7 +191,6 @@ TEST(Model, removeComponent) {
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"child2\"/>"
             "</model>";
-
     const std::string e2 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
@@ -376,14 +375,12 @@ TEST(Model, replaceComponent) {
                 "<component name=\"child1\"/>"
                 "<component name=\"child2\"/>"
             "</model>";
-
     const std::string e_after =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
                 "<component name=\"child1\"/>"
                 "<component name=\"child3\"/>"
             "</model>";
-
     const std::string e_post =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
@@ -464,7 +461,7 @@ TEST(Model, constructors) {
 }
 
 TEST(Model, setAndCheckIdsAllEntities) {
-    const std::string expected =
+    const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">"
                 "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
@@ -533,6 +530,6 @@ TEST(Model, setAndCheckIdsAllEntities) {
     m.addComponent(c2);
 
     libcellml::Printer printer;
-    std::string actual = printer.printModel(m);
-    EXPECT_EQ(expected, actual);
+    const std::string a = printer.printModel(m);
+    EXPECT_EQ(a, e);
 }

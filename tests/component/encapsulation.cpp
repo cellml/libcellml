@@ -152,7 +152,7 @@ TEST(Encapsulation, hierarchyWaterfall) {
     model.addComponent(parent);
 
     libcellml::Printer printer;
-    std::string a_parent = printer.printModel(model);
+    const std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent, a_parent);
 }
 
@@ -371,6 +371,6 @@ TEST(Encapsulation, encapsulationWithMultipleRootHierarchy) {
     model->addComponent(parent2);
 
     libcellml::Printer printer;
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }

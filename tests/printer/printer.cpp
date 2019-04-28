@@ -102,9 +102,9 @@ TEST(Printer, printEncapsulation) {
     model.addComponent(parent);
 
     libcellml::Printer printer;
-    std::string a_parent = printer.printModel(model);
+    const std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = printer.printComponent(child);
+    const std::string a_child = printer.printComponent(child);
     EXPECT_EQ(e_child, a_child);
 }
 
@@ -132,8 +132,8 @@ TEST(Printer, printEncapsulationWithNames) {
     model.addComponent(parent);
 
     libcellml::Printer printer;
-    std::string a_parent = printer.printModel(model);
+    const std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent, a_parent);
-    std::string a_child = printer.printComponent(child);
+    const std::string a_child = printer.printComponent(child);
     EXPECT_EQ(e_child, a_child);
 }
