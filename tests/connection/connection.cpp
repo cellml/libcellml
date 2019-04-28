@@ -483,7 +483,6 @@ TEST(Connection, removeEquivalentVariableMethods) {
                     "<map_variables variable_1=\"variable2\" variable_2=\"variable3\" id=\"mapId\"/>"
                 "</connection>"
             "</model>";
-
     const std::string e2 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
@@ -503,7 +502,6 @@ TEST(Connection, removeEquivalentVariableMethods) {
                     "<map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>"
                 "</connection>"
             "</model>";
-
     const std::string e3 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
@@ -975,7 +973,6 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
                     "<map_variables variable_1=\"variable_angus\" variable_2=\"variable_bob\"/>"
                 "</connection>"
             "</model>";
-
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
@@ -986,8 +983,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable) {
                     "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
             "</model>";
-
-    std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
+    const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse
     libcellml::Parser parser;

@@ -122,7 +122,7 @@ TEST(Variable, getUnsetInitialValue) {
 
 TEST(Variable, getSetInitialValue) {
     libcellml::Variable v;
-    std::string e = "0.0";
+    const std::string e = "0.0";
     v.setInitialValue(e);
     const std::string a = v.getInitialValue();
     EXPECT_EQ(e, a);
