@@ -43,11 +43,11 @@ TEST(UnitsImport, basics) {
 TEST(UnitsImport, importValidName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>"
-                "</import>"
-            "</model>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+            "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
+            "  </import>\n"
+            "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -76,11 +76,11 @@ TEST(UnitsImport, importValidName) {
 TEST(UnitsImport, importInvalidName) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<units units_ref=\"a units in that model\" name=\"units_in_this_model\"/>"
-                "</import>"
-            "</model>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+            "    <units units_ref=\"a units in that model\" name=\"units_in_this_model\"/>\n"
+            "  </import>\n"
+            "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -105,11 +105,11 @@ TEST(UnitsImport, importInvalidName) {
 TEST(UnitsImport, nonExistentURL) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<units units_ref=\"per_mole\" name=\"noble_per_mole\"/>"
-                "</import>"
-            "</model>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "  <import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+            "    <units units_ref=\"per_mole\" name=\"noble_per_mole\"/>\n"
+            "  </import>\n"
+            "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -136,23 +136,23 @@ TEST(UnitsImport, nonExistentURL) {
 TEST(UnitsImport, importModifyAndParse) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>"
-                "</import>"
-                "<units name=\"multiplied_import\">"
-                    "<unit multiplier=\"5.6\" units=\"units_in_this_model\"/>"
-                "</units>"
-                "<units name=\"prefixed_import\">"
-                    "<unit prefix=\"yotta\" units=\"units_in_this_model\"/>"
-                "</units>"
-                "<units name=\"exponented_import\">"
-                    "<unit exponent=\"3\" units=\"units_in_this_model\"/>"
-                "</units>"
-                "<units name=\"all_import\">"
-                    "<unit exponent=\"-4\" multiplier=\"-1.3\" prefix=\"-17\" units=\"units_in_this_model\"/>"
-                "</units>"
-            "</model>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+            "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
+            "  </import>\n"
+            "  <units name=\"multiplied_import\">\n"
+            "    <unit multiplier=\"5.6\" units=\"units_in_this_model\"/>\n"
+            "  </units>\n"
+            "  <units name=\"prefixed_import\">\n"
+            "    <unit prefix=\"yotta\" units=\"units_in_this_model\"/>\n"
+            "  </units>\n"
+            "  <units name=\"exponented_import\">\n"
+            "    <unit exponent=\"3\" units=\"units_in_this_model\"/>\n"
+            "  </units>\n"
+            "  <units name=\"all_import\">\n"
+            "    <unit exponent=\"-4\" multiplier=\"-1.3\" prefix=\"-17\" units=\"units_in_this_model\"/>\n"
+            "  </units>\n"
+            "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();

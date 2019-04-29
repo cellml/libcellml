@@ -21,7 +21,7 @@ limitations under the License.
 TEST(Printer, printEmptyModel) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
 
     libcellml::Printer p;
@@ -34,7 +34,7 @@ TEST(Printer, printEmptyModel) {
 TEST(Printer, printEmptyModelAllocatePointer) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
     libcellml::Model* m = new libcellml::Model();
 
     libcellml::Printer printer;
@@ -54,7 +54,7 @@ TEST(Printer, printEmptyUnits) {
 }
 
 TEST(Printer, printEmptyVariable) {
-    const std::string e = "<variable/>";
+    const std::string e = "<variable/>\n";
     libcellml::Variable v;
 
     libcellml::Printer printer;
@@ -63,7 +63,7 @@ TEST(Printer, printEmptyVariable) {
 }
 
 TEST(Printer, printEmptyComponent) {
-    const std::string e = "<component/>";
+    const std::string e = "<component/>\n";
     libcellml::Component c;
 
     libcellml::Printer printer;
@@ -72,7 +72,7 @@ TEST(Printer, printEmptyComponent) {
 }
 
 TEST(Printer, printEmptyReset) {
-    const std::string e = "<reset/>";
+    const std::string e = "<reset/>\n";
     libcellml::Reset r;
 
     libcellml::Printer printer;
@@ -83,16 +83,16 @@ TEST(Printer, printEmptyReset) {
 TEST(Printer, printEncapsulation) {
     const std::string e_parent =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component/>"
-                "<component/>"
-                "<encapsulation>"
-                    "<component_ref>"
-                        "<component_ref/>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
-    const std::string e_child = "<component/>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "  <component/>\n"
+            "  <component/>\n"
+            "  <encapsulation>\n"
+            "    <component_ref>\n"
+            "      <component_ref/>\n"
+            "    </component_ref>\n"
+            "  </encapsulation>\n"
+            "</model>\n";
+    const std::string e_child = "<component/>\n";
 
     libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -111,16 +111,16 @@ TEST(Printer, printEncapsulation) {
 TEST(Printer, printEncapsulationWithNames) {
     const std::string e_parent =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child_component\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child_component\"/>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
-    const std::string e_child= "<component name=\"child_component\"/>";
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+            "  <component name=\"parent_component\"/>\n"
+            "  <component name=\"child_component\"/>\n"
+            "  <encapsulation>\n"
+            "    <component_ref component=\"parent_component\">\n"
+            "      <component_ref component=\"child_component\"/>\n"
+            "    </component_ref>\n"
+            "  </encapsulation>\n"
+            "</model>\n";
+    const std::string e_child= "<component name=\"child_component\"/>\n";
 
     libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
