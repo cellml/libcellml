@@ -530,8 +530,8 @@ TEST(Validator, invalidMathMLVariables) {
     const std::vector<std::string> expectedErrors = {
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
+        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
-        "MathML ci element has the child text 'new_bvar', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
         "MathML ci element has a whitespace-only child element.",
         "MathML ci element has no child.",
         "No declaration for element nonsense.",
@@ -609,8 +609,8 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
             "  </apply>\n"
             "</math>\n";
     const std::vector<std::string> expectedErrors = {
+        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
-        "MathML ci element has the child text 'new_bvar', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
         "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
         "MathML ci element has a whitespace-only child element.",
         "MathML ci element has the child text 'undefined_variable', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
@@ -811,28 +811,10 @@ TEST(Validator, integerStrings) {
             "  </component>\n"
             "</model>\n";
     const std::vector<std::string> expectedParsingErrors = {
-        "When in reset referencing variable 'variable' with order '1' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '1' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '1' has an invalid non-whitespace child text element '\n      '.",
-        "When in reset referencing variable 'variable' with order '-1' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '-1' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '-1' has an invalid non-whitespace child text element '\n      '.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
     };
     const std::vector<std::string> expectedValidationErrors = {
         "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
