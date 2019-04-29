@@ -29,7 +29,7 @@ TEST(Generator, emptyModel) {
 
     libcellml::Generator generator;
 
-    generator.analyzeModel(model);
+    generator.processModel(model);
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 
@@ -51,7 +51,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 
     libcellml::Generator generator;
 
-    generator.analyzeModel(model);
+    generator.processModel(model);
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 
