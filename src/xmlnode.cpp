@@ -66,7 +66,7 @@ bool XmlNode::isElement(const char *name, const char *ns)
     bool found = false;
     if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
         && !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
-        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
+        &&  ((name == nullptr) || !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name))) {
         found = true;
     }
     return found;
