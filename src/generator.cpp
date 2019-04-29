@@ -38,10 +38,10 @@ struct Generator::GeneratorImpl
     std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
-    void analyzeNode(const XmlNodePtr &node);
+    void processNode(const XmlNodePtr &node);
 };
 
-void Generator::GeneratorImpl::analyzeNode(const XmlNodePtr &node)
+void Generator::GeneratorImpl::processNode(const XmlNodePtr &node)
 {
 (void) node;
 
@@ -85,9 +85,9 @@ void Generator::swap(Generator &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Generator::analyzeModel(const ModelPtr &model)
+void Generator::processModel(const ModelPtr &model)
 {
-    // Make sure that the model is valid before analysing it
+    // Make sure that the model is valid before processing it
 
 /*TODO: reenable the validation once it is known to work fine...
     libcellml::Validator validator;

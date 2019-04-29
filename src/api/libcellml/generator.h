@@ -32,7 +32,7 @@ public:
     Generator(Generator &&rhs); /**< Move constructor */
     Generator& operator=(Generator rhs); /**< Assignment operator */
 
-    void analyzeModel(const ModelPtr &model);
+    void processModel(const ModelPtr &model);
 
     void setWithNames(bool withNames);
 
