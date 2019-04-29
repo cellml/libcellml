@@ -18,12 +18,12 @@ limitations under the License.
 
 #include <libcellml>
 
-static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+static const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
 TEST(Maths, setAndGetMath) {
     libcellml::Component c;
-    c.setMath(emptyMath);
-    EXPECT_EQ(emptyMath, c.getMath());
+    c.setMath(EMPTY_MATH);
+    EXPECT_EQ(EMPTY_MATH, c.getMath());
 }
 
 TEST(Maths, appendAndSerialiseMathComponent) {
@@ -33,7 +33,7 @@ TEST(Maths, appendAndSerialiseMathComponent) {
             "</component>\n";
 
     libcellml::Component c;
-    c.appendMath(emptyMath);
+    c.appendMath(EMPTY_MATH);
 
     libcellml::Printer printer;
     const std::string a = printer.printComponent(c);
@@ -44,7 +44,7 @@ TEST(Maths, appendAndResetMathComponent) {
     const std::string e = "<component/>\n";
 
     libcellml::Component c;
-    c.appendMath(emptyMath);
+    c.appendMath(EMPTY_MATH);
     c.setMath("");
 
     libcellml::Printer printer;
@@ -64,7 +64,7 @@ TEST(Maths, appendSerialiseAndParseMathModel) {
     libcellml::Model m;
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     m.addComponent(c);
-    c->appendMath(emptyMath);
+    c->appendMath(EMPTY_MATH);
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -98,8 +98,8 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths) {
     v2->setName("variable2");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMath(emptyMath);
-    c->appendMath(emptyMath);
+    c->appendMath(EMPTY_MATH);
+    c->appendMath(EMPTY_MATH);
     m.addComponent(c);
 
     libcellml::Printer printer;
@@ -129,7 +129,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath) {
     v2->setInitialValue("-1.0");
     c->addVariable(v1);
     c->addVariable(v2);
-    c->appendMath(emptyMath);
+    c->appendMath(EMPTY_MATH);
     m.addComponent(c);
 
     libcellml::Printer printer;
