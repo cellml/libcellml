@@ -25,6 +25,62 @@ limitations under the License.
 
 namespace libcellml{
 
+class GeneratorEquationBinTree;
+typedef std::shared_ptr<GeneratorEquationBinTree> GeneratorEquationBinTreePtr;
+
+class GeneratorEquationBinTree
+{
+public:
+    explicit GeneratorEquationBinTree();
+
+    GeneratorEquationBinTreePtr &left();
+    GeneratorEquationBinTreePtr &right();
+
+private:
+    GeneratorEquationBinTreePtr mLeft;
+    GeneratorEquationBinTreePtr mRight;
+};
+
+GeneratorEquationBinTree::GeneratorEquationBinTree()
+    : mLeft(nullptr)
+    , mRight(nullptr)
+{
+}
+
+GeneratorEquationBinTreePtr &GeneratorEquationBinTree::left()
+{
+    return mLeft;
+}
+
+GeneratorEquationBinTreePtr &GeneratorEquationBinTree::right()
+{
+    return mRight;
+}
+
+class GeneratorEquation;
+typedef std::shared_ptr<GeneratorEquation> GeneratorEquationPtr;
+
+class GeneratorEquation
+{
+public:
+    explicit GeneratorEquation();
+
+    const GeneratorEquationBinTreePtr &binTree() const;
+
+private:
+    GeneratorEquationBinTreePtr mBinTree;
+};
+
+GeneratorEquation::GeneratorEquation()
+    : mBinTree(std::make_shared<GeneratorEquationBinTree>())
+{
+}
+
+const GeneratorEquationBinTreePtr &GeneratorEquation::binTree() const
+{
+    return mBinTree;
+}
+
 struct GeneratorVariable
 {
 };
