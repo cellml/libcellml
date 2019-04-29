@@ -1593,8 +1593,6 @@ TEST(Parser, parseResetsWithNumerousErrors) {
         "Reset in component 'component2' does not reference a variable in the component.",
         "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
         "When in reset referencing variable '' with order '' contains more than two MathML child elements.",
-//        "Reset in component 'component2' referencing variable '' does not have an order defined.",
-//        "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
         "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
         "Reset in component 'component2' does not reference a variable in the component.",
         "When in reset referencing variable '' with order '2' has an invalid attribute 'goods'.",
@@ -1611,13 +1609,9 @@ TEST(Parser, parseResetsWithNumerousErrors) {
         "Reset in component 'component2' referencing variable '' has an invalid child element 'about'.",
         "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value '-'.",
         "Reset in component 'component2' has an invalid attribute 'start'.",
-//        "Reset in component 'component2' referencing variable 'V_k' does not have an order defined.",
-        "Reset in component 'component2' referencing variable 'variable1' has an invalid non-whitespace child text element '\n      non empty whitespace.      '.",
-        "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element '\n        illegal content.        '.",
-        "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element '\n        '.",
-        "When in reset referencing variable 'variable1' with order '0' has an invalid child element 'variable'.",
-        "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element '\n      '.",
+        "Reset in component 'component2' referencing variable 'variable1' has an invalid non-whitespace child text element '\n      non empty whitespace.\n      '.",
+        "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element '\n        illegal content.\n        '.",
+        "When in reset referencing variable 'variable1' with order '0' has an invalid child element 'variable'."
     };
 
     libcellml::Parser parser;
