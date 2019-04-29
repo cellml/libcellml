@@ -1398,13 +1398,16 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             }
         } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName +
-                                "' with order '" + resetOrder +
-                                "' has an invalid non-whitespace child text element '" + textNode + "'.");
-            err->setWhen(when);
-            err->setRule(SpecificationRule::WHEN_CHILD);
-            mParser->addError(err);
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("When in reset referencing variable '" + referencedVariableName +
+                                    "' with order '" + resetOrder +
+                                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setWhen(when);
+                err->setRule(SpecificationRule::WHEN_CHILD);
+                mParser->addError(err);
+            }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
