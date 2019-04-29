@@ -411,7 +411,7 @@ TEST(Validator, invalidMath) {
             "</math>\n";
     const std::string math2 = "<invalid_math/>\n";
     const std::vector<std::string> expectedErrors = {
-        "Opening and ending tag mismatch: invalid_xml line 1 and not_valid.",
+        "Opening and ending tag mismatch: invalid_xml line 2 and not_valid.",
         "Could not get a valid XML root node from the math on component 'componentName1'.",
         "Math root node is of invalid type 'invalid_math' on component 'componentName2'. A valid math root node should be of type 'math'."
     };
@@ -530,8 +530,8 @@ TEST(Validator, invalidMathMLVariables) {
     const std::vector<std::string> expectedErrors = {
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
-        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
+        "MathML ci element has the child text 'new_bvar', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
         "MathML ci element has a whitespace-only child element.",
         "MathML ci element has no child.",
         "No declaration for element nonsense.",
@@ -609,8 +609,8 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits) {
             "  </apply>\n"
             "</math>\n";
     const std::vector<std::string> expectedErrors = {
-        "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
+        "MathML ci element has the child text 'new_bvar', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
         "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
         "MathML ci element has a whitespace-only child element.",
         "MathML ci element has the child text 'undefined_variable', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
