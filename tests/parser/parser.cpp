@@ -989,7 +989,7 @@ TEST(Parser, importedComponent2Connection) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
             "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
             "  </import>\n"
             "  <component name=\"component_bob\">\n"
@@ -1162,7 +1162,7 @@ TEST(Parser, invalidImportsAndGetError) {
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\" sauce=\"hollandaise\">\n"
+            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" sauce=\"hollandaise\">\n"
             "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
             "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
             "    <invalid_nonsense/>\n"
@@ -1177,10 +1177,10 @@ TEST(Parser, invalidImportsAndGetError) {
     const std::string output =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
             "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
             "  </import>\n"
-            "  <import xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"some-other-model.xml\">\n"
+            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
             "    <units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>\n"
             "  </import>\n"
             "</model>\n";
