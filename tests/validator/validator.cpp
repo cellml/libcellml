@@ -44,7 +44,7 @@ TEST(Validator, unnamedModel) {
 }
 
 TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Model does not have a valid name attribute.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
@@ -56,7 +56,7 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Component does not have a valid name attribute.",
     };
-    std::vector<std::string> expectedSpecificationHeadings = {
+    const std::vector<std::string> expectedSpecificationHeadings = {
         "3.1.4",
         "4.2.1",
         "3.1.2",
@@ -125,7 +125,7 @@ TEST(Validator, namedModelWithUnnamedComponent) {
 }
 
 TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -149,7 +149,7 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits) {
 }
 
 TEST(Validator, modelWithDuplicateComponentsAndUnits) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Model 'multiplicity' contains multiple components with the name 'michael'. Valid component names must be unique to their model.",
         "Model 'multiplicity' contains multiple units with the name 'keaton'. Valid units names must be unique to their model."
     };
@@ -179,7 +179,7 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits) {
 }
 
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Variable does not have a valid name attribute.",
@@ -219,7 +219,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits) {
 }
 
 TEST(Validator, invalidVariableInitialValuesAndInterfaces) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'candidate' has an invalid interface attribute value 'orange'.",
         "Variable 'candidate' has an invalid initial value 'trump'. Initial values must be a real number string or a variable reference."
     };
@@ -247,14 +247,13 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces) {
 }
 
 TEST(Validator, importUnits) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
         "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units does not have a valid name attribute."
-
     };
 
     libcellml::Validator v;
@@ -306,7 +305,7 @@ TEST(Validator, importUnits) {
 }
 
 TEST(Validator, importComponents) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
@@ -670,8 +669,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
             "    <unit prefix=\"wolf\" units=\"celsius\"/>\n"
             "  </units>\n"
             "</model>\n";
-
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Units is named 'ampere', which is a protected standard unit name.",
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
@@ -693,7 +691,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
 }
 
 TEST(Validator, validateInvalidConnections) {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
         "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
     };
@@ -905,7 +903,7 @@ TEST(Validator, resets) {
 }
 
 TEST(Validator, whens) {
-    std::vector<std::string> expectedErrors {
+    const std::vector<std::string> expectedErrors {
         "Reset in component 'comp' with order '300' does not reference a variable.",
         "When in reset with order '300' which does not reference a variable, does not have an order set.",
         "When in reset with order '300' which does not reference a variable, does not have an order set, does not have a MathML condition set.",
