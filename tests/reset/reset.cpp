@@ -252,8 +252,8 @@ TEST(Reset, printResetWithWhenWithValueSet) {
             "<reset>\n"
             "  <when>\n"
             "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-            "  a value set\n"
-            "</math>\n"
+            "      a value set\n"
+            "    </math>\n"
             "  </when>\n"
             "</reset>\n";
     const std::string math =
@@ -278,16 +278,16 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
             "<reset variable=\"A\">\n"
             "  <when order=\"2\">\n"
             "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-            "  some mathml\n"
-            "</math>\n"
+            "      some mathml\n"
+            "    </math>\n"
             "  </when>\n"
             "  <when order=\"-1\" id=\"wid\">\n"
             "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-            "  some condition in mathml\n"
-            "</math>\n"
+            "      some condition in mathml\n"
+            "    </math>\n"
             "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-            "  some value in mathml\n"
-            "</math>\n"
+            "      some value in mathml\n"
+            "    </math>\n"
             "  </when>\n"
             "</reset>\n";
     const std::string condition1 =
