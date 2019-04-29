@@ -34,6 +34,9 @@ limitations under the License.
 
 namespace libcellml {
 
+// Prototypes
+std::string printWhen(WhenPtr when);
+std::string printEncapsulation(ComponentPtr component);
 // VariableMap
 typedef std::pair <VariablePtr, VariablePtr> VariablePair; /**< Type definition for VariablePtr pair.*/
 typedef std::vector<VariablePair> VariableMap; /**< Type definition for vector of VariablePair.*/
@@ -225,7 +228,7 @@ std::string Printer::printReset(Reset reset) const
     return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
 }
 
-std::string Printer::printWhen(WhenPtr when) const
+std::string printWhen(WhenPtr when)
 {
     std::string repr = "<when";
     std::string id = when->getId();
@@ -549,7 +552,7 @@ std::string Printer::printModel(Model *model) const
     return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
 }
 
-std::string Printer::printEncapsulation(ComponentPtr component) const
+std::string printEncapsulation(ComponentPtr component)
 {
     std::string componentName = component->getName();
     std::string repr = "<component_ref";

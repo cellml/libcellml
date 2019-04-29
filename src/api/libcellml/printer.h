@@ -171,28 +171,6 @@ public:
     std::string printReset(Reset reset) const;
 
 private:
-    /**
-     * @brief Serialise the component encapsulation to @c std::string.
-     *
-     * Serialise the given @p component encapsulation to a std::string.
-     *
-     * @param component The component encapsulation to serialise.
-     *
-     * @return The @c std::string representation of the component encapsulation.
-     */
-    std::string printEncapsulation(ComponentPtr component) const;
-
-    /**
-     * @brief Serialise a @c When to @c std::string.
-     *
-     * Serialise the given @p when to a std::string.
-     *
-     * @param when The @c When to serialise.
-     *
-     * @return The @c std::string representation of the @c When.
-     */
-    std::string printWhen(WhenPtr when) const;
-
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
