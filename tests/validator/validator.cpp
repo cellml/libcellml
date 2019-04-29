@@ -828,9 +828,10 @@ TEST(Validator, integerStrings) {
 
 }
 
-TEST(Validator, resets) {
+static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
-    std::vector<std::string> expectedErrors = {
+TEST(Validator, resets) {
+    const std::vector<std::string> expectedErrors = {
         "Component 'comp' contains multiple resets with order '300'.",
         "Reset in component 'comp' with order '300' does not reference a variable.",
         "Reset in component 'comp' does not have an order set, does not reference a variable.",
@@ -857,11 +858,11 @@ TEST(Validator, resets) {
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
 
     w1->setOrder(776);
-    w1->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
-    w1->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
+    w1->setCondition(emptyMath);
+    w1->setValue(emptyMath);
     w2->setOrder(345);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
-    w2->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
+    w2->setCondition(emptyMath);
+    w2->setValue(emptyMath);
 
     r1->setOrder(300);
     r1->addWhen(w1);
@@ -941,12 +942,12 @@ TEST(Validator, whens) {
     var->setUnits("second");
 
     w2->setOrder(250);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
+    w2->setCondition(emptyMath);
     w3->setOrder(250);
-    w3->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
+    w3->setValue(emptyMath);
     w4->setOrder(365);
-    w4->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
-    w4->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>\n");
+    w4->setCondition(emptyMath);
+    w4->setValue(emptyMath);
 
     c->addVariable(var);
     c->addReset(r1);
