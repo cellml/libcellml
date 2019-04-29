@@ -110,8 +110,37 @@ TEST(Parser, parseComplexEncapsulationModelFromFile) {
 TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
     // This test resulted from https://github.com/cellml/libcellml/issues/183
 
-    const std::string e1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>a1</ci>\n\t\t\t\t<apply><plus/>\n\t\t\t\t\t<ci>b1</ci>\n\t\t\t\t\t<ci>c1</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math>";
-    const std::string e2 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>b2</ci>\n\t\t\t\t<apply><times/>\n\t\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n\t\t\t\t\t<ci>d</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math><math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>d</ci>\n\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n\t\t\t</apply>\n\t\t</math>";
+    const std::string e1 =
+            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+            "  <apply>\n"
+            "    <eq/>\n"
+            "    <ci>a1</ci>\n"
+            "    <apply>\n"
+            "      <plus/>\n"
+            "      <ci>b1</ci>\n"
+            "      <ci>c1</ci>\n"
+            "    </apply>\n"
+            "  </apply>\n"
+            "</math>\n";
+    const std::string e2 =
+            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+            "  <apply>\n"
+            "    <eq/>\n"
+            "    <ci>b2</ci>\n"
+            "    <apply>\n"
+            "      <times/>\n"
+            "      <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n"
+            "      <ci>d</ci>\n"
+            "    </apply>\n"
+            "  </apply>\n"
+            "</math>\n"
+            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+            "  <apply>\n"
+            "    <eq/>\n"
+            "    <ci>d</ci>\n"
+            "    <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n"
+            "  </apply>\n"
+            "</math>\n";
 
     std::ifstream t(TestResources::getLocation(
                     TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE));

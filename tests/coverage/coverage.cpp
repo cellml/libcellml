@@ -49,7 +49,7 @@ TEST(Coverage, printer) {
 }
 
 TEST(Coverage, units) {
-    const std::string e = "<units name=\"dimensionless\"/>";
+    const std::string e = "<units name=\"dimensionless\"/>\n";
     libcellml::Units u, um;
 
     u.setName("dimensionless");
@@ -65,7 +65,10 @@ TEST(Coverage, units) {
 }
 
 TEST(Coverage, when) {
-    const std::string e = "<reset><when/></reset>";
+    const std::string e =
+            "<reset>\n"
+            "  <when/>\n"
+            "</reset>\n";
     libcellml::When w, wm;
     libcellml::Reset r;
 
@@ -167,7 +170,7 @@ TEST(Coverage, prefixToString) {
 }
 
 TEST(Coverage, variable) {
-    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>";
+    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
     libcellml::Variable v, vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
@@ -188,16 +191,18 @@ TEST(Coverage, variable) {
 
 TEST(Coverage, component) {
     const std::string e =
-            "<component name=\"name\">"
-                "<variable/>"
-                "<1+1=2>"
-            "</component>";
+            "<component name=\"name\">\n"
+            "  <variable/>\n"
+            "  <1+1=2>\n"
+            "</component>\n";
+    const std::string math = "<1+1=2>\n";
+
     libcellml::Component c, cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
     c.setName("name");
     c.addVariable(v);
-    c.setMath("<1+1=2>");
+    c.setMath(math);
 
     libcellml::Printer printer;
     std::string a = printer.printComponent(c);
