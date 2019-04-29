@@ -88,7 +88,6 @@ void Generator::swap(Generator &rhs)
 void Generator::processModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before processing it
-
 /*TODO: reenable the validation once it is known to work fine...
     libcellml::Validator validator;
 
@@ -104,15 +103,14 @@ void Generator::processModel(const ModelPtr &model)
         return;
     }
 */
-
-    // Determine the order in which equations should be executed by analysing
+    // Determine the order in which equations should be executed by processing
     // each of the components in the given model
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         // Retrieve the math string associated with the given component and
-        // analyse it
+        // process it, one equation at a time
         // Note: at this stage, we know the model is valid, so no point in
-        //       validating the math string...
+        //       revalidating the math string...
 
         ComponentPtr component = model->getComponent(i);
         XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
@@ -120,7 +118,12 @@ void Generator::processModel(const ModelPtr &model)
 
         xmlDoc->parse(math);
 
-        mPimpl->analyzeNode(xmlDoc->getRootNode());
+        XmlNodePtr mathNode = xmlDoc->getRootNode();
+
+        for (XmlNodePtr node = mathNode->getFirstChild();
+             node != nullptr; node = node->getNext()) {
+            mPimpl->processNode(node);
+        }
     }
 }
 
