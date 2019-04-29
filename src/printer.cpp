@@ -30,7 +30,6 @@ limitations under the License.
 #include <stack>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 namespace libcellml {
 
