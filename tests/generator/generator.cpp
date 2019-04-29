@@ -20,7 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-static const std::string emptyString;
+static const std::string EMPTY_STRING = "";
 
 TEST(Generator, emptyModel) {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -37,10 +37,10 @@ TEST(Generator, emptyModel) {
     EXPECT_EQ(size_t(0), generator.rateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(emptyString, generator.initializeVariables());
-    EXPECT_EQ(emptyString, generator.computeConstantEquations());
-    EXPECT_EQ(emptyString, generator.computeRateEquations());
-    EXPECT_EQ(emptyString, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
@@ -65,7 +65,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
               generator.computeConstantEquations());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeRateEquations.out"),
               generator.computeRateEquations());
-    EXPECT_EQ(emptyString,
+    EXPECT_EQ(EMPTY_STRING,
               generator.computeAlgebraicEquations());
 
     generator.setWithNames(true);
@@ -76,6 +76,6 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
               generator.computeConstantEquations());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeRateEquations_with_names.out"),
               generator.computeRateEquations());
-    EXPECT_EQ(emptyString,
+    EXPECT_EQ(EMPTY_STRING,
               generator.computeAlgebraicEquations());
 }
