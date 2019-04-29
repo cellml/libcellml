@@ -810,22 +810,50 @@ TEST(Validator, integerStrings) {
             "    </reset>\n"
             "  </component>\n"
             "</model>\n";
-
-    std::vector<std::string> expectedErrors = {
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
+    const std::vector<std::string> expectedParsingErrors = {
+        "When in reset referencing variable 'variable' with order '1' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '1' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '1' has an invalid non-whitespace child text element '\n      '.",
+        "When in reset referencing variable 'variable' with order '-1' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '-1' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '-1' has an invalid non-whitespace child text element '\n      '.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n        '.",
+        "When in reset referencing variable 'variable' with order '' has an invalid non-whitespace child text element '\n      '.",
+    };
+    const std::vector<std::string> expectedValidationErrors = {
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
     };
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(4u, p.errorCount());
+    EXPECT_EQ(expectedParsingErrors.size(), p.errorCount());
+    for (size_t i = 0; i < expectedParsingErrors.size(); ++i) {
+        EXPECT_EQ(expectedParsingErrors.at(i), p.getError(i)->getDescription());
+    }
 
     libcellml::Validator v;
     v.validateModel(m);
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-
+    EXPECT_EQ(expectedValidationErrors.size(), v.errorCount());
+    for (size_t i = 0; i < expectedValidationErrors.size(); ++i) {
+        EXPECT_EQ(expectedValidationErrors.at(i), v.getError(i)->getDescription());
+    }
 }
 
 static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
