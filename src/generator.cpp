@@ -16,12 +16,12 @@ limitations under the License.
 
 #include "xmldoc.h"
 
+#include <vector>
+
 #include "libcellml/component.h"
 #include "libcellml/generator.h"
 #include "libcellml/model.h"
 #include "libcellml/validator.h"
-
-#include <vector>
 
 namespace libcellml{
 
