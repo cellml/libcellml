@@ -57,10 +57,10 @@
         <variable name="eqnCi" units="dimensionless"/>
         <variable name="eqnTrue" units="dimensionless"/>
         <variable name="eqnFalse" units="dimensionless"/>
-        <variable name="eqnNan" units="dimensionless"/>
+        <variable name="eqnE" units="dimensionless"/>
         <variable name="eqnPi" units="dimensionless"/>
         <variable name="eqnInf" units="dimensionless"/>
-        <variable name="eqnE" units="dimensionless"/>
+        <variable name="eqnNan" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
         <variable initial_value="3" name="o" units="dimensionless"/>
@@ -538,8 +538,8 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnNan</ci>
-                <notanumber/>
+                <ci>eqnE</ci>
+                <exponentiale/>
             </apply>
             <apply>
                 <eq/>
@@ -553,8 +553,8 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnE</ci>
-                <exponentiale/>
+                <ci>eqnNan</ci>
+                <notanumber/>
             </apply>
         </math>
     </component>
