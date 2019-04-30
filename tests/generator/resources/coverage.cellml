@@ -2,42 +2,88 @@
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Coverage-->
     <component name="my_component">
-        <variable name="two" units="dimensionless"/>
-        <variable name="three" units="dimensionless"/>
-        <variable name="five" units="dimensionless"/>
-        <variable initial_value="1" name="a" units="dimensionless"/>
-        <variable initial_value="2" name="b" units="dimensionless"/>
-        <variable initial_value="3" name="c" units="dimensionless"/>
-        <variable initial_value="4" name="d" units="dimensionless"/>
+        <variable name="eqnEqEq" units="dimensionless"/>
+        <variable name="eqnPlus" units="dimensionless"/>
+        <variable name="eqnMultiplePlus" units="dimensionless"/>
+        <variable name="eqnMinus" units="dimensionless"/>
+        <variable name="eqnMultipleMinus" units="dimensionless"/>
+        <variable name="eqnSin" units="dimensionless"/>
+        <variable name="eqnInf" units="dimensionless"/>
+        <variable name="eqnE" units="dimensionless"/>
+        <variable initial_value="1" name="m" units="dimensionless"/>
+        <variable initial_value="2" name="n" units="dimensionless"/>
+        <variable initial_value="3" name="o" units="dimensionless"/>
+        <variable initial_value="4" name="p" units="dimensionless"/>
+        <variable initial_value="5" name="q" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>two</ci>
+                <ci>eqnEqEq</ci>
+                <apply>
+                    <eq/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPlus</ci>
+                <apply>
+                    <plus/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMultiplePlus</ci>
+                <apply>
+                    <plus/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinus</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMultipleMinus</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnSin</ci>
                 <apply>
                     <sin/>
-                    <ci>a</ci>
+                    <ci>m</ci>
                 </apply>
             </apply>
             <apply>
                 <eq/>
-                <ci>three</ci>
-                <apply>
-                    <plus/>
-                    <ci>a</ci>
-                    <ci>b</ci>
-                </apply>
+                <ci>eqnInf</ci>
+                <infinity/>
             </apply>
             <apply>
                 <eq/>
-                <ci>five</ci>
-                <apply>
-                    <plus/>
-                    <ci>a</ci>
-                    <ci>b</ci>
-                    <ci>c</ci>
-                    <ci>d</ci>
-                    <exponentiale/>
-                </apply>
+                <ci>eqnE</ci>
+                <exponentiale/>
             </apply>
         </math>
     </component>
