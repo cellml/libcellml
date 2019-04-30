@@ -40,6 +40,7 @@ public:
     size_t rateCount() const;
     size_t variableCount() const;
 
+    std::string neededMathMethods() const;
     std::string initializeVariables() const;
     std::string computeConstantEquations() const;
     std::string computeRateEquations() const;
