@@ -62,7 +62,7 @@ public:
 
         // Constants
 
-        TRUE, FALSE, NAN, PI, INF, E
+        TRUE, FALSE, E, PI, INF, NAN
     };
 
     explicit GeneratorEquationBinTree(Type type, const std::string &value = "");
@@ -226,10 +226,10 @@ struct Generator::GeneratorImpl
 
     std::string mTrue = "true";
     std::string mFalse = "false";
-    std::string mNan = "sqrt(-1.0)";
+    std::string mE = convertDoubleToString(exp(1.0));
     std::string mPi = convertDoubleToString(M_PI);
     std::string mInf = "1.0/0.0";
-    std::string mE = convertDoubleToString(exp(1.0));
+    std::string mNan = "sqrt(-1.0)";
 
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
@@ -496,14 +496,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TRUE);
     } else if (node->isMathmlElement("false")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::FALSE);
-    } else if (node->isMathmlElement("notanumber")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NAN);
+    } else if (node->isMathmlElement("exponentiale")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::E);
     } else if (node->isMathmlElement("pi")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::PI);
     } else if (node->isMathmlElement("infinity")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::INF);
-    } else if (node->isMathmlElement("exponentiale")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::E);
+    } else if (node->isMathmlElement("notanumber")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NAN);
     }
 }
 
@@ -651,14 +651,14 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return mTrue;
     case GeneratorEquationBinTree::Type::FALSE:
         return mFalse;
-    case GeneratorEquationBinTree::Type::NAN:
-        return mNan;
+    case GeneratorEquationBinTree::Type::E:
+        return mE;
     case GeneratorEquationBinTree::Type::PI:
         return mPi;
     case GeneratorEquationBinTree::Type::INF:
         return mInf;
-    case GeneratorEquationBinTree::Type::E:
-        return mE;
+    case GeneratorEquationBinTree::Type::NAN:
+        return mNan;
     }
 }
 
