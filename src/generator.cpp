@@ -136,7 +136,7 @@ typedef std::shared_ptr<GeneratorVariable> GeneratorVariablePtr;
 
 struct Generator::GeneratorImpl
 {
-    bool mWithNames;
+    bool mWithNames = true;
 
     std::vector<GeneratorEquationPtr> mEquations;
 
