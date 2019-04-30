@@ -43,7 +43,7 @@ public:
 
         // Arithmetic operators
 
-        PLUS, MINUS, TIMES, DIVIDE, ABS, EXP, LN,
+        PLUS, MINUS, TIMES, DIVIDE, ABS, EXP, LN, CEILING, FLOOR, FACTORIAL,
 
         // Logical operators
 
@@ -169,6 +169,11 @@ struct Generator::GeneratorImpl
     std::string mAbs = "fabs";
     std::string mExp = "exp";
     std::string mLn = "log";
+    std::string mCeiling = "ceil";
+    std::string mFloor = "floor";
+    std::string mFactorial = "fact";
+
+    bool mNeedFactorial = false;
 
     // Logical operators
 
@@ -383,6 +388,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EXP);
     } else if (node->isMathmlElement("ln")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LN);
+    } else if (node->isMathmlElement("ceiling")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CEILING);
+    } else if (node->isMathmlElement("floor")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::FLOOR);
+    } else if (node->isMathmlElement("factorial")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::FACTORIAL);
+
+        mNeedFactorial = true;
 
     // Logical operators
 
@@ -557,6 +570,12 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return mExp+"("+generateCode(binTree->left())+")";
     case GeneratorEquationBinTree::Type::LN:
         return mLn+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::CEILING:
+        return mCeiling+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::FLOOR:
+        return mFloor+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::FACTORIAL:
+        return mFactorial+"("+generateCode(binTree->left())+")";
 
     // Logical operators
 
