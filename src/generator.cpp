@@ -188,6 +188,19 @@ struct Generator::GeneratorImpl
     std::string mAcsch = "acsch";
     std::string mAcoth = "acoth";
 
+    bool mNeedSec = false;
+    bool mNeedCsc = false;
+    bool mNeedCot = false;
+    bool mNeedSech = false;
+    bool mNeedCsch = false;
+    bool mNeedCoth = false;
+    bool mNeedAsec = false;
+    bool mNeedAcsc = false;
+    bool mNeedAcot = false;
+    bool mNeedAsech = false;
+    bool mNeedAcsch = false;
+    bool mNeedAcoth = false;
+
     // Constants
 
     std::string mTrue = "true";
@@ -203,6 +216,7 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node);
     void processNode(const XmlNodePtr &node, GeneratorEquationBinTreePtr &binTree);
 
+    std::string neededMathMethods() const;
     std::string initializeVariables() const;
     std::string computeConstantEquations() const;
     std::string computeRateEquations() const;
@@ -349,10 +363,16 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TAN);
     } else if (node->isMathmlElement("sec")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SEC);
+
+        mNeedSec = true;
     } else if (node->isMathmlElement("csc")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CSC);
+
+        mNeedCsc = true;
     } else if (node->isMathmlElement("cot")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COT);
+
+        mNeedCot = true;
     } else if (node->isMathmlElement("sinh")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SINH);
     } else if (node->isMathmlElement("cosh")) {
@@ -361,10 +381,16 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TANH);
     } else if (node->isMathmlElement("sech")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SECH);
+
+        mNeedSech = true;
     } else if (node->isMathmlElement("csch")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CSCH);
+
+        mNeedCsch = true;
     } else if (node->isMathmlElement("coth")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COTH);
+
+        mNeedCoth = true;
     } else if (node->isMathmlElement("arcsin")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASIN);
     } else if (node->isMathmlElement("arccos")) {
@@ -373,10 +399,16 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ATAN);
     } else if (node->isMathmlElement("arcsec")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASEC);
+
+        mNeedAsec = true;
     } else if (node->isMathmlElement("arccsc")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACSC);
+
+        mNeedAcsc = true;
     } else if (node->isMathmlElement("arccot")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOT);
+
+        mNeedAcot = true;
     } else if (node->isMathmlElement("arcsinh")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASINH);
     } else if (node->isMathmlElement("arccosh")) {
@@ -385,10 +417,16 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ATANH);
     } else if (node->isMathmlElement("arcsech")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASECH);
+
+        mNeedAsech = true;
     } else if (node->isMathmlElement("arccsch")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACSCH);
+
+        mNeedAcsch = true;
     } else if (node->isMathmlElement("arccoth")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOTH);
+
+        mNeedAcoth = true;
 
     // Token elements
 
@@ -412,6 +450,11 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("exponentiale")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::E);
     }
+}
+
+std::string Generator::GeneratorImpl::neededMathMethods() const
+{
+    return "";
 }
 
 std::string Generator::GeneratorImpl::initializeVariables() const
@@ -622,6 +665,8 @@ void Generator::processModel(const ModelPtr &model)
     // Generate the code for our different equations
 //TODO: remove the below once we are done testing things...
 
+    printf("%s", mPimpl->neededMathMethods().c_str());
+
     for (auto equation : mPimpl->mEquations) {
         printf("%s;\n", mPimpl->generateCode(equation->binTree()).c_str());
     }
@@ -645,6 +690,11 @@ size_t Generator::rateCount() const
 size_t Generator::variableCount() const
 {
     return mPimpl->mVariables.size();
+}
+
+std::string Generator::neededMathMethods() const
+{
+    return mPimpl->neededMathMethods();
 }
 
 std::string Generator::initializeVariables() const
