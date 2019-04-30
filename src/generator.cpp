@@ -177,7 +177,6 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node);
     void processNode(const XmlNodePtr &node, GeneratorEquationBinTreePtr &binTree);
 
-    void generateCode() const;
     std::string generateCode(const GeneratorEquationBinTreePtr &binTree) const;
 };
 
@@ -336,15 +335,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     }
 }
 
-void Generator::GeneratorImpl::generateCode() const
-{
-    // Generate the code for our different equations
-
-    for (auto equation : mEquations) {
-        printf("%s;\n", generateCode(equation->binTree()).c_str());
-    }
-}
-
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTreePtr &binTree) const
 {
     // Generate the code for the given (equation) binary tree
@@ -484,8 +474,11 @@ void Generator::processModel(const ModelPtr &model)
     }
 
     // Generate the code for our different equations
+//TODO: remove the below once we are done testing things...
 
-    mPimpl->generateCode();
+    for (auto equation : mPimpl->mEquations) {
+        printf("%s;\n", mPimpl->generateCode(equation->binTree()).c_str());
+    }
 }
 
 void Generator::setWithNames(bool withNames)
