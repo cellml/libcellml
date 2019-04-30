@@ -177,6 +177,11 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node);
     void processNode(const XmlNodePtr &node, GeneratorEquationBinTreePtr &binTree);
 
+    std::string initializeVariables() const;
+    std::string computeConstantEquations() const;
+    std::string computeRateEquations() const;
+    std::string computeAlgebraicEquations() const;
+
     std::string generateCode(const GeneratorEquationBinTreePtr &binTree) const;
 };
 
@@ -335,6 +340,26 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("exponentiale")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::E);
     }
+}
+
+std::string Generator::GeneratorImpl::initializeVariables() const
+{
+    return "";
+}
+
+std::string Generator::GeneratorImpl::computeConstantEquations() const
+{
+    return "";
+}
+
+std::string Generator::GeneratorImpl::computeRateEquations() const
+{
+    return "";
+}
+
+std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
+{
+    return "";
 }
 
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTreePtr &binTree) const
@@ -506,22 +531,22 @@ size_t Generator::variableCount() const
 
 std::string Generator::initializeVariables() const
 {
-    return "";
+    return mPimpl->initializeVariables();
 }
 
 std::string Generator::computeConstantEquations() const
 {
-    return "";
+    return mPimpl->computeConstantEquations();
 }
 
 std::string Generator::computeRateEquations() const
 {
-    return "";
+    return mPimpl->computeRateEquations();
 }
 
 std::string Generator::computeAlgebraicEquations() const
 {
-    return "";
+    return mPimpl->computeAlgebraicEquations();
 }
 
 }
