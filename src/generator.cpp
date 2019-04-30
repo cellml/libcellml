@@ -209,7 +209,7 @@ void Generator::processModel(const ModelPtr &model)
         // Retrieve the math string associated with the given component and
         // process it, one equation at a time
         // Note: at this stage, we know the model is valid, so no point in
-        //       revalidating the math string...
+        //       revalidating each math string...
 
         ComponentPtr component = model->getComponent(i);
         XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
