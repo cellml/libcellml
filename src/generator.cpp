@@ -65,7 +65,7 @@ class GeneratorEquation
 public:
     explicit GeneratorEquation();
 
-    const GeneratorEquationBinTreePtr &binTree() const;
+    GeneratorEquationBinTreePtr &binTree();
 
 private:
     GeneratorEquationBinTreePtr mBinTree;
@@ -76,7 +76,7 @@ GeneratorEquation::GeneratorEquation()
 {
 }
 
-const GeneratorEquationBinTreePtr &GeneratorEquation::binTree() const
+GeneratorEquationBinTreePtr &GeneratorEquation::binTree()
 {
     return mBinTree;
 }
