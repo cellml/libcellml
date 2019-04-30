@@ -95,7 +95,7 @@ struct Generator::GeneratorImpl
     std::vector<GeneratorVariablePtr> mVariables;
 
     size_t mathmlChildCount(const XmlNodePtr &node) const;
-    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, int index) const;
+    XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     void processNode(const XmlNodePtr &node);
 };
@@ -105,43 +105,34 @@ size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
     // Return the number of child elements, in the MathML namespace, for the
     // given node
 
-    size_t res = 0;
     XmlNodePtr childNode = node->getFirstChild();
+    size_t res = (childNode->isMathmlElement())?1:0;
 
     while (childNode != nullptr) {
-        if (childNode->isMathmlElement()) {
+        childNode = childNode->getNext();
+
+        if (childNode && childNode->isMathmlElement()) {
             ++res;
         }
-
-        childNode = childNode->getNext();
     }
 
     return res;
 }
 
-XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, int index) const
+XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, size_t index) const
 {
     // Return the nth child element of the given node, skipping anything that is
     // not int he MathML namespace
 
-    // Retrieve the first MathML node, if it exists
-
     XmlNodePtr res = node->getFirstChild();
+    size_t childNodeIndex = (res->isMathmlElement())?0:SIZE_T_MAX;
 
-    while (res && !res->isMathmlElement()) {
+    while ((res != nullptr) && (childNodeIndex != index)) {
         res = res->getNext();
-    }
 
-    // Retrieve the nth MathML element, if it exists
-
-    int nodeIndex = 0;
-
-    while (res && (nodeIndex != index)) {
-        while (res && !res->isMathmlElement()) {
-            res = res->getNext();
+        if (res && res->isMathmlElement()) {
+            ++childNodeIndex;
         }
-
-        ++nodeIndex;
     }
 
     return res;
