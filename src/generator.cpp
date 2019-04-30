@@ -47,7 +47,10 @@ public:
 
         // Trigonometric operators
 
-        SIN,
+        SIN, COS, TAN, SEC, CSC, COT,
+        SINH, COSH, TANH, SECH, CSCH, COTH,
+        ASIN, ACOS, ATAN, ASEC, ACSC, ACOT,
+        ASINH, ACOSH, ATANH, ASECH, ACSCH, ACOTH,
 
         // Token elements
 
@@ -161,6 +164,29 @@ struct Generator::GeneratorImpl
     // Trigonometric operators
 
     std::string mSin = "sin";
+    std::string mCos = "cos";
+    std::string mTan = "tan";
+    std::string mSec = "sec";
+    std::string mCsc = "csc";
+    std::string mCot = "cot";
+    std::string mSinh = "sinh";
+    std::string mCosh = "cosh";
+    std::string mTanh = "tanh";
+    std::string mSech = "sech";
+    std::string mCsch = "csch";
+    std::string mCoth = "coth";
+    std::string mAsin = "asin";
+    std::string mAcos = "acos";
+    std::string mAtan = "atan";
+    std::string mAsec = "asec";
+    std::string mAcsc = "acsc";
+    std::string mAcot = "acot";
+    std::string mAsinh = "asinh";
+    std::string mAcosh = "acosh";
+    std::string mAtanh = "atanh";
+    std::string mAsech = "asech";
+    std::string mAcsch = "acsch";
+    std::string mAcoth = "acoth";
 
     // Constants
 
@@ -317,6 +343,52 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
     } else if (node->isMathmlElement("sin")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SIN);
+    } else if (node->isMathmlElement("cos")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COS);
+    } else if (node->isMathmlElement("tan")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TAN);
+    } else if (node->isMathmlElement("sec")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SEC);
+    } else if (node->isMathmlElement("csc")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CSC);
+    } else if (node->isMathmlElement("cot")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COT);
+    } else if (node->isMathmlElement("sinh")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SINH);
+    } else if (node->isMathmlElement("cosh")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COSH);
+    } else if (node->isMathmlElement("tanh")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TANH);
+    } else if (node->isMathmlElement("sech")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SECH);
+    } else if (node->isMathmlElement("csch")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CSCH);
+    } else if (node->isMathmlElement("coth")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COTH);
+    } else if (node->isMathmlElement("arcsin")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASIN);
+    } else if (node->isMathmlElement("arccos")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOS);
+    } else if (node->isMathmlElement("arctan")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ATAN);
+    } else if (node->isMathmlElement("arcsec")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASEC);
+    } else if (node->isMathmlElement("arccsc")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACSC);
+    } else if (node->isMathmlElement("arccot")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOT);
+    } else if (node->isMathmlElement("arcsinh")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASINH);
+    } else if (node->isMathmlElement("arccosh")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOSH);
+    } else if (node->isMathmlElement("arctanh")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ATANH);
+    } else if (node->isMathmlElement("arcsech")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASECH);
+    } else if (node->isMathmlElement("arccsch")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACSCH);
+    } else if (node->isMathmlElement("arccoth")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOTH);
 
     // Token elements
 
@@ -395,6 +467,52 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
 
     case GeneratorEquationBinTree::Type::SIN:
         return mSin+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::COS:
+        return mCos+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::TAN:
+        return mTan+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::SEC:
+        return mSec+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::CSC:
+        return mCsc+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::COT:
+        return mCot+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::SINH:
+        return mSinh+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::COSH:
+        return mCosh+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::TANH:
+        return mTanh+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::SECH:
+        return mSech+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::CSCH:
+        return mCsch+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::COTH:
+        return mCoth+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ASIN:
+        return mAsin+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ACOS:
+        return mAcos+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ATAN:
+        return mAtan+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ASEC:
+        return mAsec+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ACSC:
+        return mAcsc+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ACOT:
+        return mAcot+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ASINH:
+        return mAsinh+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ACOSH:
+        return mAcosh+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ATANH:
+        return mAtanh+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ASECH:
+        return mAsech+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ACSCH:
+        return mAcsch+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::ACOTH:
+        return mAcoth+"("+generateCode(binTree->left())+")";
 
     // Token elements
 
