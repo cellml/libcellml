@@ -2,32 +2,32 @@
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Coverage-->
     <component name="my_component">
-        <variable name="eqnEqEq" units="dimensionless"/>
+        <variable name="eqnEq" units="dimensionless"/>
         <variable name="eqnNeq" units="dimensionless"/>
         <variable name="eqnLt" units="dimensionless"/>
         <variable name="eqnLeq" units="dimensionless"/>
         <variable name="eqnGt" units="dimensionless"/>
         <variable name="eqnGeq" units="dimensionless"/>
         <variable name="eqnPlus" units="dimensionless"/>
-        <variable name="eqnMultiplePlus" units="dimensionless"/>
+        <variable name="eqnPlusMultiple" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
-        <variable name="eqnMultipleMinus" units="dimensionless"/>
+        <variable name="eqnMinusMultiple" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
-        <variable name="eqnMultipleTimes" units="dimensionless"/>
+        <variable name="eqnTimesMultiple" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
-        <variable name="eqnMultipleDivide" units="dimensionless"/>
+        <variable name="eqnDivideMultiple" units="dimensionless"/>
         <variable name="eqnAbs" units="dimensionless"/>
         <variable name="eqnExp" units="dimensionless"/>
         <variable name="eqnLn" units="dimensionless"/>
-        <variable name="eqnCeil" units="dimensionless"/>
+        <variable name="eqnCeiling" units="dimensionless"/>
         <variable name="eqnFloor" units="dimensionless"/>
-        <variable name="eqnFact" units="dimensionless"/>
+        <variable name="eqnFactorial" units="dimensionless"/>
         <variable name="eqnAnd" units="dimensionless"/>
-        <variable name="eqnMultipleAnd" units="dimensionless"/>
+        <variable name="eqnAndMultiple" units="dimensionless"/>
         <variable name="eqnOr" units="dimensionless"/>
-        <variable name="eqnMultipleOr" units="dimensionless"/>
+        <variable name="eqnOrMultiple" units="dimensionless"/>
         <variable name="eqnXor" units="dimensionless"/>
-        <variable name="eqnMultipleXor" units="dimensionless"/>
+        <variable name="eqnXorMultiple" units="dimensionless"/>
         <variable name="eqnNot" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
         <variable name="eqnCos" units="dimensionless"/>
@@ -41,26 +41,26 @@
         <variable name="eqnSech" units="dimensionless"/>
         <variable name="eqnCsch" units="dimensionless"/>
         <variable name="eqnCoth" units="dimensionless"/>
-        <variable name="eqnAsin" units="dimensionless"/>
-        <variable name="eqnAcos" units="dimensionless"/>
-        <variable name="eqnAtan" units="dimensionless"/>
-        <variable name="eqnAsec" units="dimensionless"/>
-        <variable name="eqnAcsc" units="dimensionless"/>
-        <variable name="eqnAcot" units="dimensionless"/>
-        <variable name="eqnAsinh" units="dimensionless"/>
-        <variable name="eqnAcosh" units="dimensionless"/>
-        <variable name="eqnAtanh" units="dimensionless"/>
-        <variable name="eqnAsech" units="dimensionless"/>
-        <variable name="eqnAcsch" units="dimensionless"/>
-        <variable name="eqnAcoth" units="dimensionless"/>
+        <variable name="eqnArcsin" units="dimensionless"/>
+        <variable name="eqnArccos" units="dimensionless"/>
+        <variable name="eqnArctan" units="dimensionless"/>
+        <variable name="eqnArcsec" units="dimensionless"/>
+        <variable name="eqnArccsc" units="dimensionless"/>
+        <variable name="eqnArccot" units="dimensionless"/>
+        <variable name="eqnArcsinh" units="dimensionless"/>
+        <variable name="eqnArccosh" units="dimensionless"/>
+        <variable name="eqnArctanh" units="dimensionless"/>
+        <variable name="eqnArcsech" units="dimensionless"/>
+        <variable name="eqnArccsch" units="dimensionless"/>
+        <variable name="eqnArccoth" units="dimensionless"/>
         <variable name="eqnCn" units="dimensionless"/>
         <variable name="eqnCi" units="dimensionless"/>
         <variable name="eqnTrue" units="dimensionless"/>
         <variable name="eqnFalse" units="dimensionless"/>
-        <variable name="eqnE" units="dimensionless"/>
+        <variable name="eqnExponentiale" units="dimensionless"/>
         <variable name="eqnPi" units="dimensionless"/>
-        <variable name="eqnInf" units="dimensionless"/>
-        <variable name="eqnNan" units="dimensionless"/>
+        <variable name="eqnInfinity" units="dimensionless"/>
+        <variable name="eqnNotanumber" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
         <variable initial_value="3" name="o" units="dimensionless"/>
@@ -69,7 +69,7 @@
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
-                <ci>eqnEqEq</ci>
+                <ci>eqnEq</ci>
                 <apply>
                     <eq/>
                     <ci>m</ci>
@@ -132,7 +132,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultiplePlus</ci>
+                <ci>eqnPlusMultiple</ci>
                 <apply>
                     <plus/>
                     <ci>m</ci>
@@ -153,7 +153,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultipleMinus</ci>
+                <ci>eqnMinusMultiple</ci>
                 <apply>
                     <minus/>
                     <ci>m</ci>
@@ -174,7 +174,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultipleTimes</ci>
+                <ci>eqnTimesMultiple</ci>
                 <apply>
                     <times/>
                     <ci>m</ci>
@@ -195,7 +195,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultipleDivide</ci>
+                <ci>eqnDivideMultiple</ci>
                 <apply>
                     <divide/>
                     <ci>m</ci>
@@ -231,7 +231,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnCeil</ci>
+                <ci>eqnCeiling</ci>
                 <apply>
                     <ceiling/>
                     <ci>m</ci>
@@ -247,7 +247,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnFact</ci>
+                <ci>eqnFactorial</ci>
                 <apply>
                     <factorial/>
                     <ci>m</ci>
@@ -264,7 +264,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultipleAnd</ci>
+                <ci>eqnAndMultiple</ci>
                 <apply>
                     <and/>
                     <ci>m</ci>
@@ -285,7 +285,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultipleOr</ci>
+                <ci>eqnOrMultiple</ci>
                 <apply>
                     <or/>
                     <ci>m</ci>
@@ -306,7 +306,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultipleXor</ci>
+                <ci>eqnXorMultiple</ci>
                 <apply>
                     <xor/>
                     <ci>m</ci>
@@ -422,7 +422,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAsin</ci>
+                <ci>eqnArcsin</ci>
                 <apply>
                     <arcsin/>
                     <ci>m</ci>
@@ -430,7 +430,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAcos</ci>
+                <ci>eqnArccos</ci>
                 <apply>
                     <arccos/>
                     <ci>m</ci>
@@ -438,7 +438,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAtan</ci>
+                <ci>eqnArctan</ci>
                 <apply>
                     <arctan/>
                     <ci>m</ci>
@@ -446,7 +446,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAsec</ci>
+                <ci>eqnArcsec</ci>
                 <apply>
                     <arcsec/>
                     <ci>m</ci>
@@ -454,7 +454,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAcsc</ci>
+                <ci>eqnArccsc</ci>
                 <apply>
                     <arccsc/>
                     <ci>m</ci>
@@ -462,7 +462,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAcot</ci>
+                <ci>eqnArccot</ci>
                 <apply>
                     <arccot/>
                     <ci>m</ci>
@@ -470,7 +470,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAsinh</ci>
+                <ci>eqnArcsinh</ci>
                 <apply>
                     <arcsinh/>
                     <ci>m</ci>
@@ -478,7 +478,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAcosh</ci>
+                <ci>eqnArccosh</ci>
                 <apply>
                     <arccosh/>
                     <ci>m</ci>
@@ -486,7 +486,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAtanh</ci>
+                <ci>eqnArctanh</ci>
                 <apply>
                     <arctanh/>
                     <ci>m</ci>
@@ -494,7 +494,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAsech</ci>
+                <ci>eqnArcsech</ci>
                 <apply>
                     <arcsech/>
                     <ci>m</ci>
@@ -502,7 +502,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAcsch</ci>
+                <ci>eqnArccsch</ci>
                 <apply>
                     <arccsch/>
                     <ci>m</ci>
@@ -510,7 +510,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAcoth</ci>
+                <ci>eqnArccoth</ci>
                 <apply>
                     <arccoth/>
                     <ci>m</ci>
@@ -538,7 +538,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnE</ci>
+                <ci>eqnExponentiale</ci>
                 <exponentiale/>
             </apply>
             <apply>
@@ -548,12 +548,12 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnInf</ci>
+                <ci>eqnInfinity</ci>
                 <infinity/>
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnNan</ci>
+                <ci>eqnNotanumber</ci>
                 <notanumber/>
             </apply>
         </math>
