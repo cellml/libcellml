@@ -11,8 +11,11 @@
         <variable name="eqnPlus" units="dimensionless"/>
         <variable name="eqnMultiplePlus" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
+        <variable name="eqnMultipleMinus" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
+        <variable name="eqnMultipleTimes" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
+        <variable name="eqnMultipleDivide" units="dimensionless"/>
         <variable name="eqnAbs" units="dimensionless"/>
         <variable name="eqnExp" units="dimensionless"/>
         <variable name="eqnLn" units="dimensionless"/>
@@ -20,8 +23,11 @@
         <variable name="eqnFloor" units="dimensionless"/>
         <variable name="eqnFact" units="dimensionless"/>
         <variable name="eqnAnd" units="dimensionless"/>
+        <variable name="eqnMultipleAnd" units="dimensionless"/>
         <variable name="eqnOr" units="dimensionless"/>
+        <variable name="eqnMultipleOr" units="dimensionless"/>
         <variable name="eqnXor" units="dimensionless"/>
+        <variable name="eqnMultipleXor" units="dimensionless"/>
         <variable name="eqnNot" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
         <variable name="eqnCos" units="dimensionless"/>
@@ -147,6 +153,18 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnMultipleMinus</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnTimes</ci>
                 <apply>
                     <times/>
@@ -156,11 +174,35 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnMultipleTimes</ci>
+                <apply>
+                    <times/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnDivide</ci>
                 <apply>
                     <divide/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMultipleDivide</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
                 </apply>
             </apply>
             <apply>
@@ -222,6 +264,18 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnMultipleAnd</ci>
+                <apply>
+                    <and/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnOr</ci>
                 <apply>
                     <or/>
@@ -231,11 +285,35 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnMultipleOr</ci>
+                <apply>
+                    <or/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnXor</ci>
                 <apply>
                     <xor/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMultipleXor</ci>
+                <apply>
+                    <xor/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
                 </apply>
             </apply>
             <apply>
