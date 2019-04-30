@@ -45,6 +45,10 @@ public:
 
         PLUS, MINUS, TIMES, DIVIDE,
 
+        // Logical operators
+
+        AND, OR, XOR, NOT,
+
         // Trigonometric operators
 
         SIN, COS, TAN, SEC, CSC, COT,
@@ -162,6 +166,13 @@ struct Generator::GeneratorImpl
     std::string mMinus = "-";
     std::string mTimes = "*";
     std::string mDivide = "/";
+
+    // Logical operators
+
+    std::string mAnd = " && ";
+    std::string mOr = " || ";
+    std::string mXor = "^";
+    std::string mNot = "!";
 
     // Trigonometric operators
 
@@ -364,6 +375,17 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("divide")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DIVIDE);
 
+    // Logical operators
+
+    } else if (node->isMathmlElement("and")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::AND);
+    } else if (node->isMathmlElement("or")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::OR);
+    } else if (node->isMathmlElement("xor")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::XOR);
+    } else if (node->isMathmlElement("not")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NOT);
+
     // Trigonometric operators
 
     } else if (node->isMathmlElement("sin")) {
@@ -520,6 +542,17 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return generateCode(binTree->left())+mTimes+generateCode(binTree->right());
     case GeneratorEquationBinTree::Type::DIVIDE:
         return generateCode(binTree->left())+mDivide+generateCode(binTree->right());
+
+    // Logical operators
+
+    case GeneratorEquationBinTree::Type::AND:
+        return generateCode(binTree->left())+mAnd+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::OR:
+        return generateCode(binTree->left())+mOr+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::XOR:
+        return generateCode(binTree->left())+mXor+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::NOT:
+        return mNot+generateCode(binTree->left());
 
     // Trigonometric operators
 
