@@ -14,8 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "utilities.h"
 #include "xmldoc.h"
 
+#include <cmath>
+#include <limits>
 #include <vector>
 
 #include "libcellml/component.h"
@@ -31,20 +34,64 @@ typedef std::shared_ptr<GeneratorEquationBinTree> GeneratorEquationBinTreePtr;
 class GeneratorEquationBinTree
 {
 public:
-    explicit GeneratorEquationBinTree();
+    enum class Type {
+        // Relational operators
+
+        EQ,
+        EQEQ,
+
+        // Arithmetic operators
+
+        PLUS,
+        MINUS,
+
+        // Trigonometric operators
+
+        SIN,
+
+        // Token elements
+
+        CI,
+
+        // Constants
+
+        INF, E
+    };
+
+    explicit GeneratorEquationBinTree(Type type, const std::string &value = "");
+
+    Type type() const;
+
+    std::string value() const;
 
     GeneratorEquationBinTreePtr &left();
     GeneratorEquationBinTreePtr &right();
 
 private:
+    Type mType;
+
+    std::string mValue;
+
     GeneratorEquationBinTreePtr mLeft;
     GeneratorEquationBinTreePtr mRight;
 };
 
-GeneratorEquationBinTree::GeneratorEquationBinTree()
-    : mLeft(nullptr)
+GeneratorEquationBinTree::GeneratorEquationBinTree(Type type, const std::string &value)
+    : mType(type)
+    , mValue(value)
+    , mLeft(nullptr)
     , mRight(nullptr)
 {
+}
+
+GeneratorEquationBinTree::Type GeneratorEquationBinTree::type() const
+{
+    return mType;
+}
+
+std::string GeneratorEquationBinTree::value() const
+{
+    return mValue;
 }
 
 GeneratorEquationBinTreePtr &GeneratorEquationBinTree::left()
@@ -72,7 +119,7 @@ private:
 };
 
 GeneratorEquation::GeneratorEquation()
-    : mBinTree(std::make_shared<GeneratorEquationBinTree>())
+    : mBinTree(std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQ))
 {
 }
 
@@ -96,11 +143,22 @@ struct Generator::GeneratorImpl
     std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
+    std::string mEq = " = ";
+    std::string mEqEq = " == ";
+    std::string mPlus = "+";
+    std::string mMinus  = "-";
+    std::string mSin = "sin";
+    std::string mInf = "1.0/0.0";
+    std::string mE = convertDoubleToString(exp(1.0));
+
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     void processNode(const XmlNodePtr &node);
     void processNode(const XmlNodePtr &node, GeneratorEquationBinTreePtr &binTree);
+
+    void generateCode() const;
+    std::string generateCode(const GeneratorEquationBinTreePtr &binTree) const;
 };
 
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
@@ -204,8 +262,86 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 subBinTree = binTree;
             }
         }
-    } else {
-        binTree = std::make_shared<GeneratorEquationBinTree>();
+
+    // Relational operators
+
+    } else if (node->isMathmlElement("eq")) {
+        if (node->getParent()->getParent()->getName() == "math") {
+            binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQ);
+        } else {
+            binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQEQ);
+        }
+
+    // Arithmetic operators
+
+    } else if (node->isMathmlElement("plus")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::PLUS);
+    } else if (node->isMathmlElement("minus")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MINUS);
+
+    // Trigonometric operators
+
+    } else if (node->isMathmlElement("sin")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SIN);
+
+    // Token elements
+
+    } else if (node->isMathmlElement("ci")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CI, node->getFirstChild()->convertToString());
+
+    // Constants
+
+    } else if (node->isMathmlElement("infinity")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::INF);
+    } else if (node->isMathmlElement("exponentiale")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::E);
+    }
+}
+
+void Generator::GeneratorImpl::generateCode() const
+{
+    // Generate the code for our different equations
+
+    for (auto equation : mEquations) {
+        printf("%s;\n", generateCode(equation->binTree()).c_str());
+    }
+}
+
+std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTreePtr &binTree) const
+{
+    // Generate the code for the given (equation) binary tree
+
+    switch (binTree->type()) {
+    // Relational operators
+
+    case GeneratorEquationBinTree::Type::EQ:
+        return generateCode(binTree->left())+mEq+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::EQEQ:
+        return generateCode(binTree->left())+mEqEq+generateCode(binTree->right());
+
+    // Arithmetic operators
+
+    case GeneratorEquationBinTree::Type::PLUS:
+        return generateCode(binTree->left())+mPlus+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::MINUS:
+        return generateCode(binTree->left())+mMinus+generateCode(binTree->right());
+
+    // Trigonometric operators
+
+    case GeneratorEquationBinTree::Type::SIN:
+        return mSin+"("+generateCode(binTree->left())+")";
+
+    // Token elements
+
+    case GeneratorEquationBinTree::Type::CI:
+        return binTree->value();
+
+    // Constants
+
+    case GeneratorEquationBinTree::Type::INF:
+        return mInf;
+    case GeneratorEquationBinTree::Type::E:
+        return mE;
     }
 }
 
@@ -290,6 +426,10 @@ void Generator::processModel(const ModelPtr &model)
             }
         }
     }
+
+    // Generate the code for our different equations
+
+    mPimpl->generateCode();
 }
 
 void Generator::setWithNames(bool withNames)
