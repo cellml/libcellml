@@ -43,7 +43,7 @@ public:
 
         // Arithmetic operators
 
-        PLUS, MINUS, TIMES, DIVIDE,
+        PLUS, MINUS, TIMES, DIVIDE, ABS, EXP, LN,
 
         // Logical operators
 
@@ -166,6 +166,9 @@ struct Generator::GeneratorImpl
     std::string mMinus = "-";
     std::string mTimes = "*";
     std::string mDivide = "/";
+    std::string mAbs = "fabs";
+    std::string mExp = "exp";
+    std::string mLn = "log";
 
     // Logical operators
 
@@ -374,6 +377,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TIMES);
     } else if (node->isMathmlElement("divide")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DIVIDE);
+    } else if (node->isMathmlElement("abs")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ABS);
+    } else if (node->isMathmlElement("exp")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EXP);
+    } else if (node->isMathmlElement("ln")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LN);
 
     // Logical operators
 
@@ -542,6 +551,12 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return generateCode(binTree->left())+mTimes+generateCode(binTree->right());
     case GeneratorEquationBinTree::Type::DIVIDE:
         return generateCode(binTree->left())+mDivide+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::ABS:
+        return mAbs+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::EXP:
+        return mExp+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::LN:
+        return mLn+"("+generateCode(binTree->left())+")";
 
     // Logical operators
 

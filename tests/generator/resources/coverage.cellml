@@ -13,6 +13,9 @@
         <variable name="eqnMinus" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
+        <variable name="eqnAbs" units="dimensionless"/>
+        <variable name="eqnExp" units="dimensionless"/>
+        <variable name="eqnLn" units="dimensionless"/>
         <variable name="eqnAnd" units="dimensionless"/>
         <variable name="eqnOr" units="dimensionless"/>
         <variable name="eqnXor" units="dimensionless"/>
@@ -155,6 +158,30 @@
                     <divide/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAbs</ci>
+                <apply>
+                    <abs/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnExp</ci>
+                <apply>
+                    <exp/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLn</ci>
+                <apply>
+                    <ln/>
+                    <ci>m</ci>
                 </apply>
             </apply>
             <apply>
