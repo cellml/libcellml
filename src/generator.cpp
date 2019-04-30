@@ -330,9 +330,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     // Relational operators
 
     } else if (node->isMathmlElement("eq")) {
-        if (node->getParent()->getParent()->getName() == "math") {
-            binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQ);
-        } else {
+        // This element is used both to describe "a = b" and "a == b". We can
+        // distinguish between the two by checking its grand-parent. If it's a
+        // "math" MathML element then it means that it is used to describe
+        // "a = b" otherwise it is used to describe "a == b". In the former
+        // case, there is nothing more we need to do since binTree is already of
+        // GeneratorEquationBinTree::Type::EQ type.
+
+        if (node->getParent()->getParent()->getName() != "math") {
             binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQEQ);
         }
     } else if (node->isMathmlElement("neq")) {
