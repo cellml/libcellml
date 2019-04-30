@@ -39,13 +39,11 @@ public:
     enum class Type {
         // Relational operators
 
-        EQ,
-        EQEQ,
+        EQ, EQEQ, NEQ, LT, LEQ, GT, GEQ,
 
         // Arithmetic operators
 
-        PLUS,
-        MINUS,
+        PLUS, MINUS,
 
         // Trigonometric operators
 
@@ -145,11 +143,27 @@ struct Generator::GeneratorImpl
     std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
+    // Relational operators
+
     std::string mEq = " = ";
     std::string mEqEq = " == ";
+    std::string mNeq = " != ";
+    std::string mLt = " < ";
+    std::string mLeq = " <= ";
+    std::string mGt = " > ";
+    std::string mGeq = " >= ";
+
+    // Arithmetic operators
+
     std::string mPlus = "+";
     std::string mMinus  = "-";
+
+    // Trigonometric operators
+
     std::string mSin = "sin";
+
+    // Constants
+
     std::string mTrue = "true";
     std::string mFalse = "false";
     std::string mNan = "sqrt(-1.0)";
@@ -277,6 +291,16 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         } else {
             binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQEQ);
         }
+    } else if (node->isMathmlElement("neq")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NEQ);
+    } else if (node->isMathmlElement("lt")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LT);
+    } else if (node->isMathmlElement("leq")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LEQ);
+    } else if (node->isMathmlElement("gt")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::GT);
+    } else if (node->isMathmlElement("geq")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::GEQ);
 
     // Arithmetic operators
 
@@ -332,6 +356,16 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return generateCode(binTree->left())+mEq+generateCode(binTree->right());
     case GeneratorEquationBinTree::Type::EQEQ:
         return generateCode(binTree->left())+mEqEq+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::NEQ:
+        return generateCode(binTree->left())+mNeq+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::LT:
+        return generateCode(binTree->left())+mLt+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::LEQ:
+        return generateCode(binTree->left())+mLeq+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::GT:
+        return generateCode(binTree->left())+mGt+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::GEQ:
+        return generateCode(binTree->left())+mGeq+generateCode(binTree->right());
 
     // Arithmetic operators
 
