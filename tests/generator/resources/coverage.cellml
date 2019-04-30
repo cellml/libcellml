@@ -11,7 +11,8 @@
         <variable name="eqnPlus" units="dimensionless"/>
         <variable name="eqnMultiplePlus" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
-        <variable name="eqnMultipleMinus" units="dimensionless"/>
+        <variable name="eqnTimes" units="dimensionless"/>
+        <variable name="eqnDivide" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
         <variable name="eqnCos" units="dimensionless"/>
         <variable name="eqnTan" units="dimensionless"/>
@@ -136,14 +137,20 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMultipleMinus</ci>
+                <ci>eqnTimes</ci>
                 <apply>
-                    <minus/>
+                    <times/>
                     <ci>m</ci>
                     <ci>n</ci>
-                    <ci>o</ci>
-                    <ci>p</ci>
-                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnDivide</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <ci>n</ci>
                 </apply>
             </apply>
             <apply>
