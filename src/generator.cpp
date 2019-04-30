@@ -221,7 +221,9 @@ void Generator::processModel(const ModelPtr &model)
 
         for (XmlNodePtr node = mathNode->getFirstChild();
              node != nullptr; node = node->getNext()) {
-            mPimpl->processNode(node);
+            if (node->isMathmlElement()) {
+                mPimpl->processNode(node);
+            }
         }
     }
 }
