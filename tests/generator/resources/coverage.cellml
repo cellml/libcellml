@@ -31,6 +31,51 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnNeq</ci>
+                <apply>
+                    <neq/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLt</ci>
+                <apply>
+                    <lt/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLeq</ci>
+                <apply>
+                    <leq/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnGt</ci>
+                <apply>
+                    <gt/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnGeq</ci>
+                <apply>
+                    <geq/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnPlus</ci>
                 <apply>
                     <plus/>
