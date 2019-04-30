@@ -13,6 +13,29 @@
         <variable name="eqnMinus" units="dimensionless"/>
         <variable name="eqnMultipleMinus" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
+        <variable name="eqnCos" units="dimensionless"/>
+        <variable name="eqnTan" units="dimensionless"/>
+        <variable name="eqnSec" units="dimensionless"/>
+        <variable name="eqnCsc" units="dimensionless"/>
+        <variable name="eqnCot" units="dimensionless"/>
+        <variable name="eqnSinh" units="dimensionless"/>
+        <variable name="eqnCosh" units="dimensionless"/>
+        <variable name="eqnTanh" units="dimensionless"/>
+        <variable name="eqnSech" units="dimensionless"/>
+        <variable name="eqnCsch" units="dimensionless"/>
+        <variable name="eqnCoth" units="dimensionless"/>
+        <variable name="eqnAsin" units="dimensionless"/>
+        <variable name="eqnAcos" units="dimensionless"/>
+        <variable name="eqnAtan" units="dimensionless"/>
+        <variable name="eqnAsec" units="dimensionless"/>
+        <variable name="eqnAcsc" units="dimensionless"/>
+        <variable name="eqnAcot" units="dimensionless"/>
+        <variable name="eqnAsinh" units="dimensionless"/>
+        <variable name="eqnAcosh" units="dimensionless"/>
+        <variable name="eqnAtanh" units="dimensionless"/>
+        <variable name="eqnAsech" units="dimensionless"/>
+        <variable name="eqnAcsch" units="dimensionless"/>
+        <variable name="eqnAcoth" units="dimensionless"/>
         <variable name="eqnCn" units="dimensionless"/>
         <variable name="eqnCi" units="dimensionless"/>
         <variable name="eqnTrue" units="dimensionless"/>
@@ -128,6 +151,190 @@
                 <ci>eqnSin</ci>
                 <apply>
                     <sin/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCos</ci>
+                <apply>
+                    <cos/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnTan</ci>
+                <apply>
+                    <tan/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnSec</ci>
+                <apply>
+                    <sec/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCsc</ci>
+                <apply>
+                    <csc/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCot</ci>
+                <apply>
+                    <cot/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnSinh</ci>
+                <apply>
+                    <sinh/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCosh</ci>
+                <apply>
+                    <cosh/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnTanh</ci>
+                <apply>
+                    <tanh/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnSech</ci>
+                <apply>
+                    <sech/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCsch</ci>
+                <apply>
+                    <csch/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCoth</ci>
+                <apply>
+                    <coth/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAsin</ci>
+                <apply>
+                    <arcsin/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAcos</ci>
+                <apply>
+                    <arccos/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAtan</ci>
+                <apply>
+                    <arctan/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAsec</ci>
+                <apply>
+                    <arcsec/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAcsc</ci>
+                <apply>
+                    <arccsc/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAcot</ci>
+                <apply>
+                    <arccot/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAsinh</ci>
+                <apply>
+                    <arcsinh/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAcosh</ci>
+                <apply>
+                    <arccosh/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAtanh</ci>
+                <apply>
+                    <arctanh/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAsech</ci>
+                <apply>
+                    <arcsech/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAcsch</ci>
+                <apply>
+                    <arccsch/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAcoth</ci>
+                <apply>
+                    <arccoth/>
                     <ci>m</ci>
                 </apply>
             </apply>
