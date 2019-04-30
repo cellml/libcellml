@@ -194,6 +194,7 @@ void Generator::swap(Generator &rhs)
 void Generator::processModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before processing it
+
 /*TODO: reenable the validation once it is known to work fine...
     libcellml::Validator validator;
 
@@ -209,6 +210,7 @@ void Generator::processModel(const ModelPtr &model)
         return;
     }
 */
+
     // Determine the order in which equations should be executed by processing
     // each of the components in the given model
 
