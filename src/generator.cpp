@@ -51,7 +51,7 @@ public:
 
         // Token elements
 
-        CI,
+        CN, CI,
 
         // Constants
 
@@ -315,6 +315,8 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
     // Token elements
 
+    } else if (node->isMathmlElement("cn")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CN, node->getFirstChild()->convertToString());
     } else if (node->isMathmlElement("ci")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CI, node->getFirstChild()->convertToString());
 
@@ -371,6 +373,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
 
     // Token elements
 
+    case GeneratorEquationBinTree::Type::CN:
     case GeneratorEquationBinTree::Type::CI:
         return binTree->value();
 
