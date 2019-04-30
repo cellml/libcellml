@@ -43,7 +43,10 @@ public:
 
         // Arithmetic operators
 
-        PLUS, MINUS, TIMES, DIVIDE, ABS, EXP, LN, CEILING, FLOOR, FACTORIAL,
+        PLUS, MINUS, TIMES, DIVIDE,
+        ABS,
+        EXP, LN,
+        CEILING, FLOOR, FACTORIAL,
 
         // Logical operators
 
