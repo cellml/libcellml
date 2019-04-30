@@ -16,6 +16,9 @@
         <variable name="eqnAbs" units="dimensionless"/>
         <variable name="eqnExp" units="dimensionless"/>
         <variable name="eqnLn" units="dimensionless"/>
+        <variable name="eqnCeil" units="dimensionless"/>
+        <variable name="eqnFloor" units="dimensionless"/>
+        <variable name="eqnFact" units="dimensionless"/>
         <variable name="eqnAnd" units="dimensionless"/>
         <variable name="eqnOr" units="dimensionless"/>
         <variable name="eqnXor" units="dimensionless"/>
@@ -181,6 +184,30 @@
                 <ci>eqnLn</ci>
                 <apply>
                     <ln/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCeil</ci>
+                <apply>
+                    <ceiling/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnFloor</ci>
+                <apply>
+                    <floor/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnFact</ci>
+                <apply>
+                    <factorial/>
                     <ci>m</ci>
                 </apply>
             </apply>
