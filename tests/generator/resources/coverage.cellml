@@ -3,6 +3,11 @@
     <!-- Coverage-->
     <component name="my_component">
         <variable name="eqnEqEq" units="dimensionless"/>
+        <variable name="eqnNeq" units="dimensionless"/>
+        <variable name="eqnLt" units="dimensionless"/>
+        <variable name="eqnLeq" units="dimensionless"/>
+        <variable name="eqnGt" units="dimensionless"/>
+        <variable name="eqnGeq" units="dimensionless"/>
         <variable name="eqnPlus" units="dimensionless"/>
         <variable name="eqnMultiplePlus" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
