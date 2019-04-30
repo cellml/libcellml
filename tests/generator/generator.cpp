@@ -43,6 +43,20 @@ TEST(Generator, emptyModel) {
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
+TEST(Generator, coverage) {
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+}
+
+/*TODO: reenable this test once we are done with the previous tests...
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component.cellml"));
@@ -79,3 +93,4 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     EXPECT_EQ(EMPTY_STRING,
               generator.computeAlgebraicEquations());
 }
+*/
