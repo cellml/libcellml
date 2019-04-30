@@ -13,6 +13,10 @@
         <variable name="eqnMinus" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
+        <variable name="eqnAnd" units="dimensionless"/>
+        <variable name="eqnOr" units="dimensionless"/>
+        <variable name="eqnXor" units="dimensionless"/>
+        <variable name="eqnNot" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
         <variable name="eqnCos" units="dimensionless"/>
         <variable name="eqnTan" units="dimensionless"/>
@@ -151,6 +155,41 @@
                     <divide/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnAnd</ci>
+                <apply>
+                    <and/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnOr</ci>
+                <apply>
+                    <or/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXor</ci>
+                <apply>
+                    <xor/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnNot</ci>
+                <apply>
+                    <not/>
+                    <ci>m</ci>
                 </apply>
             </apply>
             <apply>
