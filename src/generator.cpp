@@ -91,6 +91,8 @@ struct Generator::GeneratorImpl
 {
     bool mWithNames;
 
+    std::vector<GeneratorEquationPtr> mEquations;
+
     std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
@@ -98,6 +100,7 @@ struct Generator::GeneratorImpl
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     void processNode(const XmlNodePtr &node);
+    void processNode(const XmlNodePtr &node, GeneratorEquationBinTreePtr &binTree);
 };
 
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
@@ -140,9 +143,70 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node)
 {
-(void) node;
+    // Create and keep track of the equation for the given node
 
-//TODO
+    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>();
+
+    mEquations.push_back(equation);
+
+    // Actually process the node
+
+    processNode(node, equation->binTree());
+}
+
+void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
+                                           GeneratorEquationBinTreePtr &binTree)
+{
+    // Basic content elements
+
+    if (node->isMathmlElement("apply")) {
+        size_t childCount = mathmlChildCount(node);
+
+        if (childCount <= 3) {
+            // Case where we have 2 or 3 child nodes, e.g. "sin(a)" and "a+b",
+            // which would translate into:
+            //
+            //     sin      and      +
+            //     / \              / \
+            //    a  nil           a   b
+
+            processNode(mathmlChildNode(node, 0), binTree);
+            processNode(mathmlChildNode(node, 1), binTree->left());
+
+            if (childCount == 3) {
+                processNode(mathmlChildNode(node, 2), binTree->right());
+            }
+        } else {
+            // Case where we have more than 3 child nodes, e.g. "a+b+c+d+e",
+            // which would translate into:
+            //
+            //      +
+            //     / \
+            //    a   +
+            //       / \
+            //      b   +
+            //         / \
+            //        c   +
+            //           / \
+            //          d   e
+
+            GeneratorEquationBinTreePtr subBinTree;
+
+            processNode(mathmlChildNode(node, 0), subBinTree);
+            processNode(mathmlChildNode(node, childCount-2), subBinTree->left());
+            processNode(mathmlChildNode(node, childCount-1), subBinTree->right());
+
+            for (size_t i = childCount-3; i >= 1; --i) {
+                processNode(mathmlChildNode(node, 0), binTree);
+                processNode(mathmlChildNode(node, i), binTree->left());
+
+                binTree->right() = subBinTree;
+                subBinTree = binTree;
+            }
+        }
+    } else {
+        binTree = std::make_shared<GeneratorEquationBinTree>();
+    }
 }
 
 Generator::Generator()

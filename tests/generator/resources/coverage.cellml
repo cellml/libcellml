@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
+    <!-- Coverage-->
+    <component name="my_component">
+        <variable name="two" units="dimensionless"/>
+        <variable name="three" units="dimensionless"/>
+        <variable name="five" units="dimensionless"/>
+        <variable initial_value="1" name="a" units="dimensionless"/>
+        <variable initial_value="2" name="b" units="dimensionless"/>
+        <variable initial_value="3" name="c" units="dimensionless"/>
+        <variable initial_value="4" name="d" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>two</ci>
+                <apply>
+                    <sin/>
+                    <ci>a</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>three</ci>
+                <apply>
+                    <plus/>
+                    <ci>a</ci>
+                    <ci>b</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>five</ci>
+                <apply>
+                    <plus/>
+                    <ci>a</ci>
+                    <ci>b</ci>
+                    <ci>c</ci>
+                    <ci>d</ci>
+                    <exponentiale/>
+                </apply>
+            </apply>
+        </math>
+    </component>
+</model>
