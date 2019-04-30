@@ -8,6 +8,8 @@
         <variable name="eqnMinus" units="dimensionless"/>
         <variable name="eqnMultipleMinus" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
+        <variable name="eqnCn" units="dimensionless"/>
+        <variable name="eqnCi" units="dimensionless"/>
         <variable name="eqnTrue" units="dimensionless"/>
         <variable name="eqnFalse" units="dimensionless"/>
         <variable name="eqnNan" units="dimensionless"/>
@@ -123,6 +125,16 @@
                     <sin/>
                     <ci>m</ci>
                 </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCn</ci>
+                <cn cellml:units="dimensionless">3</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCi</ci>
+                <ci>m</ci>
             </apply>
             <apply>
                 <eq/>
