@@ -516,6 +516,10 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return generateCode(binTree->left())+mPlus+generateCode(binTree->right());
     case GeneratorEquationBinTree::Type::MINUS:
         return generateCode(binTree->left())+mMinus+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::TIMES:
+        return generateCode(binTree->left())+mTimes+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::DIVIDE:
+        return generateCode(binTree->left())+mDivide+generateCode(binTree->right());
 
     // Trigonometric operators
 
