@@ -3,7 +3,7 @@
 #include <libcellml>
 
 TEST(Version, versionMatch) {
-    unsigned int version = libcellml::version();
+    int version = int(libcellml::version());
     EXPECT_EQ(0x000100, version);
 
     std::string version_string = libcellml::versionString();
