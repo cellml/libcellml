@@ -8,6 +8,10 @@
         <variable name="eqnMinus" units="dimensionless"/>
         <variable name="eqnMultipleMinus" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
+        <variable name="eqnTrue" units="dimensionless"/>
+        <variable name="eqnFalse" units="dimensionless"/>
+        <variable name="eqnNan" units="dimensionless"/>
+        <variable name="eqnPi" units="dimensionless"/>
         <variable name="eqnInf" units="dimensionless"/>
         <variable name="eqnE" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
@@ -74,6 +78,26 @@
                     <sin/>
                     <ci>m</ci>
                 </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnTrue</ci>
+                <true/>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnFalse</ci>
+                <false/>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnNan</ci>
+                <notanumber/>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPi</ci>
+                <pi/>
             </apply>
             <apply>
                 <eq/>

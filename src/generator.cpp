@@ -26,6 +26,8 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/validator.h"
 
+#undef NAN
+
 namespace libcellml{
 
 class GeneratorEquationBinTree;
@@ -55,7 +57,7 @@ public:
 
         // Constants
 
-        INF, E
+        TRUE, FALSE, NAN, PI, INF, E
     };
 
     explicit GeneratorEquationBinTree(Type type, const std::string &value = "");
@@ -148,6 +150,10 @@ struct Generator::GeneratorImpl
     std::string mPlus = "+";
     std::string mMinus  = "-";
     std::string mSin = "sin";
+    std::string mTrue = "true";
+    std::string mFalse = "false";
+    std::string mNan = "sqrt(-1.0)";
+    std::string mPi = convertDoubleToString(M_PI);
     std::string mInf = "1.0/0.0";
     std::string mE = convertDoubleToString(exp(1.0));
 
@@ -291,6 +297,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
     // Constants
 
+    } else if (node->isMathmlElement("true")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TRUE);
+    } else if (node->isMathmlElement("false")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::FALSE);
+    } else if (node->isMathmlElement("notanumber")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NAN);
+    } else if (node->isMathmlElement("pi")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::PI);
     } else if (node->isMathmlElement("infinity")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::INF);
     } else if (node->isMathmlElement("exponentiale")) {
@@ -338,6 +352,14 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
 
     // Constants
 
+    case GeneratorEquationBinTree::Type::TRUE:
+        return mTrue;
+    case GeneratorEquationBinTree::Type::FALSE:
+        return mFalse;
+    case GeneratorEquationBinTree::Type::NAN:
+        return mNan;
+    case GeneratorEquationBinTree::Type::PI:
+        return mPi;
     case GeneratorEquationBinTree::Type::INF:
         return mInf;
     case GeneratorEquationBinTree::Type::E:
