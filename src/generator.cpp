@@ -43,7 +43,7 @@ public:
 
         // Arithmetic operators
 
-        PLUS, MINUS,
+        PLUS, MINUS, TIMES, DIVIDE,
 
         // Trigonometric operators
 
@@ -159,7 +159,9 @@ struct Generator::GeneratorImpl
     // Arithmetic operators
 
     std::string mPlus = "+";
-    std::string mMinus  = "-";
+    std::string mMinus = "-";
+    std::string mTimes = "*";
+    std::string mDivide = "/";
 
     // Trigonometric operators
 
@@ -357,6 +359,10 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::PLUS);
     } else if (node->isMathmlElement("minus")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MINUS);
+    } else if (node->isMathmlElement("times")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TIMES);
+    } else if (node->isMathmlElement("divide")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DIVIDE);
 
     // Trigonometric operators
 
