@@ -39,6 +39,10 @@
         <variable name="eqnXor" units="dimensionless"/>
         <variable name="eqnXorMultiple" units="dimensionless"/>
         <variable name="eqnNot" units="dimensionless"/>
+        <variable name="eqnMin" units="dimensionless"/>
+        <variable name="eqnMinMultiple" units="dimensionless"/>
+        <variable name="eqnMax" units="dimensionless"/>
+        <variable name="eqnMaxMultiple" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
         <variable name="eqnCos" units="dimensionless"/>
         <variable name="eqnTan" units="dimensionless"/>
@@ -427,6 +431,48 @@
                 <apply>
                     <not/>
                     <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMin</ci>
+                <apply>
+                    <min/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinMultiple</ci>
+                <apply>
+                    <min/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMax</ci>
+                <apply>
+                    <max/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMaxMultiple</ci>
+                <apply>
+                    <max/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
                 </apply>
             </apply>
             <apply>
