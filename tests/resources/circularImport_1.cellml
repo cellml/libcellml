@@ -3,6 +3,9 @@
     <import xlink:href="circularImport_2a.cellml">
         <component name="i_am_cyclic" component_ref="c2a" />
     </import>
+	<import xlink:href="circularImport_2b.cellml">
+        <component name="i_am_ok" component_ref="c2b" />
+    </import>
 	<component name="concrete_component">
 		<variable name="v1a" units="dimensionless" />
 		<variable name="v1b" units="dimensionless" />

@@ -253,7 +253,7 @@ TEST(Validator, importUnits) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
+       // "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units does not have a valid name attribute."
 
@@ -290,7 +290,7 @@ TEST(Validator, importUnits) {
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
     v.validateModel(m);
-    EXPECT_EQ(4u, v.errorCount());
+    EXPECT_EQ(3u, v.errorCount());
 
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
@@ -299,7 +299,7 @@ TEST(Validator, importUnits) {
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
     v.validateModel(m);
-    EXPECT_EQ(6u, v.errorCount());
+    EXPECT_EQ(5u, v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -312,7 +312,7 @@ TEST(Validator, importComponents) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
+        //"Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component does not have a valid name attribute."
     };
@@ -348,7 +348,7 @@ TEST(Validator, importComponents) {
     importedComponent3->setSourceComponent(imp3, "component_in_that_model");
     m->addComponent(importedComponent3);
     v.validateModel(m);
-    EXPECT_EQ(4u, v.errorCount());
+    EXPECT_EQ(3u, v.errorCount());
 
     // Invalid component import - unnamed component
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
@@ -357,7 +357,7 @@ TEST(Validator, importComponents) {
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
     v.validateModel(m);
-    EXPECT_EQ(6u, v.errorCount());
+    EXPECT_EQ(5u, v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -1044,5 +1044,6 @@ TEST(Validator, validateCircularImportReferences) {
     );
     libcellml::Validator v;
     v.validateModel(m);
+    printErrors(v);
     EXPECT_EQ(2u, v.errorCount());
 }
