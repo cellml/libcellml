@@ -352,49 +352,39 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     // Basic content elements
 
     if (node->isMathmlElement("apply")) {
+        // We may have 2, 3 or more child nodes, which in the case of "+a",
+        // "a+b" and "a+b+c+d+e" would translate into:
+        //
+        //      +    ,    +   and   +
+        //     / \       / \       / \
+        //    a  nil    a   b     a   +
+        //                           / \
+        //                          b   +
+        //                             / \
+        //                            c   +
+        //                               / \
+        //                              d   e
+
         size_t childCount = mathmlChildCount(node);
 
-        if (childCount <= 3) {
-            // Case where we have 2 or 3 child nodes, e.g. "sin(a)" and "a+b",
-            // which would translate into:
-            //
-            //     sin      and      +
-            //     / \              / \
-            //    a  nil           a   b
+        processNode(mathmlChildNode(node, 0), ast);
+        processNode(mathmlChildNode(node, 1), ast->left());
 
-            processNode(mathmlChildNode(node, 0), ast);
-            processNode(mathmlChildNode(node, 1), ast->left());
+        if (childCount >= 3) {
+            GeneratorEquationAstPtr astRight;
+            GeneratorEquationAstPtr tempAst;
 
-            if (childCount == 3) {
-                processNode(mathmlChildNode(node, 2), ast->right());
+            processNode(mathmlChildNode(node, childCount-1), astRight);
+
+            for (size_t i = childCount-2; i > 1; --i) {
+                processNode(mathmlChildNode(node, 0), tempAst);
+                processNode(mathmlChildNode(node, i), tempAst->left());
+
+                tempAst->right() = astRight;
+                astRight = tempAst;
             }
-        } else {
-            // Case where we have more than 3 child nodes, e.g. "a+b+c+d+e",
-            // which would translate into:
-            //
-            //      +
-            //     / \
-            //    a   +
-            //       / \
-            //      b   +
-            //         / \
-            //        c   +
-            //           / \
-            //          d   e
 
-            GeneratorEquationAstPtr subAst;
-
-            processNode(mathmlChildNode(node, 0), subAst);
-            processNode(mathmlChildNode(node, childCount-2), subAst->left());
-            processNode(mathmlChildNode(node, childCount-1), subAst->right());
-
-            for (size_t i = childCount-3; i >= 1; --i) {
-                processNode(mathmlChildNode(node, 0), ast);
-                processNode(mathmlChildNode(node, i), ast->left());
-
-                ast->right() = subAst;
-                subAst = ast;
-            }
+            ast->right() = astRight;
         }
 
     // Relational operators
