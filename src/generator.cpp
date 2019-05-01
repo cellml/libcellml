@@ -90,7 +90,6 @@ public:
     };
 
     explicit GeneratorEquationAst(Type type, const std::string &value = "");
-    ~GeneratorEquationAst();
 
     Type type() const;
 
@@ -638,7 +637,7 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &ast,
                                                    const GeneratorEquationAstPtr &parentAst) const
 {
-    // Generate the code for the given (equation) AST
+    // Generate the code for the given AST
 
     std::string stringValue;
     double doubleValue;
