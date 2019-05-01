@@ -79,6 +79,10 @@
         <variable name="eqnArccsch" units="dimensionless"/>
         <variable name="eqnArccoth" units="dimensionless"/>
         <variable name="eqnRem" units="dimensionless"/>
+        <variable name="eqnPiecewisePiece" units="dimensionless"/>
+        <variable name="eqnPiecewisePieceOtherwise" units="dimensionless"/>
+        <variable name="eqnPiecewisePiecePiecePiece" units="dimensionless"/>
+        <variable name="eqnPiecewisePiecePiecePieceOtherwise" units="dimensionless"/>
         <variable name="eqnCn" units="dimensionless"/>
         <variable name="eqnCi" units="dimensionless"/>
         <variable name="eqnTrue" units="dimensionless"/>
@@ -92,6 +96,8 @@
         <variable initial_value="3.0" name="o" units="dimensionless"/>
         <variable initial_value="4.0" name="p" units="dimensionless"/>
         <variable initial_value="5.0" name="q" units="dimensionless"/>
+        <variable initial_value="6.0" name="r" units="dimensionless"/>
+        <variable initial_value="7.0" name="s" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <eq/>
@@ -755,6 +761,100 @@
                     <ci>m</ci>
                     <ci>n</ci>
                 </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPiecewisePiece</ci>
+                <piecewise>
+                    <piece>
+                        <ci>m</ci>
+                        <apply>
+                            <gt/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </piece>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPiecewisePieceOtherwise</ci>
+                <piecewise>
+                    <piece>
+                        <ci>m</ci>
+                        <apply>
+                            <gt/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <ci>o</ci>
+                    </otherwise>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPiecewisePiecePiecePiece</ci>
+                <piecewise>
+                    <piece>
+                        <ci>m</ci>
+                        <apply>
+                            <gt/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <ci>o</ci>
+                        <apply>
+                            <gt/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <ci>q</ci>
+                        <apply>
+                            <gt/>
+                            <ci>q</ci>
+                            <ci>r</ci>
+                        </apply>
+                    </piece>
+                </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPiecewisePiecePiecePieceOtherwise</ci>
+                <piecewise>
+                    <piece>
+                        <ci>m</ci>
+                        <apply>
+                            <gt/>
+                            <ci>m</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <ci>o</ci>
+                        <apply>
+                            <gt/>
+                            <ci>o</ci>
+                            <ci>p</ci>
+                        </apply>
+                    </piece>
+                    <piece>
+                        <ci>q</ci>
+                        <apply>
+                            <gt/>
+                            <ci>q</ci>
+                            <ci>r</ci>
+                        </apply>
+                    </piece>
+                    <otherwise>
+                        <ci>s</ci>
+                    </otherwise>
+                </piecewise>
             </apply>
             <apply>
                 <eq/>
