@@ -129,4 +129,17 @@ bool isCellMLInteger(const std::string &candidate);
  */
 bool isCellMLReal(const std::string &candidate);
 
+/**
+ * @brief Test if @p value1 @c double and @p value2 @c double are equal.
+ *
+ * Return @c true if @p value1 @c double and @p value2 @c double are equal,
+ * otherwise return @c false.
+ *
+ * @param value1 The first @c double value to test.
+ * @param value2 The second @c double value to test.
+ *
+ * @return @c true if @p value1 and @p value2 are equal and @c false otherwise.
+ */
+bool isEqual(double value1, double value2);
+
 }

@@ -17,6 +17,7 @@ limitations under the License.
 #include "utilities.h"
 
 #include <algorithm>
+#include <cmath>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -145,6 +146,11 @@ bool isCellMLReal(const std::string &candidate)
         }
     }
     return isReal;
+}
+
+bool isEqual(double value1, double value2)
+{
+    return std::abs(value1-value2) < std::numeric_limits<double>::epsilon();
 }
 
 }
