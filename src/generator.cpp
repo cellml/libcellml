@@ -14,6 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#ifdef _WIN32
+#   define _USE_MATH_DEFINES
+#
+#   define SIZE_T_MAX ULONG_MAX
+#endif
+
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -905,6 +911,8 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     case GeneratorEquationAst::Type::NAN:
         return mNan;
     }
+
+    return {}; // We can never reach this point, but it is needed to make MSVC happy...
 }
 
 Generator::Generator()
