@@ -355,15 +355,15 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // We may have 2, 3 or more child nodes, which in the case of "+a",
         // "a+b" and "a+b+c+d+e" would translate into:
         //
-        //      +    ,    +   and   +
-        //     / \       / \       / \
-        //    a  nil    a   b     a   +
-        //                           / \
-        //                          b   +
-        //                             / \
-        //                            c   +
-        //                               / \
-        //                              d   e
+        //   +    ,    +   and   +
+        //  / \       / \       / \
+        // a  nil    a   b     a   +
+        //                        / \
+        //                       b   +
+        //                          / \
+        //                         c   +
+        //                            / \
+        //                           d   e
 
         size_t childCount = mathmlChildCount(node);
 
