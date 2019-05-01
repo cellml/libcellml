@@ -932,14 +932,16 @@ void Generator::processModel(const ModelPtr &model)
         XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
         std::string math = component->getMath();
 
-        xmlDoc->parse(math);
+        if (!math.empty()) {
+            xmlDoc->parse(math);
 
-        XmlNodePtr mathNode = xmlDoc->getRootNode();
+            XmlNodePtr mathNode = xmlDoc->getRootNode();
 
-        for (XmlNodePtr node = mathNode->getFirstChild();
-             node != nullptr; node = node->getNext()) {
-            if (node->isMathmlElement()) {
-                mPimpl->processNode(node);
+            for (XmlNodePtr node = mathNode->getFirstChild();
+                 node != nullptr; node = node->getNext()) {
+                if (node->isMathmlElement()) {
+                    mPimpl->processNode(node);
+                }
             }
         }
     }
