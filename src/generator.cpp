@@ -30,10 +30,10 @@ limitations under the License.
 
 namespace libcellml{
 
-class GeneratorEquationBinTree;
-typedef std::shared_ptr<GeneratorEquationBinTree> GeneratorEquationBinTreePtr;
+class GeneratorEquationAst;
+typedef std::shared_ptr<GeneratorEquationAst> GeneratorEquationAstPtr;
 
-class GeneratorEquationBinTree
+class GeneratorEquationAst
 {
 public:
     enum class Type {
@@ -89,25 +89,25 @@ public:
         TRUE, FALSE, E, PI, INF, NAN
     };
 
-    explicit GeneratorEquationBinTree(Type type, const std::string &value = "");
+    explicit GeneratorEquationAst(Type type, const std::string &value = "");
 
     Type type() const;
 
     std::string value() const;
 
-    GeneratorEquationBinTreePtr &left();
-    GeneratorEquationBinTreePtr &right();
+    GeneratorEquationAstPtr &left();
+    GeneratorEquationAstPtr &right();
 
 private:
     Type mType;
 
     std::string mValue;
 
-    GeneratorEquationBinTreePtr mLeft;
-    GeneratorEquationBinTreePtr mRight;
+    GeneratorEquationAstPtr mLeft;
+    GeneratorEquationAstPtr mRight;
 };
 
-GeneratorEquationBinTree::GeneratorEquationBinTree(Type type, const std::string &value)
+GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value)
     : mType(type)
     , mValue(value)
     , mLeft(nullptr)
@@ -115,22 +115,22 @@ GeneratorEquationBinTree::GeneratorEquationBinTree(Type type, const std::string 
 {
 }
 
-GeneratorEquationBinTree::Type GeneratorEquationBinTree::type() const
+GeneratorEquationAst::Type GeneratorEquationAst::type() const
 {
     return mType;
 }
 
-std::string GeneratorEquationBinTree::value() const
+std::string GeneratorEquationAst::value() const
 {
     return mValue;
 }
 
-GeneratorEquationBinTreePtr &GeneratorEquationBinTree::left()
+GeneratorEquationAstPtr &GeneratorEquationAst::left()
 {
     return mLeft;
 }
 
-GeneratorEquationBinTreePtr &GeneratorEquationBinTree::right()
+GeneratorEquationAstPtr &GeneratorEquationAst::right()
 {
     return mRight;
 }
@@ -143,18 +143,18 @@ class GeneratorEquation
 public:
     explicit GeneratorEquation();
 
-    GeneratorEquationBinTreePtr &binTree();
+    GeneratorEquationAstPtr &binTree();
 
 private:
-    GeneratorEquationBinTreePtr mBinTree;
+    GeneratorEquationAstPtr mBinTree;
 };
 
 GeneratorEquation::GeneratorEquation()
-    : mBinTree(std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQ))
+    : mBinTree(std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQ))
 {
 }
 
-GeneratorEquationBinTreePtr &GeneratorEquation::binTree()
+GeneratorEquationAstPtr &GeneratorEquation::binTree()
 {
     return mBinTree;
 }
@@ -283,7 +283,7 @@ struct Generator::GeneratorImpl
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     void processNode(const XmlNodePtr &node);
-    void processNode(const XmlNodePtr &node, GeneratorEquationBinTreePtr &binTree);
+    void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &binTree);
 
     std::string neededMathMethods() const;
     std::string initializeVariables() const;
@@ -291,8 +291,8 @@ struct Generator::GeneratorImpl
     std::string computeRateEquations() const;
     std::string computeAlgebraicEquations() const;
 
-    std::string generateCode(const GeneratorEquationBinTreePtr &binTree,
-                             const GeneratorEquationBinTreePtr &parentBinTree = nullptr) const;
+    std::string generateCode(const GeneratorEquationAstPtr &binTree,
+                             const GeneratorEquationAstPtr &parentBinTree = nullptr) const;
 };
 
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
@@ -347,7 +347,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node)
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                           GeneratorEquationBinTreePtr &binTree)
+                                           GeneratorEquationAstPtr &binTree)
 {
     // Basic content elements
 
@@ -382,7 +382,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             //           / \
             //          d   e
 
-            GeneratorEquationBinTreePtr subBinTree;
+            GeneratorEquationAstPtr subBinTree;
 
             processNode(mathmlChildNode(node, 0), subBinTree);
             processNode(mathmlChildNode(node, childCount-2), subBinTree->left());
@@ -408,204 +408,204 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // GeneratorEquationBinTree::Type::EQ type.
 
         if (node->getParent()->getParent()->getName() != "math") {
-            binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EQEQ);
+            binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ);
         }
     } else if (node->isMathmlElement("neq")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NEQ);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NEQ);
     } else if (node->isMathmlElement("lt")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LT);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LT);
     } else if (node->isMathmlElement("leq")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LEQ);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LEQ);
     } else if (node->isMathmlElement("gt")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::GT);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GT);
     } else if (node->isMathmlElement("geq")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::GEQ);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GEQ);
 
     // Arithmetic operators
 
     } else if (node->isMathmlElement("plus")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::PLUS);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PLUS);
     } else if (node->isMathmlElement("minus")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MINUS);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MINUS);
     } else if (node->isMathmlElement("times")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TIMES);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES);
     } else if (node->isMathmlElement("divide")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DIVIDE);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE);
     } else if (node->isMathmlElement("power")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::POWER);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::POWER);
     } else if (node->isMathmlElement("root")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ROOT);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ROOT);
     } else if (node->isMathmlElement("abs")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ABS);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ABS);
     } else if (node->isMathmlElement("exp")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EXP);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EXP);
     } else if (node->isMathmlElement("ln")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LN);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LN);
     } else if (node->isMathmlElement("log")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LOG);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOG);
     } else if (node->isMathmlElement("ceiling")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CEILING);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CEILING);
     } else if (node->isMathmlElement("floor")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::FLOOR);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FLOOR);
     } else if (node->isMathmlElement("factorial")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::FACTORIAL);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FACTORIAL);
 
         mNeedFactorial = true;
 
     // Logical operators
 
     } else if (node->isMathmlElement("and")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::AND);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::AND);
     } else if (node->isMathmlElement("or")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::OR);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OR);
     } else if (node->isMathmlElement("xor")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::XOR);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::XOR);
     } else if (node->isMathmlElement("not")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NOT);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NOT);
 
     // Calculus elements
 
     } else if (node->isMathmlElement("diff")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DIFF);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIFF);
 
     // Min/max operators
 
     } else if (node->isMathmlElement("min")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MIN);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MIN);
 
         mNeedMin = true;
     } else if (node->isMathmlElement("max")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MAX);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MAX);
 
         mNeedMax = true;
 
     // Gcd/lcm operators
 
     } else if (node->isMathmlElement("gcd")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::GCD);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GCD);
 
         mNeedGcd = true;
     } else if (node->isMathmlElement("lcm")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LCM);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LCM);
 
         mNeedLcm = true;
 
     // Trigonometric operators
 
     } else if (node->isMathmlElement("sin")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SIN);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SIN);
     } else if (node->isMathmlElement("cos")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COS);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COS);
     } else if (node->isMathmlElement("tan")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TAN);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TAN);
     } else if (node->isMathmlElement("sec")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SEC);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SEC);
 
         mNeedSec = true;
     } else if (node->isMathmlElement("csc")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CSC);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSC);
 
         mNeedCsc = true;
     } else if (node->isMathmlElement("cot")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COT);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COT);
 
         mNeedCot = true;
     } else if (node->isMathmlElement("sinh")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SINH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SINH);
     } else if (node->isMathmlElement("cosh")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COSH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COSH);
     } else if (node->isMathmlElement("tanh")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TANH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TANH);
     } else if (node->isMathmlElement("sech")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::SECH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SECH);
 
         mNeedSech = true;
     } else if (node->isMathmlElement("csch")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CSCH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSCH);
 
         mNeedCsch = true;
     } else if (node->isMathmlElement("coth")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::COTH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COTH);
 
         mNeedCoth = true;
     } else if (node->isMathmlElement("arcsin")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASIN);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASIN);
     } else if (node->isMathmlElement("arccos")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOS);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOS);
     } else if (node->isMathmlElement("arctan")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ATAN);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATAN);
     } else if (node->isMathmlElement("arcsec")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASEC);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASEC);
 
         mNeedAsec = true;
     } else if (node->isMathmlElement("arccsc")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACSC);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSC);
 
         mNeedAcsc = true;
     } else if (node->isMathmlElement("arccot")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOT);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOT);
 
         mNeedAcot = true;
     } else if (node->isMathmlElement("arcsinh")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASINH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASINH);
     } else if (node->isMathmlElement("arccosh")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOSH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOSH);
     } else if (node->isMathmlElement("arctanh")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ATANH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATANH);
     } else if (node->isMathmlElement("arcsech")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ASECH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASECH);
 
         mNeedAsech = true;
     } else if (node->isMathmlElement("arccsch")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACSCH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSCH);
 
         mNeedAcsch = true;
     } else if (node->isMathmlElement("arccoth")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ACOTH);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOTH);
 
         mNeedAcoth = true;
 
     // Extra operators
 
     } else if (node->isMathmlElement("rem")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::REM);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::REM);
 
     // Token elements
 
     } else if (node->isMathmlElement("cn")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CN, node->getFirstChild()->convertToString());
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->getFirstChild()->convertToString());
     } else if (node->isMathmlElement("ci")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CI, node->getFirstChild()->convertToString());
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, node->getFirstChild()->convertToString());
 
     // Qualifier elements
 
     } else if (node->isMathmlElement("degree")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DEGREE);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DEGREE);
 
         processNode(mathmlChildNode(node, 0), binTree->left());
     } else if (node->isMathmlElement("logbase")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LOGBASE);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOGBASE);
 
         processNode(mathmlChildNode(node, 0), binTree->left());
     } else if (node->isMathmlElement("bvar")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::BVAR);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR);
 
         processNode(mathmlChildNode(node, 0), binTree->left());
 
     // Constants
 
     } else if (node->isMathmlElement("true")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TRUE);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TRUE);
     } else if (node->isMathmlElement("false")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::FALSE);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FALSE);
     } else if (node->isMathmlElement("exponentiale")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::E);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::E);
     } else if (node->isMathmlElement("pi")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::PI);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PI);
     } else if (node->isMathmlElement("infinity")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::INF);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::INF);
     } else if (node->isMathmlElement("notanumber")) {
-        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NAN);
+        binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NAN);
     }
 }
 
@@ -634,8 +634,8 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
     return "";
 }
 
-std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTreePtr &binTree,
-                                                   const GeneratorEquationBinTreePtr &parentBinTree) const
+std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &binTree,
+                                                   const GeneratorEquationAstPtr &parentBinTree) const
 {
     // Generate the code for the given (equation) binary tree
 
@@ -645,40 +645,40 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
     switch (binTree->type()) {
     // Relational operators
 
-    case GeneratorEquationBinTree::Type::EQ:
+    case GeneratorEquationAst::Type::EQ:
         return generateCode(binTree->left())+mEq+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::EQEQ:
+    case GeneratorEquationAst::Type::EQEQ:
         return generateCode(binTree->left())+mEqEq+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::NEQ:
+    case GeneratorEquationAst::Type::NEQ:
         return generateCode(binTree->left())+mNeq+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::LT:
+    case GeneratorEquationAst::Type::LT:
         return generateCode(binTree->left())+mLt+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::LEQ:
+    case GeneratorEquationAst::Type::LEQ:
         return generateCode(binTree->left())+mLeq+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::GT:
+    case GeneratorEquationAst::Type::GT:
         return generateCode(binTree->left())+mGt+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::GEQ:
+    case GeneratorEquationAst::Type::GEQ:
         return generateCode(binTree->left())+mGeq+generateCode(binTree->right());
 
     // Arithmetic operators
 
-    case GeneratorEquationBinTree::Type::PLUS:
+    case GeneratorEquationAst::Type::PLUS:
         if (binTree->right()) {
             return generateCode(binTree->left())+mPlus+generateCode(binTree->right());
         }
 
         return mPlus+generateCode(binTree->left());
-    case GeneratorEquationBinTree::Type::MINUS:
+    case GeneratorEquationAst::Type::MINUS:
         if (binTree->right()) {
             return generateCode(binTree->left())+mMinus+generateCode(binTree->right());
         }
 
         return mMinus+generateCode(binTree->left());
-    case GeneratorEquationBinTree::Type::TIMES:
+    case GeneratorEquationAst::Type::TIMES:
         return generateCode(binTree->left())+mTimes+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::DIVIDE:
+    case GeneratorEquationAst::Type::DIVIDE:
         return generateCode(binTree->left())+mDivide+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::POWER:
+    case GeneratorEquationAst::Type::POWER:
         stringValue = generateCode(binTree->right());
         doubleValue = convertToDouble(stringValue);
 
@@ -691,7 +691,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         }
 
         return mPow+"("+generateCode(binTree->left())+", "+stringValue+")";
-    case GeneratorEquationBinTree::Type::ROOT:
+    case GeneratorEquationAst::Type::ROOT:
         if (binTree->right()) {
             stringValue = generateCode(binTree->left());
             doubleValue = convertToDouble(stringValue);
@@ -704,13 +704,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         }
 
         return mSqrt+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ABS:
+    case GeneratorEquationAst::Type::ABS:
         return mAbs+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::EXP:
+    case GeneratorEquationAst::Type::EXP:
         return mExp+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::LN:
+    case GeneratorEquationAst::Type::LN:
         return mLn+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::LOG:
+    case GeneratorEquationAst::Type::LOG:
         if (binTree->right()) {
             stringValue = generateCode(binTree->left());
             doubleValue = convertToDouble(stringValue);
@@ -723,38 +723,38 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         }
 
         return mLog+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::CEILING:
+    case GeneratorEquationAst::Type::CEILING:
         return mCeiling+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::FLOOR:
+    case GeneratorEquationAst::Type::FLOOR:
         return mFloor+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::FACTORIAL:
+    case GeneratorEquationAst::Type::FACTORIAL:
         return mFactorial+"("+generateCode(binTree->left())+")";
 
     // Logical operators
 
-    case GeneratorEquationBinTree::Type::AND:
+    case GeneratorEquationAst::Type::AND:
         return generateCode(binTree->left())+mAnd+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::OR:
+    case GeneratorEquationAst::Type::OR:
         return generateCode(binTree->left())+mOr+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::XOR:
+    case GeneratorEquationAst::Type::XOR:
         return generateCode(binTree->left())+mXor+generateCode(binTree->right());
-    case GeneratorEquationBinTree::Type::NOT:
+    case GeneratorEquationAst::Type::NOT:
         return mNot+generateCode(binTree->left());
 
     // Calculus elements
 
-    case GeneratorEquationBinTree::Type::DIFF:
+    case GeneratorEquationAst::Type::DIFF:
         return "d("+generateCode(binTree->right())+")/d("+generateCode(binTree->left())+")";
 
     // Min/max operators
 
-    case GeneratorEquationBinTree::Type::MIN:
+    case GeneratorEquationAst::Type::MIN:
         if (parentBinTree == nullptr) {
             return mMin+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
         }
 
         return generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree);
-    case GeneratorEquationBinTree::Type::MAX:
+    case GeneratorEquationAst::Type::MAX:
         if (parentBinTree == nullptr) {
             return mMax+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
         }
@@ -763,13 +763,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
 
     // Gcd/lcm operators
 
-    case GeneratorEquationBinTree::Type::GCD:
+    case GeneratorEquationAst::Type::GCD:
         if (parentBinTree == nullptr) {
             return mGcd+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
         }
 
         return generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree);
-    case GeneratorEquationBinTree::Type::LCM:
+    case GeneratorEquationAst::Type::LCM:
         if (parentBinTree == nullptr) {
             return mLcm+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
         }
@@ -778,86 +778,86 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
 
     // Trigonometric operators
 
-    case GeneratorEquationBinTree::Type::SIN:
+    case GeneratorEquationAst::Type::SIN:
         return mSin+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::COS:
+    case GeneratorEquationAst::Type::COS:
         return mCos+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::TAN:
+    case GeneratorEquationAst::Type::TAN:
         return mTan+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::SEC:
+    case GeneratorEquationAst::Type::SEC:
         return mSec+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::CSC:
+    case GeneratorEquationAst::Type::CSC:
         return mCsc+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::COT:
+    case GeneratorEquationAst::Type::COT:
         return mCot+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::SINH:
+    case GeneratorEquationAst::Type::SINH:
         return mSinh+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::COSH:
+    case GeneratorEquationAst::Type::COSH:
         return mCosh+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::TANH:
+    case GeneratorEquationAst::Type::TANH:
         return mTanh+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::SECH:
+    case GeneratorEquationAst::Type::SECH:
         return mSech+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::CSCH:
+    case GeneratorEquationAst::Type::CSCH:
         return mCsch+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::COTH:
+    case GeneratorEquationAst::Type::COTH:
         return mCoth+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ASIN:
+    case GeneratorEquationAst::Type::ASIN:
         return mAsin+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ACOS:
+    case GeneratorEquationAst::Type::ACOS:
         return mAcos+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ATAN:
+    case GeneratorEquationAst::Type::ATAN:
         return mAtan+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ASEC:
+    case GeneratorEquationAst::Type::ASEC:
         return mAsec+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ACSC:
+    case GeneratorEquationAst::Type::ACSC:
         return mAcsc+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ACOT:
+    case GeneratorEquationAst::Type::ACOT:
         return mAcot+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ASINH:
+    case GeneratorEquationAst::Type::ASINH:
         return mAsinh+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ACOSH:
+    case GeneratorEquationAst::Type::ACOSH:
         return mAcosh+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ATANH:
+    case GeneratorEquationAst::Type::ATANH:
         return mAtanh+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ASECH:
+    case GeneratorEquationAst::Type::ASECH:
         return mAsech+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ACSCH:
+    case GeneratorEquationAst::Type::ACSCH:
         return mAcsch+"("+generateCode(binTree->left())+")";
-    case GeneratorEquationBinTree::Type::ACOTH:
+    case GeneratorEquationAst::Type::ACOTH:
         return mAcoth+"("+generateCode(binTree->left())+")";
 
     // Extra operators
 
-    case GeneratorEquationBinTree::Type::REM:
+    case GeneratorEquationAst::Type::REM:
         return mRem+"("+generateCode(binTree->left())+", "+generateCode(binTree->right())+")";
 
     // Token elements
 
-    case GeneratorEquationBinTree::Type::CN:
-    case GeneratorEquationBinTree::Type::CI:
+    case GeneratorEquationAst::Type::CN:
+    case GeneratorEquationAst::Type::CI:
         return binTree->value();
 
     // Qualifier elements
 
-    case GeneratorEquationBinTree::Type::DEGREE:
-    case GeneratorEquationBinTree::Type::LOGBASE:
-    case GeneratorEquationBinTree::Type::BVAR:
+    case GeneratorEquationAst::Type::DEGREE:
+    case GeneratorEquationAst::Type::LOGBASE:
+    case GeneratorEquationAst::Type::BVAR:
         return generateCode(binTree->left());
 
     // Constants
 
-    case GeneratorEquationBinTree::Type::TRUE:
+    case GeneratorEquationAst::Type::TRUE:
         return mTrue;
-    case GeneratorEquationBinTree::Type::FALSE:
+    case GeneratorEquationAst::Type::FALSE:
         return mFalse;
-    case GeneratorEquationBinTree::Type::E:
+    case GeneratorEquationAst::Type::E:
         return mE;
-    case GeneratorEquationBinTree::Type::PI:
+    case GeneratorEquationAst::Type::PI:
         return mPi;
-    case GeneratorEquationBinTree::Type::INF:
+    case GeneratorEquationAst::Type::INF:
         return mInf;
-    case GeneratorEquationBinTree::Type::NAN:
+    case GeneratorEquationAst::Type::NAN:
         return mNan;
     }
 }
