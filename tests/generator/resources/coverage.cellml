@@ -1,7 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <!-- Coverage-->
+    <units name="per_second">
+        <unit exponent="-1" units="second"/>
+    </units>
     <component name="my_component">
+        <variable name="t" units="second"/>
+        <variable initial_value="0.0" name="x" units="dimensionless"/>
         <variable name="eqnEq" units="dimensionless"/>
         <variable name="eqnNeq" units="dimensionless"/>
         <variable name="eqnLt" units="dimensionless"/>
@@ -88,6 +93,17 @@
         <variable initial_value="4.0" name="p" units="dimensionless"/>
         <variable initial_value="5.0" name="q" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>t</ci>
+                    </bvar>
+                    <ci>x</ci>
+                </apply>
+                <cn cellml:units="per_second">1.0</cn>
+            </apply>
             <apply>
                 <eq/>
                 <ci>eqnEq</ci>

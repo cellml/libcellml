@@ -53,6 +53,10 @@ public:
 
         AND, OR, XOR, NOT,
 
+        // Calculus elements
+
+        DIFF,
+
         // Min/max operators
 
         MIN, MAX,
@@ -78,7 +82,7 @@ public:
 
         // Qualifier elements
 
-        DEGREE, LOGBASE,
+        DEGREE, LOGBASE, BVAR,
 
         // Constants
 
@@ -459,6 +463,11 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("not")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NOT);
 
+    // Calculus elements
+
+    } else if (node->isMathmlElement("diff")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DIFF);
+
     // Min/max operators
 
     } else if (node->isMathmlElement("min")) {
@@ -576,6 +585,10 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         processNode(mathmlChildNode(node, 0), binTree->left());
     } else if (node->isMathmlElement("logbase")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LOGBASE);
+
+        processNode(mathmlChildNode(node, 0), binTree->left());
+    } else if (node->isMathmlElement("bvar")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::BVAR);
 
         processNode(mathmlChildNode(node, 0), binTree->left());
 
@@ -728,6 +741,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
     case GeneratorEquationBinTree::Type::NOT:
         return mNot+generateCode(binTree->left());
 
+    // Calculus elements
+
+    case GeneratorEquationBinTree::Type::DIFF:
+        return "d("+generateCode(binTree->right())+")/d("+generateCode(binTree->left())+")";
+
     // Min/max operators
 
     case GeneratorEquationBinTree::Type::MIN:
@@ -824,6 +842,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
 
     case GeneratorEquationBinTree::Type::DEGREE:
     case GeneratorEquationBinTree::Type::LOGBASE:
+    case GeneratorEquationBinTree::Type::BVAR:
         return generateCode(binTree->left());
 
     // Constants
