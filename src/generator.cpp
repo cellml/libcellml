@@ -407,7 +407,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // case, there is nothing more we need to do since binTree is already of
         // GeneratorEquationBinTree::Type::EQ type.
 
-        if (node->getParent()->getParent()->getName() != "math") {
+        if (!node->getParent()->getParent()->isMathmlElement("math")) {
             binTree = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ);
         }
     } else if (node->isMathmlElement("neq")) {
