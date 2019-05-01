@@ -61,7 +61,7 @@ public:
     * Creates and populates a new model pointer by parsing CellML
     * entities and attributes from the @p filename.
     *
-    * @param input The filename to open and parse all contents into a model.
+    * @param filename The filename to open and parse all contents into a model.
     *
     * @return The new @c ModelPtr deserialised from the input file.
     */

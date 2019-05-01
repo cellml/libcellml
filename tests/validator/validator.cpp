@@ -27,33 +27,6 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
-TEST(Validator, validateLayeredImportReferences) {
-    libcellml::Parser p;
-    libcellml::ModelPtr m = p.parseModelFromFile(
-        TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE)
-    );
-    libcellml::Validator v;
-
-    EXPECT_EQ(0u, p.errorCount());
- 
-    v.validateModel(m);
-    printErrors(v);
-    EXPECT_EQ(1u, v.errorCount());
-}
-
-TEST(Validator, validateCircularImportReferences) {
-    libcellml::Parser p;
-    libcellml::ModelPtr m = p.parseModelFromFile(
-        TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE)
-    );
-    EXPECT_EQ(0u, p.errorCount());
-
-    libcellml::Validator v;
-    v.validateModel(m);
-    printErrors(v);
-    EXPECT_EQ(2u, v.errorCount());
-}
-
 TEST(Validator, namedModel) {
 	libcellml::Validator validator;
 	libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -1034,66 +1007,42 @@ TEST(Validator, validMathCnElements) {
 	EXPECT_EQ(0u, v.errorCount());
 }
 
-TEST(Validator, recursiveFileImport) {
-	std::vector<std::string> expectedErrors = {
-		"Imported component 'duplicating_the_beach' with reference 'beach' has a source file 'recursive_import.cellml' "
-		"which references the importing model file 'recursive_import.cellml' in the same directory.",
-		"Imported units 'sandiness' with reference 'zandigheid' has a source file 'recursive_import.cellml' which "
-		"references the importing model file 'recursive_import.cellml' in the same directory.",
-	};
-
+TEST(Validator, importNameNotFoundInFile) {
 	libcellml::Parser p;
 	libcellml::ModelPtr m = p.parseModelFromFile(
 		TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT)
 	);
 	libcellml::Validator v;
-
-	// Parser should not return errors from reading the file
-	EXPECT_EQ(0u, p.errorCount());
-
-	// Validator should catch self-import and report
 	v.validateModel(m);
-	EXPECT_EQ(2u, v.errorCount());
-	for (size_t i = 0; i < v.errorCount(); ++i) {
-		EXPECT_EQ(expectedErrors[i], v.getError(i)->getDescription());
-	}
+	EXPECT_EQ(1u, v.errorCount());
  }
 
-TEST(Validator, specifiedFileIsMissing) {
-	std::vector<std::string> expectedErrors = {};
-
+TEST(Validator, importFileDoesNotExist) {
 	libcellml::Parser p;
 	libcellml::ModelPtr m = p.parseModelFromFile(
 		TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF)
 	);
 	libcellml::Validator v;
-
-	// Parser should not return errors from reading the file
-	EXPECT_EQ(0u, p.errorCount());
-	
-	// Validator should catch reference to non-existent files?
 	v.validateModel(m);
-	printErrors(v);   
+    EXPECT_EQ(2u, v.errorCount());
 }
 
-TEST(Validator, sameFilenameDifferentDirectories) {
-	// The imported file (buried_recursive_import.cellml) contains a reference to another file of the same name, 
-	// but in a separate directory (recursive_dir/buried_recursive_import.cellml)-> ie: not a recursive import,
-	// even though the file names are the same.
-
-	libcellml::Parser p;
-	libcellml::ModelPtr m = p.parseModelFromFile(
-		TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH)
-	);
-	libcellml::Validator v;
-
-	// Parser should not return errors from reading the file
-	EXPECT_EQ(0u, p.errorCount());
-
-	// Validator should skip same name in different directory 
-	v.validateModel(m);
-	EXPECT_EQ(0u, v.errorCount());
-
+TEST(Validator, importLayer) {
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE)
+    );
+    libcellml::Validator v;
+    v.validateModel(m);
+    EXPECT_EQ(1u, v.errorCount());
 }
 
-
+TEST(Validator, validateCircularImportReferences) {
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE)
+    );
+    libcellml::Validator v;
+    v.validateModel(m);
+    EXPECT_EQ(2u, v.errorCount());
+}
