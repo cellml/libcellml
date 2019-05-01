@@ -355,20 +355,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         foundImportError = true;
                     }
 
-                    // Check if we already have another import from the same source with the same component_ref.
-                    // (This looks for matching entries at the same position in the source and ref vectors).
-                    if ((componentImportSources.size() > 0) && (!foundImportError)) {
-                        if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
-                         == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported components from '" + importSource +
-                                                "' with the same component_ref attribute '" + componentRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                            addError(err);
-                        }
-                    }
                     // Push back the unique sources and refs.
                     componentImportSources.push_back(importSource);
                     componentRefs.push_back(componentRef);
@@ -424,20 +410,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         foundImportError = true;
                     }
 
-                    // Check if we already have another import from the same source with the same units_ref.
-                    // (This looks for matching enties at the same position in the source and ref vectors).
-                    if ((unitsImportSources.size() > 0) && (!foundImportError)) {
-                        if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
-                         == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported units from '" + importSource +
-                                                "' with the same units_ref attribute '" + unitsRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_UNITS_REF);
-                            addError(err);
-                        }
-                    }
                     // Push back the unique sources and refs.
                     unitsImportSources.push_back(importSource);
                     unitsRefs.push_back(unitsRef);
