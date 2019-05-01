@@ -60,6 +60,10 @@ public:
         ASIN, ACOS, ATAN, ASEC, ACSC, ACOT,
         ASINH, ACOSH, ATANH, ASECH, ACSCH, ACOTH,
 
+        // Extra operators
+
+        REM,
+
         // Token elements
 
         CN, CI,
@@ -233,6 +237,10 @@ struct Generator::GeneratorImpl
     bool mNeedAsech = false;
     bool mNeedAcsch = false;
     bool mNeedAcoth = false;
+
+    // Extra operators
+
+    std::string mRem = "fmod";
 
     // Constants
 
@@ -501,6 +509,11 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         mNeedAcoth = true;
 
+    // Extra operators
+
+    } else if (node->isMathmlElement("rem")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::REM);
+
     // Token elements
 
     } else if (node->isMathmlElement("cn")) {
@@ -709,6 +722,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return mAcsch+"("+generateCode(binTree->left())+")";
     case GeneratorEquationBinTree::Type::ACOTH:
         return mAcoth+"("+generateCode(binTree->left())+")";
+
+    // Extra operators
+
+    case GeneratorEquationBinTree::Type::REM:
+        return mRem+"("+generateCode(binTree->left())+", "+generateCode(binTree->right())+")";
 
     // Token elements
 

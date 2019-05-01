@@ -63,6 +63,7 @@
         <variable name="eqnArcsech" units="dimensionless"/>
         <variable name="eqnArccsch" units="dimensionless"/>
         <variable name="eqnArccoth" units="dimensionless"/>
+        <variable name="eqnRem" units="dimensionless"/>
         <variable name="eqnCn" units="dimensionless"/>
         <variable name="eqnCi" units="dimensionless"/>
         <variable name="eqnTrue" units="dimensionless"/>
@@ -618,6 +619,15 @@
                 <apply>
                     <arccoth/>
                     <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnRem</ci>
+                <apply>
+                    <rem/>
+                    <ci>m</ci>
+                    <ci>n</ci>
                 </apply>
             </apply>
             <apply>
