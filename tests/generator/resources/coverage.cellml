@@ -10,7 +10,9 @@
         <variable name="eqnGeq" units="dimensionless"/>
         <variable name="eqnPlus" units="dimensionless"/>
         <variable name="eqnPlusMultiple" units="dimensionless"/>
+        <variable name="eqnPlusUnary" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
+        <variable name="eqnMinusUnary" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
         <variable name="eqnTimesMultiple" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
@@ -159,11 +161,27 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnPlusUnary</ci>
+                <apply>
+                    <plus/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnMinus</ci>
                 <apply>
                     <minus/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinusUnary</ci>
+                <apply>
+                    <minus/>
+                    <ci>m</ci>
                 </apply>
             </apply>
             <apply>

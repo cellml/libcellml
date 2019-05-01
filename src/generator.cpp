@@ -625,9 +625,17 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
     // Arithmetic operators
 
     case GeneratorEquationBinTree::Type::PLUS:
-        return generateCode(binTree->left())+mPlus+generateCode(binTree->right());
+        if (binTree->right()) {
+            return generateCode(binTree->left())+mPlus+generateCode(binTree->right());
+        }
+
+        return mPlus+generateCode(binTree->left());
     case GeneratorEquationBinTree::Type::MINUS:
-        return generateCode(binTree->left())+mMinus+generateCode(binTree->right());
+        if (binTree->right()) {
+            return generateCode(binTree->left())+mMinus+generateCode(binTree->right());
+        }
+
+        return mMinus+generateCode(binTree->left());
     case GeneratorEquationBinTree::Type::TIMES:
         return generateCode(binTree->left())+mTimes+generateCode(binTree->right());
     case GeneratorEquationBinTree::Type::DIVIDE:
