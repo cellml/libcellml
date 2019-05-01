@@ -76,6 +76,10 @@ public:
 
         REM,
 
+        // Piecewise statement
+
+        PIECEWISE, PIECE, OTHERWISE,
+
         // Token elements
 
         CN, CI,
@@ -560,6 +564,42 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("rem")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::REM);
 
+    // Piecewise statement
+
+    } else if (node->isMathmlElement("piecewise")) {
+        size_t childCount = mathmlChildCount(node);
+
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE);
+
+        processNode(mathmlChildNode(node, 0), ast->left());
+
+        if (childCount >= 2) {
+            GeneratorEquationAstPtr astRight;
+            GeneratorEquationAstPtr tempAst;
+
+            processNode(mathmlChildNode(node, childCount-1), astRight);
+
+            for (size_t i = childCount-2; i > 0; --i) {
+                tempAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE);
+
+                processNode(mathmlChildNode(node, i), tempAst->left());
+
+                tempAst->right() = astRight;
+                astRight = tempAst;
+            }
+
+            ast->right() = astRight;
+        }
+    } else if (node->isMathmlElement("piece")) {
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECE);
+
+        processNode(mathmlChildNode(node, 0), ast->left());
+        processNode(mathmlChildNode(node, 1), ast->right());
+    } else if (node->isMathmlElement("otherwise")) {
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OTHERWISE);
+
+        processNode(mathmlChildNode(node, 0), ast->left());
+
     // Token elements
 
     } else if (node->isMathmlElement("cn")) {
@@ -819,6 +859,23 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
     case GeneratorEquationAst::Type::REM:
         return mRem+"("+generateCode(ast->left())+", "+generateCode(ast->right())+")";
+
+    // Piecewise statement
+
+    case GeneratorEquationAst::Type::PIECEWISE:
+        if (ast->right() != nullptr) {
+            if (ast->right()->type() == GeneratorEquationAst::Type::PIECE) {
+                return generateCode(ast->left())+":"+generateCode(ast->right())+":"+mNan;
+            } else {
+                return generateCode(ast->left())+":"+generateCode(ast->right());
+            }
+        }
+
+        return generateCode(ast->left())+":"+mNan;
+    case GeneratorEquationAst::Type::PIECE:
+        return generateCode(ast->right())+"?"+generateCode(ast->left());
+    case GeneratorEquationAst::Type::OTHERWISE:
+        return generateCode(ast->left());
 
     // Token elements
 
