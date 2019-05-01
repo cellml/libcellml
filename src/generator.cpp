@@ -275,7 +275,8 @@ struct Generator::GeneratorImpl
     std::string computeRateEquations() const;
     std::string computeAlgebraicEquations() const;
 
-    std::string generateCode(const GeneratorEquationBinTreePtr &binTree) const;
+    std::string generateCode(const GeneratorEquationBinTreePtr &binTree,
+                             const GeneratorEquationBinTreePtr &parentBinTree = nullptr) const;
 };
 
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
@@ -597,7 +598,8 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
     return "";
 }
 
-std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTreePtr &binTree) const
+std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTreePtr &binTree,
+                                                   const GeneratorEquationBinTreePtr &parentBinTree) const
 {
     // Generate the code for the given (equation) binary tree
 
@@ -706,9 +708,17 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
     // Min/max operators
 
     case GeneratorEquationBinTree::Type::MIN:
-        return mMin+"("+generateCode(binTree->left())+", "+generateCode(binTree->right())+")";
+        if (parentBinTree == nullptr) {
+            return mMin+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
+        }
+
+        return generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree);
     case GeneratorEquationBinTree::Type::MAX:
-        return mMax+"("+generateCode(binTree->left())+", "+generateCode(binTree->right())+")";
+        if (parentBinTree == nullptr) {
+            return mMax+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
+        }
+
+        return generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree);
 
     // Trigonometric operators
 
