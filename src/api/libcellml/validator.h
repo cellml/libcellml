@@ -48,8 +48,11 @@ public:
      * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
      *
      * @param model The model to validate.
+     * @param filename (optional) The filename to associate with the main model and 
+     * validate imports against
      */
     void validateModel(const ModelPtr &model);
+    void validateModel(const ModelPtr &model, std::string filename);
 
 private:
     void swap(Validator &rhs); /**< Swap method required for C++ 11 move semantics. */

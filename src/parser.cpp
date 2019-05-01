@@ -102,6 +102,13 @@ struct Parser::ParserImpl
      */
     void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
 
+
+
+
+    //KRM TODO
+    bool importIsAvailable(const std::string &find_ref, const std::string &find_name, const std::string &find_type);
+    void locateImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node);
+
     /**
      * @brief Update the @p import source with attributes parsed from @p node and add any imported
      * components or units it to the @p model.
@@ -1451,5 +1458,162 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
     }
 
 }
+
+
+
+//bool Parser::ParserImpl::importIsAvailable(const std::string &find_ref, const std::string &find_name, 
+//                                            const std::string &find_type)
+//{
+//    // Function to locate the imported entity of type find_type in file find_ref with name find_name 
+//    
+//    XmlDocPtr doc = std::make_shared<XmlDoc>();
+//    std::ifstream t(find_ref);
+//    std::stringstream buffer;
+//    bool found = false;
+//
+//    buffer << t.rdbuf();
+//    doc->parse(buffer.str());
+//
+//    // Copy any XML parsing errors into the common parser error handler.
+//    if (doc->xmlErrorCount() > 0) {
+//        for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+//            ErrorPtr err = std::make_shared<Error>();
+//            err->setDescription(doc->getXmlError(i));
+//            err->setKind(Error::Kind::XML);
+//            mParser->addError(err);
+//        }
+//    }
+//
+//    const XmlNodePtr node = doc->getRootNode();
+//    
+//    if (!node) {
+//        ErrorPtr err = std::make_shared<Error>();
+//        err->setDescription("Could not get a valid XML root node from the provided input.");
+//        err->setKind(Error::Kind::XML);
+//        mParser->addError(err);
+//        return;
+//    } 
+//    else if (!node->isCellmlElement("model")) {
+//        // KRM TODO is this required for imports??
+//        ErrorPtr err = std::make_shared<Error>();
+//        if (node->getName() == "model") {
+//            std::string nodeNamespace = node->getNamespace();
+//            if (nodeNamespace.empty())
+//                nodeNamespace = "null";
+//            err->setDescription("Model element is in invalid namespace '" + nodeNamespace +
+//                                "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS +
+//                                "'.");
+//        } else {
+//            err->setDescription("Model element is of invalid type '" + node->getName() +
+//                                "'. A valid CellML root node should be of type 'model'.");
+//        }
+//        // KRM Make better error here, and figure out where it should be sent (parser or validator?)
+//        mParser->addError(err);
+//        return;
+//    }
+//    
+//    // Get model attributes. KRM also don't care about this for imports?
+//    XmlAttributePtr attribute = node->getFirstAttribute();
+//    std::string model_name;
+//    while (attribute) {
+//        if (attribute->isType("name")) {
+//
+//            model_name = attribute->getValue();
+//
+//        } else if (attribute->isType("id")) {
+//
+//           // skip
+//
+//        } else {
+//            ErrorPtr err = std::make_shared<Error>();
+//            err->setDescription("Model '" + node->getAttribute("name") +
+//                                "' imported from '"+ find_ref +
+//                                "' has an invalid attribute '" + attribute->getName() + "'.");
+//            //err->setModel(model);
+//            mParser->addError(err);
+//        }
+//        attribute = attribute->getNext();
+//    }
+//    
+//    // Get model children (CellML entities), the only valid imported entities are components or units
+//    XmlNodePtr childNode = node->getFirstChild();
+//    std::string other_type = find_type == "component" ? "units" : "component";
+//
+//    while (childNode) {
+//        if (childNode->isCellmlElement(find_type.c_str())) {
+//            // Concrete type: check name attribute for find_name
+//            XmlAttributePtr attribute = childNode->getFirstAttribute();
+//            while (attribute) {
+//                if (attribute->isType("name")) {
+//                    // Compare to the find_name
+//                    if (attribute->getValue() == find_name) {
+//                        // Stop searching, have reached definition for this item
+//                        // KRM how to delete model??
+//                        return true;
+//                    }
+//                } else if (attribute->isType("id")) {
+//                    // skip, don't care about ids
+//                } else {
+//                    // add some error here
+//                }
+//                attribute = attribute->getNext();
+//            } // ends while attribute loop
+//        }
+//        else if (childNode->isCellmlElement("import")) {
+//            // Import type: check children for find_type
+//            XmlNodePtr importChild = childNode->getFirstChild();
+//            while (importChild) {
+//                if (importChild->isCellmlElement(find_type.c_str())) {
+//                    // check name attribute
+//                    XmlAttributePtr importAttribute = importChild->getFirstAttribute();
+//                    while (importAttribute) {
+//                        if (importAttribute->isType("name")) {
+//                            // Compare to the find_name
+//                            if (importAttribute->getValue() == find_name) {
+//                                // Stop searching, have reached definition for this item
+//                                found = true;
+//                            }
+//                        } else if (importAttribute->isType("id")) {
+//                            // skip, don't care about ids
+//                        } else {
+//                            // add some error here
+//                        }
+//                        importAttribute = importAttribute->getNext();
+//                    } // end while importAttribute loop
+//                } else {
+//                    // what to do with other import child types?
+//                }
+//            }
+//        }
+//        else if ((childNode->isCellmlElement(other_type.c_str())) 
+//                 || (childNode->isCellmlElement("encapsulation")) 
+//                 || (childNode->isCellmlElement("connection")) 
+//                 || (childNode->isComment()))
+//        {
+//            // Skip - only want the item and name we're currently looking for          
+//       } else if (childNode->isText()) {
+//            std::string textNode = childNode->convertToString();
+//            // Ignore whitespace when parsing.
+//            if (hasNonWhitespaceCharacters(textNode)) {
+//                ErrorPtr err = std::make_shared<Error>();
+//                err->setDescription("Model '" + model_name +
+//                                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
+//                //err->setModel(model);
+//                err->setRule(SpecificationRule::MODEL_CHILD);
+//                mParser->addError(err);
+//            }
+//        } else {
+//            ErrorPtr err = std::make_shared<Error>();
+//            err->setDescription("Model '" + model_name +
+//                                "' has an invalid child element '" + childNode->getName() + "'.");
+//            //err->setModel(model);
+//            err->setRule(SpecificationRule::MODEL_CHILD);
+//            mParser->addError(err);
+//        }
+//        childNode = childNode->getNext();
+//    }
+//
+//    // Delete the document? buffer?
+//}
 
 }

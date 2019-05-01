@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright libCellML Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/namespaces.h"
+#include "libcellml/parser.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
@@ -35,6 +36,11 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+// KRM remove after debgging
+#include <iostream>
+// KRM for testing out ... 
+#include <experimental/filesystem> // C++17 (or Microsoft-specific implementation in C++14)
+
 namespace libcellml {
 
 /**
@@ -46,14 +52,56 @@ struct Validator::ValidatorImpl
 {
     Validator *mValidator;
 
+
+
+    // KRM TODO
+    void checkImportIsAvailable(const std::string &find_path, 
+                           const std::string &find_ref, 
+                           const std::string &find_name,
+                           const std::string &find_type,
+                           std::vector<std::pair<std::string, std::string>> &history);
+
     /**
-    * @brief Validate that there are no self-imports from a file.
+    * @brief Validation includes imports (to inf-depth) from files, including checking for self-imports.
     *
     * If the Model was created by parsing a file, check that no other imported entity refers
     * to that original filename.  Any errors will be logged in the @c Validator.
     *
     */
-    void validateModelImport(const ModelPtr &model);
+    //void validateRecursiveComponentImport(const ModelPtr &model, std::string filename,
+    //                                 ComponentPtr &component);
+
+    /**
+    * @brief Validation includes imports (to inf-depth) from files, including checking for self-imports.
+    *
+    * If the Model was created by parsing a file, check that no other imported entity refers
+    * to that original filename.  Any errors will be logged in the @c Validator.
+    *
+    */
+    //void validateRecursiveUnitImport(const ModelPtr &model,
+    //                                 std::string filename, const UnitsPtr &units);
+
+    /**
+    * @brief A preliminary check of the importing file tree.
+    *
+    * If the Model was created by parsing a file, check that no other imported entity refers
+    * to that original filename, and that there are no cycles present.  Any errors will be 
+    * logged in the @c Validator.
+    *
+    * @return the number of layers of import discovered.  // KRM TODO
+    */
+    void validateImportSources(const ModelPtr &model, std::string filename);
+
+    /// KRM TODO
+    //bool importsAreCyclic(const ModelPtr &model);
+    //void checkImportUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent,
+    //                          std::vector<std::string> &history);
+
+    //void checkThisUnitImport(std::string &parentUrl, std::string &parentRef,
+    //                    std::vector<std::pair<std::string, std::string>> &history);
+
+    //void checkImportComponentForCycles(const ModelPtr &model, const ComponentPtr &parent,
+    //                               std::vector<std::string> &history);
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -278,7 +326,11 @@ void Validator::swap(Validator &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Validator::validateModel(const ModelPtr &model)
+void Validator::validateModel(const ModelPtr &model) {
+    validateModel(model, "");
+}
+
+void Validator::validateModel(const ModelPtr &model, std::string filename)
 {
     // Clear any pre-existing errors in ths validator instance.
     clearErrors();
@@ -291,17 +343,13 @@ void Validator::validateModel(const ModelPtr &model)
         addError(err);
     }
 
-    // Check for self-importing file recursion in this model.
-    std::string modelSourceFilename("");
-    std::string modelSourcePath("");
-    std::string modelSourceLongPath("");
-    if (model->isImportedFromFile()) {
-        // Get a list of all filenames which will be imported
-        modelSourceFilename = model->getImportFilename();
-        modelSourcePath = model->getImportPath();
-        modelSourceLongPath = model->getImportLocation();
+    // If we don't have a filename or working directory we can't check imports 
+    bool checkImports = false;
+    if ((filename != "") || (model->isImportedFromFile())) {
+        mPimpl->validateImportSources(model, filename);
+        checkImports = true;
     }
-
+    
     // Check for components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
@@ -316,7 +364,7 @@ void Validator::validateModel(const ModelPtr &model)
                     // Check for a component_ref.
                     std::string componentRef = component->getImportReference();
                     std::string importSource = component->getImportSource()->getUrl();
-                    std::string importRelSource = modelSourcePath + importSource;
+                    //std::string importRelSource = modelSourcePath + importSource;
 
                     bool foundImportError = false;
                     
@@ -341,36 +389,11 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
 
-                    // Check whether the import source is the same as the file which model creation file
-                    if (model->isImportedFromFile()) {
-                        if (importSource == modelSourceLongPath) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Imported component '" + componentName +
-                                                "' with reference '" + componentRef +
-                                                "' has a source file '" + importSource +
-                                                "' which references the importing model file '" + modelSourceFilename +
-                                                "' in the same directory."
-                            );
-                            err->setComponent(component);
-                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                            addError(err);
-                            foundImportError = true;
-                        }
-
-                        if (importRelSource == modelSourceLongPath) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Imported component '" + componentName +
-                                                "' with reference '" + componentRef +
-                                                "' has a source file '" + importSource +
-                                                "' which references the importing model file '" + modelSourceFilename +
-                                                "' in the same directory."
-                            );
-                            err->setComponent(component);
-                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                            addError(err);
-                            foundImportError = true;
-                        }
+                    // Check whether the import source is the same as the model creation file
+                    if (checkImports) {
+                       //KRM TODO mPimpl->validateRecursiveComponentImport(model, filename, component);
                     }
+
                     // Check if we already have another import from the same source with the same component_ref.
                     // (This looks for matching entries at the same position in the source and ref vectors).
                     if ((componentImportSources.size() > 0) && (!foundImportError)) {
@@ -416,7 +439,7 @@ void Validator::validateModel(const ModelPtr &model)
                     // Check for a units_ref.
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImportSource()->getUrl();
-                    std::string importRelSource = modelSourcePath + importSource;
+                    //std::string importRelSource = modelSourcePath + importSource;
                     bool foundImportError = false;
 
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
@@ -440,38 +463,6 @@ void Validator::validateModel(const ModelPtr &model)
                         foundImportError = true;
                     }
 
-                    if (model->isImportedFromFile()) {
-                        
-                        if (model->isImportedFromFile()) {
-                            if (importSource == modelSourceLongPath) {
-                                ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Imported units '" + unitsName +
-                                                    "' with reference '" + unitsRef +
-                                                    "' has a source file '" + importSource +
-                                                    "' which references the importing model file '" + modelSourceFilename +
-                                                    "' in the same directory."
-                                );
-                                err->setUnits(units);
-                                err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                                addError(err);
-                                foundImportError = true;
-                            }
-
-                            if (importRelSource == modelSourceLongPath) {
-                                ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Imported units '" + unitsName +
-                                                    "' with reference '" + unitsRef +
-                                                    "' has a source file '" + importSource +
-                                                    "' which references the importing model file '" + modelSourceFilename +
-                                                    "' in the same directory."
-                                );
-                                err->setUnits(units);
-                                err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                                addError(err);
-                                foundImportError = true;
-                            }
-                        }
-                    }
                     // Check if we already have another import from the same source with the same units_ref.
                     // (This looks for matching enties at the same position in the source and ref vectors).
                     if ((unitsImportSources.size() > 0) && (!foundImportError)) {
@@ -513,10 +504,451 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 }
 
-void Validator::ValidatorImpl::validateModelImport(const ModelPtr &model) {
+//void Validator::ValidatorImpl::validateRecursiveComponentImport(const ModelPtr &model, std::string filename, 
+//                                                                ComponentPtr &component) {
+//    // KRM TODO
+//    // Check for self-importing file recursion in this model.
+//    std::string modelSourceFilename("");
+//    std::string modelSourcePath("");
+//    std::string modelSourceLongPath("");
+//    std::string componentRef = component->getImportReference();
+//    std::string importSource = component->getImportSource()->getUrl();
+//    std::string componentName = component->getName();
+//
+//    bool checkImports = false;
+//    if (filename != "") {
+//        modelSourceFilename = filename.substr(filename.find_last_of("/\\") + 1);
+//        modelSourcePath = filename.substr(0, filename.find_last_of("/\\") + 1);
+//        modelSourceLongPath = filename;  
+//        checkImports = true;
+//    }
+//    else if (model->isImportedFromFile()) {
+//        // Get a list of all filenames which will be imported
+//        modelSourceFilename = model->getImportFilename();
+//        modelSourcePath = model->getImportPath();
+//        modelSourceLongPath = model->getImportLocation();
+//        checkImports = true;
+//    }
+//    else {
+//        // No recursive checking against original filename is possible.
+//    }
+//
+//    std::string importRelSource = modelSourcePath + importSource;
+//
+//    if (importSource == modelSourceLongPath) {
+//        ErrorPtr err = std::make_shared<Error>();
+//        err->setDescription("Imported component '" + componentName +
+//                            "' with reference '" + componentRef +
+//                            "' has a source file '" + importSource +
+//                            "' which references the importing model file '" + modelSourceFilename +
+//                            "' in the same directory."
+//        );
+//        err->setComponent(component);
+//        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+//        mValidator->addError(err);
+//    }
+//
+//    if (importRelSource == modelSourceLongPath) {
+//        ErrorPtr err = std::make_shared<Error>();
+//        err->setDescription("Imported component '" + componentName +
+//                            "' with reference '" + componentRef +
+//                            "' has a source file '" + importSource +
+//                            "' which references the importing model file '" + modelSourceFilename +
+//                            "' in the same directory."
+//        );
+//        err->setComponent(component);
+//        err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+//        mValidator->addError(err);
+//    }
+//}
+//
+//void Validator::ValidatorImpl::validateRecursiveUnitImport(const ModelPtr &model, 
+//                                                           std::string filename, const UnitsPtr &units) {
+//    // KRM TODO
+//}
 
+void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string filename) {
+    // KRM TODO
+
+    // Check against the working directory location (assumed same as path to filename or model import filename)
+    std::string workingDirectory = "";
+    if (filename!="") 
+        workingDirectory = filename.substr(0,filename.find_last_of("/\\")+1);
+    else {
+        workingDirectory = model->getImportPath();
+        filename = model->getImportLocation();
+    }
+
+    // This function constructs the dependency tree for all imported entities and checks for:
+    // - filename url is valid
+    // - file exists
+    // - cyclic dependencies
+
+    if (model->componentCount() > 0) {
+        std::vector<std::string> componentNames;
+        std::vector<std::string> componentRefs;
+        std::vector<std::string> componentImportSources;
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            ComponentPtr component = model->getComponent(i);
+            // Check for duplicate component names in this model.
+            std::string componentName = component->getName();
+            if (componentName.length()) {
+                if (component->isImport()) {
+                    // Check for a component_ref.
+                    std::string componentRef = component->getImportReference();
+                    std::string importSource = workingDirectory + component->getImportSource()->getUrl();
+                    std::vector<std::pair<std::string, std::string>> history;
+                    history.push_back(std::make_pair(componentName, filename));
+                    checkImportIsAvailable(workingDirectory, importSource, componentRef, "component", history);
+                    std::vector<std::pair<std::string,std::string>>().swap(history);  
+                }
+            }
+        }
+    }
+
+    if (model->unitsCount() > 0) {
+        std::vector<std::string> unitsNames;
+        std::vector<std::string> unitsRefs;
+        std::vector<std::string> unitsImportSources;
+        for (size_t i = 0; i < model->unitsCount(); ++i) {
+            UnitsPtr units = model->getUnits(i);
+            // Check for duplicate units names in this model.
+            std::string unitsName = units->getName();
+            if (unitsName.length()) {
+                if (units->isImport()) {
+                    // Check for a units_ref.
+                    std::string unitsRef = units->getImportReference();
+                    std::string importSource = workingDirectory + units->getImportSource()->getUrl();
+                    std::vector<std::pair<std::string, std::string>> history;
+                    history.push_back(std::make_pair(unitsName, filename));
+                    checkImportIsAvailable(workingDirectory, importSource, unitsRef, "units", history);
+                    std::vector<std::pair<std::string,std::string>>().swap(history);  
+                }
+            }
+        }
+    }
 
 }
+//
+//bool Validator::ValidatorImpl::importsAreCyclic(const ModelPtr &model) {
+//
+//    bool status = false;
+//    std::vector<std::string> history;
+//
+//    // Check the component imports
+//    for (size_t i = 0; i < model->componentCount(); ++i) {
+//        // Test each units' dependencies for presence of self in tree
+//        ComponentPtr u = model->getComponent(i);
+//        history.push_back(u->getName());
+//        checkImportComponentForCycles(model, u, history); 
+//        // Have to delete this each time to prevent reinitialisation with previous base variables
+//        std::vector<std::string>().swap(history);
+//    }
+//    
+//    // Check the units import
+//    for (size_t i = 0; i < model->unitsCount(); ++i) {
+//        // Test each units' dependencies for presence of self in tree
+//        UnitsPtr u = model->getUnits(i);
+//        history.push_back(u->getName());
+//        checkImportUnitsForCycles(model, u, history); 
+//        // Have to delete this each time to prevent reinitialisation with previous base variables
+//        std::vector<std::string>().swap(history);
+//    }
+//
+//    return status;
+//}
+//
+//void Validator::ValidatorImpl::checkImportUnitsForCycles(const ModelPtr &model, const UnitsPtr &parent, 
+//                                                  std::vector<std::string> &history) {
+//    
+//    
+//    
+//    // For each unit in model
+//
+//}
+//
+//void Validator::ValidatorImpl::checkThisUnitImport(std::string &parentUrl, std::string &parentRef,
+//    std::vector<std::pair<std::string, std::string>> &history ) {
+//
+//    // if imported:
+//    //              - check href url format
+//    //              - check href url file presence
+//    //              - open and check: 
+//    //                  - for _ref presence in file as name
+//    //                  - if imported:
+//    //                              ... repeat ... 
+//
+//
+//    // Open file defined by parentUrl:
+//    libcellml::Parser p;
+//    libcellml::ModelPtr m = p.parseModelFromFile(parentUrl);
+//    // Find the unit we want:
+//    libcellml::UnitsPtr u = m->getUnits(parentRef);
+//
+//    // Function takes a URL to open, units_ref to locate
+//
+//    // If units_ref is itself an import into this file, add url and ref to list and check children
+//
+//    // Function returns 
+//}
+
+
+void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_path,
+                                                 const std::string &find_ref,
+                                                 const std::string &find_name, 
+                                                 const std::string &find_type,
+                                                 std::vector<std::pair<std::string, std::string>> &history )
+{
+    // Function to locate the imported entity of type find_type in file find_ref with name find_name 
+
+    std::experimental::filesystem::path path(find_ref); 
+    std::string file_to_open = "";
+    std::string working_directory = "";
+    if (path.is_absolute()) {
+        // do nothing, use find_ref as the whole path
+        file_to_open = find_ref;
+        // update working directory to the path of this file
+        working_directory = find_ref.substr(0,find_ref.find_last_of("/\\")+1);
+    }
+    if (path.is_relative()) {
+        // add working directory to file path
+        file_to_open = find_path + find_ref;
+        working_directory = find_path;
+    }
+
+    // Check that this pair of item name, type and file has not been included in the history already, otherwise
+    // we have a circular import
+    auto p = std::make_pair(find_name,file_to_open);
+    if(std::find(history.begin(), history.end(), p) == history.end())
+        history.push_back(p);
+    else {
+        history.push_back(p);
+        ErrorPtr err = std::make_shared<Error>();
+        std::string e("");
+        std::string sep("         ");
+        std::string separator(" which imports ");
+        for (const auto& i : history) {
+            e += sep+"\n ('" + i.first + "' in " + i.second + ")";
+            sep = separator;
+        }
+        err->setDescription("Import of "+find_type+" '"+history[0].first+"' has circular dependencies:"+e);
+        err->setKind(Error::Kind::IMPORT);
+        mValidator->addError(err);
+        return;
+    }
+
+    XmlDocPtr doc = std::make_shared<XmlDoc>();
+    std::ifstream t(file_to_open);
+    std::stringstream buffer;
+    bool found = false;
+
+    buffer << t.rdbuf();
+    doc->parse(buffer.str());
+
+    // Copy any XML parsing errors into the common parser error handler.
+    if (doc->xmlErrorCount() > 0) {
+        for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription(doc->getXmlError(i));
+            err->setKind(Error::Kind::XML);
+            mValidator->addError(err);
+        }
+    }
+
+    const XmlNodePtr node = doc->getRootNode();
+
+    if (!node) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Could not get a valid XML root node from the provided input.");
+        err->setKind(Error::Kind::XML);
+        mValidator->addError(err);
+        return;
+    } 
+    else if (!node->isCellmlElement("model")) {
+        // KRM TODO is this required for imports??
+        ErrorPtr err = std::make_shared<Error>();
+        if (node->getName() == "model") {
+            std::string nodeNamespace = node->getNamespace();
+            if (nodeNamespace.empty())
+                nodeNamespace = "null";
+            err->setDescription("Model element is in invalid namespace '" + nodeNamespace +
+                                "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS +
+                                "'.");
+        } else {
+            err->setDescription("Model element is of invalid type '" + node->getName() +
+                                "'. A valid CellML root node should be of type 'model'.");
+        }
+        // KRM Make better error here, and figure out where it should be sent (parser or validator?)
+        mValidator->addError(err);
+        return;
+    }
+
+    // Get model attributes. KRM also don't care about this for imports?
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    std::string model_name;
+    while (attribute) {
+        if (attribute->isType("name")) {
+            model_name = attribute->getValue();
+        } else if (attribute->isType("id")) {
+            // skip
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Model '" + node->getAttribute("name") +
+                                "' imported from '"+ find_ref +
+                                "' has an invalid attribute '" + attribute->getName() + "'.");
+            //err->setModel(model);
+            mValidator->addError(err);
+        }
+        attribute = attribute->getNext();
+    }
+
+    // Get model children (CellML entities), the only valid imported entities are components or units
+    XmlNodePtr childNode = node->getFirstChild();
+    std::string other_type = find_type == "component" ? "units" : "component";
+
+    while (childNode) {
+        if (childNode->isCellmlElement(find_type.c_str())) {
+            // Concrete type: check name attribute for find_name
+            XmlAttributePtr attribute = childNode->getFirstAttribute();
+            while (attribute) {
+                if (attribute->isType("name")) {
+                    // Compare to the find_name
+                    if (attribute->getValue() == find_name) {
+                        // Stop searching, have reached concrete definition for this item
+                        // KRM how to delete model??
+                        std::vector<std::pair<std::string,std::string>>().swap(history);
+                        return;
+                    }
+                } else if (attribute->isType("id")) {
+                    // skip, don't care about ids
+                } else {
+                    // add some error here
+                }
+                attribute = attribute->getNext();
+            } // ends while attribute loop
+        }
+        else if (childNode->isCellmlElement("import")) {
+            XmlAttributePtr importAttribute = childNode->getFirstAttribute();
+            std::string import_child_ref = "";
+            // Go through the attributes and store the _ref in case it's needed for the next level
+            while (importAttribute) {
+                if (importAttribute->isType("href", XLINK_NS)) {
+                    import_child_ref = importAttribute->getValue();
+                } else if (importAttribute->isType("id")) {
+                    // Do nothing
+                } else if (importAttribute->isType("xlink")) {
+                    // Allow xlink attributes but do nothing for them.
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Import from '" + node->getAttribute("href") +
+                                        "' has an invalid attribute '" + attribute->getName() + "'.");
+                    //err->setImportSource(importSource);
+                    mValidator->addError(err);
+                }
+                importAttribute = importAttribute->getNext();
+            }
+
+            // Import type: check children for find_type
+            XmlNodePtr importChild = childNode->getFirstChild();
+            std::string find_type_ref = find_type + "_ref";
+            
+            while (importChild) {
+                if (importChild->isCellmlElement(find_type.c_str())) {
+                    // check name attribute
+                    XmlAttributePtr importAttribute = importChild->getFirstAttribute();
+                    std::string import_name = "";
+                    bool use_me = false;
+
+                    while (importAttribute) {
+                        if ((importAttribute->isType("name")) && (importAttribute->getValue()== find_name)) {
+                            use_me = true;
+                        } else if (importAttribute->isType(find_type_ref.c_str())) {
+                            import_name = importAttribute->getValue();
+                        } else if (importAttribute->isType("id")) {
+                            // do nothing
+                        } else {
+                            // add some error here
+                        }
+                        importAttribute = importAttribute->getNext();
+                    } // end while importAttribute loop
+
+                    if (use_me) {
+                        // Start check of import location for this import
+                        checkImportIsAvailable(working_directory, import_child_ref, import_name, find_type, history);
+                        return;
+                    }
+
+                } else {
+                    // what to do with other import child types?
+                }
+                importChild = importChild->getNext();
+            }
+        }
+        else if ((childNode->isCellmlElement(other_type.c_str())) 
+                 || (childNode->isCellmlElement("encapsulation")) 
+                 || (childNode->isCellmlElement("connection")) 
+                 || (childNode->isComment()))
+        {
+            // Skip - only want the item and name we're currently looking for          
+        } else if (childNode->isText()) {
+            std::string textNode = childNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Model '" + model_name +
+                                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                //err->setModel(model);
+                err->setRule(SpecificationRule::MODEL_CHILD);
+                mValidator->addError(err);
+            }
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Model '" + model_name +
+                                "' has an invalid child element '" + childNode->getName() + "'.");
+            //err->setModel(model);
+            err->setRule(SpecificationRule::MODEL_CHILD);
+            mValidator->addError(err);
+        }
+        childNode = childNode->getNext();
+    }
+
+    ErrorPtr err = std::make_shared<Error>();
+    std::string e("");
+    std::string sep = "         ";
+    std::string separator(" which imports");
+    for (const auto& i : history) {
+        e += sep+"\n ('" + i.first + "' in " + i.second + ")";
+        sep = separator;
+    }
+    err->setDescription(
+        "Import of " + find_type + " '" + history[0].first + 
+        "' has failed. Tried: " + 
+        e + " which was not found.");
+    mValidator->addError(err);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {

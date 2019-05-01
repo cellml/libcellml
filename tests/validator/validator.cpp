@@ -27,6 +27,33 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
+TEST(Validator, validateLayeredImportReferences) {
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE)
+    );
+    libcellml::Validator v;
+
+    EXPECT_EQ(0u, p.errorCount());
+ 
+    v.validateModel(m);
+    printErrors(v);
+    EXPECT_EQ(1u, v.errorCount());
+}
+
+TEST(Validator, validateCircularImportReferences) {
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE)
+    );
+    EXPECT_EQ(0u, p.errorCount());
+
+    libcellml::Validator v;
+    v.validateModel(m);
+    printErrors(v);
+    EXPECT_EQ(2u, v.errorCount());
+}
+
 TEST(Validator, namedModel) {
 	libcellml::Validator validator;
 	libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -1068,3 +1095,5 @@ TEST(Validator, sameFilenameDifferentDirectories) {
 	EXPECT_EQ(0u, v.errorCount());
 
 }
+
+

@@ -49,7 +49,7 @@ In addition, there's a signature
 
  - addUnit(reference, prefix, exponent, multiplier=1)
 
-where `prefix` is also allowed to be a float.";
+where `prefix` is also allowed to be an integer.";
 
 %feature("docstring") libcellml::Units::removeUnit
 "Removes the unit specified by index, reference, or StandardUnit.
