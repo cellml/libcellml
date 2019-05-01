@@ -629,9 +629,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 {
     // Generate the code for the given AST
 
-    std::string stringValue;
-    double doubleValue;
-
     switch (ast->type()) {
     // Relational operators
 
@@ -668,9 +665,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         return generateCode(ast->left())+mTimes+generateCode(ast->right());
     case GeneratorEquationAst::Type::DIVIDE:
         return generateCode(ast->left())+mDivide+generateCode(ast->right());
-    case GeneratorEquationAst::Type::POWER:
-        stringValue = generateCode(ast->right());
-        doubleValue = convertToDouble(stringValue);
+    case GeneratorEquationAst::Type::POWER: {
+        std::string stringValue = generateCode(ast->right());
+        double doubleValue = convertToDouble(stringValue);
 
         if (isEqual(doubleValue, 0.5)) {
             return mSqrt+"("+generateCode(ast->left())+")";
@@ -681,10 +678,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         return mPow+"("+generateCode(ast->left())+", "+stringValue+")";
+    }
     case GeneratorEquationAst::Type::ROOT:
         if (ast->right()) {
-            stringValue = generateCode(ast->left());
-            doubleValue = convertToDouble(stringValue);
+            std::string stringValue = generateCode(ast->left());
+            double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 2.0)) {
                 return mSqrt+"("+generateCode(ast->right())+")";
@@ -702,8 +700,8 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         return mLn+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::LOG:
         if (ast->right()) {
-            stringValue = generateCode(ast->left());
-            doubleValue = convertToDouble(stringValue);
+            std::string stringValue = generateCode(ast->left());
+            double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 10.0)) {
                 return mLog+"("+generateCode(ast->right())+")";
