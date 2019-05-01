@@ -57,6 +57,10 @@ public:
 
         MIN, MAX,
 
+        // Gcd/lcm operators
+
+        GCD, LCM,
+
         // Trigonometric operators
 
         SIN, COS, TAN, SEC, CSC, COT,
@@ -209,6 +213,14 @@ struct Generator::GeneratorImpl
 
     bool mNeedMin = false;
     bool mNeedMax = false;
+
+    // Gcd/lcm operators
+
+    std::string mGcd = "gcd";
+    std::string mLcm = "lcm";
+
+    bool mNeedGcd = false;
+    bool mNeedLcm = false;
 
     // Trigonometric operators
 
@@ -457,6 +469,17 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MAX);
 
         mNeedMax = true;
+
+    // Gcd/lcm operators
+
+    } else if (node->isMathmlElement("gcd")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::GCD);
+
+        mNeedGcd = true;
+    } else if (node->isMathmlElement("lcm")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LCM);
+
+        mNeedLcm = true;
 
     // Trigonometric operators
 
@@ -716,6 +739,21 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
     case GeneratorEquationBinTree::Type::MAX:
         if (parentBinTree == nullptr) {
             return mMax+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
+        }
+
+        return generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree);
+
+    // Gcd/lcm operators
+
+    case GeneratorEquationBinTree::Type::GCD:
+        if (parentBinTree == nullptr) {
+            return mGcd+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
+        }
+
+        return generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree);
+    case GeneratorEquationBinTree::Type::LCM:
+        if (parentBinTree == nullptr) {
+            return mLcm+"("+generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree)+")";
         }
 
         return generateCode(binTree->left(), binTree)+", "+generateCode(binTree->right(), binTree);
