@@ -649,7 +649,7 @@
             <apply>
                 <eq/>
                 <ci>eqnCn</ci>
-                <cn cellml:units="dimensionless">3</cn>
+                <cn cellml:units="dimensionless">3.0</cn>
             </apply>
             <apply>
                 <eq/>
