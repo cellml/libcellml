@@ -11,11 +11,9 @@
         <variable name="eqnPlus" units="dimensionless"/>
         <variable name="eqnPlusMultiple" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
-        <variable name="eqnMinusMultiple" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
         <variable name="eqnTimesMultiple" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
-        <variable name="eqnDivideMultiple" units="dimensionless"/>
         <variable name="eqnPowerSqrt" units="dimensionless"/>
         <variable name="eqnPowerSqr" units="dimensionless"/>
         <variable name="eqnPowerCube" units="dimensionless"/>
@@ -165,18 +163,6 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnMinusMultiple</ci>
-                <apply>
-                    <minus/>
-                    <ci>m</ci>
-                    <ci>n</ci>
-                    <ci>o</ci>
-                    <ci>p</ci>
-                    <ci>q</ci>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
                 <ci>eqnTimes</ci>
                 <apply>
                     <times/>
@@ -203,18 +189,6 @@
                     <divide/>
                     <ci>m</ci>
                     <ci>n</ci>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnDivideMultiple</ci>
-                <apply>
-                    <divide/>
-                    <ci>m</ci>
-                    <ci>n</ci>
-                    <ci>o</ci>
-                    <ci>p</ci>
-                    <ci>q</ci>
                 </apply>
             </apply>
             <apply>
