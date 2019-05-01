@@ -44,8 +44,9 @@ public:
         // Arithmetic operators
 
         PLUS, MINUS, TIMES, DIVIDE,
+        POWER, ROOT,
         ABS,
-        EXP, LN,
+        EXP, LN, LOG,
         CEILING, FLOOR, FACTORIAL,
 
         // Logical operators
@@ -62,6 +63,10 @@ public:
         // Token elements
 
         CN, CI,
+
+        // Qualifier elements
+
+        DEGREE, LOGBASE,
 
         // Constants
 
@@ -169,9 +174,13 @@ struct Generator::GeneratorImpl
     std::string mMinus = "-";
     std::string mTimes = "*";
     std::string mDivide = "/";
+    std::string mPow = "pow";
+    std::string mSqrt = "sqrt";
+    std::string mSqr = "sqr";
     std::string mAbs = "fabs";
     std::string mExp = "exp";
     std::string mLn = "log";
+    std::string mLog = "log10";
     std::string mCeiling = "ceil";
     std::string mFloor = "floor";
     std::string mFactorial = "fact";
@@ -385,12 +394,18 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::TIMES);
     } else if (node->isMathmlElement("divide")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DIVIDE);
+    } else if (node->isMathmlElement("power")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::POWER);
+    } else if (node->isMathmlElement("root")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ROOT);
     } else if (node->isMathmlElement("abs")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::ABS);
     } else if (node->isMathmlElement("exp")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::EXP);
     } else if (node->isMathmlElement("ln")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LN);
+    } else if (node->isMathmlElement("log")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LOG);
     } else if (node->isMathmlElement("ceiling")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CEILING);
     } else if (node->isMathmlElement("floor")) {
@@ -493,6 +508,17 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("ci")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::CI, node->getFirstChild()->convertToString());
 
+    // Qualifier elements
+
+    } else if (node->isMathmlElement("degree")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::DEGREE);
+
+        processNode(mathmlChildNode(node, 0), binTree->left());
+    } else if (node->isMathmlElement("logbase")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::LOGBASE);
+
+        processNode(mathmlChildNode(node, 0), binTree->left());
+
     // Constants
 
     } else if (node->isMathmlElement("true")) {
@@ -539,6 +565,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
 {
     // Generate the code for the given (equation) binary tree
 
+    std::string stringValue;
+    double doubleValue;
+
     switch (binTree->type()) {
     // Relational operators
 
@@ -567,12 +596,51 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return generateCode(binTree->left())+mTimes+generateCode(binTree->right());
     case GeneratorEquationBinTree::Type::DIVIDE:
         return generateCode(binTree->left())+mDivide+generateCode(binTree->right());
+    case GeneratorEquationBinTree::Type::POWER:
+        stringValue = generateCode(binTree->right());
+        doubleValue = convertToDouble(stringValue);
+
+        if (isEqual(doubleValue, 0.5)) {
+            return mSqrt+"("+generateCode(binTree->left())+")";
+        }
+
+        if (isEqual(doubleValue, 2.0)) {
+            return mSqr+"("+generateCode(binTree->left())+")";
+        }
+
+        return mPow+"("+generateCode(binTree->left())+", "+stringValue+")";
+    case GeneratorEquationBinTree::Type::ROOT:
+        if (binTree->right()) {
+            stringValue = generateCode(binTree->left());
+            doubleValue = convertToDouble(stringValue);
+
+            if (isEqual(doubleValue, 2.0)) {
+                return mSqrt+"("+generateCode(binTree->right())+")";
+            }
+
+            return mPow+"("+generateCode(binTree->right())+", 1.0/"+stringValue+")";
+        }
+
+        return mSqrt+"("+generateCode(binTree->left())+")";
     case GeneratorEquationBinTree::Type::ABS:
         return mAbs+"("+generateCode(binTree->left())+")";
     case GeneratorEquationBinTree::Type::EXP:
         return mExp+"("+generateCode(binTree->left())+")";
     case GeneratorEquationBinTree::Type::LN:
         return mLn+"("+generateCode(binTree->left())+")";
+    case GeneratorEquationBinTree::Type::LOG:
+        if (binTree->right()) {
+            stringValue = generateCode(binTree->left());
+            doubleValue = convertToDouble(stringValue);
+
+            if (isEqual(doubleValue, 10.0)) {
+                return mLog+"("+generateCode(binTree->right())+")";
+            }
+
+            return mLn+"("+generateCode(binTree->right())+")/"+mLn+"("+stringValue+")";
+        }
+
+        return mLog+"("+generateCode(binTree->left())+")";
     case GeneratorEquationBinTree::Type::CEILING:
         return mCeiling+"("+generateCode(binTree->left())+")";
     case GeneratorEquationBinTree::Type::FLOOR:
@@ -647,6 +715,12 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
     case GeneratorEquationBinTree::Type::CN:
     case GeneratorEquationBinTree::Type::CI:
         return binTree->value();
+
+    // Qualifier elements
+
+    case GeneratorEquationBinTree::Type::DEGREE:
+    case GeneratorEquationBinTree::Type::LOGBASE:
+        return generateCode(binTree->left());
 
     // Constants
 
