@@ -53,6 +53,10 @@ public:
 
         AND, OR, XOR, NOT,
 
+        // Min/max operators
+
+        MIN, MAX,
+
         // Trigonometric operators
 
         SIN, COS, TAN, SEC, CSC, COT,
@@ -197,6 +201,14 @@ struct Generator::GeneratorImpl
     std::string mOr = " || ";
     std::string mXor = "^";
     std::string mNot = "!";
+
+    // Min/max operators
+
+    std::string mMin = "min";
+    std::string mMax = "max";
+
+    bool mNeedMin = false;
+    bool mNeedMax = false;
 
     // Trigonometric operators
 
@@ -433,6 +445,17 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::XOR);
     } else if (node->isMathmlElement("not")) {
         binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::NOT);
+
+    // Min/max operators
+
+    } else if (node->isMathmlElement("min")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MIN);
+
+        mNeedMin = true;
+    } else if (node->isMathmlElement("max")) {
+        binTree = std::make_shared<GeneratorEquationBinTree>(GeneratorEquationBinTree::Type::MAX);
+
+        mNeedMax = true;
 
     // Trigonometric operators
 
@@ -671,6 +694,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationBinTre
         return generateCode(binTree->left())+mXor+generateCode(binTree->right());
     case GeneratorEquationBinTree::Type::NOT:
         return mNot+generateCode(binTree->left());
+
+    // Min/max operators
+
+    case GeneratorEquationBinTree::Type::MIN:
+        return mMin+"("+generateCode(binTree->left())+", "+generateCode(binTree->right())+")";
+    case GeneratorEquationBinTree::Type::MAX:
+        return mMax+"("+generateCode(binTree->left())+", "+generateCode(binTree->right())+")";
 
     // Trigonometric operators
 
