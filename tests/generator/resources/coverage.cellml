@@ -45,6 +45,10 @@
         <variable name="eqnMinMultiple" units="dimensionless"/>
         <variable name="eqnMax" units="dimensionless"/>
         <variable name="eqnMaxMultiple" units="dimensionless"/>
+        <variable name="eqnGcd" units="dimensionless"/>
+        <variable name="eqnGcdMultiple" units="dimensionless"/>
+        <variable name="eqnLcm" units="dimensionless"/>
+        <variable name="eqnLcmMultiple" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
         <variable name="eqnCos" units="dimensionless"/>
         <variable name="eqnTan" units="dimensionless"/>
@@ -486,6 +490,48 @@
                 <ci>eqnMaxMultiple</ci>
                 <apply>
                     <max/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnGcd</ci>
+                <apply>
+                    <gcd/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnGcdMultiple</ci>
+                <apply>
+                    <gcd/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                    <ci>o</ci>
+                    <ci>p</ci>
+                    <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLcm</ci>
+                <apply>
+                    <lcm/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLcmMultiple</ci>
+                <apply>
+                    <lcm/>
                     <ci>m</ci>
                     <ci>n</ci>
                     <ci>o</ci>
