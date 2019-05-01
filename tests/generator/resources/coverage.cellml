@@ -16,9 +16,21 @@
         <variable name="eqnTimesMultiple" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
         <variable name="eqnDivideMultiple" units="dimensionless"/>
+        <variable name="eqnPowerSqrt" units="dimensionless"/>
+        <variable name="eqnPowerSqr" units="dimensionless"/>
+        <variable name="eqnPowerCube" units="dimensionless"/>
+        <variable name="eqnPowerCi" units="dimensionless"/>
+        <variable name="eqnRootSqrt" units="dimensionless"/>
+        <variable name="eqnRootSqrtOther" units="dimensionless"/>
+        <variable name="eqnRootCube" units="dimensionless"/>
+        <variable name="eqnRootCi" units="dimensionless"/>
         <variable name="eqnAbs" units="dimensionless"/>
         <variable name="eqnExp" units="dimensionless"/>
         <variable name="eqnLn" units="dimensionless"/>
+        <variable name="eqnLog" units="dimensionless"/>
+        <variable name="eqnLog2" units="dimensionless"/>
+        <variable name="eqnLog10" units="dimensionless"/>
+        <variable name="eqnLogCi" units="dimensionless"/>
         <variable name="eqnCeiling" units="dimensionless"/>
         <variable name="eqnFloor" units="dimensionless"/>
         <variable name="eqnFactorial" units="dimensionless"/>
@@ -207,6 +219,83 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnPowerSqrt</ci>
+                <apply>
+                    <power/>
+                    <ci>m</ci>
+                    <cn cellml:units="dimensionless">0.5</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerSqr</ci>
+                <apply>
+                    <power/>
+                    <ci>m</ci>
+                    <cn cellml:units="dimensionless">2.0</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerCube</ci>
+                <apply>
+                    <power/>
+                    <ci>m</ci>
+                    <cn cellml:units="dimensionless">3.0</cn>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerCi</ci>
+                <apply>
+                    <power/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnRootSqrt</ci>
+                <apply>
+                    <root/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnRootSqrtOther</ci>
+                <apply>
+                    <root/>
+                    <degree>
+                        <cn cellml:units="dimensionless">2.0</cn>
+                    </degree>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnRootCube</ci>
+                <apply>
+                    <root/>
+                    <degree>
+                        <cn cellml:units="dimensionless">3.0</cn>
+                    </degree>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnRootCi</ci>
+                <apply>
+                    <root/>
+                    <degree>
+                        <ci>n</ci>
+                    </degree>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnAbs</ci>
                 <apply>
                     <abs/>
@@ -226,6 +315,47 @@
                 <ci>eqnLn</ci>
                 <apply>
                     <ln/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLog</ci>
+                <apply>
+                    <log/>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLog2</ci>
+                <apply>
+                    <log/>
+                    <logbase>
+                        <cn cellml:units="dimensionless">2.0</cn>
+                    </logbase>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLog10</ci>
+                <apply>
+                    <log/>
+                    <logbase>
+                        <cn cellml:units="dimensionless">10.0</cn>
+                    </logbase>
+                    <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnLogCi</ci>
+                <apply>
+                    <log/>
+                    <logbase>
+                        <ci>n</ci>
+                    </logbase>
                     <ci>m</ci>
                 </apply>
             </apply>
