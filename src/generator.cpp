@@ -18,10 +18,6 @@ limitations under the License.
 #   define _USE_MATH_DEFINES
 #endif
 
-#if defined(_WIN32) || defined(__linux__)
-#   define SIZE_T_MAX ULONG_MAX
-#endif
-
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -337,7 +333,7 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     // not int he MathML namespace
 
     XmlNodePtr res = node->getFirstChild();
-    size_t childNodeIndex = (res->isMathmlElement())?0:SIZE_T_MAX;
+    size_t childNodeIndex = (res->isMathmlElement())?0:std::numeric_limits<std::size_t>::max();
 
     while ((res != nullptr) && (childNodeIndex != index)) {
         res = res->getNext();
