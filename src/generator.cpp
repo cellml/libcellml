@@ -298,6 +298,8 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node);
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast);
 
+    void processComponent(const ComponentPtr &component);
+
     std::string neededMathMethods() const;
     std::string initializeVariables() const;
     std::string computeConstantEquations() const;
@@ -663,6 +665,34 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     }
 }
 
+void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
+{
+    // Retrieve the math string associated with the given component and process
+    // it, one equation at a time
+
+    XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
+    std::string math = component->getMath();
+
+    if (!math.empty()) {
+        xmlDoc->parse(math);
+
+        XmlNodePtr mathNode = xmlDoc->getRootNode();
+
+        for (XmlNodePtr node = mathNode->getFirstChild();
+             node != nullptr; node = node->getNext()) {
+            if (node->isMathmlElement()) {
+                processNode(node);
+            }
+        }
+    }
+
+    // Do the same for the components encapsulated by the given component
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        processComponent(component->getComponent(i));
+    }
+}
+
 std::string Generator::GeneratorImpl::neededMathMethods() const
 {
     return "";
@@ -990,31 +1020,10 @@ void Generator::processModel(const ModelPtr &model)
     }
 */
 
-    // Determine the order in which equations should be executed by processing
-    // each of the components in the given model
+    // Process the model itself
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        // Retrieve the math string associated with the given component and
-        // process it, one equation at a time
-        // Note: at this stage, we know the model is valid, so no point in
-        //       revalidating each math string...
-
-        ComponentPtr component = model->getComponent(i);
-        XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-        std::string math = component->getMath();
-
-        if (!math.empty()) {
-            xmlDoc->parse(math);
-
-            XmlNodePtr mathNode = xmlDoc->getRootNode();
-
-            for (XmlNodePtr node = mathNode->getFirstChild();
-                 node != nullptr; node = node->getNext()) {
-                if (node->isMathmlElement()) {
-                    mPimpl->processNode(node);
-                }
-            }
-        }
+        mPimpl->processComponent(model->getComponent(i));
     }
 
     // Generate the code for our different equations
