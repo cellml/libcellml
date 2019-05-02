@@ -315,6 +315,9 @@ struct Generator::GeneratorImpl
     std::string computeRateEquations() const;
     std::string computeAlgebraicEquations() const;
 
+    std::string generateOperatorCode(const std::string &op,
+                                     const GeneratorEquationAstPtr &ast) const;
+
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
@@ -736,6 +739,15 @@ std::string replace(const std::string &string, const std::string &from, const st
     return std::string(string).replace(string.find(from), from.length(), to);
 }
 
+std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
+                                                           const GeneratorEquationAstPtr &ast) const
+{
+    std::string left = generateCode(ast->left());
+    std::string right = generateCode(ast->right());
+
+    return left+op+right;
+}
+
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
                                                               const std::string &value) const
 {
@@ -760,19 +772,19 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     // Relational operators
 
     case GeneratorEquationAst::Type::EQ:
-        return generateCode(ast->left())+mEq+generateCode(ast->right());
+        return generateOperatorCode(mEq, ast);
     case GeneratorEquationAst::Type::EQEQ:
-        return generateCode(ast->left())+mEqEq+generateCode(ast->right());
+        return generateOperatorCode(mEqEq, ast);
     case GeneratorEquationAst::Type::NEQ:
-        return generateCode(ast->left())+mNeq+generateCode(ast->right());
+        return generateOperatorCode(mNeq, ast);
     case GeneratorEquationAst::Type::LT:
-        return generateCode(ast->left())+mLt+generateCode(ast->right());
+        return generateOperatorCode(mLt, ast);
     case GeneratorEquationAst::Type::LEQ:
-        return generateCode(ast->left())+mLeq+generateCode(ast->right());
+        return generateOperatorCode(mLeq, ast);
     case GeneratorEquationAst::Type::GT:
-        return generateCode(ast->left())+mGt+generateCode(ast->right());
+        return generateOperatorCode(mGt, ast);
     case GeneratorEquationAst::Type::GEQ:
-        return generateCode(ast->left())+mGeq+generateCode(ast->right());
+        return generateOperatorCode(mGeq, ast);
 
     // Arithmetic operators
 
