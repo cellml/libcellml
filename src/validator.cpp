@@ -295,7 +295,16 @@ void Validator::swap(Validator &rhs)
 }
 
 void Validator::validateModel(const ModelPtr &model) {
-    validateModel(model, "");
+
+    // If a filename is *not* specified, default to imported file, if present
+    // Otherwise, trigger zero-depth import checking as working directory is unknown
+
+    if (model->isImportedFromFile())
+        validateModel(model, model->getImportLocation());
+    else {
+        validateModel(model, "");
+        // TODO Raise warning when this is encountered?
+    }
 }
 
 void Validator::validateModel(const ModelPtr &model, std::string filename)
@@ -313,7 +322,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
 
     // If we don't have a filename or working directory we can't check imports 
     bool checkImports = false;
-    if ((filename != "") || (model->isImportedFromFile())) {
+    if (filename != "") {
         mPimpl->validateImportSources(model, filename);
         checkImports = true;
     }
