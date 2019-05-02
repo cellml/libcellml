@@ -332,8 +332,10 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     // Return the nth child element of the given node, skipping anything that is
     // not int he MathML namespace
 
+    static const size_t MAX_SIZE_T = std::numeric_limits<std::size_t>::max();
+
     XmlNodePtr res = node->getFirstChild();
-    size_t childNodeIndex = (res->isMathmlElement())?0:std::numeric_limits<std::size_t>::max();
+    size_t childNodeIndex = (res->isMathmlElement())?0:MAX_SIZE_T;
 
     while ((res != nullptr) && (childNodeIndex != index)) {
         res = res->getNext();
