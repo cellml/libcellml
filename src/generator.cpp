@@ -369,20 +369,31 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     // Basic content elements
 
     if (node->isMathmlElement("apply")) {
-        // We may have 2, 3 or more child nodes, which in the case of "+a",
-        // "a+b" and "a+b+c+d+e" would translate into:
+        // We may have 2, 3 or more child nodes, e.g.
         //
-        // +---------------------------------+
-        // |   +    ,    +   and   +         |
-        // |  / \       / \       / \        |
-        // | a  nil    a   b     a   +       |
-        // |                        / \      |
-        // |                       b   +     |
-        // |                          / \    |
-        // |                         c   +   |
-        // |                            / \  |
-        // |                           d   e |
-        // +---------------------------------+
+        //                 +--------+
+        //                 |   +    |
+        //        "+a" ==> |  / \   |
+        //                 | a  nil |
+        //                 +--------+
+        //
+        //                 +-------+
+        //                 |   +   |
+        //       "a+b" ==> |  / \  |
+        //                 | a   b |
+        //                 +-------+
+        //
+        //                 +-------------+
+        //                 |   +         |
+        //                 |  / \        |
+        //                 | a   +       |
+        //                 |    / \      |
+        // "a+b+c+d+e" ==> |   b   +     |
+        //                 |      / \    |
+        //                 |     c   +   |
+        //                 |        / \  |
+        //                 |       d   e |
+        //                 +-------------+
 
         size_t childCount = mathmlChildCount(node);
 
