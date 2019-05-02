@@ -11,5 +11,11 @@ set(CELLML_UNITS_IMPORT_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/im
 set(CELLML_IMPORT_LEVEL0_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/level0.xml")
 set(CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/level0-broken-imports.xml")
 
+set(CELLML_RECURSIVE_FILE_IMPORT "${CMAKE_CURRENT_SOURCE_DIR}/resources/recursive_import.cellml")
+set(CELLML_RECURSIVE_FILE_IMPORT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/resources/recursive_import_path.cellml")
+set(CELLML_FILE_WITH_NONEXISTENT_REF "${CMAKE_CURRENT_SOURCE_DIR}/resources/import_missing_file.cellml")
+set(CELLML_LAYERED_IMPORT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/resources/recursiveImport_1.cellml")
+set(CELLML_SAME_FILE_OTHER_DIR_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/same_file_other_dir.cellml")
+
 set(TEST_RESOURCE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/test_resources.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_resources.h.in ${TEST_RESOURCE_HEADER})
