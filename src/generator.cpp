@@ -285,10 +285,10 @@ struct Generator::GeneratorImpl
 
     // Piecewise statement
 
-    std::string mConditionalOperatorIf = "#cond?#true";
-    std::string mConditionalOperatorElse = ":#false";
-    std::string mPiecewiseIf = "piecewise(#cond, #true";
-    std::string mPiecewiseElse = ", #false)";
+    std::string mConditionalOperatorIf = "#cond?#if";
+    std::string mConditionalOperatorElse = ":#else";
+    std::string mPiecewiseIf = "piecewise(#cond, #if";
+    std::string mPiecewiseElse = ", #else)";
 
     bool mHasConditionalOperator = true;
 
@@ -741,14 +741,14 @@ std::string Generator::GeneratorImpl::piecewiseIf(const std::string &condition,
 {
     return replace(replace(mHasConditionalOperator?
                                mConditionalOperatorIf:
-                               mPiecewiseIf, "#cond", condition), "#true", value);
+                               mPiecewiseIf, "#cond", condition), "#if", value);
 }
 
 std::string Generator::GeneratorImpl::piecewiseElse(const std::string &value) const
 {
     return replace(mHasConditionalOperator?
                        mConditionalOperatorElse:
-                       mPiecewiseElse, "#false", value);
+                       mPiecewiseElse, "#else", value);
 }
 
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &ast,
