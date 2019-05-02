@@ -283,6 +283,15 @@ struct Generator::GeneratorImpl
 
     std::string mRem = "fmod";
 
+    // Piecewise statement
+
+    std::string mConditionalOperatorIf = "#cond?#true";
+    std::string mConditionalOperatorElse = ":#false";
+    std::string mPiecewiseIf = "piecewise(#cond, #true";
+    std::string mPiecewiseElse = ", #false)";
+
+    bool mHasConditionalOperator = true;
+
     // Constants
 
     std::string mTrue = "true";
@@ -305,6 +314,10 @@ struct Generator::GeneratorImpl
     std::string computeConstantEquations() const;
     std::string computeRateEquations() const;
     std::string computeAlgebraicEquations() const;
+
+    std::string piecewiseIf(const std::string &condition,
+                                      const std::string &value) const;
+    std::string piecewiseElse(const std::string &value) const;
 
     std::string generateCode(const GeneratorEquationAstPtr &ast,
                              const GeneratorEquationAstPtr &parentAst = nullptr) const;
@@ -718,6 +731,26 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
     return "";
 }
 
+std::string replace(const std::string &string, const std::string &from, const std::string &to)
+{
+    return std::string(string).replace(string.find(from), from.length(), to);
+}
+
+std::string Generator::GeneratorImpl::piecewiseIf(const std::string &condition,
+                                                  const std::string &value) const
+{
+    return replace(replace(mHasConditionalOperator?
+                               mConditionalOperatorIf:
+                               mPiecewiseIf, "#cond", condition), "#true", value);
+}
+
+std::string Generator::GeneratorImpl::piecewiseElse(const std::string &value) const
+{
+    return replace(mHasConditionalOperator?
+                       mConditionalOperatorElse:
+                       mPiecewiseElse, "#false", value);
+}
+
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &ast,
                                                    const GeneratorEquationAstPtr &parentAst) const
 {
@@ -919,15 +952,15 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     case GeneratorEquationAst::Type::PIECEWISE:
         if (ast->right() != nullptr) {
             if (ast->right()->type() == GeneratorEquationAst::Type::PIECE) {
-                return generateCode(ast->left())+":"+generateCode(ast->right())+":"+mNan;
+                return generateCode(ast->left())+piecewiseElse(generateCode(ast->right())+piecewiseElse(mNan));
             } else {
-                return generateCode(ast->left())+":"+generateCode(ast->right());
+                return generateCode(ast->left())+piecewiseElse(generateCode(ast->right()));
             }
         }
 
-        return generateCode(ast->left())+":"+mNan;
+        return generateCode(ast->left())+piecewiseElse(mNan);
     case GeneratorEquationAst::Type::PIECE:
-        return generateCode(ast->right())+"?"+generateCode(ast->left());
+        return piecewiseIf(generateCode(ast->right()), generateCode(ast->left()));
     case GeneratorEquationAst::Type::OTHERWISE:
         return generateCode(ast->left());
 
