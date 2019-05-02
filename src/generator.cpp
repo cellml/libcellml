@@ -777,13 +777,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     // Arithmetic operators
 
     case GeneratorEquationAst::Type::PLUS:
-        if (ast->right()) {
+        if (ast->right() != nullptr) {
             return generateCode(ast->left())+mPlus+generateCode(ast->right());
         }
 
         return mPlus+generateCode(ast->left());
     case GeneratorEquationAst::Type::MINUS:
-        if (ast->right()) {
+        if (ast->right() != nullptr) {
             return generateCode(ast->left())+mMinus+generateCode(ast->right());
         }
 
@@ -807,7 +807,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         return mPow+"("+generateCode(ast->left())+", "+stringValue+")";
     }
     case GeneratorEquationAst::Type::ROOT:
-        if (ast->right()) {
+        if (ast->right() != nullptr) {
             std::string stringValue = generateCode(ast->left());
             double doubleValue = convertToDouble(stringValue);
 
@@ -826,7 +826,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     case GeneratorEquationAst::Type::LN:
         return mLn+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::LOG:
-        if (ast->right()) {
+        if (ast->right() != nullptr) {
             std::string stringValue = generateCode(ast->left());
             double doubleValue = convertToDouble(stringValue);
 
