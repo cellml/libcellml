@@ -129,16 +129,3 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
     a = model->getComponent("c2")->getMath();
     EXPECT_EQ(e2, a);
 }
-
-TEST(Parser, recursiveFileImport) {
-    // Parsing a file with hrefs to its own filename: passes here, should fail validation 
-    std::ifstream t(TestResources::getLocation(
-        TestResources::CELLML_RECURSIVE_FILE_IMPORT));
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
-    libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
-    
-    EXPECT_EQ(0u, p.errorCount());
-}
