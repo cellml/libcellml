@@ -781,7 +781,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
             return generateCode(ast->left())+mPlus+generateCode(ast->right());
         }
 
-        return mPlus+generateCode(ast->left());
+        return generateCode(ast->left());
     case GeneratorEquationAst::Type::MINUS:
         if (ast->right() != nullptr) {
             return generateCode(ast->left())+mMinus+generateCode(ast->right());
