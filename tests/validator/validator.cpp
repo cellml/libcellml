@@ -1008,6 +1008,7 @@ TEST(Validator, validMathCnElements) {
 }
 
 TEST(Validator, importNameNotFoundInFile) {
+    // Check that component/unit name to import exists in specified import location
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModelFromFile(
         TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT)
@@ -1018,6 +1019,7 @@ TEST(Validator, importNameNotFoundInFile) {
  }
 
 TEST(Validator, importFileDoesNotExist) {
+    // Check import file exists
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModelFromFile(
         TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF)
@@ -1028,6 +1030,7 @@ TEST(Validator, importFileDoesNotExist) {
 }
 
 TEST(Validator, importLayer) {
+    // Check changes in directory are permitted
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModelFromFile(
         TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE)
@@ -1038,12 +1041,41 @@ TEST(Validator, importLayer) {
 }
 
 TEST(Validator, validateCircularImportReferences) {
+    // Check true circular references are identified and execution stops
+    // Check false circular references are allowed (eg: reference to another name in already-used file)
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModelFromFile(
         TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE)
     );
     libcellml::Validator v;
     v.validateModel(m);
-    printErrors(v);
     EXPECT_EQ(2u, v.errorCount());
+}
+
+TEST(Validator, validateImportsInMultipleLocations) {
+    // Check import from same filename in another directory
+    // Check ../  notation in href to go to parent directory
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE)
+    );
+    libcellml::Validator v;
+    v.validateModel(m);
+    printErrors(v);
+    EXPECT_EQ(0u, v.errorCount());
+}
+
+TEST(Validator, validateGenerationalImport) {
+    // Check non-absolute references in child imports change working directory 
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH)
+    );
+    libcellml::Validator v;
+    v.validateModel(m);
+    EXPECT_EQ(0u, v.errorCount());
+}
+
+TEST(Validator, validateRemoteImport) {
+    // TODO Import from remote?
 }

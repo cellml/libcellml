@@ -1,13 +1,6 @@
 <?xml version='1.0'?>
-<model name="vakantie" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <import xlink:href="recursive_dir\recursive_import_path.cellml">
-        <component component_ref="beach" name="duplicating_the_beach"/>
+<model name="coffee_required" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <import xlink:href="recursive_dir/recursive_import_path2.cellml">
+        <component component_ref="no_latte_here" name="latte"/>
     </import>
-	<component name="beach">
-		<variable name="sand" units="dimensionless" />
-		<variable name="sun" units="dimensionless" />
-	</component>
-	<import xlink:href="C:\Users\kerim\Documents\GitHub\libcellml\tests\resources\recursive_import_path.cellml">
-		<units name="sandiness" units_ref="zandigheid" />
-	</import>
 </model>
