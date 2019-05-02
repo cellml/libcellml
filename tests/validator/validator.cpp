@@ -1076,6 +1076,13 @@ TEST(Validator, validateGenerationalImport) {
     EXPECT_EQ(0u, v.errorCount());
 }
 
-TEST(Validator, validateRemoteImport) {
-    // TODO Import from remote?
+TEST(Validator, compareAbsoluteRelativeImports) {
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModelFromFile(
+        TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH)
+    );
+    libcellml::Validator v;
+    v.validateModel(m);
+    EXPECT_EQ(0u, v.errorCount());
 }
+

@@ -30,7 +30,7 @@ limitations under the License.
 #include "libcellml/when.h"
 
 #include <algorithm>
-#include <experimental/filesystem> // C++17 (or Microsoft-specific implementation in C++14)
+#include <filesystem> 
 #include <map>
 #include <regex>
 #include <sstream>
@@ -473,7 +473,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
     // Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
 }
-
 
 void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string filename) {
     // Check against the working directory location (assumed same as path to filename or model import filename)
