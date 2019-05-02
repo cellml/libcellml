@@ -16,7 +16,9 @@ limitations under the License.
 
 #ifdef _WIN32
 #   define _USE_MATH_DEFINES
-#
+#endif
+
+#if defined(_WIN32) || defined(__linux__)
 #   define SIZE_T_MAX ULONG_MAX
 #endif
 
@@ -33,6 +35,11 @@ limitations under the License.
 #include "libcellml/validator.h"
 
 #undef NAN
+
+#ifdef __linux__
+#   undef TRUE
+#   undef FALSE
+#endif
 
 namespace libcellml{
 
@@ -365,15 +372,17 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // We may have 2, 3 or more child nodes, which in the case of "+a",
         // "a+b" and "a+b+c+d+e" would translate into:
         //
-        //   +    ,    +   and   +
-        //  / \       / \       / \
-        // a  nil    a   b     a   +
-        //                        / \
-        //                       b   +
-        //                          / \
-        //                         c   +
-        //                            / \
-        //                           d   e
+        // +---------------------------------+
+        // |   +    ,    +   and   +         |
+        // |  / \       / \       / \        |
+        // | a  nil    a   b     a   +       |
+        // |                        / \      |
+        // |                       b   +     |
+        // |                          / \    |
+        // |                         c   +   |
+        // |                            / \  |
+        // |                           d   e |
+        // +---------------------------------+
 
         size_t childCount = mathmlChildCount(node);
 
