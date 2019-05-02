@@ -249,12 +249,14 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
     const XmlNodePtr node = doc->getRootNode();
     if (!node) {
+        // KRM Error stays in as is fatal.
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Could not get a valid XML root node from the provided input.");
         err->setKind(Error::Kind::XML);
         mParser->addError(err);
         return;
     } else if (!node->isCellmlElement("model")) {
+        // KRM Error stays in as is fatal.
         ErrorPtr err = std::make_shared<Error>();
         if (node->getName() == "model") {
             std::string nodeNamespace = node->getNamespace();
@@ -280,12 +282,12 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         } else if (attribute->isType("id")) {
             model->setId(attribute->getValue());
         } else {
-            // KRM TODO Change presence of text that can't be understood to warning instead of error?
-            //ErrorPtr err = std::make_shared<Error>();
-            //err->setDescription("Model '" + node->getAttribute("name") +
-            //                    "' has an invalid attribute '" + attribute->getName() + "'.");
-            //err->setModel(model);
-            //mParser->addError(err);
+            // KRM TODO Make warning?  Cannot be raised by validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Model '" + node->getAttribute("name") +
+                                "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setModel(model);
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -313,13 +315,13 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                     if (attribute->isType("id")) {
                         model->setEncapsulationId(attribute->getValue());
                     } else {
-                        // KRM TODO Make warning, skip
-                        /*ErrorPtr err = std::make_shared<Error>();
+                        // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                        ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Encapsulation in model '" + model->getName() +
                                             "' has an invalid attribute '" + attribute->getName() + "'.");
                         err->setModel(model);
                         err->setKind(Error::Kind::ENCAPSULATION);
-                        mParser->addError(err);*/
+                        mParser->addError(err);
                     }
                     attribute = attribute->getNext();
                 }
@@ -346,24 +348,24 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
-                // KRM TODO Make warning, skip?
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Model '" + model->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
                 err->setRule(SpecificationRule::MODEL_CHILD);
-                mParser->addError(err);*/
+                mParser->addError(err);
             }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            // KRM TODO Make warning, skip?
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Model '" + model->getName() +
                                 "' has an invalid child element '" + childNode->getName() + "'.");
             err->setModel(model);
             err->setRule(SpecificationRule::MODEL_CHILD);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -395,12 +397,12 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
         } else if (attribute->isType("id")) {
             component->setId(attribute->getValue());
         } else {
-            // KRM TODO Make warning, skip
-            //ErrorPtr err = std::make_shared<Error>();
-            //err->setDescription("Component '" + node->getAttribute("name") +
-            //                    "' has an invalid attribute '" + attribute->getName() + "'.");
-            //err->setComponent(component);
-            //mParser->addError(err);
+            // KRM TODO Make warning? Cannot raise in validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Component '" + node->getAttribute("name") +
+                                "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setComponent(component);
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -421,25 +423,25 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             component->appendMath(math);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
-            // Ignore whitespace when parsing. KRM Make warning, skip
-            //if (hasNonWhitespaceCharacters(textNode)) {
-            //    ErrorPtr err = std::make_shared<Error>();
-            //    err->setDescription("Component '" + component->getName() +
-            //                        "' has an invalid non-whitespace child text element '" + textNode + "'.");
-            //    err->setComponent(component);
-            //    err->setRule(SpecificationRule::COMPONENT_CHILD);
-            //    mParser->addError(err);
-            //}
+            // Ignore whitespace when parsing. KRM Make warning? Cannot raise in validator as not saved to model
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Component '" + component->getName() +
+                                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setComponent(component);
+                err->setRule(SpecificationRule::COMPONENT_CHILD);
+                mParser->addError(err);
+            }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            // KRM TODO Make warning, skip
-            //ErrorPtr err = std::make_shared<Error>();
-            //err->setDescription("Component '" + component->getName() +
-            //                    "' has an invalid child element '" + childNode->getName() + "'.");
-            //err->setComponent(component);
-            //err->setRule(SpecificationRule::COMPONENT_CHILD);
-            //mParser->addError(err);
+            // KRM TODO Make warning? Cannot raise in validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Component '" + component->getName() +
+                                "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setComponent(component);
+            err->setRule(SpecificationRule::COMPONENT_CHILD);
+            mParser->addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -454,12 +456,12 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
         } else if (attribute->isType("id")) {
             units->setId(attribute->getValue());
         } else {
-            // KRM TODO Make warning, skip
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not saved in model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units '" + units->getName() +
                                 "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setUnits(units);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -469,25 +471,25 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             loadUnit(units, childNode);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
-            // Ignore whitespace when parsing. KRM Make warning, skip
-            //if (hasNonWhitespaceCharacters(textNode)) {
-            //    ErrorPtr err = std::make_shared<Error>();
-            //    err->setDescription("Units '" + units->getName() +
-            //                        "' has an invalid non-whitespace child text element '" + textNode + "'.");
-            //    err->setUnits(units);
-            //    err->setRule(SpecificationRule::UNITS_CHILD);
-            //    mParser->addError(err);
-            //}
+            // Ignore whitespace when parsing. KRM Make warning? Cannot raise in validator as not saved to model
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Units '" + units->getName() +
+                                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setUnits(units);
+                err->setRule(SpecificationRule::UNITS_CHILD);
+                mParser->addError(err);
+            }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            // KRM TODO Make warning, skip
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units '" + units->getName() +
                                 "' has an invalid child element '" + childNode->getName() + "'.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNITS_CHILD);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -506,25 +508,25 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         while (childNode) {
             if (childNode->isText()) {
                 std::string textNode = childNode->convertToString();
-                // Ignore whitespace when parsing. // KRM TODO Make warning, skip
-               /* if (hasNonWhitespaceCharacters(textNode)) {
+                // Ignore whitespace when parsing. // KRM TODO Make warning? Cannot raise in validator as not saved to model
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                         "' in units '" + units->getName() +
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
                     err->setUnits(units);
                     mParser->addError(err);
-                }*/
+                }
             } else if (childNode->isComment()) {
                 // Do nothing.
             } else {
-                // KRM TODO Make warning, skip
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO Make warning? Cannot raise in validator as not saved to model
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->getAttribute("units") +
                                     "' in units '" + units->getName() +
                                     "' has an invalid child element '" + childNode->getName() + "'.");
                 err->setUnits(units);
-                mParser->addError(err);*/
+                mParser->addError(err);
             }
             childNode = childNode->getNext();
         }
@@ -540,7 +542,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             if (isCellMLReal(attribute->getValue())) {
                 exponent = convertToDouble(attribute->getValue());
             } else {
-                // KRM TODO Make warning, skip
+                // KRM TODO MOVE TO VALIDATOR - not checked currently!
                 //ErrorPtr err = std::make_shared<Error>();
                 //err->setDescription("Unit referencing '" + node->getAttribute("units") +
                 //                    "' in units '" + units->getName() +
@@ -554,7 +556,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             if (isCellMLReal(attribute->getValue())) {
                 multiplier = convertToDouble(attribute->getValue());
             } else {
-                // KRM TODO Make warning, skip
+                // KRM TODO MOVE TO VALIDATOR - not checked currently!
                 //ErrorPtr err = std::make_shared<Error>();
                 //err->setDescription("Unit referencing '" + node->getAttribute("units") +
                 //                    "' in units '" + units->getName() +
@@ -567,14 +569,14 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (attribute->isType("id")) {
             id = attribute->getValue();
         } else {
-            // KRM TODO Make warning, skip
-            //ErrorPtr err = std::make_shared<Error>();
-            //err->setDescription("Unit referencing '" + node->getAttribute("units") +
-            //                    "' in units '" + units->getName() +
-            //                    "' has an invalid attribute '" + attribute->getName() + "'.");
-            //err->setUnits(units);
-            //err->setRule(SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE);
-            //mParser->addError(err);
+            // KRM TODO Make warning? Cannot raise in validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Unit referencing '" + node->getAttribute("units") +
+                                "' in units '" + units->getName() +
+                                "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setUnits(units);
+            err->setRule(SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE);
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -590,23 +592,24 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         while (childNode) {
             if (childNode->isText()) {
                 std::string textNode = childNode->convertToString();
-                // Ignore whitespace when parsing. // KRM TODO Make warning, skip
-                /*if (hasNonWhitespaceCharacters(textNode)) {
+                // Ignore whitespace when parsing. 
+                // KRM TODO Make warning? Cannot raise in validator as not saved to model
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Variable '" + node->getAttribute("name") +
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
                     err->setVariable(variable);
                     mParser->addError(err);
-                }*/
+                }
             } else if (childNode->isComment()) {
                 // Do nothing.
             } else {
-                // KRM TODO Make warning, skip
-               /* ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO Make warning? Cannot raise in validator as not saved to model
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Variable '" + node->getAttribute("name") +
                                     "' has an invalid child element '" + childNode->getName() + "'.");
                 err->setVariable(variable);
-                mParser->addError(err);*/
+                mParser->addError(err);
             }
             childNode = childNode->getNext();
         }
@@ -628,12 +631,12 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         } else if (attribute->isType("initial_value")) {
             variable->setInitialValue(attribute->getValue());
         } else {
-            // KRM TODO Make warning, skip
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + node->getAttribute("name") +
                                 "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setVariable(variable);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -720,7 +723,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
 
     XmlNodePtr childNode = node->getFirstChild();
     if (!childNode) {
-        // KRM TODO Stays as error as fatal?
+        // KRM TODO Stays as error as fatal
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() +
                             "' must contain one or more 'map_variables' elements.");
@@ -739,26 +742,26 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             if (grandchildNode->isText()) {
                 std::string textNode = grandchildNode->convertToString();
                 // Ignore whitespace when parsing.
-                // KRM TODO Make warning, skip
-                /*if (hasNonWhitespaceCharacters(textNode)) {
+                // KRM TODO Make warning? Cannot be detected in validator as not read
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Connection in model '" + model->getName() +
                                         "' has an invalid non-whitespace child text element '" + textNode + "'.");
                     err->setModel(model);
                     err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
-                }*/
+                }
             } else if (childNode->isComment()) {
                 // Do nothing.
             } else {
-                // KRM TODO Make warning, skip
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO Make warning? Cannot raise in validator as not saved to model
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' has an invalid child element '" + grandchildNode->getName() +
                                     "' of element '" + childNode->getName() + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
-                mParser->addError(err);*/
+                mParser->addError(err);
             }
         }
 
@@ -815,25 +818,25 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
-            // KRM TODO Make warning, skip
-            /*if (hasNonWhitespaceCharacters(textNode)) {
+            // KRM TODO Make warning? cannot be checked in validator as not saved into model?
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
-            }*/
+            }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            // KRM TODO Make warning, skip
-            //ErrorPtr err = std::make_shared<Error>();
-            //err->setDescription("Connection in model '" + model->getName() +
-            //                    "' has an invalid child element '" + childNode->getName() + "'.");
-            //err->setModel(model);
-            //err->setKind(Error::Kind::CONNECTION);
-            //mParser->addError(err);
+            // KRM TODO Make warning? Cannot pass to validator as not saved to model?
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Connection in model '" + model->getName() +
+                                "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
+            mParser->addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -1018,28 +1021,28 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             const std::string textNode = parentComponentNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
-                // KRM TODO make warning?
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO make warning? Cannot raise in validator as not saved to model
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->getName() +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
                 err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
-                mParser->addError(err);*/
+                mParser->addError(err);
             } else {
                 // Continue to next node if this is whitespace (don't try to parse children of whitespace).
                 parentComponentNode = parentComponentNode->getNext();
                 continue;
             }
         } else {
-            // KRM TODO make warning and skip?
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO make warning? Cannot pass to validator as not saved to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Encapsulation in model '" + model->getName() +
                                 "' has an invalid child element '" + parentComponentNode->getName() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::ENCAPSULATION);
             err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
 
         // KRM TODO ************************* REMOVE FROM HERE, VALIDATION? ***************
@@ -1094,13 +1097,13 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     } else if (attribute->isType("id")) {
                         childEncapsulationId = attribute->getValue();
                     } else {
-                        // KRM TODO Make warning, skip?
-                        /*ErrorPtr err = std::make_shared<Error>();
+                        // KRM TODO Make warning? Cannot detect in validator as not saved to model
+                        ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Encapsulation in model '" + model->getName() +
                                             "' has an invalid component_ref attribute '" + attribute->getName() + "'.");
                         err->setModel(model);
                         err->setKind(Error::Kind::ENCAPSULATION);
-                        mParser->addError(err);*/
+                        mParser->addError(err);
                     }
                     attribute = attribute->getNext();
                 }
@@ -1134,24 +1137,24 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 // Ignore whitespace when parsing.
 
                 if (hasNonWhitespaceCharacters(textNode)) {
-                    // KRM TODO Make warning, skip?
-                    //ErrorPtr err = std::make_shared<Error>();
-                    //err->setDescription("Encapsulation in model '" + model->getName() +
-                    //                    "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                    //err->setModel(model);
-                    //err->setKind(Error::Kind::ENCAPSULATION);
-                    //err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
-                    //mParser->addError(err);
+                    // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Encapsulation in model '" + model->getName() +
+                                        "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                    err->setModel(model);
+                    err->setKind(Error::Kind::ENCAPSULATION);
+                    err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
+                    mParser->addError(err);
                 }
             } else {
-                // KRM TODO Make warning, skip?
-                //ErrorPtr err = std::make_shared<Error>();
-                //err->setDescription("Encapsulation in model '" + model->getName() +
-                //                    "' has an invalid child element '" + childComponentNode->getName() + "'.");
-                //err->setModel(model);
-                //err->setKind(Error::Kind::ENCAPSULATION);
-                //err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
-                //mParser->addError(err);
+                // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Encapsulation in model '" + model->getName() +
+                                    "' has an invalid child element '" + childComponentNode->getName() + "'.");
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
+                mParser->addError(err);
             }
 
             if ((parentComponent) && (childComponent)) {
@@ -1191,12 +1194,12 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             // Allow xlink attributes but do nothing for them.
             // KRM TODO Make warning, skip?
         } else {
-            // KRM TODO Make warning, skip?
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not passed to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Import from '" + node->getAttribute("href") +
                                 "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setImportSource(importSource);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -1214,13 +1217,13 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                 } else if (attribute->isType("component_ref")) {
                     importedComponent->setSourceComponent(importSource, attribute->getValue());
                 } else {
-                    // KRM TODO Make warning, skip?
-                    /*ErrorPtr err = std::make_shared<Error>();
+                    // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                    ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Import of component '" + childNode->getAttribute("name") +
                                         "' from '" + node->getAttribute("href") +
                                         "' has an invalid attribute '" + attribute->getName() + "'.");
                     err->setImportSource(importSource);
-                    mParser->addError(err);*/
+                    mParser->addError(err);
                     errorOccurred = true;
                 }
                 attribute = attribute->getNext();
@@ -1240,13 +1243,13 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                 } else if (attribute->isType("units_ref")) {
                     importedUnits->setSourceUnits(importSource, attribute->getValue());
                 } else {
-                    // KRM TODO Make warning, skip?
-                    /*ErrorPtr err = std::make_shared<Error>();
+                    // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                    ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Import of units '" + childNode->getAttribute("name") +
                                         "' from '" + node->getAttribute("href") +
                                         "' has an invalid attribute '" + attribute->getName() + "'.");
                     err->setImportSource(importSource);
-                    mParser->addError(err);*/
+                    mParser->addError(err);
                     errorOccurred = true;
                 }
                 attribute = attribute->getNext();
@@ -1258,24 +1261,24 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
-                // KRM TODO Make warning, skip?
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Import from '" + node->getAttribute("href") +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setImportSource(importSource);
                 err->setRule(SpecificationRule::IMPORT_CHILD);
-                mParser->addError(err);*/
+                mParser->addError(err);
             }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            // KRM TODO Make warning, skip?
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not passed to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Import from '" + node->getAttribute("href") +
                                 "' has an invalid child element '" + childNode->getName() + "'.");
             err->setImportSource(importSource);
             err->setRule(SpecificationRule::IMPORT_CHILD);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -1326,12 +1329,12 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         } else if (attribute->isType("id")) {
             reset->setId(attribute->getValue());
         } else {
-            // KRM TODO make warning?
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not passed to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Reset in component '" + component->getName() +
                                 "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setReset(reset);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -1372,26 +1375,26 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             const std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
-                // KRM TODO make warning?
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Reset in component '" + component->getName() +
                                     "' referencing variable '" + variableName +
                                     "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setReset(reset);
                 err->setRule(SpecificationRule::RESET_CHILD);
-                mParser->addError(err);*/
+                mParser->addError(err);
             }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            // KRM TODO make warning?
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not passed to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Reset in component '" + component->getName() +
                                 "' referencing variable '" + variableName +
                                 "' has an invalid child element '" + childNode->getName() + "'.");
             err->setReset(reset);
             err->setRule(SpecificationRule::RESET_CHILD);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         childNode = childNode->getNext();
     }
@@ -1421,13 +1424,13 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
         } else if (attribute->isType("id")) {
             when->setId(attribute->getValue());
         } else {
-            // KRM TODO make warning?
-            /*ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not passed to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("When in reset referencing variable '" + referencedVariableName +
                                 "' with order '" + resetOrder +
                                 "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setWhen(when);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
@@ -1458,36 +1461,36 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             } else if (mathNodeCount == 2) {
                 when->setValue(math);
             } else {
-                // KRM TODO make warning?
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM Keep as error as others will not be read
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("When in reset referencing variable '" + referencedVariableName +
                                     "' with order '" + resetOrder +
                                     "' contains more than two MathML child elements.");
                 err->setWhen(when);
                 err->setRule(SpecificationRule::WHEN_CHILD);
-                mParser->addError(err);*/
+                mParser->addError(err);
             }
         } else if (childNode->isText()) {
-            // KRM TODO make warning?
-            /*const std::string textNode = childNode->convertToString();
+            /// KRM TODO Make warning? Cannot raise in validator as not passed to model
+            const std::string textNode = childNode->convertToString();
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("When in reset referencing variable '" + referencedVariableName +
                                 "' with order '" + resetOrder +
                                 "' has an invalid non-whitespace child text element '" + textNode + "'.");
             err->setWhen(when);
             err->setRule(SpecificationRule::WHEN_CHILD);
-            mParser->addError(err);*/
+            mParser->addError(err);
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
-            // KRM TODO make warning?
-           /* ErrorPtr err = std::make_shared<Error>();
+            // KRM TODO Make warning? Cannot raise in validator as not passed to model
+            ErrorPtr err = std::make_shared<Error>();
             err->setDescription("When in reset referencing variable '" + referencedVariableName +
                                 "' with order '" + resetOrder +
                                 "' has an invalid child element '" + childNode->getName() + "'.");
             err->setWhen(when);
             err->setRule(SpecificationRule::WHEN_CHILD);
-            mParser->addError(err);*/
+            mParser->addError(err);
         }
         childNode = childNode->getNext();
     }
