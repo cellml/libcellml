@@ -15,6 +15,7 @@
         <variable name="eqnGeq" units="dimensionless"/>
         <variable name="eqnPlus" units="dimensionless"/>
         <variable name="eqnPlusMultiple" units="dimensionless"/>
+        <variable name="eqnPlusParentheses" units="dimensionless"/>
         <variable name="eqnPlusUnary" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
         <variable name="eqnMinusUnary" units="dimensionless"/>
@@ -183,6 +184,23 @@
                     <ci>o</ci>
                     <ci>p</ci>
                     <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPlusParentheses</ci>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
                 </apply>
             </apply>
             <apply>

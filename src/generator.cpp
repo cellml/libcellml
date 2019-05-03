@@ -742,8 +742,41 @@ std::string replace(const std::string &string, const std::string &from, const st
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
                                                            const GeneratorEquationAstPtr &ast) const
 {
+    // Generate the code for the left and right branches of the given AST
+
     std::string left = generateCode(ast->left());
     std::string right = generateCode(ast->right());
+
+    // Determine whether parentheses should be added around the left and/or
+    // right code
+
+    if (ast->type() == GeneratorEquationAst::Type::PLUS) {
+        if (   (ast->left()->type() == GeneratorEquationAst::Type::EQEQ)
+            || (ast->left()->type() == GeneratorEquationAst::Type::NEQ)
+            || (ast->left()->type() == GeneratorEquationAst::Type::LT)
+            || (ast->left()->type() == GeneratorEquationAst::Type::LEQ)
+            || (ast->left()->type() == GeneratorEquationAst::Type::GT)
+            || (ast->left()->type() == GeneratorEquationAst::Type::GEQ)
+            || (ast->left()->type() == GeneratorEquationAst::Type::AND)
+            || (ast->left()->type() == GeneratorEquationAst::Type::OR)
+            || (ast->left()->type() == GeneratorEquationAst::Type::XOR)
+            || (ast->left()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+            left = "("+left+")";
+        }
+
+        if (   (ast->right()->type() == GeneratorEquationAst::Type::EQEQ)
+            || (ast->right()->type() == GeneratorEquationAst::Type::NEQ)
+            || (ast->right()->type() == GeneratorEquationAst::Type::LT)
+            || (ast->right()->type() == GeneratorEquationAst::Type::LEQ)
+            || (ast->right()->type() == GeneratorEquationAst::Type::GT)
+            || (ast->right()->type() == GeneratorEquationAst::Type::GEQ)
+            || (ast->right()->type() == GeneratorEquationAst::Type::AND)
+            || (ast->right()->type() == GeneratorEquationAst::Type::OR)
+            || (ast->right()->type() == GeneratorEquationAst::Type::XOR)
+            || (ast->right()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+            right = "("+right+")";
+        }
+    }
 
     return left+op+right;
 }
@@ -790,7 +823,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
     case GeneratorEquationAst::Type::PLUS:
         if (ast->right() != nullptr) {
-            return generateCode(ast->left())+mPlus+generateCode(ast->right());
+            return generateOperatorCode(mPlus, ast);
         }
 
         return generateCode(ast->left());
