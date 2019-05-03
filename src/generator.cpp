@@ -322,7 +322,12 @@ struct Generator::GeneratorImpl
     bool isMinusOperator(const GeneratorEquationAstPtr &ast) const;
     bool isTimesOperator(const GeneratorEquationAstPtr &ast) const;
     bool isDivideOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isPowerOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isRootOperator(const GeneratorEquationAstPtr &ast) const;
     bool isLogicalOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isAndOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isOrOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isXorOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
 
     std::string generateOperatorCode(const std::string &op,
@@ -778,6 +783,31 @@ bool Generator::GeneratorImpl::isDivideOperator(const GeneratorEquationAstPtr &a
     return ast->type() == GeneratorEquationAst::Type::DIVIDE;
 }
 
+bool Generator::GeneratorImpl::isPowerOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::POWER;
+}
+
+bool Generator::GeneratorImpl::isRootOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::ROOT;
+}
+
+bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::AND;
+}
+
+bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::OR;
+}
+
+bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::XOR;
+}
+
 bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPtr &ast) const
 {
     // Note: GeneratorEquationAst::Type::NOT is a unary logical operator hence
@@ -877,6 +907,50 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         } else if (   isPlusOperator(ast->right())
                    || isMinusOperator(ast->right())) {
             if (ast->right()->right() != nullptr) {
+                right = "("+right+")";
+            }
+        }
+    } else if (isAndOperator(ast)) {
+        if (   isRelationalOperator(ast->left())
+            || isTimesOperator(ast->left())
+            || isDivideOperator(ast->left())
+            || isOrOperator(ast->left())
+            || isXorOperator(ast->left())
+            || isPiecewiseStatement(ast->left())) {
+            left = "("+left+")";
+        } else if (   isPlusOperator(ast->left())
+                   || isMinusOperator(ast->left())) {
+            if (ast->left()->right() != nullptr) {
+                left = "("+left+")";
+            }
+        } else if (isPowerOperator(ast->left())) {
+            if (mHasPowerOperator) {
+                left = "("+left+")";
+            }
+        } else if (isRootOperator(ast->left())) {
+            if (mHasPowerOperator) {
+                left = "("+left+")";
+            }
+        }
+
+        if (   isRelationalOperator(ast->right())
+            || isTimesOperator(ast->right())
+            || isDivideOperator(ast->right())
+            || isOrOperator(ast->right())
+            || isXorOperator(ast->right())
+            || isPiecewiseStatement(ast->right())) {
+            right = "("+right+")";
+        } else if (   isPlusOperator(ast->right())
+                   || isMinusOperator(ast->right())) {
+            if (ast->right()->right() != nullptr) {
+                right = "("+right+")";
+            }
+        } else if (isPowerOperator(ast->right())) {
+            if (mHasPowerOperator) {
+                right = "("+right+")";
+            }
+        } else if (isRootOperator(ast->right())) {
+            if (mHasPowerOperator) {
                 right = "("+right+")";
             }
         }
@@ -1020,7 +1094,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     // Logical operators
 
     case GeneratorEquationAst::Type::AND:
-        return generateCode(ast->left())+mAnd+generateCode(ast->right());
+        return generateOperatorCode(mAnd, ast);
     case GeneratorEquationAst::Type::OR:
         return generateCode(ast->left())+mOr+generateCode(ast->right());
     case GeneratorEquationAst::Type::XOR:
