@@ -914,8 +914,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isAndOperator(ast)) {
         if (   isRelationalOperator(ast->left())
-            || isTimesOperator(ast->left())
-            || isDivideOperator(ast->left())
             || isOrOperator(ast->left())
             || isXorOperator(ast->left())
             || isPiecewiseStatement(ast->left())) {
@@ -936,8 +934,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (   isRelationalOperator(ast->right())
-            || isTimesOperator(ast->right())
-            || isDivideOperator(ast->right())
             || isOrOperator(ast->right())
             || isXorOperator(ast->right())
             || isPiecewiseStatement(ast->right())) {
@@ -958,8 +954,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isOrOperator(ast)) {
         if (   isRelationalOperator(ast->left())
-            || isTimesOperator(ast->left())
-            || isDivideOperator(ast->left())
             || isAndOperator(ast->left())
             || isXorOperator(ast->left())
             || isPiecewiseStatement(ast->left())) {
@@ -980,8 +974,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (   isRelationalOperator(ast->right())
-            || isTimesOperator(ast->right())
-            || isDivideOperator(ast->right())
             || isAndOperator(ast->right())
             || isXorOperator(ast->right())
             || isPiecewiseStatement(ast->right())) {
@@ -1002,8 +994,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isXorOperator(ast)) {
         if (   isRelationalOperator(ast->left())
-            || isTimesOperator(ast->left())
-            || isDivideOperator(ast->left())
             || isAndOperator(ast->left())
             || isOrOperator(ast->left())
             || isPiecewiseStatement(ast->left())) {
@@ -1024,8 +1014,6 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (   isRelationalOperator(ast->right())
-            || isTimesOperator(ast->right())
-            || isDivideOperator(ast->right())
             || isAndOperator(ast->right())
             || isOrOperator(ast->right())
             || isPiecewiseStatement(ast->right())) {
