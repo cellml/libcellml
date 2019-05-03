@@ -204,12 +204,12 @@ struct Generator::GeneratorImpl
     std::string mTimes = "*";
     std::string mDivide = "/";
     std::string mPower = "pow";
-    std::string mSqrt = "sqrt";
-    std::string mSqr = "sqr";
-    std::string mAbs = "fabs";
-    std::string mExp = "exp";
-    std::string mLn = "log";
-    std::string mLog = "log10";
+    std::string mSquareRoot = "sqrt";
+    std::string mSquare = "sqr";
+    std::string mAbsoluteValue = "fabs";
+    std::string mExponential = "exp";
+    std::string mNapierianLogarithm = "log";
+    std::string mCommonLogarithm = "log10";
     std::string mCeiling = "ceil";
     std::string mFloor = "floor";
     std::string mFactorial = "fact";
@@ -965,11 +965,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         double doubleValue = convertToDouble(stringValue);
 
         if (isEqual(doubleValue, 0.5)) {
-            return mSqrt+"("+generateCode(ast->left())+")";
+            return mSquareRoot+"("+generateCode(ast->left())+")";
         }
 
         if (isEqual(doubleValue, 2.0)) {
-            return mSqr+"("+generateCode(ast->left())+")";
+            return mSquare+"("+generateCode(ast->left())+")";
         }
 
         return mHasPowerOperator?
@@ -982,7 +982,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
             double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 2.0)) {
-                return mSqrt+"("+generateCode(ast->right())+")";
+                return mSquareRoot+"("+generateCode(ast->right())+")";
             }
 
             return mHasPowerOperator?
@@ -990,26 +990,26 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
                        mPower+"("+generateCode(ast->right())+", 1.0/"+stringValue+")";
         }
 
-        return mSqrt+"("+generateCode(ast->left())+")";
+        return mSquareRoot+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::ABS:
-        return mAbs+"("+generateCode(ast->left())+")";
+        return mAbsoluteValue+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::EXP:
-        return mExp+"("+generateCode(ast->left())+")";
+        return mExponential+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::LN:
-        return mLn+"("+generateCode(ast->left())+")";
+        return mNapierianLogarithm+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::LOG:
         if (ast->right() != nullptr) {
             std::string stringValue = generateCode(ast->left());
             double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 10.0)) {
-                return mLog+"("+generateCode(ast->right())+")";
+                return mCommonLogarithm+"("+generateCode(ast->right())+")";
             }
 
-            return mLn+"("+generateCode(ast->right())+")/"+mLn+"("+stringValue+")";
+            return mNapierianLogarithm+"("+generateCode(ast->right())+")/"+mNapierianLogarithm+"("+stringValue+")";
         }
 
-        return mLog+"("+generateCode(ast->left())+")";
+        return mCommonLogarithm+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::CEILING:
         return mCeiling+"("+generateCode(ast->left())+")";
     case GeneratorEquationAst::Type::FLOOR:
