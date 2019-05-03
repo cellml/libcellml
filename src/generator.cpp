@@ -317,11 +317,9 @@ struct Generator::GeneratorImpl
 
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstPtr &ast) const;
-
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
-
     std::string generateCode(const GeneratorEquationAstPtr &ast,
                              const GeneratorEquationAstPtr &parentAst = nullptr) const;
 };
