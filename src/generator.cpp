@@ -1032,6 +1032,34 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "("+right+")";
             }
         }
+    } else if (isPowerOperator(ast)) {
+        if (   isRelationalOperator(ast->left())
+            || isMinusOperator(ast->left())
+            || isTimesOperator(ast->left())
+            || isDivideOperator(ast->left())
+            || isLogicalOperator(ast->left())
+            || isPiecewiseStatement(ast->left())) {
+            left = "("+left+")";
+        } else if (isPlusOperator(ast->left())) {
+            if (ast->left()->right() != nullptr) {
+                left = "("+left+")";
+            }
+        }
+
+        if (   isRelationalOperator(ast->right())
+            || isTimesOperator(ast->right())
+            || isDivideOperator(ast->right())
+            || isPowerOperator(ast->right())
+            || isRootOperator(ast->right())
+            || isLogicalOperator(ast->right())
+            || isPiecewiseStatement(ast->right())) {
+            right = "("+right+")";
+        } else if (   isPlusOperator(ast->right())
+                   || isMinusOperator(ast->right())) {
+            if (ast->right()->right() != nullptr) {
+                right = "("+right+")";
+            }
+        }
     }
 
     return left+op+right;
@@ -1125,7 +1153,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         }
 
         return mHasPowerOperator?
-                   generateCode(ast->left())+mPower+stringValue:
+                   generateOperatorCode(mPower, ast):
                    mPower+"("+generateCode(ast->left())+", "+stringValue+")";
     }
     case GeneratorEquationAst::Type::ROOT:
