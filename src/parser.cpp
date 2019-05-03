@@ -225,22 +225,6 @@ ModelPtr Parser::parseModel(const std::string &input)
     return model;
 }
 
-ModelPtr Parser::parseModelFromFile(const std::string &filename)
-{
-    // Function added so that we can save the filename from an original file import to check 
-    // for self-importing file recursion later.
-
-    std::ifstream t(filename);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
-    ModelPtr model = std::make_shared<Model>();
-    model = parseModel(buffer.str());
-    model->setImportLocation(filename);
-
-    return model;
-}
-
 void Parser::ParserImpl::updateModel(const ModelPtr &model, const std::string &input)
 {
     loadModel(model, input);

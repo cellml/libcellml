@@ -55,18 +55,6 @@ public:
      */
     ModelPtr parseModel(const std::string &input);
 
-    /**
-    * @brief Create and populate a new model from a @c std::fstream.
-    *
-    * Creates and populates a new model pointer by parsing CellML
-    * entities and attributes from the @p filename.
-    *
-    * @param filename The filename to open and parse all contents into a model.
-    *
-    * @return The new @c ModelPtr deserialised from the input file.
-    */
-    ModelPtr parseModelFromFile(const std::string &filename);
-
 private:
     void swap(Parser &rhs); /**< Swap method required for C++ 11 move semantics. */
 

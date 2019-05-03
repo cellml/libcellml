@@ -251,53 +251,6 @@ public:
      */
     bool hasUnresolvedImports();
 
-    /**
-    * @brief Returns true if the model was created by parsing a file.
-    *
-    * Returns true if the model was created by parsing a file.
-    *
-    * @return True if the @c Model was created by parsing a file, and false otherwise.
-    */
-    bool isImportedFromFile();
-
-    /**
-    * @brief Returns the name of the file from which the Model was originally created, if present
-    *
-    * Returns the name of the file from which the Model was originally created, if present
-    *
-    * @return Returns the name of the file from which the Model was originally created, or an empty string
-    */
-    std::string getImportFilename();
-
-    /**
-    * @brief Returns the path to the file from which the Model was originally created, if present
-    *
-    * Returns the path to the file from which the Model was originally created, if present
-    *
-    * @return Returns the path to the file from which the Model was originally created, or an empty string
-    */
-    std::string getImportPath();
-
-    /**
-    * @brief Returns the string of original file name and path from which the Model was created, if present
-    *
-    * Returns the string of original file name and path from which the Model was created, if present; or 
-    * an empty string if not
-    *
-    * @return Returns the string of original file name and path from which the Model was created, 
-    * if present; or an empty string if not
-    */
-    std::string getImportLocation();
-
-
-    /**
-    * @brief Set the @p importFilename from which the Model was originally created, including full path
-    *
-    * Set the @p importFilename from which the Model was originally created, including full path
-    *
-    */
-    void setImportLocation(std::string filename);
-
 private:
     void doAddComponent(const ComponentPtr &c) override;
     void swap(Model &rhs); /**< Swap method required for C++ 11 move semantics. */

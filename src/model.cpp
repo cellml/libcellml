@@ -43,9 +43,6 @@ struct Model::ModelImpl
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
     std::vector<UnitsPtr> mUnits;
-    // When a model is created by parsing a file, we store the filename against the model so that
-    // validation checks can identify self-importing files and prevent recursion.
-    std::string importLocation;
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -355,32 +352,4 @@ bool Model::hasUnresolvedImports()
     }
     return unresolvedImports;
 }
-
-bool Model::isImportedFromFile() {
-    return mPimpl->importLocation.length() != 0;
-}
-
-std::string Model::getImportFilename() {
-    if (isImportedFromFile()) 
-        return mPimpl->importLocation.substr( mPimpl->importLocation.find_last_of("/\\") + 1);
-    return ""; 
-}
-
-std::string Model::getImportPath() {
-    if(isImportedFromFile())
-        return mPimpl->importLocation.substr(0,mPimpl->importLocation.find_last_of("/\\")+1);
-    else return "";
-}
-
-void Model::setImportLocation(std::string filename) {
-    mPimpl->importLocation = filename;
-}
-
-std::string Model::getImportLocation() {
-    if(isImportedFromFile()) 
-        return mPimpl->importLocation;
-    return "";
-}
-
-
 }

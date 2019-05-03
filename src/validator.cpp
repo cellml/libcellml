@@ -296,15 +296,8 @@ void Validator::swap(Validator &rhs)
 
 void Validator::validateModel(const ModelPtr &model) {
 
-    // If a filename is *not* specified, default to imported file, if present
-    // Otherwise, trigger zero-depth import checking as working directory is unknown
-
-    if (model->isImportedFromFile())
-        validateModel(model, model->getImportLocation());
-    else {
-        validateModel(model, "");
-        // TODO Raise warning when this is encountered?
-    }
+    // If a filename is *not* specified, trigger zero-depth import checking as working directory is unknown
+    validateModel(model, ""); 
 }
 
 void Validator::validateModel(const ModelPtr &model, std::string filename)
@@ -480,8 +473,12 @@ void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std:
     if (filename!="") 
         workingDirectory = filename.substr(0,filename.find_last_of("/\\")+1);
     else {
-        workingDirectory = model->getImportPath();
-        filename = model->getImportLocation();
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Validation of imported files is not possible without a model file specified.");
+        err->setKind(Error::Kind::IMPORT);
+        err->setModel(model);
+        mValidator->addError(err);
+        return;
     }
 
     if (model->componentCount() > 0) {
