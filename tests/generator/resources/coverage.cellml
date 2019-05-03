@@ -28,8 +28,12 @@
         <variable name="eqnTimesParentheses" units="dimensionless"/>
         <variable name="eqnTimesParenthesesLeftPlusWith" units="dimensionless"/>
         <variable name="eqnTimesParenthesesLeftPlusWithout" units="dimensionless"/>
+        <variable name="eqnTimesParenthesesLeftMinusWith" units="dimensionless"/>
+        <variable name="eqnTimesParenthesesLeftMinusWithout" units="dimensionless"/>
         <variable name="eqnTimesParenthesesRightPlusWith" units="dimensionless"/>
         <variable name="eqnTimesParenthesesRightPlusWithout" units="dimensionless"/>
+        <variable name="eqnTimesParenthesesRightMinusWith" units="dimensionless"/>
+        <variable name="eqnTimesParenthesesRightMinusWithout" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
         <variable name="eqnPowerSqrt" units="dimensionless"/>
         <variable name="eqnPowerSqr" units="dimensionless"/>
@@ -372,6 +376,39 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnTimesParenthesesLeftMinusWith</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <minus/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnTimesParenthesesLeftMinusWithout</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <minus/>
+                        <ci>m</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnTimesParenthesesRightPlusWith</ci>
                 <apply>
                     <times/>
@@ -399,6 +436,39 @@
                     </apply>
                     <apply>
                         <plus/>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnTimesParenthesesRightMinusWith</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnTimesParenthesesRightMinusWithout</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <minus/>
                         <ci>o</ci>
                     </apply>
                 </apply>
