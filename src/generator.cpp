@@ -796,10 +796,10 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || (ast->right()->type() == GeneratorEquationAst::Type::GT)
             || (ast->right()->type() == GeneratorEquationAst::Type::GEQ)
             || (ast->right()->type() == GeneratorEquationAst::Type::MINUS)
-            || (ast->left()->type() == GeneratorEquationAst::Type::AND)
-            || (ast->left()->type() == GeneratorEquationAst::Type::OR)
-            || (ast->left()->type() == GeneratorEquationAst::Type::XOR)
-            || (ast->left()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+            || (ast->right()->type() == GeneratorEquationAst::Type::AND)
+            || (ast->right()->type() == GeneratorEquationAst::Type::OR)
+            || (ast->right()->type() == GeneratorEquationAst::Type::XOR)
+            || (ast->right()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
             right = "("+right+")";
         } else if (ast->right()->type() == GeneratorEquationAst::Type::PLUS) {
             if (ast->right() != nullptr) {
