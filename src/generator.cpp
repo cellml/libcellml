@@ -802,7 +802,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || (ast->right()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
             right = "("+right+")";
         } else if (ast->right()->type() == GeneratorEquationAst::Type::PLUS) {
-            if (ast->right() != nullptr) {
+            if (ast->right()->right() != nullptr) {
                 right = "("+right+")";
             }
         }
