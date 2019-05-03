@@ -225,6 +225,8 @@ struct Generator::GeneratorImpl
     std::string mXor = "^";
     std::string mNot = "!";
 
+    bool mHasXorOperator = true;
+
     // Min/max operators
 
     std::string mMin = "min";
@@ -998,6 +1000,50 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "("+right+")";
             }
         }
+    } else if (isXorOperator(ast)) {
+        if (   isRelationalOperator(ast->left())
+            || isTimesOperator(ast->left())
+            || isDivideOperator(ast->left())
+            || isAndOperator(ast->left())
+            || isOrOperator(ast->left())
+            || isPiecewiseStatement(ast->left())) {
+            left = "("+left+")";
+        } else if (   isPlusOperator(ast->left())
+                   || isMinusOperator(ast->left())) {
+            if (ast->left()->right() != nullptr) {
+                left = "("+left+")";
+            }
+        } else if (isPowerOperator(ast->left())) {
+            if (mHasPowerOperator) {
+                left = "("+left+")";
+            }
+        } else if (isRootOperator(ast->left())) {
+            if (mHasPowerOperator) {
+                left = "("+left+")";
+            }
+        }
+
+        if (   isRelationalOperator(ast->right())
+            || isTimesOperator(ast->right())
+            || isDivideOperator(ast->right())
+            || isAndOperator(ast->right())
+            || isOrOperator(ast->right())
+            || isPiecewiseStatement(ast->right())) {
+            right = "("+right+")";
+        } else if (   isPlusOperator(ast->right())
+                   || isMinusOperator(ast->right())) {
+            if (ast->right()->right() != nullptr) {
+                right = "("+right+")";
+            }
+        } else if (isPowerOperator(ast->right())) {
+            if (mHasPowerOperator) {
+                right = "("+right+")";
+            }
+        } else if (isRootOperator(ast->right())) {
+            if (mHasPowerOperator) {
+                right = "("+right+")";
+            }
+        }
     }
 
     return left+op+right;
@@ -1142,7 +1188,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     case GeneratorEquationAst::Type::OR:
         return generateOperatorCode(mOr, ast);
     case GeneratorEquationAst::Type::XOR:
-        return generateCode(ast->left())+mXor+generateCode(ast->right());
+        if (mHasXorOperator) {
+            return generateOperatorCode(mXor, ast);
+        }
+
+        return mXor+"("+generateCode(ast->left())+", "+generateCode(ast->right())+")";
     case GeneratorEquationAst::Type::NOT:
         return mNot+generateCode(ast->left());
 

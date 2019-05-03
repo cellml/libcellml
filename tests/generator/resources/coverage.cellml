@@ -104,6 +104,23 @@
         <variable name="eqnOrParenthesesRightRoot" units="dimensionless"/>
         <variable name="eqnXor" units="dimensionless"/>
         <variable name="eqnXorMultiple" units="dimensionless"/>
+        <variable name="eqnXorParentheses" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftPlusWith" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftPlusWithout" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftMinusWith" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftMinusWithout" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftTimes" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftDivide" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftPower" units="dimensionless"/>
+        <variable name="eqnXorParenthesesLeftRoot" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightPlusWith" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightPlusWithout" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightMinusWith" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightMinusWithout" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightTimes" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightDivide" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightPower" units="dimensionless"/>
+        <variable name="eqnXorParenthesesRightRoot" units="dimensionless"/>
         <variable name="eqnNot" units="dimensionless"/>
         <variable name="eqnMin" units="dimensionless"/>
         <variable name="eqnMinMultiple" units="dimensionless"/>
@@ -1507,6 +1524,291 @@
                     <ci>o</ci>
                     <ci>p</ci>
                     <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParentheses</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftPlusWith</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <plus/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftPlusWithout</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <plus/>
+                        <ci>m</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftMinusWith</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <minus/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftMinusWithout</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <minus/>
+                        <ci>m</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftTimes</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <times/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftDivide</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <divide/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftPower</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <power/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesLeftRoot</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <root/>
+                        <ci>n</ci>
+                        <ci>m</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightPlusWith</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightPlusWithout</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightMinusWith</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightMinusWithout</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightTimes</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightDivide</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <divide/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightPower</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <power/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnXorParenthesesRightRoot</ci>
+                <apply>
+                    <xor/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <root/>
+                        <ci>p</ci>
+                        <ci>o</ci>
+                    </apply>
                 </apply>
             </apply>
             <apply>
