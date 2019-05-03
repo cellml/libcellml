@@ -18,7 +18,10 @@
         <variable name="eqnPlusParentheses" units="dimensionless"/>
         <variable name="eqnPlusUnary" units="dimensionless"/>
         <variable name="eqnMinus" units="dimensionless"/>
+        <variable name="eqnMinusParentheses" units="dimensionless"/>
+        <variable name="eqnMinusParenthesesPlus" units="dimensionless"/>
         <variable name="eqnMinusUnary" units="dimensionless"/>
+        <variable name="eqnMinusUnaryParentheses" units="dimensionless"/>
         <variable name="eqnTimes" units="dimensionless"/>
         <variable name="eqnTimesMultiple" units="dimensionless"/>
         <variable name="eqnDivide" units="dimensionless"/>
@@ -222,10 +225,56 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnMinusParentheses</ci>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinusParenthesesPlus</ci>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnMinusUnary</ci>
                 <apply>
                     <minus/>
                     <ci>m</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnMinusUnaryParentheses</ci>
+                <apply>
+                    <minus/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
                 </apply>
             </apply>
             <apply>
