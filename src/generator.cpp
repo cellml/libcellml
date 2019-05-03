@@ -203,7 +203,7 @@ struct Generator::GeneratorImpl
     std::string mMinus = "-";
     std::string mTimes = "*";
     std::string mDivide = "/";
-    std::string mPow = "pow";
+    std::string mPower = "pow";
     std::string mSqrt = "sqrt";
     std::string mSqr = "sqr";
     std::string mAbs = "fabs";
@@ -215,6 +215,8 @@ struct Generator::GeneratorImpl
     std::string mFactorial = "fact";
 
     bool mNeedFactorial = false;
+
+    bool mHasPowerOperator = false;
 
     // Logical operators
 
@@ -970,7 +972,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
             return mSqr+"("+generateCode(ast->left())+")";
         }
 
-        return mPow+"("+generateCode(ast->left())+", "+stringValue+")";
+        return mHasPowerOperator?
+                   generateCode(ast->left())+mPower+stringValue:
+                   mPower+"("+generateCode(ast->left())+", "+stringValue+")";
     }
     case GeneratorEquationAst::Type::ROOT:
         if (ast->right() != nullptr) {
@@ -981,7 +985,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
                 return mSqrt+"("+generateCode(ast->right())+")";
             }
 
-            return mPow+"("+generateCode(ast->right())+", 1.0/"+stringValue+")";
+            return mHasPowerOperator?
+                       generateCode(ast->right())+mPower+"(1.0/"+stringValue+")":
+                       mPower+"("+generateCode(ast->right())+", 1.0/"+stringValue+")";
         }
 
         return mSqrt+"("+generateCode(ast->left())+")";
