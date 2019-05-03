@@ -317,7 +317,7 @@ struct Generator::GeneratorImpl
 
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstPtr &ast) const;
-    std::string generateMinusCode(const GeneratorEquationAstPtr &ast) const;
+    std::string generateMinusUnaryCode(const GeneratorEquationAstPtr &ast) const;
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value) const;
     std::string generatePiecewiseElseCode(const std::string &value) const;
@@ -811,7 +811,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     return left+op+right;
 }
 
-std::string Generator::GeneratorImpl::generateMinusCode(const GeneratorEquationAstPtr &ast) const
+std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEquationAstPtr &ast) const
 {
     // Generate the code for the left branch of the given AST
 
@@ -888,7 +888,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
             return generateOperatorCode(mMinus, ast);
         }
 
-        return generateMinusCode(ast);
+        return generateMinusUnaryCode(ast);
     case GeneratorEquationAst::Type::TIMES:
         return generateCode(ast->left())+mTimes+generateCode(ast->right());
     case GeneratorEquationAst::Type::DIVIDE:
