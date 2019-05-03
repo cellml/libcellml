@@ -390,13 +390,8 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
         addError(err);
     }
 
-
     // If we don't have a filename or working directory we can't check imports 
-    bool checkImports = false;
-    if (filename != "") {
-        mPimpl->validateImportSources(model, filename);
-        checkImports = true;
-    }
+    if (filename != "") mPimpl->validateImportSources(model, filename);
     
     // Check for components in this model.
     /// @cellml2_4 4.2.3 Check for unique encapsulation is not required as more than one cannot be stored
@@ -416,8 +411,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                     /// is in a valid format.  NB: Does not check what it refers to.
                     std::string componentRef = component->getImportReference(); 
                     std::string importSource = component->getImportSource()->getUrl(); 
-                    bool foundImportError = false;
-                    
+                                        
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         
                         ErrorPtr err = std::make_shared<Error>();
@@ -426,7 +420,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setComponent(component);
                         err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_7 7.1.2 Check that a xlink:href attribute is present
                     if (!importSource.length()) {
@@ -436,7 +429,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setImportSource(component->getImportSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
                     else {
@@ -449,33 +441,10 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                             err->setImportSource(component->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
-                            foundImportError = true;
                         }
                         else xmlFreeURI(URIPtr);
                     }
-                    
-                    /// @cellml2_7 __REMOVE THIS?__ Check if we already have another import from the same source with the same component_ref. 
-                    /*if ((componentImportSources.size() > 0) && (!foundImportError)) {
-                        // Check for presence of import source and component_ref
-                        std::ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 
-                            - componentImportSources.begin();
-                        std::ptrdiff_t foundRefAt = find(componentRefs.begin(), componentRefs.end(), componentRef) 
-                            - componentRefs.begin();
 
-                        // Check that they occur at the same point in the list, *and* that we're not out of range
-                        // "unsigned" used here to prevent mismatch warning at build time
-                        if((unsigned (foundSourceAt) < componentImportSources.size()) && 
-                            (unsigned (foundRefAt) < componentRefs.size()) &&            
-                            (foundRefAt == foundSourceAt)) {
-                            ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Model '" + model->getName() +
-                                                    "' contains multiple imported components from '" + importSource +
-                                                    "' with the same component_ref attribute '" + componentRef + "'.");
-                                err->setModel(model);
-                                err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                                addError(err);
-                        }
-                    }*/
                     // Push back the unique sources and refs.
                     componentImportSources.push_back(importSource);
                     componentRefs.push_back(componentRef);
