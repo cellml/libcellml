@@ -318,6 +318,7 @@ struct Generator::GeneratorImpl
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPlusOperator(const GeneratorEquationAstPtr &ast) const;
     bool isMinusOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isTimesOperator(const GeneratorEquationAstPtr &ast) const;
     bool isLogicalOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
 
@@ -764,6 +765,11 @@ bool Generator::GeneratorImpl::isMinusOperator(const GeneratorEquationAstPtr &as
     return ast->type() == GeneratorEquationAst::Type::MINUS;
 }
 
+bool Generator::GeneratorImpl::isTimesOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::TIMES;
+}
+
 bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPtr &ast) const
 {
     // Note: GeneratorEquationAst::Type::NOT is a unary logical operator hence
@@ -816,6 +822,28 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isPiecewiseStatement(ast->right())) {
             right = "("+right+")";
         } else if (isPlusOperator(ast->right())) {
+            if (ast->right()->right() != nullptr) {
+                right = "("+right+")";
+            }
+        }
+    } else if (isTimesOperator(ast)) {
+        if (   isRelationalOperator(ast->left())
+            || isLogicalOperator(ast->left())
+            || isPiecewiseStatement(ast->left())) {
+            left = "("+left+")";
+        } else if (   isPlusOperator(ast->left())
+                   || isMinusOperator(ast->left())) {
+            if (ast->left()->right() != nullptr) {
+                left = "("+left+")";
+            }
+        }
+
+        if (   isRelationalOperator(ast->right())
+            || isLogicalOperator(ast->right())
+            || isPiecewiseStatement(ast->right())) {
+            right = "("+right+")";
+        } else if (   isPlusOperator(ast->right())
+                   || isMinusOperator(ast->right())) {
             if (ast->right()->right() != nullptr) {
                 right = "("+right+")";
             }
@@ -897,7 +925,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         return generateMinusUnaryCode(ast);
     case GeneratorEquationAst::Type::TIMES:
-        return generateCode(ast->left())+mTimes+generateCode(ast->right());
+        return generateOperatorCode(mTimes, ast);
     case GeneratorEquationAst::Type::DIVIDE:
         return generateCode(ast->left())+mDivide+generateCode(ast->right());
     case GeneratorEquationAst::Type::POWER: {
