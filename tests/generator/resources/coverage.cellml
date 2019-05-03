@@ -71,16 +71,12 @@
         <variable name="eqnAndParenthesesLeftPlusWithout" units="dimensionless"/>
         <variable name="eqnAndParenthesesLeftMinusWith" units="dimensionless"/>
         <variable name="eqnAndParenthesesLeftMinusWithout" units="dimensionless"/>
-        <variable name="eqnAndParenthesesLeftTimes" units="dimensionless"/>
-        <variable name="eqnAndParenthesesLeftDivide" units="dimensionless"/>
         <variable name="eqnAndParenthesesLeftPower" units="dimensionless"/>
         <variable name="eqnAndParenthesesLeftRoot" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightPlusWith" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightPlusWithout" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightMinusWith" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightMinusWithout" units="dimensionless"/>
-        <variable name="eqnAndParenthesesRightTimes" units="dimensionless"/>
-        <variable name="eqnAndParenthesesRightDivide" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightPower" units="dimensionless"/>
         <variable name="eqnAndParenthesesRightRoot" units="dimensionless"/>
         <variable name="eqnOr" units="dimensionless"/>
@@ -90,16 +86,12 @@
         <variable name="eqnOrParenthesesLeftPlusWithout" units="dimensionless"/>
         <variable name="eqnOrParenthesesLeftMinusWith" units="dimensionless"/>
         <variable name="eqnOrParenthesesLeftMinusWithout" units="dimensionless"/>
-        <variable name="eqnOrParenthesesLeftTimes" units="dimensionless"/>
-        <variable name="eqnOrParenthesesLeftDivide" units="dimensionless"/>
         <variable name="eqnOrParenthesesLeftPower" units="dimensionless"/>
         <variable name="eqnOrParenthesesLeftRoot" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightPlusWith" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightPlusWithout" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightMinusWith" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightMinusWithout" units="dimensionless"/>
-        <variable name="eqnOrParenthesesRightTimes" units="dimensionless"/>
-        <variable name="eqnOrParenthesesRightDivide" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightPower" units="dimensionless"/>
         <variable name="eqnOrParenthesesRightRoot" units="dimensionless"/>
         <variable name="eqnXor" units="dimensionless"/>
@@ -109,16 +101,12 @@
         <variable name="eqnXorParenthesesLeftPlusWithout" units="dimensionless"/>
         <variable name="eqnXorParenthesesLeftMinusWith" units="dimensionless"/>
         <variable name="eqnXorParenthesesLeftMinusWithout" units="dimensionless"/>
-        <variable name="eqnXorParenthesesLeftTimes" units="dimensionless"/>
-        <variable name="eqnXorParenthesesLeftDivide" units="dimensionless"/>
         <variable name="eqnXorParenthesesLeftPower" units="dimensionless"/>
         <variable name="eqnXorParenthesesLeftRoot" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightPlusWith" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightPlusWithout" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightMinusWith" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightMinusWithout" units="dimensionless"/>
-        <variable name="eqnXorParenthesesRightTimes" units="dimensionless"/>
-        <variable name="eqnXorParenthesesRightDivide" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightPower" units="dimensionless"/>
         <variable name="eqnXorParenthesesRightRoot" units="dimensionless"/>
         <variable name="eqnNot" units="dimensionless"/>
@@ -999,40 +987,6 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnAndParenthesesLeftTimes</ci>
-                <apply>
-                    <and/>
-                    <apply>
-                        <times/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnAndParenthesesLeftDivide</ci>
-                <apply>
-                    <and/>
-                    <apply>
-                        <divide/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
                 <ci>eqnAndParenthesesLeftPower</ci>
                 <apply>
                     <and/>
@@ -1128,40 +1082,6 @@
                     <apply>
                         <minus/>
                         <ci>o</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnAndParenthesesRightTimes</ci>
-                <apply>
-                    <and/>
-                    <apply>
-                        <lt/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnAndParenthesesRightDivide</ci>
-                <apply>
-                    <and/>
-                    <apply>
-                        <lt/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <divide/>
-                        <ci>o</ci>
-                        <ci>p</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1305,40 +1225,6 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnOrParenthesesLeftTimes</ci>
-                <apply>
-                    <or/>
-                    <apply>
-                        <times/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnOrParenthesesLeftDivide</ci>
-                <apply>
-                    <or/>
-                    <apply>
-                        <divide/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
                 <ci>eqnOrParenthesesLeftPower</ci>
                 <apply>
                     <or/>
@@ -1434,40 +1320,6 @@
                     <apply>
                         <minus/>
                         <ci>o</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnOrParenthesesRightTimes</ci>
-                <apply>
-                    <or/>
-                    <apply>
-                        <lt/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnOrParenthesesRightDivide</ci>
-                <apply>
-                    <or/>
-                    <apply>
-                        <lt/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <divide/>
-                        <ci>o</ci>
-                        <ci>p</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1611,40 +1463,6 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnXorParenthesesLeftTimes</ci>
-                <apply>
-                    <xor/>
-                    <apply>
-                        <times/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnXorParenthesesLeftDivide</ci>
-                <apply>
-                    <xor/>
-                    <apply>
-                        <divide/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <gt/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
                 <ci>eqnXorParenthesesLeftPower</ci>
                 <apply>
                     <xor/>
@@ -1740,40 +1558,6 @@
                     <apply>
                         <minus/>
                         <ci>o</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnXorParenthesesRightTimes</ci>
-                <apply>
-                    <xor/>
-                    <apply>
-                        <lt/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <times/>
-                        <ci>o</ci>
-                        <ci>p</ci>
-                    </apply>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnXorParenthesesRightDivide</ci>
-                <apply>
-                    <xor/>
-                    <apply>
-                        <lt/>
-                        <ci>m</ci>
-                        <ci>n</ci>
-                    </apply>
-                    <apply>
-                        <divide/>
-                        <ci>o</ci>
-                        <ci>p</ci>
                     </apply>
                 </apply>
             </apply>
