@@ -315,6 +315,12 @@ struct Generator::GeneratorImpl
     std::string computeRateEquations() const;
     std::string computeAlgebraicEquations() const;
 
+    bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isPlusOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isMinusOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isLogicalOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
+
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstPtr &ast) const;
     std::string generateMinusUnaryCode(const GeneratorEquationAstPtr &ast) const;
@@ -738,6 +744,42 @@ std::string replace(const std::string &string, const std::string &from, const st
     return std::string(string).replace(string.find(from), from.length(), to);
 }
 
+bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return    (ast->type() == GeneratorEquationAst::Type::EQEQ)
+           || (ast->type() == GeneratorEquationAst::Type::NEQ)
+           || (ast->type() == GeneratorEquationAst::Type::LT)
+           || (ast->type() == GeneratorEquationAst::Type::LEQ)
+           || (ast->type() == GeneratorEquationAst::Type::GT)
+           || (ast->type() == GeneratorEquationAst::Type::GEQ);
+}
+
+bool Generator::GeneratorImpl::isPlusOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::PLUS;
+}
+
+bool Generator::GeneratorImpl::isMinusOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::MINUS;
+}
+
+bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPtr &ast) const
+{
+    // Note: GeneratorEquationAst::Type::NOT is a unary logical operator hence
+    //       we don't include it here since this method is only used to
+    //       determine whether parentheses should be added around some code.
+
+    return    (ast->type() == GeneratorEquationAst::Type::AND)
+           || (ast->type() == GeneratorEquationAst::Type::OR)
+           || (ast->type() == GeneratorEquationAst::Type::XOR);
+}
+
+bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const
+{
+    return ast->type() == GeneratorEquationAst::Type::PIECEWISE;
+}
+
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
                                                            const GeneratorEquationAstPtr &ast) const
 {
@@ -749,59 +791,31 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     // Determine whether parentheses should be added around the left and/or
     // right code
 
-    if (ast->type() == GeneratorEquationAst::Type::PLUS) {
-        if (   (ast->left()->type() == GeneratorEquationAst::Type::EQEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::NEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::LT)
-            || (ast->left()->type() == GeneratorEquationAst::Type::LEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::GT)
-            || (ast->left()->type() == GeneratorEquationAst::Type::GEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::AND)
-            || (ast->left()->type() == GeneratorEquationAst::Type::OR)
-            || (ast->left()->type() == GeneratorEquationAst::Type::XOR)
-            || (ast->left()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+    if (isPlusOperator(ast)) {
+        if (   isRelationalOperator(ast->left())
+            || isLogicalOperator(ast->left())
+            || isPiecewiseStatement(ast->left())) {
             left = "("+left+")";
         }
 
-        if (   (ast->right()->type() == GeneratorEquationAst::Type::EQEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::NEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::LT)
-            || (ast->right()->type() == GeneratorEquationAst::Type::LEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::GT)
-            || (ast->right()->type() == GeneratorEquationAst::Type::GEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::AND)
-            || (ast->right()->type() == GeneratorEquationAst::Type::OR)
-            || (ast->right()->type() == GeneratorEquationAst::Type::XOR)
-            || (ast->right()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+        if (   isRelationalOperator(ast->right())
+            || isLogicalOperator(ast->right())
+            || isPiecewiseStatement(ast->right())) {
             right = "("+right+")";
         }
-    } else if (ast->type() == GeneratorEquationAst::Type::MINUS) {
-        if (   (ast->left()->type() == GeneratorEquationAst::Type::EQEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::NEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::LT)
-            || (ast->left()->type() == GeneratorEquationAst::Type::LEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::GT)
-            || (ast->left()->type() == GeneratorEquationAst::Type::GEQ)
-            || (ast->left()->type() == GeneratorEquationAst::Type::AND)
-            || (ast->left()->type() == GeneratorEquationAst::Type::OR)
-            || (ast->left()->type() == GeneratorEquationAst::Type::XOR)
-            || (ast->left()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+    } else if (isMinusOperator(ast)) {
+        if (   isRelationalOperator(ast->left())
+            || isLogicalOperator(ast->left())
+            || isPiecewiseStatement(ast->left())) {
             left = "("+left+")";
         }
 
-        if (   (ast->right()->type() == GeneratorEquationAst::Type::EQEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::NEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::LT)
-            || (ast->right()->type() == GeneratorEquationAst::Type::LEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::GT)
-            || (ast->right()->type() == GeneratorEquationAst::Type::GEQ)
-            || (ast->right()->type() == GeneratorEquationAst::Type::MINUS)
-            || (ast->right()->type() == GeneratorEquationAst::Type::AND)
-            || (ast->right()->type() == GeneratorEquationAst::Type::OR)
-            || (ast->right()->type() == GeneratorEquationAst::Type::XOR)
-            || (ast->right()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+        if (   isRelationalOperator(ast->right())
+            || isMinusOperator(ast->right())
+            || isLogicalOperator(ast->right())
+            || isPiecewiseStatement(ast->right())) {
             right = "("+right+")";
-        } else if (ast->right()->type() == GeneratorEquationAst::Type::PLUS) {
+        } else if (isPlusOperator(ast->right())) {
             if (ast->right()->right() != nullptr) {
                 right = "("+right+")";
             }
@@ -819,18 +833,11 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
 
     // Determine whether parentheses should be added around the left code
 
-    if (   (ast->left()->type() == GeneratorEquationAst::Type::EQEQ)
-        || (ast->left()->type() == GeneratorEquationAst::Type::NEQ)
-        || (ast->left()->type() == GeneratorEquationAst::Type::LT)
-        || (ast->left()->type() == GeneratorEquationAst::Type::LEQ)
-        || (ast->left()->type() == GeneratorEquationAst::Type::GT)
-        || (ast->left()->type() == GeneratorEquationAst::Type::GEQ)
-        || (ast->left()->type() == GeneratorEquationAst::Type::PLUS)
-        || (ast->left()->type() == GeneratorEquationAst::Type::MINUS)
-        || (ast->left()->type() == GeneratorEquationAst::Type::AND)
-        || (ast->left()->type() == GeneratorEquationAst::Type::OR)
-        || (ast->left()->type() == GeneratorEquationAst::Type::XOR)
-        || (ast->left()->type() == GeneratorEquationAst::Type::PIECEWISE)) {
+    if (   isRelationalOperator(ast->left())
+        || isPlusOperator(ast->left())
+        || isMinusOperator(ast->left())
+        || isLogicalOperator(ast->left())
+        || isPiecewiseStatement(ast->left())) {
         left = "("+left+")";
     }
 
