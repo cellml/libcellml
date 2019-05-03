@@ -478,8 +478,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                     /// @cellml2_6 6.1.2 Check for a units_ref in this import units instance
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImportSource()->getUrl();
-                    //std::string importRelSource = modelSourcePath + importSource;
-                    bool foundImportError = false;
+
                     /// @cellml2_6 6.1.2 Check that the name given by the units_ref matches the naming specifications
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -488,7 +487,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setUnits(units);
                         err->setRule(SpecificationRule::IMPORT_UNITS_REF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_6 6.1.2 Check that a xlink:href is present 
                     if (!importSource.length()) {
@@ -498,7 +496,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setImportSource(units->getImportSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
                     else {
@@ -510,24 +507,10 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                             err->setImportSource(units->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
-                            foundImportError = true;
                         } 
                         else xmlFreeURI(URIPtr);
                     }
-                    /// @cellml2_6 6.1.2 Check if we already have another import from the same source with the same units_ref.
-                    /// (This looks for matching enties at the same position in the source and ref vectors).
-                    /*if ((unitsImportSources.size() > 0) && (!foundImportError)) {
-                        if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
-                         == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported units from '" + importSource +
-                                                "' with the same units_ref attribute '" + unitsRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_UNITS_REF);
-                            addError(err);
-                        }
-                    }*/
+                   
                     // Push back the unique sources and refs.
                     unitsImportSources.push_back(importSource);
                     unitsRefs.push_back(unitsRef);
@@ -680,7 +663,6 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
     }
 
     std::stringstream buffer;
-    bool found = false;
     buffer << t.rdbuf();
     doc->parse(buffer.str());
 
