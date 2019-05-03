@@ -44,6 +44,9 @@ TEST(Generator, emptyModel) {
 }
 
 TEST(Generator, coverage) {
+//TODO: code should be generated for the coverage CellML file with and without
+//      the Generator's private mHasXXX booleans set, so that we really cover
+//      everything indeed...
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
 
