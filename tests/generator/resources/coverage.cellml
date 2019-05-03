@@ -50,6 +50,21 @@
         <variable name="eqnPowerSqr" units="dimensionless"/>
         <variable name="eqnPowerCube" units="dimensionless"/>
         <variable name="eqnPowerCi" units="dimensionless"/>
+        <variable name="eqnPowerParentheses" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesLeftPlusWith" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesLeftPlusWithout" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesLeftMinusWith" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesLeftMinusWithout" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesLeftTimes" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesLeftDivide" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightPlusWith" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightPlusWithout" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightMinusWith" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightMinusWithout" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightTimes" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightDivide" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightPower" units="dimensionless"/>
+        <variable name="eqnPowerParenthesesRightRoot" units="dimensionless"/>
         <variable name="eqnRootSqrt" units="dimensionless"/>
         <variable name="eqnRootSqrtOther" units="dimensionless"/>
         <variable name="eqnRootCube" units="dimensionless"/>
@@ -749,6 +764,257 @@
                     <power/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParentheses</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesLeftPlusWith</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <plus/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesLeftPlusWithout</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <plus/>
+                        <ci>m</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesLeftMinusWith</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <minus/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesLeftMinusWithout</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <minus/>
+                        <ci>m</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesLeftTimes</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <times/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesLeftDivide</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <divide/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <gt/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightPlusWith</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightPlusWithout</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightMinusWith</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightMinusWithout</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <minus/>
+                        <ci>o</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightTimes</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightDivide</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <divide/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightPower</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <power/>
+                        <ci>o</ci>
+                        <ci>p</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnPowerParenthesesRightRoot</ci>
+                <apply>
+                    <power/>
+                    <apply>
+                        <lt/>
+                        <ci>m</ci>
+                        <ci>n</ci>
+                    </apply>
+                    <apply>
+                        <root/>
+                        <ci>p</ci>
+                        <ci>o</ci>
+                    </apply>
                 </apply>
             </apply>
             <apply>
