@@ -166,7 +166,7 @@ TEST(UnitsImport, importModifyAndParse) {
 
     libcellml::UnitsPtr importedUnitsMultiplied = std::make_shared<libcellml::Units>();
     importedUnitsMultiplied->setName("multiplied_import");
-    importedUnitsMultiplied->addUnit("units_in_this_model", 0.0, 1.0, 5.6);
+    importedUnitsMultiplied->addUnit("units_in_this_model", 0, 1.0, 5.6);
 
     m.addUnits(importedUnitsMultiplied);
 

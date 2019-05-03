@@ -271,6 +271,8 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
 
 void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
+	/// @cellml2_17 17.1.3 Note: variable equivalence pairs are not duplicated as existing v1-v2 connections are skipped
+    /// @cellml2_19 19.10.4 Note: variable equivalence pairs are not duplicated as existing v1-v2 connections are skipped
     if (!hasEquivalentVariable(equivalentVariable)) {
         VariableWeakPtr weakEquivalentVariable = equivalentVariable;
         mEquivalentVariables.push_back(weakEquivalentVariable);
@@ -362,6 +364,8 @@ std::string Variable::getInitialValue() const
 
 void Variable::setInterfaceType(const std::string &interfaceType)
 {
+	/// @cellml2_11 11.1.2.1 Sets the interface type to be a copy of the string.  __NB__ No checking
+	/// done that it's one of the allowed types (public/private/public_or_private/none)
     mPimpl->mInterfaceType = interfaceType;
 }
 

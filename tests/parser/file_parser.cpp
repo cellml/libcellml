@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "test_resources.h"
+#include "test_utils.h"
 
 #include "gtest/gtest.h"
 

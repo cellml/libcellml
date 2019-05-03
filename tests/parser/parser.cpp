@@ -613,6 +613,7 @@ TEST(Parser, modelWithInvalidUnits) {
 }
 
 TEST(Parser, emptyEncapsulation) {
+    /// @cellml2_15 15.1.1 Parser TEST for empty encapsulation block
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -628,6 +629,7 @@ TEST(Parser, emptyEncapsulation) {
 }
 
 TEST(Parser, encapsulationWithNoComponentAttribute) {
+    /// @cellml2_16 16.1.1 Parser TEST for component_ref without component block
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -647,6 +649,7 @@ TEST(Parser, encapsulationWithNoComponentAttribute) {
 }
 
 TEST(Parser, encapsulationWithNoComponentRef) {
+    /// @cellml2_15 15.1.1 Parser TEST for encapsulation without component_ref
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -666,6 +669,7 @@ TEST(Parser, encapsulationWithNoComponentRef) {
 }
 
 TEST(Parser, encapsulationWithNoComponent) {
+    /// @cellml2_16 16.1.1 Parser TEST for component_ref component must match name within model
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -687,6 +691,8 @@ TEST(Parser, encapsulationWithNoComponent) {
 }
 
 TEST(Parser, encapsulationWithMissingComponent) {
+    /// @cellml2_16 16.1.1 Parser TEST for component_ref component must match name within model
+    /// @cellml2_7 7.1.2 Parser TEST for component_ref component must match name within model
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -707,6 +713,7 @@ TEST(Parser, encapsulationWithMissingComponent) {
 }
 
 TEST(Parser, encapsulationWithNoComponentChild) {
+    /// @cellml2_16 16.1.3 Parser TEST for component_ref child of encapsulation block must have child(ren)
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -725,6 +732,7 @@ TEST(Parser, encapsulationWithNoComponentChild) {
 }
 
 TEST(Parser, encapsulationNoChildComponentRef) {
+    /// @cellml2_16 16.1.2 Parser TEST for component_ref child must be valid type
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -745,6 +753,7 @@ TEST(Parser, encapsulationNoChildComponentRef) {
 }
 
 TEST(Parser, encapsulationWithNoGrandchildComponentRef) {
+    /// @cellml2_16 16.1.3 Parser TEST for component_ref component must be valid type, and encapsulations must be grandparents
     const std::string ex =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -768,6 +777,9 @@ TEST(Parser, encapsulationWithNoGrandchildComponentRef) {
 }
 
 TEST(Parser, invalidEncapsulations) {
+    /// @cellml2_15 15.1.1 Parser TEST encapsulation elements
+    /// @cellml2_16 16.1.1-3 Parser TEST component_ref elements
+    /// @cellml2_4 4.2.3 Parser TEST only one encapsulation element allowed
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"ringo\">"
@@ -811,6 +823,7 @@ TEST(Parser, invalidEncapsulations) {
 }
 
 TEST(Parser, invalidVariableAttributesAndGetVariableError) {
+    /// @cellml2_11 11.1.1.1 Parser TEST invalid variable attribute types caught
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
@@ -846,6 +859,7 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError) {
 }
 
 TEST(Parser, variableAttributeAndChildErrors) {
+
     const std::string input1 =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
@@ -1024,6 +1038,7 @@ TEST(Parser, connectionErrorNoMapVariables) {
     libcellml::Parser p;
     p.parseModel(in);
     EXPECT_EQ(3u, p.errorCount());
+    
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
@@ -1206,6 +1221,7 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
     EXPECT_EQ(2u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
 }
 
 TEST(Parser, invalidImportsAndGetError) {

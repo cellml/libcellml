@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright libCellML Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,27 +29,32 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <libxml/uri.h>
+
 #include <algorithm>
 #include <filesystem> 
+#include <iostream>
 #include <map>
 #include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <set>
 
 
 namespace libcellml {
 
 /**
- * @brief The Validator::ValidatorImpl struct.
- *
- * The private implementation for the Validator class.
- */
+* @brief The Validator::ValidatorImpl struct.
+*
+* The private implementation for the Validator class.
+*/
 struct Validator::ValidatorImpl
 {
     Validator *mValidator;
 
     /**
+
     * @brief Check that the specified _ref item exists in the specified import url
     *
     * Any errors will be logged in the @c Validator.
@@ -72,189 +77,261 @@ struct Validator::ValidatorImpl
     void validateImportSources(const ModelPtr &model, std::string filename);
 
     /**
-     * @brief Validate the @p component using the CellML 2.0 Specification.
-     *
-     * Validate the given @p component and its encapsulated entities using
-     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
-     *
-     * @param component The component to validate.
-     */
+        * @brief Validate the @p component using the CellML 2.0 Specification.
+        * @cellml2_10 Validate the @p component using the CellML 2.0 Specification.
+        *
+        * Validate the given @p component and its encapsulated entities using
+        * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+        *
+        * @param component The component to validate.
+        */
+
     void validateComponent(const ComponentPtr &component);
 
     /**
-     * @brief Validate the @p units using the CellML 2.0 Specification.
-     *
-     * Validate the given @p units and its encapsulated entities using
-     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
-     *
-     * @param units The units to validate.
-     * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
-     */
+        * @brief Validate the @p units using the CellML 2.0 Specification.
+        * @cellml2_8 Validate the @p units using the CellML 2.0 Specification.
+        * Validate the given @p units and its encapsulated entities using
+        * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+        *
+        * @param units The units to validate.
+        * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
+        */
     void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames);
 
     /**
-     * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
-     *
-     * Validate the variable connections in the given @p model using
-     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
-     *
-     * @param model The model which may contain variable connections to validate.
-     */
+        * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
+        * @cellml2_17 Validate the variable connections in the @p model using the CellML 2.0 Specification.
+        * Validate the variable connections in the given @p model using
+        * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+        *
+        * @param model The model which may contain variable connections to validate.
+        */
     void validateConnections(const ModelPtr &model);
 
     /**
-     * @brief Check if the provided @p name is a valid CellML identifier.
-     *
-     * Checks if the provided @p name is a valid CellML identifier according
-     * to the CellML 2.0 specification. This requires a non-zero length Unicode
-     * character sequence containing basic Latin alphanumeric characters or
-     * underscores that does not start with a number.
-     *
-     * @param name The @c std::string name to check the validity of.
-     *
-     * @return @c true if @name is a valid CellML identifier and @c false otherwise.
-     */
+    * @brief Validate that there are no cycles in the equivalance network in the @p model
+    * using the CellML 2.0 Specification.
+    * Any errors will be logged in the @c Validator.
+    *
+    * @param model The model which may contain variable connections to validate.
+    * @param hints The helper string returned containing the list(s) of cyclic variables
+    */
+    bool modelVariablesAreCyclic(const ModelPtr &model, std::vector<std::string> &hints);
+
+    /**
+        * @brief Check if the provided @p name is a valid CellML identifier.
+        *
+        * Check if the provided @p name is a valid CellML identifier according
+        * to the CellML 2.0 specification. This requires a non-zero length Unicode
+        * character sequence containing basic Latin alphanumeric characters or
+        * underscores that does not start with a number.
+        *
+        * @param name The @c std::string name to check the validity of.
+        *
+        * @return @c true if @name is a valid CellML identifier and @c false otherwise.
+        */
     bool isCellmlIdentifier(const std::string &name);
 
     /**
-     * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
-     *
-     * Validate the @c unit at index @c index from @p units using
-     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
-     *
-     * @param index The index of the @c unit to validate from @p units.
-     * @param units The units to validate.
-     * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
-     */
+        * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
+        *
+        * Validate the @c unit at index @c index from @p units using
+        * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+        *
+        * @param index The index of the @c unit to validate from @p units.
+        * @param units The units to validate.
+        * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
+        */
     void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
 
     /**
-     * @brief Validate the @p variable using the CellML 2.0 Specification.
-     *
-     * Validate the given @p variable using the CellML 2.0 Specification.
-     * Any errors will be logged in the @c Validator.
-     *
-     * @param variable The variable to validate.
-     * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
-     */
+        * @brief Validate the @p variable using the CellML 2.0 Specification.
+        * @cellml2_11 Validate the variable using the CellML 2.0 Specification
+        * Validate the given @p variable using the CellML 2.0 Specification.
+        * Any errors will be logged in the @c Validator.
+        *
+        * @param variable The variable to validate.
+        * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
+        */
     void validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames);
 
     /**
-     * @brief Validate the @p reset using the CellML 2.0 Specification.
-     *
-     * Examine the @p reset for conformance to the CellML 2.0 specification.  Any
-     * errors will be logged in the @c Validator.
-     *
-     * @param reset The reset to validate.
-     * @param component The component the reset belongs to.
-     */
+        * @brief Validate the @p reset using the CellML 2.0 Specification.
+        * @cellml2_12 Validate the @p reset using the CellML 2.0 Specification.
+        * Examine the @p reset for conformance to the CellML 2.0 specification.  Any
+        * errors will be logged in the @c Validator.
+        *
+        * @param reset The reset to validate.
+        * @param component The component the reset belongs to.
+        */
     void validateReset(const ResetPtr &reset, const ComponentPtr &component);
 
     /**
-     * @brief Validate the @p when using the CellML 2.0 specification.
-     *
-     * Examine the @p when for conformance to the CellML 2.0 specification.  Any
-     * errors will be logged in the @c Validator.
-     *
-     * @param when The when to validate.
-     * @param reset The reset the when belongs to.
-     * @param component The component the reset belongs to.
-     */
+        * @brief Validate the @p when using the CellML 2.0 specification.
+        * @cellml2_13 Validate the @p when using the CellML 2.0 specification.
+        * Examine the @p when for conformance to the CellML 2.0 specification.  Any
+        * errors will be logged in the @c Validator.
+        *
+        * @param when The when to validate.
+        * @param reset The reset the when belongs to.
+        * @param component The component the reset belongs to.
+        */
     void validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component);
 
     /**
-     * @brief Validate the math @p input @c std::string.
-     *
-     * Validate the math @p input @c std::string using the CellML 2.0 Specification and
-     * the W3C MathML DTD. Any errors will be logged in the @c Validator.
-     *
-     * @param input The math @c std::string to validate.
-     * @param component The component containing the math @c std::string to be validated.
-     */
+        * @brief Validate the math @p input @c std::string.
+        * @cellml2_14 Validate the math @p input @c std::string.
+        * Validate the math @p input @c std::string using the CellML 2.0 Specification and
+        * the W3C MathML DTD. Any errors will be logged in the @c Validator.
+        *
+        * @param input The math @c std::string to validate.
+        * @param component The component containing the math @c std::string to be validated.
+        */
     void validateMath(const std::string &input, const ComponentPtr &component);
 
     /**
-     * @brief Populate @p bvarNames with new variables declared in MathML @c bvar elements.
-     *
-     * Populate @p bvarNames with new variables declared in MathML @c bvar elements found within
-     * the XmlNode @p node.
-     *
-     * @param node The @c XmlNode to search for @c bvar element names.
-     * @param bvarNames The @c std::string @c vector to populate with MathML @c bvar element names.
-     */
+        * @brief Populate @p bvarNames with new variables declared in MathML @c bvar elements.
+        *
+        * Populate @p bvarNames with new variables declared in MathML @c bvar elements found within
+        * the XmlNode @p node.
+        *
+        * @param node The @c XmlNode to search for @c bvar element names.
+        * @param bvarNames The @c std::string @c vector to populate with MathML @c bvar element names.
+        */
     void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
 
     /**
-     * @brief Traverse the node tree for invalid MathML elements.
-     *
-     * Traverse the Xml node tree checking that all MathML elements are listed in the
-     * supported MathML elements table from the CellML specification 2.0 document.
-     *
-     * @param node The node to check children and sibling nodes.
-     * @param component The component the MathML belongs to.
-     */
+        * @brief Traverse the node tree for invalid MathML elements.
+        *
+        * Traverse the Xml node tree checking that all MathML elements are listed in the
+        * supported MathML elements table from the CellML specification 2.0 document.
+        *
+        * @param node The node to check children and sibling nodes.
+        * @param component The component the MathML belongs to.
+        */
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
 
     /**
-     * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
-     *
-     * Validates CellML variables found in MathML @c ci elements and new variables from @c bvar elements. Validates @c cellml:units
-     * attributes found on @c ci and @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
-     * be validated using the MathML DTD.
-     *
-     * @param node The @c XmlNode to validate CellML entities on and remove @c cellml:units from.
-     * @param component The component that the math @c XmlNode @p node is contained within.
-     * @param variableNames A @c vector list of the names of variables found within the @p component.
-     * @param bvarNames A @c vector list of the names of new MathML @c bvar variables in this @c XmlNode @p node.
-     */
+        * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
+        *
+        * Validates CellML variables found in MathML @c ci elements and new variables from @c bvar elements. Validates @c cellml:units
+        * attributes found on @c ci and @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
+        * be validated using the MathML DTD.
+        *
+        * @param node The @c XmlNode to validate CellML entities on and remove @c cellml:units from.
+        * @param component The component that the math @c XmlNode @p node is contained within.
+        * @param variableNames A @c vector list of the names of variables found within the @p component.
+        * @param bvarNames A @c vector list of the names of new MathML @c bvar variables in this @c XmlNode @p node.
+        */
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
 
     /**
-     * @brief Remove the @c std::string @p pattern from the @c std::string @p input.
-     *
-     * Remove all occurrences of the @c std::string @p pattern from the @c std::string @p input.
-     *
-     * @param input The @c std::string to remove all occurrences of the @p pattern from.
-     * @param pattern The @c std::string to remove from the @c std::string @p input.
-     */
+        * @brief Remove the @c std::string @p pattern from the @c std::string @p input.
+        *
+        * Remove all occurrences of the @c std::string @p pattern from the @c std::string @p input.
+        *
+        * @param input The @c std::string to remove all occurrences of the @p pattern from.
+        * @param pattern The @c std::string to remove from the @c std::string @p input.
+        */
     void removeSubstring(std::string &input, std::string &pattern);
 
     /**
-     * @brief Check if the provided @p name is a standard unit.
-     *
-     * Checks if the provided @p name is one of the standard units in the
-     * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard units.
-     *
-     * @return @c true if @name is a standard unit and @c false otherwise.
-     */
+        * @brief Check if the provided @p name is a standard unit.
+        *
+        * Checks if the provided @p name is one of the standard units in the
+        * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
+        * and @c false otherwise.
+        *
+        * @param name The @c std::string name to check against the list of standard units.
+        *
+        * @return @c true if @name is a standard unit and @c false otherwise.
+        */
     bool isStandardUnitName(const std::string &name);
 
     /**
-     * @brief Check if the provided @p name is a standard prefix.
-     *
-     * Checks if the provided @p name is one of the standard prefixes in the
-     * @c Prefix @c enum. Returns @c true if @name is a standard prefix
-     * and @c false otherwise.
-     *
-     * @param name The @c std::string name to check against the list of standard prefixes.
-     *
-     * @return @c true if @name is a standard prefix and @c false otherwise.
-     */
+        * @brief Check if the provided @p name is a standard prefix.
+        *
+        * Checks if the provided @p name is one of the standard prefixes in the
+        * @c Prefix @c enum. Returns @c true if @name is a standard prefix
+        * and @c false otherwise.
+        *
+        * @param name The @c std::string name to check against the list of standard prefixes.
+        *
+        * @return @c true if @name is a standard prefix and @c false otherwise.
+        */
     bool isStandardPrefixName(const std::string &name);
 
     /**
-     * @brief Check if the provided @p node is a supported MathML element.
-     *
-     * Checks if the provided @p node is one of the supported MathML elements defined in the table
-     * of supported MathML elements from the CellML specification version 2.0 document.
-     *
-     * @param node The @c XmlNode node to check against the list of supported MathML elements.
-     * @return @c true if @node is a supported MathML element and @c false otherwise.
-     */
+        * @brief Check if the provided @p node is a supported MathML element.
+        *
+        * Checks if the provided @p node is one of the supported MathML elements defined in the table
+        * of supported MathML elements from the CellML specification version 2.0 document.
+        *
+        * @param node The @c XmlNode node to check against the list of supported MathML elements.
+        * @return @c true if @node is a supported MathML element and @c false otherwise.
+        */
     bool isSupportedMathMLElement(const XmlNodePtr &node);
+
+    /**
+    * @brief Validate that equivalent variable pairs in the @p model
+    * have equivalent units.
+    * @cellml2_19 Validate that equivalent variable pairs in the @p model
+    * have equivalent units
+    * Any errors will be logged in the @c Validator.
+    *
+    * @param model The model containing the variables
+    * @param v1 The variable which may contain units.
+    * @param v2 The equivalent variable which may contain units.
+    * @param hints String containing error messages to be passed back to calling function for logging
+    */
+    bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints);
+
+    /**
+    * @brief Utility function used by unitsAreEquivalent to compare base units of two varaibles
+    *
+    * @param model The model containing the variables
+    * @param unitmap A list of the exponents of base varaibles.
+    * @param uName String name of the current variable being investigated.
+    * @param standardList Nested map of the conversion between built-in units and the base units they contain
+    * @param uExp Exponent of the current unit in its parent.  
+    */
+    void incrementBaseUnitCount(const ModelPtr &model, std::map<std::string,double> &unitmap, 
+        const std::string uName,
+        const std::map< std::string, std::map<std::string, double>> &standardList,
+        const double uExp);
+
+    /**
+    * @brief Utility function used by unitsAreEquivalent to compare base units of two varaibles
+    *
+    * @param model The model containing the variables
+    * @param unitmap A list of the exponents of base varaibles.
+    * @param uName String name of the current variable being investigated.
+    * @param standardList Nested map of the conversion between built-in units and the base units they contain
+    * @param uExp Exponent of the current unit in its parent.  
+    */
+    void decrementBaseUnitCount(const ModelPtr &model, std::map<std::string,
+        double> &unitmap, const std::string uName,
+        const std::map< std::string, std::map<std::string, double>> &standardList,
+        const double uExp);
+
+    /**
+    * @brief Checks dependency heirarchies of units in the model 
+    *
+    * @param model The model containing the units to be tested
+    */
+    void validateNoUnitsAreCyclic(const ModelPtr &model);
+
+    /**
+    * @brief Utility function called recursively by validateNoUnitsAreCyclic
+    *
+    * @param model The model containing the units to be tested
+    * @param parent The current Units pointer to test
+    * @param history A vector of the chained dependencies.  Cyclic variables exist where the first and 
+    *                last units are equal.
+    */
+    void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                            std::vector<std::string> &history);
 };
 
 Validator::Validator()
@@ -302,9 +379,9 @@ void Validator::validateModel(const ModelPtr &model) {
 
 void Validator::validateModel(const ModelPtr &model, std::string filename)
 {
-    // Clear any pre-existing errors in ths validator instance.
+    // Clear any pre-existing errors in the validator instance.
     clearErrors();
-    // Check for a valid name attribute.
+    /// @cellml2_4 4.2.1 Check for a valid name format
     if (!mPimpl->isCellmlIdentifier(model->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Model does not have a valid name attribute.");
@@ -312,6 +389,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
         err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
+
 
     // If we don't have a filename or working directory we can't check imports 
     bool checkImports = false;
@@ -321,22 +399,27 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
     }
     
     // Check for components in this model.
+    /// @cellml2_4 4.2.3 Check for unique encapsulation is not required as more than one cannot be stored
+    /// @cellml2_4 4.2.2 Check for presence of components in this model.
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
-        std::vector<std::string> componentRefs;
+        std::vector<std::string> componentRefs;  
         std::vector<std::string> componentImportSources;
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->getComponent(i);
-            // Check for duplicate component names in this model.
+
             std::string componentName = component->getName();
             if (componentName.length()) {
                 if (component->isImport()) {
-                    // Check for a component_ref.
-                    std::string componentRef = component->getImportReference();
-                    std::string importSource = component->getImportSource()->getUrl();
+                    // Check for a component_ref; assumes imported if the import source is not null
+                    /// @cellml2_7 7.1.2 Check that the name of the component given by the component_ref 
+                    /// is in a valid format.  NB: Does not check what it refers to.
+                    std::string componentRef = component->getImportReference(); 
+                    std::string importSource = component->getImportSource()->getUrl(); 
                     bool foundImportError = false;
                     
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
+                        
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported component '" + componentName +
                                             "' does not have a valid component_ref attribute.");
@@ -345,8 +428,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         addError(err);
                         foundImportError = true;
                     }
-                    // Check for a xlink:href.
-                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
+                    /// @cellml2_7 7.1.2 Check that a xlink:href attribute is present
                     if (!importSource.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
@@ -356,25 +438,49 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         addError(err);
                         foundImportError = true;
                     }
+                    /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
+                    else {
+                        xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
+                        if (URIPtr == NULL) {
 
-                    // Check if we already have another import from the same source with the same component_ref.
-                    // (This looks for matching entries at the same position in the source and ref vectors).
-                    /*if ((componentImportSources.size() > 0) && (!foundImportError)) {
-                        if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
-                         == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())){
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported components from '" + importSource +
-                                                "' with the same component_ref attribute '" + componentRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+                            err->setDescription("Import of component '" + componentName +
+                                                "' has an invalid URI in the href attribute, '" + importSource + "'. ");
+                            err->setImportSource(component->getImportSource());
+                            err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
+                            foundImportError = true;
+                        }
+                        else xmlFreeURI(URIPtr);
+                    }
+                    
+                    /// @cellml2_7 __REMOVE THIS?__ Check if we already have another import from the same source with the same component_ref. 
+                    /*if ((componentImportSources.size() > 0) && (!foundImportError)) {
+                        // Check for presence of import source and component_ref
+                        std::ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 
+                            - componentImportSources.begin();
+                        std::ptrdiff_t foundRefAt = find(componentRefs.begin(), componentRefs.end(), componentRef) 
+                            - componentRefs.begin();
+
+                        // Check that they occur at the same point in the list, *and* that we're not out of range
+                        // "unsigned" used here to prevent mismatch warning at build time
+                        if((unsigned (foundSourceAt) < componentImportSources.size()) && 
+                            (unsigned (foundRefAt) < componentRefs.size()) &&            
+                            (foundRefAt == foundSourceAt)) {
+                            ErrorPtr err = std::make_shared<Error>();
+                                err->setDescription("Model '" + model->getName() +
+                                                    "' contains multiple imported components from '" + importSource +
+                                                    "' with the same component_ref attribute '" + componentRef + "'.");
+                                err->setModel(model);
+                                err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+                                addError(err);
                         }
                     }*/
                     // Push back the unique sources and refs.
                     componentImportSources.push_back(importSource);
                     componentRefs.push_back(componentRef);
                 }
+                /// @cellml2_10 10.1.1 Check for duplicate component names in this model.
                 if(std::find(componentNames.begin(), componentNames.end(), componentName) != componentNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Model '" + model->getName() +
@@ -385,11 +491,12 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                 }
                 componentNames.push_back(componentName);
             }
-            // Validate component.
+            /// @cellml2_4 4.2.1 Validates components in this model.
+            /// @cellml2_10 10.1.1 This function call validates the names and other aspects of the components in the model.
             mPimpl->validateComponent(component);
         }
     }
-    // Check for units in this model.
+    /// @cellml2_4 4.2.2.5 Check for presence of units in this model 
     if (model->unitsCount() > 0) {
         std::vector<std::string> unitsNames;
         std::vector<std::string> unitsRefs;
@@ -399,12 +506,12 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
             std::string unitsName = units->getName();
             if (unitsName.length()) {
                 if (units->isImport()) {
-                    // Check for a units_ref.
+                    /// @cellml2_6 6.1.2 Check for a units_ref in this import units instance
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImportSource()->getUrl();
                     //std::string importRelSource = modelSourcePath + importSource;
                     bool foundImportError = false;
-
+                    /// @cellml2_6 6.1.2 Check that the name given by the units_ref matches the naming specifications
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported units '" + unitsName +
@@ -414,8 +521,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         addError(err);
                         foundImportError = true;
                     }
-                    // Check for a xlink:href.
-                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
+                    /// @cellml2_6 6.1.2 Check that a xlink:href is present 
                     if (!importSource.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
@@ -425,26 +531,39 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         addError(err);
                         foundImportError = true;
                     }
-
-                    // Check if we already have another import from the same source with the same units_ref.
-                    // (This looks for matching enties at the same position in the source and ref vectors).
-                    //if ((unitsImportSources.size() > 0) && (!foundImportError)) {
-                    //    if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
-                    //     == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
-                    //        ErrorPtr err = std::make_shared<Error>();
-                    //        err->setDescription("Model '" + model->getName() +
-                    //                            "' contains multiple imported units from '" + importSource +
-                    //                            "' with the same units_ref attribute '" + unitsRef + "'.");
-                    //        err->setModel(model);
-                    //        err->setRule(SpecificationRule::IMPORT_UNITS_REF);
-                    //        addError(err);
-                    //    }
-                    //}
+                    /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
+                    else {
+                        xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
+                        if (URIPtr == NULL) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Import of units '" + unitsName +
+                                                "' has an invalid URI in the href attribute, '" + importSource + "'. ");
+                            err->setImportSource(units->getImportSource());
+                            err->setRule(SpecificationRule::IMPORT_HREF);
+                            addError(err);
+                            foundImportError = true;
+                        } 
+                        else xmlFreeURI(URIPtr);
+                    }
+                    /// @cellml2_6 6.1.2 Check if we already have another import from the same source with the same units_ref.
+                    /// (This looks for matching enties at the same position in the source and ref vectors).
+                    /*if ((unitsImportSources.size() > 0) && (!foundImportError)) {
+                        if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
+                         == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Model '" + model->getName() +
+                                                "' contains multiple imported units from '" + importSource +
+                                                "' with the same units_ref attribute '" + unitsRef + "'.");
+                            err->setModel(model);
+                            err->setRule(SpecificationRule::IMPORT_UNITS_REF);
+                            addError(err);
+                        }
+                    }*/
                     // Push back the unique sources and refs.
                     unitsImportSources.push_back(importSource);
                     unitsRefs.push_back(unitsRef);
                 }
-                // Check for duplicate units names in this model.
+                /// @cellml2_8 8.1.2 Check for duplicate units names in this model.
                 if(std::find(unitsNames.begin(), unitsNames.end(), unitsName) != unitsNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Model '" + model->getName() +
@@ -458,12 +577,19 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
             }
         }
         for (size_t i = 0; i < model->unitsCount(); ++i) {
-            // Validate units.
+            /// @cellml2_4 4.2.2.5 Validate units in this model
+            /// @cellml2_8 Validate units in this model
             UnitsPtr units = model->getUnits(i);
             mPimpl->validateUnits(units, unitsNames);
         }
     }
-    // Validate any connections / variable equivalence networks in the model.
+
+    /// @cellml2_9 9.1.1.2 Validate that unit definitions are not cyclic
+    // Have to have this out of the if statement so that we only test checked units
+    if(model->unitsCount() > 0)
+        mPimpl->validateNoUnitsAreCyclic(model);
+
+    /// @cellml2_4 4.2.2.2 Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
 }
 
@@ -789,31 +915,65 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
 }
 
 
+void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model) {
 
+    std::vector<std::string> history;
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        // Test each units' dependencies for presence of self in tree
+        UnitsPtr u = model->getUnits(i);
+        history.push_back(u->getName());
+        checkUnitForCycles(model, u, history); 
+        // Have to delete this each time to prevent reinitialisation with previous base variables
+        std::vector<std::string>().swap(history);
+    }
+}
 
+void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent, 
+                                                  std::vector<std::string> &history) {
+    if (parent->isBaseUnit()) return;
 
+    // Recursive function to check for self-referencing in unit definitions
+    std::string ref, id, prefix;
+    double exp, mult;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Take history, and copy it for each new branch
+    for (size_t i = 0; i < parent->unitCount(); ++i) {
+        parent->getUnitAttributes(i, ref, prefix, exp, mult, id);
+        if (std::find(history.begin(), history.end(), ref) != history.end()) {
+            history.push_back(ref);
+            // Print to error output *only* when the first and last units are the same
+            // otherwise we get lasso shapes reported 
+            if (history.front() == history.back()) {
+                ErrorPtr err = std::make_shared<Error>();
+                std::string des = "'";
+                for (size_t i = 0; i < history.size() - 1; ++i) {
+                    des += history[i] + "' -> '";
+                }
+                des += history[history.size() - 1]+"'";
+                err->setDescription("Cyclic units exist: " + des);
+                err->setModel(model);
+                err->setKind(Error::Kind::UNITS);
+                mValidator->addError(err);
+            }
+        }
+        else {
+            // Step into dependencies if they are not built-in units
+            if (model->hasUnits(ref)) {
+                UnitsPtr child = model->getUnits(ref);
+                history.push_back(ref);
+                // Making a copy of the history vector to this point
+                std::vector<std::string> child_history(history);
+                checkUnitForCycles(model, child, child_history);
+                std::vector<std::string>().swap(child_history);
+            } 
+        }
+    }
+}
 
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
-    // Check for a valid name attribute.
+    /// @cellml2_10 10.1.1 Check for a valid name attribute. 
     if (!isCellmlIdentifier(component->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setComponent(component);
@@ -826,9 +986,10 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         }
         mValidator->addError(err);
     }
-    // Check for variables in this component.
+    /// @cellml2_10 10.1.2.1 Check the variables in this component.  
     std::vector<std::string> variableNames;
     if (component->variableCount() > 0) {
+        /// @cellml2_11 11.1.1 Check for duplicate variable names in imported components
         // Check for duplicate variable names and construct vector of valid names in case
         // we have a variable initial_value set by reference.
         for (size_t i = 0; i < component->variableCount(); ++i) {
@@ -846,15 +1007,15 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
                 variableNames.push_back(variableName);
             }
         }
-        // Validate variable(s).
+        /// @cellml2_11 11.1.1 Validates variable(s) in a componenet
         for (size_t i = 0; i < component->variableCount(); ++i) {
             VariablePtr variable = component->getVariable(i);
             validateVariable(variable, variableNames);
         }
     }
-    // Check for resets in this component
+    /// @cellml2_10 10.1.2.2 Check for presence of resets in this component
     if (component->resetCount() > 0) {
-        // Check for duplicate order values in resets
+        /// @cellml2_12 12.1.1.2 Check for duplicate order values in resets in this component
         std::vector<int> resetOrders;
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->getReset(i);
@@ -872,13 +1033,13 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
                 }
             }
         }
-
+        /// @cellml2_10 10.1.2.2 Validate resets in this component's variables
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->getReset(i);
             validateReset(reset, component);
         }
     }
-    // Validate math through the private implementation (for XML handling).
+    /// @cellml2_10 10.1.2.3 Validate math through the private implementation (for XML handling) in this component
     if (component->getMath().length()) {
         validateMath(component->getMath(), component);
     }
@@ -886,8 +1047,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 
 void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
-    // Check for a valid name attribute.
-    // TODO: Check for valid base unit reduction (see 17.3)
+    /// @cellml2_8 8.1.1 check that the units' name field is present
     if (!isCellmlIdentifier(units->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setUnits(units);
@@ -900,7 +1060,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         }
         mValidator->addError(err);
     } else {
-        // Check for a matching standard units.
+        /// @cellml2_8 8.1.3 Checks for duplicated names in the standard/built-in units.
         if (isStandardUnitName(units->getName())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units is named '" + units->getName() +
@@ -911,7 +1071,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         }
     }
     if (units->unitCount() > 0) {
-        // Validate each unit in units.
+        /// @cellml2_8 8.1.4 Validates each unit in units.
         for (size_t i = 0; i < units->unitCount(); ++i) {
             validateUnitsUnit(i, units, unitsNames);
         }
@@ -923,10 +1083,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     // Validate the unit at the given index.
     std::string reference, prefix, id;
     double exponent, multiplier;
+
+    // TODO This function silently sets invalid numbers to 1.0, maybe should give a better error message?
     units->getUnitAttributes(index, reference, prefix, exponent, multiplier, id);
+    /// @cellml2_9 9.1.1 Check that the unit element has a units reference
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) &&
             (!isStandardUnitName(reference))) {
+            /// @cellml2_8 8.1.1 Check that units point to a standard or local unit base
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Units reference '" + reference + "' in units '" + units->getName() +
                                     "' is not a valid reference to a local units or a standard unit type.");
@@ -943,16 +1107,33 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         mValidator->addError(err);
     }
     if (prefix.length()) {
-        // If the prefix is not in the list of valid prefix names, check if it is a real number.
+        /// cellml2_9 9.1.2.1 Check the prefix. If the prefix is not in the list of valid prefix names, 
+        /// check that it is an integer.
         if (!isStandardPrefixName(prefix)) {
-            if (!isCellMLReal(prefix)) {
+
+            if (!isCellMLInteger(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
                                     "' in units '" + units->getName() +
-                                    "' is not a valid real number or a SI prefix.");
+                                    "' is not a valid integer or a SI prefix.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
+            }
+            else {
+                try {
+                    int test = std::stoi(prefix);
+                    (void)test;
+                }
+                catch (std::out_of_range&) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference +
+                                        "' in units '" + units->getName() +
+                                        "' is out of the integer range.");
+                    err->setUnits(units);
+                    err->setRule(SpecificationRule::UNIT_PREFIX);
+                    mValidator->addError(err);
+                }
             }
         }
     }
@@ -960,7 +1141,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
 
 void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std::vector<std::string> &variableNames)
 {
-    // Check for a valid name attribute.
+    /// @cellml2_11 11.1.1.1 Check for a valid name attribute. Validator::ValidatorImpl::validateVariable
     if (!isCellmlIdentifier(variable->getName())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable does not have a valid name attribute.");
@@ -968,7 +1149,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
         err->setRule(SpecificationRule::VARIABLE_NAME);
         mValidator->addError(err);
     }
-    // Check for a valid units attribute.
+    /// @cellml2_11 11.1.1.2 Check that this variable specifies units which have an identifier
     if (!isCellmlIdentifier(variable->getUnits())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable '" + variable->getName() +
@@ -979,6 +1160,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
     } else if (!isStandardUnitName(variable->getUnits())) {
         Component* component = static_cast<Component*>(variable->getParent());
         Model* model = static_cast<Model*>(component->getParent());
+        /// @cellml2_11 11.1.2 Check that this variable has units which, if non-standard, are specified in the model
         if (model && !model->hasUnits(variable->getUnits())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->getName() +
@@ -989,9 +1171,11 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
             mValidator->addError(err);
         }
     }
-    // Check for a valid interface attribute.
+    
     if (variable->getInterfaceType().length()) {
         std::string interfaceType = variable->getInterfaceType();
+        /// @cellml2_11 11.1.2.1 If this variable specifies an interface, checks that its type is public, private, 
+        /// public_and_private, or none.
         if ((interfaceType != "public") && (interfaceType != "private") &&
             (interfaceType != "none") && (interfaceType != "public_and_private")) {
             ErrorPtr err = std::make_shared<Error>();
@@ -1002,12 +1186,14 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
             mValidator->addError(err);
         }
     }
-    // Check for a valid initial value attribute.
+    
     if (variable->getInitialValue().length()) {
         std::string initialValue = variable->getInitialValue();
         // Check if initial value is a variable reference
+        /// @cellml2_11 11.1.2.2 If this variable specifies an initial value, checks that it has a valid reference
         if(!(std::find(variableNames.begin(), variableNames.end(), initialValue) != variableNames.end())) {
             // Otherwise, check that the initial value can be converted to a double
+            /// @cellml2_11 11.1.2.2 If the initial value is not a reference, then check it's convertible to a double
             if (!isCellMLReal(initialValue)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Variable '" + variable->getName() +
@@ -1023,6 +1209,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
 
 void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
 {
+    /// @cellml2_12 12.1.1.2 Check that this reset order is set
     std::string orderString;
     if (reset->isOrderSet()) {
         orderString = "with order '" + convertIntToString(reset->getOrder()) + "'";
@@ -1030,6 +1217,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         orderString = "does not have an order set,";
     }
 
+    /// @cellml2_12 12.1.1.1 Check that this reset references a variable 
     std::string variableString;
     std::string variableContinuation = "";
     if (reset->getVariable() == nullptr) {
@@ -1056,6 +1244,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         mValidator->addError(err);
     }
 
+    /// @cellml2_12 12.1.1.2 Checking for duplicate order values for each 'when' entry in this reset
     if (reset->whenCount() > 0) {
         // Check for duplicate when order values.
         std::vector<int> whenOrders;
@@ -1078,11 +1267,13 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
             }
 
         }
+        /// @cellml2_12 12.1.1.3 Validates all 'when' children
         for (size_t i = 0; i < reset->whenCount(); ++i) {
             WhenPtr when = reset->getWhen(i);
             validateWhen(when, reset, component);
         }
     } else {
+        ///@cellml2_12 12.1.1.3 Check there is at least one 'when' child
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Reset in component '" + component->getName() +
                             "' " + orderString +
@@ -1092,6 +1283,10 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         err->setRule(SpecificationRule::RESET_CHILD);
         mValidator->addError(err);
     }
+
+    /// @cellml2_12 TODO Need to check whether there is an implied 1-to-1 correspondence between 
+    /// the 'when' element(s) and the 'order' integers? If so, does it need to be validated?  Is this specified in 
+    /// 13.1.1 When specifications?
 }
 
 void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component)
@@ -1100,18 +1295,22 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
     std::string resetOrderString;
     std::string resetVariableString;
     std::string resetVariableContinuation;
+
+    /// @cellml2_13 13.1.1 Check that there is an order attribute specified for input when
     if (when->isOrderSet()) {
         orderString = "with order '" + convertIntToString(when->getOrder()) + "'";
     } else {
         orderString = "does not have an order set,";
     }
 
+    /// @cellml2_12 12.1.1.3 Check that there is an order attribute specified for input reset element
     if (reset->isOrderSet()) {
         resetOrderString = "with order '" + convertIntToString(reset->getOrder()) + "'";
     } else {
         resetOrderString = "which does not have an order set,";
     }
 
+    /// @cellml2_12 12.1.1.1 (?) Check that input reset references a variable
     if (reset->getVariable() == nullptr) {
         resetVariableString = "which does not reference a variable";
         resetVariableContinuation = ",";
@@ -1120,6 +1319,8 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         resetVariableString = "referencing variable '" + reset->getVariable()->getName() + "'";
     }
 
+    /// @cellml2_13 13.1.1 Check that input when has an order  (? checks when->isOrder but returns error
+    /// from reset?)
     if (!when->isOrderSet()) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("When in reset " + resetOrderString +
@@ -1130,6 +1331,7 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
+    /// @cellml2_13 13.1.2 13.? Check maths condition of the input component (? Checks component but returns error based on reset?)
     if (when->getCondition().length() > 0) {
         validateMath(when->getCondition(), component);
     } else {
@@ -1143,6 +1345,8 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
+    /// @cellml2_13 13.? Check maths value of the input component (? Checks component but returns error based on reset?)
+    /// @cellml2_14 14.? Check maths value of the input component (? Checks component but returns error based on reset?)
     if (when->getValue().length() > 0) {
         validateMath(when->getValue(), component);
     } else {
@@ -1155,10 +1359,12 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         err->setRule(SpecificationRule::WHEN_CHILD);
         mValidator->addError(err);
     }
+
 }
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
+    /// @cellml2_14 14.1.1 Check input XML is valid for a component
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
     doc->parse(input);
@@ -1172,6 +1378,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         }
     }
     XmlNodePtr node = doc->getRootNode();
+    /// @cellml2_14 14.1.1 Check input XML is valid MathML with valid root node for input component
     if (!node) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Could not get a valid XML root node from the math on component '" + component->getName() + "'.");
@@ -1192,16 +1399,25 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     XmlNodePtr nodeCopy = node;
     std::vector<std::string> bvarNames;
     std::vector<std::string> variableNames;
+    // making a list of unique variable names inside component
+    /// @cellml2_14 TODO Should variable names inside a component be validated to prevent duplicates 
+    /// instead of removing silently from check list?
     for (size_t i = 0; i < component->variableCount(); ++i) {
         std::string variableName = component->getVariable(i)->getName();
         if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
             variableNames.push_back(variableName);
         }
+      
     }
 
+    /// @cellml2_14 14.1.3 Check that the variables in the MathML are supported, see hard-coded list at
+    /// bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
     validateMathMLElements(nodeCopy, component);
+
     // Get the bvar names in this math element.
     // TODO: may want to do this with XPath instead...
+    /// @cellml2_14 TODO Change to XPath instead? 
+    /// @cellml2_14 14.? Check that there are no duplicates between bound (bvar) and unbound variable names
     gatherMathBvarVariableNames(nodeCopy, bvarNames);
     // Check that no variable names match new bvar names.
     for (std::string &variableName : variableNames) {
@@ -1218,13 +1434,16 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Iterate through ci/cn elements and remove cellml units attributes.
     XmlNodePtr mathNode = node;
     validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
-    // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
-    // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
-    // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
+
+    /// @cellml2_14 TODO Is there a better way to do this?  Get the MathML string (with cellml:units attributes already removed)
+    /// and remove the CellML namespace.  While the removeSubstring() approach for removing the cellml namespace before 
+    /// validating with the MathML DTD is not ideal, libxml does not appear to have a better way to remove a namespace 
+    /// declaration from the tree.
     std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
     std::string cleanMathml = mathNode->convertToString();
     removeSubstring(cleanMathml, cellml2NamespaceString);
 
+    /// @cellml2_14 14.? Check 'clean/unitless' math string against W3C MathML 
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
     mathmlDoc->parseMathML(cleanMathml);
@@ -1252,6 +1471,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             if (childNode->isText()) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
+                    /// @cellml2_14 14.1.3 Check that ci elements reference a variable or bound variable within the same container
                     if (ciType) {
                         // It's fine in MathML to have whitespace around variable names, we will strip it out when looking for
                         // variable names.
@@ -1270,6 +1490,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         }
                     }
                 } else {
+                    /// @cellml2_14 14.? Check that names of children are not whitespace only TODO Checking whether this needs to be explicit in specs
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("MathML " + node->getName() + " element has a whitespace-only child element.");
                     err->setComponent(component);
@@ -1278,6 +1499,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 }
             }
         } else {
+            /// @cellml2_14 14.1.3 Check that element has a child, whether or not it is ci or cn
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("MathML " + node->getName() + " element has no child.");
             err->setComponent(component);
@@ -1290,6 +1512,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         XmlAttributePtr unitsAttribute = nullptr;
         while (attribute) {
             if (attribute->getValue().length() > 0) {
+                /// @cellml2_14 14.1.4 Check for units in both cn and ci types and compares to CellML namespace  
+
                 if (attribute->isType("units", CELLML_2_0_NS)) {
                     unitsName = attribute->getValue();
                     unitsAttribute = attribute;
@@ -1307,6 +1531,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 
         bool checkUnitsIsInComponent = false;
         // Check that cellml:units has been set.
+        /// @cellml2_14 14.1.3 Check that ci element does not have units TODO Check that this is clear in specification doc
         if (ciType) {
             if (unitsAttribute != nullptr) {
                 ErrorPtr err = std::make_shared<Error>();
@@ -1314,6 +1539,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                                     "' has a cellml:units attribute with name '" + unitsAttribute->getValue() + "'.");
             }
         } else if (cnType) {
+            /// @cellml2_14 14.1.4 Check that cn elements has a units name
             if (isCellmlIdentifier(unitsName)) {
                 checkUnitsIsInComponent = true;
             } else {
@@ -1327,6 +1553,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         }
 
         // Check that a specified units is valid.
+        /// @cellml2_14  14.1.4 Check that the units exist, either locally in the component or the standard list
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
             Model* model = static_cast<Model*>(component->getParent());
@@ -1364,6 +1591,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 
 void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component)
 {
+
+    /// @cellml2_14 14.1.2 Check that each child of a math element is supported, recursive over own children
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
         if (!childNode->isText() && !isSupportedMathMLElement(childNode)) {
@@ -1421,37 +1650,73 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
+    /// @cellml2_17 TODO need checks of 17.1.1-4 as not present here?
+    std::string hints;
+    std::vector<std::string> hintlist;
+
     // Check the components in this model.
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->getComponent(i);
+
             // Check the variables in this component.
             for (size_t j = 0; j < component->variableCount(); ++j) {
                 VariablePtr variable = component->getVariable(j);
+
                 // Check the equivalent variables in this variable.
                 if (variable->equivalentVariableCount() > 0) {
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
-                        // TODO: validate variable interfaces according to 17.10.8
-                        // TODO: add check for cyclical connections (17.10.5)
+
+                        /// @cellml2_17 17.1.2 Check that we do not have a variable equivalent to itself
+                        if (variable == equivalentVariable) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->getName() +
+                                                "' has an equivalent variable '" + equivalentVariable->getName() +
+                                                "' equal to itself. "
+                            );
+                            err->setModel(model);
+                            err->setKind(Error::Kind::CONNECTION);
+                            mValidator->addError(err);
+                        }
+                        // TODO: validate variable interfaces according to 19.10.8
+                        /// @cellml2_17 TODO Validate variable interfaces according to 19.10.8
+                        /// @cellml2_19 19.10.6 Validate that equivalent varaible pairs have equivalent units
+                        if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->getName() +
+                                "' has units of '" + variable->getUnits() +
+                                "' and an equivalent variable '" + equivalentVariable->getName() +
+                                "' with non-matching units of '" + equivalentVariable->getUnits() +
+                                "'. The mismatch is: " + hints
+                            );
+                            err->setModel(model);
+                            err->setKind(Error::Kind::UNITS);
+                            mValidator->addError(err);
+                        }
+
+                        /// @cellml2_18 18.1.3 Don't need to check that connections do not duplicate variable pairs (19.10.4)
+                        /// as duplicates are not stored (?).
+
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
                             // Check that the equivalent variable has a valid parent component.
                             Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
                                 err->setDescription("Variable '" + equivalentVariable->getName() +
-                                                    "' is an equivalent variable to '" + variable->getName() +
-                                                    "' but has no parent component.");
+                                    "' is an equivalent variable to '" + variable->getName() +
+                                    "' but has no parent component.");
                                 err->setModel(model);
                                 err->setKind(Error::Kind::CONNECTION);
                                 mValidator->addError(err);
                             }
-                        } else {
+                        }
+                        else {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Variable '" + variable->getName() +
-                                                "' has an equivalent variable '" + equivalentVariable->getName() +
-                                                "'  which does not reciprocally have '" + variable->getName() +
-                                                "' set as an equivalent variable.");
+                                "' has an equivalent variable '" + equivalentVariable->getName() +
+                                "'  which does not reciprocally have '" + variable->getName() +
+                                "' set as an equivalent variable.");
                             err->setModel(model);
                             err->setKind(Error::Kind::CONNECTION);
                             mValidator->addError(err);
@@ -1460,8 +1725,395 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 }
             }
         }
+        /// @cellml2_19 19.10.5 Check that the variable equivalence network does not contain cycles
+        if (modelVariablesAreCyclic(model, hintlist)) {
+            ErrorPtr err = std::make_shared<Error>();
+            std::string des;
+            for (size_t i = 0; i < hintlist.size(); ++i) {
+                des += hintlist[i] + ", ";
+                }
+            err->setDescription("Cyclic variables exist, "+ std::to_string(hintlist.size())+" loops found (Variable(Component)). "+des);
+            err->setModel(model);
+            err->setKind(Error::Kind::UNITS);
+            mValidator->addError(err);
+            }
+ 
     }
 }
+
+bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, std::vector<std::string> &hintlist) {
+
+    /*
+        Test for cycles in the equivalent variable setup.
+    */
+
+    struct edge {
+        VariablePtr n1;
+        VariablePtr n2;
+        };
+
+    std::vector<VariablePtr> nodelist;
+    std::vector<edge> edgelist;
+
+    // Making node2edge map
+    std::map <VariablePtr, std::vector<int> > node2edge;
+    std::map <VariablePtr, std::vector<int> >::iterator it, otherfriend_it;
+    bool loop_found = false;
+
+    // Set up the list of nodes: only include nodes which have two or more connections
+    if (model->componentCount() > 0) {
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            ComponentPtr component = model->getComponent(i);
+
+            // Check for variables in this component.
+            for (size_t j = 0; j < component->variableCount(); ++j) {
+                VariablePtr variable = component->getVariable(j);
+
+                // Check for equivalent variables in this variable.
+                // Because cycles can only be formed with two or more connections, only save
+                // those variables which have more than one equiv connection with variables 
+                // that in turn have more than one commection
+                if (variable->equivalentVariableCount() >= 2) {
+                    nodelist.push_back(variable);
+                    node2edge.insert(std::pair<VariablePtr, std::vector<int>>(variable, {})); // empty vector instead of NULL
+
+                    // if equivalent variables of this one have another neighbour in the list the include that edge
+                    for (size_t k = 0; k < variable->equivalentVariableCount(); k++) {
+                        VariablePtr equivalent = variable->getEquivalentVariable(k);
+                        if (std::find(nodelist.begin(), nodelist.end(), equivalent) != nodelist.end()) {
+                            // Add the edge to the edgelist
+                            edgelist.push_back({ variable,equivalent });
+                            }
+                        }
+                    }
+                }
+            }
+
+        for (size_t e = 0; e < edgelist.size(); e++) {
+            node2edge.at(edgelist[e].n1).push_back(int (e));
+            node2edge.at(edgelist[e].n2).push_back(int (e));
+            }
+        // Removing nodes connected to only one viable edge, and then ... 
+        // Removing edges connected to only one viable node ... and then ... rinse and repeat
+        bool checking = false;
+        VariablePtr otherfriend;
+        int edge2go;
+        do {
+            checking = false;
+            for (auto onefriend = node2edge.cbegin(); onefriend != node2edge.cend();) {
+                
+                if (onefriend->second.size() == 1) {
+                    // remove edge from count of viable edges around other node
+                    edge2go = onefriend->second[0];
+
+                    // locating other node on edge to go
+                    otherfriend = edgelist[edge2go].n1 == onefriend->first ? edgelist[edge2go].n2 : edgelist[edge2go].n1;
+
+                    otherfriend_it = node2edge.find(otherfriend);
+                    if (otherfriend_it != node2edge.end()) {
+                        // Update node2edge for other nodes attached to this node -> remove edge2go from list
+                        otherfriend_it->second.erase(
+                            std::remove(
+                                otherfriend_it->second.begin(),
+                                otherfriend_it->second.end(), 
+                                edge2go), 
+                            otherfriend_it->second.end()
+                        );
+                    }
+                    
+                    // Removing the edge, cannot delete here as will screw up the indicies of the list
+                    edgelist[edge2go].n1 = edgelist[edge2go].n2 = NULL;
+                    checking = true;
+                    // Removing this node too
+                    onefriend = node2edge.erase(onefriend);
+                }
+                else {
+                    ++onefriend;
+                    }
+                }
+            } while (checking);
+            
+            // Any edges which remain in the node2edge array will be part of a loop.
+            std::vector<int> done_edges;
+            
+            while (node2edge.size()) {
+                std::vector<VariablePtr> done_nodes;
+                VariablePtr myNode = node2edge.begin()->first;
+                auto n2e_it = node2edge.begin();
+                bool closed = false;
+              
+                do {
+                    if (n2e_it->second.size() == 0) // then we have run out of edges attached to this node, not a loop
+                        break;
+                    edge2go = n2e_it->second.back();   
+
+                    // Getting nextNode at the other end of this edge
+                    otherfriend = myNode == edgelist[edge2go].n1 ? edgelist[edge2go].n2 : edgelist[edge2go].n1;
+                    // Removing myEdge from the node2edge list for myNode
+                    n2e_it->second.pop_back();
+
+                    // Update node2edge for other nodes attached to this node -> remove edge2go from list
+                    otherfriend_it = node2edge.find(otherfriend);
+                    if (otherfriend_it != node2edge.end()) {
+                        otherfriend_it->second.erase(
+                            std::remove(
+                                otherfriend_it->second.begin(),
+                                otherfriend_it->second.end(),
+                                edge2go),
+                            otherfriend_it->second.end()
+                        );
+                    }
+
+                    // Get next edge
+                    n2e_it = node2edge.find(otherfriend);
+
+                    // Adding myNode to the list
+                    if (std::find(done_nodes.begin(), done_nodes.end(), otherfriend) != done_nodes.end()) {
+                        closed = true;
+                        done_nodes.push_back(myNode);
+                        done_nodes.push_back(otherfriend);
+                        loop_found = true;
+                        }
+                    else {
+                        done_nodes.push_back(myNode);
+                        myNode = otherfriend;
+                        }
+                    } while (!closed);
+               
+                    std::string des = "";
+                    for (size_t i = 0; i < done_nodes.size(); ++i) {
+                        des += "'";
+                        Component* parent = static_cast<Component*>(done_nodes[i]->getParent());
+                        des += done_nodes[i]->getName()+" ("+parent->getName()+")'";
+                        if (i != done_nodes.size()-1) des += " <-> ";   
+                        }
+                    hintlist.push_back("Loop: " + des);
+
+                    // If the node2edge list is empty remove the entry
+                    for (auto n2e_it = node2edge.cbegin(); n2e_it != node2edge.cend();) {
+                        if (n2e_it->second.size() < 2) // Removing entries with one edge as well, catches overlapping loops 
+                            n2e_it = node2edge.erase(n2e_it);    
+                        else ++n2e_it; 
+                    }
+                };
+        }
+    return loop_found;
+}
+
+
+bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model, 
+    const VariablePtr &v1, const VariablePtr &v2, std::string &hints)
+{
+    bool status;
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr mu = std::make_shared<libcellml::Units>();
+    
+    // Reduce both sets of units to most basic form and compare them.  NB: Multipliers are not considered
+    std::map<std::string, double> unitmap;
+
+    // TODO Can we get the enum list of base units from StandardUnits here instead of hardcoding?
+    std::vector<std::string> base = { "second","ampere","metre","kilogram","mole","candela","dimensionless","kelvin" };
+    std::map< std::string, std::map<std::string,double> > standardList;
+
+    standardList["ampere"]["ampere"] = 1.0;
+    standardList["candela"]["candela"] = 1.0;
+    standardList["dimensionless"]["dimensionless"] = 1.0;
+    standardList["kelvin"]["kelvin"] = 1.0;
+    standardList["kilogram"]["kilogram"] = 1.0;
+    standardList["metre"]["metre"] = 1.0;
+    standardList["mole"]["mole"] = 1.0;
+    standardList["second"]["second"] = 1.0;
+    
+    standardList["becquerel"]["second"] = -1.0;
+    standardList["coulomb"]["second"] = 1.0;
+    standardList["coulomb"]["ampere"] = -1.0;
+    standardList["farad"]["metre"] = -2.0;
+    standardList["farad"]["kilogram"] = -1.0;
+    standardList["farad"]["second"] = -4.0;
+    standardList["farad"]["ampere"] = 2.0;
+    standardList["gram"]["kilogram"] = 1.0;
+    standardList["gray"]["metre"] = 2.0;
+    standardList["gray"]["second"] = -2.0;
+    standardList["henry"]["metre"] = 2.0;
+    standardList["henry"]["kilogram"] = 1.0;
+    standardList["henry"]["second"] = -2.0;
+    standardList["henry"]["ampere"] = -2.0;
+    standardList["hertz"]["second"] = -1.0;
+    standardList["joule"]["metre"] = 2.0;
+    standardList["joule"]["kilogram"] = 1.0;
+    standardList["joule"]["second"] = -2.0;
+    standardList["katal"]["mole"] = 1.0;
+    standardList["katal"]["second"] = -1.0;
+    standardList["liter"]["metre"] = 3.0;
+    standardList["litre"]["metre"] = 3.0;
+    standardList["lumen"]["candela"] = 1.0;
+    standardList["lux"]["metre"] = -2.0;
+    standardList["lux"]["candela"] = 1.0;
+    standardList["meter"]["metre"] = 1.0;
+    standardList["newton"]["metre"] = 1.0;
+    standardList["newton"]["kilogram"] = 1.0;
+    standardList["newton"]["second"] = -2.0;
+    standardList["ohm"]["metre"] = 2.0;
+    standardList["ohm"]["kilogram"] = 1.0;
+    standardList["ohm"]["second"] = -3.0;
+    standardList["ohm"]["ampere"] = -2.0;
+    standardList["pascal"]["metre"] = -1.0;
+    standardList["pascal"]["kilogram"] = 1.0;
+    standardList["pascal"]["second"] = -2.0;
+    // Special case for radians: set units as dimensionless for testing as m/m=1
+    standardList["radian"]["dimensionless"] = 1.0;
+    standardList["siemens"]["metre"] = -2.0;
+    standardList["siemens"]["kilogram"] = -1.0;
+    standardList["siemens"]["second"] = 3.0;
+    standardList["siemens"]["ampere"] = 2.0;
+    standardList["sievert"]["metre"] = 2.0;
+    standardList["sievert"]["second"] = -2.0;
+    // Special case for steradians: set units to dimensionless as m2/m2 = 1
+    standardList["steradian"]["dimensionless"] = 1.0;
+    standardList["tesla"]["kilogram"] = 1.0;
+    standardList["tesla"]["second"] = -2.0;
+    standardList["tesla"]["ampere"] = -1.0;
+    standardList["volt"]["metre"] = 2.0;
+    standardList["volt"]["kilogram"] = 1.0;
+    standardList["volt"]["second"] = -3.0;
+    standardList["volt"]["ampere"] = -1.0;
+    standardList["watt"]["metre"] = 2.0;
+    standardList["watt"]["kilogram"] = 1.0;
+    standardList["watt"]["second"] = -3.0;
+    standardList["weber"]["metre"] = 2.0;
+    standardList["weber"]["kilogram"] = 1.0;
+    standardList["weber"]["second"] = -2.0;
+    standardList["weber"]["ampere"] = -1.0;
+
+    for (std::vector<std::string>::iterator pos = base.begin(); pos != base.end(); ++pos) {
+        unitmap[*pos] = 0.0;
+    }
+
+    std::string myRef, myPre, myId;
+    std::map<std::string, double> myBase;
+    hints = "";
+    
+    if (!(v1->getUnits() == "dimensionless")) {
+        if (model->hasUnits(v1->getUnits())) {  
+            u1 = model->getUnits(v1->getUnits());
+            incrementBaseUnitCount(model, unitmap, u1->getName(), standardList, 1);
+        }
+        else if ( unitmap.find(v1->getUnits()) != unitmap.end() ) {  
+            // Then is an existing base unit: is it ever possible to get here?
+            unitmap.at(v1->getUnits()) += 1.0;
+        }
+        else if (isStandardUnitName(v1->getUnits())) {
+            incrementBaseUnitCount(model, unitmap, v1->getUnits(), standardList, 1);
+        }
+    }
+
+    // Remove same units from second unit to compare
+    if (!(v2->getUnits() == "dimensionless")) {
+        if ( model->hasUnits(v2->getUnits())) {
+            u2 = model->getUnits(v2->getUnits());
+            decrementBaseUnitCount(model, unitmap, u2->getName(), standardList, 1);
+        }
+        else if ( unitmap.find(v2->getUnits()) != unitmap.end() ) {  
+            // Then is an existing base unit
+            unitmap.at(v2->getUnits()) -= 1.0;
+        }
+        else if (isStandardUnitName(v2->getUnits())) {
+            decrementBaseUnitCount(model, unitmap, v2->getUnits(), standardList, 1);
+        }
+    }
+    // Remove "dimensionless" from testing
+    unitmap.erase("dimensionless");
+    // Check for non-zero entries in the map
+    status = true;
+    for (const auto &basepair : unitmap) {
+        if (basepair.second != 0.0) {
+            // Return trigger for error
+            hints += basepair.first + "^" + std::to_string(basepair.second) + ", ";
+            status = false;
+        }
+    }
+    return status;
+}
+
+void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model, 
+    std::map<std::string,double> &unitmap, const std::string uName, 
+    const std::map< std::string, std::map<std::string, double>> &standardList,
+    const double uExp) { 
+    std::string myRef, myPre, myId;
+    double myExp, myMult;
+    std::map<std::string, double> myBase;
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr uRef = std::make_shared<libcellml::Units>();
+
+    if (model->hasUnits(uName)) {
+        u = model->getUnits(uName);
+        if (!u->isBaseUnit()) {
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
+
+                if (!isStandardUnitName(myRef))
+                    incrementBaseUnitCount(model, unitmap, myRef, standardList, uExp*myExp);
+                else {
+                    // Increments base unit counts for standard unit powers
+                    myBase = standardList.at(myRef);
+                    for (const auto &iter : myBase) {
+                        unitmap.at(iter.first) += iter.second*myExp*uExp;
+                    }
+                }
+            }
+        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant 
+            // Empty unit, add to base list
+            unitmap.emplace(std::pair<std::string, double>(uName, uExp));
+        }
+    } 
+    else if (isStandardUnitName(uName)) {
+        myBase = standardList.at(uName);
+        for (const auto &iter : myBase) {
+            unitmap.at(iter.first) += iter.second*uExp;
+        }        
+    }
+}
+
+void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model, 
+    std::map<std::string,double> &unitmap, const std::string uName, 
+    const std::map< std::string, std::map<std::string, double>> &standardList, const double uExp) {
+
+    std::string myRef, myPre, myId;
+    double myExp, myMult;
+    std::map<std::string, double> myBase;
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    if (model->hasUnits(uName)) {
+        u = model->getUnits(uName);
+
+        if (!u->isBaseUnit()) {
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
+
+                if (!isStandardUnitName(myRef))
+                    decrementBaseUnitCount(model, unitmap, myRef, standardList, myExp*uExp);
+                else {
+                    myBase = standardList.at(myRef);
+                    for (const auto &iter : myBase) {
+                        unitmap.at(iter.first) -= iter.second*myExp*uExp;
+                    }
+                }
+            } 
+        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant?
+            // Empty unit, add to base list
+            unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
+        }
+    }
+    else if (isStandardUnitName(uName)) {
+        myBase = standardList.at(uName);
+        for (const auto &iter : myBase) {
+            unitmap.at(iter.first) -= iter.second*uExp;
+        }        
+    }  
+}
+
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
   std::string::size_type n = pattern.length();
@@ -1473,6 +2125,8 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
+    /// @cellml2_14 14.1.2 Lists the hard-coded supported MathML elements tags
+
     const std::vector<std::string> supportedMathMLElements =
     {
         "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
@@ -1519,9 +2173,9 @@ bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
 bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 {
     bool result = true;
-    // One or more alphabetic characters.
+    /// @cellml2_3 3.1.3 Check that length of a name is greater than 0
     if (name.length() > 0) {
-        // Does not start with numeric character.
+        /// @cellml2_3 3.1.4 Check that name does not start with a numeric character.
         if (isdigit(name[0])) {
             result = false;
             ErrorPtr err = std::make_shared<Error>();
@@ -1529,7 +2183,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
             err->setRule(SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);
             mValidator->addError(err);
         } else {
-            // Basic Latin alphanumeric characters and underscores.
+            /// @cellml2_3 3.1.2 Check that name consists of Basic Latin alphanumeric characters and underscores only.
             if (name.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_") != std::string::npos) {
                 result = false;
                 ErrorPtr err = std::make_shared<Error>();
@@ -1549,3 +2203,5 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 }
 
 }
+
+
