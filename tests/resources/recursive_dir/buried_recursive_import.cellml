@@ -1,15 +1,13 @@
 <?xml version='1.0'?>
 <model name="vakantie" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <import xlink:href="recursive_import.cellml">
+    <import xlink:href="C:/Users/kerim/Documents/GitHub/libcellml/tests/resources/buried_recursive_import.cellml">
         <component component_ref="beach" name="duplicating_the_beach"/>
     </import>
 	<component name="beach">
 		<variable name="sand" units="dimensionless" />
 		<variable name="sun" units="dimensionless" />
 	</component>
-
 	<import xlink:href="recursive_import.cellml">
 		<units name="sandiness" units_ref="zandigheid" />
 	</import>
-
 </model>

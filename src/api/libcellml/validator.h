@@ -47,9 +47,26 @@ public:
      * Validate the given @p model and its encapsulated entities using the
      * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
      *
+     * This function overloads the validateModel with a filename input.  If a filename is not
+     * provided *and* the model was not originally read from a file, then the validator will 
+     * not check 
+     *
      * @param model The model to validate.
+     * 
      */
     void validateModel(const ModelPtr &model);
+
+    /**
+    * @brief Validate the @p model using the CellML 2.0 Specification.
+    *
+    * Validate the given @p model and its encapsulated entities using the
+    * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+    *
+    * @param model The model to validate.
+    * @param filename (optional) The filename to associate with the main model and 
+    * validate imports against
+    */
+    void validateModel(const ModelPtr &model, std::string filename);
 
 private:
     void swap(Validator &rhs); /**< Swap method required for C++ 11 move semantics. */
