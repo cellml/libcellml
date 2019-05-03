@@ -302,7 +302,6 @@ TEST(Validator, importUnits) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
         "Import of units 'name_for_invalid_import' has an invalid URI in the href attribute, 'not @ valid url'. ",
         "Model 'model_name' contains multiple units with the name 'units_to_be_duplicated'. Valid units names must be unique to their model.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -329,7 +328,7 @@ TEST(Validator, importUnits) {
     importedUnits2->setName("invalid_imported_units_in_this_model");
     importedUnits2->setSourceUnits(imp2, "");
     m->addUnits(importedUnits2);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
 
     // Invalid units import - duplicate refs
@@ -343,19 +342,14 @@ TEST(Validator, importUnits) {
     v.validateModel(m);
     EXPECT_EQ(3u, v.errorCount());
 
-    v.validateModel(m); // mem error
-    EXPECT_EQ(4u, v.errorCount());
-
-
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
-    v.validateModel(m); // mem error
-    EXPECT_EQ(6u, v.errorCount());
-
+    v.validateModel(m); 
+    EXPECT_EQ(5u, v.errorCount());
 
     // Invalid html ref 
     libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
@@ -364,8 +358,8 @@ TEST(Validator, importUnits) {
     importedUnits5->setName("name_for_invalid_import");
     importedUnits5->setSourceUnits(imp5, "units_in_that_model");
     m->addUnits(importedUnits5);
-    v.validateModel(m); // mem error
-    EXPECT_EQ(7u, v.errorCount());
+    v.validateModel(m); 
+    EXPECT_EQ(6u, v.errorCount());
 
     // Duplicated units name
     libcellml::UnitsPtr manualUnits1 = std::make_shared<libcellml::Units>();
@@ -379,9 +373,9 @@ TEST(Validator, importUnits) {
     m->addUnits(manualUnits1);
     m->addUnits(manualUnits2);
 
-    v.validateModel(m); // mem error
-    EXPECT_EQ(8u, v.errorCount());
-    
+    v.validateModel(m); 
+    EXPECT_EQ(7u, v.errorCount());
+
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
@@ -398,10 +392,8 @@ TEST(Validator, importComponents) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
-        //"Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component does not have a valid name attribute.",
-        "Model 'model_name' contains multiple imported components from 'yet-another-other-model.xml' with the same component_ref attribute 'new_shiny_component_ref'.",
         "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute, 'not @ valid url'. ",
     };
 
@@ -438,36 +430,14 @@ TEST(Validator, importComponents) {
     v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
 
-    // Invalid component import - duplicate refs  TODO but is this allowed after all ?? #280, #298
-    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
-    imp3->setUrl("some-other-model.xml");
-    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
-    importedComponent3->setName("duplicate_imported_component_in_this_model");
-    importedComponent3->setSourceComponent(imp3, "component_in_that_model");
-    m->addComponent(importedComponent3);
-    v.validateModel(m); 
-    EXPECT_EQ(4u, v.errorCount());
-
   // Invalid component import - unnamed component
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
-
     v.validateModel(m); 
-    EXPECT_EQ(6u, v.errorCount());
-
-
-    // Invalid: duplicating component_ref and source TODO but is this allowed after all ?? #280, #298
-    libcellml::ImportSourcePtr imp6 = std::make_shared<libcellml::ImportSource>();
-    imp6->setUrl("yet-another-other-model.xml");
-    libcellml::ComponentPtr importedComponent6 = std::make_shared<libcellml::Component>();
-    importedComponent6->setName("another_duplicate_imported_component");
-    importedComponent6->setSourceComponent(imp6, "new_shiny_component_ref");
-    m->addComponent(importedComponent6);
-    v.validateModel(m); 
-    EXPECT_EQ(7u, v.errorCount());
+    EXPECT_EQ(5u, v.errorCount());
 
     // Valid: duplicate component_ref from a different source
     libcellml::ImportSourcePtr imp7 = std::make_shared<libcellml::ImportSource>();
@@ -477,7 +447,7 @@ TEST(Validator, importComponents) {
     importedComponent7->setSourceComponent(imp7, "component_in_that_model");
     m->addComponent(importedComponent7);
     v.validateModel(m); 
-    EXPECT_EQ(7u, v.errorCount());
+    EXPECT_EQ(5u, v.errorCount());
 
     // Invalid: component_ref is not valid html
     libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
@@ -487,7 +457,7 @@ TEST(Validator, importComponents) {
     importedComponent8->setSourceComponent(imp8, "component_in_some_model");
     m->addComponent(importedComponent8);
     v.validateModel(m); 
-    EXPECT_EQ(8u, v.errorCount());
+    EXPECT_EQ(6u, v.errorCount());
  
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -1573,7 +1543,6 @@ TEST(Validator, validMathCnElements) {
     v.validateModel(m);
     EXPECT_EQ(0u, v.errorCount());
 }
-
 
 TEST(Validator, setUnitsWithNoChildUnit) {
     /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, user-defined base variables
