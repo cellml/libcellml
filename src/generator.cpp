@@ -837,19 +837,18 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     // Determine whether parentheses should be added around the left and/or
     // right piece of code, and this based on the precedence of the operators
     // used in CellML, which are listed below from higher to lower precedence:
-    //  1. Parentheses
-    //  2. POWER (as an opeartor and not as a function, i.e. as in Matlab and
-    //            not in C, for example)
-    //  3. Unary PLUS, Unary MINUS, NOT
-    //  4. TIMES, DIVIDE
-    //  5. PLUS, MINUS
-    //  6. LT, LEQ, GT, GEQ
-    //  7. EQEQ, NEQ
-    //  8. XOR (bitwise)
-    //  9. AND (logical)
-    // 10. OR (logical)
-    // 11. PIECEWISE
-    // 12. EQ
+    //  1. Parentheses                                           [Left to right]
+    //  2. POWER (as an operator, not as a function, i.e.        [Left to right]
+    //            as in Matlab and not in C, for example)
+    //  3. Unary PLUS, Unary MINUS, NOT                          [Right to left]
+    //  4. TIMES, DIVIDE                                         [Left to right]
+    //  5. PLUS, MINUS                                           [Left to right]
+    //  6. LT, LEQ, GT, GEQ                                      [Left to right]
+    //  7. EQEQ, NEQ                                             [Left to right]
+    //  8. XOR (bitwise)                                         [Left to right]
+    //  9. AND (logical)                                         [Left to right]
+    // 10. OR (logical)                                          [Left to right]
+    // 11. PIECEWISE (as an operator)                            [Right to left]
 
     if (isPlusOperator(ast)) {
         if (   isRelationalOperator(ast->left())
