@@ -288,8 +288,11 @@ struct Generator::GeneratorImpl
     std::string mRem = "fmod";
 
     // Piecewise statement
+    // Note: the parentheses around #cond is not needed (because of precedence
+    //       rules). It's just that it looks better/clearer to have them
+    //       (somewhat subjective indeed).
 
-    std::string mConditionalOperatorIf = "#cond?#if";
+    std::string mConditionalOperatorIf = "(#cond)?#if";
     std::string mConditionalOperatorElse = ":#else";
     std::string mPiecewiseIf = "piecewise(#cond, #if";
     std::string mPiecewiseElse = ", #else)";
@@ -926,6 +929,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             }
         }
     } else if (isAndOperator(ast)) {
+        // Note: according to the precedence rules above, we only need to add
+        //       parentheses around OR and PIECEWISE. It's just that it looks
+        //       better/clearer to have some around some other operators
+        //       (somewhat subjective indeed).
+
         if (   isRelationalOperator(ast->left())
             || isOrOperator(ast->left())
             || isXorOperator(ast->left())
@@ -966,6 +974,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             }
         }
     } else if (isOrOperator(ast)) {
+        // Note: according to the precedence rules above, we only need to add
+        //       parentheses around PIECEWISE. It's just that it looks
+        //       better/clearer to have some around some other operators
+        //       (somewhat subjective indeed).
+
         if (   isRelationalOperator(ast->left())
             || isAndOperator(ast->left())
             || isXorOperator(ast->left())
@@ -1006,6 +1019,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             }
         }
     } else if (isXorOperator(ast)) {
+        // Note: according to the precedence rules above, we only need to add
+        //       parentheses around AND, OR and PIECEWISE. It's just that it
+        //       looks better/clearer to have some around some other operators
+        //       (somewhat subjective indeed).
+
         if (   isRelationalOperator(ast->left())
             || isAndOperator(ast->left())
             || isOrOperator(ast->left())
@@ -1060,6 +1078,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (   isRelationalOperator(ast->right())
+            || isMinusOperator(ast->left())
             || isTimesOperator(ast->right())
             || isDivideOperator(ast->right())
             || isPowerOperator(ast->right())
@@ -1067,8 +1086,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isLogicalOrBitwiseOperator(ast->right())
             || isPiecewiseStatement(ast->right())) {
             right = "("+right+")";
-        } else if (   isPlusOperator(ast->right())
-                   || isMinusOperator(ast->right())) {
+        } else if (isPlusOperator(ast->right())) {
             if (ast->right()->right() != nullptr) {
                 right = "("+right+")";
             }
@@ -1088,6 +1106,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (   isRelationalOperator(ast->left())
+            || isMinusOperator(ast->left())
             || isTimesOperator(ast->left())
             || isDivideOperator(ast->left())
             || isPowerOperator(ast->left())
@@ -1095,8 +1114,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
             || isLogicalOrBitwiseOperator(ast->left())
             || isPiecewiseStatement(ast->left())) {
             left = "("+left+")";
-        } else if (   isPlusOperator(ast->left())
-                   || isMinusOperator(ast->left())) {
+        } else if (isPlusOperator(ast->left())) {
             if (ast->left()->right() != nullptr) {
                 left = "("+left+")";
             }
