@@ -172,11 +172,33 @@ GeneratorEquationAstPtr &GeneratorEquation::ast()
     return mAst;
 }
 
-struct GeneratorVariable
+class GeneratorVariable;
+typedef std::shared_ptr<GeneratorVariable> GeneratorVariablePtr;
+
+class GeneratorVariable
 {
+public:
+    enum class Type {
+        VOI,
+        STATE,
+        RATE,
+        ALGEBRAIC,
+        CONSTANT,
+        COMPUTED_CONSTANT
+    };
+
+    explicit GeneratorVariable();
+
+    Type type() const;
+
+private:
+    Type mType;
 };
 
-typedef std::shared_ptr<GeneratorVariable> GeneratorVariablePtr;
+GeneratorVariable::Type GeneratorVariable::type() const
+{
+    return mType;
+}
 
 struct Generator::GeneratorImpl
 {
@@ -184,7 +206,6 @@ struct Generator::GeneratorImpl
 
     std::vector<GeneratorEquationPtr> mEquations;
 
-    std::vector<GeneratorVariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
     // Relational operators
@@ -1427,7 +1448,6 @@ Generator::Generator(const Generator &rhs)
     : Logger(rhs)
     , mPimpl(new GeneratorImpl())
 {
-    mPimpl->mStates = rhs.mPimpl->mStates;
     mPimpl->mVariables = rhs.mPimpl->mVariables;
 }
 
@@ -1493,7 +1513,15 @@ void Generator::setWithNames(bool withNames)
 
 size_t Generator::stateCount() const
 {
-    return mPimpl->mStates.size();
+    size_t res = 0;
+
+    for (auto variable : mPimpl->mVariables) {
+        if (variable->type() == GeneratorVariable::Type::STATE) {
+            ++res;
+        }
+    }
+
+    return res;
 }
 
 size_t Generator::rateCount() const
@@ -1503,7 +1531,17 @@ size_t Generator::rateCount() const
 
 size_t Generator::variableCount() const
 {
-    return mPimpl->mVariables.size();
+    size_t res = 0;
+
+    for (auto variable : mPimpl->mVariables) {
+        if (   (variable->type() == GeneratorVariable::Type::ALGEBRAIC)
+            || (variable->type() == GeneratorVariable::Type::CONSTANT)
+            || (variable->type() == GeneratorVariable::Type::COMPUTED_CONSTANT)) {
+            ++res;
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::neededMathMethods() const
