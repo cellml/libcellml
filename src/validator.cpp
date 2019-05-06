@@ -519,7 +519,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                             err->setImportSource(units->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
-                            foundImportError = true;
                         } 
                         else xmlFreeURI(URIPtr);
                     }
@@ -674,7 +673,6 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
     }
 
     std::stringstream buffer;
-    bool found = false;
     buffer << t.rdbuf();
     doc->parse(buffer.str());
 
@@ -1861,7 +1859,6 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
     return loop_found;
 }
 
-
 bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model, 
     const VariablePtr &v1, const VariablePtr &v2, std::string &hints)
 {
@@ -2035,44 +2032,6 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
             unitmap.at(iter.first) += iter.second*uExp;
         }        
     }
-}
-
-void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model, 
-    std::map<std::string,double> &unitmap, const std::string uName, 
-    const std::map< std::string, std::map<std::string, double>> &standardList, const double uExp) {
-
-    std::string myRef, myPre, myId;
-    double myExp, myMult;
-    std::map<std::string, double> myBase;
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-
-    if (model->hasUnits(uName)) {
-        u = model->getUnits(uName);
-
-        if (!u->isBaseUnit()) {
-            for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
-
-                if (!isStandardUnitName(myRef))
-                    decrementBaseUnitCount(model, unitmap, myRef, standardList, myExp*uExp);
-                else {
-                    myBase = standardList.at(myRef);
-                    for (const auto &iter : myBase) {
-                        unitmap.at(iter.first) -= iter.second*myExp*uExp;
-                    }
-                }
-            } 
-        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant?
-            // Empty unit, add to base list
-            unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
-        }
-    }
-    else if (isStandardUnitName(uName)) {
-        myBase = standardList.at(uName);
-        for (const auto &iter : myBase) {
-            unitmap.at(iter.first) -= iter.second*uExp;
-        }        
-    }  
 }
 
 void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model, 

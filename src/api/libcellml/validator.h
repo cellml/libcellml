@@ -42,18 +42,18 @@ public:
     Validator& operator=(Validator v); /**< Assignment operator */
 
     /**
-     * @brief Validate the @p model using the CellML 2.0 Specification.
-     *
-     * Validate the given @p model and its encapsulated entities using the
-     * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
-     *
-     * This function overloads the validateModel with a filename input.  If a filename is not
-     * provided *and* the model was not originally read from a file, then the validator will 
-     * not check 
-     *
-     * @param model The model to validate.
-     * 
-     */
+    * @brief Validate the @p model using the CellML 2.0 Specification.
+    *
+    * Validate the given @p model and its encapsulated entities using the
+    * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+    *
+    * This function overloads the validateModel with a filename input.  If a filename is not
+    * provided *and* the model was not originally read from a file, then the validator will 
+    * not check 
+    *
+    * @param model The model to validate.
+    * 
+    */
     void validateModel(const ModelPtr &model);
 
     /**
