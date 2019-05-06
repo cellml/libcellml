@@ -401,11 +401,8 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
     }
 
     // If we don't have a filename or working directory we can't check imports 
-    bool checkImports = false;
-    if (filename != "") {
+    if (filename != "") 
         mPimpl->validateImportSources(model, filename);
-        checkImports = true;
-    }
     
     // Check for components in this model.
     /// @cellml2_4 4.2.3 Check for unique encapsulation is not required as more than one cannot be stored
