@@ -1958,7 +1958,6 @@ TEST(Validator, validateNoCyclesUnits) {
     }   
 }
 
-
 TEST(Validator, importNameNotFoundInFile) {
     // Check that component/unit name to import exists in specified import location
     std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
@@ -1971,7 +1970,7 @@ TEST(Validator, importNameNotFoundInFile) {
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
     EXPECT_EQ(1u, v.errorCount());
-}
+ }
 
 TEST(Validator, importFileDoesNotExist) {
     // Check import file exists
@@ -2050,7 +2049,6 @@ TEST(Validator, validateGenerationalImport) {
 
     EXPECT_EQ(0u, v.errorCount());
 }
-
 
 
 
