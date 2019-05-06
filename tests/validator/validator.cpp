@@ -1959,6 +1959,100 @@ TEST(Validator, validateNoCyclesUnits) {
 }
 
 
+TEST(Validator, importNameNotFoundInFile) {
+    // Check that component/unit name to import exists in specified import location
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+    EXPECT_EQ(1u, v.errorCount());
+}
+
+TEST(Validator, importFileDoesNotExist) {
+    // Check import file exists
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
+    EXPECT_EQ(2u, v.errorCount());
+}
+
+TEST(Validator, importLayer) {
+    // Check changes in directory are permitted
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
+
+    EXPECT_EQ(1u, v.errorCount());
+}
+
+TEST(Validator, validateCircularImportReferences) {
+    // Check true circular references are identified and execution stops
+    // Check false circular references are allowed (eg: reference to another name in already-used file)
+
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
+
+    EXPECT_EQ(2u, v.errorCount());
+}
+
+TEST(Validator, validateImportsInMultipleLocations) {
+    // Check import from same filename in another directory
+    // Check ../  notation in href to go to parent directory
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
+
+    EXPECT_EQ(0u, v.errorCount());
+}
+
+TEST(Validator, validateGenerationalImport) {
+    // Check non-absolute references in child imports change working directory 
+
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
+
+    EXPECT_EQ(0u, v.errorCount());
+}
+
+
+
 
 
 
