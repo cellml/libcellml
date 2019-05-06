@@ -673,14 +673,14 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
     std::string file_to_open = "";
     std::string working_directory = "";
     
-    if (pathIsRelative(find_path)) {
+    if (pathIsRelative(find_ref)) {
         // Add parent's working directory to file path
         file_to_open = find_path + find_ref;
         working_directory = find_path;
     } else {
         file_to_open = find_ref;
         // Update working directory to the path of this file for future relative imports
-        working_directory = find_ref.substr(0,find_ref.find_last_of("/\\")+1);
+        working_directory = find_ref.substr(0, find_ref.find_last_of("/\\") + 1);
     }
 
     // Check that this pair of item name, type and file has not been included in the history already
@@ -925,7 +925,6 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
         e + " which was not found in the file.");
     mValidator->addError(err);
 }
-
 
 void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model) {
 
