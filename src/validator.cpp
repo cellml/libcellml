@@ -32,7 +32,6 @@ limitations under the License.
 #include <libxml/uri.h>
 
 #include <algorithm>
-#include <filesystem> 
 #include <iostream>
 #include <map>
 #include <regex>
@@ -371,6 +370,20 @@ void Validator::swap(Validator &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
+bool pathIsRelative(const std::string &path) {
+    // KRM TODO Not sure if this should be in this file or in a utilities file?
+    size_t found = path.find(":"); 
+
+    if (path.at(0) == '.') // starting with . or .. in any operating system implies relative path
+        return true;
+    else if (found != std::string::npos) // presence of a colon implies either an absolute path with a drive letter (Windows) or non-local path
+        return false;
+    else if (path.at(0) == '/') // starting with slash in MacOS/Unix/Linux implies absolute
+        return false;
+
+    return true;
+}
+
 void Validator::validateModel(const ModelPtr &model) {
 
     // If a filename is *not* specified, trigger zero-depth import checking as working directory is unknown
@@ -657,18 +670,17 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
                                                  std::vector<std::pair<std::string, std::string>> &history )
 {
     // Function to locate the imported entity of type=find_type in file=find_ref with name=find_name 
-    std::experimental::filesystem::path path(find_ref); 
     std::string file_to_open = "";
     std::string working_directory = "";
-    if (path.is_absolute()) {
-        file_to_open = find_ref;
-        // Update working directory to the path of this file for future relative imports
-        working_directory = find_ref.substr(0,find_ref.find_last_of("/\\")+1);
-    }
-    if (path.is_relative()) {
+    
+    if (pathIsRelative(find_path)) {
         // Add parent's working directory to file path
         file_to_open = find_path + find_ref;
         working_directory = find_path;
+    } else {
+        file_to_open = find_ref;
+        // Update working directory to the path of this file for future relative imports
+        working_directory = find_ref.substr(0,find_ref.find_last_of("/\\")+1);
     }
 
     // Check that this pair of item name, type and file has not been included in the history already

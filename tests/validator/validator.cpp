@@ -1574,7 +1574,6 @@ TEST(Validator, validMathCnElements) {
     EXPECT_EQ(0u, v.errorCount());
 }
 
-
 TEST(Validator, setUnitsWithNoChildUnit) {
     /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, user-defined base variables
     std::vector<std::string> expectedErrors = {
