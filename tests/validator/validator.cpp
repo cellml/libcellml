@@ -336,14 +336,9 @@ TEST(Validator, importUnits) {
     importedUnits3->setName("duplicate_imported_units_in_this_model");
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
-<<<<<<< HEAD
 
-    v.validateModel(m);
+    v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
-=======
-    v.validateModel(m); // mem error
-    EXPECT_EQ(4u, v.errorCount());
->>>>>>> parent of adf7c64... Merge pull request #3 from kerimoyle/recursion_checking
 
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
@@ -351,13 +346,9 @@ TEST(Validator, importUnits) {
     libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
-<<<<<<< HEAD
+
     v.validateModel(m); 
     EXPECT_EQ(5u, v.errorCount());
-=======
-    v.validateModel(m); // mem error
-    EXPECT_EQ(6u, v.errorCount());
->>>>>>> parent of adf7c64... Merge pull request #3 from kerimoyle/recursion_checking
 
     // Invalid html ref 
     libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
@@ -400,10 +391,6 @@ TEST(Validator, importComponents) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
-<<<<<<< HEAD
-=======
-        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
->>>>>>> parent of adf7c64... Merge pull request #3 from kerimoyle/recursion_checking
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component does not have a valid name attribute.",
         "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute, 'not @ valid url'. ",
@@ -442,42 +429,14 @@ TEST(Validator, importComponents) {
     v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
 
-<<<<<<< HEAD
-  // Invalid component import - unnamed component
-=======
-    // Invalid component import - duplicate refs  TODO but is this allowed after all ?? #280, #298
-    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
-    imp3->setUrl("some-other-model.xml");
-    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
-    importedComponent3->setName("duplicate_imported_component_in_this_model");
-    importedComponent3->setSourceComponent(imp3, "component_in_that_model");
-    m->addComponent(importedComponent3);
-    v.validateModel(m); 
-    EXPECT_EQ(4u, v.errorCount());
-
     // Invalid component import - unnamed component
->>>>>>> parent of adf7c64... Merge pull request #3 from kerimoyle/recursion_checking
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
     v.validateModel(m); 
-<<<<<<< HEAD
     EXPECT_EQ(5u, v.errorCount());
-=======
-    EXPECT_EQ(6u, v.errorCount());
-
-    // Invalid: duplicating component_ref and source TODO but is this allowed after all ?? #280, #298
-    libcellml::ImportSourcePtr imp6 = std::make_shared<libcellml::ImportSource>();
-    imp6->setUrl("yet-another-other-model.xml");
-    libcellml::ComponentPtr importedComponent6 = std::make_shared<libcellml::Component>();
-    importedComponent6->setName("another_duplicate_imported_component");
-    importedComponent6->setSourceComponent(imp6, "new_shiny_component_ref");
-    m->addComponent(importedComponent6);
-    v.validateModel(m); 
-    EXPECT_EQ(7u, v.errorCount());
->>>>>>> parent of adf7c64... Merge pull request #3 from kerimoyle/recursion_checking
 
     // Valid: duplicate component_ref from a different source
     libcellml::ImportSourcePtr imp7 = std::make_shared<libcellml::ImportSource>();
