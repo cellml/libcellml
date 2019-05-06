@@ -14,10 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_resources.h"
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
 
+#include <fstream>
 #include <libcellml>
 
 /*
@@ -317,7 +319,7 @@ TEST(Validator, importUnits) {
     importedUnits->setName("valid_imported_units_in_this_model");
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
-    v.validateModel(m); // mem error
+    v.validateModel(m); 
     EXPECT_EQ(0u, v.errorCount());
 
     // Invalid units import- missing refs
@@ -346,7 +348,6 @@ TEST(Validator, importUnits) {
     libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
-
     v.validateModel(m); 
     EXPECT_EQ(5u, v.errorCount());
 
@@ -429,12 +430,31 @@ TEST(Validator, importComponents) {
     v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
 
-    // Invalid component import - unnamed component
+    // Invalid component import - duplicate refs  TODO but is this allowed after all ?? #280, #298
+    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
+    imp3->setUrl("some-other-model.xml");
+    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
+    importedComponent3->setName("duplicate_imported_component_in_this_model");
+    importedComponent3->setSourceComponent(imp3, "component_in_that_model");
+    m->addComponent(importedComponent3);
+    v.validateModel(m); 
+    EXPECT_EQ(3u, v.errorCount());
+
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
+    v.validateModel(m); 
+    EXPECT_EQ(5u, v.errorCount());
+    
+    // Invalid: duplicating component_ref and source TODO but is this allowed after all ?? #280, #298
+    libcellml::ImportSourcePtr imp6 = std::make_shared<libcellml::ImportSource>();
+    imp6->setUrl("yet-another-other-model.xml");
+    libcellml::ComponentPtr importedComponent6 = std::make_shared<libcellml::Component>();
+    importedComponent6->setName("another_duplicate_imported_component");
+    importedComponent6->setSourceComponent(imp6, "new_shiny_component_ref");
+    m->addComponent(importedComponent6);
     v.validateModel(m); 
     EXPECT_EQ(5u, v.errorCount());
 
@@ -1932,6 +1952,98 @@ TEST(Validator, validateNoCyclesUnits) {
     for (size_t i = 0; i < v.errorCount(); i++) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }   
+}
+
+TEST(Validator, importNameNotFoundInFile) {
+    // Check that component/unit name to import exists in specified import location
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+    EXPECT_EQ(1u, v.errorCount());
+ }
+
+TEST(Validator, importFileDoesNotExist) {
+    // Check import file exists
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
+    EXPECT_EQ(2u, v.errorCount());
+}
+
+TEST(Validator, importLayer) {
+    // Check changes in directory are permitted
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
+
+    EXPECT_EQ(1u, v.errorCount());
+}
+
+TEST(Validator, validateCircularImportReferences) {
+    // Check true circular references are identified and execution stops
+    // Check false circular references are allowed (eg: reference to another name in already-used file)
+
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
+
+    EXPECT_EQ(2u, v.errorCount());
+}
+
+TEST(Validator, validateImportsInMultipleLocations) {
+    // Check import from same filename in another directory
+    // Check ../  notation in href to go to parent directory
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
+
+    EXPECT_EQ(0u, v.errorCount());
+}
+
+TEST(Validator, validateGenerationalImport) {
+    // Check non-absolute references in child imports change working directory 
+
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
+
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
+
+    EXPECT_EQ(0u, v.errorCount());
 }
 
 

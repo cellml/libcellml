@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<model name="coffee_required" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <import xlink:href="recursive_dir/recursive_import_path2.cellml">
+        <component component_ref="no_latte_here" name="latte"/>
+    </import>
+</model>

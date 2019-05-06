@@ -128,13 +128,8 @@ public:
      *
      * If the two variables are not equivalent the empty string is returned.
      *
-<<<<<<< HEAD
      * @param variable1 Variable one of the equivalence.
      * @param variable2 Variable two of the equivalence.
-=======
-     * @param variable1Variable one of the equivalence.
-     * @param variable2 Variable one of the equivalence.
->>>>>>> parent of adf7c64... Merge pull request #3 from kerimoyle/recursion_checking
      * @return the @c std::string mapping id.
      */
     static std::string getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);

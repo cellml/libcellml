@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<model name="level3" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<component name="c3">
+		<variable name="v3" units="dimensionless" />
+	</component>
+</model>

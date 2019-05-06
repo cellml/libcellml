@@ -22,6 +22,7 @@ limitations under the License.
 #include "libcellml/importsource.h"
 #include "libcellml/model.h"
 #include "libcellml/namespaces.h"
+#include "libcellml/parser.h"
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
@@ -49,6 +50,28 @@ namespace libcellml {
 struct Validator::ValidatorImpl
 {
     Validator *mValidator;
+
+    /**
+    * @brief Check that the specified _ref item exists in the specified import url
+    *
+    * Any errors will be logged in the @c Validator.
+    *
+    */
+    void checkImportIsAvailable(const std::string &find_path, 
+                           const std::string &find_ref, 
+                           const std::string &find_name,
+                           const std::string &find_type,
+                           std::vector<std::pair<std::string, std::string>> &history);
+
+    /**
+    * @brief A preliminary check of the importing file tree.
+    *
+    * If the Model was created by parsing a file, check that no other imported entity refers
+    * to that original filename, and that there are no cycles present.  Any errors will be 
+    * logged in the @c Validator.
+    *
+    */
+    void validateImportSources(const ModelPtr &model, std::string filename);
 
     /**
         * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -344,7 +367,27 @@ void Validator::swap(Validator &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Validator::validateModel(const ModelPtr &model)
+bool pathIsRelative(const std::string &path) {
+    // KRM TODO Not sure if this should be in this file or in a utilities file?
+    size_t found = path.find(":"); 
+
+    if (path.at(0) == '.') // starting with . or .. in any operating system implies relative path
+        return true;
+    else if (found != std::string::npos) // presence of a colon implies either an absolute path with a drive letter (Windows) or non-local path
+        return false;
+    else if (path.at(0) == '/') // starting with slash in MacOS/Unix/Linux implies absolute
+        return false;
+
+    return true;
+}
+
+void Validator::validateModel(const ModelPtr &model) {
+
+    // If a filename is *not* specified, trigger zero-depth import checking as working directory is unknown
+    validateModel(model, ""); 
+}
+
+void Validator::validateModel(const ModelPtr &model, std::string filename)
 {
     // Clear any pre-existing errors in the validator instance.
     clearErrors();
@@ -356,6 +399,15 @@ void Validator::validateModel(const ModelPtr &model)
         err->setRule(SpecificationRule::MODEL_NAME);
         addError(err);
     }
+
+    // If we don't have a filename or working directory we can't check imports 
+    bool checkImports = false;
+    if (filename != "") {
+        mPimpl->validateImportSources(model, filename);
+        checkImports = true;
+    }
+    
+    // Check for components in this model.
     /// @cellml2_4 4.2.3 Check for unique encapsulation is not required as more than one cannot be stored
     /// @cellml2_4 4.2.2 Check for presence of components in this model.
     if (model->componentCount() > 0) {
@@ -373,6 +425,7 @@ void Validator::validateModel(const ModelPtr &model)
                     /// is in a valid format.  NB: Does not check what it refers to.
                     std::string componentRef = component->getImportReference(); 
                     std::string importSource = component->getImportSource()->getUrl(); 
+
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         
                         ErrorPtr err = std::make_shared<Error>();
@@ -401,10 +454,10 @@ void Validator::validateModel(const ModelPtr &model)
                             err->setImportSource(component->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
+                            
                         }
                         else xmlFreeURI(URIPtr);
                     }                   
-                    
                     // Push back the unique sources and refs.
                     componentImportSources.push_back(importSource);
                     componentRefs.push_back(componentRef);
@@ -438,7 +491,6 @@ void Validator::validateModel(const ModelPtr &model)
                     /// @cellml2_6 6.1.2 Check for a units_ref in this import units instance
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImportSource()->getUrl();
-
                     /// @cellml2_6 6.1.2 Check that the name given by the units_ref matches the naming specifications
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -467,6 +519,7 @@ void Validator::validateModel(const ModelPtr &model)
                             err->setImportSource(units->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
+                            foundImportError = true;
                         } 
                         else xmlFreeURI(URIPtr);
                     }
@@ -502,6 +555,326 @@ void Validator::validateModel(const ModelPtr &model)
 
     /// @cellml2_4 4.2.2.2 Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
+}
+
+void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string filename) {
+    // Check against the working directory location (assumed same as path to filename or model import filename)
+    std::string workingDirectory = "";
+    if (filename!="") 
+        workingDirectory = filename.substr(0,filename.find_last_of("/\\")+1);
+    else {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Validation of imported files is not possible without a model file specified.");
+        err->setKind(Error::Kind::IMPORT);
+        err->setModel(model);
+        mValidator->addError(err);
+        return;
+    }
+
+    if (model->componentCount() > 0) {
+        std::vector<std::string> componentNames;
+        std::vector<std::string> componentRefs;
+        std::vector<std::string> componentImportSources;
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            ComponentPtr component = model->getComponent(i);
+            std::string componentName = component->getName();
+            if (componentName.length()) {
+                if (component->isImport()) {
+                    // Check that a concrete instance of a component exists at the end of import chain
+                    std::string componentRef = component->getImportReference();
+                    std::string importSource = workingDirectory + component->getImportSource()->getUrl();
+                    std::vector<std::pair<std::string, std::string>> history;
+                    history.push_back(std::make_pair(componentName, filename));
+                    checkImportIsAvailable(workingDirectory, importSource, componentRef, "component", history);
+                    std::vector<std::pair<std::string,std::string>>().swap(history);  
+                }
+            }
+        }
+    }
+
+    if (model->unitsCount() > 0) {
+        std::vector<std::string> unitsNames;
+        std::vector<std::string> unitsRefs;
+        std::vector<std::string> unitsImportSources;
+        for (size_t i = 0; i < model->unitsCount(); ++i) {
+            UnitsPtr units = model->getUnits(i);
+            std::string unitsName = units->getName();
+            if (unitsName.length()) {
+                if (units->isImport()) {
+                    // Check that a concrete instance of units exists at the end of the import chain
+                    std::string unitsRef = units->getImportReference();
+                    std::string importSource = workingDirectory + units->getImportSource()->getUrl();
+                    std::vector<std::pair<std::string, std::string>> history;
+                    history.push_back(std::make_pair(unitsName, filename));
+                    checkImportIsAvailable(workingDirectory, importSource, unitsRef, "units", history);
+                    std::vector<std::pair<std::string,std::string>>().swap(history);  
+                }
+            }
+        }
+    }
+}
+
+void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_path,
+                                                 const std::string &find_ref,
+                                                 const std::string &find_name, 
+                                                 const std::string &find_type,
+                                                 std::vector<std::pair<std::string, std::string>> &history )
+{
+    // Function to locate the imported entity of type=find_type in file=find_ref with name=find_name 
+    std::string file_to_open = "";
+    std::string working_directory = "";
+    
+    if (pathIsRelative(find_ref)) {
+        // Add parent's working directory to file path
+        file_to_open = find_path + find_ref;
+        working_directory = find_path;
+    } else {
+        file_to_open = find_ref;
+        // Update working directory to the path of this file for future relative imports
+        working_directory = find_ref.substr(0, find_ref.find_last_of("/\\") + 1);
+    }
+
+    // Check that this pair of item name, type and file has not been included in the history already
+    auto p = std::make_pair(find_name,file_to_open);
+    if(std::find(history.begin(), history.end(), p) == history.end())
+        history.push_back(p);
+    else {
+        history.push_back(p);
+        ErrorPtr err = std::make_shared<Error>();
+        std::string e("");
+        std::string sep("         ");
+        std::string separator(" which imports ");
+        for (const auto& i : history) {
+            e += sep+"\n ('" + i.first + "' in " + i.second + ")";
+            sep = separator;
+        }
+        err->setDescription("Import of "+find_type+" '"+history[0].first+"' has circular dependencies:"+e);
+        err->setKind(Error::Kind::IMPORT);
+        mValidator->addError(err);
+        return;
+    }
+
+    XmlDocPtr doc = std::make_shared<XmlDoc>();
+    std::ifstream t(file_to_open);
+    if (t.fail()) {
+        ErrorPtr err = std::make_shared<Error>();
+        std::string e("");
+        std::string sep = "         ";
+        std::string separator(" which imports");
+        for (const auto& i : history) {
+            e += sep+"\n ('" + i.first + "' in " + i.second + ")";
+            sep = separator;
+        }
+        err->setDescription(
+            "Import of " + find_type + " '" + history[0].first + 
+            "' has failed: " + 
+            e + " but the file was not found.");
+        mValidator->addError(err);
+        return;
+    }
+
+    std::stringstream buffer;
+    bool found = false;
+    buffer << t.rdbuf();
+    doc->parse(buffer.str());
+
+    // Copy any XML parsing errors into the common parser error handler.
+    if (doc->xmlErrorCount() > 0) {
+        for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Error found when reading "+file_to_open+
+                                ": "+doc->getXmlError(i));
+            err->setKind(Error::Kind::XML);
+            mValidator->addError(err);
+        }
+        return;
+    }
+
+    const XmlNodePtr node = doc->getRootNode();
+
+    if (!node) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Could not get a valid XML root node from the provided input.");
+        err->setKind(Error::Kind::XML);
+        mValidator->addError(err);
+        return;
+    } 
+    else if (!node->isCellmlElement("model")) {
+        ErrorPtr err = std::make_shared<Error>();
+        if (node->getName() == "model") {
+            std::string nodeNamespace = node->getNamespace();
+            if (nodeNamespace.empty())
+                nodeNamespace = "null";
+            err->setDescription("Model element is in invalid namespace '" + nodeNamespace +
+                                "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS +
+                                "'.");
+        } else {
+            err->setDescription("Model element is of invalid type '" + node->getName() +
+                                "'. A valid CellML root node should be of type 'model'.");
+        }
+        mValidator->addError(err);
+        return;
+    }
+
+    // Get model name
+    XmlAttributePtr attribute = node->getFirstAttribute();
+    std::string model_name;
+    while (attribute) {
+        if (attribute->isType("name")) {
+            model_name = attribute->getValue();
+        } else if (attribute->isType("id")) {
+            // Skip
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Model '" + node->getAttribute("name") +
+                                "' imported from '"+ file_to_open +
+                                "' has an invalid attribute '" + attribute->getName() + "'.");
+            mValidator->addError(err);
+        }
+        attribute = attribute->getNext();
+    }
+
+    // Get model children (CellML entities), the only valid imported entities are components or units
+    XmlNodePtr childNode = node->getFirstChild();
+    std::string other_type = find_type == "component" ? "units" : "component";
+
+    while (childNode) {
+        if (childNode->isCellmlElement(find_type.c_str())) {
+            // Concrete type: check name attribute for find_name
+            XmlAttributePtr attribute = childNode->getFirstAttribute();
+            while (attribute) {
+                if (attribute->isType("name")) {
+                    if (attribute->getValue() == find_name) {
+                        // Stop searching, have reached concrete definition for this item, delete history and return
+                        std::vector<std::pair<std::string,std::string>>().swap(history);
+                        return;
+                    }
+                } else if (attribute->isType("id")) {
+                    // Skip
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Element 'import "+find_type+"' in file '" + file_to_open +
+                                        "' has an invalid attribute '" + attribute->getName() + "'.");
+                    if(find_type=="component") 
+                        err->setKind(Error::Kind::COMPONENT);
+                    else
+                        err->setKind(Error::Kind::UNITS);
+                    mValidator->addError(err);
+                }
+                attribute = attribute->getNext();
+            } 
+        }
+        else if (childNode->isCellmlElement("import")) {
+            XmlAttributePtr importAttribute = childNode->getFirstAttribute();
+            std::string import_child_ref = "";
+            while (importAttribute) {
+                if (importAttribute->isType("href", XLINK_NS)) {
+                    import_child_ref = importAttribute->getValue();
+                } else if (importAttribute->isType("id")) {
+                    // Skip
+                } else if (importAttribute->isType("xlink")) {
+                    // Skip
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Import from '" + node->getAttribute("href") +
+                                        "' has an invalid attribute '" + attribute->getName() + "'.");
+                    mValidator->addError(err);
+                }
+                importAttribute = importAttribute->getNext();
+            }
+
+            // Import type: check children for find_type
+            XmlNodePtr importChild = childNode->getFirstChild();
+            std::string find_type_ref = find_type + "_ref";
+            
+            while (importChild) {
+                if (importChild->isCellmlElement(find_type.c_str())) {
+                    XmlAttributePtr importAttribute = importChild->getFirstAttribute();
+                    std::string import_name = "";
+                    bool use_me = false;
+
+                    while (importAttribute) {
+                        if ((importAttribute->isType("name")) && (importAttribute->getValue()== find_name)) {
+                            use_me = true;
+                        } else if (importAttribute->isType(find_type_ref.c_str())) {
+                            import_name = importAttribute->getValue();
+                        } else if (importAttribute->isType("id")) {
+                            // Skip
+                        } else {
+                            // TODO Add some error here?
+                        }
+                        importAttribute = importAttribute->getNext();
+                    } 
+
+                    if (use_me) {
+                        checkImportIsAvailable(working_directory, import_child_ref, import_name, find_type, history);
+                        return;
+                    }
+                } else if (importChild->isCellmlElement(other_type.c_str())) {
+                    // Skip other type of imports in this block
+                } 
+                else if (importChild->isText()) {
+                    std::string textNode = importChild->convertToString();
+                    // Ignore whitespace when parsing.
+                    if (hasNonWhitespaceCharacters(textNode)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Model '" + model_name +
+                                            " in file " + file_to_open +
+                                            " has an invalid non-whitespace child text element '" + textNode + "'.");
+                        err->setRule(SpecificationRule::MODEL_CHILD);
+                        mValidator->addError(err);
+                    }
+                } else if (importChild->isComment()) {
+                    // Do nothing.
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Model '" + model_name +
+                                        " in file " + file_to_open +
+                                        "' has an invalid child element '" + importChild->getName() + "'.");
+                    err->setRule(SpecificationRule::MODEL_CHILD);
+                    mValidator->addError(err);
+                }
+                importChild = importChild->getNext();
+            }
+        }
+        else if ((childNode->isCellmlElement(other_type.c_str())) 
+                 || (childNode->isCellmlElement("encapsulation")) 
+                 || (childNode->isCellmlElement("connection")) 
+                 || (childNode->isComment())) {
+            // Skip - only want the type and name we're currently looking for          
+        } else if (childNode->isText()) {
+            std::string textNode = childNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Model '" + model_name + "' from file " + file_to_open +
+                                    " has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setRule(SpecificationRule::MODEL_CHILD);
+                mValidator->addError(err);
+            }
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Model '" + model_name + "' from file " + file_to_open +
+                                "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setRule(SpecificationRule::MODEL_CHILD);
+            mValidator->addError(err);
+        }
+        childNode = childNode->getNext();
+    }
+
+    ErrorPtr err = std::make_shared<Error>();
+    std::string e("");
+    std::string sep = "         ";
+    std::string separator(" imports ");
+    for (const auto& i : history) {
+        e += sep+"\n ('" + i.first + "' in " + i.second + ")";
+        sep = separator;
+    }
+    err->setDescription(
+        "Import of " + find_type + " '" + history[0].first + 
+        "' has failed. Tried: " + 
+        e + " which was not found in the file.");
+    mValidator->addError(err);
 }
 
 void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model) {
@@ -1662,6 +2035,44 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
             unitmap.at(iter.first) += iter.second*uExp;
         }        
     }
+}
+
+void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model, 
+    std::map<std::string,double> &unitmap, const std::string uName, 
+    const std::map< std::string, std::map<std::string, double>> &standardList, const double uExp) {
+
+    std::string myRef, myPre, myId;
+    double myExp, myMult;
+    std::map<std::string, double> myBase;
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    if (model->hasUnits(uName)) {
+        u = model->getUnits(uName);
+
+        if (!u->isBaseUnit()) {
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
+
+                if (!isStandardUnitName(myRef))
+                    decrementBaseUnitCount(model, unitmap, myRef, standardList, myExp*uExp);
+                else {
+                    myBase = standardList.at(myRef);
+                    for (const auto &iter : myBase) {
+                        unitmap.at(iter.first) -= iter.second*myExp*uExp;
+                    }
+                }
+            } 
+        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant?
+            // Empty unit, add to base list
+            unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
+        }
+    }
+    else if (isStandardUnitName(uName)) {
+        myBase = standardList.at(uName);
+        for (const auto &iter : myBase) {
+            unitmap.at(iter.first) -= iter.second*uExp;
+        }        
+    }  
 }
 
 void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model, 
