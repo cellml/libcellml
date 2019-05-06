@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright libCellML Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,6 @@ limitations under the License.
 #include <vector>
 #include <set>
 
-
 namespace libcellml {
 
 /**
@@ -53,7 +52,6 @@ struct Validator::ValidatorImpl
     Validator *mValidator;
 
     /**
-
     * @brief Check that the specified _ref item exists in the specified import url
     *
     * Any errors will be logged in the @c Validator.
@@ -84,7 +82,6 @@ struct Validator::ValidatorImpl
         *
         * @param component The component to validate.
         */
-
     void validateComponent(const ComponentPtr &component);
 
     /**
@@ -403,7 +400,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
         addError(err);
     }
 
-
     // If we don't have a filename or working directory we can't check imports 
     bool checkImports = false;
     if (filename != "") {
@@ -429,8 +425,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                     /// is in a valid format.  NB: Does not check what it refers to.
                     std::string componentRef = component->getImportReference(); 
                     std::string importSource = component->getImportSource()->getUrl(); 
-                    bool foundImportError = false;
-                    
+
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         
                         ErrorPtr err = std::make_shared<Error>();
@@ -439,7 +434,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setComponent(component);
                         err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_7 7.1.2 Check that a xlink:href attribute is present
                     if (!importSource.length()) {
@@ -449,46 +443,21 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setImportSource(component->getImportSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
                     else {
                         xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
                         if (URIPtr == NULL) {
-
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Import of component '" + componentName +
                                                 "' has an invalid URI in the href attribute, '" + importSource + "'. ");
                             err->setImportSource(component->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
-                            foundImportError = true;
+                            
                         }
                         else xmlFreeURI(URIPtr);
-                    }
-                    
-                    /// @cellml2_7 __REMOVE THIS?__ Check if we already have another import from the same source with the same component_ref. 
-                    /*if ((componentImportSources.size() > 0) && (!foundImportError)) {
-                        // Check for presence of import source and component_ref
-                        std::ptrdiff_t foundSourceAt = find(componentImportSources.begin(), componentImportSources.end(), importSource) 
-                            - componentImportSources.begin();
-                        std::ptrdiff_t foundRefAt = find(componentRefs.begin(), componentRefs.end(), componentRef) 
-                            - componentRefs.begin();
-
-                        // Check that they occur at the same point in the list, *and* that we're not out of range
-                        // "unsigned" used here to prevent mismatch warning at build time
-                        if((unsigned (foundSourceAt) < componentImportSources.size()) && 
-                            (unsigned (foundRefAt) < componentRefs.size()) &&            
-                            (foundRefAt == foundSourceAt)) {
-                            ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Model '" + model->getName() +
-                                                    "' contains multiple imported components from '" + importSource +
-                                                    "' with the same component_ref attribute '" + componentRef + "'.");
-                                err->setModel(model);
-                                err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
-                                addError(err);
-                        }
-                    }*/
+                    }                   
                     // Push back the unique sources and refs.
                     componentImportSources.push_back(importSource);
                     componentRefs.push_back(componentRef);
@@ -522,8 +491,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                     /// @cellml2_6 6.1.2 Check for a units_ref in this import units instance
                     std::string unitsRef = units->getImportReference();
                     std::string importSource = units->getImportSource()->getUrl();
-                    //std::string importRelSource = modelSourcePath + importSource;
-                    bool foundImportError = false;
                     /// @cellml2_6 6.1.2 Check that the name given by the units_ref matches the naming specifications
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -532,7 +499,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setUnits(units);
                         err->setRule(SpecificationRule::IMPORT_UNITS_REF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_6 6.1.2 Check that a xlink:href is present 
                     if (!importSource.length()) {
@@ -542,7 +508,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         err->setImportSource(units->getImportSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
-                        foundImportError = true;
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
                     else {
@@ -558,20 +523,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         } 
                         else xmlFreeURI(URIPtr);
                     }
-                    /// @cellml2_6 6.1.2 Check if we already have another import from the same source with the same units_ref.
-                    /// (This looks for matching enties at the same position in the source and ref vectors).
-                    /*if ((unitsImportSources.size() > 0) && (!foundImportError)) {
-                        if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
-                         == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())){
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() +
-                                                "' contains multiple imported units from '" + importSource +
-                                                "' with the same units_ref attribute '" + unitsRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_UNITS_REF);
-                            addError(err);
-                        }
-                    }*/
                     // Push back the unique sources and refs.
                     unitsImportSources.push_back(importSource);
                     unitsRefs.push_back(unitsRef);
@@ -980,7 +931,6 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
         }
     }
 }
-
 
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
@@ -2125,6 +2075,43 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
     }  
 }
 
+void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model, 
+    std::map<std::string,double> &unitmap, const std::string uName, 
+    const std::map< std::string, std::map<std::string, double>> &standardList, const double uExp) {
+
+    std::string myRef, myPre, myId;
+    double myExp, myMult;
+    std::map<std::string, double> myBase;
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    if (model->hasUnits(uName)) {
+        u = model->getUnits(uName);
+
+        if (!u->isBaseUnit()) {
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
+
+                if (!isStandardUnitName(myRef))
+                    decrementBaseUnitCount(model, unitmap, myRef, standardList, myExp*uExp);
+                else {
+                    myBase = standardList.at(myRef);
+                    for (const auto &iter : myBase) {
+                        unitmap.at(iter.first) -= iter.second*myExp*uExp;
+                    }
+                }
+            } 
+        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant?
+            // Empty unit, add to base list
+            unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
+        }
+    }
+    else if (isStandardUnitName(uName)) {
+        myBase = standardList.at(uName);
+        for (const auto &iter : myBase) {
+            unitmap.at(iter.first) -= iter.second*uExp;
+        }        
+    }  
+}
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
   std::string::size_type n = pattern.length();

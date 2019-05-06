@@ -7,9 +7,7 @@
 		<variable name="sand" units="dimensionless" />
 		<variable name="sun" units="dimensionless" />
 	</component>
-
 	<import xlink:href="recursive_import.cellml">
 		<units name="sandiness" units_ref="zandigheid" />
 	</import>
-
 </model>

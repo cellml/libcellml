@@ -302,7 +302,6 @@ TEST(Validator, importUnits) {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
-        //"Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
         "Import of units 'name_for_invalid_import' has an invalid URI in the href attribute, 'not @ valid url'. ",
         "Model 'model_name' contains multiple units with the name 'units_to_be_duplicated'. Valid units names must be unique to their model.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -340,7 +339,7 @@ TEST(Validator, importUnits) {
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
 
-    v.validateModel(m);
+    v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
 
     // Invalid units import - unnamed units
@@ -351,7 +350,6 @@ TEST(Validator, importUnits) {
     m->addUnits(importedUnits4);
     v.validateModel(m); 
     EXPECT_EQ(5u, v.errorCount());
-
 
     // Invalid html ref 
     libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
@@ -377,7 +375,7 @@ TEST(Validator, importUnits) {
 
     v.validateModel(m); 
     EXPECT_EQ(7u, v.errorCount());
-    
+
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
@@ -442,13 +440,11 @@ TEST(Validator, importComponents) {
     v.validateModel(m); 
     EXPECT_EQ(3u, v.errorCount());
 
-  // Invalid component import - unnamed component
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
-
     v.validateModel(m); 
     EXPECT_EQ(5u, v.errorCount());
     
