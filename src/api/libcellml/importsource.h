@@ -53,7 +53,7 @@ public:
      *
      * Set the source @c Model's URL that this @c ImportSource refers to.
      *
-     * @param url The source @c Model's URL.
+     * @param source The source @c Model's URL.
      */
     void setUrl(const std::string &url);
 

@@ -21,10 +21,7 @@ limitations under the License.
 #include "libcellml/types.h"
 #include "libcellml/units.h"
 
-#include <fstream>
-#include <sstream>
 #include <string>
-
 
 //! Everything in libCellML is in this namespace.
 namespace libcellml {
