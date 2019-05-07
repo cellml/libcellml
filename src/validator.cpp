@@ -710,12 +710,11 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Error found when reading "+file_to_open+
-                                ": "+doc->getXmlError(i));
+            err->setDescription("Error found when reading " + file_to_open +
+                                ": " + doc->getXmlError(i));
             err->setKind(Error::Kind::XML);
             mValidator->addError(err);
         }
-        return;
     }
 
     const XmlNodePtr node = doc->getRootNode();
@@ -804,8 +803,8 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
                     // Skip
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Import from '" + node->getAttribute("href") +
-                                        "' has an invalid attribute '" + attribute->getName() + "'.");
+                    err->setDescription("Import from '" + find_ref +
+                                        "' has an invalid attribute '" + importAttribute->getName() + "'.");
                     mValidator->addError(err);
                 }
                 importAttribute = importAttribute->getNext();

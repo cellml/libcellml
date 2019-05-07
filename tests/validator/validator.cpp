@@ -2078,8 +2078,46 @@ TEST(Validator, validateAbsolutePathImports) {
     EXPECT_EQ(0u, validator.errorCount());
 }
 
+TEST(Validator, parseInvalidModelFromFile) {
+    std::string filename = TestResources::getLocation(TestResources::CELLML_ABSOLUTE_RELATIVE_FILES);
+    std::ifstream t(filename);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
+    libcellml::Parser parser;
+    libcellml::ModelPtr m = parser.parseModel(buffer.str());
+    libcellml::Validator v;
 
+    size_t i = filename.find_last_of("/\\", filename.length());
+    std::string path = "";
+    if (i != std::string::npos) {
+        path = filename.substr(0,i+1);
+    }
+    v.validateModel(m, filename, path);
+    
+    std::vector<std::string> expectedErrors = {
+        "Model element is of invalid type 'not_a_model'. A valid CellML root node should be of type 'model'.",
+        "Model element is in invalid namespace 'http://www.cellml.org/cellml/wrong'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.",
+        "Import of component 'i_am_not_real_either' has failed",
+        "Start tag expected, '<' not found.",
+        "Could not get a valid XML root node from the provided input.",
+        "Model element is of invalid type 'not_a_real_tag'. A valid CellML root node should be of type 'model'.",
+        "model_wrong_attribute.cellml' has an invalid attribute 'not_an_attribute'.",
+        "i_am_almost_ok.cellml' has an invalid attribute 'not_here_either'.",
+        "i_am_almost_ok.cellml' has an invalid child element 'not_a_child'.",
+        "i_am_almost_ok.cellml' has an invalid attribute 'not_an_attribute'",
+        "i_am_almost_ok.cellml' has an invalid child element 'not_an_import'.",
+        "Import of component 'not_an_attribute' has failed. Tried:",
+    };
+
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+
+    for (size_t i = 0; i < expectedErrors.size(); ++i) {
+        std::string e = v.getError(i)->getDescription();
+        std::size_t found = e.find(expectedErrors.at(i));
+        EXPECT_NE(found, std::string::npos);
+    }
+}
 
 
 

@@ -25,6 +25,7 @@ public:
         CELLML_LAYERED_IMPORT_FILE = 15,
         CELLML_CIRCULAR_IMPORT_FILE = 16,
         CELLML_SAME_FILE_OTHER_DIR_RESOURCE = 17,
+		CELLML_ABSOLUTE_RELATIVE_FILES = 18,
     };
 
     TestResources()
@@ -106,6 +107,10 @@ public:
 		if (resourceName == TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE)
         {
             return "@CELLML_SAME_FILE_OTHER_DIR_RESOURCE@";
+        }
+		if (resourceName == TestResources::CELLML_ABSOLUTE_RELATIVE_FILES)
+        {
+            return "@CELLML_ABSOLUTE_RELATIVE_FILES@";
         }
         return 0;
     }

@@ -17,6 +17,7 @@ set(CELLML_FILE_WITH_NONEXISTENT_REF "${CMAKE_CURRENT_SOURCE_DIR}/resources/impo
 set(CELLML_LAYERED_IMPORT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/resources/recursiveImport_1.cellml")
 set(CELLML_CIRCULAR_IMPORT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/resources/circularImport_1.cellml")
 set(CELLML_SAME_FILE_OTHER_DIR_RESOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources/same_file_other_dir.cellml")
+set(CELLML_ABSOLUTE_RELATIVE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/resources/validator_invalid_import_file.cellml")
 
 set(TEST_RESOURCE_HEADER ${CMAKE_CURRENT_BINARY_DIR}/test_resources.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/test_resources.h.in ${TEST_RESOURCE_HEADER})
