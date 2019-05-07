@@ -384,6 +384,10 @@ bool pathIsRelative(const std::string &path) {
     if(path.size())
         if (path.at(0) == '/') 
             return false;
+    // Presence of a colon implies non-local path
+    size_t found = path.find(":"); 
+    if (found != std::string::npos)        
+        return false;
 #endif // !_WIN32
     return true;
 }
