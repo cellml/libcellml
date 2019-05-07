@@ -166,12 +166,15 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
 
 # Format our code
 if(CLANG_FORMAT_EXE)
-    file(GLOB_RECURSE FILES_TO_FORMAT "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/src/api/libcellml/module/*"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
-                                      "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h")
-    list(FILTER FILES_TO_FORMAT EXCLUDE REGEX "^.*/gtest.h$")
+  set(FILES_TO_FORMAT
+    ${API_HEADER_FILES}
+    ${MODULE_HEADER_FILES}
+    ${SOURCE_FILES}
+    ${HEADER_FILES}
+    ${CONFIG_FILES}
+    ${TESTS_HEADER_FILES}
+    ${TESTS_SOURCE_FILES}
+  )
 
-    execute_process(COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT})
+  execute_process(COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT})
 endif()
