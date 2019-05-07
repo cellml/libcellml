@@ -90,5 +90,4 @@ private:
     ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-bool pathIsRelative(const std::string &path);
 }
