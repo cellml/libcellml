@@ -2072,9 +2072,9 @@ TEST(Validator, validateAbsolutePathImports) {
     EXPECT_EQ(0u, validator.errorCount());
     validator.validateModel(model, full_filename); // no errors
     EXPECT_EQ(0u, validator.errorCount());
-    validator.validateModel(model, filename); // TODO warning that full depth is not checked
+    validator.validateModel(model, filename); // TODO warning that full depth is not checked?
     EXPECT_EQ(0u, validator.errorCount());
-    validator.validateModel(model); // TODO warning that full depth is not checked
+    validator.validateModel(model); // TODO warning that full depth is not checked?
     EXPECT_EQ(0u, validator.errorCount());
 }
 
@@ -2093,9 +2093,8 @@ TEST(Validator, parseInvalidModelFromFile) {
     if (i != std::string::npos) {
         path = filename.substr(0,i+1);
     }
+    // Deliberately giving the full filename to test handling ...
     v.validateModel(m, filename, path);
-
-    //printErrors(v);
     
     std::vector<std::string> expectedErrors = {
         "Model element is of invalid type 'not_a_model'. A valid CellML root node should be of type 'model'.",

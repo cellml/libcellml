@@ -368,8 +368,9 @@ void Validator::swap(Validator &rhs)
 }
 
 bool pathIsRelative(const std::string &path) {
-    // KRM TODO Not sure if this should be in this file or in a utilities file?
-
+    // TODO Not sure if this should be in this file or in a utilities file?
+    if (path == "")
+        return true;
     // Starting with . or .. in any operating system implies relative path
     if (path.at(0) == '.') 
         return true;
