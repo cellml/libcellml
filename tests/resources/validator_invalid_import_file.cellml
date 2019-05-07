@@ -25,5 +25,9 @@
 	<import xlink:href="no_namespace.cellml">
         <component name="no_namespace" component_ref="c" />
     </import>
+	<import xlink:href="">
+		<component name="blank_href" component_ref="c"/>
+	</import>
+		
 
 </model>

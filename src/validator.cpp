@@ -369,11 +369,10 @@ void Validator::swap(Validator &rhs)
 
 bool pathIsRelative(const std::string &path) {
     // TODO Not sure if this should be in this file or in a utilities file?
-    if (path == "")
-        return true;
     // Starting with . or .. in any operating system implies relative path
-    if (path.at(0) == '.') 
-        return true;
+    if(path.size())
+        if (path.at(0) == '.') 
+            return true;
 #ifdef _WIN32
     // TODO Should this be _WIN64?
     // Presence of a colon implies either an absolute path with a drive letter (Windows) or non-local path
@@ -382,8 +381,9 @@ bool pathIsRelative(const std::string &path) {
         return false;
 #else
     // Starting with slash in MacOS/Unix/Linux implies absolute
-    if (path.at(0) == '/') 
-        return false;
+    if(path.size())
+        if (path.at(0) == '/') 
+            return false;
 #endif // !_WIN32
     return true;
 }
@@ -588,19 +588,6 @@ void Validator::validateModel(const ModelPtr &model, std::string filename, std::
 void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string filename, 
                                                      std::string working_directory) {
     // Check against the working directory location (assumed same as path to filename or model import filename)
-
-    //std::string working_directory = "";
-    //if (filename!="") 
-    //    working_directory = filename.substr(0,filename.find_last_of("/\\")+1);
-    //else {
-    //    ErrorPtr err = std::make_shared<Error>();
-    //    err->setDescription("Validation of imported files is not possible without a model file specified.");
-    //    err->setKind(Error::Kind::IMPORT);
-    //    err->setModel(model);
-    //    mValidator->addError(err);
-    //    return;
-    //}
-
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
         std::vector<std::string> componentRefs;
