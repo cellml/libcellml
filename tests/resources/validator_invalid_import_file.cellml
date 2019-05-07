@@ -5,6 +5,7 @@
     </import>
 	<import xlink:href="validator_wrong_namespace.cellml">
         <component name="i_have_wrong_namespace" component_ref="c" />
+		should_not_be_here
     </import>	
 	<import xlink:href="i_do_not_exist.cellml">
         <component name="i_am_not_real_either" component_ref="c" />
@@ -20,6 +21,9 @@
     </import>
 	<import xlink:href="i_am_almost_ok.cellml">
         <component name="not_an_attribute" component_ref="c" />
+    </import>
+	<import xlink:href="no_namespace.cellml">
+        <component name="no_namespace" component_ref="c" />
     </import>
 
 </model>

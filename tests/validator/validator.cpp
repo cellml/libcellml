@@ -2094,6 +2094,8 @@ TEST(Validator, parseInvalidModelFromFile) {
         path = filename.substr(0,i+1);
     }
     v.validateModel(m, filename, path);
+
+    //printErrors(v);
     
     std::vector<std::string> expectedErrors = {
         "Model element is of invalid type 'not_a_model'. A valid CellML root node should be of type 'model'.",
@@ -2105,9 +2107,12 @@ TEST(Validator, parseInvalidModelFromFile) {
         "model_wrong_attribute.cellml' has an invalid attribute 'not_an_attribute'.",
         "i_am_almost_ok.cellml' has an invalid attribute 'not_here_either'.",
         "i_am_almost_ok.cellml' has an invalid child element 'not_a_child'.",
+        "has an invalid non-whitespace child text element 'shouldnt_be_here",
         "i_am_almost_ok.cellml' has an invalid attribute 'not_an_attribute'",
         "i_am_almost_ok.cellml' has an invalid child element 'not_an_import'.",
+        "i_am_almost_ok.cellml has an invalid non-whitespace child text element 'or_even_here",
         "Import of component 'not_an_attribute' has failed. Tried:",
+        "Model element is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'",
     };
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
@@ -2117,6 +2122,7 @@ TEST(Validator, parseInvalidModelFromFile) {
         std::size_t found = e.find(expectedErrors.at(i));
         EXPECT_NE(found, std::string::npos);
     }
+    std::cout << std::endl;
 }
 
 

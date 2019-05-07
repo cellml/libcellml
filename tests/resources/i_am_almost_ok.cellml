@@ -1,13 +1,12 @@
 <?xml version='1.0'?>
 <model name="level1" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
-
 	<import xlink:href="i_am_ok.cellml" not_here_either="oops_again">
         <component name="not_an_attribute" component_ref="c" />
-		<not_a_child/>
+		<not_a_child/>shouldnt_be_here
     </import>
 	<component name="c_ok" not_an_attribute="whoopsie">
-		<not_a_child_either/>
+		<not_a_child_either/>or_here_either
 	</component>
-	<not_an_import/>
+	<not_an_import/>or_even_here
 </model>
 	

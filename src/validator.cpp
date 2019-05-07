@@ -782,10 +782,6 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Element 'import "+find_type+"' in file '" + file_to_open +
                                         "' has an invalid attribute '" + attribute->getName() + "'.");
-                    if(find_type=="component") 
-                        err->setKind(Error::Kind::COMPONENT);
-                    else
-                        err->setKind(Error::Kind::UNITS);
                     mValidator->addError(err);
                 }
                 attribute = attribute->getNext();
