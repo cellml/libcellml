@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "namespaces.h"
 #include "xmlattribute.h"
 #include "xmlnode.h"
-
-#include "libcellml/namespaces.h"
 
 #include <string>
 
