@@ -68,6 +68,21 @@ public:
     */
     void validateModel(const ModelPtr &model, std::string filename);
 
+    /**
+    * @brief Validate the @p model using the CellML 2.0 Specification.
+    *
+    * Validate the given @p model and its encapsulated entities using the
+    * CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+    *
+    * @param model The model to validate.
+    * @param filename (optional) The filename to associate with the main model and 
+    * validate imports against
+    * @param path (optional) The path to the working directory containing the @p filename
+    */
+    void validateModel(const ModelPtr &model, std::string filename, std::string path);
+
+
+
 private:
     void swap(Validator &rhs); /**< Swap method required for C++ 11 move semantics. */
 

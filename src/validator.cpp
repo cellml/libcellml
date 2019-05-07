@@ -71,7 +71,7 @@ struct Validator::ValidatorImpl
     * logged in the @c Validator.
     *
     */
-    void validateImportSources(const ModelPtr &model, std::string filename);
+    void validateImportSources(const ModelPtr &model, std::string filename, std::string working_directory);
 
     /**
         * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -369,26 +369,42 @@ void Validator::swap(Validator &rhs)
 
 bool pathIsRelative(const std::string &path) {
     // KRM TODO Not sure if this should be in this file or in a utilities file?
-    size_t found = path.find(":"); 
 
-    if (path.at(0) == '.') // starting with . or .. in any operating system implies relative path
+    // Starting with . or .. in any operating system implies relative path
+    if (path.at(0) == '.') 
         return true;
-    else if (found != std::string::npos) // presence of a colon implies either an absolute path with a drive letter (Windows) or non-local path
+#ifdef _WIN32
+    // TODO Should this be _WIN64?
+    // Presence of a colon implies either an absolute path with a drive letter (Windows) or non-local path
+    size_t found = path.find(":"); 
+    if (found != std::string::npos)        
         return false;
-    else if (path.at(0) == '/') // starting with slash in MacOS/Unix/Linux implies absolute
+#else
+    // Starting with slash in MacOS/Unix/Linux implies absolute
+    if (path.at(0) == '/') 
         return false;
-
+#endif // !_WIN32
     return true;
 }
 
 void Validator::validateModel(const ModelPtr &model) {
-
-    // If a filename is *not* specified, trigger zero-depth import checking as working directory is unknown
-    validateModel(model, ""); 
+    // If a filename is not specified, trigger zero-depth import checking as working directory is unknown
+    validateModel(model, "", ""); 
 }
 
-void Validator::validateModel(const ModelPtr &model, std::string filename)
-{
+void Validator::validateModel(const ModelPtr &model, std::string filename) {
+    // Splitting full path filename into path and filename for validation
+    std::string f = "";
+    std::string p = "";
+    size_t i = filename.find_last_of("/\\");
+    if (i != std::string::npos) {
+        f = filename.substr(i + 1, filename.length() - i);
+        p = filename.substr(0, i + 1);
+    }
+    validateModel(model, f, p);
+}
+
+void Validator::validateModel(const ModelPtr &model, std::string filename, std::string working_directory) {
     // Clear any pre-existing errors in the validator instance.
     clearErrors();
     /// @cellml2_4 4.2.1 Check for a valid name format
@@ -400,10 +416,25 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
         addError(err);
     }
 
-    // If we don't have a filename or working directory we can't check imports 
-    if (filename != "") 
-        mPimpl->validateImportSources(model, filename);
-    
+    // Checking that the filename is indeed relative
+    if (filename != "") {
+        bool is_relative = pathIsRelative(filename);
+        if ((is_relative) && (working_directory != "")) {
+            mPimpl->validateImportSources(model, filename, working_directory);
+        }
+        else if (!is_relative) {
+            size_t i = filename.find_last_of("/\\", filename.length());
+            std::string f = "";
+            std::string p = "";
+            if (i != std::string::npos) {
+                f = filename.substr(i+1, filename.length() - i);
+                p = filename.substr(0,i+1);
+            }
+            // TODO Return warning that working directory is changed to root of file path
+            mPimpl->validateImportSources(model, f, p);
+        }  
+    }
+
     // Check for components in this model.
     /// @cellml2_4 4.2.3 Check for unique encapsulation is not required as more than one cannot be stored
     /// @cellml2_4 4.2.2 Check for presence of components in this model.
@@ -420,10 +451,10 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                     // Check for a component_ref; assumes imported if the import source is not null
                     /// @cellml2_7 7.1.2 Check that the name of the component given by the component_ref 
                     /// is in a valid format.  NB: Does not check what it refers to.
-                    std::string componentRef = component->getImportReference(); 
-                    std::string importSource = component->getImportSource()->getUrl(); 
+                    std::string component_ref = component->getImportReference(); 
+                    std::string import_source = component->getImportSource()->getUrl(); 
 
-                    if (!mPimpl->isCellmlIdentifier(componentRef)) {
+                    if (!mPimpl->isCellmlIdentifier(component_ref)) {
                         
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported component '" + componentName +
@@ -433,7 +464,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         addError(err);
                     }
                     /// @cellml2_7 7.1.2 Check that a xlink:href attribute is present
-                    if (!importSource.length()) {
+                    if (!import_source.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName +
                                             "' does not have a valid locator xlink:href attribute.");
@@ -443,11 +474,11 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
                     else {
-                        xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
+                        xmlURIPtr URIPtr = xmlParseURI(import_source.c_str());
                         if (URIPtr == NULL) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Import of component '" + componentName +
-                                                "' has an invalid URI in the href attribute, '" + importSource + "'. ");
+                                                "' has an invalid URI in the href attribute, '" + import_source + "'. ");
                             err->setImportSource(component->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
@@ -456,8 +487,8 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         else xmlFreeURI(URIPtr);
                     }                   
                     // Push back the unique sources and refs.
-                    componentImportSources.push_back(importSource);
-                    componentRefs.push_back(componentRef);
+                    componentImportSources.push_back(import_source);
+                    componentRefs.push_back(component_ref);
                 }
                 /// @cellml2_10 10.1.1 Check for duplicate component names in this model.
                 if(std::find(componentNames.begin(), componentNames.end(), componentName) != componentNames.end()) {
@@ -487,7 +518,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                 if (units->isImport()) {
                     /// @cellml2_6 6.1.2 Check for a units_ref in this import units instance
                     std::string unitsRef = units->getImportReference();
-                    std::string importSource = units->getImportSource()->getUrl();
+                    std::string import_source = units->getImportSource()->getUrl();
                     /// @cellml2_6 6.1.2 Check that the name given by the units_ref matches the naming specifications
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -498,7 +529,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         addError(err);
                     }
                     /// @cellml2_6 6.1.2 Check that a xlink:href is present 
-                    if (!importSource.length()) {
+                    if (!import_source.length()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName +
                                             "' does not have a valid locator xlink:href attribute.");
@@ -508,11 +539,11 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                     }
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
                     else {
-                        xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
+                        xmlURIPtr URIPtr = xmlParseURI(import_source.c_str());
                         if (URIPtr == NULL) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Import of units '" + unitsName +
-                                                "' has an invalid URI in the href attribute, '" + importSource + "'. ");
+                                                "' has an invalid URI in the href attribute, '" + import_source + "'. ");
                             err->setImportSource(units->getImportSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
@@ -520,7 +551,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
                         else xmlFreeURI(URIPtr);
                     }
                     // Push back the unique sources and refs.
-                    unitsImportSources.push_back(importSource);
+                    unitsImportSources.push_back(import_source);
                     unitsRefs.push_back(unitsRef);
                 }
                 /// @cellml2_8 8.1.2 Check for duplicate units names in this model.
@@ -553,19 +584,21 @@ void Validator::validateModel(const ModelPtr &model, std::string filename)
     mPimpl->validateConnections(model);
 }
 
-void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string filename) {
+void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string filename, 
+                                                     std::string working_directory) {
     // Check against the working directory location (assumed same as path to filename or model import filename)
-    std::string workingDirectory = "";
-    if (filename!="") 
-        workingDirectory = filename.substr(0,filename.find_last_of("/\\")+1);
-    else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Validation of imported files is not possible without a model file specified.");
-        err->setKind(Error::Kind::IMPORT);
-        err->setModel(model);
-        mValidator->addError(err);
-        return;
-    }
+
+    //std::string working_directory = "";
+    //if (filename!="") 
+    //    working_directory = filename.substr(0,filename.find_last_of("/\\")+1);
+    //else {
+    //    ErrorPtr err = std::make_shared<Error>();
+    //    err->setDescription("Validation of imported files is not possible without a model file specified.");
+    //    err->setKind(Error::Kind::IMPORT);
+    //    err->setModel(model);
+    //    mValidator->addError(err);
+    //    return;
+    //}
 
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
@@ -577,11 +610,11 @@ void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std:
             if (componentName.length()) {
                 if (component->isImport()) {
                     // Check that a concrete instance of a component exists at the end of import chain
-                    std::string componentRef = component->getImportReference();
-                    std::string importSource = workingDirectory + component->getImportSource()->getUrl();
+                    std::string component_ref = component->getImportReference();
+                    std::string import_source = working_directory + component->getImportSource()->getUrl();
                     std::vector<std::pair<std::string, std::string>> history;
                     history.push_back(std::make_pair(componentName, filename));
-                    checkImportIsAvailable(workingDirectory, importSource, componentRef, "component", history);
+                    checkImportIsAvailable(working_directory, import_source, component_ref, "component", history);
                     std::vector<std::pair<std::string,std::string>>().swap(history);  
                 }
             }
@@ -599,10 +632,10 @@ void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std:
                 if (units->isImport()) {
                     // Check that a concrete instance of units exists at the end of the import chain
                     std::string unitsRef = units->getImportReference();
-                    std::string importSource = workingDirectory + units->getImportSource()->getUrl();
+                    std::string import_source = working_directory + units->getImportSource()->getUrl();
                     std::vector<std::pair<std::string, std::string>> history;
                     history.push_back(std::make_pair(unitsName, filename));
-                    checkImportIsAvailable(workingDirectory, importSource, unitsRef, "units", history);
+                    checkImportIsAvailable(working_directory, import_source, unitsRef, "units", history);
                     std::vector<std::pair<std::string,std::string>>().swap(history);  
                 }
             }

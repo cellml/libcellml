@@ -2046,6 +2046,40 @@ TEST(Validator, validateGenerationalImport) {
     EXPECT_EQ(0u, v.errorCount());
 }
 
+TEST(Validator, validateAbsolutePathImports) {
+    // In these tests all initial filenames returned from getLocation() are absolute.  All referenced
+    // files inside those resources are relative (as we don't know ahead of time where they will be found).
+    // This test is intended to provide coverage for the relative vs absolute file options in the validator.
+
+    std::string full_filename = TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH);
+    std::ifstream t(full_filename);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(buffer.str());
+    libcellml::Validator validator;
+
+    std::string filename = "";
+    std::string path = "";
+    size_t i = filename.find_last_of("/\\");
+
+    if (i != std::string::npos) {
+        filename = full_filename.substr(i+1, full_filename.length()-i);
+        path = full_filename.substr(0, i+1);
+    }
+    validator.validateModel(model, filename, path); // no errors
+    EXPECT_EQ(0u, validator.errorCount());
+    validator.validateModel(model, full_filename); // no errors
+    EXPECT_EQ(0u, validator.errorCount());
+    validator.validateModel(model, filename); // TODO warning that full depth is not checked
+    EXPECT_EQ(0u, validator.errorCount());
+    validator.validateModel(model); // TODO warning that full depth is not checked
+    EXPECT_EQ(0u, validator.errorCount());
+}
+
+
+
 
 
 
