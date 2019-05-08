@@ -1925,27 +1925,27 @@ TEST(Validator, validateNoCyclesUnits) {
     u1->setName("grandfather"); // base unit
 
     u2->setName("father"); // first generation
-    u2->addUnit("grandfather", 0.0, 1.0, 1.0);
+    u2->addUnit("grandfather", 0, 1.0, 1.0);
 
     u3->setName("mother"); // first generation
-    u3->addUnit("grandfather", 0.0, 1.0, 1.0);
+    u3->addUnit("grandfather", 0, 1.0, 1.0);
 
     u4->setName("brotherFromAnotherMother"); // second generation
-    u4->addUnit("father", 0.0, 1.0, 1.0);
+    u4->addUnit("father", 0, 1.0, 1.0);
 
     // second generation depending on both first gen children, still valid, no loops because of directionality
     u5->setName("childOfIncest_ButThatsOKApparently"); 
-    u5->addUnit("mother", 0.0, 1.0, 1.0);
-    u5->addUnit("father", 0.0, 1.0, 1.0);
+    u5->addUnit("mother", 0, 1.0, 1.0);
+    u5->addUnit("father", 0, 1.0, 1.0);
 
     u6->setName("sisterFromAnotherMister"); // second generation
-    u6->addUnit("mother", 0.0, 1.0, 1.0);
+    u6->addUnit("mother", 0, 1.0, 1.0);
 
     v.validateModel(m);
     EXPECT_EQ(0u, v.errorCount());
     
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1
-    u1->addUnit("brotherFromAnotherMother", 0.0, 1.0, 1.0);
+    u1->addUnit("brotherFromAnotherMother", 0, 1.0, 1.0);
     v.validateModel(m);
 
     EXPECT_EQ(3u, v.errorCount());
