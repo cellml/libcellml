@@ -129,4 +129,18 @@ bool isCellMLInteger(const std::string &candidate);
  */
 bool isCellMLReal(const std::string &candidate);
 
+/**
+* @brief Test if the @p path is absolute or relative.
+*
+* The path string is tested for:
+*   - presence of a colon, ':' (implies absolute path on Windows, or non-local path everywhere) -> false
+*   - starting with a fullstop, '.' (implies relative everywhere) -> true
+*   - starting with a slash, '/' or '\' (implies absolute on Mac/Unix) -> false
+*   - the default return (including empty paths) is true
+*
+* @param path The string to test and determine whether it is a relative path or not.
+* @return @c true if the @p path is relative, or @c false otherwise.
+*/
+bool isRelativePath(const std::string &path);
+
 }

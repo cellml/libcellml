@@ -367,31 +367,6 @@ void Validator::swap(Validator &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-bool pathIsRelative(const std::string &path) {
-    // TODO Not sure if this should be in this file or in a utilities file?
-    // Starting with . or .. in any operating system implies relative path
-    if(path.size())
-        if (path.at(0) == '.') 
-            return true;
-#ifdef _WIN32
-    // TODO Should this be _WIN64?
-    // Presence of a colon implies either an absolute path with a drive letter (Windows) or non-local path
-    size_t found = path.find(":"); 
-    if (found != std::string::npos)        
-        return false;
-#else
-    // Starting with slash in MacOS/Unix/Linux implies absolute
-    if(path.size())
-        if (path.at(0) == '/') 
-            return false;
-    // Presence of a colon implies non-local path
-    size_t found = path.find(":"); 
-    if (found != std::string::npos)        
-        return false;
-#endif // !_WIN32
-    return true;
-}
-
 void Validator::validateModel(const ModelPtr &model) {
     // If a filename is not specified, trigger zero-depth import checking as working directory is unknown
     validateModel(model, "", ""); 
@@ -423,7 +398,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename, std::
 
     // Checking that the filename is indeed relative
     if (filename != "") {
-        bool is_relative = pathIsRelative(filename);
+        bool is_relative = isRelativePath(filename);
         if ((is_relative) && (working_directory != "")) {
             mPimpl->validateImportSources(model, filename, working_directory);
         }
@@ -645,7 +620,7 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &find_pa
     std::string file_to_open = "";
     std::string working_directory = "";
     
-    if (pathIsRelative(find_ref)) {
+    if (isRelativePath(find_ref)) {
         // Add parent's working directory to file path
         file_to_open = find_path + find_ref;
         working_directory = find_path;

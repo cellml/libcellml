@@ -2112,8 +2112,6 @@ TEST(Validator, parseInvalidModelFromFile) {
         "i_am_almost_ok.cellml has an invalid non-whitespace child text element 'or_even_here",
         "Import of component 'not_an_attribute' has failed. Tried:",
         "Model element is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'",
-        "Import of component 'blank_href' has failed:",
-        "Import of component 'blank_href' does not have a valid locator xlink:href attribute.",
     };
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
