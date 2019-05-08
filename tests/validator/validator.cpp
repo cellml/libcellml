@@ -1966,6 +1966,8 @@ TEST(Validator, importNameNotFoundInFile) {
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
     EXPECT_EQ(1u, v.errorCount());
+
+    printErrors(v);
  }
 
 TEST(Validator, importFileDoesNotExist) {
@@ -1995,6 +1997,8 @@ TEST(Validator, importLayer) {
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
 
     EXPECT_EQ(1u, v.errorCount());
+
+    printErrors(v);
 }
 
 TEST(Validator, validateCircularImportReferences) {
@@ -2012,6 +2016,8 @@ TEST(Validator, validateCircularImportReferences) {
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
 
     EXPECT_EQ(2u, v.errorCount());
+
+    printErrors(v);
 }
 
 TEST(Validator, validateImportsInMultipleLocations) {
@@ -2076,6 +2082,8 @@ TEST(Validator, validateAbsolutePathImports) {
     EXPECT_EQ(0u, validator.errorCount());
     validator.validateModel(model); // TODO warning that full depth is not checked?
     EXPECT_EQ(0u, validator.errorCount());
+
+    printErrors(validator);
 }
 
 TEST(Validator, parseInvalidModelFromFile) {
@@ -2115,6 +2123,8 @@ TEST(Validator, parseInvalidModelFromFile) {
     };
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
+
+    printErrors(v);
 
     for (size_t i = 0; i < expectedErrors.size(); ++i) {
         std::string e = v.getError(i)->getDescription();
