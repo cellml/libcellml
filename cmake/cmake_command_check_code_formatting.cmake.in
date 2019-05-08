@@ -1,0 +1,20 @@
+foreach(file @FILES_TO_FORMAT@)
+  execute_process(COMMAND @CLANG_FORMAT_EXE@ ${file}
+    COMMAND @GIT_EXE@ diff --no-index -- ${file} -
+    RESULT_VARIABLE _RESULT
+    OUTPUT_VARIABLE _STDOUT
+    ERROR_VARIABLE _STDERR
+  )
+
+  if (NOT _RESULT EQUAL "0")
+    break()
+  endif ()
+
+endforeach()
+
+if (_RESULT EQUAL "0")
+  message("libCellML source code is 'clang-format' formatted.")
+else ()
+  message(FATAL_ERROR "libCellML source code is incorrectly formatted.")
+endif ()
+
