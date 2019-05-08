@@ -7,16 +7,14 @@ foreach(file @FILES_TO_FORMAT@)
     ERROR_VARIABLE _STDERR
   )
 
-  if (NOT _RESULT EQUAL "0")
+  if(NOT _RESULT EQUAL 0)
     set(_FAILED_FILE ${file})
     break()
-  endif ()
-
+  endif()
 endforeach()
 
-if (_RESULT EQUAL "0")
+if(_RESULT EQUAL 0)
   message("libCellML source code is 'clang-format' formatted.")
 else ()
   message(FATAL_ERROR "libCellML source code is incorrectly formatted.\nFailed file: ${_FAILED_FILE}")
 endif ()
-
