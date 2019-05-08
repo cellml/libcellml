@@ -24,7 +24,7 @@ find_package(Sphinx)
 find_package(SWIG 3)
 
 set(HAVE_LIBXML2_CONFIG FALSE)
-if (MSVC)
+if(MSVC)
   # If we want to use config packages on Windows with Visual Studio,
   # we need to have two find_package calls and explicitly state that
   # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
@@ -33,26 +33,26 @@ if (MSVC)
   # This does change how we get information about include paths and such so we
   # need to track how we found LibXml2.
   find_package(LibXml2 CONFIG QUIET)
-  if (LibXml2_FOUND)
+  if(LibXml2_FOUND)
     set(HAVE_LIBXML2_CONFIG TRUE)
-  else ()
+  else()
     find_package(LibXml2 REQUIRED)
-  endif ()
-else ()
+  endif()
+else()
   find_package(LibXml2 REQUIRED)
-endif ()
+endif()
 
-if (CLANG_TIDY_EXE)
+if(CLANG_TIDY_EXE)
   set(CLANG_TIDY_AVAILABLE TRUE CACHE BOOL "Executable required to perform static analysis is available.")
-endif ()
+endif()
 
 if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND)
   set(COVERAGE_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run the coverage testing are available.")
 endif()
 
-if (SWIG_EXECUTABLE)
+if(SWIG_EXECUTABLE)
   set(BINDINGS_AVAILABLE TRUE CACHE BOOL "Executable required to generate bindings is available.")
-endif ()
+endif()
 
 if(VALGRIND_EXE AND Python_Interpreter_FOUND)
   set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executable required to run valgrind testing is available.")
