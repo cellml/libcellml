@@ -1967,6 +1967,17 @@ TEST(Validator, importNameNotFoundInFile) {
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
     EXPECT_EQ(1u, v.errorCount());
 
+    std::vector<std::string> expected = { 
+        "Import of units 'sandiness' has failed. Tried:",
+        "recursive_import.cellml) which was not found in the file." 
+    };
+
+    std::string a = v.getError(0)->getDescription();
+    std::size_t f1 = a.find(expected.at(0));
+    std::size_t f2 = a.find(expected.at(1));
+    EXPECT_NE(f1, std::string::npos);
+    EXPECT_NE(f2, std::string::npos);
+
     printErrors(v);
  }
 

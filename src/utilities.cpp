@@ -160,16 +160,16 @@ bool isCellMLReal(const std::string &candidate)
 bool isRelativePath(const std::string &path) {
     
     if (path.size()) {
-        // Starting with . or .. in any operating system implies relative path
+        // Starting with . or .. in any operating system implies relative path -> true
         if (path.at(0) == '.') {
             return true;
         }
-        // Starting with slash implies absolute
+        // Starting with slash implies absolute -> false
         if (path.at(0) == '/') {
-            return true;
+            return false;
         }
     }
-    // Presence of a colon implies either an absolute path with a drive letter (Windows) or non-local path
+    // Presence of a colon implies an absolute path (Windows) or non-local path -> false
     size_t found = path.find(":"); 
     if (found != std::string::npos) {
         return false;
