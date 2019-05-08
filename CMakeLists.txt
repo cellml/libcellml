@@ -190,4 +190,3 @@ if(CLANG_FORMAT_EXE)
     COMMENT "Source code has been reformatted by clang-format."
   )
 endif()
-
