@@ -26,16 +26,16 @@ foreach(_TEST ${TEST_SRCS})
   get_filename_component(_TEST_NAME ${_TEST} NAME_WE)
   set(_TEST_NAME python_${_TEST_NAME})
   add_test(NAME ${_TEST_NAME} COMMAND ${Python_EXECUTABLE} ${_TEST})
-  if (WIN32)
-    if (TARGET xml2)
+  if(WIN32)
+    if(TARGET xml2)
       set(GEN_EXP_XML2_TARGET_FILE_DIR "\;\$<TARGET_FILE_DIR:xml2>")
-    endif ()
+    endif()
     set_tests_properties(${_TEST_NAME} PROPERTIES
       ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:_entity>${GEN_EXP_XML2_TARGET_FILE_DIR}\;%PATH%;PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python/$<CONFIG>")
-  else ()
+  else()
     set_tests_properties(${_TEST_NAME} PROPERTIES
       ENVIRONMENT "PYTHONPATH=${PROJECT_BINARY_DIR}/src/bindings/python")
-  endif ()
+  endif()
   set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${_TEST}c
     ${CMAKE_CURRENT_BINARY_DIR}/${_TEST})
