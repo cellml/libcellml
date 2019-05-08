@@ -176,7 +176,7 @@ if(CLANG_FORMAT_EXE)
     ${TESTS_SOURCE_FILES}
   )
 
-  set(CHECK_CODE_FORMATTING_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/cmake_command_check_code_formatting.cmake
+  set(CHECK_CODE_FORMATTING_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/cmake_command_check_code_formatting.cmake)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.cmake.in
     ${CHECK_CODE_FORMATTING_SCRIPT} @ONLY)
   if(CLANG_FORMAT_TESTING_AVAILABLE)
