@@ -143,14 +143,14 @@ if (MSVC)
   # This does change how we get information about include paths and such so we
   # need to track how we found LibXml2.
   find_package(LibXml2 CONFIG QUIET)
-  if (LibXml2_FOUND)
+  if(LibXml2_FOUND)
     set(HAVE_LIBXML2_CONFIG TRUE)
-  else ()
+  else()
     find_package(LibXml2 REQUIRED)
-  endif ()
-else ()
+  endif()
+else()
   find_package(LibXml2 REQUIRED)
-endif ()
+endif()
 
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
