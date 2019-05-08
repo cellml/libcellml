@@ -1,3 +1,4 @@
+set(_FAILED_FILE)
 foreach(file @FILES_TO_FORMAT@)
   execute_process(COMMAND @CLANG_FORMAT_EXE@ ${file}
     COMMAND @GIT_EXE@ diff --no-index -- ${file} -
@@ -7,12 +8,13 @@ foreach(file @FILES_TO_FORMAT@)
   )
 
   if(NOT _RESULT EQUAL 0)
+    set(_FAILED_FILE ${file})
     break()
   endif()
 endforeach()
 
 if(_RESULT EQUAL 0)
   message("libCellML source code is 'clang-format' formatted.")
-else()
-  message(FATAL_ERROR "libCellML source code is incorrectly formatted.")
-endif()
+else ()
+  message(FATAL_ERROR "libCellML source code is incorrectly formatted.\nFailed file: ${_FAILED_FILE}")
+endif ()
