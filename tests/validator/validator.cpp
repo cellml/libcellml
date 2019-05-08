@@ -2192,10 +2192,6 @@ TEST(Validator, parseInvalidModelFromFile) {
     }
 }
 
-TEST(Validator, checkFormatsOfFilename) {
-
-}
-
 
 
 
