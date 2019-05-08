@@ -75,34 +75,34 @@ class UnitsTestCase(unittest.TestCase):
         self.assertRaises(
             RuntimeError, u.addUnit, Units.StandardUnit.WEBER + 1)
 
-    def test_prefix(self):
-        from libcellml import Units
+    # def test_prefix(self):
+        # from libcellml import Units
 
-        u = Units()
-        u.addUnit('test', Units.Prefix.YOTTA)
-        u.addUnit('test', Units.Prefix.ZETTA)
-        u.addUnit('test', Units.Prefix.EXA)
-        u.addUnit('test', Units.Prefix.PETA)
-        u.addUnit('test', Units.Prefix.TERA)
-        u.addUnit('test', Units.Prefix.GIGA)
-        u.addUnit('test', Units.Prefix.MEGA)
-        u.addUnit('test', Units.Prefix.KILO)
-        u.addUnit('test', Units.Prefix.HECTO)
-        u.addUnit('test', Units.Prefix.DECA)
-        u.addUnit('test', Units.Prefix.DECI)
-        u.addUnit('test', Units.Prefix.CENTI)
-        u.addUnit('test', Units.Prefix.MILLI)
-        u.addUnit('test', Units.Prefix.MICRO)
-        u.addUnit('test', Units.Prefix.NANO)
-        u.addUnit('test', Units.Prefix.PICO)
-        u.addUnit('test', Units.Prefix.FEMTO)
-        u.addUnit('test', Units.Prefix.ATTO)
-        u.addUnit('test', Units.Prefix.ZEPTO)
-        u.addUnit('test', Units.Prefix.YOCTO)
-        self.assertRaises(
-            RuntimeError, u.addUnit, 'test', Units.Prefix.YOTTA - 1)
-        self.assertRaises(
-            RuntimeError, u.addUnit, 'test', Units.Prefix.YOCTO + 1)
+        # u = Units()
+        # u.addUnit('test', Units.Prefix.YOTTA)
+        # u.addUnit('test', Units.Prefix.ZETTA)
+        # u.addUnit('test', Units.Prefix.EXA)
+        # u.addUnit('test', Units.Prefix.PETA)
+        # u.addUnit('test', Units.Prefix.TERA)
+        # u.addUnit('test', Units.Prefix.GIGA)
+        # u.addUnit('test', Units.Prefix.MEGA)
+        # u.addUnit('test', Units.Prefix.KILO)
+        # u.addUnit('test', Units.Prefix.HECTO)
+        # u.addUnit('test', Units.Prefix.DECA)
+        # u.addUnit('test', Units.Prefix.DECI)
+        # u.addUnit('test', Units.Prefix.CENTI)
+        # u.addUnit('test', Units.Prefix.MILLI)
+        # u.addUnit('test', Units.Prefix.MICRO)
+        # u.addUnit('test', Units.Prefix.NANO)
+        # u.addUnit('test', Units.Prefix.PICO)
+        # u.addUnit('test', Units.Prefix.FEMTO)
+        # u.addUnit('test', Units.Prefix.ATTO)
+        # u.addUnit('test', Units.Prefix.ZEPTO)
+        # u.addUnit('test', Units.Prefix.YOCTO)
+        # self.assertRaises(
+            # RuntimeError, u.addUnit, 'test', Units.Prefix.YOTTA - 1)
+        # self.assertRaises(
+            # RuntimeError, u.addUnit, 'test', Units.Prefix.YOCTO + 1)
 
     def test_is_base_unit(self):
         from libcellml import Units
@@ -129,14 +129,14 @@ class UnitsTestCase(unittest.TestCase):
 
         # void addUnit(const std::string &reference, Prefix prefix,
         #   double exponent=1.0, double multiplier=1.0)
-        u = Units()
-        u.addUnit('a', Units.Prefix.YOTTA)
-        u.addUnit('a', Units.Prefix.YOTTA, -1)
-        u.addUnit('a', Units.Prefix.YOTTA, 2.3)
-        u.addUnit('a', Units.Prefix.YOTTA, -1, 3)
-        u.addUnit('a', Units.Prefix.YOTTA, -1, 2.3)
-        u.addUnit('a', Units.Prefix.YOTTA, 1.2, 3.4)
-        del(u)
+        # u = Units()
+        # u.addUnit('a', Units.Prefix.YOTTA)
+        # u.addUnit('a', Units.Prefix.YOTTA, -1)
+        # u.addUnit('a', Units.Prefix.YOTTA, 2.3)
+        # u.addUnit('a', Units.Prefix.YOTTA, -1, 3)
+        # u.addUnit('a', Units.Prefix.YOTTA, -1, 2.3)
+        # u.addUnit('a', Units.Prefix.YOTTA, 1.2, 3.4)
+        # del(u)
 
         # void addUnit(const std::string &reference, int prefix,
         #   double exponent, double multiplier=1.0)
@@ -180,14 +180,15 @@ class UnitsTestCase(unittest.TestCase):
 
         # void addUnit(StandardUnit standardRef, Prefix prefix,
         #   double exponent=1.0, double multiplier=1.0, std::string id='')
-        u = Units()
-        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO)
-        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0)
-        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1)
-        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0, 2.0)
-        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1, 2.0)
-        u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1, 2, 'id')
-        del(u)
+		# KRM Removed the overload of enums in favour of ints for python binding
+        # u = Units()
+        # u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO)
+        # u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0)
+        # u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1)
+        # u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1.0, 2.0)
+        # u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, 1, 2.0)
+        # u.addUnit(Units.StandardUnit.KATAL, Units.Prefix.PICO, -1, 2, 'id')
+        # del(u)
 
         # void addUnit(StandardUnit standardRef, int prefix,
         #   double exponent, double multiplier=1.0)
