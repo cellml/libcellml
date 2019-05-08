@@ -349,4 +349,4 @@ bool Model::hasUnresolvedImports()
     return unresolvedImports;
 }
 
-} // namespace libcellml
+}
