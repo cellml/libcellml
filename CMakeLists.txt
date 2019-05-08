@@ -50,9 +50,9 @@ unset(MEMCHECK CACHE)
 
 # BINDINGS_PYTHON ==> LIBCELLML_BINDINGS_PYTHON
 set(_PARAM_ANNOTATION "Build Python wrappers.")
-if (BINDINGS_AVAILABLE)
+if(BINDINGS_AVAILABLE)
   set(LIBCELLML_BINDINGS_PYTHON ON CACHE BOOL ${_PARAM_ANNOTATION})
-endif ()
+endif()
 if(DEFINED BINDINGS_PYTHON AND BINDINGS_AVAILABLE)
   set(LIBCELLML_BINDINGS_PYTHON "${BINDINGS_PYTHON}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 endif()
@@ -135,7 +135,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-if (LIBCELLML_UNIT_TESTS)
+if(LIBCELLML_UNIT_TESTS)
   # enable testing here so that we can make use of the 'test' target
   enable_testing()
   add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tests)
