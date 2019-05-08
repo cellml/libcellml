@@ -29,9 +29,12 @@
 // This one causes confusion: addUnit(1, 1.0) --> (StandardUnit, double exp)
 // but: addUnit(1, 1) --> (StandardUnit, Prefix, default=1, default=1)
 %ignore libcellml::Units::addUnit(StandardUnit standardRef, double exponent);
+
 // Removing the overload of enumeration and integers for the Prefix argument
-%ignore libcellml::Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent,double multiplier, const std::string &id);
+%ignore libcellml::Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent, double multiplier, const std::string &id);
+%ignore libcellml::Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent=1.0, double multiplier=1.0, const std::string &id="");
 %ignore libcellml::Units::addUnit(const std::string &reference, Prefix prefix, double exponent, double multiplier, const std::string &id);
+%ignore libcellml::Units::addUnit(const std::string &reference, Prefix prefix, double exponent=1.0, double multiplier=1.0, const std::string &id="");
 
 %feature("docstring") libcellml::Units
 "Represents a CellML Units definition.";
@@ -46,7 +49,7 @@ Possible signatures:
  - addUnit(reference)
 
 where `reference` can be a string or a StandardUnits. And `prefix` can be a
-string or Prefix.
+string or integer.
 
 In addition, there's a signature
 
