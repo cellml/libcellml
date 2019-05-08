@@ -147,11 +147,11 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit('a', 1, -1, 2.3)
         u.addUnit('a', 1, 1.2, 3.4)
         # TODO Ints get converted to Prefix enum, not to double!
-        u.addunit('a', -1, -1)
-        u.addunit('a', -1, 2.3)
-        u.addunit('a', -1, -1, 3)
-        u.addunit('a', -1, -1, 2.3)
-        u.addunit('a', -1, 1.2, 3.4)
+        u.addUnit('a', -1, -1)
+        u.addUnit('a', -1, 2.3)
+        u.addUnit('a', -1, -1, 3)
+        u.addUnit('a', -1, -1, 2.3)
+        u.addUnit('a', -1, 1.2, 3.4)
         del(u)
 
         # void addUnit(const std::string &reference, double exponent)
