@@ -1977,8 +1977,6 @@ TEST(Validator, importNameNotFoundInFile) {
     std::size_t f2 = a.find(expected.at(1));
     EXPECT_NE(f1, std::string::npos);
     EXPECT_NE(f2, std::string::npos);
-
-    printErrors(v);
  }
 
 TEST(Validator, importFileDoesNotExist) {
@@ -1992,7 +1990,24 @@ TEST(Validator, importFileDoesNotExist) {
 
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
+
     EXPECT_EQ(2u, v.errorCount());
+
+    std::vector<std::vector<std::string>> expected;
+    expected.push_back({"Import of component 'duplicating_the_beach' has failed:",
+                       "('duplicating_the_beach' in import_missing_file.cellml) which imports",
+                       "this_one_does_not_exist.cellml) but the file was not found.",});
+    expected.push_back({ "Import of units 'sandiness' has failed:",
+                       "('sandiness' in import_missing_file.cellml) which imports",
+                       "this_one_does_not_exist_either.cellml) but the file was not found." });
+
+    for (size_t i = 0; i < expected.size(); ++i) {
+        for (size_t j = 0; j < expected.at(i).size(); ++j) {
+            std::string e = v.getError(i)->getDescription();
+            std::size_t found = e.find(expected.at(i).at(j));
+            EXPECT_NE(found, std::string::npos);
+        }
+    }
 }
 
 TEST(Validator, importLayer) {
@@ -2008,8 +2023,14 @@ TEST(Validator, importLayer) {
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
 
     EXPECT_EQ(1u, v.errorCount());
-
-    printErrors(v);
+    std::vector<std::string> expected = {"Import of units 'u1' has failed. Tried:",
+                       "('u1' in recursiveImport_1.cellml) imports",
+                       "recursiveImport_3.cellml) which was not found in the file.",};
+    std::string e = v.getError(0)->getDescription();
+    for (size_t j = 0; j < expected.size(); ++j) {
+        std::size_t found = e.find(expected.at(j));
+        EXPECT_NE(found, std::string::npos);
+    }
 }
 
 TEST(Validator, validateCircularImportReferences) {
@@ -2028,7 +2049,24 @@ TEST(Validator, validateCircularImportReferences) {
 
     EXPECT_EQ(2u, v.errorCount());
 
-    printErrors(v);
+    std::vector<std::vector<std::string>> expected;
+    expected.push_back({"Import of component 'i_am_cyclic' has circular dependencies:",
+                       "('i_am_cyclic' in circularImport_1.cellml) which imports",
+                       "circularImport_2a.cellml) which imports",
+                       "circularImport_3.cellml) which imports",
+    });
+    expected.push_back({"Import of units 'u1' has failed. Tried:",
+                       "('u1' in circularImport_1.cellml) imports",
+                       "circularImport_2b.cellml) imports",
+                       "circularImport_3.cellml) which was not found in the file."});
+
+    for (size_t i = 0; i < expected.size(); ++i) {
+        for (size_t j = 0; j < expected.at(i).size(); ++j) {
+            std::string e = v.getError(i)->getDescription();
+            std::size_t found = e.find(expected.at(i).at(j));
+            EXPECT_NE(found, std::string::npos);
+        }
+    }
 }
 
 TEST(Validator, validateImportsInMultipleLocations) {
@@ -2094,7 +2132,19 @@ TEST(Validator, validateAbsolutePathImports) {
     validator.validateModel(model); // TODO warning that full depth is not checked?
     EXPECT_EQ(0u, validator.errorCount());
 
-    printErrors(validator);
+    // These is a fake file to give test coverage to the isRelativePath() function
+    validator.validateModel(model, "C:/hello/hello.cellml");
+    EXPECT_EQ(1u, validator.errorCount());
+    std::vector<std::string> expected = {
+        "Import of component 'latte' has failed:",
+        "('latte' in hello.cellml) which imports",
+        "recursive_import_path2.cellml) but the file was not found."
+    };
+    for (size_t j = 0; j < expected.size(); ++j) {
+        std::string e = validator.getError(0)->getDescription();
+        std::size_t found = e.find(expected.at(j));
+        EXPECT_NE(found, std::string::npos);
+    }
 }
 
 TEST(Validator, parseInvalidModelFromFile) {
@@ -2135,8 +2185,6 @@ TEST(Validator, parseInvalidModelFromFile) {
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    printErrors(v);
-
     for (size_t i = 0; i < expectedErrors.size(); ++i) {
         std::string e = v.getError(i)->getDescription();
         std::size_t found = e.find(expectedErrors.at(i));
@@ -2144,7 +2192,9 @@ TEST(Validator, parseInvalidModelFromFile) {
     }
 }
 
+TEST(Validator, checkFormatsOfFilename) {
 
+}
 
 
 
