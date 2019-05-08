@@ -15,6 +15,6 @@ endforeach()
 
 if(_RESULT EQUAL 0)
   message("libCellML source code is 'clang-format' formatted.")
-else ()
+else()
   message(FATAL_ERROR "libCellML source code is incorrectly formatted.\nFailed file: ${_FAILED_FILE}.")
-endif ()
+endif()
