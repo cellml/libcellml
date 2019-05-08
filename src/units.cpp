@@ -182,7 +182,7 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     // Allow all nonzero user-specified prefixes
     try
     {
-        double prefixInt = std::stoi(prefix);
+        int prefixInt = std::stoi(prefix);
         if (prefixInt != 0) {
             u.mPrefix = prefix;
         }

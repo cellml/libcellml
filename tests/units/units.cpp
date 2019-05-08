@@ -447,7 +447,7 @@ TEST(Units, getUnitAttributes) {
     EXPECT_EQ("4", prefix);
     EXPECT_DOUBLE_EQ(1.05, exponent);
     EXPECT_DOUBLE_EQ(17, multiplier);
- \
+ 
     // Get non-existent unit.
     u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("", reference);
@@ -495,6 +495,16 @@ TEST(Units, multipleUnitUsingStandardRef) {
     u.getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("micro", prefix);
 
+}
+
+TEST(Units, prefixOutOfRange) {
+    libcellml::Units u;
+    std::string prefix, reference, id;
+    double exponent, multiplier;
+
+    u.addUnit(libcellml::Units::StandardUnit::AMPERE, "18446744073709551616");
+    u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
+    EXPECT_EQ("18446744073709551616", prefix);
 }
 
 TEST(Units, removeUnit) {
