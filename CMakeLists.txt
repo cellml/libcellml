@@ -187,6 +187,7 @@ if(CLANG_FORMAT_EXE)
 
   add_custom_target(reformat_code
     COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT}
+    COMMENT "Source code has been reformatted by clang-format."
   )
 endif()
 
