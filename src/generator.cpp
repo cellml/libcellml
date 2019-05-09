@@ -25,6 +25,7 @@ limitations under the License.
 #include "libcellml/generator.h"
 #include "libcellml/model.h"
 #include "libcellml/validator.h"
+#include "libcellml/variable.h"
 
 #include <cmath>
 #include <limits>
@@ -103,10 +104,12 @@ public:
     };
 
     explicit GeneratorEquationAst(Type type, const std::string &value = "");
+    explicit GeneratorEquationAst(Type type, const VariablePtr &variable);
 
     Type type() const;
 
     std::string value() const;
+    VariablePtr variable() const;
 
     GeneratorEquationAstPtr &left();
     GeneratorEquationAstPtr &right();
@@ -115,6 +118,7 @@ private:
     Type mType;
 
     std::string mValue;
+    VariablePtr mVariable;
 
     GeneratorEquationAstPtr mLeft;
     GeneratorEquationAstPtr mRight;
@@ -123,6 +127,16 @@ private:
 GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value)
     : mType(type)
     , mValue(value)
+    , mVariable(nullptr)
+    , mLeft(nullptr)
+    , mRight(nullptr)
+{
+}
+
+GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variable)
+    : mType(type)
+    , mValue("")
+    , mVariable(variable)
     , mLeft(nullptr)
     , mRight(nullptr)
 {
@@ -136,6 +150,11 @@ GeneratorEquationAst::Type GeneratorEquationAst::type() const
 std::string GeneratorEquationAst::value() const
 {
     return mValue;
+}
+
+VariablePtr GeneratorEquationAst::variable() const
+{
+    return mVariable;
 }
 
 GeneratorEquationAstPtr &GeneratorEquationAst::left()
@@ -689,7 +708,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("cn")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->getFirstChild()->convertToString());
     } else if (node->isMathmlElement("ci")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, node->getFirstChild()->convertToString());
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, component->getVariable(node->getFirstChild()->convertToString()));
 
     // Qualifier elements
 
@@ -1407,8 +1426,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     // Token elements
 
     case GeneratorEquationAst::Type::CN:
-    case GeneratorEquationAst::Type::CI:
         return ast->value();
+    case GeneratorEquationAst::Type::CI:
+        return ast->variable()->getName();
 
     // Qualifier elements
 
