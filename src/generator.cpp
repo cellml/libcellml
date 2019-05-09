@@ -223,6 +223,8 @@ struct Generator::GeneratorImpl
 {
     bool mWithNames = true;
 
+    std::vector<GeneratorEquationPtr> mRawEquations;
+
     std::vector<GeneratorEquationPtr> mEquations;
     std::vector<GeneratorVariablePtr> mVariables;
 
@@ -353,8 +355,8 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node, const ComponentPtr &component);
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const ComponentPtr &component);
-
     void processComponent(const ComponentPtr &component);
+    void processModel(const ModelPtr &model);
 
     std::string neededMathMethods() const;
     std::string initializeVariables() const;
@@ -428,11 +430,12 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            const ComponentPtr &component)
 {
-    // Create and keep track of the equation for the given node
+    // Create and keep track of the (raw) equation associated with the given
+    // node
 
     GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>();
 
-    mEquations.push_back(equation);
+    mRawEquations.push_back(equation);
 
     // Actually process the node
 
@@ -767,6 +770,62 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         processComponent(component->getComponent(i));
+    }
+}
+
+void Generator::GeneratorImpl::processModel(const ModelPtr &model)
+{
+    // Reset a few things in case we were to process the model more than once
+    // Note: one would normally process the model only once, so we shouldn't
+    //       need to do this, but better be safe than sorry.
+
+    mRawEquations.clear();
+
+    mEquations.clear();
+    mVariables.clear();
+
+    mNeedFactorial = false;
+
+    mNeedMin = false;
+    mNeedMax = false;
+
+    mNeedGcd = false;
+    mNeedLcm = false;
+
+    mNeedSec = false;
+    mNeedCsc = false;
+    mNeedCot = false;
+    mNeedSech = false;
+    mNeedCsch = false;
+    mNeedCoth = false;
+    mNeedAsec = false;
+    mNeedAcsc = false;
+    mNeedAcot = false;
+    mNeedAsech = false;
+    mNeedAcsch = false;
+    mNeedAcoth = false;
+
+    // Recursively process the model's top components, so that we end up with an
+    // AST of each of the model's equations
+
+    for (size_t i = 0; i < model->componentCount(); ++i) {
+        processComponent(model->getComponent(i));
+    }
+
+    // Process the model's equations to determine the order in which they should
+    // be computed
+
+    if (!processEquations()) {
+        return;
+    }
+
+    // Generate the code for our different equations
+//TODO: remove the below code once we are done testing things...
+
+    printf("%s", neededMathMethods().c_str());
+
+    for (auto equation : mEquations) {
+        printf("%s;\n", generateCode(equation->ast()).c_str());
     }
 }
 
@@ -1514,18 +1573,7 @@ void Generator::processModel(const ModelPtr &model)
 
     // Process the model
 
-    for (size_t i = 0; i < model->componentCount(); ++i) {
-        mPimpl->processComponent(model->getComponent(i));
-    }
-
-    // Generate the code for our different equations
-//TODO: remove the below once we are done testing things...
-
-    printf("%s", mPimpl->neededMathMethods().c_str());
-
-    for (auto equation : mPimpl->mEquations) {
-        printf("%s;\n", mPimpl->generateCode(equation->ast()).c_str());
-    }
+    mPimpl->processModel(model);
 }
 
 void Generator::setWithNames(bool withNames)
