@@ -205,7 +205,6 @@ struct Generator::GeneratorImpl
     bool mWithNames = true;
 
     std::vector<GeneratorEquationPtr> mEquations;
-
     std::vector<GeneratorVariablePtr> mVariables;
 
     // Relational operators
