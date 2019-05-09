@@ -21,14 +21,14 @@ limitations under the License.
 #include "utilities.h"
 #include "xmldoc.h"
 
-#include <cmath>
-#include <limits>
-#include <vector>
-
 #include "libcellml/component.h"
 #include "libcellml/generator.h"
 #include "libcellml/model.h"
 #include "libcellml/validator.h"
+
+#include <cmath>
+#include <limits>
+#include <vector>
 
 #undef NAN
 
