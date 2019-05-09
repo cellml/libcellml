@@ -805,8 +805,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mNeedAcsch = false;
     mNeedAcoth = false;
 
-    // Recursively process the model's top components, so that we end up with an
-    // AST of each of the model's equations
+    // Recursively process the model's components, so that we end up with an AST
+    // for each of the model's equations
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         processComponent(model->getComponent(i));
