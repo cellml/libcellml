@@ -356,6 +356,7 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
+    bool processEquations();
     void processModel(const ModelPtr &model);
 
     std::string neededMathMethods() const;
@@ -771,6 +772,11 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     for (size_t i = 0; i < component->componentCount(); ++i) {
         processComponent(component->getComponent(i));
     }
+}
+
+bool Generator::GeneratorImpl::processEquations()
+{
+    return true;
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
