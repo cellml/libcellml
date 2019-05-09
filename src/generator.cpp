@@ -1489,7 +1489,7 @@ void Generator::processModel(const ModelPtr &model)
     }
 */
 
-    // Process the model itself
+    // Process the model
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         mPimpl->processComponent(model->getComponent(i));
