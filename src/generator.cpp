@@ -331,8 +331,9 @@ struct Generator::GeneratorImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    void processNode(const XmlNodePtr &node);
-    void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast);
+    void processNode(const XmlNodePtr &node, const ComponentPtr &component);
+    void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
+                     const ComponentPtr &component);
 
     void processComponent(const ComponentPtr &component);
 
@@ -405,7 +406,8 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     return res;
 }
 
-void Generator::GeneratorImpl::processNode(const XmlNodePtr &node)
+void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
+                                           const ComponentPtr &component)
 {
     // Create and keep track of the equation for the given node
 
@@ -415,11 +417,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node)
 
     // Actually process the node
 
-    processNode(node, equation->ast());
+    processNode(node, equation->ast(), component);
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                           GeneratorEquationAstPtr &ast)
+                                           GeneratorEquationAstPtr &ast,
+                                           const ComponentPtr &component)
 {
     // Basic content elements
 
@@ -452,18 +455,18 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         size_t childCount = mathmlChildCount(node);
 
-        processNode(mathmlChildNode(node, 0), ast);
-        processNode(mathmlChildNode(node, 1), ast->left());
+        processNode(mathmlChildNode(node, 0), ast, component);
+        processNode(mathmlChildNode(node, 1), ast->left(), component);
 
         if (childCount >= 3) {
             GeneratorEquationAstPtr astRight;
             GeneratorEquationAstPtr tempAst;
 
-            processNode(mathmlChildNode(node, childCount-1), astRight);
+            processNode(mathmlChildNode(node, childCount-1), astRight, component);
 
             for (size_t i = childCount-2; i > 1; --i) {
-                processNode(mathmlChildNode(node, 0), tempAst);
-                processNode(mathmlChildNode(node, i), tempAst->left());
+                processNode(mathmlChildNode(node, 0), tempAst, component);
+                processNode(mathmlChildNode(node, i), tempAst->left(), component);
 
                 tempAst->right() = astRight;
                 astRight = tempAst;
@@ -652,18 +655,18 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE);
 
-        processNode(mathmlChildNode(node, 0), ast->left());
+        processNode(mathmlChildNode(node, 0), ast->left(), component);
 
         if (childCount >= 2) {
             GeneratorEquationAstPtr astRight;
             GeneratorEquationAstPtr tempAst;
 
-            processNode(mathmlChildNode(node, childCount-1), astRight);
+            processNode(mathmlChildNode(node, childCount-1), astRight, component);
 
             for (size_t i = childCount-2; i > 0; --i) {
                 tempAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE);
 
-                processNode(mathmlChildNode(node, i), tempAst->left());
+                processNode(mathmlChildNode(node, i), tempAst->left(), component);
 
                 tempAst->right() = astRight;
                 astRight = tempAst;
@@ -674,12 +677,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("piece")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECE);
 
-        processNode(mathmlChildNode(node, 0), ast->left());
-        processNode(mathmlChildNode(node, 1), ast->right());
+        processNode(mathmlChildNode(node, 0), ast->left(), component);
+        processNode(mathmlChildNode(node, 1), ast->right(), component);
     } else if (node->isMathmlElement("otherwise")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OTHERWISE);
 
-        processNode(mathmlChildNode(node, 0), ast->left());
+        processNode(mathmlChildNode(node, 0), ast->left(), component);
 
     // Token elements
 
@@ -693,15 +696,15 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("degree")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DEGREE);
 
-        processNode(mathmlChildNode(node, 0), ast->left());
+        processNode(mathmlChildNode(node, 0), ast->left(), component);
     } else if (node->isMathmlElement("logbase")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOGBASE);
 
-        processNode(mathmlChildNode(node, 0), ast->left());
+        processNode(mathmlChildNode(node, 0), ast->left(), component);
     } else if (node->isMathmlElement("bvar")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR);
 
-        processNode(mathmlChildNode(node, 0), ast->left());
+        processNode(mathmlChildNode(node, 0), ast->left(), component);
 
     // Constants
 
@@ -736,7 +739,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         for (XmlNodePtr node = mathNode->getFirstChild();
              node != nullptr; node = node->getNext()) {
             if (node->isMathmlElement()) {
-                processNode(node);
+                processNode(node, component);
             }
         }
     }
