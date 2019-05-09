@@ -62,7 +62,7 @@ TEST(Generator, coverage) {
 /*TODO: reenable this test once we are done with the previous tests...
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component.cellml"));
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
@@ -76,22 +76,22 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     EXPECT_EQ(size_t(1), generator.rateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_initializeVariables.out"),
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/initializeVariables.out"),
               generator.initializeVariables());
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeConstantEquations.out"),
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/computeConstantEquations.out"),
               generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeRateEquations.out"),
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/computeRateEquations.out"),
               generator.computeRateEquations());
     EXPECT_EQ(EMPTY_STRING,
               generator.computeAlgebraicEquations());
 
     generator.setWithNames(true);
 
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_initializeVariables_with_names.out"),
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/initializeVariables_with_names.out"),
               generator.initializeVariables());
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeConstantEquations_with_names.out"),
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/computeConstantEquations_with_names.out"),
               generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component_computeRateEquations_with_names.out"),
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/computeRateEquations_with_names.out"),
               generator.computeRateEquations());
     EXPECT_EQ(EMPTY_STRING,
               generator.computeAlgebraicEquations());
