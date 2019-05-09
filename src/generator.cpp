@@ -356,6 +356,7 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
+    void processVariables(const ComponentPtr &component);
     bool processEquations();
     void processModel(const ModelPtr &model);
 
@@ -774,6 +775,15 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     }
 }
 
+void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
+{
+    // Do the same for the components encapsulated by the given component
+
+    for (size_t i = 0; i < component->componentCount(); ++i) {
+        processVariables(component->getComponent(i));
+    }
+}
+
 bool Generator::GeneratorImpl::processEquations()
 {
     return true;
@@ -816,6 +826,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         processComponent(model->getComponent(i));
+    }
+
+    // Recursively process the model's variables to determine whether all of
+    // them are being used
+
+    for (size_t i = 0; i < model->componentCount(); ++i) {
+        processVariables(model->getComponent(i));
     }
 
     // Process the model's equations to determine the order in which they should
