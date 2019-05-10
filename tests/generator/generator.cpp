@@ -59,6 +59,28 @@ TEST(Generator, coverage) {
     EXPECT_EQ(size_t(0), generator.errorCount());
 }
 
+TEST(Generator, two_variables_of_integration) {
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/two_variables_of_integration.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    std::vector<std::string> expectedErrors = {
+        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be a variable of integration."
+    };
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.getError(i)->getKind());
+    }
+}
+
 /*TODO: reenable this test once we are done with the previous tests...
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
