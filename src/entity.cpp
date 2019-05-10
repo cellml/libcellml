@@ -89,6 +89,20 @@ void *Entity::getParent() const {
     return parent;
 }
 
+Component *Entity::getParentComponent() const
+{
+    return mPimpl->mParentComponent;
+}
+
+Model *Entity::getParentModel() const
+{
+    if (mPimpl->mParentComponent) {
+        return mPimpl->mParentComponent->getParentModel();
+    }
+
+    return mPimpl->mParentModel;
+}
+
 void Entity::setParent(Component *parent) {
     mPimpl->mParentComponent = parent;
 }
