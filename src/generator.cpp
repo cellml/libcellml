@@ -727,10 +727,11 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             if (mVariableOfIntegration == nullptr) {
                 mVariableOfIntegration = variable;
             } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
-                ErrorPtr err = std::make_shared<Error>();
                 Component *voiComponent = static_cast<Component *>(mVariableOfIntegration->getParent());
                 Model *voiModel = voiComponent->getParentModel();
                 Model *model = component->getParentModel();
+                ErrorPtr err = std::make_shared<Error>();
+
                 err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
                 err->setKind(Error::Kind::GENERATOR);
 
