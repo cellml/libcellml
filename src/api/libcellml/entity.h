@@ -69,6 +69,9 @@ public:
      */
     void *getParent() const;
 
+    Component *getParentComponent() const;
+    Model *getParentModel() const;
+
     /**
      * @brief Sets the model as the parent of this entity.
      *
