@@ -69,7 +69,20 @@ public:
      */
     void *getParent() const;
 
+    /**
+     * @brief Returns the parent component of the CellML Entity.
+     *
+     * @return A pointer to the entities parent component if it has one,
+     * otherwise the null pointer.
+     */
     Component *getParentComponent() const;
+
+    /**
+     * @brief Returns the parent model of the CellML Entity.
+     *
+     * @return A pointer to the entities parent model if it has one,
+     * otherwise the null pointer.
+     */
     Model *getParentModel() const;
 
     /**
