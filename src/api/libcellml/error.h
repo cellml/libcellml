@@ -119,7 +119,8 @@ public:
         UNITS,
         VARIABLE,
         WHEN,
-        XML
+        XML,
+        GENERATOR
     };
 
     /**
