@@ -22,6 +22,12 @@ unset).";
 %feature("docstring") libcellml::Entity::getParent
 "Returns the parent of the CellML Entity (or `None` if not set).";
 
+%feature("docstring") libcellml::Entity::getParentComponent
+"Returns the parent component of the CellML Entity (or `None` if not set).";
+
+%feature("docstring") libcellml::Entity::getParentModel
+"Returns the parent model of the CellML Entity (or `None` if not set).";
+
 %feature("docstring") libcellml::Entity::hasParent
 "Tests if this entity, or any of its parent entities, have the given entity as
 parent.";
