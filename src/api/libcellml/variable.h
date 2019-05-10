@@ -208,6 +208,8 @@ public:
      */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
+    bool isEquivalentVariable(const VariablePtr &equivalentVariable) const;
+
     /**
      * @brief Set the units by @p name for this variable.
      *
