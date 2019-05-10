@@ -81,6 +81,32 @@ TEST(Generator, two_variables_of_integration) {
     }
 }
 
+TEST(Generator, non_first_order_odes) {
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/non_first_order_odes.cellml"));
+for (size_t i = 0; i < parser.errorCount(); ++i)
+    std::cout << "Parser error #" << i+1 << ": " << parser.getError(i)->getDescription() << std::endl;
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    std::vector<std::string> expectedErrors = {
+        "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
+        "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
+        "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order."
+    };
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.getError(i)->getKind());
+    }
+}
+
 /*TODO: reenable this test once we are done with the previous tests...
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
