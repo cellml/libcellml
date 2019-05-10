@@ -751,6 +751,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         processNode(mathmlChildNode(node, 0), ast->left(), component);
 
+        XmlNodePtr rightNode = mathmlChildNode(node, 1);
+
+        if (rightNode != nullptr) {
+            processNode(rightNode, ast->right(), component);
+        }
+
     // Constants
 
     } else if (node->isMathmlElement("true")) {
