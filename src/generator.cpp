@@ -106,6 +106,9 @@ public:
     explicit GeneratorEquationAst(Type type, const std::string &value = "");
     explicit GeneratorEquationAst(Type type, const VariablePtr &variable);
 
+    GeneratorEquationAstPtr parent() const;
+    void setParent(const GeneratorEquationAstPtr &parent);
+
     Type type() const;
 
     std::string value() const;
@@ -115,6 +118,8 @@ public:
     GeneratorEquationAstPtr &right();
 
 private:
+    GeneratorEquationAstPtr mParent;
+
     Type mType;
 
     std::string mValue;
@@ -140,6 +145,16 @@ GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variabl
     , mLeft(nullptr)
     , mRight(nullptr)
 {
+}
+
+void GeneratorEquationAst::setParent(const GeneratorEquationAstPtr &parent)
+{
+    mParent = parent;
+}
+
+GeneratorEquationAstPtr GeneratorEquationAst::parent() const
+{
+    return mParent;
 }
 
 GeneratorEquationAst::Type GeneratorEquationAst::type() const
@@ -358,9 +373,10 @@ struct Generator::GeneratorImpl
 
     void processNode(const XmlNodePtr &node, const ComponentPtr &component);
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
-                     const ComponentPtr &component,
-                     const GeneratorEquationAstPtr &parentAst = nullptr);
+                     const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
+    void finaliseRawEquation(const GeneratorEquationAstPtr &ast);
+    bool isValidRawEquation(const GeneratorEquationAstPtr &ast);
     void processVariables(const ComponentPtr &component);
     bool processEquations();
     void processModel(const ModelPtr &model);
@@ -451,8 +467,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            GeneratorEquationAstPtr &ast,
-                                           const ComponentPtr &component,
-                                           const GeneratorEquationAstPtr &parentAst)
+                                           const ComponentPtr &component)
 {
     // Basic content elements
 
@@ -719,25 +734,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("cn")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->getFirstChild()->convertToString());
     } else if (node->isMathmlElement("ci")) {
-        VariablePtr variable = component->getVariable(node->getFirstChild()->convertToString());
-
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable);
-
-        if ((parentAst != nullptr) && (parentAst->type() == GeneratorEquationAst::Type::BVAR)) {
-            if (mVariableOfIntegration == nullptr) {
-                mVariableOfIntegration = variable;
-            } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
-                Component *voiComponent = static_cast<Component *>(mVariableOfIntegration->getParent());
-                Model *voiModel = voiComponent->getParentModel();
-                Model *model = component->getParentModel();
-                ErrorPtr err = std::make_shared<Error>();
-
-                err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
-                err->setKind(Error::Kind::GENERATOR);
-
-                mGenerator->addError(err);
-            }
-        }
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, component->getVariable(node->getFirstChild()->convertToString()));
 
     // Qualifier elements
 
@@ -752,7 +749,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("bvar")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component, ast);
+        processNode(mathmlChildNode(node, 0), ast->left(), component);
 
     // Constants
 
@@ -797,6 +794,68 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     for (size_t i = 0; i < component->componentCount(); ++i) {
         processComponent(component->getComponent(i));
     }
+}
+
+void Generator::GeneratorImpl::finaliseRawEquation(const GeneratorEquationAstPtr &ast)
+{
+    // Recursively set the given AST's children's parent
+
+    if (ast->left() != nullptr) {
+        ast->left()->setParent(ast);
+
+        finaliseRawEquation(ast->left());
+    }
+
+    if (ast->right() != nullptr) {
+        ast->right()->setParent(ast);
+
+        finaliseRawEquation(ast->right());
+    }
+}
+
+bool Generator::GeneratorImpl::isValidRawEquation(const GeneratorEquationAstPtr &ast)
+{
+    // Make sure that we don't have more than one variable of integration
+
+    GeneratorEquationAstPtr astParent = ast->parent();
+    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr)?astParent->parent():nullptr;
+
+    if (   (ast->type() == GeneratorEquationAst::Type::CI)
+        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::BVAR)
+        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
+        VariablePtr variable = ast->variable();
+
+        if (mVariableOfIntegration == nullptr) {
+            mVariableOfIntegration = variable;
+        } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
+            Component *voiComponent = static_cast<Component *>(mVariableOfIntegration->getParent());
+            Model *voiModel = voiComponent->getParentModel();
+            Component *component = variable->getParentComponent();
+            Model *model = component->getParentModel();
+            ErrorPtr err = std::make_shared<Error>();
+
+            err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
+            err->setKind(Error::Kind::GENERATOR);
+
+            mGenerator->addError(err);
+        }
+    }
+
+    // Recursively check the given AST's children
+
+    if (ast->left() != nullptr) {
+        if (!isValidRawEquation(ast->left())) {
+            return false;
+        }
+    }
+
+    if (ast->right() != nullptr) {
+        if (!isValidRawEquation(ast->right())) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
@@ -852,6 +911,16 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         processComponent(model->getComponent(i));
+    }
+
+    // Finalise and check our different raw equations
+
+    for (const auto &rawEquation : mRawEquations) {
+        finaliseRawEquation(rawEquation->ast());
+
+        if (!isValidRawEquation(rawEquation->ast())) {
+            return;
+        }
     }
 
     // Recursively process the model's variables to determine whether all of
