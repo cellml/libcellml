@@ -221,12 +221,16 @@ GeneratorVariable::Type GeneratorVariable::type() const
 
 struct Generator::GeneratorImpl
 {
+    Generator *mGenerator;
+
     bool mWithNames = true;
 
     std::vector<GeneratorEquationPtr> mRawEquations;
 
     std::vector<GeneratorEquationPtr> mEquations;
     std::vector<GeneratorVariablePtr> mVariables;
+
+    VariablePtr mVariableOfIntegration;
 
     // Relational operators
 
@@ -354,7 +358,8 @@ struct Generator::GeneratorImpl
 
     void processNode(const XmlNodePtr &node, const ComponentPtr &component);
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
-                     const ComponentPtr &component);
+                     const ComponentPtr &component,
+                     const GeneratorEquationAstPtr &parentAst = nullptr);
     void processComponent(const ComponentPtr &component);
     void processVariables(const ComponentPtr &component);
     bool processEquations();
@@ -446,7 +451,8 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            GeneratorEquationAstPtr &ast,
-                                           const ComponentPtr &component)
+                                           const ComponentPtr &component,
+                                           const GeneratorEquationAstPtr &parentAst)
 {
     // Basic content elements
 
@@ -713,7 +719,24 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("cn")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->getFirstChild()->convertToString());
     } else if (node->isMathmlElement("ci")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, component->getVariable(node->getFirstChild()->convertToString()));
+        VariablePtr variable = component->getVariable(node->getFirstChild()->convertToString());
+
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable);
+
+        if ((parentAst != nullptr) && (parentAst->type() == GeneratorEquationAst::Type::BVAR)) {
+            if (mVariableOfIntegration == nullptr) {
+                mVariableOfIntegration = variable;
+            } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
+                ErrorPtr err = std::make_shared<Error>();
+                Component *voiComponent = static_cast<Component *>(mVariableOfIntegration->getParent());
+                Model *voiModel = voiComponent->getParentModel();
+                Model *model = component->getParentModel();
+                err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
+                err->setKind(Error::Kind::GENERATOR);
+
+                mGenerator->addError(err);
+            }
+        }
 
     // Qualifier elements
 
@@ -728,7 +751,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("bvar")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component);
+        processNode(mathmlChildNode(node, 0), ast->left(), component, ast);
 
     // Constants
 
@@ -799,6 +822,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     mEquations.clear();
     mVariables.clear();
+
+    mVariableOfIntegration = nullptr;
 
     mNeedFactorial = false;
 
@@ -1541,6 +1566,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 Generator::Generator()
     : mPimpl(new GeneratorImpl())
 {
+    mPimpl->mGenerator = this;
 }
 
 Generator::~Generator()
@@ -1552,6 +1578,8 @@ Generator::Generator(const Generator &rhs)
     : Logger(rhs)
     , mPimpl(new GeneratorImpl())
 {
+    mPimpl->mGenerator = rhs.mPimpl->mGenerator;
+
     mPimpl->mVariables = rhs.mPimpl->mVariables;
 }
 
