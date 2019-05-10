@@ -815,10 +815,11 @@ void Generator::GeneratorImpl::finaliseRawEquation(const GeneratorEquationAstPtr
 
 bool Generator::GeneratorImpl::isValidRawEquation(const GeneratorEquationAstPtr &ast)
 {
-    // Make sure that we don't have more than one variable of integration
+    // Make sure that we don't use more than one variable of integration
 
     GeneratorEquationAstPtr astParent = ast->parent();
     GeneratorEquationAstPtr astGrandParent = (astParent != nullptr)?astParent->parent():nullptr;
+    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr)?astGrandParent->parent():nullptr;
 
     if (   (ast->type() == GeneratorEquationAst::Type::CI)
         && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::BVAR)
@@ -835,6 +836,25 @@ bool Generator::GeneratorImpl::isValidRawEquation(const GeneratorEquationAstPtr 
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
+            err->setKind(Error::Kind::GENERATOR);
+
+            mGenerator->addError(err);
+        }
+    }
+
+    // Make sure that we only use first-order ODEs
+
+    if (   (ast->type() == GeneratorEquationAst::Type::CN)
+        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::DEGREE)
+        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAst::Type::BVAR)
+        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
+        if (convertToDouble(ast->value()) != 1.0) {
+            VariablePtr variable = astGreatGrandParent->right()->variable();
+            Component *component = variable->getParentComponent();
+            Model *model = component->getParentModel();
+            ErrorPtr err = std::make_shared<Error>();
+
+            err->setDescription("The differential equation for variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' must be of the first order.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
