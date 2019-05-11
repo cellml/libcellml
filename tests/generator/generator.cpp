@@ -84,8 +84,6 @@ TEST(Generator, two_variables_of_integration) {
 TEST(Generator, non_first_order_odes) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/non_first_order_odes.cellml"));
-for (size_t i = 0; i < parser.errorCount(); ++i)
-    std::cout << "Parser error #" << i+1 << ": " << parser.getError(i)->getDescription() << std::endl;
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
