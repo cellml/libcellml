@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<model name="unused_variables" xmlns="http://www.cellml.org/cellml/2.0#">
+    <component name="main">
+        <variable name="unused" units="dimensionless"/>
+    </component>
+    <component name="sub">
+        <variable name="unused" units="dimensionless"/>
+    </component>
+    <component name="sub_sub">
+        <variable name="unused" units="dimensionless"/>
+    </component>
+    <encapsulation>
+        <component_ref component="sub">
+            <component_ref component="sub_sub"/>
+        </component_ref>
+    </encapsulation>
+</model>

@@ -188,17 +188,27 @@ typedef std::shared_ptr<GeneratorEquation> GeneratorEquationPtr;
 class GeneratorEquation
 {
 public:
-    explicit GeneratorEquation();
+    explicit GeneratorEquation(const ComponentPtr &component);
+
+    ComponentPtr component() const;
 
     GeneratorEquationAstPtr &ast();
 
 private:
+    ComponentPtr mComponent;
+
     GeneratorEquationAstPtr mAst;
 };
 
-GeneratorEquation::GeneratorEquation()
-    : mAst(std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQ))
+GeneratorEquation::GeneratorEquation(const ComponentPtr &component)
+    : mComponent(component)
+    , mAst(std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQ))
 {
+}
+
+ComponentPtr GeneratorEquation::component() const
+{
+    return mComponent;
 }
 
 GeneratorEquationAstPtr &GeneratorEquation::ast()
@@ -377,6 +387,8 @@ struct Generator::GeneratorImpl
     void processComponent(const ComponentPtr &component);
     void finaliseRawEquation(const GeneratorEquationAstPtr &ast);
     bool isValidRawEquation(const GeneratorEquationAstPtr &ast);
+    bool isVariableUsed(const GeneratorEquationAstPtr &equationAst,
+                        const VariablePtr &variable) const;
     void processVariables(const ComponentPtr &component);
     bool processEquations();
     void processModel(const ModelPtr &model);
@@ -456,7 +468,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     // Create and keep track of the (raw) equation associated with the given
     // node
 
-    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>();
+    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>(component);
 
     mRawEquations.push_back(equation);
 
@@ -884,8 +896,59 @@ bool Generator::GeneratorImpl::isValidRawEquation(const GeneratorEquationAstPtr 
     return true;
 }
 
+bool Generator::GeneratorImpl::isVariableUsed(const GeneratorEquationAstPtr &equationAst,
+                                              const VariablePtr &variable) const
+{
+    // Make sure that we have a valid AST node
+
+    if (equationAst == nullptr) {
+        return false;
+    }
+
+    // Check whether the AST node corresponds to the given variable
+
+    if (   (equationAst->type() == GeneratorEquationAst::Type::CI)
+        && (equationAst->variable() == variable)) {
+        return true;
+    }
+
+    // Check whether the left or right child of the AST node corresponds to the
+    // given variable
+
+    return    isVariableUsed(equationAst->left(), variable)
+           || isVariableUsed(equationAst->right(), variable);
+}
+
 void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
 {
+    // Go trhough the given component's variable and make sure that they are
+    // used in one of the component's equations
+
+    for (size_t i = 0; i < component->variableCount(); ++i) {
+        VariablePtr variable = component->getVariable(i);
+        bool variableUsed = false;
+
+        for (const auto &rawEquation : mRawEquations) {
+            if (rawEquation->component() == component) {
+                if (isVariableUsed(rawEquation->ast(), variable)) {
+                    variableUsed = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (!variableUsed) {
+            Model *model = component->getParentModel();
+            ErrorPtr err = std::make_shared<Error>();
+
+            err->setDescription("Variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' is not used.");
+            err->setKind(Error::Kind::GENERATOR);
+
+            mGenerator->addError(err);
+        }
+    }
+
     // Do the same for the components encapsulated by the given component
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
@@ -950,7 +1013,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 
     // Recursively process the model's variables to determine whether all of
-    // them are being used
+    // them are indeed used
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         processVariables(model->getComponent(i));
