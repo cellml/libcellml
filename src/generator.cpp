@@ -386,11 +386,11 @@ struct Generator::GeneratorImpl
                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void finaliseRawEquation(const GeneratorEquationAstPtr &ast);
-    bool isValidRawEquation(const GeneratorEquationAstPtr &ast);
-    bool isVariableUsed(const GeneratorEquationAstPtr &equationAst,
-                        const VariablePtr &variable) const;
-    void processVariables(const ComponentPtr &component);
-    bool processEquations();
+    void processRawEquation(const GeneratorEquationAstPtr &ast);
+    bool isVariableUsed(const VariablePtr &variable,
+                        const GeneratorEquationAstPtr &equationAst) const;
+    void processVariables(const ComponentPtr &component) const;
+    void processEquations();
     void processModel(const ModelPtr &model);
 
     std::string neededMathMethods() const;
@@ -831,7 +831,7 @@ void Generator::GeneratorImpl::finaliseRawEquation(const GeneratorEquationAstPtr
     }
 }
 
-bool Generator::GeneratorImpl::isValidRawEquation(const GeneratorEquationAstPtr &ast)
+void Generator::GeneratorImpl::processRawEquation(const GeneratorEquationAstPtr &ast)
 {
     // Make sure that we don't use more than one variable of integration
 
@@ -882,22 +882,16 @@ bool Generator::GeneratorImpl::isValidRawEquation(const GeneratorEquationAstPtr 
     // Recursively check the given AST's children
 
     if (ast->left() != nullptr) {
-        if (!isValidRawEquation(ast->left())) {
-            return false;
-        }
+        processRawEquation(ast->left());
     }
 
     if (ast->right() != nullptr) {
-        if (!isValidRawEquation(ast->right())) {
-            return false;
-        }
+        processRawEquation(ast->right());
     }
-
-    return true;
 }
 
-bool Generator::GeneratorImpl::isVariableUsed(const GeneratorEquationAstPtr &equationAst,
-                                              const VariablePtr &variable) const
+bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
+                                              const GeneratorEquationAstPtr &equationAst) const
 {
     // Make sure that we have a valid AST node
 
@@ -915,11 +909,11 @@ bool Generator::GeneratorImpl::isVariableUsed(const GeneratorEquationAstPtr &equ
     // Check whether the left or right child of the AST node corresponds to the
     // given variable
 
-    return    isVariableUsed(equationAst->left(), variable)
-           || isVariableUsed(equationAst->right(), variable);
+    return    isVariableUsed(variable, equationAst->left())
+           || isVariableUsed(variable, equationAst->right());
 }
 
-void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
+void Generator::GeneratorImpl::processVariables(const ComponentPtr &component) const
 {
     // Go trhough the given component's variable and make sure that they are
     // used in one of the component's equations
@@ -930,7 +924,7 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
 
         for (const auto &rawEquation : mRawEquations) {
             if (rawEquation->component() == component) {
-                if (isVariableUsed(rawEquation->ast(), variable)) {
+                if (isVariableUsed(variable, rawEquation->ast())) {
                     variableUsed = true;
 
                     break;
@@ -956,9 +950,9 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
     }
 }
 
-bool Generator::GeneratorImpl::processEquations()
+void Generator::GeneratorImpl::processEquations()
 {
-    return true;
+//TODO
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
@@ -1006,10 +1000,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     for (const auto &rawEquation : mRawEquations) {
         finaliseRawEquation(rawEquation->ast());
-
-        if (!isValidRawEquation(rawEquation->ast())) {
-            return;
-        }
+        processRawEquation(rawEquation->ast());
     }
 
     // Recursively process the model's variables to determine whether all of
@@ -1022,9 +1013,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Process the model's equations to determine the order in which they should
     // be computed
 
-    if (!processEquations()) {
-        return;
-    }
+    processEquations();
 
     // Generate the code for our different equations
 //TODO: remove the below code once we are done testing things...
