@@ -105,6 +105,29 @@ TEST(Generator, non_first_order_odes) {
     }
 }
 
+TEST(Generator, unused_variables) {
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/unused_variables.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    std::vector<std::string> expectedErrors = {
+        "Variable 'unused' in component 'main' of model 'unused_variables' is not used.",
+        "Variable 'unused' in component 'sub' of model 'unused_variables' is not used.",
+        "Variable 'unused' in component 'sub_sub' of model 'unused_variables' is not used."
+    };
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+    }
+}
+
 /*TODO: reenable this test once we are done with the previous tests...
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
