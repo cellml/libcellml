@@ -118,7 +118,7 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
                 "<component name=\"component2\">"
                     "<variable name=\"variable2\"/>"
                 "</component>"
-                "<connection component_1=\"component2\">"
+                "<connection component_1=\"component2\" component_2=\"component1\">"
                     "<map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>"
                 "</connection>"
             "</model>";
