@@ -226,6 +226,7 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
         mPimpl->mComponents.erase(result);
+        foundComponent->clearParent();
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
             foundComponent = getComponent(i)->takeComponent(name, searchEncapsulated);

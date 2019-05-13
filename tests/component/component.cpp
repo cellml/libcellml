@@ -257,11 +257,13 @@ TEST(Component, takeComponentMethods) {
     EXPECT_EQ(c->takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->getName());
+    EXPECT_EQ(nullptr, c02->getParentComponent());
 
     libcellml::ComponentPtr c01 = c->takeComponent("child1");
     EXPECT_EQ(0u, c->componentCount());
 
     EXPECT_EQ("child1", c01->getName());
+    EXPECT_EQ(nullptr, c01->getParentComponent());
 
     libcellml::Printer printer;
     const std::string a = printer.printComponent(c);
