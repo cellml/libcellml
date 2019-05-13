@@ -193,12 +193,13 @@ TEST(Coverage, component) {
                 "<variable/>"
                 "<1+1=2>"
             "</component>";
-    libcellml::Component c, cm;
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
-    c.setName("name");
-    c.addVariable(v);
-    c.setMath("<1+1=2>");
+    c->setName("name");
+    c->addVariable(v);
+    c->setMath("<1+1=2>");
 
     libcellml::Printer printer;
     std::string a = printer.printComponent(c);
@@ -209,7 +210,7 @@ TEST(Coverage, component) {
     EXPECT_EQ(e, a);
 
     // Copy constructor
-    libcellml::Component cc(cm);
+    libcellml::ComponentPtr cc(cm);
     a = printer.printComponent(cc);
     EXPECT_EQ(e, a);
 }
