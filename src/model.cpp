@@ -108,7 +108,7 @@ void Model::doAddComponent(const ComponentPtr &c)
 {
     // Check for cycles.
     if (!hasParent(c)) {
-        c->setParent(shared_from_this());
+        c->setParent(std::shared_ptr<Model>(std::shared_ptr<Model>{}, this));
         ComponentEntity::doAddComponent(c);
     }
 }
