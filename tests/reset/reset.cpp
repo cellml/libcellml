@@ -27,7 +27,6 @@ TEST(Reset, create) {
 TEST(Reset, order) {
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
-
     EXPECT_FALSE(r->isOrderSet());
     r->setOrder(1);
 
