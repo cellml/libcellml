@@ -17,6 +17,7 @@ limitations under the License.
 #include "libcellml/entity.h"
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
+#include "libcellml/model.h"
 
 namespace libcellml {
 
@@ -27,8 +28,8 @@ namespace libcellml {
  */
 struct Entity::EntityImpl
 {
-    Model *mParentModel; /**< Pointer to parent model. */
-    Component *mParentComponent; /**< Pointer to component model. */
+    ModelPtr mParentModel; /**< Pointer to parent model. */
+    ComponentPtr mParentComponent; /**< Pointer to component model. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
@@ -79,21 +80,19 @@ std::string Entity::getId() const
     return mPimpl->mId;
 }
 
-void *Entity::getParent() const {
-    void *parent = nullptr;
-    if (mPimpl->mParentComponent) {
-        parent = mPimpl->mParentComponent;
-    } else if (mPimpl->mParentModel) {
-        parent = mPimpl->mParentModel;
-    }
-    return parent;
+ModelPtr Entity::getParentModel() const {
+    return mPimpl->mParentModel;
 }
 
-void Entity::setParent(Component *parent) {
+ComponentPtr Entity::getParentComponent() const {
+    return mPimpl->mParentComponent;
+}
+
+void Entity::setParent(ComponentPtr parent) {
     mPimpl->mParentComponent = parent;
 }
 
-void Entity::setParent(Model *parent) {
+void Entity::setParent(ModelPtr parent) {
     mPimpl->mParentModel = parent;
 }
 
@@ -102,7 +101,7 @@ void Entity::clearParent() {
     mPimpl->mParentModel = nullptr;
 }
 
-bool Entity::hasParent(Component *c) const
+bool Entity::hasParent(ComponentPtr c) const
 {
     bool hasParent = false;
     if (mPimpl->mParentComponent == c) {

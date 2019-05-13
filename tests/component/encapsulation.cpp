@@ -80,7 +80,7 @@ TEST(Encapsulation, reparentComponent) {
                 "</encapsulation>"
             "</model>";
 
-    libcellml::Model model;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -93,7 +93,7 @@ TEST(Encapsulation, reparentComponent) {
     parent->addComponent(child2);
     parent->addComponent(child3);
 
-    model.addComponent(parent);
+    model->addComponent(parent);
 
     libcellml::Printer printer;
     std::string a_parent = printer.printModel(model);
@@ -135,7 +135,7 @@ TEST(Encapsulation, hierarchyWaterfall) {
                 "</encapsulation>"
             "</model>";
 
-    libcellml::Model model;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -149,7 +149,7 @@ TEST(Encapsulation, hierarchyWaterfall) {
     child1->addComponent(child2);
     parent->addComponent(child1);
 
-    model.addComponent(parent);
+    model->addComponent(parent);
 
     libcellml::Printer printer;
     std::string a_parent = printer.printModel(model);
@@ -183,7 +183,7 @@ TEST(Encapsulation, hierarchyCircular) {
                 "</encapsulation>"
             "</model>";
 
-    libcellml::Model model;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -194,7 +194,7 @@ TEST(Encapsulation, hierarchyCircular) {
     parent->addComponent(child1);
     child1->addComponent(parent);
 
-    model.addComponent(parent);
+    model->addComponent(parent);
 
     libcellml::Printer printer;
     std::string a_parent = printer.printModel(model);
@@ -228,7 +228,7 @@ TEST(Encapsulation, hierarchyWaterfallAndParse) {
                 "</encapsulation>"
             "</model>";
 
-    libcellml::Model m;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -241,16 +241,16 @@ TEST(Encapsulation, hierarchyWaterfallAndParse) {
     child2->addComponent(child3);
     child1->addComponent(child2);
     parent->addComponent(child1);
-    m.addComponent(parent);
+    model->addComponent(parent);
 
     libcellml::Printer printer;
-    std::string a = printer.printModel(m);
+    std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 
     libcellml::Parser parser = libcellml::Parser();
-    libcellml::ModelPtr model = parser.parseModel(e);
+    libcellml::ModelPtr parsedModel = parser.parseModel(e);
 
-    a = printer.printModel(model);
+    a = printer.printModel(parsedModel);
     EXPECT_EQ(e, a);
 }
 
@@ -283,7 +283,7 @@ TEST(Encapsulation, parseAlternateFormHierarchy) {
 
 TEST(Encapsulation, encapsulatedComponentMethods) {
     const std::string e = "<component/>";
-    libcellml::Component c;
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
@@ -300,7 +300,7 @@ TEST(Encapsulation, encapsulatedComponentMethods) {
     c6->setName("comp6");
     c4n->setName("comp4new");
 
-    c.addComponent(c1);
+    c->addComponent(c1);
     c1->addComponent(c2);
     c2->addComponent(c3);
     c3->addComponent(c4);
@@ -308,28 +308,28 @@ TEST(Encapsulation, encapsulatedComponentMethods) {
     c5->addComponent(c6);
 
     // Contains component
-    EXPECT_TRUE(c.containsComponent("comp5"));
+    EXPECT_TRUE(c->containsComponent("comp5"));
     // Get component
-    EXPECT_EQ(c4, c.getComponent("comp4"));
-    const libcellml::ComponentPtr constC4 = static_cast<const libcellml::Component>(c).getComponent("comp4");
+    EXPECT_EQ(c4, c->getComponent("comp4"));
+    const libcellml::ComponentPtr constC4 = c->getComponent("comp4");
     EXPECT_EQ("comp4", constC4->getName());
-    EXPECT_FALSE(c.containsComponent("invalid"));
-    const libcellml::Component const_c = static_cast<const libcellml::Component>(c);
-    EXPECT_EQ(const_c.getComponent("invalid"), nullptr);
-    EXPECT_FALSE(c.containsComponent("comp4new"));
-    EXPECT_EQ(const_c.getComponent("comp4new"), nullptr);
+    EXPECT_FALSE(c->containsComponent("invalid"));
+    const libcellml::ComponentPtr const_c = c;
+    EXPECT_EQ(const_c->getComponent("invalid"), nullptr);
+    EXPECT_FALSE(c->containsComponent("comp4new"));
+    EXPECT_EQ(const_c->getComponent("comp4new"), nullptr);
     // Replace component
-    c.replaceComponent("comp4",c4n);
+    c->replaceComponent("comp4",c4n);
     c4n->addComponent(c5);
-    EXPECT_EQ(c4n, c.getComponent("comp4new"));
+    EXPECT_EQ(c4n, c->getComponent("comp4new"));
     // Take component
-    libcellml::ComponentPtr c6take = c.takeComponent("comp6");
+    libcellml::ComponentPtr c6take = c->takeComponent("comp6");
     EXPECT_EQ(c6, c6take);
     // Remove component
-    c.removeComponent("comp5");
-    c.removeComponent(c4n);
-    EXPECT_FALSE(c.containsComponent("comp5"));
-    EXPECT_FALSE(c.containsComponent("comp4new"));
+    c->removeComponent("comp5");
+    c->removeComponent(c4n);
+    EXPECT_FALSE(c->containsComponent("comp5"));
+    EXPECT_FALSE(c->containsComponent("comp4new"));
 }
 
 TEST(Encapsulation, encapsulationWithMultipleRootHierarchy) {

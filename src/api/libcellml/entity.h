@@ -62,21 +62,29 @@ public:
     std::string getId() const;
 
     /**
-     * @brief Returns the parent of the CellML Entity.
+     * @brief Returns the parent model of the CellML Entity.
      *
-     * @return A pointer to the entities parent if it has one,
+     * @return A pointer to the entity's parent model if it has one,
      * otherwise the null pointer.
      */
-    void *getParent() const;
+    ModelPtr getParentModel() const;
+
+    /**
+     * @brief Returns the parent component of the CellML Entity.
+     *
+     * @return A pointer to the entity's parent component if it has one,
+     * otherwise the null pointer.
+     */
+    ComponentPtr getParentComponent() const;
 
     /**
      * @brief Sets the model as the parent of this entity.
      *
      * Set the parent of the entity to the model given.
      *
-     * @param parent A raw pointer to a cellml::Model.
+     * @param parent A pointer to a cellml::Model.
      */
-    void setParent(Model *parent);
+    void setParent(ModelPtr parent);
 
     /**
      * @brief Sets the component as the parent of this entity.
@@ -85,9 +93,9 @@ public:
      *
      * @overload
      *
-     * @param parent A raw pointer to a cellml::Component.
+     * @param parent A pointer to a cellml::Component.
      */
-    void setParent(Component *parent);
+    void setParent(ComponentPtr parent);
 
     /**
      * @brief Clear the pointer to the parent entity.
@@ -99,17 +107,17 @@ public:
     /**
      * @brief Test to see if the given component is a parent.
      *
-     * Tests the given raw component pointer to determine if the entity or
+     * Tests the given component pointer to determine if the entity or
      * any of its parent entities already has this component as a parent.
      * This allows for a test against creating cycles. If the given component
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
      *
-     * @param c The raw pointer to the component to test against.
+     * @param c The pointer to the component to test against.
      *
      * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
-    bool hasParent(Component *c) const;
+    bool hasParent(ComponentPtr c) const;
 
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */

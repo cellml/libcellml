@@ -107,8 +107,8 @@ void Model::swap(Model &rhs)
 void Model::doAddComponent(const ComponentPtr &c)
 {
     // Check for cycles.
-    if (!hasParent(c.get())) {
-        c->setParent(this);
+    if (!hasParent(c)) {
+        c->setParent(shared_from_this());
         ComponentEntity::doAddComponent(c);
     }
 }

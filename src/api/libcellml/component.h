@@ -27,7 +27,10 @@ namespace libcellml {
  *
  * The Component class is for representing a CellML Component.
  */
-class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
+class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity,
+#ifndef SWIG
+                                  public std::enable_shared_from_this<Component>
+#endif
 {
 public:
     Component(); /**< Constructor */
