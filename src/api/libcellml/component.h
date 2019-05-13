@@ -203,7 +203,7 @@ public:
      * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
      */
     VariablePtr takeVariable(const std::string &name);
-    
+
     /**
      * @brief Get the number of variables in the component.
      *

@@ -830,8 +830,6 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute) {
                 "</component>"
             "</model>";
 
-    libcellml::Model m;
-
     libcellml::Parser parser;
     parser.parseModel(e);
     EXPECT_EQ(0u, parser.errorCount());
