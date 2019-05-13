@@ -58,12 +58,7 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &unit
 }
 
 Model::Model()
-#ifndef SWIG
-    : std::enable_shared_from_this<Model>()
-    , mPimpl(new ModelImpl())
-#else
     : mPimpl(new ModelImpl())
-#endif
 {
 }
 
@@ -74,9 +69,6 @@ Model::~Model()
 
 Model::Model(const Model &rhs)
     : ComponentEntity(rhs)
-#ifndef SWIG
-    , std::enable_shared_from_this<Model>()
-#endif
     , mPimpl(new ModelImpl())
 {
     mPimpl->mUnits = rhs.mPimpl->mUnits;
@@ -84,10 +76,7 @@ Model::Model(const Model &rhs)
 
 Model::Model(Model &&rhs)
     : ComponentEntity(std::move(rhs))
-#ifndef SWIG
-    , std::enable_shared_from_this<Model>()
-#endif
-    ,mPimpl(rhs.mPimpl)
+    , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
@@ -291,7 +280,7 @@ void Model::resolveImports(const std::string &baseFile)
         libcellml::UnitsPtr units = getUnits(n);
         resolveImport(units, baseFile);
     }
-    resolveComponentImports(shared_from_this(), baseFile);
+    resolveComponentImports(std::shared_ptr<Model>(std::shared_ptr<Model>{}, this), baseFile);
 }
 
 bool isUnresolvedImport(ImportedEntityPtr importedEntity)
@@ -348,7 +337,7 @@ bool Model::hasUnresolvedImports()
         unresolvedImports = isUnresolvedImport(units);
     }
     if (!unresolvedImports) {
-        unresolvedImports = hasUnresolvedComponentImports(shared_from_this());
+        unresolvedImports = hasUnresolvedComponentImports(std::shared_ptr<Model>(std::shared_ptr<Model>{}, this));
     }
     return unresolvedImports;
 }
