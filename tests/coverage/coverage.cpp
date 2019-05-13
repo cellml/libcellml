@@ -213,6 +213,15 @@ TEST(Coverage, component) {
     libcellml::ComponentPtr cc(cm);
     a = printer.printComponent(cc);
     EXPECT_EQ(e, a);
+
+    // Move constructor, assignment operator and swap method
+    std::vector<libcellml::Component> vec;
+    vec.push_back(libcellml::Component());
+
+    libcellml::Component rc;
+    libcellml::Component ao;
+
+    ao = rc;
 }
 
 TEST(Coverage, error) {
@@ -229,4 +238,15 @@ TEST(Coverage, error) {
 
     EXPECT_EQ(description, ec.getDescription());
     EXPECT_EQ(libcellml::Error::Kind::XML, ec.getKind());
+}
+
+TEST(Coverage, model) {
+    // Move constructor, assignment operator and swap method
+    std::vector<libcellml::Model> vec;
+    vec.push_back(libcellml::Model());
+
+    libcellml::Model rm;
+    libcellml::Model ao;
+
+    ao = rm;
 }
