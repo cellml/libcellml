@@ -86,7 +86,7 @@ ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
 
 void ComponentEntity::swap(ComponentEntity &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void ComponentEntity::addComponent(const ComponentPtr &c)

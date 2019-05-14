@@ -70,7 +70,7 @@ Entity& Entity::operator=(Entity e)
 
 void Entity::swap(Entity &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Entity::setId(const std::string &id)

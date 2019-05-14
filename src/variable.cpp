@@ -208,7 +208,7 @@ Variable& Variable::operator=(Variable v)
 
 void Variable::swap(Variable &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)

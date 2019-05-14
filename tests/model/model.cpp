@@ -343,7 +343,7 @@ struct structure
 
     void swap(structure &r) throw()
     {
-        std::swap(this->m_data, r.m_data);
+        std::swap(m_data, r.m_data);
     }
 
     ~structure()

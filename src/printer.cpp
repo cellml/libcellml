@@ -84,7 +84,7 @@ Printer& Printer::operator=(Printer p)
 
 void Printer::swap(Printer &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 std::string Printer::printUnits(UnitsPtr units) const
