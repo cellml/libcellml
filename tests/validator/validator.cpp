@@ -27,6 +27,60 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
+TEST(Validator, equivalentVariableUnitMultiplierPrefix) {
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("v1");
+    v2->setName("v2");
+    v3->setName("v3");
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("g1000");
+    u1->addUnit("gram", 0, 1.0, 1000.0 );
+    v1->setUnits(u1);
+
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    /*u2->setName("kg");
+    u2->addUnit("kilogram", 0, 1.0);
+    v2->setUnits(u2);*/
+    v2->setUnits("kilogram");
+
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    u3->setName("kilo_gram");
+    u3->addUnit("gram", "kilo", 1.0);
+    v3->setUnits(u3);
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+
+    model->addComponent(comp1);
+    model->addComponent(comp2);
+    model->addComponent(comp3);
+
+    model->addUnits(u1);
+    //model->addUnits(u2);
+    model->addUnits(u3);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    //libcellml::Variable::addEquivalence(v1, v3);	
+
+    validator.validateModel(model);
+
+    printErrors(validator);
+}
+
+
 TEST(Validator, namedModel) {
     /// @cellml2_4 4.2.1 Validate TEST model name format
     libcellml::Validator validator;
@@ -1799,17 +1853,17 @@ TEST(Validator, variableEquivalentUnits) {
     u9->addUnit("radian", 0, -4, 1);
     u9->addUnit("steradian", 0, 2, 1);
 
-    libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
+    /*libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
     u10->setName("testunit10");
-    u10->addUnit("gram", 0, 1, 1000.0);
+    u10->addUnit("gram", 0, 2.0, 1000.0);
 
     libcellml::UnitsPtr u11 = std::make_shared<libcellml::Units>();
     u11->setName("testunit11");
-    u11->addUnit("kilogram");
+    u11->addUnit("kilogram", 0, 2.0, 1.0);
 
     libcellml::UnitsPtr u12 = std::make_shared<libcellml::Units>();
     u12->setName("testunit12");
-    u12->addUnit("gram", "kilo", 1.0, 1.0);
+    u12->addUnit("gram", "kilo", 2.0, 1.0);*/
 
     libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
     u13->setName("testunit13");
@@ -1830,9 +1884,9 @@ TEST(Validator, variableEquivalentUnits) {
     v7->setUnits(u7);
     v8->setUnits(u8);
     v9->setUnits(u9);
-    v10->setUnits(u10);
+    /*v10->setUnits(u10);
     v11->setUnits(u11);
-    v12->setUnits(u12);
+    v12->setUnits(u12);*/
     v13->setUnits(u13);
     v14->setUnits(u14);
 
@@ -1845,9 +1899,9 @@ TEST(Validator, variableEquivalentUnits) {
     m->addUnits(u7);
     m->addUnits(u8);
     m->addUnits(u9);
-    m->addUnits(u10);
+   /* m->addUnits(u10);
     m->addUnits(u11);
-    m->addUnits(u12);
+    m->addUnits(u12);*/
     m->addUnits(u13);
     m->addUnits(u14);
 
@@ -1871,16 +1925,18 @@ TEST(Validator, variableEquivalentUnits) {
 
     // Fine: testing the multipliers 1000*grams = 1*kilograms 
     // ** NB multipliers not tested!
-    libcellml::Variable::addEquivalence(v10, v11);
+    //libcellml::Variable::addEquivalence(v10, v11);
 
     // Fine: testing prefix kilo*gram = kilogram
     // ** NB multipliers not tested!
-    libcellml::Variable::addEquivalence(v10, v12); 
+    // libcellml::Variable::addEquivalence(v10, v12); 
 
     // Off by (meter)^1: super-complicated nested units
     libcellml::Variable::addEquivalence(v13, v14);
 
     validator.validateModel(m);
+
+    printErrors(validator);
 
     EXPECT_EQ(4u, validator.errorCount());
 
@@ -1889,6 +1945,9 @@ TEST(Validator, variableEquivalentUnits) {
         EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
     }
 }
+
+
+
 
 TEST(Validator, validateNoCyclesUnits) {
     /// @cellml2_9 9.1.1.1-2 TEST Cyclic definitions in units
