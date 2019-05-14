@@ -1062,7 +1062,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Variable '" + variable->getName() +
                                                 "' has an equivalent variable '" + equivalentVariable->getName() +
-                                                "'  which does not reciprocally have '" + variable->getName() +
+                                                "' which does not reciprocally have '" + variable->getName() +
                                                 "' set as an equivalent variable.");
                             err->setModel(model);
                             err->setKind(Error::Kind::CONNECTION);
