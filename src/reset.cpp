@@ -76,7 +76,7 @@ Reset& Reset::operator=(Reset e)
 
 void Reset::swap(Reset &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Reset::setVariable(VariablePtr variable)

@@ -215,7 +215,7 @@ Parser& Parser::operator=(Parser p)
 
 void Parser::swap(Parser &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 ModelPtr Parser::parseModel(const std::string &input)
