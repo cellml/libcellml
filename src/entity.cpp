@@ -21,6 +21,9 @@ limitations under the License.
 
 namespace libcellml {
 
+typedef std::weak_ptr<Model> ModelWeakPtr; /**< Type definition for weak model pointer. */
+typedef std::weak_ptr<Component> ComponentWeakPtr; /**< Type definition for weak component pointer. */
+
 /**
  * @brief The Entity::EntityImpl struct.
  *
@@ -28,16 +31,16 @@ namespace libcellml {
  */
 struct Entity::EntityImpl
 {
-    ModelPtr mParentModel; /**< Pointer to parent model. */
-    ComponentPtr mParentComponent; /**< Pointer to component model. */
+    ModelWeakPtr mParentModel; /**< Pointer to parent model. */
+    ComponentWeakPtr mParentComponent; /**< Pointer to component model. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
 Entity::Entity()
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParentModel = nullptr;
-    mPimpl->mParentComponent = nullptr;
+    mPimpl->mParentModel = {};
+    mPimpl->mParentComponent = {};
 }
 
 Entity::~Entity()
@@ -81,11 +84,11 @@ std::string Entity::getId() const
 }
 
 ModelPtr Entity::getParentModel() const {
-    return mPimpl->mParentModel;
+    return mPimpl->mParentModel.lock();
 }
 
 ComponentPtr Entity::getParentComponent() const {
-    return mPimpl->mParentComponent;
+    return mPimpl->mParentComponent.lock();
 }
 
 void Entity::setParent(ComponentPtr parent) {
@@ -97,17 +100,18 @@ void Entity::setParent(ModelPtr parent) {
 }
 
 void Entity::clearParent() {
-    mPimpl->mParentComponent = nullptr;
-    mPimpl->mParentModel = nullptr;
+    mPimpl->mParentComponent = {};
+    mPimpl->mParentModel = {};
 }
 
 bool Entity::hasParent(ComponentPtr c) const
 {
     bool hasParent = false;
-    if (mPimpl->mParentComponent == c) {
+    ComponentPtr parentComponent = mPimpl->mParentComponent.lock();
+    if (parentComponent == c) {
         hasParent = true;
-    } else if (mPimpl->mParentComponent) {
-        hasParent = mPimpl->mParentComponent->hasParent(c);
+    } else if (parentComponent) {
+        hasParent = parentComponent->hasParent(c);
     }
 
     return hasParent;
