@@ -23,3 +23,8 @@ endif()
 if(LIBCELLML_BINDINGS_PYTHON)
     add_subdirectory(python)
 endif()
+
+#if (EMSCRIPTEN)
+if (TRUE)
+    add_subdirectory(javascript)
+endif ()
