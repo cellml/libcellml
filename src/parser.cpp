@@ -315,7 +315,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                     if (attribute->isType("id")) {
                         model->setEncapsulationId(attribute->getValue());
                     } else {
-                        // KRM TODO Make warning? Cannot raise in validator as not passed to model
+                        // Cannot raise in validator as not passed to model
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Encapsulation in model '" + model->getName() +
                                             "' has an invalid attribute '" + attribute->getName() + "'.");
@@ -333,14 +333,14 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 // and error-checked in loadEncapsulation().
                 encapsulationNodes.push_back(componentRefNode);
             } else {
-                // KRM TODO Check that this exists in validation then remove
-                //ErrorPtr err = std::make_shared<Error>();
-                //err->setDescription("Encapsulation in model '" + model->getName() +
-                //                    "' does not contain any child elements.");
-                //err->setModel(model);
-                //err->setKind(Error::Kind::ENCAPSULATION);
-                //err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
-                //mParser->addError(err);
+                // KRM TODO Check that this exists in validation then remove - Might need to leave encapsulation tests here?
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Encapsulation in model '" + model->getName() +
+                                    "' does not contain any child elements.");
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
+                mParser->addError(err);
             }
         } else if (childNode->isCellmlElement("connection")) {
             connectionNodes.push_back(childNode);
@@ -471,7 +471,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             loadUnit(units, childNode);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
-            // Ignore whitespace when parsing. KRM Make warning? Cannot raise in validator as not saved to model
+            // Ignore whitespace when parsing. TODO Make warning? Cannot raise in validator as not saved to model
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Units '" + units->getName() +
@@ -788,10 +788,10 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 attribute = attribute->getNext();
             }
 
-            /***************************** REMOVE?? ****************************
+            //***************************** REMOVE?? ****************************
             // Check that we found both variables.
             if (!variable1Name.length()) {
-                // KRM TODO Check is in validation and remove
+                // KRM TODO Check is in validation and remove - reamins in as deals with connections?
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid variable_1 in a map_variables element.");
@@ -802,7 +802,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 variable1Missing = true;
             }
             if (!variable2Name.length()) {
-                // KRM TODO Check is in validation and remove
+                // KRM TODO Check is in validation and remove - remains in as deals with connections?
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() +
                                     "' does not have a valid variable_2 in a map_variables element.");
@@ -846,7 +846,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         childNode = childNode->getNext();
     }
 
-    /* ******************************* MOVE TO VALIDATOR *************************************************
+    // ******************************* MOVE TO VALIDATOR *************************************************
+    // Stays here a deals with connections?
 
     // If we have a component name pair, check that the components exist in the model.
     ComponentPtr component1 = nullptr;
@@ -960,7 +961,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
         mParser->addError(err);
     }
-
+    // Stays in as deals with connections?
     // ****************************************** END MOVE TO VALIDATOR *************************************/
 }
 
@@ -1006,14 +1007,14 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 attribute = attribute->getNext();
             }
             if ((!parentComponent) && (!parentComponentName.length())) {
-                // KRM TODO Make sure unset encapsulation ids are checked in validator then remove?
-                /*ErrorPtr err = std::make_shared<Error>();
+                // KRM TODO Make sure unset encapsulation ids are checked in validator then remove? Stays here as deals with encapsulation
+                ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->getName() +
                                     "' does not have a valid component attribute in a component_ref element.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
                 err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-                mParser->addError(err);*/
+                mParser->addError(err);
             } else if (parentComponent) {
                 parentComponent->setEncapsulationId(encapsulationId);
             }
@@ -1047,28 +1048,28 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
 
         // KRM TODO ************************* REMOVE FROM HERE, VALIDATION? ***************
         // Get first child of this parent component_ref.
-        //XmlNodePtr childComponentNode = parentComponentNode->getFirstChild();
-        //if (!childComponentNode) {
-        //    XmlNodePtr grandParentComponentNode = parentComponentNode->getParent();
-        //    if (grandParentComponentNode->isCellmlElement("encapsulation")) {
-        //        ErrorPtr err = std::make_shared<Error>();
-        //        if (parentComponent) {
-        //            err->setDescription("Encapsulation in model '" + model->getName() +
-        //                                "' specifies '" + parentComponent->getName() +
-        //                                "' as a parent component_ref but it does not have any children.");
-        //        } else {
-        //            err->setDescription("Encapsulation in model '" + model->getName() +
-        //                                "' specifies an invalid parent component_ref that also does not have any children.");
-        //        }
-        //        err->setModel(model);
-        //        err->setKind(Error::Kind::ENCAPSULATION);
-        //        mParser->addError(err);
-        //    }
-        //}
+        XmlNodePtr childComponentNode = parentComponentNode->getFirstChild();
+        if (!childComponentNode) {
+            XmlNodePtr grandParentComponentNode = parentComponentNode->getParent();
+            if (grandParentComponentNode->isCellmlElement("encapsulation")) {
+                ErrorPtr err = std::make_shared<Error>();
+                if (parentComponent) {
+                    err->setDescription("Encapsulation in model '" + model->getName() +
+                                        "' specifies '" + parentComponent->getName() +
+                                        "' as a parent component_ref but it does not have any children.");
+                } else {
+                    err->setDescription("Encapsulation in model '" + model->getName() +
+                                        "' specifies an invalid parent component_ref that also does not have any children.");
+                }
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                mParser->addError(err);
+            }
+        }
         // KRM TODO end remove ***************************************************************
 
         // Loop over encapsulated children.
-        XmlNodePtr childComponentNode = parentComponentNode->getFirstChild();
+        childComponentNode = parentComponentNode->getFirstChild();
         std::string childEncapsulationId = "";
         while (childComponentNode) {
             ComponentPtr childComponent = nullptr;
@@ -1084,7 +1085,8 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                             childComponent = model->getComponent(childComponentName);
                             foundChildComponent = true;
                         } 
-                        /* ******************************** TODO REMOVE as is VALIDATION ****************************
+                        // ******************************** KRM TODO REMOVE as is VALIDATION ****************************
+                        // Stays here as deals with encapsulation?
                         else {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Encapsulation in model '" + model->getName() +
@@ -1111,26 +1113,27 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     }
                     attribute = attribute->getNext();
                 }
-                // KRM TODO************************REMOVE, VALIDATION **************************
-                //if ((!foundChildComponent) && (!childComponentMissing)) {
-                //    ErrorPtr err = std::make_shared<Error>();
-                //    if (parentComponent) {
-                //        err->setDescription("Encapsulation in model '" + model->getName() +
-                //                            "' does not have a valid component attribute in a component_ref that is a child of '"
-                //                            + parentComponent->getName() + "'.");
-                //    } else if (parentComponentName.length()) {
-                //        err->setDescription("Encapsulation in model '" + model->getName() +
-                //                            "' does not have a valid component attribute in a component_ref that is a child of invalid parent component '"
-                //                            + parentComponentName + "'.");
-                //    } else {
-                //        err->setDescription("Encapsulation in model '" + model->getName() +
-                //                            "' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.");
-                //    }
-                //    err->setModel(model);
-                //    err->setKind(Error::Kind::ENCAPSULATION);
-                //    err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-                //    mParser->addError(err);
-                //}
+                // KRM TODO************************ REMOVE, VALIDATION **************************
+                // Stays here as deals with encpsulation
+                if ((!foundChildComponent) && (!childComponentMissing)) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    if (parentComponent) {
+                        err->setDescription("Encapsulation in model '" + model->getName() +
+                                            "' does not have a valid component attribute in a component_ref that is a child of '"
+                                            + parentComponent->getName() + "'.");
+                    } else if (parentComponentName.length()) {
+                        err->setDescription("Encapsulation in model '" + model->getName() +
+                                            "' does not have a valid component attribute in a component_ref that is a child of invalid parent component '"
+                                            + parentComponentName + "'.");
+                    } else {
+                        err->setDescription("Encapsulation in model '" + model->getName() +
+                                            "' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.");
+                    }
+                    err->setModel(model);
+                    err->setKind(Error::Kind::ENCAPSULATION);
+                    err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+                    mParser->addError(err);
+                }
                 // KRM TODO end remove ************************************************************
                 if (childComponent) {
                     childComponent->setEncapsulationId(childEncapsulationId );

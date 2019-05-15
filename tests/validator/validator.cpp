@@ -819,20 +819,23 @@ TEST(Validator, integerStrings) {
             "</model>";
 
     std::vector<std::string> expectedErrors = {
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
     };
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(4u, p.errorCount());
+    //EXPECT_EQ(4u, p.errorCount()); // errors in validator instead of parser
+    EXPECT_EQ(0u, p.errorCount());
 
     libcellml::Validator v;
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
-
+    for (size_t i = 0; i < expectedErrors.size(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+    }
 }
 
 TEST(Validator, resets) {
@@ -1003,4 +1006,279 @@ TEST(Validator, validMathCnElements) {
 
     v.validateModel(m);
     EXPECT_EQ(0u, v.errorCount());
+}
+
+TEST(Validator, importDuplicateInfoset) {
+	/// @cellml2_5 5.1.3 __TODO?__ Validate TEST Check for semantic equivalence between parent and child infoset: you cannot import yourself
+}
+
+TEST(Validator, variableEquivalentUnits) {
+	/// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables
+	
+	/*std::vector<std::string> expectedErrors = {
+		"Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: kilogram^1.000000, metre^-2.000000, second^-2.000000, ",
+		"Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'potayto' with non-matching units of 'testunit3'. The mismatch is: kilogram^-1.000000, metre^2.000000, second^2.000000, ",
+		"Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1.000000, ",
+		"Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. The mismatch is: metre^-1.000000, "
+	};*/
+    std::vector<std::string> expectedErrors = {
+
+        "Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. ERROR: Unit mismatch in kilogram^1.000000, ERROR: Unit mismatch in metre^-2.000000, ERROR: Unit mismatch in second^-2.000000, ",
+        "Variable 'oncle' has units of 'testunit12' and an equivalent variable 'oom' with non-matching units of 'testunit10'. WARNING: Multiplier mismatch in kilogram(0.001000), ",
+        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'potayto' with non-matching units of 'testunit3'. ERROR: Unit mismatch in kilogram^-1.000000, ERROR: Unit mismatch in metre^2.000000, ERROR: Unit mismatch in second^2.000000, ",
+        "Variable 'oom' has units of 'testunit10' and an equivalent variable 'uncle' with non-matching units of 'testunit11'. WARNING: Multiplier mismatch in kilogram(1000.000000), ",
+        "Variable 'oom' has units of 'testunit10' and an equivalent variable 'oncle' with non-matching units of 'testunit12'. WARNING: Multiplier mismatch in kilogram(1000.000000), ",
+        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. ERROR: Unit mismatch in metre^1.000000, ",
+        "Variable 'uncle' has units of 'testunit11' and an equivalent variable 'oom' with non-matching units of 'testunit10'. WARNING: Multiplier mismatch in kilogram(0.001000), ",
+        "Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. ERROR: Unit mismatch in metre^-1.000000, ",
+    };
+
+	libcellml::Validator validator;
+	libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+	libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+	libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+	libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+
+	libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v9 = std::make_shared<libcellml::Variable>();
+
+	libcellml::VariablePtr v10 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
+
+	libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
+	libcellml::VariablePtr v14 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("tomayto");
+    v2->setName("tomahto");
+    v3->setName("potayto");
+    v4->setName("potahto");
+    v5->setName("aunty");
+    v6->setName("tante");
+    v7->setName("auntie");
+
+    v8->setName("neether");
+    v9->setName("nyther");
+
+    v10->setName("oom");
+    v11->setName("uncle");
+    v12->setName("oncle");
+
+    v13->setName("pjs");
+    v14->setName("pajamas");
+
+    comp1->setName("isay");
+    comp2->setName("yousay");
+    comp3->setName("wesay");
+
+    m->setName("callthewholethingoff");
+
+	comp1->addVariable(v1);
+	comp2->addVariable(v2);
+	comp1->addVariable(v3);
+	comp2->addVariable(v4);
+
+	comp1->addVariable(v5);
+	comp2->addVariable(v6);
+	comp3->addVariable(v7);
+
+	comp2->addVariable(v8);
+	comp3->addVariable(v9);
+
+	comp2->addVariable(v10);
+	comp3->addVariable(v11);
+
+	comp1->addVariable(v12);
+	comp2->addVariable(v13);
+	comp3->addVariable(v14);
+
+	m->addComponent(comp1);
+	m->addComponent(comp2);
+	m->addComponent(comp3);
+
+	
+	libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+	u1->setName("testunit1");
+	u1->addUnit("metre");
+
+	libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+	u2->setName("testunit2");
+	u2->addUnit("meter");
+
+	libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+	u3->setName("testunit3");
+	u3->addUnit("pascal");
+
+	libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+	u4->setName("testunit4");
+	u4->addUnit("metre", 1, -1.0, 1.0); // prefix, exp, mult
+	u4->addUnit("kilogram", 1, 1.0, 1.0);
+	u4->addUnit("second", 1, -2.0, 1.0);
+
+	libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+	u5->setName("testunit5");
+	u5->addUnit("metre", 1, -2.0, 1.0);
+	u5->addUnit("meter", 1, 2.0, 1.0);
+
+	libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
+	u6->setName("testunit6");
+	u6->addUnit("dimensionless");
+
+	libcellml::UnitsPtr u7 = std::make_shared<libcellml::Units>();
+	u7->setName("testunit7");
+	u7->addUnit("steradian");
+
+	libcellml::UnitsPtr u8 = std::make_shared<libcellml::Units>();
+	u8->setName("testunit8");
+	u8->addUnit("newton", 1, 1, 1);
+	u8->addUnit("pascal", 1, -1, 1);
+	u8->addUnit("sievert", 1, -1, 1);
+
+	libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
+	u9->setName("testunit9");
+	u9->addUnit("second", 1, 2, 1);
+	u9->addUnit("radian", 1, -4, 1);
+	u9->addUnit("steradian", 1, 2, 1);
+
+	libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
+	u10->setName("testunit10");
+	u10->addUnit("metre", "kilo", 2, 1.0);
+    //u10->addUnit("kilogram",0,2,10.0);
+
+	libcellml::UnitsPtr u11 = std::make_shared<libcellml::Units>();
+	u11->setName("testunit11");
+	u11->addUnit("metre",0,2,1.0);
+
+	libcellml::UnitsPtr u12 = std::make_shared<libcellml::Units>();
+	u12->setName("testunit12");
+	u12->addUnit("gram", "mega", 1.0, 1.0);
+
+	libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
+	u13->setName("testunit13");
+	u13->addUnit("testunit2", 1, 2.0, 1.0);
+	u13->addUnit("testunit8", 1, 2.0, 1.0);
+
+	libcellml::UnitsPtr u14 = std::make_shared<libcellml::Units>();
+	u14->setName("testunit14");
+	u14->addUnit("testunit1", 1, 1.0, 1.0);
+	u14->addUnit("testunit9", 1, 2.0, 1.0);
+
+	v1->setUnits(u1);
+	v2->setUnits(u2);
+	v3->setUnits(u3);
+	v4->setUnits(u4);
+	v5->setUnits(u5);
+	v6->setUnits(u6);
+	v7->setUnits(u7);
+	v8->setUnits(u8);
+	v9->setUnits(u9);
+	v10->setUnits(u10);
+	v11->setUnits(u11);
+	v12->setUnits(u12);
+	v13->setUnits(u13);
+	v14->setUnits(u14);
+
+	m->addUnits(u1);
+	m->addUnits(u2);
+	m->addUnits(u3);
+	m->addUnits(u4);
+	m->addUnits(u5);
+	m->addUnits(u6);
+	m->addUnits(u7);
+	m->addUnits(u8);
+	m->addUnits(u9);
+	m->addUnits(u10);
+	m->addUnits(u11);
+	m->addUnits(u12);
+	m->addUnits(u13);
+	m->addUnits(u14);
+
+	//// This one is fine : metre vs meter
+	//libcellml::Variable::addEquivalence(v1, v2);
+
+	//// This one is NOT fine: metre vs pascal
+	//libcellml::Variable::addEquivalence(v2, v3);
+
+	//// This one is fine: pascal vs kg/(m.s^2)
+	//libcellml::Variable::addEquivalence(v3, v4);
+
+	//// This one is fine: m^2/m^2 vs dimensionless
+	//libcellml::Variable::addEquivalence(v5, v6);
+	//
+	//// This one is fine: dimensionless vs steradians
+	//libcellml::Variable::addEquivalence(v6, v7);
+
+	//// This one is fine but complicated: newton/(siever.pascal) = second^2.radian^3.steradian^-4
+	//libcellml::Variable::addEquivalence(v8, v9);	
+
+	//// Fine: testing the multipliers 1000*grams = 1*kilograms 
+	//libcellml::Variable::addEquivalence(v10, v11);
+
+	//// Not fine: testing prefix mega*gram != kilogram
+	//libcellml::Variable::addEquivalence(v10, v12); 
+
+	//// Off by (meter)^1: super-complicated nested units
+	//libcellml::Variable::addEquivalence(v13, v14);
+
+    libcellml::Variable::addEquivalence(v10, v11);
+
+	validator.validateModel(m);
+	
+    //EXPECT_EQ(8u, validator.errorCount());
+
+	// Check for expected error messages
+	for (size_t i = 0; i < validator.errorCount(); ++i) {
+        std::cout << validator.getError(i)->getDescription() << std::endl;
+		//EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+	}
+}
+
+TEST(Validator, emptyEncapsulation) {
+
+    const std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+        "<encapsulation/>"
+        "</model>";
+
+    const std::string expectedError = "Encapsulation in model 'model_name' does not contain any child elements.";
+
+    libcellml::Parser p;
+    libcellml::ModelPtr model = p.parseModel(ex);
+    libcellml::Validator v;
+    // Parser returns error for empty encapsulation - validator needs to do that too
+    v.validateModel(model);
+
+}
+
+TEST(Validator, encapuslationWithNoComponentAttribute) {
+    const std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">"
+                "<encapsulation>"
+                    "<component_ref/>"
+                "</encapsulation>"
+            "</model>";
+
+    const std::string expectedError1 = "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref element.";
+    const std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
+
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(ex);
+    libcellml::Validator v;
+
+    v.validateModel(m);
+    printErrors(v);
+
+    // KRM TODO 
+    EXPECT_EQ(2u, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
 }

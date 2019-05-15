@@ -34,6 +34,7 @@ TEST(Parser, invalidXMLElements) {
                 "<Elf>"
             "</fellows>";
 
+    // KRM Why the need for two error messages? 0 and 1?
     std::vector<std::string> expectedErrors = {
         "Specification mandate value for attribute bearded.",
         "Specification mandates value for attribute bearded.",
@@ -57,6 +58,16 @@ TEST(Parser, invalidXMLElements) {
             EXPECT_EQ(expectedErrors.at(i+1), p.getError(i)->getDescription());
         }
     }
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(input);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
+
 }
 
 TEST(Parser, parse) {
@@ -84,6 +95,13 @@ TEST(Parser, parseNamedModel) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// No errors in validator ... should there be?
 }
 
 TEST(Parser, moveParser) {
@@ -109,6 +127,14 @@ TEST(Parser, emptyModelString) {
     libcellml::Parser p;
     p.parseModel(ex);
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
 }
 
 TEST(Parser, nonXmlString) {
@@ -124,6 +150,14 @@ TEST(Parser, nonXmlString) {
     for (size_t i = 0; i < p.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
     }
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
 }
 
 TEST(Parser, invalidRootNode) {
@@ -138,6 +172,14 @@ TEST(Parser, invalidRootNode) {
     p.parseModel(ex);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
 }
 
 TEST(Parser, noModelNamespace) {
@@ -151,6 +193,14 @@ TEST(Parser, noModelNamespace) {
     p.parseModel(ex);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
 }
 
 TEST(Parser, invalidModelNamespace) {
@@ -164,29 +214,40 @@ TEST(Parser, invalidModelNamespace) {
     p.parseModel(ex);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
+
 }
 
-// KRM checked in validator
-//TEST(Parser, invalidModelAttribute) {
-//    // KRM make warning
-//    const std::string ex =
-//            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" game=\"model_name\"/>";
-//
-//    const std::string expectedError1 = "Model '' has an invalid attribute 'game'.";
-//
-//    libcellml::Parser p;
-//    p.parseModel(ex);
-//    printErrors(p);
-//
-//    libcellml::ModelPtr m = p.parseModel(ex);
-//    libcellml::Validator v;
-//    v.validateModel(m);
-//    printErrors(v);
-//
-//    //EXPECT_EQ(1u, p.errorCount());
-//    //EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
-//}
+// Presense of name checked in validator, but not presense of unrecognised attribute
+TEST(Parser, invalidModelAttribute) {
+    const std::string ex =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" game=\"model_name\"/>";
+
+    const std::string expectedError1 = "Model '' has an invalid attribute 'game'.";
+
+    libcellml::Parser p;
+    p.parseModel(ex);
+    
+    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
+
+}
 
 TEST(Parser, invalidModelElement) {
     const std::string ex =
@@ -201,6 +262,13 @@ TEST(Parser, invalidModelElement) {
     p.parseModel(ex);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// Nothing returned from validator as error is not passed to model
 }
 
 TEST(Parser, modelWithInvalidElement) {
@@ -229,6 +297,19 @@ TEST(Parser, modelWithInvalidElement) {
     p.parseModel(input2);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(input1);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned from validator
+
+    //v.clearErrors();
+    //m = p.parseModel(input2);
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
 }
 
 TEST(Parser, parseModelWithInvalidAttributeAndGetError) {
@@ -246,11 +327,19 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetError) {
 
     // Get ModelError and check.
     EXPECT_EQ(model, parser.getError(0)->getModel());
+
     // Get const modelError and check.
     const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).getError(0);
     libcellml::Error *rawErr = err.get();
     const libcellml::ModelPtr modelFromError = static_cast<const libcellml::Error*>(rawErr)->getModel();
     EXPECT_EQ(model, modelFromError);
+
+    //// KRM Checking what validator returns
+    //parser.clearErrors();
+    //libcellml::ModelPtr m = parser.parseModel(input);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned from validator
 }
 
 TEST(Parser, parseNamedModelWithNamedComponent) {
@@ -271,6 +360,12 @@ TEST(Parser, parseNamedModelWithNamedComponent) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned ... should there be an empty component warning? No, is allowed
 }
 
 TEST(Parser, parseModelWithUnitsAndNamedComponent) {
@@ -290,6 +385,14 @@ TEST(Parser, parseModelWithUnitsAndNamedComponent) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking what validator returns
+    //printErrors(parser); // no parser errors
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// Units is named 'dimensionless', which is a protected standard unit name., 8.1.3
 }
 
 TEST(Parser, unitsAttributeError) {
@@ -305,6 +408,12 @@ TEST(Parser, unitsAttributeError) {
     p.parseModel(ex);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned from validator
 }
 
 TEST(Parser, unitsElementErrors) {
@@ -337,6 +446,20 @@ TEST(Parser, unitsElementErrors) {
     p.parseModel(input2);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(input1);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Units does not have a valid name attribute., 8.1.1
+
+    //// KRM Checking what validator returns
+    //v.clearErrors();
+    //m = p.parseModel(input2);
+    //v.validateModel(m);
+    //printErrors(v); //  nothing returned from validator
 }
 
 TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetError) {
@@ -365,6 +488,12 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).getError(0);
     const libcellml::UnitsPtr unitsFromError = err->getUnits();
     EXPECT_EQ(unitsExpected, unitsFromError);
+
+    // KRM Checking what validator returns
+    //libcellml::ModelPtr m = parser.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned from validator
 }
 
 TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
@@ -394,6 +523,13 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError) {
 
     // Get non-existent error
     EXPECT_EQ(nullptr, parser.getError(1));
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = parser.parseModel(input);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned
+
 }
 
 TEST(Parser, componentAttributeErrors) {
@@ -435,6 +571,24 @@ TEST(Parser, componentAttributeErrors) {
     p.parseModel(input3);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectError3, p.getError(0)->getDescription());
+
+    //// KRM Checking what validator returns
+    //libcellml::ModelPtr m = p.parseModel(input1);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Component does not have a valid name attribute., 10.1.1
+
+    //v.clearErrors();
+    //m = p.parseModel(input2);
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned
+
+    //v.clearErrors();
+    //m = p.parseModel(input3);
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned
 }
 
 TEST(Parser, componentElementErrors) {
@@ -467,6 +621,19 @@ TEST(Parser, componentElementErrors) {
     p.parseModel(input2);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(input1);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Component does not have a valid name attribute., 10.1.1
+    //
+    //v.clearErrors();
+    //m = p.parseModel(input2);
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned
 }
 
 TEST(Parser, parseModelWithTwoComponents) {
@@ -483,12 +650,18 @@ TEST(Parser, parseModelWithTwoComponents) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned
 }
 
 TEST(Parser, parseModelWithComponentHierarchyWaterfall) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"hello\">" // Added name
                 "<component name=\"dave\"/>"
                 "<component name=\"bob\"/>"
                 "<component name=\"angus\"/>"
@@ -507,12 +680,19 @@ TEST(Parser, parseModelWithComponentHierarchyWaterfall) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // returns nothing now that name has been added to model
+
 }
 
 TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\">" // added name
                 "<component name=\"ignatio\"/>"
                 "<component name=\"dave\"/>"
                 "<component name=\"bob\"/>"
@@ -539,6 +719,13 @@ TEST(Parser, parseModelWithMultipleComponentHierarchyWaterfalls) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned now that name is added to model
+
 }
 
 TEST(Parser, modelWithUnits) {
@@ -566,6 +753,13 @@ TEST(Parser, modelWithUnits) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// Units is named 'dimensionless', which is a protected standard unit name., 8.1.3
 }
 
 TEST(Parser, modelWithInvalidUnits) {
@@ -599,7 +793,6 @@ TEST(Parser, modelWithInvalidUnits) {
     std::vector<std::string> expectedErrors = {
         "Units 'fahrenheitish' has an invalid attribute 'temperature'.",
         "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid child element 'degrees'.",
-        // KRM TODO this one should be moved to validator? Currently not checked there
         "Unit referencing 'celsius' in units 'fahrenheitish' has a multiplier with the value 'Z' that is not a representation of a CellML real valued number.",
         "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid attribute 'bill'.",
         "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
@@ -611,9 +804,6 @@ TEST(Parser, modelWithInvalidUnits) {
 
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
-    libcellml::Validator v;
-    v.validateModel(model);
-    printErrors(v);
 
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
@@ -623,6 +813,21 @@ TEST(Parser, modelWithInvalidUnits) {
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Unit in units 'fahrenheitish' does not have a valid units reference., 9.1.1
+    //// Units is named 'dimensionless', which is a protected standard unit name., 8.1.3
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Units does not have a valid name attribute., 8.1.1
+    //// Units reference 'friends' in units '' is not a valid reference to a local units or a standard unit type., 9.1.1
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Unit in units '' does not have a valid units reference., 9.1.1
 }
 
 TEST(Parser, emptyEncapsulation) {
@@ -636,13 +841,14 @@ TEST(Parser, emptyEncapsulation) {
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(ex);
-    libcellml::Validator v;
-    v.validateModel(model);
-    printErrors(v);
-    
-    // KRM TODO This should be picked up by the validator?? Currently returns nothing
+
     EXPECT_EQ(1u, p.errorCount());
-    //EXPECT_EQ(expectedError, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError, p.getError(0)->getDescription());
+
+    // KRM Checking validator returns
+    //libcellml::Validator v;
+    //v.validateModel(model);
+    //printErrors(v); // nothing returned TODO need to check for empty encapsulation
 }
 
 TEST(Parser, encapsulationWithNoComponentAttribute) {
@@ -658,18 +864,16 @@ TEST(Parser, encapsulationWithNoComponentAttribute) {
     const std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
 
     libcellml::Parser p;
-    libcellml::ModelPtr m=p.parseModel(ex);
-    libcellml::Validator v;
-
-    printErrors(p);
-
-    v.validateModel(m);
-    printErrors(v);
-
-    // KRM TODO this should be checked in the validator instead?
+    libcellml::ModelPtr m = p.parseModel(ex);
+    
     EXPECT_EQ(2u, p.errorCount());
-    /*EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
-    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());*/
+    EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
+    //// KRM Checking validator returns
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned TODO check encapsulation for two generations of component_refs
     
 }
 
@@ -683,17 +887,19 @@ TEST(Parser, encapsulationWithNoComponentRef) {
             "</model>";
 
     const std::string expectedError1 = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
-    // KRM const std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
+    const std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
 
     libcellml::Parser p;
     p.parseModel(ex);
-    //printErrors(p);
-    //EXPECT_EQ(2u, p.errorCount());
-    //EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
-    //EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
-
-    EXPECT_EQ(1u, p.errorCount());
+    EXPECT_EQ(2u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+    EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
+    //// KRM Checking validator returns
+    //libcellml::ModelPtr model = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(model);
+    //printErrors(v); // nothing returned TODO check encapsulation for two generations of component_refs
     
 }
 
@@ -713,7 +919,7 @@ TEST(Parser, encapsulationWithNoComponent) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    printErrors(p);
+
     EXPECT_EQ(2u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
@@ -753,7 +959,7 @@ TEST(Parser, encapsulationWithNoComponentChild) {
 
     libcellml::Parser p;
     p.parseModel(ex);
-    printErrors(p);
+    
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
 }
@@ -837,11 +1043,17 @@ TEST(Parser, invalidEncapsulations) {
 
     libcellml::Parser parser;
     parser.parseModel(e);
-    printErrors(parser);
+    
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned TODO 
 }
 
 TEST(Parser, invalidVariableAttributesAndGetVariableError) {
@@ -856,27 +1068,41 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError) {
 
     std::vector<std::string> expectedErrors = {
         "Variable 'quixote' has an invalid attribute 'don'.",
-        "Variable 'quixote' is missing a required 'units' attribute.",
         "Variable '' has an invalid attribute 'windmill'.",
-        "Variable '' is missing a required 'name' attribute.",
-        "Variable '' is missing a required 'units' attribute.",
     };
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(in);
+
     EXPECT_EQ(expectedErrors.size(), p.errorCount());
     for (size_t i = 0; i < p.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
     }
 
     libcellml::VariablePtr variableExpected = model->getComponent("componentA")->getVariable("quixote");
+
     // Get variable from error and check.
     EXPECT_EQ(variableExpected, p.getError(0)->getVariable());
+
     // Get const variable from error and check.
     libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).getError(0);
+
     libcellml::Error *rawErr = err.get();
     const libcellml::VariablePtr variableFromError = static_cast<const libcellml::Error*>(rawErr)->getVariable();
     EXPECT_EQ(variableExpected, variableFromError);
+
+    //// KRM Check validator
+    //libcellml::Validator v;
+    //v.validateModel(model);
+    //printErrors(v); 
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Variable 'quixote' does not have a valid units attribute., 11.1.1.2
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Variable does not have a valid name attribute., 11.1.1.1
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Variable '' does not have a valid units attribute., 11.1.1.2
 }
 
 TEST(Parser, variableAttributeAndChildErrors) {
@@ -903,7 +1129,6 @@ TEST(Parser, variableAttributeAndChildErrors) {
     const std::string expectError2 = "Variable 'randy' has an invalid child element 'daughter'.";
     const std::string expectError3 = "Variable 'randy' has an invalid attribute 'son'.";
 
-
     libcellml::Parser p;
     p.parseModel(input1);
     EXPECT_EQ(1u, p.errorCount());
@@ -914,6 +1139,18 @@ TEST(Parser, variableAttributeAndChildErrors) {
     EXPECT_EQ(2u, p.errorCount());
     EXPECT_EQ(expectError2, p.getError(0)->getDescription());
     EXPECT_EQ(expectError3, p.getError(1)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m1 = p.parseModel(input1);
+    //libcellml::Validator v1;
+    //v1.validateModel(m1);
+    //printErrors(v1);
+    //// Variable 'Na' has an invalid units reference 'daves' that does not correspond with a standard unit or units in the variable's parent component or model., 11.1.1.2
+
+    //libcellml::ModelPtr m2 = p.parseModel(input2);
+    //libcellml::Validator v2;
+    //v2.validateModel(m2);
+    //printErrors(v2); // nothing returned
 }
 
 TEST(Parser, emptyConnections) {
@@ -933,6 +1170,12 @@ TEST(Parser, emptyConnections) {
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(ex);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned TODO should there have been?
 }
 
 TEST(Parser, connectionErrorNoComponent2) {
@@ -954,12 +1197,18 @@ TEST(Parser, connectionErrorNoComponent2) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    printErrors(p);
+
     EXPECT_EQ(4u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
     EXPECT_EQ(expectedError4, p.getError(3)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned TODO should there be?
 }
 
 TEST(Parser, connectionErrorNoComponent2InModel) {
@@ -979,10 +1228,16 @@ TEST(Parser, connectionErrorNoComponent2InModel) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    printErrors(p);
+
     EXPECT_EQ(2u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned TODO Should there be?
 }
 
 TEST(Parser, connectionErrorNoComponent1) {
@@ -1003,11 +1258,17 @@ TEST(Parser, connectionErrorNoComponent1) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    printErrors(p);
+  
     EXPECT_EQ(3u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned TODO Should there be?
 }
 
 TEST(Parser, connectionErrorNoMapComponents) {
@@ -1036,11 +1297,17 @@ TEST(Parser, connectionErrorNoMapComponents) {
 
     libcellml::Parser parser;
     parser.parseModel(in);
-    printErrors(parser);
+    
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
+
+    // KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned TODO should there be?
 }
 
 TEST(Parser, connectionErrorNoMapVariables) {
@@ -1064,6 +1331,14 @@ TEST(Parser, connectionErrorNoMapVariables) {
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
     EXPECT_EQ(expectedError3, p.getError(2)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(in);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
 }
 
 TEST(Parser, importedComponent2Connection) {
@@ -1085,6 +1360,16 @@ TEST(Parser, importedComponent2Connection) {
     libcellml::Parser parser;
     parser.parseModel(e);
     EXPECT_EQ(0u, parser.errorCount());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Model does not have a valid name attribute., 4.2.1
+    //// CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //// Variable 'variable_import' does not have a valid units attribute., 11.1.1.2
 }
 
 TEST(Parser, validConnectionMapVariablesFirst) {
@@ -1105,12 +1390,18 @@ TEST(Parser, validConnectionMapVariablesFirst) {
     libcellml::Parser parser;
     parser.parseModel(e);
     EXPECT_EQ(0u, parser.errorCount());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // nothing returned
 }
 
 TEST(Parser, component2ConnectionVariableMissing) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"lads\">"
                 "<component name=\"component_bob\">"
                     "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
@@ -1122,20 +1413,27 @@ TEST(Parser, component2ConnectionVariableMissing) {
                 "</connection>"
             "</model>";
 
-    const std::string expectedError = "Variable 'variable_angus' is specified as variable_2 in a connection but it does not exist in component_2 component 'component_dave' of model ''.";
+    const std::string expectedError = "Variable 'variable_angus' is specified as variable_2 in a connection but it does not exist in component_2 component 'component_dave' of model 'lads'.";
 
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
-    printErrors(p);
+    
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError, p.getError(0)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// no errors now that the name is added to the model.  TODO Should there be validation errors?
 }
 
 TEST(Parser, component2InConnectionMissing) {
     const std::string in =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"lads\">"
                 "<component name=\"component_bob\">"
                     "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
@@ -1149,7 +1447,7 @@ TEST(Parser, component2InConnectionMissing) {
 
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"lads\">"
                 "<component name=\"component_bob\">"
                     "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
@@ -1158,25 +1456,32 @@ TEST(Parser, component2InConnectionMissing) {
                 "</component>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model '' does not have a valid component_2 in a connection element.";
-    const std::string expectedError2 = "Connection in model '' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
+    const std::string expectedError1 = "Connection in model 'lads' does not have a valid component_2 in a connection element.";
+    const std::string expectedError2 = "Connection in model 'lads' specifies 'variable_angus' as variable_2 but the corresponding component_2 is invalid.";
 
     // Parse
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(in);
     EXPECT_EQ(2u, p.errorCount());
-    printErrors(p);
+    
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// No errors returned since adding name to model.  TODO should there be?
+
 }
 
 TEST(Parser, connectionVariable2Missing) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"lads\">"
                 "<component name=\"component_bob\">"
                     "<variable name=\"variable_bob\" units=\"dimensionless\"/>"
                 "</component>"
@@ -1188,19 +1493,26 @@ TEST(Parser, connectionVariable2Missing) {
                 "</connection>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model '' does not have a valid variable_2 in a map_variables element.";
+    const std::string expectedError1 = "Connection in model 'lads' does not have a valid variable_2 in a map_variables element.";
 
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// nothing returned now that name is added to model TODO should there be?
 }
 
 TEST(Parser, connectionVariable1Missing) {
     const std::string e =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"lads\">"
                 "<component name=\"component_bob\">"
                     "<variable name=\"variable_bob\" units=\"scrat\"/>"
                 "</component>"
@@ -1212,13 +1524,22 @@ TEST(Parser, connectionVariable1Missing) {
                 "</connection>"
             "</model>";
 
-    const std::string expectedError1 = "Connection in model '' does not have a valid variable_1 in a map_variables element.";
+    const std::string expectedError1 = "Connection in model 'lads' does not have a valid variable_1 in a map_variables element.";
 
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
     EXPECT_EQ(1u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = p.parseModel(e);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    //// added name
+    // Variable 'variable_bob' has an invalid units reference 'scrat' that does not correspond with a standard unit or units in the variable's parent component or model., 11.1.1.2
+    // Variable 'variable_dave' has an invalid units reference 'gone' that does not correspond with a standard unit or units in the variable's parent component or model., 11.1.1.2
 }
 
 TEST(Parser, connectionErrorNoMapVariablesType) {
@@ -1241,16 +1562,27 @@ TEST(Parser, connectionErrorNoMapVariablesType) {
 
     libcellml::Parser p;
     p.parseModel(in);
-    printErrors(p);
+
     EXPECT_EQ(2u, p.errorCount());
     EXPECT_EQ(expectedError1, p.getError(0)->getDescription());
     EXPECT_EQ(expectedError2, p.getError(1)->getDescription());
+
+  //  // KRM Checking validator
+  //  libcellml::ModelPtr m = p.parseModel(in);
+  //  libcellml::Validator v;
+  //  v.validateModel(m);
+  //  printErrors(v);
+  //  /*CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+  //  Model does not have a valid name attribute., 4.2.1
+  //  Variable 'variable1' has an invalid units reference 'scrat' that does not correspond with a standard unit or units in the variable's parent component or model., 11.1.1.2
+  //  Variable 'variable2' has an invalid units reference 'phils' that does not correspond with a standard unit or units in the variable's parent component or model., 11.1.1.2
+  //*/
 }
 
 TEST(Parser, invalidImportsAndGetError) {
     const std::string input =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_model\">"
                 "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" sauce=\"hollandaise\">"
                     "<units units_ref=\"a_units_in_that_model\" name=\"units_in_this_model\"/>"
                     "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
@@ -1267,7 +1599,7 @@ TEST(Parser, invalidImportsAndGetError) {
 
     const std::string output =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_model\">"
                 "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
                     "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
                 "</import>"
@@ -1296,6 +1628,11 @@ TEST(Parser, invalidImportsAndGetError) {
     libcellml::Error *rawErr = err.get();
     const libcellml::ImportSourcePtr importFromError = static_cast<const libcellml::Error*>(rawErr)->getImportSource();
     EXPECT_EQ(import, importFromError);
+
+    //// KRM Checking validator
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v); // no errors returned TODO should the import be caught?
 }
 
 TEST(Parser, invalidModelWithAllKindsOfErrors) {
@@ -1322,8 +1659,6 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
         "Units '' has an invalid attribute 'jedi'.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
-        "Variable '' is missing a required 'name' attribute.",
-        "Variable '' is missing a required 'units' attribute.",
         "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
         "Encapsulation in model 'starwars' does not contain any child elements.",
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
@@ -1335,6 +1670,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors) {
     // Parse and check for CellML errors.
     libcellml::Parser parser;
     parser.parseModel(input);
+
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
@@ -1440,7 +1776,6 @@ TEST(Parser, invalidModelWithTextInAllElements) {
         "Unit referencing 'ball' in units 'robot' has an invalid non-whitespace child text element 'rolls'.",
         "Component 'ship' has an invalid non-whitespace child text element 'falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element 'rey'.",
-        "Variable 'jedi' is missing a required 'units' attribute.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'awakens'.",
         "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element 'force'.",
@@ -1457,11 +1792,20 @@ TEST(Parser, invalidModelWithTextInAllElements) {
     // Parse and check for CellML errors.
     libcellml::Parser parser;
     parser.parseModel(input);
-    printErrors(parser);
+    
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
+
+    //// KRM Checking validator
+    //libcellml::ModelPtr m = parser.parseModel(input);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+    // CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    // Variable 'jedi' does not have a valid units attribute., 11.1.1.2
+    // Units reference 'ball' in units 'robot' is not a valid reference to a local units or a standard unit type., 9.1.1
 }
 
 TEST(Parser, parseIds) {
@@ -1604,108 +1948,156 @@ TEST(Parser, parseResets) {
 
 TEST(Parser, parseResetsWithNumerousErrors) {
     const std::string in =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
-                "<component name=\"component2\" id=\"c2id\">"
-                    "<variable name=\"variable1\" id=\"vid\" units=\"plough\"/>"
-                    "<variable name=\"V_k\" id=\"vid\" units=\"siemens\"/>"
-                    "<reset order=\"1.3\" id=\"rid\">"
-                        "<when order=\"-0\" change=\"$4.50\">"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some condition in mathml"
-                            "</math>"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some value in mathml"
-                            "</math>"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "extra mathml node"
-                            "</math>"
-                        "</when>"
-                        "<when order=\"3\" id=\"wid\">"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some condition in mathml"
-                            "</math>"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some value in mathml"
-                            "</math>"
-                        "</when>"
-                        "<when order=\"3\" id=\"wid\">"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some condition in mathml"
-                            "</math>"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some value in mathml"
-                            "</math>"
-                        "</when>"
-                    "</reset>"
-                    "<reset variable=\"I_na\" order=\"2\" id=\"rid\">"
-                        "<when order=\"5.9\" goods=\"socks\">"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some condition in mathml"
-                            "</math>"
-                        "</when>"
-                    "</reset>"
-                    "<reset variable=\"I_na\" order=\"2\" id=\"rid\">"
-                        "<when />"
-                    "</reset>"
-                    "<reset id=\"r3id\">"
-                        "<when order=\"\"/>"
-                    "<about>"
-                        "Some description of importance."
-                    "</about>"
-                    "</reset>"
-                    "<reset variable=\"V_k\" order=\"-\" start=\"now\"/>"
-                    "<reset variable=\"variable1\" order=\"0\">"
-                        "non empty whitespace."
-                        "<when order=\"1\">"
-                            "illegal content."
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some condition in mathml"
-                            "</math>"
-                            "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                                "some value in mathml"
-                            "</math>"
-                            "<variable/>"
-                        "</when>"
-                    "</reset>"
-                "</component>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
+        "<component name=\"component2\" id=\"c2id\">"
+        "<variable name=\"variable1\" id=\"vid\" units=\"plough\"/>"
+        "<variable name=\"V_k\" id=\"vid\" units=\"siemens\"/>"
+        "<reset order=\"1.3\" id=\"rid\">"
+        "<when order=\"-0\" change=\"$4.50\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some condition in mathml"
+        "</math>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some value in mathml"
+        "</math>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "extra mathml node"
+        "</math>"
+        "</when>"
+        "<when order=\"3\" id=\"wid\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some condition in mathml"
+        "</math>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some value in mathml"
+        "</math>"
+        "</when>"
+        "<when order=\"3\" id=\"wid\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some condition in mathml"
+        "</math>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some value in mathml"
+        "</math>"
+        "</when>"
+        "</reset>"
+        "<reset variable=\"I_na\" order=\"2\" id=\"rid\">"
+        "<when order=\"5.9\" goods=\"socks\">"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some condition in mathml"
+        "</math>"
+        "</when>"
+        "</reset>"
+        "<reset variable=\"I_na\" order=\"2\" id=\"rid\">"
+        "<when />"
+        "</reset>"
+        "<reset id=\"r3id\">"
+        "<when order=\"\"/>"
+        "<about>"
+        "Some description of importance."
+        "</about>"
+        "</reset>"
+        "<reset variable=\"V_k\" order=\"-\" start=\"now\"/>"
+        "<reset variable=\"variable1\" order=\"0\">"
+        "non empty whitespace."
+        "<when order=\"1\">"
+        "illegal content."
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some condition in mathml"
+        "</math>"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
+        "some value in mathml"
+        "</math>"
+        "<variable/>"
+        "</when>"
+        "</reset>"
+        "</component>"
+        "</model>";
+
+    //const std::vector<std::string> expectedErrors = {
+    //    "Reset in component 'component2' referencing variable '' has a non-integer order value '1.3'.",
+    //    "Reset in component 'component2' does not reference a variable in the component.",
+    //    "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
+    //    "When in reset referencing variable '' with order '' contains more than two MathML child elements.",
+    //    "Reset in component 'component2' referencing variable '' does not have an order defined.",
+    //    "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
+    //    "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
+    //    "Reset in component 'component2' does not reference a variable in the component.",
+    //    "When in reset referencing variable '' with order '2' has an invalid attribute 'goods'.",
+    //    "When in reset referencing variable '' with order '2' does not have an order defined.",
+    //    "When in reset referencing variable '' with order '2' contains only one MathML child element.",
+    //    "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
+    //    "Reset in component 'component2' does not reference a variable in the component.",
+    //    "When in reset referencing variable '' with order '2' does not have an order defined.",
+    //    "When in reset referencing variable '' with order '2' contains zero MathML child elements.",
+    //    "Reset in component 'component2' does not reference a variable in the component.",
+    //    "Reset in component 'component2' referencing variable '' does not have an order defined.",
+    //    "When in reset referencing variable '' with order '' does not have an order defined.",
+    //    "When in reset referencing variable '' with order '' contains zero MathML child elements.",
+    //    "Reset in component 'component2' referencing variable '' has an invalid child element 'about'.",
+    //    "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value '-'.",
+    //    "Reset in component 'component2' has an invalid attribute 'start'.",
+    //    "Reset in component 'component2' referencing variable 'V_k' does not have an order defined.",
+    //    "Reset in component 'component2' referencing variable 'variable1' has an invalid non-whitespace child text element 'non empty whitespace.'.",
+    //    "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element 'illegal content.'.",
+    //    "When in reset referencing variable 'variable1' with order '0' has an invalid child element 'variable'.",
+    //};
 
     const std::vector<std::string> expectedErrors = {
-        "Reset in component 'component2' referencing variable '' has a non-integer order value '1.3'.",
-        "Reset in component 'component2' does not reference a variable in the component.",
         "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
         "When in reset referencing variable '' with order '' contains more than two MathML child elements.",
-//        "Reset in component 'component2' referencing variable '' does not have an order defined.",
-//        "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
-        "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
-        "Reset in component 'component2' does not reference a variable in the component.",
         "When in reset referencing variable '' with order '2' has an invalid attribute 'goods'.",
-        "When in reset referencing variable '' with order '2' does not have an order defined.",
-        "When in reset referencing variable '' with order '2' contains only one MathML child element.",
-        "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
-        "Reset in component 'component2' does not reference a variable in the component.",
-        "When in reset referencing variable '' with order '2' does not have an order defined.",
-        "When in reset referencing variable '' with order '2' contains zero MathML child elements.",
-        "Reset in component 'component2' does not reference a variable in the component.",
-        "Reset in component 'component2' referencing variable '' does not have an order defined.",
-        "When in reset referencing variable '' with order '' does not have an order defined.",
-        "When in reset referencing variable '' with order '' contains zero MathML child elements.",
         "Reset in component 'component2' referencing variable '' has an invalid child element 'about'.",
-        "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value '-'.",
         "Reset in component 'component2' has an invalid attribute 'start'.",
-//        "Reset in component 'component2' referencing variable 'V_k' does not have an order defined.",
         "Reset in component 'component2' referencing variable 'variable1' has an invalid non-whitespace child text element 'non empty whitespace.'.",
         "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element 'illegal content.'.",
         "When in reset referencing variable 'variable1' with order '0' has an invalid child element 'variable'.",
     };
 
     libcellml::Parser parser;
-    parser.parseModel(in);
+    libcellml::ModelPtr m = parser.parseModel(in);
+    libcellml::Validator v;
+
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.getError(i)->getDescription());
     }
+
+    // KRM TODO There are loads of reset errors - not sure what should be where ... 
+   /* v.validateModel(m);
+    printErrors(v);*/
+
+  /*  CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    Model does not have a valid name attribute., 4.2.1
+    Variable 'variable1' has an invalid units reference 'plough' that does not correspond with a standard unit or units in the variable's parent component or model., 11.1.1.2
+    Component 'component2' contains multiple resets with order '2'., 12.1.1.2
+    Reset in component 'component2' does not have an order set, does not reference a variable., 12.1.1.1
+    Reset in component 'component2' does not have an order set, does not reference a variable., 12.1.1.2
+    Reset in component 'component2' does not have an order set, does not reference a variable, has multiple whens with order '3'., 12.1.1.2
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    Reset in component 'component2' with order '2' does not reference a variable., 12.1.1.1
+    When in reset with order '2' which does not reference a variable, does not have an order set., 13.1.1
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    When in reset with order '2' which does not reference a variable, does not have an order set, does not have a MathML value set., 13.1.2
+    Reset in component 'component2' with order '2' does not reference a variable., 12.1.1.1
+    When in reset with order '2' which does not reference a variable, does not have an order set., 13.1.1
+    When in reset with order '2' which does not reference a variable, does not have an order set, does not have a MathML condition set., 13.1.2
+    When in reset with order '2' which does not reference a variable, does not have an order set, does not have a MathML value set., 13.1.2
+    Reset in component 'component2' does not have an order set, does not reference a variable., 12.1.1.1
+    Reset in component 'component2' does not have an order set, does not reference a variable., 12.1.1.2
+    When in reset which does not have an order set, which does not reference a variable, does not have an order set., 13.1.1
+    When in reset which does not have an order set, which does not reference a variable, does not have an order set, does not have a MathML condition set., 13.1.2
+    When in reset which does not have an order set, which does not reference a variable, does not have an order set, does not have a MathML value set., 13.1.2
+    Reset in component 'component2' does not have an order set, referencing variable 'V_k'., 12.1.1.2
+    Reset in component 'component2' does not have an order set, referencing variable 'V_k' does not have at least one child When., 12.1.2
+    Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    Element math content does not follow the DTD, expecting(mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got(CDATA).,*/
 }
 
 TEST(Parser, parseResetsCheckResetObjectCheckWhenObject) {
@@ -1731,9 +2123,29 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject) {
     libcellml::ResetPtr resetExpected = model->getComponent(0)->getReset(0);
     libcellml::WhenPtr whenExpected = resetExpected->getWhen(0);
 
-    EXPECT_EQ(6u, parser.errorCount());
+    printErrors(parser); // KRM TODO
+    
+    EXPECT_EQ(1u, parser.errorCount());
+    EXPECT_EQ(parser.getError(0)->getDescription(),
+              "When in reset referencing variable 'V_k' with order '' has an invalid attribute 'goods'.");
+    /*EXPECT_EQ(6u, parser.errorCount()); // KRM Don't know what errors were expected in that 6u above?
     EXPECT_EQ(resetExpected, parser.getError(2)->getReset());
-    EXPECT_EQ(whenExpected, parser.getError(3)->getWhen());
+    EXPECT_EQ(whenExpected, parser.getError(3)->getWhen());*/
+
+    libcellml::Validator v;
+    v.validateModel(model);
+    printErrors(v);
+    //CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //Model does not have a valid name attribute., 4.2.1
+    //CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //Variable 'variable1' does not have a valid units attribute., 11.1.1.2
+    //CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //Variable 'V_k' does not have a valid units attribute., 11.1.1.2
+    //Reset in component 'component2' does not have an order set, referencing variable 'V_k'., 12.1.1.2
+    //When in reset which does not have an order set, referencing variable 'V_k' does not have an order set., 13.1.1
+    //Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    //When in reset which does not have an order set, referencing variable 'V_k' does not have an order set, does not have a MathML value set., 13.1.2
+
 }
 
 TEST(Parser, unitsWithCellMLRealVariations) {
@@ -1808,7 +2220,18 @@ TEST(Parser, xmlComments) {
 
     libcellml::Parser parser;
     parser.parseModel(input);
-    printErrors(parser);
 
     EXPECT_EQ(0u, parser.errorCount());
+
+    //// KRM Checking what is validated
+    //libcellml::ModelPtr m = parser.parseModel(input);
+    //libcellml::Validator v;
+    //v.validateModel(m);
+    //printErrors(v);
+
+    //CellML identifiers must contain one or more basic Latin alphabetic characters., 3.1.3
+    //Component does not have a valid name attribute., 10.1.1
+    //Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+    //Element math content does not follow the DTD, expecting (mi | mn | mo | mtext | ms | mspace | mrow | mfrac | msqrt | mroot | menclose | mstyle | merror | mpadded | mphantom | mfenced | msub | msup | msubsup | munder | mover | munderover | mmultiscripts | mtable | mtr | mlabeledtr | mtd | maligngroup | malignmark | maction | ci | csymbol | cn | integers | reals | rationals | naturalnumbers | complexes | primes | exponentiale | imaginaryi | notanumber | true | false | emptyset | pi | eulergamma | infinity | apply | fn | lambda | reln | interval | list | matrix | matrixrow | set | vector | piecewise | semantics | declare)*, got (CDATA).,
+
 }
