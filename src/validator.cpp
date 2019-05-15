@@ -32,6 +32,7 @@ limitations under the License.
 #include <libxml/uri.h>
 
 #include <algorithm>
+#include <cmath> // Adding this to make the Ubuntu build happy ...
 #include <iostream>
 #include <map>
 #include <regex>
