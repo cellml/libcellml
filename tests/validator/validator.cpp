@@ -27,59 +27,68 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
-TEST(Validator, equivalentVariableUnitMultiplierPrefix) {
-
-    libcellml::Validator validator;
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
-
-    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
-
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
-
-    v1->setName("v1");
-    v2->setName("v2");
-    v3->setName("v3");
-
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    u1->setName("g1000");
-    u1->addUnit("gram", 0, 1.0, 1000.0 );
-    v1->setUnits(u1);
-
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    /*u2->setName("kg");
-    u2->addUnit("kilogram", 0, 1.0);
-    v2->setUnits(u2);*/
-    v2->setUnits("kilogram");
-
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-    u3->setName("kilo_gram");
-    u3->addUnit("gram", "kilo", 1.0);
-    v3->setUnits(u3);
-
-    comp1->addVariable(v1);
-    comp2->addVariable(v2);
-    comp3->addVariable(v3);
-
-    model->addComponent(comp1);
-    model->addComponent(comp2);
-    model->addComponent(comp3);
-
-    model->addUnits(u1);
-    //model->addUnits(u2);
-    model->addUnits(u3);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-    //libcellml::Variable::addEquivalence(v1, v3);	
-
-    validator.validateModel(model);
-
-    printErrors(validator);
-}
-
+//TEST(Validator, equivalentVariableUnitMultiplierPrefix) {
+//
+//    libcellml::Validator validator;
+//    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+//
+//    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+//    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+//   
+//    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+//    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+//  
+//    v1->setName("v1");
+//    v2->setName("v2");
+//    
+//    // millimetres
+//    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+//    u1->setName("u1");
+//    u1->addUnit("metre", "milli", 1.0, 1.0); // standard, prefix, exponent, multiplier
+//
+//    // mm^3
+//    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+//    u2->setName("u2");
+//    u2->addUnit("u1", 0, 3.0, 1.0); // standard, prefix, exponent, multiplier
+//
+//    // mm^6
+//    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+//    u3->setName("u3");
+//    u3->addUnit("u2", 0, 2.0, 1.0); // standard, prefix, exponent, multiplier
+//
+//    // m^6
+//    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+//    u4->setName("u4");
+//    u4->addUnit("u3", 15, 1.0, 1000.0); // standard, prefix, exponent, multiplier
+//
+//    v1->setUnits(u4);
+//
+//    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+//    u5->setName("u5");
+//    u5->addUnit("metre", 0, 6.0, 1.0);
+//    v2->setUnits(u5);  
+//
+//    comp1->setName("component1");
+//    comp1->addVariable(v1);
+//
+//    comp2->setName("component2");
+//    comp2->addVariable(v2);
+//
+//    model->setName("model");
+//    model->addComponent(comp1);
+//    model->addComponent(comp2);
+//
+//    model->addUnits(u1);
+//    model->addUnits(u2);
+//    model->addUnits(u3);
+//    model->addUnits(u4);
+//    model->addUnits(u5);
+//
+//    libcellml::Variable::addEquivalence(v1, v2); 
+//    validator.validateModel(model);
+//    EXPECT_EQ(0u, validator.errorCount());
+//    printErrors(validator);
+//}
 
 TEST(Validator, namedModel) {
     /// @cellml2_4 4.2.1 Validate TEST model name format
@@ -1620,14 +1629,22 @@ TEST(Validator, validMathCnElements) {
 TEST(Validator, setUnitsWithNoChildUnit) {
     /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, user-defined base variables
     std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10.000000, banana^-5.000000, ",
-        "Variable 'v4' has units of 'gram' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: kilogram^1.000000, metre^-3.000000, ",
-        "Variable 'v7' has units of 'apple' and an equivalent variable 'v8' with non-matching units of 'banana'. The mismatch is: apple^1.000000, banana^-1.000000, ",
-        "Variable 'v2' has units of 'bunch_of_bananas' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. The mismatch is: apple^-10.000000, banana^5.000000, ",
-        "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1.000000, second^-1.000000, ",
-        "Variable 'v8' has units of 'banana' and an equivalent variable 'v7' with non-matching units of 'apple'. The mismatch is: apple^-1.000000, banana^1.000000, ",
-        "Variable 'v3' has units of 'litre' and an equivalent variable 'v4' with non-matching units of 'gram'. The mismatch is: kilogram^-1.000000, metre^3.000000, ",
-        "Variable 'v6' has units of 'second' and an equivalent variable 'v5' with non-matching units of 'metre'. The mismatch is: metre^-1.000000, second^1.000000, ",
+        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. "
+        "The mismatch is: apple^10, banana^-5, ",
+        "Variable 'v4' has units of 'gram' and an equivalent variable 'v3' with non-matching units of 'litre'. "
+        "The mismatch is: kilogram^1, metre^-3, ",
+        "Variable 'v7' has units of 'apple' and an equivalent variable 'v8' with non-matching units of 'banana'. "
+        "The mismatch is: apple^1, banana^-1, ",
+        "Variable 'v2' has units of 'bunch_of_bananas' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. "
+        "The mismatch is: apple^-10, banana^5, ",
+        "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. "
+        "The mismatch is: metre^1, second^-1, ",
+        "Variable 'v8' has units of 'banana' and an equivalent variable 'v7' with non-matching units of 'apple'. "
+        "The mismatch is: apple^-1, banana^1, ",
+        "Variable 'v3' has units of 'litre' and an equivalent variable 'v4' with non-matching units of 'gram'. "
+        "The mismatch is: kilogram^-1, metre^3, ",
+        "Variable 'v6' has units of 'second' and an equivalent variable 'v5' with non-matching units of 'metre'. "
+        "The mismatch is: metre^-1, second^1, ",
     };
 
     libcellml::Validator validator;
@@ -1734,10 +1751,14 @@ TEST(Validator, setUnitsWithNoChildUnit) {
 TEST(Validator, variableEquivalentUnits) {
     /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, built-in base variables  
     std::vector<std::string> expectedErrors = {
-        "Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: kilogram^1.000000, metre^-2.000000, second^-2.000000, ",
-        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'potayto' with non-matching units of 'testunit3'. The mismatch is: kilogram^-1.000000, metre^2.000000, second^2.000000, ",
-        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1.000000, ",
-        "Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. The mismatch is: metre^-1.000000, "
+        "Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. "
+        "The mismatch is: kilogram^1, metre^-2, second^-2, ",
+        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'potayto' with non-matching units of 'testunit3'. "
+        "The mismatch is: kilogram^-1, metre^2, second^2, ",
+        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. "
+        "The mismatch is: metre^1, multiplication factor of 10^3, ",
+        "Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. "
+        "The mismatch is: metre^-1, multiplication factor of 10^-3, "
     };
 
     libcellml::Validator validator;
@@ -1853,7 +1874,7 @@ TEST(Validator, variableEquivalentUnits) {
     u9->addUnit("radian", 0, -4, 1);
     u9->addUnit("steradian", 0, 2, 1);
 
-    /*libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u10 = std::make_shared<libcellml::Units>();
     u10->setName("testunit10");
     u10->addUnit("gram", 0, 2.0, 1000.0);
 
@@ -1863,11 +1884,11 @@ TEST(Validator, variableEquivalentUnits) {
 
     libcellml::UnitsPtr u12 = std::make_shared<libcellml::Units>();
     u12->setName("testunit12");
-    u12->addUnit("gram", "kilo", 2.0, 1.0);*/
+    u12->addUnit("gram", "kilo", 2.0, 1.0);
 
     libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
     u13->setName("testunit13");
-    u13->addUnit("testunit2", 0, 2.0, 1.0);
+    u13->addUnit("testunit2", "kilo", 2.0, 1.0);
     u13->addUnit("testunit8", 0, 2.0, 1.0);
 
     libcellml::UnitsPtr u14 = std::make_shared<libcellml::Units>();
@@ -1884,9 +1905,9 @@ TEST(Validator, variableEquivalentUnits) {
     v7->setUnits(u7);
     v8->setUnits(u8);
     v9->setUnits(u9);
-    /*v10->setUnits(u10);
+    v10->setUnits(u10);
     v11->setUnits(u11);
-    v12->setUnits(u12);*/
+    v12->setUnits(u12);
     v13->setUnits(u13);
     v14->setUnits(u14);
 
@@ -1899,9 +1920,9 @@ TEST(Validator, variableEquivalentUnits) {
     m->addUnits(u7);
     m->addUnits(u8);
     m->addUnits(u9);
-   /* m->addUnits(u10);
+    m->addUnits(u10);
     m->addUnits(u11);
-    m->addUnits(u12);*/
+    m->addUnits(u12);
     m->addUnits(u13);
     m->addUnits(u14);
 
@@ -1924,30 +1945,144 @@ TEST(Validator, variableEquivalentUnits) {
     libcellml::Variable::addEquivalence(v8, v9);	
 
     // Fine: testing the multipliers 1000*grams = 1*kilograms 
-    // ** NB multipliers not tested!
-    //libcellml::Variable::addEquivalence(v10, v11);
+    libcellml::Variable::addEquivalence(v10, v11);
 
     // Fine: testing prefix kilo*gram = kilogram
-    // ** NB multipliers not tested!
-    // libcellml::Variable::addEquivalence(v10, v12); 
+    libcellml::Variable::addEquivalence(v10, v12); 
 
     // Off by (meter)^1: super-complicated nested units
     libcellml::Variable::addEquivalence(v13, v14);
 
     validator.validateModel(m);
-
-    printErrors(validator);
-
+   
     EXPECT_EQ(4u, validator.errorCount());
-
-    // Check for expected error messages
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
     }
 }
 
+TEST(Validator, moreEquivalentVariableMultipliers) {
+    libcellml::Validator validator;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    model->setName("model");
 
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    comp1->setName("c1");
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    comp2->setName("c2");
 
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("v1");
+    v2->setName("v2");
+
+    // millimetres
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 1.0, 0.001); // standard, prefix, exponent, multiplier
+
+                                         // 10*mm^2
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("u2");
+    u2->addUnit("u1", "deca", 2.0, 1); // standard, prefix, exponent, multiplier
+
+                                       // 1000*mm^6
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    u3->setName("u3");
+    u3->addUnit("u2", 0, 3.0, 1.0); // standard, prefix, exponent, multiplier
+
+                                    // m^6
+    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    u4->setName("u4");
+    u4->addUnit("u3", "peta", 1.0, 1.0); // standard, prefix, exponent, multiplier
+
+    v1->setUnits(u4);
+
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    u5->setName("u5");
+    u5->addUnit("metre", 0, 6.0, 1.0);
+    v2->setUnits(u5);
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+
+    model->addComponent(comp1);
+    model->addComponent(comp2);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+    model->addUnits(u5);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    validator.validateModel(model);
+    EXPECT_EQ(0u, validator.errorCount());
+}
+
+TEST(Validator, nonEquivalentVariableMultipliers) {
+    libcellml::Validator validator;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    model->setName("model");
+
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    comp1->setName("comp1");
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    comp2->setName("comp2");
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("v1");
+    v2->setName("v2");
+
+    // millimetres
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("u1");
+    u1->addUnit("metre", 0, 1.0, 0.001); // standard, prefix, exponent, multiplier
+
+                                         // 10*mm^2
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("u2");
+    u2->addUnit("u1", "deca", 2.0, 1); // standard, prefix, exponent, multiplier
+
+                                       // 1000*mm^6
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    u3->setName("u3");
+    u3->addUnit("u2", 0, 3.0, 1.0); // standard, prefix, exponent, multiplier
+
+    v1->setUnits(u3);
+
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    u5->setName("u5");
+    u5->addUnit("metre", 0, 6.0, 1.0);
+    v2->setUnits(u5);
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+
+    model->addComponent(comp1);
+    model->addComponent(comp2);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u5);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    validator.validateModel(model);
+    std::vector<std::string> expectedErrors = {
+        "Variable 'v1' has units of 'u3' and an equivalent variable 'v2' with non-matching units of 'u5'. "
+        "The mismatch is: multiplication factor of 10^-15, ",
+        "Variable 'v2' has units of 'u5' and an equivalent variable 'v1' with non-matching units of 'u3'. "
+        "The mismatch is: multiplication factor of 10^15, ",
+    };
+    EXPECT_EQ(2u, validator.errorCount());
+    for (size_t i = 0; i < validator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+    } 
+}
 
 TEST(Validator, validateNoCyclesUnits) {
     /// @cellml2_9 9.1.1.1-2 TEST Cyclic definitions in units

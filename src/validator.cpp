@@ -294,7 +294,7 @@ struct Validator::ValidatorImpl
     */
     void incrementBaseUnitCount(const ModelPtr &model, 
                                 std::map<std::string,double> &unitmap, 
-                                std::map<std::string,double> &multmap,
+                                double &multmap,
                                 const std::string uName,
                                 const std::map< std::string, std::map<std::string, double>> &standardList,
                                 std::map<std::string,double> &standardMultList,
@@ -313,7 +313,7 @@ struct Validator::ValidatorImpl
     */
     void decrementBaseUnitCount(const ModelPtr &model, 
                                 std::map<std::string,double> &unitmap, 
-                                std::map<std::string,double> &multmap,
+                                double &multmap,
                                 const std::string uName,
                                 const std::map< std::string, std::map<std::string, double>> &standardList,
                                 std::map<std::string,double> &standardMultList,
@@ -1871,7 +1871,8 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     
     // Reduce both sets of units to most basic form and compare them.  
     std::map<std::string, double> unitmap;
-    std::map<std::string, double> multmap;
+    double multmap = 0.0;
+
     // TODO Can we get the enum list of prefixes from Prefix instead of hardcoding?
     std::map<std::string, double> prefixList;
     std::map<std::string, double> standardMultList;
@@ -2028,9 +2029,12 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     prefixList["yocto"] = -24;
     prefixList[""] = 0;
 
+    for (int i = -24; i <= 24; i++) {
+        prefixList.emplace(std::to_string(i), i);
+    }
+
     for (std::vector<std::string>::iterator pos = base.begin(); pos != base.end(); ++pos) {
         unitmap[*pos] = 0.0;
-        multmap[*pos] = 0.0;
     }
 
     std::string myRef, myPre, myId;
@@ -2044,10 +2048,10 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
                                1,
                                0);
     }
-    else if ( unitmap.find(v1->getUnits()) != unitmap.end() ) {  
+    else if (unitmap.find(v1->getUnits()) != unitmap.end() ) {  
         myRef = v1->getUnits();
         unitmap.at(myRef) += 1.0;
-        multmap.at(myRef) += standardMultList.at(myRef);
+        multmap += standardMultList.at(myRef);
     }
     else if (isStandardUnitName(v1->getUnits())) {
         incrementBaseUnitCount(model, unitmap, multmap, v1->getUnits(), 
@@ -2068,7 +2072,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         // Then is an existing base unit
         myRef = v2->getUnits();
         unitmap.at(v2->getUnits()) -= 1.0;
-        multmap.at(myRef) -= standardMultList.at(myRef);
+        multmap -= standardMultList.at(myRef);
     }
     else if (isStandardUnitName(v2->getUnits())) {
         decrementBaseUnitCount(model, unitmap, multmap, v2->getUnits(), 
@@ -2083,24 +2087,29 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     status = true;
     for (const auto &basepair : unitmap) {
         if (basepair.second != 0.0) {
-            // Return trigger for error
-            hints += basepair.first + "^" + std::to_string(basepair.second) + ", ";
+            std::string num = std::to_string(basepair.second);
+            num.erase(num.find_last_not_of("0")+1,num.length());
+            if (num.back() == '.') 
+                num.pop_back();
+            hints += basepair.first + "^" + num + ", ";
             status = false;
         }
     }
-    for (const auto &basepair : multmap) {
-        if (basepair.second != 0.0) {
-            // Return trigger for error
-            hints += "(" + std::to_string(basepair.second) + ")"+ basepair.first + ", ";
-            status = false;
-        }
+    if (multmap != 0.0) {
+        std::string num = std::to_string(multmap);
+        num.erase(num.find_last_not_of("0")+1,num.length());
+        if (num.back() == '.') 
+            num.pop_back();
+        hints += "multiplication factor of 10^" + num + ", ";
+        status = false;
     }
+
     return status;
 }
 
 void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                                                       std::map<std::string,double> &unitmap, 
-                                                      std::map<std::string,double> &multmap,
+                                                      double &multmap,
                                                       const std::string uName, 
                                                       const std::map< std::string,std::map<std::string,double>> &standardList,
                                                       std::map<std::string,double> &standardMultList,
@@ -2108,7 +2117,7 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                                                       const double uExp,
                                                       const double logMult) { 
     std::string myRef, myPre, myId;
-    double myExp, myMult;
+    double myExp, myMult, m;
     std::map<std::string, double> myBase;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -2118,25 +2127,30 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
         u = model->getUnits(uName);
         if (!u->isBaseUnit()) {
             for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
+                u->getUnitAttributes(i, myRef, myPre, myExp, m, myId);
+                myMult = std::log10(m);
                 if (!isStandardUnitName(myRef))
                     incrementBaseUnitCount(model, unitmap, multmap, myRef,
                                            standardList, standardMultList, prefixList,
                                            uExp*myExp,  // effective exponent
-                                           (std::log10(myMult) + prefixList.at(myPre))*myExp); // effective multiplier
+                                           logMult + myMult*uExp + prefixList.at(myPre)*uExp); // effective multiplier
                 else {
                     // Increments base unit counts for standard unit powers
                     myBase = standardList.at(myRef);
                     for (const auto &iter : myBase) {
                         unitmap.at(iter.first) += iter.second*myExp*uExp;
-                        multmap.at(iter.first) += prefixList.at(myPre)*myExp + std::log10(myMult) + standardMultList.at(myRef);
                     }
+                    multmap += logMult + (
+                            standardMultList.at(myRef) + 
+                            myMult + 
+                            prefixList.at(myPre)
+                        )*uExp;
                 }
             }
         } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant 
             // Empty unit, add to base list
             unitmap.emplace(std::pair<std::string, double>(uName, uExp));
-            //multmap.emplace(std::pair<std::string, double>(uName, uMult));
+            multmap += logMult;
         }
     } 
     else if (isStandardUnitName(uName)) {
@@ -2144,14 +2158,14 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
         myBase = standardList.at(uName);
         for (const auto &iter : myBase) {
             unitmap.at(iter.first) += iter.second*uExp;
-            multmap.at(iter.first) += logMult;
-        }        
+        }   
+        multmap += logMult;
     }
 }
 
 void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                                                       std::map<std::string,double> &unitmap, 
-                                                      std::map<std::string,double> &multmap,
+                                                      double &multmap,
                                                       const std::string uName, 
                                                       const std::map< std::string,std::map<std::string,double>> &standardList,
                                                       std::map<std::string,double> &standardMultList,
@@ -2160,7 +2174,7 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                                                       const double logMult) {
 
     std::string myRef, myPre, myId;
-    double myExp, myMult;
+    double myExp, myMult, m;
     std::map<std::string, double> myBase;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
@@ -2169,32 +2183,37 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
 
         if (!u->isBaseUnit()) {
             for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->getUnitAttributes(i, myRef, myPre, myExp, myMult, myId);
-
+                u->getUnitAttributes(i, myRef, myPre, myExp, m, myId);
+                myMult = std::log10(m);
                 if (!isStandardUnitName(myRef))
                     decrementBaseUnitCount(model, unitmap, multmap, myRef, 
                                            standardList, standardMultList, prefixList, 
                                            myExp*uExp,
-                                           (std::log10(myMult) + prefixList.at(myPre))*myExp); // effective multiplier
+                                           logMult + myMult*uExp + prefixList.at(myPre)*uExp); // effective multiplier
                 else {
                     myBase = standardList.at(myRef);
                     for (const auto &iter : myBase) {
                         unitmap.at(iter.first) -= iter.second*myExp*uExp;
-                        multmap.at(iter.first) -= prefixList.at(myPre)*myExp + std::log10(myMult) + standardMultList.at(myRef);
                     }
+                    multmap -= logMult + (
+                        standardMultList.at(myRef) + 
+                        myMult + 
+                        prefixList.at(myPre)
+                        )*uExp;
                 }
             } 
         } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant?
             // Empty unit, add to base list
             unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
+            multmap -= logMult;
         }
     }
     else if (isStandardUnitName(uName)) {
         myBase = standardList.at(uName);
         for (const auto &iter : myBase) {
             unitmap.at(iter.first) -= iter.second*uExp;
-            multmap.at(iter.first) -= logMult;
-        }        
+        }
+        multmap -= logMult;      
     }  
 }
 
