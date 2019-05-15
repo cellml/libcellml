@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright libCellML Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,16 +45,6 @@ namespace libcellml {
 struct Validator::ValidatorImpl
 {
     Validator *mValidator;
-
-    /**
-    * @brief Validate the @p encapsulation using the CellML 2.0 Specification.
-    *
-    * Validate the given @p encapsulation using
-    * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
-    *
-    * @param model The model containing the @p encapsulation to validate.
-    */
-    void validateEncapsulation(const ModelPtr &model);
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -1085,6 +1075,8 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 }
 
+// TODO: validateEncapsulations
+
 void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &pattern) {
   std::string::size_type n = pattern.length();
   for (std::string::size_type i = input.find(pattern);
@@ -1169,30 +1161,5 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
     }
     return result;
 }
-
-// TODO: validateEncapsulations
-void Validator::ValidatorImpl::validateEncapsulation(const ModelPtr &model) {}
-//
-//    
-//    // If there is no encapsulation used, stop checking
-//    if (model->getEncapsulationId().length() == 0)
-//        return;
-//
-//    // Check that encapsulation has a child component ref
-//    /// @cellml2_15 15.1.1 Every encapsulation must have one or more component_ref elements
-//
-//    // Check that component_ref has a component or 
-//
-//    //ErrorPtr err = std::make_shared<Error>();
-//    //err->setDescription("Encapsulation in model '" + model->getName() +
-//    //                    "' does not contain any child elements.");
-//    //err->setModel(model);
-//    //err->setKind(Error::Kind::ENCAPSULATION);
-//    //err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
-//    //mParser->addError(err);
-//
-//}
-
-
 
 }
