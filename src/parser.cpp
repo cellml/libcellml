@@ -600,16 +600,16 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         }
     }
     XmlAttributePtr attribute = node->getFirstAttribute();
-    bool unitsAttributePresent = false;
-    bool nameAttributePresent = false;
+    // bool unitsAttributePresent = false;
+    // bool nameAttributePresent = false;
     while (attribute) {
         if (attribute->isType("name")) {
-            nameAttributePresent = true;
+            // nameAttributePresent = true;
             variable->setName(attribute->getValue());
         } else if (attribute->isType("id")) {
             variable->setId(attribute->getValue());
         } else if (attribute->isType("units")) {
-            unitsAttributePresent = true;
+            // unitsAttributePresent = true;
             variable->setUnits(attribute->getValue());
         } else if (attribute->isType("interface")) {
             variable->setInterfaceType(attribute->getValue());
