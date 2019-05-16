@@ -425,7 +425,8 @@ struct Generator::GeneratorImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    void processNode(const XmlNodePtr &node, const ComponentPtr &component);
+    GeneratorEquationPtr processNode(const XmlNodePtr &node,
+                                     const ComponentPtr &component);
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component);
@@ -504,8 +505,8 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     return res;
 }
 
-void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                           const ComponentPtr &component)
+GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
+                                                           const ComponentPtr &component)
 {
     // Create and keep track of the equation associated with the given node
 
@@ -516,6 +517,8 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     // Actually process the node
 
     processNode(node, equation->ast(), equation->ast()->parent(), component);
+
+    return equation;
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
@@ -866,6 +869,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     std::string math = component->getMath();
+    std::vector<GeneratorEquationPtr> equations;
 
     if (!math.empty()) {
         xmlDoc->parseMathML(math);
@@ -875,7 +879,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         for (XmlNodePtr node = mathNode->getFirstChild();
              node != nullptr; node = node->getNext()) {
             if (node->isMathmlElement()) {
-                processNode(node, component);
+                equations.push_back(processNode(node, component));
             }
         }
     }
@@ -887,13 +891,11 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         VariablePtr componentVariable = component->getVariable(i);
         bool componentVariableUsed = false;
 
-        for (const auto &equation : mEquations) {
-            if (equation->component() == component) {
-                if (isVariableUsed(componentVariable, equation->ast())) {
-                    componentVariableUsed = true;
+        for (const auto &equation : equations) {
+            if (isVariableUsed(componentVariable, equation->ast())) {
+                componentVariableUsed = true;
 
-                    break;
-                }
+                break;
             }
         }
 
