@@ -73,7 +73,7 @@ struct Validator::ValidatorImpl
     * logged in the @c Validator.
     *
     */
-    void validateImportSources(const ModelPtr &model, std::string filename, std::string working_directory);
+    void validateImportSources(const ModelPtr &model, std::string &filename, std::string &working_directory);
 
     /**
         * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -298,9 +298,6 @@ struct Validator::ValidatorImpl
                                 std::map<std::string,double> &unitmap, 
                                 double &multmap,
                                 const std::string uName,
-                                /*const std::map< std::string, std::map<std::string, double>> &standardList,
-                                std::map<std::string,double> &standardMultList,
-                                const std::map<std::string, double> &prefixList,*/
                                 const double uExp,
                                 const double logMult);
 
@@ -381,7 +378,7 @@ void Validator::swap(Validator &rhs)
 
 void Validator::validateModel(const ModelPtr &model) {
     // If a filename is not specified, trigger zero-depth import checking as working directory is unknown
-    validateModel(model, "", ""); 
+    validateModel(model, "",""); 
 }
 
 void Validator::validateModel(const ModelPtr &model, std::string filename) {
@@ -576,8 +573,8 @@ void Validator::validateModel(const ModelPtr &model, std::string filename, std::
     mPimpl->validateConnections(model);
 }
 
-void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string filename, 
-                                                     std::string working_directory) {
+void Validator::ValidatorImpl::validateImportSources(const ModelPtr &model, std::string &filename, 
+                                                     std::string &working_directory) {
     // Check against the working directory location (assumed same as path to filename or model import filename)
     if (model->componentCount() > 0) {
         std::vector<std::string> componentNames;
@@ -1878,7 +1875,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr mu = std::make_shared<libcellml::Units>();
-    std::map<std::string, double> unitmap;
+    std::map<std::string, double> unitmap = {};
 
     for (std::vector<std::string>::iterator pos = baseUnitsList.begin(); pos != baseUnitsList.end(); ++pos) {
         unitmap[*pos] = 0.0;
@@ -1895,7 +1892,6 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     else if (unitmap.find(v1->getUnits()) != unitmap.end() ) {  
         myRef = v1->getUnits();
         unitmap.at(myRef) += 1.0;
-        multmap += standardMultiplierList.at(myRef);
     }
     else if (isStandardUnitName(v1->getUnits())) {
         incrementBaseUnitCount(model, unitmap, multmap, v1->getUnits(), 1, 0);
@@ -1908,7 +1904,6 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     else if ( unitmap.find(v2->getUnits()) != unitmap.end() ) {  
         myRef = v2->getUnits();
         unitmap.at(v2->getUnits()) -= 1.0;
-        multmap -= standardMultiplierList.at(myRef);
     }
     else if (isStandardUnitName(v2->getUnits())) {
         decrementBaseUnitCount(model, unitmap, multmap, v2->getUnits(), 1, 0);
@@ -1986,7 +1981,7 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
         for (const auto &iter : myBase) {
             unitmap.at(iter.first) += iter.second*uExp;
         }   
-        multmap += logMult;
+        multmap += logMult + standardMultiplierList.at(uName);
     }
 }
 
@@ -2035,7 +2030,7 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
         for (const auto &iter : myBase) {
             unitmap.at(iter.first) -= iter.second*uExp;
         }
-        multmap -= logMult;      
+        multmap -= logMult + standardMultiplierList.at(uName);     
     }  
 }
 

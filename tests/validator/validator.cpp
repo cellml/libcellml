@@ -27,69 +27,6 @@ limitations under the License.
  * are not picked up by the main tests testing the API of the library
  */
 
-//TEST(Validator, equivalentVariableUnitMultiplierPrefix) {
-//
-//    libcellml::Validator validator;
-//    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
-//
-//    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-//    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-//   
-//    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-//    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-//  
-//    v1->setName("v1");
-//    v2->setName("v2");
-//    
-//    // millimetres
-//    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-//    u1->setName("u1");
-//    u1->addUnit("metre", "milli", 1.0, 1.0); // standard, prefix, exponent, multiplier
-//
-//    // mm^3
-//    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-//    u2->setName("u2");
-//    u2->addUnit("u1", 0, 3.0, 1.0); // standard, prefix, exponent, multiplier
-//
-//    // mm^6
-//    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-//    u3->setName("u3");
-//    u3->addUnit("u2", 0, 2.0, 1.0); // standard, prefix, exponent, multiplier
-//
-//    // m^6
-//    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
-//    u4->setName("u4");
-//    u4->addUnit("u3", 15, 1.0, 1000.0); // standard, prefix, exponent, multiplier
-//
-//    v1->setUnits(u4);
-//
-//    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
-//    u5->setName("u5");
-//    u5->addUnit("metre", 0, 6.0, 1.0);
-//    v2->setUnits(u5);  
-//
-//    comp1->setName("component1");
-//    comp1->addVariable(v1);
-//
-//    comp2->setName("component2");
-//    comp2->addVariable(v2);
-//
-//    model->setName("model");
-//    model->addComponent(comp1);
-//    model->addComponent(comp2);
-//
-//    model->addUnits(u1);
-//    model->addUnits(u2);
-//    model->addUnits(u3);
-//    model->addUnits(u4);
-//    model->addUnits(u5);
-//
-//    libcellml::Variable::addEquivalence(v1, v2); 
-//    validator.validateModel(model);
-//    EXPECT_EQ(0u, validator.errorCount());
-//    printErrors(validator);
-//}
-
 TEST(Validator, namedModel) {
     /// @cellml2_4 4.2.1 Validate TEST model name format
     libcellml::Validator validator;
@@ -904,8 +841,6 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
     libcellml::Validator v;
     v.validateModel(m);
 
-    printErrors(v);
-
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -1646,8 +1581,12 @@ TEST(Validator, setUnitsWithNoChildUnit) {
         "The mismatch is: apple^-1, banana^1, ",
         "Variable 'v3' has units of 'litre' and an equivalent variable 'v4' with non-matching units of 'gram'. "
         "The mismatch is: kilogram^-1, metre^3, ",
+        "Variable 'v3' has units of 'litre' and an equivalent variable 'v9' with non-matching units of 'big_barrel'. "
+        "The mismatch is: multiplication factor of 10^-3, ",
         "Variable 'v6' has units of 'second' and an equivalent variable 'v5' with non-matching units of 'metre'. "
         "The mismatch is: metre^-1, second^1, ",
+        "Variable 'v9' has units of 'big_barrel' and an equivalent variable 'v3' with non-matching units of 'litre'. "
+        "The mismatch is: multiplication factor of 10^3, ",
     };
 
     libcellml::Validator validator;
@@ -1737,16 +1676,16 @@ TEST(Validator, setUnitsWithNoChildUnit) {
     m->addUnits(uBanana);
        
     libcellml::Variable::addEquivalence(v1, v2); // bushell of apples != bunch of bananas
-    libcellml::Variable::addEquivalence(v3, v4); // litre != gram
+    libcellml::Variable::addEquivalence(v3, v4); // litre != gram, NB both have 10^-3 factor, so no mult difference
     libcellml::Variable::addEquivalence(v5, v6); // metre != second
     libcellml::Variable::addEquivalence(v7, v8); // apple != banana
-    libcellml::Variable::addEquivalence(v3, v9); // litre = big_barrel (excluding multipliers)
+    libcellml::Variable::addEquivalence(v3, v9); // litre != big_barrel, multiplier factor
 
     validator.validateModel(m);
 
-    EXPECT_EQ(8u, validator.errorCount());
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
 
-    for (size_t i = 0; i < validator.errorCount(); ++i) {
+    for (size_t i = 0; i < expectedErrors.size(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
     }
 }
@@ -2149,6 +2088,69 @@ TEST(Validator, validateNoCyclesUnits) {
     for (size_t i = 0; i < v.errorCount(); i++) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }   
+}
+
+TEST(Validator, equivalentVariableUnitMultiplierPrefix) {
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("v1");
+    v2->setName("v2");
+
+    // millimetres
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("u1");
+    u1->addUnit("metre", "milli", 1.0, 1.0); // standard, prefix, exponent, multiplier
+
+    // mm^3
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("u2");
+    u2->addUnit("u1", 0, 3.0, 1.0); // standard, prefix, exponent, multiplier
+
+    // mm^6
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    u3->setName("u3");
+    u3->addUnit("u2", 0, 2.0, 1.0); // standard, prefix, exponent, multiplier
+
+    // m^6
+    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    u4->setName("u4");
+    u4->addUnit("u3", 15, 1.0, 1000.0); // standard, prefix, exponent, multiplier
+
+    v1->setUnits(u4);
+
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    u5->setName("u5");
+    u5->addUnit("metre", 0, 6.0, 1.0);
+    v2->setUnits(u5);  
+
+    comp1->setName("component1");
+    comp1->addVariable(v1);
+
+    comp2->setName("component2");
+    comp2->addVariable(v2);
+
+    model->setName("model");
+    model->addComponent(comp1);
+    model->addComponent(comp2);
+
+    model->addUnits(u1);
+    model->addUnits(u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+    model->addUnits(u5);
+
+    libcellml::Variable::addEquivalence(v1, v2); 
+    validator.validateModel(model);
+    EXPECT_EQ(0u, validator.errorCount());
+    printErrors(validator);
 }
 
 TEST(Validator, importNameNotFoundInFile) {
