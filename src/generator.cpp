@@ -1117,11 +1117,14 @@ printf("Number of variables: %zu\n", mVariables.size());
     // Generate the code for our different equations
 //TODO: remove the below code once we are done testing things...
 
+    printf("---------------------------------------[BEGIN]\n");
     printf("%s", neededMathMethods().c_str());
 
     for (auto equation : mEquations) {
         printf("%s;\n", generateCode(equation->ast()).c_str());
     }
+
+    printf("---------------------------------------[END]\n");
 }
 
 std::string Generator::GeneratorImpl::neededMathMethods() const
