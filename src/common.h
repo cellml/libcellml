@@ -49,7 +49,6 @@ const std::map< std::string, std::map<std::string, double> > standardUnitsList{
     {"mole", {{"mole",1.0}}},
     {"second", {{"second",1.0}}}, 
     {"becquerel", {{"second",-1.0}}},
-    {"celsius", {{"kelvin",1.0}}},  // TODO This is not in the list of standard units in the specs but tests fail if it's not included
     {"coulomb", {
         {"ampere",-1.0},
         {"second",1.0}}},
