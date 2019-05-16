@@ -105,6 +105,27 @@ TEST(Generator, non_first_order_odes) {
     }
 }
 
+TEST(Generator, variable_initialized_twice) {
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/variable_initialized_twice.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    std::vector<std::string> expectedErrors = {
+        "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore be both initialised."
+    };
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+    }
+}
+
 TEST(Generator, unused_variables) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/unused_variables.cellml"));

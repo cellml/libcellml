@@ -249,9 +249,8 @@ class GeneratorVariable
 {
 public:
     enum class Type {
-        VOI,
+        UNKNOWN,
         STATE,
-        RATE,
         ALGEBRAIC,
         CONSTANT,
         COMPUTED_CONSTANT
@@ -261,13 +260,34 @@ public:
 
     Type type() const;
 
+    VariablePtr variable() const;
+    void setVariable(const VariablePtr &variable);
+
 private:
     Type mType;
+
+    VariablePtr mVariable;
 };
+
+GeneratorVariable::GeneratorVariable()
+    : mType(Type::UNKNOWN)
+    , mVariable(nullptr)
+{
+}
 
 GeneratorVariable::Type GeneratorVariable::type() const
 {
     return mType;
+}
+
+VariablePtr GeneratorVariable::variable() const
+{
+    return mVariable;
+}
+
+void GeneratorVariable::setVariable(const VariablePtr &variable)
+{
+    mVariable = variable;
 }
 
 struct Generator::GeneratorImpl
@@ -278,10 +298,10 @@ struct Generator::GeneratorImpl
 
     std::vector<GeneratorEquationPtr> mRawEquations;
 
-    std::vector<GeneratorEquationPtr> mEquations;
-    std::vector<GeneratorVariablePtr> mVariables;
-
     VariablePtr mVariableOfIntegration;
+
+    std::vector<GeneratorVariablePtr> mVariables;
+    std::vector<GeneratorEquationPtr> mEquations;
 
     // Relational operators
 
@@ -415,7 +435,7 @@ struct Generator::GeneratorImpl
     void processRawEquation(const GeneratorEquationAstPtr &ast);
     bool isVariableUsed(const VariablePtr &variable,
                         const GeneratorEquationAstPtr &equationAst) const;
-    void processVariables(const ComponentPtr &component) const;
+    void processVariables(const ComponentPtr &component);
     void processEquations();
     void processModel(const ModelPtr &model);
 
@@ -931,30 +951,73 @@ bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
            || isVariableUsed(variable, equationAst->right());
 }
 
-void Generator::GeneratorImpl::processVariables(const ComponentPtr &component) const
+void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
 {
     // Go trhough the given component's variable and make sure that they are
     // used in one of the component's equations
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        VariablePtr variable = component->getVariable(i);
-        bool variableUsed = false;
+        VariablePtr componentVariable = component->getVariable(i);
+        bool componentVariableUsed = false;
 
         for (const auto &rawEquation : mRawEquations) {
             if (rawEquation->component() == component) {
-                if (isVariableUsed(variable, rawEquation->ast())) {
-                    variableUsed = true;
+                if (isVariableUsed(componentVariable, rawEquation->ast())) {
+                    componentVariableUsed = true;
 
                     break;
                 }
             }
         }
 
-        if (!variableUsed) {
+        if (componentVariableUsed) {
+            // The variable is used, but is it already tracked?
+
+            bool componentVariableTracked = false;
+            GeneratorVariablePtr trackedVariable;
+
+            for (const auto &variable : mVariables) {
+                if (componentVariable->isEquivalentVariable(variable->variable())) {
+                    componentVariableTracked = true;
+                    trackedVariable = variable;
+
+                    break;
+                }
+            }
+
+            // Track the variable if it is not currently tracked
+
+            if (!componentVariableTracked) {
+                trackedVariable = std::make_shared<GeneratorVariable>();
+
+                mVariables.push_back(trackedVariable);
+            }
+
+            // Keep track of the variable's initial value, if any, or generate
+            // an error if it already has one
+
+            if (   (trackedVariable->variable() == nullptr)
+                || (   !componentVariable->getInitialValue().empty()
+                    &&  trackedVariable->variable()->getInitialValue().empty())) {
+                trackedVariable->setVariable(componentVariable);
+            } else if (   !componentVariable->getInitialValue().empty()
+                       && !trackedVariable->variable()->getInitialValue().empty()) {
+                Model *model = component->getParentModel();
+                Component *trackedVariableComponent = static_cast<Component *>(trackedVariable->variable()->getParent());
+                Model *trackedVariableModel = trackedVariableComponent->getParentModel();
+                ErrorPtr err = std::make_shared<Error>();
+
+                err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' and "
+                                    "variable '"+trackedVariable->variable()->getName()+"' in component '"+trackedVariableComponent->getName()+"' of model '"+trackedVariableModel->getName()+"' are equivalent and cannot therefore be both initialised.");
+                err->setKind(Error::Kind::GENERATOR);
+
+                mGenerator->addError(err);
+            }
+        } else {
             Model *model = component->getParentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' is not used.");
+            err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' is not used.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -982,10 +1045,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     mRawEquations.clear();
 
-    mEquations.clear();
-    mVariables.clear();
-
     mVariableOfIntegration = nullptr;
+
+    mVariables.clear();
+    mEquations.clear();
 
     mNeedFactorial = false;
 
