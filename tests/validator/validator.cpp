@@ -903,6 +903,9 @@ TEST(Validator, parseAndValidateInvalidUnitErrors) {
 
     libcellml::Validator v;
     v.validateModel(m);
+
+    printErrors(v);
+
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
     for (size_t i = 0; i < v.errorCount(); ++i) {

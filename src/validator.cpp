@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "common.h"
 #include "utilities.h"
 #include "xmldoc.h"
 
@@ -297,9 +298,9 @@ struct Validator::ValidatorImpl
                                 std::map<std::string,double> &unitmap, 
                                 double &multmap,
                                 const std::string uName,
-                                const std::map< std::string, std::map<std::string, double>> &standardList,
+                                /*const std::map< std::string, std::map<std::string, double>> &standardList,
                                 std::map<std::string,double> &standardMultList,
-                                const std::map<std::string, double> &prefixList,
+                                const std::map<std::string, double> &prefixList,*/
                                 const double uExp,
                                 const double logMult);
 
@@ -316,9 +317,9 @@ struct Validator::ValidatorImpl
                                 std::map<std::string,double> &unitmap, 
                                 double &multmap,
                                 const std::string uName,
-                                const std::map< std::string, std::map<std::string, double>> &standardList,
+                              /*  const std::map< std::string, std::map<std::string, double>> &standardList,
                                 std::map<std::string,double> &standardMultList,
-                                const std::map<std::string, double> &prefixList,
+                                const std::map<std::string, double> &prefixList,*/
                                 const double uExp,
                                 const double logMult);
 
@@ -1705,6 +1706,12 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
 bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, std::vector<std::string> &hintlist) {
 
+
+
+
+
+
+
     /*
         Test for cycles in the equivalent variable setup.
     */
@@ -1863,178 +1870,17 @@ bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, st
 }
 
 bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model, 
-    const VariablePtr &v1, const VariablePtr &v2, std::string &hints)
+    const VariablePtr &v1, const VariablePtr &v2, std::string &hints) 
 {
+
     bool status;
+    double multmap = 0.0;
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr mu = std::make_shared<libcellml::Units>();
-    
-    // Reduce both sets of units to most basic form and compare them.  
     std::map<std::string, double> unitmap;
-    double multmap = 0.0;
 
-    // TODO Can we get the enum list of prefixes from Prefix instead of hardcoding?
-    std::map<std::string, double> prefixList;
-    std::map<std::string, double> standardMultList;
-
-    // TODO Can we get the enum list of base units from StandardUnits here instead of hardcoding?
-    std::vector<std::string> base = { "second","ampere","metre","kilogram","mole","candela","dimensionless","kelvin" };
-    std::map< std::string, std::map<std::string,double> > standardList;
-
-    standardList["ampere"]["ampere"] = 1.0;
-    standardMultList["ampere"] = 0.0;
-    standardList["candela"]["candela"] = 1.0;
-    standardMultList["candela"] = 0.0;
-    standardList["dimensionless"]["dimensionless"] = 1.0;
-    standardMultList["dimensionless"] = 0.0;
-    standardList["kelvin"]["kelvin"] = 1.0;
-    standardMultList["kelvin"] = 0.0;
-    standardList["kilogram"]["kilogram"] = 1.0;
-    standardMultList["kilogram"] = 0.0;
-    standardList["metre"]["metre"] = 1.0;
-    standardMultList["metre"] = 0.0;
-    standardList["mole"]["mole"] = 1.0;
-    standardMultList["mole"] = 0.0;
-    standardList["second"]["second"] = 1.0;
-    standardMultList["second"] = 0.0;
-    
-    standardList["becquerel"]["second"] = -1.0;
-    standardMultList["becquerel"] = 0.0;
-
-    standardList["coulomb"]["second"] = 1.0;
-    standardList["coulomb"]["ampere"] = -1.0;
-    standardMultList["coulomb"] = 0.0;
-
-    standardList["farad"]["metre"] = -2.0;
-    standardList["farad"]["kilogram"] = -1.0;
-    standardList["farad"]["second"] = -4.0;
-    standardList["farad"]["ampere"] = 2.0;
-    standardMultList["farad"] = 0.0;
-
-    standardList["gram"]["kilogram"] = 1.0;
-    standardMultList["gram"] = -3.0;
-
-    standardList["gray"]["metre"] = 2.0;
-    standardList["gray"]["second"] = -2.0;
-    standardMultList["gray"] = 0.0;
-
-    standardList["henry"]["metre"] = 2.0;
-    standardList["henry"]["kilogram"] = 1.0;
-    standardList["henry"]["second"] = -2.0;
-    standardList["henry"]["ampere"] = -2.0;
-    standardMultList["henry"] = 0.0;
-
-    standardList["hertz"]["second"] = -1.0;
-    standardMultList["hertz"] = 0.0;
-
-    standardList["joule"]["metre"] = 2.0;
-    standardList["joule"]["kilogram"] = 1.0;
-    standardList["joule"]["second"] = -2.0;
-    standardMultList["joule"] = 0.0;
-
-    standardList["katal"]["mole"] = 1.0;
-    standardList["katal"]["second"] = -1.0;
-    standardMultList["katal"] = 0.0;
-
-    standardList["liter"]["metre"] = 3.0;
-    standardMultList["liter"] = -3.0;
-    standardList["litre"]["metre"] = 3.0;
-    standardMultList["litre"] = -3.0;
-
-    standardList["lumen"]["candela"] = 1.0;  // lumen = candela*steradians - should they be in the base units?
-    standardMultList["lumen"] = 0.0;
-
-    standardList["lux"]["metre"] = -2.0;  // lux = lumen*steradians/m^2
-    standardList["lux"]["candela"] = 1.0;
-    standardMultList["lux"] = 0.0;
-
-    standardList["meter"]["metre"] = 1.0;
-    standardMultList["meter"] = 0.0;
-
-    standardList["newton"]["metre"] = 1.0;
-    standardList["newton"]["kilogram"] = 1.0;
-    standardList["newton"]["second"] = -2.0;
-    standardMultList["newton"] = 0.0;
-
-    standardList["ohm"]["metre"] = 2.0;
-    standardList["ohm"]["kilogram"] = 1.0;
-    standardList["ohm"]["second"] = -3.0;
-    standardList["ohm"]["ampere"] = -2.0;
-    standardMultList["ohm"] = 0.0;
-
-    standardList["pascal"]["metre"] = -1.0;
-    standardList["pascal"]["kilogram"] = 1.0;
-    standardList["pascal"]["second"] = -2.0;
-    standardMultList["pascal"] = 0.0;
-
-    // Special case for radians: set units as dimensionless for testing as m/m=1
-    standardList["radian"]["dimensionless"] = 1.0;
-    standardMultList["radian"] = 0.0;
-
-    standardList["siemens"]["metre"] = -2.0;
-    standardList["siemens"]["kilogram"] = -1.0;
-    standardList["siemens"]["second"] = 3.0;
-    standardList["siemens"]["ampere"] = 2.0;
-    standardMultList["siemens"] = 0.0;
-
-    standardList["sievert"]["metre"] = 2.0;
-    standardList["sievert"]["second"] = -2.0;
-    standardMultList["sievert"] = 0.0;
-
-    // Special case for steradians: set units to dimensionless as m2/m2 = 1
-    standardList["steradian"]["dimensionless"] = 1.0;
-    standardMultList["steradian"] = 0.0;
-
-    standardList["tesla"]["kilogram"] = 1.0;
-    standardList["tesla"]["second"] = -2.0;
-    standardList["tesla"]["ampere"] = -1.0;
-    standardMultList["tesla"] = 0.0;
-
-    standardList["volt"]["metre"] = 2.0;
-    standardList["volt"]["kilogram"] = 1.0;
-    standardList["volt"]["second"] = -3.0;
-    standardList["volt"]["ampere"] = -1.0;
-    standardMultList["volt"] = 0.0;
-
-    standardList["watt"]["metre"] = 2.0;
-    standardList["watt"]["kilogram"] = 1.0;
-    standardList["watt"]["second"] = -3.0;
-    standardMultList["watt"] = 0.0;
-
-    standardList["weber"]["metre"] = 2.0;
-    standardList["weber"]["kilogram"] = 1.0;
-    standardList["weber"]["second"] = -2.0;
-    standardList["weber"]["ampere"] = -1.0;
-    standardMultList["weber"] = 0.0;
-
-    prefixList["yotta"] = 24;
-    prefixList["zetta"] = 21;
-    prefixList["exa"] = 18;
-    prefixList["peta"] = 15;
-    prefixList["tera"] = 12;
-    prefixList["giga"] = 9;
-    prefixList["mega"] = 6;
-    prefixList["kilo"] = 3;
-    prefixList["hecto"] = 2;
-    prefixList["deca"] = 1;
-    prefixList["deci"] = -1;
-    prefixList["centi"] = -2;
-    prefixList["milli"] = -3;
-    prefixList["micro"] = -6;
-    prefixList["nano"] = -9;
-    prefixList["pico"] = -12;
-    prefixList["femto"] = -15;
-    prefixList["atto"] = -18;
-    prefixList["zepto"] = -21;
-    prefixList["yocto"] = -24;
-    prefixList[""] = 0;
-
-    for (int i = -24; i <= 24; i++) {
-        prefixList.emplace(std::to_string(i), i);
-    }
-
-    for (std::vector<std::string>::iterator pos = base.begin(); pos != base.end(); ++pos) {
+    for (std::vector<std::string>::iterator pos = baseUnitsList.begin(); pos != baseUnitsList.end(); ++pos) {
         unitmap[*pos] = 0.0;
     }
 
@@ -2044,47 +1890,33 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     
     if (model->hasUnits(v1->getUnits())) {  
         u1 = model->getUnits(v1->getUnits());
-        incrementBaseUnitCount(model, unitmap, multmap, u1->getName(), 
-                               standardList, standardMultList, prefixList,
-                               1,
-                               0);
+        incrementBaseUnitCount(model, unitmap, multmap, u1->getName(),1, 0);
     }
     else if (unitmap.find(v1->getUnits()) != unitmap.end() ) {  
         myRef = v1->getUnits();
         unitmap.at(myRef) += 1.0;
-        multmap += standardMultList.at(myRef);
+        multmap += standardMultiplierList.at(myRef);
     }
     else if (isStandardUnitName(v1->getUnits())) {
-        incrementBaseUnitCount(model, unitmap, multmap, v1->getUnits(), 
-                               standardList, standardMultList, prefixList, 
-                               1,
-                               0);
+        incrementBaseUnitCount(model, unitmap, multmap, v1->getUnits(), 1, 0);
     }
 
-    // Remove same units from second unit to compare
     if ( model->hasUnits(v2->getUnits())) {
         u2 = model->getUnits(v2->getUnits());
-        decrementBaseUnitCount(model, unitmap, multmap, u2->getName(), 
-                               standardList, standardMultList, prefixList,
-                               1,
-                               0);
+        decrementBaseUnitCount(model, unitmap, multmap, u2->getName(),  1, 0);
     }
     else if ( unitmap.find(v2->getUnits()) != unitmap.end() ) {  
-        // Then is an existing base unit
         myRef = v2->getUnits();
         unitmap.at(v2->getUnits()) -= 1.0;
-        multmap -= standardMultList.at(myRef);
+        multmap -= standardMultiplierList.at(myRef);
     }
     else if (isStandardUnitName(v2->getUnits())) {
-        decrementBaseUnitCount(model, unitmap, multmap, v2->getUnits(), 
-                               standardList, standardMultList, prefixList,
-                               1,
-                               0);
+        decrementBaseUnitCount(model, unitmap, multmap, v2->getUnits(), 1, 0);
     }
 
-    // Remove "dimensionless" from base unit testing, but not from multiplier testing
+    // Remove "dimensionless" from base unit testing 
     unitmap.erase("dimensionless");
-    // Check for non-zero entries in the map
+
     status = true;
     for (const auto &basepair : unitmap) {
         if (basepair.second != 0.0) {
@@ -2112,9 +1944,6 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                                                       std::map<std::string,double> &unitmap, 
                                                       double &multmap,
                                                       const std::string uName, 
-                                                      const std::map< std::string,std::map<std::string,double>> &standardList,
-                                                      std::map<std::string,double> &standardMultList,
-                                                      const std::map<std::string, double> &prefixList,
                                                       const double uExp,
                                                       const double logMult) { 
     std::string myRef, myPre, myId;
@@ -2132,31 +1961,28 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                 myMult = std::log10(m);
                 if (!isStandardUnitName(myRef))
                     incrementBaseUnitCount(model, unitmap, multmap, myRef,
-                                           standardList, standardMultList, prefixList,
                                            uExp*myExp,  // effective exponent
-                                           logMult + myMult*uExp + prefixList.at(myPre)*uExp); // effective multiplier
+                                           logMult + myMult*uExp + standardPrefixList.at(myPre)*uExp); // effective multiplier
                 else {
-                    // Increments base unit counts for standard unit powers
-                    myBase = standardList.at(myRef);
+                    myBase = standardUnitsList.at(myRef);
                     for (const auto &iter : myBase) {
                         unitmap.at(iter.first) += iter.second*myExp*uExp;
                     }
                     multmap += logMult + (
-                            standardMultList.at(myRef) + 
+                            standardMultiplierList.at(myRef) + 
                             myMult + 
-                            prefixList.at(myPre)
+                            standardPrefixList.at(myPre)
                         )*uExp;
                 }
             }
-        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant 
+        } else if (unitmap.find(uName) == unitmap.end()) {
             // Empty unit, add to base list
             unitmap.emplace(std::pair<std::string, double>(uName, uExp));
             multmap += logMult;
         }
     } 
     else if (isStandardUnitName(uName)) {
-        // Base unit encountered
-        myBase = standardList.at(uName);
+        myBase = standardUnitsList.at(uName);
         for (const auto &iter : myBase) {
             unitmap.at(iter.first) += iter.second*uExp;
         }   
@@ -2168,9 +1994,6 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                                                       std::map<std::string,double> &unitmap, 
                                                       double &multmap,
                                                       const std::string uName, 
-                                                      const std::map< std::string,std::map<std::string,double>> &standardList,
-                                                      std::map<std::string,double> &standardMultList,
-                                                      const std::map<std::string, double> &prefixList,
                                                       const double uExp,
                                                       const double logMult) {
 
@@ -2188,29 +2011,27 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                 myMult = std::log10(m);
                 if (!isStandardUnitName(myRef))
                     decrementBaseUnitCount(model, unitmap, multmap, myRef, 
-                                           standardList, standardMultList, prefixList, 
                                            myExp*uExp,
-                                           logMult + myMult*uExp + prefixList.at(myPre)*uExp); // effective multiplier
+                                           logMult + myMult*uExp + standardPrefixList.at(myPre)*uExp); // effective multiplier
                 else {
-                    myBase = standardList.at(myRef);
+                    myBase = standardUnitsList.at(myRef);
                     for (const auto &iter : myBase) {
                         unitmap.at(iter.first) -= iter.second*myExp*uExp;
                     }
                     multmap -= logMult + (
-                        standardMultList.at(myRef) + 
+                        standardMultiplierList.at(myRef) + 
                         myMult + 
-                        prefixList.at(myPre)
+                        standardPrefixList.at(myPre)
                         )*uExp;
                 }
             } 
-        } else if (unitmap.find(uName) == unitmap.end()) { // test is redundant?
-            // Empty unit, add to base list
+        } else if (unitmap.find(uName) == unitmap.end()) { 
             unitmap.emplace(std::pair<std::string, double>(uName, -1.0*uExp));
             multmap -= logMult;
         }
     }
     else if (isStandardUnitName(uName)) {
-        myBase = standardList.at(uName);
+        myBase = standardUnitsList.at(uName);
         for (const auto &iter : myBase) {
             unitmap.at(iter.first) -= iter.second*uExp;
         }
@@ -2229,16 +2050,6 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
     /// @cellml2_14 14.1.2 Lists the hard-coded supported MathML elements tags
-
-    const std::vector<std::string> supportedMathMLElements =
-    {
-        "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
-        "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
-        "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
-        "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth", "arcsin", "arccos", "arctan", "arcsec", "arccsc",
-        "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
-        "notanumber", "infinity", "true", "false"
-    };
     return    !node->getNamespace().compare(MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getName()) != supportedMathMLElements.end();
 }
@@ -2246,14 +2057,7 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
 {
     bool result = false;
-    std::vector<std::string> standardUnitNames =
-    {
-        "ampere", "becquerel", "candela", "celsius", "coulomb", "dimensionless", "farad", "gram", "gray",
-        "henry", "hertz", "joule", "katal", "kelvin", "kilogram", "liter", "litre", "lumen", "lux",
-        "meter", "metre", "mole", "newton", "ohm", "pascal", "radian", "second", "siemens", "sievert",
-        "steradian", "tesla", "volt", "watt", "weber"
-    };
-    if (std::find(standardUnitNames.begin(), standardUnitNames.end(), name) != standardUnitNames.end()) {
+    if (standardUnitsList.count(name) != 0) {
         result = true;
     }
     return result;
@@ -2262,12 +2066,7 @@ bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
 bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
 {
     bool result = false;
-    std::vector<std::string> prefixNames =
-    {
-        "atto", "centi", "deca", "deci", "exa", "femto", "giga", "hecto", "kilo", "mega", "micro", "milli",
-        "nano", "peta", "pico", "tera", "yocto", "yotta", "zepto", "zetta"
-    };
-    if (std::find(prefixNames.begin(), prefixNames.end(), name) != prefixNames.end()) {
+    if (standardPrefixList.count(name) != 0) {
         result = true;
     }
     return result;

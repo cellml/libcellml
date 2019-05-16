@@ -18,7 +18,9 @@ limitations under the License.
 
 #include "libcellml/exportdefinitions.h"
 
+#include <map>
 #include <string>
+#include <vector>
 
 namespace libcellml {
 
@@ -144,3 +146,4 @@ bool isCellMLReal(const std::string &candidate);
 bool isRelativePath(const std::string &path);
 
 }
+

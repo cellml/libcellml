@@ -22,7 +22,6 @@ limitations under the License.
 #include <limits>
 #include <set>
 #include <sstream>
-#include <vector>
 
 namespace libcellml {
 
