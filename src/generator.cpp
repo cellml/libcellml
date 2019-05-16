@@ -103,58 +103,74 @@ public:
         TRUE, FALSE, E, PI, INF, NAN
     };
 
-    explicit GeneratorEquationAst(Type type, const std::string &value = "");
-    explicit GeneratorEquationAst(Type type, const VariablePtr &variable);
-
-    GeneratorEquationAstPtr parent() const;
-    void setParent(const GeneratorEquationAstPtr &parent);
+    explicit GeneratorEquationAst();
+    explicit GeneratorEquationAst(Type type,
+                                  const GeneratorEquationAstPtr &parent);
+    explicit GeneratorEquationAst(Type type, const std::string &value,
+                                  const GeneratorEquationAstPtr &parent);
+    explicit GeneratorEquationAst(Type type, const VariablePtr &variable,
+                                  const GeneratorEquationAstPtr &parent);
 
     Type type() const;
 
     std::string value() const;
     VariablePtr variable() const;
 
+    GeneratorEquationAstPtr parent() const;
+    void setParent(const GeneratorEquationAstPtr &parent);
+
     GeneratorEquationAstPtr &left();
     GeneratorEquationAstPtr &right();
 
 private:
-    GeneratorEquationAstPtr mParent;
-
     Type mType;
 
     std::string mValue;
     VariablePtr mVariable;
 
+    GeneratorEquationAstPtr mParent;
+
     GeneratorEquationAstPtr mLeft;
     GeneratorEquationAstPtr mRight;
+
+    explicit GeneratorEquationAst(Type type, const std::string &value,
+                                  const VariablePtr &variable,
+                                  const GeneratorEquationAstPtr &parent);
 };
 
-GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value)
+GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value,
+                                           const VariablePtr &variable,
+                                           const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mValue(value)
-    , mVariable(nullptr)
-    , mLeft(nullptr)
-    , mRight(nullptr)
-{
-}
-
-GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variable)
-    : mType(type)
-    , mValue("")
     , mVariable(variable)
+    , mParent(parent)
     , mLeft(nullptr)
     , mRight(nullptr)
 {
 }
 
-void GeneratorEquationAst::setParent(const GeneratorEquationAstPtr &parent)
+GeneratorEquationAst::GeneratorEquationAst()
+    : GeneratorEquationAst(Type::EQ, "", nullptr, nullptr)
 {
-    mParent = parent;
 }
 
-GeneratorEquationAstPtr GeneratorEquationAst::parent() const
+GeneratorEquationAst::GeneratorEquationAst(Type type,
+                                           const GeneratorEquationAstPtr &parent)
+    : GeneratorEquationAst(type, "", nullptr, parent)
 {
-    return mParent;
+}
+
+GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value,
+                                           const GeneratorEquationAstPtr &parent)
+    : GeneratorEquationAst(type, value, nullptr, parent)
+{
+}
+
+GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variable,
+                                           const GeneratorEquationAstPtr &parent)
+    : GeneratorEquationAst(type, "", variable, parent)
+{
 }
 
 GeneratorEquationAst::Type GeneratorEquationAst::type() const
@@ -170,6 +186,16 @@ std::string GeneratorEquationAst::value() const
 VariablePtr GeneratorEquationAst::variable() const
 {
     return mVariable;
+}
+
+GeneratorEquationAstPtr GeneratorEquationAst::parent() const
+{
+    return mParent;
+}
+
+void GeneratorEquationAst::setParent(const GeneratorEquationAstPtr &parent)
+{
+    mParent = parent;
 }
 
 GeneratorEquationAstPtr &GeneratorEquationAst::left()
@@ -202,7 +228,7 @@ private:
 
 GeneratorEquation::GeneratorEquation(const ComponentPtr &component)
     : mComponent(component)
-    , mAst(std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQ))
+    , mAst(std::make_shared<GeneratorEquationAst>())
 {
 }
 
@@ -383,9 +409,9 @@ struct Generator::GeneratorImpl
 
     void processNode(const XmlNodePtr &node, const ComponentPtr &component);
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
+                     const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
-    void finaliseRawEquation(const GeneratorEquationAstPtr &ast);
     void processRawEquation(const GeneratorEquationAstPtr &ast);
     bool isVariableUsed(const VariablePtr &variable,
                         const GeneratorEquationAstPtr &equationAst) const;
@@ -474,11 +500,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
     // Actually process the node
 
-    processNode(node, equation->ast(), component);
+    processNode(node, equation->ast(), equation->ast()->parent(), component);
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            GeneratorEquationAstPtr &ast,
+                                           const GeneratorEquationAstPtr &astParent,
                                            const ComponentPtr &component)
 {
     // Basic content elements
@@ -512,22 +539,26 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         size_t childCount = mathmlChildCount(node);
 
-        processNode(mathmlChildNode(node, 0), ast, component);
-        processNode(mathmlChildNode(node, 1), ast->left(), component);
+        processNode(mathmlChildNode(node, 0), ast, astParent, component);
+        processNode(mathmlChildNode(node, 1), ast->left(), ast, component);
 
         if (childCount >= 3) {
             GeneratorEquationAstPtr astRight;
             GeneratorEquationAstPtr tempAst;
 
-            processNode(mathmlChildNode(node, childCount-1), astRight, component);
+            processNode(mathmlChildNode(node, childCount-1), astRight, nullptr, component);
 
             for (size_t i = childCount-2; i > 1; --i) {
-                processNode(mathmlChildNode(node, 0), tempAst, component);
-                processNode(mathmlChildNode(node, i), tempAst->left(), component);
+                processNode(mathmlChildNode(node, 0), tempAst, nullptr, component);
+                processNode(mathmlChildNode(node, i), tempAst->left(), tempAst, component);
+
+                astRight->setParent(tempAst);
 
                 tempAst->right() = astRight;
                 astRight = tempAst;
             }
+
+            astRight->setParent(ast);
 
             ast->right() = astRight;
         }
@@ -543,246 +574,250 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // GeneratorEquationAst::Type::EQ type.
 
         if (!node->getParent()->getParent()->isMathmlElement("math")) {
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ);
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ, astParent);
         }
     } else if (node->isMathmlElement("neq")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NEQ);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NEQ, astParent);
     } else if (node->isMathmlElement("lt")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LT);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LT, astParent);
     } else if (node->isMathmlElement("leq")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LEQ);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LEQ, astParent);
     } else if (node->isMathmlElement("gt")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GT);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GT, astParent);
     } else if (node->isMathmlElement("geq")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GEQ);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GEQ, astParent);
 
     // Arithmetic operators
 
     } else if (node->isMathmlElement("plus")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PLUS);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PLUS, astParent);
     } else if (node->isMathmlElement("minus")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MINUS);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MINUS, astParent);
     } else if (node->isMathmlElement("times")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
     } else if (node->isMathmlElement("divide")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE, astParent);
     } else if (node->isMathmlElement("power")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::POWER);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::POWER, astParent);
     } else if (node->isMathmlElement("root")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ROOT);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ROOT, astParent);
     } else if (node->isMathmlElement("abs")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ABS);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ABS, astParent);
     } else if (node->isMathmlElement("exp")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EXP);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EXP, astParent);
     } else if (node->isMathmlElement("ln")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LN);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LN, astParent);
     } else if (node->isMathmlElement("log")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOG);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOG, astParent);
     } else if (node->isMathmlElement("ceiling")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CEILING);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CEILING, astParent);
     } else if (node->isMathmlElement("floor")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FLOOR);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FLOOR, astParent);
     } else if (node->isMathmlElement("factorial")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FACTORIAL);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FACTORIAL, astParent);
 
         mNeedFactorial = true;
 
     // Logical operators
 
     } else if (node->isMathmlElement("and")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::AND);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::AND, astParent);
     } else if (node->isMathmlElement("or")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OR);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OR, astParent);
     } else if (node->isMathmlElement("xor")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::XOR);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::XOR, astParent);
     } else if (node->isMathmlElement("not")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NOT);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NOT, astParent);
 
     // Calculus elements
 
     } else if (node->isMathmlElement("diff")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIFF);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIFF, astParent);
 
     // Min/max operators
 
     } else if (node->isMathmlElement("min")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MIN);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MIN, astParent);
 
         mNeedMin = true;
     } else if (node->isMathmlElement("max")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MAX);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MAX, astParent);
 
         mNeedMax = true;
 
     // Gcd/lcm operators
 
     } else if (node->isMathmlElement("gcd")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GCD);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GCD, astParent);
 
         mNeedGcd = true;
     } else if (node->isMathmlElement("lcm")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LCM);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LCM, astParent);
 
         mNeedLcm = true;
 
     // Trigonometric operators
 
     } else if (node->isMathmlElement("sin")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SIN);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SIN, astParent);
     } else if (node->isMathmlElement("cos")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COS);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COS, astParent);
     } else if (node->isMathmlElement("tan")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TAN);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TAN, astParent);
     } else if (node->isMathmlElement("sec")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SEC);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SEC, astParent);
 
         mNeedSec = true;
     } else if (node->isMathmlElement("csc")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSC);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSC, astParent);
 
         mNeedCsc = true;
     } else if (node->isMathmlElement("cot")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COT);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COT, astParent);
 
         mNeedCot = true;
     } else if (node->isMathmlElement("sinh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SINH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SINH, astParent);
     } else if (node->isMathmlElement("cosh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COSH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COSH, astParent);
     } else if (node->isMathmlElement("tanh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TANH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TANH, astParent);
     } else if (node->isMathmlElement("sech")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SECH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SECH, astParent);
 
         mNeedSech = true;
     } else if (node->isMathmlElement("csch")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSCH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSCH, astParent);
 
         mNeedCsch = true;
     } else if (node->isMathmlElement("coth")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COTH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COTH, astParent);
 
         mNeedCoth = true;
     } else if (node->isMathmlElement("arcsin")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASIN);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASIN, astParent);
     } else if (node->isMathmlElement("arccos")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOS);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOS, astParent);
     } else if (node->isMathmlElement("arctan")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATAN);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATAN, astParent);
     } else if (node->isMathmlElement("arcsec")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASEC);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASEC, astParent);
 
         mNeedAsec = true;
     } else if (node->isMathmlElement("arccsc")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSC);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSC, astParent);
 
         mNeedAcsc = true;
     } else if (node->isMathmlElement("arccot")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOT);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOT, astParent);
 
         mNeedAcot = true;
     } else if (node->isMathmlElement("arcsinh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASINH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASINH, astParent);
     } else if (node->isMathmlElement("arccosh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOSH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOSH, astParent);
     } else if (node->isMathmlElement("arctanh")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATANH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATANH, astParent);
     } else if (node->isMathmlElement("arcsech")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASECH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASECH, astParent);
 
         mNeedAsech = true;
     } else if (node->isMathmlElement("arccsch")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSCH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSCH, astParent);
 
         mNeedAcsch = true;
     } else if (node->isMathmlElement("arccoth")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOTH);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOTH, astParent);
 
         mNeedAcoth = true;
 
     // Extra operators
 
     } else if (node->isMathmlElement("rem")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::REM);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::REM, astParent);
 
     // Piecewise statement
 
     } else if (node->isMathmlElement("piecewise")) {
         size_t childCount = mathmlChildCount(node);
 
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component);
+        processNode(mathmlChildNode(node, 0), ast->left(), ast, component);
 
         if (childCount >= 2) {
             GeneratorEquationAstPtr astRight;
             GeneratorEquationAstPtr tempAst;
 
-            processNode(mathmlChildNode(node, childCount-1), astRight, component);
+            processNode(mathmlChildNode(node, childCount-1), astRight, nullptr, component);
 
             for (size_t i = childCount-2; i > 0; --i) {
-                tempAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE);
+                tempAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE, astParent);
 
-                processNode(mathmlChildNode(node, i), tempAst->left(), component);
+                processNode(mathmlChildNode(node, i), tempAst->left(), tempAst, component);
+
+                astRight->setParent(tempAst);
 
                 tempAst->right() = astRight;
                 astRight = tempAst;
             }
 
+            astRight->setParent(ast);
+
             ast->right() = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component);
-        processNode(mathmlChildNode(node, 1), ast->right(), component);
+        processNode(mathmlChildNode(node, 0), ast->left(), ast, component);
+        processNode(mathmlChildNode(node, 1), ast->right(), ast, component);
     } else if (node->isMathmlElement("otherwise")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OTHERWISE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OTHERWISE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component);
+        processNode(mathmlChildNode(node, 0), ast->left(), ast, component);
 
     // Token elements
 
     } else if (node->isMathmlElement("cn")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->getFirstChild()->convertToString());
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->getFirstChild()->convertToString(), astParent);
     } else if (node->isMathmlElement("ci")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, component->getVariable(node->getFirstChild()->convertToString()));
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, component->getVariable(node->getFirstChild()->convertToString()), astParent);
 
     // Qualifier elements
 
     } else if (node->isMathmlElement("degree")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DEGREE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DEGREE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component);
+        processNode(mathmlChildNode(node, 0), ast->left(), ast, component);
     } else if (node->isMathmlElement("logbase")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOGBASE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOGBASE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component);
+        processNode(mathmlChildNode(node, 0), ast->left(), ast, component);
     } else if (node->isMathmlElement("bvar")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), component);
+        processNode(mathmlChildNode(node, 0), ast->left(), ast, component);
 
         XmlNodePtr rightNode = mathmlChildNode(node, 1);
 
         if (rightNode != nullptr) {
-            processNode(rightNode, ast->right(), component);
+            processNode(rightNode, ast->right(), ast, component);
         }
 
     // Constants
 
     } else if (node->isMathmlElement("true")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TRUE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TRUE, astParent);
     } else if (node->isMathmlElement("false")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FALSE);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FALSE, astParent);
     } else if (node->isMathmlElement("exponentiale")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::E);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::E, astParent);
     } else if (node->isMathmlElement("pi")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PI);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PI, astParent);
     } else if (node->isMathmlElement("infinity")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::INF);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::INF, astParent);
     } else if (node->isMathmlElement("notanumber")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NAN);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NAN, astParent);
     }
 }
 
@@ -811,23 +846,6 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         processComponent(component->getComponent(i));
-    }
-}
-
-void Generator::GeneratorImpl::finaliseRawEquation(const GeneratorEquationAstPtr &ast)
-{
-    // Recursively set the given AST's children's parent
-
-    if (ast->left() != nullptr) {
-        ast->left()->setParent(ast);
-
-        finaliseRawEquation(ast->left());
-    }
-
-    if (ast->right() != nullptr) {
-        ast->right()->setParent(ast);
-
-        finaliseRawEquation(ast->right());
     }
 }
 
@@ -997,10 +1015,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->getComponent(i));
     }
 
-    // Finalise and check our different raw equations
+    // Process our different raw equations
 
     for (const auto &rawEquation : mRawEquations) {
-        finaliseRawEquation(rawEquation->ast());
         processRawEquation(rawEquation->ast());
     }
 
