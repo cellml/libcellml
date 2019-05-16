@@ -885,7 +885,7 @@ void Generator::GeneratorImpl::processRawEquation(const GeneratorEquationAstPtr 
         if (mVariableOfIntegration == nullptr) {
             mVariableOfIntegration = variable;
         } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
-            Component *voiComponent = static_cast<Component *>(mVariableOfIntegration->getParent());
+            Component *voiComponent = mVariableOfIntegration->getParentComponent();
             Model *voiModel = voiComponent->getParentModel();
             Component *component = variable->getParentComponent();
             Model *model = component->getParentModel();
@@ -1003,7 +1003,7 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
             } else if (   !componentVariable->getInitialValue().empty()
                        && !trackedVariable->variable()->getInitialValue().empty()) {
                 Model *model = component->getParentModel();
-                Component *trackedVariableComponent = static_cast<Component *>(trackedVariable->variable()->getParent());
+                Component *trackedVariableComponent = trackedVariable->variable()->getParentComponent();
                 Model *trackedVariableModel = trackedVariableComponent->getParentModel();
                 ErrorPtr err = std::make_shared<Error>();
 
