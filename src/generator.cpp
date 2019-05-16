@@ -953,6 +953,7 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component) c
 void Generator::GeneratorImpl::processEquations()
 {
 //TODO
+    mEquations = mRawEquations;
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
