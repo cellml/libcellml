@@ -883,7 +883,21 @@ void Generator::GeneratorImpl::processRawEquation(const GeneratorEquationAstPtr 
         VariablePtr variable = ast->variable();
 
         if (mVariableOfIntegration == nullptr) {
-            mVariableOfIntegration = variable;
+            // Before keeping track of the variable of integration, make sure
+            // that it is not initialised
+
+            if (!variable->getInitialValue().empty()) {
+                Component *component = variable->getParentComponent();
+                Model *model = component->getParentModel();
+                ErrorPtr err = std::make_shared<Error>();
+
+                err->setDescription("Variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot be both a variable of integration and initialised.");
+                err->setKind(Error::Kind::GENERATOR);
+
+                mGenerator->addError(err);
+            } else {
+                mVariableOfIntegration = variable;
+            }
         } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
             Component *voiComponent = mVariableOfIntegration->getParentComponent();
             Model *voiModel = voiComponent->getParentModel();

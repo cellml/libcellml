@@ -59,6 +59,28 @@ TEST(Generator, coverage) {
     EXPECT_EQ(size_t(0), generator.errorCount());
 }
 
+TEST(Generator, initialized_variable_of_integration) {
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/initialized_variable_of_integration.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    std::vector<std::string> expectedErrors = {
+        "Variable 'time' in component 'main' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised."
+    };
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.getError(i)->getKind());
+    }
+}
+
 TEST(Generator, two_variables_of_integration) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/two_variables_of_integration.cellml"));
