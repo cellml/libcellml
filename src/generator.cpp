@@ -967,8 +967,8 @@ bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
 
 void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
 {
-    // Go trhough the given component's variable and make sure that they are
-    // used in one of the component's equations
+    // Go trhough the given component's variable and make sure that everything
+    // makes sense
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
         VariablePtr componentVariable = component->getVariable(i);
@@ -1007,8 +1007,10 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
                 mVariables.push_back(trackedVariable);
             }
 
-            // Keep track of the variable's initial value, if any, or generate
-            // an error if it already has one
+            // Set the variable held by trackedVariable, in case there was none
+            // before or in case it has no initial value while componentVariable
+            // does. Otherwise, generate an error if the variable held by
+            // trackedVariable and componentVariable are both initialised.
 
             if (   (trackedVariable->variable() == nullptr)
                 || (   !componentVariable->getInitialValue().empty()
@@ -1098,12 +1100,14 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processRawEquation(rawEquation->ast());
     }
 
-    // Recursively process the model's variables to determine whether all of
-    // them are indeed used
+    // Recursively process the model's variables to make sure that everything is
+    // sound
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         processVariables(model->getComponent(i));
     }
+//TODO: remove the below code once we are done testing things...
+printf("Number of variables: %zu\n", mVariables.size());
 
     // Process the model's equations to determine the order in which they should
     // be computed
