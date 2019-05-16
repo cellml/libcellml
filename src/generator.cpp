@@ -1008,7 +1008,7 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
                 ErrorPtr err = std::make_shared<Error>();
 
                 err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' and "
-                                    "variable '"+trackedVariable->variable()->getName()+"' in component '"+trackedVariableComponent->getName()+"' of model '"+trackedVariableModel->getName()+"' are equivalent and cannot therefore be both initialised.");
+                                    "variable '"+trackedVariable->variable()->getName()+"' in component '"+trackedVariableComponent->getName()+"' of model '"+trackedVariableModel->getName()+"' are equivalent and cannot therefore both be initialised.");
                 err->setKind(Error::Kind::GENERATOR);
 
                 mGenerator->addError(err);
