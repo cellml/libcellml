@@ -46,7 +46,7 @@ TEST(Generator, emptyModel) {
 TEST(Generator, coverage) {
 //TODO: code should be generated for the coverage CellML file with and without
 //      the Generator's private mHasXXX booleans set, so that we really cover
-//      everything indeed...
+//      everything indeed.
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
 
@@ -128,7 +128,7 @@ TEST(Generator, unused_variables) {
     }
 }
 
-/*TODO: reenable this test once we are done with the previous tests...
+/*TODO: reenable this test once we are done with the previous tests.
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));

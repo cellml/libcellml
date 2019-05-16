@@ -1744,6 +1744,7 @@ Generator::Generator(const Generator &rhs)
     : Logger(rhs)
     , mPimpl(new GeneratorImpl())
 {
+//TODO: need to list all our private properties.
     mPimpl->mGenerator = rhs.mPimpl->mGenerator;
 
     mPimpl->mVariables = rhs.mPimpl->mVariables;
@@ -1772,7 +1773,7 @@ void Generator::processModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before processing it
 
-/*TODO: reenable the validation once it is known to work fine...
+/*TODO: reenable the validation once it is known to work fine.
     libcellml::Validator validator;
 
     validator.validateModel(model);
