@@ -921,9 +921,10 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             }
 
             // Set the variable held by trackedVariable, in case there was none
-            // before or in case it has no initial value while componentVariable
-            // does. Otherwise, generate an error if the variable held by
-            // trackedVariable and componentVariable are both initialised.
+            // before or in case the existing one has no initial value while
+            // componentVariable does. Otherwise, generate an error if the
+            // variable held by trackedVariable and componentVariable are both
+            // initialised.
 
             if (   (trackedVariable->variable() == nullptr)
                 || (   !componentVariable->getInitialValue().empty()
