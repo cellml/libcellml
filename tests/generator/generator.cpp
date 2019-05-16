@@ -112,7 +112,7 @@ TEST(Generator, variable_initialized_twice) {
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     std::vector<std::string> expectedErrors = {
-        "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore be both initialised."
+        "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore both be initialised."
     };
 
     libcellml::Generator generator;
