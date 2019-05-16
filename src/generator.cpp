@@ -429,10 +429,9 @@ struct Generator::GeneratorImpl
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component);
-    void processComponent(const ComponentPtr &component);
     bool isVariableUsed(const VariablePtr &variable,
                         const GeneratorEquationAstPtr &equationAst) const;
-    void processVariables(const ComponentPtr &component);
+    void processComponent(const ComponentPtr &component);
     void processEquation(const GeneratorEquationAstPtr &ast);
     void processModel(const ModelPtr &model);
 
@@ -837,34 +836,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     }
 }
 
-void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
-{
-    // Retrieve the math string associated with the given component and process
-    // it, one equation at a time
-
-    XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    std::string math = component->getMath();
-
-    if (!math.empty()) {
-        xmlDoc->parseMathML(math);
-
-        XmlNodePtr mathNode = xmlDoc->getRootNode();
-
-        for (XmlNodePtr node = mathNode->getFirstChild();
-             node != nullptr; node = node->getNext()) {
-            if (node->isMathmlElement()) {
-                processNode(node, component);
-            }
-        }
-    }
-
-    // Do the same for the components encapsulated by the given component
-
-    for (size_t i = 0; i < component->componentCount(); ++i) {
-        processComponent(component->getComponent(i));
-    }
-}
-
 bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
                                               const GeneratorEquationAstPtr &equationAst) const
 {
@@ -888,8 +859,27 @@ bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
            || isVariableUsed(variable, equationAst->right());
 }
 
-void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
+void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 {
+    // Retrieve the math string associated with the given component and process
+    // it, one equation at a time
+
+    XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
+    std::string math = component->getMath();
+
+    if (!math.empty()) {
+        xmlDoc->parseMathML(math);
+
+        XmlNodePtr mathNode = xmlDoc->getRootNode();
+
+        for (XmlNodePtr node = mathNode->getFirstChild();
+             node != nullptr; node = node->getNext()) {
+            if (node->isMathmlElement()) {
+                processNode(node, component);
+            }
+        }
+    }
+
     // Go trhough the given component's variable and make sure that everything
     // makes sense
 
@@ -966,7 +956,7 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
     // Do the same for the components encapsulated by the given component
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        processVariables(component->getComponent(i));
+        processComponent(component->getComponent(i));
     }
 }
 
@@ -1082,12 +1072,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->getComponent(i));
     }
 
-    // Recursively process the model's variables to make sure that everything is
-    // sound
-
-    for (size_t i = 0; i < model->componentCount(); ++i) {
-        processVariables(model->getComponent(i));
-    }
 //TODO: remove the below code once we are done testing things...
 printf("Number of variables: %zu\n", mVariables.size());
 int i = 0;
