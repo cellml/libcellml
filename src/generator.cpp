@@ -296,8 +296,6 @@ struct Generator::GeneratorImpl
 
     bool mWithNames = true;
 
-    std::vector<GeneratorEquationPtr> mRawEquations;
-
     VariablePtr mVariableOfIntegration;
 
     std::vector<GeneratorVariablePtr> mVariables;
@@ -432,11 +430,10 @@ struct Generator::GeneratorImpl
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
-    void processRawEquation(const GeneratorEquationAstPtr &ast);
     bool isVariableUsed(const VariablePtr &variable,
                         const GeneratorEquationAstPtr &equationAst) const;
     void processVariables(const ComponentPtr &component);
-    void processEquations();
+    void processEquation(const GeneratorEquationAstPtr &ast);
     void processModel(const ModelPtr &model);
 
     std::string neededMathMethods() const;
@@ -511,12 +508,11 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            const ComponentPtr &component)
 {
-    // Create and keep track of the (raw) equation associated with the given
-    // node
+    // Create and keep track of the equation associated with the given node
 
     GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>(component);
 
-    mRawEquations.push_back(equation);
+    mEquations.push_back(equation);
 
     // Actually process the node
 
@@ -869,79 +865,6 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     }
 }
 
-void Generator::GeneratorImpl::processRawEquation(const GeneratorEquationAstPtr &ast)
-{
-    // Make sure that we don't use more than one variable of integration
-
-    GeneratorEquationAstPtr astParent = ast->parent();
-    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr)?astParent->parent():nullptr;
-    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr)?astGrandParent->parent():nullptr;
-
-    if (   (ast->type() == GeneratorEquationAst::Type::CI)
-        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::BVAR)
-        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
-        VariablePtr variable = ast->variable();
-
-        if (mVariableOfIntegration == nullptr) {
-            // Before keeping track of the variable of integration, make sure
-            // that it is not initialised
-
-            if (!variable->getInitialValue().empty()) {
-                Component *component = variable->getParentComponent();
-                Model *model = component->getParentModel();
-                ErrorPtr err = std::make_shared<Error>();
-
-                err->setDescription("Variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot be both a variable of integration and initialised.");
-                err->setKind(Error::Kind::GENERATOR);
-
-                mGenerator->addError(err);
-            } else {
-                mVariableOfIntegration = variable;
-            }
-        } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
-            Component *voiComponent = mVariableOfIntegration->getParentComponent();
-            Model *voiModel = voiComponent->getParentModel();
-            Component *component = variable->getParentComponent();
-            Model *model = component->getParentModel();
-            ErrorPtr err = std::make_shared<Error>();
-
-            err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
-            err->setKind(Error::Kind::GENERATOR);
-
-            mGenerator->addError(err);
-        }
-    }
-
-    // Make sure that we only use first-order ODEs
-
-    if (   (ast->type() == GeneratorEquationAst::Type::CN)
-        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::DEGREE)
-        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAst::Type::BVAR)
-        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
-        if (convertToDouble(ast->value()) != 1.0) {
-            VariablePtr variable = astGreatGrandParent->right()->variable();
-            Component *component = variable->getParentComponent();
-            Model *model = component->getParentModel();
-            ErrorPtr err = std::make_shared<Error>();
-
-            err->setDescription("The differential equation for variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' must be of the first order.");
-            err->setKind(Error::Kind::GENERATOR);
-
-            mGenerator->addError(err);
-        }
-    }
-
-    // Recursively check the given AST's children
-
-    if (ast->left() != nullptr) {
-        processRawEquation(ast->left());
-    }
-
-    if (ast->right() != nullptr) {
-        processRawEquation(ast->right());
-    }
-}
-
 bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
                                               const GeneratorEquationAstPtr &equationAst) const
 {
@@ -974,9 +897,9 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
         VariablePtr componentVariable = component->getVariable(i);
         bool componentVariableUsed = false;
 
-        for (const auto &rawEquation : mRawEquations) {
-            if (rawEquation->component() == component) {
-                if (isVariableUsed(componentVariable, rawEquation->ast())) {
+        for (const auto &equation : mEquations) {
+            if (equation->component() == component) {
+                if (isVariableUsed(componentVariable, equation->ast())) {
                     componentVariableUsed = true;
 
                     break;
@@ -1047,10 +970,77 @@ void Generator::GeneratorImpl::processVariables(const ComponentPtr &component)
     }
 }
 
-void Generator::GeneratorImpl::processEquations()
+void Generator::GeneratorImpl::processEquation(const GeneratorEquationAstPtr &ast)
 {
-//TODO
-    mEquations = mRawEquations;
+    // Make sure that we don't use more than one variable of integration
+
+    GeneratorEquationAstPtr astParent = ast->parent();
+    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr)?astParent->parent():nullptr;
+    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr)?astGrandParent->parent():nullptr;
+
+    if (   (ast->type() == GeneratorEquationAst::Type::CI)
+        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::BVAR)
+        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
+        VariablePtr variable = ast->variable();
+
+        if (mVariableOfIntegration == nullptr) {
+            // Before keeping track of the variable of integration, make sure
+            // that it is not initialised
+
+            if (!variable->getInitialValue().empty()) {
+                Component *component = variable->getParentComponent();
+                Model *model = component->getParentModel();
+                ErrorPtr err = std::make_shared<Error>();
+
+                err->setDescription("Variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot be both a variable of integration and initialised.");
+                err->setKind(Error::Kind::GENERATOR);
+
+                mGenerator->addError(err);
+            } else {
+                mVariableOfIntegration = variable;
+            }
+        } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
+            Component *voiComponent = mVariableOfIntegration->getParentComponent();
+            Model *voiModel = voiComponent->getParentModel();
+            Component *component = variable->getParentComponent();
+            Model *model = component->getParentModel();
+            ErrorPtr err = std::make_shared<Error>();
+
+            err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
+            err->setKind(Error::Kind::GENERATOR);
+
+            mGenerator->addError(err);
+        }
+    }
+
+    // Make sure that we only use first-order ODEs
+
+    if (   (ast->type() == GeneratorEquationAst::Type::CN)
+        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::DEGREE)
+        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAst::Type::BVAR)
+        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
+        if (convertToDouble(ast->value()) != 1.0) {
+            VariablePtr variable = astGreatGrandParent->right()->variable();
+            Component *component = variable->getParentComponent();
+            Model *model = component->getParentModel();
+            ErrorPtr err = std::make_shared<Error>();
+
+            err->setDescription("The differential equation for variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' must be of the first order.");
+            err->setKind(Error::Kind::GENERATOR);
+
+            mGenerator->addError(err);
+        }
+    }
+
+    // Recursively check the given AST's children
+
+    if (ast->left() != nullptr) {
+        processEquation(ast->left());
+    }
+
+    if (ast->right() != nullptr) {
+        processEquation(ast->right());
+    }
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
@@ -1058,8 +1048,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Reset a few things in case we were to process the model more than once
     // Note: one would normally process the model only once, so we shouldn't
     //       need to do this, but better be safe than sorry.
-
-    mRawEquations.clear();
 
     mVariableOfIntegration = nullptr;
 
@@ -1094,12 +1082,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->getComponent(i));
     }
 
-    // Process our different raw equations
-
-    for (const auto &rawEquation : mRawEquations) {
-        processRawEquation(rawEquation->ast());
-    }
-
     // Recursively process the model's variables to make sure that everything is
     // sound
 
@@ -1118,10 +1100,11 @@ for (const auto &variable : mVariables) {
            variable->variable()->getParentComponent()->getName().c_str());
 }
 
-    // Process the model's equations to determine the order in which they should
-    // be computed
+    // Process our different equations
 
-    processEquations();
+    for (const auto &equation : mEquations) {
+        processEquation(equation->ast());
+    }
 //TODO: remove the below code once we are done testing things...
 printf("---------------------------------------[BEGIN]\n");
 printf("%s", neededMathMethods().c_str());
