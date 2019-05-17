@@ -224,6 +224,8 @@ public:
     std::vector<VariablePtr> variables() const;
 
     void addVariable(const VariablePtr &variable);
+    void replaceVariable(const VariablePtr &oldVariable,
+                         const VariablePtr &newVariable);
 
 private:
     ComponentPtr mComponent;
@@ -259,6 +261,12 @@ void GeneratorEquation::addVariable(const VariablePtr &variable)
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
     }
+}
+
+void GeneratorEquation::replaceVariable(const VariablePtr &oldVariable,
+                                        const VariablePtr &newVariable)
+{
+    std::replace(mVariables.begin(), mVariables.end(), oldVariable, newVariable);
 }
 
 class GeneratorVariable;
@@ -1064,6 +1072,16 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
 void Generator::GeneratorImpl::processEquation(const GeneratorEquationPtr &equation)
 {
+    // Update the equation's variables with those that have become our reference
+
+    for (const auto &equationVariable : equation->variables()) {
+        for (const auto &variable : mVariables) {
+            if (equationVariable->isEquivalentVariable(variable->variable())) {
+                equation->replaceVariable(equationVariable, variable->variable());
+            }
+        }
+    }
+
     // Process the equation's AST
 
     processEquationAst(equation->ast());
