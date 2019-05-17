@@ -453,7 +453,8 @@ struct Generator::GeneratorImpl
     bool isVariableUsed(const VariablePtr &variable,
                         const GeneratorEquationAstPtr &equationAst) const;
     void processComponent(const ComponentPtr &component);
-    void processEquation(const GeneratorEquationAstPtr &ast);
+    void processEquationAst(const GeneratorEquationAstPtr &ast);
+    void processEquation(const GeneratorEquationPtr &equation);
     void processModel(const ModelPtr &model);
 
     std::string neededMathMethods() const;
@@ -988,7 +989,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     }
 }
 
-void Generator::GeneratorImpl::processEquation(const GeneratorEquationAstPtr &ast)
+void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr &ast)
 {
     // Make sure that we don't use more than one variable of integration
 
@@ -1053,12 +1054,19 @@ void Generator::GeneratorImpl::processEquation(const GeneratorEquationAstPtr &as
     // Recursively check the given AST's children
 
     if (ast->left() != nullptr) {
-        processEquation(ast->left());
+        processEquationAst(ast->left());
     }
 
     if (ast->right() != nullptr) {
-        processEquation(ast->right());
+        processEquationAst(ast->right());
     }
+}
+
+void Generator::GeneratorImpl::processEquation(const GeneratorEquationPtr &equation)
+{
+    // Process the equation's AST
+
+    processEquationAst(equation->ast());
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
@@ -1115,7 +1123,7 @@ for (const auto &variable : mVariables) {
     // Process our different equations
 
     for (const auto &equation : mEquations) {
-        processEquation(equation->ast());
+        processEquation(equation);
     }
 //TODO: remove the below code once we are done testing things...
 printf("---------------------------------------[BEGIN]\n");
