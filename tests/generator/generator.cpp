@@ -48,13 +48,21 @@ TEST(Generator, coverage) {
 //      the Generator's private mHasXXX booleans set, so that we really cover
 //      everything indeed.
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
+//    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
+//libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/hodgkin_huxley_squid_axon_model_1952.cellml"));
+//libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/noble_model_1962.cellml"));
+libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/van_der_pol_model_1928.cellml"));
+//libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/zhang_SAN_model_2000_all.cellml"));
+for (size_t i = 0; i < parser.errorCount(); ++i)
+    std::cout << "Parser error #" << i+1 << ": " << parser.getError(i)->getDescription() << std::endl;
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     libcellml::Generator generator;
 
     generator.processModel(model);
+for (size_t i = 0; i < generator.errorCount(); ++i)
+    std::cout << "Generator error #" << i+1 << ": " << generator.getError(i)->getDescription() << std::endl;
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 }
