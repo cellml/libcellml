@@ -425,11 +425,11 @@ struct Generator::GeneratorImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    GeneratorEquationPtr processNode(const XmlNodePtr &node,
-                                     const ComponentPtr &component);
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component);
+    GeneratorEquationPtr processNode(const XmlNodePtr &node,
+                                     const ComponentPtr &component);
     bool isVariableUsed(const VariablePtr &variable,
                         const GeneratorEquationAstPtr &equationAst) const;
     void processComponent(const ComponentPtr &component);
@@ -503,22 +503,6 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     }
 
     return res;
-}
-
-GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                                           const ComponentPtr &component)
-{
-    // Create and keep track of the equation associated with the given node
-
-    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>(component);
-
-    mEquations.push_back(equation);
-
-    // Actually process the node
-
-    processNode(node, equation->ast(), equation->ast()->parent(), component);
-
-    return equation;
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
@@ -839,6 +823,22 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     }
 }
 
+GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
+                                                           const ComponentPtr &component)
+{
+    // Create and keep track of the equation associated with the given node
+
+    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>(component);
+
+    mEquations.push_back(equation);
+
+    // Actually process the node
+
+    processNode(node, equation->ast(), equation->ast()->parent(), component);
+
+    return equation;
+}
+
 bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
                                               const GeneratorEquationAstPtr &equationAst) const
 {
@@ -900,7 +900,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         }
 
         if (componentVariableUsed) {
-            // The variable is used, but is it already tracked?
+            // The variable is used, but is it already being tracked?
 
             bool componentVariableTracked = false;
             GeneratorVariablePtr trackedVariable;
@@ -914,7 +914,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
                 }
             }
 
-            // Track the variable if it is not currently tracked
+            // Track the variable if it is not already being tracked
 
             if (!componentVariableTracked) {
                 trackedVariable = std::make_shared<GeneratorVariable>();
