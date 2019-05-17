@@ -34,6 +34,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <cmath> // Adding this to make the Ubuntu build happy ...
+#include <deque>
 #include <iostream>
 #include <map>
 #include <regex>
@@ -109,13 +110,22 @@ struct Validator::ValidatorImpl
 
     /**
     * @brief Validate that there are no cycles in the equivalance network in the @p model
-    * using the CellML 2.0 Specification.
+    * using the CellML 2.0 Specification.  Called from the @c validateConnections function.
     * Any errors will be logged in the @c Validator.
     *
     * @param model The model which may contain variable connections to validate.
-    * @param hints The helper string returned containing the list(s) of cyclic variables
+    * @param hintlist The helper string returned containing the list(s) of cyclic variables
     */
-    bool modelVariablesAreCyclic(const ModelPtr &model, std::vector<std::string> &hints);
+    bool isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintlist);
+
+    /**
+    * @brief Utility function called recursively from the @c isModelVariableCycleFree function
+    *
+    * @param parent Previous variable
+    * @param child Connected variable to start checking from
+    * @param check_list The helper string returned containing the list(s) of cyclic variables
+    */
+    bool cycleVariableFound(VariablePtr &parent, VariablePtr &child, std::deque<libcellml::VariablePtr> &check_list);
 
     /**
         * @brief Check if the provided @p name is a valid CellML identifier.
@@ -337,6 +347,7 @@ struct Validator::ValidatorImpl
     */
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
                             std::vector<std::string> &history);
+
 };
 
 Validator::Validator()
@@ -1685,185 +1696,112 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 }
             }
         }
-        /// @cellml2_19 19.10.5 Check that the variable equivalence network does not contain cycles
-        if (modelVariablesAreCyclic(model, hintlist)) {
+         /// @cellml2_19 19.10.5 Check that the variable equivalence network does not contain cycles
+         if (!isModelVariableCycleFree(model, hintlist)) {
             ErrorPtr err = std::make_shared<Error>();
             std::string des;
-            for (size_t i = 0; i < hintlist.size(); ++i) {
-                des += hintlist[i] + ", ";
-                }
-            err->setDescription("Cyclic variables exist, "+ std::to_string(hintlist.size())+" loops found (Variable(Component)). "+des);
-            err->setModel(model);
-            err->setKind(Error::Kind::UNITS);
-            mValidator->addError(err);
+            std::string loops;
+            loops = hintlist.size() > 1 ? " loops" : " loop";
+            for (auto s : hintlist) {
+                des += s;
             }
- 
+            err->setDescription("Cyclic variables exist, " + std::to_string(hintlist.size())+loops+" found (Component, Variable):\n"+des);
+            err->setModel(model);
+            err->setKind(Error::Kind::VARIABLE);
+            mValidator->addError(err);
+        }
     }
 }
 
-bool Validator::ValidatorImpl::modelVariablesAreCyclic(const ModelPtr &model, std::vector<std::string> &hintlist) {
+bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintlist) {
 
+    bool found = false;
+    std::deque<libcellml::VariablePtr> check_list = {};
+    std::vector<std::deque<libcellml::VariablePtr>> total_list = {};
 
-
-
-
-
-
-    /*
-        Test for cycles in the equivalent variable setup.
-    */
-
-    struct edge {
-        VariablePtr n1;
-        VariablePtr n2;
-        };
-
-    std::vector<VariablePtr> nodelist;
-    std::vector<edge> edgelist;
-
-    // Making node2edge map
-    std::map <VariablePtr, std::vector<int> > node2edge;
-    std::map <VariablePtr, std::vector<int> >::iterator it, otherfriend_it;
-    bool loop_found = false;
-
-    // Set up the list of nodes: only include nodes which have two or more connections
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->getComponent(i);
 
-            // Check for variables in this component.
             for (size_t j = 0; j < component->variableCount(); ++j) {
                 VariablePtr variable = component->getVariable(j);
 
-                // Check for equivalent variables in this variable.
-                // Because cycles can only be formed with two or more connections, only save
-                // those variables which have more than one equiv connection with variables 
-                // that in turn have more than one commection
-                if (variable->equivalentVariableCount() >= 2) {
-                    nodelist.push_back(variable);
-                    node2edge.insert(std::pair<VariablePtr, std::vector<int>>(variable, {})); // empty vector instead of NULL
+                if (variable->equivalentVariableCount() < 2)
+                    continue;
 
-                    // if equivalent variables of this one have another neighbour in the list the include that edge
-                    for (size_t k = 0; k < variable->equivalentVariableCount(); k++) {
-                        VariablePtr equivalent = variable->getEquivalentVariable(k);
-                        if (std::find(nodelist.begin(), nodelist.end(), equivalent) != nodelist.end()) {
-                            // Add the edge to the edgelist
-                            edgelist.push_back({ variable,equivalent });
-                            }
-                        }
+                for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+
+                    std::deque<libcellml::VariablePtr>().swap(check_list);
+                    check_list.push_back(variable);
+
+                    VariablePtr eq = variable->getEquivalentVariable(k);
+
+                    if (cycleVariableFound(variable, eq, check_list)) {
+                        total_list.push_back(check_list);
+                        found = true;
                     }
                 }
             }
-
-        for (size_t e = 0; e < edgelist.size(); e++) {
-            node2edge.at(edgelist[e].n1).push_back(int (e));
-            node2edge.at(edgelist[e].n2).push_back(int (e));
-            }
-        // Removing nodes connected to only one viable edge, and then ... 
-        // Removing edges connected to only one viable node ... and then ... rinse and repeat
-        bool checking = false;
-        VariablePtr otherfriend;
-        int edge2go;
-        do {
-            checking = false;
-            for (auto onefriend = node2edge.cbegin(); onefriend != node2edge.cend();) {
-                
-                if (onefriend->second.size() == 1) {
-                    // remove edge from count of viable edges around other node
-                    edge2go = onefriend->second[0];
-
-                    // locating other node on edge to go
-                    otherfriend = edgelist[edge2go].n1 == onefriend->first ? edgelist[edge2go].n2 : edgelist[edge2go].n1;
-
-                    otherfriend_it = node2edge.find(otherfriend);
-                    if (otherfriend_it != node2edge.end()) {
-                        // Update node2edge for other nodes attached to this node -> remove edge2go from list
-                        otherfriend_it->second.erase(
-                            std::remove(
-                                otherfriend_it->second.begin(),
-                                otherfriend_it->second.end(), 
-                                edge2go), 
-                            otherfriend_it->second.end()
-                        );
-                    }
-                    
-                    // Removing the edge, cannot delete here as will screw up the indicies of the list
-                    edgelist[edge2go].n1 = edgelist[edge2go].n2 = NULL;
-                    checking = true;
-                    // Removing this node too
-                    onefriend = node2edge.erase(onefriend);
-                }
-                else {
-                    ++onefriend;
-                    }
-                }
-            } while (checking);
-            
-            // Any edges which remain in the node2edge array will be part of a loop.
-            std::vector<int> done_edges;
-            
-            while (node2edge.size()) {
-                std::vector<VariablePtr> done_nodes;
-                VariablePtr myNode = node2edge.begin()->first;
-                auto n2e_it = node2edge.begin();
-                bool closed = false;
-              
-                do {
-                    if (n2e_it->second.size() == 0) // then we have run out of edges attached to this node, not a loop
-                        break;
-                    edge2go = n2e_it->second.back();   
-
-                    // Getting nextNode at the other end of this edge
-                    otherfriend = myNode == edgelist[edge2go].n1 ? edgelist[edge2go].n2 : edgelist[edge2go].n1;
-                    // Removing myEdge from the node2edge list for myNode
-                    n2e_it->second.pop_back();
-
-                    // Update node2edge for other nodes attached to this node -> remove edge2go from list
-                    otherfriend_it = node2edge.find(otherfriend);
-                    if (otherfriend_it != node2edge.end()) {
-                        otherfriend_it->second.erase(
-                            std::remove(
-                                otherfriend_it->second.begin(),
-                                otherfriend_it->second.end(),
-                                edge2go),
-                            otherfriend_it->second.end()
-                        );
-                    }
-
-                    // Get next edge
-                    n2e_it = node2edge.find(otherfriend);
-
-                    // Adding myNode to the list
-                    if (std::find(done_nodes.begin(), done_nodes.end(), otherfriend) != done_nodes.end()) {
-                        closed = true;
-                        done_nodes.push_back(myNode);
-                        done_nodes.push_back(otherfriend);
-                        loop_found = true;
-                        }
-                    else {
-                        done_nodes.push_back(myNode);
-                        myNode = otherfriend;
-                        }
-                    } while (!closed);
-               
-                    std::string des = "";
-                    for (size_t i = 0; i < done_nodes.size(); ++i) {
-                        des += "'";
-                        Component* parent = static_cast<Component*>(done_nodes[i]->getParent());
-                        des += done_nodes[i]->getName()+" ("+parent->getName()+")'";
-                        if (i != done_nodes.size()-1) des += " <-> ";   
-                        }
-                    hintlist.push_back("Loop: " + des);
-
-                    // If the node2edge list is empty remove the entry
-                    for (auto n2e_it = node2edge.cbegin(); n2e_it != node2edge.cend();) {
-                        if (n2e_it->second.size() < 2) // Removing entries with one edge as well, catches overlapping loops 
-                            n2e_it = node2edge.erase(n2e_it);    
-                        else ++n2e_it; 
-                    }
-                };
         }
-    return loop_found;
+    }
+    if (found) {
+        // Only report the loops which start with the lowest alphabetical variable name to reduce duplicate reporting 
+        for (auto list : total_list) {
+            std::string min = list.front()->getName();
+            bool use_me = true;
+            for (auto var : list) {
+                if (min.compare(var->getName()) > 0) {
+                    use_me = false;
+                    break;
+                }
+            }
+            if (use_me) {
+                std::string description = "";
+                std::string reverse_description = "";
+                std::string separator = "";
+
+                for (VariablePtr v : list) {
+                    Component* parent = static_cast<Component*>(v->getParent());
+                    description += separator + "('" + parent->getName() + "', '" + v->getName() + "')";
+                    reverse_description = "('" + parent->getName() + "', '" + v->getName() + "')" + separator + reverse_description;
+                    separator = " -> ";
+                }
+                description += "\n";
+                reverse_description += "\n";
+
+                if ((std::find(hintlist.begin(), hintlist.end(), description) == hintlist.end()) 
+                    && (std::find(hintlist.begin(), hintlist.end(), reverse_description) == hintlist.end())) {
+                    hintlist.push_back(description);
+                }
+            }
+        }
+    }
+    return (!found);
+}
+
+bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariablePtr &child, std::deque<libcellml::VariablePtr> &check_list) {
+
+    if(std::find(check_list.begin(), check_list.end(), child) != check_list.end()) {
+        check_list.push_back(child);
+        // Removing items from the start of the loop to avoid lasso shapes
+        while (check_list.front() != check_list.back()) {
+            check_list.pop_front();
+        }
+        return true;
+    }
+    else {
+        check_list.push_back(child);
+        for (size_t k = 0; k < child->equivalentVariableCount(); ++k) {
+            VariablePtr eq = child->getEquivalentVariable(k);
+            if (eq == parent) {
+                continue;
+            }
+            if (cycleVariableFound(child, eq, check_list)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model, 

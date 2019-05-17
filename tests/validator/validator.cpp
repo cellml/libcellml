@@ -1010,32 +1010,11 @@ TEST(Validator, validateNoCyclesSimple) {
     libcellml::Variable::addEquivalence(v3, v1); 
    
     v.validateModel(m);
+
+    std::string error = "Cyclic variables exist, 1 loop found (Component, Variable):\n"
+        "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n";
     EXPECT_EQ(1u, v.errorCount());
-
-    if (v.errorCount() == 1) {
-        size_t pos = 0;
-        std::string split = "Loop: ";
-        std::string msg = v.getError(0)->getDescription();
-        std::vector<std::string> split_msg;
-
-        while ((pos = msg.find(split)) != std::string::npos) {
-            split_msg.push_back(msg.substr(0, pos));
-            msg.erase(0, pos + split.length());
-        }
-        split_msg.push_back(msg);
-
-        EXPECT_EQ(2u, split_msg.size());
-
-        if (split_msg.size() == 2) {
-            bool found = false;
-            if (split_msg[1].find("variable1") &&
-                split_msg[1].find("variable2") &&
-                split_msg[1].find("variable3")) {
-                found = true;
-            }
-            EXPECT_TRUE(found);
-        }
-    }   
+    EXPECT_EQ(error, v.getError(0)->getDescription());
 }
 
 TEST(Validator, validateNoCyclesComplicated) {
@@ -1213,48 +1192,84 @@ TEST(Validator, validateNoCyclesComplicated) {
     // libcellml::Variable::addEquivalence(v1_4, v2);  // TODO Can two sibling variables in the same component be equivalent to one in another?
 
     v.validateModel(m);
+
+    std::string error = "Cyclic variables exist, 2 loops found (Component, Variable):\n"
+        "('component1', 'variable1_2') -> ('component5', 'variable5') -> ('component9', 'variable9') -> ('component1', 'variable1_2')\n"
+        "('component2', 'variable2') -> ('component4', 'variable4') -> ('component3', 'variable3') -> ('component6', 'variable6') -> "
+        "('component8', 'variable8') -> ('component2', 'variable2')\n";
     EXPECT_EQ(1u, v.errorCount());
+    EXPECT_EQ(error, v.getError(0)->getDescription());
 
-    // Two loops are present, split error message at "Loop":
-    // Check that one loop contains 'variable6' <-> 'variable8' <-> 'variable2' <-> 'variable4' <-> 'variable3' <-> 'variable6',
-    // Check that the other contains 'variable1_2' <-> 'variable9' <-> 'variable5' <-> 'variable1_2',
-    // "Cyclic variables exist, 2 loops found (Variable(Component)). Loop: 'variable4'(in 'component4') <-> 'variable3'(in 'component3') <-> 'variable6'(in 'component6') <-> 'variable8'(in 'component8') <-> '...
-    if (v.errorCount() == 1) {
-        size_t pos = 0;
-        std::string split = "Loop: ";
-        std::string msg = v.getError(0)->getDescription();
-        std::vector<std::string> split_msg;
+}
 
-        while ((pos = msg.find(split)) != std::string::npos) {
-            split_msg.push_back(msg.substr(0, pos));
-            msg.erase(0, pos + split.length());
-        }
-        split_msg.push_back(msg);
+TEST(Validator, figureEightVariableDependency) {
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
 
-        EXPECT_EQ(3u, split_msg.size());
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
 
-        if (split_msg.size() == 3) {
-        // Check that we have each of the variables present in the two loops
-            int found = 0;
-            if (((split_msg[1].find("variable6")) &&
-                (split_msg[1].find("variable8")) &&
-                 (split_msg[1].find("variable2")) &&
-                 (split_msg[1].find("variable4")) &&
-                 (split_msg[1].find("variable3")))
-                || ((split_msg[2].find("variable6")) &&
-                (split_msg[2].find("variable8")) &&
-                    (split_msg[2].find("variable2")) &&
-                    (split_msg[2].find("variable4")) &&
-                    (split_msg[2].find("variable3")))) {
-                found++;
-            }
-            if (((split_msg[1].find("variable9")) && (split_msg[1].find("variable5")) && (split_msg[1].find("variable1_2")))
-                || ((split_msg[2].find("variable9")) && (split_msg[2].find("variable5")) && (split_msg[2].find("variable1_2")))) {
-                found++;
-            }
-            EXPECT_EQ(2, found);
-        }
-    }
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    comp4->setName("component4");
+    comp5->setName("component5");
+    comp6->setName("component6");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+    v5->setName("variable5");
+    v6->setName("variable6");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+    v4->setUnits("dimensionless");
+    v5->setUnits("dimensionless");
+    v6->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    comp4->addVariable(v4);
+    comp5->addVariable(v5);
+    comp6->addVariable(v6);
+
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+    m->addComponent(comp4);
+    m->addComponent(comp5);
+    m->addComponent(comp6);
+
+    libcellml::Variable::addEquivalence(v1, v2); 
+    libcellml::Variable::addEquivalence(v1, v3); 
+    libcellml::Variable::addEquivalence(v1, v4);
+    libcellml::Variable::addEquivalence(v1, v5); 
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v4, v5); 
+
+    v.validateModel(m);
+
+    std::string error = "Cyclic variables exist, 2 loops found (Component, Variable):\n"
+        "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n"
+        "('component1', 'variable1') -> ('component4', 'variable4') -> ('component5', 'variable5') -> ('component1', 'variable1')\n";
+    EXPECT_EQ(1u, v.errorCount());
+    EXPECT_EQ(error, v.getError(0)->getDescription());
+
 }
 
 TEST(Validator, integerStrings) {
