@@ -24,7 +24,7 @@ namespace libcellml {
 /**
 * Vector of base units. NB not const as added to if need be by user-defined units
 */
-std::vector<std::string> baseUnitsList{
+std::vector<std::string> baseUnitsList = {
     "ampere",
     "candela", 
     "dimensionless", 
@@ -39,7 +39,7 @@ std::vector<std::string> baseUnitsList{
 *  Map connecting standard built-in units to their base unit components and their exponents.
 *
 */
-const std::map< std::string, std::map<std::string, double> > standardUnitsList{
+const std::map< std::string, std::map<std::string, double> > standardUnitsList = {
     {"ampere", {{"ampere",1.0}}},
     {"candela", {{"candela",1.0}}},
     {"dimensionless", {{"dimensionless",1.0}}},
@@ -127,7 +127,7 @@ const std::map< std::string, std::map<std::string, double> > standardUnitsList{
 /**
 * Map connecting standard built-in units to the multiplier exponent of their base unit components.
 */
-const std::map<std::string, double> standardMultiplierList{
+const std::map<std::string, double> standardMultiplierList = {
     {"ampere",0.0},
     {"candela",0.0},
     {"dimensionless",0.0},
@@ -167,7 +167,7 @@ const std::map<std::string, double> standardMultiplierList{
 /**
 * Map connecting prefix strings to their exponent (eg: "kilo"-> 10^3)
 */
-const std::map<std::string, int> standardPrefixList{
+const std::map<std::string, int> standardPrefixList = {
     {"yotta",24},
     {"zetta",21},
     {"exa",18},
@@ -244,7 +244,7 @@ const std::map<std::string, int> standardPrefixList{
 /*
 * List of mathml elements which are supported TODO need to pass to other checkers?
 */
-const std::vector<std::string> supportedMathMLElements{
+const std::vector<std::string> supportedMathMLElements = {
     "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
     "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
     "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
