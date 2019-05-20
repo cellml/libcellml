@@ -17,6 +17,7 @@ limitations under the License.
 #pragma once
 
 #include <map>
+#include <string> // Added to see if Mac buildbot is happy
 #include <vector>
 
 namespace libcellml {
