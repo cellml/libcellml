@@ -1204,7 +1204,25 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
         mValidator->addError(err);
     } else {
-        variableString = "referencing variable '" + reset->getVariable()->getName() + "'";
+        // Check that the reset variable is inside the same component as the reset itself
+        Component* variable_component = static_cast<Component*> (reset->getVariable()->getParent());
+
+        if (variable_component->getName() != component->getName()) {
+            /// @cellml2_12 12.1.1.1 Variable attribute references variable in the same parent component as reset
+            variableString = "references variable '" + reset->getVariable()->getName() +
+                "' in a different component '" + variable_component->getName() +"', ";
+
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Reset in component '" + component->getName() +
+                                "' " + orderString +
+                                " " + variableString + "");
+            err->setReset(reset);
+            err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
+            mValidator->addError(err);
+        }
+        else {
+            variableString = "referencing variable '" + reset->getVariable()->getName() + "'";
+        }
     }
 
     if (!reset->isOrderSet()) {

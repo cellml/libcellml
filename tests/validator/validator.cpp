@@ -1430,9 +1430,15 @@ TEST(Validator, resets) {
     m->setName("main");
     m->addComponent(c);
 
-    // adding reset to second component which does not contain the variable needed
-    /// @cellml2_12 12.1.1.1 TODO Validate TEST that variable attribute in a reset must be defined within the component parent
-    /// of that reset
+    libcellml::Validator v1;
+
+    v1.validateModel(m);
+    EXPECT_EQ(expectedErrors1.size(), v1.errorCount());
+    for (size_t i = 0; i < expectedErrors1.size(); ++i) {
+        EXPECT_EQ(expectedErrors1.at(i), v1.getError(i)->getDescription());
+    }
+
+    /// @cellml2_12 12.1.1.1 Validate that reset variable exists in component. 
     libcellml::ModelPtr m2 = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr var2 = std::make_shared<libcellml::Variable>();
@@ -1446,29 +1452,22 @@ TEST(Validator, resets) {
     var2->setName("var2");
     var2->setUnits("metre");
 
-    libcellml::Validator v1;
-
-    v1.validateModel(m);
-    EXPECT_EQ(expectedErrors1.size(), v1.errorCount());
-    for (size_t i = 0; i < expectedErrors1.size(); ++i) {
-        EXPECT_EQ(expectedErrors1.at(i), v1.getError(i)->getDescription());
-    }
-    /* TODO This should fail but doesn't because we're not checking resets properly ...*/
-    /// @cellml2_12 12.1.1 TODO Validate that reset variable exists in component.  Code to check commented out here
-    /*r8->setOrder(20);
+    r8->setOrder(20);
     r8->addWhen(w3);
-    r8->setVariable(var); // not inside this component ...
-
+    r8->setVariable(var); // not inside this component 
     c2->addVariable(var2);
     c2->addReset(r8); 
-    c2->setName("comp2");
+    c2->setName("comp_too");
 
-    m2->setName("main2");
+    m2->setName("model2");
     m2->addComponent(c2);
 
     libcellml::Validator v2;
     v2.validateModel(m2);
-    EXPECT_EQ(1u, v2.errorCount());*/
+
+    EXPECT_EQ(1u, v2.errorCount());
+    EXPECT_EQ("Reset in component 'comp_too' with order '20' references variable 'var' in a different component 'comp', ",
+              v2.getError(0)->getDescription());
 
 }
 
