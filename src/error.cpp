@@ -291,6 +291,7 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::VARIABLE_UNITS, "11.1.1.2"},
     {SpecificationRule::VARIABLE_INTERFACE, "11.1.2.1"},
     {SpecificationRule::VARIABLE_INITIAL_VALUE, "11.1.2.2"},
+    {SpecificationRule::RESET_NOT_SUPPORTED, "12.1.1.1"},
     {SpecificationRule::RESET_VARIABLE_REFERENCE, "12.1.1.1"},
     {SpecificationRule::RESET_ORDER, "12.1.1.2"},
     {SpecificationRule::RESET_CHILD, "12.1.2"},
