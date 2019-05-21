@@ -125,7 +125,9 @@ struct Validator::ValidatorImpl
     * @param child Connected variable to start checking from
     * @param check_list The helper string returned containing the list(s) of cyclic variables
     */
-    bool cycleVariableFound(VariablePtr &parent, VariablePtr &child, std::deque<libcellml::VariablePtr> &check_list);
+    bool cycleVariableFound(VariablePtr &parent, VariablePtr &child, 
+                            std::deque<libcellml::VariablePtr> &check_list,
+                            std::vector<libcellml::VariablePtr> &all_variable_list);
 
     /**
         * @brief Check if the provided @p name is a valid CellML identifier.
@@ -1718,6 +1720,7 @@ bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, s
     bool found = false;
     std::deque<libcellml::VariablePtr> check_list = {};
     std::vector<std::deque<libcellml::VariablePtr>> total_list = {};
+    std::vector<libcellml::VariablePtr> all_variable_list = {};
 
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
@@ -1728,6 +1731,8 @@ bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, s
 
                 if (variable->equivalentVariableCount() < 2)
                     continue;
+                if ((std::find(all_variable_list.begin(), all_variable_list.end(), variable) != all_variable_list.end()))
+                    continue;
 
                 for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
 
@@ -1736,7 +1741,7 @@ bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, s
 
                     VariablePtr eq = variable->getEquivalentVariable(k);
 
-                    if (cycleVariableFound(variable, eq, check_list)) {
+                    if (cycleVariableFound(variable, eq, check_list, all_variable_list)) {
                         total_list.push_back(check_list);
                         found = true;
                     }
@@ -1779,7 +1784,11 @@ bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, s
     return (!found);
 }
 
-bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariablePtr &child, std::deque<libcellml::VariablePtr> &check_list) {
+bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariablePtr &child, 
+                                                  std::deque<libcellml::VariablePtr> &check_list,
+                                                  std::vector<libcellml::VariablePtr> &all_variable_list) {
+
+    all_variable_list.push_back(child);
 
     if(std::find(check_list.begin(), check_list.end(), child) != check_list.end()) {
         check_list.push_back(child);
@@ -1796,7 +1805,7 @@ bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariableP
             if (eq == parent) {
                 continue;
             }
-            if (cycleVariableFound(child, eq, check_list)) {
+            if (cycleVariableFound(child, eq, check_list, all_variable_list)) {
                 return true;
             }
         }
