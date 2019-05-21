@@ -23,9 +23,9 @@ limitations under the License.
 namespace libcellml {
 
 /**
-* Vector of base units. NB not const as added to if need be by user-defined units
+* Vector of base units. 
 */
-std::vector<std::string> baseUnitsList = {
+const std::vector<std::string> baseUnitsList = {
     "ampere",
     "candela", 
     "dimensionless", 

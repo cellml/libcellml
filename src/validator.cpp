@@ -1815,7 +1815,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     libcellml::UnitsPtr mu = std::make_shared<libcellml::Units>();
     std::map<std::string, double> unitmap = {};
 
-    for (std::vector<std::string>::iterator pos = baseUnitsList.begin(); pos != baseUnitsList.end(); ++pos) {
+    for (std::vector<std::string>::const_iterator pos = baseUnitsList.begin(); pos != baseUnitsList.end(); ++pos) {
         unitmap[*pos] = 0.0;
     }
 
@@ -1839,7 +1839,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         u2 = model->getUnits(v2->getUnits());
         decrementBaseUnitCount(model, unitmap, multmap, u2->getName(),  1, 0);
     }
-    else if ( unitmap.find(v2->getUnits()) != unitmap.end() ) {  
+    else if (unitmap.find(v2->getUnits()) != unitmap.end() ) {  
         myRef = v2->getUnits();
         unitmap.at(v2->getUnits()) -= 1.0;
     }
