@@ -1333,6 +1333,7 @@ TEST(Validator, integerStrings) {
             "</model>";
 
     std::vector<std::string> expectedErrors = {
+        "Component 'component' contains reset items which are not supported prior to version 1.0.",
         "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
         "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
         "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
@@ -1359,6 +1360,7 @@ TEST(Validator, resets) {
     /// @cellml2_12 12.1.1.1-2 and 12.1.2 Validate TEST Reset without order, variable and any child whens
 
     std::vector<std::string> expectedErrors1 = {
+        "Component 'comp' contains reset items which are not supported prior to version 1.0.", // TODO remove when version 1.0 is released
         "Component 'comp' contains multiple resets with order '300'.",
         "Reset in component 'comp' with order '300' does not reference a variable.",
         "Reset in component 'comp' does not have an order set, does not reference a variable.",
@@ -1433,6 +1435,7 @@ TEST(Validator, resets) {
     libcellml::Validator v1;
 
     v1.validateModel(m);
+    printErrors(v1);
     EXPECT_EQ(expectedErrors1.size(), v1.errorCount());
     for (size_t i = 0; i < expectedErrors1.size(); ++i) {
         EXPECT_EQ(expectedErrors1.at(i), v1.getError(i)->getDescription());
@@ -1464,15 +1467,23 @@ TEST(Validator, resets) {
 
     libcellml::Validator v2;
     v2.validateModel(m2);
+    printErrors(v2);
 
-    EXPECT_EQ(1u, v2.errorCount());
-    EXPECT_EQ("Reset in component 'comp_too' with order '20' references variable 'var' in a different component 'comp', ",
-              v2.getError(0)->getDescription());
+    std::vector<std::string> expectedErrors2 = {
+        "Component 'comp_too' contains reset items which are not supported prior to version 1.0.", // TODO remove when version 1.0 is released
+        "Reset in component 'comp_too' with order '20' references variable 'var' in a different component 'comp', ",
+    };
+    
+    EXPECT_EQ(expectedErrors2.size(), v2.errorCount());
+    for (size_t i = 0; i < expectedErrors2.size(); ++i) {
+        EXPECT_EQ(expectedErrors2.at(i), v2.getError(i)->getDescription());
+    }
 
 }
 
 TEST(Validator, whens) {
     std::vector<std::string> expectedErrors {
+        "Component 'comp' contains reset items which are not supported prior to version 1.0.", // TODO remove when version 1.0 is released
         "Reset in component 'comp' with order '300' does not reference a variable.",
         "When in reset with order '300' which does not reference a variable, does not have an order set.",
         "When in reset with order '300' which does not reference a variable, does not have an order set, does not have a MathML condition set.",

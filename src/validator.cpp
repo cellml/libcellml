@@ -988,6 +988,14 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     }
     /// @cellml2_10 10.1.2.2 Check for presence of resets in this component
     if (component->resetCount() > 0) {
+
+        // TODO Resets are not supported in version 0.9 so adding in an error here if they're present.
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Component '"+component->getName()+"' contains reset items which are not supported prior to version 1.0.");
+        err->setComponent(component);
+        err->setRule(SpecificationRule::RESET_NOT_SUPPORTED);
+        mValidator->addError(err);
+
         /// @cellml2_12 12.1.1.2 Check for duplicate order values in resets in this component
         std::vector<int> resetOrders;
         for (size_t i = 0; i < component->resetCount(); ++i) {
