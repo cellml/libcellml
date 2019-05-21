@@ -1264,7 +1264,6 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
                     whenOrders.push_back(whenOrder);
                 }
             }
-
         }
         /// @cellml2_12 12.1.1.3 Validates all 'when' children
         for (size_t i = 0; i < reset->whenCount(); ++i) {
@@ -1282,10 +1281,6 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         err->setRule(SpecificationRule::RESET_CHILD);
         mValidator->addError(err);
     }
-
-    /// @cellml2_12 TODO Need to check whether there is an implied 1-to-1 correspondence between 
-    /// the 'when' element(s) and the 'order' integers? If so, does it need to be validated?  Is this specified in 
-    /// 13.1.1 When specifications?
 }
 
 void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component)
