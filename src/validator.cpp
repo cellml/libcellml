@@ -988,37 +988,12 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     }
     /// @cellml2_10 10.1.2.2 Check for presence of resets in this component
     if (component->resetCount() > 0) {
-
         // TODO Resets are not supported in version 0.9 so adding in an error here if they're present.
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Component '"+component->getName()+"' contains reset items which are not supported prior to version 1.0.");
+        err->setDescription("Component '"+component->getName()+"' contains reset items which are not currently supported.");
         err->setComponent(component);
         err->setRule(SpecificationRule::RESET_NOT_SUPPORTED);
         mValidator->addError(err);
-
-        /// @cellml2_12 12.1.1.2 Check for duplicate order values in resets in this component
-        std::vector<int> resetOrders;
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->getReset(i);
-            int resetOrder = reset->getOrder();
-            if (reset->isOrderSet()) {
-                if (std::find(resetOrders.begin(), resetOrders.end(), resetOrder) != resetOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->getName() +
-                                        "' contains multiple resets with order '" + convertIntToString(resetOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    resetOrders.push_back(resetOrder);
-                }
-            }
-        }
-        /// @cellml2_10 10.1.2.2 Validate resets in this component's variables
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->getReset(i);
-            validateReset(reset, component);
-        }
     }
     /// @cellml2_10 10.1.2.3 Validate math through the private implementation (for XML handling) in this component
     if (component->getMath().length()) {
@@ -1188,174 +1163,6 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, std
     }
 }
 
-void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
-{
-    /// @cellml2_12 12.1.1.2 Check that this reset order is set
-    std::string orderString;
-    if (reset->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(reset->getOrder()) + "'";
-    } else {
-        orderString = "does not have an order set,";
-    }
-
-    /// @cellml2_12 12.1.1.1 Check that this reset references a variable 
-    std::string variableString;
-    std::string variableContinuation = "";
-    if (reset->getVariable() == nullptr) {
-        variableString = "does not reference a variable";
-        variableContinuation = ",";
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->getName() +
-                            "' " + orderString +
-                            " " + variableString + ".");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
-        mValidator->addError(err);
-    } else {
-        // Check that the reset variable is inside the same component as the reset itself
-        Component* variable_component = static_cast<Component*> (reset->getVariable()->getParent());
-
-        if (variable_component->getName() != component->getName()) {
-            /// @cellml2_12 12.1.1.1 Variable attribute references variable in the same parent component as reset
-            variableString = "references variable '" + reset->getVariable()->getName() +
-                "' in a different component '" + variable_component->getName() +"', ";
-
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Reset in component '" + component->getName() +
-                                "' " + orderString +
-                                " " + variableString + "");
-            err->setReset(reset);
-            err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
-            mValidator->addError(err);
-        }
-        else {
-            variableString = "referencing variable '" + reset->getVariable()->getName() + "'";
-        }
-    }
-
-    if (!reset->isOrderSet()) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->getName() +
-                            "' " + orderString +
-                            " " + variableString + ".");
-        err->setComponent(component);
-        err->setRule(SpecificationRule::RESET_ORDER);
-        mValidator->addError(err);
-    }
-
-    /// @cellml2_12 12.1.1.2 Checking for duplicate order values for each 'when' entry in this reset
-    if (reset->whenCount() > 0) {
-        // Check for duplicate when order values.
-        std::vector<int> whenOrders;
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->getWhen(i);
-            if (when->isOrderSet()) {
-                int whenOrder = when->getOrder();
-                if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->getName() +
-                                        "' " + orderString +
-                                        " " + variableString + variableContinuation +
-                                        " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    whenOrders.push_back(whenOrder);
-                }
-            }
-        }
-        /// @cellml2_12 12.1.1.3 Validates all 'when' children
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->getWhen(i);
-            validateWhen(when, reset, component);
-        }
-    } else {
-        ///@cellml2_12 12.1.1.3 Check there is at least one 'when' child
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->getName() +
-                            "' " + orderString +
-                            " " + variableString + variableContinuation +
-                            " does not have at least one child When.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_CHILD);
-        mValidator->addError(err);
-    }
-}
-
-void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component)
-{
-    std::string orderString;
-    std::string resetOrderString;
-    std::string resetVariableString;
-    std::string resetVariableContinuation;
-
-    /// @cellml2_13 13.1.1 Check that there is an order attribute specified for input when
-    if (when->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(when->getOrder()) + "'";
-    } else {
-        orderString = "does not have an order set,";
-    }
-
-    /// @cellml2_12 12.1.1.3 Check that there is an order attribute specified for input reset element
-    if (reset->isOrderSet()) {
-        resetOrderString = "with order '" + convertIntToString(reset->getOrder()) + "'";
-    } else {
-        resetOrderString = "which does not have an order set,";
-    }
-
-    /// @cellml2_12 12.1.1.1 (?) Check that input reset references a variable
-    if (reset->getVariable() == nullptr) {
-        resetVariableString = "which does not reference a variable";
-        resetVariableContinuation = ",";
-    } else {
-        resetVariableContinuation = "";
-        resetVariableString = "referencing variable '" + reset->getVariable()->getName() + "'";
-    }
-
-    /// @cellml2_13 13.1.1 Check that input when has an order  (? checks when->isOrder but returns error
-    /// from reset?)
-    if (!when->isOrderSet()) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString +
-                            " " + resetVariableString + resetVariableContinuation +
-                            " does not have an order set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_ORDER);
-        mValidator->addError(err);
-    }
-
-    /// @cellml2_13 13.1.2 13.? Check maths condition of the input component (? Checks component but returns error based on reset?)
-    if (when->getCondition().length() > 0) {
-        validateMath(when->getCondition(), component);
-    } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString +
-                            " " + resetVariableString + resetVariableContinuation +
-                            " " + orderString +
-                            " does not have a MathML condition set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
-        mValidator->addError(err);
-    }
-
-    /// @cellml2_13 13.? Check maths value of the input component (? Checks component but returns error based on reset?)
-    /// @cellml2_14 14.? Check maths value of the input component (? Checks component but returns error based on reset?)
-    if (when->getValue().length() > 0) {
-        validateMath(when->getValue(), component);
-    } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString +
-                            " " + resetVariableString + resetVariableContinuation +
-                            " " + orderString +
-                            " does not have a MathML value set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
-        mValidator->addError(err);
-    }
-
-}
-
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
     /// @cellml2_14 14.1.1 Check input XML is valid for a component
@@ -1394,23 +1201,18 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     std::vector<std::string> bvarNames;
     std::vector<std::string> variableNames;
     // making a list of unique variable names inside component
-    /// @cellml2_14 TODO Should variable names inside a component be validated to prevent duplicates 
-    /// instead of removing silently from check list?
     for (size_t i = 0; i < component->variableCount(); ++i) {
         std::string variableName = component->getVariable(i)->getName();
         if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
             variableNames.push_back(variableName);
         }
-      
     }
 
-    /// @cellml2_14 14.1.3 Check that the variables in the MathML are supported, see hard-coded list at
-    /// bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
+    /// @cellml2_14 14.1.3 Check that the variables in the MathML are supported
     validateMathMLElements(nodeCopy, component);
 
     // Get the bvar names in this math element.
     // TODO: may want to do this with XPath instead...
-    /// @cellml2_14 TODO Change to XPath instead? 
     /// @cellml2_14 14.? Check that there are no duplicates between bound (bvar) and unbound variable names
     gatherMathBvarVariableNames(nodeCopy, bvarNames);
     // Check that no variable names match new bvar names.
@@ -1429,10 +1231,10 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     XmlNodePtr mathNode = node;
     validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
 
-    /// @cellml2_14 TODO Is there a better way to do this?  Get the MathML string (with cellml:units attributes already removed)
-    /// and remove the CellML namespace.  While the removeSubstring() approach for removing the cellml namespace before 
-    /// validating with the MathML DTD is not ideal, libxml does not appear to have a better way to remove a namespace 
-    /// declaration from the tree.
+    // TODO Is there a better way to do this?  Get the MathML string (with cellml:units attributes already removed)
+    // and remove the CellML namespace.  While the removeSubstring() approach for removing the cellml namespace before 
+    // validating with the MathML DTD is not ideal, libxml does not appear to have a better way to remove a namespace 
+    // declaration from the tree.
     std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
     std::string cleanMathml = mathNode->convertToString();
     removeSubstring(cleanMathml, cellml2NamespaceString);
@@ -1441,7 +1243,8 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Parse/validate the clean math string with the W3C MathML DTD.
     XmlDocPtr mathmlDoc = std::make_shared<XmlDoc>();
     mathmlDoc->parseMathML(cleanMathml);
-    // Copy any MathML validation errors into the common validator error handler.
+    // Copy any MathML validation errors into the common validator error handler. NB: These error messages do not use quotation marks around element names or types, 
+    // so will be inconsistent with other error messages in the validator.
     if (mathmlDoc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
@@ -1585,7 +1388,6 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 
 void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component)
 {
-
     /// @cellml2_14 14.1.2 Check that each child of a math element is supported, recursive over own children
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode) {
@@ -1688,9 +1490,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             err->setKind(Error::Kind::UNITS);
                             mValidator->addError(err);
                         }
-
-                        /// @cellml2_18 18.1.3 Don't need to check that connections do not duplicate variable pairs (19.10.4)
-                        /// as duplicates are not stored (?).
 
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
                             // Check that the equivalent variable has a valid parent component.
@@ -1835,7 +1634,9 @@ bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariableP
 }
 
 bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model, 
-    const VariablePtr &v1, const VariablePtr &v2, std::string &hints) 
+                                                  const VariablePtr &v1, 
+                                                  const VariablePtr &v2, 
+                                                  std::string &hints) 
 {
 
     bool status;
@@ -2012,7 +1813,7 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, std::string &
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
-    /// @cellml2_14 14.1.2 Lists the hard-coded supported MathML elements tags
+    /// @cellml2_14 14.1.2 Checks against the supported MathML elements tags
     return    !node->getNamespace().compare(MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getName()) != supportedMathMLElements.end();
 }

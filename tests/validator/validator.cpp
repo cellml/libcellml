@@ -1333,11 +1333,7 @@ TEST(Validator, integerStrings) {
             "</model>";
 
     std::vector<std::string> expectedErrors = {
-        "Component 'component' contains reset items which are not supported prior to version 1.0.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
+        "Component 'component' contains reset items which are not currently supported.",
     };
 
     libcellml::Parser p;
@@ -1346,102 +1342,14 @@ TEST(Validator, integerStrings) {
 
     libcellml::Validator v;
     v.validateModel(m);
+
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
+    EXPECT_EQ(expectedErrors.at(0), v.getError(0)->getDescription());
 
 }
 
 TEST(Validator, resets) {
-    /// @cellml2_12 12.1.1.2 Validate TEST Resets in a component have duplicated order values
-    /// @cellml2_12 12.1.1.1 Validate TEST Reset does not reference a variable
-    /// @cellml2_12 12.1.1.1-2 Validate TEST Reset does not have an order or reference a variable
-    /// @cellml2_12 12.1.2 Validate TEST Reset does not contain when item
-    /// @cellml2_12 12.1.1.1 and 12.1.2 Validate TEST Reset without order also missing child when
-    /// @cellml2_12 12.1.1.1-2 Validate TEST Reset without order does not reference a variable
-    /// @cellml2_12 12.1.1.1-2 and 12.1.2 Validate TEST Reset without order, variable and any child whens
 
-    std::vector<std::string> expectedErrors1 = {
-        "Component 'comp' contains reset items which are not supported prior to version 1.0.", // TODO remove when version 1.0 is released
-        "Component 'comp' contains multiple resets with order '300'.",
-        "Reset in component 'comp' with order '300' does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' with order '500' referencing variable 'var' does not have at least one child When.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var' does not have at least one child When.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable, does not have at least one child When.",
-    };
-
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-
-    libcellml::VariablePtr var = std::make_shared<libcellml::Variable>();
-
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r5 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r6 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
-
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-
-
-    w1->setOrder(776);
-    w1->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w1->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w2->setOrder(345);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w2->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-
-    r1->setOrder(300);
-    r1->addWhen(w1);
-
-    r6->addWhen(w1);
-
-    r2->setOrder(300);
-    r2->addWhen(w1);
-    r2->addWhen(w2);
-    r2->setVariable(var);
-
-    r3->setOrder(400);
-    r3->addWhen(w2);
-    r3->setVariable(var);
-
-    r4->setVariable(var);
-    r4->setOrder(500);
-
-    r5->setVariable(var);
-
-    c->setName("comp");
-    var->setName("var");
-    var->setUnits("second");
-
-    c->addVariable(var);
-    c->addReset(r1);
-    c->addReset(r6);
-    c->addReset(r2);
-    c->addReset(r3);
-    c->addReset(r4);
-    c->addReset(r5);
-    c->addReset(r7);
-
-    m->setName("main");
-    m->addComponent(c);
-
-    libcellml::Validator v1;
-
-    v1.validateModel(m);
-    printErrors(v1);
-    EXPECT_EQ(expectedErrors1.size(), v1.errorCount());
-    for (size_t i = 0; i < expectedErrors1.size(); ++i) {
-        EXPECT_EQ(expectedErrors1.at(i), v1.getError(i)->getDescription());
-    }
-
-    /// @cellml2_12 12.1.1.1 Validate that reset variable exists in component. 
     libcellml::ModelPtr m2 = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr var2 = std::make_shared<libcellml::Variable>();
@@ -1457,21 +1365,18 @@ TEST(Validator, resets) {
 
     r8->setOrder(20);
     r8->addWhen(w3);
-    r8->setVariable(var); // not inside this component 
+    r8->setVariable(var2); 
     c2->addVariable(var2);
     c2->addReset(r8); 
     c2->setName("comp_too");
-
     m2->setName("model2");
     m2->addComponent(c2);
 
     libcellml::Validator v2;
     v2.validateModel(m2);
-    printErrors(v2);
 
     std::vector<std::string> expectedErrors2 = {
-        "Component 'comp_too' contains reset items which are not supported prior to version 1.0.", // TODO remove when version 1.0 is released
-        "Reset in component 'comp_too' with order '20' references variable 'var' in a different component 'comp', ",
+        "Component 'comp_too' contains reset items which are not currently supported.", 
     };
     
     EXPECT_EQ(expectedErrors2.size(), v2.errorCount());
@@ -1479,80 +1384,6 @@ TEST(Validator, resets) {
         EXPECT_EQ(expectedErrors2.at(i), v2.getError(i)->getDescription());
     }
 
-}
-
-TEST(Validator, whens) {
-    std::vector<std::string> expectedErrors {
-        "Component 'comp' contains reset items which are not supported prior to version 1.0.", // TODO remove when version 1.0 is released
-        "Reset in component 'comp' with order '300' does not reference a variable.",
-        "When in reset with order '300' which does not reference a variable, does not have an order set.",
-        "When in reset with order '300' which does not reference a variable, does not have an order set, does not have a MathML condition set.",
-        "When in reset with order '300' which does not reference a variable, does not have an order set, does not have a MathML value set.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var' has multiple whens with order '250'.",
-        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML value set.",
-        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML condition set.",
-    };
-
-    /// @cellml2_13 13.1.1 Validate TEST When item has an order
-    /// @cellml2_12 12.1.1 Validate TEST When item has a reset which references a variable
-    /// @cellml2_13 13.1.2 Validate TEST When item has a reset which references a variable, contains a MathML condition
-    /// @cellml2_13 13.1.2 Validate TEST When item has a reset which references a variable, contains a MathML value
-    /// @cellml2_12 12.1.2 Validate TEST Reset item has an order
-    /// @cellml2_12 12.1.2 Validate TEST Reset item has duplicated order values
-    /// @cellml2_13 13.1.2 Validate TEST Reset item references a when which does not have a MathML value 
-    /// @cellml2_13 13.1.2 Validate TEST Reset item references a when which does not have a MathML condition
-    /// @cellml2_13 13.1.1 Validate TEST When item has unique order amongst siblings
-
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w4 = std::make_shared<libcellml::When>();
-
-    r1->setOrder(300);
-    r1->addWhen(w1);
-    //r2->setOrder(400);
-    r2->addWhen(w2);
-    r2->addWhen(w3);
-    r3->setOrder(500);
-    r3->addWhen(w4);
-    // r1->setVariable(var);
-    r2->setVariable(var);
-    r3->setVariable(var);
-
-    c->setName("comp");
-    var->setName("var");
-    var->setUnits("second");
-
-    w2->setOrder(250);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w3->setOrder(250);
-    w3->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w4->setOrder(365);
-    w4->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w4->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-
-    c->addVariable(var);
-    c->addReset(r1);
-    c->addReset(r2);
-    c->addReset(r3);
-
-    m->setName("main");
-    m->addComponent(c);
-
-    libcellml::Validator v;
-    v.validateModel(m);
-
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
-    }
 }
 
 TEST(Validator, validMathCnElements) {
