@@ -112,6 +112,7 @@ TEST(Coverage, prefixToString) {
         {"atto",
          "centi",
          "deca",
+         "deka",
          "deci",
          "exa",
          "femto",
@@ -134,6 +135,7 @@ TEST(Coverage, prefixToString) {
         {libcellml::Prefix::ATTO,
          libcellml::Prefix::CENTI,
          libcellml::Prefix::DECA,
+         libcellml::Prefix::DEKA,  // Added to support both 'deca' and 'deka' as both are in common use
          libcellml::Prefix::DECI,
          libcellml::Prefix::EXA,
          libcellml::Prefix::FEMTO,

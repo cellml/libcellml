@@ -28,26 +28,27 @@ namespace libcellml {
  */
 enum class Prefix
 {
-    YOTTA,
-    ZETTA,
-    EXA,
-    PETA,
-    TERA,
-    GIGA,
-    MEGA,
-    KILO,
-    HECTO,
-    DECA,
-    DECI,
-    CENTI,
-    MILLI,
-    MICRO,
-    NANO,
-    PICO,
-    FEMTO,
-    ATTO,
-    ZEPTO,
-    YOCTO
+    YOTTA = 24,
+    ZETTA = 21,
+    EXA = 18,
+    PETA = 15,
+    TERA = 12,
+    GIGA = 9,
+    MEGA = 6,
+    KILO = 3,
+    HECTO = 2,
+    DECA = 1, 
+    DEKA = 1, // Added to support 'deca' and 'deka' prefixes as both in common use
+    DECI = -1,
+    CENTI = -2,
+    MILLI = -3,
+    MICRO = -6,
+    NANO =-9 ,
+    PICO = -12,
+    FEMTO = -15,
+    ATTO = -18,
+    ZEPTO = -21,
+    YOCTO = -24
 };
 
 }

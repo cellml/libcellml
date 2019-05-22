@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright libCellML Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -1121,7 +1121,7 @@ bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
     bool result = false;
     std::vector<std::string> prefixNames =
     {
-        "atto", "centi", "deca", "deci", "exa", "femto", "giga", "hecto", "kilo", "mega", "micro", "milli",
+        "atto", "centi", "deca", "deci", "deka", "exa", "femto", "giga", "hecto", "kilo", "mega", "micro", "milli",
         "nano", "peta", "pico", "tera", "yocto", "yotta", "zepto", "zetta"
     };
     if (std::find(prefixNames.begin(), prefixNames.end(), name) != prefixNames.end()) {
