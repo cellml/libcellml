@@ -36,7 +36,6 @@ std::map<Prefix, const std::string> prefixToString =
     {Prefix::ATTO, "atto"},
     {Prefix::CENTI, "centi"},
     {Prefix::DECA, "deca"},
-    {Prefix::DEKA, "deka"},  // Added to support both 'deca' and 'deka' as both are in common use
     {Prefix::DECI, "deci"},
     {Prefix::EXA, "exa"},
     {Prefix::FEMTO, "femto"},

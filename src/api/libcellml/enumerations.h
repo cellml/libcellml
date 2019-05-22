@@ -38,7 +38,6 @@ enum class Prefix
     KILO = 3,
     HECTO = 2,
     DECA = 1, 
-    DEKA = 1, // Added to support 'deca' and 'deka' prefixes as both in common use
     DECI = -1,
     CENTI = -2,
     MILLI = -3,
