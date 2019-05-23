@@ -48,7 +48,11 @@ When we configure libCellML, the location of `LibXml2 <http://xmlsoft.org/>`_ ca
 to the configuration command.
 This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  
 
-Please note that libCellML will _only_ work with a 64-bit installation of libxml2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work.  
+Please note that libCellML will _only_ work with a 64-bit installation of libxml2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work. 
+
+
+You may need to also download and install `Graphvis <https://graphviz.gitlab.io/_pages/Download/Download_windows.html>`_ and add it to your PATH.  This is used by Doxygen to generate graphs of the dependencies between classes. You may also need to restart your computer so that it recognises your Doxygen installation.
+
 
 Windows CMake-GUI
 +++++++++++++++++
@@ -126,15 +130,29 @@ For a more verbose output, run::
 Build in Windows and Visual Studio
 ----------------------------------
 
-1. Before starting to build you may need to also download and install `Graphvis <https://graphviz.gitlab.io/_pages/Download/Download_windows.html>`_ and add it to your PATH.  This is used by Doxygen to generate graphs of the 
-dependencies between classes. 
-2. You may need to restart your computer to initialise your Doxygen installation.
-3. Open your Visual Studio and open the solution *.sln file which was created by CMake.  Depending on your setup, you may need to configure a few more dependencies before you're able to build the library.
+Once you have used CMake to configure and generate your project files, just push the Open project button to launch the project in your Visual Studio IDE.  This is the equivalent of opening the solution *.sln file inside your build folder.  The libCellML solution is a library of different projects and each of uses slightly different configurations. 
 
-Gotchas:
---------
+Possible issues
 
-a. 
+"The code execution cannot proceed because libcellmld.dll was not found.  Reinstalling the program may fix this problem."
+
+.. _fig_devBuilding_libcellml_dll_not_found:
+
+.. figure:: images/libcellml_dll_not_found.png
+   :align: center
+   :alt: System error when dll is not found.
+
+Solution:  You need to add location of the file(s) to the environment path of the project.  To do this, right-click the project and open the Properties editor.  Under the menu Configuration Properties > Debugging > Environment click the Edit button, and add the path to your libcellmldl.dll file.  You should find this file in your build directory in the  `\\src\\Debug` folder.  
+
+- The statement should begin with "PATH=" and then contain a list of semicolon-separated directories.
+- The statement should end with "%PATH%" in order to include elements included from elsewhere.
+- Note that if your path contains spaces you must surround it with double quotation marks.
+- Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
+
+You may need to repeat this process for the gtest.dll and gtest_main.dll files as well.  These are found in your build directory, under "tests\\gtest\\Debug" or similar.
+
+      
+
 
 
 
