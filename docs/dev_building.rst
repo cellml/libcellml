@@ -46,7 +46,9 @@ When we configure libCellML, the location of `LibXml2 <http://xmlsoft.org/>`_ ca
   -DLibXml2_DIR="C:\Program Files\libxml2 2.9.6\lib\cmake"
 
 to the configuration command.
-This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that this method will _only_ work with the 64-bit `LibXml2 <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_ installer provided from the OpenCMISS repository; other sources or precompiled 32-bit binaries will not work.
+This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  
+
+Please note that libCellML will _only_ work with a 64-bit installation of libxml2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work.  
 
 Windows CMake-GUI
 +++++++++++++++++
@@ -99,7 +101,7 @@ Setting the value of ``LibXml2_DIR`` to ``C:\Program Files\libxml2 2.9.6\lib\cma
 
 If `LibXml2 <http://xmlsoft.org/>`_ was not installed to ``C:\Program Files\libxml2 2.9.6``, you will need to adjust the path to match your situation.
 
-Note: If pushing the *Configure* button your path to the LibXml2 directory is lost and CMake continues to return an error about it, it could be that your LibXml2 is a 32-bit version.  Please make sure to download and run the *.exe installer from the `provided 64-bit installer <https://github.com/OpenCMISS-Dependencies/libxml2/releases/>`_ instead.   
+Note: If after pushing the *Configure* button your path to the LibXml2 directory is lost, and CMake continues to return an error about it, make sure that your LibXml2 is the required 64-bit version.  If not, simply download and run the *.exe 64-bit installer from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases/>`_, and check that your paths and settings above match the location of this installation.   
 
 Build
 =====
@@ -124,9 +126,15 @@ For a more verbose output, run::
 Build in Windows and Visual Studio
 ----------------------------------
 
-1. Before starting to build you may need to also download and install `Graphvis <https://graphviz.gitlab.io/_pages/Download/Download_windows.html>`_ and add it to your PATH.
-2. Restart your computer to initialise your Doxygen installation
-3. Open your Visual Studio and open the solution *.sln file which was created by CMake.
+1. Before starting to build you may need to also download and install `Graphvis <https://graphviz.gitlab.io/_pages/Download/Download_windows.html>`_ and add it to your PATH.  This is used by Doxygen to generate graphs of the 
+dependencies between classes. 
+2. You may need to restart your computer to initialise your Doxygen installation.
+3. Open your Visual Studio and open the solution *.sln file which was created by CMake.  Depending on your setup, you may need to configure a few more dependencies before you're able to build the library.
+
+Gotchas:
+--------
+
+a. 
 
 
 
