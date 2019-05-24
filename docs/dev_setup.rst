@@ -14,10 +14,13 @@ Overview
 The libCellML codebase is hosted on `GitHub <https://github.com/>`_ and therefore `Git <https://git-scm.com/>`_ is used to track changes. Before you begin, you will need to have a few pre-requisites satisfied:
 
 1. `GitHub <https://github.com/>`_ user account (for the rest of this document we will call our user *andre*).
-#. `Git <https://git-scm.com/>`_.
-#. `CMake <https://cmake.org/>`_.
-#. Toolchain for building software (dependent on the operating system).
-#. `LibXml2 <http://xmlsoft.org/>`_.
+#. `Git <https://git-scm.com/>`_ for tracking changes in code
+#. `CMake <https://cmake.org/>`_ to configure the build files
+#. Toolchain for building the library (dependent on the operating system).
+#. `LibXml2 <http://xmlsoft.org/>`_, an external library used to parse XML
+#. `Doxygen <https://doxygen.nl/>`_ to generate documentation
+#. `SWIG <http://swig.org>`_ (optional) to generate bindings for Python
+#. `Python <https://www.python.org/>`_ (optional) if Python bindings are required 
 
 Pre-requisite acquisition
 =========================
@@ -74,16 +77,34 @@ This component (and its requirements) is sufficient for building libCellML.
 LibXml2
 -------
 
-`LibXml2 <http://xmlsoft.org/>`_ is already installed on `macOS <https://en.wikipedia.org/wiki/MacOS>`_, so no further action is required on that platform.
-On `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_, we must install `LibXml2 <http://xmlsoft.org/>`_ using the recommended implementation available from `here <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_.  It's important to use this link as it needs to be a 64-bit version to build into libCellml.
-On `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ `LibXml2 <http://xmlsoft.org/>`_ can be installed using ``sudo apt install libxml2-dev``.
+`LibXml2 <http://xmlsoft.org/>`_ is a parser and toolkit for manipulating XML files and text.  It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.  
 
-Python bindings
----------------
+LibXML2 is already installed on `macOS <https://en.wikipedia.org/wiki/MacOS>`_, so no further action is required on that platform.  
 
-Optional Python bindings are provided using `SWIG <http://www.swig.org/>`_.
-To compile the bindings, a `SWIG <http://www.swig.org/>`_ installation is required, as well as a Python 2 or Python 3 installation (including the development packages on `Linux <https://en.wikipedia.org/wiki/Linux>`_ systems, e.g. ``python-dev``).
-Creation of Python bindings can be enabled/disabled at configuration time.
+On `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_, it's easiest to install using the packaged version available from `the OpenCMISS site <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_.  You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.  Source code for building it yourself can be downloaded from the `LibXml2 <http://xmlsoft.org/>`_ site.
+
+On `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ LibXml2 can be installed using ``sudo apt install libxml2-dev``.
+
+Doxygen
+-------
+
+`Doxygen <http://www.doxygen.nl/>`_ is software which assembles documentation files directly from annotated source code, including the generation of inheritance and dependency tree diagrams for classes.  In order for libCellML to build its documentation you will need to have Doxygen and its dependencies installed.  Note that this does not affect your use of the libCellML library itself. 
+
+Binary distributions for Linux, Windows, and MacOS are available from the `download page of the Doxygen website <http://www.doxygen.nl/download.html#srcbin>`_, and source code is available there too.
+
+
+SWIG for Python bindings (optional)
+-----------------------------------
+
+`SWIG <http://www.swig.org/>`_ is a tool which acts as a translator between code written in C++ and other languages, including `Python <https://www.python.org/>`_.  Here SWIG is used to generate the optional Python bindings for libCellML, so both a SWIG installation as well as a Python 2 or Python 3 installation are needed.  Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the following `Building LibCellML <https://libcellml.readthedocs.io/en/latest/dev_building.html>`_  page.
+
+On MacOS, Python `is already installed <https://legacy.python.org/getit/mac/>`_, though depending on the age of your machine you may like to upgrade it to a `later version from the Python site <https://www.python.org/downloads/mac-osx/>`_. SWIG for MacOS can be accessed using the `downloads for Unix/Linux sources <http://www.swig.org/download.html>`_ and building it locally.    
+
+On Windows both SWIG and Python will need to be installed.  Python binaries can be found on `the Python download page <https://www.python.org/downloads/windows/>`_, or you can build your own from source files if you prefer. 
+SWIG for Windows is available from `here <https://sourceforge.net/projects/swig/files/swigwin/>`_.
+  
+On Linux systems both Python and SWIG are already included, so no further action is needed.  
+
 
 Setting up the codebase
 =======================
@@ -109,9 +130,9 @@ The four steps to getting set up are detailed below.
 Forking your own copy
 ---------------------
 
-Login to `GitHub <https://github.com/>`_ using your credentials and go to https://github.com/cellml/libcellml.
+Login to `GitHub <https://github.com/>`_ using your credentials and go to https://github.com/cellml/libCellML.
 
-Use the fork button to create a libcellml repository under your own account, see :numref:`fig_devSetup_githubFork` for locating this button.
+Use the fork button to create a libCellML repository under your own account, see :numref:`fig_devSetup_githubFork` for locating this button.
 
 .. _fig_devSetup_githubFork:
 
@@ -125,7 +146,7 @@ Clone
 -----
 
 You now need to clone the libCellML repository to your computer.
-You do this by going to your fork (in this example user *andre*'s fork) at https://github.com/andre/libcellml.
+You do this by going to your fork (in this example user *andre*'s fork) at https://github.com/andre/libCellML.
 
 .. warning::
 
@@ -134,12 +155,12 @@ You do this by going to your fork (in this example user *andre*'s fork) at https
 
 On the right hand side of the webpage, on your fork of the repository, you can get the link for cloning the repository to your computer, in our example::
 
-  https://github.com/andre/libcellml.git
+  https://github.com/andre/libCellML.git
 
 Now clone the repository::
 
   cd <somewhere/you/keep/development/code>
-  git clone https://github.com/andre/libcellml.git
+  git clone https://github.com/andre/libCellML.git
 
 Note: again, do not clone this location substitute your `GitHub <https://github.com/>`_ username for *andre*.
 
@@ -149,8 +170,8 @@ Set Git remotes
 You now need to setup a read-only remote connection to the :term:`prime libCellML repository`.
 Given that you are still in the directory where you cloned the libCellML repository from, do the following::
 
-  cd libcellml
-  git remote add prime https://github.com/cellml/libcellml.git
+  cd libCellML
+  git remote add prime https://github.com/cellml/libCellML.git
   git config remote.prime.pushurl "You really did not want to do that!"
 
 You have now added a new remote named ``prime`` and set origin as the default fetch and push location to point at repositories under your control on `GitHub <https://github.com/>`_.
