@@ -59,14 +59,7 @@ Windows CMake-GUI
 In Windows the CMake options are slightly different.  Please note that in CMake GUI Configuration applications, the config variable is prefixed with ``LIBCELLML_``, and in Windows that neither ``MEMCHECK`` nor coverage testing is available.
 
 
-Config	Default	Description
-LIBCELLML_BUILD_TYPE	Release	The type of build Release, Debug etc.
-LIBCELMML_BUILD_SHARED	ON	Build shared libraries (so, dylib, DLLs).
-LIBCELLML_TREAT_WARNINGS_AS_ERRORS	ON	Treat warnings as errors.
-LIBCELLML_INSTALL_PREFIX		Install path prefix.
-UNIT_TESTS	ON	Enable tests.
-LibXml2_DIR		Path to the ‘cmake’ directory within your installation directory for libXML2.  
-Note that the COVERAGE and MEMCHECK options should be set to OFF or simply left out for a Windows build; these options will only run on Linux.
+.. include:: dev_configuration_options.rst
 
 
 When we use the CMake-GUI application on Windows, we first set the location of the source files and the location for the generated build files.  Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  You can edit anything you need to in the next step.
