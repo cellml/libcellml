@@ -3,7 +3,8 @@
 Configuring and Building libCellML
 ==================================
 
-This document covers building libCellML from source.
+This document covers building libCellML from source.  
+
 It is assumed that you already have the codebase downloaded and ready for building.  If not, please see the `Development Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page for instructions.
 
 The variable ``LIBCELLML_SRC`` shall be used to refer to the directory containing the ``LICENSE`` file for libCellML.
@@ -26,7 +27,7 @@ The first step is to use `CMake <https://cmake.org/>`_ to configure and generate
 Command Line: Linux, MacOS
 ++++++++++++++++++++++++++
 
-CMake can either be run through a simple text-based executable called ccmake, or through the command line directly.  There are instructions for both available from `here <https://cmake.org/runningcmake/>`_.  Building libCellML requires that you set the configuration parameters as in the table below.
+CMake can either be run through a simple text-based executable called ``ccmake``, or through the command line directly.  There are instructions for both available from `here <https://cmake.org/runningcmake/>`_.  Building libCellML requires that you set the configuration parameters as in the table below.
 
 
 .. include:: dev_configuration_options.rst
@@ -46,11 +47,11 @@ Note that CMake is also available on Windows as a GUI (instructions below).  Thi
 
 First, the location of the libXML2 library must be specified through the command line by adding the parameter::
 
-  -DLibXml2_DIR"C:\Program Files\libxml2 2.9.6\lib\cmake"
+  -DLibXml2_DIR "C:\Program Files\libxml2 2.9.6\lib\cmake"
 
 to the configuration command.
 
-This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that libCellML will only work with a 64-bit installation of libXML2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work.
+This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that libCellML will only work with a 64-bit installation of libXML2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work with libCellML.
 
 
 Windows CMake-GUI
@@ -63,6 +64,8 @@ In Windows the CMake options are slightly different.  Please note that in CMake 
 
 
 When we use the CMake-GUI application on Windows, we first set the location of the source files and the location for the generated build files.  Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  You can edit anything you need to in the next step.
+
+
 .. _fig_devBuilding_windowsCMakeGUISourceBuildDirs:
 
 .. figure:: images/libCellMLBuilding-CMakeGUISourceBuildDirs.png
@@ -70,6 +73,7 @@ When we use the CMake-GUI application on Windows, we first set the location of t
    :alt: CMake-GUI with initial values for source and build directories set.
 
    CMake-GUI with source and build directories set for user *andre*.
+   
 After the initial configuration attempt, CMake lists any changed values in red.  Don’t be alarmed, this is just a chance for you to check that they’re correct before continuing.  If CMake does not find the entries in the table above you will need to enter them manually and push the *Configure* button again.
 
 
@@ -91,10 +95,14 @@ If the *Generate* button remains grey this means that configuration attempt was 
    :alt: CMake-GUI on Windows showing configuration error after initial configuration attempt.
 
    CMake-GUI showing configuration error after initial configuration attempt.
+   
+   
 The most likely reason for this is that libXML2 library was not found or is a 32-bit version.  Double check that:
-the path specified in the ``LibXml2_DIR`` variable is correct (you may need to adjust this based on your local installation)
-that it points to the cmake directory inside your libXML2 installation, and
-that your installed version is 64-bit.   If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  Simply download and run the *.exe 64-bit installer from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases/>`_, and check that your paths and settings above match the location of this installation.   
+- the path specified in the ``LibXml2_DIR`` variable is correct (you may need to adjust this based on your local installation)
+- that it points to the cmake directory inside your libXML2 installation, and
+- that your installed version is 64-bit.   
+ 
+ If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  Simply download and run the *.exe 64-bit installer from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases/>`_, and check that your paths and settings above match the location of this installation.   
 
 Once you’ve changed the path, push *Configure* again.  (:numref:`fig_devBuilding_windowsCMakeLibXml2DirSet` shows a successfully configured ``LibXml2_DIR`` variable) from which build files may be generated using the *Generate* button.
 
@@ -148,8 +156,8 @@ Once you have used CMake to configure and generate your project files, either pu
 
 Solution:  You need to add location of the file(s) to the environment path of the project.  To do this, right-click the project and open the Properties editor.  Under the menu Configuration Properties > Debugging > Environment click the Edit button, and add the path to your libcellmldl.dll file.  You should find this file in your build directory in the ``\src\Debug`` folder.  
 
-- The statement should begin with ""PATH"" and then contain a list of semicolon-separated directories.
-- The statement should end with ""%PATH%"" in order to include elements included from elsewhere.
+- The statement should begin with "PATH" and then contain a list of semicolon-separated directories.
+- The statement should end with "%PATH%" in order to include elements included from elsewhere.
 - Note that if your path contains spaces you must surround it with double quotation marks.
 - Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
 
