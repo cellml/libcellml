@@ -5,39 +5,60 @@ Configuring and Building libCellML
 
 This document covers building libCellML from source.
 It is assumed that you already have the codebase downloaded and ready for building.  If not, please see the `Development Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page for instructions.
+
 The variable ``LIBCELLML_SRC`` shall be used to refer to the directory containing the ``LICENSE`` file for libCellML.
+
 Information including links to downloads and instructions for each of the packages referred to here is available from the earlier `Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page.  
+
+-------------------
 Directory structure
-It is best to build libCellML outside of the source tree.
-To this end, create a build directory that is not the ``LIBCELLML_SRC`` directory.
-A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``.
-The variable ``LIBCELLML_BUILD`` shall be used to refer to the build directory.
+-------------------
+
+It is best to build libCellML outside of the source tree.  To this end, create a build directory that is not the ``LIBCELLML_SRC`` directory.  A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``. The variable ``LIBCELLML_BUILD`` shall be used to refer to the build directory.
+
+--------------------
 Configure with CMake
+--------------------
+
 The first step is to use `CMake <https://cmake.org/>`_ to configure and generate build files for the library.  Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  Note that CMake version 3.2 or later is required to configure libCellML.  Instructions and information about installing CMake can be found on the `Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page.
-Command Line: Linux, MacOS, Windows
+
+
+Command Line: Linux, MacOS
+++++++++++++++++++++++++++
+
 CMake can either be run through a simple text-based executable called ccmake, or through the command line directly.  There are instructions for both available from `here <https://cmake.org/runningcmake/>`_.  Building libCellML requires that you set the configuration parameters as in the table below.
 
 
 .. include:: dev_configuration_options.rst
 
 
-The command line options can be set with the ``-D`` flag, like so ``-DBUILD_TYPERelease``.
-.. Select a generator that is appropriate for your system, or let the CMake configuration application
-
+The command line options can be set with the ``-D`` flag, like so ``-DBUILD_TYPE Release``.
 From the command line (bash shell), libCellML can be configured to create an optimised shared object library like so::
 
   cd $LIBCELLML_BUILD
   cmake -DBUILD_TYPERelease $LIBCELLML_SRC
+  
+
 Windows Command Line  
-Note that CMake is available on Windows as a GUI (instructions below).  This section describes how to use CMake on Windows directly from the command line.
+++++++++++++++++++++
+
+Note that CMake is also available on Windows as a GUI (instructions below).  This section describes how to use CMake on Windows directly from the command line.  
+
 First, the location of the libXML2 library must be specified through the command line by adding the parameter::
 
   -DLibXml2_DIR"C:\Program Files\libxml2 2.9.6\lib\cmake"
 
 to the configuration command.
-This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that libCellML will only work with a 64-bit installation of libXML2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work. 
+
+This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that libCellML will only work with a 64-bit installation of libXML2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work.
+
+
 Windows CMake-GUI
-In Windows the CMake options are slightly different.  Please note that in CMake GUI Configuration applications, the config variable is prefixed with ``LIBCELLML_``, and in Windows that neither memcheck nor coverage testing is available.
++++++++++++++++++
+
+In Windows the CMake options are slightly different.  Please note that in CMake GUI Configuration applications, the config variable is prefixed with ``LIBCELLML_``, and in Windows that neither ``MEMCHECK`` nor coverage testing is available.
+
+
 Config	Default	Description
 LIBCELLML_BUILD_TYPE	Release	The type of build Release, Debug etc.
 LIBCELMML_BUILD_SHARED	ON	Build shared libraries (so, dylib, DLLs).
