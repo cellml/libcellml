@@ -1,4 +1,3 @@
-
 ==================================
 Configuring and Building libCellML
 ==================================
@@ -46,7 +45,7 @@ Note that CMake is also available on Windows as a GUI (instructions below).  Thi
 
 First, the location of the libXML2 library must be specified through the command line by adding the parameter::
 
-  -DLibXml2_DIR"C:\Program Files\libxml2 2.9.6\lib\cmake"
+  -DLibXml2_DIR "C:\Program Files\libxml2 2.9.6\lib\cmake"
 
 to the configuration command.
 
