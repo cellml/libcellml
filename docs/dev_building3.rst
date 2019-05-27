@@ -99,7 +99,8 @@ The first time you push the *Configure* button you will probably encounter an er
    CMake-GUI showing configuration error after initial configuration attempt.
    
    
-To fix the issue, check that -
+To fix the issue, check that:
+
  - you have installed libXML2 according to the directions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_;
  - there is a variable called ``LibXml2_DIR`` listed in your CMake variables (use the *Add entry* button to create it if not);
  - that the path specified in the ``LibXml2_DIR`` variable points to the ``cmake`` directory inside your libXML2 installation;
