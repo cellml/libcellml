@@ -189,7 +189,6 @@ Fatal error: Cannot open include file Python.h
 
 If you've included Python bindings in your CMake configuration, but get this error in Visual Studio at build time, it's because the path to the Python installation was not set correctly in the CMake step.  Re-running the CMake configuration with a manually-specified path to the Python installation will solve the problem.  See `ERROR: On Windows without Python debug libaries` for instructions.
 
--------------------
 Cannot write to xxx  
 -------------------
 
@@ -203,7 +202,7 @@ This is probably a permissions error related to the locations of your libraries 
 	
     Right-click the VS icon in your start menu and select "Run as administrator"
 
-----------------------------------------------------------------------		 
+		 
 The code execution cannot proceed because libcellmld.dll was not found
 ----------------------------------------------------------------------
 
