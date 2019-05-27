@@ -156,49 +156,6 @@ TEST(Generator, variable_initialized_twice) {
     }
 }
 
-TEST(Generator, unused_variables) {
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/unused_variables.cellml"));
-
-    EXPECT_EQ(size_t(0), parser.errorCount());
-
-    std::vector<std::string> expectedErrors = {
-        "Variable 'main_unused' in component 'main' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_unused' in component 'main' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_cst' in component 'main' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_sub_unused' in component 'main' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_sub_cst' in component 'main' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'right_unused' in component 'main' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'right_cst' in component 'main' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'main_unused' in component 'right' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'main_cst' in component 'right' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_unused' in component 'right' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_cst' in component 'right' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_sub_unused' in component 'right' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_sub_cst' in component 'right' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'right_unused' in component 'right' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'main_unused' in component 'left' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_unused' in component 'left' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_sub_unused' in component 'left' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_sub_cst' in component 'left' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'right_unused' in component 'left' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'main_unused' in component 'left_sub' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_unused' in component 'left_sub' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'left_sub_unused' in component 'left_sub' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed.",
-        "Variable 'right_unused' in component 'left_sub' of model 'unused_variables' is not used, either directly or indirectly, and can therefore be removed."
-    };
-
-    libcellml::Generator generator;
-
-    generator.processModel(model);
-
-    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
-
-    for (size_t i = 0; i < generator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
-    }
-}
-
 /*TODO: reenable this test once we are done with the previous tests.
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
