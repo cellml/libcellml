@@ -192,7 +192,7 @@ If you've included Python bindings in your CMake configuration, but get this err
 Cannot write to xxx  
 -------------------
 
-This is probably a permissions error related to the locations of your libraries or your ``LIBCELLML_BUILD`` directory.  Either launch Visual Studio as an administrator (see below), or create your ``LIBCELLML_BUILD`` directory somewhere your user has default permission to access.
+This is probably a permissions error related to the locations of your libraries or your ``LIBCELLML_BUILD`` directory.  You could launch Visual Studio as an administrator by right-clicking on its icon in the Start Menu (see below), or create your ``LIBCELLML_BUILD`` directory somewhere your user has default permission to access.
 
 .. _fig_devBuilding_runAsAdministrator:
 
@@ -200,9 +200,9 @@ This is probably a permissions error related to the locations of your libraries 
    :align: center
    :alt: Right-click the VS icon in your start menu and select "Run as administrator"
 	
-    Right-click the VS icon in your start menu and select "Run as administrator"
+   Right-click the VS icon in your start menu and select "Run as administrator"
 
-		 
+
 The code execution cannot proceed because libcellmld.dll was not found
 ----------------------------------------------------------------------
 
