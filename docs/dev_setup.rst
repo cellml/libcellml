@@ -21,9 +21,11 @@ The libCellML codebase is hosted on `GitHub <https://github.com/>`_ and therefor
 #. `Doxygen <https://doxygen.nl/>`_ to generate documentation
 
 If Python bindings are required, the following packages are also needed:
-#. `Python <https://www.python.org/>`_ Version 3.5.2 or later is needed for Sphinx (see below)
+
+1. `Python <https://www.python.org/>`_ Version 3.5.2 or later is needed for Sphinx (see below)
 #. `SWIG <http://swig.org>`_ to generate the bindings for Python
 #. `Sphinx <http://www.sphinx-doc.org/en/master/>`_ to generate documentation for Python bindings
+
 
 Pre-requisite acquisition
 =========================
