@@ -301,6 +301,7 @@ To fix the issue, check that:
  - there is a variable called ``LibXml2_DIR`` listed in your CMake variables (use the *Add entry* button to create it if not);
  - that the path specified in the ``LibXml2_DIR`` variable points to the ``cmake`` directory inside your libXML2 installation;
  - that your installed version is 64-bit.   
+
  
 If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  
  
@@ -343,7 +344,7 @@ SWIG is go-between software used by libCellML to generate bindings for Python an
 Could NOT find Sphinx (missing: SPHINX_EXECUTABLE)
 --------------------------------------------------
 
-`Sphinx <http://www.sphinx-doc.org/en/master/>`_ is a documentation generator used by libCellML to collect documentation on Python bindings, which requires Python 3.5.2 or later in order to run.  Please see the installation instructions on the `installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`_ and then restart CMake.  If you do not need to generate bindings for Python then simply un-tick the CMake option `LIBCELLML_BINDINGS_PYTHON``, and push *Configure* again. 
+`Sphinx <http://www.sphinx-doc.org/en/master/>`_ is a documentation generator used by libCellML to collect documentation on Python bindings, which requires Python 3.5.2 or later in order to run.  Please see the installation instructions on the `installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`_ and then restart CMake.  If you do not need to generate bindings for Python then simply un-tick the CMake option ``LIBCELLML_BINDINGS_PYTHON``, and push *Configure* again. 
 
 
 =================   
