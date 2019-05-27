@@ -14,16 +14,16 @@ Information including links to downloads and instructions for each of the packag
 Directory structure
 -------------------
 
-It is best to build libCellML outside of the source tree.  To this end, create a build directory that is not the ``LIBCELLML_SRC`` directory.  A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``. The variable ``LIBCELLML_BUILD`` shall be used to refer to the build directory.
+It is best to build libCellML outside of the source tree.  To this end, create a build directory that is not the ``LIBCELLML_SRC`` directory.  A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``. The variable ``LIBCELLML_BUILD`` is used to refer to this build directory.
 
 ====================
 Configure with CMake
 ====================
 
-The first step is to use `CMake <https://cmake.org/>`_ to configure and generate build files for the library.  Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  Note that CMake version 3.2 or later is required to configure libCellML.  Instructions and information about installing CMake can be found on the `Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page.
+The first step is to use `CMake <https://cmake.org/>`_ to configure and generate build files for the libCellML library.  Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  Note that CMake version 3.2 or later is required to configure libCellML.  Instructions and information about installing CMake can be found on the `Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page.
 
 
-Command Line: Linux, MacOS
+Command line: Linux, MacOS
 ++++++++++++++++++++++++++
 
 CMake can either be run through a simple text-based executable called ``ccmake``, or through the command line directly.  There are instructions for both available from `here <https://cmake.org/runningcmake/>`_.  Building libCellML requires that you set the configuration parameters as in the table below.
@@ -39,16 +39,16 @@ From the command line (bash shell), libCellML can be configured to create an opt
   cmake -DBUILD_TYPERelease $LIBCELLML_SRC
   
 
-Windows Command Line  
+Windows command line  
 ++++++++++++++++++++
 
-Note that CMake is also available on Windows as a GUI (instructions below).  This section describes how to use CMake on Windows directly from the command line.  
+Note that CMake is also available on Windows as a GUI (instructions below).  This section describes how to use CMake on Windows directly from the command line.   Instructions for running CMake through the command line can be found on the `CMake site <https://cmake.org/runningcmake/>`_ under the heading "Running CMake from the command line". 
 
-First, the location of the libXML2 library must be specified through the command line by adding the parameter::
+For Windows only the location of the libXML2 library must be specified through the command line by adding the parameter::
 
   -DLibXml2_DIR "C:\Program Files\libxml2 2.9.6\lib\cmake"
 
-to the configuration command.
+to the configuration command.  This library is built into Linux and MacOS systems, so this step is only needed on Windows.
 
 This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that libCellML will only work with a 64-bit installation of libXML2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work with libCellML.
 
@@ -56,13 +56,13 @@ This assumes that the recommended LibXml2 binaries have been installed to the de
 Windows CMake-GUI
 +++++++++++++++++
 
-In Windows the CMake options are slightly different.  Please note that in CMake GUI Configuration applications, the config variable is prefixed with ``LIBCELLML_``, and in Windows that neither ``MEMCHECK`` nor coverage testing is available.
+The CMake-GUI gives slightly different options - chief among these being that the config variables are prefixed with ``LIBCELLML_``.  Also, in Windows note that neither ``MEMCHECK`` nor ``COVERAGE`` testing options are available.
 
 
 .. include:: dev_configuration_options.rst
 
 
-When we use the CMake-GUI application on Windows, we first set the location of the source files and the location for the generated build files.  Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  You can edit anything you need to in the next step.
+As with any CMake session we first set the location of the source files (your ``LIBCELLML_SRC`` directory) and a location for the generated build files (your ``LIBCELLML_BUILD`` directory).  Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  You can edit anything you need to in the next step.  
 
 
 .. _fig_devBuilding_windowsCMakeGUISourceBuildDirs:
@@ -102,7 +102,7 @@ The most likely reason for this is that libXML2 library was not found or is a 32
 - that your installed version is 64-bit.   
  
  If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  Simply download and run the *.exe 64-bit installer from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases/>`_, and check that your paths and settings above match the location of this installation.   
-
+ 
 Once you’ve changed the path, push *Configure* again.  (:numref:`fig_devBuilding_windowsCMakeLibXml2DirSet` shows a successfully configured ``LibXml2_DIR`` variable) from which build files may be generated using the *Generate* button.
 
 .. _fig_devBuilding_windowsCMakeLibXml2DirSet:
@@ -110,6 +110,7 @@ Once you’ve changed the path, push *Configure* again.  (:numref:`fig_devBuildi
 .. figure:: images/libCellMLBuilding-CMakeWindowsLibXml2DirSet.png
    :align: center
    :alt: LibXml2_DIR variable with a value of C:\Program Files\libxml2 2.9.6\lib\cmake.
+   
 
 =================   
 Build the library
@@ -143,9 +144,11 @@ Build in Windows and Visual Studio
 
 Once you have used CMake to configure and generate your project files, either push the *Open Project* button to launch the project, or locate and open the solution *.sln file inside your build folder.  
 
-**Possible issues**
+
 
 "The code execution cannot proceed because libcellmld.dll was not found.  Reinstalling the program may fix this problem."
+-------------------------------------------------------------------------------------------------------------------------
+
 
 .. _fig_devBuilding_libcellml_dll_not_found:
 
@@ -163,10 +166,19 @@ Solution:  You need to add location of the file(s) to the environment path of th
 You may need to repeat this process for the ``gtest.dll`` and ``gtest_main.dll`` files as well.  These are found in your build directory, under ``tests\gtest\Debug`` or similar.
 
 
-      
+Cannot write to xxx  
+-------------------
 
 
+This is probably a permissions error related to the locations of your libraries or your ``LIBCELLML_BUILD`` directory.  Either launch Visual Studio as an administrator (see below), or create your ``LIBCELLML_BUILD`` directory somewhere your user has default permission to access.
 
+.. _fig_devBuilding_runAsAdministrator:
+
+.. figure:: images/run_as_administrator.png
+	:align: center
+	:alt: Right-click the icon and select "Run as administrator"
+	
+	
 
 
 
