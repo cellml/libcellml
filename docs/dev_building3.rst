@@ -197,8 +197,8 @@ This is probably a permissions error related to the locations of your libraries 
 .. _fig_devBuilding_runAsAdministrator:
 
 .. figure:: images/libCellMLBuilding-WindowsRunAsAdmin.png
-	:align: center
-	:alt: Right-click the VS icon in your start menu and select "Run as administrator"
+   :align: center
+   :alt: Right-click the VS icon in your start menu and select "Run as administrator"
 	
     Right-click the VS icon in your start menu and select "Run as administrator"
 
