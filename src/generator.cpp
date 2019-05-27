@@ -217,7 +217,8 @@ class GeneratorEquation
 public:
     explicit GeneratorEquation(const ComponentPtr &component);
 
-    ComponentPtr component() const;
+//TODO: needed?
+//    ComponentPtr component() const;
 
     GeneratorEquationAstPtr &ast();
 
@@ -241,10 +242,11 @@ GeneratorEquation::GeneratorEquation(const ComponentPtr &component)
 {
 }
 
-ComponentPtr GeneratorEquation::component() const
-{
-    return mComponent;
-}
+//TODO: needed?
+//ComponentPtr GeneratorEquation::component() const
+//{
+//    return mComponent;
+//}
 
 GeneratorEquationAstPtr &GeneratorEquation::ast()
 {
