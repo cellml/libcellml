@@ -110,7 +110,6 @@ If after pushing the *Configure* button your path to the LibXml2 directory is lo
  
 Once you’ve checked and set this path, push *Configure* again. The configuration process should run successfully now, but there may be a few extra things you need to check before proceeding to generate the build files.  These are listed below.
 
--------------------------
 Policy CMP0086 is not set
 -------------------------
 
@@ -124,7 +123,7 @@ Despite being in red and repeated multiple times, this is a warning which can sa
 
    CMake-GUI showing CMP0086 error.
 
-----------------------------------------------
+
 On Windows without Python debug libaries (sic)
 ----------------------------------------------
 
@@ -138,13 +137,13 @@ Even if CMake reports that it has found Python at the beginning of its configura
    
    Set the location of the debug library using the ``PYTHON_DEBUG_LIBRARY`` tag
    
---------------------------------------------------------
+
 Could not find SWIG (missing: SWIG_DIR, SWIG_EXECUTABLE)
 --------------------------------------------------------
 
 SWIG is go-between software used by libCellML to generate bindings for Python and other languages.  If you have the CMake option ``LIBCELLML_BINDINGS_PYTHON`` set to ``true`` then SWIG is required.  Follow the instructions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ under the heading "SWIG for Python bindings (optional)".  You may need to restart your computer after installation, and then re-launch CMake.
 
---------------------------------------------------
+
 Could NOT find Sphinx (missing: SPHINX_EXECUTABLE)
 --------------------------------------------------
 
