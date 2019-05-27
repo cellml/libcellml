@@ -97,7 +97,7 @@ The first time you push the *Configure* button you will probably encounter an er
    CMake-GUI showing configuration error after initial configuration attempt.
    
    
-To fix the issue, check that:
+To fix the issue, check that -
  - you have installed libXML2 according to the directions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_;
  - there is a variable called ``LibXml2_DIR`` listed in your CMake variables (use the *Add entry* button to create it if not);
  - that the path specified in the ``LibXml2_DIR`` variable points to the ``cmake`` directory inside your libXML2 installation;
@@ -181,10 +181,10 @@ Build in Windows and Visual Studio
 
 Once you have used CMake to configure and generate your project files, either push the *Open Project* button to launch the project, or locate and open the solution ``*.sln`` file inside your build folder. You should see the collection of projects which make up the libCellML library listed.  Just use the build menus as normal to compile, link and build them.  Some issues and their solutions are listed below.  
 
-"Fatal error: Cannot open include file Python.h"
-------------------------------------------------
+Fatal error: Cannot open include file Python.h
+----------------------------------------------
 
-If you've included Python bindings in your CMake configuration, but get an error in Visual Studio at build time, it's because the path to the Python installation was not set correctly in the CMake step.  Re-running the CMake configuration with a manually-specified path to the Python installation will solve the problem.  See `ERROR: On Windows without Python debug libaries`_ for instructions.
+If you've included Python bindings in your CMake configuration, but get this error in Visual Studio at build time, it's because the path to the Python installation was not set correctly in the CMake step.  Re-running the CMake configuration with a manually-specified path to the Python installation will solve the problem.  See `ERROR: On Windows without Python debug libaries` for instructions.
 
 
 Cannot write to xxx  
@@ -198,11 +198,11 @@ This is probably a permissions error related to the locations of your libraries 
 	:align: center
 	:alt: Right-click the VS icon in your start menu and select "Run as administrator"
 	
-         Right-click the VS icon in your start menu and select "Run as administrator"
+    Right-click the VS icon in your start menu and select "Run as administrator"
 
-"The code execution cannot proceed because libcellmld.dll was not found.  Reinstalling the program may fix this problem."
--------------------------------------------------------------------------------------------------------------------------
-
+		 
+The code execution cannot proceed because libcellmld.dll was not found.  Reinstalling the program may fix this problem
+----------------------------------------------------------------------------------------------------------------------
 
 .. _fig_devBuilding_libcellml_dll_not_found:
 
@@ -214,33 +214,10 @@ This is probably a permissions error related to the locations of your libraries 
 
 Solution:  You need to add location of the file(s) to the environment path of the project.  To do this, right-click the project and open the Properties editor.  Under the menu Configuration Properties > Debugging > Environment click the Edit button, and add the path to your libcellmldl.dll file.  You should find this file in your build directory in the ``\src\Debug`` folder.  
 
-- The statement should begin with ``PATH`` and then contain a list of semicolon-separated directories.
-- The statement should end with ``%PATH%`` in order to include elements included from elsewhere.
-- Note that if your path contains spaces you must surround it with double quotation marks, eg: ``"C:\My path\has\a\space";`` compared to ``C:\My_path\has\no\spaces;``
-- Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
+ - The statement should begin with ``PATH`` and then contain a list of semicolon-separated directories.
+ - The statement should end with ``%PATH%`` in order to include elements included from elsewhere.
+ - Note that if your path contains spaces you must surround it with double quotation marks, eg: ``"C:\My path\has\a\space";`` compared to ``C:\My_path\has\no\spaces;``
+ - Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
 
 You may need to repeat this process for the ``gtest.dll`` and ``gtest_main.dll`` files as well.  These are found in your build directory, under ``tests\gtest\Debug`` or similar.
-
-
-
-	
-
-
-
-
-
-
-- The statement should begin with "PATH" and then contain a list of semicolon-separated directories.
-- The statement should end with "%PATH%" in order to include elements included from elsewhere.
-- Note that if your path contains spaces you must surround it with double quotation marks.
-- Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
-
-You may need to repeat this process for the ``gtest.dll`` and ``gtest_main.dll`` files as well.  These are found in your build directory, under ``tests\gtest\Debug`` or similar.
-
-
-
-	
-
-
-
 

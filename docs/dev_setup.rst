@@ -19,8 +19,11 @@ The libCellML codebase is hosted on `GitHub <https://github.com/>`_ and therefor
 #. Toolchain for building the library (dependent on the operating system).
 #. `LibXml2 <http://xmlsoft.org/>`_, an external library used to parse XML
 #. `Doxygen <https://doxygen.nl/>`_ to generate documentation
-#. `SWIG <http://swig.org>`_ (optional) to generate bindings for Python
-#. `Python <https://www.python.org/>`_ (optional) if Python bindings are required 
+
+If Python bindings are required, the following packages are also needed:
+#. `Python <https://www.python.org/>`_ Version 3.5.2 or later is needed for Sphinx (see below)
+#. `SWIG <http://swig.org>`_ to generate the bindings for Python
+#. `Sphinx <http://www.sphinx-doc.org/en/master/>`_ to generate documentation for Python bindings
 
 Pre-requisite acquisition
 =========================
@@ -104,6 +107,12 @@ On Windows both SWIG and Python will need to be installed.  Python binaries can 
 SWIG for Windows is available from `here <https://sourceforge.net/projects/swig/files/swigwin/>`_.
   
 On Linux systems both Python and SWIG are already included, so no further action is needed.  
+
+
+Sphinx for Python documentation (optional)
+------------------------------------------
+
+`Sphinx <http://www.sphinx-doc.org/en/master/>`_ is an additional documentation tool used here to assemble documentation of the Python bindings.  Instructions for all operating systems can be found on their `Installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`.  The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an `import error <https://github.com/rtfd/readthedocs.org/issues/3812>`_ despite being reported fixed since version Sphinx 1.7.2).  
 
 
 Setting up the codebase
