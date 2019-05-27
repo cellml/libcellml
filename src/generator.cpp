@@ -923,17 +923,20 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
         VariablePtr componentVariable = component->getVariable(i);
+        bool componentVariableHasInitialValue = !componentVariable->getInitialValue().empty();
         bool componentVariableUsed = false;
 
-        for (const auto &equation : equations) {
-            if (isVariableUsed(componentVariable, equation->ast())) {
-                componentVariableUsed = true;
+        if (!componentVariableHasInitialValue) {
+            for (const auto &equation : equations) {
+                if (isVariableUsed(componentVariable, equation->ast())) {
+                    componentVariableUsed = true;
 
-                break;
+                    break;
+                }
             }
         }
 
-        if (componentVariableUsed) {
+        if (componentVariableUsed || componentVariableHasInitialValue) {
             // The variable is used, but is it already being tracked?
 
             bool componentVariableTracked = false;
@@ -963,10 +966,10 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             // initialised.
 
             if (   (trackedVariable->variable() == nullptr)
-                || (   !componentVariable->getInitialValue().empty()
-                    &&  trackedVariable->variable()->getInitialValue().empty())) {
+                || (   componentVariableHasInitialValue
+                    && trackedVariable->variable()->getInitialValue().empty())) {
                 trackedVariable->setVariable(componentVariable);
-            } else if (   !componentVariable->getInitialValue().empty()
+            } else if (    componentVariableHasInitialValue
                        && !trackedVariable->variable()->getInitialValue().empty()) {
                 Model *model = component->getParentModel();
                 Component *trackedVariableComponent = trackedVariable->variable()->getParentComponent();
@@ -985,6 +988,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
             err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' is not used.");
             err->setKind(Error::Kind::GENERATOR);
+            // TODO: this should be made a hint/warning rather than an error.
 
             mGenerator->addError(err);
         }
