@@ -101,10 +101,10 @@ The first time you push the *Configure* button you will probably encounter an er
    
 To fix the issue, check that:
 
- - you have installed libXML2 according to the directions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_;
- - there is a variable called ``LibXml2_DIR`` listed in your CMake variables (use the *Add entry* button to create it if not);
- - that the path specified in the ``LibXml2_DIR`` variable points to the ``cmake`` directory inside your libXML2 installation;
- - that your installed version is 64-bit.   
+- you have installed libXML2 according to the directions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_;
+- there is a variable called ``LibXml2_DIR`` listed in your CMake variables (use the *Add entry* button to create it if not);
+- that the path specified in the ``LibXml2_DIR`` variable points to the ``cmake`` directory inside your libXML2 installation;
+- that your installed version is 64-bit.   
 
  
 If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  
@@ -206,9 +206,9 @@ This is probably a permissions error related to the locations of your libraries 
 The code execution cannot proceed because libcellmld.dll was not found
 ----------------------------------------------------------------------
 
-.. _fig_devBuilding_libcellml_dll_not_found:
+.. _fig_devBuilding_dllNotFound:
 
-.. figure:: images/libcellml_dll_not_found.png
+.. figure:: images/libCellMLBuilding-dllNotFound.png
    :align: center
    :alt: System error when dll is not found.
 
@@ -216,10 +216,10 @@ The code execution cannot proceed because libcellmld.dll was not found
 
 Solution:  You need to add location of the file(s) to the environment path of the project.  To do this, right-click the project and open the Properties editor.  Under the menu Configuration Properties > Debugging > Environment click the Edit button, and add the path to your libcellmldl.dll file.  You should find this file in your build directory in the ``\src\Debug`` folder.  
 
- - The statement should begin with ``PATH`` and then contain a list of semicolon-separated directories.
- - The statement should end with ``%PATH%`` in order to include elements included from elsewhere.
- - Note that if your path contains spaces you must surround it with double quotation marks, eg: ``"C:\My path\has\a\space";`` compared to ``C:\My_path\has\no\spaces;``
- - Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
+- The statement should begin with ``PATH`` and then contain a list of semicolon-separated directories.
+- The statement should end with ``%PATH%`` in order to include elements included from elsewhere.
+- Note that if your path contains spaces you must surround it with double quotation marks, eg: ``"C:\My path\has\a\space";`` compared to ``C:\My_path\has\no\spaces;``
+- Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
 
 You may need to repeat this process for the ``gtest.dll`` and ``gtest_main.dll`` files as well.  These are found in your build directory, under ``tests\gtest\Debug`` or similar.
 
