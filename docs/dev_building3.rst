@@ -18,7 +18,7 @@ Directory structure
 
 It is best to build libCellML outside of the source tree.  To this end, create a build directory that is not the ``LIBCELLML_SRC`` directory.  A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``. The variable ``LIBCELLML_BUILD`` is used to refer to this build directory.
 
-
+====================
 Configure with CMake
 ====================
 
@@ -110,6 +110,7 @@ If after pushing the *Configure* button your path to the LibXml2 directory is lo
  
 Once you’ve checked and set this path, push *Configure* again. The configuration process should run successfully now, but there may be a few extra things you need to check before proceeding to generate the build files.  These are listed below.
 
+-------------------------
 Policy CMP0086 is not set
 -------------------------
 
@@ -123,7 +124,7 @@ Despite being in red and repeated multiple times, this is a warning which can sa
 
    CMake-GUI showing CMP0086 error.
 
-
+----------------------------------------------
 On Windows without Python debug libaries (sic)
 ----------------------------------------------
 
@@ -137,13 +138,13 @@ Even if CMake reports that it has found Python at the beginning of its configura
    
    Set the location of the debug library using the ``PYTHON_DEBUG_LIBRARY`` tag
    
-
+--------------------------------------------------------
 Could not find SWIG (missing: SWIG_DIR, SWIG_EXECUTABLE)
 --------------------------------------------------------
 
 SWIG is go-between software used by libCellML to generate bindings for Python and other languages.  If you have the CMake option ``LIBCELLML_BINDINGS_PYTHON`` set to ``true`` then SWIG is required.  Follow the instructions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ under the heading "SWIG for Python bindings (optional)".  You may need to restart your computer after installation, and then re-launch CMake.
 
-
+--------------------------------------------------
 Could NOT find Sphinx (missing: SPHINX_EXECUTABLE)
 --------------------------------------------------
 
@@ -188,7 +189,7 @@ Fatal error: Cannot open include file Python.h
 
 If you've included Python bindings in your CMake configuration, but get this error in Visual Studio at build time, it's because the path to the Python installation was not set correctly in the CMake step.  Re-running the CMake configuration with a manually-specified path to the Python installation will solve the problem.  See `ERROR: On Windows without Python debug libaries` for instructions.
 
-
+-------------------
 Cannot write to xxx  
 -------------------
 
@@ -202,9 +203,9 @@ This is probably a permissions error related to the locations of your libraries 
 	
     Right-click the VS icon in your start menu and select "Run as administrator"
 
-		 
-The code execution cannot proceed because libcellmld.dll was not found.  Reinstalling the program may fix this problem
-----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------		 
+The code execution cannot proceed because libcellmld.dll was not found
+----------------------------------------------------------------------
 
 .. _fig_devBuilding_libcellml_dll_not_found:
 
