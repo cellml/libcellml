@@ -986,7 +986,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             Model *model = component->getParentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' is not used.");
+            err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' is not used, either directly or indirectly, and can therefore be removed.");
             err->setKind(Error::Kind::GENERATOR);
             // TODO: this should be made a hint/warning rather than an error.
 
