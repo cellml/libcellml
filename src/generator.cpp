@@ -458,8 +458,6 @@ struct Generator::GeneratorImpl
                      const GeneratorEquationPtr &equation);
     GeneratorEquationPtr processNode(const XmlNodePtr &node,
                                      const ComponentPtr &component);
-    bool isVariableUsed(const VariablePtr &variable,
-                        const GeneratorEquationAstPtr &equationAst) const;
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstPtr &ast);
     void processEquation(const GeneratorEquationPtr &equation);
@@ -873,29 +871,6 @@ GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &nod
     return equation;
 }
 
-bool Generator::GeneratorImpl::isVariableUsed(const VariablePtr &variable,
-                                              const GeneratorEquationAstPtr &equationAst) const
-{
-    // Make sure that we have a valid AST node
-
-    if (equationAst == nullptr) {
-        return false;
-    }
-
-    // Check whether the AST node corresponds to the given variable
-
-    if (   (equationAst->type() == GeneratorEquationAst::Type::CI)
-        && (equationAst->variable() == variable)) {
-        return true;
-    }
-
-    // Check whether the left or right child of the AST node corresponds to the
-    // given variable
-
-    return    isVariableUsed(variable, equationAst->left())
-           || isVariableUsed(variable, equationAst->right());
-}
-
 void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 {
     // Retrieve the math string associated with the given component and process
@@ -922,73 +897,46 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     // makes sense
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
+        // Check whether the variable is already tracked and, if not, track it
+
+        bool componentVariableTracked = false;
         VariablePtr componentVariable = component->getVariable(i);
-        bool componentVariableHasInitialValue = !componentVariable->getInitialValue().empty();
-        bool componentVariableUsed = false;
+        GeneratorVariablePtr trackedVariable;
 
-        if (!componentVariableHasInitialValue) {
-            for (const auto &equation : equations) {
-                if (isVariableUsed(componentVariable, equation->ast())) {
-                    componentVariableUsed = true;
+        for (const auto &variable : mVariables) {
+            if (componentVariable->isEquivalentVariable(variable->variable())) {
+                componentVariableTracked = true;
+                trackedVariable = variable;
 
-                    break;
-                }
+                break;
             }
         }
 
-        if (componentVariableUsed || componentVariableHasInitialValue) {
-            // The variable is used, but is it already being tracked?
+        if (!componentVariableTracked) {
+            trackedVariable = std::make_shared<GeneratorVariable>();
 
-            bool componentVariableTracked = false;
-            GeneratorVariablePtr trackedVariable;
+            mVariables.push_back(trackedVariable);
+        }
 
-            for (const auto &variable : mVariables) {
-                if (componentVariable->isEquivalentVariable(variable->variable())) {
-                    componentVariableTracked = true;
-                    trackedVariable = variable;
+        // Set the variable held by trackedVariable, in case there was none
+        // before or in case the existing one has no initial value while
+        // componentVariable does. Otherwise, generate an error if the variable
+        // held by trackedVariable and componentVariable are both initialised.
 
-                    break;
-                }
-            }
-
-            // Track the variable if it is not already being tracked
-
-            if (!componentVariableTracked) {
-                trackedVariable = std::make_shared<GeneratorVariable>();
-
-                mVariables.push_back(trackedVariable);
-            }
-
-            // Set the variable held by trackedVariable, in case there was none
-            // before or in case the existing one has no initial value while
-            // componentVariable does. Otherwise, generate an error if the
-            // variable held by trackedVariable and componentVariable are both
-            // initialised.
-
-            if (   (trackedVariable->variable() == nullptr)
-                || (   componentVariableHasInitialValue
-                    && trackedVariable->variable()->getInitialValue().empty())) {
-                trackedVariable->setVariable(componentVariable);
-            } else if (    componentVariableHasInitialValue
-                       && !trackedVariable->variable()->getInitialValue().empty()) {
-                Model *model = component->getParentModel();
-                Component *trackedVariableComponent = trackedVariable->variable()->getParentComponent();
-                Model *trackedVariableModel = trackedVariableComponent->getParentModel();
-                ErrorPtr err = std::make_shared<Error>();
-
-                err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' and "
-                                    "variable '"+trackedVariable->variable()->getName()+"' in component '"+trackedVariableComponent->getName()+"' of model '"+trackedVariableModel->getName()+"' are equivalent and cannot therefore both be initialised.");
-                err->setKind(Error::Kind::GENERATOR);
-
-                mGenerator->addError(err);
-            }
-        } else {
+        if (   (trackedVariable->variable() == nullptr)
+            || (   !componentVariable->getInitialValue().empty()
+                &&  trackedVariable->variable()->getInitialValue().empty())) {
+            trackedVariable->setVariable(componentVariable);
+        } else if (   !componentVariable->getInitialValue().empty()
+                   && !trackedVariable->variable()->getInitialValue().empty()) {
             Model *model = component->getParentModel();
+            Component *trackedVariableComponent = trackedVariable->variable()->getParentComponent();
+            Model *trackedVariableModel = trackedVariableComponent->getParentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' is not used, either directly or indirectly, and can therefore be removed.");
+            err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' and "
+                                "variable '"+trackedVariable->variable()->getName()+"' in component '"+trackedVariableComponent->getName()+"' of model '"+trackedVariableModel->getName()+"' are equivalent and cannot therefore both be initialised.");
             err->setKind(Error::Kind::GENERATOR);
-            // TODO: this should be made a hint/warning rather than an error.
 
             mGenerator->addError(err);
         }
