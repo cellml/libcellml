@@ -1,17 +1,72 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <model name="unused_variables" xmlns="http://www.cellml.org/cellml/2.0#">
     <component name="main">
-        <variable name="unused" units="dimensionless"/>
+        <variable name="main_unused" units="dimensionless"/>
+        <variable initial_value="0" name="main_cst" units="dimensionless"/>
+        <variable name="left_unused" units="dimensionless"/>
+        <variable name="left_cst" units="dimensionless"/>
+        <variable name="left_sub_unused" units="dimensionless"/>
+        <variable name="left_sub_cst" units="dimensionless"/>
+        <variable name="right_unused" units="dimensionless"/>
+        <variable name="right_cst" units="dimensionless"/>
     </component>
-    <component name="sub">
-        <variable name="unused" units="dimensionless"/>
+    <component name="left">
+        <variable name="main_unused" units="dimensionless"/>
+        <variable name="main_cst" units="dimensionless"/>
+        <variable name="left_unused" units="dimensionless"/>
+        <variable initial_value="0" name="left_cst" units="dimensionless"/>
+        <variable name="left_sub_cst" units="dimensionless"/>
+        <variable name="right_unused" units="dimensionless"/>
+        <variable name="right_cst" units="dimensionless"/>
     </component>
-    <component name="sub_sub">
-        <variable name="unused" units="dimensionless"/>
+    <component name="left_sub">
+        <variable name="main_unused" units="dimensionless"/>
+        <variable name="main_cst" units="dimensionless"/>
+        <variable name="left_unused" units="dimensionless"/>
+        <variable name="left_cst" units="dimensionless"/>
+        <variable name="left_sub_unused" units="dimensionless"/>
+        <variable initial_value="0" name="left_sub_cst" units="dimensionless"/>
+        <variable name="left_sub_comp" units="dimensionless"/>
+        <variable name="right_unused" units="dimensionless"/>
+        <variable name="right_cst" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>left_sub_comp</ci>
+                <apply>
+                    <plus/>
+                    <ci>main_cst</ci>
+                    <ci>left_cst</ci>
+                    <ci>left_sub_cst</ci>
+                    <ci>right_cst</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="right">
+        <variable name="main_unused" units="dimensionless"/>
+        <variable name="main_cst" units="dimensionless"/>
+        <variable name="left_unused" units="dimensionless"/>
+        <variable name="left_cst" units="dimensionless"/>
+        <variable name="left_sub_unused" units="dimensionless"/>
+        <variable name="left_sub_cst" units="dimensionless"/>
+        <variable name="right_unused" units="dimensionless"/>
+        <variable initial_value="0" name="right_cst" units="dimensionless"/>
     </component>
     <encapsulation>
-        <component_ref component="sub">
-            <component_ref component="sub_sub"/>
+        <component_ref component="left">
+            <component_ref component="left_sub"/>
         </component_ref>
+        <component_ref component="rgit"/>
     </encapsulation>
+    <connection component_1="main" component_2="left">
+        <map_variables variable_1="left" variable_2="left"/>
+    </connection>
+    <connection component_1="left" component_2="left_sub">
+        <map_variables variable_1="left" variable_2="left"/>
+        <map_variables variable_1="left_unused" variable_2="left_unused"/>
+    </connection>
+    <connection component_1="main" component_2="right">
+        <map_variables variable_1="left" variable_2="left"/>
+    </connection>
 </model>
