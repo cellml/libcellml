@@ -39,7 +39,7 @@ using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition f
 using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
-using ComponentPair = std::pair<Component*, Component*>; /**< Type definition for Component pointer pair.*/
+using ComponentPair = std::pair<Component *, Component *>; /**< Type definition for Component pointer pair.*/
 using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
 using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
@@ -295,7 +295,7 @@ std::string Printer::printVariable(Variable variable) const
 std::string printMapVariables(const VariablePair &variablePair)
 {
     std::string mapVariables = R"(<map_variables variable_1=")" + variablePair.first->getName() + R"(")"
-                                + R"( variable_2=")" + variablePair.second->getName() + R"(")";
+                               + R"( variable_2=")" + variablePair.second->getName() + R"(")";
     std::string mappingId = Variable::getEquivalenceMappingId(variablePair.first, variablePair.second);
     if (mappingId.length() > 0) {
         mapVariables += R"( id=")" + mappingId + R"(")";
@@ -334,8 +334,8 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
         // Check for subsequent variable equivalence pairs with the same parent components.
         size_t componentMapIndex2 = componentMapIndex1 + 1;
         for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
-            Component* nextComponent1 = iterPair2->first;
-            Component* nextComponent2 = iterPair2->second;
+            Component *nextComponent1 = iterPair2->first;
+            Component *nextComponent2 = iterPair2->second;
             VariablePair variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                 mappingVariables += printMapVariables(variablePair2);
@@ -386,8 +386,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            auto component1 = static_cast<Component*>(variable->getParent());
-                            auto component2 = static_cast<Component*>(equivalentVariable->getParent());
+                            auto component1 = static_cast<Component *>(variable->getParent());
+                            auto component2 = static_cast<Component *>(equivalentVariable->getParent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2 != nullptr) {

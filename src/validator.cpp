@@ -1034,7 +1034,7 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
         "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth", "arcsin", "arccos", "arctan", "arcsec", "arccsc",
         "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
         "notanumber", "infinity", "true", "false"};
-    return    (node->getNamespace() == MATHML_NS)
+    return (node->getNamespace() == MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getName()) != supportedMathMLElements.end();
 }
 
