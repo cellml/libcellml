@@ -55,7 +55,7 @@ Use-cases for libCellML
          #. with an invalid name
 
       #. import a units from a non-existent URL
-      #. import a units from a model and scale it, prefix it, offset it, exponentise it
+      #. import a units from a model and scale it, prefix it, exponentise it
 
    #. a model with variables
 
