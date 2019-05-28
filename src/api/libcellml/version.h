@@ -20,7 +20,6 @@ limitations under the License.
 
 #include <string>
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
