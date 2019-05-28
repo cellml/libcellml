@@ -14,9 +14,11 @@
 
 find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
+find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
 find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
 find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
 find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
+find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
 find_package(Doxygen)
@@ -42,6 +44,10 @@ else()
   find_package(LibXml2 REQUIRED)
 endif()
 
+if(CLANG_FORMAT_EXE AND GIT_EXE)
+  set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run the ClangFormat test are available.")
+endif()
+
 if(CLANG_TIDY_EXE)
   set(CLANG_TIDY_AVAILABLE TRUE CACHE BOOL "Executable required to perform static analysis is available.")
 endif()
@@ -60,8 +66,8 @@ endif()
 
 mark_as_advanced(
   CLANG_TIDY_EXE CLANG_TIDY_AVAILABLE
+  CLANG_FORMAT_EXE GIT_EXE CLANG_FORMAT_TESTING_AVAILABLE
   FIND_EXE GCOV_EXE COVERAGE_TESTING_AVAILABLE
   SWIG_EXECUTABLE BINDINGS_AVAILABLE
   VALGRIND_EXE VALGRIND_TESTING_AVAILABLE
 )
-

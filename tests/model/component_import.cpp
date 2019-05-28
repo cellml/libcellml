@@ -27,7 +27,8 @@ limitations under the License.
  * so don't need it just yet.
  */
 
-TEST(ComponentImport, basics) {
+TEST(ComponentImport, basics)
+{
     const std::string e;
 
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -49,14 +50,15 @@ TEST(ComponentImport, basics) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, singleImportA) {
+TEST(ComponentImport, singleImportA)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
+        "</import>"
+        "</model>";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -80,14 +82,15 @@ TEST(ComponentImport, singleImportA) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, singleImportB) {
+TEST(ComponentImport, singleImportB)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
+        "</import>"
+        "</model>";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -104,14 +107,15 @@ TEST(ComponentImport, singleImportB) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, nonExistentURLAndParse) {
+TEST(ComponentImport, nonExistentURLAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"na_channel\" name=\"noble_na_channel\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"na_channel\" name=\"noble_na_channel\"/>"
+        "</import>"
+        "</model>";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -142,31 +146,31 @@ TEST(ComponentImport, nonExistentURLAndParse) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, multipleImportAndParse) {
-
+TEST(ComponentImport, multipleImportAndParse)
+{
     const std::string e1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                    "<component component_ref=\"cc2\" name=\"c2\"/>"
-                "</import>"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c3\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"cc1\" name=\"c1\"/>"
+        "<component component_ref=\"cc2\" name=\"c2\"/>"
+        "</import>"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"cc1\" name=\"c3\"/>"
+        "</import>"
+        "</model>";
 
     const std::string e2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c3\"/>"
-                "</import>"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                    "<component component_ref=\"cc2\" name=\"c2\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"cc1\" name=\"c3\"/>"
+        "</import>"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"cc1\" name=\"c1\"/>"
+        "<component component_ref=\"cc2\" name=\"c2\"/>"
+        "</import>"
+        "</model>";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -199,24 +203,24 @@ TEST(ComponentImport, multipleImportAndParse) {
     EXPECT_TRUE((e1 == a) || (e2 == a));
 }
 
-TEST(ComponentImport, hierarchicalImportAndParse) {
-
+TEST(ComponentImport, hierarchicalImportAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                "</import>"
-                "<component name=\"dave\"/>"
-                "<component name=\"bob\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"dave\">"
-                        "<component_ref component=\"bob\">"
-                            "<component_ref component=\"c1\"/>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"cc1\" name=\"c1\"/>"
+        "</import>"
+        "<component name=\"dave\"/>"
+        "<component name=\"bob\"/>"
+        "<encapsulation>"
+        "<component_ref component=\"dave\">"
+        "<component_ref component=\"bob\">"
+        "<component_ref component=\"c1\"/>"
+        "</component_ref>"
+        "</component_ref>"
+        "</encapsulation>"
+        "</model>";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -254,26 +258,26 @@ TEST(ComponentImport, hierarchicalImportAndParse) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, complexImportAndParse) {
-
+TEST(ComponentImport, complexImportAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                "</import>"
-                "<component name=\"dave\"/>"
-                "<component name=\"bob\"/>"
-                "<component name=\"angus\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"dave\">"
-                        "<component_ref component=\"bob\">"
-                            "<component_ref component=\"c1\"/>"
-                            "<component_ref component=\"angus\"/>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
+        "<component component_ref=\"cc1\" name=\"c1\"/>"
+        "</import>"
+        "<component name=\"dave\"/>"
+        "<component name=\"bob\"/>"
+        "<component name=\"angus\"/>"
+        "<encapsulation>"
+        "<component_ref component=\"dave\">"
+        "<component_ref component=\"bob\">"
+        "<component_ref component=\"c1\"/>"
+        "<component_ref component=\"angus\"/>"
+        "</component_ref>"
+        "</component_ref>"
+        "</encapsulation>"
+        "</model>";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();

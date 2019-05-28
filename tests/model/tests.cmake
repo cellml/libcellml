@@ -10,8 +10,8 @@ set(${CURRENT_TEST}_CATEGORY entities)
 list(APPEND LIBCELLML_TESTS ${CURRENT_TEST})
 # Using absolute path relative to this file
 set(${CURRENT_TEST}_SRCS
-  ${CMAKE_CURRENT_LIST_DIR}/model.cpp
   ${CMAKE_CURRENT_LIST_DIR}/component_import.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/model.cpp
   ${CMAKE_CURRENT_LIST_DIR}/units_import.cpp
 )
 set(${CURRENT_TEST}_HDRS

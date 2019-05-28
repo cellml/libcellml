@@ -30,7 +30,6 @@ struct NamedEntity::NamedEntityImpl
     std::string mName; /**< Entity name represented as a std::string. */
 };
 
-
 NamedEntity::NamedEntity()
     : mPimpl(new NamedEntityImpl())
 {
@@ -55,9 +54,9 @@ NamedEntity::NamedEntity(NamedEntity &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-NamedEntity& NamedEntity::operator=(NamedEntity rhs)
+NamedEntity &NamedEntity::operator=(NamedEntity rhs)
 {
-    Entity::operator= (rhs);
+    Entity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -67,11 +66,13 @@ void NamedEntity::swap(NamedEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void NamedEntity::setName(const std::string &name) {
+void NamedEntity::setName(const std::string &name)
+{
     mPimpl->mName = name;
 }
 
-std::string NamedEntity::getName() const {
+std::string NamedEntity::getName() const
+{
     return mPimpl->mName;
 }
 

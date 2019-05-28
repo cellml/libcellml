@@ -75,9 +75,9 @@ Printer::Printer(Printer &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Printer& Printer::operator=(Printer rhs)
+Printer &Printer::operator=(Printer rhs)
 {
-    Logger::operator =(rhs);
+    Logger::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -147,7 +147,7 @@ std::string Printer::printUnits(const UnitsPtr &units) const
 
 std::string Printer::printUnits(Units units) const
 {
-    return printUnits(std::shared_ptr<Units>(std::shared_ptr<Units>{}, &units));
+    return printUnits(std::shared_ptr<Units>(std::shared_ptr<Units> {}, &units));
 }
 
 std::string Printer::printComponent(const ComponentPtr &component) const
@@ -175,7 +175,7 @@ std::string Printer::printComponent(const ComponentPtr &component) const
         for (size_t i = 0; i < variableCount; ++i) {
             repr += printVariable(component->getVariable(i));
         }
-        for (size_t i =0; i < resetCount; ++i) {
+        for (size_t i = 0; i < resetCount; ++i) {
             repr += printReset(component->getReset(i));
         }
         repr += component->getMath();
@@ -193,7 +193,7 @@ std::string Printer::printComponent(const ComponentPtr &component) const
 
 std::string Printer::printComponent(Component component) const
 {
-    return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+    return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component> {}, &component));
 }
 
 std::string printWhen(const WhenPtr &when)
@@ -255,7 +255,7 @@ std::string Printer::printReset(const ResetPtr &reset) const
 
 std::string Printer::printReset(Reset reset) const
 {
-    return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
+    return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset> {}, &reset));
 }
 
 std::string Printer::printVariable(const VariablePtr &variable) const
@@ -289,7 +289,7 @@ std::string Printer::printVariable(const VariablePtr &variable) const
 
 std::string Printer::printVariable(Variable variable) const
 {
-    return printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable>{}, &variable));
+    return printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable> {}, &variable));
 }
 
 std::string printMapVariables(const VariablePair &variablePair)
@@ -310,8 +310,8 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap)
     ComponentMap serialisedComponentMap;
     size_t componentMapIndex1 = 0;
     for (ComponentMapIterator iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
-        Component* currentComponent1 = iterPair->first;
-        Component* currentComponent2 = iterPair->second;
+        Component *currentComponent1 = iterPair->first;
+        Component *currentComponent2 = iterPair->second;
         ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
         ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
         // Check whether this set of connections has already been serialised.
@@ -437,6 +437,7 @@ std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
     using ImportPair = std::pair<std::string, ComponentPtr>;
+    using VectorPairIterator = std::vector<ImportPair>::const_iterator;
     using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
     using ImportMapIterator = ImportMap::const_iterator;
     ImportMap importMap;
@@ -504,13 +505,12 @@ std::string Printer::printModel(const ModelPtr &model) const
         repr += R"( id=")" + model->getId() + R"(")";
     }
     bool endTag = false;
-    if (!importMap.empty() || (model->componentCount() > 0) || (model->unitsCount() > 0)){
+    if (!importMap.empty() || (model->componentCount() > 0) || (model->unitsCount() > 0)) {
         endTag = true;
         repr += ">";
     }
 
-    for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
-    {
+    for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter) {
         repr += R"(<import xlink:href=")" + iter->first->getUrl() + R"(" xmlns:xlink="http://www.w3.org/1999/xlink")";
         if (iter->first->getId().length() > 0) {
             repr += R"( id=")" + iter->first->getId() + R"(")";
@@ -567,12 +567,37 @@ std::string Printer::printModel(const ModelPtr &model) const
 
 std::string Printer::printModel(Model model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, &model));
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, &model));
 }
 
 std::string Printer::printModel(Model *model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, model));
+}
+
+std::string Printer::printEncapsulation(ComponentPtr component) const
+{
+    std::string componentName = component->getName();
+    std::string repr = "<component_ref";
+    if (componentName.length() > 0) {
+        repr += R"( component=")" + componentName + R"(")";
+    }
+    if (component->getEncapsulationId().length() > 0) {
+        repr += R"( id=")" + component->getEncapsulationId() + R"(")";
+    }
+    size_t componentCount = component->componentCount();
+    if (componentCount > 0) {
+        repr += ">";
+    } else {
+        repr += "/>";
+    }
+    for (size_t i = 0; i < componentCount; ++i) {
+        repr += printEncapsulation(component->getComponent(i));
+    }
+    if (componentCount > 0) {
+        repr += "</component_ref>";
+    }
+    return repr;
 }
 
 } // namespace libcellml

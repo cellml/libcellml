@@ -52,15 +52,15 @@ OrderedEntity::OrderedEntity(const OrderedEntity &rhs)
 }
 
 OrderedEntity::OrderedEntity(OrderedEntity &&rhs) noexcept
-    :  Entity(std::move(rhs))
+    : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-OrderedEntity& OrderedEntity::operator=(OrderedEntity rhs)
+OrderedEntity &OrderedEntity::operator=(OrderedEntity rhs)
 {
-    Entity::operator= (rhs);
+    Entity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }

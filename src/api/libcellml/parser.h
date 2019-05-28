@@ -38,7 +38,7 @@ public:
     ~Parser() override; /**< Destructor */
     Parser(const Parser &rhs); /**< Copy constructor */
     Parser(Parser &&rhs) noexcept; /**< Move constructor */
-    Parser& operator=(Parser rhs); /**< Assignment operator */
+    Parser &operator=(Parser rhs); /**< Assignment operator */
 
     /**
      * @brief Create and populate a new model from a @c std::string.
@@ -59,4 +59,4 @@ private:
     ParserImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

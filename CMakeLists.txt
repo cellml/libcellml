@@ -143,3 +143,30 @@ endif()
 
 # Add docs
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/docs)
+
+# Format our code
+if(CLANG_FORMAT_EXE)
+  set(FILES_TO_FORMAT
+    ${API_HEADER_FILES}
+    ${MODULE_HEADER_FILES}
+    ${SOURCE_FILES}
+    ${HEADER_FILES}
+    ${CONFIG_FILES}
+    ${TESTS_HEADER_FILES}
+    ${TESTS_SOURCE_FILES}
+  )
+
+  set(CHECK_CODE_FORMATTING_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/cmake_command_check_code_formatting.cmake)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.cmake.in
+    ${CHECK_CODE_FORMATTING_SCRIPT} @ONLY)
+  if(CLANG_FORMAT_TESTING_AVAILABLE)
+    add_custom_target(test_clang_format
+      COMMAND ${CMAKE_COMMAND} -P ${CHECK_CODE_FORMATTING_SCRIPT}
+    )
+  endif()
+
+  add_custom_target(format_code
+    COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT}
+    COMMENT "Source code has been reformatted by clang-format."
+  )
+endif()

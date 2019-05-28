@@ -67,9 +67,9 @@ Reset::Reset(Reset &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Reset& Reset::operator=(Reset rhs)
+Reset &Reset::operator=(Reset rhs)
 {
-    OrderedEntity::operator= (rhs);
+    OrderedEntity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }

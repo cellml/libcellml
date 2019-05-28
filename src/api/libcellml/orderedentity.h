@@ -33,7 +33,7 @@ public:
     ~OrderedEntity() override; /**< Destructor */
     OrderedEntity(const OrderedEntity &rhs); /**< Copy constructor */
     OrderedEntity(OrderedEntity &&rhs) noexcept; /**< Move constructor */
-    OrderedEntity& operator=(OrderedEntity rhs); /**< Assignment operator */
+    OrderedEntity &operator=(OrderedEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Set the order of this entity.
@@ -76,4 +76,4 @@ private:
     OrderedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

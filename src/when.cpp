@@ -54,9 +54,9 @@ When::When(When &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-When& When::operator=(When rhs)
+When &When::operator=(When rhs)
 {
-    OrderedEntity::operator= (rhs);
+    OrderedEntity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }

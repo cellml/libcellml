@@ -18,49 +18,56 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Error, createModelError) {
+TEST(Error, createModelError)
+{
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(m);
 
     EXPECT_EQ(libcellml::Error::Kind::MODEL, e->getKind());
 }
 
-TEST(Error, createComponemntError) {
+TEST(Error, createComponemntError)
+{
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(c);
 
     EXPECT_EQ(libcellml::Error::Kind::COMPONENT, e->getKind());
 }
 
-TEST(Error, createVariableError) {
+TEST(Error, createVariableError)
+{
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(v);
 
     EXPECT_EQ(libcellml::Error::Kind::VARIABLE, e->getKind());
 }
 
-TEST(Error, createUnitsError) {
+TEST(Error, createUnitsError)
+{
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(u);
 
     EXPECT_EQ(libcellml::Error::Kind::UNITS, e->getKind());
 }
 
-TEST(Error, createImportSourceError) {
+TEST(Error, createImportSourceError)
+{
     libcellml::ImportSourcePtr i = std::make_shared<libcellml::ImportSource>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(i);
 
     EXPECT_EQ(libcellml::Error::Kind::IMPORT, e->getKind());
 }
 
-TEST(Error, createResetError) {
+TEST(Error, createResetError)
+{
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(r);
 
     EXPECT_EQ(libcellml::Error::Kind::RESET, e->getKind());
 }
 
-TEST(Error, createWhenError) {
+TEST(Error, createWhenError)
+{
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
     libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(w);
 
@@ -69,7 +76,7 @@ TEST(Error, createWhenError) {
 
 void testSpecificationRule(const libcellml::Error &e)
 {
-    switch(e.getRule()) {
+    switch (e.getRule()) {
     case libcellml::SpecificationRule::COMPONENT_CHILD:
         EXPECT_EQ("10.1.2", e.getSpecificationHeading());
         break;
@@ -241,112 +248,165 @@ void testSpecificationRule(const libcellml::Error &e)
     }
 }
 
-TEST(Error, specificationRule) {
+TEST(Error, specificationRule)
+{
     size_t count = 0;
     libcellml::Error e;
-    e.setRule(libcellml::SpecificationRule::UNDEFINED);++count;
+    e.setRule(libcellml::SpecificationRule::UNDEFINED);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::COMPONENT_CHILD);++count;
+    e.setRule(libcellml::SpecificationRule::COMPONENT_CHILD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::COMPONENT_NAME);++count;
+    e.setRule(libcellml::SpecificationRule::COMPONENT_NAME);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::COMPONENT_REF_CHILD);++count;
+    e.setRule(libcellml::SpecificationRule::COMPONENT_REF_CHILD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);++count;
+    e.setRule(libcellml::SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::COMPONENT_REF_ENCAPSULATION);++count;
+    e.setRule(libcellml::SpecificationRule::COMPONENT_REF_ENCAPSULATION);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::CONNECTION_COMPONENT1);++count;
+    e.setRule(libcellml::SpecificationRule::CONNECTION_COMPONENT1);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::CONNECTION_COMPONENT2);++count;
+    e.setRule(libcellml::SpecificationRule::CONNECTION_COMPONENT2);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::CONNECTION_UNIQUE_TRANSITIVE);++count;
+    e.setRule(libcellml::SpecificationRule::CONNECTION_UNIQUE_TRANSITIVE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::CONNECTION_MAP_VARIABLES);++count;
+    e.setRule(libcellml::SpecificationRule::CONNECTION_MAP_VARIABLES);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_AT_LEAST_ONE_ALPHANUM);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_BEGIN_EURO_NUM);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_IDENTICAL);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_IDENTICAL);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_NNEG_INT_BASE10);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_NNEG_INT_BASE10);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::DATA_REPR_NNEG_INT_EURO_NUM);++count;
+    e.setRule(libcellml::SpecificationRule::DATA_REPR_NNEG_INT_EURO_NUM);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::ENCAPSULATION_COMPONENT_REF);++count;
+    e.setRule(libcellml::SpecificationRule::ENCAPSULATION_COMPONENT_REF);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::IMPORT_CHILD);++count;
+    e.setRule(libcellml::SpecificationRule::IMPORT_CHILD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::IMPORT_CIRCULAR);++count;
+    e.setRule(libcellml::SpecificationRule::IMPORT_CIRCULAR);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::IMPORT_COMPONENT_NAME);++count;
+    e.setRule(libcellml::SpecificationRule::IMPORT_COMPONENT_NAME);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::IMPORT_COMPONENT_REF);++count;
+    e.setRule(libcellml::SpecificationRule::IMPORT_COMPONENT_REF);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::IMPORT_HREF);++count;
+    e.setRule(libcellml::SpecificationRule::IMPORT_HREF);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::IMPORT_UNITS_NAME);++count;
+    e.setRule(libcellml::SpecificationRule::IMPORT_UNITS_NAME);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::IMPORT_UNITS_REF);++count;
+    e.setRule(libcellml::SpecificationRule::IMPORT_UNITS_REF);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MAP_VARIABLES_UNIQUE);++count;
+    e.setRule(libcellml::SpecificationRule::MAP_VARIABLES_UNIQUE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MAP_VARIABLES_VARIABLE1);++count;
+    e.setRule(libcellml::SpecificationRule::MAP_VARIABLES_VARIABLE1);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MAP_VARIABLES_VARIABLE2);++count;
+    e.setRule(libcellml::SpecificationRule::MAP_VARIABLES_VARIABLE2);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MODEL_CHILD);++count;
+    e.setRule(libcellml::SpecificationRule::MODEL_CHILD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MODEL_ELEMENT);++count;
+    e.setRule(libcellml::SpecificationRule::MODEL_ELEMENT);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);++count;
+    e.setRule(libcellml::SpecificationRule::MODEL_MORE_THAN_ONE_ENCAPSULATION);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::MODEL_NAME);++count;
+    e.setRule(libcellml::SpecificationRule::MODEL_NAME);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::RESET_CHILD);++count;
+    e.setRule(libcellml::SpecificationRule::RESET_CHILD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::RESET_VARIABLE_REFERENCE);++count;
+    e.setRule(libcellml::SpecificationRule::RESET_VARIABLE_REFERENCE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::RESET_ORDER);++count;
+    e.setRule(libcellml::SpecificationRule::RESET_ORDER);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNITS_CHILD);++count;
+    e.setRule(libcellml::SpecificationRule::UNITS_CHILD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNITS_NAME);++count;
+    e.setRule(libcellml::SpecificationRule::UNITS_NAME);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNITS_NAME_UNIQUE);++count;
+    e.setRule(libcellml::SpecificationRule::UNITS_NAME_UNIQUE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNITS_STANDARD);++count;
+    e.setRule(libcellml::SpecificationRule::UNITS_STANDARD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE);++count;
+    e.setRule(libcellml::SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNIT_CIRCULAR_REF);++count;
+    e.setRule(libcellml::SpecificationRule::UNIT_CIRCULAR_REF);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNIT_DIGRAPH);++count;
+    e.setRule(libcellml::SpecificationRule::UNIT_DIGRAPH);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNIT_EXPONENT);++count;
+    e.setRule(libcellml::SpecificationRule::UNIT_EXPONENT);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNIT_MULTIPLIER);++count;
+    e.setRule(libcellml::SpecificationRule::UNIT_MULTIPLIER);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNIT_PREFIX);++count;
+    e.setRule(libcellml::SpecificationRule::UNIT_PREFIX);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::UNIT_UNITS_REF);++count;
+    e.setRule(libcellml::SpecificationRule::UNIT_UNITS_REF);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::VARIABLE_INITIAL_VALUE);++count;
+    e.setRule(libcellml::SpecificationRule::VARIABLE_INITIAL_VALUE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::VARIABLE_INTERFACE);++count;
+    e.setRule(libcellml::SpecificationRule::VARIABLE_INTERFACE);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::VARIABLE_NAME);++count;
+    e.setRule(libcellml::SpecificationRule::VARIABLE_NAME);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::VARIABLE_UNITS);++count;
+    e.setRule(libcellml::SpecificationRule::VARIABLE_UNITS);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::WHEN_CHILD);++count;
+    e.setRule(libcellml::SpecificationRule::WHEN_CHILD);
+    ++count;
     testSpecificationRule(e);
-    e.setRule(libcellml::SpecificationRule::WHEN_ORDER);++count;
+    e.setRule(libcellml::SpecificationRule::WHEN_ORDER);
+    ++count;
     testSpecificationRule(e);
     EXPECT_EQ(size_t(52), count);
 }

@@ -46,7 +46,7 @@ public:
      *
      * @param attribute The libxml2 @c xmlAttributePtr to set.
      */
-    void setXmlAttribute (const xmlAttrPtr &attribute);
+    void setXmlAttribute(const xmlAttrPtr &attribute);
 
     /**
      * @brief Get the namespace of this XmlAttribute.
@@ -117,4 +117,4 @@ private:
     XmlAttributeImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml
