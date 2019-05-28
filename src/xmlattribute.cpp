@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "namespaces.h"
 #include "xmlattribute.h"
 
 #include <string>
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-
-#include "libcellml/namespaces.h"
 
 namespace libcellml {
 
@@ -63,7 +62,7 @@ std::string XmlAttribute::getNamespace() const
 bool XmlAttribute::isType(const char *name, const char *ns)
 {
     bool found = false;
-    if (   !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
+    if (!xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
         && !xmlStrcmp(mPimpl->mXmlAttributePtr->name, BAD_CAST name)) {
         found = true;
     }
@@ -106,4 +105,4 @@ void XmlAttribute::removeAttribute()
     xmlRemoveProp(mPimpl->mXmlAttributePtr);
 }
 
-}
+} // namespace libcellml

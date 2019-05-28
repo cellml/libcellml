@@ -47,4 +47,4 @@ typedef std::shared_ptr<Variable> VariablePtr; /**< Type definition for shared v
 class When; /**< Forward declaration of When class. */
 typedef std::shared_ptr<When> WhenPtr; /**< Type definition for shared when pointer. */
 
-}
+} // namespace libcellml

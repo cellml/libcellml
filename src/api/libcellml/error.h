@@ -36,7 +36,7 @@ public:
     virtual ~Error(); /**< Destructor */
     Error(const Error &rhs); /**< Copy constructor */
     Error(Error &&rhs); /**< Move constructor */
-    Error& operator=(Error rhs); /**< Assignment operator */
+    Error &operator=(Error rhs); /**< Assignment operator */
 
     /**
      * @brief Constructs an Error for the model.
@@ -344,4 +344,4 @@ private:
     ErrorImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

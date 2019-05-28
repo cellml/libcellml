@@ -54,9 +54,9 @@ When::When(When &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-When& When::operator=(When e)
+When &When::operator=(When e)
 {
-    OrderedEntity::operator= (e);
+    OrderedEntity::operator=(e);
     e.swap(*this);
     return *this;
 }
@@ -86,4 +86,4 @@ std::string When::getValue() const
     return mPimpl->mValue;
 }
 
-}
+} // namespace libcellml

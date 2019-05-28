@@ -58,7 +58,7 @@ Entity::Entity(Entity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Entity& Entity::operator=(Entity e)
+Entity &Entity::operator=(Entity e)
 {
     e.swap(*this);
     return *this;
@@ -79,7 +79,8 @@ std::string Entity::getId() const
     return mPimpl->mId;
 }
 
-void *Entity::getParent() const {
+void *Entity::getParent() const
+{
     void *parent = nullptr;
     if (mPimpl->mParentComponent) {
         parent = mPimpl->mParentComponent;
@@ -103,15 +104,18 @@ Model *Entity::getParentModel() const
     return mPimpl->mParentModel;
 }
 
-void Entity::setParent(Component *parent) {
+void Entity::setParent(Component *parent)
+{
     mPimpl->mParentComponent = parent;
 }
 
-void Entity::setParent(Model *parent) {
+void Entity::setParent(Model *parent)
+{
     mPimpl->mParentModel = parent;
 }
 
-void Entity::clearParent() {
+void Entity::clearParent()
+{
     mPimpl->mParentComponent = nullptr;
     mPimpl->mParentModel = nullptr;
 }
@@ -128,4 +132,4 @@ bool Entity::hasParent(Component *c) const
     return hasParent;
 }
 
-}
+} // namespace libcellml
