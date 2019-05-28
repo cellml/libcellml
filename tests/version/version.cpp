@@ -2,7 +2,8 @@
 
 #include <libcellml>
 
-TEST(Version, versionMatch) {
+TEST(Version, versionMatch)
+{
     unsigned int version = libcellml::version();
     EXPECT_EQ(0x000100u, version);
 

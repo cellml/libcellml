@@ -18,13 +18,15 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(When, create) {
+TEST(When, create)
+{
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
     EXPECT_NE(nullptr, w);
 }
 
-TEST(When, condition) {
+TEST(When, condition)
+{
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
     w->setCondition("<some mathml type string for condition.>");
@@ -32,7 +34,8 @@ TEST(When, condition) {
     EXPECT_EQ("<some mathml type string for condition.>", w->getCondition());
 }
 
-TEST(When, value) {
+TEST(When, value)
+{
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
     w->setValue("<some mathml type string for value.>");
@@ -40,7 +43,8 @@ TEST(When, value) {
     EXPECT_EQ("<some mathml type string for value.>", w->getValue());
 }
 
-TEST(When, order) {
+TEST(When, order)
+{
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
     EXPECT_FALSE(w->isOrderSet());

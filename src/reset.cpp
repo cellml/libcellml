@@ -67,9 +67,9 @@ Reset::Reset(Reset &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Reset& Reset::operator=(Reset e)
+Reset &Reset::operator=(Reset e)
 {
-    OrderedEntity::operator= (e);
+    OrderedEntity::operator=(e);
     e.swap(*this);
     return *this;
 }
@@ -171,4 +171,4 @@ size_t Reset::whenCount() const
     return mPimpl->mWhens.size();
 }
 
-}
+} // namespace libcellml
