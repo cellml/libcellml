@@ -31,8 +31,7 @@ namespace libcellml {
  *
  * An internal map used to convert a Prefix into its string form.
  */
-static const std::map<Prefix, const std::string> prefixToString =
-{
+static const std::map<Prefix, const std::string> prefixToString = {
     {Prefix::ATTO, "atto"},
     {Prefix::CENTI, "centi"},
     {Prefix::DECA, "deca"},
@@ -52,16 +51,14 @@ static const std::map<Prefix, const std::string> prefixToString =
     {Prefix::YOCTO, "yocto"},
     {Prefix::YOTTA, "yotta"},
     {Prefix::ZEPTO, "zepto"},
-    {Prefix::ZETTA, "zetta"}
-};
+    {Prefix::ZETTA, "zetta"}};
 
 /**
  * @brief Map StandardUnit to their string forms.
  *
  * An internal map used to convert a standard unit into its string form.
  */
-static const std::map<Units::StandardUnit, const std::string> standardUnitToString =
-{
+static const std::map<Units::StandardUnit, const std::string> standardUnitToString = {
     {Units::StandardUnit::AMPERE, "ampere"},
     {Units::StandardUnit::BECQUEREL, "becquerel"},
     {Units::StandardUnit::CANDELA, "candela"},
@@ -94,8 +91,7 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
     {Units::StandardUnit::TESLA, "tesla"},
     {Units::StandardUnit::VOLT, "volt"},
     {Units::StandardUnit::WATT, "watt"},
-    {Units::StandardUnit::WEBER, "weber"}
-};
+    {Units::StandardUnit::WEBER, "weber"}};
 
 /**
  * @brief The Unit struct.
@@ -156,10 +152,10 @@ Units::Units(Units &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Units& Units::operator=(Units rhs)
+Units &Units::operator=(Units rhs)
 {
-    NamedEntity::operator= (rhs);
-    ImportedEntity::operator= (rhs);
+    NamedEntity::operator=(rhs);
+    ImportedEntity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -180,15 +176,14 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     Unit u;
     u.mReference = reference;
     // Allow all nonzero user-specified prefixes
-    try
-    {
+    try {
         double prefixDouble = std::stod(prefix);
         if (prefixDouble != 0.0) {
             u.mPrefix = prefix;
         }
-    } catch (std::invalid_argument&) {
+    } catch (std::invalid_argument &) {
         u.mPrefix = prefix;
-    } catch (std::out_of_range&) {
+    } catch (std::out_of_range &) {
         u.mPrefix = prefix;
     }
     if (exponent != 1.0) {
@@ -231,16 +226,16 @@ void Units::addUnit(const std::string &reference)
 void Units::addUnit(StandardUnit standardRef, const std::string &prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-   const std::string reference = standardUnitToString.find(standardRef)->second;
-   addUnit(reference, prefix, exponent, multiplier, id);
+    const std::string reference = standardUnitToString.find(standardRef)->second;
+    addUnit(reference, prefix, exponent, multiplier, id);
 }
 
 void Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-   const std::string reference = standardUnitToString.find(standardRef)->second;
-   const std::string prefixString = prefixToString.find(prefix)->second;
-   addUnit(reference, prefixString, exponent, multiplier, id);
+    const std::string reference = standardUnitToString.find(standardRef)->second;
+    const std::string prefixString = prefixToString.find(prefix)->second;
+    addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
 void Units::addUnit(StandardUnit standardRef, double prefix, double exponent,

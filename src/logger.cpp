@@ -56,7 +56,7 @@ Logger::Logger(Logger &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Logger& Logger::operator=(Logger rhs)
+Logger &Logger::operator=(Logger rhs)
 {
     rhs.swap(*this);
     return *this;

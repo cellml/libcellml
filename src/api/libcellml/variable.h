@@ -36,7 +36,7 @@ public:
     ~Variable() override; /**< Destructor */
     Variable(const Variable &rhs); /**< Copy constructor */
     Variable(Variable &&rhs) noexcept; /**< Move constructor */
-    Variable& operator=(Variable rhs); /**< Assignment operator */
+    Variable &operator=(Variable rhs); /**< Assignment operator */
 
     /**
      * @brief The InterfaceType enum class.
@@ -86,7 +86,7 @@ public:
      * @param mappingId The @c std::string mapping id.
      * @param connectionId The @c std::string connection id (optional).
      */
-    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId="");
+    static void addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId = "");
 
     /**
      * @brief Set the equivalent mapping id for this equivalence.
@@ -335,4 +335,4 @@ private:
     VariableImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

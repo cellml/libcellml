@@ -16,8 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/exportdefinitions.h"
 #include "libcellml/entity.h"
+#include "libcellml/exportdefinitions.h"
 #include "libcellml/orderedentity.h"
 #include "libcellml/types.h"
 
@@ -36,7 +36,7 @@ public:
     ~Reset() override; /**< Destructor */
     Reset(const Reset &rhs); /**< Copy constructor */
     Reset(Reset &&rhs) noexcept; /**< Move constructor */
-    Reset& operator=(Reset rhs); /**< Assignment operator */
+    Reset &operator=(Reset rhs); /**< Assignment operator */
 
     /**
      * @brief Set the @c Variable for this @c Reset.
@@ -166,4 +166,4 @@ private:
     ResetImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

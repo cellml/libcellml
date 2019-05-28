@@ -84,4 +84,4 @@ enum class SpecificationRule
     MAP_VARIABLES_UNIQUE,
 };
 
-}
+} // namespace libcellml

@@ -42,4 +42,4 @@ LIBCELLML_EXPORT unsigned int version();
  */
 LIBCELLML_EXPORT std::string versionString();
 
-}
+} // namespace libcellml

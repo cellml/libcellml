@@ -58,7 +58,7 @@ Entity::Entity(Entity &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Entity& Entity::operator=(Entity rhs)
+Entity &Entity::operator=(Entity rhs)
 {
     rhs.swap(*this);
     return *this;
@@ -79,7 +79,8 @@ std::string Entity::getId() const
     return mPimpl->mId;
 }
 
-void *Entity::getParent() const {
+void *Entity::getParent() const
+{
     void *parent = nullptr;
     if (mPimpl->mParentComponent != nullptr) {
         parent = mPimpl->mParentComponent;
@@ -89,15 +90,18 @@ void *Entity::getParent() const {
     return parent;
 }
 
-void Entity::setParent(Component *parent) {
+void Entity::setParent(Component *parent)
+{
     mPimpl->mParentComponent = parent;
 }
 
-void Entity::setParent(Model *parent) {
+void Entity::setParent(Model *parent)
+{
     mPimpl->mParentModel = parent;
 }
 
-void Entity::clearParent() {
+void Entity::clearParent()
+{
     mPimpl->mParentComponent = nullptr;
     mPimpl->mParentModel = nullptr;
 }

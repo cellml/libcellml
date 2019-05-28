@@ -77,9 +77,9 @@ ComponentEntity::ComponentEntity(ComponentEntity &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-ComponentEntity& ComponentEntity::operator=(ComponentEntity rhs)
+ComponentEntity &ComponentEntity::operator=(ComponentEntity rhs)
 {
-    NamedEntity::operator= (rhs);
+    NamedEntity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }

@@ -30,6 +30,8 @@ include(when/tests.cmake)
 
 set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
+set(TESTS_SOURCE_FILES ${TEST_UTILS_SRC})
+set(TESTS_HEADER_FILES ${TEST_UTILS_HDR})
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
@@ -39,6 +41,8 @@ foreach(TEST ${LIBCELLML_TESTS})
   if(CURRENT_CATEGORY)
     set(CURRENT_CATEGORY "${CURRENT_CATEGORY}_")
   endif()
+  list(APPEND TESTS_SOURCE_FILES ${${TEST}_SRCS})
+  list(APPEND TESTS_HEADER_FILES ${${TEST}_HDRS})
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS} ${TEST_UTILS_SRC} ${TEST_UTILS_HDR})
   target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main)
@@ -113,3 +117,6 @@ if(LIBCELLML_MEMCHECK)
 endif()
 
 include(test_resources.cmake)
+
+set(TESTS_SOURCE_FILES ${TESTS_SOURCE_FILES} PARENT_SCOPE)
+set(TESTS_HEADER_FILES ${TESTS_HEADER_FILES} PARENT_SCOPE)

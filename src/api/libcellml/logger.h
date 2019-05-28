@@ -36,7 +36,7 @@ public:
     virtual ~Logger(); /**< Destructor */
     Logger(const Logger &rhs); /**< Copy constructor */
     Logger(Logger &&rhs) noexcept; /**< Move constructor */
-    Logger& operator=(Logger rhs); /**< Assignment operator */
+    Logger &operator=(Logger rhs); /**< Assignment operator */
 
     /**
      * @brief Clear the errors from the logger.
@@ -83,4 +83,4 @@ private:
     LoggerImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

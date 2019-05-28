@@ -32,13 +32,11 @@ namespace libcellml {
  *
  * An internal map used to convert a Variable InterfaceType enum class member into its string form.
  */
-static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString =
-{
+static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
     {Variable::InterfaceType::NONE, "none"},
     {Variable::InterfaceType::PRIVATE, "private"},
     {Variable::InterfaceType::PUBLIC, "public"},
-    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}
-};
+    {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
 using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
@@ -199,9 +197,9 @@ Variable::Variable(Variable &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Variable& Variable::operator=(Variable rhs)
+Variable &Variable::operator=(Variable rhs)
 {
-    NamedEntity::operator= (rhs);
+    NamedEntity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -379,8 +377,7 @@ std::string Variable::getInterfaceType() const
 
 void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId)
 {
-    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1))
-    {
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
         variable1->mPimpl->setEquivalentMappingId(variable2, mappingId);
         variable2->mPimpl->setEquivalentMappingId(variable1, mappingId);
     }
@@ -388,8 +385,7 @@ void Variable::setEquivalenceMappingId(const VariablePtr &variable1, const Varia
 
 void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &connectionId)
 {
-    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1))
-    {
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
         variable1->mPimpl->setEquivalentConnectionId(variable2, connectionId);
         variable2->mPimpl->setEquivalentConnectionId(variable1, connectionId);
     }
@@ -398,12 +394,10 @@ void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const Va
 std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
-    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1))
-    {
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
         std::string id_1 = variable1->mPimpl->getEquivalentMappingId(variable2);
         std::string id_2 = variable2->mPimpl->getEquivalentMappingId(variable1);
-        if (id_1 == id_2)
-        {
+        if (id_1 == id_2) {
             id = id_1;
         }
     }
@@ -413,12 +407,10 @@ std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, cons
 std::string Variable::getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
-    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1))
-    {
+    if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
         std::string id_1 = variable1->mPimpl->getEquivalentConnectionId(variable2);
         std::string id_2 = variable2->mPimpl->getEquivalentConnectionId(variable1);
-        if (id_1 == id_2)
-        {
+        if (id_1 == id_2) {
             id = id_1;
         }
     }

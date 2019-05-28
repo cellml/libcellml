@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "namespaces.h"
 #include "xmlattribute.h"
 
 #include <string>
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-
-#include "libcellml/namespaces.h"
 
 namespace libcellml {
 

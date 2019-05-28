@@ -56,9 +56,9 @@ ImportSource::ImportSource(ImportSource &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-ImportSource& ImportSource::operator=(ImportSource rhs)
+ImportSource &ImportSource::operator=(ImportSource rhs)
 {
-    Entity::operator= (rhs);
+    Entity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }

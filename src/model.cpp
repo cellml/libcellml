@@ -84,9 +84,9 @@ Model::Model(Model &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Model& Model::operator=(Model rhs)
+Model &Model::operator=(Model rhs)
 {
-    ComponentEntity::operator= (rhs);
+    ComponentEntity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -239,7 +239,7 @@ size_t Model::unitsCount() const
 std::string resolvePath(const std::string &filename, const std::string &base)
 {
     // We can be naive here as we know what we are dealing with
-    std::string path = base.substr(0, base.find_last_of('/')+1) + filename;
+    std::string path = base.substr(0, base.find_last_of('/') + 1) + filename;
     return path;
 }
 
@@ -266,9 +266,8 @@ void resolveImport(const ImportedEntityPtr &importedEntity,
 void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
                              const std::string &baseFile)
 {
-    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n)
-    {
-        ComponentPtr component = parentComponentEntity->getComponent(n);
+    for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
+        libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
         if (component->isImport()) {
             resolveImport(component, baseFile);
         } else {
@@ -279,9 +278,8 @@ void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
 
 void Model::resolveImports(const std::string &baseFile)
 {
-    for (size_t n = 0; n < unitsCount(); ++n)
-    {
-        UnitsPtr units = getUnits(n);
+    for (size_t n = 0; n < unitsCount(); ++n) {
+        libcellml::UnitsPtr units = getUnits(n);
         resolveImport(units, baseFile);
     }
     resolveComponentImports(shared_from_this(), baseFile);
@@ -324,9 +322,8 @@ bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity)
 {
     bool unresolvedImports = false;
-    for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n)
-    {
-        ComponentPtr component = parentComponentEntity->getComponent(n);
+    for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n) {
+        libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
         unresolvedImports = doHasUnresolvedComponentImports(component);
     }
     return unresolvedImports;
@@ -335,9 +332,8 @@ bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEnti
 bool Model::hasUnresolvedImports()
 {
     bool unresolvedImports = false;
-    for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n)
-    {
-        UnitsPtr units = getUnits(n);
+    for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
+        libcellml::UnitsPtr units = getUnits(n);
         unresolvedImports = isUnresolvedImport(units);
     }
     if (!unresolvedImports) {

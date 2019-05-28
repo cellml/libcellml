@@ -36,7 +36,7 @@ public:
     ~NamedEntity() override; /**< Destructor */
     NamedEntity(const NamedEntity &rhs); /**< Copy constructor */
     NamedEntity(NamedEntity &&rhs) noexcept; /**< Move constructor */
-    NamedEntity& operator=(NamedEntity rhs); /**< Assignment operator */
+    NamedEntity &operator=(NamedEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Set the name for the Entity.
@@ -64,4 +64,4 @@ private:
     NamedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

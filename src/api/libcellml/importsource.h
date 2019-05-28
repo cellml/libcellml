@@ -36,7 +36,7 @@ public:
     ~ImportSource() override; /**< Destructor */
     ImportSource(const ImportSource &rhs); /**< Copy constructor */
     ImportSource(ImportSource &&rhs) noexcept; /**< Move constructor */
-    ImportSource& operator=(ImportSource rhs); /**< Assignment operator */
+    ImportSource &operator=(ImportSource rhs); /**< Assignment operator */
 
     /**
      * @brief Get the source @c Model's URL.
@@ -95,4 +95,4 @@ private:
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

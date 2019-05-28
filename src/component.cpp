@@ -92,10 +92,10 @@ Component::Component(Component &&rhs) noexcept
     rhs.mPimpl = nullptr;
 }
 
-Component& Component::operator=(Component rhs)
+Component &Component::operator=(Component rhs)
 {
-    ComponentEntity::operator= (rhs);
-    ImportedEntity::operator = (rhs);
+    ComponentEntity::operator=(rhs);
+    ImportedEntity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -119,15 +119,18 @@ void Component::setSourceComponent(const ImportSourcePtr &importSource, const st
     setImportReference(name);
 }
 
-void Component::appendMath(const std::string &math) {
+void Component::appendMath(const std::string &math)
+{
     mPimpl->mMath.append(math);
 }
 
-std::string Component::getMath() const{
+std::string Component::getMath() const
+{
     return mPimpl->mMath;
 }
 
-void Component::setMath(const std::string &math) {
+void Component::setMath(const std::string &math)
+{
     mPimpl->mMath = math;
 }
 

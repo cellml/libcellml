@@ -34,7 +34,7 @@ public:
     ~Component() override; /**< Destructor */
     Component(const Component &rhs); /**< Copy constructor */
     Component(Component &&rhs) noexcept; /**< Move constructor */
-    Component& operator=(Component rhs); /**< Assignment operator */
+    Component &operator=(Component rhs); /**< Assignment operator */
 
     /**
      * @brief Set the source component for this component.
@@ -334,4 +334,4 @@ private:
     ComponentImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml
