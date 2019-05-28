@@ -215,7 +215,15 @@ typedef std::shared_ptr<GeneratorEquation> GeneratorEquationPtr;
 class GeneratorEquation
 {
 public:
+    enum class Type {
+        UNKNOWN,
+        RATE,
+        ALGEBRAIC
+    };
+
     explicit GeneratorEquation(const ComponentPtr &component);
+
+    Type type() const;
 
 //TODO: needed?
 //    ComponentPtr component() const;
@@ -229,6 +237,8 @@ public:
                          const VariablePtr &newVariable);
 
 private:
+    Type mType;
+
     ComponentPtr mComponent;
 
     GeneratorEquationAstPtr mAst;
@@ -237,9 +247,15 @@ private:
 };
 
 GeneratorEquation::GeneratorEquation(const ComponentPtr &component)
-    : mComponent(component)
+    : mType(Type::UNKNOWN)
+    , mComponent(component)
     , mAst(std::make_shared<GeneratorEquationAst>())
 {
+}
+
+GeneratorEquation::Type GeneratorEquation::type() const
+{
+    return mType;
 }
 
 //TODO: needed?
@@ -292,10 +308,14 @@ public:
     VariablePtr variable() const;
     void setVariable(const VariablePtr &variable);
 
+    GeneratorEquationAstPtr variableAst() const;
+    void setVariableAst(const GeneratorEquationAstPtr &ast);
+
 private:
     Type mType;
 
     VariablePtr mVariable;
+    GeneratorEquationAstPtr mAst;
 };
 
 GeneratorVariable::GeneratorVariable()
@@ -317,6 +337,24 @@ VariablePtr GeneratorVariable::variable() const
 void GeneratorVariable::setVariable(const VariablePtr &variable)
 {
     mVariable = variable;
+
+    if (!variable->getInitialValue().empty()) {
+        // The variable has an initial value, so it can either be a constant or
+        // a state. By default, we consider it to be a constant. Then, if we
+        // find an ODE for it, we will know that it was actually a state.
+
+        mType = Type::CONSTANT;
+    }
+}
+
+GeneratorEquationAstPtr GeneratorVariable::variableAst() const
+{
+    return mAst;
+}
+
+void GeneratorVariable::setVariableAst(const GeneratorEquationAstPtr &ast)
+{
+    mAst = ast;
 }
 
 struct Generator::GeneratorImpl
@@ -1098,15 +1136,21 @@ for (const auto &variable : mVariables) {
         processEquation(equation);
     }
 //TODO: remove the below code once we are done testing things...
-printf("---------------------------------------[BEGIN]\n");
+printf("[neededMathMethods()]---------------------------------------[BEGIN]\n");
 printf("%s", neededMathMethods().c_str());
-
-for (const auto &equation : mEquations) {
-    printf("%s;\n", generateCode(equation->ast()).c_str());
-    printf("Number of variables in equation: %zu\n", equation->variables().size());
-}
-
-printf("---------------------------------------[END]\n");
+printf("[neededMathMethods()]---------------------------------------[END]\n");
+printf("[initializeVariables()]---------------------------------------[BEGIN]\n");
+printf("%s", initializeVariables().c_str());
+printf("[initializeVariables()]---------------------------------------[END]\n");
+printf("[computeConstantEquations()]---------------------------------------[BEGIN]\n");
+printf("%s", computeConstantEquations().c_str());
+printf("[computeConstantEquations()]---------------------------------------[END]\n");
+printf("[computeRateEquations()]---------------------------------------[BEGIN]\n");
+printf("%s", computeRateEquations().c_str());
+printf("[computeRateEquations()]---------------------------------------[END]\n");
+printf("[computeAlgebraicEquations()]---------------------------------------[BEGIN]\n");
+printf("%s", computeAlgebraicEquations().c_str());
+printf("[computeAlgebraicEquations()]---------------------------------------[END]\n");
 }
 
 std::string Generator::GeneratorImpl::neededMathMethods() const
@@ -1116,22 +1160,54 @@ std::string Generator::GeneratorImpl::neededMathMethods() const
 
 std::string Generator::GeneratorImpl::initializeVariables() const
 {
-    return {};
+    std::string res;
+
+    for (const auto &variable : mVariables) {
+        if (variable->type() == GeneratorVariable::Type::CONSTANT) {
+            res += variable->variable()->getName()+" = "+variable->variable()->getInitialValue()+";\n";
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::computeConstantEquations() const
 {
-    return {};
+    std::string res;
+
+    for (const auto &variable : mVariables) {
+        if (variable->type() == GeneratorVariable::Type::COMPUTED_CONSTANT) {
+//TODO: to be done...
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::computeRateEquations() const
 {
-    return {};
+    std::string res;
+
+    for (const auto &equation : mEquations) {
+        if (equation->type() == GeneratorEquation::Type::RATE) {
+            res += generateCode(equation->ast()).c_str();
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
 {
-    return {};
+    std::string res;
+
+    for (const auto &equation : mEquations) {
+        if (equation->type() == GeneratorEquation::Type::ALGEBRAIC) {
+            res += generateCode(equation->ast()).c_str();
+        }
+    }
+
+    return res;
 }
 
 std::string replace(const std::string &string, const std::string &from, const std::string &to)
