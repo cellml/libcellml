@@ -92,10 +92,10 @@ Component::Component(Component &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Component& Component::operator=(Component c)
+Component &Component::operator=(Component c)
 {
-    ComponentEntity::operator= (c);
-    ImportedEntity::operator = (c);
+    ComponentEntity::operator=(c);
+    ImportedEntity::operator=(c);
     c.swap(*this);
     return *this;
 }
@@ -119,15 +119,18 @@ void Component::setSourceComponent(const ImportSourcePtr &importSource, const st
     setImportReference(name);
 }
 
-void Component::appendMath(const std::string &math) {
+void Component::appendMath(const std::string &math)
+{
     mPimpl->mMath.append(math);
 }
 
-std::string Component::getMath() const{
+std::string Component::getMath() const
+{
     return mPimpl->mMath;
 }
 
-void Component::setMath(const std::string &math) {
+void Component::setMath(const std::string &math)
+{
     mPimpl->mMath = math;
 }
 
@@ -284,4 +287,4 @@ bool Component::hasReset(const ResetPtr &reset) const
     return mPimpl->findReset(reset) != mPimpl->mResets.end();
 }
 
-}
+} // namespace libcellml
