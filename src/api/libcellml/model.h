@@ -25,7 +25,6 @@ limitations under the License.
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
 #endif
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**

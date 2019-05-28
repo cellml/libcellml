@@ -24,7 +24,6 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
