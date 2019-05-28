@@ -62,7 +62,7 @@ std::string XmlAttribute::getNamespace() const
 bool XmlAttribute::isType(const char *name, const char *ns)
 {
     bool found = false;
-    if (   (xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+    if ((xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
         && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;
     }

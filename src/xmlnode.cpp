@@ -63,7 +63,7 @@ std::string XmlNode::getNamespace() const
 bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
-    if (   (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
+    if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
         && (xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
         && (xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;

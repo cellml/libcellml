@@ -51,7 +51,7 @@ TEST(Parser, invalidXMLElements)
     EXPECT_EQ(expectedErrors.size() - 1, p.errorCount());
     for (size_t i = 0; i < p.errorCount(); ++i) {
         if (i == 0) {
-            EXPECT_TRUE(   (p.getError(i)->getDescription() != expectedErrors.at(0))
+            EXPECT_TRUE((p.getError(i)->getDescription() != expectedErrors.at(0))
                         || (p.getError(i)->getDescription() != expectedErrors.at(1)));
         } else {
             EXPECT_EQ(expectedErrors.at(i + 1), p.getError(i)->getDescription());
