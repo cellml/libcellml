@@ -62,7 +62,8 @@ std::string convertIntToString(int value)
     return strs.str();
 }
 
-bool isEuropeanNumericCharacter(char c) {
+bool isEuropeanNumericCharacter(char c)
+{
     const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     return validIntegerCharacters.find(c) != validIntegerCharacters.end();
 }
@@ -95,9 +96,9 @@ std::vector<size_t> findOccurences(const std::string &candidate, const std::stri
 {
     std::vector<size_t> occurences;
     size_t pos = candidate.find(sub, 0);
-    while(pos != std::string::npos) {
+    while (pos != std::string::npos) {
         occurences.push_back(pos);
-        pos = candidate.find(sub, pos+1);
+        pos = candidate.find(sub, pos + 1);
     }
     return occurences;
 }
@@ -128,7 +129,7 @@ bool isCellMLReal(const std::string &candidate)
         std::string normalisedCandidate = candidate;
         std::vector<size_t> eOccurences = findOccurences(candidate, "E");
         for (auto ePos : eOccurences) {
-             normalisedCandidate.replace(ePos, 1, "e");
+            normalisedCandidate.replace(ePos, 1, "e");
         }
         std::vector<size_t> lowerEOccurences = findOccurences(normalisedCandidate, "e");
         size_t eIndicatorCount = lowerEOccurences.size();
@@ -136,7 +137,7 @@ bool isCellMLReal(const std::string &candidate)
             if (eIndicatorCount == 1) {
                 size_t ePos = lowerEOccurences.at(0);
                 std::string significand = normalisedCandidate.substr(0, ePos);
-                std::string exponent = normalisedCandidate.substr(ePos+1, std::string::npos);
+                std::string exponent = normalisedCandidate.substr(ePos + 1, std::string::npos);
                 if (isCellMLBasicReal(significand) && isCellMLExponent(exponent)) {
                     isReal = true;
                 }
@@ -153,4 +154,4 @@ bool isEqual(double value1, double value2)
     return std::abs(value1-value2) < std::numeric_limits<double>::epsilon();
 }
 
-}
+} // namespace libcellml

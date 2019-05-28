@@ -142,4 +142,4 @@ bool isCellMLReal(const std::string &candidate);
  */
 bool isEqual(double value1, double value2);
 
-}
+} // namespace libcellml

@@ -54,7 +54,7 @@ ImportedEntity::ImportedEntity(ImportedEntity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-ImportedEntity& ImportedEntity::operator=(ImportedEntity e)
+ImportedEntity &ImportedEntity::operator=(ImportedEntity e)
 {
     e.swap(*this);
     return *this;
@@ -90,4 +90,4 @@ void ImportedEntity::setImportReference(const std::string &reference)
     mPimpl->mImportReference = reference;
 }
 
-}
+} // namespace libcellml
