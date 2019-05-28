@@ -437,7 +437,6 @@ std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
     using ImportPair = std::pair<std::string, ComponentPtr>;
-    using VectorPairIterator = std::vector<ImportPair>::const_iterator;
     using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
     using ImportMapIterator = ImportMap::const_iterator;
     ImportMap importMap;
@@ -573,31 +572,6 @@ std::string Printer::printModel(Model model) const
 std::string Printer::printModel(Model *model) const
 {
     return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, model));
-}
-
-std::string Printer::printEncapsulation(ComponentPtr component) const
-{
-    std::string componentName = component->getName();
-    std::string repr = "<component_ref";
-    if (componentName.length() > 0) {
-        repr += R"( component=")" + componentName + R"(")";
-    }
-    if (component->getEncapsulationId().length() > 0) {
-        repr += R"( id=")" + component->getEncapsulationId() + R"(")";
-    }
-    size_t componentCount = component->componentCount();
-    if (componentCount > 0) {
-        repr += ">";
-    } else {
-        repr += "/>";
-    }
-    for (size_t i = 0; i < componentCount; ++i) {
-        repr += printEncapsulation(component->getComponent(i));
-    }
-    if (componentCount > 0) {
-        repr += "</component_ref>";
-    }
-    return repr;
 }
 
 } // namespace libcellml

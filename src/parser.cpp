@@ -1274,7 +1274,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
         when->setOrder(order);
     } else if (!orderDefined) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription(("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' does not have an order defined.");
+        err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' does not have an order defined.");
         err->setWhen(when);
         err->setRule(SpecificationRule::WHEN_ORDER);
         mParser->addError(err);
