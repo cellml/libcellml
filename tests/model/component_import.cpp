@@ -29,7 +29,7 @@ limitations under the License.
 
 TEST(ComponentImport, basics)
 {
-    const std::string e;
+    const std::string e = "";
 
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");

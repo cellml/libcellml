@@ -25,7 +25,7 @@ limitations under the License.
  */
 TEST(Coverage, import)
 {
-    const std::string e;
+    const std::string e = "";
     libcellml::ImportSource i;
     libcellml::ImportSource im;
 
