@@ -1,0 +1,16 @@
+
+# Ignore build/ directories
+build/
+
+# Eclipse project files
+.project
+.pydevproject
+.settings/
+
+# Qt Creator generated files
+CMakeLists.txt.user
+*.autosave
+
+# OS X hidden system files
+.DS_Store
+
