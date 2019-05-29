@@ -98,15 +98,25 @@ Doxygen
 Binary distributions for Linux, Windows, and MacOS are available from the `download page of the Doxygen website <http://www.doxygen.nl/download.html#srcbin>`_, and source code is available there too.
 
 
+Python (optional)
+-----------------
+`Python <https://www.python.org/>`_ is an open-source language which is syntactically easier to read than other higher-level languages.  It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.  Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the following `Building LibCellML <https://libcellml.readthedocs.io/en/latest/dev_building.html>`_  page.
+
+On MacOS, Python `is already installed <https://legacy.python.org/getit/mac/>`_, though depending on the age of your machine you may like to upgrade it to a `later version from the Python site <https://www.python.org/downloads/mac-osx/>`_.
+
+Linux also natively includes Python, but again depending on the age of your machine you may like to upgrade to a more recent version.  
+
+Python binaries for Windows can be found on `the Python download page <https://www.python.org/downloads/windows/>`_, or you can build your own from source files if you prefer. 
+
+
 SWIG for Python bindings (optional)
 -----------------------------------
 
-`SWIG <http://www.swig.org/>`_ is a tool which acts as a translator between code written in C++ and other languages, including `Python <https://www.python.org/>`_.  Here SWIG is used to generate the optional Python bindings for libCellML, so both a SWIG installation as well as a Python 2 or Python 3 installation are needed.  Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the following `Building LibCellML <https://libcellml.readthedocs.io/en/latest/dev_building.html>`_  page.
+`SWIG <http://www.swig.org/>`_ is a tool which acts as a translator between code written in C++ and other languages, including `Python <https://www.python.org/>`_.  Here SWIG is used to generate the optional Python bindings for libCellML.  The current version (0.9) of libCellML uses SWIG 4.0.0. 
 
-On MacOS, Python `is already installed <https://legacy.python.org/getit/mac/>`_, though depending on the age of your machine you may like to upgrade it to a `later version from the Python site <https://www.python.org/downloads/mac-osx/>`_. SWIG for MacOS can be accessed using the `downloads for Unix/Linux sources <http://www.swig.org/download.html>`_ and building it locally.    
-
-On Windows both SWIG and Python will need to be installed.  Python binaries can be found on `the Python download page <https://www.python.org/downloads/windows/>`_, or you can build your own from source files if you prefer. 
-SWIG for Windows is available from `here <https://sourceforge.net/projects/swig/files/swigwin/>`_.
+SWIG for MacOS can be accessed using the `downloads for Unix/Linux sources <http://www.swig.org/download.html>`_ and building it locally according to the instructions provided on that page.
+  
+SWIG for Windows is available from the `Swigwin download link <https://sourceforge.net/projects/swig/files/swigwin/>`_.
   
 On Linux systems both Python and SWIG are already included, so no further action is needed.  
 
