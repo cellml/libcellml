@@ -489,6 +489,10 @@ struct Generator::GeneratorImpl
     std::string mInf = "1.0/0.0";
     std::string mNan = "sqrt(-1.0)";
 
+    // Miscellaneous
+
+    std::string mCommandSeparator = ";";
+
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
@@ -1164,7 +1168,7 @@ std::string Generator::GeneratorImpl::initializeVariables() const
 
     for (const auto &variable : mVariables) {
         if (variable->type() == GeneratorVariable::Type::CONSTANT) {
-            res += variable->variable()->getName()+" = "+variable->variable()->getInitialValue()+";\n";
+            res += variable->variable()->getName()+" = "+variable->variable()->getInitialValue()+mCommandSeparator+"\n";
         }
     }
 
@@ -1202,9 +1206,9 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
     std::string res;
 
     for (const auto &equation : mEquations) {
-        if (equation->type() == GeneratorEquation::Type::ALGEBRAIC) {
-            res += generateCode(equation->ast()).c_str();
-        }
+//        if (equation->type() == GeneratorEquation::Type::ALGEBRAIC) {
+            res += generateCode(equation->ast()).c_str()+mCommandSeparator+"\n";
+//        }
     }
 
     return res;
