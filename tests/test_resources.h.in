@@ -31,7 +31,7 @@ public:
 
     static const std::string getResourcePath(const std::string &resourceRelativePath)
     {
-        return std::string("@TESTS_LOCATION@/")+resourceRelativePath;
+        return std::string("@TESTS_LOCATION@/").append(resourceRelativePath);
     }
 
     static const char *getLocation(ResourcesName resourceName)
