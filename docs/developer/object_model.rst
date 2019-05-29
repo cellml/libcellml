@@ -17,11 +17,11 @@ Overview of Object Model
 .. figure:: images/libCellMLRoughObjectModel-Overview.png
    :alt: libCellML Overview Object Model.
 
-Object Model for Use Cases 1 - 4
-================================
+Detailed
+========
 
 .. figure:: images/libCellMLRoughObjectModel-Entities.png
-   :alt: libCellML Object Model: Entities for use cases 1 - 4.
+   :alt: libCellML Object Model.
 
 .. figure:: images/libCellMLRoughObjectModel-IOError.png
-   :alt: libCellML Object Model: Input, Output, and Errors for use cases 1 - 4.
+   :alt: libCellML Object Model.
