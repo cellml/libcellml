@@ -4,11 +4,11 @@ Options
 =================================== =============== =========================================
 Config                              Default         Description
 =================================== =============== =========================================
-LIBCELLML_BUILD_TYPE                Release         The type of build Release, Debug etc.
+LIBCELLML_BUILD_TYPE                Release         The type of build Release, Debug etc
 ----------------------------------- --------------- -----------------------------------------
-LIBCELLML_BUILD_SHARED              ON              Build shared libraries (so, dylib, DLLs).
+LIBCELLML_BUILD_SHARED              ON              Build shared libraries (so, dylib, DLLs)
 ----------------------------------- --------------- -----------------------------------------
-LIBCELLML_TREAT_WARNINGS_AS_ERRORS  ON              Treat warnings as errors.
+LIBCELLML_TREAT_WARNINGS_AS_ERRORS  ON              Treat warnings as errors
 ----------------------------------- --------------- -----------------------------------------
 INSTALL_PREFIX                                      Install path prefix 
 ----------------------------------- --------------- -----------------------------------------
