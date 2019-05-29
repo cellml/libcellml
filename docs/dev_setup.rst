@@ -104,7 +104,7 @@ Python (optional)
 
 On MacOS, Python `is already installed <https://legacy.python.org/getit/mac/>`_, though depending on the age of your machine you may like to upgrade it to a `later version from the Python site <https://www.python.org/downloads/mac-osx/>`_.
 
-Linux also natively includes Python, but again depending on the age of your machine you may like to upgrade to a more recent version.  
+Linux also natively includes Python, but again depending on the age of your machine and system installation, you may like to upgrade to a more recent version from the `Python download page <https://www.python.org/downloads/source/>`_.    
 
 Python binaries for Windows can be found on `the Python download page <https://www.python.org/downloads/windows/>`_, or you can build your own from source files if you prefer. 
 
