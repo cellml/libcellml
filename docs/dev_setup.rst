@@ -1,5 +1,6 @@
 .. Developer Setup for libCellML
 
+.. _devSetup:
 =================
 Development Setup
 =================
@@ -32,6 +33,7 @@ Pre-requisite acquisition
 
 In this section, we cover the retrieval and installation of pre-requisites.
 
+.. _devSetup_git:
 Git
 ---
 
@@ -48,6 +50,7 @@ We commonly use `Git for windows <http://gitforwindows.org/>`_, but other popula
 * `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`_ distributions) `Git <https://git-scm.com/>`_ can be installed using the package manager with the command ``sudo apt-get install git``.
 * `macOS <https://en.wikipedia.org/wiki/MacOS>`_ `Git <https://git-scm.com/>`_ is pre-installed and available from the command line.
 
+.. _devSetup_cmake:
 CMake
 -----
 
@@ -59,6 +62,8 @@ For `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ (and other `Linux <https://
 For `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_ and `macOS <https://en.wikipedia.org/wiki/MacOS>`_, `CMake <https://cmake.org/>`_ provides `installation binaries <https://cmake.org/download/>`_.
 Choose the binary appropriate for your operating system and follow the installation instructions.
 
+
+.. _devSetup_toolchain:
 Toolchain
 ---------
 
@@ -79,6 +84,7 @@ The *Community* edition is more than sufficient for the needs of libCellML.
 To minimize the size of the installation, you may install only the C++ compiler.
 This component (and its requirements) is sufficient for building libCellML.
 
+.. _devSetup_libxml2:
 LibXml2
 -------
 
@@ -90,6 +96,7 @@ On `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`_, it's easiest to
 
 On `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`_ LibXml2 can be installed using ``sudo apt install libxml2-dev``.
 
+.. _devSetup_doxygen:
 Doxygen
 -------
 
@@ -97,7 +104,7 @@ Doxygen
 
 Binary distributions for Linux, Windows, and MacOS are available from the `download page of the Doxygen website <http://www.doxygen.nl/download.html#srcbin>`_, and source code is available there too.
 
-
+.. _devSetup_python:
 Python (optional)
 -----------------
 `Python <https://www.python.org/>`_ is an open-source language which is syntactically easier to read than other higher-level languages.  It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.  Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the following `Building LibCellML <https://libcellml.readthedocs.io/en/latest/dev_building.html>`_  page.
@@ -109,6 +116,7 @@ Linux also natively includes Python, but again depending on the age of your mach
 Python binaries for Windows can be found on `the Python download page <https://www.python.org/downloads/windows/>`_, or you can build your own from source files if you prefer. 
 
 
+.. _devSetup_swig:
 SWIG for Python bindings (optional)
 -----------------------------------
 
@@ -121,12 +129,14 @@ SWIG for Windows is available from the `Swigwin download link <https://sourcefor
 On Linux systems both Python and SWIG are already included, so no further action is needed.  
 
 
+.. _devSetup_sphinx:
 Sphinx for Python documentation (optional)
 ------------------------------------------
 
 `Sphinx <http://www.sphinx-doc.org/en/master/>`_ is an additional documentation tool used here to assemble documentation of the Python bindings.  Instructions for all operating systems can be found on their `Installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`.  The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an `import error <https://github.com/rtfd/readthedocs.org/issues/3812>`_ despite being reported fixed since version Sphinx 1.7.2).  
 
 
+.. _devSetup_codebase:
 Setting up the codebase
 =======================
 
