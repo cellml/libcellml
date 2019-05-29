@@ -1,5 +1,5 @@
 ===========================
-Submitting Code for Testing
+Testing libCellML
 ===========================
 
 If you wish to test some new code without having to create a pull request you can.
