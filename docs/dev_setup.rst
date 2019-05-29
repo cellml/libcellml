@@ -34,6 +34,7 @@ Pre-requisite acquisition
 
 In this section, we cover the retrieval and installation of pre-requisites.
 
+
 .. _devsetup_git:
 
 Git
@@ -44,7 +45,6 @@ Installing a `Git <https://git-scm.com/>`__ client is particular to each operati
 
 * `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`__ `Git <https://git-scm.com/>`__ is available from a variety of vendors.
 We commonly use `Git for windows <http://gitforwindows.org/>`__, but other popular `Git <https://git-scm.com/>`__ implementations are:
-
   - `GitHub Desktop <https://desktop.github.com/>`__
   - `GitKracken <https://www.gitkraken.com/>`__
   - `Git SCM <https://git-scm.com/>`__
@@ -52,15 +52,17 @@ We commonly use `Git for windows <http://gitforwindows.org/>`__, but other popul
 * `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`__ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`__ distributions) `Git <https://git-scm.com/>`__ can be installed using the package manager with the command ``sudo apt-get install git``.
 * `macOS <https://en.wikipedia.org/wiki/MacOS>`__ `Git <https://git-scm.com/>`__ is pre-installed and available from the command line.
 
+
 .. _devsetup_cmake:
 
 CMake
 -----
 
 `CMake <https://cmake.org/>`__ is the cross-platform family of tools designed to build, test and package software.
-`CMake <https://cmake.org/>`__ is used to control the software compilation process using simple platform and compiler independent configuration files, and to generate native makefiles and workspaces that can be used in the compiler environment of your choice.
+CMake is used to control the software compilation process using simple platform and compiler independent configuration files, and to generate native makefiles and workspaces that can be used in the compiler environment of your choice.
+Note that CMake version 3.2 or later is required to configure libCellML.
 
-Again, installation of `CMake <https://cmake.org/>`__ is particular to each operating system.
+Again, installation of CMake is particular to each operating system.
 For `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`__ (and other `Linux <https://en.wikipedia.org/wiki/Linux>`__ distributions), `CMake <https://cmake.org/>`__ can be installed using the package manager with the command ``sudo apt-get install cmake``.
 For `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`__ and `macOS <https://en.wikipedia.org/wiki/MacOS>`__, `CMake <https://cmake.org/>`__ provides `installation binaries <https://cmake.org/download/>`__.
 Choose the binary appropriate for your operating system and follow the installation instructions.
@@ -88,34 +90,53 @@ The *Community* edition is more than sufficient for the needs of libCellML.
 To minimize the size of the installation, you may install only the C++ compiler.
 This component (and its requirements) is sufficient for building libCellML.
 
+Linux
++++++
+(todo)
+
+MacOS
++++++
+(todo)
+
+
 .. _devsetup_libxml2:
 
 LibXml2
 -------
 
-`LibXml2 <http://xmlsoft.org/>`__ is a parser and toolkit for manipulating XML files and text.  It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.  
+`LibXml2 <http://xmlsoft.org/>`__ is a parser and toolkit for manipulating XML files and text.  
+It's important to use a 64-bit version of the library as the 32-bit is not compatible with libCellML.  
 
 LibXML2 is already installed on `macOS <https://en.wikipedia.org/wiki/MacOS>`__, so no further action is required on that platform.  
 
-On `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`__, it's easiest to install using the packaged version available from `the OpenCMISS site <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`__.  You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.  Source code for building it yourself can be downloaded from the `LibXml2 <http://xmlsoft.org/>`__ site.
+On `Windows <https://en.wikipedia.org/wiki/Microsoft_Windows>`__, it's easiest to install using the packaged version available from `the OpenCMISS site <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`__.
+You're welcome to build your own version if you'd rather, but please make sure it's a 64-bit implementation.  
+Source code for building it yourself can be downloaded from the `LibXml2 <http://xmlsoft.org/>`__ site.
 
 On `Ubuntu <https://en.wikipedia.org/wiki/Ubuntu>`__ LibXml2 can be installed using ``sudo apt install libxml2-dev``.
+
 
 .. _devsetup_doxygen:
 
 Doxygen
 -------
 
-`Doxygen <http://www.doxygen.nl/>`__ is software which assembles documentation files directly from annotated source code, including the generation of inheritance and dependency tree diagrams for classes.  In order for libCellML to build its documentation you will need to have Doxygen and its dependencies installed.  Note that this does not affect your use of the libCellML library itself. 
+`Doxygen <http://www.doxygen.nl/>`__ is software which assembles documentation files directly from annotated source code, including the generation of inheritance and dependency tree diagrams for classes.  
+In order for libCellML to build its documentation you will need to have Doxygen and its dependencies installed.  
+Note that this does not affect your use of the libCellML library itself. 
 
 Binary distributions for Linux, Windows, and MacOS are available from the `download page of the Doxygen website <http://www.doxygen.nl/download.html#srcbin>`__, and source code is available there too.
+
+On Windows you may also need to download and install the Graphviz package in order to generate the class heirarchy diagrams.  You can `download Graphviz <http://graphviz.org/download/>`__ from their website.
 
 
 .. _devsetup_python:
 
 Python (optional)
 -----------------
-`Python <https://www.python.org/>`__ is an open-source language which is syntactically easier to read than other higher-level languages.  It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.  Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the following `Building LibCellML <https://libcellml.readthedocs.io/en/latest/dev_building.html>`__  page.
+`Python <https://www.python.org/>`__ is an open-source language which is syntactically easier to read than other higher-level languages.  
+It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.  
+Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the following `Building LibCellML <https://libcellml.readthedocs.io/en/latest/dev_building.html>`__  page.
 
 On MacOS, Python `is already installed <https://legacy.python.org/getit/mac/>`__, though depending on the age of your machine you may like to upgrade it to a `later version from the Python site <https://www.python.org/downloads/mac-osx/>`__.
 
@@ -129,7 +150,9 @@ Python binaries for Windows can be found on `the Python download page <https://w
 SWIG for Python bindings (optional)
 -----------------------------------
 
-`SWIG <http://www.swig.org/>`__ is a tool which acts as a translator between code written in C++ and other languages, including `Python <https://www.python.org/>`__.  Here SWIG is used to generate the optional Python bindings for libCellML.  The current version (0.9) of libCellML uses SWIG 4.0.0. 
+`SWIG <http://www.swig.org/>`__ is a tool which acts as a translator between code written in C++ and other languages, including `Python <https://www.python.org/>`__.  
+Here SWIG is used to generate the optional Python bindings for libCellML.  
+The current version (0.9) of libCellML uses SWIG 4.0.0. 
 
 SWIG for MacOS can be accessed using the `downloads for Unix/Linux sources <http://www.swig.org/download.html>`__ and building it locally according to the instructions provided on that page.
   
@@ -143,7 +166,9 @@ On Linux systems both Python and SWIG are already included, so no further action
 Sphinx for Python documentation (optional)
 ------------------------------------------
 
-`Sphinx <http://www.sphinx-doc.org/en/master/>`__ is an additional documentation tool used here to assemble documentation of the Python bindings.  Instructions for all operating systems can be found on their `Installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`.  The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an `import error <https://github.com/rtfd/readthedocs.org/issues/3812>`__ despite being reported fixed since version Sphinx 1.7.2).  
+`Sphinx <http://www.sphinx-doc.org/en/master/>`__ is an additional documentation tool used here to assemble documentation of the Python bindings.  
+Instructions for all operating systems can be found on their `Installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`.  
+The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an `import error <https://github.com/rtfd/readthedocs.org/issues/3812>`__ despite being reported fixed since version Sphinx 1.7.2).  
 
 
 .. _devsetup_codebase:
@@ -204,7 +229,7 @@ Now clone the repository::
   cd <somewhere/you/keep/development/code>
   git clone https://github.com/andre/libCellML.git
 
-Note: again, do not clone this location substitute your `GitHub <https://github.com/>`__ username for *andre*.
+Note: again, do not clone this location; substitute your `GitHub <https://github.com/>`__ username for *andre*.
 
 Set Git remotes
 ---------------

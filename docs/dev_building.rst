@@ -6,7 +6,8 @@ Configuring and Building libCellML
 
 This document covers building libCellML from source.  
 
-It is assumed that you already have the codebase downloaded and ready for building.  If not, please see the `Development Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page for instructions.
+It is assumed that you already have the codebase downloaded and ready for building.  
+If not, please see the `Development Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page for instructions.
 
 The variable ``LIBCELLML_SRC`` shall be used to refer to the directory containing the ``LICENSE`` file for libCellML.
 
@@ -16,19 +17,27 @@ The variable ``LIBCELLML_SRC`` shall be used to refer to the directory containin
 Directory structure
 -------------------
 
-It is best to build libCellML outside of the source tree.  To this end, create a build directory that is not the ``LIBCELLML_SRC`` directory.  A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``. The variable ``LIBCELLML_BUILD`` is used to refer to this build directory.
+It is best to build libCellML outside of the source tree.  
+To this end, create a build directory that is not the ``LIBCELLML_SRC`` directory.  
+A sibling directory of ``LIBCELLML_SRC`` is a good choice, named something like ``build`` or ``libcellml-build``. 
+The variable ``LIBCELLML_BUILD`` is used to refer to this build directory.
 
 ====================
 Configure with CMake
 ====================
 
-The first step is to use `CMake <https://cmake.org/>`_ to configure and generate build files for the libCellML library.  Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  Note that CMake version 3.2 or later is required to configure libCellML.  Instructions and information about installing CMake can be found on the `Setup <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ page.
+The first step is to use `CMake <https://cmake.org/>`_ to configure and generate build files for the libCellML library.  
+Linux and MacOS use a command line interface, and under Windows there is an optional GUI.  
+Note that CMake version 3.2 or later is required to configure libCellML.  
+Instructions and information about installing CMake can be found on the `Setup <devsetup_cmake>` page.
 
 -------------------------
 Command line Linux, MacOS
 -------------------------
 
-CMake can either be run through a simple text-based executable called ``ccmake``, or through the command line directly.  There are instructions for both available from `here <https://cmake.org/runningcmake/>`_.  Building libCellML requires that you set the configuration parameters as in the table below.
+CMake can either be run through a simple text-based executable called ``ccmake``, or through the command line directly.  
+There are instructions for both available from `here <https://cmake.org/runningcmake/>`_.  
+Building libCellML requires that you set the configuration parameters as in the table below.
 
 
 .. include:: dev_configuration_options.rst
@@ -44,27 +53,35 @@ From the command line (bash shell), libCellML can be configured to create an opt
 Windows command line  
 --------------------
 
-Note that CMake is also available on Windows as a GUI (instructions below).  This section describes how to use CMake on Windows directly from the command line.   Instructions for running CMake through the command line can be found on the `CMake site <https://cmake.org/runningcmake/>`_ under the heading "Running CMake from the command line". 
+Note that CMake is also available on Windows as a GUI (instructions below).  
+This section describes how to use CMake on Windows directly from the command line.   
+Instructions for running CMake through the command line can be found on the `CMake site <https://cmake.org/runningcmake/>`_ under the heading "Running CMake from the command line". 
 
 For Windows only the location of the libXML2 library must be specified through the command line by adding the parameter::
 
   -DLibXml2_DIR "C:\Program Files\libxml2 2.9.6\lib\cmake"
 
-to the configuration command.  This library is built into Linux and MacOS systems, so this step is only needed on Windows.
+to the configuration command.  
+This library is built into Linux and MacOS systems, so this step is only needed on Windows.
 
-This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  Please note that libCellML will only work with a 64-bit installation of libXML2.  A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work with libCellML.
+This assumes that the recommended LibXml2 binaries have been installed to the default location ``C:\Program Files\libxml2 2.9.6``.  
+Please note that libCellML will only work with a 64-bit installation of libXML2.  
+A pre-built 64-bit installer is available from the `OpenCMISS repository <https://github.com/OpenCMISS-Dependencies/libxml2/releases>`_; 32-bit binaries or 32-bit builds will not work with libCellML.
 
 -----------------
 Windows CMake-GUI
 -----------------
 
-The CMake-GUI gives slightly different options - chief among these being that the config variables are prefixed with ``LIBCELLML_``.  Also, in Windows note that neither ``MEMCHECK`` nor ``COVERAGE`` testing options are available.
+The CMake-GUI gives slightly different options - chief among these being that the config variables are prefixed with ``LIBCELLML_``.  
+Also, in Windows note that neither ``MEMCHECK`` nor ``COVERAGE`` testing options are available.
 
 
 .. include:: dev_configuration_options_gui.rst
 
 
-As with any CMake session we first set the location of the source files (your ``LIBCELLML_SRC`` directory) and a location for the generated build files (your ``LIBCELLML_BUILD`` directory).  Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  You can edit anything you need to in the next step.  
+As with any CMake session we first set the location of the source files (your ``LIBCELLML_SRC`` directory) and a location for the generated build files (your ``LIBCELLML_BUILD`` directory).  
+Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  
+You can edit anything you need to in the next step.  
 
 
 .. _fig_devBuilding_windowsCMakeGUISourceBuildDirs:
@@ -75,7 +92,11 @@ As with any CMake session we first set the location of the source files (your ``
 
    CMake-GUI with source and build directories set for user *andre*.
    
-After the initial configuration attempt, CMake lists any *changed* values in red.  This done not mean that there's anything wrong with them!  If CMake does not find the entries in the table above you will need to enter them manually and push the *Configure* button again. To find out what's missing, read the output from the configuration step.  Some common messages and their required actions are listed below.
+After the initial configuration attempt, CMake lists any *changed* values in red.  
+This done not mean that there's anything wrong with them!  
+If CMake does not find the entries in the table above you will need to enter them manually and push the *Configure* button again. 
+To find out what's missing, read the output from the configuration step.  
+Some common messages and their required actions are listed below.
 
 
 .. _fig_devBuilding_windowsCmakeGUIInitialConfigureAttempt:
@@ -107,14 +128,18 @@ To fix the issue, check that:
 - that your installed version is 64-bit.   
 
  
-If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  
+If after pushing the *Configure* button your path to the LibXml2 directory is lost, make sure that your LibXml2 is the required 64-bit version.  
+If CMake finds a 32-bit version in the location specified, it just ignores it and continues to return the "unfound" error.  
  
-Once you’ve checked and set this path, push *Configure* again. The configuration process should run successfully now, but there may be a few extra things you need to check before proceeding to generate the build files.  These are listed below.
+Once you’ve checked and set this path, push *Configure* again. 
+The configuration process should run successfully now, but there may be a few extra things you need to check before proceeding to generate the build files.  
+These are listed below.
 
 Policy CMP0086 is not set
 -------------------------
 
-Despite being in red and repeated multiple times, this is a warning which can safely be ignored.  It's caused by a version mis-match between SWIG and libCellML and will be addressed in the next release.
+Despite being in red and repeated multiple times, this is a warning which can safely be ignored.  
+It's caused by a version mis-match between SWIG and libCellML and will be addressed in the next release.
 
 .. _fig_devBuilding_libcellml_cmp0086:
 
@@ -128,7 +153,10 @@ Despite being in red and repeated multiple times, this is a warning which can sa
 On Windows without Python debug libaries (sic)
 ----------------------------------------------
 
-Even if CMake reports that it has found Python at the beginning of its configuration output, it may still report that it has not found the debug library later on.  To address this you need to manually set the location of the Python library using the ``PYTHON_DEBUG_LIBRARY`` flag.  This can be done through the interface by clicking the *Add entry* button, entering ``PYTHON_DEBUG_LIBRARY`` in the Name field, and selecting ``FILEPATH`` in the Option field.  Then simply browse to find the file in your Python installation called something like ``python35_d.lib`` (for Python3.5), probably in the ``libs`` directory of your Python folder.
+Even if CMake reports that it has found Python at the beginning of its configuration output, it may still report that it has not found the debug library later on.  
+To address this you need to manually set the location of the Python library using the ``PYTHON_DEBUG_LIBRARY`` flag.  
+This can be done through the interface by clicking the *Add entry* button, entering ``PYTHON_DEBUG_LIBRARY`` in the Name field, and selecting ``FILEPATH`` in the Option field.  
+Then simply browse to find the file in your Python installation called something like ``python35_d.lib`` (for Python3.5), probably in the ``libs`` directory of your Python folder.
 
 .. _fig_devBuilding_PythonDebugLibrary:
 
@@ -142,13 +170,18 @@ Even if CMake reports that it has found Python at the beginning of its configura
 Could not find SWIG (missing: SWIG_DIR, SWIG_EXECUTABLE)
 --------------------------------------------------------
 
-SWIG is go-between software used by libCellML to generate bindings for Python and other languages.  If you have the CMake option ``LIBCELLML_BINDINGS_PYTHON`` set to ``true`` then SWIG is required.  Follow the instructions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ under the heading "SWIG for Python bindings (optional)".  You may need to restart your computer after installation, and then re-launch CMake.
+SWIG is go-between software used by libCellML to generate bindings for Python and other languages.  
+If you have the CMake option ``LIBCELLML_BINDINGS_PYTHON`` set to ``true`` then SWIG is required.  
+Follow the instructions on the `Setup page <https://libcellml.readthedocs.io/en/latest/dev_setup.html>`_ under the heading "SWIG for Python bindings (optional)".  
+You may need to restart your computer after installation, and then re-launch CMake.
 
 
 Could NOT find Sphinx (missing: SPHINX_EXECUTABLE)
 --------------------------------------------------
 
-`Sphinx <http://www.sphinx-doc.org/en/master/>`_ is a documentation generator used by libCellML to collect documentation on Python bindings, which requires Python 3.5.2 or later in order to run.  Please see the installation instructions on the `installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`_ and then restart CMake.  If you do not need to generate bindings for Python then simply un-tick the CMake option ``LIBCELLML_BINDINGS_PYTHON``, and push *Configure* again. 
+`Sphinx <http://www.sphinx-doc.org/en/master/>`_ is a documentation generator used by libCellML to collect documentation on Python bindings, which requires Python 3.5.2 or later in order to run.  
+Please see the installation instructions on the `installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`_ and then restart CMake.  
+If you do not need to generate bindings for Python then simply un-tick the CMake option ``LIBCELLML_BINDINGS_PYTHON``, and push *Configure* again. 
 
 
 =================   
@@ -189,10 +222,11 @@ Fatal error: Cannot open include file Python.h
 
 If you've included Python bindings in your CMake configuration, but get this error in Visual Studio at build time, it's because the path to the Python installation was not set correctly in the CMake step.  Re-running the CMake configuration with a manually-specified path to the Python installation will solve the problem.  See `ERROR: On Windows without Python debug libaries` for instructions.
 
-Cannot write to xxx  
+Cannot access xxx  
 -------------------
 
-This is probably a permissions error related to the locations of your libraries or your ``LIBCELLML_BUILD`` directory.  You could launch Visual Studio as an administrator by right-clicking on its icon in the Start Menu (see below), or create your ``LIBCELLML_BUILD`` directory somewhere your user has default permission to access.
+This is probably a permissions error related to the locations of your libraries or your ``LIBCELLML_BUILD`` directory.  
+You could launch Visual Studio as an administrator by right-clicking on its icon in the Start Menu (see below), or create your ``LIBCELLML_BUILD`` directory somewhere your user has default permission to access.
 
 .. _fig_devBuilding_runAsAdministrator:
 
@@ -218,8 +252,10 @@ Solution:  You need to add location of the file(s) to the environment path of th
 
 - The statement should begin with ``PATH`` and then contain a list of semicolon-separated directories.
 - The statement should end with ``%PATH%`` in order to include elements included from elsewhere.
-- Note that if your path contains spaces you must surround it with double quotation marks, eg: ``"C:\My path\has\a\space";`` compared to ``C:\My_path\has\no\spaces;``
+- Note that if your path contains spaces you must surround it with double quotation marks, eg:
+      ``"C:\My path\has\a\space";`` compared to ``C:\My_path\has\no\spaces;``
 - Note that the end of each path item must be a folder name (not a slash) and terminated with a semi-colon.
 
-You may need to repeat this process for the ``gtest.dll`` and ``gtest_main.dll`` files as well.  These are found in your build directory, under ``tests\gtest\Debug`` or similar.
+You may need to repeat this process for the ``gtest.dll`` and ``gtest_main.dll`` files as well.  
+These are found in your build directory, under ``tests\gtest\Debug`` or similar.
 
