@@ -11,6 +11,9 @@ build/
 CMakeLists.txt.user
 *.autosave
 
+# PyCharm generated files
+.idea/
+
 # OS X hidden system files
 .DS_Store
 
