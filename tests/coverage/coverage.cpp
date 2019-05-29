@@ -245,7 +245,8 @@ TEST(Coverage, error)
     EXPECT_EQ(libcellml::Error::Kind::XML, ec.getKind());
 }
 
-TEST(Coverage, model) {
+TEST(Coverage, model)
+{
     // Move constructor, assignment operator and swap method
     std::vector<libcellml::Model> vec;
     vec.push_back(libcellml::Model());

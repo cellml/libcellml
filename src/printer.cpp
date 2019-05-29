@@ -39,7 +39,7 @@ typedef std::pair<VariablePtr, VariablePtr> VariablePair; /**< Type definition f
 typedef std::vector<VariablePair> VariableMap; /**< Type definition for vector of VariablePair.*/
 typedef VariableMap::const_iterator VariableMapIterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
-typedef std::pair <ComponentPtr, ComponentPtr> ComponentPair; /**< Type definition for Component pointer pair.*/
+typedef std::pair<ComponentPtr, ComponentPtr> ComponentPair; /**< Type definition for Component pointer pair.*/
 typedef std::vector<ComponentPair> ComponentMap; /**< Type definition for vector of ComponentPair.*/
 typedef ComponentMap::const_iterator ComponentMapIterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
