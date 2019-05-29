@@ -324,7 +324,7 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     EXPECT_FALSE(c->containsComponent("comp4new"));
     EXPECT_EQ(const_c->getComponent("comp4new"), nullptr);
     // Replace component
-    c->replaceComponent("comp4",c4n);
+    c->replaceComponent("comp4", c4n);
     c4n->addComponent(c5);
     EXPECT_EQ(c4n, c->getComponent("comp4new"));
     // Take component
