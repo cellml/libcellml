@@ -56,7 +56,7 @@ Requirements
 We should avoid using non-standard system libraries unless there is a compelling reason.
 Once features are available, the API can be fine tuned in consultation with the CellML community.
 
-Milestone 1: python bindings, validation, code generation, and documentation
+Milestone 1: Python bindings, validation, code generation, and documentation
 ============================================================================
 
 #. Python bindings.
@@ -78,7 +78,7 @@ Milestone 1: python bindings, validation, code generation, and documentation
 
    #. API.
    #. Tutorials/documented code examples.
-   #. Integrating libCellML into common IDEs (Visual Studio, Qt Creator, PyCharm).
+   #. Integrating libCellML into common IDEs (Visual Studio, Qt Creator, and PyCharm).
    #. Provide documentation on the installation and use of the Python bindings across Windows, Linux, and macOS.
 
 Milestone 2: units, JavaScript, and resets
@@ -91,11 +91,11 @@ Milestone 2: units, JavaScript, and resets
 
 #. JavaScript.
 
-   #. Use emscripten to create a JavaScript API for libCellML.
-   #. Provide a suitable packaged version of the JavaScript API for integration in common JavaScript environments (node, webpack).
+   #. Use Emscripten to create a JavaScript API for libCellML.
+   #. Provide a suitable packaged version of the JavaScript API for integration in common JavaScript environments (e.g., Node, Webpack).
    #. Document the installation and use of the JavaScript API.
 
-#. resets.
+#. Resets.
 
    #. Extend libCellML implementation to fully support resets.
 
