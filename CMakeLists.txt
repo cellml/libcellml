@@ -12,10 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-cmake_minimum_required(VERSION 3.5.2)
+cmake_minimum_required(VERSION 3.10.2)
 
 set(PROJECT_NAME libCellML)
 project(${PROJECT_NAME} VERSION 0.2.0 LANGUAGES CXX)
+
+if(POLICY CMP0078)
+  cmake_policy(SET CMP0078 NEW)
+endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(common)
