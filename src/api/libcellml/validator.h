@@ -39,7 +39,7 @@ public:
     ~Validator() override; /**< Destructor */
     Validator(const Validator &rhs); /**< Copy constructor */
     Validator(Validator &&rhs); /**< Move constructor */
-    Validator& operator=(Validator v); /**< Assignment operator */
+    Validator &operator=(Validator v); /**< Assignment operator */
 
     /**
      * @brief Validate the @p model using the CellML 2.0 Specification.
@@ -58,4 +58,4 @@ private:
     ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

@@ -18,21 +18,24 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Variable, addAndGetEquivalentVariable) {
+TEST(Variable, addAndGetEquivalentVariable)
+{
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
     EXPECT_EQ(v2, v1->getEquivalentVariable(0));
 }
 
-TEST(Variable, addAndGetEquivalentVariableReciprocal) {
+TEST(Variable, addAndGetEquivalentVariableReciprocal)
+{
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
     EXPECT_EQ(v1, v2->getEquivalentVariable(0));
 }
 
-TEST(Variable, addTwoEquivalentVariablesAndCount) {
+TEST(Variable, addTwoEquivalentVariablesAndCount)
+{
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
@@ -43,7 +46,8 @@ TEST(Variable, addTwoEquivalentVariablesAndCount) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, addDuplicateEquivalentVariablesAndCount) {
+TEST(Variable, addDuplicateEquivalentVariablesAndCount)
+{
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
@@ -55,7 +59,8 @@ TEST(Variable, addDuplicateEquivalentVariablesAndCount) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, hasNoEquivalentVariable) {
+TEST(Variable, hasNoEquivalentVariable)
+{
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     EXPECT_FALSE(v1->hasEquivalentVariable(v2));
@@ -77,24 +82,26 @@ TEST(Variable, hasNoEquivalentVariable) {
     EXPECT_FALSE(v1->hasEquivalentVariable(v2));
 }
 
-TEST(Variable, hasEquivalentVariable) {
+TEST(Variable, hasEquivalentVariable)
+{
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
     EXPECT_TRUE(v1->hasEquivalentVariable(v2));
 }
 
-TEST(Connection, componentlessVariableInvalidConnection) {
+TEST(Connection, componentlessVariableInvalidConnection)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -111,17 +118,18 @@ TEST(Connection, componentlessVariableInvalidConnection) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
+TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component2\">\n"
-            "    <map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component2\">\n"
+        "    <map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
     libcellml::Model m;
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -145,20 +153,21 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, validConnectionAndParse) {
+TEST(Connection, validConnectionAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
@@ -184,20 +193,21 @@ TEST(Connection, validConnectionAndParse) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, parseValidAlternateFormConnection) {
+TEST(Connection, parseValidAlternateFormConnection)
+{
     const std::string input =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\" units=\"dimensionless\"/>\n"
-            "  </component>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     // Parse
     libcellml::Parser parser;
@@ -208,23 +218,24 @@ TEST(Connection, parseValidAlternateFormConnection) {
     EXPECT_EQ(1u, model->getComponent("component1")->getVariable("variable1")->equivalentVariableCount());
 }
 
-TEST(Connection, twoMapVariablesConnection) {
+TEST(Connection, twoMapVariablesConnection)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable11\"/>\n"
-            "    <variable name=\"variable12\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable21\"/>\n"
-            "    <variable name=\"variable22\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable11\" variable_2=\"variable21\"/>\n"
-            "    <map_variables variable_1=\"variable12\" variable_2=\"variable22\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable11\"/>\n"
+        "    <variable name=\"variable12\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable21\"/>\n"
+        "    <variable name=\"variable22\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable11\" variable_2=\"variable21\"/>\n"
+        "    <map_variables variable_1=\"variable12\" variable_2=\"variable22\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -255,26 +266,27 @@ TEST(Connection, twoMapVariablesConnection) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
+TEST(Connection, threeMapVariablesConnectionOneDuplicate)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable11\"/>\n"
-            "    <variable name=\"variable12\"/>\n"
-            "    <variable name=\"variable13\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable21\"/>\n"
-            "    <variable name=\"variable22\"/>\n"
-            "    <variable name=\"variable23\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable11\" variable_2=\"variable21\"/>\n"
-            "    <map_variables variable_1=\"variable12\" variable_2=\"variable22\"/>\n"
-            "    <map_variables variable_1=\"variable13\" variable_2=\"variable23\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable11\"/>\n"
+        "    <variable name=\"variable12\"/>\n"
+        "    <variable name=\"variable13\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable21\"/>\n"
+        "    <variable name=\"variable22\"/>\n"
+        "    <variable name=\"variable23\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable11\" variable_2=\"variable21\"/>\n"
+        "    <map_variables variable_1=\"variable12\" variable_2=\"variable22\"/>\n"
+        "    <map_variables variable_1=\"variable13\" variable_2=\"variable23\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -314,42 +326,43 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, nineVariablesTenConnectionsAndParse) {
+TEST(Connection, nineVariablesTenConnectionsAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable11\"/>\n"
-            "    <variable name=\"variable12\"/>\n"
-            "    <variable name=\"variable13\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable21\"/>\n"
-            "    <variable name=\"variable22\"/>\n"
-            "    <variable name=\"variable23\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\">\n"
-            "    <variable name=\"variable31\"/>\n"
-            "    <variable name=\"variable32\"/>\n"
-            "    <variable name=\"variable33\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable11\" variable_2=\"variable21\"/>\n"
-            "    <map_variables variable_1=\"variable12\" variable_2=\"variable22\"/>\n"
-            "    <map_variables variable_1=\"variable13\" variable_2=\"variable23\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\" component_2=\"component3\">\n"
-            "    <map_variables variable_1=\"variable11\" variable_2=\"variable31\"/>\n"
-            "    <map_variables variable_1=\"variable11\" variable_2=\"variable33\"/>\n"
-            "    <map_variables variable_1=\"variable12\" variable_2=\"variable32\"/>\n"
-            "    <map_variables variable_1=\"variable13\" variable_2=\"variable33\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component2\" component_2=\"component3\">\n"
-            "    <map_variables variable_1=\"variable21\" variable_2=\"variable33\"/>\n"
-            "    <map_variables variable_1=\"variable23\" variable_2=\"variable31\"/>\n"
-            "    <map_variables variable_1=\"variable23\" variable_2=\"variable33\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable11\"/>\n"
+        "    <variable name=\"variable12\"/>\n"
+        "    <variable name=\"variable13\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable21\"/>\n"
+        "    <variable name=\"variable22\"/>\n"
+        "    <variable name=\"variable23\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\">\n"
+        "    <variable name=\"variable31\"/>\n"
+        "    <variable name=\"variable32\"/>\n"
+        "    <variable name=\"variable33\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable11\" variable_2=\"variable21\"/>\n"
+        "    <map_variables variable_1=\"variable12\" variable_2=\"variable22\"/>\n"
+        "    <map_variables variable_1=\"variable13\" variable_2=\"variable23\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component3\">\n"
+        "    <map_variables variable_1=\"variable11\" variable_2=\"variable31\"/>\n"
+        "    <map_variables variable_1=\"variable11\" variable_2=\"variable33\"/>\n"
+        "    <map_variables variable_1=\"variable12\" variable_2=\"variable32\"/>\n"
+        "    <map_variables variable_1=\"variable13\" variable_2=\"variable33\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component2\" component_2=\"component3\">\n"
+        "    <map_variables variable_1=\"variable21\" variable_2=\"variable33\"/>\n"
+        "    <map_variables variable_1=\"variable23\" variable_2=\"variable31\"/>\n"
+        "    <map_variables variable_1=\"variable23\" variable_2=\"variable33\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -413,26 +426,27 @@ TEST(Connection, nineVariablesTenConnectionsAndParse) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, twoValidConnections) {
+TEST(Connection, twoValidConnections)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\">\n"
-            "    <variable name=\"variable3\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\" component_2=\"component3\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\">\n"
+        "    <variable name=\"variable3\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component3\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -460,61 +474,62 @@ TEST(Connection, twoValidConnections) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, removeEquivalentVariableMethods) {
+TEST(Connection, removeEquivalentVariableMethods)
+{
     const std::string e1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\">\n"
-            "    <variable name=\"variable3\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\" component_2=\"component3\" id=\"con2Id\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component2\" component_2=\"component3\" id=\"con1Id\">\n"
-            "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\" id=\"mapId\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\">\n"
+        "    <variable name=\"variable3\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component3\" id=\"con2Id\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component2\" component_2=\"component3\" id=\"con1Id\">\n"
+        "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\" id=\"mapId\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
     const std::string e2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\">\n"
-            "    <variable name=\"variable3\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\" component_2=\"component3\" id=\"con2Id\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\">\n"
+        "    <variable name=\"variable3\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component3\" id=\"con2Id\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
     const std::string e3 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\">\n"
-            "    <variable name=\"variable3\"/>\n"
-            "  </component>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\">\n"
+        "    <variable name=\"variable3\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -555,123 +570,124 @@ TEST(Connection, removeEquivalentVariableMethods) {
     EXPECT_EQ(e3, a);
 }
 
-TEST(Connection, removeVariablesFromConnections) {
+TEST(Connection, removeVariablesFromConnections)
+{
     // Initial model
     const std::string e1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1_1\"/>\n"
-            "    <variable name=\"variable1_2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\">\n"
-            "    <variable name=\"variable3\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component4\">\n"
-            "    <variable name=\"variable4\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
-            "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\" component_2=\"component3\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\" component_2=\"component4\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component2\" component_2=\"component3\">\n"
-            "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1_1\"/>\n"
+        "    <variable name=\"variable1_2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\">\n"
+        "    <variable name=\"variable3\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component4\">\n"
+        "    <variable name=\"variable4\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
+        "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component3\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component4\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component2\" component_2=\"component3\">\n"
+        "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     // Remove variable4
     const std::string e2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1_1\"/>\n"
-            "    <variable name=\"variable1_2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\">\n"
-            "    <variable name=\"variable3\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component4\"/>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
-            "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\" component_2=\"component3\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component2\" component_2=\"component3\">\n"
-            "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1_1\"/>\n"
+        "    <variable name=\"variable1_2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\">\n"
+        "    <variable name=\"variable3\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component4\"/>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
+        "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\" component_2=\"component3\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component2\" component_2=\"component3\">\n"
+        "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     // Remove variable3
     const std::string e3 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1_1\"/>\n"
-            "    <variable name=\"variable1_2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\">\n"
-            "    <variable name=\"variable2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component3\"/>\n"
-            "  <component name=\"component4\"/>\n"
-            "  <connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
-            "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component1\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"component2\">\n"
-            "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1_1\"/>\n"
+        "    <variable name=\"variable1_2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component3\"/>\n"
+        "  <component name=\"component4\"/>\n"
+        "  <connection component_1=\"component1\" component_2=\"component2\" id=\"conId\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
+        "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component1\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"component2\">\n"
+        "    <map_variables variable_1=\"variable2\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     // Remove variable2
     const std::string e4 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\">\n"
-            "    <variable name=\"variable1_1\"/>\n"
-            "    <variable name=\"variable1_2\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component2\"/>\n"
-            "  <component name=\"component3\"/>\n"
-            "  <component name=\"component4\"/>\n"
-            "  <connection component_1=\"component1\" id=\"conId\">\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
-            "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
-            "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1_1\"/>\n"
+        "    <variable name=\"variable1_2\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\"/>\n"
+        "  <component name=\"component3\"/>\n"
+        "  <component name=\"component4\"/>\n"
+        "  <connection component_1=\"component1\" id=\"conId\">\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable2\"/>\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable3\"/>\n"
+        "    <map_variables variable_1=\"variable1_1\" variable_2=\"variable4\" id=\"v11v4Id\"/>\n"
+        "    <map_variables variable_1=\"variable1_2\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     // Remove all variables from component1 (variable1_1 and variable1_2)
     const std::string e5 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component1\"/>\n"
-            "  <component name=\"component2\"/>\n"
-            "  <component name=\"component3\"/>\n"
-            "  <component name=\"component4\"/>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\"/>\n"
+        "  <component name=\"component2\"/>\n"
+        "  <component name=\"component3\"/>\n"
+        "  <component name=\"component4\"/>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -730,32 +746,33 @@ TEST(Connection, removeVariablesFromConnections) {
     EXPECT_EQ(e5, a);
 }
 
-TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces) {
+TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"parent\">\n"
-            "    <variable name=\"variable1\" interface=\"private\"/>\n"
-            "  </component>\n"
-            "  <component name=\"child1\">\n"
-            "    <variable name=\"variable2\" interface=\"public\"/>\n"
-            "  </component>\n"
-            "  <component name=\"child2\">\n"
-            "    <variable name=\"variable3\" interface=\"public\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"parent\" component_2=\"child1\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"parent\" component_2=\"child2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "  <encapsulation>\n"
-            "    <component_ref component=\"parent\">\n"
-            "      <component_ref component=\"child1\"/>\n"
-            "      <component_ref component=\"child2\"/>\n"
-            "    </component_ref>\n"
-            "  </encapsulation>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\">\n"
+        "    <variable name=\"variable1\" interface=\"private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child1\">\n"
+        "    <variable name=\"variable2\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child2\">\n"
+        "    <variable name=\"variable3\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"parent\" component_2=\"child1\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"parent\" component_2=\"child2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -789,32 +806,33 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfacesUsingIds) {
+TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfacesUsingIds)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"parent\">\n"
-            "    <variable name=\"variable1\" interface=\"private\"/>\n"
-            "  </component>\n"
-            "  <component name=\"child1\">\n"
-            "    <variable name=\"variable2\" interface=\"public\"/>\n"
-            "  </component>\n"
-            "  <component name=\"child2\">\n"
-            "    <variable name=\"variable3\" interface=\"public\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"parent\" component_2=\"child1\" id=\"con1\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"parent\" component_2=\"child2\" id=\"con2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\" id=\"map1\"/>\n"
-            "  </connection>\n"
-            "  <encapsulation>\n"
-            "    <component_ref component=\"parent\">\n"
-            "      <component_ref component=\"child1\"/>\n"
-            "      <component_ref component=\"child2\"/>\n"
-            "    </component_ref>\n"
-            "  </encapsulation>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\">\n"
+        "    <variable name=\"variable1\" interface=\"private\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child1\">\n"
+        "    <variable name=\"variable2\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child2\">\n"
+        "    <variable name=\"variable3\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"parent\" component_2=\"child1\" id=\"con1\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"parent\" component_2=\"child2\" id=\"con2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\" id=\"map1\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -851,32 +869,33 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterfaces) {
+TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterfaces)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"parent\">\n"
-            "    <variable name=\"variable1\" interface=\"public\"/>\n"
-            "  </component>\n"
-            "  <component name=\"child1\">\n"
-            "    <variable name=\"variable2\" interface=\"public\"/>\n"
-            "  </component>\n"
-            "  <component name=\"child2\">\n"
-            "    <variable name=\"variable3\" interface=\"public\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"parent\" component_2=\"child1\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
-            "  </connection>\n"
-            "  <connection component_1=\"parent\" component_2=\"child2\">\n"
-            "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
-            "  </connection>\n"
-            "  <encapsulation>\n"
-            "    <component_ref component=\"parent\">\n"
-            "      <component_ref component=\"child1\"/>\n"
-            "      <component_ref component=\"child2\"/>\n"
-            "    </component_ref>\n"
-            "  </encapsulation>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\">\n"
+        "    <variable name=\"variable1\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child1\">\n"
+        "    <variable name=\"variable2\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <component name=\"child2\">\n"
+        "    <variable name=\"variable3\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"parent\" component_2=\"child1\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "  <connection component_1=\"parent\" component_2=\"child2\">\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable3\"/>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -910,20 +929,21 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, importedComponentConnectionAndParse) {
+TEST(Connection, importedComponentConnectionAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
-            "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
-            "  </import>\n"
-            "  <component name=\"component_bob\">\n"
-            "    <variable name=\"variable_bob\" units=\"seconds\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component_in_this_model\" component_2=\"component_bob\">\n"
-            "    <map_variables variable_1=\"variable_import\" variable_2=\"variable_bob\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
+        "  </import>\n"
+        "  <component name=\"component_bob\">\n"
+        "    <variable name=\"variable_bob\" units=\"seconds\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component_in_this_model\" component_2=\"component_bob\">\n"
+        "    <map_variables variable_1=\"variable_import\" variable_2=\"variable_bob\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -959,30 +979,31 @@ TEST(Connection, importedComponentConnectionAndParse) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Connection, componentConnectionAndParseMissingVariable) {
+TEST(Connection, componentConnectionAndParseMissingVariable)
+{
     const std::string s =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component_dave\">\n"
-            "    <variable name=\"variable_dave\" units=\"dimensionless\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component_bob\">\n"
-            "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
-            "  </component>\n"
-            "  <connection component_1=\"component_dave\" component_2=\"component_bob\">\n"
-            "    <map_variables variable_1=\"variable_angus\" variable_2=\"variable_bob\"/>\n"
-            "  </connection>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component_dave\">\n"
+        "    <variable name=\"variable_dave\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component_bob\">\n"
+        "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component_dave\" component_2=\"component_bob\">\n"
+        "    <map_variables variable_1=\"variable_angus\" variable_2=\"variable_bob\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component name=\"component_dave\">\n"
-            "    <variable name=\"variable_dave\" units=\"dimensionless\"/>\n"
-            "  </component>\n"
-            "  <component name=\"component_bob\">\n"
-            "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
-            "  </component>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component_dave\">\n"
+        "    <variable name=\"variable_dave\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component_bob\">\n"
+        "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse

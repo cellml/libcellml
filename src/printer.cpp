@@ -26,6 +26,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <stack>
@@ -35,11 +36,11 @@ limitations under the License.
 namespace libcellml {
 
 // VariableMap
-typedef std::pair <VariablePtr, VariablePtr> VariablePair; /**< Type definition for VariablePtr pair.*/
+typedef std::pair<VariablePtr, VariablePtr> VariablePair; /**< Type definition for VariablePtr pair.*/
 typedef std::vector<VariablePair> VariableMap; /**< Type definition for vector of VariablePair.*/
 typedef VariableMap::const_iterator VariableMapIterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
-typedef std::pair <Component*, Component*> ComponentPair; /**< Type definition for Component pointer pair.*/
+typedef std::pair<Component *, Component *> ComponentPair; /**< Type definition for Component pointer pair.*/
 typedef std::vector<ComponentPair> ComponentMap; /**< Type definition for vector of ComponentPair.*/
 typedef ComponentMap::const_iterator ComponentMapIterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
@@ -64,8 +65,8 @@ static const std::string tabIndent = "  ";
 
 std::string printMapVariables(VariablePair variablePair, const std::string &indent)
 {
-    std::string mapVariables = indent+"<map_variables variable_1=\"" + variablePair.first->getName() + "\""
-                                     + " variable_2=\"" + variablePair.second->getName() + "\"";
+    std::string mapVariables = indent + "<map_variables variable_1=\"" + variablePair.first->getName() + "\""
+                               + " variable_2=\"" + variablePair.second->getName() + "\"";
     std::string mappingId = Variable::getEquivalenceMappingId(variablePair.first, variablePair.second);
     if (mappingId.length() > 0) {
         mapVariables += " id=\"" + mappingId + "\"";
@@ -81,8 +82,8 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap,
     ComponentMap serialisedComponentMap;
     int componentMapIndex1 = 0;
     for (ComponentMapIterator iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
-        Component* currentComponent1 = iterPair->first;
-        Component* currentComponent2 = iterPair->second;
+        Component *currentComponent1 = iterPair->first;
+        Component *currentComponent2 = iterPair->second;
         ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
         ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
         // Check whether this set of connections has already been serialised.
@@ -101,21 +102,21 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap,
         std::string mappingVariables = "";
         VariablePair variablePair = variableMap.at(componentMapIndex1);
         std::string connectionId = Variable::getEquivalenceConnectionId(variablePair.first, variablePair.second);
-        mappingVariables += printMapVariables(variablePair, indent+tabIndent);
+        mappingVariables += printMapVariables(variablePair, indent + tabIndent);
         // Check for subsequent variable equivalence pairs with the same parent components.
         int componentMapIndex2 = componentMapIndex1 + 1;
         for (ComponentMapIterator iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
-            Component* nextComponent1 = iterPair2->first;
-            Component* nextComponent2 = iterPair2->second;
+            Component *nextComponent1 = iterPair2->first;
+            Component *nextComponent2 = iterPair2->second;
             VariablePair variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
-                mappingVariables += printMapVariables(variablePair2, indent+tabIndent);
+                mappingVariables += printMapVariables(variablePair2, indent + tabIndent);
                 connectionId = Variable::getEquivalenceConnectionId(variablePair2.first, variablePair2.second);
             }
             ++componentMapIndex2;
         }
         // Serialise out the new connection.
-        std::string connection = indent+"<connection";
+        std::string connection = indent + "<connection";
         if (currentComponent1) {
             connection += " component_1=\"" + currentComponent1->getName() + "\"";
         }
@@ -127,7 +128,7 @@ std::string printConnections(ComponentMap componentMap, VariableMap variableMap,
         }
         connection += ">\n";
         connection += mappingVariables;
-        connection += indent+"</connection>\n";
+        connection += indent + "</connection>\n";
         connections += connection;
         serialisedComponentMap.push_back(currentComponentPair);
         ++componentMapIndex1;
@@ -142,7 +143,7 @@ std::string printMath(const std::string &math, const std::string &indent)
     std::istringstream lines(math);
     std::string line;
     while (std::getline(lines, line, '\n')) {
-        repr += indent+line+"\n";
+        repr += indent + line + "\n";
     }
     return repr;
 }
@@ -168,8 +169,8 @@ void buildMaps(ModelPtr model, ComponentMap &componentMap, VariableMap &variable
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            Component* component1 = static_cast<Component*>(variable->getParent());
-                            Component* component2 = static_cast<Component*>(equivalentVariable->getParent());
+                            Component *component1 = static_cast<Component *>(variable->getParent());
+                            Component *component2 = static_cast<Component *>(equivalentVariable->getParent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2) {
@@ -195,18 +196,18 @@ std::string Printer::PrinterImpl::printUnits(UnitsPtr units, const std::string &
     std::string repr = "";
     if (units->getName().length()) {
         if (units->isImport()) {
-            repr += indent+"<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+            repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
             if (units->getImportSource()->getId().length()) {
                 repr += " id=\"" + units->getImportSource()->getId() + "\"";
             }
-            repr += ">\n"+indent+tabIndent+"<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
+            repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
             if (units->getId().length()) {
                 repr += " id=\"" + units->getId() + "\"";
             }
-            repr += "/>\n"+indent+"</import>\n";
+            repr += "/>\n" + indent + "</import>\n";
         } else {
             bool endTag = false;
-            repr += indent+"<units name=\"" + units->getName() + "\"";
+            repr += indent + "<units name=\"" + units->getName() + "\"";
             if (units->getId().length()) {
                 repr += " id=\"" + units->getId() + "\"";
             }
@@ -217,7 +218,7 @@ std::string Printer::PrinterImpl::printUnits(UnitsPtr units, const std::string &
                     std::string reference, prefix, id;
                     double exponent, multiplier;
                     units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
-                    repr += indent+tabIndent+"<unit";
+                    repr += indent + tabIndent + "<unit";
                     if (exponent != 1.0) {
                         repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
                     }
@@ -235,7 +236,7 @@ std::string Printer::PrinterImpl::printUnits(UnitsPtr units, const std::string &
                 }
             }
             if (endTag) {
-                repr += indent+"</units>\n";
+                repr += indent + "</units>\n";
             } else {
                 repr += "/>\n";
             }
@@ -251,7 +252,7 @@ std::string Printer::PrinterImpl::printComponent(ComponentPtr component, const s
     if (component->isImport()) {
         return repr;
     }
-    repr += indent+"<component";
+    repr += indent + "<component";
     std::string componentName = component->getName();
     if (componentName.length()) {
         repr += " name=\"" + componentName + "\"";
@@ -268,15 +269,15 @@ std::string Printer::PrinterImpl::printComponent(ComponentPtr component, const s
     if (hasChildren) {
         repr += ">\n";
         for (size_t i = 0; i < variableCount; ++i) {
-            repr += printVariable(component->getVariable(i), indent+tabIndent);
+            repr += printVariable(component->getVariable(i), indent + tabIndent);
         }
-        for (size_t i =0; i < resetCount; ++i) {
-            repr += printReset(component->getReset(i), indent+tabIndent);
+        for (size_t i = 0; i < resetCount; ++i) {
+            repr += printReset(component->getReset(i), indent + tabIndent);
         }
         if (component->getMath().length()) {
-            repr += printMath(component->getMath(), indent+tabIndent);
+            repr += printMath(component->getMath(), indent + tabIndent);
         }
-        repr += indent+"</component>\n";
+        repr += indent + "</component>\n";
     } else {
         repr += "/>\n";
     }
@@ -291,7 +292,7 @@ std::string Printer::PrinterImpl::printComponent(ComponentPtr component, const s
 std::string Printer::PrinterImpl::printEncapsulation(ComponentPtr component, const std::string &indent) const
 {
     std::string componentName = component->getName();
-    std::string repr = indent+"<component_ref";
+    std::string repr = indent + "<component_ref";
     if (componentName.length() > 0) {
         repr += " component=\"" + componentName + "\"";
     }
@@ -305,10 +306,10 @@ std::string Printer::PrinterImpl::printEncapsulation(ComponentPtr component, con
         repr += "/>\n";
     }
     for (size_t i = 0; i < componentCount; ++i) {
-        repr += printEncapsulation(component->getComponent(i), indent+tabIndent);
+        repr += printEncapsulation(component->getComponent(i), indent + tabIndent);
     }
     if (componentCount > 0) {
-        repr += indent+"</component_ref>\n";
+        repr += indent + "</component_ref>\n";
     }
     return repr;
 }
@@ -316,7 +317,7 @@ std::string Printer::PrinterImpl::printEncapsulation(ComponentPtr component, con
 std::string Printer::PrinterImpl::printVariable(VariablePtr variable, const std::string &indent) const
 {
     std::string repr = "";
-    repr += indent+"<variable";
+    repr += indent + "<variable";
     std::string name = variable->getName();
     std::string id = variable->getId();
     std::string units = variable->getUnits();
@@ -344,7 +345,7 @@ std::string Printer::PrinterImpl::printVariable(VariablePtr variable, const std:
 
 std::string Printer::PrinterImpl::printReset(ResetPtr reset, const std::string &indent) const
 {
-    std::string repr = indent+"<reset";
+    std::string repr = indent + "<reset";
     std::string id = reset->getId();
     VariablePtr variable = reset->getVariable();
     if (variable) {
@@ -360,9 +361,9 @@ std::string Printer::PrinterImpl::printReset(ResetPtr reset, const std::string &
     if (when_count > 0) {
         repr += ">\n";
         for (size_t i = 0; i < when_count; ++i) {
-            repr += printWhen(reset->getWhen(i), indent+tabIndent);
+            repr += printWhen(reset->getWhen(i), indent + tabIndent);
         }
-        repr += indent+"</reset>\n";
+        repr += indent + "</reset>\n";
     } else {
         repr += "/>\n";
     }
@@ -371,7 +372,7 @@ std::string Printer::PrinterImpl::printReset(ResetPtr reset, const std::string &
 
 std::string Printer::PrinterImpl::printWhen(WhenPtr when, const std::string &indent) const
 {
-    std::string repr = indent+"<when";
+    std::string repr = indent + "<when";
     std::string id = when->getId();
     if (when->isOrderSet()) {
         repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
@@ -383,7 +384,7 @@ std::string Printer::PrinterImpl::printWhen(WhenPtr when, const std::string &ind
     size_t condition_length = condition.length();
     if (condition_length) {
         repr += ">\n";
-        repr += printMath(condition, indent+tabIndent);
+        repr += printMath(condition, indent + tabIndent);
     }
     std::string value = when->getValue();
     size_t value_length = value.length();
@@ -391,10 +392,10 @@ std::string Printer::PrinterImpl::printWhen(WhenPtr when, const std::string &ind
         if (!condition_length) {
             repr += ">\n";
         }
-        repr += printMath(value, indent+tabIndent);
+        repr += printMath(value, indent + tabIndent);
     }
     if (condition_length || value_length) {
-        repr += indent+"</when>\n";
+        repr += indent + "</when>\n";
     } else {
         repr += "/>\n";
     }
@@ -424,9 +425,9 @@ Printer::Printer(Printer &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Printer& Printer::operator=(Printer p)
+Printer &Printer::operator=(Printer p)
 {
-    Logger::operator =(p);
+    Logger::operator=(p);
     p.swap(*this);
     return *this;
 }
@@ -443,7 +444,7 @@ std::string Printer::printUnits(UnitsPtr units) const
 
 std::string Printer::printUnits(Units units) const
 {
-    return mPimpl->printUnits(std::shared_ptr<Units>(std::shared_ptr<Units>{}, &units));
+    return mPimpl->printUnits(std::shared_ptr<Units>(std::shared_ptr<Units> {}, &units));
 }
 
 std::string Printer::printComponent(ComponentPtr component) const
@@ -453,7 +454,7 @@ std::string Printer::printComponent(ComponentPtr component) const
 
 std::string Printer::printComponent(Component component) const
 {
-    return mPimpl->printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+    return mPimpl->printComponent(std::shared_ptr<Component>(std::shared_ptr<Component> {}, &component));
 }
 
 std::string Printer::printReset(ResetPtr reset) const
@@ -463,7 +464,7 @@ std::string Printer::printReset(ResetPtr reset) const
 
 std::string Printer::printReset(Reset reset) const
 {
-    return mPimpl->printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
+    return mPimpl->printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset> {}, &reset));
 }
 
 std::string Printer::printVariable(VariablePtr variable) const
@@ -473,15 +474,15 @@ std::string Printer::printVariable(VariablePtr variable) const
 
 std::string Printer::printVariable(Variable variable) const
 {
-    return mPimpl->printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable>{}, &variable));
+    return mPimpl->printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable> {}, &variable));
 }
 
 std::string Printer::printModel(ModelPtr model) const
 {
     // ImportMap
-    typedef std::pair <std::string, ComponentPtr> ImportPair;
+    typedef std::pair<std::string, ComponentPtr> ImportPair;
     typedef std::vector<ImportPair>::const_iterator VectorPairIterator;
-    typedef std::map <ImportSourcePtr, std::vector<ImportPair> > ImportMap;
+    typedef std::map<ImportSourcePtr, std::vector<ImportPair>> ImportMap;
     typedef ImportMap::const_iterator ImportMapIterator;
     ImportMap importMap;
     VariableMap variableMap;
@@ -547,27 +548,26 @@ std::string Printer::printModel(ModelPtr model) const
         repr += " id=\"" + model->getId() + "\"";
     }
     bool endTag = false;
-    if ((importMap.size() > 0) || (model->componentCount() > 0) || (model->unitsCount() > 0)){
+    if ((importMap.size() > 0) || (model->componentCount() > 0) || (model->unitsCount() > 0)) {
         endTag = true;
         repr += ">\n";
     }
 
-    for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
-    {
-        repr += tabIndent+"<import xlink:href=\"" + iter->first->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+    for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter) {
+        repr += tabIndent + "<import xlink:href=\"" + iter->first->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
         if (iter->first->getId().length() > 0) {
             repr += " id=\"" + iter->first->getId() + "\"";
         }
         repr += ">\n";
         for (VectorPairIterator vectorIter = iter->second.begin(); vectorIter != iter->second.end(); ++vectorIter) {
             ComponentPtr localComponent = std::get<1>(*vectorIter);
-            repr += tabIndent+tabIndent+"<component component_ref=\"" + std::get<0>(*vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
+            repr += tabIndent + tabIndent + "<component component_ref=\"" + std::get<0>(*vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
             if (localComponent->getId().length() > 0) {
                 repr += " id=\"" + localComponent->getId() + "\"";
             }
             repr += "/>\n";
         }
-        repr += tabIndent+"</import>\n";
+        repr += tabIndent + "</import>\n";
     }
 
     for (size_t i = 0; i < model->unitsCount(); ++i) {
@@ -580,7 +580,7 @@ std::string Printer::printModel(ModelPtr model) const
         ComponentPtr component = model->getComponent(i);
         repr += mPimpl->printComponent(component, tabIndent);
         if (component->componentCount() > 0) {
-            componentEncapsulation += mPimpl->printEncapsulation(component, tabIndent+tabIndent);
+            componentEncapsulation += mPimpl->printEncapsulation(component, tabIndent + tabIndent);
         }
     }
 
@@ -590,14 +590,14 @@ std::string Printer::printModel(ModelPtr model) const
     repr += printConnections(componentMap, variableMap, tabIndent);
 
     if (componentEncapsulation.length() > 0) {
-        repr += tabIndent+"<encapsulation";
+        repr += tabIndent + "<encapsulation";
         if (model->getEncapsulationId().length() > 0) {
             repr += " id=\"" + model->getEncapsulationId() + "\">\n";
         } else {
             repr += ">\n";
         }
         repr += componentEncapsulation;
-        repr += tabIndent+"</encapsulation>\n";
+        repr += tabIndent + "</encapsulation>\n";
     }
     if (endTag) {
         repr += "</model>\n";
@@ -610,12 +610,12 @@ std::string Printer::printModel(ModelPtr model) const
 
 std::string Printer::printModel(Model model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, &model));
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, &model));
 }
 
 std::string Printer::printModel(Model *model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, model));
 }
 
-}
+} // namespace libcellml

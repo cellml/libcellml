@@ -20,6 +20,6 @@ limitations under the License.
 
 namespace libcellml {
 
-static const std::string LIBCELLML_MATHML_DTD_LOCATION="@LIBCELLML_MATHML_DTD_LOCATION@";
+static const std::string LIBCELLML_MATHML_DTD_LOCATION = "@LIBCELLML_MATHML_DTD_LOCATION@";
 
 }

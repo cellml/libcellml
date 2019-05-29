@@ -56,23 +56,23 @@ set(SWIG_PYTHON_BINDINGS_TARGETS)
 # Create bindings for each interface file
 foreach(SWIG_INTERFACE_SRC ${SWIG_INTERFACE_SRCS})
   get_filename_component(MODULE_NAME ${SWIG_INTERFACE_SRC} NAME_WE)
-  if (${CMAKE_VERSION} VERSION_LESS 3.8)
+  if(${CMAKE_VERSION} VERSION_LESS 3.8)
     swig_add_module(${MODULE_NAME} python ${SWIG_INTERFACE_SRC})
-  else ()
+  else()
     swig_add_library(${MODULE_NAME}
       LANGUAGE python
       SOURCES ${SWIG_INTERFACE_SRC})
-  endif ()
+  endif()
   swig_link_libraries(${MODULE_NAME} Python::Python cellml)
   set(MODULE_TARGET ${SWIG_MODULE_${MODULE_NAME}_REAL_NAME})
   # Disable use of Debug Python libraries when not present on Windows
   # See http://stackoverflow.com/questions/11311877/creating-a-dll-from-a-wrapped-cpp-file-with-swig
-  if (WIN32)
-    if (NOT PYTHON_DEBUG_LIBRARY)
+  if(WIN32)
+    if(NOT PYTHON_DEBUG_LIBRARY)
       message(STATUS "On windows without Python debug libaries")
       target_compile_definitions(${MODULE_TARGET} PRIVATE $<$<CONFIG:Debug>:SWIG_PYTHON_INTERPRETER_NO_DEBUG>)
-    endif ()
-  endif ()
+    endif()
+  endif()
   set_target_properties(${MODULE_TARGET} PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON

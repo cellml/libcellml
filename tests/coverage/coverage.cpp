@@ -23,7 +23,8 @@ limitations under the License.
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
  */
-TEST(Coverage, import) {
+TEST(Coverage, import)
+{
     const std::string e = "";
     libcellml::ImportSource i, im;
 
@@ -36,7 +37,8 @@ TEST(Coverage, import) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, printer) {
+TEST(Coverage, printer)
+{
     libcellml::Printer p, pm;
 
     pm = std::move(p);
@@ -48,7 +50,8 @@ TEST(Coverage, printer) {
     EXPECT_EQ(0u, error_count);
 }
 
-TEST(Coverage, units) {
+TEST(Coverage, units)
+{
     const std::string e = "<units name=\"dimensionless\"/>\n";
     libcellml::Units u, um;
 
@@ -64,11 +67,12 @@ TEST(Coverage, units) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, when) {
+TEST(Coverage, when)
+{
     const std::string e =
-            "<reset>\n"
-            "  <when/>\n"
-            "</reset>\n";
+        "<reset>\n"
+        "  <when/>\n"
+        "</reset>\n";
     libcellml::When w, wm;
     libcellml::Reset r;
 
@@ -84,7 +88,8 @@ TEST(Coverage, when) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, unitsGetVariations) {
+TEST(Coverage, unitsGetVariations)
+{
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -107,7 +112,8 @@ TEST(Coverage, unitsGetVariations) {
     EXPECT_EQ(nullptr, m.getUnits(4));
 }
 
-TEST(Coverage, prefixToString) {
+TEST(Coverage, prefixToString)
+{
     libcellml::Model m;
     libcellml::Printer printer;
 
@@ -131,8 +137,7 @@ TEST(Coverage, prefixToString) {
          "yocto",
          "yotta",
          "zepto",
-         "zetta"
-        };
+         "zetta"};
     std::vector<libcellml::Prefix> prefixEnum =
         {libcellml::Prefix::ATTO,
          libcellml::Prefix::CENTI,
@@ -153,8 +158,7 @@ TEST(Coverage, prefixToString) {
          libcellml::Prefix::YOCTO,
          libcellml::Prefix::YOTTA,
          libcellml::Prefix::ZEPTO,
-         libcellml::Prefix::ZETTA
-        };
+         libcellml::Prefix::ZETTA};
     for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
         libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
         u->setName("abcdefg");
@@ -169,7 +173,8 @@ TEST(Coverage, prefixToString) {
     }
 }
 
-TEST(Coverage, variable) {
+TEST(Coverage, variable)
+{
     const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
     libcellml::Variable v, vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -189,12 +194,13 @@ TEST(Coverage, variable) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, component) {
+TEST(Coverage, component)
+{
     const std::string e =
-            "<component name=\"name\">\n"
-            "  <variable/>\n"
-            "  <1+1=2>\n"
-            "</component>\n";
+        "<component name=\"name\">\n"
+        "  <variable/>\n"
+        "  <1+1=2>\n"
+        "</component>\n";
     const std::string math = "<1+1=2>\n";
 
     libcellml::Component c, cm;
@@ -218,7 +224,8 @@ TEST(Coverage, component) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, error) {
+TEST(Coverage, error)
+{
     libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
     libcellml::Error e, em;
     const std::string description = "test";

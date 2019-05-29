@@ -24,10 +24,11 @@ limitations under the License.
 
 #include <libxml/parser.h>
 
-TEST(Parser, parseValidXmlDirectlyUsingLibxml) {
+TEST(Parser, parseValidXmlDirectlyUsingLibxml)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
     // parse the string using libcellml
     libcellml::Parser parser;
@@ -44,10 +45,11 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml) {
     xmlFreeDoc(doc);
 }
 
-TEST(Parser, parseInvalidXmlDirectlyUsingLibxml) {
+TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component></model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"><component></model>";
 
     // parse the string using libcellml
     libcellml::Parser parser;
