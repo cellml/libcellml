@@ -18,12 +18,13 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Units, validName) {
+TEST(Units, validName)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"valid_name\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"valid_name\"/>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -38,12 +39,13 @@ TEST(Units, validName) {
     EXPECT_EQ("valid_name", u->getName());
 }
 
-TEST(Units, invalidName) {
+TEST(Units, invalidName)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"invalid name\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"invalid name\"/>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -58,16 +60,17 @@ TEST(Units, invalidName) {
     EXPECT_EQ("invalid name", u->getName());
 }
 
-TEST(Units, compoundUnitsRaw) {
+TEST(Units, compoundUnitsRaw)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"compound_unit\">"
-                    "<unit prefix=\"-6\" units=\"ampere\"/>"
-                    "<unit units=\"kelvin\"/>"
-                    "<unit exponent=\"-1\" prefix=\"-3\" units=\"siemens\"/>"
-                "</units>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"compound_unit\">"
+        "<unit prefix=\"-6\" units=\"ampere\"/>"
+        "<unit units=\"kelvin\"/>"
+        "<unit exponent=\"-1\" prefix=\"-3\" units=\"siemens\"/>"
+        "</units>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -85,7 +88,8 @@ TEST(Units, compoundUnitsRaw) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, addUnitsVariations) {
+TEST(Units, addUnitsVariations)
+{
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("compound_unit");
 
@@ -95,16 +99,17 @@ TEST(Units, addUnitsVariations) {
     EXPECT_EQ(2u, u->unitCount());
 }
 
-TEST(Units, compoundUnitsUsingDefines) {
+TEST(Units, compoundUnitsUsingDefines)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"compound_unit\">"
-                    "<unit prefix=\"micro\" units=\"ampere\"/>"
-                    "<unit units=\"kelvin\"/>"
-                    "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
-                "</units>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"compound_unit\">"
+        "<unit prefix=\"micro\" units=\"ampere\"/>"
+        "<unit units=\"kelvin\"/>"
+        "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+        "</units>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -122,17 +127,18 @@ TEST(Units, compoundUnitsUsingDefines) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
+TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"compound_unit\">"
-                    "<unit prefix=\"micro\" units=\"ampere\"/>"
-                    "<unit units=\"kelvin\"/>"
-                    "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
-                    "<unit prefix=\"1.7e310\" units=\"meter\"/>"
-                "</units>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"compound_unit\">"
+        "<unit prefix=\"micro\" units=\"ampere\"/>"
+        "<unit units=\"kelvin\"/>"
+        "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+        "<unit prefix=\"1.7e310\" units=\"meter\"/>"
+        "</units>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -151,40 +157,41 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, removeUnitsMethodsAndCount) {
+TEST(Units, removeUnitsMethodsAndCount)
+{
     const std::string e1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"compound_unit\">"
-                    "<unit prefix=\"micro\" units=\"ampere\"/>"
-                    "<unit units=\"kelvin\"/>"
-                    "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
-                    "<unit prefix=\"1.7e10\" units=\"meter\"/>"
-                "</units>"
-                "<units name=\"simple_unit_2\"/>"
-                "<units name=\"simple_unit_3\"/>"
-                "<units name=\"simple_unit_4\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"compound_unit\">"
+        "<unit prefix=\"micro\" units=\"ampere\"/>"
+        "<unit units=\"kelvin\"/>"
+        "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+        "<unit prefix=\"1.7e10\" units=\"meter\"/>"
+        "</units>"
+        "<units name=\"simple_unit_2\"/>"
+        "<units name=\"simple_unit_3\"/>"
+        "<units name=\"simple_unit_4\"/>"
+        "</model>";
 
     const std::string e2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"compound_unit\"/>"
-                "<units name=\"simple_unit_2\"/>"
-                "<units name=\"simple_unit_3\"/>"
-                "<units name=\"simple_unit_4\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"compound_unit\"/>"
+        "<units name=\"simple_unit_2\"/>"
+        "<units name=\"simple_unit_3\"/>"
+        "<units name=\"simple_unit_4\"/>"
+        "</model>";
 
     const std::string e3 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"compound_unit\"/>"
-                "<units name=\"simple_unit_4\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"compound_unit\"/>"
+        "<units name=\"simple_unit_4\"/>"
+        "</model>";
 
     const std::string e4 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
 
     libcellml::Model m;
 
@@ -234,7 +241,8 @@ TEST(Units, removeUnitsMethodsAndCount) {
     EXPECT_EQ(e4, a);
 }
 
-TEST(Units, hasUnitsName) {
+TEST(Units, hasUnitsName)
+{
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -245,7 +253,8 @@ TEST(Units, hasUnitsName) {
     EXPECT_TRUE(m.hasUnits("a_unit"));
 }
 
-TEST(Units, hasUnitsPtr) {
+TEST(Units, hasUnitsPtr)
+{
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -256,7 +265,8 @@ TEST(Units, hasUnitsPtr) {
     EXPECT_TRUE(m.hasUnits(u));
 }
 
-TEST(Units, takeUnits) {
+TEST(Units, takeUnits)
+{
     libcellml::Model m;
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
@@ -285,7 +295,8 @@ TEST(Units, takeUnits) {
     EXPECT_EQ(nullptr, m.takeUnits("d_unit"));
 }
 
-TEST(Units, replaceUnits) {
+TEST(Units, replaceUnits)
+{
     libcellml::Model m;
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
@@ -324,21 +335,22 @@ TEST(Units, replaceUnits) {
     EXPECT_TRUE(m.replaceUnits(u2, u1));
 }
 
-TEST(Units, multiply) {
+TEST(Units, multiply)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"compound_unit\">"
-                    "<unit prefix=\"micro\" units=\"ampere\"/>"
-                    "<unit units=\"kelvin\"/>"
-                    "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
-                "</units>"
-                "<units name=\"valid_name\"/>"
-                "<units name=\"multiplied\">"
-                    "<unit units=\"compound_unit\"/>"
-                    "<unit units=\"valid_name\"/>"
-                "</units>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"compound_unit\">"
+        "<unit prefix=\"micro\" units=\"ampere\"/>"
+        "<unit units=\"kelvin\"/>"
+        "<unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>"
+        "</units>"
+        "<units name=\"valid_name\"/>"
+        "<units name=\"multiplied\">"
+        "<unit units=\"compound_unit\"/>"
+        "<unit units=\"valid_name\"/>"
+        "</units>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -368,12 +380,13 @@ TEST(Units, multiply) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Units, newBaseUnit) {
+TEST(Units, newBaseUnit)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"pH\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"pH\"/>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -388,7 +401,8 @@ TEST(Units, newBaseUnit) {
     EXPECT_EQ("pH", u->getName());
 }
 
-TEST(Units, isBaseUnit) {
+TEST(Units, isBaseUnit)
+{
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("pH");
 
@@ -399,14 +413,15 @@ TEST(Units, isBaseUnit) {
     EXPECT_FALSE(u->isBaseUnit());
 }
 
-TEST(Units, farhenheit) {
+TEST(Units, farhenheit)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"fahrenheitish\">"
-                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
-                "</units>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"fahrenheitish\">"
+        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
+        "</units>"
+        "</model>";
 
     libcellml::Model m;
 
@@ -423,7 +438,8 @@ TEST(Units, farhenheit) {
     EXPECT_EQ("fahrenheitish", u->getName());
 }
 
-TEST(Units, getUnitAttributes) {
+TEST(Units, getUnitAttributes)
+{
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -447,7 +463,7 @@ TEST(Units, getUnitAttributes) {
     EXPECT_EQ("4", prefix);
     EXPECT_DOUBLE_EQ(1.05, exponent);
     EXPECT_DOUBLE_EQ(17, multiplier);
- \
+
     // Get non-existent unit.
     u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("", reference);
@@ -470,7 +486,8 @@ TEST(Units, getUnitAttributes) {
     EXPECT_DOUBLE_EQ(1.8, multiplier);
 }
 
-TEST(Units, multipleUnitUsingStandardRef) {
+TEST(Units, multipleUnitUsingStandardRef)
+{
     libcellml::Units u;
 
     u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
@@ -494,10 +511,10 @@ TEST(Units, multipleUnitUsingStandardRef) {
     EXPECT_EQ("centi", prefix);
     u.getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("micro", prefix);
-
 }
 
-TEST(Units, removeUnit) {
+TEST(Units, removeUnit)
+{
     libcellml::Units u;
 
     u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
@@ -521,18 +538,19 @@ TEST(Units, removeUnit) {
     EXPECT_EQ(0u, u.unitCount());
 }
 
-TEST(Units, multipleAndParse) {
+TEST(Units, multipleAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<units name=\"fahrenheitish\">"
-                    "<unit multiplier=\"1.8\" units=\"celsius\"/>"
-                "</units>"
-                "<units name=\"metres_per_second\">"
-                    "<unit units=\"metre\"/>"
-                    "<unit exponent=\"-1\" units=\"second\"/>"
-                "</units>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<units name=\"fahrenheitish\">"
+        "<unit multiplier=\"1.8\" units=\"celsius\"/>"
+        "</units>"
+        "<units name=\"metres_per_second\">"
+        "<unit units=\"metre\"/>"
+        "<unit exponent=\"-1\" units=\"second\"/>"
+        "</units>"
+        "</model>";
 
     libcellml::Model m;
 

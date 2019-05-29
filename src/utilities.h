@@ -129,4 +129,4 @@ bool isCellMLInteger(const std::string &candidate);
  */
 bool isCellMLReal(const std::string &candidate);
 
-}
+} // namespace libcellml
