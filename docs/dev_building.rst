@@ -61,7 +61,7 @@ Windows CMake-GUI
 The CMake-GUI gives slightly different options - chief among these being that the config variables are prefixed with ``LIBCELLML_``.  Also, in Windows note that neither ``MEMCHECK`` nor ``COVERAGE`` testing options are available.
 
 
-.. include:: dev_configuration_options.rst
+.. include:: dev_configuration_options_gui.rst
 
 
 As with any CMake session we first set the location of the source files (your ``LIBCELLML_SRC`` directory) and a location for the generated build files (your ``LIBCELLML_BUILD`` directory).  Don’t worry about setting the options at this stage, you can just push *Configure* and CMake will try and find what it needs.  You can edit anything you need to in the next step.  
