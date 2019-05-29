@@ -249,14 +249,9 @@ TEST(Variable, addVariable)
     EXPECT_EQ(e, a);
 }
 
-<<<<<<< HEAD
-TEST(Variable, getParentComponent) {
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-=======
 TEST(Variable, getParentComponent)
 {
-    libcellml::Component c;
->>>>>>> develop
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     c->addVariable(v);
     EXPECT_EQ(c, v->getParentComponent());

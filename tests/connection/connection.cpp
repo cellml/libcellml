@@ -93,18 +93,6 @@ TEST(Variable, hasEquivalentVariable)
 TEST(Connection, componentlessVariableInvalidConnection)
 {
     const std::string e =
-<<<<<<< HEAD
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component1\">"
-                    "<variable name=\"variable1\"/>"
-                "</component>"
-                "<connection component_1=\"component1\">"
-                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
-                "</connection>"
-            "</model>";
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-=======
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
         "<component name=\"component1\">"
@@ -114,8 +102,7 @@ TEST(Connection, componentlessVariableInvalidConnection)
         "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
         "</connection>"
         "</model>";
-    libcellml::Model m;
->>>>>>> develop
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -134,18 +121,6 @@ TEST(Connection, componentlessVariableInvalidConnection)
 TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
 {
     const std::string e =
-<<<<<<< HEAD
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component2\">"
-                    "<variable name=\"variable2\"/>"
-                "</component>"
-                "<connection component_1=\"component2\">"
-                    "<map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>"
-                "</connection>"
-            "</model>";
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-=======
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
         "<component name=\"component2\">"
@@ -155,8 +130,7 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
         "<map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>"
         "</connection>"
         "</model>";
-    libcellml::Model m;
->>>>>>> develop
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -182,21 +156,6 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
 TEST(Connection, validConnectionAndParse)
 {
     const std::string e =
-<<<<<<< HEAD
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component1\">"
-                    "<variable name=\"variable1\"/>"
-                "</component>"
-                "<component name=\"component2\">"
-                    "<variable name=\"variable2\"/>"
-                "</component>"
-                "<connection component_1=\"component1\" component_2=\"component2\">"
-                    "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
-                "</connection>"
-            "</model>";
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-=======
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
         "<component name=\"component1\">"
@@ -209,8 +168,7 @@ TEST(Connection, validConnectionAndParse)
         "<map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>"
         "</connection>"
         "</model>";
-    libcellml::Model m;
->>>>>>> develop
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
