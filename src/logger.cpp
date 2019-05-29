@@ -56,7 +56,7 @@ Logger::Logger(Logger &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Logger& Logger::operator=(Logger rhs)
+Logger &Logger::operator=(Logger rhs)
 {
     rhs.swap(*this);
     return *this;
@@ -91,4 +91,4 @@ ErrorPtr Logger::getError(size_t index) const
     return err;
 }
 
-}
+} // namespace libcellml

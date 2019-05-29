@@ -62,7 +62,7 @@ Entity::Entity(Entity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Entity& Entity::operator=(Entity e)
+Entity &Entity::operator=(Entity e)
 {
     e.swap(*this);
     return *this;
@@ -117,4 +117,4 @@ bool Entity::hasParent(ComponentPtr c) const
     return hasParent;
 }
 
-}
+} // namespace libcellml
