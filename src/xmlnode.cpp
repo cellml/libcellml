@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "namespaces.h"
 #include "xmlattribute.h"
 #include "xmlnode.h"
-
-#include "libcellml/namespaces.h"
 
 #include <string>
 
@@ -64,7 +63,7 @@ std::string XmlNode::getNamespace() const
 bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
-    if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
+    if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
         && !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
         && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
         found = true;
@@ -157,13 +156,14 @@ XmlNodePtr XmlNode::getParent()
     return parentHandle;
 }
 
-std::string XmlNode::convertToString(bool format) {
+std::string XmlNode::convertToString(bool format)
+{
     std::string contentString;
     xmlBufferPtr buffer = xmlBufferCreate();
     if (format) {
         xmlKeepBlanksDefault(0);
     }
-    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, format?1:0);
+    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, format ? 1 : 0);
     if (len > 0) {
         contentString = std::string(reinterpret_cast<const char *>(buffer->content));
     }
@@ -171,4 +171,4 @@ std::string XmlNode::convertToString(bool format) {
     return contentString;
 }
 
-}
+} // namespace libcellml
