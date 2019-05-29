@@ -18,18 +18,20 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Model, setGetId) {
+TEST(Model, setGetId)
+{
     const std::string id = "modelID";
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setId(id);
     EXPECT_EQ(id, m->getId());
 }
 
-TEST(Model, name) {
+TEST(Model, name)
+{
     std::string n = "name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName(n);
@@ -41,14 +43,15 @@ TEST(Model, name) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, unsetName) {
+TEST(Model, unsetName)
+{
     std::string n = "name";
     const std::string eName =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"name\"/>";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName(n);
@@ -64,11 +67,12 @@ TEST(Model, unsetName) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, invalidName) {
+TEST(Model, invalidName)
+{
     std::string in = "invalid name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"invalid name\"/>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"invalid name\"/>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName(in);
@@ -80,12 +84,13 @@ TEST(Model, invalidName) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, addComponent) {
+TEST(Model, addComponent)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component/>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -96,13 +101,14 @@ TEST(Model, addComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, addValidNamedComponent) {
+TEST(Model, addValidNamedComponent)
+{
     const std::string in = "valid_name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"valid_name\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"valid_name\"/>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -114,13 +120,14 @@ TEST(Model, addValidNamedComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, addInvalidNamedComponent) {
+TEST(Model, addInvalidNamedComponent)
+{
     const std::string in = "invalid name";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"invalid name\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"invalid name\"/>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -132,15 +139,16 @@ TEST(Model, addInvalidNamedComponent) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, addTwoNamedComponents) {
+TEST(Model, addTwoNamedComponents)
+{
     const std::string name1 = "component_1";
     const std::string name2 = "component_2";
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"component_1\"/>"
-                "<component name=\"component_2\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"component_1\"/>"
+        "<component name=\"component_2\"/>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -157,8 +165,14 @@ TEST(Model, addTwoNamedComponents) {
     EXPECT_EQ(e, a);
 }
 
+<<<<<<< HEAD
 TEST(Model, countComponents) {
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+=======
+TEST(Model, countComponents)
+{
+    libcellml::Model m;
+>>>>>>> develop
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -171,8 +185,14 @@ TEST(Model, countComponents) {
     EXPECT_EQ(2u, m->componentCount());
 }
 
+<<<<<<< HEAD
 TEST(Model, containsComponent) {
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+=======
+TEST(Model, containsComponent)
+{
+    libcellml::Model m;
+>>>>>>> develop
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -185,19 +205,20 @@ TEST(Model, containsComponent) {
     EXPECT_TRUE(m->containsComponent("child2"));
 }
 
-TEST(Model, removeComponent) {
+TEST(Model, removeComponent)
+{
     const std::string e1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"child2\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"child2\"/>"
+        "</model>";
 
     const std::string e2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"child2\"/>"
-                "<component name=\"child1\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"child2\"/>"
+        "<component name=\"child1\"/>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -230,12 +251,13 @@ TEST(Model, removeComponent) {
     EXPECT_EQ(2u, m->componentCount());
 }
 
-TEST(Model, getComponentMethods) {
+TEST(Model, getComponentMethods)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"childA\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"childA\"/>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -258,10 +280,11 @@ TEST(Model, getComponentMethods) {
     EXPECT_EQ(nullptr, m->getComponent(4));
 }
 
-TEST(Model, takeComponentMethods) {
+TEST(Model, takeComponentMethods)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -297,12 +320,13 @@ TEST(Model, takeComponentMethods) {
 }
 
 static int count = 0;
-class big_and_complicated {
-   // lots of complicated code
+class big_and_complicated
+{
+    // lots of complicated code
 public:
     int id;
     big_and_complicated()
-        : id(count+101)
+        : id(count + 101)
     {
         count++;
     }
@@ -316,26 +340,26 @@ public:
 struct structure
 {
     structure()
-      : m_data{new big_and_complicated{}}
+        : m_data {new big_and_complicated {}}
     {
         std::cout << "structure constructor: " << m_data->id << std::endl;
     }
 
     structure(const structure &rhs)
-        : m_data{new big_and_complicated{}}
+        : m_data {new big_and_complicated {}}
     {
         std::cout << "structure copy constructor: " << rhs.m_data->id << std::endl;
         m_data->id = rhs.m_data->id;
     }
 
     structure(structure &&rhs)
-      : m_data(rhs.m_data)
+        : m_data(rhs.m_data)
     {
         std::cout << "structure move constructor: " << m_data->id << std::endl;
         rhs.m_data = nullptr;
     }
 
-    structure& operator=(structure r)
+    structure &operator=(structure r)
     {
         r.swap(*this);
         return *this;
@@ -358,7 +382,7 @@ struct structure
     }
 
 private:
-    big_and_complicated* m_data;
+    big_and_complicated *m_data;
 };
 
 //TEST(Model, simplified_replace) {
@@ -371,27 +395,28 @@ private:
 
 //}
 
-TEST(Model, replaceComponent) {
+TEST(Model, replaceComponent)
+{
     const std::string e_orig =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"child1\"/>"
+        "<component name=\"child2\"/>"
+        "</model>";
 
     const std::string e_after =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"child1\"/>"
-                "<component name=\"child3\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"child1\"/>"
+        "<component name=\"child3\"/>"
+        "</model>";
 
     const std::string e_post =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"child4\"/>"
-                "<component name=\"child3\"/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<component name=\"child4\"/>"
+        "<component name=\"child3\"/>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -428,12 +453,13 @@ TEST(Model, replaceComponent) {
     EXPECT_EQ(e_post, a);
 }
 
-TEST(Model, constructors) {
+TEST(Model, constructors)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\">"
-                "<component/>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"my_name\">"
+        "<component/>"
+        "</model>";
     const std::string n = "my_name";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -464,28 +490,28 @@ TEST(Model, constructors) {
     libcellml::ModelPtr m4 = std::move(m2);
     EXPECT_EQ("my_name", m4->getName());
     // EXPECT_EQ("", m2.getName()); m2 is now dead (contains a nullptr).
-
 }
 
-TEST(Model, setAndCheckIdsAllEntities) {
+TEST(Model, setAndCheckIdsAllEntities)
+{
     const std::string expected =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
-                    "<component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>"
-                "</import>"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
-                    "<units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>"
-                "</import>"
-                "<units name=\"u2name\" id=\"u2id\"/>"
-                "<units name=\"u3name\" id=\"u3id\"/>"
-                "<component name=\"c2name\" id=\"c2id\">"
-                    "<variable name=\"vname\" units=\"u1name\" id=\"vid\"/>"
-                    "<reset id=\"r1id\">"
-                        "<when id=\"w1id\"/>"
-                    "</reset>"
-                "</component>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">"
+        "<component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>"
+        "</import>"
+        "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">"
+        "<units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>"
+        "</import>"
+        "<units name=\"u2name\" id=\"u2id\"/>"
+        "<units name=\"u3name\" id=\"u3id\"/>"
+        "<component name=\"c2name\" id=\"c2id\">"
+        "<variable name=\"vname\" units=\"u1name\" id=\"vid\"/>"
+        "<reset id=\"r1id\">"
+        "<when id=\"w1id\"/>"
+        "</reset>"
+        "</component>"
+        "</model>";
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();

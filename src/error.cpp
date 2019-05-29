@@ -72,7 +72,7 @@ Error::Error(Error &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Error& Error::operator=(Error rhs)
+Error &Error::operator=(Error rhs)
 {
     rhs.swap(*this);
     return *this;
@@ -253,8 +253,7 @@ WhenPtr Error::getWhen() const
  *
  * An internal map used to convert a SpecificationRule into its heading string.
  */
-std::map<SpecificationRule, const std::string> ruleToHeading =
-{
+std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::UNDEFINED, ""},
     {SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE, "3.1.1"},
     {SpecificationRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, "3.1.2"},
@@ -310,8 +309,7 @@ std::map<SpecificationRule, const std::string> ruleToHeading =
     {SpecificationRule::CONNECTION_MAP_VARIABLES, "17.1.4"},
     {SpecificationRule::MAP_VARIABLES_VARIABLE1, "18.1.1"},
     {SpecificationRule::MAP_VARIABLES_VARIABLE2, "18.1.2"},
-    {SpecificationRule::MAP_VARIABLES_UNIQUE, "18.1.3"},
-};
+    {SpecificationRule::MAP_VARIABLES_UNIQUE, "18.1.3"}};
 
 std::string Error::getSpecificationHeading() const
 {
@@ -323,4 +321,4 @@ std::string Error::getSpecificationHeading() const
     return heading;
 }
 
-}
+} // namespace libcellml

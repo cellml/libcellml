@@ -77,9 +77,9 @@ ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-ComponentEntity& ComponentEntity::operator=(ComponentEntity c)
+ComponentEntity &ComponentEntity::operator=(ComponentEntity c)
 {
-    NamedEntity::operator= (c);
+    NamedEntity::operator=(c);
     c.swap(*this);
     return *this;
 }
@@ -281,4 +281,4 @@ std::string ComponentEntity::getEncapsulationId() const
     return mPimpl->mEncapsulationId;
 }
 
-}
+} // namespace libcellml

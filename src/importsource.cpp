@@ -56,9 +56,9 @@ ImportSource::ImportSource(ImportSource &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-ImportSource& ImportSource::operator=(ImportSource rhs)
+ImportSource &ImportSource::operator=(ImportSource rhs)
 {
-    Entity::operator= (rhs);
+    Entity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -93,4 +93,4 @@ bool ImportSource::hasModel() const
     return mPimpl->mModel != nullptr;
 }
 
-}
+} // namespace libcellml

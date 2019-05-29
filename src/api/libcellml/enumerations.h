@@ -50,4 +50,4 @@ enum class Prefix
     YOCTO
 };
 
-}
+} // namespace libcellml

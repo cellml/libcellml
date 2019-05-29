@@ -48,7 +48,7 @@ public:
      *
      * @param node The libxml2 @c xmlNodePtr to set.
      */
-    void setXmlNode (const xmlNodePtr &node);
+    void setXmlNode(const xmlNodePtr &node);
 
     /**
      * @brief Get the namespace of the XML element.
@@ -210,4 +210,4 @@ private:
     XmlNodeImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

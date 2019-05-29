@@ -36,7 +36,7 @@ public:
     virtual ~Entity(); /**< Destructor */
     Entity(const Entity &rhs); /**< Copy constructor */
     Entity(Entity &&rhs); /**< Move constructor */
-    Entity& operator=(Entity e); /**< Assignment operator */
+    Entity &operator=(Entity e); /**< Assignment operator */
 
     /**
      * @brief Set the @p id document identifier for this entity.
@@ -123,7 +123,7 @@ private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct EntityImpl;
-    EntityImpl* mPimpl;
+    EntityImpl *mPimpl;
 };
 
-}
+} // namespace libcellml

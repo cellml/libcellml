@@ -26,16 +26,16 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <iostream>
 #include <map>
 #include <stack>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 namespace libcellml {
 
 // VariableMap
-typedef std::pair <VariablePtr, VariablePtr> VariablePair; /**< Type definition for VariablePtr pair.*/
+typedef std::pair<VariablePtr, VariablePtr> VariablePair; /**< Type definition for VariablePtr pair.*/
 typedef std::vector<VariablePair> VariableMap; /**< Type definition for vector of VariablePair.*/
 typedef VariableMap::const_iterator VariableMapIterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
@@ -75,9 +75,9 @@ Printer::Printer(Printer &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Printer& Printer::operator=(Printer p)
+Printer &Printer::operator=(Printer p)
 {
-    Logger::operator =(p);
+    Logger::operator=(p);
     p.swap(*this);
     return *this;
 }
@@ -144,7 +144,7 @@ std::string Printer::printUnits(UnitsPtr units) const
 
 std::string Printer::printUnits(Units units) const
 {
-    return printUnits(std::shared_ptr<Units>(std::shared_ptr<Units>{}, &units));
+    return printUnits(std::shared_ptr<Units>(std::shared_ptr<Units> {}, &units));
 }
 
 std::string Printer::printComponent(ComponentPtr component) const
@@ -172,7 +172,7 @@ std::string Printer::printComponent(ComponentPtr component) const
         for (size_t i = 0; i < variableCount; ++i) {
             repr += printVariable(component->getVariable(i));
         }
-        for (size_t i =0; i < resetCount; ++i) {
+        for (size_t i = 0; i < resetCount; ++i) {
             repr += printReset(component->getReset(i));
         }
         repr += component->getMath();
@@ -190,7 +190,7 @@ std::string Printer::printComponent(ComponentPtr component) const
 
 std::string Printer::printComponent(Component component) const
 {
-    return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component>{}, &component));
+    return printComponent(std::shared_ptr<Component>(std::shared_ptr<Component> {}, &component));
 }
 
 std::string Printer::printReset(ResetPtr reset) const
@@ -222,7 +222,7 @@ std::string Printer::printReset(ResetPtr reset) const
 
 std::string Printer::printReset(Reset reset) const
 {
-    return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset>{}, &reset));
+    return printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset> {}, &reset));
 }
 
 std::string Printer::printWhen(WhenPtr when) const
@@ -288,13 +288,13 @@ std::string Printer::printVariable(VariablePtr variable) const
 
 std::string Printer::printVariable(Variable variable) const
 {
-    return printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable>{}, &variable));
+    return printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable> {}, &variable));
 }
 
 std::string printMapVariables(VariablePair variablePair)
 {
     std::string mapVariables = "<map_variables variable_1=\"" + variablePair.first->getName() + "\""
-                                + " variable_2=\"" + variablePair.second->getName() + "\"";
+                               + " variable_2=\"" + variablePair.second->getName() + "\"";
     std::string mappingId = Variable::getEquivalenceMappingId(variablePair.first, variablePair.second);
     if (mappingId.length() > 0) {
         mapVariables += " id=\"" + mappingId + "\"";
@@ -410,9 +410,9 @@ void buildMaps(ModelPtr model, ComponentMap &componentMap, VariableMap &variable
 std::string Printer::printModel(ModelPtr model) const
 {
     // ImportMap
-    typedef std::pair <std::string, ComponentPtr> ImportPair;
+    typedef std::pair<std::string, ComponentPtr> ImportPair;
     typedef std::vector<ImportPair>::const_iterator VectorPairIterator;
-    typedef std::map <ImportSourcePtr, std::vector<ImportPair> > ImportMap;
+    typedef std::map<ImportSourcePtr, std::vector<ImportPair>> ImportMap;
     typedef ImportMap::const_iterator ImportMapIterator;
     ImportMap importMap;
     VariableMap variableMap;
@@ -478,13 +478,12 @@ std::string Printer::printModel(ModelPtr model) const
         repr += " id=\"" + model->getId() + "\"";
     }
     bool endTag = false;
-    if ((importMap.size() > 0) || (model->componentCount() > 0) || (model->unitsCount() > 0)){
+    if ((importMap.size() > 0) || (model->componentCount() > 0) || (model->unitsCount() > 0)) {
         endTag = true;
         repr += ">";
     }
 
-    for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter)
-    {
+    for (ImportMapIterator iter = importMap.begin(); iter != importMap.end(); ++iter) {
         repr += "<import xlink:href=\"" + iter->first->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
         if (iter->first->getId().length() > 0) {
             repr += " id=\"" + iter->first->getId() + "\"";
@@ -541,12 +540,12 @@ std::string Printer::printModel(ModelPtr model) const
 
 std::string Printer::printModel(Model model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, &model));
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, &model));
 }
 
 std::string Printer::printModel(Model *model) const
 {
-    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model>{}, model));
+    return printModel(std::shared_ptr<Model>(std::shared_ptr<Model> {}, model));
 }
 
 std::string Printer::printEncapsulation(ComponentPtr component) const
@@ -574,4 +573,4 @@ std::string Printer::printEncapsulation(ComponentPtr component) const
     return repr;
 }
 
-}
+} // namespace libcellml
