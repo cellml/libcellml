@@ -83,23 +83,28 @@ std::string Entity::getId() const
     return mPimpl->mId;
 }
 
-ModelPtr Entity::getParentModel() const {
+ModelPtr Entity::getParentModel() const
+{
     return mPimpl->mParentModel.lock();
 }
 
-ComponentPtr Entity::getParentComponent() const {
+ComponentPtr Entity::getParentComponent() const
+{
     return mPimpl->mParentComponent.lock();
 }
 
-void Entity::setParent(ComponentPtr parent) {
+void Entity::setParent(ComponentPtr parent)
+{
     mPimpl->mParentComponent = parent;
 }
 
-void Entity::setParent(ModelPtr parent) {
+void Entity::setParent(ModelPtr parent)
+{
     mPimpl->mParentModel = parent;
 }
 
-void Entity::clearParent() {
+void Entity::clearParent()
+{
     mPimpl->mParentComponent = {};
     mPimpl->mParentModel = {};
 }

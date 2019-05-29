@@ -193,20 +193,12 @@ TEST(Coverage, variable)
 TEST(Coverage, component)
 {
     std::string e =
-<<<<<<< HEAD
-            "<component name=\"name\">"
-                "<variable/>"
-                "<1+1=2>"
-            "</component>";
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr cm;
-=======
         "<component name=\"name\">"
         "<variable/>"
         "<1+1=2>"
         "</component>";
-    libcellml::Component c, cm;
->>>>>>> develop
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
     c->setName("name");

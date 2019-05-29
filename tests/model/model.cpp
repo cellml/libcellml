@@ -165,14 +165,9 @@ TEST(Model, addTwoNamedComponents)
     EXPECT_EQ(e, a);
 }
 
-<<<<<<< HEAD
-TEST(Model, countComponents) {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-=======
 TEST(Model, countComponents)
 {
-    libcellml::Model m;
->>>>>>> develop
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -185,14 +180,9 @@ TEST(Model, countComponents)
     EXPECT_EQ(2u, m->componentCount());
 }
 
-<<<<<<< HEAD
-TEST(Model, containsComponent) {
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-=======
 TEST(Model, containsComponent)
 {
-    libcellml::Model m;
->>>>>>> develop
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
