@@ -304,6 +304,7 @@ public:
     explicit GeneratorVariable();
 
     Type type() const;
+    void setType(Type type);
 
     VariablePtr variable() const;
     void setVariable(const VariablePtr &variable);
@@ -327,6 +328,11 @@ GeneratorVariable::GeneratorVariable()
 GeneratorVariable::Type GeneratorVariable::type() const
 {
     return mType;
+}
+
+void GeneratorVariable::setType(Type type)
+{
+    mType = type;
 }
 
 VariablePtr GeneratorVariable::variable() const
