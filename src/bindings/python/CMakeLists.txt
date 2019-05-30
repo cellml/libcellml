@@ -19,7 +19,6 @@ endif()
 # Add swig interface files
 # Note: These filenames double as (generated .so file) module names!
 set(SWIG_INTERFACE_SRCS
-    __init__.i
     ../interface/component.i
     ../interface/componententity.i
     ../interface/error.i
@@ -47,6 +46,8 @@ set(SWIG_GENERATED_INTERMEDIARIES_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/swig_int
 
 # Set the location of the libcellml Python package directory.
 set(LIBCELLML_PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}${_CFGDIR}/libcellml)
+
+configure_file(__init__.py ${LIBCELLML_PYTHON_PACKAGE_DIR}/__init__.py)
 
 # Configure for C++
 if(${CMAKE_VERSION} VERSION_LESS 3.11)
