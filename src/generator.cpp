@@ -1949,7 +1949,7 @@ size_t Generator::stateCount() const
 {
     size_t res = 0;
 
-    for (auto variable : mPimpl->mVariables) {
+    for (const auto &variable : mPimpl->mVariables) {
         if (variable->type() == GeneratorVariable::Type::STATE) {
             ++res;
         }
@@ -1967,7 +1967,7 @@ size_t Generator::variableCount() const
 {
     size_t res = 0;
 
-    for (auto variable : mPimpl->mVariables) {
+    for (const auto &variable : mPimpl->mVariables) {
         if (   (variable->type() == GeneratorVariable::Type::ALGEBRAIC)
             || (variable->type() == GeneratorVariable::Type::CONSTANT)
             || (variable->type() == GeneratorVariable::Type::COMPUTED_CONSTANT)) {
