@@ -1126,7 +1126,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 printf("Number of variables: %zu\n", mVariables.size());
 int i = 0;
 for (const auto &variable : mVariables) {
-    printf("Variable #%d: %s %s[comp: %s]\n", ++i,
+    printf("Variable #%d [%d]: %s %s[comp: %s]\n", ++i,
+           variable->type(),
            variable->variable()->getName().c_str(),
            variable->variable()->getInitialValue().empty()?
                "":
