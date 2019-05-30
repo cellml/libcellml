@@ -1128,6 +1128,11 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->getComponent(i));
     }
 
+    // Process our different equations
+
+    for (const auto &equation : mEquations) {
+        processEquation(equation);
+    }
 //TODO: remove the below code once we are done testing things...
 printf("Number of variables: %zu\n", mVariables.size());
 int i = 0;
@@ -1140,13 +1145,6 @@ for (const auto &variable : mVariables) {
                std::string("[init: "+variable->variable()->getInitialValue()+"] ").c_str(),
            variable->variable()->getParentComponent()->getName().c_str());
 }
-
-    // Process our different equations
-
-    for (const auto &equation : mEquations) {
-        processEquation(equation);
-    }
-//TODO: remove the below code once we are done testing things...
 printf("[neededMathMethods()]---------------------------------------[BEGIN]\n");
 printf("%s", neededMathMethods().c_str());
 printf("[neededMathMethods()]---------------------------------------[END]\n");
