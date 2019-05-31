@@ -26,6 +26,12 @@ namespace libcellml {
 class LIBCELLML_EXPORT Generator: public Logger
 {
 public:
+    enum class Type {
+        UNKNOWN,
+        ALGEBRAIC,
+        ODE
+    };
+
     Generator(); /**< Constructor */
     ~Generator() override; /**< Destructor */
     Generator(const Generator &rhs); /**< Copy constructor */
@@ -36,6 +42,8 @@ public:
 
     void setOptimize(bool optimize);
     void setWithNames(bool withNames);
+
+    Type type() const;
 
     size_t stateCount() const;
     size_t rateCount() const;

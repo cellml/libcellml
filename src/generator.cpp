@@ -1225,7 +1225,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 
 //TODO: remove the below code once we are done testing things...
-//#define TRACES
+#define TRACES
 #ifdef TRACES
 printf("Number of variables: %zu\n", mVariables.size());
 int i = 0;
@@ -2051,6 +2051,19 @@ void Generator::setOptimize(bool optimize)
 void Generator::setWithNames(bool withNames)
 {
     mPimpl->mWithNames = withNames;
+}
+
+Generator::Type Generator::type() const
+{
+    if (errorCount() != 0) {
+        return Generator::Type::UNKNOWN;
+    }
+
+    if (mPimpl->mVariableOfIntegration != nullptr) {
+        return Generator::Type::ODE;
+    }
+
+    return Generator::Type::ALGEBRAIC;
 }
 
 size_t Generator::stateCount() const
