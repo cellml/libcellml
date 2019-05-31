@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<model name="my_model" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
-    <!-- Coverage-->
+<model name="coverage" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#">
     <units name="per_second">
         <unit exponent="-1" units="second"/>
     </units>
