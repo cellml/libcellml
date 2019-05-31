@@ -214,12 +214,32 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 }
 */
 
-//TODO: remove the below test once we are done testing things...
+TEST(Generator, van_der_pol_model_1928) {
+//TODO: code should be generated for the coverage CellML file with and without
+//      the Generator's private mHasXXX booleans set, so that we really cover
+//      everything indeed.
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/van_der_pol_model_1928/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::Type::ODE, generator.type());
+
+    EXPECT_EQ(size_t(2), generator.stateCount());
+    EXPECT_EQ(size_t(1), generator.variableCount());
+}
+
+/*TODO: remove the below test once we are done testing things.
 TEST(Generator, test) {
     libcellml::Parser parser;
-//libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/hodgkin_huxley_squid_axon_model_1952.cellml"));
+libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/hodgkin_huxley_squid_axon_model_1952.cellml"));
 //libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/noble_model_1962.cellml"));
-libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/van_der_pol_model_1928.cellml"));
 //libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/zhang_SAN_model_2000_all.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
@@ -230,3 +250,4 @@ libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 }
+*/
