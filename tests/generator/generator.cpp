@@ -185,8 +185,9 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 
+    EXPECT_EQ(libcellml::Generator::Type::ALGEBRAIC, generator.type());
+
     EXPECT_EQ(size_t(1), generator.stateCount());
-    EXPECT_EQ(size_t(1), generator.rateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
