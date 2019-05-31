@@ -1134,7 +1134,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processEquation(equation);
     }
 //TODO: remove the below code once we are done testing things...
-#define TRACES
+//#define TRACES
 #ifdef TRACES
 printf("Number of variables: %zu\n", mVariables.size());
 int i = 0;
