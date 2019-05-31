@@ -2055,6 +2055,10 @@ void Generator::setWithNames(bool withNames)
 
 size_t Generator::stateCount() const
 {
+    if (errorCount() != 0) {
+        return 0;
+    }
+
     size_t res = 0;
 
     for (const auto &variable : mPimpl->mVariables) {
@@ -2073,6 +2077,10 @@ size_t Generator::rateCount() const
 
 size_t Generator::variableCount() const
 {
+    if (errorCount() != 0) {
+        return 0;
+    }
+
     size_t res = 0;
 
     for (const auto &variable : mPimpl->mVariables) {
