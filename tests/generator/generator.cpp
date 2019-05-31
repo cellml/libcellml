@@ -151,6 +151,27 @@ TEST(Generator, variable_initialized_twice) {
     }
 }
 
+TEST(Generator, non_initialized_state) {
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/non_initialized_state.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    std::vector<std::string> expectedErrors = {
+        "Variable 'x' in component 'main' of model 'non_initialized_state' is used in an ODE, but it is not initialised."
+    };
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+    }
+}
+
 /*TODO: reenable this test once we are done with the previous tests.
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;

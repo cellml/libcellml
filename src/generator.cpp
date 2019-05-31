@@ -295,6 +295,8 @@ class GeneratorVariable
 public:
     enum class Type {
         UNKNOWN,
+        SHOULD_BE_STATE,
+        VARIABLE_OF_INTEGRATION,
         STATE,
         ALGEBRAIC,
         CONSTANT,
@@ -310,6 +312,9 @@ public:
 
     GeneratorEquationAstPtr variableAst() const;
     void setVariableAst(const GeneratorEquationAstPtr &ast);
+
+    void makeVariableOfIntegration();
+    void makeState();
 
 private:
     Type mType;
@@ -340,10 +345,31 @@ void GeneratorVariable::setVariable(const VariablePtr &variable)
 
     if (!variable->getInitialValue().empty()) {
         // The variable has an initial value, so it can either be a constant or
-        // a state. By default, we consider it to be a constant. Then, if we
-        // find an ODE for it, we will know that it was actually a state.
+        // a state. If the type of the variable is currently unknown then we
+        // consider it to be a constant (then, if we find an ODE for that
+        // variable, we will that it was actually a state). On the other hand,
+        // if it was thought that the variable should be a state, then we now
+        // know that it is indeed one.
 
-        mType = Type::CONSTANT;
+        if (mType == Type::UNKNOWN) {
+            mType = Type::CONSTANT;
+        } else if (mType == Type::SHOULD_BE_STATE) {
+            mType = Type::STATE;
+        }
+    }
+}
+
+void GeneratorVariable::makeVariableOfIntegration()
+{
+    mType = Type::VARIABLE_OF_INTEGRATION;
+}
+
+void GeneratorVariable::makeState()
+{
+    if (mType == Type::UNKNOWN) {
+        mType = Type::SHOULD_BE_STATE;
+    } else if (mType == Type::CONSTANT) {
+        mType = Type::STATE;
     }
 }
 
@@ -496,6 +522,8 @@ struct Generator::GeneratorImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
+    GeneratorVariablePtr generatorVariable(const VariablePtr &variable) const;
+
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component,
@@ -574,6 +602,17 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     }
 
     return res;
+}
+
+GeneratorVariablePtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable) const
+{
+    for (const auto &generatorVariable : mVariables) {
+        if (variable->isEquivalentVariable(generatorVariable->variable())) {
+            return generatorVariable;
+        }
+    }
+
+    return {};
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
@@ -995,7 +1034,8 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
 void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr &ast)
 {
-    // Make sure that we don't use more than one variable of integration
+    // Look for the definition of a variable of integration and make sure that
+    // we don't have more than one of them and that it's not initialised
 
     GeneratorEquationAstPtr astParent = ast->parent();
     GeneratorEquationAstPtr astGrandParent = (astParent != nullptr)?astParent->parent():nullptr;
@@ -1005,6 +1045,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::BVAR)
         && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
         VariablePtr variable = ast->variable();
+
+        generatorVariable(variable)->makeVariableOfIntegration();
+        // Note: we must make the variable a variable of integration in all
+        //       cases (i.e. even if there is, for example, already another
+        //       variable of integration) otherwise unnecessary error messages
+        //       may be added (since the variable would be of unknown type).
 
         if (mVariableOfIntegration == nullptr) {
             // Before keeping track of the variable of integration, make sure
@@ -1053,6 +1099,13 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
             mGenerator->addError(err);
         }
+    }
+
+    // Make a variable a state if it is used in an ODE
+
+    if (   (ast->type() == GeneratorEquationAst::Type::CI)
+        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAst::Type::DIFF)) {
+        generatorVariable(ast->variable())->makeState();
     }
 
     // Recursively check the given AST's children
@@ -1127,6 +1180,42 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     for (const auto &equation : mEquations) {
         processEquation(equation);
     }
+
+    // Make sure that all our variables are valid
+
+    for (const auto &variable : mVariables) {
+        std::string errorType;
+
+        switch (variable->type()) {
+        case GeneratorVariable::Type::UNKNOWN:
+            errorType = "is of unknown type";
+
+            break;
+        case GeneratorVariable::Type::SHOULD_BE_STATE:
+            errorType = "is used in an ODE, but it is not initialised";
+
+            break;
+        case GeneratorVariable::Type::VARIABLE_OF_INTEGRATION:
+        case GeneratorVariable::Type::STATE:
+        case GeneratorVariable::Type::ALGEBRAIC:
+        case GeneratorVariable::Type::CONSTANT:
+        case GeneratorVariable::Type::COMPUTED_CONSTANT:
+            break;
+        }
+
+        if (!errorType.empty()) {
+            ErrorPtr err = std::make_shared<Error>();
+            VariablePtr realVariable = variable->variable();
+            Component *component = realVariable->getParentComponent();
+            Model *model = component->getParentModel();
+
+            err->setDescription("Variable '"+realVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' "+errorType+".");
+            err->setKind(Error::Kind::GENERATOR);
+
+            mGenerator->addError(err);
+        }
+    }
+
 //TODO: remove the below code once we are done testing things...
 //#define TRACES
 #ifdef TRACES
