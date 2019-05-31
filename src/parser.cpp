@@ -222,6 +222,11 @@ ModelPtr Parser::parseModel(const std::string &input)
 {
     ModelPtr model = std::make_shared<Model>();
     mPimpl->updateModel(model, input);
+//TODO: remove the below code once we are done testing things...
+for (size_t i = 0; i < errorCount(); ++i) {
+    printf("Parser error #%zu: %s\n", i+1, getError(i)->getDescription().c_str());
+}
+
     return model;
 }
 
