@@ -34,6 +34,7 @@ public:
 
     void processModel(const ModelPtr &model);
 
+    void setOptimize(bool optimize);
     void setWithNames(bool withNames);
 
     size_t stateCount() const;

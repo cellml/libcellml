@@ -1216,6 +1216,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
+    // Optimise the model (e.g. X+0 ===> X), if requested and if there are no
+    // errors
+
+    if (mOptimize && (mGenerator->errorCount() == 0)) {
+//TODO: to be done...
+    }
+
 //TODO: remove the below code once we are done testing things...
 //#define TRACES
 #ifdef TRACES
