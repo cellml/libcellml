@@ -1946,6 +1946,11 @@ void Generator::processModel(const ModelPtr &model)
     // Process the model
 
     mPimpl->processModel(model);
+
+//TODO: remove the below code once we are done testing things...
+for (size_t i = 0; i < errorCount(); ++i) {
+    printf("Generator error #%zu: %s\n", i+1, getError(i)->getDescription().c_str());
+}
 }
 
 void Generator::setWithNames(bool withNames)
