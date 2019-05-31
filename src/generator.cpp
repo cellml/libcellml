@@ -1134,6 +1134,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processEquation(equation);
     }
 //TODO: remove the below code once we are done testing things...
+#define TRACES
+#ifdef TRACES
 printf("Number of variables: %zu\n", mVariables.size());
 int i = 0;
 for (const auto &variable : mVariables) {
@@ -1160,6 +1162,7 @@ printf("[computeRateEquations()]---------------------------------------[END]\n")
 printf("[computeAlgebraicEquations()]---------------------------------------[BEGIN]\n");
 printf("%s", computeAlgebraicEquations().c_str());
 printf("[computeAlgebraicEquations()]---------------------------------------[END]\n");
+#endif
 }
 
 std::string Generator::GeneratorImpl::neededMathMethods() const
