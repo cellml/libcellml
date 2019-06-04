@@ -19,6 +19,7 @@ Topic :: Software Development :: Libraries :: Python Modules
 from setuptools import setup
 from setuptools.dist import Distribution
 
+
 doclines = __doc__.split("\n")
 
 
@@ -41,7 +42,7 @@ setup(
     license='Apache Software License',
     description=doclines[0],
     classifiers = filter(None, classifiers.split("\n")),
-#    long_description=open('README.rst').read(),
+    long_description=open('README.rst').read(),
     distclass=BinaryDistribution,
     include_package_data=True,
     zip_safe=False,
