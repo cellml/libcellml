@@ -181,4 +181,3 @@ convert(specificationrule, 'SpecificationRule', [
     'MAP_VARIABLES_UNIQUE',
     ], new_base =  libcellml)
 del(convert, libcellml)
-
