@@ -41,7 +41,7 @@ setup(
     url='http://cellml.org',
     license='Apache Software License',
     description=doclines[0],
-    classifiers = filter(None, classifiers.split("\n")),
+    classifiers=filter(None, classifiers.split("\n")),
     long_description=open('README.rst').read(),
     distclass=BinaryDistribution,
     include_package_data=True,
