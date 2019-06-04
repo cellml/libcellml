@@ -74,7 +74,7 @@ function(GROUP_SOURCE_TO_DIR_STRUCTURE)
 endfunction()
 
 function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
-  if(   "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
      OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # The full list of diagnostic flags in Clang can be found at
     # https://clang.llvm.org/docs/DiagnosticsReference.html
@@ -102,7 +102,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     )
   endif()
 
-  if(CLANG_TIDY_EXE)
+  if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
         set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
         set(_NO_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS -cppcoreguidelines-special-member-functions)
