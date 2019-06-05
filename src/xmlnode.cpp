@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "namespaces.h"
 #include "xmlattribute.h"
 #include "xmlnode.h"
-
-#include "libcellml/namespaces.h"
 
 #include <string>
 
@@ -64,7 +63,7 @@ std::string XmlNode::getNamespace() const
 bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
-    if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
+    if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
         && !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
         && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
         found = true;
@@ -157,7 +156,8 @@ XmlNodePtr XmlNode::getParent()
     return parentHandle;
 }
 
-std::string XmlNode::convertToString() {
+std::string XmlNode::convertToString()
+{
     std::string contentString;
     xmlBufferPtr buffer = xmlBufferCreate();
     int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
@@ -168,4 +168,4 @@ std::string XmlNode::convertToString() {
     return contentString;
 }
 
-}
+} // namespace libcellml
