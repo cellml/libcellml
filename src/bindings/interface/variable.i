@@ -52,6 +52,28 @@ reference.";
 "Sets this variable's interfacetype to the given type specified as string or
 InterfaceType.";
 
+%feature("docstring") libcellml::Variable::setEquivalenceMappingId
+"Record the given id as the mapping id for the equivalence defined with the given
+variables.  The variables are commutative. This id appears in the 'map_variables'
+element of the model when serialised.
+
+To clear an equivalence mapping id set it to the empty string. If the two variables are
+not equivalent the mapping id is not set.";
+
+%feature("docstring") libcellml::Variable::setEquivalenceConnectionId
+"Record the given id as the connection id for the equivalence defined with the given
+variables.  The variables are commutative. This id appears in the 'connection'
+element of the model when serialised.
+
+To clear an equivalence connection id set it to the empty string. If the two variables are
+not equivalent the connection id is not set.";
+
+%feature("docstring") libcellml::Variable::getEquivalenceMappingId
+"Get the mapping id set for the equivalence defined with the given variables.";
+
+%feature("docstring") libcellml::Variable::getEquivalenceConnectionId
+"Get the connection id set for the equivalence defined with the given variables.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {

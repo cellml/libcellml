@@ -13,12 +13,6 @@
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
 if(LIBCELLML_BINDINGS_PYTHON) # Or any other bindings that use SWIG.
-    if(POLICY CMP0078)
-        cmake_policy(SET CMP0078 NEW)
-    endif()
-    if(POLICY CMP0086)
-        cmake_policy(SET CMP0086 NEW)
-    endif()
     find_package(SWIG 3 REQUIRED)
     include(${SWIG_USE_FILE})
 endif()
