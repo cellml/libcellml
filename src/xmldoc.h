@@ -103,4 +103,4 @@ private:
     XmlDocImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

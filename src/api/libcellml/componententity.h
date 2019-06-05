@@ -46,7 +46,7 @@ public:
 
     ComponentEntity(ComponentEntity &&rhs); /**< Move constructor */
     ComponentEntity(const ComponentEntity &rhs); /**< Copy constructor */
-    ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
+    ComponentEntity &operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Add a child component to this component entity.
@@ -84,7 +84,7 @@ public:
      *
      * @return True if the component was removed, false otherwise.
      */
-    bool removeComponent(const std::string &name, bool searchEncapsulated=true);
+    bool removeComponent(const std::string &name, bool searchEncapsulated = true);
 
     /**
      * @brief Remove the component with the given pointer.
@@ -100,7 +100,7 @@ public:
      *
      * @return True if the component was removed, false otherwise.
      */
-    bool removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
+    bool removeComponent(const ComponentPtr &component, bool searchEncapsulated = true);
 
     /**
      * @brief Remove all components stored in this component entity.
@@ -123,7 +123,7 @@ public:
      *
      * @return @c true if the named component is in this component entity and @c false otherwise.
      */
-    bool containsComponent(const std::string &name, bool searchEncapsulated=true) const;
+    bool containsComponent(const std::string &name, bool searchEncapsulated = true) const;
 
     /**
      * @brief Tests to see if the component pointer is contained within this component.
@@ -141,7 +141,7 @@ public:
      *
      * @return @c true if the component is in the component entity and @c false otherwise.
      */
-    bool containsComponent(const ComponentPtr &component, bool searchEncapsulated=true) const;
+    bool containsComponent(const ComponentPtr &component, bool searchEncapsulated = true) const;
 
     /**
      * @brief Get a component at the given @p index.
@@ -172,7 +172,7 @@ public:
      *
      * @return The Component with the given @p name on success, @c nullptr on failure.
      */
-    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated=true) const;
+    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated = true) const;
 
     /**
      * @brief Take the component at the given @p index and return it.
@@ -201,7 +201,7 @@ public:
      *
      * @return The Component identified with the given @p name, @c nullptr on failure.
      */
-    ComponentPtr takeComponent(const std::string &name, bool searchEncapsulated=true);
+    ComponentPtr takeComponent(const std::string &name, bool searchEncapsulated = true);
 
     /**
      * @brief Replace a component at the given @p index.
@@ -233,7 +233,7 @@ public:
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
+    bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated = true);
 
     /**
      * @brief Replace the given component.
@@ -252,7 +252,7 @@ public:
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated=true);
+    bool replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated = true);
 
     /**
      * @brief Get the number of components in the component.
@@ -294,7 +294,6 @@ public:
     std::string getEncapsulationId() const;
 
 protected:
-
     /**
      * @brief Virtual add component method to be implemented by derived classes.
      *
@@ -306,12 +305,10 @@ protected:
     virtual void doAddComponent(const ComponentPtr &c);
 
 private:
-
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
     ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer */
-
 };
 
-}
+} // namespace libcellml
