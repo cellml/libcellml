@@ -31,6 +31,7 @@ TEST(ComponentImport, basics)
 {
     const std::string e = "";
 
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");
 
@@ -45,8 +46,10 @@ TEST(ComponentImport, basics)
     EXPECT_EQ(c->getImportSource(), imp);
     EXPECT_EQ(c->getImportReference(), "bob");
 
+    m.addComponent(c);
+
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 

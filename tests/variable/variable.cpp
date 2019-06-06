@@ -14,18 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
+
 
 TEST(Variable, setValidVariableName)
 {
     const std::string in = "valid_name";
     const std::string e = "<variable name=\"valid_name\"/>\n";
-    libcellml::Variable v;
-    v.setName(in);
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    v->setName(in);
+
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 

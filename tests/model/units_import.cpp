@@ -22,6 +22,7 @@ TEST(UnitsImport, basics)
 {
     const std::string e = "";
 
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");
 
@@ -36,8 +37,10 @@ TEST(UnitsImport, basics)
     EXPECT_EQ(u->getImportSource(), imp);
     EXPECT_EQ(u->getImportReference(), "bob");
 
+    m.addUnits(u);
+
     libcellml::Printer printer;
-    const std::string a = printer.printUnits(u);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
