@@ -129,7 +129,7 @@ endif()
 unset(BUILD_SHARED CACHE)
 
 # Uninstall target
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.in.cmake"
                "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
                IMMEDIATE @ONLY)
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
@@ -196,7 +196,7 @@ if(CLANG_FORMAT_EXE)
   )
 
   set(CHECK_CODE_FORMATTING_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/cmake_command_check_code_formatting.cmake)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.cmake.in
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.in.cmake
     ${CHECK_CODE_FORMATTING_SCRIPT} @ONLY)
   if(CLANG_FORMAT_TESTING_AVAILABLE)
     add_custom_target(test_clang_format
