@@ -12,12 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
 
-cmake_minimum_required(VERSION 3.5.2)
+cmake_minimum_required(VERSION 3.10.2)
 
 set(PROJECT_NAME libCellML)
 project(${PROJECT_NAME} VERSION 0.2.0 LANGUAGES CXX)
 
+# Set policies that affect the build.
+if(POLICY CMP0078)
+  cmake_policy(SET CMP0078 NEW)
+endif()
+if(POLICY CMP0086)
+  cmake_policy(SET CMP0086 NEW)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 include(common)
 include(environmentchecks)
 
@@ -85,10 +94,12 @@ endif()
 unset(TWAE CACHE)
 
 # BUILD_TYPE ==> LIBCELLML_BUILD_TYPE
-set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
-set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION})
-if(DEFINED BUILD_TYPE)
-  set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+if(NOT IS_MULTI_CONFIG)
+  set(_PARAM_ANNOTATION "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel.")
+  set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION})
+  if(DEFINED BUILD_TYPE)
+    set(LIBCELLML_BUILD_TYPE ${BUILD_TYPE} CACHE STRING ${_PARAM_ANNOTATION} FORCE)
+  endif()
 endif()
 unset(BUILD_TYPE CACHE)
 if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
@@ -118,7 +129,7 @@ endif()
 unset(BUILD_SHARED CACHE)
 
 # Uninstall target
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.in.cmake"
                "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
                IMMEDIATE @ONLY)
 add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
@@ -145,8 +156,16 @@ if(MSVC)
   find_package(LibXml2 CONFIG QUIET)
   if(LibXml2_FOUND)
     set(HAVE_LIBXML2_CONFIG TRUE)
+    foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
+      if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
+        unset(${_XML2_VAR} CACHE)
+      endif()
+    endforeach()
   else()
     find_package(LibXml2 REQUIRED)
+    if(LibXml2_FOUND)
+      unset(LibXml2_DIR CACHE)
+    endif()
   endif()
 else()
   find_package(LibXml2 REQUIRED)
@@ -177,7 +196,7 @@ if(CLANG_FORMAT_EXE)
   )
 
   set(CHECK_CODE_FORMATTING_SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/cmake_command_check_code_formatting.cmake)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.cmake.in
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_command_check_code_formatting.in.cmake
     ${CHECK_CODE_FORMATTING_SCRIPT} @ONLY)
   if(CLANG_FORMAT_TESTING_AVAILABLE)
     add_custom_target(test_clang_format
