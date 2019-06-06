@@ -396,7 +396,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
         } else if (childNode->isElement("math", MATHML_NS)) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
-            std::string math = childNode->convertToString();
+            std::string math = childNode->convertToString(1) + "\n";
             component->appendMath(math);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
@@ -1287,7 +1287,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
         if (childNode->isElement("math", MATHML_NS)) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
-            std::string math = childNode->convertToString();
+            std::string math = childNode->convertToString(1) + "\n";
             ++mathNodeCount;
             if (mathNodeCount == 1) {
                 when->setCondition(math);
@@ -1302,11 +1302,14 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             }
         } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-            err->setWhen(when);
-            err->setRule(SpecificationRule::WHEN_CHILD);
-            mParser->addError(err);
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setWhen(when);
+                err->setRule(SpecificationRule::WHEN_CHILD);
+                mParser->addError(err);
+            }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {
