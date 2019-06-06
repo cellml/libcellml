@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 TEST(Printer, printEmptyModel)
 {
     const std::string e =
@@ -49,40 +51,51 @@ TEST(Printer, printEmptyModelAllocatePointer)
 TEST(Printer, printEmptyUnits)
 {
     const std::string e = "";
-    libcellml::Units u;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    m->addUnits(u);
+
 
     libcellml::Printer printer;
-    const std::string a = printer.printUnits(u);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Printer, printEmptyVariable)
 {
     const std::string e = "<variable/>\n";
-    libcellml::Variable v;
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    c->addVariable(v);
 
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Printer, printEmptyComponent)
 {
     const std::string e = "<component/>\n";
-    libcellml::Component c;
+    libcellml::ModelPtr m = createModelWithComponent();
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Printer, printEmptyReset)
 {
     const std::string e = "<reset/>\n";
-    libcellml::Reset r;
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    c->addReset(r);
 
     libcellml::Printer printer;
-    const std::string a = printer.printReset(r);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -99,7 +112,6 @@ TEST(Printer, printEncapsulation)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string e_child = "<component/>\n";
 
     libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -111,8 +123,6 @@ TEST(Printer, printEncapsulation)
     libcellml::Printer printer;
     const std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent, a_parent);
-    const std::string a_child = printer.printComponent(child);
-    EXPECT_EQ(e_child, a_child);
 }
 
 TEST(Printer, printEncapsulationWithNames)
@@ -128,7 +138,6 @@ TEST(Printer, printEncapsulationWithNames)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string e_child = "<component name=\"child_component\"/>\n";
 
     libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -142,6 +151,4 @@ TEST(Printer, printEncapsulationWithNames)
     libcellml::Printer printer;
     const std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent, a_parent);
-    const std::string a_child = printer.printComponent(child);
-    EXPECT_EQ(e_child, a_child);
 }

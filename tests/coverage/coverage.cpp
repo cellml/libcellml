@@ -19,6 +19,8 @@ limitations under the License.
 #include <iostream>
 #include <libcellml>
 
+#include "test_utils.h"
+
 /*
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
@@ -53,17 +55,20 @@ TEST(Coverage, printer)
 TEST(Coverage, units)
 {
     const std::string e = "<units name=\"dimensionless\"/>\n";
-    libcellml::Units u, um;
+    libcellml::ModelPtr m = createModel();
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr um = std::make_shared<libcellml::Units>();
 
-    u.setName("dimensionless");
+    u->setName("dimensionless");
 
     um = std::move(u);
 
     // Copy constructor
-    libcellml::Units uc(um);
+    libcellml::UnitsPtr uc(um);
+    m->addUnits(uc);
 
     libcellml::Printer printer;
-    const std::string a = printer.printUnits(uc);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -73,18 +78,21 @@ TEST(Coverage, when)
         "<reset>\n"
         "  <when/>\n"
         "</reset>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::When w, wm;
-    libcellml::Reset r;
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    c->addReset(r);
 
     wm = std::move(w);
 
     libcellml::When wc(wm);
 
     libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
-    r.addWhen(wp);
+    r->addWhen(wp);
 
     libcellml::Printer printer;
-    const std::string a = printer.printReset(r);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -176,21 +184,25 @@ TEST(Coverage, prefixToString)
 TEST(Coverage, variable)
 {
     const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
-    libcellml::Variable v, vm;
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr vm = std::make_shared<libcellml::Variable>();
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
-    v.setInitialValue(1.0);
-    v.setInterfaceType("public");
+    v->setInitialValue(1.0);
+    v->setInterfaceType("public");
     u->setName("dimensionless");
-    v.setUnits(u);
+    v->setUnits(u);
 
     vm = std::move(v);
 
     // Copy constructor
-    libcellml::Variable vc(vm);
+    libcellml::VariablePtr vc(vm);
+    c->addVariable(vc);
 
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(vc);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -203,24 +215,30 @@ TEST(Coverage, component)
         "</component>\n";
     const std::string math = "<1+1=2>\n";
 
-    libcellml::Component c, cm;
+    libcellml::ModelPtr m = createModel();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr cm = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
-    c.setName("name");
-    c.addVariable(v);
-    c.setMath(math);
+    c->setName("name");
+    c->addVariable(v);
+    c->setMath(math);
+    m->addComponent(c);
 
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     cm = std::move(c);
-    a = printer.printComponent(cm);
+    a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Copy constructor
-    libcellml::Component cc(cm);
-    a = printer.printComponent(cc);
+    m->removeAllComponents();
+    libcellml::ComponentPtr cc(cm);
+    m->addComponent(cc);
+
+    a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
