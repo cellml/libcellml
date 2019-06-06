@@ -161,11 +161,14 @@ XmlNodePtr XmlNode::getParent()
     return parentHandle;
 }
 
-std::string XmlNode::convertToString()
+std::string XmlNode::convertToString(bool format)
 {
     std::string contentString;
     xmlBufferPtr buffer = xmlBufferCreate();
-    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
+    if (format) {
+        xmlKeepBlanksDefault(0);
+    }
+    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, format ? 1 : 0);
     if (len > 0) {
         contentString = std::string(reinterpret_cast<const char *>(buffer->content));
     }
