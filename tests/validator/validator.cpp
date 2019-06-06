@@ -36,7 +36,7 @@ TEST(Validator, namedModel)
 
 TEST(Validator, unnamedModel)
 {
-    std::string expectedError = "Model does not have a valid name attribute.";
+    const std::string expectedError = "Model does not have a valid name attribute.";
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     validator.validateModel(model);
@@ -47,7 +47,7 @@ TEST(Validator, unnamedModel)
 
 TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Model does not have a valid name attribute.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
@@ -59,7 +59,7 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Component does not have a valid name attribute.",
     };
-    std::vector<std::string> expectedSpecificationHeadings = {
+    const std::vector<std::string> expectedSpecificationHeadings = {
         "3.1.4",
         "4.2.1",
         "3.1.2",
@@ -118,7 +118,7 @@ TEST(Validator, moveCopyValidatorWithUnnamedModel)
 
 TEST(Validator, namedModelWithUnnamedComponent)
 {
-    std::string expectedError = "Component does not have a valid name attribute.";
+    const std::string expectedError = "Component does not have a valid name attribute.";
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
@@ -131,7 +131,7 @@ TEST(Validator, namedModelWithUnnamedComponent)
 
 TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Model does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -155,7 +155,7 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
 
 TEST(Validator, modelWithDuplicateComponentsAndUnits)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Model 'multiplicity' contains multiple components with the name 'michael'. Valid component names must be unique to their model.",
         "Model 'multiplicity' contains multiple units with the name 'keaton'. Valid units names must be unique to their model."};
 
@@ -185,7 +185,7 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits)
 
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Component 'fargo' contains multiple variables with the name 'margie'. Valid variable names must be unique to their component.",
         "CellML identifiers must not begin with a European numeric character [0-9].",
         "Variable does not have a valid name attribute.",
@@ -225,7 +225,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
 
 TEST(Validator, invalidVariableInitialValuesAndInterfaces)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'candidate' has an invalid interface attribute value 'orange'.",
         "Variable 'candidate' has an invalid initial value 'trump'. Initial values must be a real number string or a variable reference."};
 
@@ -253,15 +253,13 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces)
 
 TEST(Validator, importUnits)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
         "Model 'model_name' contains multiple imported units from 'some-other-model.xml' with the same units_ref attribute 'units_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Imported units does not have a valid name attribute."
-
-    };
+        "Imported units does not have a valid name attribute."};
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -313,7 +311,7 @@ TEST(Validator, importUnits)
 
 TEST(Validator, importComponents)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
@@ -371,18 +369,18 @@ TEST(Validator, importComponents)
 
 TEST(Validator, validMath)
 {
-    std::string math =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "<apply>"
-        "<eq/>"
-        "<ci> C </ci>"
-        "<apply>"
-        "<plus/>"
-        "<ci>A</ci>"
-        "<ci>B</ci>"
-        "</apply>"
-        "</apply>"
-        "</math>";
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci> C </ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -414,15 +412,13 @@ TEST(Validator, validMath)
 
 TEST(Validator, invalidMath)
 {
-    std::string math1 =
-        "<math>"
-        "<invalid_xml></not_valid>"
-        "</math>";
-
-    std::string math2 = "<invalid_math/>";
-
-    std::vector<std::string> expectedErrors = {
-        "Opening and ending tag mismatch: invalid_xml line 1 and not_valid.",
+    const std::string math1 =
+        "<math>\n"
+        "  <invalid_xml></not_valid>\n"
+        "</math>\n";
+    const std::string math2 = "<invalid_math/>\n";
+    const std::vector<std::string> expectedErrors = {
+        "Opening and ending tag mismatch: invalid_xml line 2 and not_valid.",
         "Could not get a valid XML root node from the math on component 'componentName1'.",
         "Math root node is of invalid type 'invalid_math' on component 'componentName2'. A valid math root node should be of type 'math'."};
 
@@ -450,20 +446,19 @@ TEST(Validator, invalidMath)
 
 TEST(Validator, invalidMathMLElements)
 {
-    std::string math =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "<apply>"
-        "<equals/>"
-        "<ci>C</ci>"
-        "<apply>"
-        "<addition/>"
-        "<ci>A</ci>"
-        "<ci>B</ci>"
-        "</apply>"
-        "</apply>"
-        "</math>";
-
-    std::vector<std::string> expectedErrors = {
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <equals/>\n"
+        "    <ci>C</ci>\n"
+        "    <apply>\n"
+        "      <addition/>\n"
+        "      <ci>A</ci>\n"
+        "      <ci>B</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedErrors = {
         "Math has a 'equals' element that is not a supported MathML element.",
         "Math has a 'addition' element that is not a supported MathML element.",
         "No declaration for element equals.",
@@ -506,41 +501,40 @@ TEST(Validator, invalidMathMLElements)
 
 TEST(Validator, invalidMathMLVariables)
 {
-    std::string math =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "<apply>"
-        "<eq/>"
-        "<ci>answer</ci>"
-        "<partialdiff/>"
-        "<apply>"
-        "<plus/>"
-        "<ci>A</ci>"
-        "<apply>"
-        "<plus/>"
-        "<bvar>"
-        "<ci>new_bvar</ci>"
-        "</bvar>"
-        "<apply>"
-        "<plus/>"
-        "<ci>   </ci>"
-        "<apply>"
-        "<plus/>"
-        "<ci><nonsense/></ci>"
-        "<apply>"
-        "<plus/>"
-        "<ci/>"
-        "<bvar>"
-        "<ci>B</ci>"
-        "</bvar>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</math>";
-
-    std::vector<std::string> expectedErrors = {
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>answer</ci>\n"
+        "    <partialdiff/>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <apply>\n"
+        "        <plus/>\n"
+        "        <bvar>\n"
+        "        <ci>new_bvar</ci>\n"
+        "        </bvar>\n"
+        "        <apply>\n"
+        "          <plus/>\n"
+        "          <ci>   </ci>\n"
+        "          <apply>\n"
+        "            <plus/>\n"
+        "            <ci><nonsense/></ci>\n"
+        "            <apply>\n"
+        "              <plus/>\n"
+        "              <ci/>\n"
+        "              <bvar>\n"
+        "              <ci>B</ci>\n"
+        "              </bvar>\n"
+        "            </apply>\n"
+        "          </apply>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedErrors = {
         "Math has a 'partialdiff' element that is not a supported MathML element.",
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
@@ -585,44 +579,43 @@ TEST(Validator, invalidMathMLVariables)
 
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
 {
-    std::string math =
-        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "<apply>"
-        "<eq/>"
-        "<cn cellml:units=\"invalid\">oops</cn>"
-        "<apply>"
-        "<plus/>"
-        "<ci>A</ci>"
-        "<apply>"
-        "<plus/>"
-        "<bvar>"
-        "<ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>"
-        "</bvar>"
-        "<apply>"
-        "<plus/>"
-        "<ci>   </ci>"
-        "<apply>"
-        "<plus/>"
-        "<ci>undefined_variable</ci>"
-        "<apply>"
-        "<plus/>"
-        "<ci/>"
-        "<bvar>"
-        "<ci cellml:units=\"9wayswrong\">B</ci>"
-        "</bvar>"
-        "<apply>"
-        "<plus/>"
-        "<cn>2.0</cn>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</apply>"
-        "</math>";
-
-    std::vector<std::string> expectedErrors = {
+    const std::string math =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <cn cellml:units=\"invalid\">oops</cn>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>A</ci>\n"
+        "      <apply>\n"
+        "        <plus/>\n"
+        "        <bvar>\n"
+        "        <ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>\n"
+        "        </bvar>\n"
+        "        <apply>\n"
+        "          <plus/>\n"
+        "          <ci>   </ci>\n"
+        "          <apply>\n"
+        "            <plus/>\n"
+        "            <ci>undefined_variable</ci>\n"
+        "            <apply>\n"
+        "              <plus/>\n"
+        "              <ci/>\n"
+        "              <bvar>\n"
+        "              <ci cellml:units=\"9wayswrong\">B</ci>\n"
+        "              </bvar>\n"
+        "              <apply>\n"
+        "                <plus/>\n"
+        "                <cn>2.0</cn>\n"
+        "              </apply>\n"
+        "            </apply>\n"
+        "          </apply>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::vector<std::string> expectedErrors = {
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
         "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
@@ -672,19 +665,18 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 {
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">"
-        "<units name=\"ampere\"/>"
-        "<units name=\"north\"/>"
-        "<units name=\"stark\">"
-        "<unit units=\"volt\" prefix=\"mega\" multiplier=\"1000.0\"/>"
-        "<unit units=\"north\"/>"
-        "<unit units=\"ned\"/>"
-        "<unit units=\"king in the north\"/>"
-        "<unit prefix=\"wolf\" units=\"celsius\"/>"
-        "</units>"
-        "</model>";
-
-    std::vector<std::string> expectedErrors = {
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">\n"
+        "  <units name=\"ampere\"/>\n"
+        "  <units name=\"north\"/>\n"
+        "  <units name=\"stark\">\n"
+        "    <unit units=\"volt\" prefix=\"mega\" multiplier=\"1000.0\"/>\n"
+        "    <unit units=\"north\"/>\n"
+        "    <unit units=\"ned\"/>\n"
+        "    <unit units=\"king in the north\"/>\n"
+        "    <unit prefix=\"wolf\" units=\"celsius\"/>\n"
+        "  </units>\n"
+        "</model>\n";
+    const std::vector<std::string> expectedErrors = {
         "Units is named 'ampere', which is a protected standard unit name.",
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
@@ -707,7 +699,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 
 TEST(Validator, validateInvalidConnections)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
         "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
     };
@@ -774,79 +766,92 @@ TEST(Validator, integerStrings)
 {
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">"
-        "<component name=\"component\">"
-        "<variable name=\"variable\" units=\"dimensionless\"/>"
-        "<reset variable=\"variable\" order=\"1\">"
-        "<when order=\"200\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "</when>"
-        "</reset>"
-        "<reset variable=\"variable\" order=\"-1\">"
-        "<when order=\"200\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "</when>"
-        "</reset>"
-        "<reset variable=\"variable\" order=\"+1\">"
-        "<when order=\"200\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "</when>"
-        "</reset>"
-        "<reset variable=\"variable\" order=\"\">"
-        "<when order=\"200\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "</when>"
-        "</reset>"
-        "<reset variable=\"variable\" order=\"-\">"
-        "<when order=\"200\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "</when>"
-        "</reset>"
-        "<reset variable=\"variable\" order=\"odd\">"
-        "<when order=\"200\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "</math>"
-        "</when>"
-        "</reset>"
-        "</component>"
-        "</model>";
-
-    std::vector<std::string> expectedErrors = {
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
-        "Component 'component' contains a reset referencing variable 'variable' which does not have an order set.",
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"variable\" units=\"dimensionless\"/>\n"
+        "    <reset variable=\"variable\" order=\"1\">\n"
+        "      <when order=\"200\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </when>\n"
+        "    </reset>\n"
+        "    <reset variable=\"variable\" order=\"-1\">\n"
+        "      <when order=\"200\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </when>\n"
+        "    </reset>\n"
+        "    <reset variable=\"variable\" order=\"+1\">\n"
+        "      <when order=\"200\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </when>\n"
+        "    </reset>\n"
+        "    <reset variable=\"variable\" order=\"\">\n"
+        "      <when order=\"200\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </when>\n"
+        "    </reset>\n"
+        "    <reset variable=\"variable\" order=\"-\">\n"
+        "      <when order=\"200\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </when>\n"
+        "    </reset>\n"
+        "    <reset variable=\"variable\" order=\"odd\">\n"
+        "      <when order=\"200\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </when>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::vector<std::string> expectedParsingErrors = {
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
+        "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
+    };
+    const std::vector<std::string> expectedValidationErrors = {
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
     };
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(4u, p.errorCount());
+    EXPECT_EQ(expectedParsingErrors.size(), p.errorCount());
+    for (size_t i = 0; i < expectedParsingErrors.size(); ++i) {
+        EXPECT_EQ(expectedParsingErrors.at(i), p.getError(i)->getDescription());
+    }
 
     libcellml::Validator v;
     v.validateModel(m);
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+    EXPECT_EQ(expectedValidationErrors.size(), v.errorCount());
+    for (size_t i = 0; i < expectedValidationErrors.size(); ++i) {
+        EXPECT_EQ(expectedValidationErrors.at(i), v.getError(i)->getDescription());
+    }
 }
+
+static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
 TEST(Validator, resets)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Component 'comp' contains multiple resets with order '300'.",
         "Reset in component 'comp' with order '300' does not reference a variable.",
         "Reset in component 'comp' does not have an order set, does not reference a variable.",
@@ -873,11 +878,11 @@ TEST(Validator, resets)
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
 
     w1->setOrder(776);
-    w1->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w1->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
+    w1->setCondition(emptyMath);
+    w1->setValue(emptyMath);
     w2->setOrder(345);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w2->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
+    w2->setCondition(emptyMath);
+    w2->setValue(emptyMath);
 
     r1->setOrder(300);
     r1->addWhen(w1);
@@ -920,7 +925,7 @@ TEST(Validator, resets)
 
 TEST(Validator, whens)
 {
-    std::vector<std::string> expectedErrors {
+    const std::vector<std::string> expectedErrors {
         "Reset in component 'comp' with order '300' does not reference a variable.",
         "When in reset with order '300' which does not reference a variable, does not have an order set.",
         "When in reset with order '300' which does not reference a variable, does not have an order set, does not have a MathML condition set.",
@@ -958,12 +963,12 @@ TEST(Validator, whens)
     var->setUnits("second");
 
     w2->setOrder(250);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
+    w2->setCondition(emptyMath);
     w3->setOrder(250);
-    w3->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
+    w3->setValue(emptyMath);
     w4->setOrder(365);
-    w4->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
-    w4->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"></math>");
+    w4->setCondition(emptyMath);
+    w4->setValue(emptyMath);
 
     c->addVariable(var);
     c->addReset(r1);
@@ -984,18 +989,18 @@ TEST(Validator, whens)
 
 TEST(Validator, validMathCnElements)
 {
-    std::string math =
-        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "<apply>"
-        "<eq/>"
-        "<ci>C</ci>"
-        "<apply>"
-        "<plus/>"
-        "<cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>"
-        "<cn cellml:units=\"dimensionless\">-9.612</cn>"
-        "</apply>"
-        "</apply>"
-        "</math>";
+    const std::string math =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>C</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
