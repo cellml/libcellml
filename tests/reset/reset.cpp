@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 TEST(Reset, create)
 {
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
@@ -174,6 +176,8 @@ TEST(Reset, constructors)
 TEST(Reset, printResetWithVariable)
 {
     const std::string e = "<reset variable=\"A\"/>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
@@ -181,28 +185,35 @@ TEST(Reset, printResetWithVariable)
 
     r->setVariable(v);
 
+    c->addReset(r);
+
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Reset, printResetWithOrder)
 {
     const std::string e = "<reset order=\"1\"/>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     r->setOrder(1);
+    c->addReset(r);
 
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Reset, printResetWithOrderAndVariable)
 {
     const std::string e = "<reset variable=\"B\" order=\"1\"/>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -211,10 +222,11 @@ TEST(Reset, printResetWithOrderAndVariable)
 
     r->setVariable(v);
     r->setOrder(1);
+    c->addReset(r);
 
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -224,15 +236,18 @@ TEST(Reset, printResetWithWhen)
         "<reset>\n"
         "  <when/>\n"
         "</reset>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
     r->addWhen(w);
+    c->addReset(r);
 
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -244,6 +259,8 @@ TEST(Reset, printResetWithMultipleWhens)
         "  <when/>\n"
         "  <when/>\n"
         "</reset>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
@@ -253,10 +270,11 @@ TEST(Reset, printResetWithMultipleWhens)
     r->addWhen(w1);
     r->addWhen(w2);
     r->addWhen(w3);
+    c->addReset(r);
 
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -275,15 +293,18 @@ TEST(Reset, printResetWithWhenWithValueSet)
         "  a value set\n"
         "</math>\n";
 
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
     w->setValue(math);
     r->addWhen(w);
+    c->addReset(r);
 
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -318,6 +339,8 @@ TEST(Reset, printResetWithMultipleWhensWithValues)
         "  some value in mathml\n"
         "</math>\n";
 
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
@@ -335,10 +358,11 @@ TEST(Reset, printResetWithMultipleWhensWithValues)
     r->setVariable(v);
     r->addWhen(w1);
     r->addWhen(w2);
+    c->addReset(r);
 
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -350,6 +374,8 @@ TEST(Reset, printResetWithMultipleWhensWithOrders)
         "  <when order=\"-1\"/>\n"
         "  <when order=\"0\"/>\n"
         "</reset>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
@@ -363,9 +389,11 @@ TEST(Reset, printResetWithMultipleWhensWithOrders)
     w2->setOrder(-1);
     w3->setOrder(0);
 
+    c->addReset(r);
+
     libcellml::Printer p;
 
-    const std::string a = p.printReset(r);
+    const std::string a = p.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -406,7 +434,8 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "  </reset>\n"
         "</component>\n";
 
-    libcellml::Component c;
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
     libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
@@ -415,7 +444,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
 
-    c.setName(in);
+    c->setName(in);
     v->setName("V_na");
 
     r1->setVariable(v);
@@ -429,34 +458,34 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     w2->setOrder(1);
     w3->setOrder(0);
 
-    c.addReset(r1);
-    c.addReset(r2);
-    c.addVariable(v);
+    c->addReset(r1);
+    c->addReset(r2);
+    c->addVariable(v);
 
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
 
-    EXPECT_TRUE(c.removeReset(r2));
-    a = printer.printComponent(c);
+    EXPECT_TRUE(c->removeReset(r2));
+    a = printer.printModel(m);
     EXPECT_EQ(e2, a);
-    EXPECT_FALSE(c.removeReset(r3));
+    EXPECT_FALSE(c->removeReset(r3));
 
-    c.addReset(r2);
-    c.addReset(r2);
-    c.removeAllResets();
-    a = printer.printComponent(c);
+    c->addReset(r2);
+    c->addReset(r2);
+    c->removeAllResets();
+    a = printer.printModel(m);
     EXPECT_EQ(e3, a);
 
-    c.addReset(r1);
-    c.addReset(r2);
-    c.addReset(r3);
+    c->addReset(r1);
+    c->addReset(r2);
+    c->addReset(r3);
 
-    EXPECT_TRUE(c.removeReset(0)); // r1
-    EXPECT_TRUE(c.removeReset(1)); // new index of r3
-    a = printer.printComponent(c);
+    EXPECT_TRUE(c->removeReset(0)); // r1
+    EXPECT_TRUE(c->removeReset(1)); // new index of r3
+    a = printer.printModel(m);
     EXPECT_EQ(e4, a);
-    EXPECT_FALSE(c.removeReset(1));
+    EXPECT_FALSE(c->removeReset(1));
 }
 
 TEST(Reset, getResetFromComponentMethod)

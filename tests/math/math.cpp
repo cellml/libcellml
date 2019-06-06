@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+#include "test_utils.h"
+
 static const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
 TEST(Maths, setAndGetMath)
@@ -34,11 +36,12 @@ TEST(Maths, appendAndSerialiseMathComponent)
         "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "</component>\n";
 
-    libcellml::Component c;
-    c.appendMath(EMPTY_MATH);
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    c->appendMath(EMPTY_MATH);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -46,12 +49,13 @@ TEST(Maths, appendAndResetMathComponent)
 {
     const std::string e = "<component/>\n";
 
-    libcellml::Component c;
-    c.appendMath(EMPTY_MATH);
-    c.setMath("");
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    c->appendMath(EMPTY_MATH);
+    c->setMath("");
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
