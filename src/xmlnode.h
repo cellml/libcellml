@@ -217,9 +217,12 @@ public:
      * Converts the content in this @c XmlNode (including all children and
      * attributes) into a @c std::string.
      *
+     * @param format The @c bool specifying whether formatting should
+     * be used during the conversion.
+     *
      * @return The @c std::string representation of the content for this @c XmlNode.
      */
-    std::string convertToString();
+    std::string convertToString(bool format = false);
 
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */
