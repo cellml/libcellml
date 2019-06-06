@@ -1,25 +1,24 @@
 Options
 -------
 
-============== ============ =========================================
-Config         Default      Description
-============== ============ =========================================
-BUILD_TYPE     Release      The type of build Release, Debug etc.
--------------- ------------ -----------------------------------------
-BUILD_SHARED   ON           Build shared libraries (so, dylib, DLLs).
--------------- ------------ -----------------------------------------
-TWAE :sup:`*`  ON           Treat warnings as errors.
--------------- ------------ -----------------------------------------
-INSTALL_PREFIX /usr/lib     Install path prefix (platform specific).
--------------- ------------ -----------------------------------------
-UNIT_TESTS     ON           Enable tests.
--------------- ------------ -----------------------------------------
-MEMCHECK       ON           Enable memcheck testing (if available).
--------------- ------------ -----------------------------------------
-COVERAGE       ON           Enable coverage testing (if available).
-============== ============ =========================================
+============== =============== =========================================
+Config         Default         Description
+============== =============== =========================================
+BUILD_TYPE     Release         The type of build Release, Debug etc.
+-------------- --------------- -----------------------------------------
+BUILD_SHARED   ON              Build shared libraries (so, dylib, DLLs).
+-------------- --------------- -----------------------------------------
+TWAE           ON              Treat warnings as errors.
+-------------- --------------- -----------------------------------------
+INSTALL_PREFIX /usr/lib        Install path prefix (platform specific).
+-------------- --------------- -----------------------------------------
+UNIT_TESTS     ON              Enable tests.
+-------------- --------------- -----------------------------------------
+MEMCHECK       ON (Linux only) Enable memcheck testing (if available).
+-------------- --------------- -----------------------------------------
+COVERAGE       ON (Linux only) Enable coverage testing (if available).
+============== =============== =========================================
 
-:sup:`*` In CMake GUI Configuration applications this option is given in full ``LIBCELLML_TREAT_WARNINGS_AS_ERRORS``
 
 .. note In CMake GUI Configuration applications the config variable is prefixed with 'LIBCELLML\_'
 
