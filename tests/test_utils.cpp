@@ -17,3 +17,19 @@ void printErrors(const libcellml::Parser &p)
         std::cout << p.getError(i)->getSpecificationHeading() << std::endl;
     }
 }
+
+libcellml::ModelPtr createModel(const std::string name)
+{
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    model->setName(name);
+    return model;
+}
+
+libcellml::ModelPtr createModelWithComponent(const std::string name)
+{
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    model->setName(name);
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    model->addComponent(component);
+    return model;
+}

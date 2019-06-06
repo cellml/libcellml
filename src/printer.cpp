@@ -437,46 +437,6 @@ void Printer::swap(Printer &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Printer::printUnits(UnitsPtr units) const
-{
-    return mPimpl->printUnits(units);
-}
-
-std::string Printer::printUnits(Units units) const
-{
-    return mPimpl->printUnits(std::shared_ptr<Units>(std::shared_ptr<Units> {}, &units));
-}
-
-std::string Printer::printComponent(ComponentPtr component) const
-{
-    return mPimpl->printComponent(component);
-}
-
-std::string Printer::printComponent(Component component) const
-{
-    return mPimpl->printComponent(std::shared_ptr<Component>(std::shared_ptr<Component> {}, &component));
-}
-
-std::string Printer::printReset(ResetPtr reset) const
-{
-    return mPimpl->printReset(reset);
-}
-
-std::string Printer::printReset(Reset reset) const
-{
-    return mPimpl->printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset> {}, &reset));
-}
-
-std::string Printer::printVariable(VariablePtr variable) const
-{
-    return mPimpl->printVariable(variable);
-}
-
-std::string Printer::printVariable(Variable variable) const
-{
-    return mPimpl->printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable> {}, &variable));
-}
-
 std::string Printer::printModel(ModelPtr model) const
 {
     // ImportMap
