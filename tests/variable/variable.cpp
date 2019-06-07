@@ -24,7 +24,13 @@ limitations under the License.
 TEST(Variable, setValidVariableName)
 {
     const std::string in = "valid_name";
-    const std::string e = "<variable name=\"valid_name\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"valid_name\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -39,7 +45,13 @@ TEST(Variable, setValidVariableName)
 TEST(Variable, setInvalidVariableName)
 {
     const std::string in = "invalid name";
-    const std::string e = "<variable name=\"invalid name\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"invalid name\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -73,7 +85,13 @@ TEST(Variable, getInvalidVariableName)
 TEST(Variable, setUnits)
 {
     const std::string in = "dimensionless";
-    const std::string e = "<variable units=\"dimensionless\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -90,7 +108,13 @@ TEST(Variable, setUnits)
 TEST(Variable, setUnitsAndName)
 {
     const std::string in = "valid_name";
-    const std::string e = "<variable name=\"valid_name\" units=\"dimensionless\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"valid_name\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -108,7 +132,13 @@ TEST(Variable, setUnitsAndName)
 
 TEST(Variable, setInitialValueByString)
 {
-    const std::string e = "<variable initial_value=\"0.0\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable initial_value=\"0.0\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -121,7 +151,13 @@ TEST(Variable, setInitialValueByString)
 
 TEST(Variable, setInitialValueByDouble)
 {
-    const std::string e = "<variable initial_value=\"0\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable initial_value=\"0\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -135,7 +171,13 @@ TEST(Variable, setInitialValueByDouble)
 
 TEST(Variable, setInitialValueByReference)
 {
-    const std::string e = "<variable initial_value=\"referencedVariable\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable initial_value=\"referencedVariable\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     v1->setName("referencedVariable");
     libcellml::ModelPtr m = createModelWithComponent();
@@ -165,7 +207,13 @@ TEST(Variable, getSetInitialValue)
 
 TEST(Variable, setInterfaceTypeByInvalidString)
 {
-    const std::string e = "<variable interface=\"invalid\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"invalid\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -178,7 +226,13 @@ TEST(Variable, setInterfaceTypeByInvalidString)
 
 TEST(Variable, setInterfaceTypeNoneByValidString)
 {
-    const std::string e = "<variable interface=\"none\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"none\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -191,7 +245,13 @@ TEST(Variable, setInterfaceTypeNoneByValidString)
 
 TEST(Variable, setInterfaceTypeNoneByEnum)
 {
-    const std::string e = "<variable interface=\"none\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"none\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -204,7 +264,13 @@ TEST(Variable, setInterfaceTypeNoneByEnum)
 
 TEST(Variable, setInterfaceTypePrivate)
 {
-    const std::string e = "<variable interface=\"private\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -217,7 +283,13 @@ TEST(Variable, setInterfaceTypePrivate)
 
 TEST(Variable, setInterfaceTypePublic)
 {
-    const std::string e = "<variable interface=\"public\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"public\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -230,7 +302,13 @@ TEST(Variable, setInterfaceTypePublic)
 
 TEST(Variable, setInterfaceTypePublicAndPrivate)
 {
-    const std::string e = "<variable interface=\"public_and_private\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -271,9 +349,12 @@ TEST(Variable, addVariable)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component name=\"valid_name\">\n"
-        "  <variable name=\"valid_name\" units=\"dimensionless\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"valid_name\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -310,9 +391,12 @@ TEST(Variable, addVariableToUnnamedComponent)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component>\n"
-        "  <variable name=\"valid_name\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"valid_name\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -330,10 +414,13 @@ TEST(Variable, addTwoVariables)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component name=\"valid_name\">\n"
-        "  <variable name=\"variable1\"/>\n"
-        "  <variable name=\"variable2\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -355,12 +442,15 @@ TEST(Variable, addTwoVariables)
 TEST(Variable, addVariablesWithAndWithoutNameAndUnits)
 {
     const std::string e =
-        "<component>\n"
-        "  <variable name=\"var1\" units=\"dimensionless\"/>\n"
-        "  <variable name=\"var2\"/>\n"
-        "  <variable units=\"dimensionless\"/>\n"
-        "  <variable/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"var1\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"var2\"/>\n"
+        "    <variable units=\"dimensionless\"/>\n"
+        "    <variable/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -391,10 +481,13 @@ TEST(Variable, componentWithTwoVariablesWithInitialValues)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component name=\"valid_name\">\n"
-        "  <variable initial_value=\"1\"/>\n"
-        "  <variable initial_value=\"-1\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable initial_value=\"1\"/>\n"
+        "    <variable initial_value=\"-1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -417,10 +510,18 @@ TEST(Variable, removeVariableMethods)
 {
     const std::string in = "valid_name";
     const std::string e1 =
-        "<component name=\"valid_name\">\n"
-        "  <variable name=\"variable2\"/>\n"
-        "</component>\n";
-    const std::string e2 = "<component name=\"valid_name\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string e2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\"/>\n"
+        "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
