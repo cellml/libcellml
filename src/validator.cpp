@@ -748,7 +748,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         mValidator->addError(err);
         return;
     }
-    if (!node->isElement("math", MATHML_NS)) {
+    if (!node->isMathmlElement("math")) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Math root node is of invalid type '" + node->getName() + "' on component '" + component->getName() + "'. A valid math root node should be of type 'math'.");
         err->setComponent(component);
@@ -810,8 +810,8 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 {
     XmlNodePtr childNode = node->getFirstChild();
     std::string textNode;
-    bool ciType = node->isElement("ci", MATHML_NS);
-    bool cnType = node->isElement("cn", MATHML_NS);
+    bool ciType = node->isMathmlElement("ci");
+    bool cnType = node->isMathmlElement("cn");
     if (ciType || cnType) {
         if (childNode != nullptr) {
             if (childNode->isText()) {
@@ -852,7 +852,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         XmlAttributePtr unitsAttribute = nullptr;
         while (attribute) {
             if (!attribute->getValue().empty()) {
-                if (attribute->isType("units", CELLML_2_0_NS)) {
+                if (attribute->isCellmlType("units")) {
                     unitsName = attribute->getValue();
                     unitsAttribute = attribute;
                 } else {
@@ -949,8 +949,8 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames)
 {
     XmlNodePtr childNode = node->getFirstChild();
-    if (node->isElement("bvar", MATHML_NS)) {
-        if ((childNode != nullptr) && (childNode->isElement("ci", MATHML_NS))) {
+    if (node->isMathmlElement("bvar")) {
+        if ((childNode != nullptr) && (childNode->isMathmlElement("ci"))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
                 if (grandchildNode->isText()) {

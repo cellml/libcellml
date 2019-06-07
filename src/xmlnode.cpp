@@ -76,6 +76,11 @@ bool XmlNode::isCellmlElement(const char *name)
     return isElement(name, CELLML_2_0_NS);
 }
 
+bool XmlNode::isMathmlElement(const char *name)
+{
+    return isElement(name, MATHML_NS);
+}
+
 bool XmlNode::isText()
 {
     return mPimpl->mXmlNodePtr->type == XML_TEXT_NODE;

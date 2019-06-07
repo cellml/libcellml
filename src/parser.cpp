@@ -395,7 +395,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             ResetPtr reset = std::make_shared<Reset>();
             loadReset(reset, component, childNode);
             component->addReset(reset);
-        } else if (childNode->isElement("math", MATHML_NS)) {
+        } else if (childNode->isMathmlElement("math")) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
             std::string math = childNode->convertToString(true) + "\n";
@@ -1282,7 +1282,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
     size_t mathNodeCount = 0;
     XmlNodePtr childNode = node->getFirstChild();
     while (childNode) {
-        if (childNode->isElement("math", MATHML_NS)) {
+        if (childNode->isMathmlElement("math")) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
             std::string math = childNode->convertToString(true) + "\n";
