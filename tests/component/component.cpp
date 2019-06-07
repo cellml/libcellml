@@ -23,7 +23,11 @@ limitations under the License.
 TEST(Component, validName)
 {
     const std::string in = "valid_name";
-    const std::string e = "<component name=\"" + in + "\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"" + in + "\"/>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     c->setName(in);
@@ -37,7 +41,11 @@ TEST(Component, validName)
 TEST(Component, invalidName)
 {
     const std::string in = "invalid name -";
-    const std::string e = "<component name=\"" + in + "\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"" + in + "\"/>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     c->setName(in);
@@ -51,8 +59,16 @@ TEST(Component, invalidName)
 TEST(Component, setAndUnsetName)
 {
     const std::string in = "name";
-    const std::string eName = "<component name=\"" + in + "\"/>\n";
-    const std::string e = "<component/>\n";
+    const std::string eName =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"" + in + "\"/>\n"
+        "</model>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     c->setName(in);
@@ -116,14 +132,36 @@ TEST(Component, contains)
 TEST(Component, addChildrenAndSerialise)
 {
     const std::string e1 =
-        "<component name=\"child0\"/>\n"
-        "<component name=\"child1\"/>\n"
-        "<component name=\"child2\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"child0\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"child0\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e2 =
-        "<component name=\"child0\"/>\n"
-        "<component name=\"child1\"/>\n"
-        "<component name=\"child2\"/>\n"
-        "<component name=\"child3\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"child0\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"child0\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\">\n"
+        "          <component_ref component=\"child3\"/>\n"
+        "        </component_ref>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModel();
     libcellml::ComponentPtr c0 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -153,13 +191,34 @@ TEST(Component, addChildrenAndSerialise)
 TEST(Component, removeComponentMethods)
 {
     const std::string e1 =
-        "<component/>\n"
-        "<component name=\"child2\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e2 =
-        "<component/>\n"
-        "<component name=\"child2\"/>\n"
-        "<component name=\"child1\"/>\n";
-    const std::string e3 = "<component/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+    const std::string e3 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -203,17 +262,39 @@ TEST(Component, removeComponentMethods)
 TEST(Component, getComponentMethods)
 {
     const std::string e1 =
-        "<component/>\n"
-        "<component name=\"childA\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "  <component name=\"childA\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref>\n"
+        "      <component_ref component=\"childA\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e2 =
-        "<component name=\"parent\"/>\n"
-        "<component name=\"gus\"/>\n"
-        "<component name=\"childB\"/>\n"
-        "<component name=\"child3\"/>\n"
-        "<component name=\"gus\"/>\n"
-        "<component name=\"childB\"/>\n"
-        "<component name=\"child3\"/>\n";
-    ;
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component name=\"gus\"/>\n"
+        "  <component name=\"childB\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <component name=\"gus\"/>\n"
+        "  <component name=\"childB\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"gus\">\n"
+        "        <component_ref component=\"childB\"/>\n"
+        "        <component_ref component=\"child3\"/>\n"
+        "      </component_ref>\n"
+        "      <component_ref component=\"gus\">\n"
+        "        <component_ref component=\"childB\"/>\n"
+        "        <component_ref component=\"child3\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -262,7 +343,11 @@ TEST(Component, getComponentMethods)
 
 TEST(Component, takeComponentMethods)
 {
-    const std::string e = "<component/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -292,17 +377,44 @@ TEST(Component, takeComponentMethods)
 TEST(Component, replaceComponentMethods)
 {
     const std::string e_orig =
-        "<component name=\"parent\"/>\n"
-        "<component/>\n"
-        "<component name=\"child2\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref/>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e_after =
-        "<component name=\"parent\"/>\n"
-        "<component/>\n"
-        "<component name=\"child3\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref/>\n"
+        "      <component_ref component=\"child3\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e_post =
-        "<component name=\"parent\"/>\n"
-        "<component name=\"child4\"/>\n"
-        "<component name=\"child3\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component name=\"child4\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"child4\"/>\n"
+        "      <component_ref component=\"child3\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -348,8 +460,16 @@ TEST(Component, replaceComponentMethods)
 TEST(Component, constructors)
 {
     const std::string e =
-        "<component name=\"my_name\"/>\n"
-        "<component/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"my_name\"/>\n"
+        "  <component/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"my_name\">\n"
+        "      <component_ref/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string n = "my_name";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
