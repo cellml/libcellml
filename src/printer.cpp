@@ -194,52 +194,54 @@ void buildMaps(ModelPtr model, ComponentMap &componentMap, VariableMap &variable
 std::string Printer::PrinterImpl::printUnits(UnitsPtr units, const std::string &indent) const
 {
     std::string repr = "";
-    if (units->getName().length()) {
-        if (units->isImport()) {
-            repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-            if (units->getImportSource()->getId().length()) {
-                repr += " id=\"" + units->getImportSource()->getId() + "\"";
-            }
-            repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
-            if (units->getId().length()) {
-                repr += " id=\"" + units->getId() + "\"";
-            }
-            repr += "/>\n" + indent + "</import>\n";
-        } else {
-            bool endTag = false;
-            repr += indent + "<units name=\"" + units->getName() + "\"";
-            if (units->getId().length()) {
-                repr += " id=\"" + units->getId() + "\"";
-            }
-            if (units->unitCount() > 0) {
-                endTag = true;
-                repr += ">\n";
-                for (size_t i = 0; i < units->unitCount(); ++i) {
-                    std::string reference, prefix, id;
-                    double exponent, multiplier;
-                    units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
-                    repr += indent + tabIndent + "<unit";
-                    if (exponent != 1.0) {
-                        repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
-                    }
-                    if (multiplier != 1.0) {
-                        repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
-                    }
-                    if (prefix != "") {
-                        repr += " prefix=\"" + prefix + "\"";
-                    }
-                    repr += " units=\"" + reference + "\"";
-                    if (id != "") {
-                        repr += " id=\"" + id + "\"";
-                    }
-                    repr += "/>\n";
+    if (units->isImport()) {
+        repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+        if (units->getImportSource()->getId().length()) {
+            repr += " id=\"" + units->getImportSource()->getId() + "\"";
+        }
+        repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
+        if (units->getId().length()) {
+            repr += " id=\"" + units->getId() + "\"";
+        }
+        repr += "/>\n" + indent + "</import>\n";
+    } else {
+        bool endTag = false;
+        repr += indent + "<units";
+        const std::string unitsName = units->getName();
+        if (unitsName.length()) {
+            repr += " name=\"" + unitsName + "\"";
+        }
+        if (units->getId().length()) {
+            repr += " id=\"" + units->getId() + "\"";
+        }
+        if (units->unitCount() > 0) {
+            endTag = true;
+            repr += ">\n";
+            for (size_t i = 0; i < units->unitCount(); ++i) {
+                std::string reference, prefix, id;
+                double exponent, multiplier;
+                units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
+                repr += indent + tabIndent + "<unit";
+                if (exponent != 1.0) {
+                    repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
                 }
-            }
-            if (endTag) {
-                repr += indent + "</units>\n";
-            } else {
+                if (multiplier != 1.0) {
+                    repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
+                }
+                if (prefix != "") {
+                    repr += " prefix=\"" + prefix + "\"";
+                }
+                repr += " units=\"" + reference + "\"";
+                if (id != "") {
+                    repr += " id=\"" + id + "\"";
+                }
                 repr += "/>\n";
             }
+        }
+        if (endTag) {
+            repr += indent + "</units>\n";
+        } else {
+            repr += "/>\n";
         }
     }
 
