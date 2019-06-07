@@ -77,6 +77,22 @@ public:
     bool isType(const char *name, const char *ns = "");
 
     /**
+     * @brief Check if this XmlAttribute is of the named attribute type in the
+     * CellML 2.0 namespace.
+     *
+     * Checks whether this XmlAttribute has the argument attribute type name in
+     * the CellML 2.0 namespace.
+     * Returns @ true if so, and @c false otherwise.
+     *
+     * @param name The @c char attribute type name to check for.
+     *
+     * @return @c true if this XmlAttribute is of the attribute type
+     * specified by the @p name in the CellML 2.0 namespace
+     * and @c false otherwise.
+     */
+    bool isCellmlType(const char *name);
+
+    /**
      * @brief Get the name of this XmlAttribute.
      *
      * Gets the name of this XmlAttribute and returns it as a @c std::string.

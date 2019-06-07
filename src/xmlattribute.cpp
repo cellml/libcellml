@@ -69,6 +69,11 @@ bool XmlAttribute::isType(const char *name, const char *ns)
     return found;
 }
 
+bool XmlAttribute::isCellmlType(const char *name)
+{
+    return isType(name, CELLML_2_0_NS);
+}
+
 std::string XmlAttribute::getName() const
 {
     std::string type;
