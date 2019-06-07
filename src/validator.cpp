@@ -813,7 +813,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     bool ciType = node->isElement("ci", MATHML_NS);
     bool cnType = node->isElement("cn", MATHML_NS);
     if (ciType || cnType) {
-        if (childNode) {
+        if (childNode != nullptr) {
             if (childNode->isText()) {
                 textNode = childNode->convertToString();
                 if (hasNonWhitespaceCharacters(textNode)) {
@@ -908,7 +908,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         }
     } else {
         // Check children for ci/cn elements.
-        if (childNode) {
+        if (childNode != nullptr) {
             validateAndCleanMathCiCnNodes(childNode, component, variableNames, bvarNames);
         }
     }
@@ -922,7 +922,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
 void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component)
 {
     XmlNodePtr childNode = node->getFirstChild();
-    if (childNode) {
+    if (childNode != nullptr) {
         if (!childNode->isText() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + childNode->getName() + "' element" + " that is not a supported MathML element.");
@@ -950,7 +950,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (node->isElement("bvar", MATHML_NS)) {
-        if ((childNode) && (childNode->isElement("ci", MATHML_NS))) {
+        if ((childNode != nullptr) && (childNode->isElement("ci", MATHML_NS))) {
             XmlNodePtr grandchildNode = childNode->getFirstChild();
             if (grandchildNode) {
                 if (grandchildNode->isText()) {
@@ -963,7 +963,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
         }
     } else {
         // Check children for bvars.
-        if (childNode) {
+        if (childNode != nullptr) {
             gatherMathBvarVariableNames(childNode, bvarNames);
         }
     }
