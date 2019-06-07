@@ -54,7 +54,7 @@ TEST(Coverage, printer)
 
 TEST(Coverage, units)
 {
-    const std::string e = "<units name=\"dimensionless\"/>";
+    const std::string e = "<units name=\"dimensionless\"/>\n";
     libcellml::Units u;
     libcellml::Units um;
 
@@ -72,7 +72,10 @@ TEST(Coverage, units)
 
 TEST(Coverage, when)
 {
-    const std::string e = "<reset><when/></reset>";
+    const std::string e =
+        "<reset>\n"
+        "  <when/>\n"
+        "</reset>\n";
     libcellml::When w;
     libcellml::When wm;
     libcellml::Reset r;
@@ -118,56 +121,57 @@ TEST(Coverage, prefixToString)
     libcellml::Model m;
     libcellml::Printer printer;
 
-    std::vector<std::string> prefix_str = {"atto",
-                                           "centi",
-                                           "deca",
-                                           "deci",
-                                           "exa",
-                                           "femto",
-                                           "giga",
-                                           "hecto",
-                                           "kilo",
-                                           "mega",
-                                           "micro",
-                                           "milli",
-                                           "nano",
-                                           "peta",
-                                           "pico",
-                                           "tera",
-                                           "yocto",
-                                           "yotta",
-                                           "zepto",
-                                           "zetta"};
-    std::vector<libcellml::Prefix> prefix_enum = {libcellml::Prefix::ATTO,
-                                                  libcellml::Prefix::CENTI,
-                                                  libcellml::Prefix::DECA,
-                                                  libcellml::Prefix::DECI,
-                                                  libcellml::Prefix::EXA,
-                                                  libcellml::Prefix::FEMTO,
-                                                  libcellml::Prefix::GIGA,
-                                                  libcellml::Prefix::HECTO,
-                                                  libcellml::Prefix::KILO,
-                                                  libcellml::Prefix::MEGA,
-                                                  libcellml::Prefix::MICRO,
-                                                  libcellml::Prefix::MILLI,
-                                                  libcellml::Prefix::NANO,
-                                                  libcellml::Prefix::PETA,
-                                                  libcellml::Prefix::PICO,
-                                                  libcellml::Prefix::TERA,
-                                                  libcellml::Prefix::YOCTO,
-                                                  libcellml::Prefix::YOTTA,
-                                                  libcellml::Prefix::ZEPTO,
-                                                  libcellml::Prefix::ZETTA};
-    for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); ++i) {
-        std::string prefix = prefix_str[i];
+    std::vector<std::string> prefixString =
+        {"atto",
+         "centi",
+         "deca",
+         "deci",
+         "exa",
+         "femto",
+         "giga",
+         "hecto",
+         "kilo",
+         "mega",
+         "micro",
+         "milli",
+         "nano",
+         "peta",
+         "pico",
+         "tera",
+         "yocto",
+         "yotta",
+         "zepto",
+         "zetta"};
+    std::vector<libcellml::Prefix> prefixEnum =
+        {libcellml::Prefix::ATTO,
+         libcellml::Prefix::CENTI,
+         libcellml::Prefix::DECA,
+         libcellml::Prefix::DECI,
+         libcellml::Prefix::EXA,
+         libcellml::Prefix::FEMTO,
+         libcellml::Prefix::GIGA,
+         libcellml::Prefix::HECTO,
+         libcellml::Prefix::KILO,
+         libcellml::Prefix::MEGA,
+         libcellml::Prefix::MICRO,
+         libcellml::Prefix::MILLI,
+         libcellml::Prefix::NANO,
+         libcellml::Prefix::PETA,
+         libcellml::Prefix::PICO,
+         libcellml::Prefix::TERA,
+         libcellml::Prefix::YOCTO,
+         libcellml::Prefix::YOTTA,
+         libcellml::Prefix::ZEPTO,
+         libcellml::Prefix::ZETTA};
+    for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
         libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
         u->setName("abcdefg");
-        u->addUnit("empty", prefix_enum[i]);
+        u->addUnit("empty", prefixEnum[i]);
 
         m.addUnits(u);
 
         const std::string a = printer.printModel(m);
-        std::size_t found = a.find(prefix);
+        std::size_t found = a.find(prefixString[i]);
         EXPECT_NE(std::string::npos, found);
         m.removeAllUnits();
     }
@@ -175,7 +179,7 @@ TEST(Coverage, prefixToString)
 
 TEST(Coverage, variable)
 {
-    const std::string e = R"(<variable units="dimensionless" initial_value="1" interface="public"/>)";
+    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
     libcellml::Variable v;
     libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -198,17 +202,18 @@ TEST(Coverage, variable)
 TEST(Coverage, component)
 {
     const std::string e =
-        "<component name=\"name\">"
-        "<variable/>"
-        "<1+1=2>"
-        "</component>";
+        "<component name=\"name\">\n"
+        "  <variable/>\n"
+        "  <1+1=2>\n"
+        "</component>\n";
+    const std::string math = "<1+1=2>\n";
     libcellml::Component c;
     libcellml::Component cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
     c.setName("name");
     c.addVariable(v);
-    c.setMath("<1+1=2>");
+    c.setMath(math);
 
     libcellml::Printer printer;
     std::string a = printer.printComponent(c);
@@ -229,7 +234,7 @@ TEST(Coverage, error)
     libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
     libcellml::Error e;
     libcellml::Error em;
-    std::string description = "test";
+    const std::string description = "test";
 
     e.setDescription(description);
     e.setKind(libcellml::Error::Kind::XML);

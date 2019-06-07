@@ -137,6 +137,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       misc-*
       -misc-non-private-member-variables-in-classes
       modernize-*
+      -modernize-raw-string-literal
       performance-*
       -performance-inefficient-string-concatenation
       readability-*

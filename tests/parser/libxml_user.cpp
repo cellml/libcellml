@@ -28,7 +28,7 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>";
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
     // parse the string using libcellml
     libcellml::Parser parser;
