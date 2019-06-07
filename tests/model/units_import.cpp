@@ -23,6 +23,9 @@ TEST(UnitsImport, basics)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"a-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <units units_ref=\"bob\" name=\"\"/>\n"
+        "  </import>\n"
         "</model>\n";
 
     libcellml::Model m;
