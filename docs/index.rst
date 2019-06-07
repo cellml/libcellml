@@ -22,20 +22,8 @@ Contents:
    coverage_statistics
    glossary
 
-
-
-   object_model
-   dev_setup
-   dev_building
-   dev_testing_code
-   dev_contribution
-   dev_review
-   dev_coding_standard
-
 .. toctree::
    :hidden:
-
-   dev_configuration_options
 
 Indices and tables
 ==================
