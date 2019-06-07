@@ -32,16 +32,11 @@ TEST(Maths, setAndGetMath)
 TEST(Maths, appendAndSerialiseMathComponent)
 {
     const std::string e =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component>\n"
         "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
         "  </component>\n"
-        "  <encapsulation>\n"
-        "    <component_ref component=\"my_name\">\n"
-        "      <component_ref/>\n"
-        "    </component_ref>\n"
-        "  </encapsulation>\n"
         "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
@@ -55,8 +50,11 @@ TEST(Maths, appendAndSerialiseMathComponent)
 
 TEST(Maths, appendAndResetMathComponent)
 {
-    const std::string e = "<component/>\n";
-
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     c->appendMath(EMPTY_MATH);
