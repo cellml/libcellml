@@ -192,7 +192,7 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     if (multiplier != 1.0) {
         u.mMultiplier = convertDoubleToString(multiplier);
     }
-    if (id.length() > 0) {
+    if (!id.empty()) {
         u.mId = id;
     }
     mPimpl->mUnits.push_back(u);
