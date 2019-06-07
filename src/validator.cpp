@@ -704,7 +704,7 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
-    if (when->getCondition().length() > 0) {
+    if (!when->getCondition().empty()) {
         validateMath(when->getCondition(), component);
     } else {
         ErrorPtr err = std::make_shared<Error>();
@@ -714,7 +714,7 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
-    if (when->getValue().length() > 0) {
+    if (!when->getValue().empty()) {
         validateMath(when->getValue(), component);
     } else {
         ErrorPtr err = std::make_shared<Error>();
@@ -851,7 +851,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         std::string unitsName;
         XmlAttributePtr unitsAttribute = nullptr;
         while (attribute) {
-            if (attribute->getValue().length() > 0) {
+            if (!attribute->getValue().empty()) {
                 if (attribute->isType("units", CELLML_2_0_NS)) {
                     unitsName = attribute->getValue();
                     unitsAttribute = attribute;
@@ -1068,7 +1068,7 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 {
     bool result = true;
     // One or more alphabetic characters.
-    if (name.length() > 0) {
+    if (!name.empty()) {
         // Does not start with numeric character.
         if (isdigit(name[0]) != 0) {
             result = false;

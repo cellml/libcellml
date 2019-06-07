@@ -68,7 +68,7 @@ std::string printMapVariables(const VariablePair &variablePair, const std::strin
     std::string mapVariables = indent + "<map_variables variable_1=\"" + variablePair.first->getName() + "\""
                                + " variable_2=\"" + variablePair.second->getName() + "\"";
     std::string mappingId = Variable::getEquivalenceMappingId(variablePair.first, variablePair.second);
-    if (mappingId.length() > 0) {
+    if (!mappingId.empty()) {
         mapVariables += " id=\"" + mappingId + "\"";
     }
     mapVariables += "/>\n";
@@ -123,7 +123,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         if (currentComponent2 != nullptr) {
             connection += " component_2=\"" + currentComponent2->getName() + "\"";
         }
-        if (connectionId.length() > 0) {
+        if (!connectionId.empty()) {
             connection += " id=\"" + connectionId + "\"";
         }
         connection += ">\n";
@@ -296,10 +296,10 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
 {
     std::string componentName = component->getName();
     std::string repr = indent + "<component_ref";
-    if (componentName.length() > 0) {
+    if (!componentName.empty()) {
         repr += " component=\"" + componentName + "\"";
     }
-    if (component->getEncapsulationId().length() > 0) {
+    if (!component->getEncapsulationId().empty()) {
         repr += " id=\"" + component->getEncapsulationId() + "\"";
     }
     size_t componentCount = component->componentCount();
@@ -556,14 +556,14 @@ std::string Printer::printModel(const ModelPtr &model) const
 
     for (const auto &iter : importMap) {
         repr += tabIndent + "<import xlink:href=\"" + iter.first->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-        if (iter.first->getId().length() > 0) {
+        if (!iter.first->getId().empty()) {
             repr += " id=\"" + iter.first->getId() + "\"";
         }
         repr += ">\n";
         for (const auto &vectorIter : iter.second) {
             const ComponentPtr &localComponent = std::get<1>(vectorIter);
             repr += tabIndent + tabIndent + "<component component_ref=\"" + std::get<0>(vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
-            if (localComponent->getId().length() > 0) {
+            if (!localComponent->getId().empty()) {
                 repr += " id=\"" + localComponent->getId() + "\"";
             }
             repr += "/>\n";
@@ -590,9 +590,9 @@ std::string Printer::printModel(const ModelPtr &model) const
     // Serialise connections of the model.
     repr += printConnections(componentMap, variableMap, tabIndent);
 
-    if (componentEncapsulation.length() > 0) {
+    if (!componentEncapsulation.empty()) {
         repr += tabIndent + "<encapsulation";
-        if (model->getEncapsulationId().length() > 0) {
+        if (!model->getEncapsulationId().empty()) {
             repr += " id=\"" + model->getEncapsulationId() + "\">\n";
         } else {
             repr += ">\n";
