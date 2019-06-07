@@ -251,14 +251,14 @@ TEST(Reset, printResetWithOrderAndVariable)
 TEST(Reset, printResetWithWhen)
 {
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-            "  <component>\n"
-            "    <reset>\n"
-            "      <when/>\n"
-            "    </reset>\n"
-            "  </component>\n"
-            "</model>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset>\n"
+        "      <when/>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();

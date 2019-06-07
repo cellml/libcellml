@@ -26,7 +26,7 @@ TEST(Component, validName)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"" + in + "\"/>\n"
+        "  <component name=\"valid_name\"/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -44,7 +44,7 @@ TEST(Component, invalidName)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"" + in + "\"/>\n"
+        "  <component name=\"invalid name -\"/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
@@ -62,7 +62,7 @@ TEST(Component, setAndUnsetName)
     const std::string eName =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component name=\"" + in + "\"/>\n"
+        "  <component name=\"name\"/>\n"
         "</model>\n";
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
