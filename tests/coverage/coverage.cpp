@@ -54,7 +54,11 @@ TEST(Coverage, printer)
 
 TEST(Coverage, units)
 {
-    const std::string e = "<units name=\"dimensionless\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <units name=\"dimensionless\"/>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModel();
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr um = std::make_shared<libcellml::Units>();
@@ -75,9 +79,14 @@ TEST(Coverage, units)
 TEST(Coverage, when)
 {
     const std::string e =
-        "<reset>\n"
-        "  <when/>\n"
-        "</reset>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset>\n"
+        "      <when/>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::When w, wm;
@@ -183,7 +192,13 @@ TEST(Coverage, prefixToString)
 
 TEST(Coverage, variable)
 {
-    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -209,10 +224,13 @@ TEST(Coverage, variable)
 TEST(Coverage, component)
 {
     const std::string e =
-        "<component name=\"name\">\n"
-        "  <variable/>\n"
-        "  <1+1=2>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"name\">\n"
+        "    <variable/>\n"
+        "    <1+1=2>\n"
+        "  </component>\n"
+        "</model>\n";
     const std::string math = "<1+1=2>\n";
 
     libcellml::ModelPtr m = createModel();
