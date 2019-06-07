@@ -66,9 +66,9 @@ public:
      * the given namespace.
      * Returns @ true if so, and @c false otherwise.
      *
+     * @param name The @c char attribute type name to check for.
      * @param ns The @c char namespace in which the attribute
      * type name is to be defined.
-     * @param name The @c char attribute type name to check for.
      *
      * @return @c true if this XmlAttribute is of the attribute type
      * specified by the @p name in the namespace @p ns
