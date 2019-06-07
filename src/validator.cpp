@@ -771,7 +771,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // TODO: may want to do this with XPath instead...
     gatherMathBvarVariableNames(nodeCopy, bvarNames);
     // Check that no variable names match new bvar names.
-    for (std::string &variableName : variableNames) {
+    for (const std::string &variableName : variableNames) {
         if (std::find(bvarNames.begin(), bvarNames.end(), variableName) != bvarNames.end()) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math in component '" + component->getName() + "' contains '" + variableName + "' as a bvar ci element but it is already a variable name.");
