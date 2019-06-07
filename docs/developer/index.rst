@@ -27,3 +27,4 @@ Contents:
    :hidden:
 
    dev_configuration_options
+   dev_configuration_options_gui

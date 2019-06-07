@@ -136,7 +136,7 @@ Python (optional)
 -----------------
 `Python <https://www.python.org/>`__ is an open-source language which is syntactically easier to read than other higher-level languages.  
 It is commonly used as a scripting language for experimentation, and is included here to allow libCellML to be accessed from Python-based programs.  
-Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the following `Building LibCellML <https://libcellml.readthedocs.io/en/latest/dev_building.html>`__  page.
+Note that creation of Python bindings is optional, and can be enabled/disabled at configuration time - there will be instructions for this on the :doc:`Building LibCellML <dev_building>` page.
 
 On MacOS, Python `is already installed <https://legacy.python.org/getit/mac/>`__, though depending on the age of your machine you may like to upgrade it to a `later version from the Python site <https://www.python.org/downloads/mac-osx/>`__.
 
@@ -167,7 +167,7 @@ Sphinx for Python documentation (optional)
 ------------------------------------------
 
 `Sphinx <http://www.sphinx-doc.org/en/master/>`__ is an additional documentation tool used here to assemble documentation of the Python bindings.  
-Instructions for all operating systems can be found on their `Installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`.  
+Instructions for all operating systems can be found on their `Installation page <http://www.sphinx-doc.org/en/master/usage/installation.html>`__.
 The current version (2.0.1) needs Python version 3.5.2 or later (note that Python subversions 3.5.0 and 3.5.1 will still raise an `import error <https://github.com/rtfd/readthedocs.org/issues/3812>`__ despite being reported fixed since version Sphinx 1.7.2).  
 
 
@@ -186,7 +186,7 @@ In :numref:`fig_devSetup_githubRepos`, you can see a pictorial representation of
 
 .. _fig_devSetup_githubRepos:
 
-.. figure:: images/libCellMLProcesses-GitHubRepos.png
+.. figure:: ../images/libCellMLProcesses-GitHubRepos.png
    :align: center
    :alt: Setup of Git repositories.
 
@@ -203,7 +203,7 @@ Use the fork button to create a libCellML repository under your own account, see
 
 .. _fig_devSetup_githubFork:
 
-.. figure:: images/libCellMLProcesses-GitHubForkButton.png
+.. figure:: ../images/libCellMLProcesses-GitHubForkButton.png
    :align: center
    :alt: Fork button of libCellML repository.
 

@@ -14,14 +14,14 @@ This document is organic and is expected to change in accordance with community 
 Overview of Object Model
 ========================
 
-.. figure:: images/libCellMLRoughObjectModel-Overview.png
+.. figure:: ../images/libCellMLRoughObjectModel-Overview.png
    :alt: libCellML Overview Object Model.
 
 Detailed
 ========
 
-.. figure:: images/libCellMLRoughObjectModel-Entities.png
+.. figure:: ../images/libCellMLRoughObjectModel-Entities.png
    :alt: libCellML Object Model.
 
-.. figure:: images/libCellMLRoughObjectModel-IOError.png
+.. figure:: ../images/libCellMLRoughObjectModel-IOError.png
    :alt: libCellML Object Model.
