@@ -398,7 +398,7 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
         } else if (childNode->isElement("math", MATHML_NS)) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
-            std::string math = childNode->convertToString();
+            std::string math = childNode->convertToString(true) + "\n";
             component->appendMath(math);
         } else if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
@@ -608,7 +608,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     // Define types for variable and component pairs.
     using NamePair = std::pair<std::string, std::string>;
     using NamePairMap = std::vector<NamePair>;
-    using NameMapIterator = NamePairMap::const_iterator;
 
     // Initialise name pairs and flags.
     NamePair componentNamePair;
@@ -797,21 +796,21 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
 
     // If we have a map_variables, check that the variables exist in the named components.
     if (mapVariablesFound) {
-        for (NameMapIterator iterPair = variableNameMap.begin(); iterPair < variableNameMap.end(); ++iterPair) {
+        for (const auto &iterPair : variableNameMap) {
             VariablePtr variable1 = nullptr;
             VariablePtr variable2 = nullptr;
             if (component1) {
-                if (component1->hasVariable(iterPair->first)) {
-                    variable1 = component1->getVariable(iterPair->first);
+                if (component1->hasVariable(iterPair.first)) {
+                    variable1 = component1->getVariable(iterPair.first);
                 } else if (component1->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
                     variable1 = std::make_shared<Variable>();
-                    variable1->setName(iterPair->first);
+                    variable1->setName(iterPair.first);
                     component1->addVariable(variable1);
                 } else {
                     if (!variable1Missing) {
                         ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Variable '" + iterPair->first + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->getName() + "' of model '" + model->getName() + "'.");
+                        err->setDescription("Variable '" + iterPair.first + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
                         err->setKind(Error::Kind::CONNECTION);
                         err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
@@ -820,24 +819,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 }
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() + "' specifies '" + iterPair->first + "' as variable_1 but the corresponding component_1 is invalid.");
+                err->setDescription("Connection in model '" + model->getName() + "' specifies '" + iterPair.first + "' as variable_1 but the corresponding component_1 is invalid.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
                 err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
                 mParser->addError(err);
             }
             if (component2) {
-                if (component2->hasVariable(iterPair->second)) {
-                    variable2 = component2->getVariable(iterPair->second);
+                if (component2->hasVariable(iterPair.second)) {
+                    variable2 = component2->getVariable(iterPair.second);
                 } else if (component2->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
                     variable2 = std::make_shared<Variable>();
-                    variable2->setName(iterPair->second);
+                    variable2->setName(iterPair.second);
                     component2->addVariable(variable2);
                 } else {
                     if (!variable2Missing) {
                         ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Variable '" + iterPair->second + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->getName() + "' of model '" + model->getName() + "'.");
+                        err->setDescription("Variable '" + iterPair.second + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
                         err->setKind(Error::Kind::CONNECTION);
                         err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
@@ -846,7 +845,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 }
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() + "' specifies '" + iterPair->second + "' as variable_2 but the corresponding component_2 is invalid.");
+                err->setDescription("Connection in model '" + model->getName() + "' specifies '" + iterPair.second + "' as variable_2 but the corresponding component_2 is invalid.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
                 err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
@@ -1286,7 +1285,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
         if (childNode->isElement("math", MATHML_NS)) {
             // TODO: copy any namespaces declared in parents into the math element
             //       so math is a valid subdocument.
-            std::string math = childNode->convertToString();
+            std::string math = childNode->convertToString(true) + "\n";
             ++mathNodeCount;
             if (mathNodeCount == 1) {
                 when->setCondition(math);
@@ -1301,11 +1300,14 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             }
         } else if (childNode->isText()) {
             const std::string textNode = childNode->convertToString();
-            ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-            err->setWhen(when);
-            err->setRule(SpecificationRule::WHEN_CHILD);
-            mParser->addError(err);
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setWhen(when);
+                err->setRule(SpecificationRule::WHEN_CHILD);
+                mParser->addError(err);
+            }
         } else if (childNode->isComment()) {
             // Do nothing.
         } else {

@@ -42,9 +42,9 @@ TEST(ResolveImports, resolveSineModelFromFile)
 
 TEST(ResolveImports, resolveSineImportsModelFromFile)
 {
-    std::string sineModelLocation = TestResources::getLocation(
+    const std::string modelLocation = TestResources::getLocation(
         TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE);
-    std::ifstream t(sineModelLocation);
+    std::ifstream t(modelLocation);
     std::stringstream buffer;
     buffer << t.rdbuf();
 
@@ -53,13 +53,13 @@ TEST(ResolveImports, resolveSineImportsModelFromFile)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(sineModelLocation);
+    model->resolveImports(modelLocation);
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveComplexImportsModelFromFile)
 {
-    std::string modelLocation = TestResources::getLocation(
+    const std::string modelLocation = TestResources::getLocation(
         TestResources::CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE);
     std::ifstream t(modelLocation);
     std::stringstream buffer;
@@ -76,7 +76,7 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile)
 
 TEST(ResolveImports, resolveUnitsImportFromFile)
 {
-    std::string modelLocation = TestResources::getLocation(
+    const std::string modelLocation = TestResources::getLocation(
         TestResources::CELLML_UNITS_IMPORT_MODEL_RESOURCE);
     std::ifstream t(modelLocation);
     std::stringstream buffer;
@@ -94,7 +94,7 @@ TEST(ResolveImports, resolveUnitsImportFromFile)
 
 TEST(ResolveImports, resolveImportsFromFileLevel0)
 {
-    std::string modelLocation = TestResources::getLocation(
+    const std::string modelLocation = TestResources::getLocation(
         TestResources::CELLML_IMPORT_LEVEL0_MODEL_RESOURCE);
     std::ifstream t(modelLocation);
     std::stringstream buffer;
@@ -112,7 +112,7 @@ TEST(ResolveImports, resolveImportsFromFileLevel0)
 
 TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable)
 {
-    std::string modelLocation = TestResources::getLocation(
+    const std::string modelLocation = TestResources::getLocation(
         TestResources::CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE);
     std::ifstream t(modelLocation);
     std::stringstream buffer;

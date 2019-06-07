@@ -127,7 +127,7 @@ bool isCellMLReal(const std::string &candidate)
     if (candidate.length() > 0) {
         std::string normalisedCandidate = candidate;
         std::vector<size_t> eOccurences = findOccurences(candidate, "E");
-        for (auto ePos : eOccurences) {
+        for (const auto &ePos : eOccurences) {
             normalisedCandidate.replace(ePos, 1, "e");
         }
         std::vector<size_t> lowerEOccurences = findOccurences(normalisedCandidate, "e");
