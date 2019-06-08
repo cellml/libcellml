@@ -224,6 +224,16 @@ public:
      */
     std::string convertToString(bool format = false);
 
+    /**
+     * @brief Convert this @c XmlNode content into a stripped @c std::string.
+     *
+     * Converts the content in this @c XmlNode (including all children and
+     * attributes) into a @c std::string.
+     *
+     * @return The stripped @c std::string representation of the content for this @c XmlNode.
+     */
+    std::string convertToStrippedString();
+
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */
     XmlNodeImpl *mPimpl; /**< Private member to implementation pointer */

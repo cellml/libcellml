@@ -28,7 +28,6 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
-#include <algorithm>
 #include <map>
 #include <regex>
 #include <sstream>
@@ -815,13 +814,9 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     if (ciType || cnType) {
         if (childNode != nullptr) {
             if (childNode->isText()) {
-                textNode = childNode->convertToString();
-                if (hasNonWhitespaceCharacters(textNode)) {
+                textNode = childNode->convertToStrippedString();
+                if (!textNode.empty()) {
                     if (ciType) {
-                        // It's fine in MathML to have whitespace around variable names, we will strip it out when looking for
-                        // variable names.
-                        textNode.erase(textNode.begin(), find_if_not(textNode.begin(), textNode.end(), [](int c) { return isspace(c); }));
-                        textNode.erase(find_if_not(textNode.rbegin(), textNode.rend(), [](int c) { return isspace(c); }).base(), textNode.end());
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) && (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
                             ErrorPtr err = std::make_shared<Error>();
@@ -833,7 +828,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     }
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("MathML " + node->getName() + " element has a whitespace-only child element.");
+                    err->setDescription("MathML " + node->getName() + " element has an empty child element.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
@@ -923,7 +918,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (childNode != nullptr) {
-        if (!childNode->isText() && !isSupportedMathMLElement(childNode)) {
+        if (!childNode->isComment() && !childNode->isText() && !isSupportedMathMLElement(childNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + childNode->getName() + "' element" + " that is not a supported MathML element.");
             err->setComponent(component);
@@ -935,7 +930,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
 
     XmlNodePtr nextNode = node->getNext();
     if (nextNode != nullptr) {
-        if (!nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
+        if (!nextNode->isComment() && !nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + nextNode->getName() + "' element" + " that is not a supported MathML element.");
             err->setComponent(component);
@@ -953,17 +948,21 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
         while (childNode != nullptr) {
             if (childNode->isMathmlElement("ci")) {
                 XmlNodePtr grandchildNode = childNode->getFirstChild();
+                bool hasBvarName = false;
                 while (grandchildNode != nullptr) {
                     if (grandchildNode->isText()) {
-                        std::string textNode = grandchildNode->convertToString();
-                        if (hasNonWhitespaceCharacters(textNode)) {
+                        std::string textNode = grandchildNode->convertToStrippedString();
+                        if (!textNode.empty()) {
                             bvarNames.push_back(textNode);
+                            hasBvarName = true;
+                            break;
                         }
-                        break;
                     }
                     grandchildNode = grandchildNode->getNext();
                 }
-                break;
+                if (hasBvarName) {
+                    break;
+                }
             }
             childNode = childNode->getNext();
         }

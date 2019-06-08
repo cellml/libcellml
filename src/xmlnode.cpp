@@ -18,6 +18,7 @@ limitations under the License.
 #include "xmlattribute.h"
 #include "xmlnode.h"
 
+#include <algorithm>
 #include <string>
 
 #include <libxml/parser.h>
@@ -173,6 +174,14 @@ std::string XmlNode::convertToString(bool format)
         contentString = std::string(reinterpret_cast<const char *>(buffer->content));
     }
     xmlBufferFree(buffer);
+    return contentString;
+}
+
+std::string XmlNode::convertToStrippedString()
+{
+    std::string contentString = convertToString();
+    contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), [](int c) { return isspace(c); }));
+    contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), [](int c) { return isspace(c); }).base(), contentString.end());
     return contentString;
 }
 
