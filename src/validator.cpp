@@ -740,7 +740,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         }
     }
     XmlNodePtr node = doc->getRootNode();
-    if (!node) {
+    if (node == nullptr) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Could not get a valid XML root node from the math on component '" + component->getName() + "'.");
         err->setKind(Error::Kind::XML);
@@ -914,7 +914,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
     }
     // Check siblings for ci/cn.
     node = node->getNext();
-    if (node) {
+    if (node != nullptr) {
         validateAndCleanMathCiCnNodes(node, component, variableNames, bvarNames);
     }
 }
@@ -934,7 +934,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
     }
 
     XmlNodePtr nextNode = node->getNext();
-    if (nextNode) {
+    if (nextNode != nullptr) {
         if (!nextNode->isText() && !isSupportedMathMLElement(nextNode)) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Math has a '" + nextNode->getName() + "' element" + " that is not a supported MathML element.");
@@ -969,7 +969,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
     }
     // Check siblings for bvars.
     node = node->getNext();
-    if (node) {
+    if (node != nullptr) {
         gatherMathBvarVariableNames(node, bvarNames);
     }
 }

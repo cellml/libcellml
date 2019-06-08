@@ -474,28 +474,26 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     double multiplier = 1.0;
     std::string id;
     // A unit should not have any children.
-    if (node->getFirstChild()) {
-        XmlNodePtr childNode = node->getFirstChild();
-        while (childNode) {
-            if (childNode->isText()) {
-                std::string textNode = childNode->convertToString();
-                // Ignore whitespace when parsing.
-                if (hasNonWhitespaceCharacters(textNode)) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                    err->setUnits(units);
-                    mParser->addError(err);
-                }
-            } else if (childNode->isComment()) {
-                // Do nothing.
-            } else {
+    XmlNodePtr childNode = node->getFirstChild();
+    while (childNode) {
+        if (childNode->isText()) {
+            std::string textNode = childNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an invalid child element '" + childNode->getName() + "'.");
+                err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setUnits(units);
                 mParser->addError(err);
             }
-            childNode = childNode->getNext();
+        } else if (childNode->isComment()) {
+            // Do nothing.
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setUnits(units);
+            mParser->addError(err);
         }
+        childNode = childNode->getNext();
     }
     // Parse the unit attributes.
     XmlAttributePtr attribute = node->getFirstAttribute();
@@ -542,28 +540,26 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
 {
     // A variable should not have any children.
-    if (node->getFirstChild()) {
-        XmlNodePtr childNode = node->getFirstChild();
-        while (childNode) {
-            if (childNode->isText()) {
-                std::string textNode = childNode->convertToString();
-                // Ignore whitespace when parsing.
-                if (hasNonWhitespaceCharacters(textNode)) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Variable '" + node->getAttribute("name") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                    err->setVariable(variable);
-                    mParser->addError(err);
-                }
-            } else if (childNode->isComment()) {
-                // Do nothing.
-            } else {
+    XmlNodePtr childNode = node->getFirstChild();
+    while (childNode) {
+        if (childNode->isText()) {
+            std::string textNode = childNode->convertToString();
+            // Ignore whitespace when parsing.
+            if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Variable '" + node->getAttribute("name") + "' has an invalid child element '" + childNode->getName() + "'.");
+                err->setDescription("Variable '" + node->getAttribute("name") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setVariable(variable);
                 mParser->addError(err);
             }
-            childNode = childNode->getNext();
+        } else if (childNode->isComment()) {
+            // Do nothing.
+        } else {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Variable '" + node->getAttribute("name") + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setVariable(variable);
+            mParser->addError(err);
         }
+        childNode = childNode->getNext();
     }
     XmlAttributePtr attribute = node->getFirstAttribute();
     bool unitsAttributePresent = false;
