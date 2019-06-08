@@ -950,16 +950,22 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 {
     XmlNodePtr childNode = node->getFirstChild();
     if (node->isMathmlElement("bvar")) {
-        if ((childNode != nullptr) && (childNode->isMathmlElement("ci"))) {
-            XmlNodePtr grandchildNode = childNode->getFirstChild();
-            if (grandchildNode) {
-                if (grandchildNode->isText()) {
-                    std::string textNode = grandchildNode->convertToString();
-                    if (hasNonWhitespaceCharacters(textNode)) {
-                        bvarNames.push_back(textNode);
+        while (childNode != nullptr) {
+            if (childNode->isMathmlElement("ci")) {
+                XmlNodePtr grandchildNode = childNode->getFirstChild();
+                while (grandchildNode != nullptr) {
+                    if (grandchildNode->isText()) {
+                        std::string textNode = grandchildNode->convertToString();
+                        if (hasNonWhitespaceCharacters(textNode)) {
+                            bvarNames.push_back(textNode);
+                        }
+                        break;
                     }
+                    grandchildNode = grandchildNode->getNext();
                 }
+                break;
             }
+            childNode = childNode->getNext();
         }
     } else {
         // Check children for bvars.
