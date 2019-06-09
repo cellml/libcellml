@@ -92,13 +92,13 @@ if(LIBCELLML_COVERAGE)
     endif()
 
   add_custom_target(coverage
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE}
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE}
     DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests")
 
   add_custom_target(coverage_branches
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -k -b --exclude-unreachable-branches -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH}.* --gcov-executable=${GCOV_EXE}
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -k -b --exclude-unreachable-branches -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH}.* --gcov-executable=${GCOV_EXE}
     DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests with branches output")
@@ -110,7 +110,7 @@ if(LIBCELLML_MEMCHECK)
     COMMENT "Prepare for memcheck tests")
 
   add_custom_target(memcheck
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/valgrindmemcheck.py ${CMAKE_CURRENT_BINARY_DIR} ${TEST_LIST}
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/valgrindmemcheck.py ${CMAKE_CURRENT_BINARY_DIR} ${TEST_LIST}
     DEPENDS ${TEST_LIST} prepare_memcheck
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/memcheck
     COMMENT "Running memcheck tests")
