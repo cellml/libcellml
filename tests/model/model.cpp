@@ -374,16 +374,6 @@ private:
     big_and_complicated *m_data;
 };
 
-//TEST(Model, simplified_replace) {
-//    std::vector<structure> ss;
-//    structure s1, s2, s3;
-//    ss.push_back(s1);
-//    ss.push_back(s2);
-//    ss.erase(ss.begin());
-//    ss.insert(ss.begin(), s3);
-
-//}
-
 TEST(Model, replaceComponent)
 {
     const std::string e_orig =
