@@ -107,6 +107,11 @@ TEST(Coverage, component)
     ao = rc;
 
     EXPECT_EQ(n, ao.getName());
+
+    std::vector<libcellml::Component> vec;
+
+    vec.push_back(rc);
+    vec.insert(vec.begin(), ao);
 }
 
 TEST(Coverage, error)
@@ -135,4 +140,9 @@ TEST(Coverage, model)
     ao = rm;
 
     EXPECT_EQ(n, ao.getName());
+
+    std::vector<libcellml::Model> vec;
+
+    vec.push_back(rm);
+    vec.insert(vec.begin(), ao);
 }
