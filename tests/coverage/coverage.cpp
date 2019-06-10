@@ -146,12 +146,15 @@ TEST(Coverage, error)
 
 TEST(Coverage, model)
 {
-    // Move constructor, assignment operator and swap method
-    std::vector<libcellml::Model> vec;
-    vec.emplace_back();
+    const std::string n = "model";
 
     libcellml::Model rm;
+
+    rm.setName(n);
+
     libcellml::Model ao;
 
     ao = rm;
+
+    EXPECT_EQ(n, ao.getName());
 }
