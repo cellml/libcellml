@@ -35,8 +35,8 @@ public:
     When(); /**< Constructor */
     ~When() override; /**< Destructor */
     When(const When &rhs); /**< Copy constructor */
-    When(When &&rhs); /**< Move constructor */
-    When &operator=(When n); /**< Assignment operator */
+    When(When &&rhs) noexcept; /**< Move constructor */
+    When &operator=(When rhs); /**< Assignment operator */
 
     /**
      * @brief Set the condition term for this when.
