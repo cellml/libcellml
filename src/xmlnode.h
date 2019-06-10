@@ -95,6 +95,22 @@ public:
     bool isCellmlElement(const char *name);
 
     /**
+     * @brief Check if this @c XmlNode is an element node in the
+     * MathML namespace with the given local name.
+     *
+     * Checks whether this @c XmlNode is an element node in
+     * the MathML namespace with the specified local name.
+     * Returns @p true if so, and @c false otherwise.
+     *
+     * @param name The @c char element name to check for.
+     *
+     * @return @c true if this @c XmlNode is an element node in the
+     * MathML namespace with the given local name @p name; and
+     * @c false otherwise.
+     */
+    bool isMathmlElement(const char *name);
+
+    /**
      * @brief Check if this @c XmlNode is a text node.
      *
      * Checks whether this @c XmlNode is a text node.
@@ -207,6 +223,16 @@ public:
      * @return The @c std::string representation of the content for this @c XmlNode.
      */
     std::string convertToString(bool format = false);
+
+    /**
+     * @brief Convert this @c XmlNode content into a stripped @c std::string.
+     *
+     * Converts the content in this @c XmlNode (including all children and
+     * attributes) into a @c std::string.
+     *
+     * @return The stripped @c std::string representation of the content for this @c XmlNode.
+     */
+    std::string convertToStrippedString();
 
 private:
     struct XmlNodeImpl; /**< Forward declaration for pImpl idiom. */

@@ -143,34 +143,6 @@ hide_distracting_variables()
 # defined projects like INSTALL.vcproj and ZERO_CHECK.vcproj
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Find libxml2
-set(HAVE_LIBXML2_CONFIG FALSE)
-if(MSVC)
-  # If we want to use config packages on Windows with Visual Studio,
-  # we need to have two find_package calls and explicitly state that
-  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
-  # is the preferred method so we will try this first quietly.
-  #
-  # This does change how we get information about include paths and such so we
-  # need to track how we found LibXml2.
-  find_package(LibXml2 CONFIG QUIET)
-  if(LibXml2_FOUND)
-    set(HAVE_LIBXML2_CONFIG TRUE)
-    foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
-      if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
-        unset(${_XML2_VAR} CACHE)
-      endif()
-    endforeach()
-  else()
-    find_package(LibXml2 REQUIRED)
-    if(LibXml2_FOUND)
-      unset(LibXml2_DIR CACHE)
-    endif()
-  endif()
-else()
-  find_package(LibXml2 REQUIRED)
-endif()
-
 # cellml library target
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
@@ -206,6 +178,6 @@ if(CLANG_FORMAT_EXE)
 
   add_custom_target(format_code
     COMMAND ${CLANG_FORMAT_EXE} -i ${FILES_TO_FORMAT}
-    COMMENT "Source code has been reformatted by clang-format."
+    COMMENT "Source code has been reformatted by ClangFormat."
   )
 endif()
