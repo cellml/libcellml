@@ -225,11 +225,6 @@ TEST(Coverage, component)
     a = printer.printComponent(cm);
     EXPECT_EQ(e, a);
 
-    // Copy constructor
-    libcellml::ComponentPtr cc(cm);
-    a = printer.printComponent(cc);
-    EXPECT_EQ(e, a);
-
     // Move constructor, assignment operator and swap method
     std::vector<libcellml::Component> vec;
     vec.emplace_back();
