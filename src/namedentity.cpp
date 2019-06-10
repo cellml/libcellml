@@ -47,17 +47,17 @@ NamedEntity::NamedEntity(const NamedEntity &rhs)
     mPimpl->mName = rhs.mPimpl->mName;
 }
 
-NamedEntity::NamedEntity(NamedEntity &&rhs)
+NamedEntity::NamedEntity(NamedEntity &&rhs) noexcept
     : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-NamedEntity &NamedEntity::operator=(NamedEntity n)
+NamedEntity &NamedEntity::operator=(NamedEntity rhs)
 {
-    Entity::operator=(n);
-    n.swap(*this);
+    Entity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
