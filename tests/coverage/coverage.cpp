@@ -205,14 +205,14 @@ TEST(Coverage, component)
     c.addVariable(v);
     c.setMath(math);
 
-    EXPECT_EQ(1u, c.variableCount());
+    EXPECT_EQ(size_t(1), c.variableCount());
 
     cm = std::move(c);
-    EXPECT_EQ(1u, cm.variableCount());
+    EXPECT_EQ(size_t(1), cm.variableCount());
 
     // Copy constructor
     libcellml::Component cc(cm);
-    EXPECT_EQ(1u, cc.variableCount());
+    EXPECT_EQ(size_t(1), cc.variableCount());
 }
 
 TEST(Coverage, error)
