@@ -23,7 +23,6 @@ limitations under the License.
 
 #include <string>
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
@@ -37,8 +36,8 @@ public:
     Parser(); /**< Constructor */
     ~Parser() override; /**< Destructor */
     Parser(const Parser &rhs); /**< Copy constructor */
-    Parser(Parser &&rhs); /**< Move constructor */
-    Parser &operator=(Parser p); /**< Assignment operator */
+    Parser(Parser &&rhs) noexcept; /**< Move constructor */
+    Parser &operator=(Parser rhs); /**< Assignment operator */
 
     /**
      * @brief Create and populate a new model from a @c std::string.

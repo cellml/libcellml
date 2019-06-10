@@ -70,17 +70,17 @@ ComponentEntity::ComponentEntity(const ComponentEntity &rhs)
     mPimpl->mEncapsulationId = rhs.mPimpl->mEncapsulationId;
 }
 
-ComponentEntity::ComponentEntity(ComponentEntity &&rhs)
+ComponentEntity::ComponentEntity(ComponentEntity &&rhs) noexcept
     : NamedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-ComponentEntity &ComponentEntity::operator=(ComponentEntity c)
+ComponentEntity &ComponentEntity::operator=(ComponentEntity rhs)
 {
-    NamedEntity::operator=(c);
-    c.swap(*this);
+    NamedEntity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -89,14 +89,14 @@ void ComponentEntity::swap(ComponentEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void ComponentEntity::addComponent(const ComponentPtr &c)
+void ComponentEntity::addComponent(const ComponentPtr &component)
 {
-    doAddComponent(c);
+    doAddComponent(component);
 }
 
-void ComponentEntity::doAddComponent(const ComponentPtr &c)
+void ComponentEntity::doAddComponent(const ComponentPtr &component)
 {
-    mPimpl->mComponents.push_back(c);
+    mPimpl->mComponents.push_back(component);
 }
 
 bool ComponentEntity::removeComponent(const std::string &name, bool searchEncapsulated)
@@ -119,7 +119,7 @@ bool ComponentEntity::removeComponent(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
         status = true;
     }
 
@@ -212,7 +212,7 @@ ComponentPtr ComponentEntity::takeComponent(size_t index)
     ComponentPtr component = nullptr;
     if (index < mPimpl->mComponents.size()) {
         component = mPimpl->mComponents.at(index);
-        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + index);
+        mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
         component->clearParent();
     }
 
@@ -235,11 +235,11 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     return foundComponent;
 }
 
-bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
+bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &component)
 {
     bool status = false;
     if (removeComponent(index)) {
-        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + index, c);
+        mPimpl->mComponents.insert(mPimpl->mComponents.begin() + int64_t(index), component);
         status = true;
     }
 
@@ -248,7 +248,7 @@ bool ComponentEntity::replaceComponent(size_t index, const ComponentPtr &c)
 
 bool ComponentEntity::replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated)
 {
-    bool status = replaceComponent(mPimpl->findComponent(name) - mPimpl->mComponents.begin(), component);
+    bool status = replaceComponent(size_t(mPimpl->findComponent(name) - mPimpl->mComponents.begin()), component);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
             status = getComponent(i)->replaceComponent(name, component, searchEncapsulated);
@@ -260,7 +260,7 @@ bool ComponentEntity::replaceComponent(const std::string &name, const ComponentP
 
 bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated)
 {
-    bool status = replaceComponent(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin(), newComponent);
+    bool status = replaceComponent(size_t(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin()), newComponent);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
             status = getComponent(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);

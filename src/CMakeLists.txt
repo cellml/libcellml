@@ -164,6 +164,8 @@ set_target_properties(cellml PROPERTIES
   COMPATIBLE_INTERFACE_STRING ${libCellML_VERSION_MAJOR}
 )
 
+configure_clang_and_clang_tidy_settings(cellml)
+
 if(NOT UNIX AND NOT CYGWIN AND NOT MINGW)
   set_target_properties(cellml PROPERTIES
     IMPORT_PREFIX "lib"

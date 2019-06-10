@@ -48,15 +48,15 @@ ImportedEntity::ImportedEntity(const ImportedEntity &rhs)
     mPimpl->mImportReference = rhs.mPimpl->mImportReference;
 }
 
-ImportedEntity::ImportedEntity(ImportedEntity &&rhs)
+ImportedEntity::ImportedEntity(ImportedEntity &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-ImportedEntity &ImportedEntity::operator=(ImportedEntity e)
+ImportedEntity &ImportedEntity::operator=(ImportedEntity rhs)
 {
-    e.swap(*this);
+    rhs.swap(*this);
     return *this;
 }
 

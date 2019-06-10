@@ -281,8 +281,8 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
     libcellml::Parser parser = libcellml::Parser();
     libcellml::ModelPtr model = parser.parseModel(input);
 
-    EXPECT_EQ(0u, parser.errorCount());
-    EXPECT_EQ(1u, model->componentCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
 }
 
 TEST(Encapsulation, encapsulatedComponentMethods)
