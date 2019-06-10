@@ -196,11 +196,11 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
     std::string repr;
     if (units->isImport()) {
         repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-        if (units->getImportSource()->getId().length()) {
+        if (!units->getImportSource()->getId().empty()) {
             repr += " id=\"" + units->getImportSource()->getId() + "\"";
         }
         repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
-        if (units->getId().length()) {
+        if (!units->getId().empty()) {
             repr += " id=\"" + units->getId() + "\"";
         }
         repr += "/>\n" + indent + "</import>\n";
@@ -442,7 +442,7 @@ void Printer::swap(Printer &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-std::string Printer::printModel(ModelPtr model) const
+std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
     using ImportPair = std::pair<std::string, ComponentPtr>;

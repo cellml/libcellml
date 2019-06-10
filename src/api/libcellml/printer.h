@@ -47,7 +47,7 @@ public:
      *
      * @return The @c std::string representation of the @c Model.
      */
-    std::string printModel(ModelPtr smodel) const;
+    std::string printModel(const ModelPtr &model) const;
 
     /**
      * @brief Serialise the @c Model to @c std::string.
