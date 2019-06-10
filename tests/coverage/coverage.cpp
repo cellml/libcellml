@@ -78,24 +78,17 @@ TEST(Coverage, when)
 
 TEST(Coverage, variable)
 {
-    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
+    const std::string n = "dimensionless";
     libcellml::Variable v;
     libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
-    v.setInitialValue(1.0);
-    v.setInterfaceType("public");
-    u->setName("dimensionless");
+    u->setName(n);
     v.setUnits(u);
 
     vm = std::move(v);
 
-    // Copy constructor
-    libcellml::Variable vc(vm);
-
-    libcellml::Printer printer;
-    const std::string a = printer.printVariable(vc);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(n, vm.getUnits());
 }
 
 TEST(Coverage, component)
