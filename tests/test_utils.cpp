@@ -18,14 +18,14 @@ void printErrors(const libcellml::Parser &p)
     }
 }
 
-libcellml::ModelPtr createModel(const std::string name)
+libcellml::ModelPtr createModel(const std::string &name)
 {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName(name);
     return model;
 }
 
-libcellml::ModelPtr createModelWithComponent(const std::string name)
+libcellml::ModelPtr createModelWithComponent(const std::string &name)
 {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName(name);
