@@ -25,17 +25,15 @@ limitations under the License.
  */
 TEST(Coverage, import)
 {
-    const std::string e;
+    const std::string id = "id";
     libcellml::ImportSource i;
     libcellml::ImportSource im;
 
+    i.setId(id);
+
     im = std::move(i);
 
-    // Copy constructor
-    libcellml::ImportSource ic(im);
-
-    const std::string a = ic.getId();
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(id, im.getId());
 }
 
 TEST(Coverage, printer)
@@ -43,13 +41,13 @@ TEST(Coverage, printer)
     libcellml::Printer p;
     libcellml::Printer pm;
 
+    libcellml::ErrorPtr error = std::make_shared<libcellml::Error>();
+
+    p.addError(error);
+
     pm = std::move(p);
 
-    // Copy constructor
-    libcellml::Printer pc(pm);
-
-    size_t error_count = pc.errorCount();
-    EXPECT_EQ(size_t(0), error_count);
+    EXPECT_EQ(size_t(1), pm.errorCount());
 }
 
 TEST(Coverage, units)
