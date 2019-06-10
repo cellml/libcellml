@@ -94,32 +94,6 @@ TEST(Coverage, variable)
 TEST(Coverage, component)
 {
     const std::string n = "name";
-    const std::string e =
-        "<component name=\"name\">\n"
-        "  <variable/>\n"
-        "  <1+1=2>\n"
-        "</component>\n";
-    const std::string math = "<1+1=2>\n";
-
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr cm;
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-
-    c->setName(n);
-    c->addVariable(v);
-    c->setMath(math);
-
-    libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
-    EXPECT_EQ(e, a);
-
-    cm = std::move(c);
-    a = printer.printComponent(cm);
-    EXPECT_EQ(e, a);
-
-    // Move constructor, assignment operator and swap method
-    std::vector<libcellml::Component> vec;
-    vec.emplace_back();
 
     libcellml::Component rc;
     libcellml::Component ao;
