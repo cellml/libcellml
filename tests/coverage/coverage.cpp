@@ -201,6 +201,7 @@ TEST(Coverage, variable)
 
 TEST(Coverage, component)
 {
+    const std::string n = "name";
     const std::string e =
         "<component name=\"name\">\n"
         "  <variable/>\n"
@@ -212,7 +213,7 @@ TEST(Coverage, component)
     libcellml::ComponentPtr cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
-    c->setName("name");
+    c->setName(n);
     c->addVariable(v);
     c->setMath(math);
 
@@ -236,7 +237,11 @@ TEST(Coverage, component)
     libcellml::Component rc;
     libcellml::Component ao;
 
+    rc.setName(n);
+
     ao = rc;
+
+    EXPECT_EQ(n, ao.getName());
 }
 
 TEST(Coverage, error)
