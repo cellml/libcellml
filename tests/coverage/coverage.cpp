@@ -26,6 +26,7 @@ limitations under the License.
 TEST(Coverage, import)
 {
     const std::string id = "id";
+
     libcellml::ImportSource i;
     libcellml::ImportSource im;
 
@@ -53,6 +54,7 @@ TEST(Coverage, printer)
 TEST(Coverage, units)
 {
     const std::string n = "dimensionless";
+
     libcellml::Units u;
     libcellml::Units um;
 
@@ -66,6 +68,7 @@ TEST(Coverage, units)
 TEST(Coverage, when)
 {
     const std::string id = "id";
+
     libcellml::When w;
     libcellml::When wm;
 
@@ -79,6 +82,7 @@ TEST(Coverage, when)
 TEST(Coverage, variable)
 {
     const std::string n = "dimensionless";
+
     libcellml::Variable v;
     libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -107,9 +111,10 @@ TEST(Coverage, component)
 
 TEST(Coverage, error)
 {
+    const std::string description = "test";
+
     libcellml::Error e;
     libcellml::Error em;
-    const std::string description = "test";
 
     e.setDescription(description);
 
