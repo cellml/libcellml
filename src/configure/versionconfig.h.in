@@ -20,13 +20,13 @@ limitations under the License.
 
 namespace libcellml {
 
-// clang-format off
+// ClangFormat off
 #define LIBCELLML_VERSION_MAJOR @libCellML_VERSION_MAJOR@
 #define LIBCELLML_VERSION_MINOR @libCellML_VERSION_MINOR@
 #define LIBCELLML_VERSION_PATCH @libCellML_VERSION_PATCH@
 
 static unsigned int LIBCELLML_LIBRARY_VERSION = @LIBCELLML_LIBRARY_VERSION@;
-// clang-format on
+// ClangFormat on
 static const std::string LIBCELLML_LIBRARY_VERSION_STRING = "@LIBCELLML_LIBRARY_VERSION_STRING@";
 
 } // namespace libcellml
