@@ -44,8 +44,8 @@ public:
      */
     ~ComponentEntity() override;
 
-    ComponentEntity(ComponentEntity &&rhs); /**< Move constructor */
     ComponentEntity(const ComponentEntity &rhs); /**< Copy constructor */
+    ComponentEntity(ComponentEntity &&rhs) noexcept; /**< Move constructor */
     ComponentEntity &operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
@@ -53,9 +53,9 @@ public:
      *
      * Add a copy of the given component as a child component of this component entity.
      *
-     * @param c The component to add.
+     * @param component The component to add.
      */
-    void addComponent(const ComponentPtr &c);
+    void addComponent(const ComponentPtr &component);
 
     /**
      * @brief Remove the component at the given @p index.
@@ -210,11 +210,11 @@ public:
      * the range [0, \#components).
      *
      * @param index Index of the Component to replace.
-     * @param c The component to be used as a replacement.
+     * @param component The component to be used as a replacement.
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(size_t index, const ComponentPtr &c);
+    bool replaceComponent(size_t index, const ComponentPtr &component);
 
     /**
      * @brief Replace a component with the given @p name.
@@ -300,9 +300,9 @@ protected:
      * Virtual addComponent method to allow the model and component classes to
      * implement their own versions.
      *
-     * @param c The ComponentPtr to add to the list of components.
+     * @param component The ComponentPtr to add to the list of components.
      */
-    virtual void doAddComponent(const ComponentPtr &c);
+    virtual void doAddComponent(const ComponentPtr &component);
 
 private:
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */

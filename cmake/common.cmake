@@ -31,9 +31,9 @@ endfunction()
 
 function(INTERNALISE_CMAKE_VARIABLES)
   # internalise some CMake variables
-  set( CMAKE_INSTALL_PREFIX ${LIBCELLML_INSTALL_PREFIX} CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX, manipulate via LIBCELLML_INSTALL_PREFIX" FORCE )
-  set( CMAKE_BUILD_TYPE ${LIBCELLML_BUILD_TYPE} CACHE INTERNAL "Internalise CMAKE_BUILD_TYPE, manipulate via LIBCELLML_BUILD_TYPE" FORCE )
-  set( BUILD_SHARED_LIBS ${LIBCELLML_BUILD_SHARED} CACHE INTERNAL "Internalise BUILD_SHARED_LIBS, manipulate via LIBCELLML_BUILD_SHARED" FORCE )
+  set(CMAKE_INSTALL_PREFIX ${LIBCELLML_INSTALL_PREFIX} CACHE INTERNAL "Internalise CMAKE_INSTALL_PREFIX, manipulate via LIBCELLML_INSTALL_PREFIX" FORCE)
+  set(CMAKE_BUILD_TYPE ${LIBCELLML_BUILD_TYPE} CACHE INTERNAL "Internalise CMAKE_BUILD_TYPE, manipulate via LIBCELLML_BUILD_TYPE" FORCE)
+  set(BUILD_SHARED_LIBS ${LIBCELLML_BUILD_SHARED} CACHE INTERNAL "Internalise BUILD_SHARED_LIBS, manipulate via LIBCELLML_BUILD_SHARED" FORCE)
 endfunction()
 
 function(HIDE_DISTRACTING_VARIABLES)
@@ -80,5 +80,86 @@ function(GROUP_SOURCE_TO_DIR_STRUCTURE)
       endif()
       source_group("${_FILE_PREFIX}${_FILE_GROUP}" FILES "${_FILE}")
     endforeach()
+  endif()
+endfunction()
+
+function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
+     OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
+    # The full list of diagnostic flags in Clang can be found at
+    # https://clang.llvm.org/docs/DiagnosticsReference.html
+    set(_COMPILE_OPTIONS
+      -Weverything
+      -Wno-c++98-compat
+      -Wno-c++98-compat-pedantic
+      -Wno-documentation
+      -Wno-documentation-unknown-command
+      -Wno-exit-time-destructors
+      -Wno-global-constructors
+      -Wno-missing-prototypes
+      -Wno-padded
+      -Wno-reserved-id-macro
+    )
+
+  if(NOT "${_TARGET}" STREQUAL "cellml")
+    list(APPEND _COMPILE_OPTIONS
+      --system-header-prefix=gtest/
+    )
+  endif()
+
+    set_target_properties(${_TARGET} PROPERTIES
+      COMPILE_OPTIONS "${_COMPILE_OPTIONS}"
+    )
+  endif()
+
+  if(CLANG_TIDY_AVAILABLE)
+    if(NOT "${_TARGET}" STREQUAL "cellml")
+        set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
+        set(_NO_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS -cppcoreguidelines-special-member-functions)
+        set(_NO_HICPP_SPECIAL_MEMBER_FUNCTIONS -hicpp-special-member-functions)
+        set(_NO_HICPP_VARARG -hicpp-vararg)
+    endif()
+
+    # The full list of Clang-Tidy checks can be found at
+    # https://clang.llvm.org/extra/clang-tidy/checks/list.html
+    set(_CLANG_TIDY_WARNINGS
+      -*
+      bugprone-*
+      cert-*
+      -cert-err58-cpp
+      cppcoreguidelines-*
+      -cppcoreguidelines-avoid-magic-numbers
+      -cppcoreguidelines-owning-memory
+      -cppcoreguidelines-pro-type-reinterpret-cast
+      ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
+      -cppcoreguidelines-slicing
+      ${_NO_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS}
+      fuchsia-*
+      -fuchsia-default-arguments
+      -fuchsia-statically-constructed-objects
+      google-*
+      -google-readability-todo
+      -google-runtime-references
+      hicpp-*
+      ${_NO_HICPP_SPECIAL_MEMBER_FUNCTIONS}
+      ${_NO_HICPP_VARARG}
+      llvm-*
+      misc-*
+      -misc-non-private-member-variables-in-classes
+      modernize-*
+      -modernize-raw-string-literal
+      performance-*
+      -performance-inefficient-string-concatenation
+      readability-*
+      -readability-magic-numbers
+    )
+    string(REPLACE ";" ","
+           _CLANG_TIDY_WARNINGS "${_CLANG_TIDY_WARNINGS}")
+    if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
+      set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_WARNINGS}")
+    endif()
+    set_target_properties(${_TARGET} PROPERTIES
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS}${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+    )
   endif()
 endfunction()
