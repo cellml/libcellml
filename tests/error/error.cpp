@@ -408,5 +408,5 @@ TEST(Error, specificationRule)
     e.setRule(libcellml::SpecificationRule::WHEN_ORDER);
     ++count;
     testSpecificationRule(e);
-    EXPECT_EQ(52u, count);
+    EXPECT_EQ(size_t(52), count);
 }

@@ -27,8 +27,8 @@ namespace libcellml {
  */
 struct Entity::EntityImpl
 {
-    Model *mParentModel; /**< Pointer to parent model. */
-    Component *mParentComponent; /**< Pointer to component model. */
+    Model *mParentModel = nullptr; /**< Pointer to parent model. */
+    Component *mParentComponent = nullptr; /**< Pointer to component model. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
@@ -52,15 +52,15 @@ Entity::Entity(const Entity &rhs)
     mPimpl->mId = rhs.mPimpl->mId;
 }
 
-Entity::Entity(Entity &&rhs)
+Entity::Entity(Entity &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Entity &Entity::operator=(Entity e)
+Entity &Entity::operator=(Entity rhs)
 {
-    e.swap(*this);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -82,9 +82,9 @@ std::string Entity::getId() const
 void *Entity::getParent() const
 {
     void *parent = nullptr;
-    if (mPimpl->mParentComponent) {
+    if (mPimpl->mParentComponent != nullptr) {
         parent = mPimpl->mParentComponent;
-    } else if (mPimpl->mParentModel) {
+    } else if (mPimpl->mParentModel != nullptr) {
         parent = mPimpl->mParentModel;
     }
     return parent;
@@ -106,13 +106,13 @@ void Entity::clearParent()
     mPimpl->mParentModel = nullptr;
 }
 
-bool Entity::hasParent(Component *c) const
+bool Entity::hasParent(Component *component) const
 {
     bool hasParent = false;
-    if (mPimpl->mParentComponent == c) {
+    if (mPimpl->mParentComponent == component) {
         hasParent = true;
-    } else if (mPimpl->mParentComponent) {
-        hasParent = mPimpl->mParentComponent->hasParent(c);
+    } else if (mPimpl->mParentComponent != nullptr) {
+        hasParent = mPimpl->mParentComponent->hasParent(component);
     }
 
     return hasParent;
