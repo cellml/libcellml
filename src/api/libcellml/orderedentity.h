@@ -32,8 +32,8 @@ public:
     OrderedEntity(); /**< Constructor */
     ~OrderedEntity() override; /**< Destructor */
     OrderedEntity(const OrderedEntity &rhs); /**< Copy constructor */
-    OrderedEntity(OrderedEntity &&rhs); /**< Move constructor */
-    OrderedEntity &operator=(OrderedEntity n); /**< Assignment operator */
+    OrderedEntity(OrderedEntity &&rhs) noexcept; /**< Move constructor */
+    OrderedEntity &operator=(OrderedEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Set the order of this entity.

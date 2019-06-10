@@ -27,7 +27,7 @@ unsigned int version()
     return LIBCELLML_LIBRARY_VERSION;
 }
 
-const std::string versionString()
+std::string versionString()
 {
     return LIBCELLML_LIBRARY_VERSION_STRING;
 }

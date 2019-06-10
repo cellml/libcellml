@@ -17,25 +17,68 @@ get_property(IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Development)
 
 find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
-find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
+find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
+find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
 find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
 find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
-find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
+find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
+
 find_package(Doxygen)
 find_package(Sphinx)
 find_package(SWIG 3)
 
-if(VALGRIND_EXE AND Python_Interpreter_FOUND)
-  set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run valgrind testing are available.")
+# Find libxml2
+set(HAVE_LIBXML2_CONFIG FALSE)
+if(MSVC)
+  # If we want to use config packages on Windows with Visual Studio,
+  # we need to have two find_package calls and explicitly state that
+  # we wish to use Config mode in the first call.  Finding LibXml2 in config mode
+  # is the preferred method so we will try this first quietly.
+  #
+  # This does change how we get information about include paths and such so we
+  # need to track how we found LibXml2.
+  find_package(LibXml2 CONFIG QUIET)
+  if(LibXml2_FOUND)
+    set(HAVE_LIBXML2_CONFIG TRUE)
+    foreach(_XML2_VAR LIBXML2_LIBRARY LIBXML2_INCLUDE_DIR LIBXML2_XMLLINT_EXECUTABLE)
+      if(DEFINED ${_XML2_VAR} AND NOT ${${_XML2_VAR}})
+        unset(${_XML2_VAR} CACHE)
+      endif()
+    endforeach()
+  else()
+    find_package(LibXml2 REQUIRED)
+    if(LibXml2_FOUND)
+      unset(LibXml2_DIR CACHE)
+    endif()
+  endif()
+else()
+  find_package(LibXml2 REQUIRED)
 endif()
-if(GCOV_EXE AND FIND_EXE AND Python_Interpreter_FOUND)
+
+if(CLANG_FORMAT_EXE AND GIT_EXE)
+  set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run the ClangFormat test are available.")
+endif()
+
+if(CLANG_TIDY_EXE)
+  set(CLANG_TIDY_AVAILABLE TRUE CACHE BOOL "Executable required to perform static analysis is available.")
+endif()
+
+if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND)
   set(COVERAGE_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run the coverage testing are available.")
 endif()
-if(CLANG_FORMAT_EXE AND GIT_EXE)
-  set(CLANG_FORMAT_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run the clang-format test are available.")
-endif()
+
 if(SWIG_EXECUTABLE)
-  set(BINDINGS_AVAILABLE TRUE CACHE BOOL "Executables required to generate bindings are available.")
+  set(BINDINGS_AVAILABLE TRUE CACHE BOOL "Executable required to generate bindings is available.")
 endif()
-mark_as_advanced(VALGRIND_EXE VALGRIND_TESTING_AVAILABLE GCOV_EXE FIND_EXE COVERAGE_TESTING_AVAILABLE SWIG_EXECUTABLE BINDINGS_AVAILABLE
-  CLANG_FORMAT_EXE GIT_EXE CLANG_FORMAT_TESTING_AVAILABLE)
+
+if(VALGRIND_EXE AND Python_Interpreter_FOUND)
+  set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executable required to run valgrind testing is available.")
+endif()
+
+mark_as_advanced(
+  CLANG_TIDY_EXE CLANG_TIDY_AVAILABLE
+  CLANG_FORMAT_EXE GIT_EXE CLANG_FORMAT_TESTING_AVAILABLE
+  FIND_EXE GCOV_EXE COVERAGE_TESTING_AVAILABLE
+  SWIG_EXECUTABLE BINDINGS_AVAILABLE
+  VALGRIND_EXE VALGRIND_TESTING_AVAILABLE
+)

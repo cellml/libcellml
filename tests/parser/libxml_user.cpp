@@ -39,7 +39,7 @@ TEST(Parser, parseValidXmlDirectlyUsingLibxml)
 
     // and now parse directly using libxml2
     xmlParserCtxtPtr context = xmlNewParserCtxt();
-    xmlDocPtr doc = xmlCtxtReadDoc(context, BAD_CAST e.c_str(), "/", nullptr, 0);
+    xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     EXPECT_NE(nullptr, doc);
     xmlFreeDoc(doc);
@@ -54,11 +54,11 @@ TEST(Parser, parseInvalidXmlDirectlyUsingLibxml)
     // parse the string using libcellml
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_NE(0u, parser.errorCount());
+    EXPECT_NE(size_t(0), parser.errorCount());
 
     // and now parse directly using libxml2
     xmlParserCtxtPtr context = xmlNewParserCtxt();
-    xmlDocPtr doc = xmlCtxtReadDoc(context, BAD_CAST e.c_str(), "/", nullptr, 0);
+    xmlDocPtr doc = xmlCtxtReadDoc(context, reinterpret_cast<const xmlChar *>(e.c_str()), "/", nullptr, 0);
     xmlFreeParserCtxt(context);
     EXPECT_EQ(nullptr, doc);
 }
