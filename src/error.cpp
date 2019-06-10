@@ -66,7 +66,7 @@ Error::Error(const Error &rhs)
     mPimpl->mWhen = rhs.mPimpl->mWhen;
 }
 
-Error::Error(Error &&rhs)
+Error::Error(Error &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -83,49 +83,49 @@ void Error::swap(Error &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-Error::Error(ModelPtr model)
+Error::Error(const ModelPtr &model)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mModel = model;
     mPimpl->mKind = Error::Kind::MODEL;
 }
 
-Error::Error(ComponentPtr component)
+Error::Error(const ComponentPtr &component)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mComponent = component;
     mPimpl->mKind = Error::Kind::COMPONENT;
 }
 
-Error::Error(ImportSourcePtr importSource)
+Error::Error(const ImportSourcePtr &importSource)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mImportSource = importSource;
     mPimpl->mKind = Error::Kind::IMPORT;
 }
 
-Error::Error(UnitsPtr units)
+Error::Error(const UnitsPtr &units)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mUnits = units;
     mPimpl->mKind = Error::Kind::UNITS;
 }
 
-Error::Error(VariablePtr variable)
+Error::Error(const VariablePtr &variable)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mVariable = variable;
     mPimpl->mKind = Error::Kind::VARIABLE;
 }
 
-Error::Error(ResetPtr reset)
+Error::Error(const ResetPtr &reset)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mReset = reset;
     mPimpl->mKind = Error::Kind::RESET;
 }
 
-Error::Error(WhenPtr when)
+Error::Error(const WhenPtr &when)
     : mPimpl(new ErrorImpl())
 {
     mPimpl->mWhen = when;
@@ -152,7 +152,7 @@ Error::Kind Error::getKind() const
     return mPimpl->mKind;
 }
 
-bool Error::isKind(const Error::Kind &kind) const
+bool Error::isKind(Kind kind) const
 {
     bool response = false;
     if (mPimpl->mKind == kind) {
@@ -253,7 +253,7 @@ WhenPtr Error::getWhen() const
  *
  * An internal map used to convert a SpecificationRule into its heading string.
  */
-std::map<SpecificationRule, const std::string> ruleToHeading = {
+static const std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::UNDEFINED, ""},
     {SpecificationRule::DATA_REPR_IDENTIFIER_UNICODE, "3.1.1"},
     {SpecificationRule::DATA_REPR_IDENTIFIER_LATIN_ALPHANUM, "3.1.2"},

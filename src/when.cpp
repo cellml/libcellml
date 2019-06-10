@@ -47,17 +47,17 @@ When::When(const When &rhs)
     mPimpl->mValue = rhs.mPimpl->mValue;
 }
 
-When::When(When &&rhs)
+When::When(When &&rhs) noexcept
     : OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-When &When::operator=(When e)
+When &When::operator=(When rhs)
 {
-    OrderedEntity::operator=(e);
-    e.swap(*this);
+    OrderedEntity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 

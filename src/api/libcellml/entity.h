@@ -35,8 +35,8 @@ public:
     Entity(); /**< Constructor */
     virtual ~Entity(); /**< Destructor */
     Entity(const Entity &rhs); /**< Copy constructor */
-    Entity(Entity &&rhs); /**< Move constructor */
-    Entity &operator=(Entity e); /**< Assignment operator */
+    Entity(Entity &&rhs) noexcept; /**< Move constructor */
+    Entity &operator=(Entity rhs); /**< Assignment operator */
 
     /**
      * @brief Set the @p id document identifier for this entity.
@@ -84,7 +84,7 @@ public:
      *
      * @param parent A pointer to a cellml::Model.
      */
-    void setParent(ModelPtr parent);
+    void setParent(const ModelPtr &parent);
 
     /**
      * @brief Sets the component as the parent of this entity.
@@ -95,7 +95,7 @@ public:
      *
      * @param parent A pointer to a cellml::Component.
      */
-    void setParent(ComponentPtr parent);
+    void setParent(const ComponentPtr &parent);
 
     /**
      * @brief Clear the pointer to the parent entity.
@@ -117,7 +117,7 @@ public:
      *
      * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
-    bool hasParent(ComponentPtr c) const;
+    bool hasParent(const ComponentPtr &component) const;
 
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */

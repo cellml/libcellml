@@ -25,8 +25,9 @@ limitations under the License.
  */
 TEST(Coverage, import)
 {
-    const std::string e = "";
-    libcellml::ImportSource i, im;
+    const std::string e;
+    libcellml::ImportSource i;
+    libcellml::ImportSource im;
 
     im = std::move(i);
 
@@ -39,7 +40,8 @@ TEST(Coverage, import)
 
 TEST(Coverage, printer)
 {
-    libcellml::Printer p, pm;
+    libcellml::Printer p;
+    libcellml::Printer pm;
 
     pm = std::move(p);
 
@@ -47,13 +49,14 @@ TEST(Coverage, printer)
     libcellml::Printer pc(pm);
 
     size_t error_count = pc.errorCount();
-    EXPECT_EQ(0u, error_count);
+    EXPECT_EQ(size_t(0), error_count);
 }
 
 TEST(Coverage, units)
 {
     const std::string e = "<units name=\"dimensionless\"/>\n";
-    libcellml::Units u, um;
+    libcellml::Units u;
+    libcellml::Units um;
 
     u.setName("dimensionless");
 
@@ -73,7 +76,8 @@ TEST(Coverage, when)
         "<reset>\n"
         "  <when/>\n"
         "</reset>\n";
-    libcellml::When w, wm;
+    libcellml::When w;
+    libcellml::When wm;
     libcellml::Reset r;
 
     wm = std::move(w);
@@ -176,7 +180,8 @@ TEST(Coverage, prefixToString)
 TEST(Coverage, variable)
 {
     const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
-    libcellml::Variable v, vm;
+    libcellml::Variable v;
+    libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
     v.setInitialValue(1.0);
@@ -226,7 +231,7 @@ TEST(Coverage, component)
 
     // Move constructor, assignment operator and swap method
     std::vector<libcellml::Component> vec;
-    vec.push_back(libcellml::Component());
+    vec.emplace_back();
 
     libcellml::Component rc;
     libcellml::Component ao;
@@ -237,7 +242,8 @@ TEST(Coverage, component)
 TEST(Coverage, error)
 {
     libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
-    libcellml::Error e, em;
+    libcellml::Error e;
+    libcellml::Error em;
     const std::string description = "test";
 
     e.setDescription(description);
@@ -255,7 +261,7 @@ TEST(Coverage, model)
 {
     // Move constructor, assignment operator and swap method
     std::vector<libcellml::Model> vec;
-    vec.push_back(libcellml::Model());
+    vec.emplace_back();
 
     libcellml::Model rm;
     libcellml::Model ao;

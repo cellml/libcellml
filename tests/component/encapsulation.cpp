@@ -281,8 +281,8 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
     libcellml::Parser parser = libcellml::Parser();
     libcellml::ModelPtr model = parser.parseModel(input);
 
-    EXPECT_EQ(0u, parser.errorCount());
-    EXPECT_EQ(1u, model->componentCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
 }
 
 TEST(Encapsulation, encapsulatedComponentMethods)
@@ -319,7 +319,7 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     const libcellml::ComponentPtr constC4 = c->getComponent("comp4");
     EXPECT_EQ("comp4", constC4->getName());
     EXPECT_FALSE(c->containsComponent("invalid"));
-    const libcellml::ComponentPtr const_c = c;
+    const libcellml::ComponentPtr &const_c = c;
     EXPECT_EQ(const_c->getComponent("invalid"), nullptr);
     EXPECT_FALSE(c->containsComponent("comp4new"));
     EXPECT_EQ(const_c->getComponent("comp4new"), nullptr);

@@ -41,8 +41,8 @@ public:
     Component(); /**< Constructor */
     ~Component() override; /**< Destructor */
     Component(const Component &rhs); /**< Copy constructor */
-    Component(Component &&rhs); /**< Move constructor */
-    Component &operator=(Component m); /**< Assignment operator */
+    Component(Component &&rhs) noexcept; /**< Move constructor */
+    Component &operator=(Component rhs); /**< Assignment operator */
 
     /**
      * @brief Set the source component for this component.

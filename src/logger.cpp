@@ -50,7 +50,7 @@ Logger::Logger(const Logger &rhs)
     mPimpl->mErrors = rhs.mPimpl->mErrors;
 }
 
-Logger::Logger(Logger &&rhs)
+Logger::Logger(Logger &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
@@ -72,7 +72,7 @@ void Logger::clearErrors()
     mPimpl->mErrors.clear();
 }
 
-void Logger::addError(const ErrorPtr error)
+void Logger::addError(const ErrorPtr &error)
 {
     mPimpl->mErrors.push_back(error);
 }
