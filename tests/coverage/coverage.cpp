@@ -133,20 +133,15 @@ TEST(Coverage, component)
 
 TEST(Coverage, error)
 {
-    libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
     libcellml::Error e;
     libcellml::Error em;
     const std::string description = "test";
 
     e.setDescription(description);
-    e.setKind(libcellml::Error::Kind::XML);
 
     em = std::move(e);
-    // Copy constructor
-    libcellml::Error ec(em);
 
-    EXPECT_EQ(description, ec.getDescription());
-    EXPECT_EQ(libcellml::Error::Kind::XML, ec.getKind());
+    EXPECT_EQ(description, em.getDescription());
 }
 
 TEST(Coverage, model)
