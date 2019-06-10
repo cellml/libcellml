@@ -35,7 +35,7 @@ public:
     Logger(); /**< Constructor */
     virtual ~Logger(); /**< Destructor */
     Logger(const Logger &rhs); /**< Copy constructor */
-    Logger(Logger &&rhs); /**< Move constructor */
+    Logger(Logger &&rhs) noexcept; /**< Move constructor */
     Logger &operator=(Logger rhs); /**< Assignment operator */
 
     /**
@@ -52,7 +52,7 @@ public:
      *
      * @param error The @c ErrorPtr to add.
      */
-    void addError(const ErrorPtr error);
+    void addError(const ErrorPtr &error);
 
     /**
      * @brief Get the number of errors.

@@ -33,13 +33,13 @@ namespace libcellml {
  *
  * An internal map used to convert a Variable InterfaceType enum class member into its string form.
  */
-std::map<Variable::InterfaceType, std::string> interfaceTypeToString = {
+static const std::map<Variable::InterfaceType, const std::string> interfaceTypeToString = {
     {Variable::InterfaceType::NONE, "none"},
     {Variable::InterfaceType::PRIVATE, "private"},
     {Variable::InterfaceType::PUBLIC, "public"},
     {Variable::InterfaceType::PUBLIC_AND_PRIVATE, "public_and_private"}};
 
-typedef std::weak_ptr<Variable> VariableWeakPtr; /**< Type definition for weak variable pointer. */
+using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak variable pointer. */
 
 /**
  * @brief The Variable::VariableImpl struct.
@@ -164,13 +164,13 @@ struct Variable::VariableImpl
 std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                        [=](VariableWeakPtr variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
 }
 
 std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable)
 {
     return std::find_if(mEquivalentVariables.begin(), mEquivalentVariables.end(),
-                        [=](VariableWeakPtr variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
+                        [=](const VariableWeakPtr &variableWeak) -> bool { return equivalentVariable == variableWeak.lock(); });
 }
 
 Variable::Variable()
@@ -195,17 +195,17 @@ Variable::Variable(const Variable &rhs)
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
-Variable::Variable(Variable &&rhs)
+Variable::Variable(Variable &&rhs) noexcept
     : NamedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Variable &Variable::operator=(Variable v)
+Variable &Variable::operator=(Variable rhs)
 {
-    NamedEntity::operator=(v);
-    v.swap(*this);
+    NamedEntity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -382,9 +382,9 @@ void Variable::setInitialValue(double initialValue)
     mPimpl->mInitialValue = convertDoubleToString(initialValue);
 }
 
-void Variable::setInitialValue(const VariablePtr &v)
+void Variable::setInitialValue(const VariablePtr &variable)
 {
-    mPimpl->mInitialValue = v->getName();
+    mPimpl->mInitialValue = variable->getName();
 }
 
 std::string Variable::getInitialValue() const
@@ -400,7 +400,6 @@ void Variable::setInterfaceType(const std::string &interfaceType)
 void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
 {
     auto search = interfaceTypeToString.find(interfaceType);
-    assert(search != interfaceTypeToString.end());
     const std::string interfaceTypeString = search->second;
     setInterfaceType(interfaceTypeString);
 }
@@ -428,7 +427,7 @@ void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const Va
 
 std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    std::string id = "";
+    std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
         std::string id_1 = variable1->mPimpl->getEquivalentMappingId(variable2);
         std::string id_2 = variable2->mPimpl->getEquivalentMappingId(variable1);
@@ -441,7 +440,7 @@ std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, cons
 
 std::string Variable::getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    std::string id = "";
+    std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
         std::string id_1 = variable1->mPimpl->getEquivalentConnectionId(variable2);
         std::string id_2 = variable2->mPimpl->getEquivalentConnectionId(variable1);

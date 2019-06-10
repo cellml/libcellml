@@ -37,7 +37,7 @@ TEST(Printer, printEmptyModelAllocatePointer)
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
-    libcellml::Model *m = new libcellml::Model();
+    auto m = new libcellml::Model();
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -48,7 +48,7 @@ TEST(Printer, printEmptyModelAllocatePointer)
 
 TEST(Printer, printEmptyUnits)
 {
-    const std::string e = "";
+    const std::string e;
     libcellml::Units u;
 
     libcellml::Printer printer;

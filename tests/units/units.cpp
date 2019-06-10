@@ -96,7 +96,7 @@ TEST(Units, addUnitsVariations)
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
     u->addUnit(libcellml::Units::StandardUnit::KELVIN, 0.001, 2.0, 5.5);
 
-    EXPECT_EQ(2u, u->unitCount());
+    EXPECT_EQ(size_t(2), u->unitCount());
 }
 
 TEST(Units, compoundUnitsUsingDefines)
@@ -223,15 +223,15 @@ TEST(Units, removeUnitsMethodsAndCount)
     EXPECT_TRUE(m.removeUnits(u3));
     a = printer.printModel(m);
     EXPECT_EQ(e3, a);
-    EXPECT_EQ(2u, m.unitsCount());
+    EXPECT_EQ(size_t(2), m.unitsCount());
 
     EXPECT_FALSE(m.removeUnits("gram"));
     EXPECT_FALSE(m.removeUnits(u5));
     EXPECT_FALSE(m.removeUnits(3));
-    EXPECT_EQ(2u, m.unitsCount());
+    EXPECT_EQ(size_t(2), m.unitsCount());
 
     EXPECT_TRUE(m.removeUnits(1));
-    EXPECT_EQ(1u, m.unitsCount());
+    EXPECT_EQ(size_t(1), m.unitsCount());
 
     m.removeAllUnits();
     a = printer.printModel(m);
@@ -281,11 +281,11 @@ TEST(Units, takeUnits)
 
     libcellml::UnitsPtr u4 = m.takeUnits("b_unit");
     EXPECT_EQ("b_unit", u4->getName());
-    EXPECT_EQ(2u, m.unitsCount());
+    EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u5 = m.takeUnits(1);
     EXPECT_EQ("c_unit", u5->getName());
-    EXPECT_EQ(1u, m.unitsCount());
+    EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_EQ(nullptr, m.takeUnits(7));
 
@@ -309,17 +309,17 @@ TEST(Units, replaceUnits)
     m.addUnits(u2);
 
     EXPECT_TRUE(m.replaceUnits("b_unit", u3));
-    EXPECT_EQ(2u, m.unitsCount());
+    EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u4 = m.takeUnits(1);
     EXPECT_EQ("c_unit", u4->getName());
-    EXPECT_EQ(1u, m.unitsCount());
+    EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_TRUE(m.replaceUnits(0, u4));
 
     u1 = m.getUnits(0);
     EXPECT_EQ("c_unit", u1->getName());
-    EXPECT_EQ(1u, m.unitsCount());
+    EXPECT_EQ(size_t(1), m.unitsCount());
 
     // Replace non-existent units.
     EXPECT_FALSE(m.replaceUnits("d_unit", u2));
@@ -446,8 +446,11 @@ TEST(Units, getUnitAttributes)
     u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
-    std::string reference, prefix, id;
-    double exponent, multiplier;
+    std::string reference;
+    std::string prefix;
+    std::string id;
+    double exponent;
+    double multiplier;
     u->getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("celsius", reference);
     EXPECT_EQ("", prefix);
@@ -492,14 +495,17 @@ TEST(Units, multipleUnitUsingStandardRef)
     u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::CENTI);
     u.addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
 
-    EXPECT_EQ(4u, u.unitCount());
+    EXPECT_EQ(size_t(4), u.unitCount());
 
     u.removeUnit(libcellml::Units::StandardUnit::AMPERE);
 
-    EXPECT_EQ(3u, u.unitCount());
+    EXPECT_EQ(size_t(3), u.unitCount());
 
-    std::string prefix, reference, id;
-    double exponent, multiplier;
+    std::string prefix;
+    std::string reference;
+    std::string id;
+    double exponent;
+    double multiplier;
     u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
     u.getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
@@ -519,20 +525,20 @@ TEST(Units, removeUnit)
     u.addUnit("siemens", "milli", -1.0);
     u.addUnit("meter", "1.7e10");
 
-    EXPECT_EQ(4u, u.unitCount());
+    EXPECT_EQ(size_t(4), u.unitCount());
     EXPECT_TRUE(u.removeUnit("siemens"));
     EXPECT_TRUE(u.removeUnit(libcellml::Units::StandardUnit::KELVIN));
     EXPECT_TRUE(u.removeUnit(1));
-    EXPECT_EQ(1u, u.unitCount());
+    EXPECT_EQ(size_t(1), u.unitCount());
 
     // Remove non-existent unit
     EXPECT_FALSE(u.removeUnit("gram"));
     EXPECT_FALSE(u.removeUnit(libcellml::Units::StandardUnit::BECQUEREL));
     EXPECT_FALSE(u.removeUnit(3));
-    EXPECT_EQ(1u, u.unitCount());
+    EXPECT_EQ(size_t(1), u.unitCount());
 
     u.removeAllUnits();
-    EXPECT_EQ(0u, u.unitCount());
+    EXPECT_EQ(size_t(0), u.unitCount());
 }
 
 TEST(Units, multipleAndParse)

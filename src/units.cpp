@@ -31,7 +31,7 @@ namespace libcellml {
  *
  * An internal map used to convert a Prefix into its string form.
  */
-std::map<Prefix, const std::string> prefixToString = {
+static const std::map<Prefix, const std::string> prefixToString = {
     {Prefix::ATTO, "atto"},
     {Prefix::CENTI, "centi"},
     {Prefix::DECA, "deca"},
@@ -58,7 +58,7 @@ std::map<Prefix, const std::string> prefixToString = {
  *
  * An internal map used to convert a standard unit into its string form.
  */
-std::map<Units::StandardUnit, const std::string> standardUnitToString = {
+static const std::map<Units::StandardUnit, const std::string> standardUnitToString = {
     {Units::StandardUnit::AMPERE, "ampere"},
     {Units::StandardUnit::BECQUEREL, "becquerel"},
     {Units::StandardUnit::CANDELA, "candela"},
@@ -144,7 +144,7 @@ Units::Units(const Units &rhs)
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
-Units::Units(Units &&rhs)
+Units::Units(Units &&rhs) noexcept
     : NamedEntity(std::move(rhs))
     , ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
@@ -152,11 +152,11 @@ Units::Units(Units &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Units &Units::operator=(Units e)
+Units &Units::operator=(Units rhs)
 {
-    NamedEntity::operator=(e);
-    ImportedEntity::operator=(e);
-    e.swap(*this);
+    NamedEntity::operator=(rhs);
+    ImportedEntity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -192,7 +192,7 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     if (multiplier != 1.0) {
         u.mMultiplier = convertDoubleToString(multiplier);
     }
-    if (id.length() > 0) {
+    if (!id.empty()) {
         u.mId = id;
     }
     mPimpl->mUnits.push_back(u);
@@ -202,7 +202,6 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
                     double multiplier, const std::string &id)
 {
     auto search = prefixToString.find(prefix);
-    assert(search != prefixToString.end());
     const std::string prefixString = search->second;
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
@@ -264,14 +263,14 @@ void Units::getUnitAttributes(StandardUnit standardRef, std::string &prefix, dou
     std::string dummyReference;
     const std::string reference = standardUnitToString.find(standardRef)->second;
     auto result = mPimpl->findUnit(reference);
-    getUnitAttributes(result - mPimpl->mUnits.begin(), dummyReference, prefix, exponent, multiplier, id);
+    getUnitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
     auto result = mPimpl->findUnit(reference);
-    getUnitAttributes(result - mPimpl->mUnits.begin(), dummyReference, prefix, exponent, multiplier, id);
+    getUnitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
 void Units::getUnitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
@@ -282,12 +281,12 @@ void Units::getUnitAttributes(size_t index, std::string &reference, std::string 
     }
     reference = u.mReference;
     prefix = u.mPrefix;
-    if (u.mExponent.length()) {
+    if (!u.mExponent.empty()) {
         exponent = std::stod(u.mExponent);
     } else {
         exponent = 1.0;
     }
-    if (u.mMultiplier.length()) {
+    if (!u.mMultiplier.empty()) {
         multiplier = std::stod(u.mMultiplier);
     } else {
         multiplier = 1.0;
@@ -311,7 +310,7 @@ bool Units::removeUnit(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
         status = true;
     }
 

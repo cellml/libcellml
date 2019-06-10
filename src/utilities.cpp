@@ -40,7 +40,7 @@ double convertToDouble(const std::string &candidate)
 
 bool hasNonWhitespaceCharacters(const std::string &input)
 {
-    return input.find_first_not_of(" \t\n\v\f\r") != input.npos;
+    return input.find_first_not_of(" \t\n\v\f\r") != std::string::npos;
 }
 
 std::string convertDoubleToString(double value)
@@ -70,7 +70,7 @@ bool isEuropeanNumericCharacter(char c)
 
 bool isNonNegativeCellMLInteger(const std::string &candidate)
 {
-    if (candidate.length() == 0) {
+    if (candidate.empty()) {
         return false;
     }
     return std::all_of(candidate.begin(), candidate.end(), isEuropeanNumericCharacter);
@@ -78,7 +78,7 @@ bool isNonNegativeCellMLInteger(const std::string &candidate)
 
 bool isCellMLInteger(const std::string &candidate)
 {
-    if (candidate.length() > 0 && *candidate.begin() == '-') {
+    if (!candidate.empty() && *candidate.begin() == '-') {
         return isNonNegativeCellMLInteger(candidate.substr(1));
     }
     return isNonNegativeCellMLInteger(candidate);
@@ -86,7 +86,7 @@ bool isCellMLInteger(const std::string &candidate)
 
 bool isCellMLExponent(const std::string &candidate)
 {
-    if (candidate.length() > 0 && *candidate.begin() == '+') {
+    if (!candidate.empty() && *candidate.begin() == '+') {
         return isCellMLInteger(candidate.substr(1));
     }
     return isCellMLInteger(candidate);
@@ -105,7 +105,7 @@ std::vector<size_t> findOccurences(const std::string &candidate, const std::stri
 
 bool isCellMLBasicReal(const std::string &candidate)
 {
-    if (candidate.length() > 0) {
+    if (!candidate.empty()) {
         std::vector<size_t> decimalOccurences = findOccurences(candidate, ".");
         if (decimalOccurences.size() < 2) {
             bool beginsMinus = *candidate.begin() == '-';
@@ -125,10 +125,10 @@ bool isCellMLBasicReal(const std::string &candidate)
 bool isCellMLReal(const std::string &candidate)
 {
     bool isReal = false;
-    if (candidate.length() > 0) {
+    if (!candidate.empty()) {
         std::string normalisedCandidate = candidate;
         std::vector<size_t> eOccurences = findOccurences(candidate, "E");
-        for (auto ePos : eOccurences) {
+        for (const auto &ePos : eOccurences) {
             normalisedCandidate.replace(ePos, 1, "e");
         }
         std::vector<size_t> lowerEOccurences = findOccurences(normalisedCandidate, "e");
