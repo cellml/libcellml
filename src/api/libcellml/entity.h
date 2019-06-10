@@ -113,7 +113,7 @@ public:
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
      *
-     * @param c The pointer to the component to test against.
+     * @param component The pointer to the component to test against.
      *
      * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
