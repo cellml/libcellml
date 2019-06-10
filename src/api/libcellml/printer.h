@@ -22,7 +22,6 @@ limitations under the License.
 
 #include <string>
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
@@ -36,8 +35,8 @@ public:
     Printer(); /**< Constructor */
     ~Printer() override; /**< Destructor */
     Printer(const Printer &rhs); /**< Copy constructor */
-    Printer(Printer &&rhs); /**< Move constructor */
-    Printer &operator=(Printer p); /**< Assignment operator */
+    Printer(Printer &&rhs) noexcept; /**< Move constructor */
+    Printer &operator=(Printer rhs); /**< Assignment operator */
 
     /**
      * @brief Serialise the @c Model to @c std::string.
@@ -48,7 +47,7 @@ public:
      *
      * @return The @c std::string representation of the @c Model.
      */
-    std::string printModel(ModelPtr model) const;
+    std::string printModel(ModelPtr smodel) const;
 
     /**
      * @brief Serialise the @c Model to @c std::string.
