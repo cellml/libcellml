@@ -70,15 +70,13 @@ TEST(Coverage, units)
 
 TEST(Coverage, when)
 {
-    const std::string e =
-        "<reset>\n"
-        "  <when/>\n"
-        "</reset>\n";
+    const std::string randomValue = "4738";
+
     libcellml::When w;
     libcellml::When wm;
     libcellml::Reset r;
 
-    w.setValue("4738");
+    w.setValue(randomValue);
     wm = std::move(w);
 
     libcellml::When wc(wm);
@@ -86,7 +84,7 @@ TEST(Coverage, when)
     libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
     r.addWhen(wp);
 
-    EXPECT_EQ("4738", wc.getValue());
+    EXPECT_EQ(randomValue, wc.getValue());
 }
 
 TEST(Coverage, unitsGetVariations)
@@ -177,13 +175,14 @@ TEST(Coverage, prefixToString)
 TEST(Coverage, variable)
 {
     const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
+    const std::string dimensionless = "dimensionless";
     libcellml::Variable v;
     libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
     v.setInitialValue(1.0);
     v.setInterfaceType("public");
-    u->setName("dimensionless");
+    u->setName(dimensionless);
     v.setUnits(u);
 
     vm = std::move(v);
@@ -191,7 +190,7 @@ TEST(Coverage, variable)
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ("dimensionless", vc.getUnits());
+    EXPECT_EQ(dimensionless, vc.getUnits());
 }
 
 TEST(Coverage, component)
