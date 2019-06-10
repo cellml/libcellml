@@ -502,12 +502,12 @@ std::string Printer::printModel(const ModelPtr &model) const
             if (comp->isImport()) {
                 ImportPair pair = std::make_pair(comp->getImportReference(), comp);
                 ImportSourcePtr importSource = comp->getImportSource();
-                if (importMap.count(importSource) == size_t(0)) {
+                if (importMap.count(importSource) == 0) {
                     importMap[importSource] = std::vector<ImportPair>();
                 }
                 importMap[importSource].push_back(pair);
                 incrementComponent = true;
-            } else if (comp->componentCount() != size_t(0)) {
+            } else if (comp->componentCount() != 0) {
                 // If the current component is a model component
                 // let the 'for' loop take care of the stack.
                 if (modelComponent != comp) {
