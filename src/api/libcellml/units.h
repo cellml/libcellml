@@ -42,8 +42,8 @@ public:
     Units(); /**< Constructor */
     ~Units() override; /**< Destructor */
     Units(const Units &rhs); /**< Copy constructor */
-    Units(Units &&rhs); /**< Move constructor */
-    Units &operator=(Units n); /**< Assignment operator */
+    Units(Units &&rhs) noexcept; /**< Move constructor */
+    Units &operator=(Units rhs); /**< Assignment operator */
 
     /**
      * @brief The Standard Unit enum class.

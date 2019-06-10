@@ -66,9 +66,9 @@ Component::Component()
 
 Component::~Component()
 {
-    if (mPimpl) {
-        for (std::vector<VariablePtr>::iterator iter = mPimpl->mVariables.begin(); iter != mPimpl->mVariables.end(); ++iter) {
-            (*iter)->clearParent();
+    if (mPimpl != nullptr) {
+        for (const auto &variable : mPimpl->mVariables) {
+            variable->clearParent();
         }
     }
     delete mPimpl;
@@ -84,7 +84,7 @@ Component::Component(const Component &rhs)
     mPimpl->mMath = rhs.mPimpl->mMath;
 }
 
-Component::Component(Component &&rhs)
+Component::Component(Component &&rhs) noexcept
     : ComponentEntity(std::move(rhs))
     , ImportedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
@@ -92,11 +92,11 @@ Component::Component(Component &&rhs)
     rhs.mPimpl = nullptr;
 }
 
-Component &Component::operator=(Component c)
+Component &Component::operator=(Component rhs)
 {
-    ComponentEntity::operator=(c);
-    ImportedEntity::operator=(c);
-    c.swap(*this);
+    ComponentEntity::operator=(rhs);
+    ImportedEntity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -144,7 +144,7 @@ bool Component::removeVariable(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mVariables.size()) {
-        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + index);
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + int64_t(index));
         status = true;
     }
 
@@ -243,7 +243,7 @@ bool Component::removeReset(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mResets.size()) {
-        mPimpl->mResets.erase(mPimpl->mResets.begin() + index);
+        mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
         status = true;
     }
 
