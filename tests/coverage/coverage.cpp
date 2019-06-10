@@ -76,30 +76,6 @@ TEST(Coverage, when)
     EXPECT_EQ(id, wm.getId());
 }
 
-TEST(Coverage, unitsGetVariations)
-{
-    libcellml::Model m;
-
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("a_unit");
-
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u);
-
-    libcellml::UnitsPtr un = m.getUnits(0);
-    EXPECT_EQ("a_unit", un->getName());
-    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).getUnits(0);
-    EXPECT_EQ("a_unit", uSn->getName());
-
-    libcellml::UnitsPtr uns = m.getUnits("a_unit");
-    EXPECT_EQ("a_unit", uns->getName());
-    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).getUnits("a_unit");
-    EXPECT_EQ("a_unit", uSns->getName());
-
-    EXPECT_EQ(nullptr, m.getUnits("b_unit"));
-    EXPECT_EQ(nullptr, m.getUnits(4));
-}
-
 TEST(Coverage, prefixToString)
 {
     libcellml::Model m;
