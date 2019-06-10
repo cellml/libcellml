@@ -21,8 +21,8 @@ limitations under the License.
 
 namespace libcellml {
 
-typedef std::weak_ptr<Model> ModelWeakPtr; /**< Type definition for weak model pointer. */
-typedef std::weak_ptr<Component> ComponentWeakPtr; /**< Type definition for weak component pointer. */
+using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */
+using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
 
 /**
  * @brief The Entity::EntityImpl struct.
@@ -56,15 +56,15 @@ Entity::Entity(const Entity &rhs)
     mPimpl->mId = rhs.mPimpl->mId;
 }
 
-Entity::Entity(Entity &&rhs)
+Entity::Entity(Entity &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Entity &Entity::operator=(Entity e)
+Entity &Entity::operator=(Entity rhs)
 {
-    e.swap(*this);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -93,12 +93,12 @@ ComponentPtr Entity::getParentComponent() const
     return mPimpl->mParentComponent.lock();
 }
 
-void Entity::setParent(ComponentPtr parent)
+void Entity::setParent(const ComponentPtr &parent)
 {
     mPimpl->mParentComponent = parent;
 }
 
-void Entity::setParent(ModelPtr parent)
+void Entity::setParent(const ModelPtr &parent)
 {
     mPimpl->mParentModel = parent;
 }
@@ -109,14 +109,14 @@ void Entity::clearParent()
     mPimpl->mParentModel = {};
 }
 
-bool Entity::hasParent(ComponentPtr c) const
+bool Entity::hasParent(const ComponentPtr &component) const
 {
     bool hasParent = false;
     ComponentPtr parentComponent = mPimpl->mParentComponent.lock();
-    if (parentComponent == c) {
+    if (parentComponent == component) {
         hasParent = true;
     } else if (parentComponent) {
-        hasParent = parentComponent->hasParent(c);
+        hasParent = parentComponent->hasParent(component);
     }
 
     return hasParent;

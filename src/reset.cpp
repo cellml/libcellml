@@ -60,17 +60,17 @@ Reset::Reset(const Reset &rhs)
     mPimpl->mWhens = rhs.mPimpl->mWhens;
 }
 
-Reset::Reset(Reset &&rhs)
+Reset::Reset(Reset &&rhs) noexcept
     : OrderedEntity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Reset &Reset::operator=(Reset e)
+Reset &Reset::operator=(Reset rhs)
 {
-    OrderedEntity::operator=(e);
-    e.swap(*this);
+    OrderedEntity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -79,7 +79,7 @@ void Reset::swap(Reset &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-void Reset::setVariable(VariablePtr variable)
+void Reset::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;
 }
@@ -99,7 +99,7 @@ bool Reset::removeWhen(size_t index)
     bool status = false;
 
     if (index < mPimpl->mWhens.size()) {
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + index);
+        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + int64_t(index));
         status = true;
     }
 
@@ -149,7 +149,7 @@ WhenPtr Reset::takeWhen(size_t index)
     WhenPtr when = nullptr;
     if (index < mPimpl->mWhens.size()) {
         when = mPimpl->mWhens.at(index);
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + index);
+        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + int64_t(index));
     }
 
     return when;
@@ -159,7 +159,7 @@ bool Reset::replaceWhen(size_t index, const WhenPtr &when)
 {
     bool status = false;
     if (removeWhen(index)) {
-        mPimpl->mWhens.insert(mPimpl->mWhens.begin() + index, when);
+        mPimpl->mWhens.insert(mPimpl->mWhens.begin() + int64_t(index), when);
         status = true;
     }
 

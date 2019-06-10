@@ -454,7 +454,6 @@ TEST(Variable, getVariableMethods)
     EXPECT_EQ("variable4", a4);
 
     // Get invalid index
-    EXPECT_EQ(nullptr, c->getVariable(-3));
     EXPECT_EQ(nullptr, c->getVariable(7));
 
     // Get non-existent variable by string
@@ -864,5 +863,5 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
 
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(0u, parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 }

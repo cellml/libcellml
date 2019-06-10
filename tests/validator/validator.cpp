@@ -31,7 +31,7 @@ TEST(Validator, namedModel)
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName("awesomeName");
     validator.validateModel(model);
-    EXPECT_EQ(0u, validator.errorCount());
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
 
 TEST(Validator, unnamedModel)
@@ -40,7 +40,7 @@ TEST(Validator, unnamedModel)
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     validator.validateModel(model);
-    EXPECT_EQ(2u, validator.errorCount());
+    EXPECT_EQ(size_t(2), validator.errorCount());
     EXPECT_EQ(expectedError, validator.getError(1)->getDescription());
     EXPECT_EQ("4.2.1", validator.getError(1)->getSpecificationHeading());
 }
@@ -94,7 +94,7 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 
     v.validateModel(model);
 
-    EXPECT_EQ(10u, v.errorCount());
+    EXPECT_EQ(size_t(10), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
         EXPECT_EQ(expectedSpecificationHeadings.at(i), v.getError(i)->getSpecificationHeading());
@@ -103,7 +103,8 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 
 TEST(Validator, moveCopyValidatorWithUnnamedModel)
 {
-    libcellml::Validator v, vm;
+    libcellml::Validator v;
+    libcellml::Validator vm;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     v.validateModel(model);
 
@@ -125,7 +126,7 @@ TEST(Validator, namedModelWithUnnamedComponent)
     model->setName("awesomeName");
     model->addComponent(component);
     validator.validateModel(model);
-    EXPECT_EQ(2u, validator.errorCount());
+    EXPECT_EQ(size_t(2), validator.errorCount());
     EXPECT_EQ(expectedError, validator.getError(1)->getDescription());
 }
 
@@ -273,7 +274,7 @@ TEST(Validator, importUnits)
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 
     // Invalid units import- missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
@@ -282,7 +283,7 @@ TEST(Validator, importUnits)
     importedUnits2->setSourceUnits(imp2, "");
     m->addUnits(importedUnits2);
     v.validateModel(m);
-    EXPECT_EQ(3u, v.errorCount());
+    EXPECT_EQ(size_t(3), v.errorCount());
 
     // Invalid units import - duplicate refs
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
@@ -292,7 +293,7 @@ TEST(Validator, importUnits)
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
     v.validateModel(m);
-    EXPECT_EQ(4u, v.errorCount());
+    EXPECT_EQ(size_t(4), v.errorCount());
 
     // Invalid units import - unnamed units
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
@@ -301,7 +302,7 @@ TEST(Validator, importUnits)
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
     v.validateModel(m);
-    EXPECT_EQ(6u, v.errorCount());
+    EXPECT_EQ(size_t(6), v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -331,7 +332,7 @@ TEST(Validator, importComponents)
     importedComponent->setSourceComponent(imp, "component_in_that_model");
     m->addComponent(importedComponent);
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 
     // Invalid component import- missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
@@ -340,7 +341,7 @@ TEST(Validator, importComponents)
     importedComponent2->setSourceComponent(imp2, "");
     m->addComponent(importedComponent2);
     v.validateModel(m);
-    EXPECT_EQ(3u, v.errorCount());
+    EXPECT_EQ(size_t(3), v.errorCount());
 
     // Invalid component import - duplicate refs
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
@@ -350,7 +351,7 @@ TEST(Validator, importComponents)
     importedComponent3->setSourceComponent(imp3, "component_in_that_model");
     m->addComponent(importedComponent3);
     v.validateModel(m);
-    EXPECT_EQ(4u, v.errorCount());
+    EXPECT_EQ(size_t(4), v.errorCount());
 
     // Invalid component import - unnamed component
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
@@ -359,7 +360,7 @@ TEST(Validator, importComponents)
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
     v.validateModel(m);
-    EXPECT_EQ(6u, v.errorCount());
+    EXPECT_EQ(size_t(6), v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -373,7 +374,7 @@ TEST(Validator, validMath)
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
         "    <eq/>\n"
-        "    <ci> C </ci>\n"
+        "    <ci>C</ci>\n"
         "    <apply>\n"
         "      <plus/>\n"
         "      <ci>A</ci>\n"
@@ -407,7 +408,7 @@ TEST(Validator, validMath)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 }
 
 TEST(Validator, invalidMath)
@@ -491,7 +492,7 @@ TEST(Validator, invalidMathMLElements)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(6u, v.errorCount());
+    EXPECT_EQ(size_t(6), v.errorCount());
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
@@ -513,7 +514,7 @@ TEST(Validator, invalidMathMLVariables)
         "      <apply>\n"
         "        <plus/>\n"
         "        <bvar>\n"
-        "        <ci>new_bvar</ci>\n"
+        "          <ci>new_bvar</ci>\n"
         "        </bvar>\n"
         "        <apply>\n"
         "          <plus/>\n"
@@ -525,7 +526,10 @@ TEST(Validator, invalidMathMLVariables)
         "              <plus/>\n"
         "              <ci/>\n"
         "              <bvar>\n"
-        "              <ci>B</ci>\n"
+        "                <ci>\n"
+        "                  <!-- Invalid bvar -->\n"
+        "                  B\n"
+        "                </ci>\n"
         "              </bvar>\n"
         "            </apply>\n"
         "          </apply>\n"
@@ -539,8 +543,9 @@ TEST(Validator, invalidMathMLVariables)
         "Math has a 'nonsense' element that is not a supported MathML element.",
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "MathML ci element has the child text 'answer', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
-        "MathML ci element has a whitespace-only child element.",
+        "MathML ci element has an empty child element.",
         "MathML ci element has no child.",
+        "MathML ci element has an empty child element.",
         "No declaration for element nonsense.",
         "Element nonsense is not declared in ci list of possible children."};
 
@@ -590,7 +595,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "      <apply>\n"
         "        <plus/>\n"
         "        <bvar>\n"
-        "        <ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>\n"
+        "          <ci cellml:units=\"dimensionless\" cellml:value=\"zero\">new_bvar</ci>\n"
         "        </bvar>\n"
         "        <apply>\n"
         "          <plus/>\n"
@@ -602,7 +607,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "              <plus/>\n"
         "              <ci/>\n"
         "              <bvar>\n"
-        "              <ci cellml:units=\"9wayswrong\">B</ci>\n"
+        "                <ci cellml:units=\"9wayswrong\">B</ci>\n"
         "              </bvar>\n"
         "              <apply>\n"
         "                <plus/>\n"
@@ -619,7 +624,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
         "Math in component 'componentName' contains 'B' as a bvar ci element but it is already a variable name.",
         "Math has a cn element with a cellml:units attribute 'invalid' that is not a valid reference to units in component 'componentName' or a standard unit.",
         "Math ci element has an invalid attribute type 'value' in the cellml namespace.",
-        "MathML ci element has a whitespace-only child element.",
+        "MathML ci element has an empty child element.",
         "MathML ci element has the child text 'undefined_variable', which does not correspond with any variable names present in component 'componentName' and is not a variable defined within a bvar element.",
         "MathML ci element has no child.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
@@ -686,7 +691,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     libcellml::Validator v;
     v.validateModel(m);
@@ -1018,5 +1023,5 @@ TEST(Validator, validMathCnElements)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 }

@@ -58,12 +58,7 @@ std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &unit
 }
 
 Model::Model()
-#ifndef SWIG
-    : std::enable_shared_from_this<Model>()
-    , mPimpl(new ModelImpl())
-#else
     : mPimpl(new ModelImpl())
-#endif
 {
 }
 
@@ -75,27 +70,24 @@ Model::~Model()
 Model::Model(const Model &rhs)
     : ComponentEntity(rhs)
 #ifndef SWIG
-    , std::enable_shared_from_this<Model>()
+    , std::enable_shared_from_this<Model>(rhs)
 #endif
     , mPimpl(new ModelImpl())
 {
     mPimpl->mUnits = rhs.mPimpl->mUnits;
 }
 
-Model::Model(Model &&rhs)
+Model::Model(Model &&rhs) noexcept
     : ComponentEntity(std::move(rhs))
-#ifndef SWIG
-    , std::enable_shared_from_this<Model>()
-#endif
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Model &Model::operator=(Model m)
+Model &Model::operator=(Model rhs)
 {
-    ComponentEntity::operator=(m);
-    m.swap(*this);
+    ComponentEntity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -104,12 +96,12 @@ void Model::swap(Model &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-void Model::doAddComponent(const ComponentPtr &c)
+void Model::doAddComponent(const ComponentPtr &component)
 {
     // Check for cycles.
-    if (!hasParent(c)) {
-        c->setParent(shared_from_this());
-        ComponentEntity::doAddComponent(c);
+    if (!hasParent(component)) {
+        component->setParent(shared_from_this());
+        ComponentEntity::doAddComponent(component);
     }
 }
 
@@ -122,7 +114,7 @@ bool Model::removeUnits(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mUnits.size()) {
-        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + index);
+        mPimpl->mUnits.erase(mPimpl->mUnits.begin() + int64_t(index));
         status = true;
     }
 
@@ -203,14 +195,14 @@ UnitsPtr Model::takeUnits(size_t index)
 
 UnitsPtr Model::takeUnits(const std::string &name)
 {
-    return takeUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin());
+    return takeUnits(size_t(mPimpl->findUnits(name) - mPimpl->mUnits.begin()));
 }
 
 bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 {
     bool status = false;
     if (removeUnits(index)) {
-        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + index, units);
+        mPimpl->mUnits.insert(mPimpl->mUnits.begin() + int64_t(index), units);
         status = true;
     }
 
@@ -219,12 +211,12 @@ bool Model::replaceUnits(size_t index, const UnitsPtr &units)
 
 bool Model::replaceUnits(const std::string &name, const UnitsPtr &units)
 {
-    return replaceUnits(mPimpl->findUnits(name) - mPimpl->mUnits.begin(), units);
+    return replaceUnits(size_t(mPimpl->findUnits(name) - mPimpl->mUnits.begin()), units);
 }
 
 bool Model::replaceUnits(const UnitsPtr &oldUnits, const UnitsPtr &newUnits)
 {
-    return replaceUnits(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin(), newUnits);
+    return replaceUnits(size_t(mPimpl->findUnits(oldUnits) - mPimpl->mUnits.begin()), newUnits);
 }
 
 size_t Model::unitsCount() const
@@ -251,19 +243,19 @@ std::string resolvePath(const std::string &filename, const std::string &base)
     return path;
 }
 
-void resolveImport(ImportedEntityPtr importedEntity,
+void resolveImport(const ImportedEntityPtr &importedEntity,
                    const std::string &baseFile)
 {
     if (importedEntity->isImport()) {
-        libcellml::ImportSourcePtr importSource = importedEntity->getImportSource();
+        ImportSourcePtr importSource = importedEntity->getImportSource();
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->getUrl(), baseFile);
             std::ifstream file(url);
             if (file.good()) {
                 std::stringstream buffer;
                 buffer << file.rdbuf();
-                libcellml::Parser parser;
-                libcellml::ModelPtr model = parser.parseModel(buffer.str());
+                Parser parser;
+                ModelPtr model = parser.parseModel(buffer.str());
                 importSource->setModel(model);
                 model->resolveImports(url);
             }
@@ -271,7 +263,8 @@ void resolveImport(ImportedEntityPtr importedEntity,
     }
 }
 
-void resolveComponentImports(ComponentEntityPtr parentComponentEntity, const std::string &baseFile)
+void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
+                             const std::string &baseFile)
 {
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
         libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
@@ -292,11 +285,11 @@ void Model::resolveImports(const std::string &baseFile)
     resolveComponentImports(shared_from_this(), baseFile);
 }
 
-bool isUnresolvedImport(ImportedEntityPtr importedEntity)
+bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
 {
     bool unresolvedImport = false;
     if (importedEntity->isImport()) {
-        libcellml::ImportSourcePtr importedSource = importedEntity->getImportSource();
+        ImportSourcePtr importedSource = importedEntity->getImportSource();
         if (!importedSource->hasModel()) {
             unresolvedImport = true;
         }
@@ -304,16 +297,16 @@ bool isUnresolvedImport(ImportedEntityPtr importedEntity)
     return unresolvedImport;
 }
 
-bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity);
+bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity);
 
-bool doHasUnresolvedComponentImports(libcellml::ComponentPtr component)
+bool doHasUnresolvedComponentImports(const ComponentPtr &component)
 {
     bool unresolvedImports = false;
     if (component->isImport()) {
         unresolvedImports = isUnresolvedImport(component);
         if (!unresolvedImports) {
             // Check that the imported component can import all it needs from its model.
-            libcellml::ImportSourcePtr importedSource = component->getImportSource();
+            ImportSourcePtr importedSource = component->getImportSource();
             if (importedSource->hasModel()) {
                 ModelPtr importedModel = importedSource->getModel();
                 ComponentPtr importedComponent = importedModel->getComponent(component->getImportReference());
@@ -326,7 +319,7 @@ bool doHasUnresolvedComponentImports(libcellml::ComponentPtr component)
     return unresolvedImports;
 }
 
-bool hasUnresolvedComponentImports(ComponentEntityPtr parentComponentEntity)
+bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEntity)
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n) {

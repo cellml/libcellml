@@ -51,17 +51,17 @@ OrderedEntity::OrderedEntity(const OrderedEntity &rhs)
     mPimpl->mOrderSet = rhs.mPimpl->mOrderSet;
 }
 
-OrderedEntity::OrderedEntity(OrderedEntity &&rhs)
+OrderedEntity::OrderedEntity(OrderedEntity &&rhs) noexcept
     : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-OrderedEntity &OrderedEntity::operator=(OrderedEntity e)
+OrderedEntity &OrderedEntity::operator=(OrderedEntity rhs)
 {
-    Entity::operator=(e);
-    e.swap(*this);
+    Entity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 

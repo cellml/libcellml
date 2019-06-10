@@ -173,11 +173,11 @@ TEST(Model, countComponents)
     c1->setName("child1");
     c2->setName("child2");
 
-    EXPECT_EQ(0u, m->componentCount());
+    EXPECT_EQ(size_t(0), m->componentCount());
 
     m->addComponent(c1);
     m->addComponent(c2);
-    EXPECT_EQ(2u, m->componentCount());
+    EXPECT_EQ(size_t(2), m->componentCount());
 }
 
 TEST(Model, containsComponent)
@@ -217,9 +217,9 @@ TEST(Model, removeComponent)
     m->addComponent(c1);
     m->addComponent(c2);
 
-    EXPECT_EQ(2u, m->componentCount());
+    EXPECT_EQ(size_t(2), m->componentCount());
     EXPECT_TRUE(m->removeComponent(0));
-    EXPECT_EQ(1u, m->componentCount());
+    EXPECT_EQ(size_t(1), m->componentCount());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -231,13 +231,13 @@ TEST(Model, removeComponent)
 
     // Remove the first occurence of "child1".
     EXPECT_TRUE(m->removeComponent("child1"));
-    EXPECT_EQ(2u, m->componentCount());
+    EXPECT_EQ(size_t(2), m->componentCount());
     a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change to model.
     EXPECT_FALSE(m->removeComponent("child3"));
-    EXPECT_EQ(2u, m->componentCount());
+    EXPECT_EQ(size_t(2), m->componentCount());
 }
 
 TEST(Model, getComponentMethods)
@@ -284,7 +284,7 @@ TEST(Model, takeComponentMethods)
     m->addComponent(c2);
 
     libcellml::ComponentPtr c02 = m->takeComponent(1);
-    EXPECT_EQ(1u, m->componentCount());
+    EXPECT_EQ(size_t(1), m->componentCount());
 
     EXPECT_EQ(m->takeComponent(4), nullptr);
 
@@ -293,7 +293,7 @@ TEST(Model, takeComponentMethods)
 
     libcellml::ComponentPtr c01 = m->takeComponent("child1");
     EXPECT_NE(nullptr, c01);
-    EXPECT_EQ(0u, m->componentCount());
+    EXPECT_EQ(size_t(0), m->componentCount());
 
     EXPECT_EQ("child1", c01->getName());
     EXPECT_EQ(nullptr, c01->getParentModel());
@@ -303,9 +303,9 @@ TEST(Model, takeComponentMethods)
     EXPECT_EQ(e, a);
 
     // Expect no change.
-    EXPECT_EQ(0u, m->componentCount());
+    EXPECT_EQ(size_t(0), m->componentCount());
     EXPECT_EQ(nullptr, m->takeComponent("child4"));
-    EXPECT_EQ(0u, m->componentCount());
+    EXPECT_EQ(size_t(0), m->componentCount());
 }
 
 static int count = 0;
@@ -317,12 +317,12 @@ public:
     big_and_complicated()
         : id(count + 101)
     {
-        count++;
+        ++count;
     }
 
     ~big_and_complicated()
     {
-        count--;
+        --count;
     }
 };
 
@@ -341,28 +341,28 @@ struct structure
         m_data->id = rhs.m_data->id;
     }
 
-    structure(structure &&rhs)
+    structure(structure &&rhs) noexcept
         : m_data(rhs.m_data)
     {
         std::cout << "structure move constructor: " << m_data->id << std::endl;
         rhs.m_data = nullptr;
     }
 
-    structure &operator=(structure r)
+    structure &operator=(structure rhs)
     {
-        r.swap(*this);
+        rhs.swap(*this);
         return *this;
     }
 
-    void swap(structure &r) throw()
+    void swap(structure &rhs) noexcept
     {
-        std::swap(m_data, r.m_data);
+        std::swap(m_data, rhs.m_data);
     }
 
     ~structure()
     {
         std::cout << "structure destructor: ";
-        if (m_data) {
+        if (m_data != nullptr) {
             std::cout << m_data->id << std::endl;
         } else {
             std::cout << std::endl;
@@ -451,7 +451,7 @@ TEST(Model, constructors)
     EXPECT_EQ(e, a);
 
     //Testing copy constructor
-    libcellml::ModelPtr m3(m);
+    libcellml::ModelPtr &m3(m);
     EXPECT_EQ("my_name", m3->getName());
 
     // Testing model assignment
