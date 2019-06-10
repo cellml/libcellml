@@ -473,7 +473,8 @@ TEST(Component, constructors)
     const std::string n = "my_name";
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->getComponent(0);
-    libcellml::ComponentPtr c1, c2;
+    libcellml::ComponentPtr c1;
+    libcellml::ComponentPtr c2;
 
     c->setName(n);
     c->addComponent(std::make_shared<libcellml::Component>());
