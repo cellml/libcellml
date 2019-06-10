@@ -76,67 +76,6 @@ TEST(Coverage, when)
     EXPECT_EQ(id, wm.getId());
 }
 
-TEST(Coverage, prefixToString)
-{
-    libcellml::Model m;
-    libcellml::Printer printer;
-
-    std::vector<std::string> prefixString =
-        {"atto",
-         "centi",
-         "deca",
-         "deci",
-         "exa",
-         "femto",
-         "giga",
-         "hecto",
-         "kilo",
-         "mega",
-         "micro",
-         "milli",
-         "nano",
-         "peta",
-         "pico",
-         "tera",
-         "yocto",
-         "yotta",
-         "zepto",
-         "zetta"};
-    std::vector<libcellml::Prefix> prefixEnum =
-        {libcellml::Prefix::ATTO,
-         libcellml::Prefix::CENTI,
-         libcellml::Prefix::DECA,
-         libcellml::Prefix::DECI,
-         libcellml::Prefix::EXA,
-         libcellml::Prefix::FEMTO,
-         libcellml::Prefix::GIGA,
-         libcellml::Prefix::HECTO,
-         libcellml::Prefix::KILO,
-         libcellml::Prefix::MEGA,
-         libcellml::Prefix::MICRO,
-         libcellml::Prefix::MILLI,
-         libcellml::Prefix::NANO,
-         libcellml::Prefix::PETA,
-         libcellml::Prefix::PICO,
-         libcellml::Prefix::TERA,
-         libcellml::Prefix::YOCTO,
-         libcellml::Prefix::YOTTA,
-         libcellml::Prefix::ZEPTO,
-         libcellml::Prefix::ZETTA};
-    for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
-        libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-        u->setName("abcdefg");
-        u->addUnit("empty", prefixEnum[i]);
-
-        m.addUnits(u);
-
-        const std::string a = printer.printModel(m);
-        std::size_t found = a.find(prefixString[i]);
-        EXPECT_NE(std::string::npos, found);
-        m.removeAllUnits();
-    }
-}
-
 TEST(Coverage, variable)
 {
     const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
