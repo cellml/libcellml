@@ -330,7 +330,7 @@ void Variable::setUnits(const std::string &name)
 
 void Variable::setUnits(const UnitsPtr &units)
 {
-    mPimpl->mUnits = units->getName();
+    mPimpl->mUnits = units->name();
 }
 
 std::string Variable::getUnits() const
@@ -350,7 +350,7 @@ void Variable::setInitialValue(double initialValue)
 
 void Variable::setInitialValue(const VariablePtr &variable)
 {
-    mPimpl->mInitialValue = variable->getName();
+    mPimpl->mInitialValue = variable->name();
 }
 
 std::string Variable::getInitialValue() const

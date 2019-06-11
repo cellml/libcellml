@@ -103,14 +103,14 @@ TEST(Coverage, unitsGetVariations)
     m.addUnits(u);
 
     libcellml::UnitsPtr un = m.units(0);
-    EXPECT_EQ("a_unit", un->getName());
+    EXPECT_EQ("a_unit", un->name());
     libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).units(0);
-    EXPECT_EQ("a_unit", uSn->getName());
+    EXPECT_EQ("a_unit", uSn->name());
 
     libcellml::UnitsPtr uns = m.units("a_unit");
-    EXPECT_EQ("a_unit", uns->getName());
+    EXPECT_EQ("a_unit", uns->name());
     libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).units("a_unit");
-    EXPECT_EQ("a_unit", uSns->getName());
+    EXPECT_EQ("a_unit", uSns->name());
 
     EXPECT_EQ(nullptr, m.units("b_unit"));
     EXPECT_EQ(nullptr, m.units(4));

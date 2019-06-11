@@ -61,7 +61,7 @@ class ImportSourceTestCase(unittest.TestCase):
         x = ImportSource()
         self.assertIsNone(x.model())
         x.setModel(model)
-        self.assertEqual(x.model().getName(), model.getName())
+        self.assertEqual(x.model().name(), model.name())
         x.setModel(None)
         self.assertIsNone(x.model())
 

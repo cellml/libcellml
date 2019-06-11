@@ -169,7 +169,7 @@ class ComponentTestCase(unittest.TestCase):
         self.assertIsNone(c.variable(1))
         self.assertIsNone(c.variable(-1))
         self.assertIsNotNone(c.variable(0))
-        self.assertEqual(c.variable(0).getName(), name)
+        self.assertEqual(c.variable(0).name(), name)
         del(c, v, name)
 
         # VariablePtr variable(const std::string &name)
@@ -181,7 +181,7 @@ class ComponentTestCase(unittest.TestCase):
         c.addVariable(v)
         self.assertIsNone(c.variable('red'))
         self.assertIsNotNone(c.variable(name))
-        self.assertEqual(c.variable(name).getName(), name)
+        self.assertEqual(c.variable(name).name(), name)
 
     def test_variable_count(self):
         from libcellml import Component, Variable

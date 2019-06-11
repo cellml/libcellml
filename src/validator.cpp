@@ -273,7 +273,7 @@ void Validator::validateModel(const ModelPtr &model)
     // Clear any pre-existing errors in ths validator instance.
     clearErrors();
     // Check for a valid name attribute.
-    if (!mPimpl->isCellmlIdentifier(model->getName())) {
+    if (!mPimpl->isCellmlIdentifier(model->name())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Model does not have a valid name attribute.");
         err->setModel(model);
@@ -288,7 +288,7 @@ void Validator::validateModel(const ModelPtr &model)
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
             // Check for duplicate component names in this model.
-            std::string componentName = component->getName();
+            std::string componentName = component->name();
             if (!componentName.empty()) {
                 if (component->isImport()) {
                     // Check for a component_ref.
@@ -319,7 +319,7 @@ void Validator::validateModel(const ModelPtr &model)
                         if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
                             == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() + "' contains multiple imported components from '" + importSource + "' with the same component_ref attribute '" + componentRef + "'.");
+                            err->setDescription("Model '" + model->name() + "' contains multiple imported components from '" + importSource + "' with the same component_ref attribute '" + componentRef + "'.");
                             err->setModel(model);
                             err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                             addError(err);
@@ -331,7 +331,7 @@ void Validator::validateModel(const ModelPtr &model)
                 }
                 if (std::find(componentNames.begin(), componentNames.end(), componentName) != componentNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Model '" + model->getName() + "' contains multiple components with the name '" + componentName + "'. Valid component names must be unique to their model.");
+                    err->setDescription("Model '" + model->name() + "' contains multiple components with the name '" + componentName + "'. Valid component names must be unique to their model.");
                     err->setModel(model);
                     addError(err);
                 }
@@ -348,7 +348,7 @@ void Validator::validateModel(const ModelPtr &model)
         std::vector<std::string> unitsImportSources;
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             UnitsPtr units = model->units(i);
-            std::string unitsName = units->getName();
+            std::string unitsName = units->name();
             if (!unitsName.empty()) {
                 if (units->isImport()) {
                     // Check for a units_ref.
@@ -379,7 +379,7 @@ void Validator::validateModel(const ModelPtr &model)
                         if ((std::find(unitsImportSources.begin(), unitsImportSources.end(), importSource) - unitsImportSources.begin())
                             == (std::find(unitsRefs.begin(), unitsRefs.end(), unitsRef) - unitsRefs.begin())) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->getName() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
+                            err->setDescription("Model '" + model->name() + "' contains multiple imported units from '" + importSource + "' with the same units_ref attribute '" + unitsRef + "'.");
                             err->setModel(model);
                             err->setRule(SpecificationRule::IMPORT_UNITS_REF);
                             addError(err);
@@ -392,7 +392,7 @@ void Validator::validateModel(const ModelPtr &model)
                 // Check for duplicate units names in this model.
                 if (std::find(unitsNames.begin(), unitsNames.end(), unitsName) != unitsNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Model '" + model->getName() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.");
+                    err->setDescription("Model '" + model->name() + "' contains multiple units with the name '" + unitsName + "'. Valid units names must be unique to their model.");
                     err->setModel(model);
                     err->setRule(SpecificationRule::UNITS_NAME_UNIQUE);
                     addError(err);
@@ -413,7 +413,7 @@ void Validator::validateModel(const ModelPtr &model)
 void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 {
     // Check for a valid name attribute.
-    if (!isCellmlIdentifier(component->getName())) {
+    if (!isCellmlIdentifier(component->name())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setComponent(component);
         if (component->isImport()) {
@@ -431,11 +431,11 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         // Check for duplicate variable names and construct vector of valid names in case
         // we have a variable initial_value set by reference.
         for (size_t i = 0; i < component->variableCount(); ++i) {
-            std::string variableName = component->variable(i)->getName();
+            std::string variableName = component->variable(i)->name();
             if (!variableName.empty()) {
                 if (std::find(variableNames.begin(), variableNames.end(), variableName) != variableNames.end()) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->getName() + "' contains multiple variables with the name '" + variableName + "'. Valid variable names must be unique to their component.");
+                    err->setDescription("Component '" + component->name() + "' contains multiple variables with the name '" + variableName + "'. Valid variable names must be unique to their component.");
                     err->setComponent(component);
                     err->setRule(SpecificationRule::VARIABLE_NAME);
                     mValidator->addError(err);
@@ -459,7 +459,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
             if (reset->isOrderSet()) {
                 if (std::find(resetOrders.begin(), resetOrders.end(), resetOrder) != resetOrders.end()) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->getName() + "' contains multiple resets with order '" + convertIntToString(resetOrder) + "'.");
+                    err->setDescription("Component '" + component->name() + "' contains multiple resets with order '" + convertIntToString(resetOrder) + "'.");
                     err->setComponent(component);
                     err->setRule(SpecificationRule::RESET_ORDER);
                     mValidator->addError(err);
@@ -484,7 +484,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
 {
     // Check for a valid name attribute.
     // TODO: Check for valid base unit reduction (see 17.3)
-    if (!isCellmlIdentifier(units->getName())) {
+    if (!isCellmlIdentifier(units->name())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setUnits(units);
         if (units->isImport()) {
@@ -497,9 +497,9 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         mValidator->addError(err);
     } else {
         // Check for a matching standard units.
-        if (isStandardUnitName(units->getName())) {
+        if (isStandardUnitName(units->name())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Units is named '" + units->getName() + "', which is a protected standard unit name.");
+            err->setDescription("Units is named '" + units->name() + "', which is a protected standard unit name.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNITS_STANDARD);
             mValidator->addError(err);
@@ -525,14 +525,14 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Units reference '" + reference + "' in units '" + units->getName() + "' is not a valid reference to a local units or a standard unit type.");
+            err->setDescription("Units reference '" + reference + "' in units '" + units->name() + "' is not a valid reference to a local units or a standard unit type.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNIT_UNITS_REF);
             mValidator->addError(err);
         }
     } else {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Unit in units '" + units->getName() + "' does not have a valid units reference.");
+        err->setDescription("Unit in units '" + units->name() + "' does not have a valid units reference.");
         err->setUnits(units);
         err->setRule(SpecificationRule::UNIT_UNITS_REF);
         mValidator->addError(err);
@@ -542,7 +542,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         if (!isStandardPrefixName(prefix)) {
             if (!isCellMLReal(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->getName() + "' is not a valid real number or a SI prefix.");
+                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid real number or a SI prefix.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
@@ -554,7 +554,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
 void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames)
 {
     // Check for a valid name attribute.
-    if (!isCellmlIdentifier(variable->getName())) {
+    if (!isCellmlIdentifier(variable->name())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable does not have a valid name attribute.");
         err->setVariable(variable);
@@ -564,7 +564,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
     // Check for a valid units attribute.
     if (!isCellmlIdentifier(variable->getUnits())) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Variable '" + variable->getName() + "' does not have a valid units attribute.");
+        err->setDescription("Variable '" + variable->name() + "' does not have a valid units attribute.");
         err->setVariable(variable);
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
@@ -573,7 +573,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         auto model = static_cast<Model *>(component->parent());
         if ((model != nullptr) && !model->hasUnits(variable->getUnits())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->getName() + "' has an invalid units reference '" + variable->getUnits() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
+            err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->getUnits() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_UNITS);
             mValidator->addError(err);
@@ -584,7 +584,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         std::string interfaceType = variable->getInterfaceType();
         if ((interfaceType != "public") && (interfaceType != "private") && (interfaceType != "none") && (interfaceType != "public_and_private")) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->getName() + "' has an invalid interface attribute value '" + interfaceType + "'.");
+            err->setDescription("Variable '" + variable->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_INTERFACE);
             mValidator->addError(err);
@@ -598,7 +598,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             // Otherwise, check that the initial value can be converted to a double
             if (!isCellMLReal(initialValue)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Variable '" + variable->getName() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
+                err->setDescription("Variable '" + variable->name() + "' has an invalid initial value '" + initialValue + "'. Initial values must be a real number string or a variable reference.");
                 err->setVariable(variable);
                 err->setRule(SpecificationRule::VARIABLE_INITIAL_VALUE);
                 mValidator->addError(err);
@@ -622,17 +622,17 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         variableString = "does not reference a variable";
         variableContinuation = ",";
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->getName() + "' " + orderString + " " + variableString + ".");
+        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
         err->setReset(reset);
         err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
         mValidator->addError(err);
     } else {
-        variableString = "referencing variable '" + reset->getVariable()->getName() + "'";
+        variableString = "referencing variable '" + reset->getVariable()->name() + "'";
     }
 
     if (!reset->isOrderSet()) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->getName() + "' " + orderString + " " + variableString + ".");
+        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
         err->setComponent(component);
         err->setRule(SpecificationRule::RESET_ORDER);
         mValidator->addError(err);
@@ -647,7 +647,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
                 int whenOrder = when->getOrder();
                 if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->getName() + "' " + orderString + " " + variableString + variableContinuation + " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
+                    err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
                     err->setComponent(component);
                     err->setRule(SpecificationRule::RESET_ORDER);
                     mValidator->addError(err);
@@ -662,7 +662,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         }
     } else {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->getName() + "' " + orderString + " " + variableString + variableContinuation + " does not have at least one child When.");
+        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " does not have at least one child When.");
         err->setReset(reset);
         err->setRule(SpecificationRule::RESET_CHILD);
         mValidator->addError(err);
@@ -692,7 +692,7 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         resetVariableContinuation = ",";
     } else {
         resetVariableContinuation = "";
-        resetVariableString = "referencing variable '" + reset->getVariable()->getName() + "'";
+        resetVariableString = "referencing variable '" + reset->getVariable()->name() + "'";
     }
 
     if (!when->isOrderSet()) {
@@ -741,7 +741,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     XmlNodePtr node = doc->getRootNode();
     if (node == nullptr) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Could not get a valid XML root node from the math on component '" + component->getName() + "'.");
+        err->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
         err->setKind(Error::Kind::XML);
         err->setComponent(component);
         mValidator->addError(err);
@@ -749,7 +749,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     }
     if (!node->isMathmlElement("math")) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->getName() + "'. A valid math root node should be of type 'math'.");
+        err->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
         err->setComponent(component);
         err->setKind(Error::Kind::XML);
         mValidator->addError(err);
@@ -759,7 +759,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     std::vector<std::string> bvarNames;
     std::vector<std::string> variableNames;
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        std::string variableName = component->variable(i)->getName();
+        std::string variableName = component->variable(i)->name();
         if (std::find(variableNames.begin(), variableNames.end(), variableName) == variableNames.end()) {
             variableNames.push_back(variableName);
         }
@@ -773,7 +773,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     for (const std::string &variableName : variableNames) {
         if (std::find(bvarNames.begin(), bvarNames.end(), variableName) != bvarNames.end()) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Math in component '" + component->getName() + "' contains '" + variableName + "' as a bvar ci element but it is already a variable name.");
+            err->setDescription("Math in component '" + component->name() + "' contains '" + variableName + "' as a bvar ci element but it is already a variable name.");
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -820,7 +820,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) && (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("MathML ci element has the child text '" + textNode + "', which does not correspond with any variable names present in component '" + component->getName() + "' and is not a variable defined within a bvar element.");
+                            err->setDescription("MathML ci element has the child text '" + textNode + "', which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
                             err->setComponent(component);
                             err->setKind(Error::Kind::MATHML);
                             mValidator->addError(err);
@@ -888,7 +888,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in component '" + component->getName() + "' or a standard unit.");
+                    err->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in component '" + component->name() + "' or a standard unit.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
@@ -999,14 +999,14 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             auto component2 = static_cast<Component *>(equivalentVariable->parent());
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + equivalentVariable->getName() + "' is an equivalent variable to '" + variable->getName() + "' but has no parent component.");
+                                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
                                 err->setModel(model);
                                 err->setKind(Error::Kind::CONNECTION);
                                 mValidator->addError(err);
                             }
                         } else {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->getName() + "' has an equivalent variable '" + equivalentVariable->getName() + "'  which does not reciprocally have '" + variable->getName() + "' set as an equivalent variable.");
+                            err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "'  which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                             err->setModel(model);
                             err->setKind(Error::Kind::CONNECTION);
                             mValidator->addError(err);

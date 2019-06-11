@@ -125,7 +125,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertIsNone(m.units(1))
         self.assertIsNone(m.units(-1))
         self.assertIsNotNone(m.units(0))
-        self.assertEqual(m.units(0).getName(), name)
+        self.assertEqual(m.units(0).name(), name)
         del(m, u, name)
 
         # UnitsPtr units(const std::string &name)
@@ -136,7 +136,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertIsNone(m.units(name))
         m.addUnits(u)
         self.assertIsNotNone(m.units(name))
-        self.assertEqual(m.units(name).getName(), name)
+        self.assertEqual(m.units(name).name(), name)
         del(m, u, name)
 
     def test_take_units(self):
@@ -157,7 +157,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertIsNone(m.takeUnits(0))
         m.addUnits(Units())
         m.addUnits(u)
-        self.assertEqual(m.takeUnits(1).getName(), name)
+        self.assertEqual(m.takeUnits(1).name(), name)
         del(m, u)
 
         # UnitsPtr takeUnits(const std::string &name)
@@ -167,7 +167,7 @@ class ModelTestCase(unittest.TestCase):
         u.setName(name)
         self.assertIsNone(m.takeUnits(name))
         m.addUnits(u)
-        self.assertEquals(m.takeUnits(name).getName(), name)
+        self.assertEquals(m.takeUnits(name).name(), name)
         self.assertIsNone(m.takeUnits(name))
         del(m, u, name)
 
@@ -184,7 +184,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertTrue(m.replaceUnits(0, u2))
         self.assertFalse(m.replaceUnits(1, u1))
         self.assertFalse(m.replaceUnits(-1, u1))
-        self.assertEqual(m.units(0).getName(), 'b')
+        self.assertEqual(m.units(0).name(), 'b')
         del(m, u1, u2)
 
         # bool replaceUnits(const std::string &name, const UnitsPtr &units)

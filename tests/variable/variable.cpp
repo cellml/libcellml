@@ -46,7 +46,7 @@ TEST(Variable, getValidVariableName)
     const std::string e = in;
     libcellml::Variable v;
     v.setName(in);
-    const std::string a = v.getName();
+    const std::string a = v.name();
     EXPECT_EQ(e, a);
 }
 
@@ -56,7 +56,7 @@ TEST(Variable, getInvalidVariableName)
     const std::string e = in;
     libcellml::Variable v;
     v.setName(in);
-    const std::string a = v.getName();
+    const std::string a = v.name();
     EXPECT_EQ(e, a);
 }
 
@@ -437,22 +437,22 @@ TEST(Variable, getVariableMethods)
 
     // Get by string
     libcellml::VariablePtr vMethod1 = c.variable("variable1");
-    const std::string a1 = vMethod1->getName();
+    const std::string a1 = vMethod1->name();
     EXPECT_EQ("variable1", a1);
 
     // Get by index
     libcellml::VariablePtr vMethod2 = c.variable(1);
-    const std::string a2 = vMethod2->getName();
+    const std::string a2 = vMethod2->name();
     EXPECT_EQ("variable2", a2);
 
     // Get const by string
     const libcellml::VariablePtr vMethod3 = static_cast<const libcellml::Component>(c).variable("variable3");
-    const std::string a3 = vMethod3->getName();
+    const std::string a3 = vMethod3->name();
     EXPECT_EQ("variable3", a3);
 
     // Get const by index
     const libcellml::VariablePtr vMethod4 = static_cast<const libcellml::Component>(c).variable(3);
-    const std::string a4 = vMethod4->getName();
+    const std::string a4 = vMethod4->name();
     EXPECT_EQ("variable4", a4);
 
     // Get invalid index
@@ -485,21 +485,21 @@ TEST(Variable, takeVariableMethods)
 
     // Take by index
     libcellml::VariablePtr tv = c.takeVariable(0);
-    std::string tvn = tv->getName();
+    std::string tvn = tv->name();
     EXPECT_EQ("variable1", tvn);
     libcellml::VariablePtr gv = c.variable(0);
-    std::string gvn = gv->getName();
+    std::string gvn = gv->name();
     EXPECT_EQ("variable2", gvn);
     tv = c.takeVariable(0);
-    tvn = tv->getName();
+    tvn = tv->name();
     EXPECT_EQ("variable2", tvn);
     gv = c.variable(0);
-    gvn = gv->getName();
+    gvn = gv->name();
     EXPECT_EQ("variable3", gvn);
 
     // Take by string
     libcellml::VariablePtr tv3 = c.takeVariable("variable3");
-    const std::string tvn3 = tv3->getName();
+    const std::string tvn3 = tv3->name();
     EXPECT_EQ("variable3", tvn3);
 
     // Get invalid index
@@ -538,7 +538,7 @@ TEST(Variable, modelWithComponentWithVariableWithValidName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("valid_name", v->getName());
+    EXPECT_EQ("valid_name", v->name());
 }
 
 TEST(Variable, modelWithComponentWithVariableWithInvalidName)
@@ -569,7 +569,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", v->getName());
+    EXPECT_EQ("invalid name", v->name());
 }
 
 TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse)
@@ -600,7 +600,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse)
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", u->getName());
+    EXPECT_EQ("invalid name", u->name());
 
     // Parse
     libcellml::Parser parser;

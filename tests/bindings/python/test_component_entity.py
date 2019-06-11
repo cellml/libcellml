@@ -182,7 +182,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertIsNone(x.component(1))
         self.assertIsNone(x.component(-1))
         self.assertIsNotNone(x.component(0), y)
-        self.assertEqual(x.component(0).getName(), name)
+        self.assertEqual(x.component(0).name(), name)
 
         # ComponentPtr component(const std::string &name,
         #   bool searchEncapsulated=true)
@@ -199,7 +199,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         x.addComponent(y)
         self.assertIsNone(x.component('hola'))
         self.assertIsNotNone(x.component(name), y)
-        self.assertEqual(x.component(name).getName(), name)
+        self.assertEqual(x.component(name).name(), name)
         del(x, y, name)
         name = 'hiii'
         z = Component()
@@ -234,7 +234,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertIsNotNone(x.takeComponent(0), y)
         self.assertIsNone(x.takeComponent(0), y)
         x.addComponent(y)
-        self.assertEqual(x.takeComponent(0).getName(), name)
+        self.assertEqual(x.takeComponent(0).name(), name)
         self.assertIsNone(x.takeComponent(0), y)
 
         # ComponentPtr takeComponent(const std::string &name,
@@ -254,7 +254,7 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertIsNotNone(x.takeComponent(name), y)
         self.assertIsNone(x.takeComponent(name), y)
         x.addComponent(y)
-        self.assertEqual(x.takeComponent(name).getName(), name)
+        self.assertEqual(x.takeComponent(name).name(), name)
         del(x, y, name)
         name = 'hiii'
         z = Component()
