@@ -84,16 +84,16 @@ TEST(Parser, parseOrdModelFromFile)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     // Test some random values.
-    std::string a = model->component("intracellular_ions")->variable("BSLmax")->getInitialValue();
+    std::string a = model->component("intracellular_ions")->variable("BSLmax")->initialValue();
     EXPECT_EQ("1.124", a);
 
-    a = model->component("INa")->variable("mtD2")->getInitialValue();
+    a = model->component("INa")->variable("mtD2")->initialValue();
     EXPECT_EQ("8.552", a);
 
-    a = model->component("IK1")->variable("GK1_b")->getInitialValue();
+    a = model->component("IK1")->variable("GK1_b")->initialValue();
     EXPECT_EQ("0.1908", a);
 
-    a = model->component("SERCA")->variable("Jup")->getInterfaceType();
+    a = model->component("SERCA")->variable("Jup")->interfaceType();
     EXPECT_EQ("public", a);
 }
 

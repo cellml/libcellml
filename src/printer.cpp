@@ -67,7 +67,7 @@ std::string printMapVariables(const VariablePair &variablePair, const std::strin
 {
     std::string mapVariables = indent + "<map_variables variable_1=\"" + variablePair.first->name() + "\""
                                + " variable_2=\"" + variablePair.second->name() + "\"";
-    std::string mappingId = Variable::getEquivalenceMappingId(variablePair.first, variablePair.second);
+    std::string mappingId = Variable::equivalenceMappingId(variablePair.first, variablePair.second);
     if (!mappingId.empty()) {
         mapVariables += " id=\"" + mappingId + "\"";
     }
@@ -101,7 +101,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         }
         std::string mappingVariables;
         VariablePair variablePair = variableMap.at(componentMapIndex1);
-        std::string connectionId = Variable::getEquivalenceConnectionId(variablePair.first, variablePair.second);
+        std::string connectionId = Variable::equivalenceConnectionId(variablePair.first, variablePair.second);
         mappingVariables += printMapVariables(variablePair, indent + tabIndent);
         // Check for subsequent variable equivalence pairs with the same parent components.
         size_t componentMapIndex2 = componentMapIndex1 + 1;
@@ -111,7 +111,7 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
             VariablePair variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                 mappingVariables += printMapVariables(variablePair2, indent + tabIndent);
-                connectionId = Variable::getEquivalenceConnectionId(variablePair2.first, variablePair2.second);
+                connectionId = Variable::equivalenceConnectionId(variablePair2.first, variablePair2.second);
             }
             ++componentMapIndex2;
         }
@@ -156,7 +156,7 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
             VariablePtr variable = component->variable(j);
             if (variable->equivalentVariableCount() > 0) {
                 for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                    VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
+                    VariablePtr equivalentVariable = variable->equivalentVariable(k);
                     if (equivalentVariable->hasEquivalentVariable(variable)) {
                         VariablePair variablePair = std::make_pair(variable, equivalentVariable);
                         VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
@@ -323,9 +323,9 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
     repr += indent + "<variable";
     std::string name = variable->name();
     std::string id = variable->id();
-    std::string units = variable->getUnits();
-    std::string intial_value = variable->getInitialValue();
-    std::string interface_type = variable->getInterfaceType();
+    std::string units = variable->units();
+    std::string intial_value = variable->initialValue();
+    std::string interface_type = variable->interfaceType();
     if (!name.empty()) {
         repr += " name=\"" + name + "\"";
     }
