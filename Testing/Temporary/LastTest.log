@@ -1,0 +1,1321 @@
+Start testing: Jun 11 10:33 CEST
+----------------------------------------------------------
+1/34 Testing: entities_unit_test_component
+1/34 Test: entities_unit_test_component
+Command: "/Users/kmoy001/libCellML/tests/test_component"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_component" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 18 tests from 2 test cases.
+[----------] Global test environment set-up.
+[----------] 11 tests from Component
+[ RUN      ] Component.validName
+[       OK ] Component.validName (0 ms)
+[ RUN      ] Component.invalidName
+[       OK ] Component.invalidName (0 ms)
+[ RUN      ] Component.setAndUnsetName
+[       OK ] Component.setAndUnsetName (0 ms)
+[ RUN      ] Component.addAndCountChildren
+[       OK ] Component.addAndCountChildren (0 ms)
+[ RUN      ] Component.contains
+[       OK ] Component.contains (0 ms)
+[ RUN      ] Component.addChildrenAndSerialise
+[       OK ] Component.addChildrenAndSerialise (0 ms)
+[ RUN      ] Component.removeComponentMethods
+[       OK ] Component.removeComponentMethods (0 ms)
+[ RUN      ] Component.getComponentMethods
+[       OK ] Component.getComponentMethods (0 ms)
+[ RUN      ] Component.takeComponentMethods
+[       OK ] Component.takeComponentMethods (0 ms)
+[ RUN      ] Component.replaceComponentMethods
+[       OK ] Component.replaceComponentMethods (0 ms)
+[ RUN      ] Component.constructors
+[       OK ] Component.constructors (1 ms)
+[----------] 11 tests from Component (1 ms total)
+
+[----------] 7 tests from Encapsulation
+[ RUN      ] Encapsulation.reparentComponent
+[       OK ] Encapsulation.reparentComponent (0 ms)
+[ RUN      ] Encapsulation.hierarchyWaterfall
+[       OK ] Encapsulation.hierarchyWaterfall (0 ms)
+[ RUN      ] Encapsulation.hierarchyCircular
+[       OK ] Encapsulation.hierarchyCircular (0 ms)
+[ RUN      ] Encapsulation.hierarchyWaterfallAndParse
+[       OK ] Encapsulation.hierarchyWaterfallAndParse (0 ms)
+[ RUN      ] Encapsulation.parseAlternateFormHierarchy
+[       OK ] Encapsulation.parseAlternateFormHierarchy (0 ms)
+[ RUN      ] Encapsulation.encapsulatedComponentMethods
+[       OK ] Encapsulation.encapsulatedComponentMethods (0 ms)
+[ RUN      ] Encapsulation.encapsulationWithMultipleRootHierarchy
+[       OK ] Encapsulation.encapsulationWithMultipleRootHierarchy (0 ms)
+[----------] 7 tests from Encapsulation (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 18 tests from 2 test cases ran. (2 ms total)
+[  PASSED  ] 18 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_component" end time: Jun 11 10:33 CEST
+"entities_unit_test_component" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/34 Testing: entities_unit_test_connection
+2/34 Test: entities_unit_test_connection
+Command: "/Users/kmoy001/libCellML/tests/test_connection"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_connection" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 21 tests from 2 test cases.
+[----------] Global test environment set-up.
+[----------] 6 tests from Variable
+[ RUN      ] Variable.addAndGetEquivalentVariable
+[       OK ] Variable.addAndGetEquivalentVariable (0 ms)
+[ RUN      ] Variable.addAndGetEquivalentVariableReciprocal
+[       OK ] Variable.addAndGetEquivalentVariableReciprocal (0 ms)
+[ RUN      ] Variable.addTwoEquivalentVariablesAndCount
+[       OK ] Variable.addTwoEquivalentVariablesAndCount (0 ms)
+[ RUN      ] Variable.addDuplicateEquivalentVariablesAndCount
+[       OK ] Variable.addDuplicateEquivalentVariablesAndCount (0 ms)
+[ RUN      ] Variable.hasNoEquivalentVariable
+[       OK ] Variable.hasNoEquivalentVariable (0 ms)
+[ RUN      ] Variable.hasEquivalentVariable
+[       OK ] Variable.hasEquivalentVariable (0 ms)
+[----------] 6 tests from Variable (0 ms total)
+
+[----------] 15 tests from Connection
+[ RUN      ] Connection.componentlessVariableInvalidConnection
+[       OK ] Connection.componentlessVariableInvalidConnection (1 ms)
+[ RUN      ] Connection.componentlessVariableInvalidConnectionClearParentCheck
+[       OK ] Connection.componentlessVariableInvalidConnectionClearParentCheck (0 ms)
+[ RUN      ] Connection.validConnectionAndParse
+[       OK ] Connection.validConnectionAndParse (0 ms)
+[ RUN      ] Connection.parseValidAlternateFormConnection
+[       OK ] Connection.parseValidAlternateFormConnection (0 ms)
+[ RUN      ] Connection.twoMapVariablesConnection
+[       OK ] Connection.twoMapVariablesConnection (0 ms)
+[ RUN      ] Connection.threeMapVariablesConnectionOneDuplicate
+[       OK ] Connection.threeMapVariablesConnectionOneDuplicate (0 ms)
+[ RUN      ] Connection.nineVariablesTenConnectionsAndParse
+[       OK ] Connection.nineVariablesTenConnectionsAndParse (1 ms)
+[ RUN      ] Connection.twoValidConnections
+[       OK ] Connection.twoValidConnections (0 ms)
+[ RUN      ] Connection.removeEquivalentVariableMethods
+[       OK ] Connection.removeEquivalentVariableMethods (0 ms)
+[ RUN      ] Connection.removeVariablesFromConnections
+[       OK ] Connection.removeVariablesFromConnections (0 ms)
+[ RUN      ] Connection.twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
+[       OK ] Connection.twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces (0 ms)
+[ RUN      ] Connection.twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfacesUsingIds
+[       OK ] Connection.twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfacesUsingIds (1 ms)
+[ RUN      ] Connection.twoEncapsulatedChildComponentsWithConnectionsAndPublicInterfaces
+[       OK ] Connection.twoEncapsulatedChildComponentsWithConnectionsAndPublicInterfaces (0 ms)
+[ RUN      ] Connection.importedComponentConnectionAndParse
+[       OK ] Connection.importedComponentConnectionAndParse (0 ms)
+[ RUN      ] Connection.componentConnectionAndParseMissingVariable
+[       OK ] Connection.componentConnectionAndParseMissingVariable (0 ms)
+[----------] 15 tests from Connection (4 ms total)
+
+[----------] Global test environment tear-down
+[==========] 21 tests from 2 test cases ran. (4 ms total)
+[  PASSED  ] 21 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_connection" end time: Jun 11 10:33 CEST
+"entities_unit_test_connection" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/34 Testing: misc_unit_test_coverage
+3/34 Test: misc_unit_test_coverage
+Command: "/Users/kmoy001/libCellML/tests/test_coverage"
+Directory: /Users/kmoy001/libCellML/tests
+"misc_unit_test_coverage" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 9 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 9 tests from Coverage
+[ RUN      ] Coverage.import
+[       OK ] Coverage.import (0 ms)
+[ RUN      ] Coverage.printer
+[       OK ] Coverage.printer (0 ms)
+[ RUN      ] Coverage.units
+[       OK ] Coverage.units (0 ms)
+[ RUN      ] Coverage.when
+[       OK ] Coverage.when (0 ms)
+[ RUN      ] Coverage.unitsGetVariations
+[       OK ] Coverage.unitsGetVariations (0 ms)
+[ RUN      ] Coverage.prefixToString
+[       OK ] Coverage.prefixToString (1 ms)
+[ RUN      ] Coverage.variable
+[       OK ] Coverage.variable (0 ms)
+[ RUN      ] Coverage.component
+[       OK ] Coverage.component (0 ms)
+[ RUN      ] Coverage.error
+[       OK ] Coverage.error (0 ms)
+[----------] 9 tests from Coverage (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 1 test case ran. (1 ms total)
+[  PASSED  ] 9 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"misc_unit_test_coverage" end time: Jun 11 10:33 CEST
+"misc_unit_test_coverage" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/34 Testing: object_unit_test_error
+4/34 Test: object_unit_test_error
+Command: "/Users/kmoy001/libCellML/tests/test_error"
+Directory: /Users/kmoy001/libCellML/tests
+"object_unit_test_error" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 8 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 8 tests from Error
+[ RUN      ] Error.createModelError
+[       OK ] Error.createModelError (1 ms)
+[ RUN      ] Error.createComponemntError
+[       OK ] Error.createComponemntError (0 ms)
+[ RUN      ] Error.createVariableError
+[       OK ] Error.createVariableError (0 ms)
+[ RUN      ] Error.createUnitsError
+[       OK ] Error.createUnitsError (0 ms)
+[ RUN      ] Error.createImportSourceError
+[       OK ] Error.createImportSourceError (0 ms)
+[ RUN      ] Error.createResetError
+[       OK ] Error.createResetError (0 ms)
+[ RUN      ] Error.createWhenError
+[       OK ] Error.createWhenError (0 ms)
+[ RUN      ] Error.specificationRule
+[       OK ] Error.specificationRule (0 ms)
+[----------] 8 tests from Error (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 8 tests from 1 test case ran. (1 ms total)
+[  PASSED  ] 8 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"object_unit_test_error" end time: Jun 11 10:33 CEST
+"object_unit_test_error" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/34 Testing: entities_unit_test_math
+5/34 Test: entities_unit_test_math
+Command: "/Users/kmoy001/libCellML/tests/test_math"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_math" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 8 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 8 tests from Maths
+[ RUN      ] Maths.setAndGetMath
+[       OK ] Maths.setAndGetMath (0 ms)
+[ RUN      ] Maths.appendAndSerialiseMathComponent
+[       OK ] Maths.appendAndSerialiseMathComponent (0 ms)
+[ RUN      ] Maths.appendAndResetMathComponent
+[       OK ] Maths.appendAndResetMathComponent (0 ms)
+[ RUN      ] Maths.appendSerialiseAndParseMathModel
+[       OK ] Maths.appendSerialiseAndParseMathModel (0 ms)
+[ RUN      ] Maths.modelWithTwoVariablesAndTwoInvalidMaths
+[       OK ] Maths.modelWithTwoVariablesAndTwoInvalidMaths (0 ms)
+[ RUN      ] Maths.modelWithTwoVariablesWithInitialValuesAndInvalidMath
+[       OK ] Maths.modelWithTwoVariablesWithInitialValuesAndInvalidMath (0 ms)
+[ RUN      ] Maths.modelWithTwoVariablesWithInitialValuesAndValidMath
+[       OK ] Maths.modelWithTwoVariablesWithInitialValuesAndValidMath (0 ms)
+[ RUN      ] Maths.twoComponentsWithMathAndConnectionAndParse
+[       OK ] Maths.twoComponentsWithMathAndConnectionAndParse (1 ms)
+[----------] 8 tests from Maths (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 8 tests from 1 test case ran. (1 ms total)
+[  PASSED  ] 8 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_math" end time: Jun 11 10:33 CEST
+"entities_unit_test_math" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/34 Testing: entities_unit_test_model
+6/34 Test: entities_unit_test_model
+Command: "/Users/kmoy001/libCellML/tests/test_model"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_model" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 28 tests from 3 test cases.
+[----------] Global test environment set-up.
+[----------] 7 tests from ComponentImport
+[ RUN      ] ComponentImport.basics
+[       OK ] ComponentImport.basics (0 ms)
+[ RUN      ] ComponentImport.singleImportA
+[       OK ] ComponentImport.singleImportA (0 ms)
+[ RUN      ] ComponentImport.singleImportB
+[       OK ] ComponentImport.singleImportB (0 ms)
+[ RUN      ] ComponentImport.nonExistentURLAndParse
+[       OK ] ComponentImport.nonExistentURLAndParse (0 ms)
+[ RUN      ] ComponentImport.multipleImportAndParse
+[       OK ] ComponentImport.multipleImportAndParse (0 ms)
+[ RUN      ] ComponentImport.hierarchicalImportAndParse
+[       OK ] ComponentImport.hierarchicalImportAndParse (1 ms)
+[ RUN      ] ComponentImport.complexImportAndParse
+[       OK ] ComponentImport.complexImportAndParse (0 ms)
+[----------] 7 tests from ComponentImport (1 ms total)
+
+[----------] 16 tests from Model
+[ RUN      ] Model.setGetId
+[       OK ] Model.setGetId (0 ms)
+[ RUN      ] Model.name
+[       OK ] Model.name (0 ms)
+[ RUN      ] Model.unsetName
+[       OK ] Model.unsetName (0 ms)
+[ RUN      ] Model.invalidName
+[       OK ] Model.invalidName (0 ms)
+[ RUN      ] Model.addComponent
+[       OK ] Model.addComponent (0 ms)
+[ RUN      ] Model.addValidNamedComponent
+[       OK ] Model.addValidNamedComponent (0 ms)
+[ RUN      ] Model.addInvalidNamedComponent
+[       OK ] Model.addInvalidNamedComponent (0 ms)
+[ RUN      ] Model.addTwoNamedComponents
+[       OK ] Model.addTwoNamedComponents (0 ms)
+[ RUN      ] Model.countComponents
+[       OK ] Model.countComponents (0 ms)
+[ RUN      ] Model.containsComponent
+[       OK ] Model.containsComponent (0 ms)
+[ RUN      ] Model.removeComponent
+[       OK ] Model.removeComponent (0 ms)
+[ RUN      ] Model.getComponentMethods
+[       OK ] Model.getComponentMethods (0 ms)
+[ RUN      ] Model.takeComponentMethods
+[       OK ] Model.takeComponentMethods (0 ms)
+[ RUN      ] Model.replaceComponent
+[       OK ] Model.replaceComponent (0 ms)
+[ RUN      ] Model.constructors
+[       OK ] Model.constructors (0 ms)
+[ RUN      ] Model.setAndCheckIdsAllEntities
+[       OK ] Model.setAndCheckIdsAllEntities (0 ms)
+[----------] 16 tests from Model (0 ms total)
+
+[----------] 5 tests from UnitsImport
+[ RUN      ] UnitsImport.basics
+[       OK ] UnitsImport.basics (0 ms)
+[ RUN      ] UnitsImport.importValidName
+[       OK ] UnitsImport.importValidName (1 ms)
+[ RUN      ] UnitsImport.importInvalidName
+[       OK ] UnitsImport.importInvalidName (0 ms)
+[ RUN      ] UnitsImport.nonExistentURL
+[       OK ] UnitsImport.nonExistentURL (0 ms)
+[ RUN      ] UnitsImport.importModifyAndParse
+[       OK ] UnitsImport.importModifyAndParse (0 ms)
+[----------] 5 tests from UnitsImport (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 28 tests from 3 test cases ran. (3 ms total)
+[  PASSED  ] 28 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_model" end time: Jun 11 10:33 CEST
+"entities_unit_test_model" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/34 Testing: io_unit_test_parser
+7/34 Test: io_unit_test_parser
+Command: "/Users/kmoy001/libCellML/tests/test_parser"
+Directory: /Users/kmoy001/libCellML/tests
+"io_unit_test_parser" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 69 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 69 tests from Parser
+[ RUN      ] Parser.parseSineModelFromFile
+[       OK ] Parser.parseSineModelFromFile (2 ms)
+[ RUN      ] Parser.parseSineImportsModelFromFile
+[       OK ] Parser.parseSineImportsModelFromFile (1 ms)
+[ RUN      ] Parser.parseInvalidModelFromFile
+[       OK ] Parser.parseInvalidModelFromFile (0 ms)
+[ RUN      ] Parser.parseOrdModelFromFile
+[       OK ] Parser.parseOrdModelFromFile (20 ms)
+[ RUN      ] Parser.parseComplexEncapsulationModelFromFile
+[       OK ] Parser.parseComplexEncapsulationModelFromFile (0 ms)
+[ RUN      ] Parser.parseModelWithComponentsWithMultipleMathElements
+[       OK ] Parser.parseModelWithComponentsWithMultipleMathElements (0 ms)
+[ RUN      ] Parser.parseValidXmlDirectlyUsingLibxml
+[       OK ] Parser.parseValidXmlDirectlyUsingLibxml (0 ms)
+[ RUN      ] Parser.parseInvalidXmlDirectlyUsingLibxml
+/:2: parser error : Opening and ending tag mismatch: component line 2 and model
+<model xmlns="http://www.cellml.org/cellml/2.0#"><component></model>
+                                                                    ^
+/:2: parser error : Premature end of data in tag model line 2
+<model xmlns="http://www.cellml.org/cellml/2.0#"><component></model>
+                                                                    ^
+[       OK ] Parser.parseInvalidXmlDirectlyUsingLibxml (0 ms)
+[ RUN      ] Parser.invalidXMLElements
+[       OK ] Parser.invalidXMLElements (0 ms)
+[ RUN      ] Parser.parse
+[       OK ] Parser.parse (0 ms)
+[ RUN      ] Parser.parseNamedModel
+[       OK ] Parser.parseNamedModel (0 ms)
+[ RUN      ] Parser.moveParser
+[       OK ] Parser.moveParser (0 ms)
+[ RUN      ] Parser.makeError
+[       OK ] Parser.makeError (0 ms)
+[ RUN      ] Parser.emptyModelString
+[       OK ] Parser.emptyModelString (0 ms)
+[ RUN      ] Parser.nonXmlString
+[       OK ] Parser.nonXmlString (0 ms)
+[ RUN      ] Parser.invalidRootNode
+[       OK ] Parser.invalidRootNode (0 ms)
+[ RUN      ] Parser.noModelNamespace
+[       OK ] Parser.noModelNamespace (0 ms)
+[ RUN      ] Parser.invalidModelNamespace
+[       OK ] Parser.invalidModelNamespace (0 ms)
+[ RUN      ] Parser.invalidModelAttribute
+[       OK ] Parser.invalidModelAttribute (0 ms)
+[ RUN      ] Parser.invalidModelElement
+[       OK ] Parser.invalidModelElement (0 ms)
+[ RUN      ] Parser.modelWithInvalidElement
+[       OK ] Parser.modelWithInvalidElement (0 ms)
+[ RUN      ] Parser.parseModelWithInvalidAttributeAndGetError
+[       OK ] Parser.parseModelWithInvalidAttributeAndGetError (0 ms)
+[ RUN      ] Parser.parseNamedModelWithNamedComponent
+[       OK ] Parser.parseNamedModelWithNamedComponent (0 ms)
+[ RUN      ] Parser.parseModelWithUnitsAndNamedComponent
+[       OK ] Parser.parseModelWithUnitsAndNamedComponent (0 ms)
+[ RUN      ] Parser.unitsAttributeError
+[       OK ] Parser.unitsAttributeError (0 ms)
+[ RUN      ] Parser.unitsElementErrors
+[       OK ] Parser.unitsElementErrors (1 ms)
+[ RUN      ] Parser.parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetError
+[       OK ] Parser.parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetError (0 ms)
+[ RUN      ] Parser.parseModelWithInvalidComponentAttributeAndGetError
+[       OK ] Parser.parseModelWithInvalidComponentAttributeAndGetError (0 ms)
+[ RUN      ] Parser.componentAttributeErrors
+[       OK ] Parser.componentAttributeErrors (0 ms)
+[ RUN      ] Parser.componentElementErrors
+[       OK ] Parser.componentElementErrors (0 ms)
+[ RUN      ] Parser.parseModelWithTwoComponents
+[       OK ] Parser.parseModelWithTwoComponents (0 ms)
+[ RUN      ] Parser.parseModelWithComponentHierarchyWaterfall
+[       OK ] Parser.parseModelWithComponentHierarchyWaterfall (0 ms)
+[ RUN      ] Parser.parseModelWithMultipleComponentHierarchyWaterfalls
+[       OK ] Parser.parseModelWithMultipleComponentHierarchyWaterfalls (0 ms)
+[ RUN      ] Parser.modelWithUnits
+[       OK ] Parser.modelWithUnits (0 ms)
+[ RUN      ] Parser.modelWithInvalidUnits
+[       OK ] Parser.modelWithInvalidUnits (1 ms)
+[ RUN      ] Parser.emptyEncapsulation
+[       OK ] Parser.emptyEncapsulation (0 ms)
+[ RUN      ] Parser.encapsulationWithNoComponentAttribute
+[       OK ] Parser.encapsulationWithNoComponentAttribute (0 ms)
+[ RUN      ] Parser.encapsulationWithNoComponentRef
+[       OK ] Parser.encapsulationWithNoComponentRef (0 ms)
+[ RUN      ] Parser.encapsulationWithNoComponent
+[       OK ] Parser.encapsulationWithNoComponent (0 ms)
+[ RUN      ] Parser.encapsulationWithMissingComponent
+[       OK ] Parser.encapsulationWithMissingComponent (0 ms)
+[ RUN      ] Parser.encapsulationWithNoComponentChild
+[       OK ] Parser.encapsulationWithNoComponentChild (0 ms)
+[ RUN      ] Parser.encapsulationNoChildComponentRef
+[       OK ] Parser.encapsulationNoChildComponentRef (0 ms)
+[ RUN      ] Parser.encapsulationWithNoGrandchildComponentRef
+[       OK ] Parser.encapsulationWithNoGrandchildComponentRef (0 ms)
+[ RUN      ] Parser.invalidEncapsulations
+[       OK ] Parser.invalidEncapsulations (0 ms)
+[ RUN      ] Parser.invalidVariableAttributesAndGetVariableError
+[       OK ] Parser.invalidVariableAttributesAndGetVariableError (0 ms)
+[ RUN      ] Parser.variableAttributeAndChildErrors
+[       OK ] Parser.variableAttributeAndChildErrors (1 ms)
+[ RUN      ] Parser.emptyConnections
+[       OK ] Parser.emptyConnections (0 ms)
+[ RUN      ] Parser.connectionErrorNoComponent2
+[       OK ] Parser.connectionErrorNoComponent2 (0 ms)
+[ RUN      ] Parser.connectionErrorNoComponent2InModel
+[       OK ] Parser.connectionErrorNoComponent2InModel (0 ms)
+[ RUN      ] Parser.connectionErrorNoComponent1
+[       OK ] Parser.connectionErrorNoComponent1 (0 ms)
+[ RUN      ] Parser.connectionErrorNoMapComponents
+[       OK ] Parser.connectionErrorNoMapComponents (0 ms)
+[ RUN      ] Parser.connectionErrorNoMapVariables
+[       OK ] Parser.connectionErrorNoMapVariables (0 ms)
+[ RUN      ] Parser.importedComponent2Connection
+[       OK ] Parser.importedComponent2Connection (0 ms)
+[ RUN      ] Parser.validConnectionMapVariablesFirst
+[       OK ] Parser.validConnectionMapVariablesFirst (0 ms)
+[ RUN      ] Parser.component2ConnectionVariableMissing
+[       OK ] Parser.component2ConnectionVariableMissing (0 ms)
+[ RUN      ] Parser.component2InConnectionMissing
+[       OK ] Parser.component2InConnectionMissing (1 ms)
+[ RUN      ] Parser.connectionVariable2Missing
+[       OK ] Parser.connectionVariable2Missing (0 ms)
+[ RUN      ] Parser.connectionVariable1Missing
+[       OK ] Parser.connectionVariable1Missing (0 ms)
+[ RUN      ] Parser.connectionErrorNoMapVariablesType
+[       OK ] Parser.connectionErrorNoMapVariablesType (0 ms)
+[ RUN      ] Parser.invalidImportsAndGetError
+[       OK ] Parser.invalidImportsAndGetError (0 ms)
+[ RUN      ] Parser.invalidModelWithAllKindsOfErrors
+[       OK ] Parser.invalidModelWithAllKindsOfErrors (0 ms)
+[ RUN      ] Parser.invalidModelWithTextInAllElements
+[       OK ] Parser.invalidModelWithTextInAllElements (0 ms)
+[ RUN      ] Parser.parseIds
+[       OK ] Parser.parseIds (1 ms)
+[ RUN      ] Parser.parseIdsOnEverything
+[       OK ] Parser.parseIdsOnEverything (0 ms)
+[ RUN      ] Parser.parseResets
+[       OK ] Parser.parseResets (0 ms)
+[ RUN      ] Parser.parseResetsWithNumerousErrors
+[       OK ] Parser.parseResetsWithNumerousErrors (1 ms)
+[ RUN      ] Parser.parseResetsCheckResetObjectCheckWhenObject
+[       OK ] Parser.parseResetsCheckResetObjectCheckWhenObject (0 ms)
+[ RUN      ] Parser.unitsWithCellMLRealVariations
+[       OK ] Parser.unitsWithCellMLRealVariations (0 ms)
+[ RUN      ] Parser.xmlComments
+[       OK ] Parser.xmlComments (1 ms)
+[----------] 69 tests from Parser (31 ms total)
+
+[----------] Global test environment tear-down
+[==========] 69 tests from 1 test case ran. (31 ms total)
+[  PASSED  ] 69 tests.
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"io_unit_test_parser" end time: Jun 11 10:33 CEST
+"io_unit_test_parser" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/34 Testing: io_unit_test_printer
+8/34 Test: io_unit_test_printer
+Command: "/Users/kmoy001/libCellML/tests/test_printer"
+Directory: /Users/kmoy001/libCellML/tests
+"io_unit_test_printer" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 8 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 8 tests from Printer
+[ RUN      ] Printer.printEmptyModel
+[       OK ] Printer.printEmptyModel (0 ms)
+[ RUN      ] Printer.printEmptyModelAllocatePointer
+[       OK ] Printer.printEmptyModelAllocatePointer (0 ms)
+[ RUN      ] Printer.printEmptyUnits
+[       OK ] Printer.printEmptyUnits (0 ms)
+[ RUN      ] Printer.printEmptyVariable
+[       OK ] Printer.printEmptyVariable (0 ms)
+[ RUN      ] Printer.printEmptyComponent
+[       OK ] Printer.printEmptyComponent (0 ms)
+[ RUN      ] Printer.printEmptyReset
+[       OK ] Printer.printEmptyReset (0 ms)
+[ RUN      ] Printer.printEncapsulation
+[       OK ] Printer.printEncapsulation (0 ms)
+[ RUN      ] Printer.printEncapsulationWithNames
+[       OK ] Printer.printEncapsulationWithNames (0 ms)
+[----------] 8 tests from Printer (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 8 tests from 1 test case ran. (1 ms total)
+[  PASSED  ] 8 tests.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"io_unit_test_printer" end time: Jun 11 10:33 CEST
+"io_unit_test_printer" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/34 Testing: entities_unit_test_reset
+9/34 Test: entities_unit_test_reset
+Command: "/Users/kmoy001/libCellML/tests/test_reset"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_reset" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 20 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 20 tests from Reset
+[ RUN      ] Reset.create
+[       OK ] Reset.create (0 ms)
+[ RUN      ] Reset.order
+[       OK ] Reset.order (0 ms)
+[ RUN      ] Reset.addAndCountChildren
+[       OK ] Reset.addAndCountChildren (0 ms)
+[ RUN      ] Reset.contains
+[       OK ] Reset.contains (0 ms)
+[ RUN      ] Reset.removeWhenMethods
+[       OK ] Reset.removeWhenMethods (0 ms)
+[ RUN      ] Reset.getWhenMethods
+[       OK ] Reset.getWhenMethods (0 ms)
+[ RUN      ] Reset.takeWhenMethods
+[       OK ] Reset.takeWhenMethods (0 ms)
+[ RUN      ] Reset.replaceWhenMethods
+[       OK ] Reset.replaceWhenMethods (0 ms)
+[ RUN      ] Reset.constructors
+[       OK ] Reset.constructors (0 ms)
+[ RUN      ] Reset.printResetWithVariable
+[       OK ] Reset.printResetWithVariable (0 ms)
+[ RUN      ] Reset.printResetWithOrder
+[       OK ] Reset.printResetWithOrder (0 ms)
+[ RUN      ] Reset.printResetWithOrderAndVariable
+[       OK ] Reset.printResetWithOrderAndVariable (0 ms)
+[ RUN      ] Reset.printResetWithWhen
+[       OK ] Reset.printResetWithWhen (0 ms)
+[ RUN      ] Reset.printResetWithMultipleWhens
+[       OK ] Reset.printResetWithMultipleWhens (0 ms)
+[ RUN      ] Reset.printResetWithWhenWithValueSet
+[       OK ] Reset.printResetWithWhenWithValueSet (0 ms)
+[ RUN      ] Reset.printResetWithMultipleWhensWithValues
+[       OK ] Reset.printResetWithMultipleWhensWithValues (0 ms)
+[ RUN      ] Reset.printResetWithMultipleWhensWithOrders
+[       OK ] Reset.printResetWithMultipleWhensWithOrders (0 ms)
+[ RUN      ] Reset.addRemoveResetFromComponentMethods
+[       OK ] Reset.addRemoveResetFromComponentMethods (0 ms)
+[ RUN      ] Reset.getResetFromComponentMethod
+[       OK ] Reset.getResetFromComponentMethod (0 ms)
+[ RUN      ] Reset.hasResetFromComponentMethod
+[       OK ] Reset.hasResetFromComponentMethod (0 ms)
+[----------] 20 tests from Reset (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 20 tests from 1 test case ran. (0 ms total)
+[  PASSED  ] 20 tests.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_reset" end time: Jun 11 10:33 CEST
+"entities_unit_test_reset" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/34 Testing: io_unit_test_resolve_imports
+10/34 Test: io_unit_test_resolve_imports
+Command: "/Users/kmoy001/libCellML/tests/test_resolve_imports"
+Directory: /Users/kmoy001/libCellML/tests
+"io_unit_test_resolve_imports" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 6 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 6 tests from ResolveImports
+[ RUN      ] ResolveImports.resolveSineModelFromFile
+[       OK ] ResolveImports.resolveSineModelFromFile (1 ms)
+[ RUN      ] ResolveImports.resolveSineImportsModelFromFile
+[       OK ] ResolveImports.resolveSineImportsModelFromFile (2 ms)
+[ RUN      ] ResolveImports.resolveComplexImportsModelFromFile
+[       OK ] ResolveImports.resolveComplexImportsModelFromFile (2 ms)
+[ RUN      ] ResolveImports.resolveUnitsImportFromFile
+[       OK ] ResolveImports.resolveUnitsImportFromFile (0 ms)
+[ RUN      ] ResolveImports.resolveImportsFromFileLevel0
+[       OK ] ResolveImports.resolveImportsFromFileLevel0 (3 ms)
+[ RUN      ] ResolveImports.resolveImportsFromFileLevel0Unresolvable
+[       OK ] ResolveImports.resolveImportsFromFileLevel0Unresolvable (2 ms)
+[----------] 6 tests from ResolveImports (10 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test case ran. (10 ms total)
+[  PASSED  ] 6 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"io_unit_test_resolve_imports" end time: Jun 11 10:33 CEST
+"io_unit_test_resolve_imports" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/34 Testing: entities_unit_test_units
+11/34 Test: entities_unit_test_units
+Command: "/Users/kmoy001/libCellML/tests/test_units"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_units" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 19 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 19 tests from Units
+[ RUN      ] Units.validName
+[       OK ] Units.validName (0 ms)
+[ RUN      ] Units.invalidName
+[       OK ] Units.invalidName (0 ms)
+[ RUN      ] Units.compoundUnitsRaw
+[       OK ] Units.compoundUnitsRaw (0 ms)
+[ RUN      ] Units.addUnitsVariations
+[       OK ] Units.addUnitsVariations (0 ms)
+[ RUN      ] Units.compoundUnitsUsingDefines
+[       OK ] Units.compoundUnitsUsingDefines (0 ms)
+[ RUN      ] Units.compoundUnitsUsingDefinesAndStringUnitsAndPrefix
+[       OK ] Units.compoundUnitsUsingDefinesAndStringUnitsAndPrefix (0 ms)
+[ RUN      ] Units.removeUnitsMethodsAndCount
+[       OK ] Units.removeUnitsMethodsAndCount (0 ms)
+[ RUN      ] Units.hasUnitsName
+[       OK ] Units.hasUnitsName (1 ms)
+[ RUN      ] Units.hasUnitsPtr
+[       OK ] Units.hasUnitsPtr (0 ms)
+[ RUN      ] Units.takeUnits
+[       OK ] Units.takeUnits (0 ms)
+[ RUN      ] Units.replaceUnits
+[       OK ] Units.replaceUnits (0 ms)
+[ RUN      ] Units.multiply
+[       OK ] Units.multiply (0 ms)
+[ RUN      ] Units.newBaseUnit
+[       OK ] Units.newBaseUnit (0 ms)
+[ RUN      ] Units.isBaseUnit
+[       OK ] Units.isBaseUnit (0 ms)
+[ RUN      ] Units.farhenheit
+[       OK ] Units.farhenheit (0 ms)
+[ RUN      ] Units.getUnitAttributes
+[       OK ] Units.getUnitAttributes (0 ms)
+[ RUN      ] Units.multipleUnitUsingStandardRef
+[       OK ] Units.multipleUnitUsingStandardRef (0 ms)
+[ RUN      ] Units.removeUnit
+[       OK ] Units.removeUnit (0 ms)
+[ RUN      ] Units.multipleAndParse
+[       OK ] Units.multipleAndParse (0 ms)
+[----------] 19 tests from Units (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 1 test case ran. (1 ms total)
+[  PASSED  ] 19 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_units" end time: Jun 11 10:33 CEST
+"entities_unit_test_units" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/34 Testing: io_unit_test_validator
+12/34 Test: io_unit_test_validator
+Command: "/Users/kmoy001/libCellML/tests/test_validator"
+Directory: /Users/kmoy001/libCellML/tests
+"io_unit_test_validator" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 22 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 22 tests from Validator
+[ RUN      ] Validator.namedModel
+[       OK ] Validator.namedModel (0 ms)
+[ RUN      ] Validator.unnamedModel
+[       OK ] Validator.unnamedModel (0 ms)
+[ RUN      ] Validator.invalidCellMLIdentifiersWithSpecificationHeading
+[       OK ] Validator.invalidCellMLIdentifiersWithSpecificationHeading (0 ms)
+[ RUN      ] Validator.moveCopyValidatorWithUnnamedModel
+[       OK ] Validator.moveCopyValidatorWithUnnamedModel (0 ms)
+[ RUN      ] Validator.namedModelWithUnnamedComponent
+[       OK ] Validator.namedModelWithUnnamedComponent (1 ms)
+[ RUN      ] Validator.unnamedModelWithUnnamedComponentWithUnnamedUnits
+[       OK ] Validator.unnamedModelWithUnnamedComponentWithUnnamedUnits (0 ms)
+[ RUN      ] Validator.modelWithDuplicateComponentsAndUnits
+[       OK ] Validator.modelWithDuplicateComponentsAndUnits (0 ms)
+[ RUN      ] Validator.unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits
+[       OK ] Validator.unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits (0 ms)
+[ RUN      ] Validator.invalidVariableInitialValuesAndInterfaces
+[       OK ] Validator.invalidVariableInitialValuesAndInterfaces (0 ms)
+[ RUN      ] Validator.importUnits
+[       OK ] Validator.importUnits (0 ms)
+[ RUN      ] Validator.importComponents
+[       OK ] Validator.importComponents (0 ms)
+[ RUN      ] Validator.validMath
+[       OK ] Validator.validMath (25 ms)
+[ RUN      ] Validator.invalidMath
+[       OK ] Validator.invalidMath (0 ms)
+[ RUN      ] Validator.invalidMathMLElements
+[       OK ] Validator.invalidMathMLElements (16 ms)
+[ RUN      ] Validator.invalidMathMLVariables
+[       OK ] Validator.invalidMathMLVariables (15 ms)
+[ RUN      ] Validator.invalidMathMLCiAndCnElementsWithCellMLUnits
+[       OK ] Validator.invalidMathMLCiAndCnElementsWithCellMLUnits (15 ms)
+[ RUN      ] Validator.parseAndValidateInvalidUnitErrors
+[       OK ] Validator.parseAndValidateInvalidUnitErrors (1 ms)
+[ RUN      ] Validator.validateInvalidConnections
+[       OK ] Validator.validateInvalidConnections (0 ms)
+[ RUN      ] Validator.integerStrings
+[       OK ] Validator.integerStrings (154 ms)
+[ RUN      ] Validator.resets
+[       OK ] Validator.resets (127 ms)
+[ RUN      ] Validator.whens
+[       OK ] Validator.whens (50 ms)
+[ RUN      ] Validator.validMathCnElements
+[       OK ] Validator.validMathCnElements (13 ms)
+[----------] 22 tests from Validator (417 ms total)
+
+[----------] Global test environment tear-down
+[==========] 22 tests from 1 test case ran. (417 ms total)
+[  PASSED  ] 22 tests.
+<end of output>
+Test time =   0.43 sec
+----------------------------------------------------------
+Test Passed.
+"io_unit_test_validator" end time: Jun 11 10:33 CEST
+"io_unit_test_validator" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/34 Testing: entities_unit_test_variable
+13/34 Test: entities_unit_test_variable
+Command: "/Users/kmoy001/libCellML/tests/test_variable"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_variable" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 38 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 38 tests from Variable
+[ RUN      ] Variable.setValidVariableName
+[       OK ] Variable.setValidVariableName (0 ms)
+[ RUN      ] Variable.setInvalidVariableName
+[       OK ] Variable.setInvalidVariableName (0 ms)
+[ RUN      ] Variable.getValidVariableName
+[       OK ] Variable.getValidVariableName (0 ms)
+[ RUN      ] Variable.getInvalidVariableName
+[       OK ] Variable.getInvalidVariableName (0 ms)
+[ RUN      ] Variable.setUnits
+[       OK ] Variable.setUnits (0 ms)
+[ RUN      ] Variable.setUnitsAndName
+[       OK ] Variable.setUnitsAndName (0 ms)
+[ RUN      ] Variable.setInitialValueByString
+[       OK ] Variable.setInitialValueByString (1 ms)
+[ RUN      ] Variable.setInitialValueByDouble
+[       OK ] Variable.setInitialValueByDouble (0 ms)
+[ RUN      ] Variable.setInitialValueByReference
+[       OK ] Variable.setInitialValueByReference (0 ms)
+[ RUN      ] Variable.getUnsetInitialValue
+[       OK ] Variable.getUnsetInitialValue (0 ms)
+[ RUN      ] Variable.getSetInitialValue
+[       OK ] Variable.getSetInitialValue (0 ms)
+[ RUN      ] Variable.setInterfaceTypeByInvalidString
+[       OK ] Variable.setInterfaceTypeByInvalidString (0 ms)
+[ RUN      ] Variable.setInterfaceTypeNoneByValidString
+[       OK ] Variable.setInterfaceTypeNoneByValidString (0 ms)
+[ RUN      ] Variable.setInterfaceTypeNoneByEnum
+[       OK ] Variable.setInterfaceTypeNoneByEnum (0 ms)
+[ RUN      ] Variable.setInterfaceTypePrivate
+[       OK ] Variable.setInterfaceTypePrivate (0 ms)
+[ RUN      ] Variable.setInterfaceTypePublic
+[       OK ] Variable.setInterfaceTypePublic (0 ms)
+[ RUN      ] Variable.setInterfaceTypePublicAndPrivate
+[       OK ] Variable.setInterfaceTypePublicAndPrivate (0 ms)
+[ RUN      ] Variable.setGetInterfaceType
+[       OK ] Variable.setGetInterfaceType (0 ms)
+[ RUN      ] Variable.addVariable
+[       OK ] Variable.addVariable (0 ms)
+[ RUN      ] Variable.getParentComponent
+[       OK ] Variable.getParentComponent (0 ms)
+[ RUN      ] Variable.getNullParentComponent
+[       OK ] Variable.getNullParentComponent (0 ms)
+[ RUN      ] Variable.addVariableToUnnamedComponent
+[       OK ] Variable.addVariableToUnnamedComponent (0 ms)
+[ RUN      ] Variable.addTwoVariables
+[       OK ] Variable.addTwoVariables (0 ms)
+[ RUN      ] Variable.addVariablesWithAndWithoutNameAndUnits
+[       OK ] Variable.addVariablesWithAndWithoutNameAndUnits (0 ms)
+[ RUN      ] Variable.componentWithTwoVariablesWithInitialValues
+[       OK ] Variable.componentWithTwoVariablesWithInitialValues (0 ms)
+[ RUN      ] Variable.removeVariableMethods
+[       OK ] Variable.removeVariableMethods (0 ms)
+[ RUN      ] Variable.getVariableMethods
+[       OK ] Variable.getVariableMethods (0 ms)
+[ RUN      ] Variable.takeVariableMethods
+[       OK ] Variable.takeVariableMethods (0 ms)
+[ RUN      ] Variable.modelWithComponentWithVariableWithValidName
+[       OK ] Variable.modelWithComponentWithVariableWithValidName (0 ms)
+[ RUN      ] Variable.modelWithComponentWithVariableWithInvalidName
+[       OK ] Variable.modelWithComponentWithVariableWithInvalidName (0 ms)
+[ RUN      ] Variable.modelWithComponentWithVariableWithInvalidUnitsNameAndParse
+[       OK ] Variable.modelWithComponentWithVariableWithInvalidUnitsNameAndParse (0 ms)
+[ RUN      ] Variable.modelWithComponentWithTwoNamedVariablesWithInitialValues
+[       OK ] Variable.modelWithComponentWithTwoNamedVariablesWithInitialValues (0 ms)
+[ RUN      ] Variable.modelWithComponentWithTwoNamedVariablesWithInitialValuesOneReferenced
+[       OK ] Variable.modelWithComponentWithTwoNamedVariablesWithInitialValuesOneReferenced (1 ms)
+[ RUN      ] Variable.modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse
+[       OK ] Variable.modelWithComponentWithTwoNamedVariablesWithInitialValuesAndParse (0 ms)
+[ RUN      ] Variable.modelWithComponentWithFourNamedVariablesWithInterfaces
+[       OK ] Variable.modelWithComponentWithFourNamedVariablesWithInterfaces (0 ms)
+[ RUN      ] Variable.modelWithComponentWithFourNamedVariablesWithInterfacesAndParse
+[       OK ] Variable.modelWithComponentWithFourNamedVariablesWithInterfacesAndParse (0 ms)
+[ RUN      ] Variable.modelWithComponentWithFiveNamedVariablesWithInterfacesAndParse
+[       OK ] Variable.modelWithComponentWithFiveNamedVariablesWithInterfacesAndParse (0 ms)
+[ RUN      ] Variable.modelUnitsAttributeBeforeNameAttribute
+[       OK ] Variable.modelUnitsAttributeBeforeNameAttribute (0 ms)
+[----------] 38 tests from Variable (2 ms total)
+
+[----------] Global test environment tear-down
+[==========] 38 tests from 1 test case ran. (2 ms total)
+[  PASSED  ] 38 tests.
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_variable" end time: Jun 11 10:33 CEST
+"entities_unit_test_variable" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/34 Testing: api_unit_test_version
+14/34 Test: api_unit_test_version
+Command: "/Users/kmoy001/libCellML/tests/test_version"
+Directory: /Users/kmoy001/libCellML/tests
+"api_unit_test_version" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 1 test from 1 test case.
+[----------] Global test environment set-up.
+[----------] 1 test from Version
+[ RUN      ] Version.versionMatch
+[       OK ] Version.versionMatch (0 ms)
+[----------] 1 test from Version (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test case ran. (0 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"api_unit_test_version" end time: Jun 11 10:33 CEST
+"api_unit_test_version" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/34 Testing: entities_unit_test_when
+15/34 Test: entities_unit_test_when
+Command: "/Users/kmoy001/libCellML/tests/test_when"
+Directory: /Users/kmoy001/libCellML/tests
+"entities_unit_test_when" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+Running main() from gtest_main.cc
+[==========] Running 4 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 4 tests from When
+[ RUN      ] When.create
+[       OK ] When.create (0 ms)
+[ RUN      ] When.condition
+[       OK ] When.condition (0 ms)
+[ RUN      ] When.value
+[       OK ] When.value (0 ms)
+[ RUN      ] When.order
+[       OK ] When.order (0 ms)
+[----------] 4 tests from When (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 4 tests from 1 test case ran. (0 ms total)
+[  PASSED  ] 4 tests.
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"entities_unit_test_when" end time: Jun 11 10:33 CEST
+"entities_unit_test_when" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/34 Testing: python_test_component
+16/34 Test: python_test_component
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_component.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_component" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 0.046s
+
+OK
+<end of output>
+Test time =   0.12 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_component" end time: Jun 11 10:33 CEST
+"python_test_component" time elapsed: 00:00:00
+----------------------------------------------------------
+
+17/34 Testing: python_test_component_entity
+17/34 Test: python_test_component_entity
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_component_entity.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_component_entity" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.019s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_component_entity" end time: Jun 11 10:33 CEST
+"python_test_component_entity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/34 Testing: python_test_entity
+18/34 Test: python_test_entity
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_entity.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_entity" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.017s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_entity" end time: Jun 11 10:33 CEST
+"python_test_entity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/34 Testing: python_test_error
+19/34 Test: python_test_error
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_error.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_error" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.........................
+----------------------------------------------------------------------
+Ran 25 tests in 0.017s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_error" end time: Jun 11 10:33 CEST
+"python_test_error" time elapsed: 00:00:00
+----------------------------------------------------------
+
+20/34 Testing: python_test_import_source
+20/34 Test: python_test_import_source
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_import_source.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_import_source" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.016s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_import_source" end time: Jun 11 10:33 CEST
+"python_test_import_source" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/34 Testing: python_test_imported_entity
+21/34 Test: python_test_imported_entity
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_imported_entity.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_imported_entity" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.015s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_imported_entity" end time: Jun 11 10:33 CEST
+"python_test_imported_entity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/34 Testing: python_test_logger
+22/34 Test: python_test_logger
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_logger.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_logger" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.018s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_logger" end time: Jun 11 10:33 CEST
+"python_test_logger" time elapsed: 00:00:00
+----------------------------------------------------------
+
+23/34 Testing: python_test_model
+23/34 Test: python_test_model
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_model.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_model" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+..........test_model.py:170: DeprecationWarning: Please use assertEqual instead.
+  self.assertEquals(m.takeUnits(name).getName(), name)
+..
+----------------------------------------------------------------------
+Ran 12 tests in 0.018s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_model" end time: Jun 11 10:33 CEST
+"python_test_model" time elapsed: 00:00:00
+----------------------------------------------------------
+
+24/34 Testing: python_test_named_entity
+24/34 Test: python_test_named_entity
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_named_entity.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_named_entity" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.017s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_named_entity" end time: Jun 11 10:33 CEST
+"python_test_named_entity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+25/34 Testing: python_test_ordered_entity
+25/34 Test: python_test_ordered_entity
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_ordered_entity.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_ordered_entity" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.017s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_ordered_entity" end time: Jun 11 10:33 CEST
+"python_test_ordered_entity" time elapsed: 00:00:00
+----------------------------------------------------------
+
+26/34 Testing: python_test_parser
+26/34 Test: python_test_parser
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_parser.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_parser" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.015s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_parser" end time: Jun 11 10:33 CEST
+"python_test_parser" time elapsed: 00:00:00
+----------------------------------------------------------
+
+27/34 Testing: python_test_printer
+27/34 Test: python_test_printer
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_printer.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_printer" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.017s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_printer" end time: Jun 11 10:33 CEST
+"python_test_printer" time elapsed: 00:00:00
+----------------------------------------------------------
+
+28/34 Testing: python_test_reset
+28/34 Test: python_test_reset
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_reset.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_reset" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.017s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_reset" end time: Jun 11 10:33 CEST
+"python_test_reset" time elapsed: 00:00:00
+----------------------------------------------------------
+
+29/34 Testing: python_test_units
+29/34 Test: python_test_units
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_units.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_units" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 0.020s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_units" end time: Jun 11 10:33 CEST
+"python_test_units" time elapsed: 00:00:00
+----------------------------------------------------------
+
+30/34 Testing: python_test_variable
+30/34 Test: python_test_variable
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_variable.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_variable" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+...............
+----------------------------------------------------------------------
+Ran 15 tests in 0.017s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_variable" end time: Jun 11 10:33 CEST
+"python_test_variable" time elapsed: 00:00:00
+----------------------------------------------------------
+
+31/34 Testing: python_test_validator
+31/34 Test: python_test_validator
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_validator.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_validator" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.018s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_validator" end time: Jun 11 10:33 CEST
+"python_test_validator" time elapsed: 00:00:00
+----------------------------------------------------------
+
+32/34 Testing: python_test_version
+32/34 Test: python_test_version
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_version.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_version" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.017s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_version" end time: Jun 11 10:33 CEST
+"python_test_version" time elapsed: 00:00:00
+----------------------------------------------------------
+
+33/34 Testing: python_test_when
+33/34 Test: python_test_when
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_when.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_when" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.019s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_when" end time: Jun 11 10:33 CEST
+"python_test_when" time elapsed: 00:00:00
+----------------------------------------------------------
+
+34/34 Testing: python_test_docstrings
+34/34 Test: python_test_docstrings
+Command: "/usr/local/Frameworks/Python.framework/Versions/3.7/bin/python3.7" "test_docstrings.py"
+Directory: /Users/kmoy001/libCellML/tests/bindings/python
+"python_test_docstrings" start time: Jun 11 10:33 CEST
+Output:
+----------------------------------------------------------
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.017s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"python_test_docstrings" end time: Jun 11 10:33 CEST
+"python_test_docstrings" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jun 11 10:33 CEST

@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/kmoy001/libCellML/src/bindings/interface/specificationrule.i
+libcellml/specificationrules.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/specificationrules.h
+libcellml/specificationrules.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/specificationrules.h
+

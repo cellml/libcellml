@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/kmoy001/libCellML/src/bindings/interface/logger.i
+types.i
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+libcellml/logger.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/logger.h
+libcellml/types.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/types.h
+libcellml/logger.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/logger.h
+
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+std_shared_ptr.i
+-
+
+/Users/kmoy001/libCellML/src/bindings/interface/validator.i
+types.i
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+logger.i
+/Users/kmoy001/libCellML/src/bindings/interface/logger.i
+libcellml/validator.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/validator.h
+libcellml/types.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/types.h
+libcellml/validator.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/validator.h
+

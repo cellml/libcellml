@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/kmoy001/libCellML/src/bindings/interface/error.i
+std_string.i
+/Users/kmoy001/libCellML/src/bindings/interface/std_string.i
+types.i
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+libcellml/error.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/error.h
+libcellml/exportdefinitions.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/exportdefinitions.h
+libcellml/specificationrules.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/specificationrules.h
+libcellml/types.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/types.h
+libcellml/error.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/error.h
+
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+std_shared_ptr.i
+-
+

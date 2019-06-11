@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/kmoy001/libCellML/src/bindings/interface/enumerations.i
+libcellml/enumerations.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/enumerations.h
+libcellml/enumerations.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/enumerations.h
+
+/Users/kmoy001/libCellML/src/bindings/interface/logger.i
+types.i
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+libcellml/logger.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/logger.h
+libcellml/types.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/types.h
+libcellml/logger.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/logger.h
+
+/Users/kmoy001/libCellML/src/bindings/interface/parser.i
+std_string.i
+/Users/kmoy001/libCellML/src/bindings/interface/std_string.i
+types.i
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+logger.i
+/Users/kmoy001/libCellML/src/bindings/interface/logger.i
+enumerations.i
+/Users/kmoy001/libCellML/src/bindings/interface/enumerations.i
+libcellml/parser.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/parser.h
+libcellml/types.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/types.h
+libcellml/parser.h
+/Users/kmoy001/libCellML/src/bindings/interface/libcellml/parser.h
+
+/Users/kmoy001/libCellML/src/bindings/interface/types.i
+std_shared_ptr.i
+-
+

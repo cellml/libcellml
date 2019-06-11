@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++ -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -dynamiclib -Wl,-headerpad_max_install_names  -o libgtest_main.dylib -install_name @rpath/libgtest_main.dylib CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -Wl,-rpath,/Users/kmoy001/libCellML/tests/gtest libgtest.dylib 
