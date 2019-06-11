@@ -317,7 +317,7 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     // Get component
     EXPECT_EQ(c4, c.component("comp4"));
     const libcellml::ComponentPtr constC4 = static_cast<const libcellml::Component>(c).component("comp4");
-    EXPECT_EQ("comp4", constC4->getName());
+    EXPECT_EQ("comp4", constC4->name());
     EXPECT_FALSE(c.containsComponent("invalid"));
     const libcellml::Component const_c = static_cast<const libcellml::Component>(c);
     EXPECT_EQ(const_c.component("invalid"), nullptr);

@@ -36,7 +36,7 @@ TEST(Model, name)
     libcellml::Model m;
     m.setName(n);
 
-    EXPECT_EQ(n, m.getName());
+    EXPECT_EQ(n, m.name());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -55,14 +55,14 @@ TEST(Model, unsetName)
 
     libcellml::Model m;
     m.setName(n);
-    EXPECT_EQ(n, m.getName());
+    EXPECT_EQ(n, m.name());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(eName, a);
 
     m.setName("");
-    EXPECT_EQ("", m.getName());
+    EXPECT_EQ("", m.name());
     a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -77,7 +77,7 @@ TEST(Model, invalidName)
     libcellml::Model m;
     m.setName(n);
 
-    EXPECT_EQ(n, m.getName());
+    EXPECT_EQ(n, m.name());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -264,7 +264,7 @@ TEST(Model, getComponentMethods)
     const libcellml::ComponentPtr cB = static_cast<const libcellml::Model>(m).component(0);
     // Can do this as we just have a const pointer
     cB->setName("gus");
-    EXPECT_EQ("gus", cB->getName());
+    EXPECT_EQ("gus", cB->name());
 
     EXPECT_EQ(nullptr, m.component(4));
 }
@@ -288,13 +288,13 @@ TEST(Model, takeComponentMethods)
 
     EXPECT_EQ(m.takeComponent(4), nullptr);
 
-    EXPECT_EQ("child2", c02->getName());
+    EXPECT_EQ("child2", c02->name());
 
     libcellml::ComponentPtr c01 = m.takeComponent("child1");
     EXPECT_NE(nullptr, c01);
     EXPECT_EQ(size_t(0), m.componentCount());
 
-    EXPECT_EQ("child1", c01->getName());
+    EXPECT_EQ("child1", c01->name());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -460,20 +460,20 @@ TEST(Model, constructors)
 
     //Testing copy constructor
     libcellml::Model m3(m);
-    EXPECT_EQ("my_name", m3.getName());
+    EXPECT_EQ("my_name", m3.name());
 
     // Testing model assignment
     m1 = m;
-    EXPECT_EQ("my_name", m.getName());
+    EXPECT_EQ("my_name", m.name());
 
     // Testing move assignment for model
     m2 = std::move(m1);
-    EXPECT_EQ("my_name", m2.getName());
+    EXPECT_EQ("my_name", m2.name());
     // EXPECT_EQ("", m1.getName()); m1 is now dead (contains a nullptr).
 
     // Testing move constructor for component
     libcellml::Model m4 = std::move(m2);
-    EXPECT_EQ("my_name", m4.getName());
+    EXPECT_EQ("my_name", m4.name());
     // EXPECT_EQ("", m2.getName()); m2 is now dead (contains a nullptr).
 }
 

@@ -27,7 +27,7 @@ class OrderedEntityTestCase(unittest.TestCase):
 
         r.setVariable(v)
 
-        self.assertEqual("glucose", r.getVariable().getName())
+        self.assertEqual("glucose", r.getVariable().name())
 
     def test_add_when(self):
         from libcellml import Reset

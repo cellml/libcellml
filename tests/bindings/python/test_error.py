@@ -187,7 +187,7 @@ class ErrorTestCase(unittest.TestCase):
         c.setName(name)
         e.setComponent(c)
         self.assertIsInstance(e.component(), Component)
-        self.assertEqual(e.component().getName(), name)
+        self.assertEqual(e.component().name(), name)
 
     def test_set_import_source(self):
         from libcellml import Error, ImportSource
@@ -227,7 +227,7 @@ class ErrorTestCase(unittest.TestCase):
         m.setName(name)
         e.setModel(m)
         self.assertIsInstance(e.model(), Model)
-        self.assertEqual(e.model().getName(), name)
+        self.assertEqual(e.model().name(), name)
 
     def test_set_units(self):
         from libcellml import Error, Units
@@ -247,7 +247,7 @@ class ErrorTestCase(unittest.TestCase):
         u.setName(name)
         e.setUnits(u)
         self.assertIsInstance(e.units(), Units)
-        self.assertEqual(e.units().getName(), name)
+        self.assertEqual(e.units().name(), name)
 
     def test_set_variable(self):
         from libcellml import Error, Variable
@@ -267,7 +267,7 @@ class ErrorTestCase(unittest.TestCase):
         v.setName(name)
         e.setVariable(v)
         self.assertIsInstance(e.variable(), Variable)
-        self.assertEqual(e.variable().getName(), name)
+        self.assertEqual(e.variable().name(), name)
 
     def test_set_reset(self):
         from libcellml import Error, Reset

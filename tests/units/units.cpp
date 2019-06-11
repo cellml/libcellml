@@ -36,7 +36,7 @@ TEST(Units, validName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("valid_name", u->getName());
+    EXPECT_EQ("valid_name", u->name());
 }
 
 TEST(Units, invalidName)
@@ -57,7 +57,7 @@ TEST(Units, invalidName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", u->getName());
+    EXPECT_EQ("invalid name", u->name());
 }
 
 TEST(Units, compoundUnitsRaw)
@@ -280,11 +280,11 @@ TEST(Units, takeUnits)
     m.addUnits(u3);
 
     libcellml::UnitsPtr u4 = m.takeUnits("b_unit");
-    EXPECT_EQ("b_unit", u4->getName());
+    EXPECT_EQ("b_unit", u4->name());
     EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u5 = m.takeUnits(1);
-    EXPECT_EQ("c_unit", u5->getName());
+    EXPECT_EQ("c_unit", u5->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_EQ(nullptr, m.takeUnits(7));
@@ -312,13 +312,13 @@ TEST(Units, replaceUnits)
     EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u4 = m.takeUnits(1);
-    EXPECT_EQ("c_unit", u4->getName());
+    EXPECT_EQ("c_unit", u4->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_TRUE(m.replaceUnits(0, u4));
 
     u1 = m.units(0);
-    EXPECT_EQ("c_unit", u1->getName());
+    EXPECT_EQ("c_unit", u1->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     // Replace non-existent units.
@@ -395,7 +395,7 @@ TEST(Units, newBaseUnit)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("pH", u->getName());
+    EXPECT_EQ("pH", u->name());
 }
 
 TEST(Units, isBaseUnit)
@@ -432,7 +432,7 @@ TEST(Units, farhenheit)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("fahrenheitish", u->getName());
+    EXPECT_EQ("fahrenheitish", u->name());
 }
 
 TEST(Units, getUnitAttributes)

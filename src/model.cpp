@@ -48,7 +48,7 @@ struct Model::ModelImpl
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
 {
     return std::find_if(mUnits.begin(), mUnits.end(),
-                        [=](const UnitsPtr &u) -> bool { return u->getName() == name; });
+                        [=](const UnitsPtr &u) -> bool { return u->name() == name; });
 }
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const UnitsPtr &units)

@@ -80,7 +80,7 @@ TEST(Parser, parseNamedModel)
 
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_EQ(n, model->getName());
+    EXPECT_EQ(n, model->name());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
@@ -260,9 +260,9 @@ TEST(Parser, parseNamedModelWithNamedComponent)
 
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_EQ(mName, model->getName());
+    EXPECT_EQ(mName, model->name());
     libcellml::ComponentPtr c = model->component(cName);
-    EXPECT_EQ(cName, c->getName());
+    EXPECT_EQ(cName, c->name());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);

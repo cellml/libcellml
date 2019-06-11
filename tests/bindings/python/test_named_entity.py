@@ -42,14 +42,14 @@ class NamedEntityTestCase(unittest.TestCase):
     def test_name(self):
         from libcellml import NamedEntity
 
-        # std::string getName()
+        # std::string name()
         name = 'testo'
         x = NamedEntity()
-        self.assertEqual(x.getName(), '')
+        self.assertEqual(x.name(), '')
         x.setName(name)
-        self.assertEqual(x.getName(), name)
+        self.assertEqual(x.name(), name)
         x.setName('')
-        self.assertEqual(x.getName(), '')
+        self.assertEqual(x.name(), '')
 
 
 if __name__ == '__main__':
