@@ -44,18 +44,18 @@ public:
      */
     ~ComponentEntity() override;
 
-    ComponentEntity(ComponentEntity &&rhs); /**< Move constructor */
     ComponentEntity(const ComponentEntity &rhs); /**< Copy constructor */
-    ComponentEntity& operator=(ComponentEntity rhs); /**< Assignment operator */
+    ComponentEntity(ComponentEntity &&rhs) noexcept; /**< Move constructor */
+    ComponentEntity &operator=(ComponentEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Add a child component to this component entity.
      *
      * Add a copy of the given component as a child component of this component entity.
      *
-     * @param c The component to add.
+     * @param component The component to add.
      */
-    void addComponent(const ComponentPtr &c);
+    void addComponent(const ComponentPtr &component);
 
     /**
      * @brief Remove the component at the given @p index.
@@ -84,7 +84,7 @@ public:
      *
      * @return True if the component was removed, false otherwise.
      */
-    bool removeComponent(const std::string &name, bool searchEncapsulated=true);
+    bool removeComponent(const std::string &name, bool searchEncapsulated = true);
 
     /**
      * @brief Remove the component with the given pointer.
@@ -100,7 +100,7 @@ public:
      *
      * @return True if the component was removed, false otherwise.
      */
-    bool removeComponent(const ComponentPtr &component, bool searchEncapsulated=true);
+    bool removeComponent(const ComponentPtr &component, bool searchEncapsulated = true);
 
     /**
      * @brief Remove all components stored in this component entity.
@@ -123,7 +123,7 @@ public:
      *
      * @return @c true if the named component is in this component entity and @c false otherwise.
      */
-    bool containsComponent(const std::string &name, bool searchEncapsulated=true) const;
+    bool containsComponent(const std::string &name, bool searchEncapsulated = true) const;
 
     /**
      * @brief Tests to see if the component pointer is contained within this component.
@@ -141,7 +141,7 @@ public:
      *
      * @return @c true if the component is in the component entity and @c false otherwise.
      */
-    bool containsComponent(const ComponentPtr &component, bool searchEncapsulated=true) const;
+    bool containsComponent(const ComponentPtr &component, bool searchEncapsulated = true) const;
 
     /**
      * @brief Get a component at the given @p index.
@@ -172,7 +172,7 @@ public:
      *
      * @return The Component with the given @p name on success, @c nullptr on failure.
      */
-    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated=true) const;
+    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated = true) const;
 
     /**
      * @brief Take the component at the given @p index and return it.
@@ -201,7 +201,7 @@ public:
      *
      * @return The Component identified with the given @p name, @c nullptr on failure.
      */
-    ComponentPtr takeComponent(const std::string &name, bool searchEncapsulated=true);
+    ComponentPtr takeComponent(const std::string &name, bool searchEncapsulated = true);
 
     /**
      * @brief Replace a component at the given @p index.
@@ -210,11 +210,11 @@ public:
      * the range [0, \#components).
      *
      * @param index Index of the Component to replace.
-     * @param c The component to be used as a replacement.
+     * @param component The component to be used as a replacement.
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(size_t index, const ComponentPtr &c);
+    bool replaceComponent(size_t index, const ComponentPtr &component);
 
     /**
      * @brief Replace a component with the given @p name.
@@ -233,7 +233,7 @@ public:
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated=true);
+    bool replaceComponent(const std::string &name, const ComponentPtr &component, bool searchEncapsulated = true);
 
     /**
      * @brief Replace the given component.
@@ -252,7 +252,7 @@ public:
      *
      * @return True if the component was replaced, false otherwise.
      */
-    bool replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated=true);
+    bool replaceComponent(const ComponentPtr &oldComponent, const ComponentPtr &newComponent, bool searchEncapsulated = true);
 
     /**
      * @brief Get the number of components in the component.
@@ -294,24 +294,21 @@ public:
     std::string getEncapsulationId() const;
 
 protected:
-
     /**
      * @brief Virtual add component method to be implemented by derived classes.
      *
      * Virtual addComponent method to allow the model and component classes to
      * implement their own versions.
      *
-     * @param c The ComponentPtr to add to the list of components.
+     * @param component The ComponentPtr to add to the list of components.
      */
-    virtual void doAddComponent(const ComponentPtr &c);
+    virtual void doAddComponent(const ComponentPtr &component);
 
 private:
-
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ComponentEntityImpl; /**< Forward declaration for pImpl idiom. */
     ComponentEntityImpl *mPimpl; /**< Private member to implementation pointer */
-
 };
 
-}
+} // namespace libcellml

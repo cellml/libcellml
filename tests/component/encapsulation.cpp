@@ -22,63 +22,64 @@ limitations under the License.
 
 #include <iostream>
 
-TEST(Encapsulation, reparentComponent) {
+TEST(Encapsulation, reparentComponent)
+{
     const std::string e_parent_1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-                "<component name=\"child3\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\"/>"
-                        "<component_ref component=\"child2\"/>"
-                        "<component_ref component=\"child3\"/>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "      <component_ref component=\"child3\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e_parent_2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-                "<component name=\"child3\"/>"
-                "<component name=\"child3\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\"/>"
-                        "<component_ref component=\"child2\">"
-                            "<component_ref component=\"child3\"/>"
-                        "</component_ref>"
-                        "<component_ref component=\"child3\"/>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "      <component_ref component=\"child2\">\n"
+        "        <component_ref component=\"child3\"/>\n"
+        "      </component_ref>\n"
+        "      <component_ref component=\"child3\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e_re_add =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-                "<component name=\"child3\"/>"
-                "<component name=\"child3\"/>"
-                "<component name=\"child2\"/>"
-                "<component name=\"child3\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\"/>"
-                        "<component_ref component=\"child2\">"
-                            "<component_ref component=\"child3\"/>"
-                        "</component_ref>"
-                        "<component_ref component=\"child3\"/>"
-                        "<component_ref component=\"child2\">"
-                            "<component_ref component=\"child3\"/>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "      <component_ref component=\"child2\">\n"
+        "        <component_ref component=\"child3\"/>\n"
+        "      </component_ref>\n"
+        "      <component_ref component=\"child3\"/>\n"
+        "      <component_ref component=\"child2\">\n"
+        "        <component_ref component=\"child3\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -116,24 +117,25 @@ TEST(Encapsulation, reparentComponent) {
     // other options?
 }
 
-TEST(Encapsulation, hierarchyWaterfall) {
+TEST(Encapsulation, hierarchyWaterfall)
+{
     const std::string e_parent =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-                "<component name=\"child3\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\">"
-                            "<component_ref component=\"child2\">"
-                                "<component_ref component=\"child3\"/>"
-                            "</component_ref>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\">\n"
+        "          <component_ref component=\"child3\"/>\n"
+        "        </component_ref>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -152,36 +154,37 @@ TEST(Encapsulation, hierarchyWaterfall) {
     model.addComponent(parent);
 
     libcellml::Printer printer;
-    std::string a_parent = printer.printModel(model);
+    const std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent, a_parent);
 }
 
-TEST(Encapsulation, hierarchyCircular) {
+TEST(Encapsulation, hierarchyCircular)
+{
     const std::string e_parent_1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child1\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\"/>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e_parent_2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\">"
-                            "<component_ref component=\"child2\"/>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -209,24 +212,25 @@ TEST(Encapsulation, hierarchyCircular) {
     EXPECT_EQ(e_parent_2, a_parent);
 }
 
-TEST(Encapsulation, hierarchyWaterfallAndParse) {
+TEST(Encapsulation, hierarchyWaterfallAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-                "<component name=\"child3\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\">"
-                            "<component_ref component=\"child2\">"
-                                "<component_ref component=\"child3\"/>"
-                            "</component_ref>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\">\n"
+        "          <component_ref component=\"child3\"/>\n"
+        "        </component_ref>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -254,35 +258,36 @@ TEST(Encapsulation, hierarchyWaterfallAndParse) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Encapsulation, parseAlternateFormHierarchy) {
+TEST(Encapsulation, parseAlternateFormHierarchy)
+{
     const std::string input =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent_component\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent_component\">"
-                        "<component_ref component=\"child1\">"
-                            "<component_ref component=\"child2\">"
-                                "<component_ref component=\"child3\"/>"
-                            "</component_ref>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-                "<component name=\"child1\"/>"
-                "<component name=\"child2\"/>"
-                "<component name=\"child3\"/>"
-            "</model>";
-
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent_component\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent_component\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\">\n"
+        "          <component_ref component=\"child3\"/>\n"
+        "        </component_ref>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "</model>\n";
 
     libcellml::Parser parser = libcellml::Parser();
     libcellml::ModelPtr model = parser.parseModel(input);
 
-    EXPECT_EQ(0u, parser.errorCount());
-    EXPECT_EQ(1u, model->componentCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
 }
 
-TEST(Encapsulation, encapsulatedComponentMethods) {
-    const std::string e = "<component/>";
+TEST(Encapsulation, encapsulatedComponentMethods)
+{
+    const std::string e = "<component/>\n";
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -319,7 +324,7 @@ TEST(Encapsulation, encapsulatedComponentMethods) {
     EXPECT_FALSE(c.containsComponent("comp4new"));
     EXPECT_EQ(const_c.getComponent("comp4new"), nullptr);
     // Replace component
-    c.replaceComponent("comp4",c4n);
+    c.replaceComponent("comp4", c4n);
     c4n->addComponent(c5);
     EXPECT_EQ(c4n, c.getComponent("comp4new"));
     // Take component
@@ -332,25 +337,26 @@ TEST(Encapsulation, encapsulatedComponentMethods) {
     EXPECT_FALSE(c.containsComponent("comp4new"));
 }
 
-TEST(Encapsulation, encapsulationWithMultipleRootHierarchy) {
+TEST(Encapsulation, encapsulationWithMultipleRootHierarchy)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<component name=\"parent1_component\"/>"
-                "<component name=\"child11_component\"/>"
-                "<component name=\"child12_component\"/>"
-                "<component name=\"parent2_component\"/>"
-                "<component name=\"child21_component\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"parent1_component\">"
-                        "<component_ref component=\"child11_component\"/>"
-                        "<component_ref component=\"child12_component\"/>"
-                    "</component_ref>"
-                    "<component_ref component=\"parent2_component\">"
-                        "<component_ref component=\"child21_component\"/>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent1_component\"/>\n"
+        "  <component name=\"child11_component\"/>\n"
+        "  <component name=\"child12_component\"/>\n"
+        "  <component name=\"parent2_component\"/>\n"
+        "  <component name=\"child21_component\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent1_component\">\n"
+        "      <component_ref component=\"child11_component\"/>\n"
+        "      <component_ref component=\"child12_component\"/>\n"
+        "    </component_ref>\n"
+        "    <component_ref component=\"parent2_component\">\n"
+        "      <component_ref component=\"child21_component\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent1 = std::make_shared<libcellml::Component>();
     parent1->setName("parent1_component");
@@ -371,6 +377,6 @@ TEST(Encapsulation, encapsulationWithMultipleRootHierarchy) {
     model->addComponent(parent2);
 
     libcellml::Printer printer;
-    std::string a = printer.printModel(model);
+    const std::string a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }

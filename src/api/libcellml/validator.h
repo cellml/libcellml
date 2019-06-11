@@ -24,7 +24,6 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
@@ -38,8 +37,8 @@ public:
     Validator(); /**< Constructor */
     ~Validator() override; /**< Destructor */
     Validator(const Validator &rhs); /**< Copy constructor */
-    Validator(Validator &&rhs); /**< Move constructor */
-    Validator& operator=(Validator v); /**< Assignment operator */
+    Validator(Validator &&rhs) noexcept; /**< Move constructor */
+    Validator &operator=(Validator rhs); /**< Assignment operator */
 
     /**
      * @brief Validate the @p model using the CellML 2.0 Specification.
@@ -58,4 +57,4 @@ private:
     ValidatorImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

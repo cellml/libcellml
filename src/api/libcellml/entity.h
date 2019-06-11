@@ -35,8 +35,8 @@ public:
     Entity(); /**< Constructor */
     virtual ~Entity(); /**< Destructor */
     Entity(const Entity &rhs); /**< Copy constructor */
-    Entity(Entity &&rhs); /**< Move constructor */
-    Entity& operator=(Entity e); /**< Assignment operator */
+    Entity(Entity &&rhs) noexcept; /**< Move constructor */
+    Entity &operator=(Entity rhs); /**< Assignment operator */
 
     /**
      * @brief Set the @p id document identifier for this entity.
@@ -105,17 +105,17 @@ public:
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
      *
-     * @param c The raw pointer to the component to test against.
+     * @param component The raw pointer to the component to test against.
      *
      * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
-    bool hasParent(Component *c) const;
+    bool hasParent(Component *component) const;
 
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct EntityImpl;
-    EntityImpl* mPimpl;
+    EntityImpl *mPimpl;
 };
 
-}
+} // namespace libcellml

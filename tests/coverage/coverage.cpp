@@ -23,9 +23,11 @@ limitations under the License.
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
  */
-TEST(Coverage, import) {
-    std::string e = "";
-    libcellml::ImportSource i, im;
+TEST(Coverage, import)
+{
+    const std::string e;
+    libcellml::ImportSource i;
+    libcellml::ImportSource im;
 
     im = std::move(i);
 
@@ -36,8 +38,10 @@ TEST(Coverage, import) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, printer) {
-    libcellml::Printer p, pm;
+TEST(Coverage, printer)
+{
+    libcellml::Printer p;
+    libcellml::Printer pm;
 
     pm = std::move(p);
 
@@ -45,12 +49,14 @@ TEST(Coverage, printer) {
     libcellml::Printer pc(pm);
 
     size_t error_count = pc.errorCount();
-    EXPECT_EQ(0u, error_count);
+    EXPECT_EQ(size_t(0), error_count);
 }
 
-TEST(Coverage, units) {
-    const std::string e = "<units name=\"dimensionless\"/>";
-    libcellml::Units u, um;
+TEST(Coverage, units)
+{
+    const std::string e = "<units name=\"dimensionless\"/>\n";
+    libcellml::Units u;
+    libcellml::Units um;
 
     u.setName("dimensionless");
 
@@ -64,9 +70,14 @@ TEST(Coverage, units) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, when) {
-    const std::string e = "<reset><when/></reset>";
-    libcellml::When w, wm;
+TEST(Coverage, when)
+{
+    const std::string e =
+        "<reset>\n"
+        "  <when/>\n"
+        "</reset>\n";
+    libcellml::When w;
+    libcellml::When wm;
     libcellml::Reset r;
 
     wm = std::move(w);
@@ -81,7 +92,8 @@ TEST(Coverage, when) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, unitsGetVariations) {
+TEST(Coverage, unitsGetVariations)
+{
     libcellml::Model m;
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
@@ -104,11 +116,12 @@ TEST(Coverage, unitsGetVariations) {
     EXPECT_EQ(nullptr, m.getUnits(4));
 }
 
-TEST(Coverage, prefixToString) {
+TEST(Coverage, prefixToString)
+{
     libcellml::Model m;
     libcellml::Printer printer;
 
-    std::vector<std::string> prefix_str =
+    std::vector<std::string> prefixString =
         {"atto",
          "centi",
          "deca",
@@ -128,9 +141,8 @@ TEST(Coverage, prefixToString) {
          "yocto",
          "yotta",
          "zepto",
-         "zetta"
-        };
-    std::vector<libcellml::Prefix> prefix_enum =
+         "zetta"};
+    std::vector<libcellml::Prefix> prefixEnum =
         {libcellml::Prefix::ATTO,
          libcellml::Prefix::CENTI,
          libcellml::Prefix::DECA,
@@ -150,26 +162,26 @@ TEST(Coverage, prefixToString) {
          libcellml::Prefix::YOCTO,
          libcellml::Prefix::YOTTA,
          libcellml::Prefix::ZEPTO,
-         libcellml::Prefix::ZETTA
-        };
-    for (std::vector<std::string>::size_type i = 0; i != prefix_str.size(); ++i) {
-        std::string prefix = prefix_str[i];
+         libcellml::Prefix::ZETTA};
+    for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
         libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
         u->setName("abcdefg");
-        u->addUnit("empty", prefix_enum[i]);
+        u->addUnit("empty", prefixEnum[i]);
 
         m.addUnits(u);
 
         const std::string a = printer.printModel(m);
-        std::size_t found = a.find(prefix);
+        std::size_t found = a.find(prefixString[i]);
         EXPECT_NE(std::string::npos, found);
         m.removeAllUnits();
     }
 }
 
-TEST(Coverage, variable) {
-    std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>";
-    libcellml::Variable v, vm;
+TEST(Coverage, variable)
+{
+    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
+    libcellml::Variable v;
+    libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
     v.setInitialValue(1.0);
@@ -187,18 +199,21 @@ TEST(Coverage, variable) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, component) {
-    std::string e =
-            "<component name=\"name\">"
-                "<variable/>"
-                "<1+1=2>"
-            "</component>";
-    libcellml::Component c, cm;
+TEST(Coverage, component)
+{
+    const std::string e =
+        "<component name=\"name\">\n"
+        "  <variable/>\n"
+        "  <1+1=2>\n"
+        "</component>\n";
+    const std::string math = "<1+1=2>\n";
+    libcellml::Component c;
+    libcellml::Component cm;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
     c.setName("name");
     c.addVariable(v);
-    c.setMath("<1+1=2>");
+    c.setMath(math);
 
     libcellml::Printer printer;
     std::string a = printer.printComponent(c);
@@ -214,10 +229,12 @@ TEST(Coverage, component) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Coverage, error) {
+TEST(Coverage, error)
+{
     libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
-    libcellml::Error e, em;
-    std::string description = "test";
+    libcellml::Error e;
+    libcellml::Error em;
+    const std::string description = "test";
 
     e.setDescription(description);
     e.setKind(libcellml::Error::Kind::XML);

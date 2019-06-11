@@ -30,7 +30,6 @@ struct NamedEntity::NamedEntityImpl
     std::string mName; /**< Entity name represented as a std::string. */
 };
 
-
 NamedEntity::NamedEntity()
     : mPimpl(new NamedEntityImpl())
 {
@@ -48,17 +47,17 @@ NamedEntity::NamedEntity(const NamedEntity &rhs)
     mPimpl->mName = rhs.mPimpl->mName;
 }
 
-NamedEntity::NamedEntity(NamedEntity &&rhs)
+NamedEntity::NamedEntity(NamedEntity &&rhs) noexcept
     : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-NamedEntity& NamedEntity::operator=(NamedEntity n)
+NamedEntity &NamedEntity::operator=(NamedEntity rhs)
 {
-    Entity::operator= (n);
-    n.swap(*this);
+    Entity::operator=(rhs);
+    rhs.swap(*this);
     return *this;
 }
 
@@ -67,12 +66,14 @@ void NamedEntity::swap(NamedEntity &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void NamedEntity::setName(const std::string &name) {
+void NamedEntity::setName(const std::string &name)
+{
     mPimpl->mName = name;
 }
 
-std::string NamedEntity::getName() const {
+std::string NamedEntity::getName() const
+{
     return mPimpl->mName;
 }
 
-}
+} // namespace libcellml

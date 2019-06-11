@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "namespaces.h"
 #include "xmlattribute.h"
 #include "xmlnode.h"
 
-#include "libcellml/namespaces.h"
-
+#include <algorithm>
 #include <string>
 
 #include <libxml/parser.h>
@@ -55,7 +55,7 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
 
 std::string XmlNode::getNamespace() const
 {
-    if (!mPimpl->mXmlNodePtr->ns) {
+    if (mPimpl->mXmlNodePtr->ns == nullptr) {
         return std::string();
     }
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->ns->href));
@@ -64,9 +64,9 @@ std::string XmlNode::getNamespace() const
 bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
-    if (    (mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
-        && !xmlStrcmp(BAD_CAST getNamespace().c_str(), BAD_CAST ns)
-        && !xmlStrcmp(mPimpl->mXmlNodePtr->name, BAD_CAST name)) {
+    if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
+        && (xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+        && (xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;
     }
     return found;
@@ -75,6 +75,11 @@ bool XmlNode::isElement(const char *name, const char *ns)
 bool XmlNode::isCellmlElement(const char *name)
 {
     return isElement(name, CELLML_2_0_NS);
+}
+
+bool XmlNode::isMathmlElement(const char *name)
+{
+    return isElement(name, MATHML_NS);
 }
 
 bool XmlNode::isText()
@@ -95,8 +100,8 @@ std::string XmlNode::getName() const
 bool XmlNode::hasAttribute(const char *attributeName)
 {
     bool found = false;
-    xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
-    if (attribute) {
+    xmlAttrPtr attribute = xmlHasProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
+    if (attribute != nullptr) {
         found = true;
     }
     return found;
@@ -106,7 +111,7 @@ std::string XmlNode::getAttribute(const char *attributeName)
 {
     std::string attributeValueString;
     if (hasAttribute(attributeName)) {
-        xmlChar *attributeValue = xmlGetProp(mPimpl->mXmlNodePtr, BAD_CAST attributeName);
+        xmlChar *attributeValue = xmlGetProp(mPimpl->mXmlNodePtr, reinterpret_cast<const xmlChar *>(attributeName));
         attributeValueString = std::string(reinterpret_cast<const char *>(attributeValue));
         xmlFree(attributeValue);
     }
@@ -117,7 +122,7 @@ XmlAttributePtr XmlNode::getFirstAttribute()
 {
     xmlAttrPtr attribute = mPimpl->mXmlNodePtr->properties;
     XmlAttributePtr attributeHandle = nullptr;
-    if (attribute) {
+    if (attribute != nullptr) {
         attributeHandle = std::make_shared<XmlAttribute>();
         attributeHandle->setXmlAttribute(attribute);
     }
@@ -128,7 +133,7 @@ XmlNodePtr XmlNode::getFirstChild()
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = nullptr;
-    if (child) {
+    if (child != nullptr) {
         childHandle = std::make_shared<XmlNode>();
         childHandle->setXmlNode(child);
     }
@@ -139,7 +144,7 @@ XmlNodePtr XmlNode::getNext()
 {
     xmlNodePtr next = mPimpl->mXmlNodePtr->next;
     XmlNodePtr nextHandle = nullptr;
-    if (next) {
+    if (next != nullptr) {
         nextHandle = std::make_shared<XmlNode>();
         nextHandle->setXmlNode(next);
     }
@@ -150,17 +155,21 @@ XmlNodePtr XmlNode::getParent()
 {
     xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
     XmlNodePtr parentHandle = nullptr;
-    if (parent) {
+    if (parent != nullptr) {
         parentHandle = std::make_shared<XmlNode>();
         parentHandle->setXmlNode(parent);
     }
     return parentHandle;
 }
 
-std::string XmlNode::convertToString() {
+std::string XmlNode::convertToString(bool format)
+{
     std::string contentString;
     xmlBufferPtr buffer = xmlBufferCreate();
-    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, 0);
+    if (format) {
+        xmlKeepBlanksDefault(0);
+    }
+    int len = xmlNodeDump(buffer, mPimpl->mXmlNodePtr->doc, mPimpl->mXmlNodePtr, 0, format ? 1 : 0);
     if (len > 0) {
         contentString = std::string(reinterpret_cast<const char *>(buffer->content));
     }
@@ -168,4 +177,12 @@ std::string XmlNode::convertToString() {
     return contentString;
 }
 
+std::string XmlNode::convertToStrippedString()
+{
+    std::string contentString = convertToString();
+    contentString.erase(contentString.begin(), find_if_not(contentString.begin(), contentString.end(), [](int c) { return isspace(c); }));
+    contentString.erase(find_if_not(contentString.rbegin(), contentString.rend(), [](int c) { return isspace(c); }).base(), contentString.end());
+    return contentString;
 }
+
+} // namespace libcellml

@@ -18,15 +18,16 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Reset, create) {
+TEST(Reset, create)
+{
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     EXPECT_NE(nullptr, r);
 }
 
-TEST(Reset, order) {
+TEST(Reset, order)
+{
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-
 
     EXPECT_FALSE(r->isOrderSet());
     r->setOrder(1);
@@ -38,26 +39,28 @@ TEST(Reset, order) {
     EXPECT_FALSE(r->isOrderSet());
 }
 
-TEST(Reset, addAndCountChildren) {
+TEST(Reset, addAndCountChildren)
+{
     libcellml::Reset r;
     libcellml::WhenPtr child1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr child2 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr child3 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr child4 = std::make_shared<libcellml::When>();
 
-    EXPECT_EQ(0u, r.whenCount());
+    EXPECT_EQ(size_t(0), r.whenCount());
 
     r.addWhen(child1);
     r.addWhen(child2);
     r.addWhen(child3);
     r.addWhen(child4);
-    EXPECT_EQ(4u, r.whenCount());
+    EXPECT_EQ(size_t(4), r.whenCount());
 
     r.addWhen(child3);
-    EXPECT_EQ(5u, r.whenCount());
+    EXPECT_EQ(size_t(5), r.whenCount());
 }
 
-TEST(Reset, contains) {
+TEST(Reset, contains)
+{
     libcellml::Reset r;
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
@@ -70,7 +73,8 @@ TEST(Reset, contains) {
     EXPECT_TRUE(r.containsWhen(w2));
 }
 
-TEST(Reset, removeWhenMethods) {
+TEST(Reset, removeWhenMethods)
+{
     libcellml::Reset r;
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
@@ -79,7 +83,7 @@ TEST(Reset, removeWhenMethods) {
     r.addWhen(w2);
 
     EXPECT_TRUE(r.removeWhen(0));
-    EXPECT_EQ(1u, r.whenCount());
+    EXPECT_EQ(size_t(1), r.whenCount());
 
     EXPECT_FALSE(r.removeWhen(1));
 
@@ -88,17 +92,18 @@ TEST(Reset, removeWhenMethods) {
     r.addWhen(w1);
     r.removeWhen(w1);
     r.removeWhen(w1);
-    EXPECT_EQ(2u, r.whenCount());
+    EXPECT_EQ(size_t(2), r.whenCount());
 
     // Expect no change
     EXPECT_FALSE(r.removeWhen(w3));
-    EXPECT_EQ(2u, r.whenCount());
+    EXPECT_EQ(size_t(2), r.whenCount());
 
     r.removeAllWhens();
-    EXPECT_EQ(0u, r.whenCount());
+    EXPECT_EQ(size_t(0), r.whenCount());
 }
 
-TEST(Reset, getWhenMethods) {
+TEST(Reset, getWhenMethods)
+{
     libcellml::Reset r;
     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
@@ -110,13 +115,14 @@ TEST(Reset, getWhenMethods) {
 
     // Using const version of overloaded method
     const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).getWhen(0);
-    EXPECT_EQ(0, cS->getOrder());
+    EXPECT_EQ(int(0), cS->getOrder());
 
     // Can do this as we just have a const pointer
     EXPECT_EQ(nullptr, r.getWhen(4));
 }
 
-TEST(Reset, takeWhenMethods) {
+TEST(Reset, takeWhenMethods)
+{
     libcellml::Reset r;
     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
@@ -125,13 +131,14 @@ TEST(Reset, takeWhenMethods) {
     r.addWhen(c2);
 
     libcellml::WhenPtr c02 = r.takeWhen(1);
-    EXPECT_EQ(1u, r.whenCount());
-    EXPECT_EQ(0, c02->getOrder());
+    EXPECT_EQ(size_t(1), r.whenCount());
+    EXPECT_EQ(int(0), c02->getOrder());
 
     EXPECT_EQ(nullptr, r.takeWhen(4));
 }
 
-TEST(Reset, replaceWhenMethods) {
+TEST(Reset, replaceWhenMethods)
+{
     libcellml::Reset r;
     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
@@ -145,26 +152,30 @@ TEST(Reset, replaceWhenMethods) {
     EXPECT_TRUE(r.replaceWhen(1, c3));
 }
 
-TEST(Reset, constructors) {
-    libcellml::Reset r, r1, r2;
+TEST(Reset, constructors)
+{
+    libcellml::Reset r;
+    libcellml::Reset r1;
+    libcellml::Reset r2;
 
     r.addWhen(std::make_shared<libcellml::When>());
 
     // Testing assignment for Reset
     r1 = r;
-    EXPECT_EQ(1u, r1.whenCount());
+    EXPECT_EQ(size_t(1), r1.whenCount());
 
     // Testing move assignment for Reset
     r2 = std::move(r1);
-    EXPECT_EQ(1u, r2.whenCount());
+    EXPECT_EQ(size_t(1), r2.whenCount());
 
     // Testing move constructor for Reset
     libcellml::Reset r3 = std::move(r2);
-    EXPECT_EQ(1u, r3.whenCount());
+    EXPECT_EQ(size_t(1), r3.whenCount());
 }
 
-TEST(Reset, printResetWithVariable) {
-    const std::string e = "<reset variable=\"A\"/>";
+TEST(Reset, printResetWithVariable)
+{
+    const std::string e = "<reset variable=\"A\"/>\n";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
@@ -178,8 +189,9 @@ TEST(Reset, printResetWithVariable) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithOrder) {
-    const std::string e = "<reset order=\"1\"/>";
+TEST(Reset, printResetWithOrder)
+{
+    const std::string e = "<reset order=\"1\"/>\n";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     r->setOrder(1);
@@ -190,8 +202,9 @@ TEST(Reset, printResetWithOrder) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithOrderAndVariable) {
-    const std::string e = "<reset variable=\"B\" order=\"1\"/>";
+TEST(Reset, printResetWithOrderAndVariable)
+{
+    const std::string e = "<reset variable=\"B\" order=\"1\"/>\n";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -207,11 +220,12 @@ TEST(Reset, printResetWithOrderAndVariable) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithWhen) {
+TEST(Reset, printResetWithWhen)
+{
     const std::string e =
-            "<reset>"
-                "<when/>"
-            "</reset>";
+        "<reset>\n"
+        "  <when/>\n"
+        "</reset>\n";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
@@ -224,13 +238,14 @@ TEST(Reset, printResetWithWhen) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithMultipleWhens) {
+TEST(Reset, printResetWithMultipleWhens)
+{
     const std::string e =
-            "<reset>"
-                "<when/>"
-                "<when/>"
-                "<when/>"
-            "</reset>";
+        "<reset>\n"
+        "  <when/>\n"
+        "  <when/>\n"
+        "  <when/>\n"
+        "</reset>\n";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
@@ -247,20 +262,25 @@ TEST(Reset, printResetWithMultipleWhens) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithWhenWithValueSet) {
+TEST(Reset, printResetWithWhenWithValueSet)
+{
     const std::string e =
-            "<reset>"
-                "<when>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                        "a value set"
-                    "</math>"
-                "</when>"
-            "</reset>";
+        "<reset>\n"
+        "  <when>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      a value set\n"
+        "    </math>\n"
+        "  </when>\n"
+        "</reset>\n";
+    const std::string math =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  a value set\n"
+        "</math>\n";
 
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
-    w->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">a value set</math>");
+    w->setValue(math);
     r->addWhen(w);
 
     libcellml::Printer p;
@@ -269,23 +289,36 @@ TEST(Reset, printResetWithWhenWithValueSet) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithMultipleWhensWithValues) {
+TEST(Reset, printResetWithMultipleWhensWithValues)
+{
     const std::string e =
-            "<reset variable=\"A\">"
-                "<when order=\"2\">"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                        "some mathml"
-                    "</math>"
-                "</when>"
-                "<when order=\"-1\" id=\"wid\">"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                        "some condition in mathml"
-                    "</math>"
-                    "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-                        "some value in mathml"
-                    "</math>"
-                "</when>"
-            "</reset>";
+        "<reset variable=\"A\">\n"
+        "  <when order=\"2\">\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      some mathml\n"
+        "    </math>\n"
+        "  </when>\n"
+        "  <when order=\"-1\" id=\"wid\">\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      some condition in mathml\n"
+        "    </math>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      some value in mathml\n"
+        "    </math>\n"
+        "  </when>\n"
+        "</reset>\n";
+    const std::string condition1 =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  some mathml\n"
+        "</math>\n";
+    const std::string condition2 =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  some condition in mathml\n"
+        "</math>\n";
+    const std::string value2 =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  some value in mathml\n"
+        "</math>\n";
 
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
@@ -294,11 +327,11 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
 
     v->setName("A");
     w1->setOrder(2);
-    w1->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some mathml</math>");
+    w1->setCondition(condition1);
 
     w2->setOrder(-1);
-    w2->setCondition("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some condition in mathml</math>");
-    w2->setValue("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">some value in mathml</math>");
+    w2->setCondition(condition2);
+    w2->setValue(value2);
     w2->setId("wid");
 
     r->setVariable(v);
@@ -311,13 +344,14 @@ TEST(Reset, printResetWithMultipleWhensWithValues) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, printResetWithMultipleWhensWithOrders) {
+TEST(Reset, printResetWithMultipleWhensWithOrders)
+{
     const std::string e =
-            "<reset>"
-                "<when order=\"7\"/>"
-                "<when order=\"-1\"/>"
-                "<when order=\"0\"/>"
-            "</reset>";
+        "<reset>\n"
+        "  <when order=\"7\"/>\n"
+        "  <when order=\"-1\"/>\n"
+        "  <when order=\"0\"/>\n"
+        "</reset>\n";
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
@@ -337,41 +371,42 @@ TEST(Reset, printResetWithMultipleWhensWithOrders) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Reset, addRemoveResetFromComponentMethods) {
+TEST(Reset, addRemoveResetFromComponentMethods)
+{
     const std::string in = "valid_name";
     const std::string e1 =
-            "<component name=\"valid_name\">"
-                "<variable name=\"V_na\"/>"
-                "<reset variable=\"V_na\">"
-                    "<when order=\"3\"/>"
-                    "<when order=\"0\"/>"
-                "</reset>"
-                "<reset variable=\"V_na\">"
-                    "<when order=\"1\"/>"
-                "</reset>"
-            "</component>";
+        "<component name=\"valid_name\">\n"
+        "  <variable name=\"V_na\"/>\n"
+        "  <reset variable=\"V_na\">\n"
+        "    <when order=\"3\"/>\n"
+        "    <when order=\"0\"/>\n"
+        "  </reset>\n"
+        "  <reset variable=\"V_na\">\n"
+        "    <when order=\"1\"/>\n"
+        "  </reset>\n"
+        "</component>\n";
 
     const std::string e2 =
-            "<component name=\"valid_name\">"
-                "<variable name=\"V_na\"/>"
-                "<reset variable=\"V_na\">"
-                    "<when order=\"3\"/>"
-                    "<when order=\"0\"/>"
-                "</reset>"
-            "</component>";
+        "<component name=\"valid_name\">\n"
+        "  <variable name=\"V_na\"/>\n"
+        "  <reset variable=\"V_na\">\n"
+        "    <when order=\"3\"/>\n"
+        "    <when order=\"0\"/>\n"
+        "  </reset>\n"
+        "</component>\n";
 
     const std::string e3 =
-            "<component name=\"valid_name\">"
-                "<variable name=\"V_na\"/>"
-            "</component>";
+        "<component name=\"valid_name\">\n"
+        "  <variable name=\"V_na\"/>\n"
+        "</component>\n";
 
     const std::string e4 =
-            "<component name=\"valid_name\">"
-                "<variable name=\"V_na\"/>"
-                "<reset variable=\"V_na\">"
-                    "<when order=\"1\"/>"
-                "</reset>"
-            "</component>";
+        "<component name=\"valid_name\">\n"
+        "  <variable name=\"V_na\"/>\n"
+        "  <reset variable=\"V_na\">\n"
+        "    <when order=\"1\"/>\n"
+        "  </reset>\n"
+        "</component>\n";
 
     libcellml::Component c;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -426,7 +461,8 @@ TEST(Reset, addRemoveResetFromComponentMethods) {
     EXPECT_FALSE(c.removeReset(1));
 }
 
-TEST(Reset, getResetFromComponentMethod) {
+TEST(Reset, getResetFromComponentMethod)
+{
     const std::string in = "valid_name";
     libcellml::Component c;
     c.setName(in);
@@ -440,7 +476,7 @@ TEST(Reset, getResetFromComponentMethod) {
     libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
     c.addReset(r4);
 
-    EXPECT_EQ(4u, c.resetCount());
+    EXPECT_EQ(size_t(4), c.resetCount());
 
     // Get by index
     libcellml::ResetPtr rMethod1 = c.getReset(1);
@@ -451,11 +487,12 @@ TEST(Reset, getResetFromComponentMethod) {
     EXPECT_EQ(r4.get(), vMethod2.get());
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(-3));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(42));
     EXPECT_EQ(nullptr, c.getReset(7));
 }
 
-TEST(Reset, hasResetFromComponentMethod) {
+TEST(Reset, hasResetFromComponentMethod)
+{
     const std::string in = "valid_name";
     libcellml::Component c;
     c.setName(in);

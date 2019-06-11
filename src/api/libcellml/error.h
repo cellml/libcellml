@@ -35,8 +35,8 @@ public:
     Error(); /**< Constructor */
     virtual ~Error(); /**< Destructor */
     Error(const Error &rhs); /**< Copy constructor */
-    Error(Error &&rhs); /**< Move constructor */
-    Error& operator=(Error rhs); /**< Assignment operator */
+    Error(Error &&rhs) noexcept; /**< Move constructor */
+    Error &operator=(Error rhs); /**< Assignment operator */
 
     /**
      * @brief Constructs an Error for the model.
@@ -45,7 +45,7 @@ public:
      *
      * @param model The model the error references.
      */
-    explicit Error(ModelPtr model);
+    explicit Error(const ModelPtr &model);
 
     /**
      * @brief Constructs an Error for the when.
@@ -54,7 +54,7 @@ public:
      *
      * @param when The when the error references.
      */
-    explicit Error(WhenPtr when);
+    explicit Error(const WhenPtr &when);
 
     /**
      * @brief Constructs an Error for the component.
@@ -63,7 +63,7 @@ public:
      *
      * @param component The component the error references.
      */
-    explicit Error(ComponentPtr component);
+    explicit Error(const ComponentPtr &component);
 
     /**
      * @brief Constructs an Error for the import source.
@@ -72,7 +72,7 @@ public:
      *
      * @param importSource The import source the error references.
      */
-    explicit Error(ImportSourcePtr importSource);
+    explicit Error(const ImportSourcePtr &importSource);
 
     /**
      * @brief Constructs an Error for the units.
@@ -81,7 +81,7 @@ public:
      *
      * @param units The units the error references.
      */
-    explicit Error(UnitsPtr units);
+    explicit Error(const UnitsPtr &units);
 
     /**
      * @brief Constructs an Error for the variable.
@@ -90,7 +90,7 @@ public:
      *
      * @param variable The variable the error references.
      */
-    explicit Error(VariablePtr variable);
+    explicit Error(const VariablePtr &variable);
 
     /**
      * @brief Constructs an Error for the reset.
@@ -99,7 +99,7 @@ public:
      *
      * @param reset The reset the error references.
      */
-    explicit Error(ResetPtr reset);
+    explicit Error(const ResetPtr &reset);
 
     /**
      * @brief The error Kind enum class.
@@ -169,7 +169,7 @@ public:
      * @return @c true if the @p kind matches the the @c Error::Kind for this
      * error and @c false otherwise.
      */
-    bool isKind(const Kind &kind) const;
+    bool isKind(Kind kind) const;
 
     /**
      * @brief Set the @c enum SpecificationRule of this error.
@@ -343,4 +343,4 @@ private:
     ErrorImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml
