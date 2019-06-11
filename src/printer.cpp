@@ -196,7 +196,7 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
     std::string repr;
     if (!units->getName().empty()) {
         if (units->isImport()) {
-            repr += indent + "<import xlink:href=\"" + units->importSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+            repr += indent + "<import xlink:href=\"" + units->importSource()->url() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
             if (!units->importSource()->id().empty()) {
                 repr += " id=\"" + units->importSource()->id() + "\"";
             }
@@ -555,7 +555,7 @@ std::string Printer::printModel(const ModelPtr &model) const
     }
 
     for (const auto &iter : importMap) {
-        repr += tabIndent + "<import xlink:href=\"" + iter.first->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+        repr += tabIndent + "<import xlink:href=\"" + iter.first->url() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
         if (!iter.first->id().empty()) {
             repr += " id=\"" + iter.first->id() + "\"";
         }

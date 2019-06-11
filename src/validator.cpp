@@ -293,7 +293,7 @@ void Validator::validateModel(const ModelPtr &model)
                 if (component->isImport()) {
                     // Check for a component_ref.
                     std::string componentRef = component->importReference();
-                    std::string importSource = component->importSource()->getUrl();
+                    std::string importSource = component->importSource()->url();
                     bool foundImportError = false;
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -353,7 +353,7 @@ void Validator::validateModel(const ModelPtr &model)
                 if (units->isImport()) {
                     // Check for a units_ref.
                     std::string unitsRef = units->importReference();
-                    std::string importSource = units->importSource()->getUrl();
+                    std::string importSource = units->importSource()->url();
                     bool foundImportError = false;
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
