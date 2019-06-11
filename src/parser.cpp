@@ -253,14 +253,14 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     }
     if (!node->isCellmlElement("model")) {
         ErrorPtr err = std::make_shared<Error>();
-        if (node->getName() == "model") {
-            std::string nodeNamespace = node->getNamespace();
+        if (node->name() == "model") {
+            std::string nodeNamespace = node->namespaceUri();
             if (nodeNamespace.empty()) {
                 nodeNamespace = "null";
             }
             err->setDescription("Model element is in invalid namespace '" + nodeNamespace + "'. A valid CellML root node should be in namespace '" + CELLML_2_0_NS + "'.");
         } else {
-            err->setDescription("Model element is of invalid type '" + node->getName() + "'. A valid CellML root node should be of type 'model'.");
+            err->setDescription("Model element is of invalid type '" + node->name() + "'. A valid CellML root node should be of type 'model'.");
         }
         err->setModel(model);
         err->setRule(SpecificationRule::MODEL_ELEMENT);
@@ -268,7 +268,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
         return;
     }
     // Get model attributes.
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("name")) {
             model->setName(attribute->getValue());
@@ -276,14 +276,14 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             model->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Model '" + node->getAttribute("name") + "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setDescription("Model '" + node->attribute("name") + "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setModel(model);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
     // Get model children (CellML entities).
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     std::vector<XmlNodePtr> connectionNodes;
     std::vector<XmlNodePtr> encapsulationNodes;
     while (childNode) {
@@ -300,8 +300,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             loadImport(importSource, model, childNode);
         } else if (childNode->isCellmlElement("encapsulation")) {
             // An encapsulation should not have attributes other than an 'id' attribute.
-            if (childNode->getFirstAttribute()) {
-                XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            if (childNode->firstAttribute()) {
+                XmlAttributePtr childAttribute = childNode->firstAttribute();
                 while (childAttribute) {
                     if (childAttribute->isType("id")) {
                         model->setEncapsulationId(childAttribute->getValue());
@@ -316,7 +316,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
                 }
             }
             // Load encapsulated component_refs.
-            XmlNodePtr componentRefNode = childNode->getFirstChild();
+            XmlNodePtr componentRefNode = childNode->firstChild();
             if (componentRefNode) {
                 // This component_ref and its child and sibling elements will be loaded
                 // and error-checked in loadEncapsulation().
@@ -345,12 +345,12 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Model '" + model->getName() + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Model '" + model->getName() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setModel(model);
             err->setRule(SpecificationRule::MODEL_CHILD);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
 
     if (!encapsulationNodes.empty()) {
@@ -371,7 +371,7 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
 
 void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlNodePtr &node)
 {
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("name")) {
             component->setName(attribute->getValue());
@@ -379,13 +379,13 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             component->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Component '" + node->getAttribute("name") + "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setDescription("Component '" + node->attribute("name") + "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setComponent(component);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("variable")) {
             VariablePtr variable = std::make_shared<Variable>();
@@ -414,18 +414,18 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Component '" + component->getName() + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Component '" + component->getName() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setComponent(component);
             err->setRule(SpecificationRule::COMPONENT_CHILD);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
 }
 
 void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node)
 {
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("name")) {
             units->setName(attribute->getValue());
@@ -439,7 +439,7 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
         }
         attribute = attribute->getNext();
     }
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("unit")) {
             loadUnit(units, childNode);
@@ -457,12 +457,12 @@ void Parser::ParserImpl::loadUnits(const UnitsPtr &units, const XmlNodePtr &node
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Units '" + units->getName() + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Units '" + units->getName() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNITS_CHILD);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
 }
 
@@ -474,14 +474,14 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     double multiplier = 1.0;
     std::string id;
     // A unit should not have any children.
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->getName() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setUnits(units);
                 mParser->addError(err);
             }
@@ -489,14 +489,14 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->getName() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setUnits(units);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
     // Parse the unit attributes.
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("units")) {
             reference = attribute->getValue();
@@ -507,7 +507,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 exponent = convertToDouble(attribute->getValue());
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an exponent with the value '" + attribute->getValue() + "' that is not a representation of a CellML real valued number.");
+                err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->getName() + "' has an exponent with the value '" + attribute->getValue() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_EXPONENT);
                 mParser->addError(err);
@@ -517,7 +517,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 multiplier = convertToDouble(attribute->getValue());
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has a multiplier with the value '" + attribute->getValue() + "' that is not a representation of a CellML real valued number.");
+                err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->getName() + "' has a multiplier with the value '" + attribute->getValue() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_MULTIPLIER);
                 mParser->addError(err);
@@ -526,7 +526,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             id = attribute->getValue();
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Unit referencing '" + node->getAttribute("units") + "' in units '" + units->getName() + "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->getName() + "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNIT_OPTIONAL_ATTRIBUTE);
             mParser->addError(err);
@@ -540,14 +540,14 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
 void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNodePtr &node)
 {
     // A variable should not have any children.
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isText()) {
             std::string textNode = childNode->convertToString();
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Variable '" + node->getAttribute("name") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setDescription("Variable '" + node->attribute("name") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setVariable(variable);
                 mParser->addError(err);
             }
@@ -555,13 +555,13 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + node->getAttribute("name") + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Variable '" + node->attribute("name") + "' has an invalid child element '" + childNode->name() + "'.");
             err->setVariable(variable);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     bool unitsAttributePresent = false;
     bool nameAttributePresent = false;
     while (attribute) {
@@ -579,7 +579,7 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             variable->setInitialValue(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + node->getAttribute("name") + "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setDescription("Variable '" + node->attribute("name") + "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setVariable(variable);
             mParser->addError(err);
         }
@@ -587,13 +587,13 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
     }
     if (!nameAttributePresent) {
         ErrorPtr err = std::make_shared<Error>(variable);
-        err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'name' attribute.");
+        err->setDescription("Variable '" + node->attribute("name") + "' is missing a required 'name' attribute.");
         err->setRule(SpecificationRule::VARIABLE_NAME);
         mParser->addError(err);
     }
     if (!unitsAttributePresent) {
         ErrorPtr err = std::make_shared<Error>(variable);
-        err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'units' attribute.");
+        err->setDescription("Variable '" + node->attribute("name") + "' is missing a required 'units' attribute.");
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mParser->addError(err);
     }
@@ -620,7 +620,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     std::string component2Name;
     std::string mappingId;
     std::string connectionId;
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("component_1")) {
             component1Name = attribute->getValue();
@@ -658,7 +658,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
     componentNamePair = std::make_pair(component1Name, component2Name);
 
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     if (!childNode) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() + "' must contain one or more 'map_variables' elements.");
@@ -672,8 +672,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     // Iterate over connection child XML nodes.
     while (childNode) {
         // Connection map XML nodes should not have further children.
-        if (childNode->getFirstChild()) {
-            XmlNodePtr grandchildNode = childNode->getFirstChild();
+        if (childNode->firstChild()) {
+            XmlNodePtr grandchildNode = childNode->firstChild();
             if (grandchildNode->isText()) {
                 std::string textNode = grandchildNode->convertToString();
                 // Ignore whitespace when parsing.
@@ -688,7 +688,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Connection in model '" + model->getName() + "' has an invalid child element '" + grandchildNode->getName() + "' of element '" + childNode->getName() + "'.");
+                err->setDescription("Connection in model '" + model->getName() + "' has an invalid child element '" + grandchildNode->name() + "' of element '" + childNode->name() + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
@@ -698,7 +698,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         if (childNode->isCellmlElement("map_variables")) {
             std::string variable1Name;
             std::string variable2Name;
-            XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
                 if (childAttribute->isType("variable_1")) {
                     variable1Name = childAttribute->getValue();
@@ -753,12 +753,12 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Connection in model '" + model->getName() + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Connection in model '" + model->getName() + "' has an invalid child element '" + childNode->name() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::CONNECTION);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
 
     // If we have a component name pair, check that the components exist in the model.
@@ -766,7 +766,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     ComponentPtr component2 = nullptr;
     // Now check the objects exist in the model.
     if (model->containsComponent(componentNamePair.first)) {
-        component1 = model->getComponent(componentNamePair.first);
+        component1 = model->component(componentNamePair.first);
     } else {
         if (!component1Missing) {
             ErrorPtr err = std::make_shared<Error>();
@@ -778,7 +778,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         }
     }
     if (model->containsComponent(componentNamePair.second)) {
-        component2 = model->getComponent(componentNamePair.second);
+        component2 = model->component(componentNamePair.second);
     } else {
         if (!component2Missing) {
             ErrorPtr err = std::make_shared<Error>();
@@ -797,7 +797,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             VariablePtr variable2 = nullptr;
             if (component1) {
                 if (component1->hasVariable(iterPair.first)) {
-                    variable1 = component1->getVariable(iterPair.first);
+                    variable1 = component1->variable(iterPair.first);
                 } else if (component1->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
                     variable1 = std::make_shared<Variable>();
@@ -823,7 +823,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
             if (component2) {
                 if (component2->hasVariable(iterPair.second)) {
-                    variable2 = component2->getVariable(iterPair.second);
+                    variable2 = component2->variable(iterPair.second);
                 } else if (component2->isImport()) {
                     // With an imported component we assume this variable exists in the imported component.
                     variable2 = std::make_shared<Variable>();
@@ -871,7 +871,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         std::string encapsulationId;
         if (parentComponentNode->isCellmlElement("component_ref")) {
             // Check for a component in the parent component_ref.
-            XmlAttributePtr attribute = parentComponentNode->getFirstAttribute();
+            XmlAttributePtr attribute = parentComponentNode->firstAttribute();
             while (attribute) {
                 if (attribute->isType("component")) {
                     parentComponentName = attribute->getValue();
@@ -920,12 +920,12 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 mParser->addError(err);
             } else {
                 // Continue to next node if this is whitespace (don't try to parse children of whitespace).
-                parentComponentNode = parentComponentNode->getNext();
+                parentComponentNode = parentComponentNode->next();
                 continue;
             }
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Encapsulation in model '" + model->getName() + "' has an invalid child element '" + parentComponentNode->getName() + "'.");
+            err->setDescription("Encapsulation in model '" + model->getName() + "' has an invalid child element '" + parentComponentNode->name() + "'.");
             err->setModel(model);
             err->setKind(Error::Kind::ENCAPSULATION);
             err->setRule(SpecificationRule::ENCAPSULATION_COMPONENT_REF);
@@ -933,9 +933,9 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
         }
 
         // Get first child of this parent component_ref.
-        XmlNodePtr childComponentNode = parentComponentNode->getFirstChild();
+        XmlNodePtr childComponentNode = parentComponentNode->firstChild();
         if (!childComponentNode) {
-            XmlNodePtr grandParentComponentNode = parentComponentNode->getParent();
+            XmlNodePtr grandParentComponentNode = parentComponentNode->parent();
             if (grandParentComponentNode->isCellmlElement("encapsulation")) {
                 ErrorPtr err = std::make_shared<Error>();
                 if (parentComponent) {
@@ -956,12 +956,12 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             if (childComponentNode->isCellmlElement("component_ref")) {
                 bool childComponentMissing = false;
                 bool foundChildComponent = false;
-                XmlAttributePtr attribute = childComponentNode->getFirstAttribute();
+                XmlAttributePtr attribute = childComponentNode->firstAttribute();
                 while (attribute) {
                     if (attribute->isType("component")) {
                         const std::string childComponentName = attribute->getValue();
                         if (model->containsComponent(childComponentName)) {
-                            childComponent = model->getComponent(childComponentName);
+                            childComponent = model->component(childComponentName);
                             foundChildComponent = true;
                         } else {
                             ErrorPtr err = std::make_shared<Error>();
@@ -1014,7 +1014,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 }
             } else {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Encapsulation in model '" + model->getName() + "' has an invalid child element '" + childComponentNode->getName() + "'.");
+                err->setDescription("Encapsulation in model '" + model->getName() + "' has an invalid child element '" + childComponentNode->name() + "'.");
                 err->setModel(model);
                 err->setKind(Error::Kind::ENCAPSULATION);
                 err->setRule(SpecificationRule::COMPONENT_REF_CHILD);
@@ -1026,7 +1026,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 parentComponent->addComponent(childComponent);
             }
             // Load any further encapsulated children.
-            if (childComponentNode->getFirstChild()) {
+            if (childComponentNode->firstChild()) {
                 loadEncapsulation(model, childComponentNode);
             }
             if ((parentComponent) && (childComponent)) {
@@ -1034,7 +1034,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 // so remove it if it exists.
                 model->removeComponent(childComponent);
             }
-            childComponentNode = childComponentNode->getNext();
+            childComponentNode = childComponentNode->next();
         }
 
         // Re-add the parentComponent to the model with its child(ren) encapsulated.
@@ -1042,13 +1042,13 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
             model->addComponent(parentComponent);
         }
         // Get the next parent component at this level
-        parentComponentNode = parentComponentNode->getNext();
+        parentComponentNode = parentComponentNode->next();
     }
 }
 
 void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node)
 {
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("href", XLINK_NS)) {
             importSource->setUrl(attribute->getValue());
@@ -1058,18 +1058,18 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             // Allow xlink attributes but do nothing for them.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Import from '" + node->getAttribute("href") + "' has an invalid attribute '" + attribute->getName() + "'.");
+            err->setDescription("Import from '" + node->attribute("href") + "' has an invalid attribute '" + attribute->getName() + "'.");
             err->setImportSource(importSource);
             mParser->addError(err);
         }
         attribute = attribute->getNext();
     }
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = std::make_shared<Component>();
             bool errorOccurred = false;
-            XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
                 if (childAttribute->isType("name")) {
                     importedComponent->setName(childAttribute->getValue());
@@ -1079,7 +1079,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                     importedComponent->setSourceComponent(importSource, childAttribute->getValue());
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Import of component '" + childNode->getAttribute("name") + "' from '" + node->getAttribute("href") + "' has an invalid attribute '" + childAttribute->getName() + "'.");
+                    err->setDescription("Import of component '" + childNode->attribute("name") + "' from '" + node->attribute("href") + "' has an invalid attribute '" + childAttribute->getName() + "'.");
                     err->setImportSource(importSource);
                     mParser->addError(err);
                     errorOccurred = true;
@@ -1092,7 +1092,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         } else if (childNode->isCellmlElement("units")) {
             UnitsPtr importedUnits = std::make_shared<Units>();
             bool errorOccurred = false;
-            XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
                 if (childAttribute->isType("name")) {
                     importedUnits->setName(childAttribute->getValue());
@@ -1102,7 +1102,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
                     importedUnits->setSourceUnits(importSource, childAttribute->getValue());
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Import of units '" + childNode->getAttribute("name") + "' from '" + node->getAttribute("href") + "' has an invalid attribute '" + childAttribute->getName() + "'.");
+                    err->setDescription("Import of units '" + childNode->attribute("name") + "' from '" + node->attribute("href") + "' has an invalid attribute '" + childAttribute->getName() + "'.");
                     err->setImportSource(importSource);
                     mParser->addError(err);
                     errorOccurred = true;
@@ -1117,7 +1117,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             // Ignore whitespace when parsing.
             if (hasNonWhitespaceCharacters(textNode)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Import from '" + node->getAttribute("href") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
+                err->setDescription("Import from '" + node->attribute("href") + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                 err->setImportSource(importSource);
                 err->setRule(SpecificationRule::IMPORT_CHILD);
                 mParser->addError(err);
@@ -1126,12 +1126,12 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Import from '" + node->getAttribute("href") + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Import from '" + node->attribute("href") + "' has an invalid child element '" + childNode->name() + "'.");
             err->setImportSource(importSource);
             err->setRule(SpecificationRule::IMPORT_CHILD);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
 }
 
@@ -1143,11 +1143,11 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     VariablePtr referencedVariable = nullptr;
     std::string variableName;
 
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("variable")) {
             const std::string variableReference = attribute->getValue();
-            referencedVariable = component->getVariable(variableReference);
+            referencedVariable = component->variable(variableReference);
             if (referencedVariable == nullptr) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->getName() + "'.");
@@ -1204,7 +1204,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         mParser->addError(err);
     }
 
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isCellmlElement("when")) {
             WhenPtr when = std::make_shared<When>();
@@ -1224,12 +1224,12 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Reset in component '" + component->getName() + "' referencing variable '" + variableName + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("Reset in component '" + component->getName() + "' referencing variable '" + variableName + "' has an invalid child element '" + childNode->name() + "'.");
             err->setReset(reset);
             err->setRule(SpecificationRule::RESET_CHILD);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
 }
 
@@ -1247,7 +1247,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
     int order = 0;
     bool orderDefined = false;
     bool orderValid = false;
-    XmlAttributePtr attribute = node->getFirstAttribute();
+    XmlAttributePtr attribute = node->firstAttribute();
     while (attribute) {
         if (attribute->isType("order")) {
             orderValid = isCellMLInteger(attribute->getValue());
@@ -1276,7 +1276,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
     }
 
     size_t mathNodeCount = 0;
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     while (childNode) {
         if (childNode->isMathmlElement("math")) {
             // TODO: copy any namespaces declared in parents into the math element
@@ -1308,12 +1308,12 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid child element '" + childNode->getName() + "'.");
+            err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' has an invalid child element '" + childNode->name() + "'.");
             err->setWhen(when);
             err->setRule(SpecificationRule::WHEN_CHILD);
             mParser->addError(err);
         }
-        childNode = childNode->getNext();
+        childNode = childNode->next();
     }
 
     if (mathNodeCount == 0 || mathNodeCount == 1) {

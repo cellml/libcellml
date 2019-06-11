@@ -213,7 +213,7 @@ TEST(Component, getComponentMethods)
     c3->setName("child3");
     c.addComponent(c1);
 
-    libcellml::ComponentPtr cA = c.getComponent(0);
+    libcellml::ComponentPtr cA = c.component(0);
     cA->setName("childA");
 
     libcellml::Printer printer;
@@ -221,13 +221,13 @@ TEST(Component, getComponentMethods)
     EXPECT_EQ(e1, a);
 
     // Using const version of overloaded method
-    const libcellml::ComponentPtr cS = static_cast<const libcellml::Component>(c).getComponent(0);
+    const libcellml::ComponentPtr cS = static_cast<const libcellml::Component>(c).component(0);
     // Can do this as we just have a const pointer
     cS->setName("gus");
     EXPECT_EQ("gus", cS->getName());
-    EXPECT_EQ(nullptr, c.getComponent(4));
+    EXPECT_EQ(nullptr, c.component(4));
 
-    libcellml::ComponentPtr cAr = c.getComponent("gus");
+    libcellml::ComponentPtr cAr = c.component("gus");
     EXPECT_EQ("gus", cAr->getName());
 
     // Modify a deeper Component
@@ -236,13 +236,13 @@ TEST(Component, getComponentMethods)
     c1->addComponent(c2);
     c1->addComponent(c3);
 
-    libcellml::ComponentPtr cB = c.getComponent(1);
-    libcellml::ComponentPtr cBB = cB->getComponent(0);
+    libcellml::ComponentPtr cB = c.component(1);
+    libcellml::ComponentPtr cBB = cB->component(0);
     cBB->setName("childB");
 
-    EXPECT_EQ(nullptr, c.getComponent(3));
+    EXPECT_EQ(nullptr, c.component(3));
 
-    libcellml::ComponentPtr cSn = static_cast<const libcellml::Component>(c).getComponent("gus");
+    libcellml::ComponentPtr cSn = static_cast<const libcellml::Component>(c).component("gus");
     EXPECT_EQ("gus", cSn->getName());
 
     a = printer.printComponent(c);

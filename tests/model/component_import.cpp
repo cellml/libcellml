@@ -315,8 +315,8 @@ TEST(ComponentImport, complexImportAndParse)
     EXPECT_EQ(e, a);
 
     // check component counts
-    const libcellml::ComponentPtr constDave = model->getComponent("dave");
+    const libcellml::ComponentPtr constDave = model->component("dave");
     EXPECT_EQ(size_t(1), constDave->componentCount());
-    const libcellml::ComponentPtr constBob = constDave->getComponent("bob");
+    const libcellml::ComponentPtr constBob = constDave->component("bob");
     EXPECT_EQ(size_t(2), constBob->componentCount());
 }

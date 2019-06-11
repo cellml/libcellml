@@ -261,7 +261,7 @@ TEST(Parser, parseNamedModelWithNamedComponent)
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
     EXPECT_EQ(mName, model->getName());
-    libcellml::ComponentPtr c = model->getComponent(cName);
+    libcellml::ComponentPtr c = model->component(cName);
     EXPECT_EQ(cName, c->getName());
 
     libcellml::Printer printer;
@@ -374,7 +374,7 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError)
 
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(input);
-    libcellml::ComponentPtr component = model->getComponent(cName);
+    libcellml::ComponentPtr component = model->component(cName);
 
     EXPECT_EQ(size_t(1), parser.errorCount());
     EXPECT_EQ(expectedError, parser.getError(0)->getDescription());
@@ -836,7 +836,7 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError)
         EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
     }
 
-    libcellml::VariablePtr variableExpected = model->getComponent("componentA")->getVariable("quixote");
+    libcellml::VariablePtr variableExpected = model->component("componentA")->variable("quixote");
     // Get variable from error and check.
     EXPECT_EQ(variableExpected, p.getError(0)->getVariable());
     // Get const variable from error and check.
@@ -1446,14 +1446,14 @@ TEST(Parser, parseIds)
 
     EXPECT_EQ(size_t(0), p.errorCount());
     EXPECT_EQ("mid", model->getId());
-    EXPECT_EQ("c1id", model->getComponent("component1")->getId());
-    EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
+    EXPECT_EQ("c1id", model->component("component1")->getId());
+    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->getId());
     EXPECT_EQ("u1id", model->getUnits("units1")->getId());
     EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->getId());
     EXPECT_EQ("u2id", model->getUnits("units2")->getId());
-    EXPECT_EQ("c2id", model->getComponent("component2")->getId());
+    EXPECT_EQ("c2id", model->component("component2")->getId());
     EXPECT_EQ("u3id", model->getUnits("units3")->getId());
-    EXPECT_EQ("vid", model->getComponent("component2")->getVariable("variable1")->getId());
+    EXPECT_EQ("vid", model->component("component2")->variable("variable1")->getId());
 }
 
 TEST(Parser, parseIdsOnEverything)
@@ -1511,16 +1511,16 @@ TEST(Parser, parseIdsOnEverything)
     printErrors(parser);
     EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ("mid", model->getId());
-    EXPECT_EQ("c1id", model->getComponent("component1")->getId());
-    EXPECT_EQ("i1id", model->getComponent("component1")->getImportSource()->getId());
+    EXPECT_EQ("c1id", model->component("component1")->getId());
+    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->getId());
     EXPECT_EQ("u1id", model->getUnits("units1")->getId());
     EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->getId());
     EXPECT_EQ("u2id", model->getUnits("units2")->getId());
-    EXPECT_EQ("c2id", model->getComponent("component2")->getId());
+    EXPECT_EQ("c2id", model->component("component2")->getId());
     EXPECT_EQ("u3id", model->getUnits("units3")->getId());
-    EXPECT_EQ("v1id", model->getComponent("component2")->getVariable("variable1")->getId());
-    EXPECT_EQ("r1id", model->getComponent("component2")->getReset(0)->getId());
-    EXPECT_EQ("w1id", model->getComponent("component2")->getReset(0)->getWhen(0)->getId());
+    EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->getId());
+    EXPECT_EQ("r1id", model->component("component2")->reset(0)->getId());
+    EXPECT_EQ("w1id", model->component("component2")->reset(0)->getWhen(0)->getId());
 
     libcellml::Printer printer;
     EXPECT_EQ(in, printer.printModel(model));
@@ -1557,10 +1557,10 @@ TEST(Parser, parseResets)
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(in);
 
-    libcellml::ComponentPtr c = model->getComponent(0);
+    libcellml::ComponentPtr c = model->component(0);
     EXPECT_EQ(size_t(1), c->resetCount());
 
-    libcellml::ResetPtr r = c->getReset(0);
+    libcellml::ResetPtr r = c->reset(0);
     EXPECT_EQ(1, r->getOrder());
     EXPECT_EQ(size_t(2), r->whenCount());
 
@@ -1691,7 +1691,7 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    libcellml::ResetPtr resetExpected = model->getComponent(0)->getReset(0);
+    libcellml::ResetPtr resetExpected = model->component(0)->reset(0);
     libcellml::WhenPtr whenExpected = resetExpected->getWhen(0);
 
     EXPECT_EQ(size_t(6), parser.errorCount());

@@ -479,16 +479,16 @@ TEST(Reset, getResetFromComponentMethod)
     EXPECT_EQ(size_t(4), c.resetCount());
 
     // Get by index
-    libcellml::ResetPtr rMethod1 = c.getReset(1);
+    libcellml::ResetPtr rMethod1 = c.reset(1);
     EXPECT_EQ(r2.get(), rMethod1.get());
 
     // Get const by index
-    const libcellml::ResetPtr vMethod2 = static_cast<const libcellml::Component>(c).getReset(3);
+    const libcellml::ResetPtr vMethod2 = static_cast<const libcellml::Component>(c).reset(3);
     EXPECT_EQ(r4.get(), vMethod2.get());
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getReset(42));
-    EXPECT_EQ(nullptr, c.getReset(7));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).reset(42));
+    EXPECT_EQ(nullptr, c.reset(7));
 }
 
 TEST(Reset, hasResetFromComponentMethod)

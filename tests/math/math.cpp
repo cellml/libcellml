@@ -24,7 +24,7 @@ TEST(Maths, setAndGetMath)
 {
     libcellml::Component c;
     c.setMath(EMPTY_MATH);
-    EXPECT_EQ(EMPTY_MATH, c.getMath());
+    EXPECT_EQ(EMPTY_MATH, c.math());
 }
 
 TEST(Maths, appendAndSerialiseMathComponent)

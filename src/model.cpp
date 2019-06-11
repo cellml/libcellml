@@ -267,7 +267,7 @@ void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
                              const std::string &baseFile)
 {
     for (size_t n = 0; n < parentComponentEntity->componentCount(); ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
+        libcellml::ComponentPtr component = parentComponentEntity->component(n);
         if (component->isImport()) {
             resolveImport(component, baseFile);
         } else {
@@ -309,7 +309,7 @@ bool doHasUnresolvedComponentImports(const ComponentPtr &component)
             ImportSourcePtr importedSource = component->getImportSource();
             if (importedSource->hasModel()) {
                 ModelPtr importedModel = importedSource->getModel();
-                ComponentPtr importedComponent = importedModel->getComponent(component->getImportReference());
+                ComponentPtr importedComponent = importedModel->component(component->getImportReference());
                 unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
             }
         }
@@ -323,7 +323,7 @@ bool hasUnresolvedComponentImports(const ComponentEntityPtr &parentComponentEnti
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < parentComponentEntity->componentCount() && !unresolvedImports; ++n) {
-        libcellml::ComponentPtr component = parentComponentEntity->getComponent(n);
+        libcellml::ComponentPtr component = parentComponentEntity->component(n);
         unresolvedImports = doHasUnresolvedComponentImports(component);
     }
     return unresolvedImports;

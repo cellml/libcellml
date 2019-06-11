@@ -215,7 +215,7 @@ TEST(Connection, parseValidAlternateFormConnection)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ(size_t(2), model->componentCount());
-    EXPECT_EQ(size_t(1), model->getComponent("component1")->getVariable("variable1")->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), model->component("component1")->variable("variable1")->equivalentVariableCount());
 }
 
 TEST(Connection, twoMapVariablesConnection)
@@ -964,7 +964,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     m.addComponent(componentBob);
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
-    EXPECT_EQ(componentImported->getVariable(0), variableImported);
+    EXPECT_EQ(componentImported->variable(0), variableImported);
     libcellml::Variable::addEquivalence(variableImported, variableBob);
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
