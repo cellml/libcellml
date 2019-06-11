@@ -347,7 +347,7 @@ void Validator::validateModel(const ModelPtr &model)
         std::vector<std::string> unitsRefs;
         std::vector<std::string> unitsImportSources;
         for (size_t i = 0; i < model->unitsCount(); ++i) {
-            UnitsPtr units = model->getUnits(i);
+            UnitsPtr units = model->units(i);
             std::string unitsName = units->getName();
             if (!unitsName.empty()) {
                 if (units->isImport()) {
@@ -402,7 +402,7 @@ void Validator::validateModel(const ModelPtr &model)
         }
         for (size_t i = 0; i < model->unitsCount(); ++i) {
             // Validate units.
-            UnitsPtr units = model->getUnits(i);
+            UnitsPtr units = model->units(i);
             mPimpl->validateUnits(units, unitsNames);
         }
     }

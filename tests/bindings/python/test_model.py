@@ -113,30 +113,30 @@ class ModelTestCase(unittest.TestCase):
     def test_units(self):
         from libcellml import Model, Units
 
-        # UnitsPtr getUnits(size_t index)
+        # UnitsPtr units(size_t index)
         name = 'naaame'
         m = Model()
         u = Units()
         u.setName(name)
-        self.assertIsNone(m.getUnits(0))
-        self.assertIsNone(m.getUnits(1))
-        self.assertIsNone(m.getUnits(-1))
+        self.assertIsNone(m.units(0))
+        self.assertIsNone(m.units(1))
+        self.assertIsNone(m.units(-1))
         m.addUnits(u)
-        self.assertIsNone(m.getUnits(1))
-        self.assertIsNone(m.getUnits(-1))
-        self.assertIsNotNone(m.getUnits(0))
-        self.assertEqual(m.getUnits(0).getName(), name)
+        self.assertIsNone(m.units(1))
+        self.assertIsNone(m.units(-1))
+        self.assertIsNotNone(m.units(0))
+        self.assertEqual(m.units(0).getName(), name)
         del(m, u, name)
 
-        # UnitsPtr getUnits(const std::string &name)
+        # UnitsPtr units(const std::string &name)
         name = 'kermit'
         m = Model()
         u = Units()
         u.setName(name)
-        self.assertIsNone(m.getUnits(name))
+        self.assertIsNone(m.units(name))
         m.addUnits(u)
-        self.assertIsNotNone(m.getUnits(name))
-        self.assertEqual(m.getUnits(name).getName(), name)
+        self.assertIsNotNone(m.units(name))
+        self.assertEqual(m.units(name).getName(), name)
         del(m, u, name)
 
     def test_take_units(self):
@@ -184,7 +184,7 @@ class ModelTestCase(unittest.TestCase):
         self.assertTrue(m.replaceUnits(0, u2))
         self.assertFalse(m.replaceUnits(1, u1))
         self.assertFalse(m.replaceUnits(-1, u1))
-        self.assertEqual(m.getUnits(0).getName(), 'b')
+        self.assertEqual(m.units(0).getName(), 'b')
         del(m, u1, u2)
 
         # bool replaceUnits(const std::string &name, const UnitsPtr &units)

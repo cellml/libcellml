@@ -160,7 +160,7 @@ bool Model::hasUnits(const UnitsPtr &units) const
     return mPimpl->findUnits(units) != mPimpl->mUnits.end();
 }
 
-UnitsPtr Model::getUnits(size_t index) const
+UnitsPtr Model::units(size_t index) const
 {
     UnitsPtr units = nullptr;
     if (index < mPimpl->mUnits.size()) {
@@ -170,7 +170,7 @@ UnitsPtr Model::getUnits(size_t index) const
     return units;
 }
 
-UnitsPtr Model::getUnits(const std::string &name) const
+UnitsPtr Model::units(const std::string &name) const
 {
     UnitsPtr units = nullptr;
     auto result = mPimpl->findUnits(name);
@@ -279,7 +279,7 @@ void resolveComponentImports(const ComponentEntityPtr &parentComponentEntity,
 void Model::resolveImports(const std::string &baseFile)
 {
     for (size_t n = 0; n < unitsCount(); ++n) {
-        libcellml::UnitsPtr units = getUnits(n);
+        libcellml::UnitsPtr units = Model::units(n);
         resolveImport(units, baseFile);
     }
     resolveComponentImports(shared_from_this(), baseFile);
@@ -333,7 +333,7 @@ bool Model::hasUnresolvedImports()
 {
     bool unresolvedImports = false;
     for (size_t n = 0; n < unitsCount() && !unresolvedImports; ++n) {
-        libcellml::UnitsPtr units = getUnits(n);
+        libcellml::UnitsPtr units = Model::units(n);
         unresolvedImports = isUnresolvedImport(units);
     }
     if (!unresolvedImports) {
