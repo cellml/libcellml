@@ -151,9 +151,9 @@ std::string printMath(const std::string &math, const std::string &indent)
 void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &variableMap)
 {
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        ComponentPtr component = model->getComponent(i);
+        ComponentPtr component = model->component(i);
         for (size_t j = 0; j < component->variableCount(); ++j) {
-            VariablePtr variable = component->getVariable(j);
+            VariablePtr variable = component->variable(j);
             if (variable->equivalentVariableCount() > 0) {
                 for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                     VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
@@ -266,19 +266,19 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
     size_t variableCount = component->variableCount();
     size_t resetCount = component->resetCount();
     bool hasChildren = false;
-    if (variableCount > 0 || resetCount > 0 || !component->getMath().empty()) {
+    if (variableCount > 0 || resetCount > 0 || !component->math().empty()) {
         hasChildren = true;
     }
     if (hasChildren) {
         repr += ">\n";
         for (size_t i = 0; i < variableCount; ++i) {
-            repr += printVariable(component->getVariable(i), indent + tabIndent);
+            repr += printVariable(component->variable(i), indent + tabIndent);
         }
         for (size_t i = 0; i < resetCount; ++i) {
-            repr += printReset(component->getReset(i), indent + tabIndent);
+            repr += printReset(component->reset(i), indent + tabIndent);
         }
-        if (!component->getMath().empty()) {
-            repr += printMath(component->getMath(), indent + tabIndent);
+        if (!component->math().empty()) {
+            repr += printMath(component->math(), indent + tabIndent);
         }
         repr += indent + "</component>\n";
     } else {
@@ -286,7 +286,7 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
     }
     // Traverse through children of this component and add them to the representation.
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        repr += printComponent(component->getComponent(i), indent);
+        repr += printComponent(component->component(i), indent);
     }
 
     return repr;
@@ -299,8 +299,8 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
     if (!componentName.empty()) {
         repr += " component=\"" + componentName + "\"";
     }
-    if (!component->getEncapsulationId().empty()) {
-        repr += " id=\"" + component->getEncapsulationId() + "\"";
+    if (!component->encapsulationId().empty()) {
+        repr += " id=\"" + component->encapsulationId() + "\"";
     }
     size_t componentCount = component->componentCount();
     if (componentCount > 0) {
@@ -309,7 +309,7 @@ std::string Printer::PrinterImpl::printEncapsulation(const ComponentPtr &compone
         repr += "/>\n";
     }
     for (size_t i = 0; i < componentCount; ++i) {
-        repr += printEncapsulation(component->getComponent(i), indent + tabIndent);
+        repr += printEncapsulation(component->component(i), indent + tabIndent);
     }
     if (componentCount > 0) {
         repr += indent + "</component_ref>\n";
@@ -494,7 +494,7 @@ std::string Printer::printModel(const ModelPtr &model) const
     std::stack<ComponentPtr> componentStack;
     bool incrementComponent = false;
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        ComponentPtr comp = model->getComponent(i);
+        ComponentPtr comp = model->component(i);
         ComponentPtr modelComponent = comp;
         size_t index = 0;
         while (comp) {
@@ -515,7 +515,7 @@ std::string Printer::printModel(const ModelPtr &model) const
                     indeciesStack.push(index);
                 }
                 index = 0;
-                comp = comp->getComponent(index);
+                comp = comp->component(index);
             } else {
                 incrementComponent = true;
             }
@@ -528,7 +528,7 @@ std::string Printer::printModel(const ModelPtr &model) const
                     componentStack.pop();
                     index += 1;
                     if (index < comp->componentCount()) {
-                        comp = comp->getComponent(index);
+                        comp = comp->component(index);
                     } else {
                         comp = nullptr;
                     }
@@ -578,7 +578,7 @@ std::string Printer::printModel(const ModelPtr &model) const
     std::string componentEncapsulation;
     // Serialise components of the model, imported components have already been dealt with at this point.
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        ComponentPtr component = model->getComponent(i);
+        ComponentPtr component = model->component(i);
         repr += mPimpl->printComponent(component, tabIndent);
         if (component->componentCount() > 0) {
             componentEncapsulation += mPimpl->printEncapsulation(component, tabIndent + tabIndent);
@@ -592,8 +592,8 @@ std::string Printer::printModel(const ModelPtr &model) const
 
     if (!componentEncapsulation.empty()) {
         repr += tabIndent + "<encapsulation";
-        if (!model->getEncapsulationId().empty()) {
-            repr += " id=\"" + model->getEncapsulationId() + "\">\n";
+        if (!model->encapsulationId().empty()) {
+            repr += " id=\"" + model->encapsulationId() + "\">\n";
         } else {
             repr += ">\n";
         }

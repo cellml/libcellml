@@ -253,7 +253,7 @@ TEST(Model, getComponentMethods)
     c1->setName("child1");
     m.addComponent(c1);
 
-    libcellml::ComponentPtr cA = m.getComponent(0);
+    libcellml::ComponentPtr cA = m.component(0);
     cA->setName("childA");
 
     libcellml::Printer printer;
@@ -261,12 +261,12 @@ TEST(Model, getComponentMethods)
     EXPECT_EQ(e, a);
 
     // Using const version of overloaded method
-    const libcellml::ComponentPtr cB = static_cast<const libcellml::Model>(m).getComponent(0);
+    const libcellml::ComponentPtr cB = static_cast<const libcellml::Model>(m).component(0);
     // Can do this as we just have a const pointer
     cB->setName("gus");
     EXPECT_EQ("gus", cB->getName());
 
-    EXPECT_EQ(nullptr, m.getComponent(4));
+    EXPECT_EQ(nullptr, m.component(4));
 }
 
 TEST(Model, takeComponentMethods)

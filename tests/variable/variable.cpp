@@ -436,32 +436,32 @@ TEST(Variable, getVariableMethods)
     c.addVariable(v4);
 
     // Get by string
-    libcellml::VariablePtr vMethod1 = c.getVariable("variable1");
+    libcellml::VariablePtr vMethod1 = c.variable("variable1");
     const std::string a1 = vMethod1->getName();
     EXPECT_EQ("variable1", a1);
 
     // Get by index
-    libcellml::VariablePtr vMethod2 = c.getVariable(1);
+    libcellml::VariablePtr vMethod2 = c.variable(1);
     const std::string a2 = vMethod2->getName();
     EXPECT_EQ("variable2", a2);
 
     // Get const by string
-    const libcellml::VariablePtr vMethod3 = static_cast<const libcellml::Component>(c).getVariable("variable3");
+    const libcellml::VariablePtr vMethod3 = static_cast<const libcellml::Component>(c).variable("variable3");
     const std::string a3 = vMethod3->getName();
     EXPECT_EQ("variable3", a3);
 
     // Get const by index
-    const libcellml::VariablePtr vMethod4 = static_cast<const libcellml::Component>(c).getVariable(3);
+    const libcellml::VariablePtr vMethod4 = static_cast<const libcellml::Component>(c).variable(3);
     const std::string a4 = vMethod4->getName();
     EXPECT_EQ("variable4", a4);
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getVariable(42));
-    EXPECT_EQ(nullptr, c.getVariable(7));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).variable(42));
+    EXPECT_EQ(nullptr, c.variable(7));
 
     // Get non-existent variable by string
-    EXPECT_EQ(nullptr, c.getVariable("notreal"));
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).getVariable("doesntexist"));
+    EXPECT_EQ(nullptr, c.variable("notreal"));
+    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).variable("doesntexist"));
 }
 
 TEST(Variable, takeVariableMethods)
@@ -487,13 +487,13 @@ TEST(Variable, takeVariableMethods)
     libcellml::VariablePtr tv = c.takeVariable(0);
     std::string tvn = tv->getName();
     EXPECT_EQ("variable1", tvn);
-    libcellml::VariablePtr gv = c.getVariable(0);
+    libcellml::VariablePtr gv = c.variable(0);
     std::string gvn = gv->getName();
     EXPECT_EQ("variable2", gvn);
     tv = c.takeVariable(0);
     tvn = tv->getName();
     EXPECT_EQ("variable2", tvn);
-    gv = c.getVariable(0);
+    gv = c.variable(0);
     gvn = gv->getName();
     EXPECT_EQ("variable3", gvn);
 
