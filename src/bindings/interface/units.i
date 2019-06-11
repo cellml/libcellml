@@ -79,7 +79,7 @@ extract the units with the given `name`.";
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
         bool removeUnit(long index) {
-            if(index < 0) return false;
+            if (index < 0) return false;
             return $self->removeUnit((size_t)index);
         }
     }
