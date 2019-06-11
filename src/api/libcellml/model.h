@@ -25,7 +25,6 @@ limitations under the License.
 template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Model>;
 #endif
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
@@ -33,17 +32,18 @@ namespace libcellml {
  *
  * The Model class is for representing a CellML Model.
  */
+#ifdef SWIG
 class LIBCELLML_EXPORT Model: public ComponentEntity
-#ifndef SWIG
-                            , public std::enable_shared_from_this<Model>
+#else
+class LIBCELLML_EXPORT Model: public ComponentEntity, public std::enable_shared_from_this<Model>
 #endif
 {
 public:
     Model(); /**< Constructor */
     ~Model() override; /**< Destructor */
     Model(const Model &rhs); /**< Copy constructor */
-    Model(Model &&rhs); /**< Move constructor */
-    Model& operator=(Model m); /**< Assignment operator */
+    Model(Model && rhs) noexcept; /**< Move constructor */
+    Model &operator=(Model rhs); /**< Assignment operator */
 
     /**
      * @brief Add a child units to this model.
@@ -252,11 +252,11 @@ public:
     bool hasUnresolvedImports();
 
 private:
-    void doAddComponent(const ComponentPtr &c) override;
-    void swap(Model &rhs); /**< Swap method required for C++ 11 move semantics. */
+    void doAddComponent(const ComponentPtr &component) override;
+    void swap(Model & rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct ModelImpl; /**< Forward declaration for pImpl idiom. */
     ModelImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

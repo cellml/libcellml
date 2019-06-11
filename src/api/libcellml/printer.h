@@ -22,7 +22,6 @@ limitations under the License.
 
 #include <string>
 
-//! Everything in libCellML is in this namespace.
 namespace libcellml {
 
 /**
@@ -36,8 +35,8 @@ public:
     Printer(); /**< Constructor */
     ~Printer() override; /**< Destructor */
     Printer(const Printer &rhs); /**< Copy constructor */
-    Printer(Printer &&rhs); /**< Move constructor */
-    Printer& operator=(Printer p); /**< Assignment operator */
+    Printer(Printer &&rhs) noexcept; /**< Move constructor */
+    Printer &operator=(Printer rhs); /**< Assignment operator */
 
     /**
      * @brief Serialise the @c Model to @c std::string.
@@ -48,7 +47,7 @@ public:
      *
      * @return The @c std::string representation of the @c Model.
      */
-    std::string printModel(ModelPtr model) const;
+    std::string printModel(const ModelPtr &model) const;
 
     /**
      * @brief Serialise the @c Model to @c std::string.
@@ -85,7 +84,7 @@ public:
      *
      * @return The @c std::string representation of the @c Units.
      */
-    std::string printUnits(UnitsPtr units) const;
+    std::string printUnits(const UnitsPtr &units) const;
 
     /**
      * @brief Serialise the @c Units to @c std::string.
@@ -109,7 +108,7 @@ public:
      *
      * @return The @c std::string representation of the @c Variable.
      */
-    std::string printVariable(VariablePtr variable) const;
+    std::string printVariable(const VariablePtr &variable) const;
 
     /**
      * @brief Serialise the @c Variable to @c std::string.
@@ -133,7 +132,7 @@ public:
      *
      * @return The @c std::string representation of the @c Component.
      */
-    std::string printComponent(ComponentPtr component) const;
+    std::string printComponent(const ComponentPtr &component) const;
 
     /**
      * @brief Serialise the @c Component to @c std::string.
@@ -154,9 +153,10 @@ public:
      * Serialise the given @p reset to a std::string.
      *
      * @param reset The @c Reset to serialise.
+     *
      * @return  The @c std::string representation of the @c Reset.
      */
-    std::string printReset(ResetPtr reset) const;
+    std::string printReset(const ResetPtr &reset) const;
 
     /**
      * @brief Serialise the @c Reset to @c std::string.
@@ -166,37 +166,16 @@ public:
      * @overload
      *
      * @param reset The @c Reset to serialise.
+     *
      * @return The @c std::string representation of the @c Reset.
      */
     std::string printReset(Reset reset) const;
 
 private:
-    /**
-     * @brief Serialise the component encapsulation to @c std::string.
-     *
-     * Serialise the given @p component encapsulation to a std::string.
-     *
-     * @param component The component encapsulation to serialise.
-     *
-     * @return The @c std::string representation of the component encapsulation.
-     */
-    std::string printEncapsulation(ComponentPtr component) const;
-
-    /**
-     * @brief Serialise a @c When to @c std::string.
-     *
-     * Serialise the given @p when to a std::string.
-     *
-     * @param when The @c When to serialise.
-     *
-     * @return The @c std::string representation of the @c When.
-     */
-    std::string printWhen(WhenPtr when) const;
-
     void swap(Printer &rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct PrinterImpl; /**< Forward declaration for pImpl idiom. */
     PrinterImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml

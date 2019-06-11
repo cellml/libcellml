@@ -25,40 +25,42 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
-TEST(Parser, parseSineModelFromFile) {
+TEST(Parser, parseSineModelFromFile)
+{
     std::ifstream t(TestResources::getLocation(
-                    TestResources::CELLML_SINE_MODEL_RESOURCE));
+        TestResources::CELLML_SINE_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
 
     libcellml::Parser p;
     p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 }
 
-TEST(Parser, parseSineImportsModelFromFile) {
+TEST(Parser, parseSineImportsModelFromFile)
+{
     std::ifstream t(TestResources::getLocation(
-                    TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE));
+        TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
 
     libcellml::Parser p;
     p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 }
 
-TEST(Parser, parseInvalidModelFromFile) {
+TEST(Parser, parseInvalidModelFromFile)
+{
     std::ifstream t(TestResources::getLocation(
-                    TestResources::CELLML_INVALID_MODEL_RESOURCE));
+        TestResources::CELLML_INVALID_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
 
     std::vector<std::string> expectedErrors = {
         "Start tag expected, '<' not found.",
-        "Could not get a valid XML root node from the provided input."
-    };
+        "Could not get a valid XML root node from the provided input."};
 
     libcellml::Parser p;
     p.parseModel(buffer.str());
@@ -69,16 +71,17 @@ TEST(Parser, parseInvalidModelFromFile) {
     }
 }
 
-TEST(Parser, parseOrdModelFromFile) {
+TEST(Parser, parseOrdModelFromFile)
+{
     std::ifstream t(TestResources::getLocation(
-                    TestResources::CELLML_ORD_MODEL_RESOURCE));
+        TestResources::CELLML_ORD_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     // Test some random values.
     std::string a = model->getComponent("intracellular_ions")->getVariable("BSLmax")->getInitialValue();
@@ -94,33 +97,64 @@ TEST(Parser, parseOrdModelFromFile) {
     EXPECT_EQ("public", a);
 }
 
-TEST(Parser, parseComplexEncapsulationModelFromFile) {
+TEST(Parser, parseComplexEncapsulationModelFromFile)
+{
     // This test resulted from https://github.com/cellml/libcellml/issues/170
     std::ifstream t(TestResources::getLocation(
-                    TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE));
+        TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
 
     libcellml::Parser p;
     p.parseModel(buffer.str());
 
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 }
 
-TEST(Parser, parseModelWithComponentsWithMultipleMathElements) {
+TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
+{
     // This test resulted from https://github.com/cellml/libcellml/issues/183
 
-    std::string e1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>a1</ci>\n\t\t\t\t<apply><plus/>\n\t\t\t\t\t<ci>b1</ci>\n\t\t\t\t\t<ci>c1</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math>";
-    std::string e2 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>b2</ci>\n\t\t\t\t<apply><times/>\n\t\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n\t\t\t\t\t<ci>d</ci>\n\t\t\t\t</apply>\n\t\t\t</apply>\n\t\t</math><math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n\t\t\t<apply><eq/>\n\t\t\t\t<ci>d</ci>\n\t\t\t\t<cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n\t\t\t</apply>\n\t\t</math>";
+    const std::string e1 =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>a1</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <ci>b1</ci>\n"
+        "      <ci>c1</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+    const std::string e2 =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>b2</ci>\n"
+        "    <apply>\n"
+        "      <times/>\n"
+        "      <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\">2.0</cn>\n"
+        "      <ci>d</ci>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n"
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>d</ci>\n"
+        "    <cn xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" cellml:units=\"dimensionless\" type=\"e-notation\">0.5<sep/>1</cn>\n"
+        "  </apply>\n"
+        "</math>\n";
 
     std::ifstream t(TestResources::getLocation(
-                    TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE));
+        TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(buffer.str());
-    EXPECT_EQ(0u, p.errorCount());
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     std::string a = model->getComponent("c1")->getMath();
     EXPECT_EQ(e1, a);

@@ -27,8 +27,9 @@ limitations under the License.
  * so don't need it just yet.
  */
 
-TEST(ComponentImport, basics) {
-    const std::string e = "";
+TEST(ComponentImport, basics)
+{
+    const std::string e;
 
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");
@@ -49,14 +50,15 @@ TEST(ComponentImport, basics) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, singleImportA) {
+TEST(ComponentImport, singleImportA)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
+        "  </import>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -71,23 +73,24 @@ TEST(ComponentImport, singleImportA) {
 
     EXPECT_EQ(importedComponent->getImportSource(), imp);
 
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
     m.addComponent(importedComponent);
-    EXPECT_EQ(1u, m.componentCount());
+    EXPECT_EQ(size_t(1), m.componentCount());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, singleImportB) {
+TEST(ComponentImport, singleImportB)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"component_in_this_model\"/>\n"
+        "  </import>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -104,14 +107,15 @@ TEST(ComponentImport, singleImportB) {
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, nonExistentURLAndParse) {
+TEST(ComponentImport, nonExistentURLAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"na_channel\" name=\"noble_na_channel\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"http://someplace.world/cellml/model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"na_channel\" name=\"noble_na_channel\"/>\n"
+        "  </import>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -126,9 +130,9 @@ TEST(ComponentImport, nonExistentURLAndParse) {
 
     EXPECT_EQ(importedComponent->getImportSource(), imp);
 
-    EXPECT_EQ(0u, m.componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
     m.addComponent(importedComponent);
-    EXPECT_EQ(1u, m.componentCount());
+    EXPECT_EQ(size_t(1), m.componentCount());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -137,36 +141,35 @@ TEST(ComponentImport, nonExistentURLAndParse) {
     // Parse
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_EQ(1u, model->componentCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, multipleImportAndParse) {
-
+TEST(ComponentImport, multipleImportAndParse)
+{
     const std::string e1 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                    "<component component_ref=\"cc2\" name=\"c2\"/>"
-                "</import>"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c3\"/>"
-                "</import>"
-            "</model>";
-
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
+        "    <component component_ref=\"cc2\" name=\"c2\"/>\n"
+        "  </import>\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"cc1\" name=\"c3\"/>\n"
+        "  </import>\n"
+        "</model>\n";
     const std::string e2 =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c3\"/>"
-                "</import>"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                    "<component component_ref=\"cc2\" name=\"c2\"/>"
-                "</import>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"cc1\" name=\"c3\"/>\n"
+        "  </import>\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
+        "    <component component_ref=\"cc2\" name=\"c2\"/>\n"
+        "  </import>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -194,29 +197,29 @@ TEST(ComponentImport, multipleImportAndParse) {
     // Parse
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e2);
-    EXPECT_EQ(3u, model->componentCount());
+    EXPECT_EQ(size_t(3), model->componentCount());
     a = printer.printModel(model);
     EXPECT_TRUE((e1 == a) || (e2 == a));
 }
 
-TEST(ComponentImport, hierarchicalImportAndParse) {
-
+TEST(ComponentImport, hierarchicalImportAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                "</import>"
-                "<component name=\"dave\"/>"
-                "<component name=\"bob\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"dave\">"
-                        "<component_ref component=\"bob\">"
-                            "<component_ref component=\"c1\"/>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
+        "  </import>\n"
+        "  <component name=\"dave\"/>\n"
+        "  <component name=\"bob\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"dave\">\n"
+        "      <component_ref component=\"bob\">\n"
+        "        <component_ref component=\"c1\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -238,9 +241,9 @@ TEST(ComponentImport, hierarchicalImportAndParse) {
 
     EXPECT_TRUE(i1->isImport());
 
-    EXPECT_EQ(0u, bob->componentCount());
+    EXPECT_EQ(size_t(0), bob->componentCount());
     bob->addComponent(i1);
-    EXPECT_EQ(1u, bob->componentCount());
+    EXPECT_EQ(size_t(1), bob->componentCount());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -249,31 +252,31 @@ TEST(ComponentImport, hierarchicalImportAndParse) {
     // Parse
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_EQ(1u, model->componentCount());
+    EXPECT_EQ(size_t(1), model->componentCount());
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
 
-TEST(ComponentImport, complexImportAndParse) {
-
+TEST(ComponentImport, complexImportAndParse)
+{
     const std::string e =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">"
-                "<import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">"
-                    "<component component_ref=\"cc1\" name=\"c1\"/>"
-                "</import>"
-                "<component name=\"dave\"/>"
-                "<component name=\"bob\"/>"
-                "<component name=\"angus\"/>"
-                "<encapsulation>"
-                    "<component_ref component=\"dave\">"
-                        "<component_ref component=\"bob\">"
-                            "<component_ref component=\"c1\"/>"
-                            "<component_ref component=\"angus\"/>"
-                        "</component_ref>"
-                    "</component_ref>"
-                "</encapsulation>"
-            "</model>";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"cc1\" name=\"c1\"/>\n"
+        "  </import>\n"
+        "  <component name=\"dave\"/>\n"
+        "  <component name=\"bob\"/>\n"
+        "  <component name=\"angus\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"dave\">\n"
+        "      <component_ref component=\"bob\">\n"
+        "        <component_ref component=\"c1\"/>\n"
+        "        <component_ref component=\"angus\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
@@ -313,7 +316,7 @@ TEST(ComponentImport, complexImportAndParse) {
 
     // check component counts
     const libcellml::ComponentPtr constDave = model->getComponent("dave");
-    EXPECT_EQ(1u, constDave->componentCount());
+    EXPECT_EQ(size_t(1), constDave->componentCount());
     const libcellml::ComponentPtr constBob = constDave->getComponent("bob");
-    EXPECT_EQ(2u, constBob->componentCount());
+    EXPECT_EQ(size_t(2), constBob->componentCount());
 }

@@ -30,6 +30,8 @@ include(when/tests.cmake)
 
 set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
+set(TESTS_SOURCE_FILES ${TEST_UTILS_SRC})
+set(TESTS_HEADER_FILES ${TEST_UTILS_HDR})
 
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
@@ -39,6 +41,8 @@ foreach(TEST ${LIBCELLML_TESTS})
   if(CURRENT_CATEGORY)
     set(CURRENT_CATEGORY "${CURRENT_CATEGORY}_")
   endif()
+  list(APPEND TESTS_SOURCE_FILES ${${TEST}_SRCS})
+  list(APPEND TESTS_HEADER_FILES ${${TEST}_HDRS})
   add_executable(${CURRENT_TEST} ${${TEST}_SRCS} ${${TEST}_HDRS} ${TEST_UTILS_SRC} ${TEST_UTILS_HDR})
   target_include_directories(${CURRENT_TEST} PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(${CURRENT_TEST} cellml gtest_main)
@@ -47,6 +51,8 @@ foreach(TEST ${LIBCELLML_TESTS})
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
     FOLDER tests)
+
+  configure_clang_and_clang_tidy_settings(${CURRENT_TEST})
 
   if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
     target_warnings_as_errors(${CURRENT_TEST})
@@ -57,11 +63,11 @@ foreach(TEST ${LIBCELLML_TESTS})
     if(HAVE_LIBXML2_CONFIG)
       set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
         PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>\;$<TARGET_FILE_DIR:xml2>")
-	else()
-	  # The libxml2 dll must be on the path otherwise the tests will not be able to run.
+    else()
+      # The libxml2 dll must be on the path otherwise the tests will not be able to run.
       set_tests_properties(${CURRENT_CATEGORY}unit_${CURRENT_TEST}
         PROPERTIES ENVIRONMENT "PATH=$<TARGET_FILE_DIR:cellml>\;$<TARGET_FILE_DIR:gtest_main>")
-	endif()
+    endif()
   endif()
 
   list(APPEND TEST_LIST ${CURRENT_TEST})
@@ -81,18 +87,18 @@ if(LIBCELLML_COVERAGE)
     DEPENDS clean_coverage ${TEST_LIST}
     COMMAND ctest > /dev/null
     COMMENT "Prepare for coverage tests")
-    if (TARGET python_bindings)
+    if(TARGET python_bindings)
       add_dependencies(prepare_coverage python_bindings)
-    endif ()
+    endif()
 
   add_custom_target(coverage
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE}
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH} --gcov-executable=${GCOV_EXE}
     DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests")
 
   add_custom_target(coverage_branches
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -k -b --exclude-unreachable-branches -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH}.* --gcov-executable=${GCOV_EXE}
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/gcovr.py -k -b --exclude-unreachable-branches -r ${GCOV_ANALYSIS_PATH} --filter=${GCOV_PREFIX_PATH}.* --gcov-executable=${GCOV_EXE}
     DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests with branches output")
@@ -104,10 +110,13 @@ if(LIBCELLML_MEMCHECK)
     COMMENT "Prepare for memcheck tests")
 
   add_custom_target(memcheck
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/valgrindmemcheck.py ${CMAKE_CURRENT_BINARY_DIR} ${TEST_LIST}
+    COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/valgrindmemcheck.py ${CMAKE_CURRENT_BINARY_DIR} ${TEST_LIST}
     DEPENDS ${TEST_LIST} prepare_memcheck
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/memcheck
     COMMENT "Running memcheck tests")
 endif()
 
 include(test_resources.cmake)
+
+set(TESTS_SOURCE_FILES ${TESTS_SOURCE_FILES} PARENT_SCOPE)
+set(TESTS_HEADER_FILES ${TESTS_HEADER_FILES} PARENT_SCOPE)

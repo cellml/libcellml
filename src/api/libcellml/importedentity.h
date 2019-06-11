@@ -35,8 +35,8 @@ public:
     ImportedEntity(); /**< Constructor */
     virtual ~ImportedEntity(); /**< Destructor */
     ImportedEntity(const ImportedEntity &rhs); /**< Copy constructor */
-    ImportedEntity(ImportedEntity &&rhs); /**< Move constructor */
-    ImportedEntity& operator=(ImportedEntity n); /**< Assignment operator */
+    ImportedEntity(ImportedEntity &&rhs) noexcept; /**< Move constructor */
+    ImportedEntity &operator=(ImportedEntity rhs); /**< Assignment operator */
 
     /**
      * @brief Test if this entity is an imported entity.
@@ -101,7 +101,6 @@ private:
 
     struct ImportedEntityImpl; /**< Forward declaration for pImpl idiom. */
     ImportedEntityImpl *mPimpl; /**< Private member to implementation pointer. */
-
 };
 
-}
+} // namespace libcellml

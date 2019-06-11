@@ -27,7 +27,7 @@ namespace libcellml {
 struct ImportSource::ImportSourceImpl
 {
     std::string mUrl;
-    libcellml::ModelPtr mModel;
+    ModelPtr mModel;
 };
 
 ImportSource::ImportSource()
@@ -49,16 +49,16 @@ ImportSource::ImportSource(const ImportSource &rhs)
     mPimpl->mModel = rhs.mPimpl->mModel;
 }
 
-ImportSource::ImportSource(ImportSource &&rhs)
+ImportSource::ImportSource(ImportSource &&rhs) noexcept
     : Entity(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-ImportSource& ImportSource::operator=(ImportSource rhs)
+ImportSource &ImportSource::operator=(ImportSource rhs)
 {
-    Entity::operator= (rhs);
+    Entity::operator=(rhs);
     rhs.swap(*this);
     return *this;
 }
@@ -83,7 +83,7 @@ ModelPtr ImportSource::getModel() const
     return mPimpl->mModel;
 }
 
-void ImportSource::setModel(ModelPtr model)
+void ImportSource::setModel(const ModelPtr &model)
 {
     mPimpl->mModel = model;
 }
@@ -93,4 +93,4 @@ bool ImportSource::hasModel() const
     return mPimpl->mModel != nullptr;
 }
 
-}
+} // namespace libcellml

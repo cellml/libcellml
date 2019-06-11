@@ -18,9 +18,10 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Component, validName) {
+TEST(Component, validName)
+{
     const std::string in = "valid_name";
-    const std::string e = "<component name=\"" + in + "\"/>";
+    const std::string e = "<component name=\"" + in + "\"/>\n";
     libcellml::Component c;
     c.setName(in);
 
@@ -30,9 +31,10 @@ TEST(Component, validName) {
     EXPECT_EQ("valid_name", c.getName());
 }
 
-TEST(Component, invalidName) {
+TEST(Component, invalidName)
+{
     const std::string in = "invalid name -";
-    const std::string e = "<component name=\"" + in + "\"/>";
+    const std::string e = "<component name=\"" + in + "\"/>\n";
     libcellml::Component c;
     c.setName(in);
 
@@ -42,10 +44,11 @@ TEST(Component, invalidName) {
     EXPECT_EQ("invalid name -", c.getName());
 }
 
-TEST(Component, setAndUnsetName) {
+TEST(Component, setAndUnsetName)
+{
     const std::string in = "name";
-    const std::string eName = "<component name=\"" + in + "\"/>";
-    const std::string e = "<component/>";
+    const std::string eName = "<component name=\"" + in + "\"/>\n";
+    const std::string e = "<component/>\n";
     libcellml::Component c;
     c.setName(in);
 
@@ -59,7 +62,8 @@ TEST(Component, setAndUnsetName) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Component, addAndCountChildren) {
+TEST(Component, addAndCountChildren)
+{
     libcellml::Component parent;
     parent.setName("parent");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
@@ -71,22 +75,23 @@ TEST(Component, addAndCountChildren) {
     libcellml::ComponentPtr child4 = std::make_shared<libcellml::Component>();
     child4->setName("child4");
 
-    EXPECT_EQ(0u, parent.componentCount());
+    EXPECT_EQ(size_t(0), parent.componentCount());
 
     parent.addComponent(child1);
     parent.addComponent(child2);
     parent.addComponent(child3);
     parent.addComponent(child4);
-    EXPECT_EQ(4u, parent.componentCount());
+    EXPECT_EQ(size_t(4), parent.componentCount());
 
     child3->addComponent(child4);
     parent.addComponent(child3);
-    EXPECT_EQ(5u, parent.componentCount());
+    EXPECT_EQ(size_t(5), parent.componentCount());
 
-    EXPECT_EQ(1u, child3->componentCount());
+    EXPECT_EQ(size_t(1), child3->componentCount());
 }
 
-TEST(Component, contains) {
+TEST(Component, contains)
+{
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -103,16 +108,17 @@ TEST(Component, contains) {
     EXPECT_TRUE(c.containsComponent(c21));
 }
 
-TEST(Component, addChildrenAndSerialise) {
+TEST(Component, addChildrenAndSerialise)
+{
     const std::string e1 =
-            "<component name=\"child0\"/>"
-            "<component name=\"child1\"/>"
-            "<component name=\"child2\"/>";
+        "<component name=\"child0\"/>\n"
+        "<component name=\"child1\"/>\n"
+        "<component name=\"child2\"/>\n";
     const std::string e2 =
-            "<component name=\"child0\"/>"
-            "<component name=\"child1\"/>"
-            "<component name=\"child2\"/>"
-            "<component name=\"child3\"/>";
+        "<component name=\"child0\"/>\n"
+        "<component name=\"child1\"/>\n"
+        "<component name=\"child2\"/>\n"
+        "<component name=\"child3\"/>\n";
     libcellml::ComponentPtr c0 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -136,15 +142,16 @@ TEST(Component, addChildrenAndSerialise) {
     EXPECT_EQ(e2, a);
 }
 
-TEST(Component, removeComponentMethods) {
+TEST(Component, removeComponentMethods)
+{
     const std::string e1 =
-            "<component/>"
-            "<component name=\"child2\"/>";
+        "<component/>\n"
+        "<component name=\"child2\"/>\n";
     const std::string e2 =
-            "<component/>"
-            "<component name=\"child2\"/>"
-            "<component name=\"child1\"/>";
-    const std::string e3 = "<component/>";
+        "<component/>\n"
+        "<component name=\"child2\"/>\n"
+        "<component name=\"child1\"/>\n";
+    const std::string e3 = "<component/>\n";
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -155,7 +162,7 @@ TEST(Component, removeComponentMethods) {
     c.addComponent(c2);
 
     EXPECT_TRUE(c.removeComponent(0));
-    EXPECT_EQ(1u, c.componentCount());
+    EXPECT_EQ(size_t(1), c.componentCount());
 
     libcellml::Printer printer;
     std::string a = printer.printComponent(c);
@@ -169,33 +176,34 @@ TEST(Component, removeComponentMethods) {
     EXPECT_TRUE(c.removeComponent("child1"));
     // Remove the second occurence of "child1".
     EXPECT_TRUE(c.removeComponent(c1));
-    EXPECT_EQ(2u, c.componentCount());
+    EXPECT_EQ(size_t(2), c.componentCount());
     a = printer.printComponent(c);
     EXPECT_EQ(e2, a);
 
     // Expect no change
     EXPECT_FALSE(c.removeComponent("child3"));
     EXPECT_FALSE(c.removeComponent(c3));
-    EXPECT_EQ(2u, c.componentCount());
+    EXPECT_EQ(size_t(2), c.componentCount());
 
     c.removeAllComponents();
     a = printer.printComponent(c);
     EXPECT_EQ(e3, a);
-    EXPECT_EQ(0u, c.componentCount());
+    EXPECT_EQ(size_t(0), c.componentCount());
 }
 
-TEST(Component, getComponentMethods) {
+TEST(Component, getComponentMethods)
+{
     const std::string e1 =
-            "<component/>"
-            "<component name=\"childA\"/>";
+        "<component/>\n"
+        "<component name=\"childA\"/>\n";
     const std::string e2 =
-            "<component name=\"parent\"/>"
-            "<component name=\"gus\"/>"
-            "<component name=\"childB\"/>"
-            "<component name=\"child3\"/>"
-            "<component name=\"gus\"/>"
-            "<component name=\"childB\"/>"
-            "<component name=\"child3\"/>";;
+        "<component name=\"parent\"/>\n"
+        "<component name=\"gus\"/>\n"
+        "<component name=\"childB\"/>\n"
+        "<component name=\"child3\"/>\n"
+        "<component name=\"gus\"/>\n"
+        "<component name=\"childB\"/>\n"
+        "<component name=\"child3\"/>\n";
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -241,8 +249,9 @@ TEST(Component, getComponentMethods) {
     EXPECT_EQ(e2, a);
 }
 
-TEST(Component, takeComponentMethods) {
-    const std::string e = "<component/>";
+TEST(Component, takeComponentMethods)
+{
+    const std::string e = "<component/>\n";
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -252,14 +261,14 @@ TEST(Component, takeComponentMethods) {
     c.addComponent(c2);
 
     libcellml::ComponentPtr c02 = c.takeComponent(1);
-    EXPECT_EQ(1u, c.componentCount());
+    EXPECT_EQ(size_t(1), c.componentCount());
 
     EXPECT_EQ(c.takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->getName());
 
     libcellml::ComponentPtr c01 = c.takeComponent("child1");
-    EXPECT_EQ(0u, c.componentCount());
+    EXPECT_EQ(size_t(0), c.componentCount());
 
     EXPECT_EQ("child1", c01->getName());
 
@@ -268,19 +277,20 @@ TEST(Component, takeComponentMethods) {
     EXPECT_EQ(e, a);
 }
 
-TEST(Component, replaceComponentMethods) {
+TEST(Component, replaceComponentMethods)
+{
     const std::string e_orig =
-            "<component name=\"parent\"/>"
-            "<component/>"
-            "<component name=\"child2\"/>";
+        "<component name=\"parent\"/>\n"
+        "<component/>\n"
+        "<component name=\"child2\"/>\n";
     const std::string e_after =
-            "<component name=\"parent\"/>"
-            "<component/>"
-            "<component name=\"child3\"/>";
+        "<component name=\"parent\"/>\n"
+        "<component/>\n"
+        "<component name=\"child3\"/>\n";
     const std::string e_post =
-            "<component name=\"parent\"/>"
-            "<component name=\"child4\"/>"
-            "<component name=\"child3\"/>";
+        "<component name=\"parent\"/>\n"
+        "<component name=\"child4\"/>\n"
+        "<component name=\"child3\"/>\n";
 
     libcellml::Component c;
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
@@ -288,7 +298,6 @@ TEST(Component, replaceComponentMethods) {
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c4 = std::make_shared<libcellml::Component>();
     c.setName("parent");
-//    c1.setName();
     c2->setName("child2");
     c3->setName("child3");
     c4->setName("child4");
@@ -322,12 +331,15 @@ TEST(Component, replaceComponentMethods) {
     EXPECT_EQ(e_after, a);
 }
 
-TEST(Component, constructors) {
+TEST(Component, constructors)
+{
     const std::string e =
-            "<component name=\"my_name\"/>"
-            "<component/>";
+        "<component name=\"my_name\"/>\n"
+        "<component/>\n";
     const std::string n = "my_name";
-    libcellml::Component c, c1, c2;
+    libcellml::Component c;
+    libcellml::Component c1;
+    libcellml::Component c2;
 
     c.setName(n);
     c.addComponent(std::make_shared<libcellml::Component>());

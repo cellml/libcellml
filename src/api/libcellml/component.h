@@ -33,8 +33,8 @@ public:
     Component(); /**< Constructor */
     ~Component() override; /**< Destructor */
     Component(const Component &rhs); /**< Copy constructor */
-    Component(Component &&rhs); /**< Move constructor */
-    Component& operator=(Component m); /**< Assignment operator */
+    Component(Component &&rhs) noexcept; /**< Move constructor */
+    Component &operator=(Component rhs); /**< Assignment operator */
 
     /**
      * @brief Set the source component for this component.
@@ -203,7 +203,7 @@ public:
      * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
      */
     VariablePtr takeVariable(const std::string &name);
-    
+
     /**
      * @brief Get the number of variables in the component.
      *
@@ -334,4 +334,4 @@ private:
     ComponentImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
-}
+} // namespace libcellml

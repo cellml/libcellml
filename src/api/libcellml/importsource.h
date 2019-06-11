@@ -35,8 +35,8 @@ public:
     ImportSource(); /**< Constructor */
     ~ImportSource() override; /**< Destructor */
     ImportSource(const ImportSource &rhs); /**< Copy constructor */
-    ImportSource(ImportSource &&rhs); /**< Move constructor */
-    ImportSource& operator=(ImportSource rhs); /**< Assignment operator */
+    ImportSource(ImportSource &&rhs) noexcept; /**< Move constructor */
+    ImportSource &operator=(ImportSource rhs); /**< Assignment operator */
 
     /**
      * @brief Get the source @c Model's URL.
@@ -65,7 +65,7 @@ public:
      *
      * @return The @c Model used to resolve this @c ImportSource.
      */
-    libcellml::ModelPtr getModel() const;
+    ModelPtr getModel() const;
 
     /**
      * @brief Provide the @c Model used to resolve this import.
@@ -75,7 +75,7 @@ public:
      *
      * @param model The @c Model to use in resolving this @c ImportSource.
      */
-    void setModel(libcellml::ModelPtr model);
+    void setModel(const ModelPtr &model);
 
     /**
      * @brief Test if this @c ImportSource is resolved.
@@ -95,4 +95,4 @@ private:
     ImportSourceImpl *mPimpl; /**< Private member to implementation pointer. */
 };
 
-}
+} // namespace libcellml
