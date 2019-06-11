@@ -351,7 +351,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     EXPECT_EQ(size_t(1), parser.errorCount());
     EXPECT_EQ(expectedError1, parser.error(0)->description());
 
-    libcellml::UnitsPtr unitsExpected = model->getUnits("unit_name");
+    libcellml::UnitsPtr unitsExpected = model->units("unit_name");
 
     // Get units from error and check.
     EXPECT_EQ(unitsExpected, parser.error(0)->units());
@@ -1246,7 +1246,7 @@ TEST(Parser, invalidImportsAndGetError)
     const std::string a = printer.printModel(m);
     EXPECT_EQ(output, a);
 
-    libcellml::ImportSourcePtr import = m->getUnits("units_in_this_model")->importSource();
+    libcellml::ImportSourcePtr import = m->units("units_in_this_model")->importSource();
     // Get import from error and check.
     EXPECT_EQ(import, p.error(0)->importSource());
     // Get const import from error and check.
@@ -1448,11 +1448,11 @@ TEST(Parser, parseIds)
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
     EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
-    EXPECT_EQ("u1id", model->getUnits("units1")->id());
-    EXPECT_EQ("i2id", model->getUnits("units1")->importSource()->id());
-    EXPECT_EQ("u2id", model->getUnits("units2")->id());
+    EXPECT_EQ("u1id", model->units("units1")->id());
+    EXPECT_EQ("i2id", model->units("units1")->importSource()->id());
+    EXPECT_EQ("u2id", model->units("units2")->id());
     EXPECT_EQ("c2id", model->component("component2")->id());
-    EXPECT_EQ("u3id", model->getUnits("units3")->id());
+    EXPECT_EQ("u3id", model->units("units3")->id());
     EXPECT_EQ("vid", model->component("component2")->variable("variable1")->id());
 }
 
@@ -1513,11 +1513,11 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
     EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
-    EXPECT_EQ("u1id", model->getUnits("units1")->id());
-    EXPECT_EQ("i2id", model->getUnits("units1")->importSource()->id());
-    EXPECT_EQ("u2id", model->getUnits("units2")->id());
+    EXPECT_EQ("u1id", model->units("units1")->id());
+    EXPECT_EQ("i2id", model->units("units1")->importSource()->id());
+    EXPECT_EQ("u2id", model->units("units2")->id());
     EXPECT_EQ("c2id", model->component("component2")->id());
-    EXPECT_EQ("u3id", model->getUnits("units3")->id());
+    EXPECT_EQ("u3id", model->units("units3")->id());
     EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
     EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
     EXPECT_EQ("w1id", model->component("component2")->reset(0)->getWhen(0)->id());

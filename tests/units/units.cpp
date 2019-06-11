@@ -317,7 +317,7 @@ TEST(Units, replaceUnits)
 
     EXPECT_TRUE(m.replaceUnits(0, u4));
 
-    u1 = m.getUnits(0);
+    u1 = m.units(0);
     EXPECT_EQ("c_unit", u1->getName());
     EXPECT_EQ(size_t(1), m.unitsCount());
 

@@ -572,7 +572,7 @@ std::string Printer::printModel(const ModelPtr &model) const
     }
 
     for (size_t i = 0; i < model->unitsCount(); ++i) {
-        repr += mPimpl->printUnits(model->getUnits(i), tabIndent);
+        repr += mPimpl->printUnits(model->units(i), tabIndent);
     }
 
     std::string componentEncapsulation;

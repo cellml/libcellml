@@ -102,18 +102,18 @@ TEST(Coverage, unitsGetVariations)
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     m.addUnits(u);
 
-    libcellml::UnitsPtr un = m.getUnits(0);
+    libcellml::UnitsPtr un = m.units(0);
     EXPECT_EQ("a_unit", un->getName());
-    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).getUnits(0);
+    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).units(0);
     EXPECT_EQ("a_unit", uSn->getName());
 
-    libcellml::UnitsPtr uns = m.getUnits("a_unit");
+    libcellml::UnitsPtr uns = m.units("a_unit");
     EXPECT_EQ("a_unit", uns->getName());
-    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).getUnits("a_unit");
+    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).units("a_unit");
     EXPECT_EQ("a_unit", uSns->getName());
 
-    EXPECT_EQ(nullptr, m.getUnits("b_unit"));
-    EXPECT_EQ(nullptr, m.getUnits(4));
+    EXPECT_EQ(nullptr, m.units("b_unit"));
+    EXPECT_EQ(nullptr, m.units(4));
 }
 
 TEST(Coverage, prefixToString)
