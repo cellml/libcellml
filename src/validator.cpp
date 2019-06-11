@@ -521,7 +521,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     std::string id;
     double exponent;
     double multiplier;
-    units->getUnitAttributes(index, reference, prefix, exponent, multiplier, id);
+    units->unitAttributes(index, reference, prefix, exponent, multiplier, id);
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
             ErrorPtr err = std::make_shared<Error>();
