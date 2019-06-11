@@ -703,8 +703,8 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
-    if (!when->getCondition().empty()) {
-        validateMath(when->getCondition(), component);
+    if (!when->condition().empty()) {
+        validateMath(when->condition(), component);
     } else {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML condition set.");
@@ -713,8 +713,8 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         mValidator->addError(err);
     }
 
-    if (!when->getValue().empty()) {
-        validateMath(when->getValue(), component);
+    if (!when->value().empty()) {
+        validateMath(when->value(), component);
     } else {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML value set.");
