@@ -247,7 +247,7 @@ void resolveImport(const ImportedEntityPtr &importedEntity,
                    const std::string &baseFile)
 {
     if (importedEntity->isImport()) {
-        ImportSourcePtr importSource = importedEntity->getImportSource();
+        ImportSourcePtr importSource = importedEntity->importSource();
         if (!importSource->hasModel()) {
             std::string url = resolvePath(importSource->getUrl(), baseFile);
             std::ifstream file(url);
@@ -289,7 +289,7 @@ bool isUnresolvedImport(const ImportedEntityPtr &importedEntity)
 {
     bool unresolvedImport = false;
     if (importedEntity->isImport()) {
-        ImportSourcePtr importedSource = importedEntity->getImportSource();
+        ImportSourcePtr importedSource = importedEntity->importSource();
         if (!importedSource->hasModel()) {
             unresolvedImport = true;
         }
@@ -306,10 +306,10 @@ bool doHasUnresolvedComponentImports(const ComponentPtr &component)
         unresolvedImports = isUnresolvedImport(component);
         if (!unresolvedImports) {
             // Check that the imported component can import all it needs from its model.
-            ImportSourcePtr importedSource = component->getImportSource();
+            ImportSourcePtr importedSource = component->importSource();
             if (importedSource->hasModel()) {
                 ModelPtr importedModel = importedSource->getModel();
-                ComponentPtr importedComponent = importedModel->component(component->getImportReference());
+                ComponentPtr importedComponent = importedModel->component(component->importReference());
                 unresolvedImports = doHasUnresolvedComponentImports(importedComponent);
             }
         }

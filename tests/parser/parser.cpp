@@ -1246,7 +1246,7 @@ TEST(Parser, invalidImportsAndGetError)
     const std::string a = printer.printModel(m);
     EXPECT_EQ(output, a);
 
-    libcellml::ImportSourcePtr import = m->getUnits("units_in_this_model")->getImportSource();
+    libcellml::ImportSourcePtr import = m->getUnits("units_in_this_model")->importSource();
     // Get import from error and check.
     EXPECT_EQ(import, p.getError(0)->importSource());
     // Get const import from error and check.
@@ -1447,9 +1447,9 @@ TEST(Parser, parseIds)
     EXPECT_EQ(size_t(0), p.errorCount());
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
-    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->id());
+    EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
     EXPECT_EQ("u1id", model->getUnits("units1")->id());
-    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->id());
+    EXPECT_EQ("i2id", model->getUnits("units1")->importSource()->id());
     EXPECT_EQ("u2id", model->getUnits("units2")->id());
     EXPECT_EQ("c2id", model->component("component2")->id());
     EXPECT_EQ("u3id", model->getUnits("units3")->id());
@@ -1512,9 +1512,9 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
-    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->id());
+    EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
     EXPECT_EQ("u1id", model->getUnits("units1")->id());
-    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->id());
+    EXPECT_EQ("i2id", model->getUnits("units1")->importSource()->id());
     EXPECT_EQ("u2id", model->getUnits("units2")->id());
     EXPECT_EQ("c2id", model->component("component2")->id());
     EXPECT_EQ("u3id", model->getUnits("units3")->id());

@@ -44,8 +44,8 @@ class ComponentTestCase(unittest.TestCase):
         i = ImportSource()
         i.setUrl('bonjour')
         x.setSourceComponent(i, 'camembert')
-        self.assertEqual(x.getImportSource().getUrl(), 'bonjour')
-        self.assertEqual(x.getImportReference(), 'camembert')
+        self.assertEqual(x.importSource().getUrl(), 'bonjour')
+        self.assertEqual(x.importReference(), 'camembert')
 
     def test_math(self):
         from libcellml import Component

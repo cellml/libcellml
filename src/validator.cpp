@@ -292,8 +292,8 @@ void Validator::validateModel(const ModelPtr &model)
             if (!componentName.empty()) {
                 if (component->isImport()) {
                     // Check for a component_ref.
-                    std::string componentRef = component->getImportReference();
-                    std::string importSource = component->getImportSource()->getUrl();
+                    std::string componentRef = component->importReference();
+                    std::string importSource = component->importSource()->getUrl();
                     bool foundImportError = false;
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -308,7 +308,7 @@ void Validator::validateModel(const ModelPtr &model)
                     if (importSource.empty()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
-                        err->setImportSource(component->getImportSource());
+                        err->setImportSource(component->importSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
                         foundImportError = true;
@@ -352,8 +352,8 @@ void Validator::validateModel(const ModelPtr &model)
             if (!unitsName.empty()) {
                 if (units->isImport()) {
                     // Check for a units_ref.
-                    std::string unitsRef = units->getImportReference();
-                    std::string importSource = units->getImportSource()->getUrl();
+                    std::string unitsRef = units->importReference();
+                    std::string importSource = units->importSource()->getUrl();
                     bool foundImportError = false;
                     if (!mPimpl->isCellmlIdentifier(unitsRef)) {
                         ErrorPtr err = std::make_shared<Error>();
@@ -368,7 +368,7 @@ void Validator::validateModel(const ModelPtr &model)
                     if (importSource.empty()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of units '" + unitsName + "' does not have a valid locator xlink:href attribute.");
-                        err->setImportSource(units->getImportSource());
+                        err->setImportSource(units->importSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
                         foundImportError = true;
