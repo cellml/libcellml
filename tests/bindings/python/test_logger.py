@@ -47,7 +47,7 @@ class LoggerTestCase(unittest.TestCase):
         x.addError(e)
         self.assertIsNotNone(x.getError(0))
         self.assertIsNone(x.getError(1))
-        self.assertEqual(x.getError(0).getKind(), Error.Kind.MODEL)
+        self.assertEqual(x.getError(0).kind(), Error.Kind.MODEL)
 
     def test_clear_errors(self):
         from libcellml import Logger, Error
