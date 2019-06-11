@@ -18,7 +18,14 @@ public:
         CELLML_UNITS_DEFINITIONS_RESOURCE = 8,
         CELLML_UNITS_IMPORT_MODEL_RESOURCE = 9,
         CELLML_IMPORT_LEVEL0_MODEL_RESOURCE = 10,
-        CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE = 11
+        CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE = 11,
+		CELLML_RECURSIVE_FILE_IMPORT = 12,
+        CELLML_RECURSIVE_FILE_IMPORT_PATH = 13,
+        CELLML_FILE_WITH_NONEXISTENT_REF = 14,
+        CELLML_LAYERED_IMPORT_FILE = 15,
+        CELLML_CIRCULAR_IMPORT_FILE = 16,
+        CELLML_SAME_FILE_OTHER_DIR_RESOURCE = 17,
+		CELLML_ABSOLUTE_RELATIVE_FILES = 18,
     };
 
     TestResources()
@@ -76,6 +83,34 @@ public:
         if (resourceName == TestResources::CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE)
         {
             return "@CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE@";
+        }
+		if (resourceName == TestResources::CELLML_RECURSIVE_FILE_IMPORT)
+        {
+            return "@CELLML_RECURSIVE_FILE_IMPORT@";
+        }
+		if (resourceName == TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH)
+        {
+            return "@CELLML_RECURSIVE_FILE_IMPORT_PATH@";
+        }
+		if (resourceName == TestResources::CELLML_FILE_WITH_NONEXISTENT_REF)
+        {
+            return "@CELLML_FILE_WITH_NONEXISTENT_REF@";
+        }
+		if (resourceName == TestResources::CELLML_LAYERED_IMPORT_FILE)
+        {
+            return "@CELLML_LAYERED_IMPORT_FILE@";
+        }
+		if (resourceName == TestResources::CELLML_CIRCULAR_IMPORT_FILE)
+        {
+            return "@CELLML_CIRCULAR_IMPORT_FILE@";
+        }
+		if (resourceName == TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE)
+        {
+            return "@CELLML_SAME_FILE_OTHER_DIR_RESOURCE@";
+        }
+		if (resourceName == TestResources::CELLML_ABSOLUTE_RELATIVE_FILES)
+        {
+            return "@CELLML_ABSOLUTE_RELATIVE_FILES@";
         }
         return nullptr;
     }

@@ -64,7 +64,7 @@ public:
     /**
      * @brief Returns the parent of the CellML Entity.
      *
-     * @return A pointer to the entities parent if it has one,
+     * @return A pointer to the entity's parent if it has one,
      * otherwise the null pointer.
      */
     void *getParent() const;

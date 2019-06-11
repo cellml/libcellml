@@ -1,0 +1,28 @@
+<?xml version='1.0'?>
+<model name="level1" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <import xlink:href="validator_no_model.cellml">
+        <component name="i_am_invalid" component_ref="c" />
+    </import>
+	<import xlink:href="validator_wrong_namespace.cellml">
+        <component name="i_have_wrong_namespace" component_ref="c" />
+		should_not_be_here
+    </import>	
+	<import xlink:href="i_do_not_exist.cellml">
+        <component name="i_am_not_real_either" component_ref="c" />
+    </import>	
+	<import xlink:href="i_am_empty.cellml">
+        <component name="i_will_not_be_found" component_ref="c" />
+    </import>
+	<import xlink:href="not_a_real_tag.cellml">
+        <component name="also_missing" component_ref="c" />
+    </import>
+	<import xlink:href="model_wrong_attribute.cellml">
+        <component name="model_is_wrong" component_ref="c" />
+    </import>
+	<import xlink:href="i_am_almost_ok.cellml">
+        <component name="not_an_attribute" component_ref="c" />
+    </import>
+	<import xlink:href="no_namespace.cellml">
+        <component name="no_namespace" component_ref="c" />
+    </import>
+</model>

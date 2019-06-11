@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<model name="level3" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<import xlink:href="circularImport_1.cellml">
+		<component component_ref="concrete_component" name="should_be_ok"/>
+	</import>
+	<import xlink:href="circularImport_1.cellml">
+		<component component_ref="i_am_cyclic" name="closes_the_loop"/>
+	</import>
+</model>

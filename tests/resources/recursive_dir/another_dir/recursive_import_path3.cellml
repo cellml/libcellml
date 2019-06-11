@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<model name="here_be_coffee" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <component name="try_espresso_instead">
+		<variable name="sugar_not_required" units="dimensionless"/>
+	</component>
+</model>

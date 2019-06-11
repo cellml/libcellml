@@ -22,12 +22,13 @@ limitations under the License.
 #include <limits>
 #include <set>
 #include <sstream>
-#include <vector>
 
 namespace libcellml {
 
 double convertToDouble(const std::string &candidate)
 {
+	/// @cellml2_3 3.5 Function to convert string to double, __NB__ exception defaults silently to infinity.
+	/// 
     double value = 0.0;
     try {
         value = std::stod(candidate);
@@ -51,6 +52,8 @@ std::string convertDoubleToString(double value)
 
 int convertToInt(const std::string &candidate)
 {
+	/// @cellml2_3 3.1.3 Converts a string to an integer.  __NB__ No exception handling at present! 
+	/// Actual use must always be preceded by call to isCellMLInteger(const std::string &candidate) to check.
     return std::stoi(candidate);
 }
 
@@ -61,8 +64,7 @@ std::string convertIntToString(int value)
     return strs.str();
 }
 
-bool isEuropeanNumericCharacter(char c)
-{
+bool isEuropeanNumericCharacter(char c) {
     const std::set<char> validIntegerCharacters = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     return validIntegerCharacters.find(c) != validIntegerCharacters.end();
 }
@@ -123,6 +125,7 @@ bool isCellMLBasicReal(const std::string &candidate)
 
 bool isCellMLReal(const std::string &candidate)
 {
+	/// @cellml2_3 3.5 Function call to check for real number strings
     bool isReal = false;
     if (!candidate.empty()) {
         std::string normalisedCandidate = candidate;
@@ -146,6 +149,27 @@ bool isCellMLReal(const std::string &candidate)
         }
     }
     return isReal;
+}
+
+bool isRelativePath(const std::string &path) {
+    
+    if (path.size()) {
+        // Starting with . or .. in any operating system implies relative path -> true
+        if (path.at(0) == '.') {
+            return true;
+        }
+        // Starting with slash implies absolute -> false
+        if (path.at(0) == '/') {
+            return false;
+        }
+    }
+    // Presence of a colon implies an absolute path (Windows) or non-local path -> false
+    size_t found = path.find(":"); 
+    if (found != std::string::npos) {
+        return false;
+    }
+    // Default to relative paths, including for empty strings
+    return true;
 }
 
 } // namespace libcellml
