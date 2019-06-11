@@ -243,6 +243,6 @@ TEST(Coverage, error)
     // Copy constructor
     libcellml::Error ec(em);
 
-    EXPECT_EQ(description, ec.getDescription());
-    EXPECT_EQ(libcellml::Error::Kind::XML, ec.getKind());
+    EXPECT_EQ(description, ec.description());
+    EXPECT_EQ(libcellml::Error::Kind::XML, ec.kind());
 }
