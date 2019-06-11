@@ -1163,8 +1163,8 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             if (orderValid) {
                 order = convertToInt(attribute->getValue());
             } else {
-                if (reset->getVariable() != nullptr) {
-                    variableName = reset->getVariable()->name();
+                if (reset->variable() != nullptr) {
+                    variableName = reset->variable()->name();
                 }
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' has a non-integer order value '" + attribute->getValue() + "'.");
@@ -1191,8 +1191,8 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         mParser->addError(err);
     }
 
-    if (reset->getVariable() != nullptr) {
-        variableName = reset->getVariable()->name();
+    if (reset->variable() != nullptr) {
+        variableName = reset->variable()->name();
     }
     if (orderValid) {
         reset->setOrder(order);
@@ -1236,7 +1236,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
 void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node)
 {
     std::string referencedVariableName;
-    VariablePtr referencedVariable = reset->getVariable();
+    VariablePtr referencedVariable = reset->variable();
     if (referencedVariable != nullptr) {
         referencedVariableName = referencedVariable->name();
     }

@@ -350,7 +350,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
 {
     std::string repr = indent + "<reset";
     std::string id = reset->id();
-    VariablePtr variable = reset->getVariable();
+    VariablePtr variable = reset->variable();
     if (variable) {
         repr += " variable=\"" + variable->name() + "\"";
     }
@@ -364,7 +364,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
     if (when_count > 0) {
         repr += ">\n";
         for (size_t i = 0; i < when_count; ++i) {
-            repr += printWhen(reset->getWhen(i), indent + tabIndent);
+            repr += printWhen(reset->when(i), indent + tabIndent);
         }
         repr += indent + "</reset>\n";
     } else {

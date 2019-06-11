@@ -618,7 +618,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
 
     std::string variableString;
     std::string variableContinuation;
-    if (reset->getVariable() == nullptr) {
+    if (reset->variable() == nullptr) {
         variableString = "does not reference a variable";
         variableContinuation = ",";
         ErrorPtr err = std::make_shared<Error>();
@@ -627,7 +627,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
         mValidator->addError(err);
     } else {
-        variableString = "referencing variable '" + reset->getVariable()->name() + "'";
+        variableString = "referencing variable '" + reset->variable()->name() + "'";
     }
 
     if (!reset->isOrderSet()) {
@@ -642,7 +642,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         // Check for duplicate when order values.
         std::vector<int> whenOrders;
         for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->getWhen(i);
+            WhenPtr when = reset->when(i);
             if (when->isOrderSet()) {
                 int whenOrder = when->order();
                 if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
@@ -657,7 +657,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
             }
         }
         for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->getWhen(i);
+            WhenPtr when = reset->when(i);
             validateWhen(when, reset, component);
         }
     } else {
@@ -687,12 +687,12 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
         resetOrderString = "which does not have an order set,";
     }
 
-    if (reset->getVariable() == nullptr) {
+    if (reset->variable() == nullptr) {
         resetVariableString = "which does not reference a variable";
         resetVariableContinuation = ",";
     } else {
         resetVariableContinuation = "";
-        resetVariableString = "referencing variable '" + reset->getVariable()->name() + "'";
+        resetVariableString = "referencing variable '" + reset->variable()->name() + "'";
     }
 
     if (!when->isOrderSet()) {
