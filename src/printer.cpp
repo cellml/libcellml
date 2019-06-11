@@ -169,8 +169,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            auto component1 = static_cast<Component *>(variable->getParent());
-                            auto component2 = static_cast<Component *>(equivalentVariable->getParent());
+                            auto component1 = static_cast<Component *>(variable->parent());
+                            auto component2 = static_cast<Component *>(equivalentVariable->parent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2 != nullptr) {
@@ -197,19 +197,19 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
     if (!units->getName().empty()) {
         if (units->isImport()) {
             repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-            if (!units->getImportSource()->getId().empty()) {
-                repr += " id=\"" + units->getImportSource()->getId() + "\"";
+            if (!units->getImportSource()->id().empty()) {
+                repr += " id=\"" + units->getImportSource()->id() + "\"";
             }
             repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
-            if (!units->getId().empty()) {
-                repr += " id=\"" + units->getId() + "\"";
+            if (!units->id().empty()) {
+                repr += " id=\"" + units->id() + "\"";
             }
             repr += "/>\n" + indent + "</import>\n";
         } else {
             bool endTag = false;
             repr += indent + "<units name=\"" + units->getName() + "\"";
-            if (!units->getId().empty()) {
-                repr += " id=\"" + units->getId() + "\"";
+            if (!units->id().empty()) {
+                repr += " id=\"" + units->id() + "\"";
             }
             if (units->unitCount() > 0) {
                 endTag = true;
@@ -260,8 +260,8 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
     if (!componentName.empty()) {
         repr += " name=\"" + componentName + "\"";
     }
-    if (!component->getId().empty()) {
-        repr += " id=\"" + component->getId() + "\"";
+    if (!component->id().empty()) {
+        repr += " id=\"" + component->id() + "\"";
     }
     size_t variableCount = component->variableCount();
     size_t resetCount = component->resetCount();
@@ -322,7 +322,7 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
     std::string repr;
     repr += indent + "<variable";
     std::string name = variable->getName();
-    std::string id = variable->getId();
+    std::string id = variable->id();
     std::string units = variable->getUnits();
     std::string intial_value = variable->getInitialValue();
     std::string interface_type = variable->getInterfaceType();
@@ -349,7 +349,7 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
 std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
     std::string repr = indent + "<reset";
-    std::string id = reset->getId();
+    std::string id = reset->id();
     VariablePtr variable = reset->getVariable();
     if (variable) {
         repr += " variable=\"" + variable->getName() + "\"";
@@ -376,7 +376,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
 std::string Printer::PrinterImpl::printWhen(const WhenPtr &when, const std::string &indent) const
 {
     std::string repr = indent + "<when";
-    std::string id = when->getId();
+    std::string id = when->id();
     if (when->isOrderSet()) {
         repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
     }
@@ -545,8 +545,8 @@ std::string Printer::printModel(const ModelPtr &model) const
     if (!model->getName().empty()) {
         repr += " name=\"" + model->getName() + "\"";
     }
-    if (!model->getId().empty()) {
-        repr += " id=\"" + model->getId() + "\"";
+    if (!model->id().empty()) {
+        repr += " id=\"" + model->id() + "\"";
     }
     bool endTag = false;
     if (!importMap.empty() || (model->componentCount() > 0) || (model->unitsCount() > 0)) {
@@ -556,15 +556,15 @@ std::string Printer::printModel(const ModelPtr &model) const
 
     for (const auto &iter : importMap) {
         repr += tabIndent + "<import xlink:href=\"" + iter.first->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-        if (!iter.first->getId().empty()) {
-            repr += " id=\"" + iter.first->getId() + "\"";
+        if (!iter.first->id().empty()) {
+            repr += " id=\"" + iter.first->id() + "\"";
         }
         repr += ">\n";
         for (const auto &vectorIter : iter.second) {
             const ComponentPtr &localComponent = std::get<1>(vectorIter);
             repr += tabIndent + tabIndent + "<component component_ref=\"" + std::get<0>(vectorIter) + "\" name=\"" + localComponent->getName() + "\"";
-            if (!localComponent->getId().empty()) {
-                repr += " id=\"" + localComponent->getId() + "\"";
+            if (!localComponent->id().empty()) {
+                repr += " id=\"" + localComponent->id() + "\"";
             }
             repr += "/>\n";
         }

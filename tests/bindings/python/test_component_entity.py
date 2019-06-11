@@ -27,11 +27,11 @@ class ComponentEntityTestCase(unittest.TestCase):
 
         # Test access to inherited methods
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
+        self.assertEqual(x.id(), idx)
         y = ComponentEntity(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(y.id(), idx)
 
     def test_add_component(self):
         from libcellml import ComponentEntity, Component
@@ -167,39 +167,39 @@ class ComponentEntityTestCase(unittest.TestCase):
         self.assertTrue(x.containsComponent(z, z))
         del(x, y, z)
 
-    def test_get_component(self):
+    def test_component(self):
         from libcellml import ComponentEntity, Component
 
-        # ComponentPtr getComponent(size_t index)
+        # ComponentPtr component(size_t index)
         name = 'testo'
         x = ComponentEntity()
         y = Component()
         y.setName(name)
-        self.assertIsNone(x.getComponent(0))
-        self.assertIsNone(x.getComponent(1))
-        self.assertIsNone(x.getComponent(-1))
+        self.assertIsNone(x.component(0))
+        self.assertIsNone(x.component(1))
+        self.assertIsNone(x.component(-1))
         x.addComponent(y)
-        self.assertIsNone(x.getComponent(1))
-        self.assertIsNone(x.getComponent(-1))
-        self.assertIsNotNone(x.getComponent(0), y)
-        self.assertEqual(x.getComponent(0).getName(), name)
+        self.assertIsNone(x.component(1))
+        self.assertIsNone(x.component(-1))
+        self.assertIsNotNone(x.component(0), y)
+        self.assertEqual(x.component(0).getName(), name)
 
-        # ComponentPtr getComponent(const std::string &name,
+        # ComponentPtr component(const std::string &name,
         #   bool searchEncapsulated=true)
         name = 'testo'
         x = ComponentEntity()
         y = Component()
         y.setName(name)
-        self.assertIsNone(x.getComponent('bonjour'))
-        self.assertIsNone(x.getComponent(name))
-        self.assertIsNone(x.getComponent(name, True))
-        self.assertIsNone(x.getComponent(name, False))
-        self.assertIsNone(x.getComponent(name, 1))
-        self.assertIsNone(x.getComponent(name, 'hello'))
+        self.assertIsNone(x.component('bonjour'))
+        self.assertIsNone(x.component(name))
+        self.assertIsNone(x.component(name, True))
+        self.assertIsNone(x.component(name, False))
+        self.assertIsNone(x.component(name, 1))
+        self.assertIsNone(x.component(name, 'hello'))
         x.addComponent(y)
-        self.assertIsNone(x.getComponent('hola'))
-        self.assertIsNotNone(x.getComponent(name), y)
-        self.assertEqual(x.getComponent(name).getName(), name)
+        self.assertIsNone(x.component('hola'))
+        self.assertIsNotNone(x.component(name), y)
+        self.assertEqual(x.component(name).getName(), name)
         del(x, y, name)
         name = 'hiii'
         z = Component()
@@ -208,13 +208,13 @@ class ComponentEntityTestCase(unittest.TestCase):
         y.addComponent(z)
         x = ComponentEntity()
         x.addComponent(y)
-        self.assertIsNone(x.getComponent(name, False))
-        self.assertIsNone(x.getComponent(name, 0))
-        self.assertIsNone(x.getComponent(name, []))
-        self.assertIsNotNone(x.getComponent(name))
-        self.assertIsNotNone(x.getComponent(name, True))
-        self.assertIsNotNone(x.getComponent(name, 1))
-        self.assertIsNotNone(x.getComponent(name, name))
+        self.assertIsNone(x.component(name, False))
+        self.assertIsNone(x.component(name, 0))
+        self.assertIsNone(x.component(name, []))
+        self.assertIsNotNone(x.component(name))
+        self.assertIsNotNone(x.component(name, True))
+        self.assertIsNotNone(x.component(name, 1))
+        self.assertIsNotNone(x.component(name, name))
         del(x, y, z, name)
 
     def test_take_component(self):
@@ -395,16 +395,16 @@ class ComponentEntityTestCase(unittest.TestCase):
         x.setEncapsulationId('Hello')
         x.setEncapsulationId('')
 
-    def test_get_encapsulation_id(self):
+    def test_encapsulation_id(self):
         from libcellml import ComponentEntity
 
-        # std::string getEncapsulationId() const;
+        # std::string encapsulationId() const;
         x = ComponentEntity()
-        self.assertEqual(x.getEncapsulationId(), '')
+        self.assertEqual(x.encapsulationId(), '')
         x.setEncapsulationId('Hello')
-        self.assertEqual(x.getEncapsulationId(), 'Hello')
+        self.assertEqual(x.encapsulationId(), 'Hello')
         x.setEncapsulationId('')
-        self.assertEqual(x.getEncapsulationId(), '')
+        self.assertEqual(x.encapsulationId(), '')
 
 
 if __name__ == '__main__':

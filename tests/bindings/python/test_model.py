@@ -27,11 +27,11 @@ class ModelTestCase(unittest.TestCase):
         # Test access to inherited methods
         x = Model()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
+        self.assertEqual(x.id(), idx)
         y = Model(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(y.id(), idx)
 
     def test_add_units(self):
         from libcellml import Model, Units
@@ -110,7 +110,7 @@ class ModelTestCase(unittest.TestCase):
         v = Units()
         self.assertFalse(m.hasUnits(v))
 
-    def test_get_units(self):
+    def test_units(self):
         from libcellml import Model, Units
 
         # UnitsPtr getUnits(size_t index)

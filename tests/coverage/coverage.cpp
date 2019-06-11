@@ -34,7 +34,7 @@ TEST(Coverage, import)
     // Copy constructor
     libcellml::ImportSource ic(im);
 
-    const std::string a = ic.getId();
+    const std::string a = ic.id();
     EXPECT_EQ(e, a);
 }
 

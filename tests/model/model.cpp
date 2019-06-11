@@ -23,7 +23,7 @@ TEST(Model, setGetId)
     const std::string id = "modelID";
     libcellml::Model m;
     m.setId(id);
-    EXPECT_EQ(id, m.getId());
+    EXPECT_EQ(id, m.id());
 }
 
 TEST(Model, name)

@@ -34,7 +34,7 @@ class LoggerTestCase(unittest.TestCase):
         x.addError(Error())
         self.assertEqual(x.errorCount(), 2)
 
-    def test_get_error(self):
+    def test_error(self):
         from libcellml import Logger, Error
 
         # ErrorPtr getError(size_t index)

@@ -1445,15 +1445,15 @@ TEST(Parser, parseIds)
     libcellml::ModelPtr model = p.parseModel(in);
 
     EXPECT_EQ(size_t(0), p.errorCount());
-    EXPECT_EQ("mid", model->getId());
-    EXPECT_EQ("c1id", model->component("component1")->getId());
-    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->getId());
-    EXPECT_EQ("u1id", model->getUnits("units1")->getId());
-    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->getId());
-    EXPECT_EQ("u2id", model->getUnits("units2")->getId());
-    EXPECT_EQ("c2id", model->component("component2")->getId());
-    EXPECT_EQ("u3id", model->getUnits("units3")->getId());
-    EXPECT_EQ("vid", model->component("component2")->variable("variable1")->getId());
+    EXPECT_EQ("mid", model->id());
+    EXPECT_EQ("c1id", model->component("component1")->id());
+    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->id());
+    EXPECT_EQ("u1id", model->getUnits("units1")->id());
+    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->id());
+    EXPECT_EQ("u2id", model->getUnits("units2")->id());
+    EXPECT_EQ("c2id", model->component("component2")->id());
+    EXPECT_EQ("u3id", model->getUnits("units3")->id());
+    EXPECT_EQ("vid", model->component("component2")->variable("variable1")->id());
 }
 
 TEST(Parser, parseIdsOnEverything)
@@ -1510,17 +1510,17 @@ TEST(Parser, parseIdsOnEverything)
 
     printErrors(parser);
     EXPECT_EQ(size_t(0), parser.errorCount());
-    EXPECT_EQ("mid", model->getId());
-    EXPECT_EQ("c1id", model->component("component1")->getId());
-    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->getId());
-    EXPECT_EQ("u1id", model->getUnits("units1")->getId());
-    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->getId());
-    EXPECT_EQ("u2id", model->getUnits("units2")->getId());
-    EXPECT_EQ("c2id", model->component("component2")->getId());
-    EXPECT_EQ("u3id", model->getUnits("units3")->getId());
-    EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->getId());
-    EXPECT_EQ("r1id", model->component("component2")->reset(0)->getId());
-    EXPECT_EQ("w1id", model->component("component2")->reset(0)->getWhen(0)->getId());
+    EXPECT_EQ("mid", model->id());
+    EXPECT_EQ("c1id", model->component("component1")->id());
+    EXPECT_EQ("i1id", model->component("component1")->getImportSource()->id());
+    EXPECT_EQ("u1id", model->getUnits("units1")->id());
+    EXPECT_EQ("i2id", model->getUnits("units1")->getImportSource()->id());
+    EXPECT_EQ("u2id", model->getUnits("units2")->id());
+    EXPECT_EQ("c2id", model->component("component2")->id());
+    EXPECT_EQ("u3id", model->getUnits("units3")->id());
+    EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
+    EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
+    EXPECT_EQ("w1id", model->component("component2")->reset(0)->getWhen(0)->id());
 
     libcellml::Printer printer;
     EXPECT_EQ(in, printer.printModel(model));

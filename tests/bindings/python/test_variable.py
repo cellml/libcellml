@@ -26,11 +26,11 @@ class VariableTestCase(unittest.TestCase):
         # Test access to inherited methods
         x = Variable()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
+        self.assertEqual(x.id(), idx)
         y = Variable(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(y.id(), idx)
 
     def test_add_equivalence(self):
         from libcellml import Variable
@@ -71,7 +71,7 @@ class VariableTestCase(unittest.TestCase):
         self.assertFalse(Variable.removeEquivalence(v1, v2))
         self.assertTrue(Variable.removeEquivalence(v1, v3))
 
-    def test_get_equivalent_variable(self):
+    def test_equivalent_variable(self):
         from libcellml import Variable
 
         # VariablePtr getEquivalentVariable(size_t index)
@@ -144,7 +144,7 @@ class VariableTestCase(unittest.TestCase):
         v.setUnits(u)
         self.assertEqual(v.getUnits(), name)
 
-    def test_get_units(self):
+    def test_units(self):
         from libcellml import Variable
 
         # std::string getUnits()
@@ -176,7 +176,7 @@ class VariableTestCase(unittest.TestCase):
         v1.setInitialValue(v2)
         del(v1, v2)
 
-    def test_get_initial_value(self):
+    def test_initial_value(self):
         from libcellml import Variable
 
         # std::string getInitialValue()
@@ -224,7 +224,7 @@ class VariableTestCase(unittest.TestCase):
         v.setInterfaceType('not an interface type')
         del(v)
 
-    def test_get_interface_type(self):
+    def test_interface_type(self):
         from libcellml import Variable
 
         # std::string getInterfaceType()

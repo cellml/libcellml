@@ -113,7 +113,7 @@ class ErrorTestCase(unittest.TestCase):
         e.setDescription('hello')
         e.setDescription('')
 
-    def test_get_description(self):
+    def test_description(self):
         from libcellml import Error
 
         # std::string getDescription()
@@ -131,7 +131,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setKind(Error.Kind.CONNECTION)
 
-    def test_get_kind(self):
+    def test_kind(self):
         from libcellml import Error
 
         # Kind getKind()
@@ -155,14 +155,14 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setRule(SpecificationRule.MAP_VARIABLES_VARIABLE2)
 
-    def test_get_rule(self):
+    def test_rule(self):
         from libcellml import Error, SpecificationRule
 
         # SpecificationRule getRule()
         e = Error()
         self.assertEqual(e.getRule(), SpecificationRule.UNDEFINED)
 
-    def test_get_specification_heading(self):
+    def test_specification_heading(self):
         from libcellml import Error
 
         # std::string getSpecificationHeading()
@@ -176,7 +176,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setComponent(Component())
 
-    def test_get_component(self):
+    def test_component(self):
         from libcellml import Error, Component
 
         # ComponentPtr getComponent()
@@ -196,7 +196,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setImportSource(ImportSource())
 
-    def test_get_import_source(self):
+    def test_import_source(self):
         from libcellml import Error, ImportSource
 
         # ImportSourcePtr getImportSource()
@@ -207,7 +207,7 @@ class ErrorTestCase(unittest.TestCase):
         i.setId(name)
         e.setImportSource(i)
         self.assertIsInstance(e.getImportSource(), ImportSource)
-        self.assertEqual(e.getImportSource().getId(), name)
+        self.assertEqual(e.getImportSource().id(), name)
 
     def test_set_model(self):
         from libcellml import Error, Model
@@ -216,7 +216,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setModel(Model())
 
-    def test_get_model(self):
+    def test_model(self):
         from libcellml import Error, Model
 
         # ModelPtr getModel()
@@ -236,7 +236,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setUnits(Units())
 
-    def test_get_units(self):
+    def test_units(self):
         from libcellml import Error, Units
 
         # UnitsPtr getUnits()
@@ -256,7 +256,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setVariable(Variable())
 
-    def test_get_variable(self):
+    def test_variable(self):
         from libcellml import Error, Variable
 
         # VariablePtr getVariable()
@@ -276,7 +276,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setReset(Reset())
 
-    def test_get_reset(self):
+    def test_reset(self):
         from libcellml import Error, Reset
 
         # ResetPtr getReset() const;
@@ -287,7 +287,7 @@ class ErrorTestCase(unittest.TestCase):
         r.setId(name)
         e.setReset(r)
         self.assertIsInstance(e.getReset(), Reset)
-        self.assertEqual(e.getReset().getId(), name)
+        self.assertEqual(e.getReset().id(), name)
 
     def test_set_when(self):
         from libcellml import Error, When
@@ -296,7 +296,7 @@ class ErrorTestCase(unittest.TestCase):
         e = Error()
         e.setWhen(When())
 
-    def test_get_when(self):
+    def test_when(self):
         from libcellml import Error, When
 
         # WhenPtr getWhen() const;
@@ -307,7 +307,7 @@ class ErrorTestCase(unittest.TestCase):
         w.setId(name)
         e.setWhen(w)
         self.assertIsInstance(e.getWhen(), When)
-        self.assertEqual(e.getWhen().getId(), name)
+        self.assertEqual(e.getWhen().id(), name)
 
 
 if __name__ == '__main__':

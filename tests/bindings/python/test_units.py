@@ -27,11 +27,11 @@ class UnitsTestCase(unittest.TestCase):
         # Test access to inherited methods
         x = Units()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
+        self.assertEqual(x.id(), idx)
         y = Units(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(y.id(), idx)
 
     def test_standard_unit(self):
         from libcellml import Units
@@ -207,7 +207,7 @@ class UnitsTestCase(unittest.TestCase):
         u.addUnit(Units.StandardUnit.KATAL)
         del(u)
 
-    def test_get_unit_attributes(self):
+    def test_unit_attributes(self):
         from libcellml import Units
 
         # void getUnitAttributes(size_t index, std::string &reference,
