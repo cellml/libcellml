@@ -383,13 +383,13 @@ std::string Printer::PrinterImpl::printWhen(const WhenPtr &when, const std::stri
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
     }
-    std::string condition = when->getCondition();
+    std::string condition = when->condition();
     bool hasCondition = !condition.empty();
     if (hasCondition) {
         repr += ">\n";
         repr += printMath(condition, indent + tabIndent);
     }
-    std::string value = when->getValue();
+    std::string value = when->value();
     bool hasValue = !value.empty();
     if (hasValue) {
         if (!hasCondition) {

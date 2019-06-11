@@ -132,12 +132,12 @@ class OrderedEntityTestCase(unittest.TestCase):
         r.addWhen(w1)
 
         self.assertFalse(r.replaceWhen(3, w2))
-        self.assertEqual("x=exp(y)", r.when(0).getCondition())
-        self.assertEqual("", r.when(0).getValue())
+        self.assertEqual("x=exp(y)", r.when(0).condition())
+        self.assertEqual("", r.when(0).value())
 
         self.assertTrue(r.replaceWhen(0, w2))
-        self.assertEqual("", r.when(0).getCondition())
-        self.assertEqual("a=2", r.when(0).getValue())
+        self.assertEqual("", r.when(0).condition())
+        self.assertEqual("a=2", r.when(0).value())
 
 
 if __name__ == '__main__':
