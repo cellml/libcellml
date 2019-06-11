@@ -19,7 +19,7 @@ entity.";
 A second argument can be given to specify whether or not child components
 should be searched for the component to remove.";
 
-%feature("docstring") libcellml::ComponentEntity::getComponent
+%feature("docstring") libcellml::ComponentEntity::component
 "Returns a component, specified by an index or name.
 
 A second argument can be given to specify whether or not child components
@@ -59,7 +59,7 @@ Returns `True` on success.";
 %feature("docstring") libcellml::ComponentEntity::componentCount
 "Returns the number of components the component contains.  ";
 
-%feature("docstring") libcellml::ComponentEntity::getEncapsulationId
+%feature("docstring") libcellml::ComponentEntity::encapsulationId
 "Returns the encapsulation id for this entity.
 
 The encapsulation Id is placed on the XML element for this entity. For the
@@ -85,9 +85,9 @@ the structure."
 
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::ComponentEntity {
-        ComponentPtr getComponent(long index) const {
-            return $self->getComponent(size_t(index));
+        ComponentPtr component(long index) const {
             if (index < 0) return nullptr;
+            return $self->component(size_t(index));
         }
         bool removeComponent(long index) {
             if (index < 0) return false;

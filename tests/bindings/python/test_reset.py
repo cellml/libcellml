@@ -88,7 +88,7 @@ class OrderedEntityTestCase(unittest.TestCase):
         self.assertTrue(r.containsWhen(w1))
         self.assertFalse(r.containsWhen(w2))
 
-    def test_get_when(self):
+    def test_when(self):
         from libcellml import Reset
         from libcellml import When
 

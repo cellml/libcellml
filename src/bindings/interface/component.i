@@ -16,7 +16,7 @@ component in the `importSource`.";
 %feature("docstring") libcellml::Component::appendMath
 "Appends `math` to the existing math string for this component.";
 
-%feature("docstring") libcellml::Component::getMath
+%feature("docstring") libcellml::Component::math
 "Returns a math string if one has been created for this component (empty string
 if not).";
 
@@ -27,7 +27,7 @@ If `math` is an empty string, math will be removed from the component.";
 %feature("docstring") libcellml::Component::addVariable
 "Adds variable `variable` to this component.";
 
-%feature("docstring") libcellml::Component::getVariable
+%feature("docstring") libcellml::Component::variable
 "Returns a Variable from this component, specified by name or index.
 
 Only the first matching variable is returned.";
@@ -73,7 +73,7 @@ range for the index is [0, #resets).";
 %feature("docstring") libcellml::Component::removeAllResets
 "Clears all resets that have been added to this component.";
 
-%feature("docstring") libcellml::Component::getReset
+%feature("docstring") libcellml::Component::reset
 "Returns a reference to a reset at the index @p index for this
 component. If the index is not valid a @c nullptr is returned, the valid
 range for the index is [0, #resets).";
@@ -89,9 +89,9 @@ resets and False otherwise.";
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Component {
-        VariablePtr getVariable(long index) const {
-            return $self->getVariable(size_t(index));
+        VariablePtr variable(long index) const {
             if (index < 0) return nullptr;
+            return $self->variable(size_t(index));
         }
         bool removeVariable(long index) {
             if (index < 0) return false;

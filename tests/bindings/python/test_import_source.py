@@ -31,7 +31,7 @@ class ImportSourceTestCase(unittest.TestCase):
         x.setUrl('hello')
         x.setUrl('')
 
-    def test_get_url(self):
+    def test_url(self):
         from libcellml import ImportSource
 
         # std::string getUrl()
@@ -52,7 +52,7 @@ class ImportSourceTestCase(unittest.TestCase):
         x.setModel(Model())
         x.setModel(None)
 
-    def test_get_model(self):
+    def test_model(self):
         from libcellml import ImportSource, Model
 
         # ModelPtr getModel() const;

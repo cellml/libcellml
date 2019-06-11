@@ -34,7 +34,7 @@ class ImportedEntityTestCase(unittest.TestCase):
         x.setImportSource(None)
         self.assertFalse(x.isImport())
 
-    def test_get_import_source(self):
+    def test_import_source(self):
         from libcellml import ImportedEntity, ImportSource
 
         # ImportSourcePtr getImportSource()
@@ -57,7 +57,7 @@ class ImportedEntityTestCase(unittest.TestCase):
         x.setImportReference(r)
         x.setImportReference('')
 
-    def test_get_import_reference(self):
+    def test_import_reference(self):
         from libcellml import ImportedEntity
 
         # std::string getImportReference()
