@@ -90,11 +90,11 @@ resets and False otherwise.";
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Component {
         VariablePtr getVariable(long index) const {
-            if(index < 0) return nullptr;
             return $self->getVariable(size_t(index));
+            if (index < 0) return nullptr;
         }
         bool removeVariable(long index) {
-            if(index < 0) return false;
+            if (index < 0) return false;
             return $self->removeVariable(size_t(index));
         }
     }
