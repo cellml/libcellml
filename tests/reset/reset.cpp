@@ -111,14 +111,14 @@ TEST(Reset, getWhenMethods)
     r.addWhen(c1);
     r.addWhen(c2);
 
-    libcellml::WhenPtr cA = r.getWhen(0);
+    libcellml::WhenPtr cA = r.when(0);
 
     // Using const version of overloaded method
-    const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).getWhen(0);
+    const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).when(0);
     EXPECT_EQ(int(0), cS->order());
 
     // Can do this as we just have a const pointer
-    EXPECT_EQ(nullptr, r.getWhen(4));
+    EXPECT_EQ(nullptr, r.when(4));
 }
 
 TEST(Reset, takeWhenMethods)

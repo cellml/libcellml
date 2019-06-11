@@ -11,7 +11,7 @@
 %feature("docstring") libcellml::Reset::setVariable
 "Sets the :class: Variable for this reset.";
 
-%feature("docstring") libcellml::Reset::getVariable
+%feature("docstring") libcellml::Reset::variable
 "Returns the :class: Variable of this reset.";
 
 %feature("docstring") libcellml::Reset::addWhen
@@ -28,7 +28,7 @@
 within this When entity. Returns True if the when is in the reset
 entity and False otherwise.";
 
-%feature("docstring") libcellml::Reset::getWhen
+%feature("docstring") libcellml::Reset::when
 "Returns a reference to a when at the given :param: index.  :param: index must be in the range [0, #whens).";
 
 %feature("docstring") libcellml::Reset::takeWhen
@@ -47,9 +47,9 @@ entity and False otherwise.";
 
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Reset {
-        WhenPtr getWhen(long index) const {
+        WhenPtr when(long index) const {
             if (index < 0) return nullptr;
-            return $self->getWhen(size_t(index));
+            return $self->when(size_t(index));
         }
         bool removeWhen(long index) {
             if (index < 0) return false;

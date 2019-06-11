@@ -1520,7 +1520,7 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ("u3id", model->units("units3")->id());
     EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
     EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
-    EXPECT_EQ("w1id", model->component("component2")->reset(0)->getWhen(0)->id());
+    EXPECT_EQ("w1id", model->component("component2")->reset(0)->when(0)->id());
 
     libcellml::Printer printer;
     EXPECT_EQ(in, printer.printModel(model));
@@ -1564,7 +1564,7 @@ TEST(Parser, parseResets)
     EXPECT_EQ(1, r->order());
     EXPECT_EQ(size_t(2), r->whenCount());
 
-    libcellml::WhenPtr w = r->getWhen(1);
+    libcellml::WhenPtr w = r->when(1);
     EXPECT_EQ(3, w->order());
 }
 
@@ -1692,7 +1692,7 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
     libcellml::ModelPtr model = parser.parseModel(in);
 
     libcellml::ResetPtr resetExpected = model->component(0)->reset(0);
-    libcellml::WhenPtr whenExpected = resetExpected->getWhen(0);
+    libcellml::WhenPtr whenExpected = resetExpected->when(0);
 
     EXPECT_EQ(size_t(6), parser.errorCount());
     EXPECT_EQ(resetExpected, parser.error(2)->reset());
