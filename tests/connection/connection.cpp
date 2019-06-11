@@ -1011,7 +1011,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     libcellml::ModelPtr model = parser.parseModel(s);
     EXPECT_EQ(size_t(1), parser.errorCount());
 
-    EXPECT_EQ(expectError, parser.getError(0)->description());
+    EXPECT_EQ(expectError, parser.error(0)->description());
     parser.clearErrors();
     EXPECT_EQ(size_t(0), parser.errorCount());
 
