@@ -102,7 +102,7 @@ TEST(Reset, removeWhenMethods)
     EXPECT_EQ(size_t(0), r.whenCount());
 }
 
-TEST(Reset, getWhenMethods)
+TEST(Reset, whenMethods)
 {
     libcellml::Reset r;
     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
@@ -461,7 +461,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     EXPECT_FALSE(c.removeReset(1));
 }
 
-TEST(Reset, getResetFromComponentMethod)
+TEST(Reset, resetFromComponentMethod)
 {
     const std::string in = "valid_name";
     libcellml::Component c;
