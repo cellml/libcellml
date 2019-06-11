@@ -455,7 +455,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         std::vector<int> resetOrders;
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->reset(i);
-            int resetOrder = reset->getOrder();
+            int resetOrder = reset->order();
             if (reset->isOrderSet()) {
                 if (std::find(resetOrders.begin(), resetOrders.end(), resetOrder) != resetOrders.end()) {
                     ErrorPtr err = std::make_shared<Error>();
@@ -611,7 +611,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
 {
     std::string orderString;
     if (reset->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(reset->getOrder()) + "'";
+        orderString = "with order '" + convertIntToString(reset->order()) + "'";
     } else {
         orderString = "does not have an order set,";
     }
@@ -644,7 +644,7 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         for (size_t i = 0; i < reset->whenCount(); ++i) {
             WhenPtr when = reset->getWhen(i);
             if (when->isOrderSet()) {
-                int whenOrder = when->getOrder();
+                int whenOrder = when->order();
                 if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
@@ -676,13 +676,13 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
     std::string resetVariableString;
     std::string resetVariableContinuation;
     if (when->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(when->getOrder()) + "'";
+        orderString = "with order '" + convertIntToString(when->order()) + "'";
     } else {
         orderString = "does not have an order set,";
     }
 
     if (reset->isOrderSet()) {
-        resetOrderString = "with order '" + convertIntToString(reset->getOrder()) + "'";
+        resetOrderString = "with order '" + convertIntToString(reset->order()) + "'";
     } else {
         resetOrderString = "which does not have an order set,";
     }

@@ -1242,7 +1242,7 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
     }
     std::string resetOrder;
     if (reset->isOrderSet()) {
-        resetOrder = convertIntToString(reset->getOrder());
+        resetOrder = convertIntToString(reset->order());
     }
     int order = 0;
     bool orderDefined = false;

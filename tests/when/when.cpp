@@ -52,10 +52,10 @@ TEST(When, order)
     w->setOrder(5);
 
     EXPECT_TRUE(w->isOrderSet());
-    EXPECT_EQ(5, w->getOrder());
+    EXPECT_EQ(5, w->order());
 
     w->unsetOrder();
 
     EXPECT_FALSE(w->isOrderSet());
-    EXPECT_EQ(5, w->getOrder());
+    EXPECT_EQ(5, w->order());
 }

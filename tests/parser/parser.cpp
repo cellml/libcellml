@@ -1561,11 +1561,11 @@ TEST(Parser, parseResets)
     EXPECT_EQ(size_t(1), c->resetCount());
 
     libcellml::ResetPtr r = c->reset(0);
-    EXPECT_EQ(1, r->getOrder());
+    EXPECT_EQ(1, r->order());
     EXPECT_EQ(size_t(2), r->whenCount());
 
     libcellml::WhenPtr w = r->getWhen(1);
-    EXPECT_EQ(3, w->getOrder());
+    EXPECT_EQ(3, w->order());
 }
 
 TEST(Parser, parseResetsWithNumerousErrors)

@@ -32,7 +32,7 @@ TEST(Reset, order)
     EXPECT_FALSE(r->isOrderSet());
     r->setOrder(1);
 
-    EXPECT_EQ(1, r->getOrder());
+    EXPECT_EQ(1, r->order());
     EXPECT_TRUE(r->isOrderSet());
 
     r->unsetOrder();
@@ -115,7 +115,7 @@ TEST(Reset, getWhenMethods)
 
     // Using const version of overloaded method
     const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).getWhen(0);
-    EXPECT_EQ(int(0), cS->getOrder());
+    EXPECT_EQ(int(0), cS->order());
 
     // Can do this as we just have a const pointer
     EXPECT_EQ(nullptr, r.getWhen(4));
@@ -132,7 +132,7 @@ TEST(Reset, takeWhenMethods)
 
     libcellml::WhenPtr c02 = r.takeWhen(1);
     EXPECT_EQ(size_t(1), r.whenCount());
-    EXPECT_EQ(int(0), c02->getOrder());
+    EXPECT_EQ(int(0), c02->order());
 
     EXPECT_EQ(nullptr, r.takeWhen(4));
 }

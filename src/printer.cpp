@@ -355,7 +355,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
         repr += " variable=\"" + variable->name() + "\"";
     }
     if (reset->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(reset->getOrder()) + "\"";
+        repr += " order=\"" + convertIntToString(reset->order()) + "\"";
     }
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
@@ -378,7 +378,7 @@ std::string Printer::PrinterImpl::printWhen(const WhenPtr &when, const std::stri
     std::string repr = indent + "<when";
     std::string id = when->id();
     if (when->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(when->getOrder()) + "\"";
+        repr += " order=\"" + convertIntToString(when->order()) + "\"";
     }
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
