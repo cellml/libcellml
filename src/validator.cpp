@@ -733,12 +733,12 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(doc->getXmlError(i));
+            err->setDescription(doc->xmlError(i));
             err->setKind(Error::Kind::XML);
             mValidator->addError(err);
         }
     }
-    XmlNodePtr node = doc->getRootNode();
+    XmlNodePtr node = doc->rootNode();
     if (node == nullptr) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
@@ -796,7 +796,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (mathmlDoc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < mathmlDoc->xmlErrorCount(); ++i) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription(mathmlDoc->getXmlError(i));
+            err->setDescription(mathmlDoc->xmlError(i));
             err->setComponent(component);
             err->setKind(Error::Kind::MATHML);
             mValidator->addError(err);
@@ -846,19 +846,19 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         std::string unitsName;
         XmlAttributePtr unitsAttribute = nullptr;
         while (attribute) {
-            if (!attribute->getValue().empty()) {
+            if (!attribute->value().empty()) {
                 if (attribute->isCellmlType("units")) {
-                    unitsName = attribute->getValue();
+                    unitsName = attribute->value();
                     unitsAttribute = attribute;
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->getName() + "' in the cellml namespace.");
+                    err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.");
                     err->setComponent(component);
                     err->setKind(Error::Kind::MATHML);
                     mValidator->addError(err);
                 }
             }
-            attribute = attribute->getNext();
+            attribute = attribute->next();
         }
 
         bool checkUnitsIsInComponent = false;
@@ -866,7 +866,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         if (ciType) {
             if (unitsAttribute != nullptr) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Math ci element with value '" + textNode + "' has a cellml:units attribute with name '" + unitsAttribute->getValue() + "'.");
+                err->setDescription("Math ci element with value '" + textNode + "' has a cellml:units attribute with name '" + unitsAttribute->value() + "'.");
             }
         } else if (cnType) {
             if (isCellmlIdentifier(unitsName)) {

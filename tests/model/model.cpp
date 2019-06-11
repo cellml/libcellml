@@ -469,12 +469,10 @@ TEST(Model, constructors)
     // Testing move assignment for model
     m2 = std::move(m1);
     EXPECT_EQ("my_name", m2.name());
-    // EXPECT_EQ("", m1.getName()); m1 is now dead (contains a nullptr).
 
     // Testing move constructor for component
     libcellml::Model m4 = std::move(m2);
     EXPECT_EQ("my_name", m4.name());
-    // EXPECT_EQ("", m2.getName()); m2 is now dead (contains a nullptr).
 }
 
 TEST(Model, setAndCheckIdsAllEntities)

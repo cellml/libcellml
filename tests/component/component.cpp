@@ -356,8 +356,7 @@ TEST(Component, constructors)
     c2 = std::move(c1);
     EXPECT_EQ("my_name", c2.name());
     // c1 is now in a valid but undefined state. For us this means we cannot use it, the pointer to implementation
-    // is now a nullptr and anything that tries to dereference it will segfault, like getName().
-    // EXPECT_EQ("", c1.getName());
+    // is now a nullptr and anything that tries to dereference it will segfault, like name().
 
     // Testing move constructor for component
     libcellml::Component c3 = std::move(c2);

@@ -131,7 +131,7 @@ struct Variable::VariableImpl
      * @param equivalentVariable The variable this variable is equivalent to.
      * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
      */
-    std::string getEquivalentMappingId(const VariablePtr &equivalentVariable) const;
+    std::string equivalentMappingId(const VariablePtr &equivalentVariable) const;
 
     /**
      * @brief Get the equivalent connection id for this equivalence.
@@ -144,7 +144,7 @@ struct Variable::VariableImpl
      * @param equivalentVariable The variable this variable is equivalent to.
      * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
      */
-    std::string getEquivalentConnectionId(const VariablePtr &equivalentVariable) const;
+    std::string equivalentConnectionId(const VariablePtr &equivalentVariable) const;
 
     std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
     std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
@@ -301,7 +301,7 @@ void Variable::VariableImpl::setEquivalentMappingId(const VariablePtr &equivalen
     mMappingIdMap[weakEquivalentVariable] = id;
 }
 
-std::string Variable::VariableImpl::getEquivalentMappingId(const VariablePtr &equivalentVariable) const
+std::string Variable::VariableImpl::equivalentMappingId(const VariablePtr &equivalentVariable) const
 {
     if (mMappingIdMap.find(equivalentVariable) != mMappingIdMap.end()) {
         return mMappingIdMap.at(equivalentVariable);
@@ -315,7 +315,7 @@ void Variable::VariableImpl::setEquivalentConnectionId(const VariablePtr &equiva
     mConnectionIdMap[weakEquivalentVariable] = id;
 }
 
-std::string Variable::VariableImpl::getEquivalentConnectionId(const VariablePtr &equivalentVariable) const
+std::string Variable::VariableImpl::equivalentConnectionId(const VariablePtr &equivalentVariable) const
 {
     if (mConnectionIdMap.find(equivalentVariable) != mConnectionIdMap.end()) {
         return mConnectionIdMap.at(equivalentVariable);
@@ -395,8 +395,8 @@ std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const V
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
-        std::string id_1 = variable1->mPimpl->getEquivalentMappingId(variable2);
-        std::string id_2 = variable2->mPimpl->getEquivalentMappingId(variable1);
+        std::string id_1 = variable1->mPimpl->equivalentMappingId(variable2);
+        std::string id_2 = variable2->mPimpl->equivalentMappingId(variable1);
         if (id_1 == id_2) {
             id = id_1;
         }
@@ -408,8 +408,8 @@ std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, cons
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
-        std::string id_1 = variable1->mPimpl->getEquivalentConnectionId(variable2);
-        std::string id_2 = variable2->mPimpl->getEquivalentConnectionId(variable1);
+        std::string id_1 = variable1->mPimpl->equivalentConnectionId(variable2);
+        std::string id_2 = variable2->mPimpl->equivalentConnectionId(variable1);
         if (id_1 == id_2) {
             id = id_1;
         }

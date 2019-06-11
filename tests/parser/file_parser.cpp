@@ -27,7 +27,7 @@ limitations under the License.
 
 TEST(Parser, parseSineModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_SINE_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -40,7 +40,7 @@ TEST(Parser, parseSineModelFromFile)
 
 TEST(Parser, parseSineImportsModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -53,7 +53,7 @@ TEST(Parser, parseSineImportsModelFromFile)
 
 TEST(Parser, parseInvalidModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_INVALID_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -73,7 +73,7 @@ TEST(Parser, parseInvalidModelFromFile)
 
 TEST(Parser, parseOrdModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_ORD_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -100,7 +100,7 @@ TEST(Parser, parseOrdModelFromFile)
 TEST(Parser, parseComplexEncapsulationModelFromFile)
 {
     // This test resulted from https://github.com/cellml/libcellml/issues/170
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -147,7 +147,7 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
         "  </apply>\n"
         "</math>\n";
 
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
