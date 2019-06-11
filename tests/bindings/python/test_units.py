@@ -210,38 +210,38 @@ class UnitsTestCase(unittest.TestCase):
     def test_unit_attributes(self):
         from libcellml import Units
 
-        # void getUnitAttributes(size_t index, std::string &reference,
+        # void unitAttributes(size_t index, std::string &reference,
         #   std::string &prefix, double &exponent, double &multiplier, std::string &id)
         u = Units()
-        x = u.getUnitAttributes(0)
+        x = u.unitAttributes(0)
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['', '', 1.0, 1.0, ''])
         u.addUnit('blabla', 'hello', 1.2, 3.4, 'unitid')
-        x = u.getUnitAttributes(0)
+        x = u.unitAttributes(0)
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['blabla', 'hello', 1.2, 3.4, 'unitid'])
-        x = u.getUnitAttributes(1)
+        x = u.unitAttributes(1)
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['', '', 1.0, 1.0, ''])
         del(u, x)
 
-        # void getUnitAttributes(const std::string &reference,
+        # void unitAttributes(const std::string &reference,
         #   std::string &prefix, double &exponent, double &multiplier) const;
         u = Units()
-        x = u.getUnitAttributes('newton')
+        x = u.unitAttributes('newton')
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['newton', '', 1.0, 1.0, ''])
         u.addUnit('few', 'bars', 4.3, 2.1, 'job')
-        x = u.getUnitAttributes('newton')
+        x = u.unitAttributes('newton')
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['newton', '', 1.0, 1.0, ''])
-        x = u.getUnitAttributes('few')
+        x = u.unitAttributes('few')
         self.assertIsInstance(x, list)
         self.assertEqual(x, ['few', 'bars', 4.3, 2.1, 'job'])
         del(u, x)
 
-        # This method conflicts with getUnitAttributes(size_t, ...)
-        # void getUnitAttributes(StandardUnit standardRef, std::string &prefix,
+        # This method conflicts with unitAttributes(size_t, ...)
+        # void unitAttributes(StandardUnit standardRef, std::string &prefix,
         #   double &exponent, double &multiplier) const;
 
     def test_remove_unit(self):

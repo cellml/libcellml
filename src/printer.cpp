@@ -220,7 +220,7 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
                     std::string id;
                     double exponent;
                     double multiplier;
-                    units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
+                    units->unitAttributes(i, reference, prefix, exponent, multiplier, id);
                     repr += indent + tabIndent + "<unit";
                     if (exponent != 1.0) {
                         repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
