@@ -12,7 +12,7 @@
 "Adds an equivalence relation between this variable and the given one (both
 objects are updated)";
 
-%feature("docstring") libcellml::Variable::getEquivalentVariable
+%feature("docstring") libcellml::Variable::equivalentVariable
 "Returns the equivalent variable at the given index.";
 
 %feature("docstring") libcellml::Variable::hasEquivalentVariable
@@ -32,20 +32,20 @@ updated).";
 %feature("docstring") libcellml::Variable::equivalentVariableCount
 "Returns the number of equivalent variables for this variable.";
 
-%feature("docstring") libcellml::Variable::getUnits
+%feature("docstring") libcellml::Variable::units
 "Returns the name of the units set for this variable (empty string if none)";
 
 %feature("docstring") libcellml::Variable::setUnits
 "Sets the units for this variable to the given string (name) or Units object.";
 
-%feature("docstring") libcellml::Variable::getInitialValue
+%feature("docstring") libcellml::Variable::initialValue
 "Returns the string corresponding to the initial value for this variable.";
 
 %feature("docstring") libcellml::Variable::setInitialValue
 "Sets this variable's initial value, given as a string, number, or variable
 reference.";
 
-%feature("docstring") libcellml::Variable::getInterfaceType
+%feature("docstring") libcellml::Variable::interfaceType
 "Returns this variable's interface type as string.";
 
 %feature("docstring") libcellml::Variable::setInterfaceType
@@ -68,18 +68,18 @@ element of the model when serialised.
 To clear an equivalence connection id set it to the empty string. If the two variables are
 not equivalent the connection id is not set.";
 
-%feature("docstring") libcellml::Variable::getEquivalenceMappingId
+%feature("docstring") libcellml::Variable::equivalenceMappingId
 "Get the mapping id set for the equivalence defined with the given variables.";
 
-%feature("docstring") libcellml::Variable::getEquivalenceConnectionId
+%feature("docstring") libcellml::Variable::equivalenceConnectionId
 "Get the connection id set for the equivalence defined with the given variables.";
 
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {
-        VariablePtr getEquivalentVariable(long index) {
+        VariablePtr equivalentVariable(long index) {
             if (index < 0) return nullptr;
-            return $self->getEquivalentVariable(size_t(index));
+            return $self->equivalentVariable(size_t(index));
         }
     }
 #endif

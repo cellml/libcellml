@@ -127,7 +127,7 @@ TEST(Variable, setInitialValueByReference)
 TEST(Variable, getUnsetInitialValue)
 {
     libcellml::Variable v;
-    EXPECT_EQ(v.getInitialValue(), "");
+    EXPECT_EQ(v.initialValue(), "");
 }
 
 TEST(Variable, getSetInitialValue)
@@ -135,7 +135,7 @@ TEST(Variable, getSetInitialValue)
     libcellml::Variable v;
     const std::string e = "0.0";
     v.setInitialValue(e);
-    const std::string a = v.getInitialValue();
+    const std::string a = v.initialValue();
     EXPECT_EQ(e, a);
 }
 
@@ -219,10 +219,10 @@ TEST(Variable, setGetInterfaceType)
     const std::string interfaceTypeString3 = "public";
     const std::string interfaceTypeString4 = "public_and_private";
 
-    EXPECT_EQ(interfaceTypeString1, v1.getInterfaceType());
-    EXPECT_EQ(interfaceTypeString2, v2.getInterfaceType());
-    EXPECT_EQ(interfaceTypeString3, v3.getInterfaceType());
-    EXPECT_EQ(interfaceTypeString4, v4.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString1, v1.interfaceType());
+    EXPECT_EQ(interfaceTypeString2, v2.interfaceType());
+    EXPECT_EQ(interfaceTypeString3, v3.interfaceType());
+    EXPECT_EQ(interfaceTypeString4, v4.interfaceType());
 }
 
 TEST(Variable, addVariable)

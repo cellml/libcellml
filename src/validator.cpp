@@ -562,26 +562,26 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         mValidator->addError(err);
     }
     // Check for a valid units attribute.
-    if (!isCellmlIdentifier(variable->getUnits())) {
+    if (!isCellmlIdentifier(variable->units())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Variable '" + variable->name() + "' does not have a valid units attribute.");
         err->setVariable(variable);
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
-    } else if (!isStandardUnitName(variable->getUnits())) {
+    } else if (!isStandardUnitName(variable->units())) {
         auto component = static_cast<Component *>(variable->parent());
         auto model = static_cast<Model *>(component->parent());
-        if ((model != nullptr) && !model->hasUnits(variable->getUnits())) {
+        if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->getUnits() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
+            err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_UNITS);
             mValidator->addError(err);
         }
     }
     // Check for a valid interface attribute.
-    if (!variable->getInterfaceType().empty()) {
-        std::string interfaceType = variable->getInterfaceType();
+    if (!variable->interfaceType().empty()) {
+        std::string interfaceType = variable->interfaceType();
         if ((interfaceType != "public") && (interfaceType != "private") && (interfaceType != "none") && (interfaceType != "public_and_private")) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
@@ -591,8 +591,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         }
     }
     // Check for a valid initial value attribute.
-    if (!variable->getInitialValue().empty()) {
-        std::string initialValue = variable->getInitialValue();
+    if (!variable->initialValue().empty()) {
+        std::string initialValue = variable->initialValue();
         // Check if initial value is a variable reference
         if (!(std::find(variableNames.begin(), variableNames.end(), initialValue) != variableNames.end())) {
             // Otherwise, check that the initial value can be converted to a double
@@ -991,7 +991,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 // Check the equivalent variables in this variable.
                 if (variable->equivalentVariableCount() > 0) {
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                        VariablePtr equivalentVariable = variable->getEquivalentVariable(k);
+                        VariablePtr equivalentVariable = variable->equivalentVariable(k);
                         // TODO: validate variable interfaces according to 17.10.8
                         // TODO: add check for cyclical connections (17.10.5)
                         if (equivalentVariable->hasEquivalentVariable(variable)) {

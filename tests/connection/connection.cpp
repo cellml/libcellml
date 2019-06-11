@@ -23,7 +23,7 @@ TEST(Variable, addAndGetEquivalentVariable)
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
-    EXPECT_EQ(v2, v1->getEquivalentVariable(0));
+    EXPECT_EQ(v2, v1->equivalentVariable(0));
 }
 
 TEST(Variable, addAndGetEquivalentVariableReciprocal)
@@ -31,7 +31,7 @@ TEST(Variable, addAndGetEquivalentVariableReciprocal)
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
-    EXPECT_EQ(v1, v2->getEquivalentVariable(0));
+    EXPECT_EQ(v1, v2->equivalentVariable(0));
 }
 
 TEST(Variable, addTwoEquivalentVariablesAndCount)

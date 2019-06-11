@@ -237,7 +237,7 @@ void Variable::removeAllEquivalences()
     mPimpl->mEquivalentVariables.clear();
 }
 
-VariablePtr Variable::getEquivalentVariable(size_t index) const
+VariablePtr Variable::equivalentVariable(size_t index) const
 {
     VariablePtr equivalentVariable = nullptr;
     if (index < mPimpl->mEquivalentVariables.size()) {
@@ -333,7 +333,7 @@ void Variable::setUnits(const UnitsPtr &units)
     mPimpl->mUnits = units->name();
 }
 
-std::string Variable::getUnits() const
+std::string Variable::units() const
 {
     return mPimpl->mUnits;
 }
@@ -353,7 +353,7 @@ void Variable::setInitialValue(const VariablePtr &variable)
     mPimpl->mInitialValue = variable->name();
 }
 
-std::string Variable::getInitialValue() const
+std::string Variable::initialValue() const
 {
     return mPimpl->mInitialValue;
 }
@@ -370,7 +370,7 @@ void Variable::setInterfaceType(Variable::InterfaceType interfaceType)
     setInterfaceType(interfaceTypeString);
 }
 
-std::string Variable::getInterfaceType() const
+std::string Variable::interfaceType() const
 {
     return mPimpl->mInterfaceType;
 }
@@ -391,7 +391,7 @@ void Variable::setEquivalenceConnectionId(const VariablePtr &variable1, const Va
     }
 }
 
-std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
+std::string Variable::equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
@@ -404,7 +404,7 @@ std::string Variable::getEquivalenceMappingId(const VariablePtr &variable1, cons
     return id;
 }
 
-std::string Variable::getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
+std::string Variable::equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2)
 {
     std::string id;
     if (variable1->hasEquivalentVariable(variable2) && variable2->hasEquivalentVariable(variable1)) {
