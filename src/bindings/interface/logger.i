@@ -23,7 +23,7 @@
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Logger {
         ErrorPtr getError(long index) {
-            if(index < 0) return nullptr;
+            if (index < 0) return nullptr;
             return $self->getError(size_t(index));
         }
     }

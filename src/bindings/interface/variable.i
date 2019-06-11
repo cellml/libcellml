@@ -78,7 +78,7 @@ not equivalent the connection id is not set.";
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Variable {
         VariablePtr getEquivalentVariable(long index) {
-            if(index < 0) return nullptr;
+            if (index < 0) return nullptr;
             return $self->getEquivalentVariable(size_t(index));
         }
     }
