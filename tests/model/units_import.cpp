@@ -27,14 +27,14 @@ TEST(UnitsImport, basics)
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
-    EXPECT_EQ(u->getImportSource(), nullptr);
-    EXPECT_EQ(u->getImportReference(), "");
+    EXPECT_EQ(u->importSource(), nullptr);
+    EXPECT_EQ(u->importReference(), "");
 
     u->setImportSource(imp);
     u->setImportReference("bob");
 
-    EXPECT_EQ(u->getImportSource(), imp);
-    EXPECT_EQ(u->getImportReference(), "bob");
+    EXPECT_EQ(u->importSource(), imp);
+    EXPECT_EQ(u->importReference(), "bob");
 
     libcellml::Printer printer;
     const std::string a = printer.printUnits(u);
@@ -57,14 +57,14 @@ TEST(UnitsImport, importValidName)
 
     libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
 
-    EXPECT_EQ(importedUnits->getImportSource(), nullptr);
+    EXPECT_EQ(importedUnits->importSource(), nullptr);
 
     EXPECT_FALSE(importedUnits->isImport());
 
     importedUnits->setName("units_in_this_model");
     importedUnits->setSourceUnits(imp, "a_units_in_that_model");
 
-    EXPECT_EQ(importedUnits->getImportSource(), imp);
+    EXPECT_EQ(importedUnits->importSource(), imp);
 
     EXPECT_TRUE(importedUnits->isImport());
 
@@ -91,12 +91,12 @@ TEST(UnitsImport, importInvalidName)
 
     libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
 
-    EXPECT_EQ(importedUnits->getImportSource(), nullptr);
+    EXPECT_EQ(importedUnits->importSource(), nullptr);
 
     importedUnits->setName("units_in_this_model");
     importedUnits->setSourceUnits(imp, "a units in that model");
 
-    EXPECT_EQ(importedUnits->getImportSource(), imp);
+    EXPECT_EQ(importedUnits->importSource(), imp);
 
     m.addUnits(importedUnits);
 
@@ -121,12 +121,12 @@ TEST(UnitsImport, nonExistentURL)
 
     libcellml::UnitsPtr importedUnits = std::make_shared<libcellml::Units>();
 
-    EXPECT_EQ(importedUnits->getImportSource(), nullptr);
+    EXPECT_EQ(importedUnits->importSource(), nullptr);
 
     importedUnits->setName("noble_per_mole");
     importedUnits->setSourceUnits(imp, "per_mole");
 
-    EXPECT_EQ(importedUnits->getImportSource(), imp);
+    EXPECT_EQ(importedUnits->importSource(), imp);
 
     EXPECT_EQ(size_t(0), m.unitsCount());
     m.addUnits(importedUnits);

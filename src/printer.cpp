@@ -196,11 +196,11 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
     std::string repr;
     if (!units->getName().empty()) {
         if (units->isImport()) {
-            repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-            if (!units->getImportSource()->id().empty()) {
-                repr += " id=\"" + units->getImportSource()->id() + "\"";
+            repr += indent + "<import xlink:href=\"" + units->importSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+            if (!units->importSource()->id().empty()) {
+                repr += " id=\"" + units->importSource()->id() + "\"";
             }
-            repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
+            repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->importReference() + "\" name=\"" + units->getName() + "\"";
             if (!units->id().empty()) {
                 repr += " id=\"" + units->id() + "\"";
             }
@@ -500,8 +500,8 @@ std::string Printer::printModel(const ModelPtr &model) const
         while (comp) {
             incrementComponent = false;
             if (comp->isImport()) {
-                ImportPair pair = std::make_pair(comp->getImportReference(), comp);
-                ImportSourcePtr importSource = comp->getImportSource();
+                ImportPair pair = std::make_pair(comp->importReference(), comp);
+                ImportSourcePtr importSource = comp->importSource();
                 if (importMap.count(importSource) == 0) {
                     importMap[importSource] = std::vector<ImportPair>();
                 }
