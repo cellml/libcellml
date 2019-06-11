@@ -13,7 +13,7 @@
 %feature("docstring") libcellml::Logger::clearErrors
 "Clears all errors from this logger.";
 
-%feature("docstring") libcellml::Logger::getError
+%feature("docstring") libcellml::Logger::error
 "Returns the error at the specified `index`.";
 
 %feature("docstring") libcellml::Logger::errorCount
@@ -22,9 +22,9 @@
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Logger {
-        ErrorPtr getError(long index) {
+        ErrorPtr error(long index) {
             if (index < 0) return nullptr;
-            return $self->getError(size_t(index));
+            return $self->error(size_t(index));
         }
     }
 #endif

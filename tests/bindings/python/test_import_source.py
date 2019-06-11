@@ -34,14 +34,14 @@ class ImportSourceTestCase(unittest.TestCase):
     def test_url(self):
         from libcellml import ImportSource
 
-        # std::string getUrl()
+        # std::string url()
         source = 'cheers'
         x = ImportSource()
-        self.assertEqual(x.getUrl(), '')
+        self.assertEqual(x.url(), '')
         x.setUrl(source)
-        self.assertEqual(x.getUrl(), source)
+        self.assertEqual(x.url(), source)
         x.setUrl('')
-        self.assertEqual(x.getUrl(), '')
+        self.assertEqual(x.url(), '')
 
     def test_set_model(self):
         from libcellml import ImportSource, Model
@@ -55,15 +55,15 @@ class ImportSourceTestCase(unittest.TestCase):
     def test_model(self):
         from libcellml import ImportSource, Model
 
-        # ModelPtr getModel() const;
+        # ModelPtr model() const;
         model = Model()
         model.setName('bert')
         x = ImportSource()
-        self.assertIsNone(x.getModel())
+        self.assertIsNone(x.model())
         x.setModel(model)
-        self.assertEqual(x.getModel().getName(), model.getName())
+        self.assertEqual(x.model().getName(), model.getName())
         x.setModel(None)
-        self.assertIsNone(x.getModel())
+        self.assertIsNone(x.model())
 
     def test_has_model(self):
         from libcellml import ImportSource, Model
