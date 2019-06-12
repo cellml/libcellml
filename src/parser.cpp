@@ -39,7 +39,7 @@ namespace libcellml {
  */
 struct Parser::ParserImpl
 {
-    Parser *mParser;
+    Parser *mParser = {};
 
     /**
      * @brief Update the @p model with attributes parsed from a @c std::string.
