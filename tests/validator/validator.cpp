@@ -298,16 +298,15 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces)
     }
 }
 
-
 TEST(Validator, importUnits) 
 {
     /// @cellml2_6 6.1.2 Validate TEST import units has valid units_ref attribute
     /// @cellml2_6 6.1.1 Validate TEST import units have a valid name
     /// @cellml2_6 6.1.2 Validate TEST import units have a units_ref unique to this model
     /// @cellml2_6 6.1.1 Validate TEST import units has a name unique in this model
-    /// @cellml2_5 5.1.1 Validate TEST import element has a valid href formatted attribute 
+    /// @cellml2_5 5.1.1 Validate TEST import element has a valid href formatted attribute TODO This is very restrictive at present, check ...
     
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported units 'invalid_imported_units_in_this_model' does not have a valid units_ref attribute.",
         "Import of units 'invalid_imported_units_in_this_model' does not have a valid locator xlink:href attribute.",
@@ -328,7 +327,7 @@ TEST(Validator, importUnits)
     importedUnits->setName("valid_imported_units_in_this_model");
     importedUnits->setSourceUnits(imp, "units_in_that_model");
     m->addUnits(importedUnits);
-    v.validateModel(m); 
+    v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
     // Invalid units import- missing refs
@@ -337,7 +336,7 @@ TEST(Validator, importUnits)
     importedUnits2->setName("invalid_imported_units_in_this_model");
     importedUnits2->setSourceUnits(imp2, "");
     m->addUnits(importedUnits2);
-    v.validateModel(m); 
+    v.validateModel(m);
     EXPECT_EQ(size_t(3), v.errorCount());
 
     // Invalid units import - duplicate refs
@@ -347,8 +346,7 @@ TEST(Validator, importUnits)
     importedUnits3->setName("duplicate_imported_units_in_this_model");
     importedUnits3->setSourceUnits(imp3, "units_in_that_model");
     m->addUnits(importedUnits3);
-
-    v.validateModel(m); 
+    v.validateModel(m);
     EXPECT_EQ(size_t(3), v.errorCount());
 
     // Invalid units import - unnamed units
@@ -357,18 +355,8 @@ TEST(Validator, importUnits)
     libcellml::UnitsPtr importedUnits4 = std::make_shared<libcellml::Units>();
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
-    v.validateModel(m); 
+    v.validateModel(m);
     EXPECT_EQ(size_t(5), v.errorCount());
-
-    // Invalid html ref 
-    libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
-    imp5->setUrl("not @ valid url");
-    libcellml::UnitsPtr importedUnits5 = std::make_shared<libcellml::Units>();
-    importedUnits5->setName("name_for_invalid_import");
-    importedUnits5->setSourceUnits(imp5, "units_in_that_model");
-    m->addUnits(importedUnits5);
-    v.validateModel(m); 
-    EXPECT_EQ(size_t(6), v.errorCount());
 
     // Duplicated units name
     libcellml::UnitsPtr manualUnits1 = std::make_shared<libcellml::Units>();
@@ -961,8 +949,7 @@ TEST(Validator, validateInvalidConnections)
     }
 }
 
-TEST(Validator, validateConnectionComponent1NotEqualComponent2) 
-{
+TEST(Validator, validateConnectionComponent1NotEqualComponent2) {
 
     std::vector<std::string> expectedErrors = {
         "Variable 'doppelganger' has an equivalent variable 'doppelganger' equal to itself. ",
@@ -987,8 +974,7 @@ TEST(Validator, validateConnectionComponent1NotEqualComponent2)
 }
 
 
-TEST(Validator, validateNoCyclesSimple) 
-{
+TEST(Validator, validateNoCyclesSimple) {
     /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles - simple test
     /// @cellml2_19 19.10.5 TODO Can two sibling variables in the same component be equivalent to one variable in another?
 
@@ -1035,8 +1021,7 @@ TEST(Validator, validateNoCyclesSimple)
     EXPECT_EQ(error, v.getError(0)->getDescription());
 }
 
-TEST(Validator, validateNoCyclesComplicated) 
-{
+TEST(Validator, validateNoCyclesComplicated) {
     /// @cellml2_19 19.10.5 Validate that no variable equivalence network has cycles, complicated example
     /// @cellml2_19 19.10.5 TODO Can two sibling variables in the same component be equivalent to one variable in another?
  
@@ -1221,8 +1206,7 @@ TEST(Validator, validateNoCyclesComplicated)
 
 }
 
-TEST(Validator, figureEightVariableDependency) 
-{
+TEST(Validator, figureEightVariableDependency) {
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -1631,8 +1615,7 @@ TEST(Validator, validMathCnElements)
     EXPECT_EQ(size_t(0), v.errorCount());
 }
 
-TEST(Validator, setUnitsWithNoChildUnit) 
-{
+TEST(Validator, setUnitsWithNoChildUnit) {
     /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, user-defined base variables
     std::vector<std::string> expectedErrors = {
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. "
@@ -1758,8 +1741,7 @@ TEST(Validator, setUnitsWithNoChildUnit)
     }
 }
 
-TEST(Validator, variableEquivalentUnits) 
-{
+TEST(Validator, variableEquivalentUnits) {
     /// @cellml2_19 19.10.6 Validate TEST Check unit reduction is the same for equivalent variables, built-in base variables  
     std::vector<std::string> expectedErrors = {
         "Variable 'potayto' has units of 'testunit3' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. "
@@ -1972,8 +1954,7 @@ TEST(Validator, variableEquivalentUnits)
     }
 }
 
-TEST(Validator, moreEquivalentVariableMultipliers) 
-{
+TEST(Validator, moreEquivalentVariableMultipliers) {
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName("model");
@@ -2033,8 +2014,7 @@ TEST(Validator, moreEquivalentVariableMultipliers)
     EXPECT_EQ(size_t(0), validator.errorCount());
 }
 
-TEST(Validator, nonEquivalentVariableMultipliers) 
-{
+TEST(Validator, nonEquivalentVariableMultipliers) {
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     model->setName("model");
@@ -2097,8 +2077,7 @@ TEST(Validator, nonEquivalentVariableMultipliers)
     } 
 }
 
-TEST(Validator, validateNoCyclesUnits) 
-{
+TEST(Validator, validateNoCyclesUnits) {
     /// @cellml2_9 9.1.1.1-2 TEST Cyclic definitions in units
     std::vector<std::string> expectedErrors = {
         "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
@@ -2162,8 +2141,7 @@ TEST(Validator, validateNoCyclesUnits)
     }   
 }
 
-TEST(Validator, equivalentVariableUnitMultiplierPrefix)
-{
+TEST(Validator, equivalentVariableUnitMultiplierPrefix) {
 
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -2226,247 +2204,243 @@ TEST(Validator, equivalentVariableUnitMultiplierPrefix)
     printErrors(validator);
 }
 
+TEST(Validator, importNameNotFoundInFile) {
+    // Check that component/unit name to import exists in specified import location
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-// TODO: Removed these tests as not sure whether we're checking for import errors anymore ... ?
-// TEST(Validator, importNameNotFoundInFile) 
-// {
-//     // Check that component/unit name to import exists in specified import location
-//     std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
 
-//     libcellml::Parser p;
-//     libcellml::ModelPtr m = p.parseModel(buffer.str());
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
+    EXPECT_EQ(size_t(1), v.errorCount());
 
-//     libcellml::Validator v;
-    
-//     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
-//     EXPECT_EQ(size_t(1), v.errorCount());
+    std::vector<std::string> expected = { 
+        "Import of units 'sandiness' has failed. Tried:",
+        "recursive_import.cellml) which was not found in the file." 
+    };
 
-//     std::vector<std::string> expected = { 
-//         "Import of units 'sandiness' has failed. Tried:",
-//         "recursive_import.cellml) which was not found in the file." 
-//     };
+    std::string a = v.getError(0)->getDescription();
+    std::size_t f1 = a.find(expected.at(0));
+    std::size_t f2 = a.find(expected.at(1));
+    EXPECT_NE(f1, std::string::npos);
+    EXPECT_NE(f2, std::string::npos);
+ }
 
-//     std::string a = v.getError(0)->getDescription();
-//     std::size_t f1 = a.find(expected.at(0));
-//     std::size_t f2 = a.find(expected.at(1));
-//     EXPECT_NE(f1, std::string::npos);
-//     EXPECT_NE(f2, std::string::npos);
-//  }
+TEST(Validator, importFileDoesNotExist) {
+    // Check import file exists
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-// TEST(Validator, importFileDoesNotExist) {
-//     // Check import file exists
-//     std::ifstream t(TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
 
-//     libcellml::Parser p;
-//     libcellml::ModelPtr m = p.parseModel(buffer.str());
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
 
-//     libcellml::Validator v;
-//     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
+    EXPECT_EQ(size_t(2), v.errorCount());
 
-//     EXPECT_EQ(size_t(2), v.errorCount());
+    std::vector<std::vector<std::string>> expected;
+    expected.push_back({"Import of component 'duplicating_the_beach' has failed:",
+                       "('duplicating_the_beach' in import_missing_file.cellml) which imports",
+                       "this_one_does_not_exist.cellml) but the file was not found.",});
+    expected.push_back({ "Import of units 'sandiness' has failed:",
+                       "('sandiness' in import_missing_file.cellml) which imports",
+                       "this_one_does_not_exist_either.cellml) but the file was not found." });
 
-//     std::vector<std::vector<std::string>> expected;
-//     expected.push_back({"Import of component 'duplicating_the_beach' has failed:",
-//                        "('duplicating_the_beach' in import_missing_file.cellml) which imports",
-//                        "this_one_does_not_exist.cellml) but the file was not found.",});
-//     expected.push_back({ "Import of units 'sandiness' has failed:",
-//                        "('sandiness' in import_missing_file.cellml) which imports",
-//                        "this_one_does_not_exist_either.cellml) but the file was not found." });
+    for (size_t i = 0; i < expected.size(); ++i) {
+        for (size_t j = 0; j < expected.at(i).size(); ++j) {
+            std::string e = v.getError(i)->getDescription();
+            std::size_t found = e.find(expected.at(i).at(j));
+            EXPECT_NE(found, std::string::npos);
+        }
+    }
+}
 
-//     for (size_t i = 0; i < expected.size(); ++i) {
-//         for (size_t j = 0; j < expected.at(i).size(); ++j) {
-//             std::string e = v.getError(i)->getDescription();
-//             std::size_t found = e.find(expected.at(i).at(j));
-//             EXPECT_NE(found, std::string::npos);
-//         }
-//     }
-// }
+TEST(Validator, importLayer) {
+    // Check changes in directory are permitted
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-// TEST(Validator, importLayer) {
-//     // Check changes in directory are permitted
-//     std::ifstream t(TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
 
-//     libcellml::Parser p;
-//     libcellml::ModelPtr m = p.parseModel(buffer.str());
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
 
-//     libcellml::Validator v;
-//     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
+    EXPECT_EQ(size_t(1), v.errorCount());
+    std::vector<std::string> expected = {"Import of units 'u1' has failed. Tried:",
+                       "('u1' in recursiveImport_1.cellml) imports",
+                       "recursiveImport_3.cellml) which was not found in the file.",};
+    std::string e = v.getError(0)->getDescription();
+    for (size_t j = 0; j < expected.size(); ++j) {
+        std::size_t found = e.find(expected.at(j));
+        EXPECT_NE(found, std::string::npos);
+    }
+}
 
-//     EXPECT_EQ(size_t(1), v.errorCount());
-//     std::vector<std::string> expected = {"Import of units 'u1' has failed. Tried:",
-//                        "('u1' in recursiveImport_1.cellml) imports",
-//                        "recursiveImport_3.cellml) which was not found in the file.",};
-//     std::string e = v.getError(0)->getDescription();
-//     for (size_t j = 0; j < expected.size(); ++j) {
-//         std::size_t found = e.find(expected.at(j));
-//         EXPECT_NE(found, std::string::npos);
-//     }
-// }
+TEST(Validator, validateCircularImportReferences) {
+    // Check true circular references are identified and execution stops
+    // Check false circular references are allowed (eg: reference to another name in already-used file)
 
-// TEST(Validator, validateCircularImportReferences) {
-//     // Check true circular references are identified and execution stops
-//     // Check false circular references are allowed (eg: reference to another name in already-used file)
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-//     std::ifstream t(TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
 
-//     libcellml::Parser p;
-//     libcellml::ModelPtr m = p.parseModel(buffer.str());
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
 
-//     libcellml::Validator v;
-//     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
+    EXPECT_EQ(size_t(2), v.errorCount());
 
-//     EXPECT_EQ(size_t(2), v.errorCount());
+    std::vector<std::vector<std::string>> expected;
+    expected.push_back({"Import of component 'i_am_cyclic' has circular dependencies:",
+                       "('i_am_cyclic' in circularImport_1.cellml) which imports",
+                       "circularImport_2a.cellml) which imports",
+                       "circularImport_3.cellml) which imports",
+    });
+    expected.push_back({"Import of units 'u1' has failed. Tried:",
+                       "('u1' in circularImport_1.cellml) imports",
+                       "circularImport_2b.cellml) imports",
+                       "circularImport_3.cellml) which was not found in the file."});
 
-//     std::vector<std::vector<std::string>> expected;
-//     expected.push_back({"Import of component 'i_am_cyclic' has circular dependencies:",
-//                        "('i_am_cyclic' in circularImport_1.cellml) which imports",
-//                        "circularImport_2a.cellml) which imports",
-//                        "circularImport_3.cellml) which imports",
-//     });
-//     expected.push_back({"Import of units 'u1' has failed. Tried:",
-//                        "('u1' in circularImport_1.cellml) imports",
-//                        "circularImport_2b.cellml) imports",
-//                        "circularImport_3.cellml) which was not found in the file."});
+    for (size_t i = 0; i < expected.size(); ++i) {
+        for (size_t j = 0; j < expected.at(i).size(); ++j) {
+            std::string e = v.getError(i)->getDescription();
+            std::size_t found = e.find(expected.at(i).at(j));
+            EXPECT_NE(found, std::string::npos);
+        }
+    }
+}
 
-//     for (size_t i = 0; i < expected.size(); ++i) {
-//         for (size_t j = 0; j < expected.at(i).size(); ++j) {
-//             std::string e = v.getError(i)->getDescription();
-//             std::size_t found = e.find(expected.at(i).at(j));
-//             EXPECT_NE(found, std::string::npos);
-//         }
-//     }
-// }
+TEST(Validator, validateImportsInMultipleLocations) {
+    // Check import from same filename in another directory
+    // Check ../  notation in href to go to parent directory
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-// TEST(Validator, validateImportsInMultipleLocations) {
-//     // Check import from same filename in another directory
-//     // Check ../  notation in href to go to parent directory
-//     std::ifstream t(TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
 
-//     libcellml::Parser p;
-//     libcellml::ModelPtr m = p.parseModel(buffer.str());
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
 
-//     libcellml::Validator v;
-//     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
+    EXPECT_EQ(size_t(0), v.errorCount());
+}
 
-//     EXPECT_EQ(size_t(0), v.errorCount());
-// }
+TEST(Validator, validateGenerationalImport) {
+    // Check non-absolute references in child imports change working directory 
 
-// TEST(Validator, validateGenerationalImport) {
-//     // Check non-absolute references in child imports change working directory 
+    std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-//     std::ifstream t(TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser p;
+    libcellml::ModelPtr m = p.parseModel(buffer.str());
 
-//     libcellml::Parser p;
-//     libcellml::ModelPtr m = p.parseModel(buffer.str());
+    libcellml::Validator v;
+    v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
 
-//     libcellml::Validator v;
-//     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
+    EXPECT_EQ(size_t(0), v.errorCount());
+}
 
-//     EXPECT_EQ(size_t(0), v.errorCount());
-// }
+TEST(Validator, validateAbsolutePathImports) {
+    // In these tests all initial filenames returned from getLocation() are absolute.  All referenced
+    // files inside those resources are relative (as we don't know ahead of time where they will be found).
+    // This test is intended to provide coverage for the relative vs absolute file options in the validator.
 
-// TEST(Validator, validateAbsolutePathImports) {
-//     // In these tests all initial filenames returned from getLocation() are absolute.  All referenced
-//     // files inside those resources are relative (as we don't know ahead of time where they will be found).
-//     // This test is intended to provide coverage for the relative vs absolute file options in the validator.
+    std::string full_filename = TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH);
+    std::ifstream t(full_filename);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-//     std::string full_filename = TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH);
-//     std::ifstream t(full_filename);
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(buffer.str());
+    libcellml::Validator validator;
 
-//     libcellml::Parser parser;
-//     libcellml::ModelPtr model = parser.parseModel(buffer.str());
-//     libcellml::Validator validator;
+    std::string filename = "";
+    std::string path = "";
+    size_t i = filename.find_last_of("/\\");
 
-//     std::string filename = "";
-//     std::string path = "";
-//     size_t i = filename.find_last_of("/\\");
+    if (i != std::string::npos) {
+        filename = full_filename.substr(i+1, full_filename.length()-i);
+        path = full_filename.substr(0, i+1);
+    }
+    validator.validateModel(model, filename, path); // no errors
+    EXPECT_EQ(size_t(0), validator.errorCount());
+    validator.validateModel(model, full_filename); // no errors
+    EXPECT_EQ(size_t(0), validator.errorCount());
+    validator.validateModel(model, filename); // TODO warning that full depth is not checked?
+    EXPECT_EQ(size_t(0), validator.errorCount());
+    validator.validateModel(model); // TODO warning that full depth is not checked?
+    EXPECT_EQ(size_t(0), validator.errorCount());
 
-//     if (i != std::string::npos) {
-//         filename = full_filename.substr(i+1, full_filename.length()-i);
-//         path = full_filename.substr(0, i+1);
-//     }
-//     validator.validateModel(model, filename, path); // no errors
-//     EXPECT_EQ(size_t(0), validator.errorCount());
-//     validator.validateModel(model, full_filename); // no errors
-//     EXPECT_EQ(size_t(0), validator.errorCount());
-//     validator.validateModel(model, filename); // TODO warning that full depth is not checked?
-//     EXPECT_EQ(size_t(0), validator.errorCount());
-//     validator.validateModel(model); // TODO warning that full depth is not checked?
-//     EXPECT_EQ(size_t(0), validator.errorCount());
+    // These is a fake file to give test coverage to the isRelativePath() function
+    validator.validateModel(model, "C:/hello/hello.cellml");
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    std::vector<std::string> expected = {
+        "Import of component 'latte' has failed:",
+        "('latte' in hello.cellml) which imports",
+        "recursive_import_path2.cellml) but the file was not found."
+    };
+    for (size_t j = 0; j < expected.size(); ++j) {
+        std::string e = validator.getError(0)->getDescription();
+        std::size_t found = e.find(expected.at(j));
+        EXPECT_NE(found, std::string::npos);
+    }
+}
 
-//     // These is a fake file to give test coverage to the isRelativePath() function
-//     validator.validateModel(model, "C:/hello/hello.cellml");
-//     EXPECT_EQ(size_t(1), validator.errorCount());
-//     std::vector<std::string> expected = {
-//         "Import of component 'latte' has failed:",
-//         "('latte' in hello.cellml) which imports",
-//         "recursive_import_path2.cellml) but the file was not found."
-//     };
-//     for (size_t j = 0; j < expected.size(); ++j) {
-//         std::string e = validator.getError(0)->getDescription();
-//         std::size_t found = e.find(expected.at(j));
-//         EXPECT_NE(found, std::string::npos);
-//     }
-// }
+TEST(Validator, parseInvalidModelFromFile) {
+    std::string filename = TestResources::getLocation(TestResources::CELLML_ABSOLUTE_RELATIVE_FILES);
+    std::ifstream t(filename);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
 
-// TEST(Validator, parseInvalidModelFromFile) {
-//     std::string filename = TestResources::getLocation(TestResources::CELLML_ABSOLUTE_RELATIVE_FILES);
-//     std::ifstream t(filename);
-//     std::stringstream buffer;
-//     buffer << t.rdbuf();
+    libcellml::Parser parser;
+    libcellml::ModelPtr m = parser.parseModel(buffer.str());
+    libcellml::Validator v;
 
-//     libcellml::Parser parser;
-//     libcellml::ModelPtr m = parser.parseModel(buffer.str());
-//     libcellml::Validator v;
+    size_t i = filename.find_last_of("/\\", filename.length());
+    std::string path = "";
+    if (i != std::string::npos) {
+        path = filename.substr(0,i+1);
+    }
+    // Deliberately giving the full filename to test handling ...
+    v.validateModel(m, filename, path);
 
-//     size_t i = filename.find_last_of("/\\", filename.length());
-//     std::string path = "";
-//     if (i != std::string::npos) {
-//         path = filename.substr(0,i+1);
-//     }
-//     // Deliberately giving the full filename to test handling ...
-//     v.validateModel(m, filename, path);
+    std::vector<std::string> expectedErrors = {
+        "Model element is of invalid type 'not_a_model'. A valid CellML root node should be of type 'model'.",
+        "Model element is in invalid namespace 'http://www.cellml.org/cellml/wrong'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.",
+        "Import of component 'i_am_not_real_either' has failed",
+        "Start tag expected, '<' not found.",
+        "Could not get a valid XML root node from the provided input.",
+        "Model element is of invalid type 'not_a_real_tag'. A valid CellML root node should be of type 'model'.",
+        "model_wrong_attribute.cellml' has an invalid attribute 'not_an_attribute'.",
+        "i_am_almost_ok.cellml' has an invalid attribute 'not_here_either'.",
+        "i_am_almost_ok.cellml' has an invalid child element 'not_a_child'.",
+        "has an invalid non-whitespace child text element 'shouldnt_be_here",
+        "i_am_almost_ok.cellml' has an invalid attribute 'not_an_attribute'",
+        "i_am_almost_ok.cellml' has an invalid child element 'not_an_import'.",
+        "i_am_almost_ok.cellml has an invalid non-whitespace child text element 'or_even_here",
+        "Import of component 'not_an_attribute' has failed. Tried:",
+        "Model element is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'",
+    };
 
-//     std::vector<std::string> expectedErrors = {
-//         "Model element is of invalid type 'not_a_model'. A valid CellML root node should be of type 'model'.",
-//         "Model element is in invalid namespace 'http://www.cellml.org/cellml/wrong'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'.",
-//         "Import of component 'i_am_not_real_either' has failed",
-//         "Start tag expected, '<' not found.",
-//         "Could not get a valid XML root node from the provided input.",
-//         "Model element is of invalid type 'not_a_real_tag'. A valid CellML root node should be of type 'model'.",
-//         "model_wrong_attribute.cellml' has an invalid attribute 'not_an_attribute'.",
-//         "i_am_almost_ok.cellml' has an invalid attribute 'not_here_either'.",
-//         "i_am_almost_ok.cellml' has an invalid child element 'not_a_child'.",
-//         "has an invalid non-whitespace child text element 'shouldnt_be_here",
-//         "i_am_almost_ok.cellml' has an invalid attribute 'not_an_attribute'",
-//         "i_am_almost_ok.cellml' has an invalid child element 'not_an_import'.",
-//         "i_am_almost_ok.cellml has an invalid non-whitespace child text element 'or_even_here",
-//         "Import of component 'not_an_attribute' has failed. Tried:",
-//         "Model element is in invalid namespace 'null'. A valid CellML root node should be in namespace 'http://www.cellml.org/cellml/2.0#'",
-//     };
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-//     EXPECT_EQ(expectedErrors.size(), v.errorCount());
-
-//     for (size_t j = 0; j < expectedErrors.size(); ++j) {
-//         std::string e = v.getError(j)->getDescription();
-//         std::size_t found = e.find(expectedErrors.at(j));
-//         EXPECT_NE(found, std::string::npos);
-//     }
-// }
+    for (size_t j = 0; j < expectedErrors.size(); ++j) {
+        std::string e = v.getError(j)->getDescription();
+        std::size_t found = e.find(expectedErrors.at(j));
+        EXPECT_NE(found, std::string::npos);
+    }
+}
 
 
 

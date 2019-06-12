@@ -19,6 +19,3 @@ CMakeLists.txt.user
 
 # VSCode settings files
 .vscode
-
-# Coverage test binary files (?)
-#*.gcda
