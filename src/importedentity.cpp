@@ -62,7 +62,7 @@ ImportedEntity &ImportedEntity::operator=(ImportedEntity rhs)
 
 void ImportedEntity::swap(ImportedEntity &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 bool ImportedEntity::isImport() const

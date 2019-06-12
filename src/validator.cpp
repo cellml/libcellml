@@ -265,7 +265,7 @@ Validator &Validator::operator=(Validator rhs)
 
 void Validator::swap(Validator &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Validator::validateModel(const ModelPtr &model)
@@ -569,8 +569,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->getUnits())) {
-        auto component = static_cast<Component *>(variable->getParent());
-        auto model = static_cast<Model *>(component->getParent());
+        ComponentPtr component = variable->getParentComponent();
+        ModelPtr model = component->getParentModel();
         if ((model != nullptr) && !model->hasUnits(variable->getUnits())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->getName() + "' has an invalid units reference '" + variable->getUnits() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
@@ -883,7 +883,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            auto model = static_cast<Model *>(component->getParent());
+            ModelPtr model = component->getParentModel();
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
@@ -996,7 +996,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                         // TODO: add check for cyclical connections (17.10.5)
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
                             // Check that the equivalent variable has a valid parent component.
-                            auto component2 = static_cast<Component *>(equivalentVariable->getParent());
+                            ComponentPtr component2 = equivalentVariable->getParentComponent();
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
                                 err->setDescription("Variable '" + equivalentVariable->getName() + "' is an equivalent variable to '" + variable->getName() + "' but has no parent component.");
