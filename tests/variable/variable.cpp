@@ -263,56 +263,152 @@ TEST(Variable, getNullParentComponent)
     EXPECT_EQ(nullptr, v->getParent());
 }
 
-TEST(Variable, isEquivalentVariable)
+TEST(Variable, hasDirectEquivalentVariable)
 {
-    libcellml::VariablePtr x1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x3 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x4 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
 
-    libcellml::Variable::addEquivalence(x1, x2);
-    libcellml::Variable::addEquivalence(x2, x3);
-    libcellml::Variable::addEquivalence(x3, x4);
-    libcellml::Variable::addEquivalence(x4, x5);
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v5));
 
-    EXPECT_TRUE(x1->isEquivalentVariable(x2));
-    EXPECT_TRUE(x1->isEquivalentVariable(x3));
-    EXPECT_TRUE(x2->isEquivalentVariable(x3));
-    EXPECT_TRUE(x1->isEquivalentVariable(x4));
-    EXPECT_TRUE(x2->isEquivalentVariable(x4));
-    EXPECT_TRUE(x3->isEquivalentVariable(x4));
-    EXPECT_TRUE(x1->isEquivalentVariable(x5));
-    EXPECT_TRUE(x2->isEquivalentVariable(x5));
-    EXPECT_TRUE(x3->isEquivalentVariable(x5));
-    EXPECT_TRUE(x4->isEquivalentVariable(x5));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v5));
 
-    libcellml::VariablePtr y1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr y2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr y3 = std::make_shared<libcellml::Variable>();
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v5));
 
-    libcellml::Variable::addEquivalence(y1, y2);
-    libcellml::Variable::addEquivalence(y2, y3);
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v5));
 
-    EXPECT_TRUE(y1->isEquivalentVariable(y2));
-    EXPECT_TRUE(y1->isEquivalentVariable(y3));
-    EXPECT_TRUE(y2->isEquivalentVariable(y3));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v5));
 
-    EXPECT_FALSE(x1->isEquivalentVariable(y1));
-    EXPECT_FALSE(x1->isEquivalentVariable(y2));
-    EXPECT_FALSE(x1->isEquivalentVariable(y3));
-    EXPECT_FALSE(x2->isEquivalentVariable(y1));
-    EXPECT_FALSE(x2->isEquivalentVariable(y2));
-    EXPECT_FALSE(x2->isEquivalentVariable(y3));
-    EXPECT_FALSE(x3->isEquivalentVariable(y1));
-    EXPECT_FALSE(x3->isEquivalentVariable(y2));
-    EXPECT_FALSE(x3->isEquivalentVariable(y3));
-    EXPECT_FALSE(x4->isEquivalentVariable(y1));
-    EXPECT_FALSE(x4->isEquivalentVariable(y2));
-    EXPECT_FALSE(x4->isEquivalentVariable(y3));
-    EXPECT_FALSE(x5->isEquivalentVariable(y1));
-    EXPECT_FALSE(x5->isEquivalentVariable(y2));
-    EXPECT_FALSE(x5->isEquivalentVariable(y3));
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v3, v4);
+    libcellml::Variable::addEquivalence(v4, v5);
+
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v1));
+    EXPECT_TRUE(v1->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v5));
+
+    EXPECT_TRUE(v2->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v2));
+    EXPECT_TRUE(v2->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v5));
+
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v1));
+    EXPECT_TRUE(v3->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v3));
+    EXPECT_TRUE(v3->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v5));
+
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v2));
+    EXPECT_TRUE(v4->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v4));
+    EXPECT_TRUE(v4->hasDirectEquivalentVariable(v5));
+
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v3));
+    EXPECT_TRUE(v5->hasDirectEquivalentVariable(v4));
+    EXPECT_FALSE(v5->hasDirectEquivalentVariable(v5));
+}
+
+TEST(Variable, hasEquivalentVariable)
+{
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+
+    EXPECT_FALSE(v1->hasEquivalentVariable(v1));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v4));
+    EXPECT_FALSE(v1->hasEquivalentVariable(v5));
+
+    EXPECT_FALSE(v2->hasEquivalentVariable(v1));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v3));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v4));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v5));
+
+    EXPECT_FALSE(v3->hasEquivalentVariable(v1));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v3));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v4));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v5));
+
+    EXPECT_FALSE(v4->hasEquivalentVariable(v1));
+    EXPECT_FALSE(v4->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v4->hasEquivalentVariable(v3));
+    EXPECT_FALSE(v4->hasEquivalentVariable(v4));
+    EXPECT_FALSE(v4->hasEquivalentVariable(v5));
+
+    EXPECT_FALSE(v5->hasEquivalentVariable(v1));
+    EXPECT_FALSE(v5->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v5->hasEquivalentVariable(v3));
+    EXPECT_FALSE(v5->hasEquivalentVariable(v4));
+    EXPECT_FALSE(v5->hasEquivalentVariable(v5));
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v3, v4);
+    libcellml::Variable::addEquivalence(v4, v5);
+
+    EXPECT_FALSE(v1->hasEquivalentVariable(v1));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v3));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v4));
+    EXPECT_TRUE(v1->hasEquivalentVariable(v5));
+
+    EXPECT_TRUE(v2->hasEquivalentVariable(v1));
+    EXPECT_FALSE(v2->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v3));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v4));
+    EXPECT_TRUE(v2->hasEquivalentVariable(v5));
+
+    EXPECT_TRUE(v3->hasEquivalentVariable(v1));
+    EXPECT_TRUE(v3->hasEquivalentVariable(v2));
+    EXPECT_FALSE(v3->hasEquivalentVariable(v3));
+    EXPECT_TRUE(v3->hasEquivalentVariable(v4));
+    EXPECT_TRUE(v3->hasEquivalentVariable(v5));
+
+    EXPECT_TRUE(v4->hasEquivalentVariable(v1));
+    EXPECT_TRUE(v4->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v4->hasEquivalentVariable(v3));
+    EXPECT_FALSE(v4->hasEquivalentVariable(v4));
+    EXPECT_TRUE(v4->hasEquivalentVariable(v5));
+
+    EXPECT_TRUE(v5->hasEquivalentVariable(v1));
+    EXPECT_TRUE(v5->hasEquivalentVariable(v2));
+    EXPECT_TRUE(v5->hasEquivalentVariable(v3));
+    EXPECT_TRUE(v5->hasEquivalentVariable(v4));
+    EXPECT_FALSE(v5->hasEquivalentVariable(v5));
 }
 
 TEST(Variable, addVariableToUnnamedComponent)
