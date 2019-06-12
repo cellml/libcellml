@@ -33,10 +33,11 @@ namespace libcellml {
  */
 struct ComponentEntity::ComponentEntityImpl
 {
-    std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
-    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
     std::vector<ComponentPtr> mComponents;
     std::string mEncapsulationId;
+
+    std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
+    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
 };
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)

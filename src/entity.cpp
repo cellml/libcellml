@@ -27,9 +27,9 @@ namespace libcellml {
  */
 struct Entity::EntityImpl
 {
-    Model *mParentModel = nullptr; /**< Pointer to parent model. */
-    Component *mParentComponent = nullptr; /**< Pointer to component model. */
-    std::string mId; /**< String document identifier for this entity. */
+    Model *mParentModel = {};
+    Component *mParentComponent = {};
+    std::string mId;
 };
 
 Entity::Entity()
