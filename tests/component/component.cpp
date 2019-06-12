@@ -29,7 +29,7 @@ TEST(Component, validName)
         "  <component name=\"valid_name\"/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
     libcellml::Printer printer;
@@ -47,7 +47,7 @@ TEST(Component, invalidName)
         "  <component name=\"invalid name -\"/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
     libcellml::Printer printer;
@@ -70,7 +70,7 @@ TEST(Component, setAndUnsetName)
         "  <component/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
     libcellml::Printer printer;
@@ -220,7 +220,7 @@ TEST(Component, removeComponentMethods)
         "  <component/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
@@ -259,7 +259,7 @@ TEST(Component, removeComponentMethods)
     EXPECT_EQ(size_t(0), c->componentCount());
 }
 
-TEST(Component, getComponentMethods)
+TEST(Component, componentMethods)
 {
     const std::string e1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -296,7 +296,7 @@ TEST(Component, getComponentMethods)
         "  </encapsulation>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
@@ -349,7 +349,7 @@ TEST(Component, takeComponentMethods)
         "  <component/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
@@ -417,7 +417,7 @@ TEST(Component, replaceComponentMethods)
         "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
@@ -472,7 +472,7 @@ TEST(Component, constructors)
         "</model>\n";
     const std::string n = "my_name";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ComponentPtr c1;
     libcellml::ComponentPtr c2;
 

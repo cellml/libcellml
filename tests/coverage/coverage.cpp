@@ -65,7 +65,7 @@ TEST(Coverage, units)
     // Copy constructor
     libcellml::Units uc(um);
 
-    EXPECT_EQ("dimensionless", uc.getName());
+    EXPECT_EQ("dimensionless", uc.name());
 }
 
 TEST(Coverage, when)
@@ -84,7 +84,7 @@ TEST(Coverage, when)
     libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
     r.addWhen(wp);
 
-    EXPECT_EQ(randomValue, wc.getValue());
+    EXPECT_EQ(randomValue, wc.value());
 }
 
 TEST(Coverage, unitsGetVariations)
@@ -190,7 +190,7 @@ TEST(Coverage, variable)
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ(dimensionless, vc.getUnits());
+    EXPECT_EQ(dimensionless, vc.units());
 }
 
 TEST(Coverage, component)
