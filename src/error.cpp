@@ -29,16 +29,16 @@ namespace libcellml {
  */
 struct Error::ErrorImpl
 {
-    std::string mDescription; /**< The string description for why this entity error raised. */
-    Error::Kind mKind = Error::Kind::UNDEFINED; /**< The Error::Kind enum value for this error. */
-    SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this error. */
-    ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
-    ImportSourcePtr mImportSource; /**< Pointer to the import source that the error occurred in. */
-    ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
-    UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
-    VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
-    ResetPtr mReset; /**< Pointer to the reset that the error ocurred in. */
-    WhenPtr mWhen; /**< Pointer to the when that the error ocurred in. */
+    std::string mDescription;
+    Error::Kind mKind = Error::Kind::UNDEFINED;
+    SpecificationRule mRule = SpecificationRule::UNDEFINED;
+    ComponentPtr mComponent;
+    ImportSourcePtr mImportSource;
+    ModelPtr mModel;
+    UnitsPtr mUnits;
+    VariablePtr mVariable;
+    ResetPtr mReset;
+    WhenPtr mWhen;
 };
 
 Error::Error()

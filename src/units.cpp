@@ -102,11 +102,11 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
  */
 struct Unit
 {
-    std::string mReference; /**< Reference to the units for the unit.*/
-    std::string mPrefix; /**< String expression of the prefix for the unit.*/
-    std::string mExponent; /**< Exponent for the unit.*/
-    std::string mMultiplier; /**< Multiplier for the unit.*/
-    std::string mId; /**< Id for the unit.*/
+    std::string mReference;
+    std::string mPrefix;
+    std::string mExponent;
+    std::string mMultiplier;
+    std::string mId;
 };
 
 /**
@@ -116,8 +116,9 @@ struct Unit
  */
 struct Units::UnitsImpl
 {
+    std::vector<Unit> mUnits;
+
     std::vector<Unit>::iterator findUnit(const std::string &reference);
-    std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
 };
 
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
