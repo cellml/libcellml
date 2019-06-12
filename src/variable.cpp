@@ -88,6 +88,10 @@ struct Variable::VariableImpl
      */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
+    bool areEquivalentVariables(const Variable *variable1,
+                                const Variable *variable2,
+                                std::vector<const Variable *> &testedVariables) const;
+
     /**
      * @brief Set the equivalent mapping id for this equivalence.
      *
@@ -258,6 +262,13 @@ bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable) cons
     return mPimpl->hasEquivalentVariable(equivalentVariable);
 }
 
+bool Variable::isEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    std::vector<const Variable *> testedVariables;
+
+    return mPimpl->areEquivalentVariables(this, equivalentVariable.get(), testedVariables);
+}
+
 bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     auto it = findEquivalentVariable(equivalentVariable);
@@ -265,6 +276,28 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
         return false;
     }
     return !it->expired();
+}
+
+bool Variable::VariableImpl::areEquivalentVariables(const Variable *variable1,
+                                                    const Variable *variable2,
+                                                    std::vector<const Variable *> &testedVariables) const
+{
+    if (variable1 == variable2) {
+        return true;
+    }
+
+    testedVariables.push_back(variable2);
+
+    for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
+        Variable *equivalentVariable2 = variable2->getEquivalentVariable(i).get();
+
+        if (   (std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())
+            && areEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)

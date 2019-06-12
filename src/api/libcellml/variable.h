@@ -209,6 +209,20 @@ public:
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     /**
+     * @brief Test whether the argument variable is equivalent to this variable.
+     *
+     * Tests to see if the argument variable is equivalent to this variable.
+     * Returns @c true if the argument variable is equivalent to this variable
+     * and @c false otherwise.
+     *
+     * @param equivalentVariable The variable to check whether it is equivalent this variable.
+     *
+     * @return @c true if the @p equivalentVariable is equivalent to this variable
+     * and @c false otherwise.
+     */
+    bool isEquivalentVariable(const VariablePtr &equivalentVariable) const;
+
+    /**
      * @brief Set the units by @p name for this variable.
      *
      * Set the units for this variable by name. Set to an empty string

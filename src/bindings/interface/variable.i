@@ -19,6 +19,9 @@ objects are updated)";
 "Tests if the given variable is in this variable's set of equivalent
 variables.";
 
+%feature("docstring") libcellml::Variable::isEquivalentVariable
+"Test if the given variable is equivalent to this variable.";
+
 %feature("docstring") libcellml::Variable::removeEquivalence
 "Removes an equivalence between this variable and the given one (both objects
 are updated).
