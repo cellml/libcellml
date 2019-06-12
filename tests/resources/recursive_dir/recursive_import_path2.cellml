@@ -1,6 +1,0 @@
-<?xml version='1.0'?>
-<model name="alas" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <import xlink:href="another_dir/recursive_import_path3.cellml">
-        <component component_ref="try_espresso_instead" name="no_latte_here"/>
-    </import>
-</model>

@@ -100,7 +100,6 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
  * prefix can be expressed using either an integer or an enum.
  * The enum structure member is given preference if both are set.
  */
-
 struct Unit
 {
     std::string mReference; /**< Reference to the units for the unit.*/
@@ -177,11 +176,9 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     Unit u;
     u.mReference = reference;
     // Allow all nonzero user-specified prefixes
-	/// @cellml2_9 9.1.2.1 Check prefix field for integers otherwise save as string
-	try
-    {
-        int prefixInt = std::stoi(prefix);
-        if (prefixInt != 0) {
+    try {
+        double prefixDouble = std::stod(prefix);
+        if (prefixDouble != 0.0) {
             u.mPrefix = prefix;
         }
     } catch (std::invalid_argument &) {
@@ -189,13 +186,9 @@ void Units::addUnit(const std::string &reference, const std::string &prefix, dou
     } catch (std::out_of_range &) {
         u.mPrefix = prefix;
     }
-	/// @cellml2_9 9.1.2.3 If exponent value != 1.0 then it's saved as a string in the created unit.  If == 1.0 then not saved
-    /// Values that make it this far have been filtered already by void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     if (exponent != 1.0) {
         u.mExponent = convertDoubleToString(exponent);
     }
-	/// @cellml2_9 9.1.2.2 If multiplier value != 1.0 then it's saved as a string in the created unit.  If == 1.0 then not saved.  Value already
-    /// filtered by void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
     if (multiplier != 1.0) {
         u.mMultiplier = convertDoubleToString(multiplier);
     }
@@ -213,24 +206,21 @@ void Units::addUnit(const std::string &reference, Prefix prefix, double exponent
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
-//void Units::addUnit(const std::string &reference, int prefix, double exponent,
-//                    double multiplier, const std::string &id)
 void Units::addUnit(const std::string &reference, double prefix, double exponent,
                     double multiplier, const std::string &id)
 {
-    //const std::string prefixString = convertIntToString(prefix);
     const std::string prefixString = convertDoubleToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
 void Units::addUnit(const std::string &reference, double exponent, const std::string &id)
 {
-    addUnit(reference, "0", exponent, 1.0, id);
+    addUnit(reference, "0.0", exponent, 1.0, id);
 }
 
 void Units::addUnit(const std::string &reference)
 {
-    addUnit(reference, "0", 1.0, 1.0, "");
+    addUnit(reference, "0.0", 1.0, 1.0, "");
 }
 
 void Units::addUnit(StandardUnit standardRef, const std::string &prefix, double exponent,
@@ -248,13 +238,10 @@ void Units::addUnit(StandardUnit standardRef, Prefix prefix, double exponent,
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
 
-//void Units::addUnit(StandardUnit standardRef, int prefix, double exponent,
-//                    double multiplier, const std::string &id)
 void Units::addUnit(StandardUnit standardRef, double prefix, double exponent,
                     double multiplier, const std::string &id)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    //const std::string prefixString = convertIntToString(prefix);
     const std::string prefixString = convertDoubleToString(prefix);
     addUnit(reference, prefixString, exponent, multiplier, id);
 }
@@ -262,13 +249,13 @@ void Units::addUnit(StandardUnit standardRef, double prefix, double exponent,
 void Units::addUnit(StandardUnit standardRef, double exponent, const std::string &id)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    addUnit(reference, "0", exponent, 1.0, id);
+    addUnit(reference, "0.0", exponent, 1.0, id);
 }
 
 void Units::addUnit(StandardUnit standardRef)
 {
     const std::string reference = standardUnitToString.find(standardRef)->second;
-    addUnit(reference, "0", 1.0, 1.0, "");
+    addUnit(reference, "0.0", 1.0, 1.0, "");
 }
 
 void Units::getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const

@@ -270,9 +270,8 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     // Get model attributes.
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
-        /// @cellml2_4 4.2.1 Checks for presence of name attribute of model at load time
         if (attribute->isType("name")) {
-            model->setName(attribute->getValue());		
+            model->setName(attribute->getValue());
         } else if (attribute->isType("id")) {
             model->setId(attribute->getValue());
         } else {
@@ -357,7 +356,6 @@ void Parser::ParserImpl::loadModel(const ModelPtr &model, const std::string &inp
     if (!encapsulationNodes.empty()) {
         loadEncapsulation(model, encapsulationNodes.at(0));
         if (encapsulationNodes.size() > 1) {
-            /// @cellml2_4 4.2.3 Check for maximum of one encapsulation item per model at load time
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Model '" + model->getName() + "' has more than one encapsulation element.");
             err->setModel(model);
@@ -375,11 +373,9 @@ void Parser::ParserImpl::loadComponent(const ComponentPtr &component, const XmlN
 {
     XmlAttributePtr attribute = node->getFirstAttribute();
     while (attribute) {
-        /// @cellml2_10 10.1.1 Loads a component name
         if (attribute->isType("name")) {
             component->setName(attribute->getValue());
         } else if (attribute->isType("id")) {
-        /// @cellml2_10 Loads a component id
             component->setId(attribute->getValue());
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -507,7 +503,6 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
         } else if (attribute->isType("prefix")) {
             prefix = attribute->getValue();
         } else if (attribute->isType("exponent")) {
-            /// @cellml2_9 9.1.2.3 Check the exponent is a real number string on load
             if (isCellMLReal(attribute->getValue())) {
                 exponent = convertToDouble(attribute->getValue());
             } else {
@@ -518,7 +513,6 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
                 mParser->addError(err);
             }
         } else if (attribute->isType("multiplier")) {
-            /// @cellml2_9 9.1.2.2 Check the multiplier is a real number string on load
             if (isCellMLReal(attribute->getValue())) {
                 multiplier = convertToDouble(attribute->getValue());
             } else {
@@ -592,14 +586,12 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         attribute = attribute->getNext();
     }
     if (!nameAttributePresent) {
-        /// @cellml2_11 11.1.1.1 Checks for presence of variable name attribute at load time
         ErrorPtr err = std::make_shared<Error>(variable);
         err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'name' attribute.");
         err->setRule(SpecificationRule::VARIABLE_NAME);
         mParser->addError(err);
     }
     if (!unitsAttributePresent) {
-        /// @cellml2_11 11.1.1.1 Checks for presence of variable units attribute at load time
         ErrorPtr err = std::make_shared<Error>(variable);
         err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'units' attribute.");
         err->setRule(SpecificationRule::VARIABLE_UNITS);
@@ -647,7 +639,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     }
     // Check that we found both components.
     if (component1Name.empty()) {
-        /// @cellml2_17 17.1.2 Checks that component_1 attribute is found at load time
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() + "' does not have a valid component_1 in a connection element.");
         err->setModel(model);
@@ -657,7 +648,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         component1Missing = true;
     }
     if (component2Name.empty()) {
-        /// @cellml2_17 17.1.2 Checks that component_2 attribute is found at load time
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() + "' does not have a valid component_2 in a connection element.");
         err->setModel(model);
@@ -667,17 +657,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         component2Missing = true;
     }
     componentNamePair = std::make_pair(component1Name, component2Name);
-
-    /// @cellml2_17 17.1.2 Check that component1 != component2 (removed, should be allowed in parser)
-    //if ((!component1Missing)&&(!component2Missing)&&(component1Name == component2Name)) {
-    //    ErrorPtr err = std::make_shared<Error>();
-    //    err->setDescription("Connection in model '" + model->getName() +
-    //                        "' specifies component_1 attribute '" + component1Name +
-    //                        "' the same as component_2 attribute '" + component2Name + "'. "); 
-    //    err->setModel(model);
-    //    err->setKind(Error::Kind::CONNECTION);
-    //    mParser->addError(err);
-    //}
 
     XmlNodePtr childNode = node->getFirstChild();
     if (!childNode) {
@@ -717,9 +696,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         }
 
         if (childNode->isCellmlElement("map_variables")) {
-            /// @cellml2_17 17.1.4 map_variables type checked here before use
-            std::string variable1Name = "";
-            std::string variable2Name = "";
+            std::string variable1Name;
+            std::string variable2Name;
             XmlAttributePtr childAttribute = childNode->getFirstAttribute();
             while (childAttribute) {
                 if (childAttribute->isType("variable_1")) {
@@ -739,7 +717,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
             }
             // Check that we found both variables.
             if (variable1Name.empty()) {
-                /// @cellml2_18 18.1.1 Presence of variable_1 attribute checked, but value not validated here
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() + "' does not have a valid variable_1 in a map_variables element.");
                 err->setModel(model);
@@ -749,7 +726,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 variable1Missing = true;
             }
             if (variable2Name.empty()) {
-                /// @cellml2_18 18.1.2 Presence of variable_2 attribute checked, but value not validated here
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Connection in model '" + model->getName() + "' does not have a valid variable_2 in a map_variables element.");
                 err->setModel(model);
@@ -759,7 +735,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 variable2Missing = true;
             }
             // We can have multiple map_variables per connection.
-            /// @cellml2_18 18.1.3 Pair of variable1 and variable2 added to connection but not checked for duplicates
             variableNamePair = std::make_pair(variable1Name, variable2Name);
             variableNameMap.push_back(variableNamePair);
             mapVariablesFound = true;
@@ -794,7 +769,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         component1 = model->getComponent(componentNamePair.first);
     } else {
         if (!component1Missing) {
-            /// @cellml2_17 17.1.1 Checks that component_1 specification points to a valid component
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Connection in model '" + model->getName() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
             err->setModel(model);
@@ -807,7 +781,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         component2 = model->getComponent(componentNamePair.second);
     } else {
         if (!component2Missing) {
-            /// @cellml2_17 17.1.2 Checks that component_2 specification points to a valid component
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Connection in model '" + model->getName() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");
             err->setModel(model);
@@ -832,7 +805,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     component1->addVariable(variable1);
                 } else {
                     if (!variable1Missing) {
-                        /// @cellml2_18 18.1.1 Checks that the variable_1 attribute points to a valid variable within component_1
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Variable '" + iterPair.first + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
@@ -859,7 +831,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     component2->addVariable(variable2);
                 } else {
                     if (!variable2Missing) {
-                        /// @cellml2_18 18.1.2 Checks that the variable_2 attribute points to a valid variable within component_2
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Variable '" + iterPair.second + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->getName() + "' of model '" + model->getName() + "'.");
                         err->setComponent(component1);
@@ -877,14 +848,11 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 mParser->addError(err);
             }
             // Set the variable equivalence relationship for this variable pair.
-            /// @cellml2_18 18.1.3 Other than overwriting in the map (see void Variable::VariableImpl::setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id) 
-            /// the condition for no duplicated mappings is not tested anywhere
             if ((variable1) && (variable2)) {
                 Variable::addEquivalence(variable1, variable2, mappingId, connectionId);
             }
         }
     } else {
-        /// @celllml2_17 17.1.4 Presence of at least one map_variables element within connection checked
         ErrorPtr err = std::make_shared<Error>();
         err->setDescription("Connection in model '" + model->getName() + "' does not have a map_variables element.");
         err->setModel(model);
@@ -892,7 +860,6 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
         mParser->addError(err);
     }
-    /// @cellml2_17 17.1.3 Need to check that this infoset does not contain this connection element (component_1 --- component_2) already
 }
 
 void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
@@ -912,7 +879,6 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                         // Will re-add this to the model once we encapsulate the child(ren).
                         parentComponent = model->takeComponent(parentComponentName);
                     } else {
-                        ///@cellml2_16 16.1.1 Checks that the component attribute of a component_ref matches a name in the model at load time
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Encapsulation in model '" + model->getName() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it does not exist in the model.");
                         err->setModel(model);
@@ -933,7 +899,6 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 attribute = attribute->getNext();
             }
             if ((!parentComponent) && (parentComponentName.empty())) {
-                /// @cellml2_15 15.1.1 Checks for non-empty encapsulation at load time
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Encapsulation in model '" + model->getName() + "' does not have a valid component attribute in a component_ref element.");
                 err->setModel(model);
@@ -1090,7 +1055,6 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         } else if (attribute->isType("id")) {
             importSource->setId(attribute->getValue());
         } else if (attribute->isType("xlink")) {
-            /// @cellml2_5 NB Skips loading 'xlink' attributes, no warning raised
             // Allow xlink attributes but do nothing for them.
         } else {
             ErrorPtr err = std::make_shared<Error>();
@@ -1100,9 +1064,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
         }
         attribute = attribute->getNext();
     }
-
     XmlNodePtr childNode = node->getFirstChild();
-    /// @cellml2_5 5.2.1-2 PARSER Checks importchildren are "component" or "units" only
     while (childNode) {
         if (childNode->isCellmlElement("component")) {
             ComponentPtr importedComponent = std::make_shared<Component>();
@@ -1186,7 +1148,6 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         if (attribute->isType("variable")) {
             const std::string variableReference = attribute->getValue();
             referencedVariable = component->getVariable(variableReference);
-            /// @cellml2_12 12.1.1.1 Checks that reset has a valid varaible attribute at load time
             if (referencedVariable == nullptr) {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->getName() + "'.");
@@ -1198,8 +1159,6 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             }
         } else if (attribute->isType("order")) {
             orderDefined = true;
-            /// @cellml2_12 12.1.1.2 Checks that the order value is an integer at load time.
-            /// __NB__ Does *not* check for duplicate order values here, and allows negative numbers??
             orderValid = isCellMLInteger(attribute->getValue());
             if (orderValid) {
                 order = convertToInt(attribute->getValue());
@@ -1235,8 +1194,6 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     if (reset->getVariable() != nullptr) {
         variableName = reset->getVariable()->getName();
     }
-    /// @cellml2_12 12.1.1.2 Checks that an order value is present at load time (but does not check it's 
-    /// valid as an order, only as an int)
     if (orderValid) {
         reset->setOrder(order);
     } else if (!orderDefined) {
@@ -1294,8 +1251,6 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
     while (attribute) {
         if (attribute->isType("order")) {
             orderValid = isCellMLInteger(attribute->getValue());
-            /// @cellml2_13 13.1.1 Checks that this when has an order attribute which is an integer at 
-            /// load time.
             if (orderValid) {
                 order = convertToInt(attribute->getValue());
             }
@@ -1329,9 +1284,9 @@ void Parser::ParserImpl::loadWhen(const WhenPtr &when, const ResetPtr &reset, co
             std::string math = childNode->convertToString(true) + "\n";
             ++mathNodeCount;
             if (mathNodeCount == 1) {
-                when->setCondition(math);	// first one read defines the MathML condition
+                when->setCondition(math);
             } else if (mathNodeCount == 2) {
-                when->setValue(math);		// second one read defines the MathML expression to be evaluated
+                when->setValue(math);
             } else {
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("When in reset referencing variable '" + referencedVariableName + "' with order '" + resetOrder + "' contains more than two MathML child elements.");

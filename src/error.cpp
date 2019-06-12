@@ -37,8 +37,8 @@ struct Error::ErrorImpl
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
     UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
-    ResetPtr mReset; /**< Pointer to the reset that the error occurred in. */
-    WhenPtr mWhen; /**< Pointer to the when that the error occurred in. */
+    ResetPtr mReset; /**< Pointer to the reset that the error ocurred in. */
+    WhenPtr mWhen; /**< Pointer to the when that the error ocurred in. */
 };
 
 Error::Error()
@@ -290,7 +290,6 @@ static const std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::VARIABLE_UNITS, "11.1.1.2"},
     {SpecificationRule::VARIABLE_INTERFACE, "11.1.2.1"},
     {SpecificationRule::VARIABLE_INITIAL_VALUE, "11.1.2.2"},
-    {SpecificationRule::RESET_NOT_SUPPORTED, "12.1.1.1"},  // TODO: Remove after version 0.9
     {SpecificationRule::RESET_VARIABLE_REFERENCE, "12.1.1.1"},
     {SpecificationRule::RESET_ORDER, "12.1.1.2"},
     {SpecificationRule::RESET_CHILD, "12.1.2"},
