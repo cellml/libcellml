@@ -263,58 +263,6 @@ TEST(Variable, getNullParentComponent)
     EXPECT_EQ(nullptr, v->getParentComponent());
 }
 
-TEST(Variable, isEquivalentVariable)
-{
-    libcellml::VariablePtr x1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x3 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x4 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr x5 = std::make_shared<libcellml::Variable>();
-
-    libcellml::Variable::addEquivalence(x1, x2);
-    libcellml::Variable::addEquivalence(x2, x3);
-    libcellml::Variable::addEquivalence(x3, x4);
-    libcellml::Variable::addEquivalence(x4, x5);
-
-    EXPECT_TRUE(x1->isEquivalentVariable(x2));
-    EXPECT_TRUE(x1->isEquivalentVariable(x3));
-    EXPECT_TRUE(x2->isEquivalentVariable(x3));
-    EXPECT_TRUE(x1->isEquivalentVariable(x4));
-    EXPECT_TRUE(x2->isEquivalentVariable(x4));
-    EXPECT_TRUE(x3->isEquivalentVariable(x4));
-    EXPECT_TRUE(x1->isEquivalentVariable(x5));
-    EXPECT_TRUE(x2->isEquivalentVariable(x5));
-    EXPECT_TRUE(x3->isEquivalentVariable(x5));
-    EXPECT_TRUE(x4->isEquivalentVariable(x5));
-
-    libcellml::VariablePtr y1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr y2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr y3 = std::make_shared<libcellml::Variable>();
-
-    libcellml::Variable::addEquivalence(y1, y2);
-    libcellml::Variable::addEquivalence(y2, y3);
-
-    EXPECT_TRUE(y1->isEquivalentVariable(y2));
-    EXPECT_TRUE(y1->isEquivalentVariable(y3));
-    EXPECT_TRUE(y2->isEquivalentVariable(y3));
-
-    EXPECT_FALSE(x1->isEquivalentVariable(y1));
-    EXPECT_FALSE(x1->isEquivalentVariable(y2));
-    EXPECT_FALSE(x1->isEquivalentVariable(y3));
-    EXPECT_FALSE(x2->isEquivalentVariable(y1));
-    EXPECT_FALSE(x2->isEquivalentVariable(y2));
-    EXPECT_FALSE(x2->isEquivalentVariable(y3));
-    EXPECT_FALSE(x3->isEquivalentVariable(y1));
-    EXPECT_FALSE(x3->isEquivalentVariable(y2));
-    EXPECT_FALSE(x3->isEquivalentVariable(y3));
-    EXPECT_FALSE(x4->isEquivalentVariable(y1));
-    EXPECT_FALSE(x4->isEquivalentVariable(y2));
-    EXPECT_FALSE(x4->isEquivalentVariable(y3));
-    EXPECT_FALSE(x5->isEquivalentVariable(y1));
-    EXPECT_FALSE(x5->isEquivalentVariable(y2));
-    EXPECT_FALSE(x5->isEquivalentVariable(y3));
-}
-
 TEST(Variable, addVariableToUnnamedComponent)
 {
     const std::string in = "valid_name";
