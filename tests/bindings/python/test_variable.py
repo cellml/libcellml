@@ -126,6 +126,59 @@ class VariableTestCase(unittest.TestCase):
         self.assertTrue(v3.hasEquivalentVariable(v2))
         self.assertFalse(v3.hasEquivalentVariable(v3))
 
+    def test_is_equivalent_variable(self):
+        from libcellml import Variable
+
+        # bool test_is_equivalent_variable(const VariablePtr &equivalentVariable)
+        x1 = Variable()
+        x2 = Variable()
+        x3 = Variable()
+        x4 = Variable()
+        x5 = Variable()
+
+        Variable.addEquivalence(x1, x2)
+        Variable.addEquivalence(x2, x3)
+        Variable.addEquivalence(x3, x4)
+        Variable.addEquivalence(x4, x5)
+
+        self.assertTrue(x1.isEquivalentVariable(x2))
+        self.assertTrue(x1.isEquivalentVariable(x3))
+        self.assertTrue(x2.isEquivalentVariable(x3))
+        self.assertTrue(x1.isEquivalentVariable(x4))
+        self.assertTrue(x2.isEquivalentVariable(x4))
+        self.assertTrue(x3.isEquivalentVariable(x4))
+        self.assertTrue(x1.isEquivalentVariable(x5))
+        self.assertTrue(x2.isEquivalentVariable(x5))
+        self.assertTrue(x3.isEquivalentVariable(x5))
+        self.assertTrue(x4.isEquivalentVariable(x5))
+
+        y1 = Variable()
+        y2 = Variable()
+        y3 = Variable()
+
+        Variable.addEquivalence(y1, y2)
+        Variable.addEquivalence(y2, y3)
+
+        self.assertTrue(y1.isEquivalentVariable(y2))
+        self.assertTrue(y1.isEquivalentVariable(y3))
+        self.assertTrue(y2.isEquivalentVariable(y3))
+
+        self.assertFalse(x1.isEquivalentVariable(y1))
+        self.assertFalse(x1.isEquivalentVariable(y2))
+        self.assertFalse(x1.isEquivalentVariable(y3))
+        self.assertFalse(x2.isEquivalentVariable(y1))
+        self.assertFalse(x2.isEquivalentVariable(y2))
+        self.assertFalse(x2.isEquivalentVariable(y3))
+        self.assertFalse(x3.isEquivalentVariable(y1))
+        self.assertFalse(x3.isEquivalentVariable(y2))
+        self.assertFalse(x3.isEquivalentVariable(y3))
+        self.assertFalse(x4.isEquivalentVariable(y1))
+        self.assertFalse(x4.isEquivalentVariable(y2))
+        self.assertFalse(x4.isEquivalentVariable(y3))
+        self.assertFalse(x5.isEquivalentVariable(y1))
+        self.assertFalse(x5.isEquivalentVariable(y2))
+        self.assertFalse(x5.isEquivalentVariable(y3))
+
     def test_set_units(self):
         from libcellml import Variable, Units
 
