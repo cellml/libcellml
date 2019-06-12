@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -21,44 +23,63 @@ limitations under the License.
 TEST(Component, validName)
 {
     const std::string in = "valid_name";
-    const std::string e = "<component name=\"" + in + "\"/>\n";
-    libcellml::Component c;
-    c.setName(in);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\"/>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    c->setName(in);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("valid_name", c.getName());
+    EXPECT_EQ("valid_name", c->getName());
 }
 
 TEST(Component, invalidName)
 {
     const std::string in = "invalid name -";
-    const std::string e = "<component name=\"" + in + "\"/>\n";
-    libcellml::Component c;
-    c.setName(in);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"invalid name -\"/>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    c->setName(in);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name -", c.getName());
+    EXPECT_EQ("invalid name -", c->getName());
 }
 
 TEST(Component, setAndUnsetName)
 {
     const std::string in = "name";
-    const std::string eName = "<component name=\"" + in + "\"/>\n";
-    const std::string e = "<component/>\n";
-    libcellml::Component c;
-    c.setName(in);
+    const std::string eName =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"name\"/>\n"
+        "</model>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    c->setName(in);
 
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
-    EXPECT_EQ("name", c.getName());
+    std::string a = printer.printModel(m);
+    EXPECT_EQ("name", c->getName());
     EXPECT_EQ(eName, a);
-    c.setName("");
-    EXPECT_EQ("", c.getName());
-    a = printer.printComponent(c);
+    c->setName("");
+    EXPECT_EQ("", c->getName());
+    a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -111,14 +132,37 @@ TEST(Component, contains)
 TEST(Component, addChildrenAndSerialise)
 {
     const std::string e1 =
-        "<component name=\"child0\"/>\n"
-        "<component name=\"child1\"/>\n"
-        "<component name=\"child2\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"child0\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"child0\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e2 =
-        "<component name=\"child0\"/>\n"
-        "<component name=\"child1\"/>\n"
-        "<component name=\"child2\"/>\n"
-        "<component name=\"child3\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"child0\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"child0\">\n"
+        "      <component_ref component=\"child1\">\n"
+        "        <component_ref component=\"child2\">\n"
+        "          <component_ref component=\"child3\"/>\n"
+        "        </component_ref>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModel();
     libcellml::ComponentPtr c0 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
@@ -133,233 +177,324 @@ TEST(Component, addChildrenAndSerialise)
     c1->setName("child1");
     c2->setName("child2");
 
+    m->addComponent(c0);
+
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c0);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
 
     c2->addComponent(c3);
-    a = printer.printComponent(c0);
+    a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 }
 
 TEST(Component, removeComponentMethods)
 {
     const std::string e1 =
-        "<component/>\n"
-        "<component name=\"child2\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e2 =
-        "<component/>\n"
-        "<component name=\"child2\"/>\n"
-        "<component name=\"child1\"/>\n";
-    const std::string e3 = "<component/>\n";
-    libcellml::Component c;
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <component name=\"child1\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "      <component_ref component=\"child1\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+    const std::string e3 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
     c2->setName("child2");
-    c.addComponent(c1);
-    c.addComponent(c2);
+    c->addComponent(c1);
+    c->addComponent(c2);
 
-    EXPECT_TRUE(c.removeComponent(0));
-    EXPECT_EQ(size_t(1), c.componentCount());
+    EXPECT_TRUE(c->removeComponent(0));
+    EXPECT_EQ(size_t(1), c->componentCount());
 
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
-    EXPECT_FALSE(c.removeComponent(1));
+    EXPECT_FALSE(c->removeComponent(1));
 
-    c.addComponent(c1);
-    c.addComponent(c1);
-    c.addComponent(c1);
+    c->addComponent(c1);
+    c->addComponent(c1);
+    c->addComponent(c1);
     // Remove the first occurence of "child1".
-    EXPECT_TRUE(c.removeComponent("child1"));
+    EXPECT_TRUE(c->removeComponent("child1"));
     // Remove the second occurence of "child1".
-    EXPECT_TRUE(c.removeComponent(c1));
-    EXPECT_EQ(size_t(2), c.componentCount());
-    a = printer.printComponent(c);
+    EXPECT_TRUE(c->removeComponent(c1));
+    EXPECT_EQ(size_t(2), c->componentCount());
+    a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change
-    EXPECT_FALSE(c.removeComponent("child3"));
-    EXPECT_FALSE(c.removeComponent(c3));
-    EXPECT_EQ(size_t(2), c.componentCount());
+    EXPECT_FALSE(c->removeComponent("child3"));
+    EXPECT_FALSE(c->removeComponent(c3));
+    EXPECT_EQ(size_t(2), c->componentCount());
 
-    c.removeAllComponents();
-    a = printer.printComponent(c);
+    c->removeAllComponents();
+    a = printer.printModel(m);
     EXPECT_EQ(e3, a);
-    EXPECT_EQ(size_t(0), c.componentCount());
+    EXPECT_EQ(size_t(0), c->componentCount());
 }
 
 TEST(Component, getComponentMethods)
 {
     const std::string e1 =
-        "<component/>\n"
-        "<component name=\"childA\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "  <component name=\"childA\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref>\n"
+        "      <component_ref component=\"childA\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e2 =
-        "<component name=\"parent\"/>\n"
-        "<component name=\"gus\"/>\n"
-        "<component name=\"childB\"/>\n"
-        "<component name=\"child3\"/>\n"
-        "<component name=\"gus\"/>\n"
-        "<component name=\"childB\"/>\n"
-        "<component name=\"child3\"/>\n";
-    libcellml::Component c;
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component name=\"gus\"/>\n"
+        "  <component name=\"childB\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <component name=\"gus\"/>\n"
+        "  <component name=\"childB\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"gus\">\n"
+        "        <component_ref component=\"childB\"/>\n"
+        "        <component_ref component=\"child3\"/>\n"
+        "      </component_ref>\n"
+        "      <component_ref component=\"gus\">\n"
+        "        <component_ref component=\"childB\"/>\n"
+        "        <component_ref component=\"child3\"/>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
     c2->setName("child2");
     c3->setName("child3");
-    c.addComponent(c1);
+    c->addComponent(c1);
 
-    libcellml::ComponentPtr cA = c.getComponent(0);
+    libcellml::ComponentPtr cA = c->getComponent(0);
     cA->setName("childA");
 
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
 
     // Using const version of overloaded method
-    const libcellml::ComponentPtr cS = static_cast<const libcellml::Component>(c).getComponent(0);
+    const libcellml::ComponentPtr cS = static_cast<const libcellml::ComponentPtr>(c)->getComponent(0);
     // Can do this as we just have a const pointer
     cS->setName("gus");
     EXPECT_EQ("gus", cS->getName());
-    EXPECT_EQ(nullptr, c.getComponent(4));
+    EXPECT_EQ(nullptr, c->getComponent(4));
 
-    libcellml::ComponentPtr cAr = c.getComponent("gus");
+    libcellml::ComponentPtr cAr = c->getComponent("gus");
     EXPECT_EQ("gus", cAr->getName());
 
     // Modify a deeper Component
-    c.setName("parent");
-    c.addComponent(c1);
+    c->setName("parent");
+    c->addComponent(c1);
     c1->addComponent(c2);
     c1->addComponent(c3);
 
-    libcellml::ComponentPtr cB = c.getComponent(1);
+    libcellml::ComponentPtr cB = c->getComponent(1);
     libcellml::ComponentPtr cBB = cB->getComponent(0);
     cBB->setName("childB");
 
-    EXPECT_EQ(nullptr, c.getComponent(3));
+    EXPECT_EQ(nullptr, c->getComponent(3));
 
-    libcellml::ComponentPtr cSn = static_cast<const libcellml::Component>(c).getComponent("gus");
+    libcellml::ComponentPtr cSn = static_cast<const libcellml::ComponentPtr>(c)->getComponent("gus");
     EXPECT_EQ("gus", cSn->getName());
 
-    a = printer.printComponent(c);
+    a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 }
 
 TEST(Component, takeComponentMethods)
 {
-    const std::string e = "<component/>\n";
-    libcellml::Component c;
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c1->setName("child1");
     c2->setName("child2");
-    c.addComponent(c1);
-    c.addComponent(c2);
+    c->addComponent(c1);
+    c->addComponent(c2);
 
-    libcellml::ComponentPtr c02 = c.takeComponent(1);
-    EXPECT_EQ(size_t(1), c.componentCount());
+    libcellml::ComponentPtr c02 = c->takeComponent(1);
+    EXPECT_EQ(size_t(1), c->componentCount());
 
-    EXPECT_EQ(c.takeComponent(4), nullptr);
+    EXPECT_EQ(c->takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->getName());
 
-    libcellml::ComponentPtr c01 = c.takeComponent("child1");
-    EXPECT_EQ(size_t(0), c.componentCount());
+    libcellml::ComponentPtr c01 = c->takeComponent("child1");
+    EXPECT_EQ(size_t(0), c->componentCount());
 
     EXPECT_EQ("child1", c01->getName());
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Component, replaceComponentMethods)
 {
     const std::string e_orig =
-        "<component name=\"parent\"/>\n"
-        "<component/>\n"
-        "<component name=\"child2\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component/>\n"
+        "  <component name=\"child2\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref/>\n"
+        "      <component_ref component=\"child2\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e_after =
-        "<component name=\"parent\"/>\n"
-        "<component/>\n"
-        "<component name=\"child3\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref/>\n"
+        "      <component_ref component=\"child3\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string e_post =
-        "<component name=\"parent\"/>\n"
-        "<component name=\"child4\"/>\n"
-        "<component name=\"child3\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"parent\"/>\n"
+        "  <component name=\"child4\"/>\n"
+        "  <component name=\"child3\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"parent\">\n"
+        "      <component_ref component=\"child4\"/>\n"
+        "      <component_ref component=\"child3\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
-    libcellml::Component c;
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c4 = std::make_shared<libcellml::Component>();
-    c.setName("parent");
+
+    c->setName("parent");
     c2->setName("child2");
     c3->setName("child3");
     c4->setName("child4");
-    c.addComponent(c1);
-    c.addComponent(c2);
+    c->addComponent(c1);
+    c->addComponent(c2);
 
     // Test replace by index
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e_orig, a);
-    EXPECT_FALSE(c.replaceComponent(5, c3));
+    EXPECT_FALSE(c->replaceComponent(5, c3));
 
-    EXPECT_TRUE(c.replaceComponent(1, c3));
+    EXPECT_TRUE(c->replaceComponent(1, c3));
 
-    a = printer.printComponent(c);
+    a = printer.printModel(m);
     EXPECT_EQ(e_after, a);
 
     // Test replace by name
     // Try to replace non-existent child.
-    EXPECT_FALSE(c.replaceComponent("child5", c4));
+    EXPECT_FALSE(c->replaceComponent("child5", c4));
 
-    EXPECT_TRUE(c.replaceComponent("", c4));
+    EXPECT_TRUE(c->replaceComponent("", c4));
 
-    a = printer.printComponent(c);
+    a = printer.printModel(m);
     EXPECT_EQ(e_post, a);
 
     // Test replace by ptr
-    EXPECT_FALSE(c.replaceComponent(c1, c2));
-    EXPECT_TRUE(c.replaceComponent(c4, c1));
-    a = printer.printComponent(c);
+    EXPECT_FALSE(c->replaceComponent(c1, c2));
+    EXPECT_TRUE(c->replaceComponent(c4, c1));
+    a = printer.printModel(m);
     EXPECT_EQ(e_after, a);
 }
 
 TEST(Component, constructors)
 {
     const std::string e =
-        "<component name=\"my_name\"/>\n"
-        "<component/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"my_name\"/>\n"
+        "  <component/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"my_name\">\n"
+        "      <component_ref/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
     const std::string n = "my_name";
-    libcellml::Component c;
-    libcellml::Component c1;
-    libcellml::Component c2;
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c1;
+    libcellml::ComponentPtr c2;
 
-    c.setName(n);
-    c.addComponent(std::make_shared<libcellml::Component>());
+    c->setName(n);
+    c->addComponent(std::make_shared<libcellml::Component>());
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 
     // Testing assignment for component
     c1 = c;
-    EXPECT_EQ("my_name", c1.getName());
+    EXPECT_EQ("my_name", c1->getName());
 
     // Testing move assignment for component
     c2 = std::move(c1);
-    EXPECT_EQ("my_name", c2.getName());
+    EXPECT_EQ("my_name", c2->getName());
     // c1 is now in a valid but undefined state. For us this means we cannot use it, the pointer to implementation
     // is now a nullptr and anything that tries to dereference it will segfault, like getName().
     // EXPECT_EQ("", c1.getName());
 
     // Testing move constructor for component
-    libcellml::Component c3 = std::move(c2);
-    EXPECT_EQ("my_name", c3.getName());
+    libcellml::ComponentPtr c3 = std::move(c2);
+    EXPECT_EQ("my_name", c3->getName());
 }

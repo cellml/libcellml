@@ -586,6 +586,10 @@ TEST(Parser, modelWithInvalidUnits)
         "    <unit units=\"\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
+        "  <units>\n"
+        "    <unit units=\"friends\"/>\n"
+        "    <unit units=\"\"/>\n"
+        "  </units>\n"
         "</model>\n";
 
     std::vector<std::string> expectedErrors = {
