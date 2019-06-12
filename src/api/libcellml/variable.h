@@ -206,9 +206,8 @@ public:
      * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
      * and @c false otherwise.
      *
-     * @warning This method is currently needed by our Printer and Validator classes, but this is
-     * not a method that a libCellML user should ever need. It will therefore be removed at some
-     * point.
+     * @deprecated This method is currently needed by our Printer and Validator classes, but this is
+     * not a method that a libCellML user should ever need. It will therefore be removed at some point.
      */
     bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
