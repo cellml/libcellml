@@ -371,7 +371,7 @@ TEST(Validator, importUnits)
     m->addUnits(manualUnits2);
 
     v.validateModel(m); 
-    EXPECT_EQ(size_t(7), v.errorCount());
+    EXPECT_EQ(7u, v.errorCount());
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
@@ -417,7 +417,7 @@ TEST(Validator, importComponents)
     importedComponent5->setSourceComponent(imp5, "new_shiny_component_ref");
     m->addComponent(importedComponent5);
     v.validateModel(m); 
-    EXPECT_EQ(size_t(0), v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
 
     // Invalid component import - missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
@@ -967,7 +967,7 @@ TEST(Validator, validateConnectionComponent1NotEqualComponent2) {
     libcellml::Variable::addEquivalence(v, v);          
     validator.validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(1u, validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(validator.getError(i)->getDescription(), expectedErrors[i]);
     }
@@ -1017,7 +1017,7 @@ TEST(Validator, validateNoCyclesSimple) {
 
     std::string error = "Cyclic variables exist, 1 loop found (Component, Variable):\n"
         "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n";
-    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(1u, v.errorCount());
     EXPECT_EQ(error, v.getError(0)->getDescription());
 }
 
@@ -1201,7 +1201,7 @@ TEST(Validator, validateNoCyclesComplicated) {
         "('component1', 'variable1_2') -> ('component5', 'variable5') -> ('component9', 'variable9') -> ('component1', 'variable1_2')\n"
         "('component2', 'variable2') -> ('component4', 'variable4') -> ('component3', 'variable3') -> ('component6', 'variable6') -> "
         "('component8', 'variable8') -> ('component2', 'variable2')\n";
-    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(1u, v.errorCount());
     EXPECT_EQ(error, v.getError(0)->getDescription());
 
 }
@@ -1271,7 +1271,7 @@ TEST(Validator, figureEightVariableDependency) {
     std::string error = "Cyclic variables exist, 2 loops found (Component, Variable):\n"
         "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n"
         "('component1', 'variable1') -> ('component4', 'variable4') -> ('component5', 'variable5') -> ('component1', 'variable1')\n";
-    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(1u, v.errorCount());
     EXPECT_EQ(error, v.getError(0)->getDescription());
 
 }
@@ -1948,7 +1948,7 @@ TEST(Validator, variableEquivalentUnits) {
 
     validator.validateModel(m);
    
-    EXPECT_EQ(size_t(4), validator.errorCount());
+    EXPECT_EQ(4u, validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
     }
@@ -2011,7 +2011,7 @@ TEST(Validator, moreEquivalentVariableMultipliers) {
 
     libcellml::Variable::addEquivalence(v1, v2);
     validator.validateModel(model);
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(0u, validator.errorCount());
 }
 
 TEST(Validator, nonEquivalentVariableMultipliers) {
@@ -2071,7 +2071,7 @@ TEST(Validator, nonEquivalentVariableMultipliers) {
         "Variable 'v2' has units of 'u5' and an equivalent variable 'v1' with non-matching units of 'u3'. "
         "The mismatch is: multiplication factor of 10^15, ",
     };
-    EXPECT_EQ(size_t(2), validator.errorCount());
+    EXPECT_EQ(2u, validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
     } 
@@ -2129,13 +2129,13 @@ TEST(Validator, validateNoCyclesUnits) {
     u6->addUnit("mother", 0.0, 1.0, 1.0);
 
     v.validateModel(m);
-    EXPECT_EQ(size_t(0), v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
     
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1
     u1->addUnit("brotherFromAnotherMother", 0.0, 1.0, 1.0);
     v.validateModel(m);
 
-    EXPECT_EQ(size_t(3), v.errorCount());
+    EXPECT_EQ(3u, v.errorCount());
     for (size_t i = 0; i < v.errorCount(); i++) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }   
@@ -2200,7 +2200,7 @@ TEST(Validator, equivalentVariableUnitMultiplierPrefix) {
 
     libcellml::Variable::addEquivalence(v1, v2); 
     validator.validateModel(model);
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(0u, validator.errorCount());
     printErrors(validator);
 }
 
@@ -2215,7 +2215,7 @@ TEST(Validator, importNameNotFoundInFile) {
 
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT));
-    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(1u, v.errorCount());
 
     std::vector<std::string> expected = { 
         "Import of units 'sandiness' has failed. Tried:",
@@ -2241,7 +2241,7 @@ TEST(Validator, importFileDoesNotExist) {
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_FILE_WITH_NONEXISTENT_REF));
 
-    EXPECT_EQ(size_t(2), v.errorCount());
+    EXPECT_EQ(2u, v.errorCount());
 
     std::vector<std::vector<std::string>> expected;
     expected.push_back({"Import of component 'duplicating_the_beach' has failed:",
@@ -2272,7 +2272,7 @@ TEST(Validator, importLayer) {
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_LAYERED_IMPORT_FILE));
 
-    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(1u, v.errorCount());
     std::vector<std::string> expected = {"Import of units 'u1' has failed. Tried:",
                        "('u1' in recursiveImport_1.cellml) imports",
                        "recursiveImport_3.cellml) which was not found in the file.",};
@@ -2297,7 +2297,7 @@ TEST(Validator, validateCircularImportReferences) {
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_CIRCULAR_IMPORT_FILE));
 
-    EXPECT_EQ(size_t(2), v.errorCount());
+    EXPECT_EQ(2u, v.errorCount());
 
     std::vector<std::vector<std::string>> expected;
     expected.push_back({"Import of component 'i_am_cyclic' has circular dependencies:",
@@ -2332,7 +2332,7 @@ TEST(Validator, validateImportsInMultipleLocations) {
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_SAME_FILE_OTHER_DIR_RESOURCE));
 
-    EXPECT_EQ(size_t(0), v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
 }
 
 TEST(Validator, validateGenerationalImport) {
@@ -2348,7 +2348,7 @@ TEST(Validator, validateGenerationalImport) {
     libcellml::Validator v;
     v.validateModel(m,TestResources::getLocation(TestResources::CELLML_RECURSIVE_FILE_IMPORT_PATH));
 
-    EXPECT_EQ(size_t(0), v.errorCount());
+    EXPECT_EQ(0u, v.errorCount());
 }
 
 TEST(Validator, validateAbsolutePathImports) {
@@ -2374,17 +2374,17 @@ TEST(Validator, validateAbsolutePathImports) {
         path = full_filename.substr(0, i+1);
     }
     validator.validateModel(model, filename, path); // no errors
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(0u, validator.errorCount());
     validator.validateModel(model, full_filename); // no errors
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(0u, validator.errorCount());
     validator.validateModel(model, filename); // TODO warning that full depth is not checked?
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(0u, validator.errorCount());
     validator.validateModel(model); // TODO warning that full depth is not checked?
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(0u, validator.errorCount());
 
     // These is a fake file to give test coverage to the isRelativePath() function
     validator.validateModel(model, "C:/hello/hello.cellml");
-    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(1u, validator.errorCount());
     std::vector<std::string> expected = {
         "Import of component 'latte' has failed:",
         "('latte' in hello.cellml) which imports",
@@ -2435,9 +2435,9 @@ TEST(Validator, parseInvalidModelFromFile) {
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    for (size_t j = 0; j < expectedErrors.size(); ++j) {
-        std::string e = v.getError(j)->getDescription();
-        std::size_t found = e.find(expectedErrors.at(j));
+    for (size_t i = 0; i < expectedErrors.size(); ++i) {
+        std::string e = v.getError(i)->getDescription();
+        std::size_t found = e.find(expectedErrors.at(i));
         EXPECT_NE(found, std::string::npos);
     }
 }
