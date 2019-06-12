@@ -1,7 +1,0 @@
-<?xml version='1.0'?>
-<model name="level2b" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<component name="c2">
-		<variable name="v1a" units="dimensionless" />
-		<variable name="v1b" units="dimensionless" />
-	</component>
-</model>

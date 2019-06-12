@@ -67,17 +67,17 @@ TEST(Model, unsetName)
     EXPECT_EQ(e, a);
 }
 
-TEST(Model, invalidName) {
-	/// @cellml2_4 4.2.1 TEST for model name with space
-    std::string in = "invalid name";
+TEST(Model, invalidName)
+{
+    const std::string n = "invalid name";
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"invalid name\"/>\n";
 
     libcellml::Model m;
-    m.setName(in);
+    m.setName(n);
 
-    EXPECT_EQ(in, m.getName());
+    EXPECT_EQ(n, m.getName());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);

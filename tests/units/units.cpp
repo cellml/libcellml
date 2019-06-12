@@ -94,8 +94,7 @@ TEST(Units, addUnitsVariations)
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
-    // Changed prefix from 0.001 to -3 as needs to be int
-    u->addUnit(libcellml::Units::StandardUnit::KELVIN, -3, 2.0, 5.5);  
+    u->addUnit(libcellml::Units::StandardUnit::KELVIN, 0.001, 2.0, 5.5);
 
     EXPECT_EQ(size_t(2), u->unitCount());
 }
@@ -427,7 +426,7 @@ TEST(Units, farhenheit)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("celsius", 0, 1.0, 1.8);
+    u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
     libcellml::Printer printer;
@@ -444,7 +443,7 @@ TEST(Units, getUnitAttributes)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("celsius", 0, 1.0, 1.8);
+    u->addUnit("celsius", 0.0, 1.0, 1.8);
     m.addUnits(u);
 
     std::string reference;
@@ -458,7 +457,7 @@ TEST(Units, getUnitAttributes)
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
 
-    u->addUnit("NewUnit", 4, 1.05, 17.0);
+    u->addUnit("NewUnit", 4.0, 1.05, 17.0);
     u->getUnitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("NewUnit", reference);
     EXPECT_EQ("4", prefix);

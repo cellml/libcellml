@@ -1,6 +1,0 @@
-<?xml version='1.0'?>
-<model name="level1" xmlns="http://www.cellml.org/cellml/2.0#" xmlns:cellml="http://www.cellml.org/cellml/2.0#" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<import xlink:href="validator_wrong_namespace.cellml">
-        <component name="i_have_wrong_namespace" component_ref="c" />
-    </import>	
-</model>

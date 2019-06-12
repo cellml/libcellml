@@ -191,9 +191,6 @@ void testSpecificationRule(const libcellml::Error &e)
     case libcellml::SpecificationRule::RESET_ORDER:
         EXPECT_EQ("12.1.1.2", e.getSpecificationHeading());
         break;
-    case libcellml::SpecificationRule::RESET_NOT_SUPPORTED:
-        EXPECT_EQ("12.1.1.1", e.getSpecificationHeading());     // TODO: Remove after version 0.9
-        break;
     case libcellml::SpecificationRule::UNITS_CHILD:
         EXPECT_EQ("8.1.4", e.getSpecificationHeading());
         break;

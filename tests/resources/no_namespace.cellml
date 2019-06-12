@@ -1,6 +1,0 @@
-<?xml version='1.0'?>
-<model name="myModel" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<component name="c">
-		<variable name="v" units="dimensionless" />
-	</component>
-</model>
