@@ -20,8 +20,15 @@ limitations under the License.
 
 TEST(UnitsImport, basics)
 {
-    const std::string e;
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"a-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <units units_ref=\"bob\" name=\"\"/>\n"
+        "  </import>\n"
+        "</model>\n";
 
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");
 
@@ -36,8 +43,10 @@ TEST(UnitsImport, basics)
     EXPECT_EQ(u->getImportSource(), imp);
     EXPECT_EQ(u->getImportReference(), "bob");
 
+    m.addUnits(u);
+
     libcellml::Printer printer;
-    const std::string a = printer.printUnits(u);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 

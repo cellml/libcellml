@@ -194,55 +194,57 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
 std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::string &indent) const
 {
     std::string repr;
-    if (!units->getName().empty()) {
-        if (units->isImport()) {
-            repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
-            if (!units->getImportSource()->getId().empty()) {
-                repr += " id=\"" + units->getImportSource()->getId() + "\"";
-            }
-            repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
-            if (!units->getId().empty()) {
-                repr += " id=\"" + units->getId() + "\"";
-            }
-            repr += "/>\n" + indent + "</import>\n";
-        } else {
-            bool endTag = false;
-            repr += indent + "<units name=\"" + units->getName() + "\"";
-            if (!units->getId().empty()) {
-                repr += " id=\"" + units->getId() + "\"";
-            }
-            if (units->unitCount() > 0) {
-                endTag = true;
-                repr += ">\n";
-                for (size_t i = 0; i < units->unitCount(); ++i) {
-                    std::string reference;
-                    std::string prefix;
-                    std::string id;
-                    double exponent;
-                    double multiplier;
-                    units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
-                    repr += indent + tabIndent + "<unit";
-                    if (exponent != 1.0) {
-                        repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
-                    }
-                    if (multiplier != 1.0) {
-                        repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
-                    }
-                    if (!prefix.empty()) {
-                        repr += " prefix=\"" + prefix + "\"";
-                    }
-                    repr += " units=\"" + reference + "\"";
-                    if (!id.empty()) {
-                        repr += " id=\"" + id + "\"";
-                    }
-                    repr += "/>\n";
+    if (units->isImport()) {
+        repr += indent + "<import xlink:href=\"" + units->getImportSource()->getUrl() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
+        if (!units->getImportSource()->getId().empty()) {
+            repr += " id=\"" + units->getImportSource()->getId() + "\"";
+        }
+        repr += ">\n" + indent + tabIndent + "<units units_ref=\"" + units->getImportReference() + "\" name=\"" + units->getName() + "\"";
+        if (!units->getId().empty()) {
+            repr += " id=\"" + units->getId() + "\"";
+        }
+        repr += "/>\n" + indent + "</import>\n";
+    } else {
+        bool endTag = false;
+        repr += indent + "<units";
+        const std::string unitsName = units->getName();
+        if (!unitsName.empty()) {
+            repr += " name=\"" + unitsName + "\"";
+        }
+        if (!units->getId().empty()) {
+            repr += " id=\"" + units->getId() + "\"";
+        }
+        if (units->unitCount() > 0) {
+            endTag = true;
+            repr += ">\n";
+            for (size_t i = 0; i < units->unitCount(); ++i) {
+                std::string reference;
+                std::string prefix;
+                std::string id;
+                double exponent;
+                double multiplier;
+                units->getUnitAttributes(i, reference, prefix, exponent, multiplier, id);
+                repr += indent + tabIndent + "<unit";
+                if (exponent != 1.0) {
+                    repr += " exponent=\"" + convertDoubleToString(exponent) + "\"";
                 }
-            }
-            if (endTag) {
-                repr += indent + "</units>\n";
-            } else {
+                if (multiplier != 1.0) {
+                    repr += " multiplier=\"" + convertDoubleToString(multiplier) + "\"";
+                }
+                if (!prefix.empty()) {
+                    repr += " prefix=\"" + prefix + "\"";
+                }
+                repr += " units=\"" + reference + "\"";
+                if (!id.empty()) {
+                    repr += " id=\"" + id + "\"";
+                }
                 repr += "/>\n";
             }
+        }
+        if (endTag) {
+            repr += indent + "</units>\n";
+        } else {
+            repr += "/>\n";
         }
     }
 
@@ -438,46 +440,6 @@ Printer &Printer::operator=(Printer rhs)
 void Printer::swap(Printer &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
-}
-
-std::string Printer::printUnits(const UnitsPtr &units) const
-{
-    return mPimpl->printUnits(units);
-}
-
-std::string Printer::printUnits(Units units) const
-{
-    return mPimpl->printUnits(std::shared_ptr<Units>(std::shared_ptr<Units> {}, &units));
-}
-
-std::string Printer::printComponent(const ComponentPtr &component) const
-{
-    return mPimpl->printComponent(component);
-}
-
-std::string Printer::printComponent(Component component) const
-{
-    return mPimpl->printComponent(std::shared_ptr<Component>(std::shared_ptr<Component> {}, &component));
-}
-
-std::string Printer::printReset(const ResetPtr &reset) const
-{
-    return mPimpl->printReset(reset);
-}
-
-std::string Printer::printReset(Reset reset) const
-{
-    return mPimpl->printReset(std::shared_ptr<Reset>(std::shared_ptr<Reset> {}, &reset));
-}
-
-std::string Printer::printVariable(const VariablePtr &variable) const
-{
-    return mPimpl->printVariable(variable);
-}
-
-std::string Printer::printVariable(Variable variable) const
-{
-    return mPimpl->printVariable(std::shared_ptr<Variable>(std::shared_ptr<Variable> {}, &variable));
 }
 
 std::string Printer::printModel(const ModelPtr &model) const
