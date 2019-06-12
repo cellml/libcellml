@@ -48,26 +48,114 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
 struct Variable::VariableImpl
 {
     Variable *mVariable = {};
-    std::vector<VariableWeakPtr> mEquivalentVariables;
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap;
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap;
-    std::string mInitialValue;
-    std::string mInterfaceType;
-    std::string mUnits;
+    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping id map for equivalent variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
+    std::string mInitialValue; /**< Initial value for this Variable.*/
+    std::string mInterfaceType; /**< Interface type for this Variable.*/
+    std::string mUnits; /**< The name of the units defined for this Variable.*/
 
+    /**
+     * @brief Private function to add an equivalent variable to the set for this variable.
+     *
+     * Add the argument equivalent variable to the set of equivalent variables for this
+     * variable if it is not already present. If the equivalent variable is present,
+     * do nothing.
+     *
+     * @sa addEquivalence, unsetEquivalentTo
+     *
+     * @param equivalentVariable The variable to add to this variable's equivalent
+     * variable set if not already present.
+     */
     void setEquivalentTo(const VariablePtr &equivalentVariable);
+
+    /**
+     * @brief Private function to remove an equivalent variable from the set for this variable.
+     *
+     * Remove the @p equivalentVariable from the set of equivalent variables for this
+     * variable if it is present.
+     *
+     * @sa removeEquivalence, setEquivalentTo
+     *
+     * @param equivalentVariable The variable to remove from this variable's equivalent
+     * variable set if it is present.
+     *
+     * @return True if the @p equivalentVariable is removed from set of equivalent variables, false otherwise.
+     */
     bool unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
+    /**
+     * @brief Test if the given variable is directly equivalent to this one.
+     *
+     * The two variables are considered directly equivalent if this variable holds a valid reference to the
+     * given variable.  Returns @c true if this variable holds a reference to the given variable
+     * and that that reference is a valid reference to the given variable.
+     *
+     * @param equivalentVariable The varialbe to test for equivalence to this one.
+     * @return @c true if the variables are equivalent @c false otherwise.
+     */
     bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     bool haveEquivalentVariables(const Variable *variable1, const Variable *variable2,
                                  std::vector<const Variable *> &testedVariables) const;
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
+    /**
+     * @brief Set the equivalent mapping id for this equivalence.
+     *
+     * Record the given id as the mapping id for the equivalence defined with this variable
+     * and the given one.  This id appears in the 'map_variables' element of the model when
+     * serialised.
+     *
+     * To clear an equivalence mapping id set it to the empty string. If the two variables are
+     * not equivalent the mapping id is not set.
+     *
+     * @param equivalentVariable The equivalent variable the id refers to.
+     * @param id @c std::string id to set.
+     */
     void setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id);
+
+    /**
+     * @brief Set the equivalent connection id for this equivalence.
+     *
+     * Record the given id as the connection id for the equivalence defined with this variable
+     * and the given one.  This id appears in the 'connection' element of the model when serialised.
+     *
+     * Where the same component pair has multiple equivalent variables only the last connection id
+     * found in the set will be serialised.
+     *
+     * To clear an equivalence connection id set it to the empty string.  If the two variables are not
+     * equivalent the connection id is not set.
+     *
+     * @param equivalentVariable The equivalent variable the id refers to.
+     * @param id @c std::string id to set.
+     */
     void setEquivalentConnectionId(const VariablePtr &equivalentVariable, const std::string &id);
 
+    /**
+     * @brief Get the equivalent mapping id for this equivalence.
+     *
+     * Get the mapping id set for the equivalence defined by the this variable and the given one.
+     * If no mapping id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param equivalentVariable The variable this variable is equivalent to.
+     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     */
     std::string getEquivalentMappingId(const VariablePtr &equivalentVariable) const;
+
+    /**
+     * @brief Get the equivalent connection id for this equivalence.
+     *
+     * Get the connection id set for the equivalence defined by the this variable and the given one.
+     * If no connection id is set the empty string is returned.
+     *
+     * If the two variables are not equivalent the empty string is returned.
+     *
+     * @param equivalentVariable The variable this variable is equivalent to.
+     * @return The @c std::string id of the equivalence if found otherwise returns the empty string.
+     */
     std::string getEquivalentConnectionId(const VariablePtr &equivalentVariable) const;
 
     std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);

@@ -41,16 +41,143 @@ struct Parser::ParserImpl
 {
     Parser *mParser = {};
 
+    /**
+     * @brief Update the @p model with attributes parsed from a @c std::string.
+     *
+     * Update the @p model with attributes and entities parsed from
+     * the @c std::string @p input. Any entities or attributes in @p model with names
+     * matching those in @p input will be overwritten.
+     *
+     * @param model The @c ModelPtr to update.
+     * @param input The string to parse and update the @p model with.
+     */
     void loadModel(const ModelPtr &model, const std::string &input);
+
+    /**
+     * @brief Update a @p model with the attributes from a @c std::string.
+     *
+     * Update the @p model with entities and attributes
+     * from the @c std::string @p input. Any entities or attributes
+     * in the @p model with names matching those in @p input
+     * will be overwritten.
+     *
+     * @param model The @c ModelPtr to update.
+     * @param input The string to parse and update the @p model with.
+     */
     void updateModel(const ModelPtr &model, const std::string &input);
+
+    /**
+     * @brief Update the @p component with attributes parsed from @p node.
+     *
+     * Update the @p component with attributes and entities parsed from
+     * the XML @p node. Any entities or attributes in @p component with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param component The @c ComponentPtr to update.
+     * @param node The @c XmlNodePtr to parse and update the @p component with.
+     */
     void loadComponent(const ComponentPtr &component, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p model with a connection parsed from @p node.
+     *
+     * Update the @p model with connection information parsed from
+     * the XML @p node. Connection information from @p node will be added
+     * to any variable equivalence relationships already existing in @p model.
+     *
+     * @param model The @c ModelPtr to update.
+     * @param node The @c XmlNodePtr to parse and update the model with.
+     */
     void loadConnection(const ModelPtr &model, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p model with an encapsulation parsed from @p node.
+     *
+     * Update the @p model with encapsulation information parsed from
+     * the XML @p node. Encapsulation relationships from @p node will be added
+     * to any encapsulations relationships already in @p model.
+     *
+     * @param model The @c ModelPtr to update.
+     * @param node The @c XmlNodePtr to parse and update the model with.
+     */
     void loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p import source with attributes parsed from @p node and add any imported
+     * components or units it to the @p model.
+     *
+     * Update the @p import source with attributes parsed from @p node and add any imported
+     * components or units to the @p model. If any attributes exist in @p import source
+     * with names matching those in @p node, they will be overwritten. Likewise,
+     * any imported components or units of the same name already in @p model will
+     * be overwritten by those parsed from @p node.
+     *
+     * @param importSource The @c ImportSourcePtr to update.
+     * @param model The @c ModelPtr to add imported components/units to.
+     * @param node The @c XmlNodePtr to parse and update the @p import source with.
+     */
     void loadImport(const ImportSourcePtr &importSource, const ModelPtr &model, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p units with attributes parsed from @p node.
+     *
+     * Update the @p units by parsing the XML @p node.
+     * Existing attributes in @p units with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param units The @c UnitsPtr to update.
+     * @param node The @c XmlNodePtr to parse and update the @p units with.
+     */
     void loadUnits(const UnitsPtr &units, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p units with a unit parsed from @p node.
+     *
+     * Update the @p units with a unit parsed from the XML @p node.
+     * If a unit with the same name exists in @p units, it will be
+     * overwritten by the unit from @p node.
+     *
+     * @param units The @c UnitsPtr to update.
+     * @param node The unit @c XmlNodePtr to parse and update the @p units with.
+     */
     void loadUnit(const UnitsPtr &units, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p variable with attributes parsed from @p node.
+     *
+     * Update the @p variable with attributes parsed from
+     * the XML @p node. Existing attributes in @p variable with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param variable The @c VariablePtr to update.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
     void loadVariable(const VariablePtr &variable, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p reset with attributes parsed from the @p node.
+     *
+     * Update the @p reset with attributes parsed from
+     * the XML @p node. Existing attributes in @p reset with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param reset The @c ResetPtr to update.
+     * @param component The @c ComponentPtr the reset belongs to.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
     void loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node);
+
+    /**
+     * @brief Update the @p when with attributes parsed from the @p node.
+     *
+     * Update the @p when with attributes parsed from
+     * the XML @p node. Existing attributes in @p when with names
+     * matching those in @p node will be overwritten.
+     *
+     * @param when The @c WhenPtr to update.
+     * @param reset The @c ResetPtr the when belongs to.
+     * @param node The @c XmlNodePtr to parse and update the @p variable with.
+     */
     void loadWhen(const WhenPtr &when, const ResetPtr &reset, const XmlNodePtr &node);
 };
 

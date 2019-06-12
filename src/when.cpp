@@ -25,8 +25,8 @@ namespace libcellml {
  */
 struct When::WhenImpl
 {
-    std::string mCondition;
-    std::string mValue;
+    std::string mCondition; /**< A string of math for determining the condition for transitioning from False to True.*/
+    std::string mValue; /**< A string of math for assigning.*/
 };
 
 When::When()
