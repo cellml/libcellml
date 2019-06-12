@@ -47,8 +47,6 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
  */
 struct Variable::VariableImpl
 {
-    std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
-    std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
     std::vector<VariableWeakPtr> mEquivalentVariables;
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap;
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap;
@@ -70,6 +68,9 @@ struct Variable::VariableImpl
 
     std::string getEquivalentMappingId(const VariablePtr &equivalentVariable) const;
     std::string getEquivalentConnectionId(const VariablePtr &equivalentVariable) const;
+
+    std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
+    std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
 };
 
 std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
