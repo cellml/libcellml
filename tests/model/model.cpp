@@ -75,9 +75,9 @@ TEST(Model, invalidName) {
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"invalid name\"/>\n";
 
     libcellml::Model m;
-    m.setName(n);
+    m.setName(in);
 
-    EXPECT_EQ(n, m.getName());
+    EXPECT_EQ(in, m.getName());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);

@@ -475,7 +475,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename, std::
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs
                     else {
                         xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
-                        if (URIPtr == NULL) {
+                        if (URIPtr == nullptr) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Import of component '" + componentName +
                                                 "' has an invalid URI in the href attribute, '" + importSource + "'. ");
@@ -536,7 +536,7 @@ void Validator::validateModel(const ModelPtr &model, std::string filename, std::
                     /// @cellml2_5 5.1.1 Check that xlink:href meets XLink specs 
                     else {
                         xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
-                        if (URIPtr == NULL) {
+                        if (URIPtr == nullptr) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Import of units '" + unitsName +
                                                 "' has an invalid URI in the href attribute, '" + importSource + "'. ");
@@ -749,23 +749,23 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &findPat
     while (childNode) {
         if (childNode->isCellmlElement(findType.c_str())) {
             // Concrete type: check name attribute for findName
-            XmlAttributePtr attribute = childNode->getFirstAttribute();
-            while (attribute) {
-                if (attribute->isType("name")) {
-                    if (attribute->getValue() == findName) {
+            XmlAttributePtr childAttribute = childNode->getFirstAttribute();
+            while (childAttribute) {
+                if (childAttribute->isType("name")) {
+                    if (childAttribute->getValue() == findName) {
                         // Stop searching, have reached concrete definition for this item, delete history and return
                         std::vector<std::pair<std::string,std::string>>().swap(history);
                         return;
                     }
-                } else if (attribute->isType("id")) {
+                } else if (childAttribute->isType("id")) {
                     // Skip
                 } else {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Element 'import "+findType+"' in file '" + fileToOpen +
-                                        "' has an invalid attribute '" + attribute->getName() + "'.");
+                                        "' has an invalid attribute '" + childAttribute->getName() + "'.");
                     mValidator->addError(err);
                 }
-                attribute = attribute->getNext();
+                childAttribute = childAttribute->getNext();
             } 
         }
         else if (childNode->isCellmlElement("import")) {
@@ -793,21 +793,21 @@ void Validator::ValidatorImpl::checkImportIsAvailable(const std::string &findPat
             
             while (importChild) {
                 if (importChild->isCellmlElement(findType.c_str())) {
-                    XmlAttributePtr importAttribute = importChild->getFirstAttribute();
+                    XmlAttributePtr importChildAttribute = importChild->getFirstAttribute();
                     std::string import_name = "";
                     bool useMe = false;
 
-                    while (importAttribute) {
-                        if ((importAttribute->isType("name")) && (importAttribute->getValue()== findName)) {
+                    while (importChildAttribute) {
+                        if ((importChildAttribute->isType("name")) && (importChildAttribute->getValue()== findName)) {
                             useMe = true;
-                        } else if (importAttribute->isType(findType_ref.c_str())) {
+                        } else if (importChildAttribute->isType(findType_ref.c_str())) {
                             import_name = importAttribute->getValue();
-                        } else if (importAttribute->isType("id")) {
+                        } else if (importChildAttribute->isType("id")) {
                             // Skip
                         } else {
                             // TODO Add some error here?
                         }
-                        importAttribute = importAttribute->getNext();
+                        importChildAttribute = importChildAttribute->getNext();
                     } 
 
                     if (useMe) {
@@ -912,8 +912,8 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
             if (history.front() == history.back()) {
                 ErrorPtr err = std::make_shared<Error>();
                 std::string des = "'";
-                for (size_t i = 0; i < history.size() - 1; ++i) {
-                    des += history[i] + "' -> '";
+                for (size_t j = 0; j < history.size() - 1; ++j) {
+                    des += history[j] + "' -> '";
                 }
                 des += history[history.size() - 1]+"'";
                 err->setDescription("Cyclic units exist: " + des);
