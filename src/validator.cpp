@@ -45,21 +45,189 @@ struct Validator::ValidatorImpl
 {
     Validator *mValidator = {};
 
+    /**
+     * @brief Validate the @p component using the CellML 2.0 Specification.
+     *
+     * Validate the given @p component and its encapsulated entities using
+     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+     *
+     * @param component The component to validate.
+     */
     void validateComponent(const ComponentPtr &component);
+
+    /**
+     * @brief Validate the @p units using the CellML 2.0 Specification.
+     *
+     * Validate the given @p units and its encapsulated entities using
+     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+     *
+     * @param units The units to validate.
+     * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
+     */
     void validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames);
+
+    /**
+     * @brief Validate the variable connections in the @p model using the CellML 2.0 Specification.
+     *
+     * Validate the variable connections in the given @p model using
+     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+     *
+     * @param model The model which may contain variable connections to validate.
+     */
     void validateConnections(const ModelPtr &model);
+
+    /**
+     * @brief Check if the provided @p name is a valid CellML identifier.
+     *
+     * Checks if the provided @p name is a valid CellML identifier according
+     * to the CellML 2.0 specification. This requires a non-zero length Unicode
+     * character sequence containing basic Latin alphanumeric characters or
+     * underscores that does not start with a number.
+     *
+     * @param name The @c std::string name to check the validity of.
+     *
+     * @return @c true if @name is a valid CellML identifier and @c false otherwise.
+     */
     bool isCellmlIdentifier(const std::string &name);
+
+    /**
+     * @brief Validate the @c unit at index @c index from @p units using the CellML 2.0 Specification.
+     *
+     * Validate the @c unit at index @c index from @p units using
+     * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
+     *
+     * @param index The index of the @c unit to validate from @p units.
+     * @param units The units to validate.
+     * @param unitsNames A vector list of the name attributes of the @p units and its siblings.
+     */
     void validateUnitsUnit(size_t index, const UnitsPtr &units, const std::vector<std::string> &unitsNames);
+
+    /**
+     * @brief Validate the @p variable using the CellML 2.0 Specification.
+     *
+     * Validate the given @p variable using the CellML 2.0 Specification.
+     * Any errors will be logged in the @c Validator.
+     *
+     * @param variable The variable to validate.
+     * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
+     */
     void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames);
+
+    /**
+     * @brief Validate the @p reset using the CellML 2.0 Specification.
+     *
+     * Examine the @p reset for conformance to the CellML 2.0 specification.  Any
+     * errors will be logged in the @c Validator.
+     *
+     * @param reset The reset to validate.
+     * @param component The component the reset belongs to.
+     */
     void validateReset(const ResetPtr &reset, const ComponentPtr &component);
+
+    /**
+     * @brief Validate the @p when using the CellML 2.0 specification.
+     *
+     * Examine the @p when for conformance to the CellML 2.0 specification.  Any
+     * errors will be logged in the @c Validator.
+     *
+     * @param when The when to validate.
+     * @param reset The reset the when belongs to.
+     * @param component The component the reset belongs to.
+     */
     void validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component);
+
+    /**
+     * @brief Validate the math @p input @c std::string.
+     *
+     * Validate the math @p input @c std::string using the CellML 2.0 Specification and
+     * the W3C MathML DTD. Any errors will be logged in the @c Validator.
+     *
+     * @param input The math @c std::string to validate.
+     * @param component The component containing the math @c std::string to be validated.
+     */
     void validateMath(const std::string &input, const ComponentPtr &component);
+
+    /**
+     * @brief Populate @p bvarNames with new variables declared in MathML @c bvar elements.
+     *
+     * Populate @p bvarNames with new variables declared in MathML @c bvar elements found within
+     * the XmlNode @p node.
+     *
+     * @param node The @c XmlNode to search for @c bvar element names.
+     * @param bvarNames The @c std::string @c vector to populate with MathML @c bvar element names.
+     */
     void gatherMathBvarVariableNames(XmlNodePtr &node, std::vector<std::string> &bvarNames);
+
+    /**
+     * @brief Traverse the node tree for invalid MathML elements.
+     *
+     * Traverse the Xml node tree checking that all MathML elements are listed in the
+     * supported MathML elements table from the CellML specification 2.0 document.
+     *
+     * @param node The node to check children and sibling nodes.
+     * @param component The component the MathML belongs to.
+     */
     void validateMathMLElements(const XmlNodePtr &node, const ComponentPtr &component);
+
+    /**
+     * @brief Validate CellML variables and units in MathML @c ci and @c cn variables. Removes CellML units from the @p node.
+     *
+     * Validates CellML variables found in MathML @c ci elements and new variables from @c bvar elements. Validates @c cellml:units
+     * attributes found on @c ci and @c cn elements and removes them from the @c XmlNode @p node to leave MathML that may then
+     * be validated using the MathML DTD.
+     *
+     * @param node The @c XmlNode to validate CellML entities on and remove @c cellml:units from.
+     * @param component The component that the math @c XmlNode @p node is contained within.
+     * @param variableNames A @c vector list of the names of variables found within the @p component.
+     * @param bvarNames A @c vector list of the names of new MathML @c bvar variables in this @c XmlNode @p node.
+     */
     void validateAndCleanMathCiCnNodes(XmlNodePtr &node, const ComponentPtr &component, const std::vector<std::string> &variableNames, const std::vector<std::string> &bvarNames);
+
+    /**
+     * @brief Remove the @c std::string @p pattern from the @c std::string @p input.
+     *
+     * Remove all occurrences of the @c std::string @p pattern from the @c std::string @p input.
+     *
+     * @param input The @c std::string to remove all occurrences of the @p pattern from.
+     * @param pattern The @c std::string to remove from the @c std::string @p input.
+     */
     void removeSubstring(std::string &input, const std::string &pattern);
+
+    /**
+     * @brief Check if the provided @p name is a standard unit.
+     *
+     * Checks if the provided @p name is one of the standard units in the
+     * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
+     * and @c false otherwise.
+     *
+     * @param name The @c std::string name to check against the list of standard units.
+     *
+     * @return @c true if @name is a standard unit and @c false otherwise.
+     */
     bool isStandardUnitName(const std::string &name);
+
+    /**
+     * @brief Check if the provided @p name is a standard prefix.
+     *
+     * Checks if the provided @p name is one of the standard prefixes in the
+     * @c Prefix @c enum. Returns @c true if @name is a standard prefix
+     * and @c false otherwise.
+     *
+     * @param name The @c std::string name to check against the list of standard prefixes.
+     *
+     * @return @c true if @name is a standard prefix and @c false otherwise.
+     */
     bool isStandardPrefixName(const std::string &name);
+
+    /**
+     * @brief Check if the provided @p node is a supported MathML element.
+     *
+     * Checks if the provided @p node is one of the supported MathML elements defined in the table
+     * of supported MathML elements from the CellML specification version 2.0 document.
+     *
+     * @param node The @c XmlNode node to check against the list of supported MathML elements.
+     * @return @c true if @node is a supported MathML element and @c false otherwise.
+     */
     bool isSupportedMathMLElement(const XmlNodePtr &node);
 };
 

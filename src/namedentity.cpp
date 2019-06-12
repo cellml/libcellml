@@ -27,7 +27,7 @@ namespace libcellml {
  */
 struct NamedEntity::NamedEntityImpl
 {
-    std::string mName;
+    std::string mName; /**< Entity name represented as a std::string. */
 };
 
 NamedEntity::NamedEntity()
