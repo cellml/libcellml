@@ -20,7 +20,7 @@ objects are updated)";
 variables.";
 
 %feature("docstring") libcellml::Variable::isEquivalentVariable
-"Test if the given variable is equivalent to this variable.";
+"Tests whether the argument variable is equivalent to this variable.";
 
 %feature("docstring") libcellml::Variable::removeEquivalence
 "Removes an equivalence between this variable and the given one (both objects
