@@ -29,8 +29,15 @@ limitations under the License.
 
 TEST(ComponentImport, basics)
 {
-    const std::string e;
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"a-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"bob\" name=\"\"/>\n"
+        "  </import>\n"
+        "</model>\n";
 
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");
 
@@ -45,8 +52,10 @@ TEST(ComponentImport, basics)
     EXPECT_EQ(c->getImportSource(), imp);
     EXPECT_EQ(c->getImportReference(), "bob");
 
+    m.addComponent(c);
+
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
