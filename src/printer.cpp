@@ -40,7 +40,7 @@ using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition f
 using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
-using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair.*/
+using ComponentPair = std::pair<Component *, Component *>; /**< Type definition for Component pointer pair.*/
 using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
 using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
@@ -82,8 +82,8 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
     ComponentMap serialisedComponentMap;
     size_t componentMapIndex1 = 0;
     for (auto iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
-        ComponentPtr currentComponent1 = iterPair->first;
-        ComponentPtr currentComponent2 = iterPair->second;
+        Component *currentComponent1 = iterPair->first;
+        Component *currentComponent2 = iterPair->second;
         ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
         ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
         // Check whether this set of connections has already been serialised.
@@ -106,8 +106,8 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         // Check for subsequent variable equivalence pairs with the same parent components.
         size_t componentMapIndex2 = componentMapIndex1 + 1;
         for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
-            ComponentPtr nextComponent1 = iterPair2->first;
-            ComponentPtr nextComponent2 = iterPair2->second;
+            Component *nextComponent1 = iterPair2->first;
+            Component *nextComponent2 = iterPair2->second;
             VariablePair variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                 mappingVariables += printMapVariables(variablePair2, indent + tabIndent);
@@ -169,8 +169,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            ComponentPtr component1 = variable->getParentComponent();
-                            ComponentPtr component2 = equivalentVariable->getParentComponent();
+                            auto component1 = static_cast<Component *>(variable->getParent());
+                            auto component2 = static_cast<Component *>(equivalentVariable->getParent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2 != nullptr) {
@@ -181,8 +181,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                             // Add new unique variable equivalence pair to the VariableMap.
                             variableMap.push_back(variablePair);
                             // Also create a component map pair corresponding with the variable map pair.
-                            ComponentPair componentPair = std::make_pair(component1, component2);
-                            componentMap.push_back(componentPair);
+                            ComponentPair iterPair = std::make_pair(component1, component2);
+                            componentMap.push_back(iterPair);
                         }
                     }
                 }

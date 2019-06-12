@@ -20,10 +20,6 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 
-#ifndef SWIG
-template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Component>;
-#endif
-
 namespace libcellml {
 
 /**
@@ -32,10 +28,6 @@ namespace libcellml {
  * The Component class is for representing a CellML Component.
  */
 class LIBCELLML_EXPORT Component: public ComponentEntity, public ImportedEntity
-#ifndef SWIG
-    ,
-                                  public std::enable_shared_from_this<Component>
-#endif
 {
 public:
     Component(); /**< Constructor */

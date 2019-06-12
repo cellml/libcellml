@@ -408,7 +408,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "  </reset>\n"
         "</component>\n";
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::Component c;
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
     libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
@@ -417,7 +417,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
 
-    c->setName(in);
+    c.setName(in);
     v->setName("V_na");
 
     r1->setVariable(v);
@@ -431,34 +431,34 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     w2->setOrder(1);
     w3->setOrder(0);
 
-    c->addReset(r1);
-    c->addReset(r2);
-    c->addVariable(v);
+    c.addReset(r1);
+    c.addReset(r2);
+    c.addVariable(v);
 
     libcellml::Printer printer;
     std::string a = printer.printComponent(c);
     EXPECT_EQ(e1, a);
 
-    EXPECT_TRUE(c->removeReset(r2));
+    EXPECT_TRUE(c.removeReset(r2));
     a = printer.printComponent(c);
     EXPECT_EQ(e2, a);
-    EXPECT_FALSE(c->removeReset(r3));
+    EXPECT_FALSE(c.removeReset(r3));
 
-    c->addReset(r2);
-    c->addReset(r2);
-    c->removeAllResets();
+    c.addReset(r2);
+    c.addReset(r2);
+    c.removeAllResets();
     a = printer.printComponent(c);
     EXPECT_EQ(e3, a);
 
-    c->addReset(r1);
-    c->addReset(r2);
-    c->addReset(r3);
+    c.addReset(r1);
+    c.addReset(r2);
+    c.addReset(r3);
 
-    EXPECT_TRUE(c->removeReset(0)); // r1
-    EXPECT_TRUE(c->removeReset(1)); // new index of r3
+    EXPECT_TRUE(c.removeReset(0)); // r1
+    EXPECT_TRUE(c.removeReset(1)); // new index of r3
     a = printer.printComponent(c);
     EXPECT_EQ(e4, a);
-    EXPECT_FALSE(c->removeReset(1));
+    EXPECT_FALSE(c.removeReset(1));
 }
 
 TEST(Reset, getResetFromComponentMethod)

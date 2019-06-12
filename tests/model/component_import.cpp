@@ -60,7 +60,7 @@ TEST(ComponentImport, singleImportA)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
@@ -73,9 +73,9 @@ TEST(ComponentImport, singleImportA)
 
     EXPECT_EQ(importedComponent->getImportSource(), imp);
 
-    EXPECT_EQ(size_t(0), m->componentCount());
-    m->addComponent(importedComponent);
-    EXPECT_EQ(size_t(1), m->componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
+    m.addComponent(importedComponent);
+    EXPECT_EQ(size_t(1), m.componentCount());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -92,7 +92,7 @@ TEST(ComponentImport, singleImportB)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
@@ -100,7 +100,7 @@ TEST(ComponentImport, singleImportB)
     importedComponent->setName("component_in_this_model");
     importedComponent->setImportSource(imp);
     importedComponent->setImportReference("a_component_in_that_model");
-    m->addComponent(importedComponent);
+    m.addComponent(importedComponent);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -117,7 +117,7 @@ TEST(ComponentImport, nonExistentURLAndParse)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("http://someplace.world/cellml/model.xml");
 
@@ -130,9 +130,9 @@ TEST(ComponentImport, nonExistentURLAndParse)
 
     EXPECT_EQ(importedComponent->getImportSource(), imp);
 
-    EXPECT_EQ(size_t(0), m->componentCount());
-    m->addComponent(importedComponent);
-    EXPECT_EQ(size_t(1), m->componentCount());
+    EXPECT_EQ(size_t(0), m.componentCount());
+    m.addComponent(importedComponent);
+    EXPECT_EQ(size_t(1), m.componentCount());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -171,24 +171,24 @@ TEST(ComponentImport, multipleImportAndParse)
         "  </import>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     c1->setName("c1");
     c1->setSourceComponent(imp, "cc1");
-    m->addComponent(c1);
+    m.addComponent(c1);
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     c2->setName("c2");
     c2->setSourceComponent(imp, "cc2");
-    m->addComponent(c2);
+    m.addComponent(c2);
 
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
     imp2->setUrl("some-other-model.xml");
     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
     c3->setName("c3");
     c3->setSourceComponent(imp2, "cc1");
-    m->addComponent(c3);
+    m.addComponent(c3);
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -221,13 +221,13 @@ TEST(ComponentImport, hierarchicalImportAndParse)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
     libcellml::ComponentPtr dave = std::make_shared<libcellml::Component>();
     dave->setName("dave");
-    m->addComponent(dave);
+    m.addComponent(dave);
 
     libcellml::ComponentPtr bob = std::make_shared<libcellml::Component>();
     bob->setName("bob");
@@ -278,13 +278,13 @@ TEST(ComponentImport, complexImportAndParse)
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("some-other-model.xml");
 
     libcellml::ComponentPtr dave = std::make_shared<libcellml::Component>();
     dave->setName("dave");
-    m->addComponent(dave);
+    m.addComponent(dave);
 
     libcellml::ComponentPtr bob = std::make_shared<libcellml::Component>();
     bob->setName("bob");
