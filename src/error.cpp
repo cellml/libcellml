@@ -80,7 +80,7 @@ Error &Error::operator=(Error rhs)
 
 void Error::swap(Error &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 Error::Error(const ModelPtr &model)

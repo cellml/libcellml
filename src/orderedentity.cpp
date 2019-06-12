@@ -67,7 +67,7 @@ OrderedEntity &OrderedEntity::operator=(OrderedEntity rhs)
 
 void OrderedEntity::swap(OrderedEntity &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void OrderedEntity::setOrder(int order)

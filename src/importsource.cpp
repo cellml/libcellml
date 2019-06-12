@@ -65,7 +65,7 @@ ImportSource &ImportSource::operator=(ImportSource rhs)
 
 void ImportSource::swap(ImportSource &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 std::string ImportSource::getUrl() const

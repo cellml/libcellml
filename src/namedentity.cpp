@@ -63,7 +63,7 @@ NamedEntity &NamedEntity::operator=(NamedEntity rhs)
 
 void NamedEntity::swap(NamedEntity &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void NamedEntity::setName(const std::string &name)
