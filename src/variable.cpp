@@ -47,6 +47,7 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
  */
 struct Variable::VariableImpl
 {
+    Variable *mVariable = {};
     std::vector<VariableWeakPtr> mEquivalentVariables;
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap;
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap;
@@ -57,11 +58,11 @@ struct Variable::VariableImpl
     void setEquivalentTo(const VariablePtr &equivalentVariable);
     bool unsetEquivalentTo(const VariablePtr &equivalentVariable);
 
-    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
+    bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
-    bool areEquivalentVariables(const Variable *variable1,
-                                const Variable *variable2,
-                                std::vector<const Variable *> &testedVariables) const;
+    bool haveEquivalentVariables(const Variable *variable1, const Variable *variable2,
+                                 std::vector<const Variable *> &testedVariables) const;
+    bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
     void setEquivalentMappingId(const VariablePtr &equivalentVariable, const std::string &id);
     void setEquivalentConnectionId(const VariablePtr &equivalentVariable, const std::string &id);
@@ -88,6 +89,7 @@ std::vector<VariableWeakPtr>::iterator Variable::VariableImpl::findEquivalentVar
 Variable::Variable()
     : mPimpl(new VariableImpl())
 {
+    mPimpl->mVariable = this;
 }
 
 Variable::~Variable()
@@ -99,6 +101,7 @@ Variable::Variable(const Variable &rhs)
     : NamedEntity(rhs)
     , mPimpl(new VariableImpl())
 {
+    mPimpl->mVariable = rhs.mPimpl->mVariable;
     mPimpl->mEquivalentVariables = rhs.mPimpl->mEquivalentVariables;
     mPimpl->mConnectionIdMap = rhs.mPimpl->mConnectionIdMap;
     mPimpl->mMappingIdMap = rhs.mPimpl->mMappingIdMap;
@@ -170,19 +173,12 @@ size_t Variable::equivalentVariableCount() const
     return mPimpl->mEquivalentVariables.size();
 }
 
-bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
+bool Variable::hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
-    return mPimpl->hasEquivalentVariable(equivalentVariable);
+    return mPimpl->hasDirectEquivalentVariable(equivalentVariable);
 }
 
-bool Variable::isEquivalentVariable(const VariablePtr &equivalentVariable) const
-{
-    std::vector<const Variable *> testedVariables;
-
-    return mPimpl->areEquivalentVariables(this, equivalentVariable.get(), testedVariables);
-}
-
-bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
+bool Variable::VariableImpl::hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const
 {
     auto it = findEquivalentVariable(equivalentVariable);
     if (it == mEquivalentVariables.end()) {
@@ -191,12 +187,32 @@ bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalent
     return !it->expired();
 }
 
-bool Variable::VariableImpl::areEquivalentVariables(const Variable *variable1,
-                                                    const Variable *variable2,
-                                                    std::vector<const Variable *> &testedVariables) const
+bool Variable::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    return mPimpl->hasEquivalentVariable(equivalentVariable);
+}
+
+bool Variable::VariableImpl::hasEquivalentVariable(const VariablePtr &equivalentVariable) const
+{
+    if (mVariable == equivalentVariable.get()) {
+        return false;
+    }
+
+    std::vector<const Variable *> testedVariables;
+
+    return haveEquivalentVariables(mVariable, equivalentVariable.get(), testedVariables);
+}
+
+bool Variable::VariableImpl::haveEquivalentVariables(const Variable *variable1,
+                                                     const Variable *variable2,
+                                                     std::vector<const Variable *> &testedVariables) const
 {
     if (variable1 == variable2) {
         return true;
+    }
+
+    if (variable2 == nullptr) {
+        return false;
     }
 
     testedVariables.push_back(variable2);
@@ -205,7 +221,7 @@ bool Variable::VariableImpl::areEquivalentVariables(const Variable *variable1,
         Variable *equivalentVariable2 = variable2->getEquivalentVariable(i).get();
 
         if ((std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())
-            && areEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
+            && haveEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
             return true;
         }
     }
@@ -215,7 +231,7 @@ bool Variable::VariableImpl::areEquivalentVariables(const Variable *variable1,
 
 void Variable::VariableImpl::setEquivalentTo(const VariablePtr &equivalentVariable)
 {
-    if (!hasEquivalentVariable(equivalentVariable)) {
+    if (!hasDirectEquivalentVariable(equivalentVariable)) {
         VariableWeakPtr weakEquivalentVariable = equivalentVariable;
         mEquivalentVariables.push_back(weakEquivalentVariable);
     }
