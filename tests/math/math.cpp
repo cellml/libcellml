@@ -40,7 +40,7 @@ TEST(Maths, appendAndSerialiseMathComponent)
         "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     c->appendMath(EMPTY_MATH);
 
     libcellml::Printer printer;
@@ -56,7 +56,7 @@ TEST(Maths, appendAndResetMathComponent)
         "  <component/>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     c->appendMath(EMPTY_MATH);
     c->setMath("");
 

@@ -185,7 +185,7 @@ TEST(Reset, printResetWithVariable)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
@@ -211,7 +211,7 @@ TEST(Reset, printResetWithOrder)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     r->setOrder(1);
@@ -233,7 +233,7 @@ TEST(Reset, printResetWithOrderAndVariable)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -262,7 +262,7 @@ TEST(Reset, printResetWithWhen)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
@@ -290,7 +290,7 @@ TEST(Reset, printResetWithMultipleWhens)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
@@ -329,7 +329,7 @@ TEST(Reset, printResetWithWhenWithValueSet)
         "</math>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
@@ -380,7 +380,7 @@ TEST(Reset, printResetWithMultipleWhensWithValues)
         "</math>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
@@ -420,7 +420,7 @@ TEST(Reset, printResetWithMultipleWhensWithOrders)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
@@ -491,7 +491,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
     libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
