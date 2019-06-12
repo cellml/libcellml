@@ -65,21 +65,18 @@ TEST(Coverage, units)
     // Copy constructor
     libcellml::Units uc(um);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printUnits(uc);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ("dimensionless", uc.getName());
 }
 
 TEST(Coverage, when)
 {
-    const std::string e =
-        "<reset>\n"
-        "  <when/>\n"
-        "</reset>\n";
+    const std::string randomValue = "4738";
+
     libcellml::When w;
     libcellml::When wm;
     libcellml::Reset r;
 
+    w.setValue(randomValue);
     wm = std::move(w);
 
     libcellml::When wc(wm);
@@ -87,9 +84,7 @@ TEST(Coverage, when)
     libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
     r.addWhen(wp);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printReset(r);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(randomValue, wc.getValue());
 }
 
 TEST(Coverage, unitsGetVariations)
@@ -180,13 +175,14 @@ TEST(Coverage, prefixToString)
 TEST(Coverage, variable)
 {
     const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
+    const std::string dimensionless = "dimensionless";
     libcellml::Variable v;
     libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
     v.setInitialValue(1.0);
     v.setInterfaceType("public");
-    u->setName("dimensionless");
+    u->setName(dimensionless);
     v.setUnits(u);
 
     vm = std::move(v);
@@ -194,18 +190,11 @@ TEST(Coverage, variable)
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printVariable(vc);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(dimensionless, vc.getUnits());
 }
 
 TEST(Coverage, component)
 {
-    const std::string e =
-        "<component name=\"name\">\n"
-        "  <variable/>\n"
-        "  <1+1=2>\n"
-        "</component>\n";
     const std::string math = "<1+1=2>\n";
     libcellml::Component c;
     libcellml::Component cm;
@@ -215,18 +204,14 @@ TEST(Coverage, component)
     c.addVariable(v);
     c.setMath(math);
 
-    libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), c.variableCount());
 
     cm = std::move(c);
-    a = printer.printComponent(cm);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), cm.variableCount());
 
     // Copy constructor
     libcellml::Component cc(cm);
-    a = printer.printComponent(cc);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), cc.variableCount());
 }
 
 TEST(Coverage, error)
