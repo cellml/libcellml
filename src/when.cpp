@@ -63,7 +63,7 @@ When &When::operator=(When rhs)
 
 void When::swap(When &rhs)
 {
-    std::swap(mPimpl, rhs.mPimpl);
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 void When::setCondition(const std::string &condition)

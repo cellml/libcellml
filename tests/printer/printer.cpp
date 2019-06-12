@@ -101,12 +101,12 @@ TEST(Printer, printEncapsulation)
         "</model>\n";
     const std::string e_child = "<component/>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
     parent->addComponent(child);
 
-    model->addComponent(parent);
+    model.addComponent(parent);
 
     libcellml::Printer printer;
     const std::string a_parent = printer.printModel(model);
@@ -130,14 +130,14 @@ TEST(Printer, printEncapsulationWithNames)
         "</model>\n";
     const std::string e_child = "<component name=\"child_component\"/>\n";
 
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::Model model;
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
     libcellml::ComponentPtr child = std::make_shared<libcellml::Component>();
     child->setName("child_component");
     parent->addComponent(child);
 
-    model->addComponent(parent);
+    model.addComponent(parent);
 
     libcellml::Printer printer;
     const std::string a_parent = printer.printModel(model);

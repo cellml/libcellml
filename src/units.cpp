@@ -162,7 +162,7 @@ Units &Units::operator=(Units rhs)
 
 void Units::swap(Units &rhs)
 {
-    std::swap(mPimpl, rhs.mPimpl);
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 bool Units::isBaseUnit() const

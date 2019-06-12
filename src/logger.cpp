@@ -64,7 +64,7 @@ Logger &Logger::operator=(Logger rhs)
 
 void Logger::swap(Logger &rhs)
 {
-    std::swap(mPimpl, rhs.mPimpl);
+    std::swap(this->mPimpl, rhs.mPimpl);
 }
 
 void Logger::clearErrors()
