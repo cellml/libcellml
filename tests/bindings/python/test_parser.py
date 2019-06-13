@@ -23,8 +23,8 @@ class ParserTestCase(unittest.TestCase):
         self.assertIsInstance(x, libcellml.Logger)
 
         # Test access to inherited methods
-        self.assertIsNone(x.getError(0))
-        self.assertIsNone(x.getError(-1))
+        self.assertIsNone(x.error(0))
+        self.assertIsNone(x.error(-1))
         self.assertEqual(x.errorCount(), 0)
         x.addError(libcellml.Error())
         self.assertEqual(x.errorCount(), 1)

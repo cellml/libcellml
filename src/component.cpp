@@ -44,7 +44,7 @@ struct Component::ComponentImpl
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
 {
     return std::find_if(mVariables.begin(), mVariables.end(),
-                        [=](const VariablePtr &v) -> bool { return v->getName() == name; });
+                        [=](const VariablePtr &v) -> bool { return v->name() == name; });
 }
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const VariablePtr &variable)
@@ -124,7 +124,7 @@ void Component::appendMath(const std::string &math)
     mPimpl->mMath.append(math);
 }
 
-std::string Component::getMath() const
+std::string Component::math() const
 {
     return mPimpl->mMath;
 }
@@ -142,37 +142,34 @@ void Component::addVariable(const VariablePtr &variable)
 
 bool Component::removeVariable(size_t index)
 {
-    bool status = false;
     if (index < mPimpl->mVariables.size()) {
         mPimpl->mVariables.erase(mPimpl->mVariables.begin() + int64_t(index));
-        status = true;
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 bool Component::removeVariable(const std::string &name)
 {
-    bool status = false;
     auto result = mPimpl->findVariable(name);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
-        status = true;
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 bool Component::removeVariable(const VariablePtr &variable)
 {
-    bool status = false;
     auto result = mPimpl->findVariable(variable);
     if (result != mPimpl->mVariables.end()) {
         mPimpl->mVariables.erase(result);
-        status = true;
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 void Component::removeAllVariables()
@@ -180,43 +177,41 @@ void Component::removeAllVariables()
     mPimpl->mVariables.clear();
 }
 
-VariablePtr Component::getVariable(size_t index) const
+VariablePtr Component::variable(size_t index) const
 {
-    VariablePtr variable = nullptr;
     if (index < mPimpl->mVariables.size()) {
-        variable = mPimpl->mVariables.at(index);
+        return mPimpl->mVariables.at(index);
     }
 
-    return variable;
+    return nullptr;
 }
 
-VariablePtr Component::getVariable(const std::string &name) const
+VariablePtr Component::variable(const std::string &name) const
 {
-    VariablePtr variable = nullptr;
     auto result = mPimpl->findVariable(name);
     if (result != mPimpl->mVariables.end()) {
-        variable = *result;
+        return *result;
     }
 
-    return variable;
+    return nullptr;
 }
 
 VariablePtr Component::takeVariable(size_t index)
 {
-    VariablePtr variable = nullptr;
-    variable = getVariable(index);
+    VariablePtr res = nullptr;
+    res = variable(index);
     removeVariable(index);
 
-    return variable;
+    return res;
 }
 
 VariablePtr Component::takeVariable(const std::string &name)
 {
-    VariablePtr variable = nullptr;
-    variable = getVariable(name);
+    VariablePtr res = nullptr;
+    res = variable(name);
     removeVariable(name);
 
-    return variable;
+    return res;
 }
 
 size_t Component::variableCount() const
@@ -241,25 +236,23 @@ void Component::addReset(const ResetPtr &reset)
 
 bool Component::removeReset(size_t index)
 {
-    bool status = false;
     if (index < mPimpl->mResets.size()) {
         mPimpl->mResets.erase(mPimpl->mResets.begin() + int64_t(index));
-        status = true;
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 bool Component::removeReset(const ResetPtr &reset)
 {
-    bool status = false;
     auto result = mPimpl->findReset(reset);
     if (result != mPimpl->mResets.end()) {
         mPimpl->mResets.erase(result);
-        status = true;
+        return true;
     }
 
-    return status;
+    return false;
 }
 
 void Component::removeAllResets()
@@ -267,14 +260,13 @@ void Component::removeAllResets()
     mPimpl->mResets.clear();
 }
 
-ResetPtr Component::getReset(size_t index) const
+ResetPtr Component::reset(size_t index) const
 {
-    ResetPtr reset = nullptr;
     if (index < mPimpl->mResets.size()) {
-        reset = mPimpl->mResets.at(index);
+        return mPimpl->mResets.at(index);
     }
 
-    return reset;
+    return nullptr;
 }
 
 size_t Component::resetCount() const

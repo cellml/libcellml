@@ -74,12 +74,12 @@ void Entity::setId(const std::string &id)
     mPimpl->mId = id;
 }
 
-std::string Entity::getId() const
+std::string Entity::id() const
 {
     return mPimpl->mId;
 }
 
-void *Entity::getParent() const
+void *Entity::parent() const
 {
     void *parent = nullptr;
     if (mPimpl->mParentComponent != nullptr) {
