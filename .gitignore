@@ -17,3 +17,6 @@ CMakeLists.txt.user
 # OS X hidden system files
 .DS_Store
 
+# VS Code configuration files
+.vscode/
+
