@@ -28,11 +28,13 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <deque>
 #include <map>
 #include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
+
 
 namespace libcellml {
 
