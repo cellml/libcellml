@@ -686,7 +686,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
         "Unit in units 'stark' does not have a valid units reference.",
-        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid real number or a SI prefix.",
+        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid integer or a SI prefix.",
     };
 
     libcellml::Parser p;
@@ -1026,10 +1026,8 @@ TEST(Validator, validMathCnElements)
     EXPECT_EQ(size_t(0), v.errorCount());
 }
 
-
 TEST(Validator, validateNoCyclesUnits)
 {
-
     std::vector<std::string> expectedErrors = {
         "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
         "Cyclic units exist: 'father' -> 'grandfather' -> 'brotherFromAnotherMother' -> 'father'",
@@ -1080,18 +1078,17 @@ TEST(Validator, validateNoCyclesUnits)
     u6->addUnit("mother", 0.0, 1.0, 1.0);
 
     v.validateModel(m);
-    EXPECT_EQ(0u, v.errorCount());
+    EXPECT_EQ(size_t(0), v.errorCount());
 
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1
     u1->addUnit("brotherFromAnotherMother", 0.0, 1.0, 1.0);
     v.validateModel(m);
 
-    EXPECT_EQ(3u, v.errorCount());
+    EXPECT_EQ(size_t(3), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); i++) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
     }
 }
-
 
 TEST(Validator, equivalentVariableUnitMultiplierPrefix)
 {
@@ -1152,6 +1149,5 @@ TEST(Validator, equivalentVariableUnitMultiplierPrefix)
 
     libcellml::Variable::addEquivalence(v1, v2);
     validator.validateModel(model);
-    EXPECT_EQ(0u, validator.errorCount());
-    printErrors(validator);
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
