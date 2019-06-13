@@ -581,3 +581,35 @@ TEST(Units, multipleAndParse)
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
 }
+
+TEST(Units, unitsWithPrefixOutOfRange)
+{
+    // int limit is 18,446,744,073,709,551,615
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    m->setName("myModel");
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName("myComponent");
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName("myVariable");
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    u->setName("myUnits");
+    u->addUnit("second", "18446744073709551616");
+
+    v->setUnits(u);
+    c->addVariable(v);
+    m->addComponent(c);
+    m->addUnits(u);
+
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
+
+    // TODO Removed this until validator actually does these checks - test just here for coverage
+    // EXPECT_EQ(size_t(1), validator.errorCount());
+    // EXPECT_EQ("Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.",
+    //           validator.getError(0)->getDescription());
+}
+
