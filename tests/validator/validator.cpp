@@ -1353,5 +1353,3 @@ TEST(Validator, figureEightVariableDependency)
     EXPECT_EQ(size_t(1), v.errorCount());
     EXPECT_EQ(error, v.getError(0)->getDescription());
 }
-
-

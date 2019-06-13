@@ -35,7 +35,6 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-
 namespace libcellml {
 
 /**
@@ -1074,7 +1073,7 @@ bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, s
                 if (variable->equivalentVariableCount() < 2) {
                     continue;
                 }
-                if ((std::find(allVariableList.begin(), allVariableList.end(), variable) != allVariableList.end())){
+                if ((std::find(allVariableList.begin(), allVariableList.end(), variable) != allVariableList.end())) {
                     continue;
                 }
                 for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
@@ -1143,7 +1142,7 @@ bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariableP
         }
         return true;
     }
-    
+
     checkList.push_back(child);
     for (size_t k = 0; k < child->equivalentVariableCount(); ++k) {
         VariablePtr eq = child->getEquivalentVariable(k);
