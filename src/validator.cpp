@@ -229,6 +229,27 @@ struct Validator::ValidatorImpl
      * @return @c true if @node is a supported MathML element and @c false otherwise.
      */
     bool isSupportedMathMLElement(const XmlNodePtr &node);
+
+    /**
+    * @brief Utility function called recursively from the @c isModelVariableCycleFree function
+    *
+    * @param parent Previous variable
+    * @param child Connected variable to start checking from
+    * @param checkList The helper string returned containing the list(s) of cyclic variables
+    */
+    bool cycleVariableFound(VariablePtr &parent, VariablePtr &child,
+                            std::deque<libcellml::VariablePtr> &checkList,
+                            std::vector<libcellml::VariablePtr> &allVariableList);
+
+    /**
+    * @brief Validate that there are no cycles in the equivalance network in the @p model
+    * using the CellML 2.0 Specification.  Called from the @c validateConnections function.
+    * Any errors will be logged in the @c Validator.
+    *
+    * @param model The model which may contain variable connections to validate.
+    * @param hintList The helper string returned containing the list(s) of cyclic variables
+    */
+    bool isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList);
 };
 
 Validator::Validator()
@@ -982,6 +1003,9 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
     // Check the components in this model.
+    std::string hints;
+    std::vector<std::string> hintList;
+
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->getComponent(i);
@@ -1015,10 +1039,121 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 }
             }
         }
+        if (!isModelVariableCycleFree(model, hintList)) {
+            ErrorPtr err = std::make_shared<Error>();
+            std::string des;
+            std::string loops;
+            loops = hintList.size() > 1 ? " loops" : " loop";
+            for (auto &s : hintList) {
+                des += s;
+            }
+            err->setDescription("Cyclic variables exist, " + std::to_string(hintList.size()) + loops + " found (Component, Variable):\n" + des);
+            err->setModel(model);
+            err->setKind(Error::Kind::VARIABLE);
+            mValidator->addError(err);
+        }
     }
 }
 
-// TODO: validateEncapsulations
+bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList)
+{
+    bool found = false;
+    std::deque<libcellml::VariablePtr> checkList = {};
+    std::vector<std::deque<libcellml::VariablePtr>> totalList = {};
+    std::vector<libcellml::VariablePtr> allVariableList = {};
+
+    if (model->componentCount() > 0) {
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            ComponentPtr component = model->getComponent(i);
+
+            for (size_t j = 0; j < component->variableCount(); ++j) {
+                VariablePtr variable = component->getVariable(j);
+
+                if (variable->equivalentVariableCount() < 2) {
+                    continue;
+                }
+                if ((std::find(allVariableList.begin(), allVariableList.end(), variable) != allVariableList.end())){
+                    continue;
+                }
+                for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                    std::deque<libcellml::VariablePtr>().swap(checkList);
+                    checkList.push_back(variable);
+
+                    VariablePtr eq = variable->getEquivalentVariable(k);
+
+                    if (cycleVariableFound(variable, eq, checkList, allVariableList)) {
+                        totalList.push_back(checkList);
+                        found = true;
+                    }
+                }
+            }
+        }
+    }
+    if (found) {
+        // Only report the loops which start with the lowest alphabetical variable name to reduce duplicate reporting
+        for (auto &list : totalList) {
+            std::string min = list.front()->getName();
+            bool useMe = true;
+            for (auto &var : list) {
+                if (min.compare(var->getName()) > 0) {
+                    useMe = false;
+                    break;
+                }
+            }
+            if (useMe) {
+                std::string description;
+                std::string reverseDescription;
+                std::string separator;
+
+                description = "";
+                separator = "";
+
+                for (VariablePtr &v : list) {
+                    auto *parent = static_cast<Component *>(v->getParent());
+                    description += separator + "('" + parent->getName() + "', '" + v->getName() + "')";
+                    reverseDescription = "('" + parent->getName() + "', '" + v->getName() + "')" + separator + reverseDescription;
+                    separator = " -> ";
+                }
+                description += "\n";
+                reverseDescription += "\n";
+
+                if ((std::find(hintList.begin(), hintList.end(), description) == hintList.end())
+                    && (std::find(hintList.begin(), hintList.end(), reverseDescription) == hintList.end())) {
+                    hintList.push_back(description);
+                }
+            }
+        }
+    }
+    return (!found);
+}
+
+bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariablePtr &child,
+                                                  std::deque<libcellml::VariablePtr> &checkList,
+                                                  std::vector<libcellml::VariablePtr> &allVariableList)
+{
+    allVariableList.push_back(child);
+
+    if (std::find(checkList.begin(), checkList.end(), child) != checkList.end()) {
+        checkList.push_back(child);
+        // Removing items from the start of the loop to avoid lasso shapes
+        while (checkList.front() != checkList.back()) {
+            checkList.pop_front();
+        }
+        return true;
+    }
+    
+    checkList.push_back(child);
+    for (size_t k = 0; k < child->equivalentVariableCount(); ++k) {
+        VariablePtr eq = child->getEquivalentVariable(k);
+        if (eq == parent) {
+            continue;
+        }
+        if (cycleVariableFound(child, eq, checkList, allVariableList)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
 {

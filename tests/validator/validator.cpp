@@ -704,7 +704,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 
 TEST(Validator, validateInvalidConnections)
 {
-    const std::vector<std::string> expectedErrors = {
+    std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
         "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
     };
@@ -715,52 +715,79 @@ TEST(Validator, validateInvalidConnections)
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp7 = std::make_shared<libcellml::Component>();
+
     libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v1_2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
     comp1->setName("component1");
     comp2->setName("component2");
     comp3->setName("component3");
     comp4->setName("component4");
+    comp5->setName("component5");
+    comp6->setName("component6");
+    comp7->setName("component7");
+
     v1_1->setName("variable1_1");
     v1_2->setName("variable1_2");
     v2->setName("variable2");
     v3->setName("variable3");
     v4->setName("variable4");
+    v5->setName("variable5");
+    v6->setName("variable6");
+    v7->setName("variable7");
 
     v1_1->setUnits("dimensionless");
     v1_2->setUnits("dimensionless");
     v2->setUnits("dimensionless");
     v3->setUnits("dimensionless");
     v4->setUnits("dimensionless");
+    v5->setUnits("dimensionless");
+    v6->setUnits("dimensionless");
+    v7->setUnits("dimensionless");
 
     comp1->addVariable(v1_1);
     comp1->addVariable(v1_2);
     comp2->addVariable(v2);
     comp3->addVariable(v3);
     comp4->addVariable(v4);
+    comp5->addVariable(v5);
+    comp6->addVariable(v6);
+    comp7->addVariable(v7);
     m->addComponent(comp1);
     m->addComponent(comp2);
     m->addComponent(comp3);
     m->addComponent(comp4);
+    m->addComponent(comp5);
+    m->addComponent(comp6);
+    m->addComponent(comp7);
 
     // Valid connections.
     libcellml::Variable::addEquivalence(v1_1, v2);
     libcellml::Variable::addEquivalence(v1_2, v2);
-    libcellml::Variable::addEquivalence(v1_1, v3);
     libcellml::Variable::addEquivalence(v1_1, v4);
     libcellml::Variable::addEquivalence(v2, v3);
-    libcellml::Variable::addEquivalence(v1_1, v3);
+    libcellml::Variable::addEquivalence(v5, v6); // valid here but duplicated below
+
+    // Not valid connections
+    libcellml::Variable::addEquivalence(v6, v5); // duplicated above, does not overwrite, skips silently
+
     // Make v4 a variable without a parent component.
     comp4->removeVariable(v4);
     // Remove all connections on v1_2, leaving dangling reciprocal connections.
     v1_2->removeAllEquivalences();
 
     v.validateModel(m);
+
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
@@ -1025,3 +1052,306 @@ TEST(Validator, validMathCnElements)
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 }
+
+TEST(Validator, validateNoCyclesSimple)
+{
+    // TODO Can two sibling variables in the same component be equivalent to one variable in another?
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v3, v1);
+
+    v.validateModel(m);
+
+    std::string error = "Cyclic variables exist, 1 loop found (Component, Variable):\n"
+                        "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n";
+    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(error, v.getError(0)->getDescription());
+}
+
+TEST(Validator, validateNoCyclesComplicated)
+{
+    // TODO Can two sibling variables in the same component be equivalent to one variable in another?
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp7 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp8 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp9 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp10 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp11 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp12 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp13 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp14 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp15 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp16 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp17 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1_2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1_3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1_4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v9 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v10 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v12 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v14 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v15 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v16 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v17 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    comp4->setName("component4");
+    comp5->setName("component5");
+    comp6->setName("component6");
+    comp7->setName("component7");
+    comp8->setName("component8");
+    comp9->setName("component9");
+    comp10->setName("component10");
+    comp11->setName("component11");
+    comp12->setName("component12");
+    comp13->setName("component13");
+    comp14->setName("component14");
+    comp15->setName("component15");
+    comp16->setName("component16");
+    comp17->setName("component17");
+
+    v1_1->setName("variable1_1");
+    v1_2->setName("variable1_2");
+    v1_3->setName("variable1_3");
+    v1_4->setName("variable1_4");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+    v5->setName("variable5");
+    v6->setName("variable6");
+    v7->setName("variable7");
+    v8->setName("variable8");
+    v9->setName("variable9");
+    v10->setName("variable10");
+    v11->setName("variable11");
+    v12->setName("variable12");
+    v13->setName("variable13");
+    v14->setName("variable14");
+    v15->setName("variable15");
+    v16->setName("variable16");
+    v17->setName("variable17");
+
+    v1_1->setUnits("dimensionless");
+    v1_2->setUnits("dimensionless");
+    v1_3->setUnits("dimensionless");
+    v1_4->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+    v4->setUnits("dimensionless");
+    v5->setUnits("dimensionless");
+    v6->setUnits("dimensionless");
+    v7->setUnits("dimensionless");
+    v8->setUnits("dimensionless");
+    v9->setUnits("dimensionless");
+    v10->setUnits("dimensionless");
+    v11->setUnits("dimensionless");
+    v12->setUnits("dimensionless");
+    v13->setUnits("dimensionless");
+    v14->setUnits("dimensionless");
+    v15->setUnits("dimensionless");
+    v16->setUnits("dimensionless");
+    v17->setUnits("dimensionless");
+
+    comp1->addVariable(v1_1);
+    comp1->addVariable(v1_2);
+    comp1->addVariable(v1_3);
+    comp1->addVariable(v1_4);
+
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    comp4->addVariable(v4);
+    comp5->addVariable(v5);
+    comp6->addVariable(v6);
+    comp7->addVariable(v7);
+    comp8->addVariable(v8);
+    comp9->addVariable(v9);
+    comp10->addVariable(v10);
+    comp11->addVariable(v11);
+    comp12->addVariable(v12);
+    comp13->addVariable(v13);
+    comp14->addVariable(v14);
+    comp15->addVariable(v15);
+    comp16->addVariable(v16);
+    comp17->addVariable(v17);
+
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+    m->addComponent(comp4);
+    m->addComponent(comp5);
+    m->addComponent(comp6);
+    m->addComponent(comp7);
+    m->addComponent(comp8);
+    m->addComponent(comp9);
+    m->addComponent(comp10);
+    m->addComponent(comp11);
+    m->addComponent(comp12);
+    m->addComponent(comp13);
+    m->addComponent(comp14);
+    m->addComponent(comp15);
+    m->addComponent(comp16);
+    m->addComponent(comp17);
+
+    libcellml::Variable::addEquivalence(v2, v4);
+    libcellml::Variable::addEquivalence(v3, v4);
+    libcellml::Variable::addEquivalence(v8, v6);
+    libcellml::Variable::addEquivalence(v2, v8);
+    libcellml::Variable::addEquivalence(v3, v6); // Loop formed: 2, 4, 3, 6, 8, 2
+
+    libcellml::Variable::addEquivalence(v6, v7);
+
+    // NB Attached loops (ie: a-b-c-a and b-c-d-b) *are* detected and handled but return too many variations of the loop
+    // (eg a-b-c-d, a-b-c, b-c-d, etc) to be viable as a hard-coded test, so have broken the attachment here.
+    // libcellml::Variable::addEquivalence(v3, v7);    // Second attached loop: 3, 6, 7
+
+    libcellml::Variable::addEquivalence(v9, v5);
+    libcellml::Variable::addEquivalence(v5, v1_2);
+    libcellml::Variable::addEquivalence(v1_2, v9); // Unattached loop: 5, 9, 1_2
+
+    libcellml::Variable::addEquivalence(v11, v4);
+    libcellml::Variable::addEquivalence(v11, v14);
+    libcellml::Variable::addEquivalence(v11, v13);
+    libcellml::Variable::addEquivalence(v11, v12);
+    libcellml::Variable::addEquivalence(v12, v15);
+    libcellml::Variable::addEquivalence(v12, v17);
+    libcellml::Variable::addEquivalence(v17, v16); // Complicated tree, no loops
+
+    libcellml::Variable::addEquivalence(v1_1, v8);
+    libcellml::Variable::addEquivalence(v1_3, v2);
+    // libcellml::Variable::addEquivalence(v1_4, v2);  // TODO Can two sibling variables in the same component be equivalent to one in another?
+
+    v.validateModel(m);
+
+    std::string error = "Cyclic variables exist, 2 loops found (Component, Variable):\n"
+                        "('component1', 'variable1_2') -> ('component5', 'variable5') -> ('component9', 'variable9') -> ('component1', 'variable1_2')\n"
+                        "('component2', 'variable2') -> ('component4', 'variable4') -> ('component3', 'variable3') -> ('component6', 'variable6') -> "
+                        "('component8', 'variable8') -> ('component2', 'variable2')\n";
+    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(error, v.getError(0)->getDescription());
+}
+
+TEST(Validator, figureEightVariableDependency)
+{
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    comp4->setName("component4");
+    comp5->setName("component5");
+    comp6->setName("component6");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+    v5->setName("variable5");
+    v6->setName("variable6");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+    v4->setUnits("dimensionless");
+    v5->setUnits("dimensionless");
+    v6->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    comp4->addVariable(v4);
+    comp5->addVariable(v5);
+    comp6->addVariable(v6);
+
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+    m->addComponent(comp4);
+    m->addComponent(comp5);
+    m->addComponent(comp6);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v1, v4);
+    libcellml::Variable::addEquivalence(v1, v5);
+    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v4, v5);
+
+    v.validateModel(m);
+
+    std::string error = "Cyclic variables exist, 2 loops found (Component, Variable):\n"
+                        "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n"
+                        "('component1', 'variable1') -> ('component4', 'variable4') -> ('component5', 'variable5') -> ('component1', 'variable1')\n";
+    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(error, v.getError(0)->getDescription());
+}
+
+
