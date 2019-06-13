@@ -612,4 +612,3 @@ TEST(Units, unitsWithPrefixOutOfRange)
     // EXPECT_EQ("Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.",
     //           validator.getError(0)->getDescription());
 }
-
