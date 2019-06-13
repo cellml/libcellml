@@ -20,7 +20,7 @@ class OrderedEntityTestCase(unittest.TestCase):
 
         x = When()
         x.setOrder(3)
-        self.assertEqual(3, x.getOrder())
+        self.assertEqual(3, x.order())
 
     def test_is_order_set(self):
         from libcellml import When
@@ -45,21 +45,21 @@ class OrderedEntityTestCase(unittest.TestCase):
         from libcellml import When
 
         x = When()
-        self.assertEqual("", x.getCondition())
+        self.assertEqual("", x.condition())
 
         x.setCondition("A MathML string.")
 
-        self.assertEqual("A MathML string.", x.getCondition())
+        self.assertEqual("A MathML string.", x.condition())
 
     def test_set_get_value(self):
         from libcellml import When
 
         x = When()
-        self.assertEqual("", x.getValue())
+        self.assertEqual("", x.value())
 
         x.setValue("A value MathML string.")
 
-        self.assertEqual("A value MathML string.", x.getValue())
+        self.assertEqual("A value MathML string.", x.value())
 
 
 if __name__ == '__main__':
