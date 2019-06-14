@@ -11,14 +11,14 @@ expected to be obtainable (the 'source'). The `ImportSource` also acts as a
 handle to indicate that imported entities originate from the same instance of
 that imported source.";
 
-%feature("docstring") libcellml::ImportSource::getUrl
+%feature("docstring") libcellml::ImportSource::url
 "Returns the URL of the source model (empty string if not set).";
 
 %feature("docstring") libcellml::ImportSource::setUrl
 "Sets the source model URL that this import source refers to (empty string to
 unset).";
 
-%feature("docstring") libcellml::ImportSource::getModel
+%feature("docstring") libcellml::ImportSource::model
 "Returns the Model that has been assigned to resolve this ImportSource.";
 
 %feature("docstring") libcellml::ImportSource::setModel

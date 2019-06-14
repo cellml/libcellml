@@ -64,7 +64,7 @@ public:
      *
      * @return The root XML element for this document.
      */
-    XmlNodePtr getRootNode() const;
+    XmlNodePtr rootNode() const;
 
     /**
      * @brief Add an @p error raised while parsing this XML document.
@@ -96,7 +96,7 @@ public:
      * @param index The index of the error to get.
      * @return The @c std::string form of the XML error.
      */
-    std::string getXmlError(size_t index) const;
+    std::string xmlError(size_t index) const;
 
 private:
     struct XmlDocImpl; /**< Forward declaration for pImpl idiom. */

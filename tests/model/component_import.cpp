@@ -43,14 +43,14 @@ TEST(ComponentImport, basics)
 
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
 
-    EXPECT_EQ(c->getImportSource(), nullptr);
-    EXPECT_EQ(c->getImportReference(), "");
+    EXPECT_EQ(c->importSource(), nullptr);
+    EXPECT_EQ(c->importReference(), "");
 
     c->setImportSource(imp);
     c->setImportReference("bob");
 
-    EXPECT_EQ(c->getImportSource(), imp);
-    EXPECT_EQ(c->getImportReference(), "bob");
+    EXPECT_EQ(c->importSource(), imp);
+    EXPECT_EQ(c->importReference(), "bob");
 
     m.addComponent(c);
 
@@ -75,12 +75,12 @@ TEST(ComponentImport, singleImportA)
 
     libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
 
-    EXPECT_EQ(importedComponent->getImportSource(), nullptr);
+    EXPECT_EQ(importedComponent->importSource(), nullptr);
 
     importedComponent->setName("component_in_this_model");
     importedComponent->setSourceComponent(imp, "a_component_in_that_model");
 
-    EXPECT_EQ(importedComponent->getImportSource(), imp);
+    EXPECT_EQ(importedComponent->importSource(), imp);
 
     EXPECT_EQ(size_t(0), m.componentCount());
     m.addComponent(importedComponent);
@@ -132,12 +132,12 @@ TEST(ComponentImport, nonExistentURLAndParse)
 
     libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
 
-    EXPECT_EQ(importedComponent->getImportSource(), nullptr);
+    EXPECT_EQ(importedComponent->importSource(), nullptr);
 
     importedComponent->setName("noble_na_channel");
     importedComponent->setSourceComponent(imp, "na_channel");
 
-    EXPECT_EQ(importedComponent->getImportSource(), imp);
+    EXPECT_EQ(importedComponent->importSource(), imp);
 
     EXPECT_EQ(size_t(0), m.componentCount());
     m.addComponent(importedComponent);
@@ -324,8 +324,8 @@ TEST(ComponentImport, complexImportAndParse)
     EXPECT_EQ(e, a);
 
     // check component counts
-    const libcellml::ComponentPtr constDave = model->getComponent("dave");
+    const libcellml::ComponentPtr constDave = model->component("dave");
     EXPECT_EQ(size_t(1), constDave->componentCount());
-    const libcellml::ComponentPtr constBob = constDave->getComponent("bob");
+    const libcellml::ComponentPtr constBob = constDave->component("bob");
     EXPECT_EQ(size_t(2), constBob->componentCount());
 }
