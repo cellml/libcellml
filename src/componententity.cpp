@@ -201,7 +201,7 @@ ComponentPtr ComponentEntity::component(const std::string &name, bool searchEnca
         foundComponent = *result;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
-            foundComponent = ComponentEntity::component(i)->component(name, searchEncapsulated);
+            foundComponent = component(i)->component(name, searchEncapsulated);
         }
     }
 
@@ -229,7 +229,7 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
         mPimpl->mComponents.erase(result);
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
-            foundComponent = ComponentEntity::component(i)->takeComponent(name, searchEncapsulated);
+            foundComponent = component(i)->takeComponent(name, searchEncapsulated);
         }
     }
 
@@ -264,7 +264,7 @@ bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const C
     bool status = replaceComponent(size_t(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin()), newComponent);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = ComponentEntity::component(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
+            status = component(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
         }
     }
 
