@@ -562,16 +562,16 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         childNode = childNode->getNext();
     }
     XmlAttributePtr attribute = node->getFirstAttribute();
-    bool unitsAttributePresent = false;
-    bool nameAttributePresent = false;
+    // bool unitsAttributePresent = false;
+    // bool nameAttributePresent = false;
     while (attribute) {
         if (attribute->isType("name")) {
-            nameAttributePresent = true;
+            // nameAttributePresent = true;
             variable->setName(attribute->getValue());
         } else if (attribute->isType("id")) {
             variable->setId(attribute->getValue());
         } else if (attribute->isType("units")) {
-            unitsAttributePresent = true;
+            // unitsAttributePresent = true;
             variable->setUnits(attribute->getValue());
         } else if (attribute->isType("interface")) {
             variable->setInterfaceType(attribute->getValue());
@@ -585,18 +585,20 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         }
         attribute = attribute->getNext();
     }
-    if (!nameAttributePresent) {
-        ErrorPtr err = std::make_shared<Error>(variable);
-        err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'name' attribute.");
-        err->setRule(SpecificationRule::VARIABLE_NAME);
-        mParser->addError(err);
-    }
-    if (!unitsAttributePresent) {
-        ErrorPtr err = std::make_shared<Error>(variable);
-        err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'units' attribute.");
-        err->setRule(SpecificationRule::VARIABLE_UNITS);
-        mParser->addError(err);
-    }
+    // TODO ********** Remove validation from parser *********************************
+    // if (!nameAttributePresent) {
+    //     ErrorPtr err = std::make_shared<Error>(variable);
+    //     err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'name' attribute.");
+    //     err->setRule(SpecificationRule::VARIABLE_NAME);
+    //     mParser->addError(err);
+    // }
+    // if (!unitsAttributePresent) {
+    //     ErrorPtr err = std::make_shared<Error>(variable);
+    //     err->setDescription("Variable '" + node->getAttribute("name") + "' is missing a required 'units' attribute.");
+    //     err->setRule(SpecificationRule::VARIABLE_UNITS);
+    //     mParser->addError(err);
+    // }
+    // TODO ---------- end Remove validation from parser -----------------------------
 }
 
 void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr &node)
