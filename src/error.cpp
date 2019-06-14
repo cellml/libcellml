@@ -137,7 +137,7 @@ void Error::setDescription(const std::string &description)
     mPimpl->mDescription = description;
 }
 
-std::string Error::getDescription() const
+std::string Error::description() const
 {
     return mPimpl->mDescription;
 }
@@ -147,7 +147,7 @@ void Error::setKind(Error::Kind kind)
     mPimpl->mKind = kind;
 }
 
-Error::Kind Error::getKind() const
+Error::Kind Error::kind() const
 {
     return mPimpl->mKind;
 }
@@ -166,7 +166,7 @@ void Error::setRule(SpecificationRule rule)
     mPimpl->mRule = rule;
 }
 
-SpecificationRule Error::getRule() const
+SpecificationRule Error::rule() const
 {
     return mPimpl->mRule;
 }
@@ -177,7 +177,7 @@ void Error::setComponent(const ComponentPtr &component)
     mPimpl->mKind = Error::Kind::COMPONENT;
 }
 
-ComponentPtr Error::getComponent() const
+ComponentPtr Error::component() const
 {
     return mPimpl->mComponent;
 }
@@ -188,7 +188,7 @@ void Error::setImportSource(const ImportSourcePtr &importSource)
     mPimpl->mKind = Error::Kind::IMPORT;
 }
 
-ImportSourcePtr Error::getImportSource() const
+ImportSourcePtr Error::importSource() const
 {
     return mPimpl->mImportSource;
 }
@@ -199,7 +199,7 @@ void Error::setModel(const ModelPtr &model)
     mPimpl->mKind = Error::Kind::MODEL;
 }
 
-ModelPtr Error::getModel() const
+ModelPtr Error::model() const
 {
     return mPimpl->mModel;
 }
@@ -210,7 +210,7 @@ void Error::setUnits(const UnitsPtr &units)
     mPimpl->mKind = Error::Kind::UNITS;
 }
 
-UnitsPtr Error::getUnits() const
+UnitsPtr Error::units() const
 {
     return mPimpl->mUnits;
 }
@@ -221,7 +221,7 @@ void Error::setVariable(const VariablePtr &variable)
     mPimpl->mKind = Error::Kind::VARIABLE;
 }
 
-VariablePtr Error::getVariable() const
+VariablePtr Error::variable() const
 {
     return mPimpl->mVariable;
 }
@@ -232,7 +232,7 @@ void Error::setReset(const ResetPtr &reset)
     mPimpl->mKind = Error::Kind::RESET;
 }
 
-ResetPtr Error::getReset() const
+ResetPtr Error::reset() const
 {
     return mPimpl->mReset;
 }
@@ -243,7 +243,7 @@ void Error::setWhen(const WhenPtr &when)
     mPimpl->mKind = Error::Kind::WHEN;
 }
 
-WhenPtr Error::getWhen() const
+WhenPtr Error::when() const
 {
     return mPimpl->mWhen;
 }
@@ -311,10 +311,10 @@ static const std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::MAP_VARIABLES_VARIABLE2, "18.1.2"},
     {SpecificationRule::MAP_VARIABLES_UNIQUE, "18.1.3"}};
 
-std::string Error::getSpecificationHeading() const
+std::string Error::specificationHeading() const
 {
     std::string heading = "X.Y.Z";
-    auto search = ruleToHeading.find(getRule());
+    auto search = ruleToHeading.find(rule());
     if (search != ruleToHeading.end()) {
         heading = search->second;
     }

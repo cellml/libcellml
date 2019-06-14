@@ -23,7 +23,7 @@ TEST(Variable, addAndGetEquivalentVariable)
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
-    EXPECT_EQ(v2, v1->getEquivalentVariable(0));
+    EXPECT_EQ(v2, v1->equivalentVariable(0));
 }
 
 TEST(Variable, addAndGetEquivalentVariableReciprocal)
@@ -31,7 +31,7 @@ TEST(Variable, addAndGetEquivalentVariableReciprocal)
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::Variable::addEquivalence(v1, v2);
-    EXPECT_EQ(v1, v2->getEquivalentVariable(0));
+    EXPECT_EQ(v1, v2->equivalentVariable(0));
 }
 
 TEST(Variable, addTwoEquivalentVariablesAndCount)
@@ -215,7 +215,7 @@ TEST(Connection, parseValidAlternateFormConnection)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ(size_t(2), model->componentCount());
-    EXPECT_EQ(size_t(1), model->getComponent("component1")->getVariable("variable1")->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), model->component("component1")->variable("variable1")->equivalentVariableCount());
 }
 
 TEST(Connection, twoMapVariablesConnection)
@@ -964,7 +964,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     m->addComponent(componentBob);
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
-    EXPECT_EQ(componentImported->getVariable(0), variableImported);
+    EXPECT_EQ(componentImported->variable(0), variableImported);
     libcellml::Variable::addEquivalence(variableImported, variableBob);
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -1011,7 +1011,7 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     libcellml::ModelPtr model = parser.parseModel(s);
     EXPECT_EQ(size_t(1), parser.errorCount());
 
-    EXPECT_EQ(expectError, parser.getError(0)->getDescription());
+    EXPECT_EQ(expectError, parser.error(0)->description());
     parser.clearErrors();
     EXPECT_EQ(size_t(0), parser.errorCount());
 

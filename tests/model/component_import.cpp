@@ -29,24 +29,33 @@ limitations under the License.
 
 TEST(ComponentImport, basics)
 {
-    const std::string e;
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"a-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"bob\" name=\"\"/>\n"
+        "  </import>\n"
+        "</model>\n";
 
+    libcellml::Model m;
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     imp->setUrl("a-model.xml");
 
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
 
-    EXPECT_EQ(c->getImportSource(), nullptr);
-    EXPECT_EQ(c->getImportReference(), "");
+    EXPECT_EQ(c->importSource(), nullptr);
+    EXPECT_EQ(c->importReference(), "");
 
     c->setImportSource(imp);
     c->setImportReference("bob");
 
-    EXPECT_EQ(c->getImportSource(), imp);
-    EXPECT_EQ(c->getImportReference(), "bob");
+    EXPECT_EQ(c->importSource(), imp);
+    EXPECT_EQ(c->importReference(), "bob");
+
+    m.addComponent(c);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -66,12 +75,12 @@ TEST(ComponentImport, singleImportA)
 
     libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
 
-    EXPECT_EQ(importedComponent->getImportSource(), nullptr);
+    EXPECT_EQ(importedComponent->importSource(), nullptr);
 
     importedComponent->setName("component_in_this_model");
     importedComponent->setSourceComponent(imp, "a_component_in_that_model");
 
-    EXPECT_EQ(importedComponent->getImportSource(), imp);
+    EXPECT_EQ(importedComponent->importSource(), imp);
 
     EXPECT_EQ(size_t(0), m->componentCount());
     m->addComponent(importedComponent);
@@ -123,12 +132,12 @@ TEST(ComponentImport, nonExistentURLAndParse)
 
     libcellml::ComponentPtr importedComponent = std::make_shared<libcellml::Component>();
 
-    EXPECT_EQ(importedComponent->getImportSource(), nullptr);
+    EXPECT_EQ(importedComponent->importSource(), nullptr);
 
     importedComponent->setName("noble_na_channel");
     importedComponent->setSourceComponent(imp, "na_channel");
 
-    EXPECT_EQ(importedComponent->getImportSource(), imp);
+    EXPECT_EQ(importedComponent->importSource(), imp);
 
     EXPECT_EQ(size_t(0), m->componentCount());
     m->addComponent(importedComponent);
@@ -315,8 +324,8 @@ TEST(ComponentImport, complexImportAndParse)
     EXPECT_EQ(e, a);
 
     // check component counts
-    const libcellml::ComponentPtr constDave = model->getComponent("dave");
+    const libcellml::ComponentPtr constDave = model->component("dave");
     EXPECT_EQ(size_t(1), constDave->componentCount());
-    const libcellml::ComponentPtr constBob = constDave->getComponent("bob");
+    const libcellml::ComponentPtr constBob = constDave->component("bob");
     EXPECT_EQ(size_t(2), constBob->componentCount());
 }

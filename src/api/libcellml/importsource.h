@@ -46,7 +46,7 @@ public:
      *
      * @return The URL of the source @c Model if set otherwise the emtpy string.
      */
-    std::string getUrl() const;
+    std::string url() const;
 
     /**
      * @brief Set the source @c Model's URL.
@@ -65,7 +65,7 @@ public:
      *
      * @return The @c Model used to resolve this @c ImportSource.
      */
-    ModelPtr getModel() const;
+    ModelPtr model() const;
 
     /**
      * @brief Provide the @c Model used to resolve this import.

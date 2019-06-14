@@ -258,22 +258,22 @@ void Units::addUnit(StandardUnit standardRef)
     addUnit(reference, "0.0", 1.0, 1.0, "");
 }
 
-void Units::getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
+void Units::unitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
     const std::string reference = standardUnitToString.find(standardRef)->second;
     auto result = mPimpl->findUnit(reference);
-    getUnitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
-void Units::getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
+void Units::unitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     std::string dummyReference;
     auto result = mPimpl->findUnit(reference);
-    getUnitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
+    unitAttributes(size_t(result - mPimpl->mUnits.begin()), dummyReference, prefix, exponent, multiplier, id);
 }
 
-void Units::getUnitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
+void Units::unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const
 {
     Unit u;
     if (index < mPimpl->mUnits.size()) {

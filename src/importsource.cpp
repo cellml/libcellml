@@ -68,7 +68,7 @@ void ImportSource::swap(ImportSource &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-std::string ImportSource::getUrl() const
+std::string ImportSource::url() const
 {
     return mPimpl->mUrl;
 }
@@ -78,7 +78,7 @@ void ImportSource::setUrl(const std::string &url)
     mPimpl->mUrl = url;
 }
 
-ModelPtr ImportSource::getModel() const
+ModelPtr ImportSource::model() const
 {
     return mPimpl->mModel;
 }
