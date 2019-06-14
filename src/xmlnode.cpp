@@ -53,7 +53,7 @@ void XmlNode::setXmlNode(const xmlNodePtr &node)
     mPimpl->mXmlNodePtr = node;
 }
 
-std::string XmlNode::getNamespace() const
+std::string XmlNode::namespaceUri() const
 {
     if (mPimpl->mXmlNodePtr->ns == nullptr) {
         return std::string();
@@ -65,7 +65,7 @@ bool XmlNode::isElement(const char *name, const char *ns)
 {
     bool found = false;
     if ((mPimpl->mXmlNodePtr->type == XML_ELEMENT_NODE)
-        && (xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+        && (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
         && (xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;
     }
@@ -92,7 +92,7 @@ bool XmlNode::isComment()
     return mPimpl->mXmlNodePtr->type == XML_COMMENT_NODE;
 }
 
-std::string XmlNode::getName() const
+std::string XmlNode::name() const
 {
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlNodePtr->name));
 }
@@ -107,7 +107,7 @@ bool XmlNode::hasAttribute(const char *attributeName)
     return found;
 }
 
-std::string XmlNode::getAttribute(const char *attributeName)
+std::string XmlNode::attribute(const char *attributeName)
 {
     std::string attributeValueString;
     if (hasAttribute(attributeName)) {
@@ -118,7 +118,7 @@ std::string XmlNode::getAttribute(const char *attributeName)
     return attributeValueString;
 }
 
-XmlAttributePtr XmlNode::getFirstAttribute()
+XmlAttributePtr XmlNode::firstAttribute()
 {
     xmlAttrPtr attribute = mPimpl->mXmlNodePtr->properties;
     XmlAttributePtr attributeHandle = nullptr;
@@ -129,7 +129,7 @@ XmlAttributePtr XmlNode::getFirstAttribute()
     return attributeHandle;
 }
 
-XmlNodePtr XmlNode::getFirstChild()
+XmlNodePtr XmlNode::firstChild()
 {
     xmlNodePtr child = mPimpl->mXmlNodePtr->children;
     XmlNodePtr childHandle = nullptr;
@@ -140,7 +140,7 @@ XmlNodePtr XmlNode::getFirstChild()
     return childHandle;
 }
 
-XmlNodePtr XmlNode::getNext()
+XmlNodePtr XmlNode::next()
 {
     xmlNodePtr next = mPimpl->mXmlNodePtr->next;
     XmlNodePtr nextHandle = nullptr;
@@ -151,7 +151,7 @@ XmlNodePtr XmlNode::getNext()
     return nextHandle;
 }
 
-XmlNodePtr XmlNode::getParent()
+XmlNodePtr XmlNode::parent()
 {
     xmlNodePtr parent = mPimpl->mXmlNodePtr->parent;
     XmlNodePtr parentHandle = nullptr;

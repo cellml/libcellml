@@ -34,7 +34,7 @@ TEST(Coverage, import)
     // Copy constructor
     libcellml::ImportSource ic(im);
 
-    const std::string a = ic.getId();
+    const std::string a = ic.id();
     EXPECT_EQ(e, a);
 }
 
@@ -65,21 +65,18 @@ TEST(Coverage, units)
     // Copy constructor
     libcellml::Units uc(um);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printUnits(uc);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ("dimensionless", uc.name());
 }
 
 TEST(Coverage, when)
 {
-    const std::string e =
-        "<reset>\n"
-        "  <when/>\n"
-        "</reset>\n";
+    const std::string randomValue = "4738";
+
     libcellml::When w;
     libcellml::When wm;
     libcellml::Reset r;
 
+    w.setValue(randomValue);
     wm = std::move(w);
 
     libcellml::When wc(wm);
@@ -87,9 +84,7 @@ TEST(Coverage, when)
     libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
     r.addWhen(wp);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printReset(r);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(randomValue, wc.value());
 }
 
 TEST(Coverage, unitsGetVariations)
@@ -102,18 +97,18 @@ TEST(Coverage, unitsGetVariations)
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     m.addUnits(u);
 
-    libcellml::UnitsPtr un = m.getUnits(0);
-    EXPECT_EQ("a_unit", un->getName());
-    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).getUnits(0);
-    EXPECT_EQ("a_unit", uSn->getName());
+    libcellml::UnitsPtr un = m.units(0);
+    EXPECT_EQ("a_unit", un->name());
+    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).units(0);
+    EXPECT_EQ("a_unit", uSn->name());
 
-    libcellml::UnitsPtr uns = m.getUnits("a_unit");
-    EXPECT_EQ("a_unit", uns->getName());
-    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).getUnits("a_unit");
-    EXPECT_EQ("a_unit", uSns->getName());
+    libcellml::UnitsPtr uns = m.units("a_unit");
+    EXPECT_EQ("a_unit", uns->name());
+    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).units("a_unit");
+    EXPECT_EQ("a_unit", uSns->name());
 
-    EXPECT_EQ(nullptr, m.getUnits("b_unit"));
-    EXPECT_EQ(nullptr, m.getUnits(4));
+    EXPECT_EQ(nullptr, m.units("b_unit"));
+    EXPECT_EQ(nullptr, m.units(4));
 }
 
 TEST(Coverage, prefixToString)
@@ -180,13 +175,14 @@ TEST(Coverage, prefixToString)
 TEST(Coverage, variable)
 {
     const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
+    const std::string dimensionless = "dimensionless";
     libcellml::Variable v;
     libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
     v.setInitialValue(1.0);
     v.setInterfaceType("public");
-    u->setName("dimensionless");
+    u->setName(dimensionless);
     v.setUnits(u);
 
     vm = std::move(v);
@@ -194,18 +190,11 @@ TEST(Coverage, variable)
     // Copy constructor
     libcellml::Variable vc(vm);
 
-    libcellml::Printer printer;
-    const std::string a = printer.printVariable(vc);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(dimensionless, vc.units());
 }
 
 TEST(Coverage, component)
 {
-    const std::string e =
-        "<component name=\"name\">\n"
-        "  <variable/>\n"
-        "  <1+1=2>\n"
-        "</component>\n";
     const std::string math = "<1+1=2>\n";
     libcellml::Component c;
     libcellml::Component cm;
@@ -215,18 +204,14 @@ TEST(Coverage, component)
     c.addVariable(v);
     c.setMath(math);
 
-    libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), c.variableCount());
 
     cm = std::move(c);
-    a = printer.printComponent(cm);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), cm.variableCount());
 
     // Copy constructor
     libcellml::Component cc(cm);
-    a = printer.printComponent(cc);
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(size_t(1), cc.variableCount());
 }
 
 TEST(Coverage, error)
@@ -243,6 +228,6 @@ TEST(Coverage, error)
     // Copy constructor
     libcellml::Error ec(em);
 
-    EXPECT_EQ(description, ec.getDescription());
-    EXPECT_EQ(libcellml::Error::Kind::XML, ec.getKind());
+    EXPECT_EQ(description, ec.description());
+    EXPECT_EQ(libcellml::Error::Kind::XML, ec.kind());
 }
