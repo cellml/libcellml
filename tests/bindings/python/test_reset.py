@@ -23,11 +23,11 @@ class OrderedEntityTestCase(unittest.TestCase):
         v = Variable()
         v.setName("glucose")
 
-        self.assertEqual(None, r.getVariable())
+        self.assertEqual(None, r.variable())
 
         r.setVariable(v)
 
-        self.assertEqual("glucose", r.getVariable().getName())
+        self.assertEqual("glucose", r.variable().name())
 
     def test_add_when(self):
         from libcellml import Reset
@@ -88,7 +88,7 @@ class OrderedEntityTestCase(unittest.TestCase):
         self.assertTrue(r.containsWhen(w1))
         self.assertFalse(r.containsWhen(w2))
 
-    def test_get_when(self):
+    def test_when(self):
         from libcellml import Reset
         from libcellml import When
 
@@ -97,9 +97,9 @@ class OrderedEntityTestCase(unittest.TestCase):
 
         r.addWhen(w)
 
-        self.assertEqual(None, r.getWhen(2))
-        self.assertEqual(None, r.getWhen(-4))
-        self.assertNotEqual(None, r.getWhen(0))
+        self.assertEqual(None, r.when(2))
+        self.assertEqual(None, r.when(-4))
+        self.assertNotEqual(None, r.when(0))
 
     def test_take_when(self):
         from libcellml import Reset
@@ -132,12 +132,12 @@ class OrderedEntityTestCase(unittest.TestCase):
         r.addWhen(w1)
 
         self.assertFalse(r.replaceWhen(3, w2))
-        self.assertEqual("x=exp(y)", r.getWhen(0).getCondition())
-        self.assertEqual("", r.getWhen(0).getValue())
+        self.assertEqual("x=exp(y)", r.when(0).condition())
+        self.assertEqual("", r.when(0).value())
 
         self.assertTrue(r.replaceWhen(0, w2))
-        self.assertEqual("", r.getWhen(0).getCondition())
-        self.assertEqual("a=2", r.getWhen(0).getValue())
+        self.assertEqual("", r.when(0).condition())
+        self.assertEqual("a=2", r.when(0).value())
 
 
 if __name__ == '__main__':

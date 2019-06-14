@@ -70,7 +70,7 @@ bool ImportedEntity::isImport() const
     return mPimpl->mImportSource != nullptr;
 }
 
-ImportSourcePtr ImportedEntity::getImportSource() const
+ImportSourcePtr ImportedEntity::importSource() const
 {
     return mPimpl->mImportSource;
 }
@@ -80,7 +80,7 @@ void ImportedEntity::setImportSource(const ImportSourcePtr &importSource)
     mPimpl->mImportSource = importSource;
 }
 
-std::string ImportedEntity::getImportReference() const
+std::string ImportedEntity::importReference() const
 {
     return mPimpl->mImportReference;
 }

@@ -20,7 +20,7 @@ class OrderedEntityTestCase(unittest.TestCase):
 
         x = OrderedEntity()
         x.setOrder(3)
-        self.assertEqual(3, x.getOrder())
+        self.assertEqual(3, x.order())
 
     def test_is_order_set(self):
         from libcellml import OrderedEntity

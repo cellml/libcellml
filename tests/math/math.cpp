@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -24,34 +26,42 @@ TEST(Maths, setAndGetMath)
 {
     libcellml::Component c;
     c.setMath(EMPTY_MATH);
-    EXPECT_EQ(EMPTY_MATH, c.getMath());
+    EXPECT_EQ(EMPTY_MATH, c.math());
 }
 
 TEST(Maths, appendAndSerialiseMathComponent)
 {
     const std::string e =
-        "<component>\n"
-        "  <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-    libcellml::Component c;
-    c.appendMath(EMPTY_MATH);
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    c->appendMath(EMPTY_MATH);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Maths, appendAndResetMathComponent)
 {
-    const std::string e = "<component/>\n";
-
-    libcellml::Component c;
-    c.appendMath(EMPTY_MATH);
-    c.setMath("");
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component/>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    c->appendMath(EMPTY_MATH);
+    c->setMath("");
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
