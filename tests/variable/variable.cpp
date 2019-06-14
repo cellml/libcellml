@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -21,181 +23,298 @@ limitations under the License.
 TEST(Variable, setValidVariableName)
 {
     const std::string in = "valid_name";
-    const std::string e = "<variable name=\"valid_name\"/>\n";
-    libcellml::Variable v;
-    v.setName(in);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"valid_name\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(in);
+
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInvalidVariableName)
 {
     const std::string in = "invalid name";
-    const std::string e = "<variable name=\"invalid name\"/>\n";
-    libcellml::Variable v;
-    v.setName(in);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"invalid name\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(in);
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, getValidVariableName)
+TEST(Variable, validVariableName)
 {
     const std::string in = "valid_name";
     const std::string e = in;
     libcellml::Variable v;
     v.setName(in);
-    const std::string a = v.getName();
+    const std::string a = v.name();
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, getInvalidVariableName)
+TEST(Variable, invalidVariableName)
 {
     const std::string in = "invalid name";
     const std::string e = in;
     libcellml::Variable v;
     v.setName(in);
-    const std::string a = v.getName();
+    const std::string a = v.name();
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setUnits)
 {
     const std::string in = "dimensionless";
-    const std::string e = "<variable units=\"dimensionless\"/>\n";
-    libcellml::Variable v;
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName(in);
-    v.setUnits(u);
-
+    v->setUnits(u);
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setUnitsAndName)
 {
     const std::string in = "valid_name";
-    const std::string e = "<variable name=\"valid_name\" units=\"dimensionless\"/>\n";
-    libcellml::Variable v;
-    v.setName(in);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"valid_name\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName(in);
 
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("dimensionless");
-    v.setUnits(u);
+    v->setUnits(u);
+    c->addVariable(v);
 
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInitialValueByString)
 {
-    const std::string e = "<variable initial_value=\"0.0\"/>\n";
-    libcellml::Variable v;
-    v.setInitialValue("0.0");
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable initial_value=\"0.0\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setInitialValue("0.0");
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInitialValueByDouble)
 {
-    const std::string e = "<variable initial_value=\"0\"/>\n";
-    libcellml::Variable v;
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable initial_value=\"0\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     double value = 0.0;
-    v.setInitialValue(value);
+    v->setInitialValue(value);
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInitialValueByReference)
 {
-    const std::string e = "<variable initial_value=\"referencedVariable\"/>\n";
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable initial_value=\"referencedVariable\"/>\n"
+        "  </component>\n"
+        "</model>\n";
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     v1->setName("referencedVariable");
-    libcellml::Variable v2;
-    v2.setInitialValue(v1);
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    v2->setInitialValue(v1);
+    c->addVariable(v2);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v2);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, getUnsetInitialValue)
+TEST(Variable, unsetInitialValue)
 {
     libcellml::Variable v;
-    EXPECT_EQ(v.getInitialValue(), "");
+    EXPECT_EQ(v.initialValue(), "");
 }
 
-TEST(Variable, getSetInitialValue)
+TEST(Variable, setInitialValue)
 {
     libcellml::Variable v;
     const std::string e = "0.0";
     v.setInitialValue(e);
-    const std::string a = v.getInitialValue();
+    const std::string a = v.initialValue();
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypeByInvalidString)
 {
-    const std::string e = "<variable interface=\"invalid\"/>\n";
-    libcellml::Variable v;
-    v.setInterfaceType("invalid");
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"invalid\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setInterfaceType("invalid");
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypeNoneByValidString)
 {
-    const std::string e = "<variable interface=\"none\"/>\n";
-    libcellml::Variable v;
-    v.setInterfaceType("none");
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"none\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setInterfaceType("none");
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypeNoneByEnum)
 {
-    const std::string e = "<variable interface=\"none\"/>\n";
-    libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceType::NONE);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"none\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setInterfaceType(libcellml::Variable::InterfaceType::NONE);
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypePrivate)
 {
-    const std::string e = "<variable interface=\"private\"/>\n";
-    libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setInterfaceType(libcellml::Variable::InterfaceType::PRIVATE);
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypePublic)
 {
-    const std::string e = "<variable interface=\"public\"/>\n";
-    libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"public\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC);
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, setInterfaceTypePublicAndPrivate)
 {
-    const std::string e = "<variable interface=\"public_and_private\"/>\n";
-    libcellml::Variable v;
-    v.setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable interface=\"public_and_private\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setInterfaceType(libcellml::Variable::InterfaceType::PUBLIC_AND_PRIVATE);
+    c->addVariable(v);
     libcellml::Printer printer;
-    const std::string a = printer.printVariable(v);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -219,21 +338,25 @@ TEST(Variable, setGetInterfaceType)
     const std::string interfaceTypeString3 = "public";
     const std::string interfaceTypeString4 = "public_and_private";
 
-    EXPECT_EQ(interfaceTypeString1, v1.getInterfaceType());
-    EXPECT_EQ(interfaceTypeString2, v2.getInterfaceType());
-    EXPECT_EQ(interfaceTypeString3, v3.getInterfaceType());
-    EXPECT_EQ(interfaceTypeString4, v4.getInterfaceType());
+    EXPECT_EQ(interfaceTypeString1, v1.interfaceType());
+    EXPECT_EQ(interfaceTypeString2, v2.interfaceType());
+    EXPECT_EQ(interfaceTypeString3, v3.interfaceType());
+    EXPECT_EQ(interfaceTypeString4, v4.interfaceType());
 }
 
 TEST(Variable, addVariable)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component name=\"valid_name\">\n"
-        "  <variable name=\"valid_name\" units=\"dimensionless\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"valid_name\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -245,39 +368,44 @@ TEST(Variable, addVariable)
     v->setUnits(u);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
-TEST(Variable, getParentComponent)
+TEST(Variable, parentComponent)
 {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     c->addVariable(v);
-    EXPECT_EQ(c, v->getParentComponent());
+    EXPECT_EQ(c, v->parentComponent());
 }
 
-TEST(Variable, getNullParentComponent)
+TEST(Variable, nullParentComponent)
 {
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    EXPECT_EQ(nullptr, v->getParentComponent());
+    EXPECT_EQ(nullptr, v->parentComponent());
 }
 
 TEST(Variable, addVariableToUnnamedComponent)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component>\n"
-        "  <variable name=\"valid_name\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"valid_name\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
     v->setName(in);
     c->addVariable(v);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -285,12 +413,16 @@ TEST(Variable, addTwoVariables)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component name=\"valid_name\">\n"
-        "  <variable name=\"variable1\"/>\n"
-        "  <variable name=\"variable2\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -302,21 +434,25 @@ TEST(Variable, addTwoVariables)
     c->addVariable(v2);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
 TEST(Variable, addVariablesWithAndWithoutNameAndUnits)
 {
     const std::string e =
-        "<component>\n"
-        "  <variable name=\"var1\" units=\"dimensionless\"/>\n"
-        "  <variable name=\"var2\"/>\n"
-        "  <variable units=\"dimensionless\"/>\n"
-        "  <variable/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <variable name=\"var1\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"var2\"/>\n"
+        "    <variable units=\"dimensionless\"/>\n"
+        "    <variable/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     v1->setName("var1");
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -335,7 +471,7 @@ TEST(Variable, addVariablesWithAndWithoutNameAndUnits)
     v3->setUnits(u);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -343,12 +479,16 @@ TEST(Variable, componentWithTwoVariablesWithInitialValues)
 {
     const std::string in = "valid_name";
     const std::string e =
-        "<component name=\"valid_name\">\n"
-        "  <variable initial_value=\"1\"/>\n"
-        "  <variable initial_value=\"-1\"/>\n"
-        "</component>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable initial_value=\"1\"/>\n"
+        "    <variable initial_value=\"-1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
     c->setName(in);
 
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -360,7 +500,7 @@ TEST(Variable, componentWithTwoVariablesWithInitialValues)
     c->addVariable(v2);
 
     libcellml::Printer printer;
-    const std::string a = printer.printComponent(c);
+    const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
 
@@ -368,12 +508,20 @@ TEST(Variable, removeVariableMethods)
 {
     const std::string in = "valid_name";
     const std::string e1 =
-        "<component name=\"valid_name\">\n"
-        "  <variable name=\"variable2\"/>\n"
-        "</component>\n";
-    const std::string e2 = "<component name=\"valid_name\"/>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::string e2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\"/>\n"
+        "</model>\n";
 
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
@@ -393,13 +541,13 @@ TEST(Variable, removeVariableMethods)
     EXPECT_TRUE(c->removeVariable("variable1"));
     EXPECT_TRUE(c->removeVariable(v3));
     libcellml::Printer printer;
-    std::string a = printer.printComponent(c);
+    std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
     EXPECT_FALSE(c->removeVariable("BAD_NAME"));
 
     c->addVariable(v4);
     c->removeAllVariables();
-    a = printer.printComponent(c);
+    a = printer.printModel(m);
     EXPECT_EQ(e2, a);
     EXPECT_FALSE(c->removeVariable(v5));
 
@@ -409,12 +557,12 @@ TEST(Variable, removeVariableMethods)
 
     EXPECT_TRUE(c->removeVariable(0)); // v1
     EXPECT_TRUE(c->removeVariable(1)); // new index of v3
-    a = printer.printComponent(c);
+    a = printer.printModel(m);
     EXPECT_EQ(e1, a);
     EXPECT_FALSE(c->removeVariable(1));
 }
 
-TEST(Variable, getVariableMethods)
+TEST(Variable, variableMethods)
 {
     const std::string in = "valid_name";
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -434,31 +582,30 @@ TEST(Variable, getVariableMethods)
     c->addVariable(v4);
 
     // Get by string
-    libcellml::VariablePtr vMethod1 = c->getVariable("variable1");
-    const std::string a1 = vMethod1->getName();
+    libcellml::VariablePtr vMethod1 = c->variable("variable1");
+    const std::string a1 = vMethod1->name();
     EXPECT_EQ("variable1", a1);
 
     // Get by index
-    libcellml::VariablePtr vMethod2 = c->getVariable(1);
-    const std::string a2 = vMethod2->getName();
+    libcellml::VariablePtr vMethod2 = c->variable(1);
+    const std::string a2 = vMethod2->name();
     EXPECT_EQ("variable2", a2);
 
     // Get const by string
-    const libcellml::VariablePtr vMethod3 = c->getVariable("variable3");
-    const std::string a3 = vMethod3->getName();
+    const libcellml::VariablePtr vMethod3 = c->variable("variable3");
+    const std::string a3 = vMethod3->name();
     EXPECT_EQ("variable3", a3);
 
     // Get const by index
-    const libcellml::VariablePtr vMethod4 = c->getVariable(3);
-    const std::string a4 = vMethod4->getName();
+    const libcellml::VariablePtr vMethod4 = c->variable(3);
+    const std::string a4 = vMethod4->name();
     EXPECT_EQ("variable4", a4);
 
     // Get invalid index
-    EXPECT_EQ(nullptr, c->getVariable(7));
+    EXPECT_EQ(nullptr, c->variable(7));
 
     // Get non-existent variable by string
-    EXPECT_EQ(nullptr, c->getVariable("notreal"));
-    EXPECT_EQ(nullptr, c->getVariable("doesntexist"));
+    EXPECT_EQ(nullptr, c->variable("doesntexist"));
 }
 
 TEST(Variable, takeVariableMethods)
@@ -482,21 +629,21 @@ TEST(Variable, takeVariableMethods)
 
     // Take by index
     libcellml::VariablePtr tv = c->takeVariable(0);
-    std::string tvn = tv->getName();
+    std::string tvn = tv->name();
     EXPECT_EQ("variable1", tvn);
-    libcellml::VariablePtr gv = c->getVariable(0);
-    std::string gvn = gv->getName();
+    libcellml::VariablePtr gv = c->variable(0);
+    std::string gvn = gv->name();
     EXPECT_EQ("variable2", gvn);
     tv = c->takeVariable(0);
-    tvn = tv->getName();
+    tvn = tv->name();
     EXPECT_EQ("variable2", tvn);
-    gv = c->getVariable(0);
-    gvn = gv->getName();
+    gv = c->variable(0);
+    gvn = gv->name();
     EXPECT_EQ("variable3", gvn);
 
     // Take by string
     libcellml::VariablePtr tv3 = c->takeVariable("variable3");
-    const std::string tvn3 = tv3->getName();
+    const std::string tvn3 = tv3->name();
     EXPECT_EQ("variable3", tvn3);
 
     // Get invalid index
@@ -535,7 +682,7 @@ TEST(Variable, modelWithComponentWithVariableWithValidName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("valid_name", v->getName());
+    EXPECT_EQ("valid_name", v->name());
 }
 
 TEST(Variable, modelWithComponentWithVariableWithInvalidName)
@@ -566,7 +713,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", v->getName());
+    EXPECT_EQ("invalid name", v->name());
 }
 
 TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse)
@@ -597,7 +744,7 @@ TEST(Variable, modelWithComponentWithVariableWithInvalidUnitsNameAndParse)
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", u->getName());
+    EXPECT_EQ("invalid name", u->name());
 
     // Parse
     libcellml::Parser parser;

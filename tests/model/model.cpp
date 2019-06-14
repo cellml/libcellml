@@ -23,7 +23,7 @@ TEST(Model, setGetId)
     const std::string id = "modelID";
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setId(id);
-    EXPECT_EQ(id, m->getId());
+    EXPECT_EQ(id, m->id());
 }
 
 TEST(Model, name)
@@ -36,7 +36,7 @@ TEST(Model, name)
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName(n);
 
-    EXPECT_EQ(n, m->getName());
+    EXPECT_EQ(n, m->name());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -55,14 +55,14 @@ TEST(Model, unsetName)
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName(n);
-    EXPECT_EQ(n, m->getName());
+    EXPECT_EQ(n, m->name());
 
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(eName, a);
 
     m->setName("");
-    EXPECT_EQ("", m->getName());
+    EXPECT_EQ("", m->name());
     a = printer.printModel(m);
     EXPECT_EQ(e, a);
 }
@@ -77,7 +77,7 @@ TEST(Model, invalidName)
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName(n);
 
-    EXPECT_EQ(n, m->getName());
+    EXPECT_EQ(n, m->name());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -240,7 +240,7 @@ TEST(Model, removeComponent)
     EXPECT_EQ(size_t(2), m->componentCount());
 }
 
-TEST(Model, getComponentMethods)
+TEST(Model, componentMethods)
 {
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -253,7 +253,7 @@ TEST(Model, getComponentMethods)
     c1->setName("child1");
     m->addComponent(c1);
 
-    libcellml::ComponentPtr cA = m->getComponent(0);
+    libcellml::ComponentPtr cA = m->component(0);
     cA->setName("childA");
 
     libcellml::Printer printer;
@@ -261,12 +261,12 @@ TEST(Model, getComponentMethods)
     EXPECT_EQ(e, a);
 
     // Using const version of overloaded method
-    const libcellml::ComponentPtr cB = m->getComponent(0);
+    const libcellml::ComponentPtr cB = m->component(0);
     // Can do this as we just have a const pointer
     cB->setName("gus");
-    EXPECT_EQ("gus", cB->getName());
+    EXPECT_EQ("gus", cB->name());
 
-    EXPECT_EQ(nullptr, m->getComponent(4));
+    EXPECT_EQ(nullptr, m->component(4));
 }
 
 TEST(Model, takeComponentMethods)
@@ -288,15 +288,15 @@ TEST(Model, takeComponentMethods)
 
     EXPECT_EQ(m->takeComponent(4), nullptr);
 
-    EXPECT_EQ("child2", c02->getName());
-    EXPECT_EQ(nullptr, c02->getParentModel());
+    EXPECT_EQ("child2", c02->name());
+    EXPECT_EQ(nullptr, c02->parentModel());
 
     libcellml::ComponentPtr c01 = m->takeComponent("child1");
     EXPECT_NE(nullptr, c01);
     EXPECT_EQ(size_t(0), m->componentCount());
 
-    EXPECT_EQ("child1", c01->getName());
-    EXPECT_EQ(nullptr, c01->getParentModel());
+    EXPECT_EQ("child1", c01->name());
+    EXPECT_EQ(nullptr, c01->parentModel());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -452,21 +452,19 @@ TEST(Model, constructors)
 
     //Testing copy constructor
     libcellml::ModelPtr &m3(m);
-    EXPECT_EQ("my_name", m3->getName());
+    EXPECT_EQ("my_name", m3->name());
 
     // Testing model assignment
     m1 = m;
-    EXPECT_EQ("my_name", m->getName());
+    EXPECT_EQ("my_name", m->name());
 
     // Testing move assignment for model
     m2 = std::move(m1);
-    EXPECT_EQ("my_name", m2->getName());
-    // EXPECT_EQ("", m1.getName()); m1 is now dead (contains a nullptr).
+    EXPECT_EQ("my_name", m2->name());
 
     // Testing move constructor for component
     libcellml::ModelPtr m4 = std::move(m2);
-    EXPECT_EQ("my_name", m4->getName());
-    // EXPECT_EQ("", m2.getName()); m2 is now dead (contains a nullptr).
+    EXPECT_EQ("my_name", m4->name());
 }
 
 TEST(Model, setAndCheckIdsAllEntities)

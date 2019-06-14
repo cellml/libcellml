@@ -34,7 +34,7 @@ TEST(Coverage, import)
 
     im = std::move(i);
 
-    EXPECT_EQ(id, im.getId());
+    EXPECT_EQ(id, im.id());
 }
 
 TEST(Coverage, printer)
@@ -62,7 +62,7 @@ TEST(Coverage, units)
 
     um = std::move(u);
 
-    EXPECT_EQ(n, um.getName());
+    EXPECT_EQ(n, um.name());
 }
 
 TEST(Coverage, when)
@@ -76,7 +76,7 @@ TEST(Coverage, when)
 
     wm = std::move(w);
 
-    EXPECT_EQ(id, wm.getId());
+    EXPECT_EQ(id, wm.id());
 }
 
 TEST(Coverage, variable)
@@ -92,7 +92,7 @@ TEST(Coverage, variable)
 
     vm = std::move(v);
 
-    EXPECT_EQ(n, vm.getUnits());
+    EXPECT_EQ(n, vm.units());
 }
 
 TEST(Coverage, component)
@@ -106,7 +106,7 @@ TEST(Coverage, component)
 
     ao = rc;
 
-    EXPECT_EQ(n, ao.getName());
+    EXPECT_EQ(n, ao.name());
 
     std::vector<libcellml::Component> vec;
 
@@ -125,7 +125,7 @@ TEST(Coverage, error)
 
     em = std::move(e);
 
-    EXPECT_EQ(description, em.getDescription());
+    EXPECT_EQ(description, em.description());
 }
 
 TEST(Coverage, model)
@@ -139,7 +139,7 @@ TEST(Coverage, model)
 
     ao = rm;
 
-    EXPECT_EQ(n, ao.getName());
+    EXPECT_EQ(n, ao.name());
 
     std::vector<libcellml::Model> vec;
 
