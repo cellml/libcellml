@@ -8,7 +8,7 @@
 %feature("docstring") libcellml::OrderedEntity
 "Abstract base class for entities that can be ordered relative to others.";
 
-%feature("docstring") libcellml::OrderedEntity::getOrder
+%feature("docstring") libcellml::OrderedEntity::order
 "Returns the order for this entity as an integer value.";
 
 %feature("docstring") libcellml::OrderedEntity::setOrder
