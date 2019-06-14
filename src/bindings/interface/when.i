@@ -13,13 +13,13 @@
 %feature("docstring") libcellml::When::setCondition
 "Set the MathML string as the condition term for this when.";
 
-%feature("docstring") libcellml::When::getCondition
+%feature("docstring") libcellml::When::condition
 "Get the MathML string as the condition term for this when.";
 
 %feature("docstring") libcellml::When::setValue
 "Set the MathML string as the value term for this when.";
 
-%feature("docstring") libcellml::When::getValue
+%feature("docstring") libcellml::When::value
 "Get the string MathML string that represents the value for this when.";
 
 %{

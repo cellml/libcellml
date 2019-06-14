@@ -76,7 +76,7 @@ void OrderedEntity::setOrder(int order)
     mPimpl->mOrderSet = true;
 }
 
-int OrderedEntity::getOrder() const
+int OrderedEntity::order() const
 {
     return mPimpl->mOrder;
 }

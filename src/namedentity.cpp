@@ -71,7 +71,7 @@ void NamedEntity::setName(const std::string &name)
     mPimpl->mName = name;
 }
 
-std::string NamedEntity::getName() const
+std::string NamedEntity::name() const
 {
     return mPimpl->mName;
 }

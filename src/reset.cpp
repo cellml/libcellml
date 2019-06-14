@@ -84,7 +84,7 @@ void Reset::setVariable(const VariablePtr &variable)
     mPimpl->mVariable = variable;
 }
 
-VariablePtr Reset::getVariable() const
+VariablePtr Reset::variable() const
 {
     return mPimpl->mVariable;
 }
@@ -134,7 +134,7 @@ bool Reset::containsWhen(const WhenPtr &when) const
     return status;
 }
 
-WhenPtr Reset::getWhen(size_t index) const
+WhenPtr Reset::when(size_t index) const
 {
     WhenPtr when = nullptr;
     if (index < mPimpl->mWhens.size()) {
