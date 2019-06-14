@@ -999,6 +999,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                     mParser->addError(err);
                 }
+
                 if (childComponent) {
                     childComponent->setEncapsulationId(childEncapsulationId);
                 }
