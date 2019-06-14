@@ -51,14 +51,14 @@ public:
     void setXmlNode(const xmlNodePtr &node);
 
     /**
-     * @brief Get the namespace of the XML element.
+     * @brief Get the namespace URI of the XML element.
      *
-     * Get the namespace of the XML element.
+     * Get the namespace URI of the XML element.
      *
-     * @return A @c std::string representation of the XML namespace.
+     * @return A @c std::string representation of the XML namespace URI.
      */
 
-    std::string getNamespace() const;
+    std::string namespaceUri() const;
 
     /**
      * @brief Check if this @c XmlNode is an element node in the given
@@ -154,7 +154,7 @@ public:
      *
      * @return A @c std::string representation of the XML name.
      */
-    std::string getName() const;
+    std::string name() const;
 
     /**
      * @brief Check if this @c XmlNode has the specified attribute.
@@ -181,7 +181,7 @@ public:
      * @return The @c std::string form of the attribute value of the
      * specified type.
      */
-    std::string getAttribute(const char *attributeName);
+    std::string attribute(const char *attributeName);
 
     /**
      * @brief Get the first attribute for this @c XmlNode
@@ -192,7 +192,7 @@ public:
      * @return The @c XmlAttributePtr form of the first attribute
      * for this @c XmlNode.
      */
-    XmlAttributePtr getFirstAttribute();
+    XmlAttributePtr firstAttribute();
 
     /**
      * @brief Get the first child for this @c XmlNode.
@@ -203,7 +203,7 @@ public:
      *
      * @return The @c XmlNodePtr to the first child node for this @c XmlNode.
      */
-    XmlNodePtr getFirstChild();
+    XmlNodePtr firstChild();
 
     /**
      * @brief Get the @c XmlNode immediately following this @c XmlNode.
@@ -214,7 +214,7 @@ public:
      *
      * @return The @c XmlNodePtr to the next node following this @c XmlNode.
      */
-    XmlNodePtr getNext();
+    XmlNodePtr next();
 
     /**
      * @brief Get the @c XmlNode parent of this @c XmlNode.
@@ -225,7 +225,7 @@ public:
      *
      * @return The @c XmlNodePtr to the parent of this @c XmlNode.
      */
-    XmlNodePtr getParent();
+    XmlNodePtr parent();
 
     /**
      * @brief Convert this @c XmlNode content into a @c std::string.

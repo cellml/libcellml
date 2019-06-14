@@ -11,20 +11,8 @@
 %feature("docstring") libcellml::Printer
 "Prints CellML models to an XML string.";
 
-%feature("docstring") libcellml::Printer::printComponent
-"Serialises the given :class:`Component` to an XML string.";
-
 %feature("docstring") libcellml::Printer::printModel
 "Serialises the given :class:`Model` to an XML string.";
-
-%feature("docstring") libcellml::Printer::printUnits
-"Serialises the given :class:`Units` to an XML string.";
-
-%feature("docstring") libcellml::Printer::printVariable
-"Serialises the given :class:`Variable` to an XML string.";
-
-%feature("docstring") libcellml::Printer::printReset
-"Serialises the given :class:`Reset` to an XML string.";
 
 %{
 #include "libcellml/printer.h"

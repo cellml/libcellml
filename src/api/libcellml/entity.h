@@ -43,7 +43,7 @@ public:
      *
      * Set the @p id document identifier for this entity using a @c std::string.
      *
-     * @sa getId
+     * @sa id
      *
      * @param id The @c std::string document identifier to set.
      */
@@ -59,7 +59,7 @@ public:
      *
      * @return The @c std::string document identifier for this entity.
      */
-    std::string getId() const;
+    std::string id() const;
 
     /**
      * @brief Returns the parent of the CellML Entity.
@@ -67,7 +67,7 @@ public:
      * @return A pointer to the entities parent if it has one,
      * otherwise the null pointer.
      */
-    void *getParent() const;
+    void *parent() const;
 
     /**
      * @brief Returns the parent component of the CellML Entity.

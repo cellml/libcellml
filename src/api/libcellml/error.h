@@ -139,7 +139,7 @@ public:
      *
      * @return The @c std::string description of the error.
      */
-    std::string getDescription() const;
+    std::string description() const;
 
     /**
      * @brief Set the kind of this error.
@@ -159,7 +159,7 @@ public:
      *
      * @return The @c Error::Kind set for this error.
      */
-    Kind getKind() const;
+    Kind kind() const;
 
     /**
      * @brief Check whether the kind of this error matches the argument kind.
@@ -190,7 +190,7 @@ public:
      *
      * @return The @c SpecificationRule for this error.
      */
-    SpecificationRule getRule() const;
+    SpecificationRule rule() const;
 
     /**
      * @brief Get the @c std::string heading associated with the @c enum SpecificationRule for this error.
@@ -200,7 +200,7 @@ public:
      *
      * @return The @c std::string referencing the CellML 2.0 Specification heading relevant to this error.
      */
-    std::string getSpecificationHeading() const;
+    std::string specificationHeading() const;
 
     /**
      * @brief Set the component for this component error.
@@ -219,7 +219,7 @@ public:
      * @return A pointer to the component that this error was raised on. If no
      * component has been set for this error, return a @c nullptr.
      */
-    ComponentPtr getComponent() const;
+    ComponentPtr component() const;
 
     /**
      * @brief Set the @p import source for this error.
@@ -240,7 +240,7 @@ public:
      * @return A pointer to the import source this error was raised on. If no
      * import source has been set for this error, return a @c nullptr.
      */
-    ImportSourcePtr getImportSource() const;
+    ImportSourcePtr importSource() const;
 
     /**
      * @brief Set the @p model for this error.
@@ -259,7 +259,7 @@ public:
      * @return A pointer to the model that this error was raised on.
      * If no model has been set for this error, return a @c nullptr.
      */
-    ModelPtr getModel() const;
+    ModelPtr model() const;
 
     /**
      * @brief Set the units for this error.
@@ -278,7 +278,7 @@ public:
      * @return A pointer to the units that this error was raised on.
      * If no units has been set for this error, return a @c nullptr.
      */
-    UnitsPtr getUnits() const;
+    UnitsPtr units() const;
 
     /**
      * @brief Set the variable for this error.
@@ -297,7 +297,7 @@ public:
      * @return A pointer to the variable this variable error was raised on.
      * If no variable has been set for this error, return a @c nullptr.
      */
-    VariablePtr getVariable() const;
+    VariablePtr variable() const;
 
     /**
      * @brief Set the reset for this error.
@@ -316,7 +316,7 @@ public:
      * @return A pointer to the reset this reset error was raised on.
      * If no reset has been set for this error, return a @c nullptr.
      */
-    ResetPtr getReset() const;
+    ResetPtr reset() const;
 
     /**
      * @brief Set the when for this error.
@@ -335,7 +335,7 @@ public:
      * @return A pointer to the when this when error was raised on.
      * If no when has been set for this error, return a @c nullptr.
      */
-    WhenPtr getWhen() const;
+    WhenPtr when() const;
 
 private:
     void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */
