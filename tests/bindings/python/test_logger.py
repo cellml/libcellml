@@ -34,20 +34,20 @@ class LoggerTestCase(unittest.TestCase):
         x.addError(Error())
         self.assertEqual(x.errorCount(), 2)
 
-    def test_get_error(self):
+    def test_error(self):
         from libcellml import Logger, Error
 
-        # ErrorPtr getError(size_t index)
+        # ErrorPtr error(size_t index)
         x = Logger()
-        self.assertIsNone(x.getError(0))
-        self.assertIsNone(x.getError(1))
-        self.assertIsNone(x.getError(-1))
+        self.assertIsNone(x.error(0))
+        self.assertIsNone(x.error(1))
+        self.assertIsNone(x.error(-1))
         e = Error()
         e.setKind(Error.Kind.MODEL)
         x.addError(e)
-        self.assertIsNotNone(x.getError(0))
-        self.assertIsNone(x.getError(1))
-        self.assertEqual(x.getError(0).getKind(), Error.Kind.MODEL)
+        self.assertIsNotNone(x.error(0))
+        self.assertIsNone(x.error(1))
+        self.assertEqual(x.error(0).kind(), Error.Kind.MODEL)
 
     def test_clear_errors(self):
         from libcellml import Logger, Error

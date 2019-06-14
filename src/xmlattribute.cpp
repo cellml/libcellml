@@ -51,7 +51,7 @@ void XmlAttribute::setXmlAttribute(const xmlAttrPtr &attribute)
     mPimpl->mXmlAttributePtr = attribute;
 }
 
-std::string XmlAttribute::getNamespace() const
+std::string XmlAttribute::namespaceUri() const
 {
     if (mPimpl->mXmlAttributePtr->ns == nullptr) {
         return std::string();
@@ -62,7 +62,7 @@ std::string XmlAttribute::getNamespace() const
 bool XmlAttribute::isType(const char *name, const char *ns)
 {
     bool found = false;
-    if ((xmlStrcmp(reinterpret_cast<const xmlChar *>(getNamespace().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
+    if ((xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
         && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;
     }
@@ -74,7 +74,7 @@ bool XmlAttribute::isCellmlType(const char *name)
     return isType(name, CELLML_2_0_NS);
 }
 
-std::string XmlAttribute::getName() const
+std::string XmlAttribute::name() const
 {
     std::string type;
     if (mPimpl->mXmlAttributePtr->name != nullptr) {
@@ -83,7 +83,7 @@ std::string XmlAttribute::getName() const
     return type;
 }
 
-std::string XmlAttribute::getValue() const
+std::string XmlAttribute::value() const
 {
     std::string valueString;
     if ((mPimpl->mXmlAttributePtr->name != nullptr) && (mPimpl->mXmlAttributePtr->parent != nullptr)) {
@@ -94,7 +94,7 @@ std::string XmlAttribute::getValue() const
     return valueString;
 }
 
-XmlAttributePtr XmlAttribute::getNext()
+XmlAttributePtr XmlAttribute::next()
 {
     xmlAttrPtr next = mPimpl->mXmlAttributePtr->next;
     XmlAttributePtr nextHandle = nullptr;
