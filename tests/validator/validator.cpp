@@ -312,13 +312,14 @@ TEST(Validator, importUnits)
 
 TEST(Validator, importComponents)
 {
-    const std::vector<std::string> expectedErrors = {
+    std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Imported component does not have a valid name attribute."};
+        "Imported component does not have a valid name attribute.",
+        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute, 'not @ valid url'. ",
+    };
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -334,7 +335,17 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
-    // Invalid component import- missing refs
+    // Another valid component import
+    libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
+    imp5->setUrl("yet-another-other-model.xml");
+    libcellml::ComponentPtr importedComponent5 = std::make_shared<libcellml::Component>();
+    importedComponent5->setName("another_valid_imported_component_in_this_model");
+    importedComponent5->setSourceComponent(imp5, "new_shiny_component_ref");
+    m->addComponent(importedComponent5);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+
+    // Invalid component import - missing refs
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
     importedComponent2->setName("invalid_imported_component_in_this_model");
@@ -343,7 +354,7 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(3), v.errorCount());
 
-    // Invalid component import - duplicate refs
+    // Invalid component import - duplicate refs  TODO but is this allowed after all ?? #280, #298
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
     imp3->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
@@ -351,14 +362,43 @@ TEST(Validator, importComponents)
     importedComponent3->setSourceComponent(imp3, "component_in_that_model");
     m->addComponent(importedComponent3);
     v.validateModel(m);
-    EXPECT_EQ(size_t(4), v.errorCount());
+    EXPECT_EQ(size_t(3), v.errorCount());
 
-    // Invalid component import - unnamed component
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Invalid: duplicating component_ref and source TODO but is this allowed after all ?? #280, #298
+    libcellml::ImportSourcePtr imp6 = std::make_shared<libcellml::ImportSource>();
+    imp6->setUrl("yet-another-other-model.xml");
+    libcellml::ComponentPtr importedComponent6 = std::make_shared<libcellml::Component>();
+    importedComponent6->setName("another_duplicate_imported_component");
+    importedComponent6->setSourceComponent(imp6, "new_shiny_component_ref");
+    m->addComponent(importedComponent6);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Valid: duplicate component_ref from a different source
+    libcellml::ImportSourcePtr imp7 = std::make_shared<libcellml::ImportSource>();
+    imp7->setUrl("yet-another-other-model.xml"); // source used before
+    libcellml::ComponentPtr importedComponent7 = std::make_shared<libcellml::Component>();
+    importedComponent7->setName("a_good_imported_component");
+    importedComponent7->setSourceComponent(imp7, "component_in_that_model");
+    m->addComponent(importedComponent7);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Invalid: component_ref is not valid html
+    libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
+    imp8->setUrl("not @ valid url"); // source used before
+    libcellml::ComponentPtr importedComponent8 = std::make_shared<libcellml::Component>();
+    importedComponent8->setName("a_bad_imported_component");
+    importedComponent8->setSourceComponent(imp8, "component_in_some_model");
+    m->addComponent(importedComponent8);
     v.validateModel(m);
     EXPECT_EQ(size_t(6), v.errorCount());
 
