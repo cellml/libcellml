@@ -8,7 +8,7 @@
 %feature("docstring") libcellml::Entity
 "Abstract base class for all libCellML core classes."
 
-%feature("docstring") libcellml::Entity::getId
+%feature("docstring") libcellml::Entity::id
 "Returns the `id` document identifier for this entity, or an empty string if
 not set.";
 
@@ -19,7 +19,7 @@ unset).";
 %feature("docstring") libcellml::Entity::clearParent
 "Removes any parent set for this entity.";
 
-%feature("docstring") libcellml::Entity::getParent
+%feature("docstring") libcellml::Entity::parent
 "Returns the parent of the CellML Entity (or `None` if not set).";
 
 %feature("docstring") libcellml::Entity::hasParent

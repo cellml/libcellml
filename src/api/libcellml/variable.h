@@ -59,7 +59,7 @@ public:
      * @p variable2 if not already present. Also add a copy of @p variable2 to the
      * set of equivalent variables for @p variable1 if not already present.
      *
-     * @sa removeEquivalence, getEquivalentVariable
+     * @sa removeEquivalence, equivalentVariable
      *
      * @param variable1 The variable to copy to the equivalent variable set
      * for @p variable2.
@@ -132,7 +132,7 @@ public:
      * @param variable2 Variable one of the equivalence.
      * @return the @c std::string mapping id.
      */
-    static std::string getEquivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
+    static std::string equivalenceMappingId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Get the equivalent connection id for this equivalence.
@@ -146,7 +146,7 @@ public:
      * @param variable2 Variable one of the equivalence.
      * @return the @c std::string connection id.
      */
-    static std::string getEquivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
+    static std::string equivalenceConnectionId(const VariablePtr &variable1, const VariablePtr &variable2);
 
     /**
      * @brief Remove each argument variable to the other's equivalent variable set.
@@ -155,7 +155,7 @@ public:
      * @p variable2, if present. Also removes a copy of @p variable2 from the
      * set of equivalent variables for @p variable1, if present.
      *
-     * @sa addEquivalence, getEquivalentVariable
+     * @sa addEquivalence, equivalentVariable
      *
      * @param variable1 The variable to remove from the equivalent variable set
      * for @p variable2.
@@ -183,7 +183,7 @@ public:
      *
      * @return The equivalent variable at the given index.
      */
-    VariablePtr getEquivalentVariable(size_t index) const;
+    VariablePtr equivalentVariable(size_t index) const;
 
     /**
      * @brief Get the number of equivalent variables for this variable.
@@ -230,7 +230,7 @@ public:
      * Set the units for this variable by name. Set to an empty string
      * to unset the units.
      *
-     * @sa getUnits
+     * @sa units
      *
      * @param name The name of the units to set.
      */
@@ -244,7 +244,7 @@ public:
      *
      * @overload
      *
-     * @sa getUnits
+     * @sa units
      *
      * @param units The @c UnitsPtr to set.
      */
@@ -260,14 +260,14 @@ public:
      *
      * @return The @c std::string name of the units for this variable.
      */
-    std::string getUnits() const;
+    std::string units() const;
 
     /**
      * @brief Set the initial value for this variable using a string.
      *
      * Set the initial value for this variable using a string.
      *
-     * @sa getInitialValue
+     * @sa initialValue
      *
      * @param initialValue The initial value to set.
      */
@@ -281,7 +281,7 @@ public:
      *
      * @overload
      *
-     * @sa getInitialValue
+     * @sa initialValue
      *
      * @param initialValue The initial value to set.
      */
@@ -295,7 +295,7 @@ public:
      *
      * @overload
      *
-     * @sa getInitialValue
+     * @sa initialValue
      *
      * @param variable The variable reference to use to set the initial value.
      */
@@ -308,14 +308,14 @@ public:
      *
      * @sa setInitialValue
      */
-    std::string getInitialValue() const;
+    std::string initialValue() const;
 
     /**
      * @brief Set the interface type for this variable.
      *
      * Set the interface type for this variable using a string.
      *
-     * @sa getInterfaceType
+     * @sa interfaceType
      *
      * @param interfaceType The string interface type to set for this variable.
      */
@@ -329,7 +329,7 @@ public:
      *
      * @overload
      *
-     * @sa getInterfaceType
+     * @sa interfaceType
      *
      * @param interfaceType The enum interface type to set for this variable.
      */
@@ -342,7 +342,7 @@ public:
      *
      * @sa setInterfaceType
      */
-    std::string getInterfaceType() const;
+    std::string interfaceType() const;
 
 private:
     void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */

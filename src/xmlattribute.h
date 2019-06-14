@@ -49,14 +49,14 @@ public:
     void setXmlAttribute(const xmlAttrPtr &attribute);
 
     /**
-     * @brief Get the namespace of this XmlAttribute.
+     * @brief Get the namespace URI of this XmlAttribute.
      *
-     * Get the namespace of this XmlAttribute.
+     * Get the namespace URI of this XmlAttribute.
      *
-     * @return A @c std::string representation of the XML namespace.
+     * @return A @c std::string representation of the XML namespace URI.
      */
 
-    std::string getNamespace() const;
+    std::string namespaceUri() const;
 
     /**
      * @brief Check if this XmlAttribute is of the named attribute type in the
@@ -99,7 +99,7 @@ public:
      *
      * @return The @c std::string corresponding with the name of this XmlAttribute.
      */
-    std::string getName() const;
+    std::string name() const;
 
     /**
      * @brief Get the value of this XmlAttribute.
@@ -108,7 +108,7 @@ public:
      *
      * @return The @c std::string corresponding with the value of this XmlAttribute.
      */
-    std::string getValue() const;
+    std::string value() const;
 
     /**
      * @brief Get the XmlAttribute immediately following this XmlAttribute.
@@ -119,7 +119,7 @@ public:
      *
      * @return The XmlAttributePtr to the next attribute following this XmlAttribute.
      */
-    XmlAttributePtr getNext();
+    XmlAttributePtr next();
 
     /**
      * @brief Remove this XmlAttribute from its parent XmlNode.

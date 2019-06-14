@@ -58,7 +58,7 @@ public:
      * @return The shared pointer for the import source, if no import source is
      * set returns @c nullptr.
      */
-    ImportSourcePtr getImportSource() const;
+    ImportSourcePtr importSource() const;
 
     /**
      * @brief Set the import source.
@@ -66,7 +66,7 @@ public:
      * Set the import source for the imported entity.  Set to @c nullptr to
      * unset the import source.
      *
-     * @sa getImportSource
+     * @sa importSource
      *
      * @param importSource The import source to set.
      */
@@ -82,7 +82,7 @@ public:
      * @return The reference to the entity in the imported model, the empty
      * string if it is not set.
      */
-    std::string getImportReference() const;
+    std::string importReference() const;
 
     /**
      * @brief Set the import reference.
@@ -90,7 +90,7 @@ public:
      * Set the import reference to an entity in the imported model.  The import
      * reference should be a Component or a Unit in the import model.
      *
-     * @sa getImportReference
+     * @sa importReference
      *
      * @param reference The name of the reference to refer to in the import model.
      */

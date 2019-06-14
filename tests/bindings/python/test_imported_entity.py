@@ -34,18 +34,18 @@ class ImportedEntityTestCase(unittest.TestCase):
         x.setImportSource(None)
         self.assertFalse(x.isImport())
 
-    def test_get_import_source(self):
+    def test_import_source(self):
         from libcellml import ImportedEntity, ImportSource
 
-        # ImportSourcePtr getImportSource()
+        # ImportSourcePtr importSource()
         i = ImportSource()
         source = 'hello'
         i.setUrl(source)
         x = ImportedEntity()
-        self.assertIsNone(x.getImportSource())
+        self.assertIsNone(x.importSource())
         x.setImportSource(i)
-        self.assertIsNotNone(x.getImportSource())
-        self.assertEqual(x.getImportSource().getUrl(), source)
+        self.assertIsNotNone(x.importSource())
+        self.assertEqual(x.importSource().url(), source)
 
     def test_set_import_reference(self):
         from libcellml import ImportedEntity
@@ -57,17 +57,17 @@ class ImportedEntityTestCase(unittest.TestCase):
         x.setImportReference(r)
         x.setImportReference('')
 
-    def test_get_import_reference(self):
+    def test_import_reference(self):
         from libcellml import ImportedEntity
 
-        # std::string getImportReference()
+        # std::string importReference()
         r = 'yes'
         x = ImportedEntity()
-        self.assertEqual(x.getImportReference(), '')
+        self.assertEqual(x.importReference(), '')
         x.setImportReference(r)
-        self.assertEqual(x.getImportReference(), r)
+        self.assertEqual(x.importReference(), r)
         x.setImportReference('')
-        self.assertEqual(x.getImportReference(), '')
+        self.assertEqual(x.importReference(), '')
 
 
 if __name__ == '__main__':

@@ -27,7 +27,7 @@ limitations under the License.
 
 TEST(Parser, parseSineModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_SINE_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -40,7 +40,7 @@ TEST(Parser, parseSineModelFromFile)
 
 TEST(Parser, parseSineImportsModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -53,7 +53,7 @@ TEST(Parser, parseSineImportsModelFromFile)
 
 TEST(Parser, parseInvalidModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_INVALID_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -67,13 +67,13 @@ TEST(Parser, parseInvalidModelFromFile)
 
     EXPECT_EQ(expectedErrors.size(), p.errorCount());
     for (size_t i = 0; i < p.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), p.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), p.error(i)->description());
     }
 }
 
 TEST(Parser, parseOrdModelFromFile)
 {
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_ORD_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -84,23 +84,23 @@ TEST(Parser, parseOrdModelFromFile)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     // Test some random values.
-    std::string a = model->getComponent("intracellular_ions")->getVariable("BSLmax")->getInitialValue();
+    std::string a = model->component("intracellular_ions")->variable("BSLmax")->initialValue();
     EXPECT_EQ("1.124", a);
 
-    a = model->getComponent("INa")->getVariable("mtD2")->getInitialValue();
+    a = model->component("INa")->variable("mtD2")->initialValue();
     EXPECT_EQ("8.552", a);
 
-    a = model->getComponent("IK1")->getVariable("GK1_b")->getInitialValue();
+    a = model->component("IK1")->variable("GK1_b")->initialValue();
     EXPECT_EQ("0.1908", a);
 
-    a = model->getComponent("SERCA")->getVariable("Jup")->getInterfaceType();
+    a = model->component("SERCA")->variable("Jup")->interfaceType();
     EXPECT_EQ("public", a);
 }
 
 TEST(Parser, parseComplexEncapsulationModelFromFile)
 {
     // This test resulted from https://github.com/cellml/libcellml/issues/170
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_COMPLEX_ENCAPSULATION_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -147,7 +147,7 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
         "  </apply>\n"
         "</math>\n";
 
-    std::ifstream t(TestResources::getLocation(
+    std::ifstream t(TestResources::location(
         TestResources::CELLML_A_PLUS_B_MODEL_RESOURCE));
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -156,9 +156,9 @@ TEST(Parser, parseModelWithComponentsWithMultipleMathElements)
     libcellml::ModelPtr model = p.parseModel(buffer.str());
     EXPECT_EQ(size_t(0), p.errorCount());
 
-    std::string a = model->getComponent("c1")->getMath();
+    std::string a = model->component("c1")->math();
     EXPECT_EQ(e1, a);
 
-    a = model->getComponent("c2")->getMath();
+    a = model->component("c2")->math();
     EXPECT_EQ(e2, a);
 }

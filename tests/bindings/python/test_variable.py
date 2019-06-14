@@ -26,11 +26,11 @@ class VariableTestCase(unittest.TestCase):
         # Test access to inherited methods
         x = Variable()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
+        self.assertEqual(x.id(), idx)
         y = Variable(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(y.id(), idx)
 
     def test_add_equivalence(self):
         from libcellml import Variable
@@ -71,22 +71,22 @@ class VariableTestCase(unittest.TestCase):
         self.assertFalse(Variable.removeEquivalence(v1, v2))
         self.assertTrue(Variable.removeEquivalence(v1, v3))
 
-    def test_get_equivalent_variable(self):
+    def test_equivalent_variable(self):
         from libcellml import Variable
 
-        # VariablePtr getEquivalentVariable(size_t index)
+        # VariablePtr equivalentVariable(size_t index)
         v1 = Variable()
         v2 = Variable()
         v3 = Variable()
-        self.assertIsNone(v1.getEquivalentVariable(0))
-        self.assertIsNone(v1.getEquivalentVariable(1))
-        self.assertIsNone(v1.getEquivalentVariable(-1))
+        self.assertIsNone(v1.equivalentVariable(0))
+        self.assertIsNone(v1.equivalentVariable(1))
+        self.assertIsNone(v1.equivalentVariable(-1))
         Variable.addEquivalence(v1, v2)
         Variable.addEquivalence(v1, v3)
-        self.assertIsNone(v1.getEquivalentVariable(2))
-        self.assertIsNone(v1.getEquivalentVariable(-1))
-        self.assertIsNotNone(v1.getEquivalentVariable(0))
-        self.assertIsNotNone(v1.getEquivalentVariable(1))
+        self.assertIsNone(v1.equivalentVariable(2))
+        self.assertIsNone(v1.equivalentVariable(-1))
+        self.assertIsNotNone(v1.equivalentVariable(0))
+        self.assertIsNotNone(v1.equivalentVariable(1))
 
     def test_equivalent_variable_count(self):
         from libcellml import Variable
@@ -270,19 +270,19 @@ class VariableTestCase(unittest.TestCase):
         u.setName(name)
         v = Variable()
         v.setUnits(u)
-        self.assertEqual(v.getUnits(), name)
+        self.assertEqual(v.units(), name)
 
-    def test_get_units(self):
+    def test_units(self):
         from libcellml import Variable
 
-        # std::string getUnits()
+        # std::string units()
         name = 'testo'
         v = Variable()
-        self.assertEqual(v.getUnits(), '')
+        self.assertEqual(v.units(), '')
         v.setUnits(name)
-        self.assertEqual(v.getUnits(), name)
+        self.assertEqual(v.units(), name)
         v.setUnits('')
-        self.assertEqual(v.getUnits(), '')
+        self.assertEqual(v.units(), '')
         del(v, name)
 
     def test_set_initial_value(self):
@@ -304,15 +304,15 @@ class VariableTestCase(unittest.TestCase):
         v1.setInitialValue(v2)
         del(v1, v2)
 
-    def test_get_initial_value(self):
+    def test_initial_value(self):
         from libcellml import Variable
 
-        # std::string getInitialValue()
+        # std::string initialValue()
         value = '5 + x'
         v = Variable()
-        self.assertEqual(v.getInitialValue(), '')
+        self.assertEqual(v.initialValue(), '')
         v.setInitialValue(value)
-        self.assertEqual(v.getInitialValue(), value)
+        self.assertEqual(v.initialValue(), value)
 
     def test_interface_type(self):
         from libcellml import Variable
@@ -352,20 +352,20 @@ class VariableTestCase(unittest.TestCase):
         v.setInterfaceType('not an interface type')
         del(v)
 
-    def test_get_interface_type(self):
+    def test_interface_type(self):
         from libcellml import Variable
 
-        # std::string getInterfaceType()
+        # std::string interfaceType()
         v = Variable()
-        self.assertEqual(v.getInterfaceType(), '')
+        self.assertEqual(v.interfaceType(), '')
         v.setInterfaceType(Variable.InterfaceType.NONE)
-        self.assertEqual(v.getInterfaceType(), 'none')
+        self.assertEqual(v.interfaceType(), 'none')
         v.setInterfaceType(Variable.InterfaceType.PRIVATE)
-        self.assertEqual(v.getInterfaceType(), 'private')
+        self.assertEqual(v.interfaceType(), 'private')
         v.setInterfaceType(Variable.InterfaceType.PUBLIC)
-        self.assertEqual(v.getInterfaceType(), 'public')
+        self.assertEqual(v.interfaceType(), 'public')
         v.setInterfaceType(Variable.InterfaceType.PUBLIC_AND_PRIVATE)
-        self.assertEqual(v.getInterfaceType(), 'public_and_private')
+        self.assertEqual(v.interfaceType(), 'public_and_private')
 
 
 if __name__ == '__main__':
