@@ -1324,7 +1324,6 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
         case libcellml::Error::Kind::MATHML:
         case libcellml::Error::Kind::RESET:
         case libcellml::Error::Kind::UNDEFINED:
-        case libcellml::Error::Kind::WHEN:
         case libcellml::Error::Kind::XML:
             break;
         }
@@ -1477,8 +1476,9 @@ TEST(Parser, parseIdsOnEverything)
         "  <units name=\"units3\" id=\"u3id\"/>\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
         "    <variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>\n"
-        "    <reset variable=\"variable1\" order=\"1\" id=\"r1id\">\n"
-        "      <when order=\"5\" id=\"w1id\">\n"
+        "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"r1id\">\n"
+        "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math1when1\">\n"
         "          <apply>\n"
         "            <eq/>\n"
@@ -1486,15 +1486,17 @@ TEST(Parser, parseIdsOnEverything)
         "            <cn>3.4</cn>\n"
         "          </apply>\n"
         "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math2when2\">\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math2when1\">\n"
         "          <apply>\n"
         "            <eq/>\n"
         "            <ci>variable1</ci>\n"
         "            <cn>9.0</cn>\n"
         "          </apply>\n"
         "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"  
         "  </component>\n"
         "  <component name=\"component3\" id=\"c3id\">\n"
         "    <variable name=\"variable2\" units=\"ampere\" id=\"c3v2id\"/>\n"
@@ -1508,7 +1510,7 @@ TEST(Parser, parseIdsOnEverything)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-
+    
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
 
@@ -1523,10 +1525,12 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ("c2id", model->component("component2")->id());
     EXPECT_EQ("u3id", model->units("units3")->id());
     EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
-    EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
-    EXPECT_EQ("w1id", model->component("component2")->reset(0)->when(0)->id());
+    EXPECT_EQ("r1id", model->component("component2")->reset(0)->id()); // TODO Removed until test_variable is in the cellml namespace
 
     libcellml::Printer printer;
+
+    std::cout << printer.printModel(model) << std::endl;
+
     EXPECT_EQ(in, printer.printModel(model));
 }
 
@@ -1537,23 +1541,18 @@ TEST(Parser, parseResets)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
         "    <variable name=\"variable1\" id=\"vid\"/>\n"
-        "    <reset order=\"1\" id=\"rid\">\n"
-        "      <when order=\"5\">\n"
+        "    <variable name=\"variable2\" id=\"vid2\"/>\n"
+        "    <reset order=\"1\" id=\"rid\" variable=\"variable1\" test_variable=\"variable2\">\n"
+        "      <test_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some condition in mathml\n"
         "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some value in mathml\n"
         "        </math>\n"
-        "      </when>\n"
-        "      <when order=\"3\" id=\"wid\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n"
-        "      </when>\n"
+        "      </reset_value>\n"
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
@@ -1566,141 +1565,112 @@ TEST(Parser, parseResets)
 
     libcellml::ResetPtr r = c->reset(0);
     EXPECT_EQ(1, r->order());
-    EXPECT_EQ(size_t(2), r->whenCount());
 
-    libcellml::WhenPtr w = r->when(1);
-    EXPECT_EQ(3, w->order());
+    libcellml::VariablePtr v1 = r->variable();
+    EXPECT_EQ("variable1", v1->name());
+
+    libcellml::VariablePtr v2 = r->testVariable();
+    EXPECT_EQ("variable2", v2->name());
+
+    std::string testValueString = r->testValue();
+    std::string t =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some condition in mathml\n"
+        "        </math>\n";
+    EXPECT_EQ(t, testValueString);
+
+    std::string resetValueString = r->resetValue();
+    std::string rt =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n";
+    EXPECT_EQ(rt, resetValueString);
 }
 
-TEST(Parser, parseResetsWithNumerousErrors)
+TEST(Parser, parseResetsWithErrors)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\" id=\"vid\" units=\"dimensionless\"/>\n" // reset variable not in the same component: TODO valdiation error only?
+        "  </component>\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
-        "    <variable name=\"variable1\" id=\"vid\" units=\"plough\"/>\n"
-        "    <variable name=\"V_k\" id=\"vid\" units=\"siemens\"/>\n"
-        "    <reset order=\"1.3\" id=\"rid\">\n"
-        "      <when order=\"-0\" change=\"$4.50\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          extra mathml node\n"
-        "        </math>\n"
-        "      </when>\n"
-        "      <when order=\"3\" id=\"wid\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n"
+        "    <variable name=\"variable2\" id=\"vid2\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"variable4\" id=\"vid4\" units=\"dimensionless\"/>\n"
+
+        // variable1 does not exist in this component, variable3 does not exist at all
+        "    <reset order=\"33\" variable=\"variable3\" test_variable=\"variable1\">\n"
+        "      <test_value one_invalid_attribute=\"apples\">\n" // invalid attribute
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some value in mathml\n"
         "        </math>\n"
-        "      </when>\n"
-        "      <when order=\"3\" id=\"wid\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n"
+        "      </test_value>\n"
+        "      <test_value>\n" // duplicated test_value block inside reset
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some value in mathml\n"
         "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "    <reset variable=\"I_na\" order=\"2\" id=\"rid\">\n"
-        "      <when order=\"5.9\" goods=\"socks\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "    <reset variable=\"I_na\" order=\"2\" id=\"rid\">\n"
-        "      <when />\n"
-        "    </reset>\n"
-        "    <reset id=\"r3id\">\n"
-        "      <when order=\"\"/>\n"
-        "    <about>\n"
-        "      Some description of importance.\n"
-        "    </about>\n"
-        "    </reset>\n"
-        "    <reset variable=\"V_k\" order=\"-\" start=\"now\"/>\n"
-        "    <reset variable=\"variable1\" order=\"0\">\n"
-        "      non empty whitespace.\n"
-        "      <when order=\"1\">\n"
-        "        illegal content.\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value another_invalid_attribute=\"bananas\">\n" // invalid attribute
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some value in mathml\n"
         "        </math>\n"
-        "        <variable/>\n"
-        "      </when>\n"
+        "      </reset_value>\n"
+        "      <test_value>\n" // duplicated test_value block inside reset
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </reset_value>\n" // duplicated reset_value block inside reset
         "    </reset>\n"
+
+        // order not specified
+        "    <reset variable=\"variable2\" test_variable=\"variable4\">\n"
+        "      <test_value>\n"
+        "        <some_invalid_tag/>\n" // test_value should only contain mathml
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <some_other_invalid_tag/>\n" // reset_value should only contain mathml
+        "      </reset_value>\n"
+        "    </reset>\n"
+
+        // order not specified
+        "    <reset variable=\"variable2\" test_variable=\"variable4\">\n"
+        // test_value missing
+        // reset_value missing
+        "    </reset>\n"
+
         "  </component>\n"
         "</model>\n";
-    const std::vector<std::string> expectedErrors = {
-        "Reset in component 'component2' referencing variable '' has a non-integer order value '1.3'.",
-        "Reset in component 'component2' does not reference a variable in the component.",
-        "When in reset referencing variable '' with order '' has an invalid attribute 'change'.",
-        "When in reset referencing variable '' with order '' contains more than two MathML child elements.",
-        "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
-        "Reset in component 'component2' does not reference a variable in the component.",
-        "When in reset referencing variable '' with order '2' has an invalid attribute 'goods'.",
-        "When in reset referencing variable '' with order '2' does not have an order defined.",
-        "When in reset referencing variable '' with order '2' contains only one MathML child element.",
-        "Reset referencing variable 'I_na' is not a valid reference for a variable in component 'component2'.",
-        "Reset in component 'component2' does not reference a variable in the component.",
-        "When in reset referencing variable '' with order '2' does not have an order defined.",
-        "When in reset referencing variable '' with order '2' contains zero MathML child elements.",
-        "Reset in component 'component2' does not reference a variable in the component.",
-        "Reset in component 'component2' referencing variable '' does not have an order defined.",
-        "When in reset referencing variable '' with order '' does not have an order defined.",
-        "When in reset referencing variable '' with order '' contains zero MathML child elements.",
-        "Reset in component 'component2' referencing variable '' has an invalid child element 'about'.",
-        "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value '-'.",
-        "Reset in component 'component2' has an invalid attribute 'start'.",
-        "Reset in component 'component2' referencing variable 'variable1' has an invalid non-whitespace child text element '\n      non empty whitespace.\n      '.",
-        "When in reset referencing variable 'variable1' with order '0' has an invalid non-whitespace child text element '\n        illegal content.\n        '.",
-        "When in reset referencing variable 'variable1' with order '0' has an invalid child element 'variable'."};
 
-    libcellml::Parser parser;
-    parser.parseModel(in);
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
+    std::vector<std::string> expectedErrors = {
+        "Reset referencing variable 'variable3' is not a valid reference for a variable in component 'component2'.",
+        "Reset referencing test_variable 'variable1' is not a valid reference for a variable in component 'component2'.",
+        "Reset in component 'component2' does not reference a variable in the component.",
+        "Reset in component 'component2' does not reference a test_variable in the component.",
+        "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the test_value block of 'one_invalid_attribute'.",
+        "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the reset_value block of 'another_invalid_attribute'.",
+        "Reset in component 'component2' referencing variable '' and test_variable '' has multiple test_value blocks.",
+        "Reset in component 'component2' referencing variable '' and test_variable '' has multiple reset_value blocks.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have an order defined.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' has a non-whitespace test_value child. MathML block expected.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' has a non-whitespace reset_value child. MathML block expected.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a test_value block defined.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have an order defined.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a test_value block defined.",
+        "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined."};
+
+    libcellml::Parser p;
+    libcellml::ModelPtr model = p.parseModel(in);
+    EXPECT_EQ(size_t(16), p.errorCount());
+    for (size_t i = 0; i < p.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors[i], p.error(i)->description());
     }
-}
-
-TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
-{
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
-        "  <component name=\"component2\" id=\"c2id\">\n"
-        "    <variable name=\"variable1\" id=\"vid\"/>\n"
-        "    <variable name=\"V_k\" id=\"vid\"/>\n"
-        "    <reset variable=\"V_k\" order=\"a\" id=\"rid\">\n"
-        "      <when order=\"5.9\" goods=\"socks\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some condition in mathml\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "  </component>\n"
-        "</model>\n";
-
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(in);
-
-    libcellml::ResetPtr resetExpected = model->component(0)->reset(0);
-    libcellml::WhenPtr whenExpected = resetExpected->when(0);
-
-    EXPECT_EQ(size_t(6), parser.errorCount());
-    EXPECT_EQ(resetExpected, parser.error(2)->reset());
-    EXPECT_EQ(whenExpected, parser.error(3)->when());
 }
 
 TEST(Parser, unitsWithCellMLRealVariations)
@@ -1759,17 +1729,19 @@ TEST(Parser, xmlComments)
         "    <!-- THIS COMMENT SHOULD BE IGNORED 3 -->\n"
         "    <variable name=\"stan\" units=\"dimensionless\"/>\n"
         "    <variable name=\"V_k\" units=\"dimensionless\"><!-- THIS COMMENT SHOULD BE IGNORED 3a --></variable>\n"
-        "    <reset variable=\"V_k\" order=\"2\" id=\"rid\">\n"
+        "    <reset variable=\"V_k\" order=\"2\" id=\"rid\" test_variable=\"stan\">\n"
         "      <!-- THIS COMMENT SHOULD BE IGNORED 4 -->\n"
-        "      <when order=\"5\">\n"
+        "      <test_value>\n"
         "        <!-- THIS COMMENT SHOULD BE IGNORED 5 -->\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some condition in mathml\n"
         "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "          some condition in mathml\n"
         "        </math>\n"
-        "      </when>\n"
+        "      </reset_value>\n"
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";

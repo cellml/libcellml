@@ -26,7 +26,6 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
 
 #include <map>
 #include <regex>
@@ -123,18 +122,6 @@ struct Validator::ValidatorImpl
      * @param component The component the reset belongs to.
      */
     void validateReset(const ResetPtr &reset, const ComponentPtr &component);
-
-    /**
-     * @brief Validate the @p when using the CellML 2.0 specification.
-     *
-     * Examine the @p when for conformance to the CellML 2.0 specification.  Any
-     * errors will be logged in the @c Validator.
-     *
-     * @param when The when to validate.
-     * @param reset The reset the when belongs to.
-     * @param component The component the reset belongs to.
-     */
-    void validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component);
 
     /**
      * @brief Validate the math @p input @c std::string.
@@ -609,6 +596,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 
 void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
 {
+
+    // KRM TODO *********************
     std::string orderString;
     if (reset->isOrderSet()) {
         orderString = "with order '" + convertIntToString(reset->order()) + "'";
@@ -638,90 +627,6 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         mValidator->addError(err);
     }
 
-    if (reset->whenCount() > 0) {
-        // Check for duplicate when order values.
-        std::vector<int> whenOrders;
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->when(i);
-            if (when->isOrderSet()) {
-                int whenOrder = when->order();
-                if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    whenOrders.push_back(whenOrder);
-                }
-            }
-        }
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->when(i);
-            validateWhen(when, reset, component);
-        }
-    } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " does not have at least one child When.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_CHILD);
-        mValidator->addError(err);
-    }
-}
-
-void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component)
-{
-    std::string orderString;
-    std::string resetOrderString;
-    std::string resetVariableString;
-    std::string resetVariableContinuation;
-    if (when->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(when->order()) + "'";
-    } else {
-        orderString = "does not have an order set,";
-    }
-
-    if (reset->isOrderSet()) {
-        resetOrderString = "with order '" + convertIntToString(reset->order()) + "'";
-    } else {
-        resetOrderString = "which does not have an order set,";
-    }
-
-    if (reset->variable() == nullptr) {
-        resetVariableString = "which does not reference a variable";
-        resetVariableContinuation = ",";
-    } else {
-        resetVariableContinuation = "";
-        resetVariableString = "referencing variable '" + reset->variable()->name() + "'";
-    }
-
-    if (!when->isOrderSet()) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " does not have an order set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_ORDER);
-        mValidator->addError(err);
-    }
-
-    if (!when->condition().empty()) {
-        validateMath(when->condition(), component);
-    } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML condition set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
-        mValidator->addError(err);
-    }
-
-    if (!when->value().empty()) {
-        validateMath(when->value(), component);
-    } else {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML value set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
-        mValidator->addError(err);
-    }
 }
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
