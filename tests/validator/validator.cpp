@@ -767,230 +767,166 @@ TEST(Validator, validateInvalidConnections)
     }
 }
 
-TEST(Validator, integerStrings)
-{
-    const std::string input =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">\n"
-        "  <component name=\"component\">\n"
-        "    <variable name=\"variable\" units=\"dimensionless\"/>\n"
-        "    <reset variable=\"variable\" order=\"1\">\n"
-        "      <when order=\"200\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "    <reset variable=\"variable\" order=\"-1\">\n"
-        "      <when order=\"200\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "    <reset variable=\"variable\" order=\"+1\">\n"
-        "      <when order=\"200\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "    <reset variable=\"variable\" order=\"\">\n"
-        "      <when order=\"200\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "    <reset variable=\"variable\" order=\"-\">\n"
-        "      <when order=\"200\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "    <reset variable=\"variable\" order=\"odd\">\n"
-        "      <when order=\"200\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n"
-        "      </when>\n"
-        "    </reset>\n"
-        "  </component>\n"
-        "</model>\n";
-    const std::vector<std::string> expectedParsingErrors = {
-        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
-        "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
-        "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
-        "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
-    };
-    const std::vector<std::string> expectedValidationErrors = {
-        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
-        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
-        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
-        "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
-    };
+// TEST(Validator, integerStrings)
+// {
+//     const std::string input =
+//         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+//         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"asoiaf\">\n"
+//         "  <component name=\"component\">\n"
+//         "    <variable name=\"variable\" units=\"dimensionless\"/>\n"
+//         "    <reset variable=\"variable\" order=\"1\">\n"
+//         "      <when order=\"200\">\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "      </when>\n"
+//         "    </reset>\n"
+//         "    <reset variable=\"variable\" order=\"-1\">\n"
+//         "      <when order=\"200\">\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "      </when>\n"
+//         "    </reset>\n"
+//         "    <reset variable=\"variable\" order=\"+1\">\n"
+//         "      <when order=\"200\">\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "      </when>\n"
+//         "    </reset>\n"
+//         "    <reset variable=\"variable\" order=\"\">\n"
+//         "      <when order=\"200\">\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "      </when>\n"
+//         "    </reset>\n"
+//         "    <reset variable=\"variable\" order=\"-\">\n"
+//         "      <when order=\"200\">\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "      </when>\n"
+//         "    </reset>\n"
+//         "    <reset variable=\"variable\" order=\"odd\">\n"
+//         "      <when order=\"200\">\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+//         "        </math>\n"
+//         "      </when>\n"
+//         "    </reset>\n"
+//         "  </component>\n"
+//         "</model>\n";
+//     const std::vector<std::string> expectedParsingErrors = {
+//         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
+//         "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
+//         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
+//         "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
+//     };
+//     const std::vector<std::string> expectedValidationErrors = {
+//         "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+//         "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+//         "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+//         "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
+//     };
 
-    libcellml::Parser p;
-    libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(expectedParsingErrors.size(), p.errorCount());
-    for (size_t i = 0; i < expectedParsingErrors.size(); ++i) {
-        EXPECT_EQ(expectedParsingErrors.at(i), p.error(i)->description());
-    }
+//     libcellml::Parser p;
+//     libcellml::ModelPtr m = p.parseModel(input);
+//     EXPECT_EQ(expectedParsingErrors.size(), p.errorCount());
+//     for (size_t i = 0; i < expectedParsingErrors.size(); ++i) {
+//         EXPECT_EQ(expectedParsingErrors.at(i), p.error(i)->description());
+//     }
 
-    libcellml::Validator v;
-    v.validateModel(m);
-    EXPECT_EQ(expectedValidationErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedValidationErrors.size(); ++i) {
-        EXPECT_EQ(expectedValidationErrors.at(i), v.error(i)->description());
-    }
-}
+//     libcellml::Validator v;
+//     v.validateModel(m);
+//     EXPECT_EQ(expectedValidationErrors.size(), v.errorCount());
+//     for (size_t i = 0; i < expectedValidationErrors.size(); ++i) {
+//         EXPECT_EQ(expectedValidationErrors.at(i), v.error(i)->description());
+//     }
+// }
 
 static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
-TEST(Validator, resets)
-{
-    const std::vector<std::string> expectedErrors = {
-        "Component 'comp' contains multiple resets with order '300'.",
-        "Reset in component 'comp' with order '300' does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' with order '500' referencing variable 'var' does not have at least one child When.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var' does not have at least one child When.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable, does not have at least one child When.",
-    };
+// TEST(Validator, resets)
+// {
+//     const std::vector<std::string> expectedErrors = {
+//         "Component 'comp' contains multiple resets with order '300'.",
+//         "Reset in component 'comp' with order '300' does not reference a variable.",
+//         "Reset in component 'comp' does not have an order set, does not reference a variable.",
+//         "Reset in component 'comp' does not have an order set, does not reference a variable.",
+//         "Reset in component 'comp' with order '500' referencing variable 'var' does not have at least one child When.",
+//         "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
+//         "Reset in component 'comp' does not have an order set, referencing variable 'var' does not have at least one child When.",
+//         "Reset in component 'comp' does not have an order set, does not reference a variable.",
+//         "Reset in component 'comp' does not have an order set, does not reference a variable.",
+//         "Reset in component 'comp' does not have an order set, does not reference a variable, does not have at least one child When.",
+//     };
 
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r5 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r6 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+//     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+//     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+//     libcellml::VariablePtr var = std::make_shared<libcellml::Variable>();
+//     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+//     libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
+//     libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+//     libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
+//     libcellml::ResetPtr r5 = std::make_shared<libcellml::Reset>();
+//     libcellml::ResetPtr r6 = std::make_shared<libcellml::Reset>();
+//     libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
+//     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
+//     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
 
-    w1->setOrder(776);
-    w1->setCondition(emptyMath);
-    w1->setValue(emptyMath);
-    w2->setOrder(345);
-    w2->setCondition(emptyMath);
-    w2->setValue(emptyMath);
+//     w1->setOrder(776);
+//     w1->setCondition(emptyMath);
+//     w1->setValue(emptyMath);
+//     w2->setOrder(345);
+//     w2->setCondition(emptyMath);
+//     w2->setValue(emptyMath);
 
-    r1->setOrder(300);
-    r1->addWhen(w1);
-    r6->addWhen(w1);
-    r2->setOrder(300);
-    r2->addWhen(w1);
-    r2->addWhen(w2);
-    r2->setVariable(var);
-    r3->setOrder(400);
-    r3->addWhen(w2);
-    r3->setVariable(var);
-    r4->setVariable(var);
-    r4->setOrder(500);
-    r5->setVariable(var);
+//     r1->setOrder(300);
+//     r1->addWhen(w1);
+//     r6->addWhen(w1);
+//     r2->setOrder(300);
+//     r2->addWhen(w1);
+//     r2->addWhen(w2);
+//     r2->setVariable(var);
+//     r3->setOrder(400);
+//     r3->addWhen(w2);
+//     r3->setVariable(var);
+//     r4->setVariable(var);
+//     r4->setOrder(500);
+//     r5->setVariable(var);
 
-    c->setName("comp");
-    var->setName("var");
-    var->setUnits("second");
+//     c->setName("comp");
+//     var->setName("var");
+//     var->setUnits("second");
 
-    c->addVariable(var);
-    c->addReset(r1);
-    c->addReset(r6);
-    c->addReset(r2);
-    c->addReset(r3);
-    c->addReset(r4);
-    c->addReset(r5);
-    c->addReset(r7);
+//     c->addVariable(var);
+//     c->addReset(r1);
+//     c->addReset(r6);
+//     c->addReset(r2);
+//     c->addReset(r3);
+//     c->addReset(r4);
+//     c->addReset(r5);
+//     c->addReset(r7);
 
-    m->setName("main");
-    m->addComponent(c);
+//     m->setName("main");
+//     m->addComponent(c);
 
-    libcellml::Validator v;
-    v.validateModel(m);
+//     libcellml::Validator v;
+//     v.validateModel(m);
 
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
-}
-
-TEST(Validator, whens)
-{
-    const std::vector<std::string> expectedErrors {
-        "Reset in component 'comp' with order '300' does not reference a variable.",
-        "When in reset with order '300' which does not reference a variable, does not have an order set.",
-        "When in reset with order '300' which does not reference a variable, does not have an order set, does not have a MathML condition set.",
-        "When in reset with order '300' which does not reference a variable, does not have an order set, does not have a MathML value set.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var' has multiple whens with order '250'.",
-        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML value set.",
-        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML condition set.",
-    };
-
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w4 = std::make_shared<libcellml::When>();
-
-    r1->setOrder(300);
-    r1->addWhen(w1);
-    //r2->setOrder(400);
-    r2->addWhen(w2);
-    r2->addWhen(w3);
-    r3->setOrder(500);
-    r3->addWhen(w4);
-    // r1->setVariable(var);
-    r2->setVariable(var);
-    r3->setVariable(var);
-
-    c->setName("comp");
-    var->setName("var");
-    var->setUnits("second");
-
-    w2->setOrder(250);
-    w2->setCondition(emptyMath);
-    w3->setOrder(250);
-    w3->setValue(emptyMath);
-    w4->setOrder(365);
-    w4->setCondition(emptyMath);
-    w4->setValue(emptyMath);
-
-    c->addVariable(var);
-    c->addReset(r1);
-    c->addReset(r2);
-    c->addReset(r3);
-
-    m->setName("main");
-    m->addComponent(c);
-
-    libcellml::Validator v;
-    v.validateModel(m);
-
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
-}
+//     EXPECT_EQ(expectedErrors.size(), v.errorCount());
+//     for (size_t i = 0; i < expectedErrors.size(); ++i) {
+//         EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
+//     }
+// }
 
 TEST(Validator, validMathCnElements)
 {

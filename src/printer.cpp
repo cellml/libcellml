@@ -24,7 +24,6 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
 
 #include <iostream>
 #include <map>
@@ -56,7 +55,6 @@ struct Printer::PrinterImpl
     std::string printEncapsulation(const ComponentPtr &component, const std::string &indent = "") const;
     std::string printVariable(const VariablePtr &variable, const std::string &indent = "") const;
     std::string printReset(const ResetPtr &reset, const std::string &indent = "") const;
-    std::string printWhen(const WhenPtr &when, const std::string &indent) const;
 };
 
 static const std::string tabIndent = "  ";
@@ -139,6 +137,8 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 
 std::string printMath(const std::string &math, const std::string &indent)
 {
+    // TODO This becomes unstable: need to remove the automatic addition of the indent so that mathml which
+    // has been parsed from text which already has whitespace in it doesn't get out of control
     std::string repr;
     std::istringstream lines(math);
     std::string line;
@@ -350,11 +350,24 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
 
 std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
+    // KRM TODO *************
+
+    // <reset variable=”name_1” test_variable=”name_2” order=”1”>
+    //     <test_value>MATHML</test_value>
+    //     <reset_value>MATHML</reset_value>
+    // </reset>
+
     std::string repr = indent + "<reset";
     std::string id = reset->id();
+    std::string s;
     VariablePtr variable = reset->variable();
+    VariablePtr testVariable = reset->testVariable();
+
     if (variable) {
         repr += " variable=\"" + variable->name() + "\"";
+    }
+    if (testVariable) {
+        repr += " test_variable=\"" + testVariable->name() + "\"";
     }
     if (reset->isOrderSet()) {
         repr += " order=\"" + convertIntToString(reset->order()) + "\"";
@@ -362,48 +375,24 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
     }
-    size_t when_count = reset->whenCount();
-    if (when_count > 0) {
-        repr += ">\n";
-        for (size_t i = 0; i < when_count; ++i) {
-            repr += printWhen(reset->when(i), indent + tabIndent);
-        }
-        repr += indent + "</reset>\n";
-    } else {
-        repr += "/>\n";
-    }
-    return repr;
-}
+    repr += ">\n";
 
-std::string Printer::PrinterImpl::printWhen(const WhenPtr &when, const std::string &indent) const
-{
-    std::string repr = indent + "<when";
-    std::string id = when->id();
-    if (when->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(when->order()) + "\"";
+    s = reset->testValue();
+    if (!s.empty()) {
+        repr += indent + tabIndent + "<test_value>\n";
+        repr += indent + tabIndent + tabIndent + printMath(s, "");
+        repr += indent + tabIndent + "</test_value>\n";
     }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
-    }
-    std::string condition = when->condition();
-    bool hasCondition = !condition.empty();
-    if (hasCondition) {
-        repr += ">\n";
-        repr += printMath(condition, indent + tabIndent);
-    }
-    std::string value = when->value();
-    bool hasValue = !value.empty();
-    if (hasValue) {
-        if (!hasCondition) {
-            repr += ">\n";
-        }
-        repr += printMath(value, indent + tabIndent);
-    }
-    if (hasCondition || hasValue) {
-        repr += indent + "</when>\n";
-    } else {
-        repr += "/>\n";
-    }
+
+    s = reset->resetValue();
+    if (!s.empty()) {
+        repr += indent + tabIndent + "<reset_value>\n";
+        repr += indent + tabIndent + tabIndent + printMath(s, "");
+        repr += indent + tabIndent + "</reset_value>\n";
+    } 
+
+    repr += indent + "</reset>\n";
+
     return repr;
 }
 
