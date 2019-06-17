@@ -1529,8 +1529,6 @@ TEST(Parser, parseIdsOnEverything)
 
     libcellml::Printer printer;
 
-    std::cout << printer.printModel(model) << std::endl;
-
     EXPECT_EQ(in, printer.printModel(model));
 }
 

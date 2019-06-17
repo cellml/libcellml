@@ -350,18 +350,14 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
 
 std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
-    // KRM TODO *************
-
-    // <reset variable=”name_1” test_variable=”name_2” order=”1”>
-    //     <test_value>MATHML</test_value>
-    //     <reset_value>MATHML</reset_value>
-    // </reset>
-
     std::string repr = indent + "<reset";
+
     std::string id = reset->id();
     std::string s;
     VariablePtr variable = reset->variable();
     VariablePtr testVariable = reset->testVariable();
+    bool hasTestValue = false;
+    bool hasResetValue = false;
 
     if (variable) {
         repr += " variable=\"" + variable->name() + "\"";
@@ -375,24 +371,33 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
     }
-    repr += ">\n";
-
+    
     s = reset->testValue();
     if (!s.empty()) {
+        repr += ">\n";
+        // TODO Not happy with how this works - should be more consistent with other calls to printMath but that function
+        // adds extra spaces somehow ... ?
         repr += indent + tabIndent + "<test_value>\n";
         repr += indent + tabIndent + tabIndent + printMath(s, "");
         repr += indent + tabIndent + "</test_value>\n";
+        hasTestValue = true;
     }
-
     s = reset->resetValue();
     if (!s.empty()) {
+        if(!hasTestValue) {
+            repr += ">\n";
+        }
         repr += indent + tabIndent + "<reset_value>\n";
         repr += indent + tabIndent + tabIndent + printMath(s, "");
         repr += indent + tabIndent + "</reset_value>\n";
-    } 
+        hasResetValue = true;
+    }
 
-    repr += indent + "</reset>\n";
-
+    if ((hasTestValue) || (hasResetValue)){
+        repr += indent + "</reset>\n";
+    } else {
+        repr += "/>\n";
+    }
     return repr;
 }
 
