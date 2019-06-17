@@ -117,6 +117,7 @@ TEST(Printer, printEmptyReset)
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
+
     EXPECT_EQ(e, a);
 }
 
