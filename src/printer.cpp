@@ -371,7 +371,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
     if (!id.empty()) {
         repr += " id=\"" + id + "\"";
     }
-    
+
     s = reset->testValue();
     if (!s.empty()) {
         repr += ">\n";
@@ -384,7 +384,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
     }
     s = reset->resetValue();
     if (!s.empty()) {
-        if(!hasTestValue) {
+        if (!hasTestValue) {
             repr += ">\n";
         }
         repr += indent + tabIndent + "<reset_value>\n";
@@ -393,7 +393,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
         hasResetValue = true;
     }
 
-    if ((hasTestValue) || (hasResetValue)){
+    if ((hasTestValue) || (hasResetValue)) {
         repr += indent + "</reset>\n";
     } else {
         repr += "/>\n";
