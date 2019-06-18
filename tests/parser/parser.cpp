@@ -1496,7 +1496,7 @@ TEST(Parser, parseIdsOnEverything)
         "          </apply>\n"
         "        </math>\n"
         "      </reset_value>\n"
-        "    </reset>\n"  
+        "    </reset>\n"
         "  </component>\n"
         "  <component name=\"component3\" id=\"c3id\">\n"
         "    <variable name=\"variable2\" units=\"ampere\" id=\"c3v2id\"/>\n"
@@ -1510,7 +1510,7 @@ TEST(Parser, parseIdsOnEverything)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    
+
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
 
@@ -1525,7 +1525,7 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ("c2id", model->component("component2")->id());
     EXPECT_EQ("u3id", model->units("units3")->id());
     EXPECT_EQ("v1id", model->component("component2")->variable("variable1")->id());
-    EXPECT_EQ("r1id", model->component("component2")->reset(0)->id()); // TODO Removed until test_variable is in the cellml namespace
+    EXPECT_EQ("r1id", model->component("component2")->reset(0)->id());
 
     libcellml::Printer printer;
 

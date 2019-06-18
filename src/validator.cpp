@@ -596,7 +596,6 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 
 void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
 {
-
     // KRM TODO *********************
     std::string orderString;
     if (reset->isOrderSet()) {
@@ -626,7 +625,6 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         err->setRule(SpecificationRule::RESET_ORDER);
         mValidator->addError(err);
     }
-
 }
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
