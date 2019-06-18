@@ -9,10 +9,34 @@
 "The Reset class is for describing a CellML reset.";
 
 %feature("docstring") libcellml::Reset::setVariable
-"Sets the :class: Variable for this reset.";
+"Sets the :class: variable for this reset.";
 
 %feature("docstring") libcellml::Reset::variable
-"Returns the :class: Variable of this reset.";
+"Returns the :class: variable of this reset.";
+
+%feature("docstring") libcellml::Reset::setTestVariable
+"Sets the :class: test_variable for this reset.";
+
+%feature("docstring") libcellml::Reset::testVariable
+"Returns the :class: test_variable of this reset.";
+
+%feature("docstring") libcellml::Reset::testValue
+"Returns the :class: test_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::resetValue
+"Returns the :class: reset_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::setTestValue
+"Sets the :class: test_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::setResetValue
+"Sets the :class: reset_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::appendTestValue
+"Appends to the :class: test_value MathML string of this reset.";
+
+%feature("docstring") libcellml::Reset::appendResetValue
+"Appends to the :class: reset_value MathML string of this reset.";
 
 #if defined(SWIGPYTHON)
     // Allow any type of input to be converted to bool
