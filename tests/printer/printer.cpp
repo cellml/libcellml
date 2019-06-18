@@ -75,7 +75,7 @@ TEST(Printer, printEmptyVariable)
         "  </component>\n"
         "</model>\n";
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     c->addVariable(v);
 
@@ -110,7 +110,7 @@ TEST(Printer, printEmptyReset)
         "</model>\n";
 
     libcellml::ModelPtr m = createModelWithComponent();
-    libcellml::ComponentPtr c = m->getComponent(0);
+    libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     c->addReset(r);
