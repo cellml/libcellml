@@ -90,28 +90,28 @@ void *Entity::parent() const
     return parent;
 }
 
-Component *Entity::getParentComponent() const
-{
-    return mPimpl->mParentComponent;
-}
-
-Model *Entity::getParentModel() const
+Model *Entity::parentModel() const
 {
     if (mPimpl->mParentComponent != nullptr) {
-        return mPimpl->mParentComponent->getParentModel();
+        return mPimpl->mParentComponent->parentModel();
     }
 
     return mPimpl->mParentModel;
 }
 
-void Entity::setParent(Component *parent)
+Component *Entity::parentComponent() const
 {
-    mPimpl->mParentComponent = parent;
+    return mPimpl->mParentComponent;
 }
 
 void Entity::setParent(Model *parent)
 {
     mPimpl->mParentModel = parent;
+}
+
+void Entity::setParent(Component *parent)
+{
+    mPimpl->mParentComponent = parent;
 }
 
 void Entity::clearParent()
