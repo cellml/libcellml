@@ -408,107 +408,115 @@ TEST(Reset, printResetWithOrderAndVariable)
 //     EXPECT_EQ(e, a);
 // }
 
-// TEST(Reset, addRemoveResetFromComponentMethods)
-// {
-//     const std::string in = "valid_name";
-//     const std::string e1 =
-//         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-//         "  <component name=\"valid_name\">\n"
-//         "    <variable name=\"V_na\"/>\n"
-//         "    <reset variable=\"V_na\">\n"
-//         "      <when order=\"3\"/>\n"
-//         "      <when order=\"0\"/>\n"
-//         "    </reset>\n"
-//         "    <reset variable=\"V_na\">\n"
-//         "      <when order=\"1\"/>\n"
-//         "    </reset>\n"
-//         "  </component>\n"
-//         "</model>\n";
+TEST(Reset, addRemoveResetFromComponentMethods)
+{
+    std::string a;
+    const std::string in = "valid_name";
+    static const std::string emptyMath =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n";
+    const std::string e1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
 
-//     const std::string e2 =
-//         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-//         "  <component name=\"valid_name\">\n"
-//         "    <variable name=\"V_na\"/>\n"
-//         "    <reset variable=\"V_na\">\n"
-//         "      <when order=\"3\"/>\n"
-//         "      <when order=\"0\"/>\n"
-//         "    </reset>\n"
-//         "  </component>\n"
-//         "</model>\n";
+    const std::string e2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"2\">\n" // only difference is order of reset
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
 
-//     const std::string e3 =
-//         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-//         "  <component name=\"valid_name\">\n"
-//         "    <variable name=\"V_na\"/>\n"
-//         "  </component>\n"
-//         "</model>\n";
+    const std::string e3 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"valid_name\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-//     const std::string e4 =
-//         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-//         "  <component name=\"valid_name\">\n"
-//         "    <variable name=\"V_na\"/>\n"
-//         "    <reset variable=\"V_na\">\n"
-//         "      <when order=\"1\"/>\n"
-//         "    </reset>\n"
-//         "  </component>\n"
-//         "</model>\n";
-//     libcellml::ModelPtr m = createModelWithComponent();
-//     libcellml::ComponentPtr c = m->component(0);
-//     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-//     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-//     libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-//     libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-//     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+    libcellml::Printer printer;
 
-//     c->setName(in);
-//     v->setName("V_na");
+    c->setName(in);
+    v1->setName("variable1");
+    v2->setName("variable2");
 
-//     r1->setVariable(v);
-//     r2->setVariable(v);
+    r1->setVariable(v1);
+    r1->setTestVariable(v2);
+    r1->setOrder(1);
+    r1->setResetValue(emptyMath);
+    r1->setTestValue(emptyMath);
 
-//     r1->addWhen(w1);
-//     r1->addWhen(w3);
-//     r2->addWhen(w2);
+    c->addReset(r1);
+    c->addVariable(v1);
+    c->addVariable(v2);
 
-//     w1->setOrder(3);
-//     w2->setOrder(1);
-//     w3->setOrder(0);
+    a = printer.printModel(m);
+    EXPECT_EQ(e1, a);
 
-//     c->addReset(r1);
-//     c->addReset(r2);
-//     c->addVariable(v);
+    // Add another reset
+    r2->setVariable(v1);
+    r2->setTestVariable(v2);
+    r2->setOrder(2);
+    r2->setResetValue(emptyMath);
+    r2->setTestValue(emptyMath);
+    c->addReset(r2);
 
-//     libcellml::Printer printer;
-//     std::string a = printer.printModel(m);
-//     EXPECT_EQ(e1, a);
+    // Remove the first one and print the model
+    c->removeReset(r1);
+    a = printer.printModel(m);
+    EXPECT_EQ(e2, a);
 
-//     EXPECT_TRUE(c->removeReset(r2));
-//     a = printer.printModel(m);
-//     EXPECT_EQ(e2, a);
-//     EXPECT_FALSE(c->removeReset(r3));
+    // Remove the second one and print the model
+    c->removeReset(0);
+    a = printer.printModel(m);
+    EXPECT_EQ(e3, a);
 
-//     c->addReset(r2);
-//     c->addReset(r2);
-//     c->removeAllResets();
-//     a = printer.printModel(m);
-//     EXPECT_EQ(e3, a);
+    // Add them both back in and use removeAllResets to remove them
+    c->addReset(r1);
+    c->addReset(r2);
+    c->removeAllResets();
+    a = printer.printModel(m);
+    EXPECT_EQ(e3, a);
 
-//     c->addReset(r1);
-//     c->addReset(r2);
-//     c->addReset(r3);
-
-//     EXPECT_TRUE(c->removeReset(0)); // r1
-//     EXPECT_TRUE(c->removeReset(1)); // new index of r3
-//     a = printer.printModel(m);
-//     EXPECT_EQ(e4, a);
-//     EXPECT_FALSE(c->removeReset(1));
-// }
+    // Try and remove the ones which don't exist so we trigger the 'false' return statement
+    EXPECT_FALSE(c->removeReset(1));
+    EXPECT_FALSE(c->removeReset(r1));
+}
 
 TEST(Reset, resetFromComponentMethod)
 {
