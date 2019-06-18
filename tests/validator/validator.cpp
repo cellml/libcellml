@@ -1086,7 +1086,7 @@ TEST(Validator, validateNoCyclesUnits)
 
     EXPECT_EQ(size_t(3), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); i++) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
