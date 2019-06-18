@@ -1033,8 +1033,8 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::st
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
-    return (node->getNamespace() == MATHML_NS)
-           && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->getName()) != supportedMathMLElements.end();
+    return (node->namespaceUri() == MATHML_NS)
+           && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
 
 bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
