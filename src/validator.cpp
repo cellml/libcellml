@@ -293,7 +293,7 @@ void Validator::validateModel(const ModelPtr &model)
             std::string componentName = component->name();
             if (!componentName.empty()) {
                 if (component->isImport()) {
-                    // Check for a component_ref; assumes imported if the import source is not null
+                    // Check for a component_ref; assumes imported if the import source is not null.
                     std::string componentRef = component->importReference();
                     std::string importSource = component->importSource()->url();
 
@@ -311,8 +311,8 @@ void Validator::validateModel(const ModelPtr &model)
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
                     } else {
-                        xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
-                        if (URIPtr == nullptr) {
+                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+                        if (uri == nullptr) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
                             err->setImportSource(component->importSource());
@@ -320,7 +320,7 @@ void Validator::validateModel(const ModelPtr &model)
                             addError(err);
 
                         } else {
-                            xmlFreeURI(URIPtr);
+                            xmlFreeURI(uri);
                         }
                     }
                     // Push back the unique sources and refs.
