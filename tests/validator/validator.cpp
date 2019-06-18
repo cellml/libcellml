@@ -312,7 +312,7 @@ TEST(Validator, importUnits)
 
 TEST(Validator, importComponents)
 {
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
