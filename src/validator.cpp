@@ -596,33 +596,85 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 
 void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
 {
-    // KRM TODO *********************
-    std::string orderString;
+    // KRM TODO: Need clarification on rules:
+    // variable must be inside this component? yes
+    // what about test_variable?
+    // uniqueness of order among connected variable set?
+
+    bool noOrder = false;
+    bool noVariable = false;
+    bool noTestVariable = false;
+    bool noTestValue = false;
+    bool noResetValue = false;
+
+    std::string description = "Reset in component '" + component->name() + "' ";
+
     if (reset->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(reset->order()) + "'";
+        description += "with order '" + convertIntToString(reset->order()) + "', ";
     } else {
-        orderString = "does not have an order set,";
+        noOrder = true;
     }
 
-    std::string variableString;
-    std::string variableContinuation;
     if (reset->variable() == nullptr) {
-        variableString = "does not reference a variable";
-        variableContinuation = ",";
+        noVariable = true;
+    } else {
+        description += "with variable '" + reset->variable()->name() + "', ";
+    }
+
+    if (reset->testVariable() == nullptr) {
+        noTestVariable = true;
+    } else {
+        description += "with test_variable '" + reset->testVariable()->name() + "', ";
+    }
+
+    // Check that the contents of test_value and reset_value are valid MathML
+    std::string testValueString = reset->testValue();
+    std::string resetValueString = reset->resetValue();
+
+    if (testValueString.empty()) {
+        noTestValue = true;
+    } else {
+        validateMath(testValueString, component);
+    }
+    if (resetValueString.empty()) {
+        noResetValue = true;
+    } else {
+        validateMath(resetValueString, component);
+    }
+
+    if (noOrder) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
+        err->setDescription(description + "does not have an order set.");
+        err->setComponent(component);
+        err->setRule(SpecificationRule::RESET_ORDER);
+        mValidator->addError(err);
+    }
+    if (noVariable) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "does not reference a variable.");
         err->setReset(reset);
         err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
         mValidator->addError(err);
-    } else {
-        variableString = "referencing variable '" + reset->variable()->name() + "'";
     }
-
-    if (!reset->isOrderSet()) {
+    if (noTestVariable) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
-        err->setComponent(component);
-        err->setRule(SpecificationRule::RESET_ORDER);
+        err->setDescription(description + "does not reference a test_variable.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
+        mValidator->addError(err);
+    }
+    if (noTestValue) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "does not have a test_value specified.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VALUE);
+        mValidator->addError(err);
+    }
+    if (noResetValue) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "does not have a reset_value specified.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_RESET_VALUE);
         mValidator->addError(err);
     }
 }
