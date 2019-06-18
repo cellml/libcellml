@@ -265,7 +265,7 @@ Validator &Validator::operator=(Validator rhs)
 
 void Validator::swap(Validator &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Validator::validateModel(const ModelPtr &model)
