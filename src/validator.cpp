@@ -314,7 +314,7 @@ void Validator::validateModel(const ModelPtr &model)
                         xmlURIPtr URIPtr = xmlParseURI(importSource.c_str());
                         if (URIPtr == nullptr) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute, '" + importSource + "'. ");
+                            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
                             err->setImportSource(component->importSource());
                             err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);

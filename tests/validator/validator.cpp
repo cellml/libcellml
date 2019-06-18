@@ -318,8 +318,7 @@ TEST(Validator, importComponents)
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component does not have a valid name attribute.",
-        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute, 'not @ valid url'. ",
-    };
+        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute."};
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
