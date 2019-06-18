@@ -54,7 +54,7 @@ public:
      *
      * @return The @c std::string MathML string of the condition.
      */
-    std::string getCondition() const;
+    std::string condition() const;
 
     /**
      * @brief Set the value term for this when.
@@ -73,7 +73,7 @@ public:
      *
      * @return The @c std::string MathML string of the value.
      */
-    std::string getValue() const;
+    std::string value() const;
 
 private:
     void swap(When &rhs); /**< Swap method required for C++ 11 move semantics. */

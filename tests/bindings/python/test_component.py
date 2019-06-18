@@ -31,11 +31,11 @@ class ComponentTestCase(unittest.TestCase):
 
         x = Component()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
+        self.assertEqual(x.id(), idx)
         y = Component(x)
-        self.assertEqual(y.getId(), idx)
+        self.assertEqual(y.id(), idx)
 
     def test_set_source(self):
         from libcellml import Component, ImportSource
@@ -44,8 +44,8 @@ class ComponentTestCase(unittest.TestCase):
         i = ImportSource()
         i.setUrl('bonjour')
         x.setSourceComponent(i, 'camembert')
-        self.assertEqual(x.getImportSource().getUrl(), 'bonjour')
-        self.assertEqual(x.getImportReference(), 'camembert')
+        self.assertEqual(x.importSource().url(), 'bonjour')
+        self.assertEqual(x.importReference(), 'camembert')
 
     def test_math(self):
         from libcellml import Component
@@ -55,16 +55,16 @@ class ComponentTestCase(unittest.TestCase):
         x.appendMath('More maths')
         x.appendMath(' please!')
 
-        # std::string getMath()
-        self.assertEqual(x.getMath(), 'More maths please!')
+        # std::string math()
+        self.assertEqual(x.math(), 'More maths please!')
         x = Component()
-        self.assertEqual(x.getMath(), '')
+        self.assertEqual(x.math(), '')
 
         # void setMath(const std::string &math)
         x.setMath('bonjour')
-        self.assertEqual(x.getMath(), 'bonjour')
+        self.assertEqual(x.math(), 'bonjour')
         x.setMath('hola')
-        self.assertEqual(x.getMath(), 'hola')
+        self.assertEqual(x.math(), 'hola')
 
     def test_add_variable(self):
         from libcellml import Component, Variable
@@ -154,34 +154,34 @@ class ComponentTestCase(unittest.TestCase):
         self.assertFalse(c.hasVariable(v1))
         self.assertFalse(c.hasVariable(v2))
 
-    def test_get_variable(self):
+    def test_variable(self):
         from libcellml import Component, Variable
 
-        # VariablePtr getVariable(size_t index)
+        # VariablePtr variable(size_t index)
         c = Component()
         v = Variable()
         name = 'green'
         v.setName(name)
-        self.assertIsNone(c.getVariable(0))
-        self.assertIsNone(c.getVariable(1))
-        self.assertIsNone(c.getVariable(-1))
+        self.assertIsNone(c.variable(0))
+        self.assertIsNone(c.variable(1))
+        self.assertIsNone(c.variable(-1))
         c.addVariable(v)
-        self.assertIsNone(c.getVariable(1))
-        self.assertIsNone(c.getVariable(-1))
-        self.assertIsNotNone(c.getVariable(0))
-        self.assertEqual(c.getVariable(0).getName(), name)
+        self.assertIsNone(c.variable(1))
+        self.assertIsNone(c.variable(-1))
+        self.assertIsNotNone(c.variable(0))
+        self.assertEqual(c.variable(0).name(), name)
         del(c, v, name)
 
-        # VariablePtr getVariable(const std::string &name)
+        # VariablePtr variable(const std::string &name)
         c = Component()
         v = Variable()
         name = 'green'
         v.setName(name)
-        self.assertIsNone(c.getVariable(name))
+        self.assertIsNone(c.variable(name))
         c.addVariable(v)
-        self.assertIsNone(c.getVariable('red'))
-        self.assertIsNotNone(c.getVariable(name))
-        self.assertEqual(c.getVariable(name).getName(), name)
+        self.assertIsNone(c.variable('red'))
+        self.assertIsNotNone(c.variable(name))
+        self.assertEqual(c.variable(name).name(), name)
 
     def test_variable_count(self):
         from libcellml import Component, Variable

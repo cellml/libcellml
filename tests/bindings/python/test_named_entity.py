@@ -26,9 +26,9 @@ class NamedEntityTestCase(unittest.TestCase):
         # Test access to inherited methods
         x = NamedEntity()
         idx = 'test'
-        self.assertEqual(x.getId(), '')
+        self.assertEqual(x.id(), '')
         x.setId(idx)
-        self.assertEqual(x.getId(), idx)
+        self.assertEqual(x.id(), idx)
 
     def test_set_name(self):
         from libcellml import NamedEntity
@@ -39,17 +39,17 @@ class NamedEntityTestCase(unittest.TestCase):
         x.setName(name)
         x.setName('')
 
-    def test_get_name(self):
+    def test_name(self):
         from libcellml import NamedEntity
 
-        # std::string getName()
+        # std::string name()
         name = 'testo'
         x = NamedEntity()
-        self.assertEqual(x.getName(), '')
+        self.assertEqual(x.name(), '')
         x.setName(name)
-        self.assertEqual(x.getName(), name)
+        self.assertEqual(x.name(), name)
         x.setName('')
-        self.assertEqual(x.getName(), '')
+        self.assertEqual(x.name(), '')
 
 
 if __name__ == '__main__':
