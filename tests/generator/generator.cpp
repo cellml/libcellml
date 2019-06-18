@@ -20,7 +20,7 @@ limitations under the License.
 
 #include <libcellml>
 
-static const std::string EMPTY_STRING = "";
+static const std::string EMPTY_STRING;
 
 TEST(Generator, emptyModel) {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -79,8 +79,8 @@ TEST(Generator, initialized_variable_of_integration) {
     EXPECT_EQ(expectedErrors.size(), generator.errorCount());
 
     for (size_t i = 0; i < generator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
-        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.getError(i)->getKind());
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
+        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
 }
 
@@ -101,8 +101,8 @@ TEST(Generator, two_variables_of_integration) {
     EXPECT_EQ(expectedErrors.size(), generator.errorCount());
 
     for (size_t i = 0; i < generator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
-        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.getError(i)->getKind());
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
+        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
 }
 
@@ -125,8 +125,8 @@ TEST(Generator, non_first_order_odes) {
     EXPECT_EQ(expectedErrors.size(), generator.errorCount());
 
     for (size_t i = 0; i < generator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
-        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.getError(i)->getKind());
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
+        EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
 }
 
@@ -147,7 +147,7 @@ TEST(Generator, variable_initialized_twice) {
     EXPECT_EQ(expectedErrors.size(), generator.errorCount());
 
     for (size_t i = 0; i < generator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
     }
 }
 
@@ -168,7 +168,7 @@ TEST(Generator, non_initialized_state) {
     EXPECT_EQ(expectedErrors.size(), generator.errorCount());
 
     for (size_t i = 0; i < generator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), generator.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
     }
 }
 

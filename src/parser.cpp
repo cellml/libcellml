@@ -30,6 +30,9 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+//TODO: remove the below code once we are done testing things...
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -224,7 +227,7 @@ ModelPtr Parser::parseModel(const std::string &input)
     mPimpl->updateModel(model, input);
 //TODO: remove the below code once we are done testing things...
 for (size_t i = 0; i < errorCount(); ++i) {
-    printf("Parser error #%zu: %s\n", i+1, getError(i)->getDescription().c_str());
+    std::cout << "Parser error #" << i+1 << ": " << error(i)->description() << std::endl;
 }
 
     return model;
