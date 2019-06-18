@@ -36,7 +36,7 @@ TEST(Units, validName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("valid_name", u->getName());
+    EXPECT_EQ("valid_name", u->name());
 }
 
 TEST(Units, invalidName)
@@ -57,7 +57,7 @@ TEST(Units, invalidName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", u->getName());
+    EXPECT_EQ("invalid name", u->name());
 }
 
 TEST(Units, compoundUnitsRaw)
@@ -280,11 +280,11 @@ TEST(Units, takeUnits)
     m.addUnits(u3);
 
     libcellml::UnitsPtr u4 = m.takeUnits("b_unit");
-    EXPECT_EQ("b_unit", u4->getName());
+    EXPECT_EQ("b_unit", u4->name());
     EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u5 = m.takeUnits(1);
-    EXPECT_EQ("c_unit", u5->getName());
+    EXPECT_EQ("c_unit", u5->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_EQ(nullptr, m.takeUnits(7));
@@ -312,13 +312,13 @@ TEST(Units, replaceUnits)
     EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u4 = m.takeUnits(1);
-    EXPECT_EQ("c_unit", u4->getName());
+    EXPECT_EQ("c_unit", u4->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_TRUE(m.replaceUnits(0, u4));
 
-    u1 = m.getUnits(0);
-    EXPECT_EQ("c_unit", u1->getName());
+    u1 = m.units(0);
+    EXPECT_EQ("c_unit", u1->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     // Replace non-existent units.
@@ -395,7 +395,7 @@ TEST(Units, newBaseUnit)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("pH", u->getName());
+    EXPECT_EQ("pH", u->name());
 }
 
 TEST(Units, isBaseUnit)
@@ -432,10 +432,10 @@ TEST(Units, farhenheit)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("fahrenheitish", u->getName());
+    EXPECT_EQ("fahrenheitish", u->name());
 }
 
-TEST(Units, getUnitAttributes)
+TEST(Units, unitAttributes)
 {
     libcellml::Model m;
 
@@ -451,36 +451,36 @@ TEST(Units, getUnitAttributes)
     std::string id;
     double exponent;
     double multiplier;
-    u->getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("kelvin", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
 
     u->addUnit("NewUnit", 4.0, 1.05, 17.0);
-    u->getUnitAttributes(1, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("NewUnit", reference);
     EXPECT_EQ("4", prefix);
     EXPECT_DOUBLE_EQ(1.05, exponent);
     EXPECT_DOUBLE_EQ(17, multiplier);
 
     // Get non-existent unit.
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1, exponent);
     EXPECT_DOUBLE_EQ(1, multiplier);
 
     u->addUnit("daves", "house");
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes("daves", prefix, exponent, multiplier, id);
+    u->unitAttributes("daves", prefix, exponent, multiplier, id);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes("kelvin", prefix, exponent, multiplier, id);
+    u->unitAttributes("kelvin", prefix, exponent, multiplier, id);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
@@ -506,13 +506,13 @@ TEST(Units, multipleUnitUsingStandardRef)
     std::string id;
     double exponent;
     double multiplier;
-    u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
+    u.unitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
+    u.unitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(1, reference, prefix, exponent, multiplier, id);
+    u.unitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("centi", prefix);
-    u.getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u.unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("micro", prefix);
 }
 

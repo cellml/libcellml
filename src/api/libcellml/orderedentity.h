@@ -51,7 +51,7 @@ public:
      *
      * @return The order.
      */
-    int getOrder() const;
+    int order() const;
 
     /**
      * @brief Mark the order as unset.

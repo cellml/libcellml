@@ -55,7 +55,7 @@ public:
      *
      * @return @c std::string representation of the Entity name.
      */
-    std::string getName() const;
+    std::string name() const;
 
 private:
     void swap(NamedEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
