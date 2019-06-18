@@ -315,18 +315,18 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     // Contains component
     EXPECT_TRUE(c.containsComponent("comp5"));
     // Get component
-    EXPECT_EQ(c4, c.getComponent("comp4"));
-    const libcellml::ComponentPtr constC4 = static_cast<const libcellml::Component>(c).getComponent("comp4");
-    EXPECT_EQ("comp4", constC4->getName());
+    EXPECT_EQ(c4, c.component("comp4"));
+    const libcellml::ComponentPtr constC4 = static_cast<const libcellml::Component>(c).component("comp4");
+    EXPECT_EQ("comp4", constC4->name());
     EXPECT_FALSE(c.containsComponent("invalid"));
     const libcellml::Component const_c = static_cast<const libcellml::Component>(c);
-    EXPECT_EQ(const_c.getComponent("invalid"), nullptr);
+    EXPECT_EQ(const_c.component("invalid"), nullptr);
     EXPECT_FALSE(c.containsComponent("comp4new"));
-    EXPECT_EQ(const_c.getComponent("comp4new"), nullptr);
+    EXPECT_EQ(const_c.component("comp4new"), nullptr);
     // Replace component
     c.replaceComponent("comp4", c4n);
     c4n->addComponent(c5);
-    EXPECT_EQ(c4n, c.getComponent("comp4new"));
+    EXPECT_EQ(c4n, c.component("comp4new"));
     // Take component
     libcellml::ComponentPtr c6take = c.takeComponent("comp6");
     EXPECT_EQ(c6, c6take);
