@@ -120,26 +120,25 @@ TEST(Reset, order)
 //     EXPECT_TRUE(r.replaceWhen(1, c3));
 // }
 
-// TEST(Reset, constructors)
-// {
-//     libcellml::Reset r;
-//     libcellml::Reset r1;
-//     libcellml::Reset r2;
+TEST(Reset, constructors)
+{
+    libcellml::Reset r;
+    libcellml::Reset r1;
+    libcellml::Reset r2;
 
-//     r.addWhen(std::make_shared<libcellml::When>());
+    r.setOrder(1);
+    // Testing assignment for Reset
+    r1 = r;
+    EXPECT_EQ(size_t(1), r1.order());
 
-//     // Testing assignment for Reset
-//     r1 = r;
-//     EXPECT_EQ(size_t(1), r1.whenCount());
+    // Testing move assignment for Reset
+    r2 = std::move(r1);
+    EXPECT_EQ(size_t(1), r2.order());
 
-//     // Testing move assignment for Reset
-//     r2 = std::move(r1);
-//     EXPECT_EQ(size_t(1), r2.whenCount());
-
-//     // Testing move constructor for Reset
-//     libcellml::Reset r3 = std::move(r2);
-//     EXPECT_EQ(size_t(1), r3.whenCount());
-// }
+    // Testing move constructor for Reset
+    libcellml::Reset r3 = std::move(r2);
+    EXPECT_EQ(size_t(1), r3.order());
+}
 
 TEST(Reset, printResetWithVariable)
 {
