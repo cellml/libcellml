@@ -1009,9 +1009,9 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             trackedVariable->setVariable(componentVariable);
         } else if (   !componentVariable->initialValue().empty()
                    && !trackedVariable->variable()->initialValue().empty()) {
-            Model *model = component->parentModel();
-            Component *trackedVariableComponent = trackedVariable->variable()->parentComponent();
-            Model *trackedVariableModel = trackedVariableComponent->parentModel();
+            ModelPtr model = component->parentModel();
+            ComponentPtr trackedVariableComponent = trackedVariable->variable()->parentComponent();
+            ModelPtr trackedVariableModel = trackedVariableComponent->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '"+componentVariable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' and "
@@ -1054,8 +1054,8 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             // that it is not initialised
 
             if (!variable->initialValue().empty()) {
-                Component *component = variable->parentComponent();
-                Model *model = component->parentModel();
+                ComponentPtr component = variable->parentComponent();
+                ModelPtr model = component->parentModel();
                 ErrorPtr err = std::make_shared<Error>();
 
                 err->setDescription("Variable '"+variable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' cannot be both a variable of integration and initialised.");
@@ -1066,10 +1066,10 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
                 mVariableOfIntegration = variable;
             }
         } else if (!variable->isEquivalentVariable(mVariableOfIntegration)) {
-            Component *voiComponent = mVariableOfIntegration->parentComponent();
-            Model *voiModel = voiComponent->parentModel();
-            Component *component = variable->parentComponent();
-            Model *model = component->parentModel();
+            ComponentPtr voiComponent = mVariableOfIntegration->parentComponent();
+            ModelPtr voiModel = voiComponent->parentModel();
+            ComponentPtr component = variable->parentComponent();
+            ModelPtr model = component->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '"+mVariableOfIntegration->name()+"' in component '"+voiComponent->name()+"' of model '"+voiModel->name()+"' and variable '"+variable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' cannot both be a variable of integration.");
@@ -1087,8 +1087,8 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->type() == GeneratorEquationAst::Type::DIFF)) {
         if (convertToDouble(ast->value()) != 1.0) {
             VariablePtr variable = astGreatGrandParent->right()->variable();
-            Component *component = variable->parentComponent();
-            Model *model = component->parentModel();
+            ComponentPtr component = variable->parentComponent();
+            ModelPtr model = component->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("The differential equation for variable '"+variable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' must be of the first order.");
@@ -1203,8 +1203,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         if (!errorType.empty()) {
             ErrorPtr err = std::make_shared<Error>();
             VariablePtr realVariable = variable->variable();
-            Component *realComponent = realVariable->parentComponent();
-            Model *realModel = realComponent->parentModel();
+            ComponentPtr realComponent = realVariable->parentComponent();
+            ModelPtr realModel = realComponent->parentModel();
 
             err->setDescription("Variable '"+realVariable->name()+"' in component '"+realComponent->name()+"' of model '"+realModel->name()+"' "+errorType+".");
             err->setKind(Error::Kind::GENERATOR);

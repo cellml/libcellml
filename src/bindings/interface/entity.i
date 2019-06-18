@@ -19,9 +19,6 @@ unset).";
 %feature("docstring") libcellml::Entity::clearParent
 "Removes any parent set for this entity.";
 
-%feature("docstring") libcellml::Entity::parent
-"Returns the parent of the CellML Entity (or `None` if not set).";
-
 %feature("docstring") libcellml::Entity::parentComponent
 "Returns the parent component of the CellML Entity (or `None` if not set).";
 
