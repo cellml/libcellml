@@ -97,7 +97,7 @@ Component *Entity::getParentComponent() const
 
 Model *Entity::getParentModel() const
 {
-    if (mPimpl->mParentComponent) {
+    if (mPimpl->mParentComponent != nullptr) {
         return mPimpl->mParentComponent->getParentModel();
     }
 

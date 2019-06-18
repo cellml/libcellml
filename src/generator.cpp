@@ -39,10 +39,15 @@ limitations under the License.
 #   undef FALSE
 #endif
 
-namespace libcellml{
+//TODO: remove the below code once we are done testing things...
+#define TRACES
+#ifdef TRACES
+#   include <iostream>
+#endif
+namespace libcellml {
 
 class GeneratorEquationAst;
-typedef std::shared_ptr<GeneratorEquationAst> GeneratorEquationAstPtr;
+using GeneratorEquationAstPtr = std::shared_ptr<GeneratorEquationAst>;
 
 class GeneratorEquationAst
 {
@@ -210,7 +215,7 @@ GeneratorEquationAstPtr &GeneratorEquationAst::right()
 }
 
 class GeneratorEquation;
-typedef std::shared_ptr<GeneratorEquation> GeneratorEquationPtr;
+using GeneratorEquationPtr = std::shared_ptr<GeneratorEquation>;
 
 class GeneratorEquation
 {
@@ -237,7 +242,7 @@ public:
                          const VariablePtr &newVariable);
 
 private:
-    Type mType;
+    Type mType = Type::UNKNOWN;
 
     ComponentPtr mComponent;
 
@@ -247,8 +252,7 @@ private:
 };
 
 GeneratorEquation::GeneratorEquation(const ComponentPtr &component)
-    : mType(Type::UNKNOWN)
-    , mComponent(component)
+    : mComponent(component)
     , mAst(std::make_shared<GeneratorEquationAst>())
 {
 }
@@ -288,7 +292,7 @@ void GeneratorEquation::replaceVariable(const VariablePtr &oldVariable,
 }
 
 class GeneratorVariable;
-typedef std::shared_ptr<GeneratorVariable> GeneratorVariablePtr;
+using GeneratorVariablePtr = std::shared_ptr<GeneratorVariable>;
 
 class GeneratorVariable
 {
@@ -303,8 +307,6 @@ public:
         COMPUTED_CONSTANT
     };
 
-    explicit GeneratorVariable();
-
     Type type() const;
 
     VariablePtr variable() const;
@@ -317,17 +319,11 @@ public:
     void makeState();
 
 private:
-    Type mType;
+    Type mType = Type::UNKNOWN;
 
-    VariablePtr mVariable;
-    GeneratorEquationAstPtr mAst;
+    VariablePtr mVariable = nullptr;
+    GeneratorEquationAstPtr mAst = nullptr;
 };
-
-GeneratorVariable::GeneratorVariable()
-    : mType(Type::UNKNOWN)
-    , mVariable(nullptr)
-{
-}
 
 GeneratorVariable::Type GeneratorVariable::type() const
 {
@@ -343,7 +339,7 @@ void GeneratorVariable::setVariable(const VariablePtr &variable)
 {
     mVariable = variable;
 
-    if (!variable->getInitialValue().empty()) {
+    if (!variable->initialValue().empty()) {
         // The variable has an initial value, so it can either be a constant or
         // a state. If the type of the variable is currently unknown then we
         // consider it to be a constant (then, if we find an ODE for that
@@ -385,7 +381,7 @@ void GeneratorVariable::setVariableAst(const GeneratorEquationAstPtr &ast)
 
 struct Generator::GeneratorImpl
 {
-    Generator *mGenerator;
+    Generator *mGenerator = nullptr;
 
     bool mOptimize = true;
     bool mWithNames = true;
@@ -570,11 +566,11 @@ size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
     // Return the number of child elements, in the MathML namespace, for the
     // given node
 
-    XmlNodePtr childNode = node->getFirstChild();
+    XmlNodePtr childNode = node->firstChild();
     size_t res = (childNode->isMathmlElement())?1:0;
 
     while (childNode != nullptr) {
-        childNode = childNode->getNext();
+        childNode = childNode->next();
 
         if (childNode && childNode->isMathmlElement()) {
             ++res;
@@ -591,11 +587,11 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 
     static const size_t MAX_SIZE_T = std::numeric_limits<std::size_t>::max();
 
-    XmlNodePtr res = node->getFirstChild();
+    XmlNodePtr res = node->firstChild();
     size_t childNodeIndex = (res->isMathmlElement())?0:MAX_SIZE_T;
 
     while ((res != nullptr) && (childNodeIndex != index)) {
-        res = res->getNext();
+        res = res->next();
 
         if (res && res->isMathmlElement()) {
             ++childNodeIndex;
@@ -687,7 +683,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // case, there is nothing more we need to do since ast is already of
         // GeneratorEquationAst::Type::EQ type.
 
-        if (!node->getParent()->getParent()->isMathmlElement("math")) {
+        if (!node->parent()->parent()->isMathmlElement("math")) {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ, astParent);
         }
     } else if (node->isMathmlElement("neq")) {
@@ -893,9 +889,9 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     // Token elements
 
     } else if (node->isMathmlElement("cn")) {
-        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->getFirstChild()->convertToString(), astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
     } else if (node->isMathmlElement("ci")) {
-        VariablePtr variable = component->getVariable(node->getFirstChild()->convertToString());
+        VariablePtr variable = component->variable(node->firstChild()->convertToString());
 
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
 
@@ -961,16 +957,16 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     // it, one equation at a time
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
-    std::string math = component->getMath();
+    std::string math = component->math();
     std::vector<GeneratorEquationPtr> equations;
 
     if (!math.empty()) {
         xmlDoc->parseMathML(math);
 
-        XmlNodePtr mathNode = xmlDoc->getRootNode();
+        XmlNodePtr mathNode = xmlDoc->rootNode();
 
-        for (XmlNodePtr node = mathNode->getFirstChild();
-             node != nullptr; node = node->getNext()) {
+        for (XmlNodePtr node = mathNode->firstChild();
+             node != nullptr; node = node->next()) {
             if (node->isMathmlElement()) {
                 equations.push_back(processNode(node, component));
             }
@@ -984,7 +980,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         // Check whether the variable is already tracked and, if not, track it
 
         bool componentVariableTracked = false;
-        VariablePtr componentVariable = component->getVariable(i);
+        VariablePtr componentVariable = component->variable(i);
         GeneratorVariablePtr trackedVariable;
 
         for (const auto &variable : mVariables) {
@@ -1008,18 +1004,18 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         // held by trackedVariable and componentVariable are both initialised.
 
         if (   (trackedVariable->variable() == nullptr)
-            || (   !componentVariable->getInitialValue().empty()
-                &&  trackedVariable->variable()->getInitialValue().empty())) {
+            || (   !componentVariable->initialValue().empty()
+                &&  trackedVariable->variable()->initialValue().empty())) {
             trackedVariable->setVariable(componentVariable);
-        } else if (   !componentVariable->getInitialValue().empty()
-                   && !trackedVariable->variable()->getInitialValue().empty()) {
+        } else if (   !componentVariable->initialValue().empty()
+                   && !trackedVariable->variable()->initialValue().empty()) {
             Model *model = component->getParentModel();
             Component *trackedVariableComponent = trackedVariable->variable()->getParentComponent();
             Model *trackedVariableModel = trackedVariableComponent->getParentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '"+componentVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' and "
-                                "variable '"+trackedVariable->variable()->getName()+"' in component '"+trackedVariableComponent->getName()+"' of model '"+trackedVariableModel->getName()+"' are equivalent and cannot therefore both be initialised.");
+            err->setDescription("Variable '"+componentVariable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' and "
+                                "variable '"+trackedVariable->variable()->name()+"' in component '"+trackedVariableComponent->name()+"' of model '"+trackedVariableModel->name()+"' are equivalent and cannot therefore both be initialised.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1029,7 +1025,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     // Do the same for the components encapsulated by the given component
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
-        processComponent(component->getComponent(i));
+        processComponent(component->component(i));
     }
 }
 
@@ -1057,12 +1053,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             // Before keeping track of the variable of integration, make sure
             // that it is not initialised
 
-            if (!variable->getInitialValue().empty()) {
+            if (!variable->initialValue().empty()) {
                 Component *component = variable->getParentComponent();
                 Model *model = component->getParentModel();
                 ErrorPtr err = std::make_shared<Error>();
 
-                err->setDescription("Variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot be both a variable of integration and initialised.");
+                err->setDescription("Variable '"+variable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' cannot be both a variable of integration and initialised.");
                 err->setKind(Error::Kind::GENERATOR);
 
                 mGenerator->addError(err);
@@ -1076,7 +1072,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             Model *model = component->getParentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '"+mVariableOfIntegration->getName()+"' in component '"+voiComponent->getName()+"' of model '"+voiModel->getName()+"' and variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' cannot both be a variable of integration.");
+            err->setDescription("Variable '"+mVariableOfIntegration->name()+"' in component '"+voiComponent->name()+"' of model '"+voiModel->name()+"' and variable '"+variable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' cannot both be a variable of integration.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1095,7 +1091,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             Model *model = component->getParentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("The differential equation for variable '"+variable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' must be of the first order.");
+            err->setDescription("The differential equation for variable '"+variable->name()+"' in component '"+component->name()+"' of model '"+model->name()+"' must be of the first order.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1173,7 +1169,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // for each of the model's equations
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
-        processComponent(model->getComponent(i));
+        processComponent(model->component(i));
     }
 
     // Process our different equations
@@ -1207,10 +1203,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         if (!errorType.empty()) {
             ErrorPtr err = std::make_shared<Error>();
             VariablePtr realVariable = variable->variable();
-            Component *component = realVariable->getParentComponent();
-            Model *model = component->getParentModel();
+            Component *realComponent = realVariable->getParentComponent();
+            Model *realModel = realComponent->getParentModel();
 
-            err->setDescription("Variable '"+realVariable->getName()+"' in component '"+component->getName()+"' of model '"+model->getName()+"' "+errorType+".");
+            err->setDescription("Variable '"+realVariable->name()+"' in component '"+realComponent->name()+"' of model '"+realModel->name()+"' "+errorType+".");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1225,34 +1221,32 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 
 //TODO: remove the below code once we are done testing things...
-#define TRACES
 #ifdef TRACES
-printf("Number of variables: %zu\n", mVariables.size());
+std::cout << "Number of variables: " << mVariables.size() << std::endl;
 int i = 0;
 for (const auto &variable : mVariables) {
-    printf("Variable #%d [%d]: %s %s[comp: %s]\n", ++i,
-           variable->type(),
-           variable->variable()->getName().c_str(),
-           variable->variable()->getInitialValue().empty()?
-               "":
-               std::string("[init: "+variable->variable()->getInitialValue()+"] ").c_str(),
-           variable->variable()->getParentComponent()->getName().c_str());
+    std::cout << "Variable #" << ++i << " [" << int(variable->type())
+              << "]: " << variable->variable()->name().c_str()
+              << " " << (variable->variable()->initialValue().empty()?
+                             "":
+                             std::string("[init: "+variable->variable()->initialValue()+"] "))
+              << "[comp: " << variable->variable()->getParentComponent()->name() << "]" << std::endl;
 }
-printf("[neededMathMethods()]---------------------------------------[BEGIN]\n");
-printf("%s", neededMathMethods().c_str());
-printf("[neededMathMethods()]---------------------------------------[END]\n");
-printf("[initializeVariables()]---------------------------------------[BEGIN]\n");
-printf("%s", initializeVariables().c_str());
-printf("[initializeVariables()]---------------------------------------[END]\n");
-printf("[computeConstantEquations()]---------------------------------------[BEGIN]\n");
-printf("%s", computeConstantEquations().c_str());
-printf("[computeConstantEquations()]---------------------------------------[END]\n");
-printf("[computeRateEquations()]---------------------------------------[BEGIN]\n");
-printf("%s", computeRateEquations().c_str());
-printf("[computeRateEquations()]---------------------------------------[END]\n");
-printf("[computeAlgebraicEquations()]---------------------------------------[BEGIN]\n");
-printf("%s", computeAlgebraicEquations().c_str());
-printf("[computeAlgebraicEquations()]---------------------------------------[END]\n");
+std::cout << "[neededMathMethods()]---------------------------------------[BEGIN]" << std::endl;
+std::cout << neededMathMethods() << std::endl;
+std::cout << "[neededMathMethods()]---------------------------------------[END]" << std::endl;
+std::cout << "[initializeVariables()]---------------------------------------[BEGIN]" << std::endl;
+std::cout << initializeVariables() << std::endl;
+std::cout << "[initializeVariables()]---------------------------------------[END]" << std::endl;
+std::cout << "[computeConstantEquations()]---------------------------------------[BEGIN]" << std::endl;
+std::cout << computeConstantEquations() << std::endl;
+std::cout << "[computeConstantEquations()]---------------------------------------[END]" << std::endl;
+std::cout << "[computeRateEquations()]---------------------------------------[BEGIN]" << std::endl;
+std::cout << computeRateEquations() << std::endl;
+std::cout << "[computeRateEquations()]---------------------------------------[END]" << std::endl;
+std::cout << "[computeAlgebraicEquations()]---------------------------------------[BEGIN]" << std::endl;
+std::cout << computeAlgebraicEquations() << std::endl;
+std::cout << "[computeAlgebraicEquations()]---------------------------------------[END]" << std::endl;
 #endif
 }
 
@@ -1267,7 +1261,7 @@ std::string Generator::GeneratorImpl::initializeVariables() const
 
     for (const auto &variable : mVariables) {
         if (variable->type() == GeneratorVariable::Type::CONSTANT) {
-            res += variable->variable()->getName()+" = "+variable->variable()->getInitialValue()+mCommandSeparator+"\n";
+            res += variable->variable()->name()+" = "+variable->variable()->initialValue()+mCommandSeparator+"\n";
         }
     }
 
@@ -1293,7 +1287,7 @@ std::string Generator::GeneratorImpl::computeRateEquations() const
 
     for (const auto &equation : mEquations) {
         if (equation->type() == GeneratorEquation::Type::RATE) {
-            res += generateCode(equation->ast()).c_str();
+            res += generateCode(equation->ast());
         }
     }
 
@@ -1306,7 +1300,7 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
 
     for (const auto &equation : mEquations) {
 //        if (equation->type() == GeneratorEquation::Type::ALGEBRAIC) {
-            res += generateCode(equation->ast()).c_str()+mCommandSeparator+"\n";
+            res += generateCode(equation->ast())+mCommandSeparator+"\n";
 //        }
     }
 
@@ -1930,9 +1924,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         if (ast->right() != nullptr) {
             if (ast->right()->type() == GeneratorEquationAst::Type::PIECE) {
                 return generateCode(ast->left())+generatePiecewiseElseCode(generateCode(ast->right())+generatePiecewiseElseCode(mNan));
-            } else {
-                return generateCode(ast->left())+generatePiecewiseElseCode(generateCode(ast->right()));
             }
+
+            return generateCode(ast->left())+generatePiecewiseElseCode(generateCode(ast->right()));
         }
 
         return generateCode(ast->left())+generatePiecewiseElseCode(mNan);
@@ -1946,7 +1940,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     case GeneratorEquationAst::Type::CN:
         return ast->value();
     case GeneratorEquationAst::Type::CI:
-        return ast->variable()->getName();
+        return ast->variable()->name();
 
     // Qualifier elements
 
@@ -1995,7 +1989,7 @@ Generator::Generator(const Generator &rhs)
     mPimpl->mVariables = rhs.mPimpl->mVariables;
 }
 
-Generator::Generator(Generator &&rhs)
+Generator::Generator(Generator &&rhs) noexcept
     : Logger(std::move(rhs))
     , mPimpl(rhs.mPimpl)
 {
@@ -2039,7 +2033,7 @@ void Generator::processModel(const ModelPtr &model)
     mPimpl->processModel(model);
 //TODO: remove the below code once we are done testing things...
 for (size_t i = 0; i < errorCount(); ++i) {
-    printf("Generator error #%zu: %s\n", i+1, getError(i)->getDescription().c_str());
+    std::cout << "Generator error #" << i+1 << ": " << error(i)->description() << std::endl;
 }
 }
 
@@ -2132,4 +2126,4 @@ std::string Generator::computeAlgebraicEquations() const
     return mPimpl->computeAlgebraicEquations();
 }
 
-}
+} // namespace libcellml

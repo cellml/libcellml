@@ -35,7 +35,7 @@ public:
     Generator(); /**< Constructor */
     ~Generator() override; /**< Destructor */
     Generator(const Generator &rhs); /**< Copy constructor */
-    Generator(Generator &&rhs); /**< Move constructor */
+    Generator(Generator &&rhs) noexcept; /**< Move constructor */
     Generator& operator=(Generator rhs); /**< Assignment operator */
 
     void processModel(const ModelPtr &model);
