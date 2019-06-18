@@ -129,15 +129,15 @@ TEST(Reset, constructors)
     r.setOrder(1);
     // Testing assignment for Reset
     r1 = r;
-    EXPECT_EQ(size_t(1), r1.order());
+    EXPECT_EQ(1, r1.order());
 
     // Testing move assignment for Reset
     r2 = std::move(r1);
-    EXPECT_EQ(size_t(1), r2.order());
+    EXPECT_EQ(1, r2.order());
 
     // Testing move constructor for Reset
     libcellml::Reset r3 = std::move(r2);
-    EXPECT_EQ(size_t(1), r3.order());
+    EXPECT_EQ(1, r3.order());
 }
 
 TEST(Reset, printResetWithVariable)
