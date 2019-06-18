@@ -74,7 +74,7 @@ public:
      *
      * @return A reference to the error at the given index on success, @c nullptr otherwise.
      */
-    ErrorPtr getError(size_t index) const;
+    ErrorPtr error(size_t index) const;
 
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */

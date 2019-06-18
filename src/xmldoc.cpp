@@ -98,7 +98,7 @@ void XmlDoc::parseMathML(const std::string &input)
     xmlSetStructuredErrorFunc(nullptr, nullptr);
 }
 
-XmlNodePtr XmlDoc::getRootNode() const
+XmlNodePtr XmlDoc::rootNode() const
 {
     xmlNodePtr root = xmlDocGetRootElement(mPimpl->mXmlDocPtr);
     XmlNodePtr rootHandle = nullptr;
@@ -119,7 +119,7 @@ size_t XmlDoc::xmlErrorCount() const
     return mPimpl->mXmlErrors.size();
 }
 
-std::string XmlDoc::getXmlError(size_t index) const
+std::string XmlDoc::xmlError(size_t index) const
 {
     return mPimpl->mXmlErrors.at(index);
 }
