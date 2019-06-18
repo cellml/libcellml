@@ -84,7 +84,7 @@ struct Validator::ValidatorImpl
      * Checks if the provided @p name is a valid CellML identifier according
      * to the CellML 2.0 specification. This requires a non-zero length Unicode
      * character sequence containing basic Latin alphanumeric characters or
-     * underscores that does not start with a number.
+     * underscores that does not begin with a number.
      *
      * @param name The @c std::string name to check the validity of.
      *
