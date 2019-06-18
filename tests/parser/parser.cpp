@@ -1628,6 +1628,7 @@ TEST(Parser, parseResetsWithErrors)
 
         // order not specified
         "    <reset variable=\"variable2\" test_variable=\"variable4\">\n"
+        "      lost text here\n"
         "      <test_value>\n"
         "        <some_invalid_tag/>\n" // test_value should only contain mathml
         "      </test_value>\n"
@@ -1636,8 +1637,8 @@ TEST(Parser, parseResetsWithErrors)
         "      </reset_value>\n"
         "    </reset>\n"
 
-        // order not specified
-        "    <reset variable=\"variable2\" test_variable=\"variable4\">\n"
+        // order not specified, unknown attribute
+        "    <reset variable=\"variable2\" test_variable=\"variable4\" i_dont_belong_here=\"yep_really_i_dont\">\n"
         // test_value missing
         // reset_value missing
         "    </reset>\n"
@@ -1655,17 +1656,20 @@ TEST(Parser, parseResetsWithErrors)
         "Reset in component 'component2' referencing variable '' and test_variable '' has multiple test_value blocks.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has multiple reset_value blocks.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have an order defined.",
+        "Reset has an invalid non-whitespace child text element '\n      lost text here\n      '.  Expected either 'test_value' or 'reset_value' block.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' has a non-whitespace test_value child. MathML block expected.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' has a non-whitespace reset_value child. MathML block expected.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a test_value block defined.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined.",
+        "Reset in component 'component2' has an invalid attribute 'i_dont_belong_here'.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have an order defined.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a test_value block defined.",
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined."};
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(in);
-    EXPECT_EQ(size_t(16), p.errorCount());
+
+    EXPECT_EQ(size_t(18), p.errorCount());
     for (size_t i = 0; i < p.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors[i], p.error(i)->description());
     }
