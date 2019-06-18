@@ -17,8 +17,12 @@ limitations under the License.
 #include "libcellml/component.h"
 #include "libcellml/componententity.h"
 #include "libcellml/entity.h"
+#include "libcellml/model.h"
 
 namespace libcellml {
+
+using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */
+using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
 
 /**
  * @brief The Entity::EntityImpl struct.
@@ -27,16 +31,16 @@ namespace libcellml {
  */
 struct Entity::EntityImpl
 {
-    Model *mParentModel = nullptr; /**< Pointer to parent model. */
-    Component *mParentComponent = nullptr; /**< Pointer to component model. */
+    ModelWeakPtr mParentModel; /**< Pointer to parent model. */
+    ComponentWeakPtr mParentComponent; /**< Pointer to component model. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
 Entity::Entity()
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParentModel = nullptr;
-    mPimpl->mParentComponent = nullptr;
+    mPimpl->mParentModel = {};
+    mPimpl->mParentComponent = {};
 }
 
 Entity::~Entity()
@@ -79,54 +83,40 @@ std::string Entity::id() const
     return mPimpl->mId;
 }
 
-void *Entity::parent() const
+ModelPtr Entity::parentModel() const
 {
-    void *parent = nullptr;
-    if (mPimpl->mParentComponent != nullptr) {
-        parent = mPimpl->mParentComponent;
-    } else if (mPimpl->mParentModel != nullptr) {
-        parent = mPimpl->mParentModel;
-    }
-    return parent;
+    return mPimpl->mParentModel.lock();
 }
 
-Model *Entity::parentModel() const
+ComponentPtr Entity::parentComponent() const
 {
-    if (mPimpl->mParentComponent != nullptr) {
-        return mPimpl->mParentComponent->parentModel();
-    }
-
-    return mPimpl->mParentModel;
+    return mPimpl->mParentComponent.lock();
 }
 
-Component *Entity::parentComponent() const
-{
-    return mPimpl->mParentComponent;
-}
-
-void Entity::setParent(Model *parent)
-{
-    mPimpl->mParentModel = parent;
-}
-
-void Entity::setParent(Component *parent)
+void Entity::setParent(const ComponentPtr &parent)
 {
     mPimpl->mParentComponent = parent;
 }
 
-void Entity::clearParent()
+void Entity::setParent(const ModelPtr &parent)
 {
-    mPimpl->mParentComponent = nullptr;
-    mPimpl->mParentModel = nullptr;
+    mPimpl->mParentModel = parent;
 }
 
-bool Entity::hasParent(Component *component) const
+void Entity::clearParent()
+{
+    mPimpl->mParentComponent = {};
+    mPimpl->mParentModel = {};
+}
+
+bool Entity::hasParent(const ComponentPtr &component) const
 {
     bool hasParent = false;
-    if (mPimpl->mParentComponent == component) {
+    ComponentPtr parentComponent = mPimpl->mParentComponent.lock();
+    if (parentComponent == component) {
         hasParent = true;
-    } else if (mPimpl->mParentComponent != nullptr) {
-        hasParent = mPimpl->mParentComponent->hasParent(component);
+    } else if (parentComponent) {
+        hasParent = parentComponent->hasParent(component);
     }
 
     return hasParent;

@@ -77,6 +77,9 @@ Component::~Component()
 Component::Component(const Component &rhs)
     : ComponentEntity(rhs)
     , ImportedEntity(rhs)
+#ifndef SWIG
+    , std::enable_shared_from_this<Component>(rhs)
+#endif
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mVariables = rhs.mPimpl->mVariables;
@@ -107,8 +110,8 @@ void Component::swap(Component &rhs)
 
 void Component::doAddComponent(const ComponentPtr &component)
 {
-    if (!hasParent(component.get())) {
-        component->setParent(this);
+    if (!hasParent(component)) {
+        component->setParent(shared_from_this());
         ComponentEntity::doAddComponent(component);
     }
 }
@@ -137,7 +140,7 @@ void Component::setMath(const std::string &math)
 void Component::addVariable(const VariablePtr &variable)
 {
     mPimpl->mVariables.push_back(variable);
-    variable->setParent(this);
+    variable->setParent(shared_from_this());
 }
 
 bool Component::removeVariable(size_t index)
