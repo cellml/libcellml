@@ -102,7 +102,7 @@ Component &Component::operator=(Component rhs)
 
 void Component::swap(Component &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Component::doAddComponent(const ComponentPtr &component)

@@ -93,7 +93,7 @@ Model &Model::operator=(Model rhs)
 
 void Model::swap(Model &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Model::doAddComponent(const ComponentPtr &component)

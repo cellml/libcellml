@@ -354,7 +354,7 @@ struct structure
 
     void swap(structure &rhs) noexcept
     {
-        std::swap(this->m_data, rhs.m_data);
+        std::swap(m_data, rhs.m_data);
     }
 
     ~structure()
