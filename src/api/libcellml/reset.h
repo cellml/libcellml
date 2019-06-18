@@ -54,7 +54,7 @@ public:
      *
      * @return The @c Variable.
      */
-    VariablePtr getVariable() const;
+    VariablePtr variable() const;
 
     /**
      * @brief Add a child when to this @c Reset.
@@ -123,7 +123,7 @@ public:
      *
      * @return The @c When at the given @p index on success, @c nullptr on failure.
      */
-    WhenPtr getWhen(size_t index) const;
+    WhenPtr when(size_t index) const;
 
     /**
      * @brief Take the @c When at the given @p index and return it.
