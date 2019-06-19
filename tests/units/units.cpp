@@ -606,9 +606,4 @@ TEST(Units, unitsWithPrefixOutOfRange)
     validator.validateModel(m);
 
     EXPECT_EQ(size_t(0), validator.errorCount());
-
-    // TODO Removed this until validator actually does these checks - test just here for coverage
-    // EXPECT_EQ(size_t(1), validator.errorCount());
-    // EXPECT_EQ("Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.",
-    //           validator.getError(0)->getDescription());
 }
