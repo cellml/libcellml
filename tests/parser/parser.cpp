@@ -1296,41 +1296,33 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
         switch (parser.error(i)->kind()) {
-        case libcellml::Error::Kind::COMPONENT: {
+        case libcellml::Error::Kind::COMPONENT:
             foundKind.at(0) = true;
             break;
-        }
-        case (libcellml::Error::Kind::CONNECTION): {
+        case (libcellml::Error::Kind::CONNECTION):
             foundKind.at(1) = true;
             break;
-        }
-        case (libcellml::Error::Kind::ENCAPSULATION): {
+        case (libcellml::Error::Kind::ENCAPSULATION):
             foundKind.at(2) = true;
             break;
-        }
-        case (libcellml::Error::Kind::IMPORT): {
+        case (libcellml::Error::Kind::IMPORT):
             foundKind.at(3) = true;
             break;
-        }
-        case (libcellml::Error::Kind::MODEL): {
+        case (libcellml::Error::Kind::MODEL):
             foundKind.at(4) = true;
             break;
-        }
-        case (libcellml::Error::Kind::UNITS): {
+        case (libcellml::Error::Kind::UNITS):
             foundKind.at(5) = true;
             break;
-        }
-        case (libcellml::Error::Kind::VARIABLE): {
+        case (libcellml::Error::Kind::VARIABLE):
             foundKind.at(6) = true;
             break;
-        }
         case libcellml::Error::Kind::MATHML:
         case libcellml::Error::Kind::RESET:
         case libcellml::Error::Kind::UNDEFINED:
         case libcellml::Error::Kind::WHEN:
-        case libcellml::Error::Kind::XML: {
+        case libcellml::Error::Kind::XML:
             break;
-        }
         }
     }
 
@@ -1361,8 +1353,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
 
     // Check that we've found all the possible error types
     bool foundAllKinds = false;
-    if (std::all_of(foundKind.begin(), foundKind.end(),
-                    [](bool i) { return i; })) {
+    if (std::all_of(foundKind.begin(), foundKind.end(), [](bool i) { return i; })) {
         foundAllKinds = true;
     }
     EXPECT_TRUE(foundAllKinds);
@@ -1709,17 +1700,12 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
     libcellml::ResetPtr resetExpected = model->component(0)->reset(0);
     libcellml::WhenPtr whenExpected = resetExpected->when(0);
 
-    std::vector<std::string> expectedErrors = {
-        "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value 'a'.",
-        "When in reset referencing variable 'V_k' with order '' has an invalid attribute 'goods'.",
-        "When in reset referencing variable 'V_k' with order '' does not have an order defined.",
-        "When in reset referencing variable 'V_k' with order '' contains only one MathML child element.",
-    };
-
     EXPECT_EQ(size_t(4), parser.errorCount());
+
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
     }
+
     EXPECT_EQ(resetExpected, parser.error(0)->reset());
     EXPECT_EQ(whenExpected, parser.error(1)->when());
 }
