@@ -965,8 +965,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
         XmlNodePtr mathNode = xmlDoc->rootNode();
 
-        for (XmlNodePtr node = mathNode->firstChild();
-             node != nullptr; node = node->next()) {
+        for (XmlNodePtr node = mathNode->firstChild(); node != nullptr; node = node->next()) {
             if (node->isMathmlElement()) {
                 equations.push_back(processNode(node, component));
             }
