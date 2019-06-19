@@ -20,10 +20,6 @@ limitations under the License.
 #include "libcellml/exportdefinitions.h"
 #include "libcellml/importedentity.h"
 
-#ifndef SWIG
-template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Component>;
-#endif
-
 namespace libcellml {
 
 /**
