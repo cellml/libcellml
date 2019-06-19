@@ -92,7 +92,7 @@ public:
      * CellML 2.0 namespace with the given local name @p name; and
      * @c false otherwise.
      */
-    bool isCellmlElement(const char *name  = nullptr);
+    bool isCellmlElement(const char *name = nullptr);
 
     /**
      * @brief Check if this @c XmlNode is an element node in the
