@@ -344,7 +344,7 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
-    // Invalid component import - missing refs
+    // Invalid component import - missing ref to source component
     libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
     importedComponent3->setName("invalid_imported_component_in_this_model");
@@ -353,7 +353,7 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(3), v.errorCount());
 
-    // Invalid component import - duplicate refs
+    // Valid component import - two components imported from the same place is allowed
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
     imp4->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
@@ -363,6 +363,7 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(3), v.errorCount());
 
+    // Invalid - name missing from component
     libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
     imp5->setUrl("some-other-different-model.xml");
     libcellml::ComponentPtr importedComponent5 = std::make_shared<libcellml::Component>();
@@ -371,7 +372,7 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(5), v.errorCount());
 
-    // Invalid: duplicating component_ref and source
+    // Valid - two components from the same source is allowed
     libcellml::ImportSourcePtr imp7 = std::make_shared<libcellml::ImportSource>();
     imp7->setUrl("yet-another-other-model.xml");
     libcellml::ComponentPtr importedComponent7 = std::make_shared<libcellml::Component>();
@@ -381,7 +382,7 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(5), v.errorCount());
 
-    // Valid: duplicate component_ref from a different source
+    // Valid - duplicate component_ref from a different source
     libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
     imp8->setUrl("yet-another-other-model.xml"); // source used before
     libcellml::ComponentPtr importedComponent8 = std::make_shared<libcellml::Component>();
@@ -393,7 +394,7 @@ TEST(Validator, importComponents)
 
     // Invalid: component_ref is not valid html
     libcellml::ImportSourcePtr imp9 = std::make_shared<libcellml::ImportSource>();
-    imp9->setUrl("not @ valid url"); // source used before
+    imp9->setUrl("not @ valid url"); // source used before but is not valid
     libcellml::ComponentPtr importedComponent9 = std::make_shared<libcellml::Component>();
     importedComponent9->setName("a_bad_imported_component");
     importedComponent9->setSourceComponent(imp9, "component_in_some_model");
