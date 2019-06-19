@@ -1,5 +1,7 @@
+# OS X hidden system files
+.DS_Store
 
-# Ignore build/ directories
+# Ignore the build directory
 build/
 
 # Eclipse project files
