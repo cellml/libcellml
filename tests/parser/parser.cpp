@@ -275,7 +275,7 @@ TEST(Parser, parseModelWithUnitsAndNamedComponent)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
         "  <component name=\"component_name\"/>\n"
@@ -539,7 +539,7 @@ TEST(Parser, modelWithUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
         "</model>\n";
@@ -547,7 +547,7 @@ TEST(Parser, modelWithUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
         "</model>\n";
@@ -566,7 +566,7 @@ TEST(Parser, modelWithInvalidUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\" temperature=\"451\">\n"
-        "    <unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">\n"
+        "    <unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"kelvin\" bill=\"murray\">\n"
         "      <degrees/>\n"
         "    </unit>\n"
         "    <bobshouse address=\"34 Rich Lane\"/>\n"
@@ -582,7 +582,7 @@ TEST(Parser, modelWithInvalidUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit exponent=\"inf\" units=\"celsius\"/>\n"
+        "    <unit exponent=\"inf\" units=\"kelvin\"/>\n"
         "    <unit units=\"\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
@@ -594,9 +594,9 @@ TEST(Parser, modelWithInvalidUnits)
 
     std::vector<std::string> expectedErrors = {
         "Units 'fahrenheitish' has an invalid attribute 'temperature'.",
-        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid child element 'degrees'.",
-        "Unit referencing 'celsius' in units 'fahrenheitish' has a multiplier with the value 'Z' that is not a representation of a CellML real valued number.",
-        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid attribute 'bill'.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has an invalid child element 'degrees'.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has a multiplier with the value 'Z' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has an invalid attribute 'bill'.",
         "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
         "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
         "Units '' has an invalid attribute 'jerry'.",
@@ -827,10 +827,7 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError)
         "</model>\n";
     const std::vector<std::string> expectedErrors = {
         "Variable 'quixote' has an invalid attribute 'don'.",
-        "Variable 'quixote' is missing a required 'units' attribute.",
         "Variable '' has an invalid attribute 'windmill'.",
-        "Variable '' is missing a required 'name' attribute.",
-        "Variable '' is missing a required 'units' attribute.",
     };
 
     libcellml::Parser p;
@@ -1277,14 +1274,12 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
         "  <connection wookie=\"chewie\"/>\n"
         "  <encapsulation yoda=\"green\"/>\n"
         "</model>\n";
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid attribute 'episode'.",
         "Import from '' has an invalid attribute 'princess'.",
         "Units '' has an invalid attribute 'jedi'.",
         "Component '' has an invalid attribute 'ship'.",
         "Variable '' has an invalid attribute 'pilot'.",
-        "Variable '' is missing a required 'name' attribute.",
-        "Variable '' is missing a required 'units' attribute.",
         "Encapsulation in model 'starwars' has an invalid attribute 'yoda'.",
         "Encapsulation in model 'starwars' does not contain any child elements.",
         "Connection in model 'starwars' has an invalid connection attribute 'wookie'.",
@@ -1405,7 +1400,6 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "Unit referencing 'ball' in units 'robot' has an invalid non-whitespace child text element '\n      rolls\n    '.",
         "Component 'ship' has an invalid non-whitespace child text element '\n    falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element '\n      rey\n    '.",
-        "Variable 'jedi' is missing a required 'units' attribute.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n    awakens\n    '.",
         "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n      force\n    '.",
@@ -1430,7 +1424,7 @@ TEST(Parser, invalidModelWithTextInAllElements)
 
 TEST(Parser, parseIds)
 {
-    const std::string in =
+    const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">\n"
@@ -1447,7 +1441,7 @@ TEST(Parser, parseIds)
         "</model>\n";
 
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(in);
+    libcellml::ModelPtr model = p.parseModel(input);
 
     EXPECT_EQ(size_t(0), p.errorCount());
     EXPECT_EQ("mid", model->id());
@@ -1463,7 +1457,7 @@ TEST(Parser, parseIds)
 
 TEST(Parser, parseIdsOnEverything)
 {
-    const std::string in =
+    const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"everything\" id=\"mid\">\n"
         "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">\n"
@@ -1511,7 +1505,7 @@ TEST(Parser, parseIdsOnEverything)
         "</model>\n";
 
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(in);
+    libcellml::ModelPtr model = parser.parseModel(input);
 
     printErrors(parser);
     EXPECT_EQ(size_t(0), parser.errorCount());
@@ -1528,12 +1522,12 @@ TEST(Parser, parseIdsOnEverything)
     EXPECT_EQ("w1id", model->component("component2")->reset(0)->when(0)->id());
 
     libcellml::Printer printer;
-    EXPECT_EQ(in, printer.printModel(model));
+    EXPECT_EQ(input, printer.printModel(model));
 }
 
 TEST(Parser, parseResets)
 {
-    const std::string in =
+    const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
@@ -1560,7 +1554,7 @@ TEST(Parser, parseResets)
         "</model>\n";
 
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(in);
+    libcellml::ModelPtr model = p.parseModel(input);
 
     libcellml::ComponentPtr c = model->component(0);
     EXPECT_EQ(size_t(1), c->resetCount());
@@ -1575,7 +1569,7 @@ TEST(Parser, parseResets)
 
 TEST(Parser, parseResetsWithNumerousErrors)
 {
-    const std::string in =
+    const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
@@ -1668,7 +1662,7 @@ TEST(Parser, parseResetsWithNumerousErrors)
         "When in reset referencing variable 'variable1' with order '0' has an invalid child element 'variable'."};
 
     libcellml::Parser parser;
-    parser.parseModel(in);
+    parser.parseModel(input);
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
@@ -1677,7 +1671,7 @@ TEST(Parser, parseResetsWithNumerousErrors)
 
 TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
 {
-    const std::string in =
+    const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
         "  <component name=\"component2\" id=\"c2id\">\n"
@@ -1692,28 +1686,39 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
+    const std::vector<std::string> expectedErrors = {
+        "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value 'a'.",
+        "When in reset referencing variable 'V_k' with order '' has an invalid attribute 'goods'.",
+        "When in reset referencing variable 'V_k' with order '' does not have an order defined.",
+        "When in reset referencing variable 'V_k' with order '' contains only one MathML child element.",
+    };
 
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(in);
+    libcellml::ModelPtr model = parser.parseModel(input);
 
     libcellml::ResetPtr resetExpected = model->component(0)->reset(0);
     libcellml::WhenPtr whenExpected = resetExpected->when(0);
 
-    EXPECT_EQ(size_t(6), parser.errorCount());
-    EXPECT_EQ(resetExpected, parser.error(2)->reset());
-    EXPECT_EQ(whenExpected, parser.error(3)->when());
+    EXPECT_EQ(size_t(4), parser.errorCount());
+
+    for (size_t i = 0; i < parser.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
+    }
+
+    EXPECT_EQ(resetExpected, parser.error(0)->reset());
+    EXPECT_EQ(whenExpected, parser.error(1)->when());
 }
 
 TEST(Parser, unitsWithCellMLRealVariations)
 {
-    const std::string in =
+    const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" exponent=\"-0.23E-13\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" exponent=\"-0.23E-13\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"units_invalid_reals\">\n"
-        "    <unit multiplier=\"1.8.0\" exponent=\"4.87f87\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8.0\" exponent=\"4.87f87\" units=\"kelvin\"/>\n"
         "    <unit multiplier=\"+9.87\" exponent=\"4.87e+16\" units=\"oranges\"/>\n"
         "    <unit multiplier=\"AB8e34\" exponent=\"4.87ee32\" units=\"apples\"/>\n"
         "    <unit multiplier=\"AB8\" exponent=\"4.87eE32\" units=\"bananas\"/>\n"
@@ -1725,10 +1730,10 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit exponent=\"-2.3e-14\" multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit exponent=\"-2.3e-14\" multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"units_invalid_reals\">\n"
-        "    <unit units=\"celsius\"/>\n"
+        "    <unit units=\"kelvin\"/>\n"
         "    <unit exponent=\"4.87e+16\" units=\"oranges\"/>\n"
         "    <unit units=\"apples\"/>\n"
         "    <unit units=\"bananas\"/>\n"
@@ -1738,7 +1743,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "</model>\n";
 
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(in);
+    libcellml::ModelPtr model = parser.parseModel(input);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
