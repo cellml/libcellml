@@ -1,5 +1,7 @@
+# OS X hidden system files
+.DS_Store
 
-# Ignore build/ directories
+# Ignore the build directory
 build/
 
 # Eclipse project files
@@ -14,5 +16,5 @@ CMakeLists.txt.user
 # PyCharm generated files
 .idea/
 
-# OS X hidden system files
-.DS_Store
+# VS Code system files
+.vscode/
