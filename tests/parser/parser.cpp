@@ -275,7 +275,7 @@ TEST(Parser, parseModelWithUnitsAndNamedComponent)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
         "  <component name=\"component_name\"/>\n"
@@ -539,7 +539,7 @@ TEST(Parser, modelWithUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
         "</model>\n";
@@ -547,7 +547,7 @@ TEST(Parser, modelWithUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
         "</model>\n";
@@ -566,7 +566,7 @@ TEST(Parser, modelWithInvalidUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\" temperature=\"451\">\n"
-        "    <unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"celsius\" bill=\"murray\">\n"
+        "    <unit multiplier=\"Z\" exponent=\"35.0E+310\" units=\"kelvin\" bill=\"murray\">\n"
         "      <degrees/>\n"
         "    </unit>\n"
         "    <bobshouse address=\"34 Rich Lane\"/>\n"
@@ -582,7 +582,7 @@ TEST(Parser, modelWithInvalidUnits)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit exponent=\"inf\" units=\"celsius\"/>\n"
+        "    <unit exponent=\"inf\" units=\"kelvin\"/>\n"
         "    <unit units=\"\"/>\n"
         "  </units>\n"
         "  <units name=\"dimensionless\"/>\n"
@@ -594,9 +594,9 @@ TEST(Parser, modelWithInvalidUnits)
 
     std::vector<std::string> expectedErrors = {
         "Units 'fahrenheitish' has an invalid attribute 'temperature'.",
-        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid child element 'degrees'.",
-        "Unit referencing 'celsius' in units 'fahrenheitish' has a multiplier with the value 'Z' that is not a representation of a CellML real valued number.",
-        "Unit referencing 'celsius' in units 'fahrenheitish' has an invalid attribute 'bill'.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has an invalid child element 'degrees'.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has a multiplier with the value 'Z' that is not a representation of a CellML real valued number.",
+        "Unit referencing 'kelvin' in units 'fahrenheitish' has an invalid attribute 'bill'.",
         "Units 'fahrenheitish' has an invalid child element 'bobshouse'.",
         "Unit referencing '' in units 'fahrenheitish' has an invalid attribute 'GUnit'.",
         "Units '' has an invalid attribute 'jerry'.",
@@ -1714,10 +1714,10 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" exponent=\"-0.23E-13\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" exponent=\"-0.23E-13\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"units_invalid_reals\">\n"
-        "    <unit multiplier=\"1.8.0\" exponent=\"4.87f87\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8.0\" exponent=\"4.87f87\" units=\"kelvin\"/>\n"
         "    <unit multiplier=\"+9.87\" exponent=\"4.87e+16\" units=\"oranges\"/>\n"
         "    <unit multiplier=\"AB8e34\" exponent=\"4.87ee32\" units=\"apples\"/>\n"
         "    <unit multiplier=\"AB8\" exponent=\"4.87eE32\" units=\"bananas\"/>\n"
@@ -1729,10 +1729,10 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit exponent=\"-2.3e-14\" multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit exponent=\"-2.3e-14\" multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"units_invalid_reals\">\n"
-        "    <unit units=\"celsius\"/>\n"
+        "    <unit units=\"kelvin\"/>\n"
         "    <unit exponent=\"4.87e+16\" units=\"oranges\"/>\n"
         "    <unit units=\"apples\"/>\n"
         "    <unit units=\"bananas\"/>\n"
