@@ -1030,13 +1030,6 @@ void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::st
 
 bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 {
-    const std::vector<std::string> supportedMathMLElements = {
-        "ci", "cn", "sep", "apply", "piecewise", "piece", "otherwise", "eq", "neq", "gt", "lt", "geq", "leq", "and", "or",
-        "xor", "not", "plus", "minus", "times", "divide", "power", "root", "abs", "exp", "ln", "log", "floor",
-        "ceiling", "min", "max", "rem", "diff", "bvar", "logbase", "degree", "sin", "cos", "tan", "sec", "csc",
-        "cot", "sinh", "cosh", "tanh", "sech", "csch", "coth", "arcsin", "arccos", "arctan", "arcsec", "arccsc",
-        "arccot", "arcsinh", "arccosh", "arctanh", "arcsech", "arccsch", "arccoth", "pi", "exponentiale",
-        "notanumber", "infinity", "true", "false"};
     return (node->namespaceUri() == MATHML_NS)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
@@ -1044,12 +1037,7 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
 bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
 {
     bool result = false;
-    std::vector<std::string> standardUnitNames = {
-        "ampere", "becquerel", "candela", "celsius", "coulomb", "dimensionless", "farad", "gram", "gray",
-        "henry", "hertz", "joule", "katal", "kelvin", "kilogram", "liter", "litre", "lumen", "lux",
-        "meter", "metre", "mole", "newton", "ohm", "pascal", "radian", "second", "siemens", "sievert",
-        "steradian", "tesla", "volt", "watt", "weber"};
-    if (std::find(standardUnitNames.begin(), standardUnitNames.end(), name) != standardUnitNames.end()) {
+    if (standardUnitsList.count(name) != 0) {
         result = true;
     }
     return result;
@@ -1058,10 +1046,7 @@ bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
 bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
 {
     bool result = false;
-    std::vector<std::string> prefixNames = {
-        "atto", "centi", "deca", "deci", "exa", "femto", "giga", "hecto", "kilo", "mega", "micro", "milli",
-        "nano", "peta", "pico", "tera", "yocto", "yotta", "zepto", "zetta"};
-    if (std::find(prefixNames.begin(), prefixNames.end(), name) != prefixNames.end()) {
+    if (standardPrefixList.count(name) != 0) {
         result = true;
     }
     return result;
