@@ -1062,6 +1062,7 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
+    std::string hints;
     // Check the components in this model.
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
@@ -1075,6 +1076,15 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
                         // TODO: validate variable interfaces according to 17.10.8
                         // TODO: add check for cyclical connections (17.10.5)
+
+                        if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
+                            err->setModel(model);
+                            err->setKind(Error::Kind::UNITS);
+                            mValidator->addError(err);
+                        }
+
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
                             // Check that the equivalent variable has a valid parent component.
                             auto component2 = static_cast<Component *>(equivalentVariable->parent());
