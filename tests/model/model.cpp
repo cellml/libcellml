@@ -475,77 +475,72 @@ TEST(Model, constructors)
     EXPECT_EQ("my_name", m4.name());
 }
 
-// TEST(Model, setAndCheckIdsAllEntities)
-// {
+TEST(Model, setAndCheckIdsAllEntities)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">\n"
+        "    <component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>\n"
+        "  </import>\n"
+        "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">\n"
+        "    <units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>\n"
+        "  </import>\n"
+        "  <units name=\"u2name\" id=\"u2id\"/>\n"
+        "  <units name=\"u3name\" id=\"u3id\"/>\n"
+        "  <component name=\"c2name\" id=\"c2id\">\n"
+        "    <variable name=\"vname\" units=\"u1name\" id=\"vid\"/>\n"
+        "    <reset id=\"r1id\"/>\n"
+        "  </component>\n"
+        "</model>\n";
 
-//     // KRM TODO ***********************
+    libcellml::Model m;
+    libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
 
-//     const std::string e =
-//         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"mname\" id=\"mid\">\n"
-//         "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i1id\">\n"
-//         "    <component component_ref=\"a_component_in_that_model\" name=\"c1name\" id=\"c1id\"/>\n"
-//         "  </import>\n"
-//         "  <import xlink:href=\"some-other-model.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" id=\"i2id\">\n"
-//         "    <units units_ref=\"a_units_in_that_model\" name=\"u1name\" id=\"u1id\"/>\n"
-//         "  </import>\n"
-//         "  <units name=\"u2name\" id=\"u2id\"/>\n"
-//         "  <units name=\"u3name\" id=\"u3id\"/>\n"
-//         "  <component name=\"c2name\" id=\"c2id\">\n"
-//         "    <variable name=\"vname\" units=\"u1name\" id=\"vid\"/>\n"
-//         "    <reset id=\"r1id\">\n"
-//         "      <when id=\"w1id\"/>\n"
-//         "    </reset>\n"
-//         "  </component>\n"
-//         "</model>\n";
+    i1->setUrl("some-other-model.xml");
+    c1->setSourceComponent(i1, "a_component_in_that_model");
 
-//     libcellml::Model m;
-//     libcellml::ImportSourcePtr i1 = std::make_shared<libcellml::ImportSource>();
-//     libcellml::ImportSourcePtr i2 = std::make_shared<libcellml::ImportSource>();
-//     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-//     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-//     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-//     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-//     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-//     libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-//     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    i2->setUrl("some-other-model.xml");
+    u1->setSourceUnits(i2, "a_units_in_that_model");
 
-//     i1->setUrl("some-other-model.xml");
-//     c1->setSourceComponent(i1, "a_component_in_that_model");
+    m.setName("mname");
+    c1->setName("c1name");
+    c2->setName("c2name");
+    v->setName("vname");
+    u1->setName("u1name");
+    u2->setName("u2name");
+    u3->setName("u3name");
 
-//     i2->setUrl("some-other-model.xml");
-//     u1->setSourceUnits(i2, "a_units_in_that_model");
+    m.setId("mid");
+    i1->setId("i1id");
+    i2->setId("i2id");
+    c1->setId("c1id");
+    c2->setId("c2id");
+    v->setId("vid");
+    u1->setId("u1id");
+    u2->setId("u2id");
+    u3->setId("u3id");
+    r1->setId("r1id");
 
-//     m.setName("mname");
-//     c1->setName("c1name");
-//     c2->setName("c2name");
-//     v->setName("vname");
-//     u1->setName("u1name");
-//     u2->setName("u2name");
-//     u3->setName("u3name");
+    v->setUnits(u1);
+    c2->addReset(r1);
+    c2->addVariable(v);
 
-//     m.setId("mid");
-//     i1->setId("i1id");
-//     i2->setId("i2id");
-//     c1->setId("c1id");
-//     c2->setId("c2id");
-//     v->setId("vid");
-//     u1->setId("u1id");
-//     u2->setId("u2id");
-//     u3->setId("u3id");
-//     r1->setId("r1id");
+    m.addUnits(u1);
+    m.addUnits(u2);
+    m.addUnits(u3);
+    m.addComponent(c1);
+    m.addComponent(c2);
 
-//     v->setUnits(u1);
-//     c2->addReset(r1);
-//     c2->addVariable(v);
-
-//     m.addUnits(u1);
-//     m.addUnits(u2);
-//     m.addUnits(u3);
-//     m.addComponent(c1);
-//     m.addComponent(c2);
-
-//     libcellml::Printer printer;
-//     const std::string a = printer.printModel(m);
-//     EXPECT_EQ(a, e);
-// }
+    libcellml::Printer printer;
+    const std::string a = printer.printModel(m);
+    EXPECT_EQ(a, e);
+}
