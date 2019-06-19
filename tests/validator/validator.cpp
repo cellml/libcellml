@@ -392,9 +392,9 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(5), v.errorCount());
 
-    // Invalid: component_ref is not valid html
+    // Invalid: component_ref url is not valid html
     libcellml::ImportSourcePtr imp9 = std::make_shared<libcellml::ImportSource>();
-    imp9->setUrl("not @ valid url"); // source used before but is not valid
+    imp9->setUrl("not @ valid url"); 
     libcellml::ComponentPtr importedComponent9 = std::make_shared<libcellml::Component>();
     importedComponent9->setName("a_bad_imported_component");
     importedComponent9->setSourceComponent(imp9, "component_in_some_model");
