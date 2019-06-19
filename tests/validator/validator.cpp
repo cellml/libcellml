@@ -41,8 +41,8 @@ TEST(Validator, unnamedModel)
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     validator.validateModel(model);
     EXPECT_EQ(size_t(2), validator.errorCount());
-    EXPECT_EQ(expectedError, validator.getError(1)->getDescription());
-    EXPECT_EQ("4.2.1", validator.getError(1)->getSpecificationHeading());
+    EXPECT_EQ(expectedError, validator.error(1)->description());
+    EXPECT_EQ("4.2.1", validator.error(1)->specificationHeading());
 }
 
 TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
@@ -96,8 +96,8 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
 
     EXPECT_EQ(size_t(10), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
-        EXPECT_EQ(expectedSpecificationHeadings.at(i), v.getError(i)->getSpecificationHeading());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
+        EXPECT_EQ(expectedSpecificationHeadings.at(i), v.error(i)->specificationHeading());
     }
 }
 
@@ -114,7 +114,7 @@ TEST(Validator, moveCopyValidatorWithUnnamedModel)
     libcellml::Validator vc(vm);
 
     // Check that the model error is in the copy.
-    EXPECT_EQ(libcellml::Error::Kind::MODEL, vc.getError(1)->getKind());
+    EXPECT_EQ(libcellml::Error::Kind::MODEL, vc.error(1)->kind());
 }
 
 TEST(Validator, namedModelWithUnnamedComponent)
@@ -127,7 +127,7 @@ TEST(Validator, namedModelWithUnnamedComponent)
     model->addComponent(component);
     validator.validateModel(model);
     EXPECT_EQ(size_t(2), validator.errorCount());
-    EXPECT_EQ(expectedError, validator.getError(1)->getDescription());
+    EXPECT_EQ(expectedError, validator.error(1)->description());
 }
 
 TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
@@ -150,7 +150,7 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
 }
 
@@ -180,7 +180,7 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits)
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
 }
 
@@ -220,7 +220,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
 }
 
@@ -248,7 +248,7 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces)
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
 }
 
@@ -306,7 +306,7 @@ TEST(Validator, importUnits)
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -364,7 +364,7 @@ TEST(Validator, importComponents)
 
     // Check for expected error messages
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -441,7 +441,7 @@ TEST(Validator, invalidMath)
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -496,7 +496,7 @@ TEST(Validator, invalidMathMLElements)
 
     // Check for two expected error messages (see note above).
     for (size_t i = 0; i < 2; ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -578,7 +578,7 @@ TEST(Validator, invalidMathMLVariables)
 
     // Check for expected error messages.
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -662,7 +662,7 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
     // NOTE: We're not checking the exact message of the last error as older versions of
     //       libxml may not include the namespace in the error message.
     for (size_t i = 0; i < v.errorCount() - 1; ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -678,7 +678,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "    <unit units=\"north\"/>\n"
         "    <unit units=\"ned\"/>\n"
         "    <unit units=\"king in the north\"/>\n"
-        "    <unit prefix=\"wolf\" units=\"celsius\"/>\n"
+        "    <unit prefix=\"wolf\" units=\"metre\"/>\n"
         "  </units>\n"
         "</model>\n";
     const std::vector<std::string> expectedErrors = {
@@ -686,7 +686,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
         "Unit in units 'stark' does not have a valid units reference.",
-        "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid real number or a SI prefix.",
+        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid real number or a SI prefix.",
     };
 
     libcellml::Parser p;
@@ -698,7 +698,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -763,7 +763,7 @@ TEST(Validator, validateInvalidConnections)
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -841,14 +841,14 @@ TEST(Validator, integerStrings)
     libcellml::ModelPtr m = p.parseModel(input);
     EXPECT_EQ(expectedParsingErrors.size(), p.errorCount());
     for (size_t i = 0; i < expectedParsingErrors.size(); ++i) {
-        EXPECT_EQ(expectedParsingErrors.at(i), p.getError(i)->getDescription());
+        EXPECT_EQ(expectedParsingErrors.at(i), p.error(i)->description());
     }
 
     libcellml::Validator v;
     v.validateModel(m);
     EXPECT_EQ(expectedValidationErrors.size(), v.errorCount());
     for (size_t i = 0; i < expectedValidationErrors.size(); ++i) {
-        EXPECT_EQ(expectedValidationErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedValidationErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -924,7 +924,7 @@ TEST(Validator, resets)
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 
@@ -988,7 +988,7 @@ TEST(Validator, whens)
 
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.getError(i)->getDescription());
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
 }
 

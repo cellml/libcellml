@@ -31,7 +31,7 @@ TEST(When, condition)
 
     w->setCondition("<some mathml type string for condition.>");
 
-    EXPECT_EQ("<some mathml type string for condition.>", w->getCondition());
+    EXPECT_EQ("<some mathml type string for condition.>", w->condition());
 }
 
 TEST(When, value)
@@ -40,7 +40,7 @@ TEST(When, value)
 
     w->setValue("<some mathml type string for value.>");
 
-    EXPECT_EQ("<some mathml type string for value.>", w->getValue());
+    EXPECT_EQ("<some mathml type string for value.>", w->value());
 }
 
 TEST(When, order)
@@ -52,10 +52,10 @@ TEST(When, order)
     w->setOrder(5);
 
     EXPECT_TRUE(w->isOrderSet());
-    EXPECT_EQ(5, w->getOrder());
+    EXPECT_EQ(5, w->order());
 
     w->unsetOrder();
 
     EXPECT_FALSE(w->isOrderSet());
-    EXPECT_EQ(5, w->getOrder());
+    EXPECT_EQ(5, w->order());
 }

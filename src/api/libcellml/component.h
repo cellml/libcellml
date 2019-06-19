@@ -64,7 +64,7 @@ public:
      *
      * @return @c std::string math for this component.
      */
-    std::string getMath() const;
+    std::string math() const;
 
     /**
      * @brief Set the math string for this component.
@@ -159,7 +159,7 @@ public:
      *
      * @return A reference to the variable at the given index on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(size_t index) const;
+    VariablePtr variable(size_t index) const;
 
     /**
      * @brief Get a variable with the given name @p name.
@@ -173,7 +173,7 @@ public:
      *
      * @return A reference to the Variable with the given name on success, @c nullptr otherwise.
      */
-    VariablePtr getVariable(const std::string &name) const;
+    VariablePtr variable(const std::string &name) const;
 
     /**
      * @brief Take a variable at index.
@@ -301,7 +301,7 @@ public:
      *
      * @return A reference to the reset at the given index on success, @c nullptr otherwise.
      */
-    ResetPtr getReset(size_t index) const;
+    ResetPtr reset(size_t index) const;
 
     /**
      * @brief Get the number of resets in the component.

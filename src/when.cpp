@@ -71,7 +71,7 @@ void When::setCondition(const std::string &condition)
     mPimpl->mCondition = condition;
 }
 
-std::string When::getCondition() const
+std::string When::condition() const
 {
     return mPimpl->mCondition;
 }
@@ -81,7 +81,7 @@ void When::setValue(const std::string &value)
     mPimpl->mValue = value;
 }
 
-std::string When::getValue() const
+std::string When::value() const
 {
     return mPimpl->mValue;
 }
