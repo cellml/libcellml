@@ -1265,16 +1265,15 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     // Trigger CellML entity errors
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\" "
-        "episode=\"four\">"
-        "<import princess=\"leia\"/>"
-        "<units jedi=\"luke\"/>"
-        "<component ship=\"falcon\">"
-        "<variable pilot=\"han\"/>"
-        "</component>"
-        "<connection wookie=\"chewie\"/>"
-        "<encapsulation yoda=\"green\"/>"
-        "</model>";
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\" episode=\"four\">\n"
+        "  <import princess=\"leia\"/>\n"
+        "  <units jedi=\"luke\"/>\n"
+        "  <component ship=\"falcon\">\n"
+        "    <variable pilot=\"han\"/>\n"
+        "  </component>\n"
+        "  <connection wookie=\"chewie\"/>\n"
+        "  <encapsulation yoda=\"green\"/>\n"
+        "</model>\n";
 
     std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid attribute 'episode'.",
@@ -1374,28 +1373,35 @@ TEST(Parser, invalidModelWithTextInAllElements)
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"starwars\">\n"
-        "episode7\n"
-        "<import xlink:href=\"sith.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">kylo</import>\n"
-        "<units name=\"robot\">"
-        "bb-8"
-        "<unit units=\"ball\">rolls</unit>"
-        "</units>\n"
-        "<component name=\"ship\">falcon\n"
-        "    <variable name=\"jedi\">rey</variable>\n"
-        "</component>\n"
-        "<connection>"
-        "finn"
-        "<map_variables>"
-        "trooper"
-        "</map_variables>"
-        "</connection>\n"
-        "<encapsulation>"
-        "awakens"
-        "<component_ref component=\"ship\">"
-        "force"
-        "</component_ref>"
-        "</encapsulation>\n"
-        "</model>";
+        "  episode7\n"
+        "  <import xlink:href=\"sith.xml\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    kylo\n"
+        "  </import>\n"
+        "  <units name=\"robot\">\n"
+        "    bb-8\n"
+        "    <unit units=\"ball\">\n"
+        "      rolls\n"
+        "    </unit>\n"
+        "  </units>\n"
+        "  <component name=\"ship\">\n"
+        "    falcon\n"
+        "    <variable name=\"jedi\">\n"
+        "      rey\n"
+        "    </variable>\n"
+        "  </component>\n"
+        "  <connection>\n"
+        "    finn\n"
+        "    <map_variables>\n"
+        "      trooper\n"
+        "    </map_variables>\n"
+        "  </connection>\n"
+        "  <encapsulation>\n"
+        "    awakens\n"
+        "    <component_ref component=\"ship\">\n"
+        "      force\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
 
     const std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid non-whitespace child text element '\nepisode7\n'.",
@@ -1677,19 +1683,25 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
 {
     const std::string in =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">"
-        "<component name=\"component2\" id=\"c2id\">"
-        "<variable name=\"variable1\" id=\"vid\"/>"
-        "<variable name=\"V_k\" id=\"vid\"/>"
-        "<reset variable=\"V_k\" order=\"a\" id=\"rid\">"
-        "<when order=\"5.9\" goods=\"socks\">"
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">"
-        "some condition in mathml"
-        "</math>"
-        "</when>"
-        "</reset>"
-        "</component>"
-        "</model>";
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "  <component name=\"component2\" id=\"c2id\">\n"
+        "    <variable name=\"variable1\" id=\"vid\"/>\n"
+        "    <variable name=\"V_k\" id=\"vid\"/>\n"
+        "    <reset variable=\"V_k\" order=\"a\" id=\"rid\">\n"
+        "      <when order=\"5.9\" goods=\"socks\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some condition in mathml\n"
+        "        </math>\n"
+        "      </when>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+    const std::vector<std::string> expectedErrors = {
+        "Reset in component 'component2' referencing variable 'V_k' has a non-integer order value 'a'.",
+        "When in reset referencing variable 'V_k' with order '' has an invalid attribute 'goods'.",
+        "When in reset referencing variable 'V_k' with order '' does not have an order defined.",
+        "When in reset referencing variable 'V_k' with order '' contains only one MathML child element.",
+    };
 
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
