@@ -1477,28 +1477,29 @@ TEST(Validator, variableEquivalentUnits) //new
     }
 }
 
-// TEST(Validator, integerPrefixOutOfRange)
-// {
-//     // KRM TODO Not sure how to give a coverage test here as clang doesn't let the out-of-range integer be set?
-//     libcellml::Validator validator;
-//     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-//     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-//     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-//     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+TEST(Validator, integerPrefixOutOfRange)
+{
+    const std::string e = "Prefix '2147483648' of a unit referencing 'metre' in units 'unit' is out of the integer range.";
 
-//     m->setName("model");
-//     c->setName("component");
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
-//     u->setName("unit");
-//     u->addUnit("metre", 18446744073709551616, 1.0, 1.0); // should throw out of integer range error
+    m->setName("model");
+    c->setName("component");
+    u->setName("unit");
+    u->addUnit("metre", 2147483648, 1.0, 1.0); // should throw out of integer range error
 
-//     v->setName("variable");
-//     v->setUnits(u);
+    v->setName("variable");
+    v->setUnits(u);
+    c->addVariable(v);
+    m->addUnits(u);
+    m->addComponent(c);
 
-//     c->addVariable(v);
-//     m->addComponent(c);
+    validator.validateModel(m);
 
-//     validator.validateModel(m);
-
-//     printErrors(validator);
-// }
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(e, validator.error(0)->description());
+}
