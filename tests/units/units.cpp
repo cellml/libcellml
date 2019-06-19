@@ -94,7 +94,7 @@ TEST(Units, addUnitsVariations)
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
-    u->addUnit(libcellml::Units::StandardUnit::KELVIN, 0.001, 2.0, 5.5);
+    u->addUnit(libcellml::Units::StandardUnit::KELVIN, -3, 2.0, 5.5);
 
     EXPECT_EQ(size_t(2), u->unitCount());
 }
@@ -426,7 +426,7 @@ TEST(Units, farhenheit)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("kelvin", 0.0, 1.0, 1.8);
+    u->addUnit("kelvin", 0, 1.0, 1.8);
     m.addUnits(u);
 
     libcellml::Printer printer;
@@ -443,7 +443,7 @@ TEST(Units, unitAttributes)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("kelvin", 0.0, 1.0, 1.8);
+    u->addUnit("kelvin", 0, 1.0, 1.8);
     m.addUnits(u);
 
     std::string reference;
@@ -580,4 +580,30 @@ TEST(Units, multipleAndParse)
     libcellml::ModelPtr model = parser.parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
+}
+
+TEST(Units, unitsWithPrefixOutOfRange)
+{
+    // int limit is 18,446,744,073,709,551,615
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    m->setName("myModel");
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName("myComponent");
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName("myVariable");
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    u->setName("myUnits");
+    u->addUnit("second", "18446744073709551616");
+
+    v->setUnits(u);
+    c->addVariable(v);
+    m->addComponent(c);
+    m->addUnits(u);
+
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
