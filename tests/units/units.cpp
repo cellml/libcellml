@@ -426,7 +426,7 @@ TEST(Units, farhenheit)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("celsius", 0, 1.0, 1.8);
+    u->addUnit("kelvin", 0, 1.0, 1.8);
     m.addUnits(u);
 
     libcellml::Printer printer;
@@ -443,7 +443,7 @@ TEST(Units, unitAttributes)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("celsius", 0, 1.0, 1.8);
+    u->addUnit("kelvin", 0, 1.0, 1.8);
     m.addUnits(u);
 
     std::string reference;
