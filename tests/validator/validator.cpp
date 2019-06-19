@@ -678,7 +678,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "    <unit units=\"north\"/>\n"
         "    <unit units=\"ned\"/>\n"
         "    <unit units=\"king in the north\"/>\n"
-        "    <unit prefix=\"wolf\" units=\"celsius\"/>\n"
+        "    <unit prefix=\"wolf\" units=\"metre\"/>\n"
         "  </units>\n"
         "</model>\n";
     const std::vector<std::string> expectedErrors = {
@@ -686,7 +686,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
         "Unit in units 'stark' does not have a valid units reference.",
-        "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid real number or a SI prefix.",
+        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid real number or a SI prefix.",
     };
 
     libcellml::Parser p;
