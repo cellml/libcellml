@@ -439,6 +439,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     // Check for resets in this component
     if (component->resetCount() > 0) {
         // Check for duplicate order values in resets
+        // TODO KRM Need to remove this as doesn't match the spec - need to move into the equivalent variable testing intead
         std::vector<int> resetOrders;
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->reset(i);
@@ -596,11 +597,6 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 
 void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
 {
-    // KRM TODO: Need clarification on rules:
-    // variable must be inside this component? yes
-    // what about test_variable?
-    // uniqueness of order among connected variable set?
-
     bool noOrder = false;
     bool noVariable = false;
     bool noTestVariable = false;
