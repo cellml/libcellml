@@ -11,7 +11,7 @@
 %feature("docstring") libcellml::Model::addUnits
 "Add a copy of the given Units to this model.";
 
-%feature("docstring") libcellml::Model::getUnits
+%feature("docstring") libcellml::Model::units
 "Returns a Units object from this Model, specified by index or name.
 
 Only the first matching Units is returned.";
@@ -60,19 +60,19 @@ determine the full path to the source model relative to this one.";
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Model {
         bool removeUnits(long index) {
-            if(index < 0) return false;
+            if (index < 0) return false;
             return $self->removeUnits(size_t(index));
         }
-        UnitsPtr getUnits(long index) const {
-            if(index < 0) return nullptr;
-            return $self->getUnits(size_t(index));
+        UnitsPtr units(long index) const {
+            if (index < 0) return nullptr;
+            return $self->units(size_t(index));
         }
         UnitsPtr takeUnits(long index) {
-            if(index < 0) return nullptr;
+            if (index < 0) return nullptr;
             return $self->takeUnits(size_t(index));
         }
         bool replaceUnits(long index, UnitsPtr &units) {
-            if(index < 0) return false;
+            if (index < 0) return false;
             return $self->replaceUnits(size_t(index), units);
         }
     }

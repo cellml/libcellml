@@ -27,7 +27,7 @@ public:
     ~TestResources()
     {  }
 
-    static const char *getLocation(ResourcesName resourceName)
+    static const char *location(ResourcesName resourceName)
     {
         if (resourceName == TestResources::CELLML_SINE_MODEL_RESOURCE)
         {
