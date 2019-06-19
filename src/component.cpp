@@ -34,11 +34,12 @@ namespace libcellml {
 struct Component::ComponentImpl
 {
     std::string mMath;
+    std::vector<ResetPtr> mResets;
+    std::vector<VariablePtr> mVariables;
+
+    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
-    std::vector<VariablePtr> mVariables;
-    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
-    std::vector<ResetPtr> mResets;
 };
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
