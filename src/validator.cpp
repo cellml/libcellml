@@ -33,6 +33,8 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include <libxml/uri.h>
+
 namespace libcellml {
 
 /**
@@ -81,7 +83,7 @@ struct Validator::ValidatorImpl
      * Checks if the provided @p name is a valid CellML identifier according
      * to the CellML 2.0 specification. This requires a non-zero length Unicode
      * character sequence containing basic Latin alphanumeric characters or
-     * underscores that does not start with a number.
+     * underscores that does not begin with a number.
      *
      * @param name The @c std::string name to check the validity of.
      *
@@ -278,38 +280,34 @@ void Validator::validateModel(const ModelPtr &model)
             std::string componentName = component->name();
             if (!componentName.empty()) {
                 if (component->isImport()) {
-                    // Check for a component_ref.
+                    // Check for a component_ref; assumes imported if the import source is not null.
                     std::string componentRef = component->importReference();
                     std::string importSource = component->importSource()->url();
-                    bool foundImportError = false;
+
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
                         err->setComponent(component);
                         err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                         addError(err);
-                        foundImportError = true;
                     }
-                    // Check for a xlink:href.
-                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
                     if (importSource.empty()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
                         err->setImportSource(component->importSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
-                        foundImportError = true;
-                    }
-                    // Check if we already have another import from the same source with the same component_ref.
-                    // (This looks for matching entries at the same position in the source and ref vectors).
-                    if (!componentImportSources.empty() && (!foundImportError)) {
-                        if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
-                            == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())) {
+                    } else {
+                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+                        if (uri == nullptr) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->name() + "' contains multiple imported components from '" + importSource + "' with the same component_ref attribute '" + componentRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+                            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
+                            err->setImportSource(component->importSource());
+                            err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
+
+                        } else {
+                            xmlFreeURI(uri);
                         }
                     }
                     // Push back the unique sources and refs.
