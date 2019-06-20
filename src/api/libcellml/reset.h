@@ -77,9 +77,9 @@ public:
     /**
      * @brief Appends the argument to the testValue string for this reset.
      *
-     * Appends @p testValue to the existing testValue string for this reset.
+     * Appends @p math to the existing testValue string for this reset.
      *
-     * @param testValue The @c std::string to append for this reset.
+     * @param math The @c std::string to append for this reset.
      */
     void appendTestValue(const std::string &math);
 
@@ -96,10 +96,10 @@ public:
     /**
      * @brief Set the TestValue string for this reset.
      *
-     * Sets the TestValue string for this reset. If @p TestValue is an empty
+     * Sets the TestValue string for this reset. If @p math is an empty
      * string, TestValue will be removed from the reset.
      *
-     * @param TestValue The @c std::string to append for this reset.
+     * @param math The @c std::string to append for this reset.
      */
     void setTestValue(const std::string &math);
 
