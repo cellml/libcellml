@@ -116,7 +116,7 @@ TEST(Reset, whenMethods)
     libcellml::WhenPtr cA = r.when(0);
 
     // Using const version of overloaded method
-    const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).when(0);
+    const libcellml::WhenPtr cS = r.when(0);
     EXPECT_EQ(int(0), cS->order());
 
     // Can do this as we just have a const pointer
@@ -459,7 +459,6 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
-
     const std::string e2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -471,7 +470,6 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
-
     const std::string e3 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -479,7 +477,6 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    <variable name=\"V_na\"/>\n"
         "  </component>\n"
         "</model>\n";
-
     const std::string e4 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -490,6 +487,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
+
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
@@ -566,11 +564,10 @@ TEST(Reset, resetFromComponentMethod)
     EXPECT_EQ(r2.get(), rMethod1.get());
 
     // Get const by index
-    const libcellml::ResetPtr vMethod2 = static_cast<const libcellml::Component>(c).reset(3);
+    const libcellml::ResetPtr vMethod2 = c.reset(3);
     EXPECT_EQ(r4.get(), vMethod2.get());
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).reset(42));
     EXPECT_EQ(nullptr, c.reset(7));
 }
 
