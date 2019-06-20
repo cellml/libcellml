@@ -24,7 +24,7 @@ limitations under the License.
 namespace libcellml {
 
 class XmlAttribute; /**< Forward declaration of the internal XmlAttribute class. */
-typedef std::shared_ptr<XmlAttribute> XmlAttributePtr; /**< Type definition for shared XML attribute pointer. */
+using XmlAttributePtr = std::shared_ptr<XmlAttribute>; /**< Type definition for shared XML attribute pointer. */
 
 /**
  * @brief The XmlAttribute class.
