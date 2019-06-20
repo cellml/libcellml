@@ -149,7 +149,7 @@ public:
      * @param multiplier The multiplier.
      * @param id The optional @c std::string id to set for this unit.
      */
-    void addUnit(const std::string &reference, double prefix, double exponent,
+    void addUnit(const std::string &reference, int prefix, double exponent,
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
@@ -226,7 +226,7 @@ public:
      * @param multiplier The multiplier.
      * @param id The optional @c std::string id to set for this unit.
      */
-    void addUnit(StandardUnit standardRef, double prefix, double exponent,
+    void addUnit(StandardUnit standardRef, int prefix, double exponent,
                  double multiplier = 1.0, const std::string &id = "");
 
     /**
@@ -269,8 +269,8 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param id The @c std::string id for this @c unit. Defaults to the empty string.
      */
-    void getUnitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent,
-                           double &multiplier, std::string &id) const;
+    void unitAttributes(size_t index, std::string &reference, std::string &prefix, double &exponent,
+                        double &multiplier, std::string &id) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p reference.
@@ -286,7 +286,7 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param id The @c std::string id for this @c unit. Defaults to the empty string.
      */
-    void getUnitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
+    void unitAttributes(const std::string &reference, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
     /**
      * @brief Get the @c unit attributes for the given @p standardRef.
@@ -302,7 +302,7 @@ public:
      * @param multiplier The multiplier for this @c unit. Defaults to 1.0.
      * @param id The @c std::string id for this @c unit. Defaults to the empty string.
      */
-    void getUnitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
+    void unitAttributes(StandardUnit standardRef, std::string &prefix, double &exponent, double &multiplier, std::string &id) const;
 
     /**
      * @brief Remove the unit at the given @p index.
