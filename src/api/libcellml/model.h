@@ -139,7 +139,7 @@ public:
      *
      * @return A reference to the units at the given @p index on success, @c nullptr otherwise.
      */
-    UnitsPtr getUnits(size_t index) const;
+    UnitsPtr units(size_t index) const;
 
     /**
      * @brief Get a units with the given @p name.
@@ -153,7 +153,7 @@ public:
      *
      * @return A reference to the units with the given @p name on success, @c nullptr otherwise.
      */
-    UnitsPtr getUnits(const std::string &name) const;
+    UnitsPtr units(const std::string &name) const;
 
     /**
      * @brief Take the units at the given @p index and return it.

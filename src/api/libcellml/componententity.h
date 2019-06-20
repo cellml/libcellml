@@ -155,7 +155,7 @@ public:
      *
      * @return The Component at the given @p index on success, @c nullptr on failure.
      */
-    ComponentPtr getComponent(size_t index) const;
+    ComponentPtr component(size_t index) const;
 
     /**
      * @brief Get a component with the given @p name.
@@ -172,7 +172,7 @@ public:
      *
      * @return The Component with the given @p name on success, @c nullptr on failure.
      */
-    ComponentPtr getComponent(const std::string &name, bool searchEncapsulated = true) const;
+    ComponentPtr component(const std::string &name, bool searchEncapsulated = true) const;
 
     /**
      * @brief Take the component at the given @p index and return it.
@@ -272,7 +272,7 @@ public:
      * class this is the 'component_ref' element that references the
      * component it represents in the structure.
      *
-     * @sa getEncapsulationId
+     * @sa encapsulationId
      *
      * @param id
      */
@@ -291,7 +291,7 @@ public:
      *
      * @return The @c std::string of the encapsulation Id.
      */
-    std::string getEncapsulationId() const;
+    std::string encapsulationId() const;
 
 protected:
     /**

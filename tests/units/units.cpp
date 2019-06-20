@@ -36,7 +36,7 @@ TEST(Units, validName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("valid_name", u->getName());
+    EXPECT_EQ("valid_name", u->name());
 }
 
 TEST(Units, invalidName)
@@ -57,7 +57,7 @@ TEST(Units, invalidName)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("invalid name", u->getName());
+    EXPECT_EQ("invalid name", u->name());
 }
 
 TEST(Units, compoundUnitsRaw)
@@ -94,7 +94,7 @@ TEST(Units, addUnitsVariations)
     u->setName("compound_unit");
 
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, libcellml::Prefix::MICRO);
-    u->addUnit(libcellml::Units::StandardUnit::KELVIN, 0.001, 2.0, 5.5);
+    u->addUnit(libcellml::Units::StandardUnit::KELVIN, -3, 2.0, 5.5);
 
     EXPECT_EQ(size_t(2), u->unitCount());
 }
@@ -280,11 +280,11 @@ TEST(Units, takeUnits)
     m.addUnits(u3);
 
     libcellml::UnitsPtr u4 = m.takeUnits("b_unit");
-    EXPECT_EQ("b_unit", u4->getName());
+    EXPECT_EQ("b_unit", u4->name());
     EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u5 = m.takeUnits(1);
-    EXPECT_EQ("c_unit", u5->getName());
+    EXPECT_EQ("c_unit", u5->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_EQ(nullptr, m.takeUnits(7));
@@ -312,13 +312,13 @@ TEST(Units, replaceUnits)
     EXPECT_EQ(size_t(2), m.unitsCount());
 
     libcellml::UnitsPtr u4 = m.takeUnits(1);
-    EXPECT_EQ("c_unit", u4->getName());
+    EXPECT_EQ("c_unit", u4->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     EXPECT_TRUE(m.replaceUnits(0, u4));
 
-    u1 = m.getUnits(0);
-    EXPECT_EQ("c_unit", u1->getName());
+    u1 = m.units(0);
+    EXPECT_EQ("c_unit", u1->name());
     EXPECT_EQ(size_t(1), m.unitsCount());
 
     // Replace non-existent units.
@@ -395,7 +395,7 @@ TEST(Units, newBaseUnit)
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("pH", u->getName());
+    EXPECT_EQ("pH", u->name());
 }
 
 TEST(Units, isBaseUnit)
@@ -416,7 +416,7 @@ TEST(Units, farhenheit)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "</model>\n";
 
@@ -426,16 +426,16 @@ TEST(Units, farhenheit)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("celsius", 0.0, 1.0, 1.8);
+    u->addUnit("kelvin", 0, 1.0, 1.8);
     m.addUnits(u);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
-    EXPECT_EQ("fahrenheitish", u->getName());
+    EXPECT_EQ("fahrenheitish", u->name());
 }
 
-TEST(Units, getUnitAttributes)
+TEST(Units, unitAttributes)
 {
     libcellml::Model m;
 
@@ -443,7 +443,7 @@ TEST(Units, getUnitAttributes)
     u->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u->addUnit("celsius", 0.0, 1.0, 1.8);
+    u->addUnit("kelvin", 0, 1.0, 1.8);
     m.addUnits(u);
 
     std::string reference;
@@ -451,36 +451,36 @@ TEST(Units, getUnitAttributes)
     std::string id;
     double exponent;
     double multiplier;
-    u->getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
-    EXPECT_EQ("celsius", reference);
+    u->unitAttributes(0, reference, prefix, exponent, multiplier, id);
+    EXPECT_EQ("kelvin", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
 
     u->addUnit("NewUnit", 4.0, 1.05, 17.0);
-    u->getUnitAttributes(1, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("NewUnit", reference);
     EXPECT_EQ("4", prefix);
     EXPECT_DOUBLE_EQ(1.05, exponent);
     EXPECT_DOUBLE_EQ(17, multiplier);
 
     // Get non-existent unit.
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("", reference);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1, exponent);
     EXPECT_DOUBLE_EQ(1, multiplier);
 
     u->addUnit("daves", "house");
-    u->getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u->unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes("daves", prefix, exponent, multiplier, id);
+    u->unitAttributes("daves", prefix, exponent, multiplier, id);
     EXPECT_EQ("daves", reference);
     EXPECT_EQ("house", prefix);
 
-    u->getUnitAttributes("celsius", prefix, exponent, multiplier, id);
+    u->unitAttributes("kelvin", prefix, exponent, multiplier, id);
     EXPECT_EQ("", prefix);
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
@@ -506,13 +506,13 @@ TEST(Units, multipleUnitUsingStandardRef)
     std::string id;
     double exponent;
     double multiplier;
-    u.getUnitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
+    u.unitAttributes(libcellml::Units::StandardUnit::AMPERE, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(0, reference, prefix, exponent, multiplier, id);
+    u.unitAttributes(0, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("milli", prefix);
-    u.getUnitAttributes(1, reference, prefix, exponent, multiplier, id);
+    u.unitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("centi", prefix);
-    u.getUnitAttributes(2, reference, prefix, exponent, multiplier, id);
+    u.unitAttributes(2, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("micro", prefix);
 }
 
@@ -547,7 +547,7 @@ TEST(Units, multipleAndParse)
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <units name=\"fahrenheitish\">\n"
-        "    <unit multiplier=\"1.8\" units=\"celsius\"/>\n"
+        "    <unit multiplier=\"1.8\" units=\"kelvin\"/>\n"
         "  </units>\n"
         "  <units name=\"metres_per_second\">\n"
         "    <unit units=\"metre\"/>\n"
@@ -561,7 +561,7 @@ TEST(Units, multipleAndParse)
     u1->setName("fahrenheitish");
 
     /* Give prefix and exponent their default values. */
-    u1->addUnit("celsius", 0, 1.0, 1.8);
+    u1->addUnit("kelvin", 0, 1.0, 1.8);
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("metres_per_second");
@@ -580,4 +580,30 @@ TEST(Units, multipleAndParse)
     libcellml::ModelPtr model = parser.parseModel(e);
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
+}
+
+TEST(Units, unitsWithPrefixOutOfRange)
+{
+    // int limit is 18,446,744,073,709,551,615
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    m->setName("myModel");
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    c->setName("myComponent");
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    v->setName("myVariable");
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+
+    u->setName("myUnits");
+    u->addUnit("second", "18446744073709551616");
+
+    v->setUnits(u);
+    c->addVariable(v);
+    m->addComponent(c);
+    m->addUnits(u);
+
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
