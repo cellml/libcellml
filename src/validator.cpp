@@ -1016,7 +1016,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
                         // TODO: validate variable interfaces according to 17.10.8
-                        // TODO: add check for cyclical connections (17.10.5)
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
                             // Check that the equivalent variable has a valid parent component.
                             auto component2 = static_cast<Component *>(equivalentVariable->parent());

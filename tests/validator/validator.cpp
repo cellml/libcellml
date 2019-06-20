@@ -1137,7 +1137,7 @@ TEST(Validator, validateNoCyclesSimple)
     std::string error = "Cyclic variables exist, 1 loop found (Component, Variable):\n"
                         "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n";
     EXPECT_EQ(size_t(1), v.errorCount());
-    EXPECT_EQ(error, v.getError(0)->getDescription());
+    EXPECT_EQ(error, v.error(0)->description());
 }
 
 TEST(Validator, validateNoCyclesComplicated)
@@ -1321,7 +1321,7 @@ TEST(Validator, validateNoCyclesComplicated)
                         "('component2', 'variable2') -> ('component4', 'variable4') -> ('component3', 'variable3') -> ('component6', 'variable6') -> "
                         "('component8', 'variable8') -> ('component2', 'variable2')\n";
     EXPECT_EQ(size_t(1), v.errorCount());
-    EXPECT_EQ(error, v.getError(0)->getDescription());
+    EXPECT_EQ(error, v.error(0)->description());
 }
 
 TEST(Validator, figureEightVariableDependency)
@@ -1391,5 +1391,89 @@ TEST(Validator, figureEightVariableDependency)
                         "('component1', 'variable1') -> ('component2', 'variable2') -> ('component3', 'variable3') -> ('component1', 'variable1')\n"
                         "('component1', 'variable1') -> ('component4', 'variable4') -> ('component5', 'variable5') -> ('component1', 'variable1')\n";
     EXPECT_EQ(size_t(1), v.errorCount());
-    EXPECT_EQ(error, v.getError(0)->getDescription());
+    EXPECT_EQ(error, v.error(0)->description());
 }
+
+
+TEST(Validator, resetOrderUniqueness)
+{
+    const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    libcellml::VariablePtr tv1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr tv2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr tv3 = std::make_shared<libcellml::Variable>();
+
+    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+    libcellml::Validator v;
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);
+
+    r1->setOrder(20);
+    r1->setVariable(v1);
+    r1->setTestVariable(tv1);
+    r1->setTestValue(emptyMath);
+    r1->setResetValue(emptyMath);
+    c1->addReset(r1);
+    v1->setUnits("dimensionless");
+    v1->setName("v1");
+    tv1->setUnits("dimensionless");
+    tv1->setName("tv1");
+    c1->addVariable(v1);
+    c1->addVariable(tv1);
+
+    r2->setOrder(30);
+    r2->setVariable(v2);
+    r2->setTestVariable(tv2);
+    r2->setTestValue(emptyMath);
+    r2->setResetValue(emptyMath);
+    c2->addReset(r2);
+    v2->setUnits("dimensionless");
+    v2->setName("v2");
+    tv2->setUnits("dimensionless");
+    tv2->setName("tv2");
+    c2->addVariable(v2);
+    c2->addVariable(tv2);
+
+    r3->setOrder(20); // non-unique order value between equivalent variables
+    r3->setVariable(v3);
+    r3->setTestVariable(tv3);
+    r3->setTestValue(emptyMath);
+    r3->setResetValue(emptyMath);
+    c3->addReset(r3);
+    v3->setUnits("dimensionless");
+    v3->setName("v3");
+    tv3->setUnits("dimensionless");
+    tv3->setName("tv3");
+    c3->addVariable(v3);
+    c3->addVariable(tv3);
+
+    m->setName("model");
+    c1->setName("c1");
+    c2->setName("c2");
+    c3->setName("c3");
+
+    m->addComponent(c1);
+    m->addComponent(c2);
+    m->addComponent(c3);
+
+    v.validateModel(m);
+
+    printErrors(v); // THIS SHOULD FAIL!
+
+    // EXPECT_EQ(expectedErrors.size(), v.errorCount());
+    // for (size_t i = 0; i < expectedErrors.size(); ++i) {
+    //     EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
+    // }
+}
+
