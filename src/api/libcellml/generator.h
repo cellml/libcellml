@@ -26,7 +26,8 @@ namespace libcellml {
 class LIBCELLML_EXPORT Generator: public Logger
 {
 public:
-    enum class Type {
+    enum class Type
+    {
         UNKNOWN,
         ALGEBRAIC,
         ODE
@@ -36,7 +37,7 @@ public:
     ~Generator() override; /**< Destructor */
     Generator(const Generator &rhs); /**< Copy constructor */
     Generator(Generator &&rhs) noexcept; /**< Move constructor */
-    Generator& operator=(Generator rhs); /**< Assignment operator */
+    Generator &operator=(Generator rhs); /**< Assignment operator */
 
     void processModel(const ModelPtr &model);
 
@@ -62,4 +63,4 @@ private:
     GeneratorImpl *mPimpl;
 };
 
-}
+} // namespace libcellml

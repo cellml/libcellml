@@ -22,7 +22,8 @@ limitations under the License.
 
 static const std::string EMPTY_STRING;
 
-TEST(Generator, emptyModel) {
+TEST(Generator, emptyModel)
+{
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
 
     model->setName("emptyModel");
@@ -62,15 +63,15 @@ TEST(Generator, coverage) {
 }
 */
 
-TEST(Generator, initialized_variable_of_integration) {
+TEST(Generator, initialized_variable_of_integration)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/initialized_variable_of_integration.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     std::vector<std::string> expectedErrors = {
-        "Variable 'time' in component 'main' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised."
-    };
+        "Variable 'time' in component 'main' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised."};
 
     libcellml::Generator generator;
 
@@ -84,15 +85,15 @@ TEST(Generator, initialized_variable_of_integration) {
     }
 }
 
-TEST(Generator, two_variables_of_integration) {
+TEST(Generator, two_variables_of_integration)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/two_variables_of_integration.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     std::vector<std::string> expectedErrors = {
-        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be a variable of integration."
-    };
+        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be a variable of integration."};
 
     libcellml::Generator generator;
 
@@ -106,7 +107,8 @@ TEST(Generator, two_variables_of_integration) {
     }
 }
 
-TEST(Generator, non_first_order_odes) {
+TEST(Generator, non_first_order_odes)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/non_first_order_odes.cellml"));
 
@@ -115,8 +117,7 @@ TEST(Generator, non_first_order_odes) {
     std::vector<std::string> expectedErrors = {
         "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
         "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
-        "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order."
-    };
+        "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order."};
 
     libcellml::Generator generator;
 
@@ -130,15 +131,15 @@ TEST(Generator, non_first_order_odes) {
     }
 }
 
-TEST(Generator, variable_initialized_twice) {
+TEST(Generator, variable_initialized_twice)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/variable_initialized_twice.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     std::vector<std::string> expectedErrors = {
-        "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore both be initialised."
-    };
+        "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore both be initialised."};
 
     libcellml::Generator generator;
 
@@ -151,15 +152,15 @@ TEST(Generator, variable_initialized_twice) {
     }
 }
 
-TEST(Generator, non_initialized_state) {
+TEST(Generator, non_initialized_state)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/non_initialized_state.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     std::vector<std::string> expectedErrors = {
-        "Variable 'x' in component 'main' of model 'non_initialized_state' is used in an ODE, but it is not initialised."
-    };
+        "Variable 'x' in component 'main' of model 'non_initialized_state' is used in an ODE, but it is not initialised."};
 
     libcellml::Generator generator;
 
@@ -214,10 +215,11 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 }
 */
 
-TEST(Generator, van_der_pol_model_1928) {
-//TODO: code should be generated for the coverage CellML file with and without
-//      the Generator's private mHasXXX booleans set, so that we really cover
-//      everything indeed.
+TEST(Generator, van_der_pol_model_1928)
+{
+    //TODO: code should be generated for the coverage CellML file with and without
+    //      the Generator's private mHasXXX booleans set, so that we really cover
+    //      everything indeed.
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/van_der_pol_model_1928/model.cellml"));
 

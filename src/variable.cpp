@@ -291,7 +291,7 @@ bool Variable::VariableImpl::areEquivalentVariables(const Variable *variable1,
     for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
         Variable *equivalentVariable2 = variable2->equivalentVariable(i).get();
 
-        if (   (std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())
+        if ((std::find(testedVariables.begin(), testedVariables.end(), equivalentVariable2) == testedVariables.end())
             && areEquivalentVariables(variable1, equivalentVariable2, testedVariables)) {
             return true;
         }
