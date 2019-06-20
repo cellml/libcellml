@@ -151,7 +151,7 @@ bool isCellMLReal(const std::string &candidate)
 
 bool isEqual(double value1, double value2)
 {
-    return std::abs(value1-value2) < std::numeric_limits<double>::epsilon();
+    return std::abs(value1 - value2) < std::numeric_limits<double>::epsilon();
 }
 
 } // namespace libcellml
