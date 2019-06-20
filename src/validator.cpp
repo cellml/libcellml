@@ -625,12 +625,12 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     std::string testValueString = reset->testValue();
     std::string resetValueString = reset->resetValue();
 
-    if (testValueString.empty()) {
+    if ((testValueString.empty()) || (std::all_of(testValueString.begin(), testValueString.end(), isspace))) {
         noTestValue = true;
     } else {
         validateMath(testValueString, component);
     }
-    if (resetValueString.empty()) {
+    if ((resetValueString.empty()) || (std::all_of(resetValueString.begin(), resetValueString.end(), isspace))) {
         noResetValue = true;
     } else {
         validateMath(resetValueString, component);

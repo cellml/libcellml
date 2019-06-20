@@ -19,7 +19,6 @@ limitations under the License.
 #include "xmlnode.h"
 
 #include <algorithm>
-#include <iostream>
 #include <string>
 
 #include <libxml/parser.h>
@@ -69,7 +68,6 @@ bool XmlNode::isElement(const char *name, const char *ns)
         && (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
         && (xmlStrcmp(mPimpl->mXmlNodePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;
-    } else {
     }
     return found;
 }

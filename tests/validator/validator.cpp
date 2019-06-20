@@ -920,6 +920,8 @@ TEST(Validator, resets)
         "Reset in component 'comp' with variable 'var', with test_variable 'var2', does not have an order set.",
         "Reset in component 'comp' with order '6', with variable 'var', with test_variable 'var2', does not have a reset_value specified.",
         "Reset in component 'comp' with order '7', with variable 'var', with test_variable 'var2', does not have a test_value specified.",
+        "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a test_value specified.",
+        "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a reset_value specified.",
     };
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -933,6 +935,8 @@ TEST(Validator, resets)
     libcellml::ResetPtr r5 = std::make_shared<libcellml::Reset>();
     libcellml::ResetPtr r6 = std::make_shared<libcellml::Reset>();
     libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r8 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r9 = std::make_shared<libcellml::Reset>();
 
     // This one is good :)
     r1->setVariable(v1);
@@ -983,6 +987,20 @@ TEST(Validator, resets)
     r7->setResetValue(goodMath);
     // r7->setTestValue(emptyMath);
 
+    // Whitespace test_value and reset_value
+    r8->setVariable(v1);
+    r8->setTestVariable(v2);
+    r8->setOrder(8);
+    r8->setResetValue(" ");
+    r8->setTestValue(" ");
+
+    // Empty test_value and reset_value math block TODO should math blocks which are empty of content be valid? issue #365
+    r9->setVariable(v1);
+    r9->setTestVariable(v2);
+    r9->setOrder(9);
+    r9->setResetValue(emptyMath);
+    r9->setTestValue(emptyMath);
+
     c->setName("comp");
     v1->setName("var");
     v1->setUnits("second");
@@ -999,6 +1017,8 @@ TEST(Validator, resets)
     c->addReset(r5);
     c->addReset(r6);
     c->addReset(r7);
+    c->addReset(r8);
+    c->addReset(r9);
 
     m->setName("main");
     m->addComponent(c);

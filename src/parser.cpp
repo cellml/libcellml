@@ -647,27 +647,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         if (childNode->firstChild()) {
             XmlNodePtr grandchildNode = childNode->firstChild();
 
-            while (grandchildNode) {
-                if (grandchildNode->isText()) {
-                    std::string textNode = grandchildNode->convertToString();
-                    // Ignore whitespace when parsing.
-                    if (hasNonWhitespaceCharacters(textNode)) {
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Connection in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
-                        err->setModel(model);
-                        err->setKind(Error::Kind::CONNECTION);
-                        mParser->addError(err);
-                    }
-                } else if (childNode->isComment()) {
-                    // Do nothing.
-                } else {
+            if (grandchildNode->isText()) {
+                std::string textNode = grandchildNode->convertToString();
+                // Ignore whitespace when parsing.
+                if (hasNonWhitespaceCharacters(textNode)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Connection in model '" + model->name() + "' has an invalid child element '" + grandchildNode->name() + "' of element '" + childNode->name() + "'.");
+                    err->setDescription("Connection in model '" + model->name() + "' has an invalid non-whitespace child text element '" + textNode + "'.");
                     err->setModel(model);
                     err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
                 }
-                grandchildNode = grandchildNode->next();
+            } else if (childNode->isComment()) {
+                // Do nothing.
+            } else {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Connection in model '" + model->name() + "' has an invalid child element '" + grandchildNode->name() + "' of element '" + childNode->name() + "'.");
+                err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
+                mParser->addError(err);
             }
         }
 
@@ -1174,25 +1171,8 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
         attribute = attribute->next();
     }
 
-    // TODO Remove as validation?
-    if (referencedVariable == nullptr) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' does not reference a variable in the component.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
-        mParser->addError(err);
-    }
-
     if (reset->variable() != nullptr) {
         variableName = reset->variable()->name();
-    }
-
-    if (testVariable == nullptr) {
-        ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' does not reference a test_variable in the component.");
-        err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
-        mParser->addError(err);
     }
 
     if (reset->testVariable() != nullptr) {
