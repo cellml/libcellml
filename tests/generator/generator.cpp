@@ -70,7 +70,7 @@ TEST(Generator, initialized_variable_of_integration)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'time' in component 'main' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised."};
 
     libcellml::Generator generator;
@@ -92,7 +92,7 @@ TEST(Generator, two_variables_of_integration)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be a variable of integration."};
 
     libcellml::Generator generator;
@@ -114,7 +114,7 @@ TEST(Generator, non_first_order_odes)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
         "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
         "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order."};
@@ -138,7 +138,7 @@ TEST(Generator, variable_initialized_twice)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'x' in component 'sub' of model 'variable_initialized_twice' and variable 'x' in component 'main' of model 'variable_initialized_twice' are equivalent and cannot therefore both be initialised."};
 
     libcellml::Generator generator;
@@ -159,7 +159,7 @@ TEST(Generator, non_initialized_state)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    std::vector<std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'x' in component 'main' of model 'non_initialized_state' is used in an ODE, but it is not initialised."};
 
     libcellml::Generator generator;
