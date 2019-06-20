@@ -62,7 +62,6 @@ std::string XmlAttribute::namespaceUri() const
 bool XmlAttribute::isType(const char *name, const char *ns)
 {
     bool found = false;
-
     if ((xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0)
         && (xmlStrcmp(mPimpl->mXmlAttributePtr->name, reinterpret_cast<const xmlChar *>(name)) == 0)) {
         found = true;

@@ -137,8 +137,6 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
 
 std::string printMath(const std::string &math, const std::string &indent)
 {
-    // TODO This becomes unstable: need to remove the automatic addition of the indent so that mathml which
-    // has been parsed from text which already has whitespace in it doesn't get out of control
     std::string repr;
     std::istringstream lines(math);
     std::string line;
@@ -375,10 +373,8 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
     s = reset->testValue();
     if (!s.empty()) {
         repr += ">\n";
-        // TODO Not happy with how this works - should be more consistent with other calls to printMath but that function
-        // adds extra spaces somehow ... ?
         repr += indent + tabIndent + "<test_value>\n";
-        repr += indent + tabIndent + tabIndent + printMath(s, "");
+        repr += printMath(s, indent + tabIndent + tabIndent);
         repr += indent + tabIndent + "</test_value>\n";
         hasTestValue = true;
     }
@@ -388,7 +384,7 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
             repr += ">\n";
         }
         repr += indent + tabIndent + "<reset_value>\n";
-        repr += indent + tabIndent + tabIndent + printMath(s, "");
+        repr += printMath(s, indent + tabIndent + tabIndent);
         repr += indent + tabIndent + "</reset_value>\n";
         hasResetValue = true;
     }

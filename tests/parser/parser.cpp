@@ -1580,6 +1580,56 @@ TEST(Parser, parseResets)
 
 TEST(Parser, parseResetsWithErrors)
 {
+    /* const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\" id=\"vid\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\" id=\"c2id\">\n"
+        "    <variable name=\"variable2\" id=\"vid2\" units=\"dimensionless\"/>\n"
+        "    <variable name=\"variable4\" id=\"vid4\" units=\"dimensionless\"/>\n"
+        "    <reset order=\"33\" variable=\"variable3\" test_variable=\"variable1\">\n"
+        "      <test_value one_invalid_attribute=\"apples\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value another_invalid_attribute=\"bananas\">\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "          some value in mathml\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "    <reset variable=\"variable2\" test_variable=\"variable4\">\n"
+        "      lost text here\n"
+        "      <test_value>\n"
+        "        <some_invalid_tag/>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <some_other_invalid_tag/>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "    <reset variable=\"variable2\" test_variable=\"variable4\" i_dont_belong_here=\"yep_really_i_dont\">\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n"; */
+
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
@@ -1594,7 +1644,15 @@ TEST(Parser, parseResetsWithErrors)
         "    <reset order=\"33\" variable=\"variable3\" test_variable=\"variable1\">\n"
         "      <test_value one_invalid_attribute=\"apples\">\n" // invalid attribute
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
+        "          <apply>\n"
+        "          <eq/>\n"
+        "            <ci>C1</ci>\n"
+        "            <apply>\n"
+        "              <plus/>\n"
+        "              <ci>A1</ci>\n"
+        "              <ci>B1</ci>\n"
+        "            </apply>\n"
+        "          </apply>\n"
         "        </math>\n"
         "      </test_value>\n"
         "      <test_value>\n" // duplicated test_value block inside reset
@@ -1630,10 +1688,10 @@ TEST(Parser, parseResetsWithErrors)
         "      </reset_value>\n"
         "    </reset>\n"
 
-        // order not specified, unknown attribute
+        //order not specified, unknown attribute
         "    <reset variable=\"variable2\" test_variable=\"variable4\" i_dont_belong_here=\"yep_really_i_dont\">\n"
-        // test_value missing
-        // reset_value missing
+        //test_value missing
+        //reset_value missing
         "    </reset>\n"
 
         "  </component>\n"
@@ -1642,8 +1700,6 @@ TEST(Parser, parseResetsWithErrors)
     const std::vector<std::string> expectedErrors = {
         "Reset referencing variable 'variable3' is not a valid reference for a variable in component 'component2'.",
         "Reset referencing test_variable 'variable1' is not a valid reference for a variable in component 'component2'.",
-        "Reset in component 'component2' does not reference a variable in the component.",
-        "Reset in component 'component2' does not reference a test_variable in the component.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the test_value block of 'one_invalid_attribute'.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the reset_value block of 'another_invalid_attribute'.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has multiple test_value blocks.",
@@ -1660,12 +1716,16 @@ TEST(Parser, parseResetsWithErrors)
         "Reset in component 'component2' referencing variable 'variable2' and test_variable 'variable4' does not have a reset_value block defined."};
 
     libcellml::Parser p;
+    libcellml::Printer printer;
     libcellml::ModelPtr model = p.parseModel(input);
 
-    EXPECT_EQ(size_t(18), p.errorCount());
+    EXPECT_EQ(expectedErrors.size(), p.errorCount());
     for (size_t i = 0; i < p.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors[i], p.error(i)->description());
+        EXPECT_EQ(expectedErrors.at(i), p.error(i)->description());
     }
+
+    std::cout<<printer.printModel(model);
+
 }
 
 TEST(Parser, unitsWithCellMLRealVariations)
@@ -1746,4 +1806,131 @@ TEST(Parser, xmlComments)
     printErrors(parser);
 
     EXPECT_EQ(size_t(0), parser.errorCount());
+}
+
+TEST(Parser, repeatedMathParsePrintBehaviour)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"A\" initial_value=\"1.0\"/>\n"
+        "    <variable name=\"B\" initial_value=\"-1.0\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>C</ci>\n"
+        "        <apply>\n"
+        "          <plus/>\n"
+        "          <ci>A</ci>\n"
+        "          <ci>B</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    libcellml::Printer printer;
+
+    libcellml::ModelPtr model1 = parser.parseModel(input);
+    std::string output1 = printer.printModel(model1);
+
+    libcellml::ModelPtr model2 = parser.parseModel(output1);
+    std::string output2 = printer.printModel(model2);
+
+    libcellml::ModelPtr model3 = parser.parseModel(output2);
+    std::string output3 = printer.printModel(model3);
+
+    EXPECT_EQ(input, output3);
+}
+
+TEST(Parser, repeatedMathParsePrintBehaviourInvalidMath)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"A\" initial_value=\"1.0\"/>\n"
+        "    <variable name=\"B\" initial_value=\"-1.0\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      this is not valid maths\n"
+        "    </math>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"A\" initial_value=\"1.0\"/>\n"
+        "    <variable name=\"B\" initial_value=\"-1.0\"/>\n"
+        "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "      <apply>\n"
+        "        <eq/>\n"
+        "        <ci>C</ci>\n"
+        "        <apply>\n"
+        "          <plus/>\n"
+        "          <ci>A</ci>\n"
+        "          <ci>B</ci>\n"
+        "        </apply>\n"
+        "      </apply>\n"
+        "    </math>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    libcellml::Printer printer;
+
+    libcellml::ModelPtr model1 = parser.parseModel(input);
+    std::string output1 = printer.printModel(model1);
+
+    libcellml::ModelPtr model2 = parser.parseModel(output1);
+    std::string output2 = printer.printModel(model2);
+
+    libcellml::ModelPtr model3 = parser.parseModel(output2);
+    std::string output3 = printer.printModel(model3);
+
+    EXPECT_EQ(input, output3);
+}
+
+TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
+{
+    const std::string input =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component\">\n"
+        "    <variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>\n"
+        "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
+        "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"r1id\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math1when1\">\n"
+        "          <apply>\n"
+        "            <eq/>\n"
+        "            <ci>variable1</ci>\n"
+        "            <cn>3.4</cn>\n"
+        "          </apply>\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math2when1\">\n"
+        "          <apply>\n"
+        "            <eq/>\n"
+        "            <ci>variable1</ci>\n"
+        "            <cn>9.0</cn>\n"
+        "          </apply>\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::Parser parser;
+    libcellml::Printer printer;
+
+    libcellml::ModelPtr model1 = parser.parseModel(input);
+    std::string output1 = printer.printModel(model1);
+
+    libcellml::ModelPtr model2 = parser.parseModel(output1);
+    std::string output2 = printer.printModel(model2);
+
+    libcellml::ModelPtr model3 = parser.parseModel(output2);
+    std::string output3 = printer.printModel(model3);
+
+    EXPECT_EQ(input, output3);
 }

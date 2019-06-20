@@ -41,85 +41,6 @@ TEST(Reset, order)
     EXPECT_FALSE(r->isOrderSet());
 }
 
-// TEST(Reset, removeWhenMethods)
-// {
-//     libcellml::Reset r;
-//     libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr w3 = std::make_shared<libcellml::When>();
-//     r.addWhen(w1);
-//     r.addWhen(w2);
-
-//     EXPECT_TRUE(r.removeWhen(0));
-//     EXPECT_EQ(size_t(1), r.whenCount());
-
-//     EXPECT_FALSE(r.removeWhen(1));
-
-//     r.addWhen(w1);
-//     r.addWhen(w1);
-//     r.addWhen(w1);
-//     r.removeWhen(w1);
-//     r.removeWhen(w1);
-//     EXPECT_EQ(size_t(2), r.whenCount());
-
-//     // Expect no change
-//     EXPECT_FALSE(r.removeWhen(w3));
-//     EXPECT_EQ(size_t(2), r.whenCount());
-
-//     r.removeAllWhens();
-//     EXPECT_EQ(size_t(0), r.whenCount());
-// }
-
-// TEST(Reset, whenMethods)
-// {
-//     libcellml::Reset r;
-//     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
-
-//     r.addWhen(c1);
-//     r.addWhen(c2);
-
-//     libcellml::WhenPtr cA = r.when(0);
-
-//     // Using const version of overloaded method
-//     const libcellml::WhenPtr cS = static_cast<const libcellml::Reset>(r).when(0);
-//     EXPECT_EQ(int(0), cS->order());
-
-//     // Can do this as we just have a const pointer
-//     EXPECT_EQ(nullptr, r.when(4));
-// }
-
-// TEST(Reset, takeWhenMethods)
-// {
-//     libcellml::Reset r;
-//     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
-
-//     r.addWhen(c1);
-//     r.addWhen(c2);
-
-//     libcellml::WhenPtr c02 = r.takeWhen(1);
-//     EXPECT_EQ(size_t(1), r.whenCount());
-//     EXPECT_EQ(int(0), c02->order());
-
-//     EXPECT_EQ(nullptr, r.takeWhen(4));
-// }
-
-// TEST(Reset, replaceWhenMethods)
-// {
-//     libcellml::Reset r;
-//     libcellml::WhenPtr c1 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr c2 = std::make_shared<libcellml::When>();
-//     libcellml::WhenPtr c3 = std::make_shared<libcellml::When>();
-
-//     r.addWhen(c1);
-//     r.addWhen(c2);
-
-//     EXPECT_FALSE(r.replaceWhen(5, c3));
-
-//     EXPECT_TRUE(r.replaceWhen(1, c3));
-// }
-
 TEST(Reset, constructors)
 {
     libcellml::Reset r;
@@ -171,7 +92,7 @@ TEST(Reset, printResetWithoutTestValue)
     std::string a;
     static const std::string emptyMath =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n";
+        "</math>\n";
 
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -193,8 +114,6 @@ TEST(Reset, printResetWithoutTestValue)
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
     libcellml::Printer printer;
 
     m->setName("model");
@@ -237,6 +156,28 @@ TEST(Reset, printResetWithOrder)
     EXPECT_EQ(e, a);
 }
 
+TEST(Reset, printResetWithNegativeOrder)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset order=\"-1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    r->setOrder(-1);
+    c->addReset(r);
+
+    libcellml::Printer p;
+
+    const std::string a = p.printModel(m);
+    EXPECT_EQ(e, a);
+}
+
 TEST(Reset, printResetWithOrderAndVariable)
 {
     const std::string e =
@@ -270,7 +211,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
     const std::string in = "valid_name";
     static const std::string emptyMath =
         "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "        </math>\n";
+        "</math>\n";
     const std::string e1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
