@@ -118,8 +118,6 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
   if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
         set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
-        set(_NO_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS -cppcoreguidelines-special-member-functions)
-        set(_NO_HICPP_SPECIAL_MEMBER_FUNCTIONS -hicpp-special-member-functions)
         set(_NO_HICPP_VARARG -hicpp-vararg)
     endif()
 
@@ -136,17 +134,19 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -cppcoreguidelines-pro-type-reinterpret-cast
       ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
       -cppcoreguidelines-slicing
-      ${_NO_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS}
+      -cppcoreguidelines-special-member-functions
       fuchsia-*
       -fuchsia-default-arguments
+      -fuchsia-multiple-inheritance
       -fuchsia-statically-constructed-objects
       google-*
       -google-readability-todo
       -google-runtime-references
       hicpp-*
-      ${_NO_HICPP_SPECIAL_MEMBER_FUNCTIONS}
+      -hicpp-special-member-functions
       ${_NO_HICPP_VARARG}
       llvm-*
+      -llvm-header-guard
       misc-*
       -misc-non-private-member-variables-in-classes
       modernize-*
@@ -162,7 +162,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_WARNINGS}")
     endif()
     set_target_properties(${_TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS}${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS};-header-filter=../src${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
