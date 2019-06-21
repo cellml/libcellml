@@ -34,11 +34,9 @@ find_package(SWIG 3)
 set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
 set(CMAKE_REQUIRED_FLAGS -fprofile-instr-generate)
-unset(COMPILER_FLAG_PROFILE_INSTR CACHE)
 check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS)
 
 set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage")
-unset(COMPILER_FLAG_PROFILE_INSTR CACHE)
 check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS)
 
 set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
