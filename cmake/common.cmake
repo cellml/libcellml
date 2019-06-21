@@ -102,12 +102,14 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -Wno-missing-prototypes
       -Wno-padded
     )
-    if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)
-      set(_COMPILE_OPTIONS
-        ${_COMPILE_OPTIONS}
-        -Wno-reserved-id-macro
-      )
-    endif()
+
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" AND
+      ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)
+    set(_COMPILE_OPTIONS
+      ${_COMPILE_OPTIONS}
+      -Wno-reserved-id-macro
+    )
+  endif()
 
   if(NOT "${_TARGET}" STREQUAL "cellml")
     list(APPEND _COMPILE_OPTIONS
