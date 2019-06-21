@@ -1113,13 +1113,48 @@ TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr base = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr standard = std::make_shared<libcellml::Units>();
+
+    const std::map<std::string, std::map<std::string, double>> standardToBaseUnitList = {
+        {"ampere", {{"ampere", 1.0}}},
+        {"becquerel", {{"second", -1.0}}},
+        {"candela", {{"candela", 1.0}}},
+        {"coulomb", {{"ampere", -1.0}, {"second", 1.0}}},
+        {"dimensionless", {{"dimensionless", 1.0}}},
+        {"farad", {{"ampere", 2.0}, {"kilogram", -1.0}, {"metre", -2.0}, {"second", -4.0}}},
+        {"gram", {{"kilogram", 1.0}}},
+        {"gray", {{"metre", 2.0}, {"second", -2.0}}},
+        {"henry", {{"ampere", -2.0}, {"kilogram", 1.0}, {"metre", 2.0}, {"second", -2.0}}},
+        {"hertz", {{"second", -1.0}}},
+        {"joule", {{"kilogram", 1.0}, {"metre", 2.0}, {"second", -2.0}}},
+        {"katal", {{"mole", 1.0}, {"second", -1.0}}},
+        {"kelvin", {{"kelvin", 1.0}}},
+        {"kilogram", {{"kilogram", 1.0}}},
+        {"liter", {{"metre", 3.0}}},
+        {"litre", {{"metre", 3.0}}},
+        {"lumen", {{"candela", 1.0}}},
+        {"lux", {{"candela", 1.0}, {"metre", -2.0}}},
+        {"meter", {{"metre", 1.0}}},
+        {"metre", {{"metre", 1.0}}},
+        {"mole", {{"mole", 1.0}}},
+        {"newton", {{"kilogram", 1.0}, {"metre", 1.0}, {"second", -2.0}}},
+        {"ohm", {{"ampere", -2.0}, {"kilogram", 1.0}, {"metre", 2.0}, {"second", -3.0}}},
+        {"pascal", {{"kilogram", 1.0}, {"metre", -1.0}, {"second", -2.0}}},
+        {"radian", {{"dimensionless", 1.0}}},
+        {"second", {{"second", 1.0}}},
+        {"siemens", {{"ampere", 2.0}, {"kilogram", -1.0}, {"metre", -2.0}, {"second", 3.0}}},
+        {"sievert", {{"metre", 2.0}, {"second", -2.0}}},
+        {"steradian", {{"dimensionless", 1.0}}},
+        {"tesla", {{"ampere", -1.0}, {"kilogram", 1.0}, {"second", -2.0}}},
+        {"volt", {{"ampere", -1.0}, {"kilogram", 1.0}, {"metre", 2.0}, {"second", -3.0}}},
+        {"watt", {{"kilogram", 1.0}, {"metre", 2.0}, {"second", -3.0}}},
+        {"weber", {{"ampere", -1.0}, {"kilogram", 1.0}, {"metre", 2.0}, {"second", -2.0}}}};
 
     v1->setName("tomayto");
     v2->setName("tomahto");
-
     m->setName("callthewholethingoff");
     comp1->addVariable(v1);
     comp2->addVariable(v2);
@@ -1127,26 +1162,23 @@ TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
     comp2->setName("comp2");
     m->addComponent(comp1);
     m->addComponent(comp2);
+    base->setName("base");
+    standard->setName("standard");
+    v1->setUnits(base);
+    v2->setUnits(standard);
+    m->addUnits(base);
+    m->addUnits(standard);
 
-    // u3 = u4: compound unit testing pascal = kg⋅m−1⋅s−2
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    u1->setName("testunit3");
-    u1->addUnit("pascal");
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    u2->setName("testunit4");
-    u2->addUnit("metre", 0, -1.0, 1.0); // prefix, exp, mult
-    u2->addUnit("kilogram", 0, 1.0, 1.0);
-    u2->addUnit("second", 0, -2.0, 1.0);
-
-    v1->setUnits(u1);
-    v2->setUnits(u2);
-    m->addUnits(u1);
-    m->addUnits(u2);
-
-    libcellml::Variable::addEquivalence(v1, v2);
-
-    validator.validateModel(m);
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    for (const auto &line : standardToBaseUnitList) {
+        standard->removeAllUnits();
+        base->removeAllUnits();
+        standard->addUnit(line.first);
+        for (const auto &baseUnits : line.second) {
+            base->addUnit(baseUnits.first, 0, baseUnits.second, 1.0);
+        }
+        validator.validateModel(m);
+        EXPECT_EQ(size_t(0), validator.errorCount());
+    }
 }
 
 TEST(Validator, unitEquivalenceDimensionlessUnits)
