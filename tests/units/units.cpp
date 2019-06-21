@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_utils.h"
+
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -586,6 +588,8 @@ TEST(Units, unitsWithPrefixOutOfRange)
 {
     // int limit is 18,446,744,073,709,551,615
 
+    const std::string e = "Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
+
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName("myModel");
@@ -605,5 +609,6 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     validator.validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(e, validator.error(0)->description());
 }
