@@ -1008,8 +1008,19 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
                         // TODO: validate variable interfaces according to 17.10.8
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
-                            // Check that the equivalent variable has a valid parent component.
                             auto component2 = static_cast<Component *>(equivalentVariable->parent());
+                            // Check that the components of the two equivalent variables are not the same
+                            std::string c1name = component->name();
+                            std::string c2name = component2->name();
+                            if (c1name == c2name) {
+                                ErrorPtr err = std::make_shared<Error>();
+                                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
+                                                    + variable->name() + "' but they are in the same component, '" + component->name() + "'.");
+                                err->setModel(model);
+                                err->setKind(Error::Kind::CONNECTION);
+                                mValidator->addError(err);
+                            }
+                            // Check that the equivalent variable has a valid parent component.
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
                                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");

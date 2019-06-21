@@ -1093,6 +1093,62 @@ TEST(Validator, validMathCnElements)
     EXPECT_EQ(size_t(0), v.errorCount());
 }
 
+TEST(Validator, variableEquivalentToSelf)
+{
+    libcellml::Validator validator;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr variable = std::make_shared<libcellml::Variable>();
+    libcellml::Variable::addEquivalence(variable, variable);
+
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'variable' is an equivalent variable to 'variable' but they are in the same component, 'component'.",
+    };
+
+    variable->setName("variable");
+    variable->setUnits("dimensionless");
+    component->setName("component");
+    component->addVariable(variable);
+    model->setName("modelName");
+    model->addComponent(component);
+
+    validator.validateModel(model);
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
+    for (size_t i = 0; i < expectedErrors.size(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
+    }
+}
+
+TEST(Validator, variableEquivalenceInSameComponent)
+{
+    libcellml::Validator validator;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr variable1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr variable2 = std::make_shared<libcellml::Variable>();
+    libcellml::Variable::addEquivalence(variable1, variable2);
+
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'variable2' is an equivalent variable to 'variable1' but they are in the same component, 'component'.",
+        "Variable 'variable1' is an equivalent variable to 'variable2' but they are in the same component, 'component'."};
+
+    variable1->setName("variable1");
+    variable1->setUnits("dimensionless");
+    variable2->setName("variable2");
+    variable2->setUnits("dimensionless");
+    component->setName("component");
+    component->addVariable(variable1);
+    component->addVariable(variable2);
+    model->setName("modelName");
+    model->addComponent(component);
+
+    validator.validateModel(model);
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
+    for (size_t i = 0; i < expectedErrors.size(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
+    }
+}
+
 TEST(Validator, validateNoCyclesSimple)
 {
     // TODO Can two sibling variables in the same component be equivalent to one variable in another?
