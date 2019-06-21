@@ -1032,6 +1032,62 @@ TEST(Validator, resets)
     }
 }
 
+TEST(Validator, resetVariableOutsideComponent)
+{
+    static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+
+    const std::vector<std::string> expectedErrors = {
+        "Reset in component 'c1' with order '1', with variable 'v2', with test_variable 'v1', refers to a variable 'v2' in a different component 'c2'.",
+        "Reset in component 'c2' with order '1', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'."
+    };
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
+    libcellml::Validator validator;
+
+    v1->setName("v1");
+    v1->setUnits("dimensionless");
+    v2->setName("v2");
+    v2->setUnits("dimensionless");
+
+    c1->setName("c1");
+    c2->setName("c2");
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    c1->addReset(r1);
+    c2->addReset(r2);
+
+    r1->setVariable(v2); // variable outside parent component
+    r1->setTestVariable(v1);
+    r1->setOrder(1);
+    r1->setResetValue(emptyMath);
+    r1->setTestValue(emptyMath);
+
+    r2->setVariable(v2);
+    r2->setTestVariable(v1); // test_variable outside parent component
+    r2->setOrder(1);
+    r2->setResetValue(emptyMath);
+    r2->setTestValue(emptyMath);
+
+    m->setName("model");
+    m->addComponent(c1);
+    m->addComponent(c2);
+
+    validator.validateModel(m);
+
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
+    for (size_t i = 0; i < expectedErrors.size(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
+    }
+}
+
 TEST(Validator, validMathCnElements)
 {
     const std::string math =

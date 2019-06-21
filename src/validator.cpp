@@ -600,6 +600,10 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     bool noTestVariable = false;
     bool noTestValue = false;
     bool noResetValue = false;
+    bool varOutsideComponent = false;
+    bool testVarOutsideComponent = false;
+    std::string varParentName;
+    std::string testVarParentName;
 
     std::string description = "Reset in component '" + component->name() + "' ";
 
@@ -613,12 +617,25 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         noVariable = true;
     } else {
         description += "with variable '" + reset->variable()->name() + "', ";
+        auto var = reset->variable();
+        auto varParent = static_cast<Component*>(var->parent());
+        varParentName = varParent->name();
+        if (varParentName != component->name()) {
+            varOutsideComponent = true;
+        }
     }
 
     if (reset->testVariable() == nullptr) {
         noTestVariable = true;
     } else {
         description += "with test_variable '" + reset->testVariable()->name() + "', ";
+
+        auto var = reset->testVariable();
+        auto varParent = static_cast<Component*>(var->parent());
+        testVarParentName = varParent->name();
+        if (testVarParentName != component->name()) {
+            testVarOutsideComponent = true;
+        }
     }
 
     // Check that the contents of test_value and reset_value are valid MathML
@@ -669,6 +686,20 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         err->setDescription(description + "does not have a reset_value specified.");
         err->setReset(reset);
         err->setRule(SpecificationRule::RESET_RESET_VALUE);
+        mValidator->addError(err);
+    }
+    if (varOutsideComponent) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
+        mValidator->addError(err);
+    }
+    if(testVarOutsideComponent) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
         mValidator->addError(err);
     }
 }
