@@ -46,14 +46,14 @@ endif()
 unset(COVERAGE CACHE)
 
 # LLVM_COVERAGE ==> LIBCELLML_LLVM_COVERAGE
-set(_PARAM_ANNOTATION "Enable OSX coverage testing.")
+set(_PARAM_ANNOTATION "Enable llvm coverage testing.")
 if(LLVM_COVERAGE_TESTING_AVAILABLE)
   set(LIBCELLML_LLVM_COVERAGE ON CACHE BOOL ${_PARAM_ANNOTATION})
 endif()
 if(DEFINED LLVM_COVERAGE AND LLVM_COVERAGE_TESTING_AVAILABLE)
   set(LIBCELLML_LLVM_COVERAGE "${LLVM_COVERAGE}" CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
 elseif(LLVM_COVERAGE)
-  message(WARNING "OSX coverage testing requested but llvm-profdata or llvm-cov not found!")
+  message(WARNING "llvm coverage testing requested but llvm-profdata or llvm-cov not found!")
 endif()
 unset(LLVM_COVERAGE CACHE)
 
