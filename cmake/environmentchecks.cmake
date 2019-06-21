@@ -18,6 +18,8 @@ find_package(Python ${PREFERRED_PYTHON_VERSION} COMPONENTS Interpreter Developme
 
 find_program(CLANG_FORMAT_EXE NAMES ${PREFERRED_CLANG_FORMAT_NAMES} clang-format)
 find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
+find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS /Library/Developer/CommandLineTools/usr/bin/)
+find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS /Library/Developer/CommandLineTools/usr/bin/)
 find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
 find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
 find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
@@ -73,6 +75,10 @@ endif()
 
 if(VALGRIND_EXE AND Python_Interpreter_FOUND)
   set(VALGRIND_TESTING_AVAILABLE TRUE CACHE BOOL "Executable required to run valgrind testing is available.")
+endif()
+
+if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE)
+  set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE CACHE BOOL "Executables required to run the OSX coverage testing are available.")
 endif()
 
 mark_as_advanced(

@@ -79,13 +79,13 @@ add_subdirectory(bindings)
 if(LIBCELLML_COVERAGE)
   # Clean away old gcov arc files
   add_custom_target(clean_coverage
-    COMMAND find ${GCOV_ANALYSIS_PATH} -type f -name '*.gcda' -print | xargs /bin/rm -f
+    COMMAND ${FIND_EXE} ${GCOV_ANALYSIS_PATH} -type f -name '*.gcda' -print | xargs /bin/rm -f
     COMMENT "Clean old coverage data")
 
   # Prepare for test coverage by generating the gcov note files
   add_custom_target(prepare_coverage
     DEPENDS clean_coverage ${TEST_LIST}
-    COMMAND ctest > /dev/null
+    COMMAND ${CMAKE_CTEST_COMMAND} > /dev/null
     COMMENT "Prepare for coverage tests")
     if(TARGET python_bindings)
       add_dependencies(prepare_coverage python_bindings)
@@ -102,6 +102,36 @@ if(LIBCELLML_COVERAGE)
     DEPENDS prepare_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running coverage tests with branches output")
+endif()
+
+if(LIBCELLML_LLVM_COVERAGE)
+  set(RAW_PROFILE_FILENAME "${CMAKE_CURRENT_BINARY_DIR}/libcellml-%m.profraw")
+  set(RAW_GATHER_PROFILE_FILENAME "${CMAKE_CURRENT_BINARY_DIR}/libcellml-*.profraw")
+  set(DATA_PROFILE_FILENAME "${CMAKE_CURRENT_BINARY_DIR}/libcellml.profdata")
+
+  unset(_CMD_STRING)
+  foreach(_TEST ${TEST_LIST})
+    list(APPEND _CMD_STRING COMMAND LLVM_PROFILE_FILE=${RAW_PROFILE_FILENAME} ./${_TEST} > /dev/null 2> /dev/null)
+  endforeach()
+
+  # Clean away old profile files
+  add_custom_target(clean_llvm_coverage
+    COMMAND ${FIND_EXE} ${CMAKE_CURRENT_BINARY_DIR} -type f -name '*.profraw' -print | xargs /bin/rm -f
+    COMMAND ${FIND_EXE} ${CMAKE_CURRENT_BINARY_DIR} -type f -name '*.profdata' -print | xargs /bin/rm -f
+    COMMENT "Clean old OSX coverage data")
+
+  add_custom_target(prepare_llvm_coverage
+    ${_CMD_STRING}
+    DEPENDS clean_llvm_coverage ${TEST_LIST}
+    COMMENT "Prepare for OSX coverage tests")
+
+  # Unfortunately we cannot get an output in html format at this time as it is not supported at version 8.
+  add_custom_target(llvm_coverage
+    COMMAND ${LLVM_PROFDATA_EXE} merge -sparse ${RAW_GATHER_PROFILE_FILENAME} -o ${DATA_PROFILE_FILENAME}
+    COMMAND ${LLVM_COV_EXE} report $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=text
+    DEPENDS prepare_llvm_coverage
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Running OSX coverage tests")
 endif()
 
 if(LIBCELLML_MEMCHECK)
