@@ -91,7 +91,7 @@ struct Variable::VariableImpl
      * given variable.  Returns @c true if this variable holds a reference to the given variable
      * and that that reference is a valid reference to the given variable.
      *
-     * @param equivalentVariable The varialbe to test for equivalence to this one.
+     * @param equivalentVariable The variable to test for equivalence to this one.
      * @return @c true if the variables are equivalent @c false otherwise.
      */
     bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
