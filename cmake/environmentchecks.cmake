@@ -34,10 +34,10 @@ find_package(SWIG 3)
 set(_ORIGINAL_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
 
 set(CMAKE_REQUIRED_FLAGS -fprofile-instr-generate)
-check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS)
+check_cxx_compiler_flag("-fprofile-instr-generate -fcoverage-mapping" LLVM_COVERAGE_COMPILER_FLAGS_OK)
 
 set(CMAKE_REQUIRED_FLAGS "-fprofile-arcs -ftest-coverage")
-check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS)
+check_cxx_compiler_flag("-fprofile-arcs -ftest-coverage" GCC_COVERAGE_COMPILER_FLAGS_OK)
 
 set(CMAKE_REQUIRED_FLAGS ${_ORIGINAL_CMAKE_REQUIRED_FLAGS})
 
@@ -77,7 +77,7 @@ if(CLANG_TIDY_EXE)
   set(CLANG_TIDY_AVAILABLE TRUE INTERNAL BOOL "Executable required to perform static analysis is available.")
 endif()
 
-if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND AND GCC_COVERAGE_COMPILER_FLAGS)
+if(FIND_EXE AND GCOV_EXE AND Python_Interpreter_FOUND AND GCC_COVERAGE_COMPILER_FLAGS_OK)
   set(COVERAGE_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executables required to run the coverage testing are available.")
 endif()
 
@@ -89,7 +89,7 @@ if(VALGRIND_EXE AND Python_Interpreter_FOUND)
   set(VALGRIND_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executable required to run valgrind testing is available.")
 endif()
 
-if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS)
+if(LLVM_PROFDATA_EXE AND LLVM_COV_EXE AND FIND_EXE AND LLVM_COVERAGE_COMPILER_FLAGS_OK)
   set(LLVM_COVERAGE_TESTING_AVAILABLE TRUE INTERNAL BOOL "Executables required to run the llvm coverage testing are available.")
 endif()
 
@@ -103,6 +103,6 @@ mark_as_advanced(
   VALGRIND_EXE
   LLVM_COV_EXE
   LLVM_PROFDATA_EXE
-  LLVM_COVERAGE_COMPILER_FLAGS
-  GCC_COVERAGE_COMPILER_FLAGS
+  LLVM_COVERAGE_COMPILER_FLAGS_OK
+  GCC_COVERAGE_COMPILER_FLAGS_OK
 )
