@@ -1641,11 +1641,7 @@ TEST(Validator, unitCyclesFound)
     //                  <- mother (u3)  <-|
     //                             <- sisterFromAnotherMister (u6)
 
-    std::vector<std::string> expectedErrors = {
-        "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'",
-        "Cyclic units exist: 'father' -> 'grandfather' -> 'brotherFromAnotherMother' -> 'father'",
-        "Cyclic units exist: 'brotherFromAnotherMother' -> 'father' -> 'grandfather' -> 'brotherFromAnotherMother'",
-    };
+    const std::string expectedError = "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'";
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1690,12 +1686,14 @@ TEST(Validator, unitCyclesFound)
     u6->setName("sisterFromAnotherMister"); // second generation
     u6->addUnit("mother", 0.0, 1.0, 1.0);
 
+    // Network valid because of directionality
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1
     u1->addUnit("brotherFromAnotherMother", 0.0, 1.0, 1.0);
     v.validateModel(m);
 
-    EXPECT_EQ(size_t(3), v.errorCount());
-    for (size_t i = 0; i < v.errorCount(); i++) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(expectedError, v.error(0)->description());
 }
