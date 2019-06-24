@@ -29,6 +29,9 @@ limitations under the License.
 #include "libcellml/when.h"
 
 #include <cmath>
+
+#include <iostream>
+
 #include <map>
 #include <regex>
 #include <sstream>
@@ -291,11 +294,12 @@ struct Validator::ValidatorImpl
     *
     * @param model The model containing the units to be tested
     * @param parent The current Units pointer to test
-    * @param history A vector of the chained dependencies.  Cyclic variables exist where the first and 
-    *                last units are equal.
+    * @param history A vector of the chained dependencies.  Cyclic variables exist where the first and last units are equal.
+    * @param errorList An array of loops, returned so that the reported errors are not too repetitive
     */
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                            std::vector<std::string> &history);
+                            std::vector<std::string> &history,
+                            std::vector<std::vector<std::string>> &errorList);
 };
 
 Validator::Validator()
@@ -1343,18 +1347,48 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
 void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
 {
     std::vector<std::string> history;
+    std::vector<std::vector<std::string>> errorList;
+
     for (size_t i = 0; i < model->unitsCount(); ++i) {
         // Test each units' dependencies for presence of self in tree
         UnitsPtr u = model->units(i);
         history.push_back(u->name());
-        checkUnitForCycles(model, u, history);
+        checkUnitForCycles(model, u, history, errorList);
         // Have to delete this each time to prevent reinitialisation with previous base variables
         std::vector<std::string>().swap(history);
+    }
+
+    if (!errorList.empty()) {
+        std::vector<std::map<std::string, bool>> reportedErrorList;
+        for (auto &errors : errorList) {
+            std::map<std::string, bool> hash;
+
+            for (auto &e : errors) {
+                hash.insert(std::pair<std::string, bool>(e, true));
+            }
+
+            // Only return as error if this combo has not been reported already
+            if (std::find(reportedErrorList.begin(), reportedErrorList.end(), hash) == reportedErrorList.end()) {
+                ErrorPtr err = std::make_shared<Error>();
+                std::string des = "'";
+                for (size_t j = 0; j < errors.size() - 1; ++j) {
+                    des += errors[j] + "' -> '";
+                }
+                des += errors[errors.size() - 1] + "'";
+                err->setDescription("Cyclic units exist: " + des);
+                err->setModel(model);
+                err->setKind(Error::Kind::UNITS);
+                mValidator->addError(err);
+                reportedErrorList.push_back(hash);
+            }
+            std::map<std::string, bool>().swap(hash);
+        }
     }
 }
 
 void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                                                  std::vector<std::string> &history)
+                                                  std::vector<std::string> &history,
+                                                  std::vector<std::vector<std::string>> &errorList)
 {
     if (parent->isBaseUnit()) {
         return;
@@ -1375,16 +1409,7 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
             // Print to error output *only* when the first and last units are the same
             // otherwise we get lasso shapes reported
             if (history.front() == history.back()) {
-                ErrorPtr err = std::make_shared<Error>();
-                std::string des = "'";
-                for (size_t j = 0; j < history.size() - 1; ++j) {
-                    des += history[j] + "' -> '";
-                }
-                des += history[history.size() - 1] + "'";
-                err->setDescription("Cyclic units exist: " + des);
-                err->setModel(model);
-                err->setKind(Error::Kind::UNITS);
-                mValidator->addError(err);
+                errorList.push_back(history);
             }
         } else {
             // Step into dependencies if they are not built-in units
@@ -1393,7 +1418,7 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
                 history.push_back(ref);
                 // Making a copy of the history vector to this point
                 std::vector<std::string> child_history(history);
-                checkUnitForCycles(model, child, child_history);
+                checkUnitForCycles(model, child, child_history, errorList);
                 std::vector<std::string>().swap(child_history);
             }
         }
