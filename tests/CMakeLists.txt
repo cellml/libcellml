@@ -118,20 +118,26 @@ if(LIBCELLML_LLVM_COVERAGE)
   add_custom_target(clean_llvm_coverage
     COMMAND ${FIND_EXE} ${CMAKE_CURRENT_BINARY_DIR} -type f -name '*.profraw' -print | xargs /bin/rm -f
     COMMAND ${FIND_EXE} ${CMAKE_CURRENT_BINARY_DIR} -type f -name '*.profdata' -print | xargs /bin/rm -f
-    COMMENT "Clean old OSX coverage data")
+    COMMENT "Clean old LLVM coverage data")
 
   add_custom_target(prepare_llvm_coverage
     ${_CMD_STRING}
+    COMMAND ${LLVM_PROFDATA_EXE} merge -sparse ${RAW_GATHER_PROFILE_FILENAME} -o ${DATA_PROFILE_FILENAME}
     DEPENDS clean_llvm_coverage ${TEST_LIST}
-    COMMENT "Prepare for OSX coverage tests")
+    COMMENT "Prepare for LLVM coverage tests")
 
   # Unfortunately we cannot get an output in html format at this time as it is not supported at version 8.
   add_custom_target(llvm_coverage
-    COMMAND ${LLVM_PROFDATA_EXE} merge -sparse ${RAW_GATHER_PROFILE_FILENAME} -o ${DATA_PROFILE_FILENAME}
     COMMAND ${LLVM_COV_EXE} report $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=text
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Running OSX coverage tests")
+    COMMENT "Running LLVM coverage tests")
+
+  add_custom_target(llvm_coverage_missing_lines
+    COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -line-coverage-lt=100 -Xdemangler c++filt -Xdemangler -n
+    DEPENDS prepare_llvm_coverage
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Running LLVM coverage missing lines command")
 endif()
 
 if(LIBCELLML_MEMCHECK)
