@@ -1158,12 +1158,9 @@ bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, s
                 }
             }
             if (useMe) {
-                std::string description;
+                std::string description = "";
                 std::string reverseDescription;
-                std::string separator;
-
-                description = "";
-                separator = "";
+                std::string separator = "";
 
                 for (VariablePtr &v : list) {
                     auto *parent = static_cast<Component *>(v->parent());
