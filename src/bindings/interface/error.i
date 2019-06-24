@@ -25,6 +25,16 @@ return Kind::UNDEFINED.";
 %feature("docstring") libcellml::Error::setKind
 "Sets the ``kind`` of this error.";
 
+%feature("docstring") libcellml::Error::level
+"Get the ``level`` of this error. If no level has been set for this error, will
+return Level::FATAL.";
+
+%feature("docstring") libcellml::Error::isLevel
+"Tests if this error matches the given ``level``.";
+
+%feature("docstring") libcellml::Error::setLevel
+"Sets the ``level`` of this error.";
+
 %feature("docstring") libcellml::Error::rule
 "Get the :class:`SpecificationRule` of this error.";
 
