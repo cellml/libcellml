@@ -684,7 +684,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     err->setKind(Error::Kind::CONNECTION);
                     mParser->addError(err);
                 }
-            } else if (childNode->isComment()) {
+            } else if (grandchildNode->isComment()) {
                 // Do nothing.
             } else {
                 ErrorPtr err = std::make_shared<Error>();
@@ -1054,7 +1054,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
             importSource->setUrl(attribute->value());
         } else if (attribute->isType("id")) {
             importSource->setId(attribute->value());
-        } else if (attribute->isType("xlink")) {
+        } else if (attribute->inNamespaceUri(XLINK_NS)) {
             // Allow xlink attributes but do nothing for them.
         } else {
             ErrorPtr err = std::make_shared<Error>();
