@@ -23,6 +23,27 @@ limitations under the License.
  * The tests in this file are here to catch any branches of code that
  * are not picked up by the main tests testing the API of the library
  */
+TEST(Coverage, connectionComment)
+{
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"modelA\">\n"
+        "  <component name=\"componentA\">\n"
+        "    <variable name=\"variable1\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_1=\"component1\">\n"
+        "    <!-- Comment on connection. -->\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\">"
+            "<!-- Comment in a map variables. -->"
+            "</map_variables>"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::Parser p;
+    p.parseModel(in);
+    EXPECT_EQ(size_t(4), p.errorCount());
+}
+
 TEST(Coverage, import)
 {
     const std::string e;
@@ -36,6 +57,30 @@ TEST(Coverage, import)
 
     const std::string a = ic.id();
     EXPECT_EQ(e, a);
+}
+
+TEST(Coverage, importWithNonHrefXlink)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <import xlink:href=\"some-other-model.xml\" xlink:type=\"simple\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
+        "    <component component_ref=\"component_in_that_model\" name=\"component_in_this_model\"/>\n"
+        "    <!-- Comment in an import block -->\n"
+        "  </import>\n"
+        "  <component name=\"component_bob\">\n"
+        "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
+        "  </component>\n"
+        "  <connection component_2=\"component_in_this_model\" component_1=\"component_bob\">\n"
+        "    <map_variables variable_2=\"variable_import\" variable_1=\"variable_bob\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    // Parse
+    libcellml::Parser parser;
+    parser.parseModel(e);
+    EXPECT_EQ(size_t(0), parser.errorCount());
+//    EXPECT_EQ("bob", parser.error(0)->description());
 }
 
 TEST(Coverage, printer)
