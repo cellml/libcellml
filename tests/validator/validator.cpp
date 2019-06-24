@@ -994,7 +994,8 @@ TEST(Validator, resets)
     r8->setResetValue(" ");
     r8->setTestValue(" ");
 
-    // Empty test_value and reset_value math block TODO should math blocks which are empty of content be valid? issue #365
+    // Empty test_value and reset_value math block 
+    // TODO: For now, empty maths blocks are valid. Issue #365
     r9->setVariable(v1);
     r9->setTestVariable(v2);
     r9->setOrder(9);
