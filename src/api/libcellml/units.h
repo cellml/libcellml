@@ -73,7 +73,7 @@ public:
         LITRE, /**< Convenience unit litre. */
         LUMEN, /**< Derived SI unit lumen. */
         LUX, /**< Derived SI unit lux. */
-        METRE, /**< Base SI unit metre (alternative spelling). */
+        METRE, /**< Base SI unit metre. */
         MOLE, /**< Base SI unit mole. */
         NEWTON, /**< Derived SI unit newton. */
         OHM, /**< Derived SI unit ohm. */
