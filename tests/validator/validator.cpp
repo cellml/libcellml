@@ -744,7 +744,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 
 TEST(Validator, validateInvalidConnections)
 {
-    const std::vector<const std::string> expectedErrors = {
+    const std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
     };
 
