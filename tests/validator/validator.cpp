@@ -746,7 +746,6 @@ TEST(Validator, validateInvalidConnections)
 {
     const std::vector<const std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
-        "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
     };
 
     libcellml::Validator v;
@@ -823,7 +822,7 @@ TEST(Validator, validateInvalidConnections)
 
     // Make v4 a variable without a parent component.
     comp4->removeVariable(v4);
-    // Remove all connections on v1_2, leaving dangling reciprocal connections.
+    // Remove all connections on v1_2.
     v1_2->removeAllEquivalences();
 
     v.validateModel(m);
