@@ -23,8 +23,8 @@ find_program(CLANG_TIDY_EXE NAMES ${PREFERRED_CLANG_TIDY_NAMES} clang-tidy)
 find_program(FIND_EXE NAMES ${PREFERRED_FIND_NAMES} find)
 find_program(GCOV_EXE NAMES ${PREFERRED_GCOV_NAMES} gcov)
 find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
-find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS /Library/Developer/CommandLineTools/usr/bin/)
-find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS /Library/Developer/CommandLineTools/usr/bin/)
+find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
+find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
 
 find_package(Doxygen)
@@ -101,8 +101,8 @@ mark_as_advanced(
   GCOV_EXE
   GIT_EXE
   LLVM_COV_EXE
-  LLVM_PROFDATA_EXE
   LLVM_COVERAGE_COMPILER_FLAGS_OK
+  LLVM_PROFDATA_EXE
   SWIG_EXECUTABLE
   VALGRIND_EXE
 )
