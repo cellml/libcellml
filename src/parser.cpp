@@ -672,8 +672,8 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     // Iterate over connection child XML nodes.
     while (childNode) {
         // Connection map XML nodes should not have further children.
-        if (childNode->firstChild()) {
-            XmlNodePtr grandchildNode = childNode->firstChild();
+        XmlNodePtr grandchildNode = childNode->firstChild();
+        while (grandchildNode) {
             if (grandchildNode->isText()) {
                 std::string textNode = grandchildNode->convertToString();
                 // Ignore whitespace when parsing.
@@ -693,6 +693,7 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 err->setKind(Error::Kind::CONNECTION);
                 mParser->addError(err);
             }
+            grandchildNode = grandchildNode->next();
         }
 
         if (childNode->isCellmlElement("map_variables")) {
