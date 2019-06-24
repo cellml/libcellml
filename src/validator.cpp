@@ -1271,9 +1271,7 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, myRef, myPre, myExp, m, myId);
                 myMult = std::log10(m);
                 if (!isStandardUnitName(myRef)) {
-                    incrementBaseUnitCount(model, unitmap, multmap, myRef,
-                                           uExp * myExp, // effective exponent
-                                           logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp); // effective multiplier
+                    incrementBaseUnitCount(model, unitmap, multmap, myRef, uExp * myExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp);
                 } else {
                     myBase = standardUnitsList.at(myRef);
                     for (const auto &iter : myBase) {
@@ -1320,9 +1318,7 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, myRef, myPre, myExp, m, myId);
                 myMult = std::log10(m);
                 if (!isStandardUnitName(myRef)) {
-                    decrementBaseUnitCount(model, unitmap, multmap, myRef,
-                                           myExp * uExp,
-                                           logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp); // effective multiplier
+                    decrementBaseUnitCount(model, unitmap, multmap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp);
                 } else {
                     myBase = standardUnitsList.at(myRef);
                     for (const auto &iter : myBase) {
