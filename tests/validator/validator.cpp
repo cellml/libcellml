@@ -316,9 +316,9 @@ TEST(Validator, importComponents)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Imported component does not have a valid name attribute."};
+        "Imported component does not have a valid name attribute.",
+        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute."};
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -334,31 +334,71 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
-    // Invalid component import- missing refs
+    // Another valid component import
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
+    imp2->setUrl("yet-another-other-model.xml");
     libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
-    importedComponent2->setName("invalid_imported_component_in_this_model");
-    importedComponent2->setSourceComponent(imp2, "");
+    importedComponent2->setName("another_valid_imported_component_in_this_model");
+    importedComponent2->setSourceComponent(imp2, "new_shiny_component_ref");
     m->addComponent(importedComponent2);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+
+    // Invalid component import - missing ref to source component
+    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
+    importedComponent3->setName("invalid_imported_component_in_this_model");
+    importedComponent3->setSourceComponent(imp3, "");
+    m->addComponent(importedComponent3);
     v.validateModel(m);
     EXPECT_EQ(size_t(3), v.errorCount());
 
-    // Invalid component import - duplicate refs
-    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
-    imp3->setUrl("some-other-model.xml");
-    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
-    importedComponent3->setName("duplicate_imported_component_in_this_model");
-    importedComponent3->setSourceComponent(imp3, "component_in_that_model");
-    m->addComponent(importedComponent3);
-    v.validateModel(m);
-    EXPECT_EQ(size_t(4), v.errorCount());
-
-    // Invalid component import - unnamed component
+    // Valid component import - two components imported from the same place is allowed
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
-    imp4->setUrl("some-other-different-model.xml");
+    imp4->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
+    importedComponent4->setName("duplicate_imported_component_in_this_model");
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(3), v.errorCount());
+
+    // Invalid - name missing from component
+    libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
+    imp5->setUrl("some-other-different-model.xml");
+    libcellml::ComponentPtr importedComponent5 = std::make_shared<libcellml::Component>();
+    importedComponent5->setSourceComponent(imp5, "component_in_that_model");
+    m->addComponent(importedComponent5);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Valid - two components from the same source is allowed
+    libcellml::ImportSourcePtr imp7 = std::make_shared<libcellml::ImportSource>();
+    imp7->setUrl("yet-another-other-model.xml");
+    libcellml::ComponentPtr importedComponent7 = std::make_shared<libcellml::Component>();
+    importedComponent7->setName("another_duplicate_imported_component");
+    importedComponent7->setSourceComponent(imp7, "new_shiny_component_ref");
+    m->addComponent(importedComponent7);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Valid - duplicate component_ref from a different source
+    libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
+    imp8->setUrl("yet-another-other-model.xml"); // source used before
+    libcellml::ComponentPtr importedComponent8 = std::make_shared<libcellml::Component>();
+    importedComponent8->setName("a_good_imported_component");
+    importedComponent8->setSourceComponent(imp8, "component_in_that_model");
+    m->addComponent(importedComponent8);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Invalid: component_ref url is not valid html
+    libcellml::ImportSourcePtr imp9 = std::make_shared<libcellml::ImportSource>();
+    imp9->setUrl("not @ valid url");
+    libcellml::ComponentPtr importedComponent9 = std::make_shared<libcellml::Component>();
+    importedComponent9->setName("a_bad_imported_component");
+    importedComponent9->setSourceComponent(imp9, "component_in_some_model");
+    m->addComponent(importedComponent9);
     v.validateModel(m);
     EXPECT_EQ(size_t(6), v.errorCount());
 
@@ -678,7 +718,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "    <unit units=\"north\"/>\n"
         "    <unit units=\"ned\"/>\n"
         "    <unit units=\"king in the north\"/>\n"
-        "    <unit prefix=\"wolf\" units=\"celsius\"/>\n"
+        "    <unit prefix=\"wolf\" units=\"metre\"/>\n"
         "  </units>\n"
         "</model>\n";
     const std::vector<std::string> expectedErrors = {
@@ -686,7 +726,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
         "Unit in units 'stark' does not have a valid units reference.",
-        "Prefix 'wolf' of a unit referencing 'celsius' in units 'stark' is not a valid real number or a SI prefix.",
+        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid real number or a SI prefix.",
     };
 
     libcellml::Parser p;
