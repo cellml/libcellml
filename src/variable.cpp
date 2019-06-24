@@ -234,7 +234,16 @@ bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr
 
 void Variable::removeAllEquivalences()
 {
-    mPimpl->mEquivalentVariables.clear();
+    std::vector<VariablePtr> variablesToUnset;
+    for (auto variable : mPimpl->mEquivalentVariables) {
+        if (auto temporaryVariable = variable.lock()) {
+            variablesToUnset.push_back(temporaryVariable);
+            temporaryVariable->mPimpl->unsetEquivalentTo(shared_from_this());
+        }
+    }
+    for (auto variable : variablesToUnset) {
+        mPimpl->unsetEquivalentTo(variable);
+    }
 }
 
 VariablePtr Variable::equivalentVariable(size_t index) const
