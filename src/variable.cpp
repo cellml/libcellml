@@ -180,6 +180,9 @@ Variable::~Variable()
 
 Variable::Variable(const Variable &rhs)
     : NamedEntity(rhs)
+#ifndef SWIG
+    , std::enable_shared_from_this<Variable>(rhs)
+#endif
     , mPimpl(new VariableImpl())
 {
     mPimpl->mEquivalentVariables = rhs.mPimpl->mEquivalentVariables;
@@ -235,13 +238,13 @@ bool Variable::removeEquivalence(const VariablePtr &variable1, const VariablePtr
 void Variable::removeAllEquivalences()
 {
     std::vector<VariablePtr> variablesToUnset;
-    for (auto variable : mPimpl->mEquivalentVariables) {
+    for (const auto &variable : mPimpl->mEquivalentVariables) {
         if (auto temporaryVariable = variable.lock()) {
             variablesToUnset.push_back(temporaryVariable);
             temporaryVariable->mPimpl->unsetEquivalentTo(shared_from_this());
         }
     }
-    for (auto variable : variablesToUnset) {
+    for (const auto &variable : variablesToUnset) {
         mPimpl->unsetEquivalentTo(variable);
     }
 }
