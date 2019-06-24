@@ -123,7 +123,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
 
     # The full list of Clang-Tidy checks can be found at
     # https://clang.llvm.org/extra/clang-tidy/checks/list.html
-    set(_CLANG_TIDY_WARNINGS
+    set(_CLANG_TIDY_CHECKS
       -*
       bugprone-*
       cert-*
@@ -157,20 +157,20 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -readability-magic-numbers
     )
     string(REPLACE ";" ","
-           _CLANG_TIDY_WARNINGS "${_CLANG_TIDY_WARNINGS}")
+           _CLANG_TIDY_CHECKS "${_CLANG_TIDY_CHECKS}")
     if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-      set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_WARNINGS}")
+      set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_CHECKS}")
     endif()
 
-    file(RELATIVE_PATH _RELATIVE_SOURCE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src)
-    set(_RELATIVE_SOURCE_PATH "${CMAKE_BINARY_DIR}/${_RELATIVE_SOURCE_PATH}")
+    file(RELATIVE_PATH _RELATIVE_SOURCE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR})
+    set(_RELATIVE_SOURCE_PATH "${CMAKE_BINARY_DIR}/${_RELATIVE_SOURCE_PATH}src")
     string(REPLACE "." "\\\."
            _RELATIVE_SOURCE_PATH "${_RELATIVE_SOURCE_PATH}")
     string(REPLACE "/" "\\\/"
            _RELATIVE_SOURCE_PATH "${_RELATIVE_SOURCE_PATH}")
 
     set_target_properties(${_TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS};-header-filter=${_RELATIVE_SOURCE_PATH}\\\/.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_RELATIVE_SOURCE_PATH}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
