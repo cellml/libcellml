@@ -1066,7 +1066,7 @@ TEST(Validator, validMathCnElements)
     EXPECT_EQ(size_t(0), v.errorCount());
 }
 
-TEST(Validator, unitEquivalenceSpellingOfUnits)
+TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
 {
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1099,12 +1099,20 @@ TEST(Validator, unitEquivalenceSpellingOfUnits)
     m->addUnits(u1);
     m->addUnits(u2);
 
-    // This one is fine : metre vs meter
+    const std::vector<std::string> expectedErrors = {
+        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
+        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1, ",
+        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' with non-matching units of 'testunit1'. The mismatch is: metre^-1, "};
+
+    // This one is now an error
     libcellml::Variable::addEquivalence(v1, v2);
     validator.validateModel(m);
-    EXPECT_EQ(size_t(0), validator.errorCount());
 
-    printErrors(validator);
+    EXPECT_EQ(size_t(3), validator.errorCount());
+
+    for (size_t i = 0; i < validator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
+    }
 }
 
 TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
@@ -1133,11 +1141,9 @@ TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
         {"katal", {{"mole", 1.0}, {"second", -1.0}}},
         {"kelvin", {{"kelvin", 1.0}}},
         {"kilogram", {{"kilogram", 1.0}}},
-        {"liter", {{"metre", 3.0}}},
         {"litre", {{"metre", 3.0}}},
         {"lumen", {{"candela", 1.0}}},
         {"lux", {{"candela", 1.0}, {"metre", -2.0}}},
-        {"meter", {{"metre", 1.0}}},
         {"metre", {{"metre", 1.0}}},
         {"mole", {{"mole", 1.0}}},
         {"newton", {{"kilogram", 1.0}, {"metre", 1.0}, {"second", -2.0}}},
@@ -1212,7 +1218,7 @@ TEST(Validator, unitEquivalenceDimensionlessUnits)
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("testunit5");
     u1->addUnit("metre", 0, -2.0, 1.0);
-    u1->addUnit("meter", 0, 2.0, 1.0);
+    u1->addUnit("metre", 0, 2.0, 1.0);
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("testunit6");
     u2->addUnit("dimensionless");
@@ -1298,14 +1304,12 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
 
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v9 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v13 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v14 = std::make_shared<libcellml::Variable>();
 
     v1->setName("tomayto");
-    v2->setName("tomahto");
     v8->setName("neether");
     v9->setName("nyther");
     v13->setName("pjs");
@@ -1318,7 +1322,6 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     m->setName("callthewholethingoff");
 
     comp1->addVariable(v1);
-    comp2->addVariable(v2);
     comp2->addVariable(v8);
     comp3->addVariable(v9);
     comp2->addVariable(v13);
@@ -1328,13 +1331,9 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     m->addComponent(comp2);
     m->addComponent(comp3);
 
-    // u1 = u2: different spelling of meter/metre
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("testunit1");
     u1->addUnit("metre");
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    u2->setName("testunit2");
-    u2->addUnit("meter");
 
     // u8 = u9: testing more complicated compound units, newton/(siever.pascal) = second^2.radian^3.steradian^-4
     libcellml::UnitsPtr u8 = std::make_shared<libcellml::Units>();
@@ -1351,7 +1350,7 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     // u13 != u14: testing that the mismatch is reported correctly
     libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
     u13->setName("testunit13");
-    u13->addUnit("testunit2", "kilo", 2.0, 1.0);
+    u13->addUnit("testunit1", "kilo", 2.0, 1.0);
     u13->addUnit("testunit8", 0, 2.0, 1.0);
     libcellml::UnitsPtr u14 = std::make_shared<libcellml::Units>();
     u14->setName("testunit14");
@@ -1359,14 +1358,12 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     u14->addUnit("testunit9", 0, 2.0, 1.0);
 
     v1->setUnits(u1);
-    v2->setUnits(u2);
     v8->setUnits(u8);
     v9->setUnits(u9);
     v13->setUnits(u13);
     v14->setUnits(u14);
 
     m->addUnits(u1);
-    m->addUnits(u2);
     m->addUnits(u8);
     m->addUnits(u9);
     m->addUnits(u13);
@@ -1375,7 +1372,7 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     // This one is fine but complicated: newton/(siever.pascal) = second^2.radian^3.steradian^-4
     libcellml::Variable::addEquivalence(v8, v9);
 
-    // Off by (meter)^1: testing nested unit equivalence
+    // Off by (metre)^1: testing nested unit equivalence
     libcellml::Variable::addEquivalence(v13, v14);
 
     validator.validateModel(m);

@@ -138,7 +138,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
         "    <unit prefix=\"micro\" units=\"ampere\"/>\n"
         "    <unit units=\"kelvin\"/>\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>\n"
-        "    <unit prefix=\"1.7e310\" units=\"meter\"/>\n"
+        "    <unit prefix=\"1.7e310\" units=\"metre\"/>\n"
         "  </units>\n"
         "</model>\n";
 
@@ -150,7 +150,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u->addUnit("kelvin");
     u->addUnit("siemens", "milli", -1.0);
-    u->addUnit("meter", "1.7e310");
+    u->addUnit("metre", "1.7e310");
 
     m.addUnits(u);
 
@@ -168,7 +168,7 @@ TEST(Units, removeUnitsMethodsAndCount)
         "    <unit prefix=\"micro\" units=\"ampere\"/>\n"
         "    <unit units=\"kelvin\"/>\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>\n"
-        "    <unit prefix=\"1.7e10\" units=\"meter\"/>\n"
+        "    <unit prefix=\"1.7e10\" units=\"metre\"/>\n"
         "  </units>\n"
         "  <units name=\"simple_unit_2\"/>\n"
         "  <units name=\"simple_unit_3\"/>\n"
@@ -207,7 +207,7 @@ TEST(Units, removeUnitsMethodsAndCount)
     u1->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u1->addUnit("kelvin");
     u1->addUnit("siemens", "milli", -1.0);
-    u1->addUnit("meter", "1.7e10");
+    u1->addUnit("metre", "1.7e10");
     m.addUnits(u1);
     m.addUnits(u2);
     m.addUnits(u3);
@@ -525,7 +525,7 @@ TEST(Units, removeUnit)
     u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u.addUnit("kelvin");
     u.addUnit("siemens", "milli", -1.0);
-    u.addUnit("meter", "1.7e10");
+    u.addUnit("metre", "1.7e10");
 
     EXPECT_EQ(size_t(4), u.unitCount());
     EXPECT_TRUE(u.removeUnit("siemens"));
