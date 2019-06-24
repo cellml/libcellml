@@ -66,7 +66,7 @@ public:
      * @param ns The @c char namespace in which the attribute is in.
      *
      * @return @c true if this XmlAttribute is in the namespace
-     * specified by the @p ns and @c false otherwise.
+     * specified by @p ns and @c false otherwise.
      */
     bool inNamespaceUri(const char *ns);
 
