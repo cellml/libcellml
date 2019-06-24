@@ -914,7 +914,7 @@ TEST(Validator, resets)
         "</math>\n";
 
     const std::vector<std::string> expectedErrors = {
-        "Component 'comp' contains multiple resets with order '1'.", // TODO KRM need to clarify where the duplication is forbidden - within a component or within a connected variable set??
+        "Component 'comp' contains multiple resets with order '1'.", // TODO addressed in PR #350
         "Reset in component 'comp' with order '3', with test_variable 'var2', does not reference a variable.",
         "Reset in component 'comp' with order '4', with variable 'var', does not reference a test_variable.",
         "Reset in component 'comp' with variable 'var', with test_variable 'var2', does not have an order set.",
@@ -937,6 +937,7 @@ TEST(Validator, resets)
     libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
     libcellml::ResetPtr r8 = std::make_shared<libcellml::Reset>();
     libcellml::ResetPtr r9 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r10 = std::make_shared<libcellml::Reset>();
 
     // This one is good :)
     r1->setVariable(v1);
@@ -1002,6 +1003,13 @@ TEST(Validator, resets)
     r9->setResetValue(emptyMath);
     r9->setTestValue(emptyMath);
 
+    // Negative order value should be allowed
+    r10->setVariable(v1);
+    r10->setTestVariable(v2);
+    r10->setOrder(-100);
+    r10->setResetValue(goodMath);
+    r10->setTestValue(goodMath);
+
     c->setName("comp");
     v1->setName("var");
     v1->setUnits("second");
@@ -1020,6 +1028,7 @@ TEST(Validator, resets)
     c->addReset(r7);
     c->addReset(r8);
     c->addReset(r9);
+    c->addReset(r10);
 
     m->setName("main");
     m->addComponent(c);
