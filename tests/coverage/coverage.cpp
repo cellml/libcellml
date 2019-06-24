@@ -78,7 +78,6 @@ TEST(Coverage, importWithNonHrefXlink)
     libcellml::Parser parser;
     parser.parseModel(e);
     EXPECT_EQ(size_t(0), parser.errorCount());
-    //    EXPECT_EQ("bob", parser.error(0)->description());
 }
 
 TEST(Coverage, printer)
