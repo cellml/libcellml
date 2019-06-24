@@ -994,7 +994,7 @@ TEST(Validator, resets)
     r8->setResetValue(" ");
     r8->setTestValue(" ");
 
-    // Empty test_value and reset_value math block 
+    // Empty test_value and reset_value math block
     // TODO: For now, empty maths blocks are valid. Issue #365
     r9->setVariable(v1);
     r9->setTestVariable(v2);
