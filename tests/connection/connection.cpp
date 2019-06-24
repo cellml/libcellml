@@ -59,6 +59,18 @@ TEST(Variable, addDuplicateEquivalentVariablesAndCount)
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, removeAllEquivalences)
+{
+    const size_t e = 0;
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v1->removeAllEquivalences();
+    EXPECT_EQ(e, v1->equivalentVariableCount());
+    EXPECT_EQ(e, v2->equivalentVariableCount());
+}
+
 TEST(Variable, hasNoEquivalentVariable)
 {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
