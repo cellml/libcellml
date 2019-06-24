@@ -33,9 +33,7 @@ TEST(Coverage, connectionComment)
         "  </component>\n"
         "  <connection component_1=\"component1\">\n"
         "    <!-- Comment on connection. -->\n"
-        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\">"
-            "<!-- Comment in a map variables. -->"
-            "</map_variables>"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"><!-- Comment in a map variables. --></map_variables>\n"
         "  </connection>\n"
         "</model>\n";
 
@@ -80,7 +78,7 @@ TEST(Coverage, importWithNonHrefXlink)
     libcellml::Parser parser;
     parser.parseModel(e);
     EXPECT_EQ(size_t(0), parser.errorCount());
-//    EXPECT_EQ("bob", parser.error(0)->description());
+    //    EXPECT_EQ("bob", parser.error(0)->description());
 }
 
 TEST(Coverage, printer)
