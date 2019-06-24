@@ -32,6 +32,7 @@ struct Error::ErrorImpl
     std::string mDescription; /**< The string description for why this entity error raised. */
     Error::Kind mKind = Error::Kind::UNDEFINED; /**< The Error::Kind enum value for this error. */
     SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this error. */
+    Error::Level mLevel = Error::Level::FATAL; /**< The Error::Level enum value for this error. */
     ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the error occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
@@ -64,6 +65,7 @@ Error::Error(const Error &rhs)
     mPimpl->mVariable = rhs.mPimpl->mVariable;
     mPimpl->mReset = rhs.mPimpl->mReset;
     mPimpl->mWhen = rhs.mPimpl->mWhen;
+    mPimpl->mLevel = rhs.mPimpl->mLevel;
 }
 
 Error::Error(Error &&rhs) noexcept
@@ -169,6 +171,25 @@ void Error::setRule(SpecificationRule rule)
 SpecificationRule Error::rule() const
 {
     return mPimpl->mRule;
+}
+
+void Error::setLevel(Level level)
+{
+    mPimpl->mLevel = level;
+}
+
+Error::Level Error::level() const
+{
+    return mPimpl->mLevel;
+}
+
+bool Error::isLevel(Level level) const
+{
+    bool response = false;
+    if (mPimpl->mLevel == level) {
+        response = true;
+    }
+    return response;
 }
 
 void Error::setComponent(const ComponentPtr &component)

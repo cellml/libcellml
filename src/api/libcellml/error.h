@@ -123,6 +123,20 @@ public:
     };
 
     /**
+     * @brief The error Level enum class
+     * 
+     * Enum to describe the level of the error
+     */
+    enum class Level
+    {
+        UNDEFINED,
+        FATAL,
+        WARNING,
+        FUTURE_ERROR,
+        INFORMATION
+    };
+
+    /**
      * @brief Set the description for this error.
      *
      * Set the @c std::string @p description for why this error was raised.
@@ -190,6 +204,37 @@ public:
      * @return The @c SpecificationRule for this error.
      */
     SpecificationRule rule() const;
+
+    /**
+     * @brief Set the level of this error.
+     *
+     * Set the @p level of this error from the options available in
+     * @c Error::Level.
+     *
+     * @param level The @c Error::Level to set.
+     */
+    void setLevel(Level level);
+
+    /**
+     * @brief Get the level of this error.
+     *
+     * Get the @c level of this error. If no level has been set for
+     * this error, will return Level::FATAL.
+     *
+     * @return The @c Error::Level set for this error.
+     */
+    Level level() const;
+
+    /**
+     * @brief Check whether the level of this error matches the argument level.
+     *
+     * Returns @c true if the @p level matches the the @c Error::level for this
+     * error and @c false otherwise.
+     *
+     * @return @c true if the @p level matches the the @c Error::level for this
+     * error and @c false otherwise.
+     */
+    bool isLevel(Level level) const;
 
     /**
      * @brief Get the @c std::string heading associated with the @c enum SpecificationRule for this error.
