@@ -162,7 +162,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_WARNINGS}")
     endif()
     set_target_properties(${_TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS};-header-filter=../src/.*,-exportdefinitions.h${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS};-header-filter=.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
