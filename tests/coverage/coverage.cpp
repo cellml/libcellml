@@ -33,7 +33,9 @@ TEST(Coverage, connectionComment)
         "  </component>\n"
         "  <connection component_1=\"component1\">\n"
         "    <!-- Comment on connection. -->\n"
-        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"><!-- Comment in a map variables. --></map_variables>\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\">\n"
+        "      <!-- Comment in a map variables. -->\n"
+        "    </map_variables>\n"
         "  </connection>\n"
         "</model>\n";
 
