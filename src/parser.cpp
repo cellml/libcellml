@@ -562,16 +562,12 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
         childNode = childNode->next();
     }
     XmlAttributePtr attribute = node->firstAttribute();
-    bool unitsAttributePresent = false;
-    bool nameAttributePresent = false;
     while (attribute) {
         if (attribute->isType("name")) {
-            nameAttributePresent = true;
             variable->setName(attribute->value());
         } else if (attribute->isType("id")) {
             variable->setId(attribute->value());
         } else if (attribute->isType("units")) {
-            unitsAttributePresent = true;
             variable->setUnits(attribute->value());
         } else if (attribute->isType("interface")) {
             variable->setInterfaceType(attribute->value());
@@ -584,18 +580,6 @@ void Parser::ParserImpl::loadVariable(const VariablePtr &variable, const XmlNode
             mParser->addError(err);
         }
         attribute = attribute->next();
-    }
-    if (!nameAttributePresent) {
-        ErrorPtr err = std::make_shared<Error>(variable);
-        err->setDescription("Variable '" + node->attribute("name") + "' is missing a required 'name' attribute.");
-        err->setRule(SpecificationRule::VARIABLE_NAME);
-        mParser->addError(err);
-    }
-    if (!unitsAttributePresent) {
-        ErrorPtr err = std::make_shared<Error>(variable);
-        err->setDescription("Variable '" + node->attribute("name") + "' is missing a required 'units' attribute.");
-        err->setRule(SpecificationRule::VARIABLE_UNITS);
-        mParser->addError(err);
     }
 }
 
@@ -1001,7 +985,6 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 if (childComponent) {
                     childComponent->setEncapsulationId(childEncapsulationId);
                 }
-
             } else if (childComponentNode->isText()) {
                 const std::string textNode = childComponentNode->convertToString();
                 // Ignore whitespace when parsing.
