@@ -360,3 +360,266 @@ TEST(Reset, hasResetFromComponentMethod)
     EXPECT_TRUE(c.hasReset(r2));
     EXPECT_FALSE(c.hasReset(r3));
 }
+
+TEST(Reset, printResetWithVariableAndTestVariable)
+{
+    static const std::string emptyMath =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "</math>\n";
+
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    libcellml::Printer p;
+
+    const std::string a = p.printModel(m);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Reset, testValueSetClear)
+{
+    static const std::string emptyMath =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "</math>\n";
+
+    const std::string in1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "      <test_value/>\n" // empty test_value block will be removed on printing
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::Printer p;
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    const std::string out1 = p.printModel(m);
+    EXPECT_EQ(test1, out1);
+
+    // Test setting of test_value block
+    r->setTestValue(emptyMath);
+    const std::string out2 = p.printModel(m);
+    EXPECT_EQ(test2, out2);
+
+    // Test clearing of test_value block
+    r->setTestValue("");
+    const std::string out3 = p.printModel(m);
+    EXPECT_EQ(test1, out3);
+}
+
+TEST(Reset, testValueAppend)
+{
+    static const std::string firstMaths = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n";
+    static const std::string secondMaths = "</math>\n";
+
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <test_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </test_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::Printer p;
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    // Test appending of test_value block
+    r->appendTestValue(firstMaths);
+    r->appendTestValue(secondMaths);
+
+    const std::string out = p.printModel(m);
+    EXPECT_EQ(test, out);
+}
+
+TEST(Reset, resetValueSetClear)
+{
+    static const std::string emptyMath =
+        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "</math>\n";
+
+    const std::string in1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" reset_variable=\"B\" order=\"1\"/>\n"
+        "      <reset_value/>\n" // empty reset_value block will be removed on printing
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test1 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test2 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::Printer p;
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    const std::string out1 = p.printModel(m);
+    EXPECT_EQ(test1, out1);
+
+    // Test setting of reset_value block
+    r->setResetValue(emptyMath);
+    const std::string out2 = p.printModel(m);
+    EXPECT_EQ(test2, out2);
+
+    // Test clearing of reset_value block
+    r->setResetValue("");
+    const std::string out3 = p.printModel(m);
+    EXPECT_EQ(test1, out3);
+}
+
+TEST(Reset, resetValueAppend)
+{
+    static const std::string firstMaths = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n";
+    static const std::string secondMaths = "</math>\n";
+
+    const std::string in =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    const std::string test =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component>\n"
+        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\">\n"
+        "      <reset_value>\n"
+        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "        </math>\n"
+        "      </reset_value>\n"
+        "    </reset>\n"
+        "  </component>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = createModelWithComponent();
+    libcellml::ComponentPtr c = m->component(0);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::Printer p;
+
+    v1->setName("A");
+    v2->setName("B");
+
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    c->addReset(r);
+
+    // Test appending of reset_value block
+    r->appendResetValue(firstMaths);
+    r->appendResetValue(secondMaths);
+
+    const std::string out = p.printModel(m);
+    EXPECT_EQ(test, out);
+}

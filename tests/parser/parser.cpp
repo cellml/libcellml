@@ -1792,51 +1792,6 @@ TEST(Parser, repeatedMathParsePrintBehaviour)
     EXPECT_EQ(input, output3);
 }
 
-// TODO Removed so that math print/parse behaviour can be investigated independently through #364
-// TEST(Parser, repeatedMathParsePrintBehaviourInvalidMath)
-// {
-//     const std::string input =
-//         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-//         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-//         "  <component name=\"component\">\n"
-//         "    <variable name=\"A\" initial_value=\"1.0\"/>\n"
-//         "    <variable name=\"B\" initial_value=\"-1.0\"/>\n"
-//         "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-//         "      this is not valid maths\n"
-//         "    </math>\n"
-//         "  </component>\n"
-//         "  <component name=\"component2\">\n"
-//         "    <variable name=\"A\" initial_value=\"1.0\"/>\n"
-//         "    <variable name=\"B\" initial_value=\"-1.0\"/>\n"
-//         "    <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-//         "      <apply>\n"
-//         "        <eq/>\n"
-//         "        <ci>C</ci>\n"
-//         "        <apply>\n"
-//         "          <plus/>\n"
-//         "          <ci>A</ci>\n"
-//         "          <ci>B</ci>\n"
-//         "        </apply>\n"
-//         "      </apply>\n"
-//         "    </math>\n"
-//         "  </component>\n"
-//         "</model>\n";
-
-//     libcellml::Parser parser;
-//     libcellml::Printer printer;
-
-//     libcellml::ModelPtr model1 = parser.parseModel(input);
-//     std::string output1 = printer.printModel(model1);
-
-//     libcellml::ModelPtr model2 = parser.parseModel(output1);
-//     std::string output2 = printer.printModel(model2);
-
-//     libcellml::ModelPtr model3 = parser.parseModel(output2);
-//     std::string output3 = printer.printModel(model3);
-
-//     EXPECT_EQ(input, output3);
-// }
-
 TEST(Parser, repeatedMathParsePrintBehaviourWithReset)
 {
     const std::string input =
