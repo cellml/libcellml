@@ -897,9 +897,8 @@ TEST(Validator, integerStrings)
     }
 }
 
-TEST(Validator, resets)
+TEST(Validator, resetValid)
 {
-    static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
     const std::string goodMath =
         "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
         "  <apply>\n"
@@ -913,102 +912,18 @@ TEST(Validator, resets)
         "  </apply>\n"
         "</math>\n";
 
-    const std::vector<std::string> expectedErrors = {
-        "Component 'comp' contains multiple resets with order '1'.", // TODO addressed in PR #350
-        "Reset in component 'comp' with order '3', with test_variable 'var2', does not reference a variable.",
-        "Reset in component 'comp' with order '4', with variable 'var', does not reference a test_variable.",
-        "Reset in component 'comp' with variable 'var', with test_variable 'var2', does not have an order set.",
-        "Reset in component 'comp' with order '6', with variable 'var', with test_variable 'var2', does not have a reset_value specified.",
-        "Reset in component 'comp' with order '7', with variable 'var', with test_variable 'var2', does not have a test_value specified.",
-        "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a test_value specified.",
-        "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a reset_value specified.",
-    };
-
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r5 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r6 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r8 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r9 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r10 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
     // This one is good :)
-    r1->setVariable(v1);
-    r1->setTestVariable(v2);
-    r1->setOrder(1);
-    r1->setResetValue(goodMath);
-    r1->setTestValue(goodMath);
-
-    // Duplicated order in the same variable
-    r2->setVariable(v1);
-    r2->setTestVariable(v2);
-    r2->setOrder(1);
-    r2->setResetValue(goodMath);
-    r2->setTestValue(goodMath);
-
-    // No variable
-    //r3->setVariable(v1);
-    r3->setTestVariable(v2);
-    r3->setOrder(3);
-    r3->setResetValue(goodMath);
-    r3->setTestValue(goodMath);
-
-    // No test_variable
-    r4->setVariable(v1);
-    //r4->setTestVariable(v2);
-    r4->setOrder(4);
-    r4->setResetValue(goodMath);
-    r4->setTestValue(goodMath);
-
-    // No order
-    r5->setVariable(v1);
-    r5->setTestVariable(v2);
-    // r5->setOrder(5);
-    r5->setResetValue(goodMath);
-    r5->setTestValue(goodMath);
-
-    // No reset_value
-    r6->setVariable(v1);
-    r6->setTestVariable(v2);
-    r6->setOrder(6);
-    // r6->setResetValue(goodMath);
-    r6->setTestValue(goodMath);
-
-    // No test_value
-    r7->setVariable(v1);
-    r7->setTestVariable(v2);
-    r7->setOrder(7);
-    r7->setResetValue(goodMath);
-    // r7->setTestValue(emptyMath);
-
-    // Whitespace test_value and reset_value
-    r8->setVariable(v1);
-    r8->setTestVariable(v2);
-    r8->setOrder(8);
-    r8->setResetValue(" ");
-    r8->setTestValue(" ");
-
-    // Empty test_value and reset_value math block
-    // TODO: For now, empty maths blocks are valid. Issue #365
-    r9->setVariable(v1);
-    r9->setTestVariable(v2);
-    r9->setOrder(9);
-    r9->setResetValue(emptyMath);
-    r9->setTestValue(emptyMath);
-
-    // Negative order value should be allowed
-    r10->setVariable(v1);
-    r10->setTestVariable(v2);
-    r10->setOrder(-100);
-    r10->setResetValue(goodMath);
-    r10->setTestValue(goodMath);
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    r->setResetValue(goodMath);
+    r->setTestValue(goodMath);
 
     c->setName("comp");
     v1->setName("var");
@@ -1019,16 +934,299 @@ TEST(Validator, resets)
     c->addVariable(v1);
     c->addVariable(v2);
 
-    c->addReset(r1);
-    c->addReset(r2);
-    c->addReset(r3);
-    c->addReset(r4);
-    c->addReset(r5);
-    c->addReset(r6);
-    c->addReset(r7);
-    c->addReset(r8);
-    c->addReset(r9);
-    c->addReset(r10);
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
+}
+TEST(Validator, resetNoVariable)
+{
+    const std::string goodMath =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>var</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    const std::string expectedError =
+        "Reset in component 'comp' with order '3', with test_variable 'var2', does not reference a variable.";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // No variable
+    r->setTestVariable(v2);
+    r->setOrder(3);
+    r->setResetValue(goodMath);
+    r->setTestValue(goodMath);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(expectedError, validator.error(0)->description());
+}
+
+TEST(Validator, resetNoTestVariable)
+{
+    const std::string goodMath =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>var</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    const std::string expectedError =
+        "Reset in component 'comp' with order '4', with variable 'var', does not reference a test_variable.";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // No test_variable
+    r->setVariable(v1);
+    r->setOrder(4);
+    r->setResetValue(goodMath);
+    r->setTestValue(goodMath);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(expectedError, validator.error(0)->description());
+}
+
+TEST(Validator, resetNoOrder)
+{
+    const std::string goodMath =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>var</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    const std::string expectedError =
+        "Reset in component 'comp' with variable 'var', with test_variable 'var2', does not have an order set.";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // No order
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setResetValue(goodMath);
+    r->setTestValue(goodMath);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(expectedError, validator.error(0)->description());
+}
+
+TEST(Validator, resetNoResetValue)
+{
+    const std::string goodMath =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>var</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    const std::string expectedError = "Reset in component 'comp' with order '6', with variable 'var', with test_variable 'var2', does not have a reset_value specified.";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // No reset_value
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(6);
+    r->setTestValue(goodMath);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(expectedError, validator.error(0)->description());
+}
+
+TEST(Validator, resetNoTestValue)
+{
+    const std::string goodMath =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>var</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    const std::string expectedError =
+        "Reset in component 'comp' with order '7', with variable 'var', with test_variable 'var2', does not have a test_value specified.";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // No test_value
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(7);
+    r->setResetValue(goodMath);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(1), validator.errorCount());
+    EXPECT_EQ(expectedError, validator.error(0)->description());
+}
+
+TEST(Validator, resetWhitespaceAsMaths)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a test_value specified.",
+        "Reset in component 'comp' with order '8', with variable 'var', with test_variable 'var2', does not have a reset_value specified.",
+    };
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // Whitespace test_value and reset_value
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(8);
+    r->setResetValue(" ");
+    r->setTestValue(" ");
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
 
     m->setName("main");
     m->addComponent(c);
@@ -1040,6 +1238,92 @@ TEST(Validator, resets)
     for (size_t i = 0; i < expectedErrors.size(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
+}
+
+TEST(Validator, resetEmptyMathML)
+{
+    static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // Empty test_value and reset_value math block
+    // TODO: For now, empty maths blocks are valid. Issue #365
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(9);
+    r->setResetValue(emptyMath);
+    r->setTestValue(emptyMath);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
+}
+
+TEST(Validator, resetNegativeOrder)
+{
+    const std::string goodMath =
+        "<math xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\" xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
+        "  <apply>\n"
+        "    <eq/>\n"
+        "    <ci>var</ci>\n"
+        "    <apply>\n"
+        "      <plus/>\n"
+        "      <cn cellml:units=\"dimensionless\">3.44<sep/>2</cn>\n"
+        "      <cn cellml:units=\"dimensionless\">-9.612</cn>\n"
+        "    </apply>\n"
+        "  </apply>\n"
+        "</math>\n";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    // Negative order value should be allowed
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(-100);
+    r->setResetValue(goodMath);
+    r->setTestValue(goodMath);
+
+    c->setName("comp");
+    v1->setName("var");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+
+    c->addReset(r);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
 
 TEST(Validator, resetVariableOutsideComponent)
