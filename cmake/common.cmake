@@ -168,8 +168,6 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     endif()
 
     set(_HEADER_FILTER_DIR "${CMAKE_SOURCE_DIR}/src/")
-    string(REPLACE "//" "/"
-           _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
     string(REPLACE "." "\\\."
            _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
     string(REPLACE "/" "\\\/"
