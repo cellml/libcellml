@@ -56,7 +56,7 @@ class LoggerTestCase(unittest.TestCase):
         x = Logger()
         self.assertEqual(x.errorCount(), 0)
         x.addError(Issue())
-        x.addIssue(Issue())
+        x.addError(Issue())
         self.assertEqual(x.errorCount(), 2)
         x.clearErrors()
         self.assertEqual(x.errorCount(), 0)
