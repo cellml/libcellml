@@ -435,31 +435,11 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         }
     }
     // Check for resets in this component
-    if (component->resetCount() > 0) {
-        // Check for duplicate order values in resets
-        // TODO KRM Need to remove this as doesn't match the spec - need to move into the equivalent variable testing intead
-        std::vector<int> resetOrders;
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->reset(i);
-            int resetOrder = reset->order();
-            if (reset->isOrderSet()) {
-                if (std::find(resetOrders.begin(), resetOrders.end(), resetOrder) != resetOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->name() + "' contains multiple resets with order '" + convertIntToString(resetOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    resetOrders.push_back(resetOrder);
-                }
-            }
-        }
-
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->reset(i);
-            validateReset(reset, component);
-        }
+    for (size_t i = 0; i < component->resetCount(); ++i) {
+        ResetPtr reset = component->reset(i);
+        validateReset(reset, component);
     }
+
     // Validate math through the private implementation (for XML handling).
     if (!component->math().empty()) {
         validateMath(component->math(), component);
