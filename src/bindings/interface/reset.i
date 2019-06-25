@@ -38,6 +38,18 @@
 %feature("docstring") libcellml::Reset::appendResetValue
 "Appends to the :class: reset_value MathML string of this reset.";
 
+%feature("docstring") libcellml::Reset::setTestValueId
+"Sets the :class: test_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::setResetValueId
+"Sets the :class: reset_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::testValueId
+"Returns the :class: test_value id string of this reset.";
+
+%feature("docstring") libcellml::Reset::resetValueId
+"Returns the :class: reset_value id string of this reset.";
+
 #if defined(SWIGPYTHON)
     // Allow any type of input to be converted to bool
     %typemap(typecheck,precedence=SWIG_TYPECHECK_BOOL) bool { $1 = 1; }
