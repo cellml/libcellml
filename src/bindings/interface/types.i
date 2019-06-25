@@ -8,9 +8,9 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Component)
 %shared_ptr(libcellml::ComponentEntity)
 %shared_ptr(libcellml::Entity)
-%shared_ptr(libcellml::Error)
 %shared_ptr(libcellml::ImportSource)
 %shared_ptr(libcellml::ImportedEntity)
+%shared_ptr(libcellml::Issue)
 %shared_ptr(libcellml::Model)
 %shared_ptr(libcellml::NamedEntity)
 %shared_ptr(libcellml::OrderedEntity)
@@ -45,12 +45,12 @@ Only meant to be included, shouldn't be passed to cmake as a module!
   }
 }
 
-%typemap(in) libcellml::Error::Kind (int val, int ecode) {
+%typemap(in) libcellml::Issue::Kind (int val, int ecode) {
   ecode = SWIG_AsVal(int)($input, &val);
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
-    if (val < %static_cast(libcellml::Error::Kind::COMPONENT, int) || %static_cast(libcellml::Error::Kind::XML, int) < val) {
+    if (val < %static_cast(libcellml::Issue::Kind::COMPONENT, int) || %static_cast(libcellml::Issue::Kind::XML, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val,$basetype);
