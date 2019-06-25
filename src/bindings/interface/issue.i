@@ -1,4 +1,4 @@
-%module(package="libcellml") error
+%module(package="libcellml") issue
 
 #define LIBCELLML_EXPORT
 
@@ -6,95 +6,95 @@
 
 %import "types.i"
 
-%feature("docstring") libcellml::Error
+%feature("docstring") libcellml::Issue
 "Base class for errors used with logger derived classes."
 
-%feature("docstring") libcellml::Error::description
+%feature("docstring") libcellml::Issue::description
 "Get a string description for why this error was raised.";
 
-%feature("docstring") libcellml::Error::setDescription
+%feature("docstring") libcellml::Issue::setDescription
 "Sets a string description for why this error was raised.";
 
-%feature("docstring") libcellml::Error::kind
+%feature("docstring") libcellml::Issue::kind
 "Get the ``kind`` of this error. If no kind has been set for this error, will
 return Kind::UNDEFINED.";
 
-%feature("docstring") libcellml::Error::isKind
+%feature("docstring") libcellml::Issue::isKind
 "Tests if this error matches the given ``kind``.";
 
-%feature("docstring") libcellml::Error::setKind
+%feature("docstring") libcellml::Issue::setKind
 "Sets the ``kind`` of this error.";
 
-%feature("docstring") libcellml::Error::level
+%feature("docstring") libcellml::Issue::level
 "Get the ``level`` of this error. If no level has been set for this error, will
 return Level::FATAL.";
 
-%feature("docstring") libcellml::Error::isLevel
+%feature("docstring") libcellml::Issue::isLevel
 "Tests if this error matches the given ``level``.";
 
-%feature("docstring") libcellml::Error::setLevel
+%feature("docstring") libcellml::Issue::setLevel
 "Sets the ``level`` of this error.";
 
-%feature("docstring") libcellml::Error::rule
+%feature("docstring") libcellml::Issue::rule
 "Get the :class:`SpecificationRule` of this error.";
 
-%feature("docstring") libcellml::Error::setRule
+%feature("docstring") libcellml::Issue::setRule
 "Sets the :class:`SpecificationRule` for this error.";
 
-%feature("docstring") libcellml::Error::specificationHeading
+%feature("docstring") libcellml::Issue::specificationHeading
 "Returns the CellML 2.0 Specification heading associated with the
 :class:`SpecificationRule` for this error (empty string if not set).";
 
-%feature("docstring") libcellml::Error::component
+%feature("docstring") libcellml::Issue::component
 "Returns the :class:`Component` that this error is relevant to (or ``None``).";
 
-%feature("docstring") libcellml::Error::setComponent
+%feature("docstring") libcellml::Issue::setComponent
 "Sets the :class:`Component` that this error is relevant to (``None`` to unset).";
 
-%feature("docstring") libcellml::Error::importSource
+%feature("docstring") libcellml::Issue::importSource
 "Returns the :class:`ImportSource` that this error is relevant to (or ``None``).";
 
-%feature("docstring") libcellml::Error::setImportSource
+%feature("docstring") libcellml::Issue::setImportSource
 "Sets the :class:`ImportSource` that this error is relevant to (``None`` to unset).";
 
-%feature("docstring") libcellml::Error::model
+%feature("docstring") libcellml::Issue::model
 "Returns the :class:`Model` that this error is relevant to (or ``None``).";
 
-%feature("docstring") libcellml::Error::setModel
+%feature("docstring") libcellml::Issue::setModel
 "Sets the :class:`Model` that this error is relevant to (``None`` to unset).";
 
-%feature("docstring") libcellml::Error::units
+%feature("docstring") libcellml::Issue::units
 "Get the :class:`Units` that this error is relevant to (or ``None``).";
 
-%feature("docstring") libcellml::Error::setUnits
+%feature("docstring") libcellml::Issue::setUnits
 "Sets the :class`Units` that this error is relevant to (``None`` to unset).";
 
-%feature("docstring") libcellml::Error::variable
+%feature("docstring") libcellml::Issue::variable
 "Get the :class:`Variable` that this error is relevant to (or ``None``).";
 
-%feature("docstring") libcellml::Error::setVariable
+%feature("docstring") libcellml::Issue::setVariable
 "Sets the :class:`Variable` that this error is relevant to (``None`` to unset).";
 
-%feature("docstring") libcellml::Error::reset
+%feature("docstring") libcellml::Issue::reset
 "Get the :class:`Reset` that this error is relevant to (or ``None``).";
 
-%feature("docstring") libcellml::Error::setReset
+%feature("docstring") libcellml::Issue::setReset
 "Sets the :class:`Reset` that this error is relevant to (``None`` to unset).";
 
-%feature("docstring") libcellml::Error::when
+%feature("docstring") libcellml::Issue::when
 "Get the :class:`When` that this error is relevant to (or ``None``).";
 
-%feature("docstring") libcellml::Error::setWhen
+%feature("docstring") libcellml::Issue::setWhen
 "Sets the :class:`When` that this error is relevant to (``None`` to unset).";
 
 %{
-#include "libcellml/error.h"
+#include "libcellml/issue.h"
 %}
 
-%ignore libcellml::Error::Error(Error &&);
-%ignore libcellml::Error::operator =;
+%ignore libcellml::Issue::Issue(Issue &&);
+%ignore libcellml::Issue::operator =;
 
 %include "libcellml/exportdefinitions.h"
 %include "libcellml/specificationrules.h"
 %include "libcellml/types.h"
-%include "libcellml/error.h"
+%include "libcellml/issue.h"

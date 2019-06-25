@@ -18,63 +18,63 @@ limitations under the License.
 
 #include <libcellml>
 
-TEST(Error, createModelError)
+TEST(Issue, createModelError)
 {
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(m);
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(m);
 
-    EXPECT_EQ(libcellml::Error::Kind::MODEL, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::MODEL, e->kind());
 }
 
-TEST(Error, createComponemntError)
+TEST(Issue, createComponemntError)
 {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(c);
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(c);
 
-    EXPECT_EQ(libcellml::Error::Kind::COMPONENT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::COMPONENT, e->kind());
 }
 
-TEST(Error, createVariableError)
+TEST(Issue, createVariableError)
 {
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(v);
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(v);
 
-    EXPECT_EQ(libcellml::Error::Kind::VARIABLE, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::VARIABLE, e->kind());
 }
 
-TEST(Error, createUnitsError)
+TEST(Issue, createUnitsError)
 {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(u);
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(u);
 
-    EXPECT_EQ(libcellml::Error::Kind::UNITS, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::UNITS, e->kind());
 }
 
-TEST(Error, createImportSourceError)
+TEST(Issue, createImportSourceError)
 {
     libcellml::ImportSourcePtr i = std::make_shared<libcellml::ImportSource>();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(i);
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(i);
 
-    EXPECT_EQ(libcellml::Error::Kind::IMPORT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::IMPORT, e->kind());
 }
 
-TEST(Error, createResetError)
+TEST(Issue, createResetError)
 {
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(r);
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(r);
 
-    EXPECT_EQ(libcellml::Error::Kind::RESET, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::RESET, e->kind());
 }
 
-TEST(Error, createWhenError)
+TEST(Issue, createWhenError)
 {
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>(w);
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(w);
 
-    EXPECT_EQ(libcellml::Error::Kind::WHEN, e->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::WHEN, e->kind());
 }
 
-void testSpecificationRule(const libcellml::Error &e)
+void testSpecificationRule(const libcellml::Issue &e)
 {
     switch (e.rule()) {
     case libcellml::SpecificationRule::COMPONENT_CHILD:
@@ -248,10 +248,10 @@ void testSpecificationRule(const libcellml::Error &e)
     }
 }
 
-TEST(Error, specificationRule)
+TEST(Issue, specificationRule)
 {
     size_t count = 0;
-    libcellml::Error e;
+    libcellml::Issue e;
     e.setRule(libcellml::SpecificationRule::UNDEFINED);
     ++count;
     testSpecificationRule(e);

@@ -22,7 +22,7 @@
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Logger {
-        ErrorPtr error(long index) {
+        IssuePtr error(long index) {
             if (index < 0) return nullptr;
             return $self->error(size_t(index));
         }

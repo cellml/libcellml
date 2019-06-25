@@ -10,9 +10,9 @@ The purpose of libCellML is to create, manipulate, serialise, deserialise,
 from libcellml.component import Component
 from libcellml.componententity import ComponentEntity
 from libcellml.entity import Entity
-from libcellml.error import Error
 from libcellml.importedentity import ImportedEntity
 from libcellml.importsource import ImportSource
+from libcellml.issue import Issue
 from libcellml.logger import Logger
 from libcellml.model import Model
 from libcellml.namedentity import NamedEntity
@@ -45,7 +45,7 @@ def convert(base, enum, variables, new_base=None):
             converting = True
     if converting:
         setattr(base if new_base is None else new_base, enum, obj)
-convert(Error, 'Kind', [
+convert(Issue, 'Kind', [
     'COMPONENT',
     'CONNECTION',
     'ENCAPSULATION',

@@ -102,7 +102,7 @@ TEST(Parser, makeError)
 {
     const std::string ex;
 
-    libcellml::ErrorPtr e = std::make_shared<libcellml::Error>();
+    libcellml::IssuePtr e = std::make_shared<libcellml::Issue>();
 
     EXPECT_EQ(ex, e->description());
 }
@@ -242,9 +242,9 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetError)
     // Get ModelError and check.
     EXPECT_EQ(model, parser.error(0)->model());
     // Get const modelError and check.
-    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).error(0);
-    libcellml::Error *rawErr = err.get();
-    const libcellml::ModelPtr modelFromError = static_cast<const libcellml::Error *>(rawErr)->model();
+    const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(parser).error(0);
+    libcellml::Issue *rawErr = err.get();
+    const libcellml::ModelPtr modelFromError = static_cast<const libcellml::Issue *>(rawErr)->model();
     EXPECT_EQ(model, modelFromError);
 }
 
@@ -357,7 +357,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     EXPECT_EQ(unitsExpected, parser.error(0)->units());
 
     // Get const units from error and check.
-    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).error(0);
+    const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(parser).error(0);
     const libcellml::UnitsPtr unitsFromError = err->units();
     EXPECT_EQ(unitsExpected, unitsFromError);
 }
@@ -382,9 +382,9 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError)
     // Get component from error and check.
     EXPECT_EQ(component, parser.error(0)->component());
     // Get const component from error and check.
-    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(parser).error(0);
-    libcellml::Error *rawErr = err.get();
-    const libcellml::ComponentPtr componentFromError = static_cast<const libcellml::Error *>(rawErr)->component();
+    const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(parser).error(0);
+    libcellml::Issue *rawErr = err.get();
+    const libcellml::ComponentPtr componentFromError = static_cast<const libcellml::Issue *>(rawErr)->component();
     EXPECT_EQ(component, componentFromError);
 
     // Get non-existent error
@@ -841,9 +841,9 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError)
     // Get variable from error and check.
     EXPECT_EQ(variableExpected, p.error(0)->variable());
     // Get const variable from error and check.
-    libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).error(0);
-    libcellml::Error *rawErr = err.get();
-    const libcellml::VariablePtr variableFromError = static_cast<const libcellml::Error *>(rawErr)->variable();
+    libcellml::IssuePtr err = static_cast<const libcellml::Parser>(p).error(0);
+    libcellml::Issue *rawErr = err.get();
+    const libcellml::VariablePtr variableFromError = static_cast<const libcellml::Issue *>(rawErr)->variable();
     EXPECT_EQ(variableExpected, variableFromError);
 }
 
@@ -1251,9 +1251,9 @@ TEST(Parser, invalidImportsAndGetError)
     // Get import from error and check.
     EXPECT_EQ(import, p.error(0)->importSource());
     // Get const import from error and check.
-    const libcellml::ErrorPtr err = static_cast<const libcellml::Parser>(p).error(0);
-    libcellml::Error *rawErr = err.get();
-    const libcellml::ImportSourcePtr importFromError = static_cast<const libcellml::Error *>(rawErr)->importSource();
+    const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(p).error(0);
+    libcellml::Issue *rawErr = err.get();
+    const libcellml::ImportSourcePtr importFromError = static_cast<const libcellml::Issue *>(rawErr)->importSource();
     EXPECT_EQ(import, importFromError);
 }
 
@@ -1295,32 +1295,32 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
         switch (parser.error(i)->kind()) {
-        case libcellml::Error::Kind::COMPONENT:
+        case libcellml::Issue::Kind::COMPONENT:
             foundKind.at(0) = true;
             break;
-        case (libcellml::Error::Kind::CONNECTION):
+        case (libcellml::Issue::Kind::CONNECTION):
             foundKind.at(1) = true;
             break;
-        case (libcellml::Error::Kind::ENCAPSULATION):
+        case (libcellml::Issue::Kind::ENCAPSULATION):
             foundKind.at(2) = true;
             break;
-        case (libcellml::Error::Kind::IMPORT):
+        case (libcellml::Issue::Kind::IMPORT):
             foundKind.at(3) = true;
             break;
-        case (libcellml::Error::Kind::MODEL):
+        case (libcellml::Issue::Kind::MODEL):
             foundKind.at(4) = true;
             break;
-        case (libcellml::Error::Kind::UNITS):
+        case (libcellml::Issue::Kind::UNITS):
             foundKind.at(5) = true;
             break;
-        case (libcellml::Error::Kind::VARIABLE):
+        case (libcellml::Issue::Kind::VARIABLE):
             foundKind.at(6) = true;
             break;
-        case libcellml::Error::Kind::MATHML:
-        case libcellml::Error::Kind::RESET:
-        case libcellml::Error::Kind::UNDEFINED:
-        case libcellml::Error::Kind::WHEN:
-        case libcellml::Error::Kind::XML:
+        case libcellml::Issue::Kind::MATHML:
+        case libcellml::Issue::Kind::RESET:
+        case libcellml::Issue::Kind::UNDEFINED:
+        case libcellml::Issue::Kind::WHEN:
+        case libcellml::Issue::Kind::XML:
             break;
         }
     }
@@ -1328,10 +1328,10 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     // Trigger undefined error
     libcellml::Parser parser2;
     // Add an undefined error
-    libcellml::ErrorPtr undefinedError = std::make_shared<libcellml::Error>();
+    libcellml::IssuePtr undefinedError = std::make_shared<libcellml::Issue>();
     parser2.addError(undefinedError);
     EXPECT_EQ(size_t(1), parser2.errorCount());
-    if (parser2.error(0)->isKind(libcellml::Error::Kind::UNDEFINED)) {
+    if (parser2.error(0)->isKind(libcellml::Issue::Kind::UNDEFINED)) {
         foundKind.at(7) = true;
     }
 
@@ -1345,7 +1345,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     EXPECT_EQ(expectedErrors3.size(), parser3.errorCount());
     for (size_t i = 0; i < parser3.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors3.at(i), parser3.error(i)->description());
-        if (parser3.error(i)->isKind(libcellml::Error::Kind::XML)) {
+        if (parser3.error(i)->isKind(libcellml::Issue::Kind::XML)) {
             foundKind.at(8) = true;
         }
     }

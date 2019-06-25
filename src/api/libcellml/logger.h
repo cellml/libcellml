@@ -16,8 +16,8 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/error.h"
 #include "libcellml/exportdefinitions.h"
+#include "libcellml/issue.h"
 #include "libcellml/types.h"
 
 #include <string>
@@ -50,9 +50,9 @@ public:
      *
      * Adds the argument @p error to this logger.
      *
-     * @param error The @c ErrorPtr to add.
+     * @param error The @c IssuePtr to add.
      */
-    void addError(const ErrorPtr &error);
+    void addError(const IssuePtr &error);
 
     /**
      * @brief Get the number of errors.
@@ -74,7 +74,7 @@ public:
      *
      * @return A reference to the error at the given index on success, @c nullptr otherwise.
      */
-    ErrorPtr error(size_t index) const;
+    IssuePtr error(size_t index) const;
 
 private:
     void swap(Logger &rhs); /**< Swap method required for C++ 11 move semantics. */

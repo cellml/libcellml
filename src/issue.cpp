@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/error.h"
+#include "libcellml/issue.h"
 #include "libcellml/types.h"
 
 #include <map>
@@ -23,16 +23,16 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Error::ErrorImpl struct.
+ * @brief The Issue::IssueImpl struct.
  *
- * The private implementation for the Error class.
+ * The private implementation for the Issue class.
  */
-struct Error::ErrorImpl
+struct Issue::IssueImpl
 {
     std::string mDescription; /**< The string description for why this entity error raised. */
-    Error::Kind mKind = Error::Kind::UNDEFINED; /**< The Error::Kind enum value for this error. */
+    Issue::Kind mKind = Issue::Kind::UNDEFINED; /**< The Issue::Kind enum value for this error. */
     SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this error. */
-    Error::Level mLevel = Error::Level::FATAL; /**< The Error::Level enum value for this error. */
+    Issue::Level mLevel = Issue::Level::FATAL; /**< The Issue::Level enum value for this error. */
     ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the error occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
@@ -42,18 +42,18 @@ struct Error::ErrorImpl
     WhenPtr mWhen; /**< Pointer to the when that the error ocurred in. */
 };
 
-Error::Error()
-    : mPimpl(new ErrorImpl())
+Issue::Issue()
+    : mPimpl(new IssueImpl())
 {
 }
 
-Error::~Error()
+Issue::~Issue()
 {
     delete mPimpl;
 }
 
-Error::Error(const Error &rhs)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const Issue &rhs)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mDescription = rhs.mPimpl->mDescription;
     mPimpl->mKind = rhs.mPimpl->mKind;
@@ -68,93 +68,93 @@ Error::Error(const Error &rhs)
     mPimpl->mLevel = rhs.mPimpl->mLevel;
 }
 
-Error::Error(Error &&rhs) noexcept
+Issue::Issue(Issue &&rhs) noexcept
     : mPimpl(rhs.mPimpl)
 {
     rhs.mPimpl = nullptr;
 }
 
-Error &Error::operator=(Error rhs)
+Issue &Issue::operator=(Issue rhs)
 {
     rhs.swap(*this);
     return *this;
 }
 
-void Error::swap(Error &rhs)
+void Issue::swap(Issue &rhs)
 {
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-Error::Error(const ModelPtr &model)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const ModelPtr &model)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mModel = model;
-    mPimpl->mKind = Error::Kind::MODEL;
+    mPimpl->mKind = Issue::Kind::MODEL;
 }
 
-Error::Error(const ComponentPtr &component)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const ComponentPtr &component)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mComponent = component;
-    mPimpl->mKind = Error::Kind::COMPONENT;
+    mPimpl->mKind = Issue::Kind::COMPONENT;
 }
 
-Error::Error(const ImportSourcePtr &importSource)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const ImportSourcePtr &importSource)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mImportSource = importSource;
-    mPimpl->mKind = Error::Kind::IMPORT;
+    mPimpl->mKind = Issue::Kind::IMPORT;
 }
 
-Error::Error(const UnitsPtr &units)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const UnitsPtr &units)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mUnits = units;
-    mPimpl->mKind = Error::Kind::UNITS;
+    mPimpl->mKind = Issue::Kind::UNITS;
 }
 
-Error::Error(const VariablePtr &variable)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const VariablePtr &variable)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mVariable = variable;
-    mPimpl->mKind = Error::Kind::VARIABLE;
+    mPimpl->mKind = Issue::Kind::VARIABLE;
 }
 
-Error::Error(const ResetPtr &reset)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const ResetPtr &reset)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mReset = reset;
-    mPimpl->mKind = Error::Kind::RESET;
+    mPimpl->mKind = Issue::Kind::RESET;
 }
 
-Error::Error(const WhenPtr &when)
-    : mPimpl(new ErrorImpl())
+Issue::Issue(const WhenPtr &when)
+    : mPimpl(new IssueImpl())
 {
     mPimpl->mWhen = when;
-    mPimpl->mKind = Error::Kind::WHEN;
+    mPimpl->mKind = Issue::Kind::WHEN;
 }
 
-void Error::setDescription(const std::string &description)
+void Issue::setDescription(const std::string &description)
 {
     mPimpl->mDescription = description;
 }
 
-std::string Error::description() const
+std::string Issue::description() const
 {
     return mPimpl->mDescription;
 }
 
-void Error::setKind(Error::Kind kind)
+void Issue::setKind(Issue::Kind kind)
 {
     mPimpl->mKind = kind;
 }
 
-Error::Kind Error::kind() const
+Issue::Kind Issue::kind() const
 {
     return mPimpl->mKind;
 }
 
-bool Error::isKind(Kind kind) const
+bool Issue::isKind(Kind kind) const
 {
     bool response = false;
     if (mPimpl->mKind == kind) {
@@ -163,27 +163,27 @@ bool Error::isKind(Kind kind) const
     return response;
 }
 
-void Error::setRule(SpecificationRule rule)
+void Issue::setRule(SpecificationRule rule)
 {
     mPimpl->mRule = rule;
 }
 
-SpecificationRule Error::rule() const
+SpecificationRule Issue::rule() const
 {
     return mPimpl->mRule;
 }
 
-void Error::setLevel(Level level)
+void Issue::setLevel(Level level)
 {
     mPimpl->mLevel = level;
 }
 
-Error::Level Error::level() const
+Issue::Level Issue::level() const
 {
     return mPimpl->mLevel;
 }
 
-bool Error::isLevel(Level level) const
+bool Issue::isLevel(Level level) const
 {
     bool response = false;
     if (mPimpl->mLevel == level) {
@@ -192,79 +192,79 @@ bool Error::isLevel(Level level) const
     return response;
 }
 
-void Error::setComponent(const ComponentPtr &component)
+void Issue::setComponent(const ComponentPtr &component)
 {
     mPimpl->mComponent = component;
-    mPimpl->mKind = Error::Kind::COMPONENT;
+    mPimpl->mKind = Issue::Kind::COMPONENT;
 }
 
-ComponentPtr Error::component() const
+ComponentPtr Issue::component() const
 {
     return mPimpl->mComponent;
 }
 
-void Error::setImportSource(const ImportSourcePtr &importSource)
+void Issue::setImportSource(const ImportSourcePtr &importSource)
 {
     mPimpl->mImportSource = importSource;
-    mPimpl->mKind = Error::Kind::IMPORT;
+    mPimpl->mKind = Issue::Kind::IMPORT;
 }
 
-ImportSourcePtr Error::importSource() const
+ImportSourcePtr Issue::importSource() const
 {
     return mPimpl->mImportSource;
 }
 
-void Error::setModel(const ModelPtr &model)
+void Issue::setModel(const ModelPtr &model)
 {
     mPimpl->mModel = model;
-    mPimpl->mKind = Error::Kind::MODEL;
+    mPimpl->mKind = Issue::Kind::MODEL;
 }
 
-ModelPtr Error::model() const
+ModelPtr Issue::model() const
 {
     return mPimpl->mModel;
 }
 
-void Error::setUnits(const UnitsPtr &units)
+void Issue::setUnits(const UnitsPtr &units)
 {
     mPimpl->mUnits = units;
-    mPimpl->mKind = Error::Kind::UNITS;
+    mPimpl->mKind = Issue::Kind::UNITS;
 }
 
-UnitsPtr Error::units() const
+UnitsPtr Issue::units() const
 {
     return mPimpl->mUnits;
 }
 
-void Error::setVariable(const VariablePtr &variable)
+void Issue::setVariable(const VariablePtr &variable)
 {
     mPimpl->mVariable = variable;
-    mPimpl->mKind = Error::Kind::VARIABLE;
+    mPimpl->mKind = Issue::Kind::VARIABLE;
 }
 
-VariablePtr Error::variable() const
+VariablePtr Issue::variable() const
 {
     return mPimpl->mVariable;
 }
 
-void Error::setReset(const ResetPtr &reset)
+void Issue::setReset(const ResetPtr &reset)
 {
     mPimpl->mReset = reset;
-    mPimpl->mKind = Error::Kind::RESET;
+    mPimpl->mKind = Issue::Kind::RESET;
 }
 
-ResetPtr Error::reset() const
+ResetPtr Issue::reset() const
 {
     return mPimpl->mReset;
 }
 
-void Error::setWhen(const WhenPtr &when)
+void Issue::setWhen(const WhenPtr &when)
 {
     mPimpl->mWhen = when;
-    mPimpl->mKind = Error::Kind::WHEN;
+    mPimpl->mKind = Issue::Kind::WHEN;
 }
 
-WhenPtr Error::when() const
+WhenPtr Issue::when() const
 {
     return mPimpl->mWhen;
 }
@@ -332,7 +332,7 @@ static const std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::MAP_VARIABLES_VARIABLE2, "18.1.2"},
     {SpecificationRule::MAP_VARIABLES_UNIQUE, "18.1.3"}};
 
-std::string Error::specificationHeading() const
+std::string Issue::specificationHeading() const
 {
     std::string heading = "X.Y.Z";
     auto search = ruleToHeading.find(rule());

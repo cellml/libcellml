@@ -1,5 +1,5 @@
 #
-# Tests the Error class bindings
+# Tests the Issue class bindings
 #
 import unittest
 
@@ -17,46 +17,46 @@ class LoggerTestCase(unittest.TestCase):
         del(y, z)
 
     def test_add_error(self):
-        from libcellml import Logger, Error
+        from libcellml import Logger, Issue
 
-        # void addError(const ErrorPtr error)
+        # void addError(const IssuePtr error)
         x = Logger()
-        x.addError(Error())
+        x.addError(Issue())
 
     def test_error_count(self):
-        from libcellml import Logger, Error
+        from libcellml import Logger, Issue
 
         # size_t errorCount()
         x = Logger()
         self.assertEqual(x.errorCount(), 0)
-        x.addError(Error())
+        x.addError(Issue())
         self.assertEqual(x.errorCount(), 1)
-        x.addError(Error())
+        x.addError(Issue())
         self.assertEqual(x.errorCount(), 2)
 
     def test_error(self):
-        from libcellml import Logger, Error
+        from libcellml import Logger, Issue
 
-        # ErrorPtr error(size_t index)
+        # IssuePtr error(size_t index)
         x = Logger()
         self.assertIsNone(x.error(0))
         self.assertIsNone(x.error(1))
         self.assertIsNone(x.error(-1))
-        e = Error()
-        e.setKind(Error.Kind.MODEL)
+        e = Issue()
+        e.setKind(Issue.Kind.MODEL)
         x.addError(e)
         self.assertIsNotNone(x.error(0))
         self.assertIsNone(x.error(1))
-        self.assertEqual(x.error(0).kind(), Error.Kind.MODEL)
+        self.assertEqual(x.error(0).kind(), Issue.Kind.MODEL)
 
     def test_clear_errors(self):
-        from libcellml import Logger, Error
+        from libcellml import Logger, Issue
 
         # void clearErrors()
         x = Logger()
         self.assertEqual(x.errorCount(), 0)
-        x.addError(Error())
-        x.addError(Error())
+        x.addError(Issue())
+        x.addIssue(Issue())
         self.assertEqual(x.errorCount(), 2)
         x.clearErrors()
         self.assertEqual(x.errorCount(), 0)

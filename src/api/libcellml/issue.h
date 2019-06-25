@@ -25,81 +25,81 @@ limitations under the License.
 namespace libcellml {
 
 /**
- * @brief The Error class
+ * @brief The Issue class
  *
  * Base class for errors used with logger derived classes.
  */
-class LIBCELLML_EXPORT Error
+class LIBCELLML_EXPORT Issue
 {
 public:
-    Error(); /**< Constructor */
-    virtual ~Error(); /**< Destructor */
-    Error(const Error &rhs); /**< Copy constructor */
-    Error(Error &&rhs) noexcept; /**< Move constructor */
-    Error &operator=(Error rhs); /**< Assignment operator */
+    Issue(); /**< Constructor */
+    virtual ~Issue(); /**< Destructor */
+    Issue(const Issue &rhs); /**< Copy constructor */
+    Issue(Issue &&rhs) noexcept; /**< Move constructor */
+    Issue &operator=(Issue rhs); /**< Assignment operator */
 
     /**
-     * @brief Constructs an Error for the model.
+     * @brief Constructs an Issue for the model.
      *
      * Convienence constructor for creating an error for the model.
      *
      * @param model The model the error references.
      */
-    explicit Error(const ModelPtr &model);
+    explicit Issue(const ModelPtr &model);
 
     /**
-     * @brief Constructs an Error for the when.
+     * @brief Constructs an Issue for the when.
      *
      * Convienence constructor for creating an error for the when.
      *
      * @param when The when the error references.
      */
-    explicit Error(const WhenPtr &when);
+    explicit Issue(const WhenPtr &when);
 
     /**
-     * @brief Constructs an Error for the component.
+     * @brief Constructs an Issue for the component.
      *
      * Convienence constructor for creating an error for the component.
      *
      * @param component The component the error references.
      */
-    explicit Error(const ComponentPtr &component);
+    explicit Issue(const ComponentPtr &component);
 
     /**
-     * @brief Constructs an Error for the import source.
+     * @brief Constructs an Issue for the import source.
      *
      * Convienence constructor for creating an error for the import source.
      *
      * @param importSource The import source the error references.
      */
-    explicit Error(const ImportSourcePtr &importSource);
+    explicit Issue(const ImportSourcePtr &importSource);
 
     /**
-     * @brief Constructs an Error for the units.
+     * @brief Constructs an Issue for the units.
      *
      * Convienence constructor for creating an error for the units.
      *
      * @param units The units the error references.
      */
-    explicit Error(const UnitsPtr &units);
+    explicit Issue(const UnitsPtr &units);
 
     /**
-     * @brief Constructs an Error for the variable.
+     * @brief Constructs an Issue for the variable.
      *
      * Convienence constructor for creating an error for the variable.
      *
      * @param variable The variable the error references.
      */
-    explicit Error(const VariablePtr &variable);
+    explicit Issue(const VariablePtr &variable);
 
     /**
-     * @brief Constructs an Error for the reset.
+     * @brief Constructs an Issue for the reset.
      *
      * Convienence constructor for creating an error for the reset.
      *
      * @param reset The reset the error references.
      */
-    explicit Error(const ResetPtr &reset);
+    explicit Issue(const ResetPtr &reset);
 
     /**
      * @brief The error Kind enum class.
@@ -158,9 +158,9 @@ public:
      * @brief Set the kind of this error.
      *
      * Set the @p kind of this error from the options available in
-     * @c Error::Kind.
+     * @c Issue::Kind.
      *
-     * @param kind The @c Error::Kind to set.
+     * @param kind The @c Issue::Kind to set.
      */
     void setKind(Kind kind);
 
@@ -170,17 +170,17 @@ public:
      * Get the @c kind of this error. If no kind has been set for
      * this error, will return Kind::UNDEFINED.
      *
-     * @return The @c Error::Kind set for this error.
+     * @return The @c Issue::Kind set for this error.
      */
     Kind kind() const;
 
     /**
      * @brief Check whether the kind of this error matches the argument kind.
      *
-     * Returns @c true if the @p kind matches the the @c Error::Kind for this
+     * Returns @c true if the @p kind matches the the @c Issue::Kind for this
      * error and @c false otherwise.
      *
-     * @return @c true if the @p kind matches the the @c Error::Kind for this
+     * @return @c true if the @p kind matches the the @c Issue::Kind for this
      * error and @c false otherwise.
      */
     bool isKind(Kind kind) const;
@@ -209,9 +209,9 @@ public:
      * @brief Set the level of this error.
      *
      * Set the @p level of this error from the options available in
-     * @c Error::Level.
+     * @c Issue::Level.
      *
-     * @param level The @c Error::Level to set.
+     * @param level The @c Issue::Level to set.
      */
     void setLevel(Level level);
 
@@ -221,17 +221,17 @@ public:
      * Get the @c level of this error. If no level has been set for
      * this error, will return Level::FATAL.
      *
-     * @return The @c Error::Level set for this error.
+     * @return The @c Issue::Level set for this error.
      */
     Level level() const;
 
     /**
      * @brief Check whether the level of this error matches the argument level.
      *
-     * Returns @c true if the @p level matches the the @c Error::level for this
+     * Returns @c true if the @p level matches the the @c Issue::level for this
      * error and @c false otherwise.
      *
-     * @return @c true if the @p level matches the the @c Error::level for this
+     * @return @c true if the @p level matches the the @c Issue::level for this
      * error and @c false otherwise.
      */
     bool isLevel(Level level) const;
@@ -382,10 +382,10 @@ public:
     WhenPtr when() const;
 
 private:
-    void swap(Error &rhs); /**< Swap method required for C++ 11 move semantics. */
+    void swap(Issue &rhs); /**< Swap method required for C++ 11 move semantics. */
 
-    struct ErrorImpl; /**< Forward declaration for pImpl idiom. */
-    ErrorImpl *mPimpl; /**< Private member to implementation pointer */
+    struct IssueImpl; /**< Forward declaration for pImpl idiom. */
+    IssueImpl *mPimpl; /**< Private member to implementation pointer */
 };
 
 } // namespace libcellml

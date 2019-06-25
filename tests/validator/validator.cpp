@@ -114,7 +114,7 @@ TEST(Validator, moveCopyValidatorWithUnnamedModel)
     libcellml::Validator vc(vm);
 
     // Check that the model error is in the copy.
-    EXPECT_EQ(libcellml::Error::Kind::MODEL, vc.error(1)->kind());
+    EXPECT_EQ(libcellml::Issue::Kind::MODEL, vc.error(1)->kind());
 }
 
 TEST(Validator, namedModelWithUnnamedComponent)
