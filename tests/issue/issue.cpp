@@ -13,12 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "test_utils.h"
 
 #include "gtest/gtest.h"
 
 #include <libcellml>
 
-TEST(Issue, createModelError)
+TEST(Issue, createModelIssue)
 {
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(m);
@@ -26,7 +27,7 @@ TEST(Issue, createModelError)
     EXPECT_EQ(libcellml::Issue::Kind::MODEL, e->kind());
 }
 
-TEST(Issue, createComponemntError)
+TEST(Issue, createComponentIssue)
 {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(c);
@@ -34,7 +35,7 @@ TEST(Issue, createComponemntError)
     EXPECT_EQ(libcellml::Issue::Kind::COMPONENT, e->kind());
 }
 
-TEST(Issue, createVariableError)
+TEST(Issue, createVariableIssue)
 {
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(v);
@@ -42,7 +43,7 @@ TEST(Issue, createVariableError)
     EXPECT_EQ(libcellml::Issue::Kind::VARIABLE, e->kind());
 }
 
-TEST(Issue, createUnitsError)
+TEST(Issue, createUnitsIssue)
 {
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(u);
@@ -50,7 +51,7 @@ TEST(Issue, createUnitsError)
     EXPECT_EQ(libcellml::Issue::Kind::UNITS, e->kind());
 }
 
-TEST(Issue, createImportSourceError)
+TEST(Issue, createImportSourceIssue)
 {
     libcellml::ImportSourcePtr i = std::make_shared<libcellml::ImportSource>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(i);
@@ -58,7 +59,7 @@ TEST(Issue, createImportSourceError)
     EXPECT_EQ(libcellml::Issue::Kind::IMPORT, e->kind());
 }
 
-TEST(Issue, createResetError)
+TEST(Issue, createResetIssue)
 {
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(r);
@@ -66,7 +67,7 @@ TEST(Issue, createResetError)
     EXPECT_EQ(libcellml::Issue::Kind::RESET, e->kind());
 }
 
-TEST(Issue, createWhenError)
+TEST(Issue, createWhenIssue)
 {
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(w);
@@ -409,4 +410,50 @@ TEST(Issue, specificationRule)
     ++count;
     testSpecificationRule(e);
     EXPECT_EQ(size_t(52), count);
+}
+
+TEST(Issue, collectNonFatalIssues)
+{
+    /*
+        The purpose of this test is to show how the non-fatal error/issue structure could be used. Or something. I don't really know how this bit works when there's nothing to test.
+    */
+
+    // Make a bunch of fatal and non-fatal mistakes
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+
+    m->setName("model");
+    c1->setName("component1");
+    c2->setName("component2");
+
+    v1->setName("variable1");
+    v1->setUnits("metre");
+
+    v2->setName("variable2");
+    u2->setName("kilometre");
+    u2->addUnit("metre", "kilo");
+    v2->setUnits(u2);
+
+    c1->addVariable(v1);
+    c2->addVariable(v2);
+
+    m->addComponent(c1);
+    m->addComponent(c2);
+    m->addUnits(u2);
+
+    // Variables are equivalent but with different order of magnitude
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    validator.validateModel(m);
+    printErrors(validator);
+    EXPECT_EQ(size_t(0), validator.errorCount());
+
+    // Want to generate a non-fatal warning for the mismatch in unit multiplier/prefix
+    // EXPECT_EQ(size_t(1), validator.warningCount());
 }

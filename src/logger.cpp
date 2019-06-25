@@ -31,7 +31,7 @@ namespace libcellml {
  */
 struct Logger::LoggerImpl
 {
-    std::vector<IssuePtr> mErrors;
+    std::vector<IssuePtr> mErrors; // TODO Change this ...
 };
 
 Logger::Logger()
