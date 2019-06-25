@@ -101,14 +101,19 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -Wno-global-constructors
       -Wno-missing-prototypes
       -Wno-padded
-      -Wno-reserved-id-macro
     )
 
-  if(NOT "${_TARGET}" STREQUAL "cellml")
-    list(APPEND _COMPILE_OPTIONS
-      --system-header-prefix=gtest/
-    )
-  endif()
+    if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)
+      list(APPEND _COMPILE_OPTIONS
+        -Wno-reserved-id-macro
+      )
+    endif()
+
+    if(NOT "${_TARGET}" STREQUAL "cellml")
+      list(APPEND _COMPILE_OPTIONS
+        --system-header-prefix=gtest/
+      )
+    endif()
 
     set_target_properties(${_TARGET} PROPERTIES
       COMPILE_OPTIONS "${_COMPILE_OPTIONS}"
