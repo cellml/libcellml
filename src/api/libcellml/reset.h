@@ -104,6 +104,22 @@ public:
     void setTestValue(const std::string &math);
 
     /**
+     * @brief Set the TestValueId string for this reset.
+     *
+     * Sets the TestValueId string for this reset. 
+     *
+     * @param id The @c std::string to set for this reset's test_value.
+     */
+    void setTestValueId(const std::string &id);
+
+    /**
+     * @brief Return the TestValueId string for this reset.
+     *
+     * Gets the TestValueId string for this reset. 
+     */
+    std::string testValueId() const;
+
+    /**
      * @brief Appends the argument to the resetValue string for this reset.
      *
      * Appends @p math to the existing resetValue string for this reset.
@@ -131,6 +147,22 @@ public:
      * @param math The @c std::string to append for this reset.
      */
     void setResetValue(const std::string &math);
+
+    /**
+     * @brief Set the ResetValueId string for this reset.
+     *
+     * Sets the ResetValueId string for this reset. 
+     *
+     * @param id The @c std::string to set for this reset's reset_value.
+     */
+    void setResetValueId(const std::string &id);
+
+    /**
+     * @brief Return the ResetValueId string for this reset.
+     *
+     * Gets the ResetValueId string for this reset. 
+     */
+    std::string resetValueId() const;
 
 private:
     void swap(Reset &rhs); /**< Swap method required for C++ 11 move semantics. */

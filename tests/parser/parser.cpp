@@ -1472,7 +1472,7 @@ TEST(Parser, parseIdsOnEverything)
         "    <variable name=\"variable1\" units=\"blob\" id=\"v1id\"/>\n"
         "    <variable name=\"variable2\" units=\"blob\" id=\"v2id\"/>\n"
         "    <reset variable=\"variable1\" test_variable=\"variable2\" order=\"1\" id=\"r1id\">\n"
-        "      <test_value>\n"
+        "      <test_value id=\"tv1id\">\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math1when1\">\n"
         "          <apply>\n"
         "            <eq/>\n"
@@ -1481,7 +1481,7 @@ TEST(Parser, parseIdsOnEverything)
         "          </apply>\n"
         "        </math>\n"
         "      </test_value>\n"
-        "      <reset_value>\n"
+        "      <reset_value id=\"rv1id\">\n"
         "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\" id=\"math2when1\">\n"
         "          <apply>\n"
         "            <eq/>\n"
@@ -1580,56 +1580,6 @@ TEST(Parser, parseResets)
 
 TEST(Parser, parseResetsWithErrors)
 {
-    /* const std::string input =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
-        "  <component name=\"component1\">\n"
-        "    <variable name=\"variable1\" id=\"vid\" units=\"dimensionless\"/>\n"
-        "  </component>\n"
-        "  <component name=\"component2\" id=\"c2id\">\n"
-        "    <variable name=\"variable2\" id=\"vid2\" units=\"dimensionless\"/>\n"
-        "    <variable name=\"variable4\" id=\"vid4\" units=\"dimensionless\"/>\n"
-        "    <reset order=\"33\" variable=\"variable3\" test_variable=\"variable1\">\n"
-        "      <test_value one_invalid_attribute=\"apples\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n"
-        "      </test_value>\n"
-        "      <test_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n"
-        "      </test_value>\n"
-        "      <reset_value another_invalid_attribute=\"bananas\">\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n"
-        "      </reset_value>\n"
-        "      <test_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n"
-        "      </test_value>\n"
-        "      <reset_value>\n"
-        "        <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "          some value in mathml\n"
-        "        </math>\n"
-        "      </reset_value>\n"
-        "    </reset>\n"
-        "    <reset variable=\"variable2\" test_variable=\"variable4\">\n"
-        "      lost text here\n"
-        "      <test_value>\n"
-        "        <some_invalid_tag/>\n"
-        "      </test_value>\n"
-        "      <reset_value>\n"
-        "        <some_other_invalid_tag/>\n"
-        "      </reset_value>\n"
-        "    </reset>\n"
-        "    <reset variable=\"variable2\" test_variable=\"variable4\" i_dont_belong_here=\"yep_really_i_dont\">\n"
-        "    </reset>\n"
-        "  </component>\n"
-        "</model>\n"; */
-
     const std::string input =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" id=\"mid\">\n"
@@ -1723,8 +1673,6 @@ TEST(Parser, parseResetsWithErrors)
     for (size_t i = 0; i < p.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), p.error(i)->description());
     }
-
-    std::cout << printer.printModel(model);
 }
 
 TEST(Parser, unitsWithCellMLRealVariations)

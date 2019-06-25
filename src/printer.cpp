@@ -349,8 +349,9 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
 std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
     std::string repr = indent + "<reset";
-
-    std::string id = reset->id();
+    std::string rid = reset->id();
+    std::string tvid = reset->testValueId();
+    std::string rvid = reset->resetValueId();
     std::string s;
     VariablePtr variable = reset->variable();
     VariablePtr testVariable = reset->testVariable();
@@ -366,14 +367,18 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
     if (reset->isOrderSet()) {
         repr += " order=\"" + convertIntToString(reset->order()) + "\"";
     }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
+    if (!rid.empty()) {
+        repr += " id=\"" + rid + "\"";
     }
 
     s = reset->testValue();
     if (!s.empty()) {
         repr += ">\n";
-        repr += indent + tabIndent + "<test_value>\n";
+        repr += indent + tabIndent + "<test_value";
+        if (!tvid.empty()) {
+            repr += " id=\"" + tvid + "\"";
+        }
+        repr += ">\n";
         repr += printMath(s, indent + tabIndent + tabIndent);
         repr += indent + tabIndent + "</test_value>\n";
         hasTestValue = true;
@@ -383,7 +388,12 @@ std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::s
         if (!hasTestValue) {
             repr += ">\n";
         }
-        repr += indent + tabIndent + "<reset_value>\n";
+        repr += indent + tabIndent + "<reset_value";
+        if (!rvid.empty()) {
+            repr += " id=\"" + rvid + "\"";
+        }
+        repr += ">\n";
+
         repr += printMath(s, indent + tabIndent + tabIndent);
         repr += indent + tabIndent + "</reset_value>\n";
         hasResetValue = true;
