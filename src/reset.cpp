@@ -33,7 +33,9 @@ struct Reset::ResetImpl
     VariablePtr mVariable; /**< The associated variable for the reset.*/
     VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
     std::string mTestValue = ""; /**< The mathml string for the test_value.*/
+    std::string mTestValueId = ""; /**< The id of the test_value block */
     std::string mResetValue = ""; /**< The mathml string for the reset_value.*/
+    std::string mResetValueId = ""; /**< The id of the reset_value block */
 };
 
 Reset::Reset()
@@ -55,6 +57,8 @@ Reset::Reset(const Reset &rhs)
     mPimpl->mTestVariable = rhs.mPimpl->mTestVariable;
     mPimpl->mTestValue = rhs.mPimpl->mTestValue;
     mPimpl->mResetValue = rhs.mPimpl->mResetValue;
+    mPimpl->mTestValueId = rhs.mPimpl->mTestValueId;
+    mPimpl->mResetValueId = rhs.mPimpl->mResetValueId;
 }
 
 Reset::Reset(Reset &&rhs) noexcept
@@ -106,6 +110,16 @@ std::string Reset::testValue() const
     return mPimpl->mTestValue;
 }
 
+void Reset::setTestValueId(const std::string &id)
+{
+    mPimpl->mTestValueId = id;
+}
+
+std::string Reset::testValueId() const
+{
+    return mPimpl->mTestValueId;
+}
+
 void Reset::setTestValue(const std::string &math)
 {
     mPimpl->mTestValue = math;
@@ -124,6 +138,16 @@ std::string Reset::resetValue() const
 void Reset::setResetValue(const std::string &math)
 {
     mPimpl->mResetValue = math;
+}
+
+void Reset::setResetValueId(const std::string &id)
+{
+    mPimpl->mResetValueId = id;
+}
+
+std::string Reset::resetValueId() const
+{
+    return mPimpl->mResetValueId;
 }
 
 } // namespace libcellml

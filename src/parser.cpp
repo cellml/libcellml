@@ -1192,16 +1192,20 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     XmlNodePtr childNode = node->firstChild();
     int testValueCount = 0;
     int resetValueCount = 0;
+
     while (childNode) {
         if (childNode->isCellmlElement("test_value")) {
-            // testing the attributes even though they're not read
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the test_value block of '" + childAttribute->name() + "'.");
-                err->setReset(reset);
-                err->setRule(SpecificationRule::RESET_TEST_VALUE);
-                mParser->addError(err);
+                if (childAttribute->isType("id")) {
+                    reset->setTestValueId(childAttribute->value());
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the test_value block of '" + childAttribute->name() + "'.");
+                    err->setReset(reset);
+                    err->setRule(SpecificationRule::RESET_TEST_VALUE);
+                    mParser->addError(err);
+                }
                 childAttribute = childAttribute->next();
             }
 
@@ -1232,14 +1236,17 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             }
 
         } else if (childNode->isCellmlElement("reset_value")) {
-            // testing the attributes even though they're not read
             XmlAttributePtr childAttribute = childNode->firstAttribute();
             while (childAttribute) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the reset_value block of '" + childAttribute->name() + "'.");
-                err->setReset(reset);
-                err->setRule(SpecificationRule::RESET_RESET_VALUE);
-                mParser->addError(err);
+                if (childAttribute->isType("id")) {
+                    reset->setResetValueId(childAttribute->value());
+                } else {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' has an unexpected attribute in the reset_value block of '" + childAttribute->name() + "'.");
+                    err->setReset(reset);
+                    err->setRule(SpecificationRule::RESET_RESET_VALUE);
+                    mParser->addError(err);
+                }
                 childAttribute = childAttribute->next();
             }
 
