@@ -148,10 +148,7 @@ TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
     model->addUnits(units);
     validator.validateModel(model);
 
-    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
-    for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, validator);
 }
 
 TEST(Validator, modelWithDuplicateComponentsAndUnits)
@@ -178,10 +175,7 @@ TEST(Validator, modelWithDuplicateComponentsAndUnits)
     u2->setName("keaton");
     validator.validateModel(model);
 
-    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
-    for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, validator);
 }
 
 TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
@@ -218,10 +212,7 @@ TEST(Validator, unnamedAndDuplicateNamedVariablesWithAndWithoutValidUnits)
     v4->setUnits("dollars");
     validator.validateModel(model);
 
-    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
-    for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, validator);
 }
 
 TEST(Validator, invalidVariableInitialValuesAndInterfaces)
@@ -246,10 +237,7 @@ TEST(Validator, invalidVariableInitialValuesAndInterfaces)
 
     validator.validateModel(model);
 
-    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
-    for (size_t i = 0; i < validator.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, validator);
 }
 
 TEST(Validator, importUnits)
@@ -302,12 +290,8 @@ TEST(Validator, importUnits)
     importedUnits4->setSourceUnits(imp4, "units_in_that_model");
     m->addUnits(importedUnits4);
     v.validateModel(m);
-    EXPECT_EQ(size_t(6), v.errorCount());
 
-    // Check for expected error messages
-    for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, importComponents)
@@ -400,12 +384,8 @@ TEST(Validator, importComponents)
     importedComponent9->setSourceComponent(imp9, "component_in_some_model");
     m->addComponent(importedComponent9);
     v.validateModel(m);
-    EXPECT_EQ(size_t(6), v.errorCount());
 
-    // Check for expected error messages
-    for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, validMath)
@@ -478,11 +458,8 @@ TEST(Validator, invalidMath)
     m->addComponent(c2);
 
     v.validateModel(m);
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, invalidMathMLElements)
@@ -532,6 +509,7 @@ TEST(Validator, invalidMathMLElements)
     m->addComponent(c);
 
     v.validateModel(m);
+
     EXPECT_EQ(size_t(6), v.errorCount());
 
     // Check for two expected error messages (see note above).
@@ -614,12 +592,8 @@ TEST(Validator, invalidMathMLVariables)
     m->addComponent(c);
 
     v.validateModel(m);
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    // Check for expected error messages.
-    for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
@@ -735,11 +709,8 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 
     libcellml::Validator v;
     v.validateModel(m);
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, validateInvalidConnections)
@@ -827,10 +798,7 @@ TEST(Validator, validateInvalidConnections)
 
     v.validateModel(m);
 
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < v.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, integerStrings)
@@ -905,17 +873,13 @@ TEST(Validator, integerStrings)
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(expectedParsingErrors.size(), p.errorCount());
-    for (size_t i = 0; i < expectedParsingErrors.size(); ++i) {
-        EXPECT_EQ(expectedParsingErrors.at(i), p.error(i)->description());
-    }
+
+    checkExpectedErrors(expectedParsingErrors, p);
 
     libcellml::Validator v;
     v.validateModel(m);
-    EXPECT_EQ(expectedValidationErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedValidationErrors.size(); ++i) {
-        EXPECT_EQ(expectedValidationErrors.at(i), v.error(i)->description());
-    }
+
+    checkExpectedErrors(expectedValidationErrors, v);
 }
 
 static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
@@ -988,10 +952,7 @@ TEST(Validator, resets)
     libcellml::Validator v;
     v.validateModel(m);
 
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, whens)
@@ -1052,10 +1013,7 @@ TEST(Validator, whens)
     libcellml::Validator v;
     v.validateModel(m);
 
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }
 
 TEST(Validator, validMathCnElements)
@@ -1112,10 +1070,7 @@ TEST(Validator, variableEquivalentToSelf)
     model->addComponent(component);
 
     validator.validateModel(model);
-    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, validator);
 }
 
 TEST(Validator, variableEquivalenceInSameComponent)
@@ -1142,10 +1097,7 @@ TEST(Validator, variableEquivalenceInSameComponent)
     model->addComponent(component);
 
     validator.validateModel(model);
-    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, validator);
 }
 
 TEST(Validator, validateNoCyclesSimple)
@@ -1520,8 +1472,5 @@ TEST(Validator, resetOrderUniqueness)
     libcellml::Validator v;
     v.validateModel(m);
 
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-    }
+    checkExpectedErrors(expectedErrors, v);
 }

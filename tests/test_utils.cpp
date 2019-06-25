@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "test_utils.h"
 
+#include "gtest/gtest.h"
+
 #include <iostream>
 
 void printErrors(const libcellml::Validator &v)
@@ -48,4 +50,12 @@ libcellml::ModelPtr createModelWithComponent(const std::string &name)
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
     model->addComponent(component);
     return model;
+}
+
+void checkExpectedErrors(const std::vector<std::string> &expectedErrors, const libcellml::Logger &logger)
+{
+    EXPECT_EQ(expectedErrors.size(), logger.errorCount());
+    for (size_t i = 0; i < logger.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), logger.error(i)->description());
+    }
 }
