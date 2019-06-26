@@ -414,7 +414,7 @@ TEST(Issue, specificationRule)
 
 TEST(Issue, collectHints)
 {
-    std::string expectedHint = "Mismatch in units of equivalent variables 'variable1' and 'variable2' by a factor of 10^3";
+    std::string expectedHint = "Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable2' with units of 'kilometre', by a factor of 10^3.";
 
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -449,17 +449,19 @@ TEST(Issue, collectHints)
     validator.validateModel(m);
     printErrors(validator);
     EXPECT_EQ(size_t(0), validator.errorCount()); // This way is what we currently have ...
-    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Level::ERROR)); // Would rather do it this way: generic issue retrival based on level argument TODO Will fail because this function doesn't exist ... 
+    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Level::ERROR)); // Would rather do it this way: generic issue retrival based on level argument TODO Will fail because this function doesn't exist ...
     EXPECT_EQ(size_t(0), validator.issueCount()); // Default to "ERROR" when level is not specified
 
     // Want to generate a hint for the mismatch in unit multiplier/prefix
     EXPECT_EQ(size_t(1), validator.hintCount()); // Variation on what we currently have
     EXPECT_EQ(size_t(1), validator.issueCount(Issue::Level::HINT)); // As above: generic issue retrival based on level argument
+    EXPECT_EQ(expectedHint, validator.hint(0)->description());
+    EXPECT_EQ(expectedHint, validator.issue(Issue::Level::HINT, 0)->description());
 }
 
 TEST(Issue, collectWarnings)
 {
-    std::string expectedHints = {
+    std::string expectedWarnings = {
         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
     };
@@ -499,6 +501,10 @@ TEST(Issue, collectWarnings)
     EXPECT_EQ(size_t(0), validator.issueCount()); // Default to "ERROR" when level is not specified
 
     // Want to generate a warning for the empty MathML block
-    EXPECT_EQ(size_t(1), validator.warningCount()); // Variation on what we currently have
-    EXPECT_EQ(size_t(1), validator.issueCount(Issue::Level::WARNING)); // As above: generic issue retrival based on level argument
+    EXPECT_EQ(size_t(2), validator.warningCount()); // Variation on what we currently have
+    EXPECT_EQ(size_t(2), validator.issueCount(Issue::Level::WARNING)); // As above: generic issue retrival based on level argument
+    EXPECT_EQ(expectedWarnings.at(0), validator.warning(0)->desicription());
+    EXPECT_EQ(expectedWarnings.at(1), validator.warning(1)->desicription());
+    EXPECT_EQ(expectedWarnings.at(0), validator.issue(Issue::Level::WARNING, 0)->desicription());
+    EXPECT_EQ(expectedWarnings.at(1), validator.issue(Issue::Level::WARNING, 1)->desicription());
 }
