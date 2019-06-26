@@ -90,10 +90,6 @@ TEST(Reset, printResetWithVariable)
 TEST(Reset, printResetWithoutTestValue)
 {
     std::string a;
-    static const std::string emptyMath =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "</math>\n";
-
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model\">\n"
@@ -209,9 +205,7 @@ TEST(Reset, addRemoveResetFromComponentMethods)
 {
     std::string a;
     const std::string in = "valid_name";
-    static const std::string emptyMath =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "</math>\n";
+
     const std::string e1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -363,10 +357,6 @@ TEST(Reset, hasResetFromComponentMethod)
 
 TEST(Reset, printResetWithVariableAndTestVariable)
 {
-    static const std::string emptyMath =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "</math>\n";
-
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -398,19 +388,6 @@ TEST(Reset, printResetWithVariableAndTestVariable)
 
 TEST(Reset, testValueSetClear)
 {
-    static const std::string emptyMath =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "</math>\n";
-
-    const std::string in1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component>\n"
-        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
-        "      <test_value/>\n" // empty test_value block will be removed on printing
-        "  </component>\n"
-        "</model>\n";
-
     const std::string test1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -512,19 +489,6 @@ TEST(Reset, testValueAppend)
 
 TEST(Reset, resetValueSetClear)
 {
-    static const std::string emptyMath =
-        "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n"
-        "</math>\n";
-
-    const std::string in1 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component>\n"
-        "    <reset variable=\"A\" reset_variable=\"B\" order=\"1\"/>\n"
-        "      <reset_value/>\n" // empty reset_value block will be removed on printing
-        "  </component>\n"
-        "</model>\n";
-
     const std::string test1 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -579,14 +543,6 @@ TEST(Reset, resetValueAppend)
 {
     static const std::string firstMaths = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">\n";
     static const std::string secondMaths = "</math>\n";
-
-    const std::string in =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
-        "  <component>\n"
-        "    <reset variable=\"A\" test_variable=\"B\" order=\"1\"/>\n"
-        "  </component>\n"
-        "</model>\n";
 
     const std::string test =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
