@@ -412,13 +412,9 @@ TEST(Issue, specificationRule)
     EXPECT_EQ(size_t(52), count);
 }
 
-TEST(Issue, collectNonFatalIssues)
+TEST(Issue, collectHints)
 {
-    /*
-        The purpose of this test is to show how the non-fatal error/issue structure could be used. Or something. I don't really know how this bit works when there's nothing to test.
-    */
-
-    // Make a bunch of fatal and non-fatal mistakes
+    std::string expectedHint = "Mismatch in units of equivalent variables 'variable1' and 'variable2' by a factor of 10^3";
 
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -452,8 +448,57 @@ TEST(Issue, collectNonFatalIssues)
 
     validator.validateModel(m);
     printErrors(validator);
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(size_t(0), validator.errorCount()); // This way is what we currently have ...
+    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Level::ERROR)); // Would rather do it this way: generic issue retrival based on level argument TODO Will fail because this function doesn't exist ... 
+    EXPECT_EQ(size_t(0), validator.issueCount()); // Default to "ERROR" when level is not specified
 
-    // Want to generate a non-fatal warning for the mismatch in unit multiplier/prefix
-    // EXPECT_EQ(size_t(1), validator.warningCount());
+    // Want to generate a hint for the mismatch in unit multiplier/prefix
+    EXPECT_EQ(size_t(1), validator.hintCount()); // Variation on what we currently have
+    EXPECT_EQ(size_t(1), validator.issueCount(Issue::Level::HINT)); // As above: generic issue retrival based on level argument
+}
+
+TEST(Issue, collectWarnings)
+{
+    std::string expectedHints = {
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
+    };
+
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    m->setName("model");
+    c->setName("component");
+
+    v1->setName("variable1");
+    v1->setUnits("dimensionless");
+    v2->setName("variable2");
+    v2->setUnits("dimensionless");
+
+    // TODO these will all fail to compile because they use the new format for resets
+    r->setVariable(v1);
+    r->setTestVariable(v2);
+    r->setOrder(1);
+    r->setTestValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
+    r->setResetValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
+
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addReset(r);
+
+    m->addComponent(c);
+
+    validator.validateModel(m);
+    printErrors(validator);
+    EXPECT_EQ(size_t(0), validator.errorCount()); // This way is what we currently have ...
+    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Level::ERROR)); // Would rather do it this way: generic issue retrival based on level argument
+    EXPECT_EQ(size_t(0), validator.issueCount()); // Default to "ERROR" when level is not specified
+
+    // Want to generate a warning for the empty MathML block
+    EXPECT_EQ(size_t(1), validator.warningCount()); // Variation on what we currently have
+    EXPECT_EQ(size_t(1), validator.issueCount(Issue::Level::WARNING)); // As above: generic issue retrival based on level argument
 }

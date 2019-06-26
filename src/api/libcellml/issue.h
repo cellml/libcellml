@@ -129,11 +129,9 @@ public:
      */
     enum class Level
     {
-        UNDEFINED,
-        FATAL,
+        ERROR,
         WARNING,
-        FUTURE_ERROR,
-        INFORMATION
+        HINT
     };
 
     /**

@@ -32,7 +32,7 @@ struct Issue::IssueImpl
     std::string mDescription; /**< The string description for why this entity error raised. */
     Issue::Kind mKind = Issue::Kind::UNDEFINED; /**< The Issue::Kind enum value for this error. */
     SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this error. */
-    Issue::Level mLevel = Issue::Level::FATAL; /**< The Issue::Level enum value for this error. */
+    Issue::Level mLevel = Issue::Level::ERROR; /**< The Issue::Level enum value for this error. */
     ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the error occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
