@@ -1242,8 +1242,6 @@ TEST(Validator, resetWhitespaceAsMaths)
 
 TEST(Validator, resetEmptyMathML)
 {
-    static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
-
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -1328,8 +1326,6 @@ TEST(Validator, resetNegativeOrder)
 
 TEST(Validator, resetVariableOutsideComponent)
 {
-    static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
-
     const std::vector<std::string> expectedErrors = {
         "Reset in component 'c1' with order '1', with variable 'v2', with test_variable 'v1', refers to a variable 'v2' in a different component 'c2'.",
         "Reset in component 'c2' with order '1', with variable 'v2', with test_variable 'v1', refers to a test_variable 'v1' in a different component 'c1'."};
