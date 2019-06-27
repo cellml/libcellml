@@ -59,6 +59,15 @@ std::string XmlAttribute::namespaceUri() const
     return std::string(reinterpret_cast<const char *>(mPimpl->mXmlAttributePtr->ns->href));
 }
 
+bool XmlAttribute::inNamespaceUri(const char *ns)
+{
+    bool in = false;
+    if (xmlStrcmp(reinterpret_cast<const xmlChar *>(namespaceUri().c_str()), reinterpret_cast<const xmlChar *>(ns)) == 0) {
+        in = true;
+    }
+    return in;
+}
+
 bool XmlAttribute::isType(const char *name, const char *ns)
 {
     bool found = false;

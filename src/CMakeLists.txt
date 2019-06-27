@@ -179,9 +179,19 @@ endif()
 
 add_subdirectory(bindings)
 
+function(append_target_property _TARGET _PROPERTY _VALUE)
+  get_target_property(_CURRENT_PROPERTY_VALUE ${_TARGET} ${_PROPERTY})
+  if(_CURRENT_PROPERTY_VALUE)
+    set(_APPENDED_PROPERTY "${_CURRENT_PROPERTY_VALUE} ${_VALUE}")
+  else()
+    set(_APPENDED_PROPERTY "${_VALUE}")
+  endif()
+  set_target_properties(${_TARGET} PROPERTIES ${_PROPERTY} "${_APPENDED_PROPERTY}")
+endfunction()
+
 if(LIBCELLML_COVERAGE)
-  set_target_properties(cellml PROPERTIES COMPILE_FLAGS "-fprofile-arcs -ftest-coverage"
-    LINK_FLAGS "-fprofile-arcs -ftest-coverage")
+  append_target_property(cellml COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
+  append_target_property(cellml LINK_FLAGS "-fprofile-arcs -ftest-coverage")
 
   # Share some paths with interested parties (tests)
   set(GCOV_ANALYSIS_PATH "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir" PARENT_SCOPE)
@@ -195,6 +205,11 @@ if(LIBCELLML_COVERAGE)
     list(APPEND GCOV_CLEAN_FILES "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/cellml.dir/${_tmp_file}.gcda")
   endforeach()
   set_directory_properties(${GCOV_ANALYSIS_PATH} PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${GCOV_CLEAN_FILES}")
+endif()
+
+if(LIBCELLML_LLVM_COVERAGE)
+  append_target_property(cellml COMPILE_FLAGS "-fprofile-instr-generate -fcoverage-mapping")
+  append_target_property(cellml LINK_FLAGS "-fprofile-instr-generate")
 endif()
 
 install(TARGETS cellml EXPORT libcellml-targets
