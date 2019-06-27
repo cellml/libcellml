@@ -168,11 +168,12 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     endif()
 
     if("${CMAKE_GENERATOR}" STREQUAL "Ninja")
-      file(RELATIVE_PATH _HEADER_FILTER_DIR ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR})
-      set(_HEADER_FILTER_DIR "${CMAKE_BINARY_DIR}/${_HEADER_FILTER_DIR}src/")
+      set(_HEADER_FILTER_DIR ..)
     else()
-      set(_HEADER_FILTER_DIR "${CMAKE_SOURCE_DIR}/src/")
+      set(_HEADER_FILTER_DIR ${CMAKE_SOURCE_DIR})
     endif()
+
+    set(_HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}/src/")
 
     string(REPLACE "." "\\\."
            _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
