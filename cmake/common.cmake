@@ -167,7 +167,13 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_CHECKS}")
     endif()
 
-    set(_HEADER_FILTER_DIR "${CMAKE_SOURCE_DIR}/src/")
+    if("${CMAKE_GENERATOR}" STREQUAL "Ninja")
+      file(RELATIVE_PATH _HEADER_FILTER_DIR ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR})
+      set(_HEADER_FILTER_DIR "${CMAKE_BINARY_DIR}/${_HEADER_FILTER_DIR}src/")
+    else()
+      set(_HEADER_FILTER_DIR "${CMAKE_SOURCE_DIR}/src/")
+    endif()
+
     string(REPLACE "." "\\\."
            _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
     string(REPLACE "/" "\\\/"
