@@ -1034,7 +1034,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     // makes sense
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        // Check whether the variable is already tracked and, if not, track it
+        // Track the variable if it isn't already being tracked
 
         bool componentVariableTracked = false;
         VariablePtr componentVariable = component->variable(i);
