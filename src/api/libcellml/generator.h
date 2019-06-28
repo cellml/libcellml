@@ -18,10 +18,15 @@ limitations under the License.
 
 #include "libcellml/logger.h"
 #include "libcellml/types.h"
+#include "libcellml/variable.h"
 
 #include <string>
 
 namespace libcellml {
+
+class LIBCELLML_EXPORT GeneratorVariable: public Variable
+{
+};
 
 class LIBCELLML_EXPORT Generator: public Logger
 {
@@ -49,6 +54,10 @@ public:
     size_t stateCount() const;
     size_t rateCount() const;
     size_t variableCount() const;
+
+    GeneratorVariablePtr variableOfIntegration() const;
+    GeneratorVariablePtr state(size_t index) const;
+    GeneratorVariablePtr variable(size_t index) const;
 
     std::string neededMathMethods() const;
     std::string initializeVariables() const;
