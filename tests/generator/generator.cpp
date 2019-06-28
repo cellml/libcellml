@@ -35,7 +35,6 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(size_t(0), generator.errorCount());
 
     EXPECT_EQ(size_t(0), generator.stateCount());
-    EXPECT_EQ(size_t(0), generator.rateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
