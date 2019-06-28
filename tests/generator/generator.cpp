@@ -37,6 +37,10 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
+    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.state(0));
+    EXPECT_EQ(nullptr, generator.variable(0));
+
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
