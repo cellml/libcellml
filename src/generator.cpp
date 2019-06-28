@@ -2165,6 +2165,30 @@ size_t Generator::variableCount() const
     return res;
 }
 
+GeneratorVariablePtr Generator::variableOfIntegration() const
+{
+    //TODO: to be done...
+    (void)index;
+
+    return {};
+}
+
+GeneratorVariablePtr Generator::state(size_t index) const
+{
+    //TODO: to be done...
+    (void)index;
+
+    return {};
+}
+
+GeneratorVariablePtr Generator::variable(size_t index) const
+{
+    //TODO: to be done...
+    (void)index;
+
+    return {};
+}
+
 std::string Generator::neededMathMethods() const
 {
     return mPimpl->neededMathMethods();
