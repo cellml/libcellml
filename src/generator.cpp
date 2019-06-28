@@ -2111,17 +2111,17 @@ void Generator::setWithNames(bool withNames)
     mPimpl->mWithNames = withNames;
 }
 
-Generator::Type Generator::type() const
+Generator::ModelType Generator::modelType() const
 {
     if (!mPimpl->hasValidModel()) {
-        return Generator::Type::UNKNOWN;
+        return Generator::ModelType::UNKNOWN;
     }
 
     if (mPimpl->mVariableOfIntegration != nullptr) {
-        return Generator::Type::ODE;
+        return Generator::ModelType::ODE;
     }
 
-    return Generator::Type::ALGEBRAIC;
+    return Generator::ModelType::ALGEBRAIC;
 }
 
 size_t Generator::stateCount() const
