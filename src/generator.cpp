@@ -2141,11 +2141,6 @@ size_t Generator::stateCount() const
     return res;
 }
 
-size_t Generator::rateCount() const
-{
-    return stateCount();
-}
-
 size_t Generator::variableCount() const
 {
     if (!mPimpl->hasValidModel()) {
