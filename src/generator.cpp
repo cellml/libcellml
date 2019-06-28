@@ -2145,8 +2145,6 @@ size_t Generator::variableCount() const
 GeneratorVariablePtr Generator::variableOfIntegration() const
 {
     //TODO: to be done...
-    (void)index;
-
     return {};
 }
 
