@@ -52,7 +52,6 @@ public:
     Type type() const;
 
     size_t stateCount() const;
-    size_t rateCount() const;
     size_t variableCount() const;
 
     GeneratorVariablePtr variableOfIntegration() const;
