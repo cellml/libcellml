@@ -1,4 +1,0 @@
-double &dv_dt = rates[0];
-double &a = variables[0];
-
-dv_dt = a;
