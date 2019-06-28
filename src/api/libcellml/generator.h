@@ -31,7 +31,7 @@ class LIBCELLML_EXPORT GeneratorVariable: public Variable
 class LIBCELLML_EXPORT Generator: public Logger
 {
 public:
-    enum class Type
+    enum class ModelType
     {
         UNKNOWN,
         ALGEBRAIC,
@@ -49,7 +49,7 @@ public:
     void setOptimize(bool optimize);
     void setWithNames(bool withNames);
 
-    Type type() const;
+    ModelType modelType() const;
 
     size_t stateCount() const;
     size_t variableCount() const;

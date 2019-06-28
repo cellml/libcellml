@@ -231,7 +231,7 @@ TEST(Generator, van_der_pol_model_1928)
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 
-    EXPECT_EQ(libcellml::Generator::Type::ODE, generator.type());
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
 
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
