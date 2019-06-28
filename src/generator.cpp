@@ -2086,9 +2086,11 @@ void Generator::processModel(const ModelPtr &model)
 
     mPimpl->processModel(model);
     //TODO: remove the below code once we are done testing things...
+#ifdef TRACES
     for (size_t i = 0; i < errorCount(); ++i) {
         std::cout << "Generator error #" << i + 1 << ": " << error(i)->description() << std::endl;
     }
+#endif
 }
 
 Generator::ModelType Generator::modelType() const
