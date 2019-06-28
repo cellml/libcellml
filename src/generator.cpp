@@ -437,9 +437,6 @@ struct Generator::GeneratorImpl
 
     bool mHasModel = false;
 
-    bool mOptimize = true;
-    bool mWithNames = true;
-
     VariablePtr mVariableOfIntegration;
 
     std::vector<GeneratorVariablePimplPtr> mVariables;
@@ -1276,13 +1273,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Optimise the model (e.g. X+0 ===> X), if requested and if there are no
-    // errors
-
-    if (mOptimize && (mGenerator->errorCount() == 0)) {
-        //TODO: to be done...
-    }
-
 //TODO: remove the below code once we are done testing things...
 #ifdef TRACES
     std::cout << "Number of variables: " << mVariables.size() << std::endl;
@@ -2099,16 +2089,6 @@ void Generator::processModel(const ModelPtr &model)
     for (size_t i = 0; i < errorCount(); ++i) {
         std::cout << "Generator error #" << i + 1 << ": " << error(i)->description() << std::endl;
     }
-}
-
-void Generator::setOptimize(bool optimize)
-{
-    mPimpl->mOptimize = optimize;
-}
-
-void Generator::setWithNames(bool withNames)
-{
-    mPimpl->mWithNames = withNames;
 }
 
 Generator::ModelType Generator::modelType() const
