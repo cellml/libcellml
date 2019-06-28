@@ -435,6 +435,8 @@ struct Generator::GeneratorImpl
 {
     Generator *mGenerator = nullptr;
 
+    bool mHasModel = false;
+
     bool mOptimize = true;
     bool mWithNames = true;
 
@@ -568,6 +570,8 @@ struct Generator::GeneratorImpl
 
     std::string mCommandSeparator = ";";
 
+    bool hasValidModel() const;
+
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
@@ -612,6 +616,11 @@ struct Generator::GeneratorImpl
     std::string generateCode(const GeneratorEquationAstPtr &ast,
                              const GeneratorEquationAstPtr &parentAst = nullptr) const;
 };
+
+bool Generator::GeneratorImpl::hasValidModel() const
+{
+    return mHasModel && (mGenerator->errorCount() != 0);
+}
 
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
 {
@@ -1190,6 +1199,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Reset a few things in case we were to process the model more than once
     // Note: one would normally process the model only once, so we shouldn't
     //       need to do this, but better be safe than sorry.
+
+    mHasModel = true;
 
     mVariableOfIntegration = nullptr;
 
@@ -2102,7 +2113,7 @@ void Generator::setWithNames(bool withNames)
 
 Generator::Type Generator::type() const
 {
-    if (errorCount() != 0) {
+    if (!mPimpl->hasValidModel()) {
         return Generator::Type::UNKNOWN;
     }
 
@@ -2115,7 +2126,7 @@ Generator::Type Generator::type() const
 
 size_t Generator::stateCount() const
 {
-    if (errorCount() != 0) {
+    if (!mPimpl->hasValidModel()) {
         return 0;
     }
 
@@ -2137,7 +2148,7 @@ size_t Generator::rateCount() const
 
 size_t Generator::variableCount() const
 {
-    if (errorCount() != 0) {
+    if (!mPimpl->hasValidModel()) {
         return 0;
     }
 
