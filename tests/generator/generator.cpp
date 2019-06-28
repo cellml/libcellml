@@ -48,24 +48,6 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
-/*TODO: reenable this test once we can correctly type a model's variables.
-TEST(Generator, coverage) {
-//TODO: code should be generated for the coverage CellML file with and without
-//      the Generator's private mHasXXX booleans set, so that we really cover
-//      everything indeed.
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
-
-    EXPECT_EQ(size_t(0), parser.errorCount());
-
-    libcellml::Generator generator;
-
-    generator.processModel(model);
-
-    EXPECT_EQ(size_t(0), generator.errorCount());
-}
-*/
-
 TEST(Generator, initialized_variable_of_integration)
 {
     libcellml::Parser parser;
@@ -248,6 +230,24 @@ TEST(Generator, test) {
 libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/hodgkin_huxley_squid_axon_model_1952.cellml"));
 //libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/noble_model_1962.cellml"));
 //libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/zhang_SAN_model_2000_all.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+}
+*/
+
+/*TODO: reenable this test once we can correctly type a model's variables.
+TEST(Generator, coverage) {
+//TODO: code should be generated for the coverage CellML file with and without
+//      the Generator's private mHasXXX booleans set, so that we really cover
+//      everything indeed.
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
