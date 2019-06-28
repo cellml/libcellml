@@ -1,5 +1,0 @@
-double &v = states[0];
-double &a = variables[0];
-
-v = 1.0;
-a = 1.0;
