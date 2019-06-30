@@ -49,6 +49,7 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorvariable.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
@@ -76,6 +77,7 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/error.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorvariable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
