@@ -17,16 +17,10 @@ limitations under the License.
 #pragma once
 
 #include "libcellml/logger.h"
-#include "libcellml/types.h"
-#include "libcellml/variable.h"
 
 #include <string>
 
 namespace libcellml {
-
-class LIBCELLML_EXPORT GeneratorVariable: public Variable
-{
-};
 
 class LIBCELLML_EXPORT Generator: public Logger
 {
