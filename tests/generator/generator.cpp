@@ -158,7 +158,8 @@ TEST(Generator, non_initialized_state)
     }
 }
 
-TEST(Generator, algebraic_eqn_constant_on_rhs) {
+TEST(Generator, algebraic_eqn_constant_on_rhs)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_constant_on_rhs/model.cellml"));
 

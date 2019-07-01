@@ -143,7 +143,7 @@ GeneratorProfile::~GeneratorProfile()
 GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     : mPimpl(new GeneratorProfileImpl())
 {
-    (void) rhs;
+    (void)rhs;
 }
 
 GeneratorProfile::GeneratorProfile(GeneratorProfile &&rhs) noexcept
