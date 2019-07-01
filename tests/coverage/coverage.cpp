@@ -41,7 +41,7 @@ TEST(Coverage, connectionComment)
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(size_t(4), p.errorCount());
+    EXPECT_EQ(size_t(4), p.issueCount());
 }
 
 TEST(Coverage, import)
@@ -79,7 +79,7 @@ TEST(Coverage, importWithNonHrefXlink)
     // Parse
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.issueCount());
 }
 
 TEST(Coverage, printer)
@@ -92,7 +92,7 @@ TEST(Coverage, printer)
     // Copy constructor
     libcellml::Printer pc(pm);
 
-    size_t error_count = pc.errorCount();
+    size_t error_count = pc.issueCount();
     EXPECT_EQ(size_t(0), error_count);
 }
 

@@ -32,7 +32,7 @@ struct Issue::IssueImpl
     std::string mDescription; /**< The string description for why this entity error raised. */
     Issue::Cause mCause = Issue::Cause::UNDEFINED; /**< The Issue::Cause enum value for this error. */
     SpecificationRule mRule = SpecificationRule::UNDEFINED; /**< The SpecificationRule enum value for this error. */
-    Issue::Type mLevel = Issue::Type::ERROR; /**< The Issue::Type enum value for this error. */
+    Issue::Type mType = Issue::Type::ERROR; /**< The Issue::Type enum value for this error. */
     ComponentPtr mComponent; /**< Pointer to the component that the error occurred in. */
     ImportSourcePtr mImportSource; /**< Pointer to the import source that the error occurred in. */
     ModelPtr mModel; /**< Pointer to the model that the error occurred in. */
@@ -65,7 +65,7 @@ Issue::Issue(const Issue &rhs)
     mPimpl->mVariable = rhs.mPimpl->mVariable;
     mPimpl->mReset = rhs.mPimpl->mReset;
     mPimpl->mWhen = rhs.mPimpl->mWhen;
-    mPimpl->mLevel = rhs.mPimpl->mLevel;
+    mPimpl->mType = rhs.mPimpl->mType;
 }
 
 Issue::Issue(Issue &&rhs) noexcept
@@ -173,20 +173,20 @@ SpecificationRule Issue::rule() const
     return mPimpl->mRule;
 }
 
-void Issue::setLevel(Type level)
+void Issue::setType(Type type)
 {
-    mPimpl->mLevel = level;
+    mPimpl->mType = type;
 }
 
-Issue::Type Issue::level() const
+Issue::Type Issue::type() const
 {
-    return mPimpl->mLevel;
+    return mPimpl->mType;
 }
 
-bool Issue::isLevel(Type level) const
+bool Issue::isType(Type type) const
 {
     bool response = false;
-    if (mPimpl->mLevel == level) {
+    if (mPimpl->mType == type) {
         response = true;
     }
     return response;

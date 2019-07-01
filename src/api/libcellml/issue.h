@@ -125,7 +125,7 @@ public:
     /**
      * @brief The error Type enum class
      * 
-     * Enum to describe the level of the error
+     * Enum to describe the type of the error
      */
     enum class Type
     {
@@ -204,35 +204,35 @@ public:
     SpecificationRule rule() const;
 
     /**
-     * @brief Set the level of this error.
+     * @brief Set the type of this error.
      *
-     * Set the @p level of this error from the options available in
+     * Set the @p type of this error from the options available in
      * @c Issue::Type.
      *
-     * @param level The @c Issue::Type to set.
+     * @param type The @c Issue::Type to set.
      */
-    void setLevel(Type level);
+    void setType(Type type);
 
     /**
-     * @brief Get the level of this error.
+     * @brief Get the type of this error.
      *
-     * Get the @c level of this error. If no level has been set for
+     * Get the @c type of this error. If no type has been set for
      * this error, will return Type::FATAL.
      *
      * @return The @c Issue::Type set for this error.
      */
-    Type level() const;
+    Type type() const;
 
     /**
-     * @brief Check whether the level of this error matches the argument level.
+     * @brief Check whether the type of this error matches the argument type.
      *
-     * Returns @c true if the @p level matches the the @c Issue::level for this
+     * Returns @c true if the @p type matches the the @c Issue::type for this
      * error and @c false otherwise.
      *
-     * @return @c true if the @p level matches the the @c Issue::level for this
+     * @return @c true if the @p type matches the the @c Issue::type for this
      * error and @c false otherwise.
      */
-    bool isLevel(Type level) const;
+    bool isType(Type type) const;
 
     /**
      * @brief Get the @c std::string heading associated with the @c enum SpecificationRule for this error.

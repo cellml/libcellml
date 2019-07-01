@@ -19,20 +19,20 @@ class LoggerTestCase(unittest.TestCase):
     def test_add_error(self):
         from libcellml import Logger, Issue
 
-        # void addError(const IssuePtr error)
+        # void addIssue(const IssuePtr error)
         x = Logger()
-        x.addError(Issue())
+        x.addIssue(Issue())
 
     def test_error_count(self):
         from libcellml import Logger, Issue
 
-        # size_t errorCount()
+        # size_t issueCount()
         x = Logger()
-        self.assertEqual(x.errorCount(), 0)
-        x.addError(Issue())
-        self.assertEqual(x.errorCount(), 1)
-        x.addError(Issue())
-        self.assertEqual(x.errorCount(), 2)
+        self.assertEqual(x.issueCount(), 0)
+        x.addIssue(Issue())
+        self.assertEqual(x.issueCount(), 1)
+        x.addIssue(Issue())
+        self.assertEqual(x.issueCount(), 2)
 
     def test_error(self):
         from libcellml import Logger, Issue
@@ -44,7 +44,7 @@ class LoggerTestCase(unittest.TestCase):
         self.assertIsNone(x.error(-1))
         e = Issue()
         e.setCause(Issue.Cause.MODEL)
-        x.addError(e)
+        x.addIssue(e)
         self.assertIsNotNone(x.error(0))
         self.assertIsNone(x.error(1))
         self.assertEqual(x.error(0).cause(), Issue.Cause.MODEL)
@@ -52,14 +52,14 @@ class LoggerTestCase(unittest.TestCase):
     def test_clear_errors(self):
         from libcellml import Logger, Issue
 
-        # void clearErrors()
+        # void clearIssues()
         x = Logger()
-        self.assertEqual(x.errorCount(), 0)
-        x.addError(Issue())
-        x.addError(Issue())
-        self.assertEqual(x.errorCount(), 2)
-        x.clearErrors()
-        self.assertEqual(x.errorCount(), 0)
+        self.assertEqual(x.issueCount(), 0)
+        x.addIssue(Issue())
+        x.addIssue(Issue())
+        self.assertEqual(x.issueCount(), 2)
+        x.clearIssues()
+        self.assertEqual(x.issueCount(), 0)
 
 
 if __name__ == '__main__':

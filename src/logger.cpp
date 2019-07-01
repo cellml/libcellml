@@ -31,7 +31,8 @@ namespace libcellml {
  */
 struct Logger::LoggerImpl
 {
-    std::vector<IssuePtr> mErrors; // TODO Change this ...
+    std::vector<IssuePtr> mIssues;
+    std::vector<std::vector<size_t>> mTypeIndex;
 };
 
 Logger::Logger()
@@ -47,7 +48,8 @@ Logger::~Logger()
 Logger::Logger(const Logger &rhs)
     : mPimpl(new LoggerImpl())
 {
-    mPimpl->mErrors = rhs.mPimpl->mErrors;
+    mPimpl->mIssues = rhs.mPimpl->mIssues;
+    mPimpl->mTypeIndex = rhs.mPimpl->mTypeIndex;
 }
 
 Logger::Logger(Logger &&rhs) noexcept
@@ -67,26 +69,110 @@ void Logger::swap(Logger &rhs)
     std::swap(this->mPimpl, rhs.mPimpl);
 }
 
-void Logger::clearErrors()
+void Logger::clearIssues()
 {
-    mPimpl->mErrors.clear();
+    // TODO What's the rationale of using .clear() instead of swapping with empty here?
+    // mPimpl->mIssues.clear();
+    // mPimpl->mTypeIndex.at(0).clear();
+    // mPimpl->mTypeIndex.at(1).clear();
+    // mPimpl->mTypeIndex.at(2).clear();
 }
 
-void Logger::addError(const IssuePtr &error)
+void Logger::addIssue(const IssuePtr &issue)
 {
-    mPimpl->mErrors.push_back(error);
+    mPimpl->mIssues.push_back(issue);
+
+    auto typeIndex = static_cast<size_t>(issue->type());
+    mPimpl->mTypeIndex.at(typeIndex).push_back(mPimpl->mIssues.size() - size_t(1));
 }
 
-size_t Logger::errorCount() const
+size_t Logger::issueCount() const
 {
-    return mPimpl->mErrors.size();
+    return mPimpl->mIssues.size();
+}
+
+size_t Logger::issueCount(Issue::Type type) const
+{
+    return mPimpl->mTypeIndex.at(static_cast<size_t>(type)).size();
+}
+
+size_t Logger::issueCount(std::vector<Issue::Type> &types) const
+{
+    size_t num = 0;
+    for (auto t : types) {
+        num += mPimpl->mTypeIndex.at(static_cast<size_t>(t)).size();
+    }
+    return num;
 }
 
 IssuePtr Logger::error(size_t index) const
 {
+    // Get issues of the Issue::Type::ERROR type at the given index
     IssuePtr err = nullptr;
-    if (index < mPimpl->mErrors.size()) {
-        err = mPimpl->mErrors.at(index);
+    if (index < mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::ERROR)).size()) {
+        size_t i = mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::ERROR)).at(index);
+        err = mPimpl->mIssues.at(i);
+    }
+    return err;
+}
+
+IssuePtr Logger::warning(size_t index) const
+{
+    // Get issues of the Issue::Type::WARNING type at the given index
+    IssuePtr err = nullptr;
+    if (index < mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::WARNING)).size()) {
+        size_t i = mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::WARNING)).at(index);
+        err = mPimpl->mIssues.at(i);
+    }
+    return err;
+}
+
+IssuePtr Logger::hint(size_t index) const
+{
+    // Get issues of the Issue::Type::HINT type at the given index
+    IssuePtr err = nullptr;
+    if (index < mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::HINT)).size()) {
+        size_t i = mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::HINT)).at(index);
+        err = mPimpl->mIssues.at(i);
+    }
+    return err;
+}
+
+IssuePtr Logger::issue(size_t index) const
+{
+    IssuePtr err = nullptr;
+    if (index < mPimpl->mIssues.size()) {
+        err = mPimpl->mIssues.at(index);
+    }
+    return err;
+}
+
+IssuePtr Logger::issue(Issue::Type type, size_t index) const
+{
+    IssuePtr err = nullptr;
+    if (index < mPimpl->mTypeIndex.at(static_cast<size_t>(type)).size()) {
+        size_t i = mPimpl->mTypeIndex.at(static_cast<size_t>(type)).at(index);
+        err = mPimpl->mIssues.at(i);
+    }
+    return err;
+}
+
+IssuePtr Logger::issue(std::vector<Issue::Type> &types, size_t index) const
+{
+    IssuePtr err = nullptr;
+
+    if (index < issueCount(types)) {
+        //     // Get vector of issues of type in types
+        //     std::vector<size_t> issues;
+        //     issues.reserve(issueCount(types));
+
+        //     for (auto type : types) {
+        //         auto t = static_cast<size_t>(type);
+        //         std::copy(mPimpl->mTypeIndex.at(t).begin(), mPimpl->mTypeIndex.at(t).end(), issues.rbegin());
+        //     }
+        //     std::sort(issues.begin(), issues.end());
+        // err = mPimpl->mIssues.at(issues.at(index));
+        err = nullptr;
     }
     return err;
 }

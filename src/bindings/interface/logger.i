@@ -7,16 +7,16 @@
 %feature("docstring") libcellml::Logger
 "Base class for all serialisable libCellML classes.";
 
-%feature("docstring") libcellml::Logger::addError
+%feature("docstring") libcellml::Logger::addIssue
 "Adds an error to this logger.";
 
-%feature("docstring") libcellml::Logger::clearErrors
+%feature("docstring") libcellml::Logger::clearIssues
 "Clears all errors from this logger.";
 
 %feature("docstring") libcellml::Logger::error
 "Returns the error at the specified `index`.";
 
-%feature("docstring") libcellml::Logger::errorCount
+%feature("docstring") libcellml::Logger::issueCount
 "Returns the number of errors currently stored in the logger.";
 
 #if defined(SWIGPYTHON)

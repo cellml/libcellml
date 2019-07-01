@@ -47,8 +47,8 @@ TEST(Parser, invalidXMLElements)
     libcellml::Parser p;
     p.parseModel(input);
 
-    EXPECT_EQ(expectedErrors.size() - 1, p.errorCount());
-    for (size_t i = 0; i < p.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size() - 1, p.issueCount());
+    for (size_t i = 0; i < p.issueCount(); ++i) {
         if (i == 0) {
             EXPECT_TRUE((p.error(i)->description() != expectedErrors.at(0))
                         || (p.error(i)->description() != expectedErrors.at(1)));
@@ -126,8 +126,8 @@ TEST(Parser, nonXmlString)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(expectedErrors.size(), p.errorCount());
-    for (size_t i = 0; i < p.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), p.issueCount());
+    for (size_t i = 0; i < p.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), p.error(i)->description());
     }
 }
@@ -142,7 +142,7 @@ TEST(Parser, invalidRootNode)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -155,7 +155,7 @@ TEST(Parser, noModelNamespace)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -168,7 +168,7 @@ TEST(Parser, invalidModelNamespace)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -181,7 +181,7 @@ TEST(Parser, invalidModelAttribute)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -196,7 +196,7 @@ TEST(Parser, invalidModelElement)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -217,12 +217,12 @@ TEST(Parser, modelWithInvalidElement)
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
 
-    p.clearErrors();
+    p.clearIssues();
     p.parseModel(input2);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError2, p.error(0)->description());
 }
 
@@ -236,7 +236,7 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetError)
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(input);
 
-    EXPECT_EQ(size_t(1), parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.issueCount());
     EXPECT_EQ(expectedError, parser.error(0)->description());
 
     // Get ModelError and check.
@@ -300,7 +300,7 @@ TEST(Parser, unitsAttributeError)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -325,12 +325,12 @@ TEST(Parser, unitsElementErrors)
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
 
-    p.clearErrors();
+    p.clearIssues();
     p.parseModel(input2);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError2, p.error(0)->description());
 }
 
@@ -348,7 +348,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    EXPECT_EQ(size_t(1), parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.issueCount());
     EXPECT_EQ(expectedError1, parser.error(0)->description());
 
     libcellml::UnitsPtr unitsExpected = model->units("unit_name");
@@ -376,7 +376,7 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError)
     libcellml::ModelPtr model = parser.parseModel(input);
     libcellml::ComponentPtr component = model->component(cName);
 
-    EXPECT_EQ(size_t(1), parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.issueCount());
     EXPECT_EQ(expectedError, parser.error(0)->description());
 
     // Get component from error and check.
@@ -414,17 +414,17 @@ TEST(Parser, componentAttributeErrors)
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
 
-    p.clearErrors();
+    p.clearIssues();
     p.parseModel(input2);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError2, p.error(0)->description());
 
-    p.clearErrors();
+    p.clearIssues();
     p.parseModel(input3);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError3, p.error(0)->description());
 }
 
@@ -449,12 +449,12 @@ TEST(Parser, componentElementErrors)
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
 
-    p.clearErrors();
+    p.clearIssues();
     p.parseModel(input2);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError2, p.error(0)->description());
 }
 
@@ -606,8 +606,8 @@ TEST(Parser, modelWithInvalidUnits)
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(in);
 
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), parser.issueCount());
+    for (size_t i = 0; i < parser.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
     }
 
@@ -628,7 +628,7 @@ TEST(Parser, emptyEncapsulation)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError, p.error(0)->description());
 }
 
@@ -646,7 +646,7 @@ TEST(Parser, encapsulationWithNoComponentAttribute)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(2), p.errorCount());
+    EXPECT_EQ(size_t(2), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
 }
@@ -665,7 +665,7 @@ TEST(Parser, encapsulationWithNoComponentRef)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(2), p.errorCount());
+    EXPECT_EQ(size_t(2), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
 }
@@ -686,7 +686,7 @@ TEST(Parser, encapsulationWithNoComponent)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(2), p.errorCount());
+    EXPECT_EQ(size_t(2), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
 }
@@ -707,7 +707,7 @@ TEST(Parser, encapsulationWithMissingComponent)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -725,7 +725,7 @@ TEST(Parser, encapsulationWithNoComponentChild)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError, p.error(0)->description());
 }
 
@@ -745,7 +745,7 @@ TEST(Parser, encapsulationNoChildComponentRef)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError, p.error(0)->description());
 }
 
@@ -768,7 +768,7 @@ TEST(Parser, encapsulationWithNoGrandchildComponentRef)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError, p.error(0)->description());
 }
 
@@ -809,8 +809,8 @@ TEST(Parser, invalidEncapsulations)
     libcellml::Parser parser;
     parser.parseModel(e);
 
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), parser.issueCount());
+    for (size_t i = 0; i < parser.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
     }
 }
@@ -832,8 +832,8 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError)
 
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(in);
-    EXPECT_EQ(expectedErrors.size(), p.errorCount());
-    for (size_t i = 0; i < p.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), p.issueCount());
+    for (size_t i = 0; i < p.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), p.error(i)->description());
     }
 
@@ -871,12 +871,12 @@ TEST(Parser, variableAttributeAndChildErrors)
 
     libcellml::Parser p;
     p.parseModel(input1);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
 
-    p.clearErrors();
+    p.clearIssues();
     p.parseModel(input2);
-    EXPECT_EQ(size_t(2), p.errorCount());
+    EXPECT_EQ(size_t(2), p.issueCount());
     EXPECT_EQ(expectError2, p.error(0)->description());
     EXPECT_EQ(expectError3, p.error(1)->description());
 }
@@ -894,7 +894,7 @@ TEST(Parser, emptyConnections)
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(3), p.errorCount());
+    EXPECT_EQ(size_t(3), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
     EXPECT_EQ(expectedError3, p.error(2)->description());
@@ -919,7 +919,7 @@ TEST(Parser, connectionErrorNoComponent2)
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(size_t(4), p.errorCount());
+    EXPECT_EQ(size_t(4), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
     EXPECT_EQ(expectedError3, p.error(2)->description());
@@ -943,7 +943,7 @@ TEST(Parser, connectionErrorNoComponent2InModel)
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(size_t(2), p.errorCount());
+    EXPECT_EQ(size_t(2), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
 }
@@ -966,7 +966,7 @@ TEST(Parser, connectionErrorNoComponent1)
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(size_t(3), p.errorCount());
+    EXPECT_EQ(size_t(3), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
     EXPECT_EQ(expectedError3, p.error(2)->description());
@@ -998,8 +998,8 @@ TEST(Parser, connectionErrorNoMapComponents)
     libcellml::Parser parser;
     parser.parseModel(in);
 
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), parser.issueCount());
+    for (size_t i = 0; i < parser.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
     }
 }
@@ -1021,7 +1021,7 @@ TEST(Parser, connectionErrorNoMapVariables)
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(size_t(3), p.errorCount());
+    EXPECT_EQ(size_t(3), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
     EXPECT_EQ(expectedError3, p.error(2)->description());
@@ -1046,7 +1046,7 @@ TEST(Parser, importedComponent2Connection)
     // Parse
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.issueCount());
 }
 
 TEST(Parser, validConnectionMapVariablesFirst)
@@ -1067,7 +1067,7 @@ TEST(Parser, validConnectionMapVariablesFirst)
 
     libcellml::Parser parser;
     parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.issueCount());
 }
 
 TEST(Parser, component2ConnectionVariableMissing)
@@ -1090,7 +1090,7 @@ TEST(Parser, component2ConnectionVariableMissing)
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError, p.error(0)->description());
 }
 
@@ -1125,7 +1125,7 @@ TEST(Parser, component2InConnectionMissing)
     // Parse
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(in);
-    EXPECT_EQ(size_t(2), p.errorCount());
+    EXPECT_EQ(size_t(2), p.issueCount());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -1154,7 +1154,7 @@ TEST(Parser, connectionVariable2Missing)
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -1178,7 +1178,7 @@ TEST(Parser, connectionVariable1Missing)
     // Parse
     libcellml::Parser p;
     p.parseModel(e);
-    EXPECT_EQ(size_t(1), p.errorCount());
+    EXPECT_EQ(size_t(1), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
 }
 
@@ -1202,7 +1202,7 @@ TEST(Parser, connectionErrorNoMapVariablesType)
 
     libcellml::Parser p;
     p.parseModel(in);
-    EXPECT_EQ(size_t(2), p.errorCount());
+    EXPECT_EQ(size_t(2), p.issueCount());
     EXPECT_EQ(expectedError1, p.error(0)->description());
     EXPECT_EQ(expectedError2, p.error(1)->description());
 }
@@ -1237,7 +1237,7 @@ TEST(Parser, invalidImportsAndGetError)
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
-    EXPECT_EQ(size_t(4), p.errorCount());
+    EXPECT_EQ(size_t(4), p.issueCount());
     EXPECT_EQ(expectError1, p.error(0)->description());
     EXPECT_EQ(expectError2, p.error(1)->description());
     EXPECT_EQ(expectError3, p.error(2)->description());
@@ -1291,8 +1291,8 @@ TEST(Parser, invalidModelWithAllCausesOfErrors)
     // Parse and check for CellML errors.
     libcellml::Parser parser;
     parser.parseModel(input);
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), parser.issueCount());
+    for (size_t i = 0; i < parser.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
         switch (parser.error(i)->cause()) {
         case libcellml::Issue::Cause::COMPONENT:
@@ -1329,8 +1329,8 @@ TEST(Parser, invalidModelWithAllCausesOfErrors)
     libcellml::Parser parser2;
     // Add an undefined error
     libcellml::IssuePtr undefinedError = std::make_shared<libcellml::Issue>();
-    parser2.addError(undefinedError);
-    EXPECT_EQ(size_t(1), parser2.errorCount());
+    parser2.addIssue(undefinedError);
+    EXPECT_EQ(size_t(1), parser2.issueCount());
     if (parser2.error(0)->isCause(libcellml::Issue::Cause::UNDEFINED)) {
         foundCause.at(7) = true;
     }
@@ -1342,8 +1342,8 @@ TEST(Parser, invalidModelWithAllCausesOfErrors)
         "Could not get a valid XML root node from the provided input."};
     libcellml::Parser parser3;
     parser3.parseModel(input3);
-    EXPECT_EQ(expectedErrors3.size(), parser3.errorCount());
-    for (size_t i = 0; i < parser3.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors3.size(), parser3.issueCount());
+    for (size_t i = 0; i < parser3.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors3.at(i), parser3.error(i)->description());
         if (parser3.error(i)->isCause(libcellml::Issue::Cause::XML)) {
             foundCause.at(8) = true;
@@ -1415,8 +1415,8 @@ TEST(Parser, invalidModelWithTextInAllElements)
     // Parse and check for CellML errors.
     libcellml::Parser parser;
     parser.parseModel(input);
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), parser.issueCount());
+    for (size_t i = 0; i < parser.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
     }
 }
@@ -1442,7 +1442,7 @@ TEST(Parser, parseIds)
     libcellml::Parser p;
     libcellml::ModelPtr model = p.parseModel(input);
 
-    EXPECT_EQ(size_t(0), p.errorCount());
+    EXPECT_EQ(size_t(0), p.issueCount());
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
     EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
@@ -1507,7 +1507,7 @@ TEST(Parser, parseIdsOnEverything)
     libcellml::ModelPtr model = parser.parseModel(input);
 
     printErrors(parser);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.issueCount());
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
     EXPECT_EQ("i1id", model->component("component1")->importSource()->id());
@@ -1662,8 +1662,8 @@ TEST(Parser, parseResetsWithNumerousErrors)
 
     libcellml::Parser parser;
     parser.parseModel(input);
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
+    EXPECT_EQ(expectedErrors.size(), parser.issueCount());
+    for (size_t i = 0; i < parser.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
     }
 }
@@ -1698,9 +1698,9 @@ TEST(Parser, parseResetsCheckResetObjectCheckWhenObject)
     libcellml::ResetPtr resetExpected = model->component(0)->reset(0);
     libcellml::WhenPtr whenExpected = resetExpected->when(0);
 
-    EXPECT_EQ(size_t(4), parser.errorCount());
+    EXPECT_EQ(size_t(4), parser.issueCount());
 
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
+    for (size_t i = 0; i < parser.issueCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
     }
 
@@ -1783,5 +1783,5 @@ TEST(Parser, xmlComments)
     parser.parseModel(input);
     printErrors(parser);
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.issueCount());
 }

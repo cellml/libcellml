@@ -605,5 +605,5 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     validator.validateModel(m);
 
-    EXPECT_EQ(size_t(0), validator.errorCount());
+    EXPECT_EQ(size_t(0), validator.issueCount());
 }

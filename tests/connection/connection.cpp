@@ -213,7 +213,7 @@ TEST(Connection, parseValidAlternateFormConnection)
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(input);
 
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.issueCount());
     EXPECT_EQ(size_t(2), model->componentCount());
     EXPECT_EQ(size_t(1), model->component("component1")->variable("variable1")->equivalentVariableCount());
 }
@@ -973,7 +973,7 @@ TEST(Connection, importedComponentConnectionAndParse)
     // Parse
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(e);
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.issueCount());
 
     a = printer.printModel(model);
     EXPECT_EQ(e, a);
@@ -1009,11 +1009,11 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     // Parse
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(s);
-    EXPECT_EQ(size_t(1), parser.errorCount());
+    EXPECT_EQ(size_t(1), parser.issueCount());
 
     EXPECT_EQ(expectError, parser.error(0)->description());
-    parser.clearErrors();
-    EXPECT_EQ(size_t(0), parser.errorCount());
+    parser.clearIssues();
+    EXPECT_EQ(size_t(0), parser.issueCount());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(model);
