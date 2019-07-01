@@ -32,7 +32,7 @@ namespace libcellml {
 struct Logger::LoggerImpl
 {
     std::vector<IssuePtr> mIssues;
-    std::vector<std::vector<size_t>> mTypeIndex;
+    std::vector<std::vector<size_t>> mTypeIndex {{}, {}, {}};  // TODO Don't like this ...
 };
 
 Logger::Logger()
