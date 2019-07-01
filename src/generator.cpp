@@ -802,7 +802,6 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     std::string math = component->math();
-    std::vector<GeneratorEquationPimplPtr> equations;
 
     if (!math.empty()) {
         xmlDoc->parseMathML(math);
@@ -811,12 +810,12 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
         for (XmlNodePtr node = mathNode->firstChild(); node != nullptr; node = node->next()) {
             if (node->isMathmlElement()) {
-                equations.push_back(processNode(node, component));
+                processNode(node, component);
             }
         }
     }
 
-    // Go trhough the given component's variable and make sure that everything
+    // Go through the given component's variable and make sure that everything
     // makes sense
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
