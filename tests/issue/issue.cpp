@@ -24,7 +24,7 @@ TEST(Issue, createModelIssue)
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(m);
 
-    EXPECT_EQ(libcellml::Issue::Kind::MODEL, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::MODEL, e->cause());
 }
 
 TEST(Issue, createComponentIssue)
@@ -32,7 +32,7 @@ TEST(Issue, createComponentIssue)
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(c);
 
-    EXPECT_EQ(libcellml::Issue::Kind::COMPONENT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::COMPONENT, e->cause());
 }
 
 TEST(Issue, createVariableIssue)
@@ -40,7 +40,7 @@ TEST(Issue, createVariableIssue)
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(v);
 
-    EXPECT_EQ(libcellml::Issue::Kind::VARIABLE, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::VARIABLE, e->cause());
 }
 
 TEST(Issue, createUnitsIssue)
@@ -48,7 +48,7 @@ TEST(Issue, createUnitsIssue)
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(u);
 
-    EXPECT_EQ(libcellml::Issue::Kind::UNITS, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::UNITS, e->cause());
 }
 
 TEST(Issue, createImportSourceIssue)
@@ -56,7 +56,7 @@ TEST(Issue, createImportSourceIssue)
     libcellml::ImportSourcePtr i = std::make_shared<libcellml::ImportSource>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(i);
 
-    EXPECT_EQ(libcellml::Issue::Kind::IMPORT, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::IMPORT, e->cause());
 }
 
 TEST(Issue, createResetIssue)
@@ -64,7 +64,7 @@ TEST(Issue, createResetIssue)
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(r);
 
-    EXPECT_EQ(libcellml::Issue::Kind::RESET, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::RESET, e->cause());
 }
 
 TEST(Issue, createWhenIssue)
@@ -72,7 +72,7 @@ TEST(Issue, createWhenIssue)
     libcellml::WhenPtr w = std::make_shared<libcellml::When>();
     libcellml::IssuePtr e = std::make_shared<libcellml::Issue>(w);
 
-    EXPECT_EQ(libcellml::Issue::Kind::WHEN, e->kind());
+    EXPECT_EQ(libcellml::Issue::Cause::WHEN, e->cause());
 }
 
 void testSpecificationRule(const libcellml::Issue &e)
@@ -449,14 +449,14 @@ TEST(Issue, collectHints)
     validator.validateModel(m);
     printErrors(validator);
     EXPECT_EQ(size_t(0), validator.errorCount()); // This way is what we currently have ...
-    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Level::ERROR)); // Would rather do it this way: generic issue retrival based on level argument TODO Will fail because this function doesn't exist ...
+    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Type::ERROR)); // Would rather do it this way: generic issue retrival based on level argument TODO Will fail because this function doesn't exist ...
     EXPECT_EQ(size_t(0), validator.issueCount()); // Default to "ERROR" when level is not specified
 
     // Want to generate a hint for the mismatch in unit multiplier/prefix
     EXPECT_EQ(size_t(1), validator.hintCount()); // Variation on what we currently have
-    EXPECT_EQ(size_t(1), validator.issueCount(Issue::Level::HINT)); // As above: generic issue retrival based on level argument
+    EXPECT_EQ(size_t(1), validator.issueCount(Issue::Type::HINT)); // As above: generic issue retrival based on level argument
     EXPECT_EQ(expectedHint, validator.hint(0)->description());
-    EXPECT_EQ(expectedHint, validator.issue(Issue::Level::HINT, 0)->description());
+    EXPECT_EQ(expectedHint, validator.issue(Issue::Type::HINT, 0)->description());
 }
 
 TEST(Issue, collectWarnings)
@@ -482,11 +482,11 @@ TEST(Issue, collectWarnings)
     v2->setUnits("dimensionless");
 
     // TODO these will all fail to compile because they use the new format for resets
-    r->setVariable(v1);
-    r->setTestVariable(v2);
-    r->setOrder(1);
-    r->setTestValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
-    r->setResetValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
+    // r->setVariable(v1);
+    // r->setTestVariable(v2);
+    // r->setOrder(1);
+    // r->setTestValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
+    // r->setResetValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
 
     c->addVariable(v1);
     c->addVariable(v2);
@@ -497,14 +497,86 @@ TEST(Issue, collectWarnings)
     validator.validateModel(m);
     printErrors(validator);
     EXPECT_EQ(size_t(0), validator.errorCount()); // This way is what we currently have ...
-    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Level::ERROR)); // Would rather do it this way: generic issue retrival based on level argument
+    EXPECT_EQ(size_t(0), validator.issueCount(Issue::Type::ERROR)); // Would rather do it this way: generic issue retrival based on level argument
     EXPECT_EQ(size_t(0), validator.issueCount()); // Default to "ERROR" when level is not specified
 
     // Want to generate a warning for the empty MathML block
     EXPECT_EQ(size_t(2), validator.warningCount()); // Variation on what we currently have
-    EXPECT_EQ(size_t(2), validator.issueCount(Issue::Level::WARNING)); // As above: generic issue retrival based on level argument
+    EXPECT_EQ(size_t(2), validator.issueCount(Issue::Type::WARNING)); // As above: generic issue retrival based on level argument
     EXPECT_EQ(expectedWarnings.at(0), validator.warning(0)->desicription());
     EXPECT_EQ(expectedWarnings.at(1), validator.warning(1)->desicription());
-    EXPECT_EQ(expectedWarnings.at(0), validator.issue(Issue::Level::WARNING, 0)->desicription());
-    EXPECT_EQ(expectedWarnings.at(1), validator.issue(Issue::Level::WARNING, 1)->desicription());
+    EXPECT_EQ(expectedWarnings.at(0), validator.issue(Issue::Type::WARNING, 0)->desicription());
+    EXPECT_EQ(expectedWarnings.at(1), validator.issue(Issue::Type::WARNING, 1)->desicription());
+}
+
+TEST(Issue, orderOfIssuesValidator)
+{
+    // Test that issues are reported in the order encountered, regardless of the level at which they're requested
+    std::vector<std::string> expectedIssues;
+    std::vector<std::string> expectedErrors;
+    std::vector<std::string> expectedWarnings;
+    std::vector<std::string> expectedHints;
+
+    // Model  will generate a combination of errors, warnings, and hints
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+
+    m->setName("model");
+    c1->setName("component1");
+    c2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c2->addVariable(v3);
+
+    // Making an error: Component has no name
+    c3->setName("");
+    expectedErrors = {"Component does not have a valid name attribute."};
+
+    // Making a hint: Equivalent variables with mis-matched multipliers in the units
+    // TODO this will not generate a hint as multiplier checking is not active yet.
+    v1->setUnits("metre");
+    u3->setName("kilometre");
+    u3->addUnit("metre", "kilo");
+    v3->setUnits(u3);
+    libcellml::Variable::addEquivalence(v1, v3);
+    expectedHints = {"Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable3' with units of 'kilometre', by a factor of 10^3."};
+
+    // Making a warning: empty mathml field in resets
+    // TODO these will all fail to compile because they use the new format for resets
+    // r->setVariable(v1);
+    // r->setTestVariable(v2);
+    // r->setOrder(1);
+    // r->setTestValue(emptyMath);
+    // r->setResetValue(emptyMath);
+    // c1->addReset(r);
+    expectedWarnings = {
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
+    };
+    // Creating the issues in order that they will be returned
+    expectedIssues.push_back(expectedErrors.at(0)); // parser error first
+    expectedIssues.push_back(expectedHints.at(0)); // unit validation next
+    expectedIssues.push_back(expectedWarnings.at(0));
+    expectedIssues.push_back(expectedWarnings.at(1)); // resets tested last
+
+    validator.validateModel(m);
+
+    EXPECT_EQ(size_t(5), valdator.issueCount()); // Default is to return all categories
+    EXPECT_EQ(size_t(1), valdator.issueCount(Issue::Type::ERROR));
+    EXPECT_EQ(size_t(2), valdator.issueCount(Issue::Type::WARNING));
+    EXPECT_EQ(size_t(1), valdator.issueCount(Issue::Type::HINT));
+
+    EXPECT_EQ(size_t(3), valdator.issueCount({Issue::Type::ERROR, Issue::Type::HINT})); // Test combination of types
+
 }

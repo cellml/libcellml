@@ -15,19 +15,19 @@
 %feature("docstring") libcellml::Issue::setDescription
 "Sets a string description for why this error was raised.";
 
-%feature("docstring") libcellml::Issue::kind
-"Get the ``kind`` of this error. If no kind has been set for this error, will
-return Kind::UNDEFINED.";
+%feature("docstring") libcellml::Issue::cause
+"Get the ``cause`` of this error. If no cause has been set for this error, will
+return Cause::UNDEFINED.";
 
-%feature("docstring") libcellml::Issue::isKind
-"Tests if this error matches the given ``kind``.";
+%feature("docstring") libcellml::Issue::isCause
+"Tests if this error matches the given ``cause``.";
 
-%feature("docstring") libcellml::Issue::setKind
-"Sets the ``kind`` of this error.";
+%feature("docstring") libcellml::Issue::setCause
+"Sets the ``cause`` of this error.";
 
 %feature("docstring") libcellml::Issue::level
 "Get the ``level`` of this error. If no level has been set for this error, will
-return Level::FATAL.";
+return Type::FATAL.";
 
 %feature("docstring") libcellml::Issue::isLevel
 "Tests if this error matches the given ``level``.";

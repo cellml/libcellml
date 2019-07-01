@@ -45,12 +45,12 @@ Only meant to be included, shouldn't be passed to cmake as a module!
   }
 }
 
-%typemap(in) libcellml::Issue::Kind (int val, int ecode) {
+%typemap(in) libcellml::Issue::Cause (int val, int ecode) {
   ecode = SWIG_AsVal(int)($input, &val);
   if (!SWIG_IsOK(ecode)) {
     %argument_fail(ecode, "$type", $symname, $argnum);
   } else {
-    if (val < %static_cast(libcellml::Issue::Kind::COMPONENT, int) || %static_cast(libcellml::Issue::Kind::XML, int) < val) {
+    if (val < %static_cast(libcellml::Issue::Cause::COMPONENT, int) || %static_cast(libcellml::Issue::Cause::XML, int) < val) {
       %argument_fail(ecode, "$type is not a valid value for the enumeration.", $symname, $argnum);
     }
     $1 = %static_cast(val,$basetype);

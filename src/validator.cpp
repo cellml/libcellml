@@ -732,7 +732,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
             IssuePtr err = std::make_shared<Issue>();
             err->setDescription(doc->xmlError(i));
-            err->setKind(Issue::Kind::XML);
+            err->setCause(Issue::Cause::XML);
             mValidator->addError(err);
         }
     }
@@ -740,7 +740,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     if (node == nullptr) {
         IssuePtr err = std::make_shared<Issue>();
         err->setDescription("Could not get a valid XML root node from the math on component '" + component->name() + "'.");
-        err->setKind(Issue::Kind::XML);
+        err->setCause(Issue::Cause::XML);
         err->setComponent(component);
         mValidator->addError(err);
         return;
@@ -749,7 +749,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
         IssuePtr err = std::make_shared<Issue>();
         err->setDescription("Math root node is of invalid type '" + node->name() + "' on component '" + component->name() + "'. A valid math root node should be of type 'math'.");
         err->setComponent(component);
-        err->setKind(Issue::Kind::XML);
+        err->setCause(Issue::Cause::XML);
         mValidator->addError(err);
         return;
     }
@@ -773,7 +773,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             IssuePtr err = std::make_shared<Issue>();
             err->setDescription("Math in component '" + component->name() + "' contains '" + variableName + "' as a bvar ci element but it is already a variable name.");
             err->setComponent(component);
-            err->setKind(Issue::Kind::MATHML);
+            err->setCause(Issue::Cause::MATHML);
             mValidator->addError(err);
         }
     }
@@ -796,7 +796,7 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
             IssuePtr err = std::make_shared<Issue>();
             err->setDescription(mathmlDoc->xmlError(i));
             err->setComponent(component);
-            err->setKind(Issue::Kind::MATHML);
+            err->setCause(Issue::Cause::MATHML);
             mValidator->addError(err);
         }
     }
@@ -820,7 +820,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                             IssuePtr err = std::make_shared<Issue>();
                             err->setDescription("MathML ci element has the child text '" + textNode + "', which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
                             err->setComponent(component);
-                            err->setKind(Issue::Kind::MATHML);
+                            err->setCause(Issue::Cause::MATHML);
                             mValidator->addError(err);
                         }
                     }
@@ -828,7 +828,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     IssuePtr err = std::make_shared<Issue>();
                     err->setDescription("MathML " + node->name() + " element has an empty child element.");
                     err->setComponent(component);
-                    err->setKind(Issue::Kind::MATHML);
+                    err->setCause(Issue::Cause::MATHML);
                     mValidator->addError(err);
                 }
             }
@@ -836,7 +836,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
             IssuePtr err = std::make_shared<Issue>();
             err->setDescription("MathML " + node->name() + " element has no child.");
             err->setComponent(component);
-            err->setKind(Issue::Kind::MATHML);
+            err->setCause(Issue::Cause::MATHML);
             mValidator->addError(err);
         }
         // Get cellml:units attribute.
@@ -852,7 +852,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     IssuePtr err = std::make_shared<Issue>();
                     err->setDescription("Math " + node->name() + " element has an invalid attribute type '" + attribute->name() + "' in the cellml namespace.");
                     err->setComponent(component);
-                    err->setKind(Issue::Kind::MATHML);
+                    err->setCause(Issue::Cause::MATHML);
                     mValidator->addError(err);
                 }
             }
@@ -873,7 +873,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                 IssuePtr err = std::make_shared<Issue>();
                 err->setDescription("Math cn element with the value '" + textNode + "' does not have a valid cellml:units attribute.");
                 err->setComponent(component);
-                err->setKind(Issue::Kind::MATHML);
+                err->setCause(Issue::Cause::MATHML);
                 mValidator->addError(err);
             }
         }
@@ -888,7 +888,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                     IssuePtr err = std::make_shared<Issue>();
                     err->setDescription("Math has a " + node->name() + " element with a cellml:units attribute '" + unitsName + "' that is not a valid reference to units in component '" + component->name() + "' or a standard unit.");
                     err->setComponent(component);
-                    err->setKind(Issue::Kind::MATHML);
+                    err->setCause(Issue::Cause::MATHML);
                     mValidator->addError(err);
                 }
             }
@@ -920,7 +920,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
             IssuePtr err = std::make_shared<Issue>();
             err->setDescription("Math has a '" + childNode->name() + "' element" + " that is not a supported MathML element.");
             err->setComponent(component);
-            err->setKind(Issue::Kind::MATHML);
+            err->setCause(Issue::Cause::MATHML);
             mValidator->addError(err);
         }
         validateMathMLElements(childNode, component);
@@ -932,7 +932,7 @@ void Validator::ValidatorImpl::validateMathMLElements(const XmlNodePtr &node, co
             IssuePtr err = std::make_shared<Issue>();
             err->setDescription("Math has a '" + nextNode->name() + "' element" + " that is not a supported MathML element.");
             err->setComponent(component);
-            err->setKind(Issue::Kind::MATHML);
+            err->setCause(Issue::Cause::MATHML);
             mValidator->addError(err);
         }
         validateMathMLElements(nextNode, component);
@@ -999,14 +999,14 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 IssuePtr err = std::make_shared<Issue>();
                                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
                                 err->setModel(model);
-                                err->setKind(Issue::Kind::CONNECTION);
+                                err->setCause(Issue::Cause::CONNECTION);
                                 mValidator->addError(err);
                             }
                         } else {
                             IssuePtr err = std::make_shared<Issue>();
                             err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "'  which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                             err->setModel(model);
-                            err->setKind(Issue::Kind::CONNECTION);
+                            err->setCause(Issue::Cause::CONNECTION);
                             mValidator->addError(err);
                         }
                     }

@@ -1257,10 +1257,10 @@ TEST(Parser, invalidImportsAndGetError)
     EXPECT_EQ(import, importFromError);
 }
 
-TEST(Parser, invalidModelWithAllKindsOfErrors)
+TEST(Parser, invalidModelWithAllCausesOfErrors)
 {
-    // Check for all kinds of errors.
-    std::vector<bool> foundKind(9, false);
+    // Check for all causes of errors.
+    std::vector<bool> foundCause(9, false);
 
     // Trigger CellML entity errors
     const std::string input =
@@ -1294,33 +1294,33 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     EXPECT_EQ(expectedErrors.size(), parser.errorCount());
     for (size_t i = 0; i < parser.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
-        switch (parser.error(i)->kind()) {
-        case libcellml::Issue::Kind::COMPONENT:
-            foundKind.at(0) = true;
+        switch (parser.error(i)->cause()) {
+        case libcellml::Issue::Cause::COMPONENT:
+            foundCause.at(0) = true;
             break;
-        case (libcellml::Issue::Kind::CONNECTION):
-            foundKind.at(1) = true;
+        case (libcellml::Issue::Cause::CONNECTION):
+            foundCause.at(1) = true;
             break;
-        case (libcellml::Issue::Kind::ENCAPSULATION):
-            foundKind.at(2) = true;
+        case (libcellml::Issue::Cause::ENCAPSULATION):
+            foundCause.at(2) = true;
             break;
-        case (libcellml::Issue::Kind::IMPORT):
-            foundKind.at(3) = true;
+        case (libcellml::Issue::Cause::IMPORT):
+            foundCause.at(3) = true;
             break;
-        case (libcellml::Issue::Kind::MODEL):
-            foundKind.at(4) = true;
+        case (libcellml::Issue::Cause::MODEL):
+            foundCause.at(4) = true;
             break;
-        case (libcellml::Issue::Kind::UNITS):
-            foundKind.at(5) = true;
+        case (libcellml::Issue::Cause::UNITS):
+            foundCause.at(5) = true;
             break;
-        case (libcellml::Issue::Kind::VARIABLE):
-            foundKind.at(6) = true;
+        case (libcellml::Issue::Cause::VARIABLE):
+            foundCause.at(6) = true;
             break;
-        case libcellml::Issue::Kind::MATHML:
-        case libcellml::Issue::Kind::RESET:
-        case libcellml::Issue::Kind::UNDEFINED:
-        case libcellml::Issue::Kind::WHEN:
-        case libcellml::Issue::Kind::XML:
+        case libcellml::Issue::Cause::MATHML:
+        case libcellml::Issue::Cause::RESET:
+        case libcellml::Issue::Cause::UNDEFINED:
+        case libcellml::Issue::Cause::WHEN:
+        case libcellml::Issue::Cause::XML:
             break;
         }
     }
@@ -1331,8 +1331,8 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     libcellml::IssuePtr undefinedError = std::make_shared<libcellml::Issue>();
     parser2.addError(undefinedError);
     EXPECT_EQ(size_t(1), parser2.errorCount());
-    if (parser2.error(0)->isKind(libcellml::Issue::Kind::UNDEFINED)) {
-        foundKind.at(7) = true;
+    if (parser2.error(0)->isCause(libcellml::Issue::Cause::UNDEFINED)) {
+        foundCause.at(7) = true;
     }
 
     // Trigger an XML error
@@ -1345,17 +1345,17 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
     EXPECT_EQ(expectedErrors3.size(), parser3.errorCount());
     for (size_t i = 0; i < parser3.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors3.at(i), parser3.error(i)->description());
-        if (parser3.error(i)->isKind(libcellml::Issue::Kind::XML)) {
-            foundKind.at(8) = true;
+        if (parser3.error(i)->isCause(libcellml::Issue::Cause::XML)) {
+            foundCause.at(8) = true;
         }
     }
 
     // Check that we've found all the possible error types
-    bool foundAllKinds = false;
-    if (std::all_of(foundKind.begin(), foundKind.end(), [](bool i) { return i; })) {
-        foundAllKinds = true;
+    bool foundAllCauses = false;
+    if (std::all_of(foundCause.begin(), foundCause.end(), [](bool i) { return i; })) {
+        foundAllCauses = true;
     }
-    EXPECT_TRUE(foundAllKinds);
+    EXPECT_TRUE(foundAllCauses);
 }
 
 TEST(Parser, invalidModelWithTextInAllElements)

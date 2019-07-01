@@ -102,11 +102,11 @@ public:
     explicit Issue(const ResetPtr &reset);
 
     /**
-     * @brief The error Kind enum class.
+     * @brief The error Cause enum class.
      *
-     * Enum to describe the kind of error a given error is.
+     * Enum to describe the cause of a given error.
      */
-    enum class Kind
+    enum class Cause
     {
         COMPONENT,
         CONNECTION,
@@ -123,11 +123,11 @@ public:
     };
 
     /**
-     * @brief The error Level enum class
+     * @brief The error Type enum class
      * 
      * Enum to describe the level of the error
      */
-    enum class Level
+    enum class Type
     {
         ERROR,
         WARNING,
@@ -153,35 +153,35 @@ public:
     std::string description() const;
 
     /**
-     * @brief Set the kind of this error.
+     * @brief Set the cause of this error.
      *
-     * Set the @p kind of this error from the options available in
-     * @c Issue::Kind.
+     * Set the @p cause of this error from the options available in
+     * @c Issue::Cause.
      *
-     * @param kind The @c Issue::Kind to set.
+     * @param cause The @c Issue::Cause to set.
      */
-    void setKind(Kind kind);
+    void setCause(Cause cause);
 
     /**
-     * @brief Get the kind of this error.
+     * @brief Get the cause of this error.
      *
-     * Get the @c kind of this error. If no kind has been set for
-     * this error, will return Kind::UNDEFINED.
+     * Get the @c cause of this error. If no cause has been set for
+     * this error, will return Cause::UNDEFINED.
      *
-     * @return The @c Issue::Kind set for this error.
+     * @return The @c Issue::Cause set for this error.
      */
-    Kind kind() const;
+    Cause cause() const;
 
     /**
-     * @brief Check whether the kind of this error matches the argument kind.
+     * @brief Check whether the cause of this error matches the argument cause.
      *
-     * Returns @c true if the @p kind matches the the @c Issue::Kind for this
+     * Returns @c true if the @p cause matches the the @c Issue::Cause for this
      * error and @c false otherwise.
      *
-     * @return @c true if the @p kind matches the the @c Issue::Kind for this
+     * @return @c true if the @p cause matches the the @c Issue::Cause for this
      * error and @c false otherwise.
      */
-    bool isKind(Kind kind) const;
+    bool isCause(Cause cause) const;
 
     /**
      * @brief Set the @c enum SpecificationRule of this error.
@@ -207,21 +207,21 @@ public:
      * @brief Set the level of this error.
      *
      * Set the @p level of this error from the options available in
-     * @c Issue::Level.
+     * @c Issue::Type.
      *
-     * @param level The @c Issue::Level to set.
+     * @param level The @c Issue::Type to set.
      */
-    void setLevel(Level level);
+    void setLevel(Type level);
 
     /**
      * @brief Get the level of this error.
      *
      * Get the @c level of this error. If no level has been set for
-     * this error, will return Level::FATAL.
+     * this error, will return Type::FATAL.
      *
-     * @return The @c Issue::Level set for this error.
+     * @return The @c Issue::Type set for this error.
      */
-    Level level() const;
+    Type level() const;
 
     /**
      * @brief Check whether the level of this error matches the argument level.
@@ -232,7 +232,7 @@ public:
      * @return @c true if the @p level matches the the @c Issue::level for this
      * error and @c false otherwise.
      */
-    bool isLevel(Level level) const;
+    bool isLevel(Type level) const;
 
     /**
      * @brief Get the @c std::string heading associated with the @c enum SpecificationRule for this error.

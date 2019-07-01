@@ -43,11 +43,11 @@ class LoggerTestCase(unittest.TestCase):
         self.assertIsNone(x.error(1))
         self.assertIsNone(x.error(-1))
         e = Issue()
-        e.setKind(Issue.Kind.MODEL)
+        e.setCause(Issue.Cause.MODEL)
         x.addError(e)
         self.assertIsNotNone(x.error(0))
         self.assertIsNone(x.error(1))
-        self.assertEqual(x.error(0).kind(), Issue.Kind.MODEL)
+        self.assertEqual(x.error(0).cause(), Issue.Cause.MODEL)
 
     def test_clear_errors(self):
         from libcellml import Logger, Issue

@@ -266,12 +266,12 @@ TEST(Coverage, error)
     const std::string description = "test";
 
     e.setDescription(description);
-    e.setKind(libcellml::Issue::Kind::XML);
+    e.setCause(libcellml::Issue::Cause::XML);
 
     em = std::move(e);
     // Copy constructor
     libcellml::Issue ec(em);
 
     EXPECT_EQ(description, ec.description());
-    EXPECT_EQ(libcellml::Issue::Kind::XML, ec.kind());
+    EXPECT_EQ(libcellml::Issue::Cause::XML, ec.cause());
 }
