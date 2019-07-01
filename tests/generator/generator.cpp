@@ -187,7 +187,7 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
               generator.computeAlgebraicEquations());
 }
 
-/*TODO: reenable this test once we are done with the previous tests.
+/*ISSUE359: reenable this test once we are done with the previous tests.
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
@@ -219,9 +219,9 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 
 TEST(Generator, van_der_pol_model_1928)
 {
-    //TODO: code should be generated for the coverage CellML file with and without
-    //      the Generator's private mHasXXX booleans set, so that we really cover
-    //      everything indeed.
+    //ISSUE359: code should be generated for the coverage CellML file with and
+    //          without the Generator's private mHasXXX booleans set, so that we
+    //          really cover everything indeed.
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/van_der_pol_model_1928/model.cellml"));
 
@@ -239,11 +239,11 @@ TEST(Generator, van_der_pol_model_1928)
     EXPECT_EQ(size_t(1), generator.variableCount());
 }
 
-/*TODO: reenable this test once we can correctly type a model's variables.
+/*ISSUE359: reenable this test once we can correctly type a model's variables.
 TEST(Generator, coverage) {
-//TODO: code should be generated for the coverage CellML file with and without
-//      the Generator's private mHasXXX booleans set, so that we really cover
-//      everything indeed.
+//ISSUE359: code should be generated for the coverage CellML file with and
+//          without the Generator's private mHasXXX booleans set, so that we
+//          really cover everything indeed.
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
 
@@ -257,7 +257,7 @@ TEST(Generator, coverage) {
 }
 */
 
-/*TODO: remove the below test once we are done testing things.
+/*ISSUE359: remove the below test once we are done testing things.
 TEST(Generator, test) {
     libcellml::Parser parser;
 libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/hodgkin_huxley_squid_axon_model_1952.cellml"));
