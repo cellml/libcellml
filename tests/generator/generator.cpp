@@ -217,7 +217,6 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 }
 */
 
-/*TODO: remove the below test once we are done testing things.
 TEST(Generator, van_der_pol_model_1928)
 {
     //TODO: code should be generated for the coverage CellML file with and without
@@ -239,7 +238,6 @@ TEST(Generator, van_der_pol_model_1928)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 }
-*/
 
 /*TODO: reenable this test once we can correctly type a model's variables.
 TEST(Generator, coverage) {
