@@ -46,12 +46,11 @@ limitations under the License.
 #endif
 namespace libcellml {
 
-class GeneratorEquationAstPimpl;
+struct GeneratorEquationAstPimpl;
 using GeneratorEquationAstPimplPtr = std::shared_ptr<GeneratorEquationAstPimpl>;
 
-class GeneratorEquationAstPimpl
+struct GeneratorEquationAstPimpl
 {
-public:
     enum class Type
     {
         // Relational operators
@@ -159,26 +158,6 @@ public:
         NAN
     };
 
-    explicit GeneratorEquationAstPimpl();
-    explicit GeneratorEquationAstPimpl(Type type,
-                                       const GeneratorEquationAstPimplPtr &parent);
-    explicit GeneratorEquationAstPimpl(Type type, const std::string &value,
-                                       const GeneratorEquationAstPimplPtr &parent);
-    explicit GeneratorEquationAstPimpl(Type type, const VariablePtr &variable,
-                                       const GeneratorEquationAstPimplPtr &parent);
-
-    Type type() const;
-
-    std::string value() const;
-    VariablePtr variable() const;
-
-    GeneratorEquationAstPimplPtr parent() const;
-    void setParent(const GeneratorEquationAstPimplPtr &parent);
-
-    GeneratorEquationAstPimplPtr &left();
-    GeneratorEquationAstPimplPtr &right();
-
-private:
     Type mType;
 
     std::string mValue;
@@ -191,6 +170,13 @@ private:
 
     explicit GeneratorEquationAstPimpl(Type type, const std::string &value,
                                        const VariablePtr &variable,
+                                       const GeneratorEquationAstPimplPtr &parent);
+    explicit GeneratorEquationAstPimpl();
+    explicit GeneratorEquationAstPimpl(Type type,
+                                       const GeneratorEquationAstPimplPtr &parent);
+    explicit GeneratorEquationAstPimpl(Type type, const std::string &value,
+                                       const GeneratorEquationAstPimplPtr &parent);
+    explicit GeneratorEquationAstPimpl(Type type, const VariablePtr &variable,
                                        const GeneratorEquationAstPimplPtr &parent);
 };
 
@@ -229,47 +215,11 @@ GeneratorEquationAstPimpl::GeneratorEquationAstPimpl(Type type, const VariablePt
 {
 }
 
-GeneratorEquationAstPimpl::Type GeneratorEquationAstPimpl::type() const
-{
-    return mType;
-}
-
-std::string GeneratorEquationAstPimpl::value() const
-{
-    return mValue;
-}
-
-VariablePtr GeneratorEquationAstPimpl::variable() const
-{
-    return mVariable;
-}
-
-GeneratorEquationAstPimplPtr GeneratorEquationAstPimpl::parent() const
-{
-    return mParent;
-}
-
-void GeneratorEquationAstPimpl::setParent(const GeneratorEquationAstPimplPtr &parent)
-{
-    mParent = parent;
-}
-
-GeneratorEquationAstPimplPtr &GeneratorEquationAstPimpl::left()
-{
-    return mLeft;
-}
-
-GeneratorEquationAstPimplPtr &GeneratorEquationAstPimpl::right()
-{
-    return mRight;
-}
-
-class GeneratorEquationPimpl;
+struct GeneratorEquationPimpl;
 using GeneratorEquationPimplPtr = std::shared_ptr<GeneratorEquationPimpl>;
 
-class GeneratorEquationPimpl
+struct GeneratorEquationPimpl
 {
-public:
     enum class Type
     {
         UNKNOWN,
@@ -277,56 +227,22 @@ public:
         ALGEBRAIC
     };
 
-    explicit GeneratorEquationPimpl(const ComponentPtr &component);
-
-    Type type() const;
-
-    //TODO: needed?
-    //    ComponentPtr component() const;
-
-    GeneratorEquationAstPimplPtr &ast();
-
-    std::vector<VariablePtr> variables() const;
-
-    void addVariable(const VariablePtr &variable);
-    void replaceVariable(const VariablePtr &oldVariable,
-                         const VariablePtr &newVariable);
-
-private:
     Type mType = Type::UNKNOWN;
-
-    ComponentPtr mComponent;
 
     GeneratorEquationAstPimplPtr mAst;
 
     std::vector<VariablePtr> mVariables;
+
+    explicit GeneratorEquationPimpl();
+
+    void addVariable(const VariablePtr &variable);
+    void replaceVariable(const VariablePtr &oldVariable,
+                         const VariablePtr &newVariable);
 };
 
-GeneratorEquationPimpl::GeneratorEquationPimpl(const ComponentPtr &component)
-    : mComponent(component)
-    , mAst(std::make_shared<GeneratorEquationAstPimpl>())
+GeneratorEquationPimpl::GeneratorEquationPimpl()
+    : mAst(std::make_shared<GeneratorEquationAstPimpl>())
 {
-}
-
-GeneratorEquationPimpl::Type GeneratorEquationPimpl::type() const
-{
-    return mType;
-}
-
-//TODO: needed?
-//ComponentPtr GeneratorEquationPimpl::component() const
-//{
-//    return mComponent;
-//}
-
-GeneratorEquationAstPimplPtr &GeneratorEquationPimpl::ast()
-{
-    return mAst;
-}
-
-std::vector<VariablePtr> GeneratorEquationPimpl::variables() const
-{
-    return mVariables;
 }
 
 void GeneratorEquationPimpl::addVariable(const VariablePtr &variable)
@@ -342,12 +258,11 @@ void GeneratorEquationPimpl::replaceVariable(const VariablePtr &oldVariable,
     std::replace(mVariables.begin(), mVariables.end(), oldVariable, newVariable);
 }
 
-class GeneratorVariablePimpl;
+struct GeneratorVariablePimpl;
 using GeneratorVariablePimplPtr = std::shared_ptr<GeneratorVariablePimpl>;
 
-class GeneratorVariablePimpl
+struct GeneratorVariablePimpl
 {
-public:
     enum class Type
     {
         UNKNOWN,
@@ -359,33 +274,16 @@ public:
         COMPUTED_CONSTANT
     };
 
-    Type type() const;
-
-    VariablePtr variable() const;
-    void setVariable(const VariablePtr &variable);
-
-    GeneratorEquationAstPimplPtr variableAst() const;
-    void setVariableAst(const GeneratorEquationAstPimplPtr &ast);
-
-    void makeVariableOfIntegration();
-    void makeState();
-
-private:
     Type mType = Type::UNKNOWN;
 
     VariablePtr mVariable = nullptr;
     GeneratorEquationAstPimplPtr mAst = nullptr;
+
+    void setVariable(const VariablePtr &variable);
+
+    void makeVariableOfIntegration();
+    void makeState();
 };
-
-GeneratorVariablePimpl::Type GeneratorVariablePimpl::type() const
-{
-    return mType;
-}
-
-VariablePtr GeneratorVariablePimpl::variable() const
-{
-    return mVariable;
-}
 
 void GeneratorVariablePimpl::setVariable(const VariablePtr &variable)
 {
@@ -419,16 +317,6 @@ void GeneratorVariablePimpl::makeState()
     } else if (mType == Type::CONSTANT) {
         mType = Type::STATE;
     }
-}
-
-GeneratorEquationAstPimplPtr GeneratorVariablePimpl::variableAst() const
-{
-    return mAst;
-}
-
-void GeneratorVariablePimpl::setVariableAst(const GeneratorEquationAstPimplPtr &ast)
-{
-    mAst = ast;
 }
 
 struct Generator::GeneratorImpl
@@ -560,7 +448,7 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 GeneratorVariablePimplPtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable) const
 {
     for (const auto &generatorVariable : mVariables) {
-        if (variable->isEquivalentVariable(generatorVariable->variable())) {
+        if (variable->isEquivalentVariable(generatorVariable->mVariable)) {
             return generatorVariable;
         }
     }
@@ -606,7 +494,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         size_t childCount = mathmlChildCount(node);
 
         processNode(mathmlChildNode(node, 0), ast, astParent, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->left(), ast, component, equation);
+        processNode(mathmlChildNode(node, 1), ast->mLeft, ast, component, equation);
 
         if (childCount >= 3) {
             GeneratorEquationAstPimplPtr astRight;
@@ -616,17 +504,17 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
             for (size_t i = childCount - 2; i > 1; --i) {
                 processNode(mathmlChildNode(node, 0), tempAst, nullptr, component, equation);
-                processNode(mathmlChildNode(node, i), tempAst->left(), tempAst, component, equation);
+                processNode(mathmlChildNode(node, i), tempAst->mLeft, tempAst, component, equation);
 
-                astRight->setParent(tempAst);
+                astRight->mParent = tempAst;
 
-                tempAst->right() = astRight;
+                tempAst->mRight = astRight;
                 astRight = tempAst;
             }
 
-            astRight->setParent(ast);
+            astRight->mParent = ast;
 
-            ast->right() = astRight;
+            ast->mRight = astRight;
         }
 
         // Relational operators
@@ -809,7 +697,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         ast = std::make_shared<GeneratorEquationAstPimpl>(GeneratorEquationAstPimpl::Type::PIECEWISE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
 
         if (childCount >= 2) {
             GeneratorEquationAstPimplPtr astRight;
@@ -820,27 +708,27 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             for (size_t i = childCount - 2; i > 0; --i) {
                 tempAst = std::make_shared<GeneratorEquationAstPimpl>(GeneratorEquationAstPimpl::Type::PIECEWISE, astParent);
 
-                processNode(mathmlChildNode(node, i), tempAst->left(), tempAst, component, equation);
+                processNode(mathmlChildNode(node, i), tempAst->mLeft, tempAst, component, equation);
 
-                astRight->setParent(tempAst);
+                astRight->mParent = tempAst;
 
-                tempAst->right() = astRight;
+                tempAst->mRight = astRight;
                 astRight = tempAst;
             }
 
-            astRight->setParent(ast);
+            astRight->mParent = ast;
 
-            ast->right() = astRight;
+            ast->mRight = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
         ast = std::make_shared<GeneratorEquationAstPimpl>(GeneratorEquationAstPimpl::Type::PIECE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), ast, component, equation);
-        processNode(mathmlChildNode(node, 1), ast->right(), ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
+        processNode(mathmlChildNode(node, 1), ast->mRight, ast, component, equation);
     } else if (node->isMathmlElement("otherwise")) {
         ast = std::make_shared<GeneratorEquationAstPimpl>(GeneratorEquationAstPimpl::Type::OTHERWISE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
 
         // Token elements
 
@@ -858,20 +746,20 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("degree")) {
         ast = std::make_shared<GeneratorEquationAstPimpl>(GeneratorEquationAstPimpl::Type::DEGREE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
     } else if (node->isMathmlElement("logbase")) {
         ast = std::make_shared<GeneratorEquationAstPimpl>(GeneratorEquationAstPimpl::Type::LOGBASE, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
     } else if (node->isMathmlElement("bvar")) {
         ast = std::make_shared<GeneratorEquationAstPimpl>(GeneratorEquationAstPimpl::Type::BVAR, astParent);
 
-        processNode(mathmlChildNode(node, 0), ast->left(), ast, component, equation);
+        processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
 
         XmlNodePtr rightNode = mathmlChildNode(node, 1);
 
         if (rightNode != nullptr) {
-            processNode(rightNode, ast->right(), ast, component, equation);
+            processNode(rightNode, ast->mRight, ast, component, equation);
         }
 
         // Constants
@@ -896,13 +784,13 @@ GeneratorEquationPimplPtr Generator::GeneratorImpl::processNode(const XmlNodePtr
 {
     // Create and keep track of the equation associated with the given node
 
-    GeneratorEquationPimplPtr equation = std::make_shared<GeneratorEquationPimpl>(component);
+    GeneratorEquationPimplPtr equation = std::make_shared<GeneratorEquationPimpl>();
 
     mEquations.push_back(equation);
 
     // Actually process the node
 
-    processNode(node, equation->ast(), equation->ast()->parent(), component, equation);
+    processNode(node, equation->mAst, equation->mAst->mParent, component, equation);
 
     return equation;
 }
@@ -939,7 +827,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         GeneratorVariablePimplPtr trackedVariable;
 
         for (const auto &variable : mVariables) {
-            if (componentVariable->isEquivalentVariable(variable->variable())) {
+            if (componentVariable->isEquivalentVariable(variable->mVariable)) {
                 componentVariableTracked = true;
                 trackedVariable = variable;
 
@@ -958,20 +846,20 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         // componentVariable does. Otherwise, generate an error if the variable
         // held by trackedVariable and componentVariable are both initialised.
 
-        if ((trackedVariable->variable() == nullptr)
+        if ((trackedVariable->mVariable == nullptr)
             || (!componentVariable->initialValue().empty()
-                && trackedVariable->variable()->initialValue().empty())) {
+                && trackedVariable->mVariable->initialValue().empty())) {
             trackedVariable->setVariable(componentVariable);
         } else if (!componentVariable->initialValue().empty()
-                   && !trackedVariable->variable()->initialValue().empty()) {
+                   && !trackedVariable->mVariable->initialValue().empty()) {
             ModelPtr model = component->parentModel();
-            ComponentPtr trackedVariableComponent = trackedVariable->variable()->parentComponent();
+            ComponentPtr trackedVariableComponent = trackedVariable->mVariable->parentComponent();
             ModelPtr trackedVariableModel = trackedVariableComponent->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + componentVariable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' and "
                                                                                                                                                      "variable '"
-                                + trackedVariable->variable()->name() + "' in component '" + trackedVariableComponent->name() + "' of model '" + trackedVariableModel->name() + "' are equivalent and cannot therefore both be initialised.");
+                                + trackedVariable->mVariable->name() + "' in component '" + trackedVariableComponent->name() + "' of model '" + trackedVariableModel->name() + "' are equivalent and cannot therefore both be initialised.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -990,14 +878,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPimp
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of them and that it's not initialised
 
-    GeneratorEquationAstPimplPtr astParent = ast->parent();
-    GeneratorEquationAstPimplPtr astGrandParent = (astParent != nullptr) ? astParent->parent() : nullptr;
-    GeneratorEquationAstPimplPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->parent() : nullptr;
+    GeneratorEquationAstPimplPtr astParent = ast->mParent;
+    GeneratorEquationAstPimplPtr astGrandParent = (astParent != nullptr) ? astParent->mParent : nullptr;
+    GeneratorEquationAstPimplPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent : nullptr;
 
-    if ((ast->type() == GeneratorEquationAstPimpl::Type::CI)
-        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAstPimpl::Type::BVAR)
-        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAstPimpl::Type::DIFF)) {
-        VariablePtr variable = ast->variable();
+    if ((ast->mType == GeneratorEquationAstPimpl::Type::CI)
+        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstPimpl::Type::BVAR)
+        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAstPimpl::Type::DIFF)) {
+        VariablePtr variable = ast->mVariable;
 
         generatorVariable(variable)->makeVariableOfIntegration();
         // Note: we must make the variable a variable of integration in all
@@ -1037,12 +925,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPimp
 
     // Make sure that we only use first-order ODEs
 
-    if ((ast->type() == GeneratorEquationAstPimpl::Type::CN)
-        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAstPimpl::Type::DEGREE)
-        && (astGrandParent != nullptr) && (astGrandParent->type() == GeneratorEquationAstPimpl::Type::BVAR)
-        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->type() == GeneratorEquationAstPimpl::Type::DIFF)) {
-        if (convertToDouble(ast->value()) != 1.0) {
-            VariablePtr variable = astGreatGrandParent->right()->variable();
+    if ((ast->mType == GeneratorEquationAstPimpl::Type::CN)
+        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstPimpl::Type::DEGREE)
+        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAstPimpl::Type::BVAR)
+        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAstPimpl::Type::DIFF)) {
+        if (convertToDouble(ast->mValue) != 1.0) {
+            VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = variable->parentComponent();
             ModelPtr model = component->parentModel();
             ErrorPtr err = std::make_shared<Error>();
@@ -1056,19 +944,19 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPimp
 
     // Make a variable a state if it is used in an ODE
 
-    if ((ast->type() == GeneratorEquationAstPimpl::Type::CI)
-        && (astParent != nullptr) && (astParent->type() == GeneratorEquationAstPimpl::Type::DIFF)) {
-        generatorVariable(ast->variable())->makeState();
+    if ((ast->mType == GeneratorEquationAstPimpl::Type::CI)
+        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstPimpl::Type::DIFF)) {
+        generatorVariable(ast->mVariable)->makeState();
     }
 
     // Recursively check the given AST's children
 
-    if (ast->left() != nullptr) {
-        processEquationAst(ast->left());
+    if (ast->mLeft != nullptr) {
+        processEquationAst(ast->mLeft);
     }
 
-    if (ast->right() != nullptr) {
-        processEquationAst(ast->right());
+    if (ast->mRight != nullptr) {
+        processEquationAst(ast->mRight);
     }
 }
 
@@ -1076,17 +964,17 @@ void Generator::GeneratorImpl::processEquation(const GeneratorEquationPimplPtr &
 {
     // Update the equation's variables with those that have become our reference
 
-    for (const auto &equationVariable : equation->variables()) {
+    for (const auto &equationVariable : equation->mVariables) {
         for (const auto &variable : mVariables) {
-            if (equationVariable->isEquivalentVariable(variable->variable())) {
-                equation->replaceVariable(equationVariable, variable->variable());
+            if (equationVariable->isEquivalentVariable(variable->mVariable)) {
+                equation->replaceVariable(equationVariable, variable->mVariable);
             }
         }
     }
 
     // Process the equation's AST
 
-    processEquationAst(equation->ast());
+    processEquationAst(equation->mAst);
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
@@ -1141,7 +1029,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     for (const auto &variable : mVariables) {
         std::string errorType;
 
-        switch (variable->type()) {
+        switch (variable->mType) {
         case GeneratorVariablePimpl::Type::UNKNOWN:
             errorType = "is of unknown type";
 
@@ -1160,7 +1048,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
         if (!errorType.empty()) {
             ErrorPtr err = std::make_shared<Error>();
-            VariablePtr realVariable = variable->variable();
+            VariablePtr realVariable = variable->mVariable;
             ComponentPtr realComponent = realVariable->parentComponent();
             ModelPtr realModel = realComponent->parentModel();
 
@@ -1176,10 +1064,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     std::cout << "Number of variables: " << mVariables.size() << std::endl;
     int i = 0;
     for (const auto &variable : mVariables) {
-        std::cout << "Variable #" << ++i << " [" << int(variable->type())
-                  << "]: " << variable->variable()->name().c_str()
-                  << " " << (variable->variable()->initialValue().empty() ? "" : std::string("[init: " + variable->variable()->initialValue() + "] "))
-                  << "[comp: " << variable->variable()->parentComponent()->name() << "]" << std::endl;
+        std::cout << "Variable #" << ++i << " [" << int(variable->mType)
+                  << "]: " << variable->mVariable->name().c_str()
+                  << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
+                  << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
     }
     std::cout << "[neededMathMethods()]---------------------------------------[BEGIN]" << std::endl;
     std::cout << neededMathMethods() << std::endl;
@@ -1209,8 +1097,8 @@ std::string Generator::GeneratorImpl::initializeVariables() const
     std::string res;
 
     for (const auto &variable : mVariables) {
-        if (variable->type() == GeneratorVariablePimpl::Type::CONSTANT) {
-            res += variable->variable()->name() + " = " + variable->variable()->initialValue() + mProfile->commandSeparatorString() + "\n";
+        if (variable->mType == GeneratorVariablePimpl::Type::CONSTANT) {
+            res += variable->mVariable->name() + " = " + variable->mVariable->initialValue() + mProfile->commandSeparatorString() + "\n";
         }
     }
 
@@ -1222,7 +1110,7 @@ std::string Generator::GeneratorImpl::computeConstantEquations() const
     std::string res;
 
     for (const auto &variable : mVariables) {
-        if (variable->type() == GeneratorVariablePimpl::Type::COMPUTED_CONSTANT) {
+        if (variable->mType == GeneratorVariablePimpl::Type::COMPUTED_CONSTANT) {
             //TODO: to be done...
         }
     }
@@ -1235,8 +1123,8 @@ std::string Generator::GeneratorImpl::computeRateEquations() const
     std::string res;
 
     for (const auto &equation : mEquations) {
-        if (equation->type() == GeneratorEquationPimpl::Type::RATE) {
-            res += generateCode(equation->ast());
+        if (equation->mType == GeneratorEquationPimpl::Type::RATE) {
+            res += generateCode(equation->mAst);
         }
     }
 
@@ -1248,8 +1136,8 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
     std::string res;
 
     for (const auto &equation : mEquations) {
-        //        if (equation->type() == GeneratorEquationPimpl::Type::ALGEBRAIC) {
-        res += generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
+        //        if (equation->mType == GeneratorEquationPimpl::Type::ALGEBRAIC) {
+        res += generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
         //        }
     }
 
@@ -1263,57 +1151,57 @@ std::string replace(const std::string &string, const std::string &from, const st
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return (ast->type() == GeneratorEquationAstPimpl::Type::EQEQ)
-           || (ast->type() == GeneratorEquationAstPimpl::Type::NEQ)
-           || (ast->type() == GeneratorEquationAstPimpl::Type::LT)
-           || (ast->type() == GeneratorEquationAstPimpl::Type::LEQ)
-           || (ast->type() == GeneratorEquationAstPimpl::Type::GT)
-           || (ast->type() == GeneratorEquationAstPimpl::Type::GEQ);
+    return (ast->mType == GeneratorEquationAstPimpl::Type::EQEQ)
+           || (ast->mType == GeneratorEquationAstPimpl::Type::NEQ)
+           || (ast->mType == GeneratorEquationAstPimpl::Type::LT)
+           || (ast->mType == GeneratorEquationAstPimpl::Type::LEQ)
+           || (ast->mType == GeneratorEquationAstPimpl::Type::GT)
+           || (ast->mType == GeneratorEquationAstPimpl::Type::GEQ);
 }
 
 bool Generator::GeneratorImpl::isPlusOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::PLUS;
+    return ast->mType == GeneratorEquationAstPimpl::Type::PLUS;
 }
 
 bool Generator::GeneratorImpl::isMinusOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::MINUS;
+    return ast->mType == GeneratorEquationAstPimpl::Type::MINUS;
 }
 
 bool Generator::GeneratorImpl::isTimesOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::TIMES;
+    return ast->mType == GeneratorEquationAstPimpl::Type::TIMES;
 }
 
 bool Generator::GeneratorImpl::isDivideOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::DIVIDE;
+    return ast->mType == GeneratorEquationAstPimpl::Type::DIVIDE;
 }
 
 bool Generator::GeneratorImpl::isPowerOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::POWER;
+    return ast->mType == GeneratorEquationAstPimpl::Type::POWER;
 }
 
 bool Generator::GeneratorImpl::isRootOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::ROOT;
+    return ast->mType == GeneratorEquationAstPimpl::Type::ROOT;
 }
 
 bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::AND;
+    return ast->mType == GeneratorEquationAstPimpl::Type::AND;
 }
 
 bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::OR;
+    return ast->mType == GeneratorEquationAstPimpl::Type::OR;
 }
 
 bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::XOR;
+    return ast->mType == GeneratorEquationAstPimpl::Type::XOR;
 }
 
 bool Generator::GeneratorImpl::isLogicalOrBitwiseOperator(const GeneratorEquationAstPimplPtr &ast) const
@@ -1322,14 +1210,14 @@ bool Generator::GeneratorImpl::isLogicalOrBitwiseOperator(const GeneratorEquatio
     //       we don't include it here since this method is only used to
     //       determine whether parentheses should be added around some code.
 
-    return (ast->type() == GeneratorEquationAstPimpl::Type::AND)
-           || (ast->type() == GeneratorEquationAstPimpl::Type::OR)
-           || (ast->type() == GeneratorEquationAstPimpl::Type::XOR);
+    return (ast->mType == GeneratorEquationAstPimpl::Type::AND)
+           || (ast->mType == GeneratorEquationAstPimpl::Type::OR)
+           || (ast->mType == GeneratorEquationAstPimpl::Type::XOR);
 }
 
 bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPimplPtr &ast) const
 {
-    return ast->type() == GeneratorEquationAstPimpl::Type::PIECEWISE;
+    return ast->mType == GeneratorEquationAstPimpl::Type::PIECEWISE;
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
@@ -1337,8 +1225,8 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 {
     // Generate the code for the left and right branches of the given AST
 
-    std::string left = generateCode(ast->left());
-    std::string right = generateCode(ast->right());
+    std::string left = generateCode(ast->mLeft);
+    std::string right = generateCode(ast->mRight);
 
     // Determine whether parentheses should be added around the left and/or
     // right piece of code, and this based on the precedence of the operators
@@ -1357,77 +1245,77 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     // 11. PIECEWISE (as an operator)                            [Right to left]
 
     if (isPlusOperator(ast)) {
-        if (isRelationalOperator(ast->left())
-            || isLogicalOrBitwiseOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         }
 
-        if (isRelationalOperator(ast->right())
-            || isLogicalOrBitwiseOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
         }
     } else if (isMinusOperator(ast)) {
-        if (isRelationalOperator(ast->left())
-            || isLogicalOrBitwiseOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         }
 
-        if (isRelationalOperator(ast->right())
-            || isMinusOperator(ast->right())
-            || isLogicalOrBitwiseOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isMinusOperator(ast->mRight)
+            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
         }
     } else if (isTimesOperator(ast)) {
-        if (isRelationalOperator(ast->left())
-            || isLogicalOrBitwiseOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
-        } else if (isPlusOperator(ast->left())
-                   || isMinusOperator(ast->left())) {
-            if (ast->left()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mLeft)
+                   || isMinusOperator(ast->mLeft)) {
+            if (ast->mLeft->mRight != nullptr) {
                 left = "(" + left + ")";
             }
         }
 
-        if (isRelationalOperator(ast->right())
-            || isLogicalOrBitwiseOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())
-                   || isMinusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)
+                   || isMinusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
         }
     } else if (isDivideOperator(ast)) {
-        if (isRelationalOperator(ast->left())
-            || isLogicalOrBitwiseOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
-        } else if (isPlusOperator(ast->left())
-                   || isMinusOperator(ast->left())) {
-            if (ast->left()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mLeft)
+                   || isMinusOperator(ast->mLeft)) {
+            if (ast->mLeft->mRight != nullptr) {
                 left = "(" + left + ")";
             }
         }
 
-        if (isRelationalOperator(ast->right())
-            || isTimesOperator(ast->right())
-            || isDivideOperator(ast->right())
-            || isLogicalOrBitwiseOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isTimesOperator(ast->mRight)
+            || isDivideOperator(ast->mRight)
+            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())
-                   || isMinusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)
+                   || isMinusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
         }
@@ -1437,41 +1325,41 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       better/clearer to have some around some other operators
         //       (somewhat subjective indeed).
 
-        if (isRelationalOperator(ast->left())
-            || isOrOperator(ast->left())
-            || isXorOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isOrOperator(ast->mLeft)
+            || isXorOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
-        } else if (isPlusOperator(ast->left())
-                   || isMinusOperator(ast->left())) {
-            if (ast->left()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mLeft)
+                   || isMinusOperator(ast->mLeft)) {
+            if (ast->mLeft->mRight != nullptr) {
                 left = "(" + left + ")";
             }
-        } else if (isPowerOperator(ast->left())) {
+        } else if (isPowerOperator(ast->mLeft)) {
             if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
-        } else if (isRootOperator(ast->left())) {
+        } else if (isRootOperator(ast->mLeft)) {
             if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         }
 
-        if (isRelationalOperator(ast->right())
-            || isOrOperator(ast->right())
-            || isXorOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isOrOperator(ast->mRight)
+            || isXorOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())
-                   || isMinusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)
+                   || isMinusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
-        } else if (isPowerOperator(ast->right())) {
+        } else if (isPowerOperator(ast->mRight)) {
             if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
-        } else if (isRootOperator(ast->right())) {
+        } else if (isRootOperator(ast->mRight)) {
             if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
@@ -1482,41 +1370,41 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       better/clearer to have some around some other operators
         //       (somewhat subjective indeed).
 
-        if (isRelationalOperator(ast->left())
-            || isAndOperator(ast->left())
-            || isXorOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isAndOperator(ast->mLeft)
+            || isXorOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
-        } else if (isPlusOperator(ast->left())
-                   || isMinusOperator(ast->left())) {
-            if (ast->left()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mLeft)
+                   || isMinusOperator(ast->mLeft)) {
+            if (ast->mLeft->mRight != nullptr) {
                 left = "(" + left + ")";
             }
-        } else if (isPowerOperator(ast->left())) {
+        } else if (isPowerOperator(ast->mLeft)) {
             if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
-        } else if (isRootOperator(ast->left())) {
+        } else if (isRootOperator(ast->mLeft)) {
             if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         }
 
-        if (isRelationalOperator(ast->right())
-            || isAndOperator(ast->right())
-            || isXorOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isAndOperator(ast->mRight)
+            || isXorOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())
-                   || isMinusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)
+                   || isMinusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
-        } else if (isPowerOperator(ast->right())) {
+        } else if (isPowerOperator(ast->mRight)) {
             if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
-        } else if (isRootOperator(ast->right())) {
+        } else if (isRootOperator(ast->mRight)) {
             if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
@@ -1527,98 +1415,98 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         //       looks better/clearer to have some around some other operators
         //       (somewhat subjective indeed).
 
-        if (isRelationalOperator(ast->left())
-            || isAndOperator(ast->left())
-            || isOrOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isAndOperator(ast->mLeft)
+            || isOrOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
-        } else if (isPlusOperator(ast->left())
-                   || isMinusOperator(ast->left())) {
-            if (ast->left()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mLeft)
+                   || isMinusOperator(ast->mLeft)) {
+            if (ast->mLeft->mRight != nullptr) {
                 left = "(" + left + ")";
             }
-        } else if (isPowerOperator(ast->left())) {
+        } else if (isPowerOperator(ast->mLeft)) {
             if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
-        } else if (isRootOperator(ast->left())) {
+        } else if (isRootOperator(ast->mLeft)) {
             if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         }
 
-        if (isRelationalOperator(ast->right())
-            || isAndOperator(ast->right())
-            || isOrOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isAndOperator(ast->mRight)
+            || isOrOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())
-                   || isMinusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)
+                   || isMinusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
-        } else if (isPowerOperator(ast->right())) {
+        } else if (isPowerOperator(ast->mRight)) {
             if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
-        } else if (isRootOperator(ast->right())) {
+        } else if (isRootOperator(ast->mRight)) {
             if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
         }
     } else if (isPowerOperator(ast)) {
-        if (isRelationalOperator(ast->left())
-            || isMinusOperator(ast->left())
-            || isTimesOperator(ast->left())
-            || isDivideOperator(ast->left())
-            || isLogicalOrBitwiseOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isMinusOperator(ast->mLeft)
+            || isTimesOperator(ast->mLeft)
+            || isDivideOperator(ast->mLeft)
+            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
-        } else if (isPlusOperator(ast->left())) {
-            if (ast->left()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mLeft)) {
+            if (ast->mLeft->mRight != nullptr) {
                 left = "(" + left + ")";
             }
         }
 
-        if (isRelationalOperator(ast->right())
-            || isMinusOperator(ast->left())
-            || isTimesOperator(ast->right())
-            || isDivideOperator(ast->right())
-            || isPowerOperator(ast->right())
-            || isRootOperator(ast->right())
-            || isLogicalOrBitwiseOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isMinusOperator(ast->mLeft)
+            || isTimesOperator(ast->mRight)
+            || isDivideOperator(ast->mRight)
+            || isPowerOperator(ast->mRight)
+            || isRootOperator(ast->mRight)
+            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
         }
     } else if (isRootOperator(ast)) {
-        if (isRelationalOperator(ast->right())
-            || isMinusOperator(ast->right())
-            || isTimesOperator(ast->right())
-            || isDivideOperator(ast->right())
-            || isLogicalOrBitwiseOperator(ast->right())
-            || isPiecewiseStatement(ast->right())) {
+        if (isRelationalOperator(ast->mRight)
+            || isMinusOperator(ast->mRight)
+            || isTimesOperator(ast->mRight)
+            || isDivideOperator(ast->mRight)
+            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
-        } else if (isPlusOperator(ast->right())) {
-            if (ast->right()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mRight)) {
+            if (ast->mRight->mRight != nullptr) {
                 right = "(" + right + ")";
             }
         }
 
-        if (isRelationalOperator(ast->left())
-            || isMinusOperator(ast->left())
-            || isTimesOperator(ast->left())
-            || isDivideOperator(ast->left())
-            || isPowerOperator(ast->left())
-            || isRootOperator(ast->left())
-            || isLogicalOrBitwiseOperator(ast->left())
-            || isPiecewiseStatement(ast->left())) {
+        if (isRelationalOperator(ast->mLeft)
+            || isMinusOperator(ast->mLeft)
+            || isTimesOperator(ast->mLeft)
+            || isDivideOperator(ast->mLeft)
+            || isPowerOperator(ast->mLeft)
+            || isRootOperator(ast->mLeft)
+            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
-        } else if (isPlusOperator(ast->left())) {
-            if (ast->left()->right() != nullptr) {
+        } else if (isPlusOperator(ast->mLeft)) {
+            if (ast->mLeft->mRight != nullptr) {
                 left = "(" + left + ")";
             }
         }
@@ -1633,15 +1521,15 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
 {
     // Generate the code for the left branch of the given AST
 
-    std::string left = generateCode(ast->left());
+    std::string left = generateCode(ast->mLeft);
 
     // Determine whether parentheses should be added around the left code
 
-    if (isRelationalOperator(ast->left())
-        || isPlusOperator(ast->left())
-        || isMinusOperator(ast->left())
-        || isLogicalOrBitwiseOperator(ast->left())
-        || isPiecewiseStatement(ast->left())) {
+    if (isRelationalOperator(ast->mLeft)
+        || isPlusOperator(ast->mLeft)
+        || isMinusOperator(ast->mLeft)
+        || isLogicalOrBitwiseOperator(ast->mLeft)
+        || isPiecewiseStatement(ast->mLeft)) {
         left = "(" + left + ")";
     }
 
@@ -1671,7 +1559,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
 {
     // Generate the code for the given AST
 
-    switch (ast->type()) {
+    switch (ast->mType) {
         // Relational operators
 
     case GeneratorEquationAstPimpl::Type::EQ:
@@ -1692,13 +1580,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
         // Arithmetic operators
 
     case GeneratorEquationAstPimpl::Type::PLUS:
-        if (ast->right() != nullptr) {
+        if (ast->mRight != nullptr) {
             return generateOperatorCode(mProfile->plusString(), ast);
         }
 
-        return generateCode(ast->left());
+        return generateCode(ast->mLeft);
     case GeneratorEquationAstPimpl::Type::MINUS:
-        if (ast->right() != nullptr) {
+        if (ast->mRight != nullptr) {
             return generateOperatorCode(mProfile->minusString(), ast);
         }
 
@@ -1708,61 +1596,61 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
     case GeneratorEquationAstPimpl::Type::DIVIDE:
         return generateOperatorCode(mProfile->divideString(), ast);
     case GeneratorEquationAstPimpl::Type::POWER: {
-        std::string stringValue = generateCode(ast->right());
+        std::string stringValue = generateCode(ast->mRight);
         double doubleValue = convertToDouble(stringValue);
 
         if (isEqual(doubleValue, 0.5)) {
-            return mProfile->squareRootString() + "(" + generateCode(ast->left()) + ")";
+            return mProfile->squareRootString() + "(" + generateCode(ast->mLeft) + ")";
         }
 
         if (isEqual(doubleValue, 2.0)) {
-            return mProfile->squareString() + "(" + generateCode(ast->left()) + ")";
+            return mProfile->squareString() + "(" + generateCode(ast->mLeft) + ")";
         }
 
         return mProfile->hasPowerOperator() ?
                    generateOperatorCode(mProfile->powerString(), ast) :
-                   mProfile->powerString() + "(" + generateCode(ast->left()) + ", " + stringValue + ")";
+                   mProfile->powerString() + "(" + generateCode(ast->mLeft) + ", " + stringValue + ")";
     }
     case GeneratorEquationAstPimpl::Type::ROOT:
-        if (ast->right() != nullptr) {
-            std::string stringValue = generateCode(ast->left());
+        if (ast->mRight != nullptr) {
+            std::string stringValue = generateCode(ast->mLeft);
             double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 2.0)) {
-                return mProfile->squareRootString() + "(" + generateCode(ast->right()) + ")";
+                return mProfile->squareRootString() + "(" + generateCode(ast->mRight) + ")";
             }
 
             return mProfile->hasPowerOperator() ?
                        generateOperatorCode(mProfile->powerString(), ast) :
-                       mProfile->powerString() + "(" + generateCode(ast->right()) + ", 1.0/" + stringValue + ")";
+                       mProfile->powerString() + "(" + generateCode(ast->mRight) + ", 1.0/" + stringValue + ")";
         }
 
-        return mProfile->squareRootString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->squareRootString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ABS:
-        return mProfile->absoluteValueString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->absoluteValueString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::EXP:
-        return mProfile->exponentialString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->exponentialString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::LN:
-        return mProfile->napierianLogarithmString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->napierianLogarithmString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::LOG:
-        if (ast->right() != nullptr) {
-            std::string stringValue = generateCode(ast->left());
+        if (ast->mRight != nullptr) {
+            std::string stringValue = generateCode(ast->mLeft);
             double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 10.0)) {
-                return mProfile->commonLogarithmString() + "(" + generateCode(ast->right()) + ")";
+                return mProfile->commonLogarithmString() + "(" + generateCode(ast->mRight) + ")";
             }
 
-            return mProfile->napierianLogarithmString() + "(" + generateCode(ast->right()) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
+            return mProfile->napierianLogarithmString() + "(" + generateCode(ast->mRight) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
         }
 
-        return mProfile->commonLogarithmString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->commonLogarithmString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::CEILING:
-        return mProfile->ceilingString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->ceilingString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::FLOOR:
-        return mProfile->floorString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->floorString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::FACTORIAL:
-        return mProfile->factorialString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->factorialString() + "(" + generateCode(ast->mLeft) + ")";
 
         // Logical operators
 
@@ -1775,131 +1663,131 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
             return generateOperatorCode(mProfile->xorString(), ast);
         }
 
-        return mProfile->xorString() + "(" + generateCode(ast->left()) + ", " + generateCode(ast->right()) + ")";
+        return mProfile->xorString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
     case GeneratorEquationAstPimpl::Type::NOT:
-        return mProfile->notString() + generateCode(ast->left());
+        return mProfile->notString() + generateCode(ast->mLeft);
 
         // Calculus elements
 
     case GeneratorEquationAstPimpl::Type::DIFF:
-        return "d(" + generateCode(ast->right()) + ")/d(" + generateCode(ast->left()) + ")";
+        return "d(" + generateCode(ast->mRight) + ")/d(" + generateCode(ast->mLeft) + ")";
 
         // Min/max operators
 
     case GeneratorEquationAstPimpl::Type::MIN:
         if (parentAst == nullptr) {
-            return mProfile->minString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->minString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
         }
 
-        return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
+        return generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
     case GeneratorEquationAstPimpl::Type::MAX:
         if (parentAst == nullptr) {
-            return mProfile->maxString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->maxString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
         }
 
-        return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
+        return generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
 
         // Gcd/lcm operators
 
     case GeneratorEquationAstPimpl::Type::GCD:
         if (parentAst == nullptr) {
-            return mProfile->gcdString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->gcdString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
         }
 
-        return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
+        return generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
     case GeneratorEquationAstPimpl::Type::LCM:
         if (parentAst == nullptr) {
-            return mProfile->lcmString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->lcmString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
         }
 
-        return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
+        return generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
 
         // Trigonometric operators
 
     case GeneratorEquationAstPimpl::Type::SIN:
-        return mProfile->sinString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->sinString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::COS:
-        return mProfile->cosString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cosString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::TAN:
-        return mProfile->tanString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->tanString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::SEC:
-        return mProfile->secString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->secString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::CSC:
-        return mProfile->cscString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cscString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::COT:
-        return mProfile->cotString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cotString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::SINH:
-        return mProfile->sinhString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->sinhString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::COSH:
-        return mProfile->coshString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->coshString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::TANH:
-        return mProfile->tanhString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->tanhString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::SECH:
-        return mProfile->sechString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->sechString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::CSCH:
-        return mProfile->cschString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cschString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::COTH:
-        return mProfile->cothString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cothString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ASIN:
-        return mProfile->asinString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asinString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ACOS:
-        return mProfile->acosString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acosString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ATAN:
-        return mProfile->atanString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->atanString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ASEC:
-        return mProfile->asecString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asecString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ACSC:
-        return mProfile->acscString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acscString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ACOT:
-        return mProfile->acotString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acotString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ASINH:
-        return mProfile->asinhString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asinhString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ACOSH:
-        return mProfile->acoshString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acoshString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ATANH:
-        return mProfile->atanhString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->atanhString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ASECH:
-        return mProfile->asechString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asechString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ACSCH:
-        return mProfile->acschString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acschString() + "(" + generateCode(ast->mLeft) + ")";
     case GeneratorEquationAstPimpl::Type::ACOTH:
-        return mProfile->acothString() + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acothString() + "(" + generateCode(ast->mLeft) + ")";
 
         // Extra operators
 
     case GeneratorEquationAstPimpl::Type::REM:
-        return mProfile->remString() + "(" + generateCode(ast->left()) + ", " + generateCode(ast->right()) + ")";
+        return mProfile->remString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
 
         // Piecewise statement
 
     case GeneratorEquationAstPimpl::Type::PIECEWISE:
-        if (ast->right() != nullptr) {
-            if (ast->right()->type() == GeneratorEquationAstPimpl::Type::PIECE) {
-                return generateCode(ast->left()) + generatePiecewiseElseCode(generateCode(ast->right()) + generatePiecewiseElseCode(mProfile->nanString()));
+        if (ast->mRight != nullptr) {
+            if (ast->mRight->mType == GeneratorEquationAstPimpl::Type::PIECE) {
+                return generateCode(ast->mLeft) + generatePiecewiseElseCode(generateCode(ast->mRight) + generatePiecewiseElseCode(mProfile->nanString()));
             }
 
-            return generateCode(ast->left()) + generatePiecewiseElseCode(generateCode(ast->right()));
+            return generateCode(ast->mLeft) + generatePiecewiseElseCode(generateCode(ast->mRight));
         }
 
-        return generateCode(ast->left()) + generatePiecewiseElseCode(mProfile->nanString());
+        return generateCode(ast->mLeft) + generatePiecewiseElseCode(mProfile->nanString());
     case GeneratorEquationAstPimpl::Type::PIECE:
-        return generatePiecewiseIfCode(generateCode(ast->right()), generateCode(ast->left()));
+        return generatePiecewiseIfCode(generateCode(ast->mRight), generateCode(ast->mLeft));
     case GeneratorEquationAstPimpl::Type::OTHERWISE:
-        return generateCode(ast->left());
+        return generateCode(ast->mLeft);
 
         // Token elements
 
     case GeneratorEquationAstPimpl::Type::CN:
-        return ast->value();
+        return ast->mValue;
     case GeneratorEquationAstPimpl::Type::CI:
-        return ast->variable()->name();
+        return ast->mVariable->name();
 
         // Qualifier elements
 
     case GeneratorEquationAstPimpl::Type::DEGREE:
     case GeneratorEquationAstPimpl::Type::LOGBASE:
     case GeneratorEquationAstPimpl::Type::BVAR:
-        return generateCode(ast->left());
+        return generateCode(ast->mLeft);
 
         // Constants
 
@@ -2045,7 +1933,7 @@ size_t Generator::stateCount() const
     size_t res = 0;
 
     for (const auto &variable : mPimpl->mVariables) {
-        if (variable->type() == GeneratorVariablePimpl::Type::STATE) {
+        if (variable->mType == GeneratorVariablePimpl::Type::STATE) {
             ++res;
         }
     }
@@ -2062,9 +1950,9 @@ size_t Generator::variableCount() const
     size_t res = 0;
 
     for (const auto &variable : mPimpl->mVariables) {
-        if ((variable->type() == GeneratorVariablePimpl::Type::ALGEBRAIC)
-            || (variable->type() == GeneratorVariablePimpl::Type::CONSTANT)
-            || (variable->type() == GeneratorVariablePimpl::Type::COMPUTED_CONSTANT)) {
+        if ((variable->mType == GeneratorVariablePimpl::Type::ALGEBRAIC)
+            || (variable->mType == GeneratorVariablePimpl::Type::CONSTANT)
+            || (variable->mType == GeneratorVariablePimpl::Type::COMPUTED_CONSTANT)) {
             ++res;
         }
     }
