@@ -412,170 +412,165 @@ TEST(Issue, specificationRule)
     EXPECT_EQ(size_t(52), count);
 }
 
-// TEST(Issue, collectHints)
-// {
-//     std::string expectedHint = "Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable2' with units of 'kilometre', by a factor of 10^3.";
+TEST(Issue, collectHints)
+{
+    std::string expectedHint = "Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable2' with units of 'kilometre', by a factor of 10^3.";
 
-//     libcellml::Validator validator;
-//     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-//     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-//     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-//     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-//     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-//     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
 
-//     m->setName("model");
-//     c1->setName("component1");
-//     c2->setName("component2");
+    m->setName("model");
+    c1->setName("component1");
+    c2->setName("component2");
 
-//     v1->setName("variable1");
-//     v1->setUnits("metre");
+    v1->setName("variable1");
+    v1->setUnits("metre");
 
-//     v2->setName("variable2");
-//     u2->setName("kilometre");
-//     u2->addUnit("metre", "kilo");
-//     v2->setUnits(u2);
+    v2->setName("variable2");
+    u2->setName("kilometre");
+    u2->addUnit("metre", "kilo");
+    v2->setUnits(u2);
 
-//     c1->addVariable(v1);
-//     c2->addVariable(v2);
+    c1->addVariable(v1);
+    c2->addVariable(v2);
 
-//     m->addComponent(c1);
-//     m->addComponent(c2);
-//     m->addUnits(u2);
+    m->addComponent(c1);
+    m->addComponent(c2);
+    m->addUnits(u2);
 
-//     // Variables are equivalent but with different order of magnitude
-//     libcellml::Variable::addEquivalence(v1, v2);
+    // Variables are equivalent but with different order of magnitude
+    libcellml::Variable::addEquivalence(v1, v2);
 
-//     validator.validateModel(m);
-//     printErrors(validator);
-//     EXPECT_EQ(size_t(0), validator.issueCount()); // This way is what we currently have ...
-//     EXPECT_EQ(size_t(0), validator.issueCount(Issue::Type::ERROR)); // Would rather do it this way: generic issue retrival based on level argument TODO Will fail because this function doesn't exist ...
+    validator.validateModel(m);
+    printIssues(validator);
+    EXPECT_EQ(size_t(0), validator.issueCount()); // This way is what we currently have ...
+    EXPECT_EQ(size_t(0), validator.issueCount(libcellml::Issue::Type::ERROR)); // Would rather do it this way: generic issue retrival based on level argument TODO Will fail because this function doesn't exist ...
 
-//     // Want to generate a hint for the mismatch in unit multiplier/prefix
-//     // EXPECT_EQ(size_t(1), validator.hintCount()); // Variation on what we currently have
-//     EXPECT_EQ(size_t(1), validator.issueCount(Issue::Type::HINT)); // As above: generic issue retrival based on level argument
-//     EXPECT_EQ(expectedHint, validator.hint(0)->description());
-//     EXPECT_EQ(expectedHint, validator.issue(Issue::Type::HINT, 0)->description());
-// }
+    // Want to generate a hint for the mismatch in unit multiplier/prefix
+    EXPECT_EQ(size_t(1), validator.issueCount(libcellml::Issue::Type::HINT)); // As above: generic issue retrival based on level argument
+    EXPECT_EQ(expectedHint, validator.issue(libcellml::Issue::Type::HINT, 0)->description());
+}
 
-// TEST(Issue, collectWarnings)
-// {
-//     std::string expectedWarnings = {
-//         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
-//         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
-//     };
+TEST(Issue, collectWarnings)
+{
+    std::vector<std::string> expectedWarnings = {
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
+    };
 
-//     libcellml::Validator validator;
-//     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-//     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-//     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-//     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-//     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
-//     m->setName("model");
-//     c->setName("component");
+    m->setName("model");
+    c->setName("component");
 
-//     v1->setName("variable1");
-//     v1->setUnits("dimensionless");
-//     v2->setName("variable2");
-//     v2->setUnits("dimensionless");
+    v1->setName("variable1");
+    v1->setUnits("dimensionless");
+    v2->setName("variable2");
+    v2->setUnits("dimensionless");
 
-//     // TODO these will all fail to compile because they use the new format for resets
-//     // r->setVariable(v1);
-//     // r->setTestVariable(v2);
-//     // r->setOrder(1);
-//     // r->setTestValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
-//     // r->setResetValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
+    // TODO these will all fail to compile because they use the new format for resets
+    // r->setVariable(v1);
+    // r->setTestVariable(v2);
+    // r->setOrder(1);
+    // r->setTestValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
+    // r->setResetValue(emptyMath); // Resets contain a mathml field, but that math field is empty. Valid, but not meaningful ...
 
-//     c->addVariable(v1);
-//     c->addVariable(v2);
-//     c->addReset(r);
+    c->addVariable(v1);
+    c->addVariable(v2);
+    c->addReset(r);
 
-//     m->addComponent(c);
+    m->addComponent(c);
 
-//     validator.validateModel(m);
-//     printErrors(validator);
-//     EXPECT_EQ(size_t(0), validator.issueCount()); // Defaults to ERROR
-//     EXPECT_EQ(size_t(0), validator.issueCount(Issue::Type::ERROR)); // Would rather do it this way: generic issue retrival based on level argument
+    validator.validateModel(m);
+    printIssues(validator);
+    EXPECT_EQ(size_t(2), validator.issueCount()); // Defaults to all types of error
+    EXPECT_EQ(size_t(0), validator.issueCount(libcellml::Issue::Type::ERROR)); // No ERROR-type issues generated
 
+    // Want to generate a warning for the empty MathML block
+    EXPECT_EQ(size_t(2), validator.issueCount(libcellml::Issue::Type::WARNING)); // As above: generic issue retrival based on level argument
+    EXPECT_EQ(expectedWarnings.at(0), validator.issue(libcellml::Issue::Type::WARNING, 0)->description());
+    EXPECT_EQ(expectedWarnings.at(1), validator.issue(libcellml::Issue::Type::WARNING, 1)->description());
+}
 
-//     // Want to generate a warning for the empty MathML block
-//     EXPECT_EQ(size_t(2), validator.warningCount()); // Variation on what we currently have
-//     EXPECT_EQ(size_t(2), validator.issueCount(Issue::Type::WARNING)); // As above: generic issue retrival based on level argument
-//     EXPECT_EQ(expectedWarnings.at(0), validator.warning(0)->desicription());
-//     EXPECT_EQ(expectedWarnings.at(1), validator.warning(1)->desicription());
-//     EXPECT_EQ(expectedWarnings.at(0), validator.issue(Issue::Type::WARNING, 0)->desicription());
-//     EXPECT_EQ(expectedWarnings.at(1), validator.issue(Issue::Type::WARNING, 1)->desicription());
-// }
+TEST(Issue, orderOfIssuesValidator)
+{
+    // Test that issues are reported in the order encountered, regardless of the level at which they're requested
+    std::vector<std::string> expectedIssues;
+    std::vector<std::string> expectedErrors;
+    std::vector<std::string> expectedWarnings;
+    std::vector<std::string> expectedHints;
 
-// TEST(Issue, orderOfIssuesValidator)
-// {
-//     // Test that issues are reported in the order encountered, regardless of the level at which they're requested
-//     std::vector<std::string> expectedIssues;
-//     std::vector<std::string> expectedErrors;
-//     std::vector<std::string> expectedWarnings;
-//     std::vector<std::string> expectedHints;
+    // Model  will generate a combination of errors, warnings, and hints
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
 
-//     // Model  will generate a combination of errors, warnings, and hints
-//     libcellml::Validator validator;
-//     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-//     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
-//     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
-//     libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
-//     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-//     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-//     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
-//     libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-//     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    m->setName("model");
+    c1->setName("component1");
+    c2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    c1->addVariable(v1);
+    c1->addVariable(v2);
+    c2->addVariable(v3);
 
-//     m->setName("model");
-//     c1->setName("component1");
-//     c2->setName("component2");
-//     v1->setName("variable1");
-//     v2->setName("variable2");
-//     v3->setName("variable3");
-//     c1->addVariable(v1);
-//     c1->addVariable(v2);
-//     c2->addVariable(v3);
+    // Making an error: Component has no name
+    c3->setName("");
+    expectedErrors = {"Component does not have a valid name attribute."};
 
-//     // Making an error: Component has no name
-//     c3->setName("");
-//     expectedErrors = {"Component does not have a valid name attribute."};
+    // Making a hint: Equivalent variables with mis-matched multipliers in the units
+    // TODO this will not generate a hint as multiplier checking is not active yet.
+    v1->setUnits("metre");
+    u3->setName("kilometre");
+    u3->addUnit("metre", "kilo");
+    v3->setUnits(u3);
+    libcellml::Variable::addEquivalence(v1, v3);
+    expectedHints = {"Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable3' with units of 'kilometre', by a factor of 10^3."};
 
-//     // Making a hint: Equivalent variables with mis-matched multipliers in the units
-//     // TODO this will not generate a hint as multiplier checking is not active yet.
-//     v1->setUnits("metre");
-//     u3->setName("kilometre");
-//     u3->addUnit("metre", "kilo");
-//     v3->setUnits(u3);
-//     libcellml::Variable::addEquivalence(v1, v3);
-//     expectedHints = {"Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable3' with units of 'kilometre', by a factor of 10^3."};
+    // Making a warning: empty mathml field in resets
+    // TODO these will all fail to compile because they use the new format for resets
+    // r->setVariable(v1);
+    // r->setTestVariable(v2);
+    // r->setOrder(1);
+    // r->setTestValue(emptyMath);
+    // r->setResetValue(emptyMath);
+    // c1->addReset(r);
+    expectedWarnings = {
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
+        "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
+    };
+    // Creating the issues in order that they will be returned
+    expectedIssues.push_back(expectedErrors.at(0)); // parser error first
+    expectedIssues.push_back(expectedHints.at(0)); // unit validation next
+    expectedIssues.push_back(expectedWarnings.at(0));
+    expectedIssues.push_back(expectedWarnings.at(1)); // resets tested last
 
-//     // Making a warning: empty mathml field in resets
-//     // TODO these will all fail to compile because they use the new format for resets
-//     // r->setVariable(v1);
-//     // r->setTestVariable(v2);
-//     // r->setOrder(1);
-//     // r->setTestValue(emptyMath);
-//     // r->setResetValue(emptyMath);
-//     // c1->addReset(r);
-//     expectedWarnings = {
-//         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
-//         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
-//     };
-//     // Creating the issues in order that they will be returned
-//     expectedIssues.push_back(expectedErrors.at(0)); // parser error first
-//     expectedIssues.push_back(expectedHints.at(0)); // unit validation next
-//     expectedIssues.push_back(expectedWarnings.at(0));
-//     expectedIssues.push_back(expectedWarnings.at(1)); // resets tested last
+    validator.validateModel(m);
 
-//     validator.validateModel(m);
+    EXPECT_EQ(size_t(5), validator.issueCount()); // Default returns all issue types
+    EXPECT_EQ(size_t(1), validator.issueCount(libcellml::Issue::Type::ERROR));
+    EXPECT_EQ(size_t(2), validator.issueCount(libcellml::Issue::Type::WARNING));
+    EXPECT_EQ(size_t(1), validator.issueCount(libcellml::Issue::Type::HINT));
 
-//     EXPECT_EQ(size_t(5), valdator.issueCount()); // Default is to return all categories
-//     EXPECT_EQ(size_t(1), valdator.issueCount(Issue::Type::ERROR));
-//     EXPECT_EQ(size_t(2), valdator.issueCount(Issue::Type::WARNING));
-//     EXPECT_EQ(size_t(1), valdator.issueCount(Issue::Type::HINT));
+    std::vector<libcellml::Issue::Type> findType {libcellml::Issue::Type::ERROR, libcellml::Issue::Type::HINT};
 
-//     EXPECT_EQ(size_t(3), valdator.issueCount({Issue::Type::ERROR, Issue::Type::HINT})); // Test combination of types
-
-// }
+    EXPECT_EQ(size_t(3), validator.issueCount(findType)); // Test combination of types
+}

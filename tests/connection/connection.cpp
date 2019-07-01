@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include "test_utils.h"
+
 #include <libcellml>
 
 TEST(Variable, addAndGetEquivalentVariable)
@@ -1011,8 +1013,12 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
     libcellml::ModelPtr model = parser.parseModel(s);
     EXPECT_EQ(size_t(1), parser.issueCount());
 
-    EXPECT_EQ(expectError, parser.error(0)->description());
+    printIssues(parser);
+
+    EXPECT_EQ(expectError, parser.issue(0)->description());
     parser.clearIssues();
+
+    
     EXPECT_EQ(size_t(0), parser.issueCount());
 
     libcellml::Printer printer;

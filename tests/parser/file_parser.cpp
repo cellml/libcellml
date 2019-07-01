@@ -67,7 +67,7 @@ TEST(Parser, parseInvalidModelFromFile)
 
     EXPECT_EQ(expectedErrors.size(), p.issueCount());
     for (size_t i = 0; i < p.issueCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), p.error(i)->description());
+        EXPECT_EQ(expectedErrors.at(i), p.issue(i)->description());
     }
 }
 

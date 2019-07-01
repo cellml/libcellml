@@ -24,7 +24,7 @@
     %extend libcellml::Logger {
         IssuePtr error(long index) {
             if (index < 0) return nullptr;
-            return $self->error(size_t(index));
+            return $self->issue(size_t(index));
         }
     }
 #endif

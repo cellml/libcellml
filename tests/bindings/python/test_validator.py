@@ -24,8 +24,8 @@ class ValidatorTestCase(unittest.TestCase):
         self.assertIsInstance(x, libcellml.Logger)
 
         # Test access to inherited methods
-        self.assertIsNone(x.error(0))
-        self.assertIsNone(x.error(-1))
+        self.assertIsNone(x.issue(0))
+        self.assertIsNone(x.issue(-1))
         self.assertEqual(x.issueCount(), 0)
         x.addIssue(libcellml.Issue())
         self.assertEqual(x.issueCount(), 1)

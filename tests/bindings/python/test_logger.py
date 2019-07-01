@@ -39,15 +39,15 @@ class LoggerTestCase(unittest.TestCase):
 
         # IssuePtr error(size_t index)
         x = Logger()
-        self.assertIsNone(x.error(0))
-        self.assertIsNone(x.error(1))
-        self.assertIsNone(x.error(-1))
+        self.assertIsNone(x.issue(0))
+        self.assertIsNone(x.issue(1))
+        self.assertIsNone(x.issue(-1))
         e = Issue()
         e.setCause(Issue.Cause.MODEL)
         x.addIssue(e)
-        self.assertIsNotNone(x.error(0))
-        self.assertIsNone(x.error(1))
-        self.assertEqual(x.error(0).cause(), Issue.Cause.MODEL)
+        self.assertIsNotNone(x.issue(0))
+        self.assertIsNone(x.issue(1))
+        self.assertEqual(x.issue(0).cause(), Issue.Cause.MODEL)
 
     def test_clear_errors(self):
         from libcellml import Logger, Issue

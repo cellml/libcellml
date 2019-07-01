@@ -38,33 +38,6 @@ public:
     Logger(Logger &&rhs) noexcept; /**< Move constructor */
     Logger &operator=(Logger rhs); /**< Assignment operator */
 
-    // /**
-    //  * @brief Add an error to the logger.
-    //  *
-    //  * Adds the argument @p error to this logger.
-    //  *
-    //  * @param error The @c IssuePtr to add.
-    //  */
-    // void addError(const IssuePtr &error);
-
-    // /**
-    //  * @brief Add a warning to the logger.
-    //  *
-    //  * Adds the argument @p warning to this logger.
-    //  *
-    //  * @param warning The @c IssuePtr to add.
-    //  */
-    // void addWarning(const IssuePtr &error);
-
-    // /**
-    //  * @brief Add an error to the logger.
-    //  *
-    //  * Adds the argument @p error to this logger.
-    //  *
-    //  * @param error The @c IssuePtr to add.
-    //  */
-    // void addHint(const IssuePtr &error);
-
     /**
      * @brief Add an issue to the logger.
      *
@@ -101,72 +74,12 @@ public:
      */
     size_t issueCount(std::vector<Issue::Type> &types) const;
 
-    // /**
-    //  * @brief Clear the errors from the logger.
-    //  *
-    //  * Clear the errors from the logger.
-    //  */
-    // void clearErrors();
-
-    // /**
-    //  * @brief Clear the errors from the logger.
-    //  *
-    //  * Clear the errors from the logger.
-    //  */
-    // void clearWarnings();
-
-    // /**
-    //  * @brief Clear the errors from the logger.
-    //  *
-    //  * Clear the errors from the logger.
-    //  */
-    // void clearHints();
-
     /**
      * @brief Clear the issues from the logger.
      *
      * Clear the issues from the logger.
      */
     void clearIssues();
-
-    /**
-     * @brief Get error at the specified @p index.
-     *
-     * Returns an error at the @p index.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#errors).
-     *
-     * @param index The index of the error to return.
-     *
-     * @return A reference to the error at the given index on success, @c nullptr otherwise.
-     */
-    IssuePtr error(size_t index) const;
-
-    /**
-     * @brief Get warning at the specified @p index.
-     *
-     * Returns a warning at the @p index.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#warning).
-     *
-     * @param index The index of the warning to return.
-     *
-     * @return A reference to the warning at the given index on success, @c nullptr otherwise.
-     */
-    IssuePtr warning(size_t index) const;
-
-    /**
-     * @brief Get hint at the specified @p index.
-     *
-     * Returns a hint at the @p index.  If the @p index
-     * is not valid a @c nullptr is returned, the valid range for the @p index
-     * is [0, \#hints).
-     *
-     * @param index The index of the hint to return.
-     *
-     * @return A reference to the hint at the given index on success, @c nullptr otherwise.
-     */
-    IssuePtr hint(size_t index) const;
 
     /**
      * @brief Get issue at the specified @p index.

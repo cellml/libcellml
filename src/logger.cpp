@@ -71,11 +71,11 @@ void Logger::swap(Logger &rhs)
 
 void Logger::clearIssues()
 {
-    // TODO What's the rationale of using .clear() instead of swapping with empty here?
-    // mPimpl->mIssues.clear();
-    // mPimpl->mTypeIndex.at(0).clear();
-    // mPimpl->mTypeIndex.at(1).clear();
-    // mPimpl->mTypeIndex.at(2).clear();
+    // TODO What's the rationale of using .clear() instead of swapping with empty vector here?
+    mPimpl->mIssues.clear();
+    mPimpl->mTypeIndex.at(static_cast<size_t>(libcellml::Issue::Type::ERROR)).clear();
+    mPimpl->mTypeIndex.at(static_cast<size_t>(libcellml::Issue::Type::WARNING)).clear();
+    mPimpl->mTypeIndex.at(static_cast<size_t>(libcellml::Issue::Type::HINT)).clear();
 }
 
 void Logger::addIssue(const IssuePtr &issue)
@@ -105,39 +105,6 @@ size_t Logger::issueCount(std::vector<Issue::Type> &types) const
     return num;
 }
 
-IssuePtr Logger::error(size_t index) const
-{
-    // Get issues of the Issue::Type::ERROR type at the given index
-    IssuePtr err = nullptr;
-    if (index < mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::ERROR)).size()) {
-        size_t i = mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::ERROR)).at(index);
-        err = mPimpl->mIssues.at(i);
-    }
-    return err;
-}
-
-IssuePtr Logger::warning(size_t index) const
-{
-    // Get issues of the Issue::Type::WARNING type at the given index
-    IssuePtr err = nullptr;
-    if (index < mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::WARNING)).size()) {
-        size_t i = mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::WARNING)).at(index);
-        err = mPimpl->mIssues.at(i);
-    }
-    return err;
-}
-
-IssuePtr Logger::hint(size_t index) const
-{
-    // Get issues of the Issue::Type::HINT type at the given index
-    IssuePtr err = nullptr;
-    if (index < mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::HINT)).size()) {
-        size_t i = mPimpl->mTypeIndex.at(static_cast<size_t>(Issue::Type::HINT)).at(index);
-        err = mPimpl->mIssues.at(i);
-    }
-    return err;
-}
-
 IssuePtr Logger::issue(size_t index) const
 {
     IssuePtr err = nullptr;
@@ -162,17 +129,16 @@ IssuePtr Logger::issue(std::vector<Issue::Type> &types, size_t index) const
     IssuePtr err = nullptr;
 
     if (index < issueCount(types)) {
-        //     // Get vector of issues of type in types
-        //     std::vector<size_t> issues;
-        //     issues.reserve(issueCount(types));
+        // Get vector of issues of type in types
+        std::vector<size_t> issues;
+        issues.reserve(issueCount(types));
 
-        //     for (auto type : types) {
-        //         auto t = static_cast<size_t>(type);
-        //         std::copy(mPimpl->mTypeIndex.at(t).begin(), mPimpl->mTypeIndex.at(t).end(), issues.rbegin());
-        //     }
-        //     std::sort(issues.begin(), issues.end());
-        // err = mPimpl->mIssues.at(issues.at(index));
-        err = nullptr;
+        for (auto type : types) {
+            auto t = static_cast<size_t>(type);
+            std::copy(mPimpl->mTypeIndex.at(t).begin(), mPimpl->mTypeIndex.at(t).end(), issues.rbegin());
+        }
+        std::sort(issues.begin(), issues.end());
+        err = mPimpl->mIssues.at(issues.at(index));
     }
     return err;
 }
