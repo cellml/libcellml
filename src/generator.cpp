@@ -832,27 +832,27 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 
         VariablePtr componentVariable = component->variable(i);
 
-        GeneratorVariableImplPtr trackedVariable = Generator::GeneratorImpl::generatorVariable(componentVariable);
+        GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(componentVariable);
 
-        // Set the variable held by trackedVariable, in case there was none
+        // Set the variable held by generatorVariable, in case there was none
         // before or in case the existing one has no initial value while
         // componentVariable does. Otherwise, generate an error if the variable
-        // held by trackedVariable and componentVariable are both initialised.
+        // held by generatorVariable and componentVariable are both initialised
 
-        if ((trackedVariable->mVariable == nullptr)
+        if ((generatorVariable->mVariable == nullptr)
             || (!componentVariable->initialValue().empty()
-                && trackedVariable->mVariable->initialValue().empty())) {
-            trackedVariable->setVariable(componentVariable);
+                && generatorVariable->mVariable->initialValue().empty())) {
+            generatorVariable->setVariable(componentVariable);
         } else if (!componentVariable->initialValue().empty()
-                   && !trackedVariable->mVariable->initialValue().empty()) {
+                   && !generatorVariable->mVariable->initialValue().empty()) {
             ModelPtr model = component->parentModel();
-            ComponentPtr trackedVariableComponent = trackedVariable->mVariable->parentComponent();
+            ComponentPtr trackedVariableComponent = generatorVariable->mVariable->parentComponent();
             ModelPtr trackedVariableModel = trackedVariableComponent->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + componentVariable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' and "
                                                                                                                                                      "variable '"
-                                + trackedVariable->mVariable->name() + "' in component '" + trackedVariableComponent->name() + "' of model '" + trackedVariableModel->name() + "' are equivalent and cannot therefore both be initialised.");
+                                + generatorVariable->mVariable->name() + "' in component '" + trackedVariableComponent->name() + "' of model '" + trackedVariableModel->name() + "' are equivalent and cannot therefore both be initialised.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
