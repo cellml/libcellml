@@ -18,6 +18,7 @@ limitations under the License.
 #include "libcellml/logger.h"
 #include "libcellml/types.h"
 
+#include <algorithm>
 #include <vector>
 
 namespace libcellml {
@@ -32,7 +33,7 @@ namespace libcellml {
 struct Logger::LoggerImpl
 {
     std::vector<IssuePtr> mIssues;
-    std::vector<std::vector<size_t>> mTypeIndex {{}, {}, {}};  // TODO Don't like this ...
+    std::vector<std::vector<size_t>> mTypeIndex {{}, {}, {}}; // TODO Don't like this ...
 };
 
 Logger::Logger()
