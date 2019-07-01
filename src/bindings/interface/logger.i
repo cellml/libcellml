@@ -13,14 +13,14 @@
 %feature("docstring") libcellml::Logger::clearIssues
 "Clears all errors from this logger.";
 
-%feature("docstring") libcellml::Logger::error
-"Returns the error at the specified `index`.";
+%feature("docstring") libcellml::Logger::issue
+"Returns the issue at the specified `index`.";
 
 %feature("docstring") libcellml::Logger::issueCount
 "Returns the number of errors currently stored in the logger.";
 
 #if defined(SWIGPYTHON)
-    // Treat negative size_t as invalid index (instead of unknown method)
+    // Treat negative size_t as invalid index (instead of unknown method) TODO Check why this didn't work?
     %extend libcellml::Logger {
         IssuePtr error(long index) {
             if (index < 0) return nullptr;

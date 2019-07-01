@@ -25,15 +25,15 @@ return Cause::UNDEFINED.";
 %feature("docstring") libcellml::Issue::setCause
 "Sets the ``cause`` of this error.";
 
-%feature("docstring") libcellml::Issue::level
-"Get the ``level`` of this error. If no level has been set for this error, will
-return Type::FATAL.";
+%feature("docstring") libcellml::Issue::type
+"Get the ``type`` of this error. If no type has been set for this error, will
+return Type::ERROR.";
 
-%feature("docstring") libcellml::Issue::isLevel
-"Tests if this error matches the given ``level``.";
+%feature("docstring") libcellml::Issue::isType
+"Tests if this error matches the given ``type``.";
 
-%feature("docstring") libcellml::Issue::setLevel
-"Sets the ``level`` of this error.";
+%feature("docstring") libcellml::Issue::setType
+"Sets the ``type`` of this error.";
 
 %feature("docstring") libcellml::Issue::rule
 "Get the :class:`SpecificationRule` of this error.";
