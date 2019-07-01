@@ -258,7 +258,7 @@ TEST(Coverage, component)
     EXPECT_EQ(size_t(1), cc.variableCount());
 }
 
-TEST(Coverage, error)
+TEST(Coverage, issue)
 {
     libcellml::IssuePtr err = std::make_shared<libcellml::Issue>();
     libcellml::Issue e;

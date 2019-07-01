@@ -16,14 +16,14 @@ class LoggerTestCase(unittest.TestCase):
         z = Logger(y)
         del(y, z)
 
-    def test_add_error(self):
+    def test_add_issue(self):
         from libcellml import Logger, Issue
 
-        # void addIssue(const IssuePtr error)
+        # void addIssue(const IssuePtr issue)
         x = Logger()
         x.addIssue(Issue())
 
-    def test_error_count(self):
+    def test_issue_count(self):
         from libcellml import Logger, Issue
 
         # size_t issueCount()
@@ -34,10 +34,10 @@ class LoggerTestCase(unittest.TestCase):
         x.addIssue(Issue())
         self.assertEqual(x.issueCount(), 2)
 
-    def test_error(self):
+    def test_issue(self):
         from libcellml import Logger, Issue
 
-        # IssuePtr error(size_t index)
+        # IssuePtr issue(size_t index)
         x = Logger()
         self.assertIsNone(x.issue(0))
         self.assertIsNone(x.issue(1))
@@ -49,7 +49,7 @@ class LoggerTestCase(unittest.TestCase):
         self.assertIsNone(x.issue(1))
         self.assertEqual(x.issue(0).cause(), Issue.Cause.MODEL)
 
-    def test_clear_errors(self):
+    def test_clear_issues(self):
         from libcellml import Logger, Issue
 
         # void clearIssues()
