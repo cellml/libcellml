@@ -40,13 +40,13 @@ public:
     std::string neqString() const;
     void setNeqString(const std::string &neqString);
 
-    std::string ltString() const ;
+    std::string ltString() const;
     void setLtString(const std::string &ltString);
 
     std::string leqString() const;
     void setLeqString(const std::string &leqString);
 
-    std::string gtString() const ;
+    std::string gtString() const;
     void setGtString(const std::string &gtString);
 
     std::string geqString() const;
