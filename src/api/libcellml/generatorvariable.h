@@ -22,6 +22,18 @@ namespace libcellml {
 
 class LIBCELLML_EXPORT GeneratorVariable: public Variable
 {
+public:
+    GeneratorVariable(); /**< Constructor */
+    ~GeneratorVariable(); /**< Destructor */
+    GeneratorVariable(const GeneratorVariable &rhs); /**< Copy constructor */
+    GeneratorVariable(GeneratorVariable &&rhs) noexcept; /**< Move constructor */
+    GeneratorVariable &operator=(GeneratorVariable rhs); /**< Assignment operator */
+
+private:
+    void swap(GeneratorVariable &rhs); /**< Swap method required for C++ 11 move semantics. */
+
+    struct GeneratorVariableImpl;
+    GeneratorVariableImpl *mPimpl;
 };
 
 } // namespace libcellml
