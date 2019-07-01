@@ -357,7 +357,7 @@ struct Generator::GeneratorImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    GeneratorVariableImplPtr generatorVariable(const VariablePtr &variable) const;
+    GeneratorVariableImplPtr generatorVariable(const VariablePtr &variable);
 
     void processNode(const XmlNodePtr &node, GeneratorEquationAstImplPtr &ast,
                      const GeneratorEquationAstImplPtr &astParent,
@@ -444,15 +444,25 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     return res;
 }
 
-GeneratorVariableImplPtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable) const
+GeneratorVariableImplPtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable)
 {
+    // Find and return, if there is one, the generator variable associated with
+    // given variable
+
     for (const auto &generatorVariable : mVariables) {
         if (variable->isEquivalentVariable(generatorVariable->mVariable)) {
             return generatorVariable;
         }
     }
 
-    return {};
+    // No generator variable exists for the given variable, so create one, track
+    // it and return it
+
+    GeneratorVariableImplPtr generatorVariable = std::make_shared<GeneratorVariableImpl>();
+
+    mVariables.push_back(generatorVariable);
+
+    return generatorVariable;
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
@@ -818,26 +828,11 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     // makes sense
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        // Track the variable if it isn't already being tracked
+        // Retrieve the corresponding generator variable
 
-        bool componentVariableTracked = false;
         VariablePtr componentVariable = component->variable(i);
-        GeneratorVariableImplPtr trackedVariable;
 
-        for (const auto &variable : mVariables) {
-            if (componentVariable->isEquivalentVariable(variable->mVariable)) {
-                componentVariableTracked = true;
-                trackedVariable = variable;
-
-                break;
-            }
-        }
-
-        if (!componentVariableTracked) {
-            trackedVariable = std::make_shared<GeneratorVariableImpl>();
-
-            mVariables.push_back(trackedVariable);
-        }
+        GeneratorVariableImplPtr trackedVariable = Generator::GeneratorImpl::generatorVariable(componentVariable);
 
         // Set the variable held by trackedVariable, in case there was none
         // before or in case the existing one has no initial value while
