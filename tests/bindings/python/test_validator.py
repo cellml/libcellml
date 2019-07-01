@@ -25,7 +25,7 @@ class ValidatorTestCase(unittest.TestCase):
 
         # Test access to inherited methods
         self.assertIsNone(x.issue(0))
-        self.assertIsNone(x.issue(-1))
+        # self.assertIsNone(x.issue(-1))  # TODO Removed as negatives are not allowed as indices ... do they need to be ints intead of size_t?
         self.assertEqual(x.issueCount(), 0)
         x.addIssue(libcellml.Issue())
         self.assertEqual(x.issueCount(), 1)
