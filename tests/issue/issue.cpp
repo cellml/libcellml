@@ -572,7 +572,7 @@ TEST(Issue, orderOfIssuesValidator)
     // r->setTestValue(emptyMath);
     // r->setResetValue(emptyMath);
     // c1->addReset(r);
-    
+
     expectedWarnings = {
         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its test_value. ",
         "Reset in component 'component' with variable 'v1', and test_variable 'v1', and order '1' has an empty MathML block for its reset_value. ",
