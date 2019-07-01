@@ -39,7 +39,7 @@ limitations under the License.
 #    undef FALSE
 #endif
 
-//TODO: remove the below code once we are done testing things...
+//ISSUE359: remove the below code once we are done testing things.
 //#define TRACES
 #ifdef TRACES
 #    include <iostream>
@@ -277,7 +277,6 @@ struct GeneratorVariableImpl
     Type mType = Type::UNKNOWN;
 
     VariablePtr mVariable = nullptr;
-    GeneratorEquationAstImplPtr mAst = nullptr;
 
     void setVariable(const VariablePtr &variable);
 
@@ -1058,7 +1057,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-//TODO: remove the below code once we are done testing things...
+//ISSUE359: remove the below code once we are done testing things.
 #ifdef TRACES
     std::cout << "Number of variables: " << mVariables.size() << std::endl;
     int i = 0;
@@ -1110,7 +1109,7 @@ std::string Generator::GeneratorImpl::computeConstantEquations() const
 
     for (const auto &variable : mVariables) {
         if (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT) {
-            //TODO: to be done...
+            //ISSUE359: to be done...
         }
     }
 
@@ -1883,7 +1882,7 @@ void Generator::processModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before processing it
 
-    /*TODO: reenable the validation once it is known to work fine.
+    /*ISSUE359: reenable the validation once it is known to work fine.
     libcellml::Validator validator;
 
     validator.validateModel(model);
@@ -1902,7 +1901,7 @@ void Generator::processModel(const ModelPtr &model)
     // Process the model
 
     mPimpl->processModel(model);
-    //TODO: remove the below code once we are done testing things...
+    //ISSUE359: remove the below code once we are done testing things.
 #ifdef TRACES
     for (size_t i = 0; i < errorCount(); ++i) {
         std::cout << "Generator error #" << i + 1 << ": " << error(i)->description() << std::endl;
@@ -1961,13 +1960,13 @@ size_t Generator::variableCount() const
 
 GeneratorVariablePtr Generator::variableOfIntegration() const
 {
-    //TODO: to be done...
+    //ISSUE359: to be done...
     return {};
 }
 
 GeneratorVariablePtr Generator::state(size_t index) const
 {
-    //TODO: to be done...
+    //ISSUE359: to be done...
     (void)index;
 
     return {};
@@ -1975,7 +1974,7 @@ GeneratorVariablePtr Generator::state(size_t index) const
 
 GeneratorVariablePtr Generator::variable(size_t index) const
 {
-    //TODO: to be done...
+    //ISSUE359: to be done...
     (void)index;
 
     return {};
