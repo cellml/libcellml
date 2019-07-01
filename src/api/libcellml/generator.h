@@ -38,6 +38,8 @@ public:
     Generator(Generator &&rhs) noexcept; /**< Move constructor */
     Generator &operator=(Generator rhs); /**< Assignment operator */
 
+    void setProfile(const GeneratorProfilePtr &profile);
+
     void processModel(const ModelPtr &model);
 
     ModelType modelType() const;

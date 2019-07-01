@@ -23,12 +23,12 @@ limitations under the License.
 
 #include "libcellml/component.h"
 #include "libcellml/generator.h"
+#include "libcellml/generatorprofile.h"
 #include "libcellml/model.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 
 #include <algorithm>
-#include <cmath>
 #include <limits>
 #include <vector>
 
@@ -442,88 +442,15 @@ struct Generator::GeneratorImpl
     std::vector<GeneratorVariablePimplPtr> mVariables;
     std::vector<GeneratorEquationPimplPtr> mEquations;
 
-    // Relational operators
-
-    std::string mEq = " = ";
-    std::string mEqEq = " == ";
-    std::string mNeq = " != ";
-    std::string mLt = " < ";
-    std::string mLeq = " <= ";
-    std::string mGt = " > ";
-    std::string mGeq = " >= ";
-
-    // Arithmetic operators
-
-    std::string mPlus = "+";
-    std::string mMinus = "-";
-    std::string mTimes = "*";
-    std::string mDivide = "/";
-    std::string mPower = "pow";
-    std::string mSquareRoot = "sqrt";
-    std::string mSquare = "sqr";
-    std::string mAbsoluteValue = "fabs";
-    std::string mExponential = "exp";
-    std::string mNapierianLogarithm = "log";
-    std::string mCommonLogarithm = "log10";
-    std::string mCeiling = "ceil";
-    std::string mFloor = "floor";
-    std::string mFactorial = "fact";
+    GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     bool mNeedFactorial = false;
-
-    bool mHasPowerOperator = false;
-
-    // Logical operators
-
-    std::string mAnd = " && ";
-    std::string mOr = " || ";
-    std::string mXor = "^";
-    std::string mNot = "!";
-
-    bool mHasXorOperator = true;
-
-    // Min/max operators
-
-    std::string mMin = "min";
-    std::string mMax = "max";
 
     bool mNeedMin = false;
     bool mNeedMax = false;
 
-    // Gcd/lcm operators
-
-    std::string mGcd = "gcd";
-    std::string mLcm = "lcm";
-
     bool mNeedGcd = false;
     bool mNeedLcm = false;
-
-    // Trigonometric operators
-
-    std::string mSin = "sin";
-    std::string mCos = "cos";
-    std::string mTan = "tan";
-    std::string mSec = "sec";
-    std::string mCsc = "csc";
-    std::string mCot = "cot";
-    std::string mSinh = "sinh";
-    std::string mCosh = "cosh";
-    std::string mTanh = "tanh";
-    std::string mSech = "sech";
-    std::string mCsch = "csch";
-    std::string mCoth = "coth";
-    std::string mAsin = "asin";
-    std::string mAcos = "acos";
-    std::string mAtan = "atan";
-    std::string mAsec = "asec";
-    std::string mAcsc = "acsc";
-    std::string mAcot = "acot";
-    std::string mAsinh = "asinh";
-    std::string mAcosh = "acosh";
-    std::string mAtanh = "atanh";
-    std::string mAsech = "asech";
-    std::string mAcsch = "acsch";
-    std::string mAcoth = "acoth";
 
     bool mNeedSec = false;
     bool mNeedCsc = false;
@@ -537,35 +464,6 @@ struct Generator::GeneratorImpl
     bool mNeedAsech = false;
     bool mNeedAcsch = false;
     bool mNeedAcoth = false;
-
-    // Extra operators
-
-    std::string mRem = "fmod";
-
-    // Piecewise statement
-    // Note: the parentheses around #cond is not needed (because of precedence
-    //       rules). It's just that it looks better/clearer to have them
-    //       (somewhat subjective indeed).
-
-    std::string mConditionalOperatorIf = "(#cond)?#if";
-    std::string mConditionalOperatorElse = ":#else";
-    std::string mPiecewiseIf = "piecewise(#cond, #if";
-    std::string mPiecewiseElse = ", #else)";
-
-    bool mHasConditionalOperator = true;
-
-    // Constants
-
-    std::string mTrue = "true";
-    std::string mFalse = "false";
-    std::string mE = convertDoubleToString(exp(1.0));
-    std::string mPi = convertDoubleToString(M_PI);
-    std::string mInf = "1.0/0.0";
-    std::string mNan = "sqrt(-1.0)";
-
-    // Miscellaneous
-
-    std::string mCommandSeparator = ";";
 
     bool hasValidModel() const;
 
@@ -1312,7 +1210,7 @@ std::string Generator::GeneratorImpl::initializeVariables() const
 
     for (const auto &variable : mVariables) {
         if (variable->type() == GeneratorVariablePimpl::Type::CONSTANT) {
-            res += variable->variable()->name() + " = " + variable->variable()->initialValue() + mCommandSeparator + "\n";
+            res += variable->variable()->name() + " = " + variable->variable()->initialValue() + mProfile->commandSeparatorString() + "\n";
         }
     }
 
@@ -1351,7 +1249,7 @@ std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
 
     for (const auto &equation : mEquations) {
         //        if (equation->type() == GeneratorEquationPimpl::Type::ALGEBRAIC) {
-        res += generateCode(equation->ast()) + mCommandSeparator + "\n";
+        res += generateCode(equation->ast()) + mProfile->commandSeparatorString() + "\n";
         //        }
     }
 
@@ -1550,11 +1448,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 left = "(" + left + ")";
             }
         } else if (isPowerOperator(ast->left())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         } else if (isRootOperator(ast->left())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         }
@@ -1570,11 +1468,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "(" + right + ")";
             }
         } else if (isPowerOperator(ast->right())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
         } else if (isRootOperator(ast->right())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
         }
@@ -1595,11 +1493,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 left = "(" + left + ")";
             }
         } else if (isPowerOperator(ast->left())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         } else if (isRootOperator(ast->left())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         }
@@ -1615,11 +1513,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "(" + right + ")";
             }
         } else if (isPowerOperator(ast->right())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
         } else if (isRootOperator(ast->right())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
         }
@@ -1640,11 +1538,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 left = "(" + left + ")";
             }
         } else if (isPowerOperator(ast->left())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         } else if (isRootOperator(ast->left())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 left = "(" + left + ")";
             }
         }
@@ -1660,11 +1558,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "(" + right + ")";
             }
         } else if (isPowerOperator(ast->right())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
         } else if (isRootOperator(ast->right())) {
-            if (mHasPowerOperator) {
+            if (mProfile->hasPowerOperator()) {
                 right = "(" + right + ")";
             }
         }
@@ -1747,24 +1645,24 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
         left = "(" + left + ")";
     }
 
-    return mMinus + left;
+    return mProfile->minusString() + left;
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
                                                               const std::string &value) const
 {
-    return replace(replace(mHasConditionalOperator ?
-                               mConditionalOperatorIf :
-                               mPiecewiseIf,
+    return replace(replace(mProfile->hasConditionalOperator() ?
+                               mProfile->conditionalOperatorIfString() :
+                               mProfile->piecewiseIfString(),
                            "#cond", condition),
                    "#if", value);
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value) const
 {
-    return replace(mHasConditionalOperator ?
-                       mConditionalOperatorElse :
-                       mPiecewiseElse,
+    return replace(mProfile->hasConditionalOperator() ?
+                       mProfile->conditionalOperatorElseString() :
+                       mProfile->piecewiseElseString(),
                    "#else", value);
 }
 
@@ -1777,53 +1675,53 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
         // Relational operators
 
     case GeneratorEquationAstPimpl::Type::EQ:
-        return generateOperatorCode(mEq, ast);
+        return generateOperatorCode(mProfile->eqString(), ast);
     case GeneratorEquationAstPimpl::Type::EQEQ:
-        return generateOperatorCode(mEqEq, ast);
+        return generateOperatorCode(mProfile->eqEqString(), ast);
     case GeneratorEquationAstPimpl::Type::NEQ:
-        return generateOperatorCode(mNeq, ast);
+        return generateOperatorCode(mProfile->neqString(), ast);
     case GeneratorEquationAstPimpl::Type::LT:
-        return generateOperatorCode(mLt, ast);
+        return generateOperatorCode(mProfile->ltString(), ast);
     case GeneratorEquationAstPimpl::Type::LEQ:
-        return generateOperatorCode(mLeq, ast);
+        return generateOperatorCode(mProfile->leqString(), ast);
     case GeneratorEquationAstPimpl::Type::GT:
-        return generateOperatorCode(mGt, ast);
+        return generateOperatorCode(mProfile->gtString(), ast);
     case GeneratorEquationAstPimpl::Type::GEQ:
-        return generateOperatorCode(mGeq, ast);
+        return generateOperatorCode(mProfile->geqString(), ast);
 
         // Arithmetic operators
 
     case GeneratorEquationAstPimpl::Type::PLUS:
         if (ast->right() != nullptr) {
-            return generateOperatorCode(mPlus, ast);
+            return generateOperatorCode(mProfile->plusString(), ast);
         }
 
         return generateCode(ast->left());
     case GeneratorEquationAstPimpl::Type::MINUS:
         if (ast->right() != nullptr) {
-            return generateOperatorCode(mMinus, ast);
+            return generateOperatorCode(mProfile->minusString(), ast);
         }
 
         return generateMinusUnaryCode(ast);
     case GeneratorEquationAstPimpl::Type::TIMES:
-        return generateOperatorCode(mTimes, ast);
+        return generateOperatorCode(mProfile->timesString(), ast);
     case GeneratorEquationAstPimpl::Type::DIVIDE:
-        return generateOperatorCode(mDivide, ast);
+        return generateOperatorCode(mProfile->divideString(), ast);
     case GeneratorEquationAstPimpl::Type::POWER: {
         std::string stringValue = generateCode(ast->right());
         double doubleValue = convertToDouble(stringValue);
 
         if (isEqual(doubleValue, 0.5)) {
-            return mSquareRoot + "(" + generateCode(ast->left()) + ")";
+            return mProfile->squareRootString() + "(" + generateCode(ast->left()) + ")";
         }
 
         if (isEqual(doubleValue, 2.0)) {
-            return mSquare + "(" + generateCode(ast->left()) + ")";
+            return mProfile->squareString() + "(" + generateCode(ast->left()) + ")";
         }
 
-        return mHasPowerOperator ?
-                   generateOperatorCode(mPower, ast) :
-                   mPower + "(" + generateCode(ast->left()) + ", " + stringValue + ")";
+        return mProfile->hasPowerOperator() ?
+                   generateOperatorCode(mProfile->powerString(), ast) :
+                   mProfile->powerString() + "(" + generateCode(ast->left()) + ", " + stringValue + ")";
     }
     case GeneratorEquationAstPimpl::Type::ROOT:
         if (ast->right() != nullptr) {
@@ -1831,55 +1729,55 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
             double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 2.0)) {
-                return mSquareRoot + "(" + generateCode(ast->right()) + ")";
+                return mProfile->squareRootString() + "(" + generateCode(ast->right()) + ")";
             }
 
-            return mHasPowerOperator ?
-                       generateOperatorCode(mPower, ast) :
-                       mPower + "(" + generateCode(ast->right()) + ", 1.0/" + stringValue + ")";
+            return mProfile->hasPowerOperator() ?
+                       generateOperatorCode(mProfile->powerString(), ast) :
+                       mProfile->powerString() + "(" + generateCode(ast->right()) + ", 1.0/" + stringValue + ")";
         }
 
-        return mSquareRoot + "(" + generateCode(ast->left()) + ")";
+        return mProfile->squareRootString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ABS:
-        return mAbsoluteValue + "(" + generateCode(ast->left()) + ")";
+        return mProfile->absoluteValueString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::EXP:
-        return mExponential + "(" + generateCode(ast->left()) + ")";
+        return mProfile->exponentialString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::LN:
-        return mNapierianLogarithm + "(" + generateCode(ast->left()) + ")";
+        return mProfile->napierianLogarithmString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::LOG:
         if (ast->right() != nullptr) {
             std::string stringValue = generateCode(ast->left());
             double doubleValue = convertToDouble(stringValue);
 
             if (isEqual(doubleValue, 10.0)) {
-                return mCommonLogarithm + "(" + generateCode(ast->right()) + ")";
+                return mProfile->commonLogarithmString() + "(" + generateCode(ast->right()) + ")";
             }
 
-            return mNapierianLogarithm + "(" + generateCode(ast->right()) + ")/" + mNapierianLogarithm + "(" + stringValue + ")";
+            return mProfile->napierianLogarithmString() + "(" + generateCode(ast->right()) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
         }
 
-        return mCommonLogarithm + "(" + generateCode(ast->left()) + ")";
+        return mProfile->commonLogarithmString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::CEILING:
-        return mCeiling + "(" + generateCode(ast->left()) + ")";
+        return mProfile->ceilingString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::FLOOR:
-        return mFloor + "(" + generateCode(ast->left()) + ")";
+        return mProfile->floorString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::FACTORIAL:
-        return mFactorial + "(" + generateCode(ast->left()) + ")";
+        return mProfile->factorialString() + "(" + generateCode(ast->left()) + ")";
 
         // Logical operators
 
     case GeneratorEquationAstPimpl::Type::AND:
-        return generateOperatorCode(mAnd, ast);
+        return generateOperatorCode(mProfile->andString(), ast);
     case GeneratorEquationAstPimpl::Type::OR:
-        return generateOperatorCode(mOr, ast);
+        return generateOperatorCode(mProfile->orString(), ast);
     case GeneratorEquationAstPimpl::Type::XOR:
-        if (mHasXorOperator) {
-            return generateOperatorCode(mXor, ast);
+        if (mProfile->hasXorOperator()) {
+            return generateOperatorCode(mProfile->xorString(), ast);
         }
 
-        return mXor + "(" + generateCode(ast->left()) + ", " + generateCode(ast->right()) + ")";
+        return mProfile->xorString() + "(" + generateCode(ast->left()) + ", " + generateCode(ast->right()) + ")";
     case GeneratorEquationAstPimpl::Type::NOT:
-        return mNot + generateCode(ast->left());
+        return mProfile->notString() + generateCode(ast->left());
 
         // Calculus elements
 
@@ -1890,13 +1788,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
 
     case GeneratorEquationAstPimpl::Type::MIN:
         if (parentAst == nullptr) {
-            return mMin + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->minString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
         }
 
         return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
     case GeneratorEquationAstPimpl::Type::MAX:
         if (parentAst == nullptr) {
-            return mMax + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->maxString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
         }
 
         return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
@@ -1905,13 +1803,13 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
 
     case GeneratorEquationAstPimpl::Type::GCD:
         if (parentAst == nullptr) {
-            return mGcd + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->gcdString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
         }
 
         return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
     case GeneratorEquationAstPimpl::Type::LCM:
         if (parentAst == nullptr) {
-            return mLcm + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
+            return mProfile->lcmString() + "(" + generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast) + ")";
         }
 
         return generateCode(ast->left(), ast) + ", " + generateCode(ast->right(), ast);
@@ -1919,71 +1817,71 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
         // Trigonometric operators
 
     case GeneratorEquationAstPimpl::Type::SIN:
-        return mSin + "(" + generateCode(ast->left()) + ")";
+        return mProfile->sinString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::COS:
-        return mCos + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cosString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::TAN:
-        return mTan + "(" + generateCode(ast->left()) + ")";
+        return mProfile->tanString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::SEC:
-        return mSec + "(" + generateCode(ast->left()) + ")";
+        return mProfile->secString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::CSC:
-        return mCsc + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cscString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::COT:
-        return mCot + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cotString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::SINH:
-        return mSinh + "(" + generateCode(ast->left()) + ")";
+        return mProfile->sinhString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::COSH:
-        return mCosh + "(" + generateCode(ast->left()) + ")";
+        return mProfile->coshString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::TANH:
-        return mTanh + "(" + generateCode(ast->left()) + ")";
+        return mProfile->tanhString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::SECH:
-        return mSech + "(" + generateCode(ast->left()) + ")";
+        return mProfile->sechString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::CSCH:
-        return mCsch + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cschString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::COTH:
-        return mCoth + "(" + generateCode(ast->left()) + ")";
+        return mProfile->cothString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ASIN:
-        return mAsin + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asinString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ACOS:
-        return mAcos + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acosString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ATAN:
-        return mAtan + "(" + generateCode(ast->left()) + ")";
+        return mProfile->atanString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ASEC:
-        return mAsec + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asecString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ACSC:
-        return mAcsc + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acscString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ACOT:
-        return mAcot + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acotString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ASINH:
-        return mAsinh + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asinhString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ACOSH:
-        return mAcosh + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acoshString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ATANH:
-        return mAtanh + "(" + generateCode(ast->left()) + ")";
+        return mProfile->atanhString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ASECH:
-        return mAsech + "(" + generateCode(ast->left()) + ")";
+        return mProfile->asechString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ACSCH:
-        return mAcsch + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acschString() + "(" + generateCode(ast->left()) + ")";
     case GeneratorEquationAstPimpl::Type::ACOTH:
-        return mAcoth + "(" + generateCode(ast->left()) + ")";
+        return mProfile->acothString() + "(" + generateCode(ast->left()) + ")";
 
         // Extra operators
 
     case GeneratorEquationAstPimpl::Type::REM:
-        return mRem + "(" + generateCode(ast->left()) + ", " + generateCode(ast->right()) + ")";
+        return mProfile->remString() + "(" + generateCode(ast->left()) + ", " + generateCode(ast->right()) + ")";
 
         // Piecewise statement
 
     case GeneratorEquationAstPimpl::Type::PIECEWISE:
         if (ast->right() != nullptr) {
             if (ast->right()->type() == GeneratorEquationAstPimpl::Type::PIECE) {
-                return generateCode(ast->left()) + generatePiecewiseElseCode(generateCode(ast->right()) + generatePiecewiseElseCode(mNan));
+                return generateCode(ast->left()) + generatePiecewiseElseCode(generateCode(ast->right()) + generatePiecewiseElseCode(mProfile->nanString()));
             }
 
             return generateCode(ast->left()) + generatePiecewiseElseCode(generateCode(ast->right()));
         }
 
-        return generateCode(ast->left()) + generatePiecewiseElseCode(mNan);
+        return generateCode(ast->left()) + generatePiecewiseElseCode(mProfile->nanString());
     case GeneratorEquationAstPimpl::Type::PIECE:
         return generatePiecewiseIfCode(generateCode(ast->right()), generateCode(ast->left()));
     case GeneratorEquationAstPimpl::Type::OTHERWISE:
@@ -2006,17 +1904,17 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPim
         // Constants
 
     case GeneratorEquationAstPimpl::Type::TRUE:
-        return mTrue;
+        return mProfile->trueString();
     case GeneratorEquationAstPimpl::Type::FALSE:
-        return mFalse;
+        return mProfile->falseString();
     case GeneratorEquationAstPimpl::Type::E:
-        return mE;
+        return mProfile->eString();
     case GeneratorEquationAstPimpl::Type::PI:
-        return mPi;
+        return mProfile->piString();
     case GeneratorEquationAstPimpl::Type::INF:
-        return mInf;
+        return mProfile->infString();
     case GeneratorEquationAstPimpl::Type::NAN:
-        return mNan;
+        return mProfile->nanString();
     }
 
     return {}; // We can never reach this point, but it is needed to make MSVC happy...
@@ -2037,10 +1935,37 @@ Generator::Generator(const Generator &rhs)
     : Logger(rhs)
     , mPimpl(new GeneratorImpl())
 {
-    //TODO: need to list all our private properties.
     mPimpl->mGenerator = rhs.mPimpl->mGenerator;
 
+    mPimpl->mHasModel = rhs.mPimpl->mHasModel;
+
+    mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
+
     mPimpl->mVariables = rhs.mPimpl->mVariables;
+    mPimpl->mEquations = rhs.mPimpl->mEquations;
+
+    mPimpl->mProfile = rhs.mPimpl->mProfile;
+
+    mPimpl->mNeedFactorial = rhs.mPimpl->mNeedFactorial;
+
+    mPimpl->mNeedMin = rhs.mPimpl->mNeedMin;
+    mPimpl->mNeedMax = rhs.mPimpl->mNeedMax;
+
+    mPimpl->mNeedGcd = rhs.mPimpl->mNeedGcd;
+    mPimpl->mNeedLcm = rhs.mPimpl->mNeedLcm;
+
+    mPimpl->mNeedSec = rhs.mPimpl->mNeedSec;
+    mPimpl->mNeedCsc = rhs.mPimpl->mNeedCsc;
+    mPimpl->mNeedCot = rhs.mPimpl->mNeedCot;
+    mPimpl->mNeedSech = rhs.mPimpl->mNeedSech;
+    mPimpl->mNeedCsch = rhs.mPimpl->mNeedCsch;
+    mPimpl->mNeedCoth = rhs.mPimpl->mNeedCoth;
+    mPimpl->mNeedAsec = rhs.mPimpl->mNeedAsec;
+    mPimpl->mNeedAcsc = rhs.mPimpl->mNeedAcsc;
+    mPimpl->mNeedAcot = rhs.mPimpl->mNeedAcot;
+    mPimpl->mNeedAsech = rhs.mPimpl->mNeedAsech;
+    mPimpl->mNeedAcsch = rhs.mPimpl->mNeedAcsch;
+    mPimpl->mNeedAcoth = rhs.mPimpl->mNeedAcoth;
 }
 
 Generator::Generator(Generator &&rhs) noexcept
@@ -2060,6 +1985,11 @@ Generator &Generator::operator=(Generator rhs)
 void Generator::swap(Generator &rhs)
 {
     std::swap(mPimpl, rhs.mPimpl);
+}
+
+void Generator::setProfile(const GeneratorProfilePtr &profile)
+{
+    mPimpl->mProfile = profile;
 }
 
 void Generator::processModel(const ModelPtr &model)
