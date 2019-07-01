@@ -217,6 +217,8 @@ GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const VariablePtr 
 
 struct GeneratorEquationImpl;
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
+struct GeneratorVariableImpl;
+using GeneratorVariableImplPtr = std::shared_ptr<GeneratorVariableImpl>;
 
 struct GeneratorEquationImpl
 {
@@ -231,13 +233,11 @@ struct GeneratorEquationImpl
 
     GeneratorEquationAstImplPtr mAst;
 
-    std::vector<VariablePtr> mVariables;
+    std::vector<GeneratorVariableImplPtr> mVariables;
 
     explicit GeneratorEquationImpl();
 
-    void addVariable(const VariablePtr &variable);
-    void replaceVariable(const VariablePtr &oldVariable,
-                         const VariablePtr &newVariable);
+    void addVariable(const GeneratorVariableImplPtr &variable);
 };
 
 GeneratorEquationImpl::GeneratorEquationImpl()
@@ -245,21 +245,12 @@ GeneratorEquationImpl::GeneratorEquationImpl()
 {
 }
 
-void GeneratorEquationImpl::addVariable(const VariablePtr &variable)
+void GeneratorEquationImpl::addVariable(const GeneratorVariableImplPtr &variable)
 {
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
     }
 }
-
-void GeneratorEquationImpl::replaceVariable(const VariablePtr &oldVariable,
-                                            const VariablePtr &newVariable)
-{
-    std::replace(mVariables.begin(), mVariables.end(), oldVariable, newVariable);
-}
-
-struct GeneratorVariableImpl;
-using GeneratorVariableImplPtr = std::shared_ptr<GeneratorVariableImpl>;
 
 struct GeneratorVariableImpl
 {
@@ -276,13 +267,20 @@ struct GeneratorVariableImpl
 
     Type mType = Type::UNKNOWN;
 
-    VariablePtr mVariable = nullptr;
+    VariablePtr mVariable;
+
+    explicit GeneratorVariableImpl(const VariablePtr &variable);
 
     void setVariable(const VariablePtr &variable);
 
     void makeVariableOfIntegration();
     void makeState();
 };
+
+GeneratorVariableImpl::GeneratorVariableImpl(const VariablePtr &variable)
+{
+    setVariable(variable);
+}
 
 void GeneratorVariableImpl::setVariable(const VariablePtr &variable)
 {
@@ -458,7 +456,7 @@ GeneratorVariableImplPtr Generator::GeneratorImpl::generatorVariable(const Varia
     // No generator variable exists for the given variable, so create one, track
     // it and return it
 
-    GeneratorVariableImplPtr generatorVariable = std::make_shared<GeneratorVariableImpl>();
+    GeneratorVariableImplPtr generatorVariable = std::make_shared<GeneratorVariableImpl>(variable);
 
     mVariables.push_back(generatorVariable);
 
@@ -748,7 +746,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CI, variable, astParent);
 
-        equation->addVariable(variable);
+        equation->addVariable(generatorVariable(variable));
 
         // Qualifier elements
 
@@ -830,27 +828,27 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     for (size_t i = 0; i < component->variableCount(); ++i) {
         // Retrieve the corresponding generator variable
 
-        VariablePtr componentVariable = component->variable(i);
+        VariablePtr variable = component->variable(i);
 
-        GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(componentVariable);
+        GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
-        // Set the variable held by generatorVariable, in case there was none
-        // before or in case the existing one has no initial value while
-        // componentVariable does. Otherwise, generate an error if the variable
-        // held by generatorVariable and componentVariable are both initialised
+        // Replace the variable held by generatorVariable, in case the existing
+        // one has no initial value while componentVariable does. Otherwise,
+        // generate an error if the variable held by generatorVariable and
+        // componentVariable are both initialised
 
-        if ((generatorVariable->mVariable == nullptr)
-            || (!componentVariable->initialValue().empty()
-                && generatorVariable->mVariable->initialValue().empty())) {
-            generatorVariable->setVariable(componentVariable);
-        } else if (!componentVariable->initialValue().empty()
+        if (!variable->initialValue().empty()
+            && generatorVariable->mVariable->initialValue().empty()) {
+            generatorVariable->setVariable(variable);
+        } else if ((variable != generatorVariable->mVariable)
+                   && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
             ModelPtr model = component->parentModel();
             ComponentPtr trackedVariableComponent = generatorVariable->mVariable->parentComponent();
             ModelPtr trackedVariableModel = trackedVariableComponent->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '" + componentVariable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' and "
+            err->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' and "
                                                                                                                                                      "variable '"
                                 + generatorVariable->mVariable->name() + "' in component '" + trackedVariableComponent->name() + "' of model '" + trackedVariableModel->name() + "' are equivalent and cannot therefore both be initialised.");
             err->setKind(Error::Kind::GENERATOR);
@@ -955,16 +953,6 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
 
 void Generator::GeneratorImpl::processEquation(const GeneratorEquationImplPtr &equation)
 {
-    // Update the equation's variables with those that have become our reference
-
-    for (const auto &equationVariable : equation->mVariables) {
-        for (const auto &variable : mVariables) {
-            if (equationVariable->isEquivalentVariable(variable->mVariable)) {
-                equation->replaceVariable(equationVariable, variable->mVariable);
-            }
-        }
-    }
-
     // Process the equation's AST
 
     processEquationAst(equation->mAst);
