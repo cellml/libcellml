@@ -25,6 +25,8 @@ class Error; /**< Forward declaration of Error class. */
 typedef std::shared_ptr<Error> ErrorPtr; /**< Type definition for shared error pointer. */
 class Generator; /**< Forward declaration of Generator class. */
 typedef std::shared_ptr<Generator> GeneratorPtr; /**< Type definition for shared generator pointer. */
+class GeneratorProfile; /**< Forward declaration of GeneratorProfile class. */
+typedef std::shared_ptr<GeneratorProfile> GeneratorProfilePtr; /**< Type definition for shared generator variable pointer. */
 class GeneratorVariable; /**< Forward declaration of GeneratorVariable class. */
 typedef std::shared_ptr<GeneratorVariable> GeneratorVariablePtr; /**< Type definition for shared generator variable pointer. */
 class Parser; /**< Forward declaration of Parser class. */
