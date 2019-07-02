@@ -47,6 +47,8 @@ limitations under the License.
 #endif
 namespace libcellml {
 
+static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
+
 struct GeneratorVariableImpl
 {
     enum class Type
@@ -61,6 +63,7 @@ struct GeneratorVariableImpl
     };
 
     Type mType = Type::UNKNOWN;
+    size_t mIndex = MAX_SIZE_T;
 
     VariablePtr mVariable;
 
@@ -569,8 +572,6 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 {
     // Return the nth child element of the given node, skipping anything that is
     // not int he MathML namespace
-
-    static const size_t MAX_SIZE_T = std::numeric_limits<std::size_t>::max();
 
     XmlNodePtr res = node->firstChild();
     size_t childNodeIndex = (res->isMathmlElement()) ? 0 : MAX_SIZE_T;
