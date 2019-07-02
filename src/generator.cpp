@@ -364,7 +364,6 @@ struct Generator::GeneratorImpl
                                          const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstImplPtr &ast);
-    void processEquation(const GeneratorEquationImplPtr &equation);
     void processModel(const ModelPtr &model);
 
     std::string neededMathMethods() const;
@@ -950,13 +949,6 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
     }
 }
 
-void Generator::GeneratorImpl::processEquation(const GeneratorEquationImplPtr &equation)
-{
-    // Process the equation's AST
-
-    processEquationAst(equation->mAst);
-}
-
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 {
     // Reset a few things in case we were to process the model more than once
@@ -998,10 +990,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->component(i));
     }
 
-    // Process our different equations
+    // Process our different equations' AST
 
     for (const auto &equation : mEquations) {
-        processEquation(equation);
+        processEquationAst(equation->mAst);
     }
 
     // Make sure that all our variables are valid
