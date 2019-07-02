@@ -188,7 +188,8 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
 }
 
 /*ISSUE359: reenable this test once we are done with the previous tests.
-TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
+TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
 
@@ -274,7 +275,8 @@ TEST(Generator, van_der_pol_model_1928)
     EXPECT_EQ(size_t(1), generator.variableCount());
 }
 
-TEST(Generator, coverage) {
+TEST(Generator, coverage)
+{
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
 
@@ -286,20 +288,3 @@ TEST(Generator, coverage) {
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 }
-
-/*ISSUE359: remove the below test once we are done testing things.
-TEST(Generator, test) {
-    libcellml::Parser parser;
-libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/hodgkin_huxley_squid_axon_model_1952.cellml"));
-//libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/noble_model_1962.cellml"));
-//libcellml::ModelPtr model = parser.parseModel(fileContents("../../../../Desktop/zhang_SAN_model_2000_all.cellml"));
-
-    EXPECT_EQ(size_t(0), parser.errorCount());
-
-    libcellml::Generator generator;
-
-    generator.processModel(model);
-
-    EXPECT_EQ(size_t(0), generator.errorCount());
-}
-*/
