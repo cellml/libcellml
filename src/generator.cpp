@@ -93,9 +93,9 @@ void GeneratorVariableImpl::setVariable(const VariablePtr &variable)
         // The variable has an initial value, so it can either be a constant or
         // a state. If the type of the variable is currently unknown then we
         // consider it to be a constant (then, if we find an ODE for that
-        // variable, we will that it was actually a state). On the other hand,
-        // if it was thought that the variable should be a state, then we now
-        // know that it is indeed one.
+        // variable, we will know that it was actually a state). On the other
+        // hand, if it was thought that the variable should be a state, then we
+        // now know that it is indeed one.
 
         if (mType == Type::UNKNOWN) {
             mType = Type::CONSTANT;
@@ -402,8 +402,8 @@ void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool 
 void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
-    // everything is fine) or if there is one known variable / ODE variable left
-    // (i.e. this equation is an overconstraint)
+    // everything is fine) or if there is one known (ODE) variable left (i.e.
+    // this equation is an overconstraint).
 
     if (mOrder != 0) {
         return;
@@ -417,14 +417,14 @@ void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
         }
     }
 
-    // Determine, from the (new) known variables / ODE variables, whether the
-    // equation is constant
+    // Determine, from the (new) known (ODE) variables, whether the equation is
+    // constant.
 
     mConstant = mConstant
                 && !containsNonConstantVariable(mVariables)
                 && !containsNonConstantVariable(mOdeVariables);
 
-    // Stop tracking (new) known variables / ODE variables
+    // Stop tracking (new) known (ODE) variables.
 #ifdef TRACES
     std::cout << "---------------------------------------" << std::endl;
     std::cout << "[" << this << "] [BEFORE] " << mVariables.size() << " | " << mOdeVariables.size() << std::endl;
@@ -436,10 +436,10 @@ void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
 
-    // If there is one variable / ODE variable left then update its type (if it
-    // is currently of unknown type), determine its index, consider it computed,
-    // and determine the type of our equation and set its order, if the variable
-    // / ODE variable is a state, computed constant or algebraic variable
+    // If there is one (ODE) variable left then update its type (if it is
+    // currently unknown), determine its index, consider it computed, and
+    // determine the type of our equation and set its order, if the (ODE)
+    // variable is a state, computed constant or algebraic variable.
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
@@ -559,7 +559,7 @@ bool Generator::GeneratorImpl::hasValidModel() const
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
 {
     // Return the number of child elements, in the MathML namespace, for the
-    // given node
+    // given node.
 
     XmlNodePtr childNode = node->firstChild();
     size_t res = (childNode->isMathmlElement()) ? 1 : 0;
@@ -578,7 +578,7 @@ size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
 XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, size_t index) const
 {
     // Return the nth child element of the given node, skipping anything that is
-    // not int he MathML namespace
+    // not int he MathML namespace.
 
     XmlNodePtr res = node->firstChild();
     size_t childNodeIndex = (res->isMathmlElement()) ? 0 : MAX_SIZE_T;
@@ -597,7 +597,7 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
 GeneratorVariableImplPtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable)
 {
     // Find and return, if there is one, the generator variable associated with
-    // given variable
+    // the given variable.
 
     for (const auto &generatorVariable : mVariables) {
         if (variable->isEquivalentVariable(generatorVariable->mVariable)) {
@@ -606,7 +606,7 @@ GeneratorVariableImplPtr Generator::GeneratorImpl::generatorVariable(const Varia
     }
 
     // No generator variable exists for the given variable, so create one, track
-    // it and return it
+    // it and return it.
 
     GeneratorVariableImplPtr generatorVariable = std::make_shared<GeneratorVariableImpl>(variable);
 
@@ -681,9 +681,9 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
         // distinguish between the two by checking its grand-parent. If it's a
-        // "math" MathML element then it means that it is used to describe
-        // "a = b" otherwise it is used to describe "a == b". In the former
-        // case, there is nothing more we need to do since ast is already of
+        // "math" element then it means that it is used to describe "a = b"
+        // otherwise it is used to describe "a == b". In the former case, there
+        // is nothing more we need to do since `ast` is already of
         // GeneratorEquationAstImpl::Type::EQ type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
@@ -898,11 +898,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CI, variable, astParent);
 
-        // Have our equation track the variable / ODE variable (by ODE variable,
-        // we mean a variable that is used in a `diff` element, i.e. a "normal"
-        // variable or the variable of integration)
+        // Have our equation track the (ODE) variable (by ODE variable, we mean
+        // a variable that is used in a diff element, i.e. a "normal" variable
+        // or the variable of integration)
 
         GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+        //ISSUE359 - Do we really need to track the VOI as an ODE variable?
 
         if ((node->parent()->firstChild()->isMathmlElement("diff")
              || (node->parent()->isMathmlElement("bvar")
@@ -953,13 +954,13 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 GeneratorEquationImplPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                                                const ComponentPtr &component)
 {
-    // Create and keep track of the equation associated with the given node
+    // Create and keep track of the equation associated with the given node.
 
     GeneratorEquationImplPtr equation = std::make_shared<GeneratorEquationImpl>();
 
     mEquations.push_back(equation);
 
-    // Actually process the node
+    // Actually process the node and return its corresponding equation.
 
     processNode(node, equation->mAst, equation->mAst->mParent, component, equation);
 
@@ -969,7 +970,7 @@ GeneratorEquationImplPtr Generator::GeneratorImpl::processNode(const XmlNodePtr 
 void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 {
     // Retrieve the math string associated with the given component and process
-    // it, one equation at a time
+    // it, one equation at a time.
 
     XmlDocPtr xmlDoc = std::make_shared<XmlDoc>();
     std::string math = component->math();
@@ -986,20 +987,20 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         }
     }
 
-    // Go through the given component's variable and make sure that everything
-    // makes sense
+    // Go through the given component's variables and make sure that everything
+    // makes sense.
 
     for (size_t i = 0; i < component->variableCount(); ++i) {
-        // Retrieve the corresponding generator variable
+        // Retrieve the variable's corresponding generator variable.
 
         VariablePtr variable = component->variable(i);
 
         GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
-        // Replace the variable held by generatorVariable, in case the existing
-        // one has no initial value while componentVariable does. Otherwise,
-        // generate an error if the variable held by generatorVariable and
-        // componentVariable are both initialised
+        // Replace the variable held by `generatorVariable`, in case the
+        // existing one has no initial value while `variable` does. Otherwise,
+        // generate an error if the variable held by `generatorVariable` and
+        // `variable` are both initialised.
 
         if (!variable->initialValue().empty()
             && generatorVariable->mVariable->initialValue().empty()) {
@@ -1021,7 +1022,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         }
     }
 
-    // Do the same for the components encapsulated by the given component
+    // Do the same for the components encapsulated by the given component.
 
     for (size_t i = 0; i < component->componentCount(); ++i) {
         processComponent(component->component(i));
@@ -1031,7 +1032,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
 void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImplPtr &ast)
 {
     // Look for the definition of a variable of integration and make sure that
-    // we don't have more than one of them and that it's not initialised
+    // we don't have more than one of it and that it's not initialised.
 
     GeneratorEquationAstImplPtr astParent = ast->mParent;
     GeneratorEquationAstImplPtr astGrandParent = (astParent != nullptr) ? astParent->mParent : nullptr;
@@ -1046,11 +1047,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
         // Note: we must make the variable a variable of integration in all
         //       cases (i.e. even if there is, for example, already another
         //       variable of integration) otherwise unnecessary error messages
-        //       may be added (since the variable would be of unknown type).
+        //       may be reported (since the type of the variable would be
+        //       unknown).
 
         if (mVariableOfIntegration == nullptr) {
             // Before keeping track of the variable of integration, make sure
-            // that it is not initialised
+            // that it is not initialised.
 
             if (!variable->initialValue().empty()) {
                 ComponentPtr component = variable->parentComponent();
@@ -1078,7 +1080,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
         }
     }
 
-    // Make sure that we only use first-order ODEs
+    // Make sure that we only use first-order ODEs.
 
     if ((ast->mType == GeneratorEquationAstImpl::Type::CN)
         && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstImpl::Type::DEGREE)
@@ -1097,14 +1099,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
         }
     }
 
-    // Make a variable a state if it is used in an ODE
+    // Make a variable a state if it is used in an ODE.
 
     if ((ast->mType == GeneratorEquationAstImpl::Type::CI)
         && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstImpl::Type::DIFF)) {
         generatorVariable(ast->mVariable)->makeState();
     }
 
-    // Recursively check the given AST's children
+    // Recursively check the given AST's children.
 
     if (ast->mLeft != nullptr) {
         processEquationAst(ast->mLeft);
@@ -1117,7 +1119,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 {
-    // Reset a few things in case we were to process the model more than once
+    // Reset a few things in case we were to process the model more than once.
     // Note: one would normally process the model only once, so we shouldn't
     //       need to do this, but better be safe than sorry.
 
@@ -1150,13 +1152,14 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mNeedAcoth = false;
 
     // Recursively process the model's components, so that we end up with an AST
-    // for each of the model's equations
+    // for each of the model's equations.
 
     for (size_t i = 0; i < model->componentCount(); ++i) {
         processComponent(model->component(i));
     }
 
-    // Process our different equations' AST
+    // Process our different equations' AST to determine the type of each of all
+    // our variables.
 
     if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
@@ -1164,7 +1167,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Determine the index of our constants
+    // Determine the index of our constant variables.
 
     size_t variableIndex = MAX_SIZE_T;
 
@@ -1174,8 +1177,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Loop over our equations, checking wich variable, if any, can be
-    // determined using a given equation
+    // Loop over our equations, checking wich variables, if any, can be
+    // determined using a given equation.
 
     size_t equationOrder = 0;
     size_t stateIndex = MAX_SIZE_T;
@@ -1199,7 +1202,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Make sure that all our variables are valid
+    // Make sure that all our variables are valid.
 
     if (mGenerator->errorCount() == 0) {
         for (const auto &variable : mVariables) {
@@ -1299,7 +1302,7 @@ bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstImplPtr &
 
 bool Generator::GeneratorImpl::isLogicalOrBitwiseOperator(const GeneratorEquationAstImplPtr &ast) const
 {
-    // Note: GeneratorEquationAstImpl::Type::NOT is a unary logical operator
+    // Note: GeneratorEquationAstImpl::Type::NOT is a unary logical operator,
     //       hence we don't include it here since this method is only used to
     //       determine whether parentheses should be added around some code.
 
@@ -1341,7 +1344,7 @@ std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &va
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
                                                            const GeneratorEquationAstImplPtr &ast)
 {
-    // Generate the code for the left and right branches of the given AST
+    // Generate the code for the left and right branches of the given AST.
 
     std::string left = generateCode(ast->mLeft);
     std::string right = generateCode(ast->mRight);
@@ -1439,9 +1442,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isAndOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
-        //       parentheses around OR and PIECEWISE. It's just that it looks
+        //       parentheses around OR and PIECEWISE. However, it looks
         //       better/clearer to have some around some other operators
-        //       (somewhat subjective indeed).
+        //       (agreed, this is somewhat subjective).
 
         if (isRelationalOperator(ast->mLeft)
             || isOrOperator(ast->mLeft)
@@ -1484,9 +1487,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isOrOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
-        //       parentheses around PIECEWISE. It's just that it looks
-        //       better/clearer to have some around some other operators
-        //       (somewhat subjective indeed).
+        //       parentheses around PIECEWISE. However, it looks better/clearer
+        //       to have some around some other operators (agreed, this is
+        //       somewhat subjective).
 
         if (isRelationalOperator(ast->mLeft)
             || isAndOperator(ast->mLeft)
@@ -1529,9 +1532,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isXorOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
-        //       parentheses around AND, OR and PIECEWISE. It's just that it
-        //       looks better/clearer to have some around some other operators
-        //       (somewhat subjective indeed).
+        //       parentheses around AND, OR and PIECEWISE. However, it looks
+        //       better/clearer to have some around some other operators
+        //       (agreed, this is somewhat subjective).
 
         if (isRelationalOperator(ast->mLeft)
             || isAndOperator(ast->mLeft)
@@ -1637,11 +1640,11 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 
 std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEquationAstImplPtr &ast)
 {
-    // Generate the code for the left branch of the given AST
+    // Generate the code for the left branch of the given AST.
 
     std::string left = generateCode(ast->mLeft);
 
-    // Determine whether parentheses should be added around the left code
+    // Determine whether parentheses should be added around the left code.
 
     if (isRelationalOperator(ast->mLeft)
         || isPlusOperator(ast->mLeft)
@@ -1675,7 +1678,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImplPtr &ast,
                                                    const GeneratorEquationAstImplPtr &parentAst)
 {
-    // Generate the code for the given AST
+    // Generate the code for the given AST.
 
     switch (ast->mType) {
         // Relational operators
@@ -1923,7 +1926,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         return mProfile->nanString();
     }
 
-    return {}; // We can never reach this point, but it is needed to make MSVC happy...
+    return {}; // We can never reach this point, but it is needed to make MSVC happy.
 }
 
 Generator::Generator()
@@ -2000,25 +2003,24 @@ void Generator::setProfile(const GeneratorProfilePtr &profile)
 
 void Generator::processModel(const ModelPtr &model)
 {
-    // Make sure that the model is valid before processing it
+    // Make sure that the model is valid before processing it.
 
-    /*ISSUE359: reenable the validation once it is known to work fine.
     libcellml::Validator validator;
 
     validator.validateModel(model);
 
     if (validator.errorCount() > 0) {
-        // The model is not valid, so retrieve the validation errors and keep a
-        // copy of them
+        // The model is not valid, so retrieve the validation errors and make
+        // them our own.
 
-        for (size_t i = 0; i < validator.errorCount(); ++i)
-            addError(validator.getError(i));
+        for (size_t i = 0; i < validator.errorCount(); ++i) {
+            addError(validator.error(i));
+        }
 
         return;
     }
-*/
 
-    // Process the model
+    // Process the model.
 
     mPimpl->processModel(model);
     //ISSUE359: remove the below code once we are done testing things.
