@@ -1327,7 +1327,7 @@ std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &va
     std::string arrayName;
 
     if (generatorVariable->mType == GeneratorVariableImpl::Type::STATE) {
-        arrayName = (ast->mParent->mType == GeneratorEquationAstImpl::Type::DIFF) ?
+        arrayName = ((ast != nullptr) && (ast->mParent->mType == GeneratorEquationAstImpl::Type::DIFF)) ?
                         mProfile->ratesArrayString() :
                         mProfile->statesArrayString();
     } else {
@@ -2143,7 +2143,8 @@ std::string Generator::initializeVariables() const
     std::string res;
 
     for (const auto &variable : mPimpl->mVariables) {
-        if (variable->mType == GeneratorVariableImpl::Type::CONSTANT) {
+        if ((variable->mType == GeneratorVariableImpl::Type::STATE)
+            || (variable->mType == GeneratorVariableImpl::Type::CONSTANT)) {
             res += mPimpl->generateVariableName(variable->mVariable) + " = " + variable->mVariable->initialValue() + mPimpl->mProfile->commandSeparatorString() + "\n";
         }
     }
