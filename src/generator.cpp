@@ -753,9 +753,15 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CI, variable, astParent);
 
+        // Have our equation track the variable / ODE variable (by ODE variable,
+        // we mean a variable that is used in a `diff` element, i.e. a "normal"
+        // variable or the variable of integration)
+
         GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
-        if (node->parent()->firstChild()->isMathmlElement("diff")) {
+        if ((node->parent()->firstChild()->isMathmlElement("diff")
+             || (node->parent()->isMathmlElement("bvar")
+                 && node->parent()->parent()->firstChild()->isMathmlElement("diff")))) {
             equation->addOdeVariable(generatorVariable);
         } else {
             equation->addVariable(generatorVariable);
