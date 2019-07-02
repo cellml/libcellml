@@ -394,7 +394,7 @@ void GeneratorEquationImpl::check(size_t &order)
     }
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
-        GeneratorVariableImplPtr variable = (mVariables.size() == 1)?mVariables.front():mOdeVariables.front();
+        GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         if (variable->mType != GeneratorVariableImpl::Type::UNKNOWN) {
             return;
