@@ -310,6 +310,8 @@ struct GeneratorEquationImpl
     void addVariable(const GeneratorVariableImplPtr &variable);
     void addOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
+    static bool containsNonConstantVariable(const std::list<GeneratorVariableImplPtr> &variables);
+
     static bool knownVariable(const GeneratorVariableImplPtr &variable);
     static bool knownOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
@@ -335,6 +337,15 @@ void GeneratorEquationImpl::addOdeVariable(const GeneratorVariableImplPtr &odeVa
     if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
         mOdeVariables.push_back(odeVariable);
     }
+}
+
+bool GeneratorEquationImpl::containsNonConstantVariable(const std::list<GeneratorVariableImplPtr> &variables)
+{
+    return std::find_if(variables.begin(), variables.end(), [](const GeneratorVariableImplPtr &variable) {
+               return (variable->mType != GeneratorVariableImpl::Type::UNKNOWN)
+                      && (variable->mType != GeneratorVariableImpl::Type::CONSTANT);
+           })
+           != std::end(variables);
 }
 
 bool GeneratorEquationImpl::knownVariable(const GeneratorVariableImplPtr &variable)
@@ -401,6 +412,13 @@ void GeneratorEquationImpl::check(size_t &order)
             return;
         }
     }
+
+    // Determine, from the (new) known variables / ODE variables, whether the
+    // equation is constant
+
+    mConstant = mConstant
+                && !containsNonConstantVariable(mVariables)
+                && !containsNonConstantVariable(mOdeVariables);
 
     // Stop tracking (new) known variables / ODE variables
 #ifdef TRACES
