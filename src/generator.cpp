@@ -41,7 +41,7 @@ limitations under the License.
 #endif
 
 //ISSUE359: remove the below code once we are done testing things.
-//#define TRACES
+#define TRACES
 #ifdef TRACES
 #    include <iostream>
 #endif
