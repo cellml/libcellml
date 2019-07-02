@@ -30,6 +30,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <limits>
+#include <list>
 #include <vector>
 
 #undef NAN
