@@ -129,6 +129,10 @@ TEST(GeneratorProfile, defaultValues)
 
     // Miscellaneous
 
+    EXPECT_EQ("states", generatorProfile->statesArrayString());
+    EXPECT_EQ("rates", generatorProfile->ratesArrayString());
+    EXPECT_EQ("variables", generatorProfile->variablesArrayString());
+
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
 }
 
@@ -356,7 +360,15 @@ TEST(GeneratorProfile, miscellaneous)
 
     const std::string value = "value";
 
+    generatorProfile->setStatesArrayString(value);
+    generatorProfile->setRatesArrayString(value);
+    generatorProfile->setVariablesArrayString(value);
+
     generatorProfile->setCommandSeparatorString(value);
 
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
+
+    EXPECT_EQ(value, generatorProfile->statesArrayString());
+    EXPECT_EQ(value, generatorProfile->ratesArrayString());
+    EXPECT_EQ(value, generatorProfile->variablesArrayString());
 }

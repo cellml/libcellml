@@ -253,6 +253,15 @@ public:
 
     // Miscellaneous
 
+    std::string statesArrayString() const;
+    void setStatesArrayString(const std::string &statesArrayString);
+
+    std::string ratesArrayString() const;
+    void setRatesArrayString(const std::string &ratesArrayString);
+
+    std::string variablesArrayString() const;
+    void setVariablesArrayString(const std::string &variablesArrayString);
+
     std::string commandSeparatorString() const;
     void setCommandSeparatorString(const std::string &commandSeparatorString);
 

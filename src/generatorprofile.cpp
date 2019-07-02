@@ -127,6 +127,10 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
+    std::string mStatesArrayString = "states";
+    std::string mRatesArrayString = "rates";
+    std::string mVariablesArrayString = "variables";
+
     std::string mCommandSeparatorString = ";";
 };
 
@@ -831,6 +835,36 @@ std::string GeneratorProfile::nanString() const
 void GeneratorProfile::setNanString(const std::string &nanString)
 {
     mPimpl->mNanString = nanString;
+}
+
+std::string GeneratorProfile::statesArrayString() const
+{
+    return mPimpl->mStatesArrayString;
+}
+
+void GeneratorProfile::setStatesArrayString(const std::string &statesArrayString)
+{
+    mPimpl->mStatesArrayString = statesArrayString;
+}
+
+std::string GeneratorProfile::ratesArrayString() const
+{
+    return mPimpl->mRatesArrayString;
+}
+
+void GeneratorProfile::setRatesArrayString(const std::string &ratesArrayString)
+{
+    mPimpl->mRatesArrayString = ratesArrayString;
+}
+
+std::string GeneratorProfile::variablesArrayString() const
+{
+    return mPimpl->mVariablesArrayString;
+}
+
+void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
+{
+    mPimpl->mVariablesArrayString = variablesArrayString;
 }
 
 std::string GeneratorProfile::commandSeparatorString() const
