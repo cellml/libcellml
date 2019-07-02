@@ -310,7 +310,7 @@ struct GeneratorEquationImpl
     void addOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
     static bool knownVariable(const GeneratorVariableImplPtr &variable);
-    static bool knownOdeVariable(const GeneratorVariableImplPtr &variable);
+    static bool knownOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
     void check(size_t &order);
 };
@@ -344,10 +344,10 @@ bool GeneratorEquationImpl::knownVariable(const GeneratorVariableImplPtr &variab
            || (variable->mType == GeneratorVariableImpl::Type::CONSTANT);
 }
 
-bool GeneratorEquationImpl::knownOdeVariable(const GeneratorVariableImplPtr &variable)
+bool GeneratorEquationImpl::knownOdeVariable(const GeneratorVariableImplPtr &odeVariable)
 {
-    return variable->mComputed
-           || (variable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION);
+    return odeVariable->mComputed
+           || (odeVariable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION);
 }
 
 #ifdef TRACES
@@ -1951,29 +1951,31 @@ void Generator::processModel(const ModelPtr &model)
     for (size_t i = 0; i < errorCount(); ++i) {
         std::cout << "Generator error #" << i + 1 << ": " << error(i)->description() << std::endl;
     }
-    std::cout << "Number of variables: " << mPimpl->mVariables.size() << std::endl;
-    int i = 0;
-    for (const auto &variable : mPimpl->mVariables) {
-        std::cout << "Variable #" << ++i << " [" << int(variable->mType)
-                  << "]: " << variable->mVariable->name().c_str()
-                  << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
-                  << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
+    if (errorCount() == 0) {
+        std::cout << "Number of variables: " << mPimpl->mVariables.size() << std::endl;
+        int i = 0;
+        for (const auto &variable : mPimpl->mVariables) {
+            std::cout << "Variable #" << ++i << " [" << int(variable->mType)
+                      << "]: " << variable->mVariable->name().c_str()
+                      << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
+                      << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
+        }
+        std::cout << "[neededMathMethods()]---------------------------------------[BEGIN]" << std::endl;
+        std::cout << neededMathMethods() << std::endl;
+        std::cout << "[neededMathMethods()]---------------------------------------[END]" << std::endl;
+        std::cout << "[initializeVariables()]---------------------------------------[BEGIN]" << std::endl;
+        std::cout << initializeVariables() << std::endl;
+        std::cout << "[initializeVariables()]---------------------------------------[END]" << std::endl;
+        std::cout << "[computeConstantEquations()]---------------------------------------[BEGIN]" << std::endl;
+        std::cout << computeConstantEquations() << std::endl;
+        std::cout << "[computeConstantEquations()]---------------------------------------[END]" << std::endl;
+        std::cout << "[computeRateEquations()]---------------------------------------[BEGIN]" << std::endl;
+        std::cout << computeRateEquations() << std::endl;
+        std::cout << "[computeRateEquations()]---------------------------------------[END]" << std::endl;
+        std::cout << "[computeAlgebraicEquations()]---------------------------------------[BEGIN]" << std::endl;
+        std::cout << computeAlgebraicEquations() << std::endl;
+        std::cout << "[computeAlgebraicEquations()]---------------------------------------[END]" << std::endl;
     }
-    std::cout << "[neededMathMethods()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << neededMathMethods() << std::endl;
-    std::cout << "[neededMathMethods()]---------------------------------------[END]" << std::endl;
-    std::cout << "[initializeVariables()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << initializeVariables() << std::endl;
-    std::cout << "[initializeVariables()]---------------------------------------[END]" << std::endl;
-    std::cout << "[computeConstantEquations()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << computeConstantEquations() << std::endl;
-    std::cout << "[computeConstantEquations()]---------------------------------------[END]" << std::endl;
-    std::cout << "[computeRateEquations()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << computeRateEquations() << std::endl;
-    std::cout << "[computeRateEquations()]---------------------------------------[END]" << std::endl;
-    std::cout << "[computeAlgebraicEquations()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << computeAlgebraicEquations() << std::endl;
-    std::cout << "[computeAlgebraicEquations()]---------------------------------------[END]" << std::endl;
 #endif
 }
 
