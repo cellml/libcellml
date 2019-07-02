@@ -318,7 +318,7 @@ struct GeneratorEquationImpl
     static bool knownVariable(const GeneratorVariableImplPtr &variable);
     static bool knownOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
-    void check(size_t &order);
+    void check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex);
 };
 
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
@@ -398,7 +398,7 @@ void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool 
 }
 #endif
 
-void GeneratorEquationImpl::check(size_t &order)
+void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine) or if there is one known variable / ODE variable left
@@ -436,9 +436,9 @@ void GeneratorEquationImpl::check(size_t &order)
     mOdeVariables.remove_if(knownOdeVariable);
 
     // If there is one variable / ODE variable left then update its type (if it
-    // is currently of unknown type), consider computed, and determine the type
-    // of our equation and set its order, if the variable / ODE variable is a
-    // state, computed constant or algebraic variable
+    // is currently of unknown type), determine its index, consider it computed,
+    // and determine the type of our equation and set its order, if the variable
+    // / ODE variable is a state, computed constant or algebraic variable
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
@@ -450,6 +450,10 @@ void GeneratorEquationImpl::check(size_t &order)
         if ((variable->mType == GeneratorVariableImpl::Type::STATE)
             || (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT)
             || (variable->mType == GeneratorVariableImpl::Type::ALGEBRAIC)) {
+            variable->mIndex = (variable->mType == GeneratorVariableImpl::Type::STATE) ?
+                        ++stateIndex :
+                        ++variableIndex;
+
             variable->mComputed = true;
 
             mType = (variable->mType == GeneratorVariableImpl::Type::STATE) ?
@@ -458,7 +462,7 @@ void GeneratorEquationImpl::check(size_t &order)
                         Type::CONSTANT :
                         Type::ALGEBRAIC;
 
-            mOrder = ++order;
+            mOrder = ++equationOrder;
         }
     }
 #ifdef TRACES
@@ -1160,7 +1164,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Loop over our equations, checking wich variable, if any, can be
     // determined using a given equation
 
-    size_t order = 0;
+    size_t equationOrder = 0;
+    size_t stateIndex = MAX_SIZE_T;
+    size_t variableIndex = MAX_SIZE_T;
 
     if (mGenerator->errorCount() == 0) {
         for (;;) {
@@ -1170,7 +1176,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             for (const auto &equation : mEquations) {
                 oldAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
 
-                equation->check(order);
+                equation->check(equationOrder, stateIndex, variableIndex);
 
                 newAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
             }
