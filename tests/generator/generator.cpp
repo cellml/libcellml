@@ -274,7 +274,6 @@ TEST(Generator, van_der_pol_model_1928)
     EXPECT_EQ(size_t(1), generator.variableCount());
 }
 
-/*ISSUE359: reenable this test once we can correctly type a model's variables.
 TEST(Generator, coverage) {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
@@ -287,7 +286,6 @@ TEST(Generator, coverage) {
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 }
-*/
 
 /*ISSUE359: remove the below test once we are done testing things.
 TEST(Generator, test) {
