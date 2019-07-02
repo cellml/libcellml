@@ -1124,12 +1124,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
 
             if ((newAllVariableCount == mEquations.size()) || (oldAllVariableCount == newAllVariableCount)) {
-                std::cout << "ALL DONE!" << std::endl;
-
                 break;
             }
-
-            std::cout << "CARRYING ON..." << std::endl;
         }
     }
 
