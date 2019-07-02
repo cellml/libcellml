@@ -302,6 +302,8 @@ struct GeneratorEquationImpl
     std::list<GeneratorVariableImplPtr> mVariables;
     std::list<GeneratorVariableImplPtr> mOdeVariables;
 
+    bool mConstant = true;
+
     explicit GeneratorEquationImpl();
 
     void addVariable(const GeneratorVariableImplPtr &variable);
@@ -383,14 +385,23 @@ void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool 
 
 void GeneratorEquationImpl::check(size_t &order)
 {
-    // Remove the (new) known variables from our list of variables and ODE
-    // variables, should there be more than one variable or more than one ODE
-    // variable left
+    // Nothing to check if the equation has already been given an order (i.e.
+    // everything is fine) or if there is one known variable / ODE variable left
+    // (i.e. this equation is an overconstraint)
 
-    if (mVariables.size() + mOdeVariables.size() == 1) {
+    if (mOrder != 0) {
         return;
     }
 
+    if (mVariables.size() + mOdeVariables.size() == 1) {
+        GeneratorVariableImplPtr variable = (mVariables.size() == 1)?mVariables.front():mOdeVariables.front();
+
+        if (variable->mType != GeneratorVariableImpl::Type::UNKNOWN) {
+            return;
+        }
+    }
+
+    // Stop tracking (new) known variables / ODE variables
 #ifdef TRACES
     std::cout << "---------------------------------------" << std::endl;
     std::cout << "[" << this << "] [BEFORE] " << mVariables.size() << " | " << mOdeVariables.size() << std::endl;
@@ -398,8 +409,24 @@ void GeneratorEquationImpl::check(size_t &order)
     std::cout << "                 ---" << std::endl;
     outputVariables(mOdeVariables, true);
 #endif
+
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
+
+    // If there is one variable of one ODE variable left and it is of unknown
+    // type then update the type of that variable / ODE variable and set the
+    // order of the equation
+
+    if (mVariables.size() + mOdeVariables.size() == 1) {
+        GeneratorVariableImplPtr variable = (mVariables.size() == 1)?mVariables.front():mOdeVariables.front();
+
+        if (variable->mType == GeneratorVariableImpl::Type::UNKNOWN) {
+            variable->mType = mConstant?GeneratorVariableImpl::Type::COMPUTED_CONSTANT:GeneratorVariableImpl::Type::ALGEBRAIC;
+            variable->mComputed = true;
+
+            mOrder = ++order;
+        }
+    }
 #ifdef TRACES
     std::cout << "[" << this << "] [AFTER]  " << mVariables.size() << " | " << mOdeVariables.size() << std::endl;
     outputVariables(mVariables, false);
@@ -407,10 +434,6 @@ void GeneratorEquationImpl::check(size_t &order)
     outputVariables(mOdeVariables, true);
     std::cout << "---------------------------------------" << std::endl;
 #endif
-
-    if (mVariables.size() + mOdeVariables.size() == 1) {
-        mOrder = ++order;
-    }
 }
 
 struct Generator::GeneratorImpl
