@@ -444,9 +444,9 @@ void GeneratorEquationImpl::check(size_t &order)
             variable->mType = mConstant ? GeneratorVariableImpl::Type::COMPUTED_CONSTANT : GeneratorVariableImpl::Type::ALGEBRAIC;
         }
 
-        if ((variable->mType != GeneratorVariableImpl::Type::STATE)
-            || (variable->mType != GeneratorVariableImpl::Type::COMPUTED_CONSTANT)
-            || (variable->mType != GeneratorVariableImpl::Type::ALGEBRAIC)) {
+        if ((variable->mType == GeneratorVariableImpl::Type::STATE)
+            || (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT)
+            || (variable->mType == GeneratorVariableImpl::Type::ALGEBRAIC)) {
             variable->mComputed = true;
 
             mType = (variable->mType == GeneratorVariableImpl::Type::STATE) ?
