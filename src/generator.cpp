@@ -55,9 +55,9 @@ struct GeneratorVariableImpl
         SHOULD_BE_STATE,
         VARIABLE_OF_INTEGRATION,
         STATE,
-        ALGEBRAIC,
         CONSTANT,
-        COMPUTED_CONSTANT
+        COMPUTED_CONSTANT,
+        ALGEBRAIC
     };
 
     Type mType = Type::UNKNOWN;
@@ -380,14 +380,14 @@ void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool 
         case GeneratorVariableImpl::Type::STATE:
             type = ode ? "rate" : "state";
             break;
-        case GeneratorVariableImpl::Type::ALGEBRAIC:
-            type = "algebraic";
-            break;
         case GeneratorVariableImpl::Type::CONSTANT:
             type = "constant";
             break;
         case GeneratorVariableImpl::Type::COMPUTED_CONSTANT:
             type = "computed constant";
+            break;
+        case GeneratorVariableImpl::Type::ALGEBRAIC:
+            type = "algebraic";
             break;
         }
         std::cout << "                 " << variable->mVariable->name() << ": " << type << std::endl;
@@ -1185,9 +1185,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 break;
             case GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION:
             case GeneratorVariableImpl::Type::STATE:
-            case GeneratorVariableImpl::Type::ALGEBRAIC:
             case GeneratorVariableImpl::Type::CONSTANT:
             case GeneratorVariableImpl::Type::COMPUTED_CONSTANT:
+            case GeneratorVariableImpl::Type::ALGEBRAIC:
                 break;
             }
 
