@@ -177,9 +177,9 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
     EXPECT_EQ(size_t(1), generator.variableCount());
 
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_constant_on_rhs/initializeVariables.out"),
-              generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING,
+              generator.initializeVariables());
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_constant_on_rhs/computeConstantEquations.out"),
               generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING,
               generator.computeRateEquations());
