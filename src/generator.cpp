@@ -2005,6 +2005,7 @@ void Generator::processModel(const ModelPtr &model)
 {
     // Make sure that the model is valid before processing it.
 
+    /*ISSUE359: reenable the validation once it is known to work fine.
     libcellml::Validator validator;
 
     validator.validateModel(model);
@@ -2019,6 +2020,7 @@ void Generator::processModel(const ModelPtr &model)
 
         return;
     }
+*/
 
     // Process the model.
 
