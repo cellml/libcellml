@@ -292,6 +292,8 @@ struct GeneratorEquationImpl
 
     Type mType = Type::UNKNOWN;
 
+    size_t mOrder = 0;
+
     GeneratorEquationAstImplPtr mAst;
 
     std::list<GeneratorVariableImplPtr> mVariables;
@@ -305,7 +307,7 @@ struct GeneratorEquationImpl
     static bool knownVariable(const GeneratorVariableImplPtr &variable);
     static bool knownOdeVariable(const GeneratorVariableImplPtr &variable);
 
-    void check();
+    void check(size_t &order);
 };
 
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
@@ -376,7 +378,7 @@ void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool 
 }
 #endif
 
-void GeneratorEquationImpl::check()
+void GeneratorEquationImpl::check(size_t &order)
 {
     // Remove the (new) known variables from our list of variables and ODE
     // variables, should there be more than one variable or more than one ODE
@@ -402,6 +404,10 @@ void GeneratorEquationImpl::check()
     outputVariables(mOdeVariables, true);
     std::cout << "---------------------------------------" << std::endl;
 #endif
+
+    if (mVariables.size() + mOdeVariables.size() == 1) {
+        mOrder = ++order;
+    }
 }
 
 struct Generator::GeneratorImpl
@@ -1102,6 +1108,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Loop over our equations, checking wich variable, if any, can be
     // determined using a given equation
 
+    size_t order = 0;
+
     if (mGenerator->errorCount() == 0) {
         for (;;) {
             size_t oldAllVariableCount = 0;
@@ -1110,7 +1118,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             for (const auto &equation : mEquations) {
                 oldAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
 
-                equation->check();
+                equation->check(order);
 
                 newAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
             }
