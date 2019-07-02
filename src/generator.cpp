@@ -46,6 +46,72 @@ limitations under the License.
 #endif
 namespace libcellml {
 
+struct GeneratorVariableImpl
+{
+    enum class Type
+    {
+        UNKNOWN,
+        SHOULD_BE_STATE,
+        VARIABLE_OF_INTEGRATION,
+        STATE,
+        ALGEBRAIC,
+        CONSTANT,
+        COMPUTED_CONSTANT
+    };
+
+    Type mType = Type::UNKNOWN;
+
+    VariablePtr mVariable;
+
+    explicit GeneratorVariableImpl(const VariablePtr &variable);
+
+    void setVariable(const VariablePtr &variable);
+
+    void makeVariableOfIntegration();
+    void makeState();
+};
+
+using GeneratorVariableImplPtr = std::shared_ptr<GeneratorVariableImpl>;
+
+GeneratorVariableImpl::GeneratorVariableImpl(const VariablePtr &variable)
+{
+    setVariable(variable);
+}
+
+void GeneratorVariableImpl::setVariable(const VariablePtr &variable)
+{
+    mVariable = variable;
+
+    if (!variable->initialValue().empty()) {
+        // The variable has an initial value, so it can either be a constant or
+        // a state. If the type of the variable is currently unknown then we
+        // consider it to be a constant (then, if we find an ODE for that
+        // variable, we will that it was actually a state). On the other hand,
+        // if it was thought that the variable should be a state, then we now
+        // know that it is indeed one.
+
+        if (mType == Type::UNKNOWN) {
+            mType = Type::CONSTANT;
+        } else if (mType == Type::SHOULD_BE_STATE) {
+            mType = Type::STATE;
+        }
+    }
+}
+
+void GeneratorVariableImpl::makeVariableOfIntegration()
+{
+    mType = Type::VARIABLE_OF_INTEGRATION;
+}
+
+void GeneratorVariableImpl::makeState()
+{
+    if (mType == Type::UNKNOWN) {
+        mType = Type::SHOULD_BE_STATE;
+    } else if (mType == Type::CONSTANT) {
+        mType = Type::STATE;
+    }
+}
+
 struct GeneratorEquationAstImpl;
 using GeneratorEquationAstImplPtr = std::shared_ptr<GeneratorEquationAstImpl>;
 
@@ -215,11 +281,6 @@ GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const VariablePtr 
 {
 }
 
-struct GeneratorEquationImpl;
-using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
-struct GeneratorVariableImpl;
-using GeneratorVariableImplPtr = std::shared_ptr<GeneratorVariableImpl>;
-
 struct GeneratorEquationImpl
 {
     enum class Type
@@ -240,6 +301,8 @@ struct GeneratorEquationImpl
     void addVariable(const GeneratorVariableImplPtr &variable);
 };
 
+using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
+
 GeneratorEquationImpl::GeneratorEquationImpl()
     : mAst(std::make_shared<GeneratorEquationAstImpl>())
 {
@@ -249,70 +312,6 @@ void GeneratorEquationImpl::addVariable(const GeneratorVariableImplPtr &variable
 {
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
-    }
-}
-
-struct GeneratorVariableImpl
-{
-    enum class Type
-    {
-        UNKNOWN,
-        SHOULD_BE_STATE,
-        VARIABLE_OF_INTEGRATION,
-        STATE,
-        ALGEBRAIC,
-        CONSTANT,
-        COMPUTED_CONSTANT
-    };
-
-    Type mType = Type::UNKNOWN;
-
-    VariablePtr mVariable;
-
-    explicit GeneratorVariableImpl(const VariablePtr &variable);
-
-    void setVariable(const VariablePtr &variable);
-
-    void makeVariableOfIntegration();
-    void makeState();
-};
-
-GeneratorVariableImpl::GeneratorVariableImpl(const VariablePtr &variable)
-{
-    setVariable(variable);
-}
-
-void GeneratorVariableImpl::setVariable(const VariablePtr &variable)
-{
-    mVariable = variable;
-
-    if (!variable->initialValue().empty()) {
-        // The variable has an initial value, so it can either be a constant or
-        // a state. If the type of the variable is currently unknown then we
-        // consider it to be a constant (then, if we find an ODE for that
-        // variable, we will that it was actually a state). On the other hand,
-        // if it was thought that the variable should be a state, then we now
-        // know that it is indeed one.
-
-        if (mType == Type::UNKNOWN) {
-            mType = Type::CONSTANT;
-        } else if (mType == Type::SHOULD_BE_STATE) {
-            mType = Type::STATE;
-        }
-    }
-}
-
-void GeneratorVariableImpl::makeVariableOfIntegration()
-{
-    mType = Type::VARIABLE_OF_INTEGRATION;
-}
-
-void GeneratorVariableImpl::makeState()
-{
-    if (mType == Type::UNKNOWN) {
-        mType = Type::SHOULD_BE_STATE;
-    } else if (mType == Type::CONSTANT) {
-        mType = Type::STATE;
     }
 }
 
