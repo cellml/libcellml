@@ -187,7 +187,6 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
               generator.computeAlgebraicEquations());
 }
 
-/*ISSUE359: reenable this test once we are done with the previous tests.
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
 {
     libcellml::Parser parser;
@@ -201,7 +200,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 
-    EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator.modelType());
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
 
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
@@ -216,7 +215,6 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
     EXPECT_EQ(EMPTY_STRING,
               generator.computeAlgebraicEquations());
 }
-*/
 
 TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
 {
