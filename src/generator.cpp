@@ -437,10 +437,10 @@ void GeneratorEquationImpl::check(size_t &order)
     // order of the equation
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
-        GeneratorVariableImplPtr variable = (mVariables.size() == 1)?mVariables.front():mOdeVariables.front();
+        GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         if (variable->mType == GeneratorVariableImpl::Type::UNKNOWN) {
-            variable->mType = mConstant?GeneratorVariableImpl::Type::COMPUTED_CONSTANT:GeneratorVariableImpl::Type::ALGEBRAIC;
+            variable->mType = mConstant ? GeneratorVariableImpl::Type::COMPUTED_CONSTANT : GeneratorVariableImpl::Type::ALGEBRAIC;
             variable->mComputed = true;
 
             mOrder = ++order;
