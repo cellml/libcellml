@@ -19,6 +19,7 @@ limitations under the License.
 #include "libcellml/types.h"
 
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
 namespace libcellml {
@@ -33,7 +34,8 @@ namespace libcellml {
 struct Logger::LoggerImpl
 {
     std::vector<IssuePtr> mIssues;
-    std::vector<std::vector<size_t>> mTypeIndex {{}, {}, {}}; // TODO Don't like this ...
+    std::vector<std::vector<size_t>> mTypeIndex {{}, {}, {}}; // TODO Don't like this ... want cleaner way to get length of Type enum
+    // std::vector<int> mIndex;
 };
 
 Logger::Logger()
@@ -74,6 +76,7 @@ void Logger::clearIssues()
 {
     // TODO What's the rationale of using .clear() instead of swapping with empty vector here?
     mPimpl->mIssues.clear();
+    // mPimpl->mIndex.clear();
     mPimpl->mTypeIndex.at(static_cast<size_t>(libcellml::Issue::Type::ERROR)).clear();
     mPimpl->mTypeIndex.at(static_cast<size_t>(libcellml::Issue::Type::WARNING)).clear();
     mPimpl->mTypeIndex.at(static_cast<size_t>(libcellml::Issue::Type::HINT)).clear();
@@ -82,8 +85,10 @@ void Logger::clearIssues()
 void Logger::addIssue(const IssuePtr &issue)
 {
     mPimpl->mIssues.push_back(issue);
-
     auto typeIndex = static_cast<size_t>(issue->type());
+
+    // mPimpl->mIndex.push_back(mPimpl->mTypeIndex.at(typeIndex).size());
+
     mPimpl->mTypeIndex.at(typeIndex).push_back(mPimpl->mIssues.size() - size_t(1));
 }
 
@@ -127,19 +132,19 @@ IssuePtr Logger::issue(Issue::Type type, size_t index) const
 
 IssuePtr Logger::issue(std::vector<Issue::Type> &types, size_t index) const
 {
+    // TODO This seems like a super inefficient way to do it ... a lot of manipulation to retrieve one item :(
     IssuePtr err = nullptr;
-
     if (index < issueCount(types)) {
-        // Get vector of issues of type in types
-        std::vector<size_t> issues;
-        issues.reserve(issueCount(types));
-
+        std::vector<int> get_issues(mPimpl->mIssues.size(), -1);
         for (auto type : types) {
             auto t = static_cast<size_t>(type);
-            std::copy(mPimpl->mTypeIndex.at(t).begin(), mPimpl->mTypeIndex.at(t).end(), issues.rbegin());
+            for (auto const &i : mPimpl->mTypeIndex.at(t)) {
+                get_issues.at(i) = static_cast<int>(i);
+            }
         }
-        std::sort(issues.begin(), issues.end());
-        err = mPimpl->mIssues.at(issues.at(index));
+
+        get_issues.erase(std::remove(get_issues.begin(), get_issues.end(), -1), get_issues.end());
+        err = mPimpl->mIssues.at(static_cast<size_t>(get_issues.at(index)));
     }
     return err;
 }

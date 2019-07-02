@@ -17,6 +17,7 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
+#include <iostream>
 #include <libcellml>
 
 TEST(Issue, createIssue)
@@ -502,7 +503,7 @@ TEST(Issue, collectWarnings)
     m->addComponent(c);
 
     validator.validateModel(m);
-    printIssues(validator);
+    // printIssues(validator);
     EXPECT_EQ(size_t(0), validator.issueCount(libcellml::Issue::Type::ERROR)); // No ERROR-type issues generated
 
     // Want to generate a warning for the empty MathML block
@@ -513,7 +514,7 @@ TEST(Issue, collectWarnings)
     EXPECT_EQ(size_t(0), validator.issueCount()); // Defaults to all types of error
 }
 
-TEST(Issue, orderOfIssuesValidator)
+TEST(Issue, simpleCombinationOfIssues)
 {
     // Test that issues are reported in the order encountered, regardless of the level at which they're requested
     std::vector<std::string> expectedIssues;
@@ -551,7 +552,8 @@ TEST(Issue, orderOfIssuesValidator)
     c3->setName("");
     expectedErrors = {
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Component does not have a valid name attribute."};
+        "Component does not have a valid name attribute.",
+    };
 
     // Making a hint: Equivalent variables with mis-matched multipliers in the units
     // TODO this will not generate a hint as multiplier checking is not active yet.
@@ -562,7 +564,8 @@ TEST(Issue, orderOfIssuesValidator)
     v3->setUnits(u3);
     libcellml::Variable::addEquivalence(v1, v3);
     expectedHints = {
-        "Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable3' with units of 'kilometre', by a factor of 10^3."};
+        "Multiplier mismatch in units of equivalent variables 'variable1' with units of 'metre', and 'variable3' with units of 'kilometre', by a factor of 10^3.",
+    };
 
     // Making a warning: empty mathml field in resets
     // TODO these will all fail to compile because they use the new format for resets
@@ -588,11 +591,168 @@ TEST(Issue, orderOfIssuesValidator)
     // EXPECT_EQ(size_t(5), validator.issueCount()); // Default returns all issue types
     EXPECT_EQ(size_t(2), validator.issueCount(libcellml::Issue::Type::ERROR));
 
-    printIssues(validator);
+    // printIssues(validator);
     // EXPECT_EQ(size_t(2), validator.issueCount(libcellml::Issue::Type::WARNING));
     // EXPECT_EQ(size_t(1), validator.issueCount(libcellml::Issue::Type::HINT));
 
     // std::vector<libcellml::Issue::Type> findType {libcellml::Issue::Type::ERROR, libcellml::Issue::Type::HINT};
 
     // EXPECT_EQ(size_t(3), validator.issueCount(findType)); // Test combination of types
+}
+
+TEST(Issue, orderOfIssueTypes)
+{
+    std::vector<std::string> expectedIssues = {
+        "Error 1",
+        "Warning 1",
+        "Hint 1",
+        "Error 2",
+        "Warning 2",
+        "Hint 2",
+        "Error 3",
+        "Warning 3",
+        "Hint 3",
+        "Error 4",
+        "Warning 4",
+        "Error 5",
+    };
+
+    std::vector<std::string> expectedErrors = {
+        "Error 1",
+        "Error 2",
+        "Error 3",
+        "Error 4",
+        "Error 5",
+    };
+
+    std::vector<std::string> expectedWarnings = {
+        "Warning 1",
+        "Warning 2",
+        "Warning 3",
+        "Warning 4",
+    };
+
+    std::vector<std::string> expectedHints = {
+        "Hint 1",
+        "Hint 2",
+        "Hint 3",
+    };
+
+    std::vector<std::string> expectedErrorsAndWarnings = {
+        "Error 1",
+        "Warning 1",
+        "Error 2",
+        "Warning 2",
+        "Error 3",
+        "Warning 3",
+        "Error 4",
+        "Warning 4",
+        "Error 5",
+    };
+
+    std::vector<std::string> expectedErrorsAndHints = {
+        "Error 1",
+        "Hint 1",
+        "Error 2",
+        "Hint 2",
+        "Error 3",
+        "Hint 3",
+        "Error 4",
+        "Error 5",
+    };
+
+    libcellml::Logger logger;
+    std::vector<libcellml::Issue::Type> errorAndWarningType = {libcellml::Issue::Type::ERROR, libcellml::Issue::Type::WARNING};
+    std::vector<libcellml::Issue::Type> hintAndErrorType = {libcellml::Issue::Type::HINT, libcellml::Issue::Type::ERROR};
+    std::vector<libcellml::Issue::Type> allTypes = {libcellml::Issue::Type::HINT, libcellml::Issue::Type::ERROR, libcellml::Issue::Type::WARNING};
+
+    libcellml::IssuePtr e1 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr e2 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr e3 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr e4 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr e5 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr w1 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr w2 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr w3 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr w4 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr h1 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr h2 = std::make_shared<libcellml::Issue>();
+    libcellml::IssuePtr h3 = std::make_shared<libcellml::Issue>();
+
+    e1->setDescription("Error 1");
+    e2->setDescription("Error 2");
+    e3->setDescription("Error 3");
+    e4->setDescription("Error 4");
+    e5->setDescription("Error 5");
+    w1->setDescription("Warning 1");
+    w2->setDescription("Warning 2");
+    w3->setDescription("Warning 3");
+    w4->setDescription("Warning 4");
+    h1->setDescription("Hint 1");
+    h2->setDescription("Hint 2");
+    h3->setDescription("Hint 3");
+
+    // default Type is ERROR so don't need to set for the e[1-5]
+    w1->setType(libcellml::Issue::Type::WARNING);
+    w2->setType(libcellml::Issue::Type::WARNING);
+    w3->setType(libcellml::Issue::Type::WARNING);
+    w4->setType(libcellml::Issue::Type::WARNING);
+
+    h1->setType(libcellml::Issue::Type::HINT);
+    h2->setType(libcellml::Issue::Type::HINT);
+    h3->setType(libcellml::Issue::Type::HINT);
+
+    logger.addIssue(e1);
+    logger.addIssue(w1);
+    logger.addIssue(h1);
+    logger.addIssue(e2);
+    logger.addIssue(w2);
+    logger.addIssue(h2);
+    logger.addIssue(e3);
+    logger.addIssue(w3);
+    logger.addIssue(h3);
+    logger.addIssue(e4);
+    logger.addIssue(w4);
+    logger.addIssue(e5);
+
+    // Check Types:
+    EXPECT_TRUE(logger.issue(0)->isType(libcellml::Issue::Type::ERROR));
+    EXPECT_TRUE(logger.issue(1)->isType(libcellml::Issue::Type::WARNING));
+    EXPECT_TRUE(logger.issue(2)->isType(libcellml::Issue::Type::HINT));
+
+    // Check that the subsets retain their order
+    EXPECT_EQ(expectedIssues.size(), logger.issueCount());
+    for (size_t i = 0; i < logger.issueCount(); ++i) {
+        EXPECT_EQ(expectedIssues.at(i), logger.issue(i)->description());
+    }
+
+    EXPECT_EQ(expectedErrors.size(), logger.issueCount(libcellml::Issue::Type::ERROR));
+    for (size_t i = 0; i < logger.issueCount(libcellml::Issue::Type::ERROR); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), logger.issue(libcellml::Issue::Type::ERROR, i)->description());
+    }
+
+    EXPECT_EQ(expectedWarnings.size(), logger.issueCount(libcellml::Issue::Type::WARNING));
+    for (size_t i = 0; i < logger.issueCount(libcellml::Issue::Type::WARNING); ++i) {
+        EXPECT_EQ(expectedWarnings.at(i), logger.issue(libcellml::Issue::Type::WARNING, i)->description());
+    }
+
+    EXPECT_EQ(expectedHints.size(), logger.issueCount(libcellml::Issue::Type::HINT));
+    for (size_t i = 0; i < logger.issueCount(libcellml::Issue::Type::HINT); ++i) {
+        EXPECT_EQ(expectedHints.at(i), logger.issue(libcellml::Issue::Type::HINT, i)->description());
+    }
+
+    EXPECT_EQ(expectedErrorsAndWarnings.size(), logger.issueCount(errorAndWarningType));
+    for (size_t i = 0; i < logger.issueCount(errorAndWarningType); ++i) {
+        EXPECT_EQ(expectedErrorsAndWarnings.at(i), logger.issue(errorAndWarningType, i)->description());
+    }
+
+    EXPECT_EQ(expectedErrorsAndHints.size(), logger.issueCount(hintAndErrorType));
+    for (size_t i = 0; i < logger.issueCount(hintAndErrorType); ++i) {
+        EXPECT_EQ(expectedErrorsAndHints.at(i), logger.issue(hintAndErrorType, i)->description());
+    }
+
+    EXPECT_EQ(expectedIssues.size(), logger.issueCount(allTypes));
+    for (size_t i = 0; i < logger.issueCount(allTypes); ++i) {
+        EXPECT_EQ(expectedIssues.at(i), logger.issue(allTypes, i)->description());
+    }
 }
