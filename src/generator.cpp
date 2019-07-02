@@ -992,42 +992,46 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     // Process our different equations' AST
 
-    for (const auto &equation : mEquations) {
-        processEquationAst(equation->mAst);
+    if (mGenerator->errorCount() == 0) {
+        for (const auto &equation : mEquations) {
+            processEquationAst(equation->mAst);
+        }
     }
 
     // Make sure that all our variables are valid
 
-    for (const auto &variable : mVariables) {
-        std::string errorType;
+    if (mGenerator->errorCount() == 0) {
+        for (const auto &variable : mVariables) {
+            std::string errorType;
 
-        switch (variable->mType) {
-        case GeneratorVariableImpl::Type::UNKNOWN:
-            errorType = "is of unknown type";
+            switch (variable->mType) {
+            case GeneratorVariableImpl::Type::UNKNOWN:
+                errorType = "is of unknown type";
 
-            break;
-        case GeneratorVariableImpl::Type::SHOULD_BE_STATE:
-            errorType = "is used in an ODE, but it is not initialised";
+                break;
+            case GeneratorVariableImpl::Type::SHOULD_BE_STATE:
+                errorType = "is used in an ODE, but it is not initialised";
 
-            break;
-        case GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION:
-        case GeneratorVariableImpl::Type::STATE:
-        case GeneratorVariableImpl::Type::ALGEBRAIC:
-        case GeneratorVariableImpl::Type::CONSTANT:
-        case GeneratorVariableImpl::Type::COMPUTED_CONSTANT:
-            break;
-        }
+                break;
+            case GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION:
+            case GeneratorVariableImpl::Type::STATE:
+            case GeneratorVariableImpl::Type::ALGEBRAIC:
+            case GeneratorVariableImpl::Type::CONSTANT:
+            case GeneratorVariableImpl::Type::COMPUTED_CONSTANT:
+                break;
+            }
 
-        if (!errorType.empty()) {
-            ErrorPtr err = std::make_shared<Error>();
-            VariablePtr realVariable = variable->mVariable;
-            ComponentPtr realComponent = realVariable->parentComponent();
-            ModelPtr realModel = realComponent->parentModel();
+            if (!errorType.empty()) {
+                ErrorPtr err = std::make_shared<Error>();
+                VariablePtr realVariable = variable->mVariable;
+                ComponentPtr realComponent = realVariable->parentComponent();
+                ModelPtr realModel = realComponent->parentModel();
 
-            err->setDescription("Variable '" + realVariable->name() + "' in component '" + realComponent->name() + "' of model '" + realModel->name() + "' " + errorType + ".");
-            err->setKind(Error::Kind::GENERATOR);
+                err->setDescription("Variable '" + realVariable->name() + "' in component '" + realComponent->name() + "' of model '" + realModel->name() + "' " + errorType + ".");
+                err->setKind(Error::Kind::GENERATOR);
 
-            mGenerator->addError(err);
+                mGenerator->addError(err);
+            }
         }
     }
 
