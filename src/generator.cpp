@@ -489,7 +489,7 @@ struct Generator::GeneratorImpl
 
 bool Generator::GeneratorImpl::hasValidModel() const
 {
-    return mHasModel && (mGenerator->errorCount() != 0);
+    return mHasModel && (mGenerator->errorCount() == 0);
 }
 
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
