@@ -301,6 +301,11 @@ struct GeneratorEquationImpl
 
     void addVariable(const GeneratorVariableImplPtr &variable);
     void addOdeVariable(const GeneratorVariableImplPtr &odeVariable);
+
+    static bool knownVariable(const GeneratorVariableImplPtr &variable);
+    static bool knownOdeVariable(const GeneratorVariableImplPtr &variable);
+
+    void check();
 };
 
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
@@ -322,6 +327,81 @@ void GeneratorEquationImpl::addOdeVariable(const GeneratorVariableImplPtr &odeVa
     if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
         mOdeVariables.push_back(odeVariable);
     }
+}
+
+bool GeneratorEquationImpl::knownVariable(const GeneratorVariableImplPtr &variable)
+{
+    return variable->mComputed
+           || (variable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION)
+           || (variable->mType == GeneratorVariableImpl::Type::STATE)
+           || (variable->mType == GeneratorVariableImpl::Type::CONSTANT);
+}
+
+bool GeneratorEquationImpl::knownOdeVariable(const GeneratorVariableImplPtr &variable)
+{
+    return variable->mComputed
+           || (variable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION);
+}
+
+#ifdef TRACES
+void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool ode)
+{
+    for (const auto &variable : variables) {
+        std::string type;
+        switch (variable->mType) {
+        case GeneratorVariableImpl::Type::UNKNOWN:
+            type = "unknown";
+            break;
+        case GeneratorVariableImpl::Type::SHOULD_BE_STATE:
+            type = "should be state";
+            break;
+        case GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION:
+            type = "variable of integration";
+            break;
+        case GeneratorVariableImpl::Type::STATE:
+            type = ode ? "rate" : "state";
+            break;
+        case GeneratorVariableImpl::Type::ALGEBRAIC:
+            type = "algebraic";
+            break;
+        case GeneratorVariableImpl::Type::CONSTANT:
+            type = "constant";
+            break;
+        case GeneratorVariableImpl::Type::COMPUTED_CONSTANT:
+            type = "computed constant";
+            break;
+        }
+        std::cout << "                 " << variable->mVariable->name() << ": " << type << std::endl;
+    }
+}
+#endif
+
+void GeneratorEquationImpl::check()
+{
+    // Remove the (new) known variables from our list of variables and ODE
+    // variables, should there be more than one variable or more than one ODE
+    // variable left
+
+    if (mVariables.size() + mOdeVariables.size() == 1) {
+        return;
+    }
+
+#ifdef TRACES
+    std::cout << "---------------------------------------" << std::endl;
+    std::cout << "[" << this << "] [BEFORE] " << mVariables.size() << " | " << mOdeVariables.size() << std::endl;
+    outputVariables(mVariables, false);
+    std::cout << "                 ---" << std::endl;
+    outputVariables(mOdeVariables, true);
+#endif
+    mVariables.remove_if(knownVariable);
+    mOdeVariables.remove_if(knownOdeVariable);
+#ifdef TRACES
+    std::cout << "[" << this << "] [AFTER]  " << mVariables.size() << " | " << mOdeVariables.size() << std::endl;
+    outputVariables(mVariables, false);
+    std::cout << "                 ---" << std::endl;
+    outputVariables(mOdeVariables, true);
+    std::cout << "---------------------------------------" << std::endl;
+#endif
 }
 
 struct Generator::GeneratorImpl
@@ -1016,6 +1096,32 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
             processEquationAst(equation->mAst);
+        }
+    }
+
+    // Loop over our equations, checking wich variable, if any, can be
+    // determined using a given equation
+
+    if (mGenerator->errorCount() == 0) {
+        for (;;) {
+            size_t oldAllVariableCount = 0;
+            size_t newAllVariableCount = 0;
+
+            for (const auto &equation : mEquations) {
+                oldAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
+
+                equation->check();
+
+                newAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
+            }
+
+            if ((newAllVariableCount == mEquations.size()) || (oldAllVariableCount == newAllVariableCount)) {
+                std::cout << "ALL DONE!" << std::endl;
+
+                break;
+            }
+
+            std::cout << "CARRYING ON..." << std::endl;
         }
     }
 
