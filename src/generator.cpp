@@ -462,12 +462,6 @@ struct Generator::GeneratorImpl
     void processEquationAst(const GeneratorEquationAstImplPtr &ast);
     void processModel(const ModelPtr &model);
 
-    std::string neededMathMethods() const;
-    std::string initializeVariables() const;
-    std::string computeConstantEquations() const;
-    std::string computeRateEquations() const;
-    std::string computeAlgebraicEquations() const;
-
     bool isRelationalOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isPlusOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isMinusOperator(const GeneratorEquationAstImplPtr &ast) const;
@@ -1166,90 +1160,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         }
     }
-
-//ISSUE359: remove the below code once we are done testing things.
-#ifdef TRACES
-    std::cout << "Number of variables: " << mVariables.size() << std::endl;
-    int i = 0;
-    for (const auto &variable : mVariables) {
-        std::cout << "Variable #" << ++i << " [" << int(variable->mType)
-                  << "]: " << variable->mVariable->name().c_str()
-                  << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
-                  << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
-    }
-    std::cout << "[neededMathMethods()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << neededMathMethods() << std::endl;
-    std::cout << "[neededMathMethods()]---------------------------------------[END]" << std::endl;
-    std::cout << "[initializeVariables()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << initializeVariables() << std::endl;
-    std::cout << "[initializeVariables()]---------------------------------------[END]" << std::endl;
-    std::cout << "[computeConstantEquations()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << computeConstantEquations() << std::endl;
-    std::cout << "[computeConstantEquations()]---------------------------------------[END]" << std::endl;
-    std::cout << "[computeRateEquations()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << computeRateEquations() << std::endl;
-    std::cout << "[computeRateEquations()]---------------------------------------[END]" << std::endl;
-    std::cout << "[computeAlgebraicEquations()]---------------------------------------[BEGIN]" << std::endl;
-    std::cout << computeAlgebraicEquations() << std::endl;
-    std::cout << "[computeAlgebraicEquations()]---------------------------------------[END]" << std::endl;
-#endif
-}
-
-std::string Generator::GeneratorImpl::neededMathMethods() const
-{
-    return {};
-}
-
-std::string Generator::GeneratorImpl::initializeVariables() const
-{
-    std::string res;
-
-    for (const auto &variable : mVariables) {
-        if (variable->mType == GeneratorVariableImpl::Type::CONSTANT) {
-            res += variable->mVariable->name() + " = " + variable->mVariable->initialValue() + mProfile->commandSeparatorString() + "\n";
-        }
-    }
-
-    return res;
-}
-
-std::string Generator::GeneratorImpl::computeConstantEquations() const
-{
-    std::string res;
-
-    for (const auto &variable : mVariables) {
-        if (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT) {
-            //ISSUE359: to be done...
-        }
-    }
-
-    return res;
-}
-
-std::string Generator::GeneratorImpl::computeRateEquations() const
-{
-    std::string res;
-
-    for (const auto &equation : mEquations) {
-        if (equation->mType == GeneratorEquationImpl::Type::RATE) {
-            res += generateCode(equation->mAst);
-        }
-    }
-
-    return res;
-}
-
-std::string Generator::GeneratorImpl::computeAlgebraicEquations() const
-{
-    std::string res;
-
-    for (const auto &equation : mEquations) {
-        //        if (equation->mType == GeneratorEquationImpl::Type::ALGEBRAIC) {
-        res += generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
-        //        }
-    }
-
-    return res;
 }
 
 std::string replace(const std::string &string, const std::string &from, const std::string &to)
@@ -2016,6 +1926,29 @@ void Generator::processModel(const ModelPtr &model)
     for (size_t i = 0; i < errorCount(); ++i) {
         std::cout << "Generator error #" << i + 1 << ": " << error(i)->description() << std::endl;
     }
+    std::cout << "Number of variables: " << mPimpl->mVariables.size() << std::endl;
+    int i = 0;
+    for (const auto &variable : mPimpl->mVariables) {
+        std::cout << "Variable #" << ++i << " [" << int(variable->mType)
+                  << "]: " << variable->mVariable->name().c_str()
+                  << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
+                  << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
+    }
+    std::cout << "[neededMathMethods()]---------------------------------------[BEGIN]" << std::endl;
+    std::cout << neededMathMethods() << std::endl;
+    std::cout << "[neededMathMethods()]---------------------------------------[END]" << std::endl;
+    std::cout << "[initializeVariables()]---------------------------------------[BEGIN]" << std::endl;
+    std::cout << initializeVariables() << std::endl;
+    std::cout << "[initializeVariables()]---------------------------------------[END]" << std::endl;
+    std::cout << "[computeConstantEquations()]---------------------------------------[BEGIN]" << std::endl;
+    std::cout << computeConstantEquations() << std::endl;
+    std::cout << "[computeConstantEquations()]---------------------------------------[END]" << std::endl;
+    std::cout << "[computeRateEquations()]---------------------------------------[BEGIN]" << std::endl;
+    std::cout << computeRateEquations() << std::endl;
+    std::cout << "[computeRateEquations()]---------------------------------------[END]" << std::endl;
+    std::cout << "[computeAlgebraicEquations()]---------------------------------------[BEGIN]" << std::endl;
+    std::cout << computeAlgebraicEquations() << std::endl;
+    std::cout << "[computeAlgebraicEquations()]---------------------------------------[END]" << std::endl;
 #endif
 }
 
@@ -2092,27 +2025,75 @@ GeneratorVariablePtr Generator::variable(size_t index) const
 
 std::string Generator::neededMathMethods() const
 {
-    return mPimpl->neededMathMethods();
+    return {};
 }
 
 std::string Generator::initializeVariables() const
 {
-    return mPimpl->initializeVariables();
+    if (errorCount() != 0) {
+        return {};
+    }
+
+    std::string res;
+
+    for (const auto &variable : mPimpl->mVariables) {
+        if (variable->mType == GeneratorVariableImpl::Type::CONSTANT) {
+            res += variable->mVariable->name() + " = " + variable->mVariable->initialValue() + mPimpl->mProfile->commandSeparatorString() + "\n";
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::computeConstantEquations() const
 {
-    return mPimpl->computeConstantEquations();
+    if (errorCount() != 0) {
+        return {};
+    }
+
+    std::string res;
+
+    for (const auto &variable : mPimpl->mVariables) {
+        if (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT) {
+            //ISSUE359: to be done...
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::computeRateEquations() const
 {
-    return mPimpl->computeRateEquations();
+    if (errorCount() != 0) {
+        return {};
+    }
+
+    std::string res;
+
+    for (const auto &equation : mPimpl->mEquations) {
+        if (equation->mType == GeneratorEquationImpl::Type::RATE) {
+            res += mPimpl->generateCode(equation->mAst);
+        }
+    }
+
+    return res;
 }
 
 std::string Generator::computeAlgebraicEquations() const
 {
-    return mPimpl->computeAlgebraicEquations();
+    if (errorCount() != 0) {
+        return {};
+    }
+
+    std::string res;
+
+    for (const auto &equation : mPimpl->mEquations) {
+        //        if (equation->mType == GeneratorEquationImpl::Type::ALGEBRAIC) {
+        res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
+        //        }
+    }
+
+    return res;
 }
 
 } // namespace libcellml
