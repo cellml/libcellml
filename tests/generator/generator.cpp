@@ -217,6 +217,44 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component) {
 }
 */
 
+TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(4), generator.stateCount());
+    EXPECT_EQ(size_t(5), generator.variableCount());
+}
+
+TEST(Generator, noble_model_1962)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/noble_model_1962/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(4), generator.stateCount());
+    EXPECT_EQ(size_t(5), generator.variableCount());
+}
+
 TEST(Generator, van_der_pol_model_1928)
 {
     libcellml::Parser parser;
