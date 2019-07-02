@@ -233,7 +233,7 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
 
     EXPECT_EQ(size_t(4), generator.stateCount());
-    EXPECT_EQ(size_t(5), generator.variableCount());
+    EXPECT_EQ(size_t(18), generator.variableCount());
 }
 
 TEST(Generator, noble_model_1962)
@@ -252,7 +252,7 @@ TEST(Generator, noble_model_1962)
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
 
     EXPECT_EQ(size_t(4), generator.stateCount());
-    EXPECT_EQ(size_t(5), generator.variableCount());
+    EXPECT_EQ(size_t(17), generator.variableCount());
 }
 
 TEST(Generator, van_der_pol_model_1928)
