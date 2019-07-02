@@ -432,16 +432,28 @@ void GeneratorEquationImpl::check(size_t &order)
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
 
-    // If there is one variable of one ODE variable left and it is of unknown
-    // type then update the type of that variable / ODE variable and set the
-    // order of the equation
+    // If there is one variable / ODE variable left then update its type (if it
+    // is currently of unknown type), consider computed, and determine the type
+    // of our equation and set its order, if the variable / ODE variable is a
+    // state, computed constant or algebraic variable
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         if (variable->mType == GeneratorVariableImpl::Type::UNKNOWN) {
             variable->mType = mConstant ? GeneratorVariableImpl::Type::COMPUTED_CONSTANT : GeneratorVariableImpl::Type::ALGEBRAIC;
+        }
+
+        if ((variable->mType != GeneratorVariableImpl::Type::STATE)
+            || (variable->mType != GeneratorVariableImpl::Type::COMPUTED_CONSTANT)
+            || (variable->mType != GeneratorVariableImpl::Type::ALGEBRAIC)) {
             variable->mComputed = true;
+
+            mType = (variable->mType == GeneratorVariableImpl::Type::STATE) ?
+                        Type::RATE :
+                        (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT) ?
+                        Type::CONSTANT :
+                        Type::ALGEBRAIC;
 
             mOrder = ++order;
         }
