@@ -289,6 +289,7 @@ struct GeneratorEquationImpl
     enum class Type
     {
         UNKNOWN,
+        CONSTANT,
         RATE,
         ALGEBRAIC
     };
@@ -2080,9 +2081,9 @@ std::string Generator::computeConstantEquations() const
 
     std::string res;
 
-    for (const auto &variable : mPimpl->mVariables) {
-        if (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT) {
-            //ISSUE359: to be done...
+    for (const auto &equation : mPimpl->mEquations) {
+        if (equation->mType == GeneratorEquationImpl::Type::CONSTANT) {
+            res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
         }
     }
 
@@ -2115,9 +2116,9 @@ std::string Generator::computeAlgebraicEquations() const
     std::string res;
 
     for (const auto &equation : mPimpl->mEquations) {
-        //        if (equation->mType == GeneratorEquationImpl::Type::ALGEBRAIC) {
-        res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
-        //        }
+        if (equation->mType == GeneratorEquationImpl::Type::ALGEBRAIC) {
+            res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
+        }
     }
 
     return res;
