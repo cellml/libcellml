@@ -127,6 +127,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
+    std::string mVariableOfIntegrationString = "voi";
+
     std::string mStatesArrayString = "states";
     std::string mRatesArrayString = "rates";
     std::string mVariablesArrayString = "variables";
@@ -835,6 +837,16 @@ std::string GeneratorProfile::nanString() const
 void GeneratorProfile::setNanString(const std::string &nanString)
 {
     mPimpl->mNanString = nanString;
+}
+
+std::string GeneratorProfile::variableOfIntegrationString() const
+{
+    return mPimpl->mVariableOfIntegrationString;
+}
+
+void GeneratorProfile::setVariableOfIntegrationString(const std::string &variableOfIntegrationString)
+{
+    mPimpl->mVariableOfIntegrationString = variableOfIntegrationString;
 }
 
 std::string GeneratorProfile::statesArrayString() const

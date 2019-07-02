@@ -253,6 +253,9 @@ public:
 
     // Miscellaneous
 
+    std::string variableOfIntegrationString() const;
+    void setVariableOfIntegrationString(const std::string &variableOfIntegrationString);
+
     std::string statesArrayString() const;
     void setStatesArrayString(const std::string &statesArrayString);
 

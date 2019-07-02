@@ -129,6 +129,8 @@ TEST(GeneratorProfile, defaultValues)
 
     // Miscellaneous
 
+    EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
+
     EXPECT_EQ("states", generatorProfile->statesArrayString());
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
@@ -359,6 +361,8 @@ TEST(GeneratorProfile, miscellaneous)
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     const std::string value = "value";
+
+    generatorProfile->setVariableOfIntegrationString(value);
 
     generatorProfile->setStatesArrayString(value);
     generatorProfile->setRatesArrayString(value);
