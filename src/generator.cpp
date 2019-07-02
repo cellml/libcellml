@@ -31,6 +31,7 @@ limitations under the License.
 #include <algorithm>
 #include <limits>
 #include <list>
+#include <sstream>
 #include <vector>
 
 #undef NAN
@@ -451,8 +452,8 @@ void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
             || (variable->mType == GeneratorVariableImpl::Type::COMPUTED_CONSTANT)
             || (variable->mType == GeneratorVariableImpl::Type::ALGEBRAIC)) {
             variable->mIndex = (variable->mType == GeneratorVariableImpl::Type::STATE) ?
-                        ++stateIndex :
-                        ++variableIndex;
+                                   ++stateIndex :
+                                   ++variableIndex;
 
             variable->mComputed = true;
 
@@ -537,6 +538,8 @@ struct Generator::GeneratorImpl
     bool isOrOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isXorOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstImplPtr &ast) const;
+
+    std::string generateVariableName(const VariablePtr &variable, const GeneratorEquationAstImplPtr &ast = nullptr);
 
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstImplPtr &ast);
@@ -1161,12 +1164,21 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
+    // Determine the index of our constants
+
+    size_t variableIndex = MAX_SIZE_T;
+
+    for (const auto &variable : mVariables) {
+        if (variable->mType == GeneratorVariableImpl::Type::CONSTANT) {
+            variable->mIndex = ++variableIndex;
+        }
+    }
+
     // Loop over our equations, checking wich variable, if any, can be
     // determined using a given equation
 
     size_t equationOrder = 0;
     size_t stateIndex = MAX_SIZE_T;
-    size_t variableIndex = MAX_SIZE_T;
 
     if (mGenerator->errorCount() == 0) {
         for (;;) {
@@ -1299,6 +1311,31 @@ bool Generator::GeneratorImpl::isLogicalOrBitwiseOperator(const GeneratorEquatio
 bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstImplPtr &ast) const
 {
     return ast->mType == GeneratorEquationAstImpl::Type::PIECEWISE;
+}
+
+std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &variable, const GeneratorEquationAstImplPtr &ast)
+{
+    GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+
+    if (generatorVariable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION) {
+        return mProfile->variableOfIntegrationString();
+    }
+
+    std::string arrayName;
+
+    if (generatorVariable->mType == GeneratorVariableImpl::Type::STATE) {
+        arrayName = (ast->mParent->mType == GeneratorEquationAstImpl::Type::DIFF) ?
+                        mProfile->ratesArrayString() :
+                        mProfile->statesArrayString();
+    } else {
+        arrayName = mProfile->variablesArrayString();
+    }
+
+    std::ostringstream index;
+
+    index << generatorVariable->mIndex;
+
+    return arrayName + "[" + index.str() + "]";
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
@@ -1751,7 +1788,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         // Calculus elements
 
     case GeneratorEquationAstImpl::Type::DIFF:
-        return "d(" + generateCode(ast->mRight) + ")/d(" + generateCode(ast->mLeft) + ")";
+        return generateCode(ast->mRight);
 
         // Min/max operators
 
@@ -1861,7 +1898,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
     case GeneratorEquationAstImpl::Type::CN:
         return ast->mValue;
     case GeneratorEquationAstImpl::Type::CI:
-        return ast->mVariable->name();
+        return generateVariableName(ast->mVariable, ast);
 
         // Qualifier elements
 
@@ -2103,7 +2140,7 @@ std::string Generator::initializeVariables() const
 
     for (const auto &variable : mPimpl->mVariables) {
         if (variable->mType == GeneratorVariableImpl::Type::CONSTANT) {
-            res += variable->mVariable->name() + " = " + variable->mVariable->initialValue() + mPimpl->mProfile->commandSeparatorString() + "\n";
+            res += mPimpl->generateVariableName(variable->mVariable) + " = " + variable->mVariable->initialValue() + mPimpl->mProfile->commandSeparatorString() + "\n";
         }
     }
 
