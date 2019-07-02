@@ -64,6 +64,8 @@ struct GeneratorVariableImpl
 
     VariablePtr mVariable;
 
+    bool mComputed = false;
+
     explicit GeneratorVariableImpl(const VariablePtr &variable);
 
     void setVariable(const VariablePtr &variable);
