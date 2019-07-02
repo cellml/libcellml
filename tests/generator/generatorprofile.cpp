@@ -370,6 +370,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setCommandSeparatorString(value);
 
+    EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
+
     EXPECT_EQ(value, generatorProfile->statesArrayString());
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
