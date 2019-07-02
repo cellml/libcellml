@@ -532,13 +532,13 @@ struct Generator::GeneratorImpl
     bool isPiecewiseStatement(const GeneratorEquationAstImplPtr &ast) const;
 
     std::string generateOperatorCode(const std::string &op,
-                                     const GeneratorEquationAstImplPtr &ast) const;
-    std::string generateMinusUnaryCode(const GeneratorEquationAstImplPtr &ast) const;
+                                     const GeneratorEquationAstImplPtr &ast);
+    std::string generateMinusUnaryCode(const GeneratorEquationAstImplPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition,
-                                        const std::string &value) const;
-    std::string generatePiecewiseElseCode(const std::string &value) const;
+                                        const std::string &value);
+    std::string generatePiecewiseElseCode(const std::string &value);
     std::string generateCode(const GeneratorEquationAstImplPtr &ast,
-                             const GeneratorEquationAstImplPtr &parentAst = nullptr) const;
+                             const GeneratorEquationAstImplPtr &parentAst = nullptr);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -1295,7 +1295,7 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstIm
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
-                                                           const GeneratorEquationAstImplPtr &ast) const
+                                                           const GeneratorEquationAstImplPtr &ast)
 {
     // Generate the code for the left and right branches of the given AST
 
@@ -1591,7 +1591,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     return left + op + right;
 }
 
-std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEquationAstImplPtr &ast) const
+std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEquationAstImplPtr &ast)
 {
     // Generate the code for the left branch of the given AST
 
@@ -1611,7 +1611,7 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
-                                                              const std::string &value) const
+                                                              const std::string &value)
 {
     return replace(replace(mProfile->hasConditionalOperator() ?
                                mProfile->conditionalOperatorIfString() :
@@ -1620,7 +1620,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string 
                    "#if", value);
 }
 
-std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value) const
+std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value)
 {
     return replace(mProfile->hasConditionalOperator() ?
                        mProfile->conditionalOperatorElseString() :
@@ -1629,7 +1629,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
 }
 
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImplPtr &ast,
-                                                   const GeneratorEquationAstImplPtr &parentAst) const
+                                                   const GeneratorEquationAstImplPtr &parentAst)
 {
     // Generate the code for the given AST
 
