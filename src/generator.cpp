@@ -294,11 +294,13 @@ struct GeneratorEquationImpl
 
     GeneratorEquationAstImplPtr mAst;
 
-    std::vector<GeneratorVariableImplPtr> mVariables;
+    std::list<GeneratorVariableImplPtr> mVariables;
+    std::list<GeneratorVariableImplPtr> mOdeVariables;
 
     explicit GeneratorEquationImpl();
 
     void addVariable(const GeneratorVariableImplPtr &variable);
+    void addOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 };
 
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
@@ -312,6 +314,13 @@ void GeneratorEquationImpl::addVariable(const GeneratorVariableImplPtr &variable
 {
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
+    }
+}
+
+void GeneratorEquationImpl::addOdeVariable(const GeneratorVariableImplPtr &odeVariable)
+{
+    if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
+        mOdeVariables.push_back(odeVariable);
     }
 }
 
@@ -744,7 +753,13 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CI, variable, astParent);
 
-        equation->addVariable(generatorVariable(variable));
+        GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+
+        if (node->parent()->firstChild()->isMathmlElement("diff")) {
+            equation->addOdeVariable(generatorVariable);
+        } else {
+            equation->addVariable(generatorVariable);
+        }
 
         // Qualifier elements
 
