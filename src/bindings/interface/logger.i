@@ -20,9 +20,9 @@
 "Returns the number of errors currently stored in the logger.";
 
 #if defined(SWIGPYTHON)
-    // Treat negative size_t as invalid index (instead of unknown method) TODO Check why this didn't work?
+    // Treat negative size_t as invalid index (instead of unknown method) 
     %extend libcellml::Logger {
-        IssuePtr error(long index) {
+        IssuePtr issue(long index) {
             if (index < 0) return nullptr;
             return $self->issue(size_t(index));
         }

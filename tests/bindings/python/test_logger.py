@@ -41,7 +41,7 @@ class LoggerTestCase(unittest.TestCase):
         x = Logger()
         self.assertIsNone(x.issue(0))
         self.assertIsNone(x.issue(1))
-        # self.assertIsNone(x.issue(-1))  # TODO Removed as negatives are not allowed as indices ... do they need to be ints intead of size_t?
+        self.assertIsNone(x.issue(-1))  
         e = Issue()
         e.setCause(Issue.Cause.MODEL)
         x.addIssue(e)
