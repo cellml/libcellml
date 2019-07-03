@@ -39,8 +39,8 @@ struct Entity::EntityImpl
 Entity::Entity()
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParentModel = nullptr;
-    mPimpl->mParentComponent = nullptr;
+    mPimpl->mParentModel = {};
+    mPimpl->mParentComponent = {};
 }
 
 Entity::~Entity()
@@ -105,8 +105,8 @@ void Entity::setParent(const ModelPtr &parent)
 
 void Entity::clearParent()
 {
-    mPimpl->mParentComponent = nullptr;
-    mPimpl->mParentModel = nullptr;
+    mPimpl->mParentComponent = {};
+    mPimpl->mParentModel = {};
 }
 
 bool Entity::hasParent(const ComponentPtr &component) const
