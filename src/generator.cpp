@@ -625,7 +625,7 @@ GeneratorVariableImplPtr Generator::GeneratorImpl::generatorVariable(const Varia
     // the given variable.
 
     for (const auto &generatorVariable : mVariables) {
-        if (variable->hasDirectEquivalentVariable(generatorVariable->mVariable)) {
+        if (variable->hasEquivalentVariable(generatorVariable->mVariable)) {
             return generatorVariable;
         }
     }
@@ -1098,7 +1098,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
             } else {
                 mVariableOfIntegration = variable;
             }
-        } else if (!variable->hasDirectEquivalentVariable(mVariableOfIntegration)) {
+        } else if (!variable->hasEquivalentVariable(mVariableOfIntegration)) {
             ComponentPtr voiComponent = mVariableOfIntegration->parentComponent();
             ModelPtr voiModel = voiComponent->parentModel();
             ComponentPtr component = variable->parentComponent();
