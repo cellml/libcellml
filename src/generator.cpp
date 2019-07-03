@@ -928,7 +928,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // or the variable of integration)
 
         GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
-        //ISSUE359 - Do we really need to track the VOI as an ODE variable?
+        //ISSUE359: do we really need to track the VOI as an ODE variable?
 
         if ((node->parent()->firstChild()->isMathmlElement("diff")
              || (node->parent()->isMathmlElement("bvar")
@@ -2158,30 +2158,34 @@ size_t Generator::variableCount() const
     return res;
 }
 
+/*ISSUE359: to be done.
 GeneratorVariablePtr Generator::variableOfIntegration() const
 {
-    //ISSUE359: to be done...
     return {};
 }
+*/
 
+/*ISSUE359: to be done.
 GeneratorVariablePtr Generator::state(size_t index) const
 {
-    //ISSUE359: to be done...
     (void)index;
 
     return {};
 }
+*/
 
+/*ISSUE359: to be done.
 GeneratorVariablePtr Generator::variable(size_t index) const
 {
-    //ISSUE359: to be done...
     (void)index;
 
     return {};
 }
+*/
 
 std::string Generator::neededMathMethods() const
 {
+    //ISSUE359: to be done.
     return {};
 }
 
