@@ -222,7 +222,6 @@ ModelPtr Parser::parseModel(const std::string &input)
 {
     ModelPtr model = std::make_shared<Model>();
     mPimpl->updateModel(model, input);
-
     return model;
 }
 
