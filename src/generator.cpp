@@ -1019,7 +1019,6 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         // Retrieve the variable's corresponding generator variable.
 
         VariablePtr variable = component->variable(i);
-
         GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
         // Replace the variable held by `generatorVariable`, in case the
