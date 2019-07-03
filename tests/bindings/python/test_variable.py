@@ -111,73 +111,33 @@ class VariableTestCase(unittest.TestCase):
         v1 = Variable()
         v2 = Variable()
         v3 = Variable()
-        v4 = Variable()
-        v5 = Variable()
 
         self.assertFalse(v1.hasDirectEquivalentVariable(v1))
         self.assertFalse(v1.hasDirectEquivalentVariable(v2))
         self.assertFalse(v1.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v1.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v1.hasDirectEquivalentVariable(v5))
 
         self.assertFalse(v2.hasDirectEquivalentVariable(v1))
         self.assertFalse(v2.hasDirectEquivalentVariable(v2))
         self.assertFalse(v2.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v2.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v2.hasDirectEquivalentVariable(v5))
 
         self.assertFalse(v3.hasDirectEquivalentVariable(v1))
         self.assertFalse(v3.hasDirectEquivalentVariable(v2))
         self.assertFalse(v3.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v3.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v3.hasDirectEquivalentVariable(v5))
-
-        self.assertFalse(v4.hasDirectEquivalentVariable(v1))
-        self.assertFalse(v4.hasDirectEquivalentVariable(v2))
-        self.assertFalse(v4.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v4.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v4.hasDirectEquivalentVariable(v5))
-
-        self.assertFalse(v5.hasDirectEquivalentVariable(v1))
-        self.assertFalse(v5.hasDirectEquivalentVariable(v2))
-        self.assertFalse(v5.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v5.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v5.hasDirectEquivalentVariable(v5))
 
         Variable.addEquivalence(v1, v2)
         Variable.addEquivalence(v2, v3)
-        Variable.addEquivalence(v3, v4)
-        Variable.addEquivalence(v4, v5)
 
         self.assertFalse(v1.hasDirectEquivalentVariable(v1))
         self.assertTrue(v1.hasDirectEquivalentVariable(v2))
         self.assertFalse(v1.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v1.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v1.hasDirectEquivalentVariable(v5))
 
         self.assertTrue(v2.hasDirectEquivalentVariable(v1))
         self.assertFalse(v2.hasDirectEquivalentVariable(v2))
         self.assertTrue(v2.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v2.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v2.hasDirectEquivalentVariable(v5))
 
         self.assertFalse(v3.hasDirectEquivalentVariable(v1))
         self.assertTrue(v3.hasDirectEquivalentVariable(v2))
         self.assertFalse(v3.hasDirectEquivalentVariable(v3))
-        self.assertTrue(v3.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v3.hasDirectEquivalentVariable(v5))
-
-        self.assertFalse(v4.hasDirectEquivalentVariable(v1))
-        self.assertFalse(v4.hasDirectEquivalentVariable(v2))
-        self.assertTrue(v4.hasDirectEquivalentVariable(v3))
-        self.assertFalse(v4.hasDirectEquivalentVariable(v4))
-        self.assertTrue(v4.hasDirectEquivalentVariable(v5))
-
-        self.assertFalse(v5.hasDirectEquivalentVariable(v1))
-        self.assertFalse(v5.hasDirectEquivalentVariable(v2))
-        self.assertFalse(v5.hasDirectEquivalentVariable(v3))
-        self.assertTrue(v5.hasDirectEquivalentVariable(v4))
-        self.assertFalse(v5.hasDirectEquivalentVariable(v5))
 
     def test_has_equivalent_variable(self):
         from libcellml import Variable
@@ -186,73 +146,33 @@ class VariableTestCase(unittest.TestCase):
         v1 = Variable()
         v2 = Variable()
         v3 = Variable()
-        v4 = Variable()
-        v5 = Variable()
 
         self.assertFalse(v1.hasEquivalentVariable(v1))
         self.assertFalse(v1.hasEquivalentVariable(v2))
         self.assertFalse(v1.hasEquivalentVariable(v3))
-        self.assertFalse(v1.hasEquivalentVariable(v4))
-        self.assertFalse(v1.hasEquivalentVariable(v5))
 
         self.assertFalse(v2.hasEquivalentVariable(v1))
         self.assertFalse(v2.hasEquivalentVariable(v2))
         self.assertFalse(v2.hasEquivalentVariable(v3))
-        self.assertFalse(v2.hasEquivalentVariable(v4))
-        self.assertFalse(v2.hasEquivalentVariable(v5))
 
         self.assertFalse(v3.hasEquivalentVariable(v1))
         self.assertFalse(v3.hasEquivalentVariable(v2))
         self.assertFalse(v3.hasEquivalentVariable(v3))
-        self.assertFalse(v3.hasEquivalentVariable(v4))
-        self.assertFalse(v3.hasEquivalentVariable(v5))
-
-        self.assertFalse(v4.hasEquivalentVariable(v1))
-        self.assertFalse(v4.hasEquivalentVariable(v2))
-        self.assertFalse(v4.hasEquivalentVariable(v3))
-        self.assertFalse(v4.hasEquivalentVariable(v4))
-        self.assertFalse(v4.hasEquivalentVariable(v5))
-
-        self.assertFalse(v5.hasEquivalentVariable(v1))
-        self.assertFalse(v5.hasEquivalentVariable(v2))
-        self.assertFalse(v5.hasEquivalentVariable(v3))
-        self.assertFalse(v5.hasEquivalentVariable(v4))
-        self.assertFalse(v5.hasEquivalentVariable(v5))
 
         Variable.addEquivalence(v1, v2)
         Variable.addEquivalence(v2, v3)
-        Variable.addEquivalence(v3, v4)
-        Variable.addEquivalence(v4, v5)
 
         self.assertFalse(v1.hasEquivalentVariable(v1))
         self.assertTrue(v1.hasEquivalentVariable(v2))
         self.assertTrue(v1.hasEquivalentVariable(v3))
-        self.assertTrue(v1.hasEquivalentVariable(v4))
-        self.assertTrue(v1.hasEquivalentVariable(v5))
 
         self.assertTrue(v2.hasEquivalentVariable(v1))
         self.assertFalse(v2.hasEquivalentVariable(v2))
         self.assertTrue(v2.hasEquivalentVariable(v3))
-        self.assertTrue(v2.hasEquivalentVariable(v4))
-        self.assertTrue(v2.hasEquivalentVariable(v5))
 
         self.assertTrue(v3.hasEquivalentVariable(v1))
         self.assertTrue(v3.hasEquivalentVariable(v2))
         self.assertFalse(v3.hasEquivalentVariable(v3))
-        self.assertTrue(v3.hasEquivalentVariable(v4))
-        self.assertTrue(v3.hasEquivalentVariable(v5))
-
-        self.assertTrue(v4.hasEquivalentVariable(v1))
-        self.assertTrue(v4.hasEquivalentVariable(v2))
-        self.assertTrue(v4.hasEquivalentVariable(v3))
-        self.assertFalse(v4.hasEquivalentVariable(v4))
-        self.assertTrue(v4.hasEquivalentVariable(v5))
-
-        self.assertTrue(v5.hasEquivalentVariable(v1))
-        self.assertTrue(v5.hasEquivalentVariable(v2))
-        self.assertTrue(v5.hasEquivalentVariable(v3))
-        self.assertTrue(v5.hasEquivalentVariable(v4))
-        self.assertFalse(v5.hasEquivalentVariable(v5))
 
     def test_set_units(self):
         from libcellml import Variable, Units
