@@ -2032,12 +2032,27 @@ void Generator::processModel(const ModelPtr &model)
     }
     if (errorCount() == 0) {
         std::cout << "Number of variables: " << mPimpl->mVariables.size() << std::endl;
-        int i = 0;
         for (const auto &variable : mPimpl->mVariables) {
-            std::cout << "Variable #" << ++i << " [" << int(variable->mType)
-                      << "]: " << variable->mVariable->name().c_str()
-                      << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
-                      << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
+            if (variable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION) {
+                std::cout << "VOI: " << variable->mVariable->name().c_str()
+                          << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
+                          << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
+            }
+        }
+        for (const auto &variable : mPimpl->mVariables) {
+            if (variable->mType == GeneratorVariableImpl::Type::STATE) {
+                std::cout << "State #" << variable->mIndex << ": " << variable->mVariable->name().c_str()
+                          << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
+                          << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
+            }
+        }
+        for (const auto &variable : mPimpl->mVariables) {
+            if ((variable->mType != GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION)
+                && (variable->mType != GeneratorVariableImpl::Type::STATE)) {
+                std::cout << "Variable #" << variable->mIndex << ": " << variable->mVariable->name().c_str()
+                          << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
+                          << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
+            }
         }
         std::cout << "[neededMathMethods()]---------------------------------------[BEGIN]" << std::endl;
         std::cout << neededMathMethods() << std::endl;
