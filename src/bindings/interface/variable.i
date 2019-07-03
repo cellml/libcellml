@@ -15,12 +15,12 @@ objects are updated)";
 %feature("docstring") libcellml::Variable::equivalentVariable
 "Returns the equivalent variable at the given index.";
 
-%feature("docstring") libcellml::Variable::hasEquivalentVariable
+%feature("docstring") libcellml::Variable::hasDirectEquivalentVariable
 "Tests if the given variable is in this variable's set of equivalent
 variables.";
 
-%feature("docstring") libcellml::Variable::isEquivalentVariable
-"Tests whether the argument variable is equivalent to this variable.";
+%feature("docstring") libcellml::Variable::hasEquivalentVariable
+"Tests if the given variable is equivalent to this variable.";
 
 %feature("docstring") libcellml::Variable::removeEquivalence
 "Removes an equivalence between this variable and the given one (both objects
