@@ -21,6 +21,9 @@ limitations under the License.
 
 namespace libcellml {
 
+using ModelWeakPtr = std::weak_ptr<Model>; /**< Type definition for weak model pointer. */
+using ComponentWeakPtr = std::weak_ptr<Component>; /**< Type definition for weak component pointer. */
+
 /**
  * @brief The Entity::EntityImpl struct.
  *
@@ -28,16 +31,16 @@ namespace libcellml {
  */
 struct Entity::EntityImpl
 {
-    ModelPtr mParentModel; /**< Pointer to parent model. */
-    ComponentPtr mParentComponent; /**< Pointer to component model. */
+    ModelWeakPtr mParentModel; /**< Pointer to parent model. */
+    ComponentWeakPtr mParentComponent; /**< Pointer to component model. */
     std::string mId; /**< String document identifier for this entity. */
 };
 
 Entity::Entity()
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParentModel = nullptr;
-    mPimpl->mParentComponent = nullptr;
+    mPimpl->mParentModel = {};
+    mPimpl->mParentComponent = {};
 }
 
 Entity::~Entity()
@@ -82,17 +85,12 @@ std::string Entity::id() const
 
 ModelPtr Entity::parentModel() const
 {
-    return mPimpl->mParentModel;
+    return mPimpl->mParentModel.lock();
 }
 
 ComponentPtr Entity::parentComponent() const
 {
-    return mPimpl->mParentComponent;
-}
-
-void Entity::setParent(const ModelPtr &parent)
-{
-    mPimpl->mParentModel = parent;
+    return mPimpl->mParentComponent.lock();
 }
 
 void Entity::setParent(const ComponentPtr &parent)
@@ -100,23 +98,28 @@ void Entity::setParent(const ComponentPtr &parent)
     mPimpl->mParentComponent = parent;
 }
 
+void Entity::setParent(const ModelPtr &parent)
+{
+    mPimpl->mParentModel = parent;
+}
+
 void Entity::clearParent()
 {
-    mPimpl->mParentComponent = nullptr;
-    mPimpl->mParentModel = nullptr;
+    mPimpl->mParentComponent = {};
+    mPimpl->mParentModel = {};
 }
 
 bool Entity::hasParent(const ComponentPtr &component) const
 {
-    if (mPimpl->mParentComponent == component) {
-        return true;
+    bool hasParent = false;
+    ComponentPtr parentComponent = mPimpl->mParentComponent.lock();
+    if (parentComponent == component) {
+        hasParent = true;
+    } else if (parentComponent) {
+        hasParent = parentComponent->hasParent(component);
     }
 
-    if (mPimpl->mParentComponent) {
-        return mPimpl->mParentComponent->hasParent(component);
-    }
-
-    return false;
+    return hasParent;
 }
 
 } // namespace libcellml
