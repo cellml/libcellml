@@ -26,7 +26,7 @@ limitations under the License.
 namespace libcellml {
 
 class XmlNode; /**< Forward declaration of the internal XmlNode class. */
-typedef std::shared_ptr<XmlNode> XmlNodePtr; /**< Type definition for shared XML node pointer. */
+using XmlNodePtr = std::shared_ptr<XmlNode>; /**< Type definition for shared XML node pointer. */
 
 /**
  * @brief The XmlNode class.
