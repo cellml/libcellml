@@ -116,8 +116,9 @@ struct Unit
  */
 struct Units::UnitsImpl
 {
-    std::vector<Unit>::iterator findUnit(const std::string &reference);
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
+
+    std::vector<Unit>::iterator findUnit(const std::string &reference);
 };
 
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)

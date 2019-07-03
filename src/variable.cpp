@@ -47,6 +47,13 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
  */
 struct Variable::VariableImpl
 {
+    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping id map for equivalent variable.*/
+    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
+    std::string mInitialValue; /**< Initial value for this Variable.*/
+    std::string mInterfaceType; /**< Interface type for this Variable.*/
+    std::string mUnits; /**< The name of the units defined for this Variable.*/
+
     /**
      * @brief Private function to add an equivalent variable to the set for this variable.
      *
@@ -152,12 +159,6 @@ struct Variable::VariableImpl
 
     std::vector<VariableWeakPtr>::iterator findEquivalentVariable(const VariablePtr &equivalentVariable);
     std::vector<VariableWeakPtr>::const_iterator findEquivalentVariable(const VariablePtr &equivalentVariable) const;
-    std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping id map for equivalent variable.*/
-    std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/
-    std::string mInitialValue; /**< Initial value for this Variable.*/
-    std::string mInterfaceType; /**< Interface type for this Variable.*/
-    std::string mUnits; /**< The name of the units defined for this Variable.*/
 };
 
 std::vector<VariableWeakPtr>::const_iterator Variable::VariableImpl::findEquivalentVariable(const VariablePtr &equivalentVariable) const
