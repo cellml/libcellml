@@ -28,7 +28,6 @@ limitations under the License.
 #include "libcellml/error.h"
 #include "libcellml/generator.h"
 #include "libcellml/generatorprofile.h"
-#include "libcellml/generatorvariable.h"
 #include "libcellml/importsource.h"
 #include "libcellml/logger.h"
 #include "libcellml/model.h"
