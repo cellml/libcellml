@@ -24,7 +24,7 @@ limitations under the License.
 namespace libcellml {
 
 class XmlDoc; /**< Forward declaration of the internal XmlDoc class. */
-typedef std::shared_ptr<XmlDoc> XmlDocPtr; /**< Type definition for shared XML doc pointer. */
+using XmlDocPtr = std::shared_ptr<XmlDoc>; /**< Type definition for shared XML doc pointer. */
 
 /**
  * @brief The XmlDoc class.
