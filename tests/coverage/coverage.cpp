@@ -190,3 +190,16 @@ TEST(Coverage, model)
     vec.push_back(rm);
     vec.insert(vec.begin(), ao);
 }
+
+TEST(Coverage, generator)
+{
+    libcellml::Generator rg;
+    libcellml::Generator ao;
+
+    ao = rg;
+
+    std::vector<libcellml::Generator> vec;
+
+    vec.push_back(rg);
+    vec.insert(vec.begin(), ao);
+}
