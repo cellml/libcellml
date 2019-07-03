@@ -26,8 +26,6 @@ find_program(GIT_EXE NAMES ${PRFERRED_GIT_NAMES} git)
 find_program(LLVM_COV_EXE NAMES ${PREFERRED_LLVM_COV_NAMES} llvm-cov HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
 find_program(LLVM_PROFDATA_EXE NAMES ${PREFERRED_LLVM_PROFDATA_NAMES} llvm-profdata HINTS ${LLVM_BIN_DIR} /Library/Developer/CommandLineTools/usr/bin/)
 find_program(VALGRIND_EXE NAMES ${PREFERRED_VALGRIND_NAMES} valgrind)
-#ISSUE359 -- Remove the below...
-set(CLANG_TIDY_EXE)
 
 find_package(Doxygen)
 find_package(Sphinx)
