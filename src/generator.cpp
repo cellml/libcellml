@@ -1038,9 +1038,13 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
             ModelPtr trackedVariableModel = trackedVariableComponent->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' and "
-                                                                                                                                            "variable '"
-                                + generatorVariable->mVariable->name() + "' in component '" + trackedVariableComponent->name() + "' of model '" + trackedVariableModel->name() + "' are equivalent and cannot therefore both be initialised.");
+            err->setDescription("Variable '" + variable->name()
+                                + "' in component '" + component->name()
+                                + "' of model '" + model->name()
+                                + "' and variable '" + generatorVariable->mVariable->name()
+                                + "' in component '" + trackedVariableComponent->name()
+                                + "' of model '" + trackedVariableModel->name()
+                                + "' are equivalent and cannot therefore both be initialised.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1084,7 +1088,10 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
                 ModelPtr model = component->parentModel();
                 ErrorPtr err = std::make_shared<Error>();
 
-                err->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' cannot be both a variable of integration and initialised.");
+                err->setDescription("Variable '" + variable->name()
+                                    + "' in component '" + component->name()
+                                    + "' of model '" + model->name()
+                                    + "' cannot be both a variable of integration and initialised.");
                 err->setKind(Error::Kind::GENERATOR);
 
                 mGenerator->addError(err);
@@ -1098,7 +1105,13 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
             ModelPtr model = component->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '" + mVariableOfIntegration->name() + "' in component '" + voiComponent->name() + "' of model '" + voiModel->name() + "' and variable '" + variable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' cannot both be a variable of integration.");
+            err->setDescription("Variable '" + mVariableOfIntegration->name()
+                                + "' in component '" + voiComponent->name()
+                                + "' of model '" + voiModel->name()
+                                + "' and variable '" + variable->name()
+                                + "' in component '" + component->name()
+                                + "' of model '" + model->name()
+                                + "' cannot both be a variable of integration.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1117,7 +1130,10 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
             ModelPtr model = component->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("The differential equation for variable '" + variable->name() + "' in component '" + component->name() + "' of model '" + model->name() + "' must be of the first order.");
+            err->setDescription("The differential equation for variable '" + variable->name()
+                                + "' in component '" + component->name()
+                                + "' of model '" + model->name()
+                                + "' must be of the first order.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1257,7 +1273,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 ComponentPtr realComponent = realVariable->parentComponent();
                 ModelPtr realModel = realComponent->parentModel();
 
-                err->setDescription("Variable '" + realVariable->name() + "' in component '" + realComponent->name() + "' of model '" + realModel->name() + "' " + errorType + ".");
+                err->setDescription("Variable '" + realVariable->name()
+                                    + "' in component '" + realComponent->name()
+                                    + "' of model '" + realModel->name() + "' " + errorType + ".");
                 err->setKind(Error::Kind::GENERATOR);
 
                 mGenerator->addError(err);
