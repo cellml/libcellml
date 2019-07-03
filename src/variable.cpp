@@ -47,7 +47,7 @@ using VariableWeakPtr = std::weak_ptr<Variable>; /**< Type definition for weak v
  */
 struct Variable::VariableImpl
 {
-    Variable *mVariable = {};
+    Variable *mVariable = nullptr;
     std::vector<VariableWeakPtr> mEquivalentVariables; /**< Equivalent variables for this Variable.*/
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mMappingIdMap; /**< Mapping id map for equivalent variable.*/
     std::map<VariableWeakPtr, std::string, std::owner_less<VariableWeakPtr>> mConnectionIdMap; /**< Connection id map for equivalent variable.*/

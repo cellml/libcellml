@@ -45,7 +45,7 @@ namespace libcellml {
  */
 struct Validator::ValidatorImpl
 {
-    Validator *mValidator = {};
+    Validator *mValidator = nullptr;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
