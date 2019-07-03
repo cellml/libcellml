@@ -64,6 +64,14 @@ TEST(Generator, initialized_variable_of_integration)
         EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
         EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
+
+    // Make sure that we can't get any code from our generator.
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, two_variables_of_integration)
