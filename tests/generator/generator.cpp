@@ -466,7 +466,8 @@ TEST(Generator, coverage)
               generator.initializeVariables());
     EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquations.out"),
               generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(fileContents("generator/resources/coverage/computeRateEquations.out"),
+              generator.computeRateEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
@@ -485,6 +486,7 @@ TEST(Generator, coverage)
               generator.initializeVariables());
     EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithCustomProfile.out"),
               generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(fileContents("generator/resources/coverage/computeRateEquations.out"),
+              generator.computeRateEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
