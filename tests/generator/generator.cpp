@@ -433,6 +433,14 @@ TEST(Generator, van_der_pol_model_1928)
 
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/van_der_pol_model_1928/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(fileContents("generator/resources/van_der_pol_model_1928/computeRateEquations.out"),
+              generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, coverage)
