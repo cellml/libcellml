@@ -1,0 +1,3 @@
+variables[6] = variables[2]-10.613;
+variables[8] = variables[2]-115;
+variables[14] = variables[2]+12;
