@@ -31,6 +31,8 @@ TEST(Generator, emptyModel)
 
     EXPECT_EQ(size_t(0), generator.errorCount());
 
+    EXPECT_EQ(libcellml::Generator::ModelType::UNKNOWN, generator.modelType());
+
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
