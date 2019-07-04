@@ -64,6 +64,9 @@ TEST(Generator, initialized_variable_of_integration)
 
     // Make sure that we can't get any code from our generator.
 
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
