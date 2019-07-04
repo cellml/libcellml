@@ -57,7 +57,8 @@ struct GeneratorVariableImpl
         CONSTANT,
         COMPUTED_TRUE_CONSTANT,
         COMPUTED_VARIABLE_BASED_CONSTANT,
-        ALGEBRAIC
+        ALGEBRAIC,
+        OVERCONSTRAINED
     };
 
     Type mType = Type::UNKNOWN;
@@ -1247,7 +1248,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
             switch (variable->mType) {
             case GeneratorVariableImpl::Type::UNKNOWN:
-                errorType = "is of unknown type";
+                errorType = "is not computed";
 
                 break;
             case GeneratorVariableImpl::Type::SHOULD_BE_STATE:
@@ -1260,6 +1261,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             case GeneratorVariableImpl::Type::COMPUTED_TRUE_CONSTANT:
             case GeneratorVariableImpl::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
             case GeneratorVariableImpl::Type::ALGEBRAIC:
+                break;
+            case GeneratorVariableImpl::Type::OVERCONSTRAINED:
+                errorType = "is computed more than once";
+
                 break;
             }
 
@@ -2258,6 +2263,27 @@ Generator::ModelType Generator::modelType() const
 {
     if (!mPimpl->hasValidModel()) {
         return Generator::ModelType::UNKNOWN;
+    }
+
+    bool hasUnknownVariables = std::find_if(mPimpl->mVariables.begin(), mPimpl->mVariables.end(), [](const GeneratorVariableImplPtr &variable) {
+                                   return variable->mType == GeneratorVariableImpl::Type::UNKNOWN;
+                               })
+                               != std::end(mPimpl->mVariables);
+    bool hasOverconstrainedVariables = std::find_if(mPimpl->mVariables.begin(), mPimpl->mVariables.end(), [](const GeneratorVariableImplPtr &variable) {
+                                           return variable->mType == GeneratorVariableImpl::Type::OVERCONSTRAINED;
+                                       })
+                                       != std::end(mPimpl->mVariables);
+
+    if (hasUnknownVariables) {
+        if (hasOverconstrainedVariables) {
+            return Generator::ModelType::UNSUITABLY_CONSTRAINED;
+        }
+
+        return Generator::ModelType::UNDERCONSTRAINED;
+    }
+
+    if (hasOverconstrainedVariables) {
+        return Generator::ModelType::OVERCONSTRAINED;
     }
 
     if (mPimpl->mVariableOfIntegration != nullptr) {

@@ -29,7 +29,10 @@ public:
     {
         UNKNOWN,
         ALGEBRAIC,
-        ODE
+        ODE,
+        UNDERCONSTRAINED,
+        OVERCONSTRAINED,
+        UNSUITABLY_CONSTRAINED
     };
 
     Generator(); /**< Constructor */

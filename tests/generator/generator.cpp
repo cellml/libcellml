@@ -167,6 +167,76 @@ TEST(Generator, non_initialized_state)
     }
 }
 
+TEST(Generator, underconstrained)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/underconstrained.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'x' in component 'my_component' of model 'my_model' is not computed."};
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
+    }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::UNDERCONSTRAINED, generator.modelType());
+}
+
+TEST(Generator, overconstrained)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/overconstrained.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'x' in component 'my_component' of model 'my_model' is computed more than once."};
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
+    }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::OVERCONSTRAINED, generator.modelType());
+}
+
+TEST(Generator, unsuitably_constrained)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/unsuitably_constrained.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
+        "Variable 'y' in component 'my_component' of model 'my_model' is computed more than once."};
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
+    }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::UNSUITABLY_CONSTRAINED, generator.modelType());
+}
+
 TEST(Generator, algebraic_eqn_constant_on_rhs)
 {
     libcellml::Parser parser;
