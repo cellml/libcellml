@@ -1209,23 +1209,22 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Determine the index of our constant variables.
-
-    size_t variableIndex = MAX_SIZE_T;
-
-    for (const auto &variable : mVariables) {
-        if (variable->mType == GeneratorVariableImpl::Type::CONSTANT) {
-            variable->mIndex = ++variableIndex;
-        }
-    }
-
-    // Loop over our equations, checking wich variables, if any, can be
-    // determined using a given equation.
-
-    size_t equationOrder = 0;
-    size_t stateIndex = MAX_SIZE_T;
+    // Determine the index of our constant variables and then loop over our
+    // equations, checking wich variables, if any, can be determined using a
+    // given equation.
 
     if (mGenerator->errorCount() == 0) {
+        size_t variableIndex = MAX_SIZE_T;
+
+        for (const auto &variable : mVariables) {
+            if (variable->mType == GeneratorVariableImpl::Type::CONSTANT) {
+                variable->mIndex = ++variableIndex;
+            }
+        }
+
+        size_t equationOrder = 0;
+        size_t stateIndex = MAX_SIZE_T;
+
         for (;;) {
             bool relevantCheck = false;
 
