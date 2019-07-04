@@ -99,9 +99,6 @@ public:
     bool hasPowerOperator() const;
     void setHasPowerOperator(bool hasPowerOperator);
 
-    bool hasXorOperator() const;
-    void setHasXorOperator(bool hasXorOperator);
-
     // Logical operators
 
     std::string andString() const;
@@ -115,6 +112,9 @@ public:
 
     std::string notString() const;
     void setNotString(const std::string &notString);
+
+    bool hasXorOperator() const;
+    void setHasXorOperator(bool hasXorOperator);
 
     // Min/max operators
 
