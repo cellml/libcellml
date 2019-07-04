@@ -376,6 +376,16 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
 
     EXPECT_EQ(size_t(4), generator.stateCount());
     EXPECT_EQ(size_t(18), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/computeConstantEquations.out"),
+              generator.computeConstantEquations());
+    EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/computeRateEquations.out"),
+              generator.computeRateEquations());
+    EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/computeAlgebraicEquations.out"),
+              generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, noble_model_1962)

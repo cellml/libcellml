@@ -1,0 +1,4 @@
+rates[0] = variables[10]*(1-states[0])-variables[11]*states[0];
+rates[1] = variables[12]*(1-states[1])-variables[13]*states[1];
+rates[2] = variables[16]*(1-states[2])-variables[17]*states[2];
+rates[3] = -(-variables[5]+variables[9]+variables[15]+variables[7])/variables[1];
