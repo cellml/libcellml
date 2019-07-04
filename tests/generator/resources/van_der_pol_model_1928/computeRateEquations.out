@@ -1,0 +1,2 @@
+rates[0] = states[1]*1;
+rates[1] = (variables[0]*(1-sqr(states[0]))*states[1]-states[0])*1;
