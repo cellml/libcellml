@@ -323,7 +323,7 @@ struct GeneratorEquationImpl
     static bool knownVariable(const GeneratorVariableImplPtr &variable);
     static bool knownOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
-    void check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex);
+    bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex);
 };
 
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
@@ -414,21 +414,21 @@ void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool 
 }
 #endif
 
-void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex)
+bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine) or if there is one known (ODE) variable left (i.e.
     // this equation is an overconstraint).
 
     if (mOrder != 0) {
-        return;
+        return false;
     }
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         if (variable->mType != GeneratorVariableImpl::Type::UNKNOWN) {
-            return;
+            return false;
         }
     }
 
@@ -458,6 +458,8 @@ void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
     // currently unknown), determine its index, consider it computed, and
     // determine the type of our equation and set its order, if the (ODE)
     // variable is a state, computed constant or algebraic variable.
+
+    bool relevantCheck = false;
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
@@ -489,6 +491,8 @@ void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
                         Type::ALGEBRAIC;
 
             mOrder = ++equationOrder;
+
+            relevantCheck = true;
         }
     }
 #ifdef TRACES
@@ -498,6 +502,8 @@ void GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
     outputVariables(mOdeVariables, true);
     std::cout << "---------------------------------------" << std::endl;
 #endif
+
+    return relevantCheck;
 }
 
 struct Generator::GeneratorImpl
@@ -1227,18 +1233,14 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     if (mGenerator->errorCount() == 0) {
         for (;;) {
-            size_t oldAllVariableCount = 0;
-            size_t newAllVariableCount = 0;
+            bool relevantCheck = false;
 
             for (const auto &equation : mEquations) {
-                oldAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
-
-                equation->check(equationOrder, stateIndex, variableIndex);
-
-                newAllVariableCount += equation->mVariables.size() + equation->mOdeVariables.size();
+                relevantCheck = equation->check(equationOrder, stateIndex, variableIndex)
+                                || relevantCheck;
             }
 
-            if ((newAllVariableCount == mEquations.size()) || (oldAllVariableCount == newAllVariableCount)) {
+            if (!relevantCheck) {
                 break;
             }
         }
