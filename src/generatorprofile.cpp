@@ -58,14 +58,14 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     bool mHasPowerOperator = false;
 
-    bool mHasXorOperator = true;
-
     // Logical operators
 
     std::string mAndString = " && ";
     std::string mOrString = " || ";
     std::string mXorString = "^";
     std::string mNotString = "!";
+
+    bool mHasXorOperator = true;
 
     // Min/max operators
 
@@ -393,16 +393,6 @@ void GeneratorProfile::setHasPowerOperator(bool hasPowerOperator)
     mPimpl->mHasPowerOperator = hasPowerOperator;
 }
 
-bool GeneratorProfile::hasXorOperator() const
-{
-    return mPimpl->mHasXorOperator;
-}
-
-void GeneratorProfile::setHasXorOperator(bool hasXorOperator)
-{
-    mPimpl->mHasXorOperator = hasXorOperator;
-}
-
 std::string GeneratorProfile::andString() const
 {
     return mPimpl->mAndString;
@@ -441,6 +431,16 @@ std::string GeneratorProfile::notString() const
 void GeneratorProfile::setNotString(const std::string &notString)
 {
     mPimpl->mNotString = notString;
+}
+
+bool GeneratorProfile::hasXorOperator() const
+{
+    return mPimpl->mHasXorOperator;
+}
+
+void GeneratorProfile::setHasXorOperator(bool hasXorOperator)
+{
+    mPimpl->mHasXorOperator = hasXorOperator;
 }
 
 std::string GeneratorProfile::minString() const
