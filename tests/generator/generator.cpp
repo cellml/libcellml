@@ -472,19 +472,29 @@ TEST(Generator, coverage)
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
 
-    profile->setPowerString("^");
-    profile->setXorString("xor");
-
-    profile->setHasPowerOperator(true);
-    profile->setHasXorOperator(false);
-    profile->setHasConditionalOperator(false);
-
     generator.setProfile(profile);
+
+    profile->setPowerString("^^");
+    profile->setHasPowerOperator(true);
+    profile->setHasConditionalOperator(false);
 
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
               generator.initializeVariables());
-    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithCustomProfile.out"),
+    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithFirstCustomProfile.out"),
+              generator.computeConstantEquations());
+    EXPECT_EQ(fileContents("generator/resources/coverage/computeRateEquations.out"),
+              generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+
+    profile->setPowerString("^");
+    profile->setXorString("xor");
+    profile->setHasXorOperator(false);
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithSecondCustomProfile.out"),
               generator.computeConstantEquations());
     EXPECT_EQ(fileContents("generator/resources/coverage/computeRateEquations.out"),
               generator.computeRateEquations());
