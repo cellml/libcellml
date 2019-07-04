@@ -64,10 +64,7 @@ TEST(Generator, initialized_variable_of_integration)
         EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
 
-    // Make sure that the type of our model is unknown, that it has no states or
-    // variables and that we can't get any code for it.
-
-    EXPECT_EQ(libcellml::Generator::ModelType::UNKNOWN, generator.modelType());
+    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator.modelType());
 
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
@@ -99,6 +96,17 @@ TEST(Generator, two_variables_of_integration)
         EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
         EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, non_first_order_odes)
@@ -123,6 +131,17 @@ TEST(Generator, non_first_order_odes)
         EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
         EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, variable_initialized_twice)
@@ -144,6 +163,17 @@ TEST(Generator, variable_initialized_twice)
     for (size_t i = 0; i < generator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
     }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, non_initialized_state)
@@ -165,6 +195,17 @@ TEST(Generator, non_initialized_state)
     for (size_t i = 0; i < generator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
     }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::UNDERCONSTRAINED, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, underconstrained)
@@ -188,6 +229,15 @@ TEST(Generator, underconstrained)
     }
 
     EXPECT_EQ(libcellml::Generator::ModelType::UNDERCONSTRAINED, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, overconstrained)
@@ -211,6 +261,15 @@ TEST(Generator, overconstrained)
     }
 
     EXPECT_EQ(libcellml::Generator::ModelType::OVERCONSTRAINED, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, unsuitably_constrained)
@@ -235,6 +294,15 @@ TEST(Generator, unsuitably_constrained)
     }
 
     EXPECT_EQ(libcellml::Generator::ModelType::UNSUITABLY_CONSTRAINED, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, algebraic_eqn_constant_on_rhs)
