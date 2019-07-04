@@ -30,6 +30,7 @@ public:
         UNKNOWN,
         ALGEBRAIC,
         ODE,
+        INVALID,
         UNDERCONSTRAINED,
         OVERCONSTRAINED,
         UNSUITABLY_CONSTRAINED
