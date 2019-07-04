@@ -48,7 +48,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 struct GeneratorVariableImpl
 {
-    enum class Type
+    enum struct Type
     {
         UNKNOWN,
         SHOULD_BE_STATE,
@@ -115,7 +115,7 @@ using GeneratorEquationAstImplPtr = std::shared_ptr<GeneratorEquationAstImpl>;
 
 struct GeneratorEquationAstImpl
 {
-    enum class Type
+    enum struct Type
     {
         // Relational operators
 
@@ -281,7 +281,7 @@ GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const VariablePtr 
 
 struct GeneratorEquationImpl
 {
-    enum class Type
+    enum struct Type
     {
         UNKNOWN,
         TRUE_CONSTANT,
