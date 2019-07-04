@@ -202,6 +202,8 @@ TEST(Coverage, generator)
 
     vec.push_back(rg);
     vec.insert(vec.begin(), ao);
+
+    rg.setProfile(std::make_shared<libcellml::GeneratorProfile>());
 }
 
 TEST(Coverage, generatorProfile)
