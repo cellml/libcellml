@@ -186,12 +186,9 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_constant_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING,
-              generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING,
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING,
-              generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
@@ -215,8 +212,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/initializeVariables.out"),
               generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING,
-              generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/computeRateEquations.out"),
               generator.computeRateEquations());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/computeAlgebraicEquations.out"),
