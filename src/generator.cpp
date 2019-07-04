@@ -425,7 +425,8 @@ bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
         GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         if ((variable->mType != GeneratorVariableImpl::Type::UNKNOWN)
-            && (variable->mType != GeneratorVariableImpl::Type::SHOULD_BE_STATE)) {
+            && (variable->mType != GeneratorVariableImpl::Type::SHOULD_BE_STATE)
+            && (variable->mIndex != MAX_SIZE_T)) {
             variable->mType = GeneratorVariableImpl::Type::OVERCONSTRAINED;
 
             return false;

@@ -1,9 +1,9 @@
-states[18446744073709551615] = 0.0;
+states[0] = 0.0;
 variables[0] = 1.0;
 variables[1] = 2.0;
-variables[2] = 5.0;
+variables[2] = 3.0;
 variables[3] = 4.0;
-variables[4] = 3.0;
+variables[4] = 5.0;
 variables[5] = 6.0;
 variables[6] = 7.0;
 variables[177] = 3.0;
