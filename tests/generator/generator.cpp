@@ -51,7 +51,7 @@ TEST(Generator, initialized_variable_of_integration)
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     const std::vector<std::string> expectedErrors = {
-        "Variable 'time' in component 'main' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised."};
+        "Variable 'time' in component 'my_component' of model 'initialized_variable_of_integration' cannot be both a variable of integration and initialised."};
 
     libcellml::Generator generator;
 
@@ -154,7 +154,7 @@ TEST(Generator, non_initialized_state)
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     const std::vector<std::string> expectedErrors = {
-        "Variable 'x' in component 'main' of model 'non_initialized_state' is used in an ODE, but it is not initialised."};
+        "Variable 'x' in component 'my_component' of model 'non_initialized_state' is used in an ODE, but it is not initialised."};
 
     libcellml::Generator generator;
 
