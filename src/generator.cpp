@@ -1175,22 +1175,20 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
 bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorVariableImplPtr &variable1,
                                                       const GeneratorVariableImplPtr &variable2)
 {
+    // TODO: we can't currently instatiate imports, which means that we can't
+    //       have variables in different models. This also means that we can't
+    //       have code to check for the name of a model since this would fail
+    //       coverage test.
     VariablePtr realVariable1 = variable1->mVariable;
     VariablePtr realVariable2 = variable2->mVariable;
     ComponentPtr realComponent1 = realVariable1->parentComponent();
     ComponentPtr realComponent2 = realVariable2->parentComponent();
-    ModelPtr realModel1 = realComponent1->parentModel();
-    ModelPtr realModel2 = realComponent2->parentModel();
 
-    if (realModel1->name() == realModel2->name()) {
-        if (realComponent1->name() == realComponent2->name()) {
-            return realVariable1->name() < realVariable2->name();
-        }
-
-        return realComponent1->name() < realComponent2->name();
+    if (realComponent1->name() == realComponent2->name()) {
+        return realVariable1->name() < realVariable2->name();
     }
 
-    return realModel1->name() < realModel2->name();
+    return realComponent1->name() < realComponent2->name();
 }
 
 bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorVariableImplPtr &variable1,
