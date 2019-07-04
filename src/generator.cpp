@@ -1966,7 +1966,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         return mProfile->nanString();
     }
 
+#ifdef _WIN32
     return {}; // We can never reach this point, but it is needed to make MSVC happy.
+#endif
 }
 
 Generator::Generator()
