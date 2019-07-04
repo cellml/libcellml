@@ -62,7 +62,10 @@ TEST(Generator, initialized_variable_of_integration)
         EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
 
-    // Make sure that we can't get any code from our generator.
+    // Make sure that the type of our model is unknown, that it has no states or
+    // variables and that we can't get any code for it.
+
+    EXPECT_EQ(libcellml::Generator::ModelType::UNKNOWN, generator.modelType());
 
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
