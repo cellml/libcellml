@@ -931,17 +931,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CI, variable, astParent);
 
         // Have our equation track the (ODE) variable (by ODE variable, we mean
-        // a variable that is used in a diff element, i.e. a "normal" variable
-        // or the variable of integration)
+        // a variable that is used in a "diff" element)
 
         GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
-        //ISSUE359: do we really need to track the VOI as an ODE variable?
 
-        if ((node->parent()->firstChild()->isMathmlElement("diff")
-             || (node->parent()->isMathmlElement("bvar")
-                 && node->parent()->parent()->firstChild()->isMathmlElement("diff")))) {
+        if (node->parent()->firstChild()->isMathmlElement("diff")) {
             equation->addOdeVariable(generatorVariable);
-        } else {
+        } else if (!(node->parent()->isMathmlElement("bvar")
+                     && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
             equation->addVariable(generatorVariable);
         }
 
