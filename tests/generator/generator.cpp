@@ -303,4 +303,23 @@ TEST(Generator, coverage)
               generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
+
+    profile->setPowerString("^");
+    profile->setXorString("xor");
+
+    profile->setHasPowerOperator(true);
+    profile->setHasXorOperator(false);
+    profile->setHasConditionalOperator(false);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithCustomProfile.out"),
+              generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
