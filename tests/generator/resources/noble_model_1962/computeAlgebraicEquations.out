@@ -1,0 +1,12 @@
+variables[5] = variables[1]*(states[3]-variables[0]);
+variables[6] = pow(states[0], 3)*states[1]*variables[4];
+variables[7] = (variables[6]+0.14)*(states[3]-variables[3]);
+variables[8] = 0.1*(-states[3]-48)/(exp((-states[3]-48)/15)-1);
+variables[9] = 0.12*(states[3]+8)/(exp((states[3]+8)/5)-1);
+variables[10] = 0.17*exp((-states[3]-90)/20);
+variables[11] = 1/(1+exp((-states[3]-42)/10));
+variables[12] = 1.2*exp((-states[3]-90)/50)+0.015*exp((states[3]+90)/60);
+variables[13] = 1.2*pow(states[2], 4);
+variables[14] = 0.0001*(-states[3]-50)/(exp((-states[3]-50)/10)-1);
+variables[15] = 0.002*exp((-states[3]-90)/80);
+variables[16] = (variables[12]+variables[13])*(states[3]+100);

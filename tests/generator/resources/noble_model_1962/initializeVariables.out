@@ -1,0 +1,9 @@
+states[0] = 0.01;
+states[1] = 0.8;
+states[2] = 0.01;
+states[3] = -87;
+variables[0] = -60;
+variables[1] = 0.075;
+variables[2] = 12;
+variables[3] = 40;
+variables[4] = 400;
