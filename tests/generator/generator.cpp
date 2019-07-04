@@ -281,7 +281,7 @@ TEST(Generator, van_der_pol_model_1928)
 TEST(Generator, coverage)
 {
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage.cellml"));
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/coverage/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
@@ -290,4 +290,17 @@ TEST(Generator, coverage)
     generator.processModel(model);
 
     EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(1), generator.stateCount());
+    EXPECT_EQ(size_t(185), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquations.out"),
+              generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }

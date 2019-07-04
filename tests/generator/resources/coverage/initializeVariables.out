@@ -1,0 +1,15 @@
+states[18446744073709551615] = 0.0;
+variables[0] = 1.0;
+variables[1] = 2.0;
+variables[2] = 5.0;
+variables[3] = 4.0;
+variables[4] = 3.0;
+variables[5] = 6.0;
+variables[6] = 7.0;
+variables[177] = 3.0;
+variables[179] = true;
+variables[180] = false;
+variables[181] = 2.71828182845905;
+variables[182] = 3.14159265358979;
+variables[183] = 1.0/0.0;
+variables[184] = sqrt(-1.0);
