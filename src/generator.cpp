@@ -424,7 +424,10 @@ bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorVariableImplPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
-        if (variable->mType != GeneratorVariableImpl::Type::UNKNOWN) {
+        if ((variable->mType != GeneratorVariableImpl::Type::UNKNOWN)
+            && (variable->mType != GeneratorVariableImpl::Type::SHOULD_BE_STATE)) {
+            variable->mType = GeneratorVariableImpl::Type::OVERCONSTRAINED;
+
             return false;
         }
     }
@@ -507,12 +510,12 @@ struct Generator::GeneratorImpl
 {
     Generator *mGenerator = nullptr;
 
-    bool mHasModel = false;
+    Generator::ModelType mModelType = Generator::ModelType::UNKNOWN;
 
     VariablePtr mVariableOfIntegration;
 
-    std::vector<GeneratorVariableImplPtr> mVariables;
-    std::vector<GeneratorEquationImplPtr> mEquations;
+    std::list<GeneratorVariableImplPtr> mVariables;
+    std::list<GeneratorEquationImplPtr> mEquations;
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
@@ -543,6 +546,14 @@ struct Generator::GeneratorImpl
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
     GeneratorVariableImplPtr generatorVariable(const VariablePtr &variable);
+
+    static bool compareVariablesByName(const GeneratorVariableImplPtr &variable1,
+                                       const GeneratorVariableImplPtr &variable2);
+    static bool compareVariablesByTypeAndIndex(const GeneratorVariableImplPtr &variable1,
+                                               const GeneratorVariableImplPtr &variable2);
+
+    static bool compareEquationsByOrder(const GeneratorEquationImplPtr &equation1,
+                                        const GeneratorEquationImplPtr &equation2);
 
     void processNode(const XmlNodePtr &node, GeneratorEquationAstImplPtr &ast,
                      const GeneratorEquationAstImplPtr &astParent,
@@ -581,7 +592,8 @@ struct Generator::GeneratorImpl
 
 bool Generator::GeneratorImpl::hasValidModel() const
 {
-    return mHasModel && (mGenerator->errorCount() == 0) && !mVariables.empty();
+    return (mModelType == Generator::ModelType::ALGEBRAIC)
+           || (mModelType == Generator::ModelType::ODE);
 }
 
 size_t Generator::GeneratorImpl::mathmlChildCount(const XmlNodePtr &node) const
@@ -1159,13 +1171,50 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
     }
 }
 
+bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorVariableImplPtr &variable1,
+                                                      const GeneratorVariableImplPtr &variable2)
+{
+    VariablePtr realVariable1 = variable1->mVariable;
+    VariablePtr realVariable2 = variable2->mVariable;
+    ComponentPtr realComponent1 = realVariable1->parentComponent();
+    ComponentPtr realComponent2 = realVariable2->parentComponent();
+    ModelPtr realModel1 = realComponent1->parentModel();
+    ModelPtr realModel2 = realComponent2->parentModel();
+
+    if (realModel1->name() == realModel2->name()) {
+        if (realComponent1->name() == realComponent2->name()) {
+            return realVariable1->name() < realVariable2->name();
+        }
+
+        return realComponent1->name() < realComponent2->name();
+    }
+
+    return realModel1->name() < realModel2->name();
+}
+
+bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorVariableImplPtr &variable1,
+                                                              const GeneratorVariableImplPtr &variable2)
+{
+    if (variable1->mType == variable2->mType) {
+        return variable1->mIndex < variable2->mIndex;
+    }
+
+    return variable1->mType < variable2->mType;
+}
+
+bool Generator::GeneratorImpl::compareEquationsByOrder(const GeneratorEquationImplPtr &equation1,
+                                                       const GeneratorEquationImplPtr &equation2)
+{
+    return equation1->mOrder < equation2->mOrder;
+}
+
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 {
     // Reset a few things in case we were to process the model more than once.
     // Note: one would normally process the model only once, so we shouldn't
     //       need to do this, but better be safe than sorry.
 
-    mHasModel = true;
+    mModelType = Generator::ModelType::UNKNOWN;
 
     mVariableOfIntegration = nullptr;
 
@@ -1209,11 +1258,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Determine the index of our constant variables and then loop over our
-    // equations, checking wich variables, if any, can be determined using a
-    // given equation.
+    // Sort our variables, determine the index of our constant variables and
+    // then loop over our equations, checking wich variables, if any, can be
+    // determined using a given equation.
 
     if (mGenerator->errorCount() == 0) {
+        mVariables.sort(compareVariablesByName);
+
         size_t variableIndex = MAX_SIZE_T;
 
         for (const auto &variable : mVariables) {
@@ -1237,6 +1288,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 break;
             }
         }
+    } else {
+        mModelType = Generator::ModelType::INVALID;
     }
 
     // Make sure that all our variables are valid.
@@ -1281,6 +1334,43 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 mGenerator->addError(err);
             }
         }
+    }
+
+    // Determine the type of our model, if it hasn't already been categorised as
+    // being invalid
+
+    if (mModelType != Generator::ModelType::INVALID) {
+        bool hasUnderconstrainedVariables = std::find_if(mVariables.begin(), mVariables.end(), [](const GeneratorVariableImplPtr &variable) {
+                                                return (variable->mType == GeneratorVariableImpl::Type::UNKNOWN)
+                                                       || (variable->mType == GeneratorVariableImpl::Type::SHOULD_BE_STATE);
+                                            })
+                                            != std::end(mVariables);
+        bool hasOverconstrainedVariables = std::find_if(mVariables.begin(), mVariables.end(), [](const GeneratorVariableImplPtr &variable) {
+                                               return variable->mType == GeneratorVariableImpl::Type::OVERCONSTRAINED;
+                                           })
+                                           != std::end(mVariables);
+
+        if (hasUnderconstrainedVariables) {
+            if (hasOverconstrainedVariables) {
+                mModelType = Generator::ModelType::UNSUITABLY_CONSTRAINED;
+            } else {
+                mModelType = Generator::ModelType::UNDERCONSTRAINED;
+            }
+        } else if (hasOverconstrainedVariables) {
+            mModelType = Generator::ModelType::OVERCONSTRAINED;
+        } else if (mVariableOfIntegration != nullptr) {
+            mModelType = Generator::ModelType::ODE;
+        } else if (!mVariables.empty()) {
+            mModelType = Generator::ModelType::ALGEBRAIC;
+        }
+    }
+
+    // Sort our variables and equations, if we have a valid movel
+
+    if ((mModelType == Generator::ModelType::ODE)
+        || (mModelType == Generator::ModelType::ALGEBRAIC)) {
+        mVariables.sort(compareVariablesByTypeAndIndex);
+        mEquations.sort(compareEquationsByOrder);
     }
 }
 
@@ -2122,7 +2212,7 @@ Generator::Generator(const Generator &rhs)
 {
     mPimpl->mGenerator = rhs.mPimpl->mGenerator;
 
-    mPimpl->mHasModel = rhs.mPimpl->mHasModel;
+    mPimpl->mModelType = rhs.mPimpl->mModelType;
 
     mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
 
@@ -2260,36 +2350,7 @@ void Generator::processModel(const ModelPtr &model)
 
 Generator::ModelType Generator::modelType() const
 {
-    if (!mPimpl->hasValidModel()) {
-        return Generator::ModelType::UNKNOWN;
-    }
-
-    bool hasUnknownVariables = std::find_if(mPimpl->mVariables.begin(), mPimpl->mVariables.end(), [](const GeneratorVariableImplPtr &variable) {
-                                   return variable->mType == GeneratorVariableImpl::Type::UNKNOWN;
-                               })
-                               != std::end(mPimpl->mVariables);
-    bool hasOverconstrainedVariables = std::find_if(mPimpl->mVariables.begin(), mPimpl->mVariables.end(), [](const GeneratorVariableImplPtr &variable) {
-                                           return variable->mType == GeneratorVariableImpl::Type::OVERCONSTRAINED;
-                                       })
-                                       != std::end(mPimpl->mVariables);
-
-    if (hasUnknownVariables) {
-        if (hasOverconstrainedVariables) {
-            return Generator::ModelType::UNSUITABLY_CONSTRAINED;
-        }
-
-        return Generator::ModelType::UNDERCONSTRAINED;
-    }
-
-    if (hasOverconstrainedVariables) {
-        return Generator::ModelType::OVERCONSTRAINED;
-    }
-
-    if (mPimpl->mVariableOfIntegration != nullptr) {
-        return Generator::ModelType::ODE;
-    }
-
-    return Generator::ModelType::ALGEBRAIC;
+    return mPimpl->mModelType;
 }
 
 size_t Generator::stateCount() const
@@ -2362,7 +2423,7 @@ std::string Generator::neededMathMethods() const
 
 std::string Generator::initializeVariables() const
 {
-    if (errorCount() != 0) {
+    if (!mPimpl->hasValidModel()) {
         return {};
     }
 
@@ -2386,7 +2447,7 @@ std::string Generator::initializeVariables() const
 
 std::string Generator::computeConstantEquations() const
 {
-    if (errorCount() != 0) {
+    if (!mPimpl->hasValidModel()) {
         return {};
     }
 
@@ -2403,7 +2464,7 @@ std::string Generator::computeConstantEquations() const
 
 std::string Generator::computeRateEquations() const
 {
-    if (errorCount() != 0) {
+    if (!mPimpl->hasValidModel()) {
         return {};
     }
 
@@ -2420,7 +2481,7 @@ std::string Generator::computeRateEquations() const
 
 std::string Generator::computeAlgebraicEquations() const
 {
-    if (errorCount() != 0) {
+    if (!mPimpl->hasValidModel()) {
         return {};
     }
 
