@@ -89,17 +89,10 @@ void GeneratorVariableImpl::setVariable(const VariablePtr &variable)
 
     if (!variable->initialValue().empty()) {
         // The variable has an initial value, so it can either be a constant or
-        // a state. If the type of the variable is currently unknown then we
-        // consider it to be a constant (then, if we find an ODE for that
-        // variable, we will know that it was actually a state). On the other
-        // hand, if it was thought that the variable should be a state, then we
-        // now know that it is indeed one.
+        // a state. By default, we consider it to be a constant and, if we find
+        // an ODE for that variable, we will know that it was actually a state.
 
-        if (mType == Type::UNKNOWN) {
-            mType = Type::CONSTANT;
-        } else if (mType == Type::SHOULD_BE_STATE) {
-            mType = Type::STATE;
-        }
+        mType = Type::CONSTANT;
     }
 }
 
