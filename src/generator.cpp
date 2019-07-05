@@ -229,8 +229,8 @@ struct GeneratorEquationAstImpl
 
     GeneratorEquationAstImplPtr mParent;
 
-    GeneratorEquationAstImplPtr mLeft;
-    GeneratorEquationAstImplPtr mRight;
+    GeneratorEquationAstImplPtr mLeft = nullptr;
+    GeneratorEquationAstImplPtr mRight = nullptr;
 
     explicit GeneratorEquationAstImpl(Type type, const std::string &value,
                                       const VariablePtr &variable,
@@ -251,8 +251,6 @@ GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const std::string 
     , mValue(value)
     , mVariable(variable)
     , mParent(parent)
-    , mLeft(nullptr)
-    , mRight(nullptr)
 {
 }
 
