@@ -202,3 +202,31 @@ TEST(Coverage, model)
     vec.push_back(rm);
     vec.insert(vec.begin(), ao);
 }
+
+TEST(Coverage, generator)
+{
+    libcellml::Generator rg;
+    libcellml::Generator ao;
+
+    ao = rg;
+
+    std::vector<libcellml::Generator> vec;
+
+    vec.push_back(rg);
+    vec.insert(vec.begin(), ao);
+
+    rg.setProfile(std::make_shared<libcellml::GeneratorProfile>());
+}
+
+TEST(Coverage, generatorProfile)
+{
+    libcellml::GeneratorProfile rgp;
+    libcellml::GeneratorProfile ao;
+
+    ao = rgp;
+
+    std::vector<libcellml::GeneratorProfile> vec;
+
+    vec.push_back(rgp);
+    vec.insert(vec.begin(), ao);
+}
