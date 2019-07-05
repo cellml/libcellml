@@ -55,7 +55,9 @@ TEST(Coverage, import)
 
     im = std::move(i);
 
-    EXPECT_EQ(id, im.id());
+    libcellml::ImportSource ic(im);
+
+    EXPECT_EQ(id, ic.id());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -92,7 +94,9 @@ TEST(Coverage, printer)
 
     pm = std::move(p);
 
-    EXPECT_EQ(size_t(1), pm.errorCount());
+    libcellml::Printer pc(pm);
+
+    EXPECT_EQ(size_t(1), pc.errorCount());
 }
 
 TEST(Coverage, units)
@@ -106,7 +110,9 @@ TEST(Coverage, units)
 
     um = std::move(u);
 
-    EXPECT_EQ(n, um.name());
+    libcellml::Units uc(um);
+
+    EXPECT_EQ(n, uc.name());
 }
 
 TEST(Coverage, when)
@@ -120,7 +126,9 @@ TEST(Coverage, when)
 
     wm = std::move(w);
 
-    EXPECT_EQ(id, wm.id());
+    libcellml::When wc(wm);
+
+    EXPECT_EQ(id, wc.id());
 }
 
 TEST(Coverage, variable)
@@ -136,7 +144,9 @@ TEST(Coverage, variable)
 
     vm = std::move(v);
 
-    EXPECT_EQ(n, vm.units());
+    libcellml::Variable vc(vm);
+
+    EXPECT_EQ(n, vc.units());
 }
 
 TEST(Coverage, component)
@@ -169,7 +179,9 @@ TEST(Coverage, error)
 
     em = std::move(e);
 
-    EXPECT_EQ(description, em.description());
+    libcellml::Error ec(em);
+
+    EXPECT_EQ(description, ec.description());
 }
 
 TEST(Coverage, model)
