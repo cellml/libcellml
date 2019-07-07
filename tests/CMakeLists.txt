@@ -129,13 +129,13 @@ if(LIBCELLML_LLVM_COVERAGE)
 
   # Unfortunately we cannot get an output in html format at this time as it is not supported at version 8.
   add_custom_target(llvm_coverage
-    COMMAND ${LLVM_COV_EXE} report $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=text
+    COMMAND ${LLVM_COV_EXE} report $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=text -use-color
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running LLVM coverage tests")
 
   add_custom_target(llvm_coverage_missing_lines
-    COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -line-coverage-lt=100 -Xdemangler c++filt -Xdemangler -n
+    COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=html -line-coverage-lt=100 -Xdemangler c++filt -Xdemangler -n
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running LLVM coverage missing lines command")
