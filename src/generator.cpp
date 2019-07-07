@@ -222,19 +222,16 @@ struct GeneratorEquationAstImpl
         NAN
     };
 
-    Type mType;
+    Type mType = Type::EQ;
 
     std::string mValue;
-    VariablePtr mVariable;
+    VariablePtr mVariable = nullptr;
 
-    GeneratorEquationAstImplPtr mParent;
+    GeneratorEquationAstImplPtr mParent = nullptr;
 
     GeneratorEquationAstImplPtr mLeft = nullptr;
     GeneratorEquationAstImplPtr mRight = nullptr;
 
-    explicit GeneratorEquationAstImpl(Type type, const std::string &value,
-                                      const VariablePtr &variable,
-                                      const GeneratorEquationAstImplPtr &parent);
     explicit GeneratorEquationAstImpl();
     explicit GeneratorEquationAstImpl(Type type,
                                       const GeneratorEquationAstImplPtr &parent);
@@ -244,36 +241,28 @@ struct GeneratorEquationAstImpl
                                       const GeneratorEquationAstImplPtr &parent);
 };
 
-GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const std::string &value,
-                                                   const VariablePtr &variable,
+GeneratorEquationAstImpl::GeneratorEquationAstImpl() = default;
+
+GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type,
                                                    const GeneratorEquationAstImplPtr &parent)
     : mType(type)
-    , mValue(value)
-    , mVariable(variable)
     , mParent(parent)
 {
 }
 
-GeneratorEquationAstImpl::GeneratorEquationAstImpl()
-    : GeneratorEquationAstImpl(Type::EQ, "", nullptr, nullptr)
-{
-}
-
-GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type,
-                                                   const GeneratorEquationAstImplPtr &parent)
-    : GeneratorEquationAstImpl(type, "", nullptr, parent)
-{
-}
-
 GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const std::string &value,
                                                    const GeneratorEquationAstImplPtr &parent)
-    : GeneratorEquationAstImpl(type, value, nullptr, parent)
+    : mType(type)
+    , mValue(value)
+    , mParent(parent)
 {
 }
 
 GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const VariablePtr &variable,
                                                    const GeneratorEquationAstImplPtr &parent)
-    : GeneratorEquationAstImpl(type, "", variable, parent)
+    : mType(type)
+    , mVariable(variable)
+    , mParent(parent)
 {
 }
 
