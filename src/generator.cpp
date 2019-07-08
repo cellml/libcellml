@@ -310,7 +310,7 @@ struct GeneratorEquationImpl: public std::enable_shared_from_this<GeneratorEquat
     static bool knownVariable(const GeneratorVariableImplPtr &variable);
     static bool knownOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
-    bool check(size_t &stateIndex, size_t &variableIndex);
+    bool check(size_t & stateIndex, size_t & variableIndex);
 };
 
 GeneratorEquationImpl::GeneratorEquationImpl()
