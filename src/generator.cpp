@@ -676,7 +676,9 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 astRight = tempAst;
             }
 
-            astRight->mParent = ast;
+            if (astRight != nullptr) {
+                astRight->mParent = ast;
+            }
 
             ast->mRight = astRight;
         }
@@ -899,20 +901,34 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("cn")) {
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CN, node->firstChild()->convertToString(), astParent);
     } else if (node->isMathmlElement("ci")) {
-        VariablePtr variable = component->variable(node->firstChild()->convertToString());
+        std::string variableName = node->firstChild()->convertToString();
+        VariablePtr variable = component->variable(variableName);
 
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CI, variable, astParent);
+        if (variable != nullptr) {
+            ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CI, variable, astParent);
 
-        // Have our equation track the (ODE) variable (by ODE variable, we mean
-        // a variable that is used in a "diff" element)
+            // Have our equation track the (ODE) variable (by ODE variable, we
+            // mean a variable that is used in a "diff" element)
 
-        GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+            GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
-        if (node->parent()->firstChild()->isMathmlElement("diff")) {
-            equation->addOdeVariable(generatorVariable);
-        } else if (!(node->parent()->isMathmlElement("bvar")
-                     && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
-            equation->addVariable(generatorVariable);
+            if (node->parent()->firstChild()->isMathmlElement("diff")) {
+                equation->addOdeVariable(generatorVariable);
+            } else if (!(node->parent()->isMathmlElement("bvar")
+                         && node->parent()->parent()->firstChild()->isMathmlElement("diff"))) {
+                equation->addVariable(generatorVariable);
+            }
+        } else {
+            ModelPtr model = component->parentModel();
+            ErrorPtr err = std::make_shared<Error>();
+
+            err->setDescription("Variable '" + variableName
+                                + "' in component '" + component->name()
+                                + "' of model '" + model->name()
+                                + "' is referenced in an equation, but it is not defined anywhere.");
+            err->setKind(Error::Kind::GENERATOR);
+
+            mGenerator->addError(err);
         }
 
         // Qualifier elements
