@@ -43,7 +43,6 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 struct GeneratorEquationImpl;
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
-using GeneratorEquationImplWeakPtr = std::weak_ptr<GeneratorEquationImpl>;
 
 struct GeneratorVariableImpl
 {
@@ -67,7 +66,7 @@ struct GeneratorVariableImpl
 
     bool mProcessed = false;
 
-    GeneratorEquationImplWeakPtr mEquation;
+    GeneratorEquationImplPtr mEquation;
 
     explicit GeneratorVariableImpl(const VariablePtr &variable);
 
