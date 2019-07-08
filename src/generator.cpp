@@ -41,6 +41,10 @@ namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
+struct GeneratorEquationImpl;
+using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
+using GeneratorEquationImplWeakPtr = std::weak_ptr<GeneratorEquationImpl>;
+
 struct GeneratorVariableImpl
 {
     enum struct Type
@@ -62,6 +66,8 @@ struct GeneratorVariableImpl
     VariablePtr mVariable;
 
     bool mProcessed = false;
+
+    GeneratorEquationImplWeakPtr mEquation;
 
     explicit GeneratorVariableImpl(const VariablePtr &variable);
 
@@ -262,7 +268,11 @@ GeneratorEquationAstImpl::GeneratorEquationAstImpl(Type type, const VariablePtr 
 {
 }
 
+#ifdef SWIG
 struct GeneratorEquationImpl
+#else
+struct GeneratorEquationImpl: public std::enable_shared_from_this<GeneratorEquationImpl>
+#endif
 {
     enum struct Type
     {
@@ -281,6 +291,8 @@ struct GeneratorEquationImpl
 
     std::list<GeneratorVariableImplPtr> mVariables;
     std::list<GeneratorVariableImplPtr> mOdeVariables;
+
+    GeneratorVariableImplPtr mVariable = nullptr;
 
     bool mTrulyConstant = true;
     bool mVariableBasedConstant = true;
@@ -415,6 +427,7 @@ bool GeneratorEquationImpl::check(size_t &stateIndex, size_t &variableIndex)
                                    ++variableIndex;
 
             variable->mProcessed = true;
+            variable->mEquation = shared_from_this();
 
             mType = (variable->mType == GeneratorVariableImpl::Type::STATE) ?
                         Type::RATE :
@@ -425,6 +438,7 @@ bool GeneratorEquationImpl::check(size_t &stateIndex, size_t &variableIndex)
                         Type::ALGEBRAIC;
 
             mProcessed = true;
+            mVariable = variable;
 
             relevantCheck = true;
         }
