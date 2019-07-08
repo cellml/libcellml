@@ -310,8 +310,6 @@ struct GeneratorEquationImpl: public std::enable_shared_from_this<GeneratorEquat
     bool check(size_t &stateIndex, size_t &variableIndex);
 };
 
-using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
-
 GeneratorEquationImpl::GeneratorEquationImpl()
     : mAst(std::make_shared<GeneratorEquationAstImpl>())
 {
