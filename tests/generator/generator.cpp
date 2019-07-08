@@ -384,8 +384,7 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
               generator.computeConstantEquations());
     EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/computeRateEquations.out"),
               generator.computeRateEquations());
-    EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/computeAlgebraicEquations.out"),
-              generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
 TEST(Generator, noble_model_1962)
