@@ -275,7 +275,7 @@ struct GeneratorEquationImpl
 
     Type mType = Type::UNKNOWN;
 
-    size_t mOrder = 0;
+    bool mProcessed = false;
 
     GeneratorEquationAstImplPtr mAst;
 
@@ -296,7 +296,7 @@ struct GeneratorEquationImpl
     static bool knownVariable(const GeneratorVariableImplPtr &variable);
     static bool knownOdeVariable(const GeneratorVariableImplPtr &odeVariable);
 
-    bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex);
+    bool check(size_t &stateIndex, size_t &variableIndex);
 };
 
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
@@ -351,13 +351,13 @@ bool GeneratorEquationImpl::knownOdeVariable(const GeneratorVariableImplPtr &ode
            || (odeVariable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION);
 }
 
-bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex)
+bool GeneratorEquationImpl::check(size_t &stateIndex, size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine) or if there is one known (ODE) variable left (i.e.
     // this equation is an overconstraint).
 
-    if (mOrder != 0) {
+    if (mProcessed) {
         return false;
     }
 
@@ -424,7 +424,7 @@ bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
                         Type::VARIABLE_BASED_CONSTANT :
                         Type::ALGEBRAIC;
 
-            mOrder = ++equationOrder;
+            mProcessed = true;
 
             relevantCheck = true;
         }
@@ -1198,14 +1198,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         }
 
-        size_t equationOrder = 0;
         size_t stateIndex = MAX_SIZE_T;
 
         for (;;) {
             bool relevantCheck = false;
 
             for (const auto &equation : mEquations) {
-                relevantCheck = equation->check(equationOrder, stateIndex, variableIndex)
+                relevantCheck = equation->check(stateIndex, variableIndex)
                                 || relevantCheck;
             }
 
