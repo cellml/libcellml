@@ -1290,7 +1290,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Sort our variables and equations, if we have a valid movel
+    // Sort our variables and equations, if we have a valid model
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
