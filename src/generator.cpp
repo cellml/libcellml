@@ -552,6 +552,9 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value);
     std::string generateCode(const GeneratorEquationAstImplPtr &ast,
                              const GeneratorEquationAstImplPtr &parentAst = nullptr);
+
+    std::string generateInitializationCode(const GeneratorVariableImplPtr &variable);
+    std::string generateEquationCode(const GeneratorEquationImplPtr &equation);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -2177,6 +2180,24 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
     return code;
 }
 
+std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorVariableImplPtr &variable)
+{
+    return generateVariableName(variable->mVariable) + " = " + variable->mVariable->initialValue() + mProfile->commandSeparatorString() + "\n";
+}
+
+std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationImplPtr &equation)
+{
+    std::string res;
+
+    for (const auto &dependency : equation->mDependencies) {
+        res += generateEquationCode(dependency);
+    }
+
+    res += generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
+
+    return res;
+}
+
 Generator::Generator()
     : mPimpl(new GeneratorImpl())
 {
@@ -2359,13 +2380,13 @@ std::string Generator::initializeVariables() const
     for (const auto &variable : mPimpl->mVariables) {
         if ((variable->mType == GeneratorVariableImpl::Type::STATE)
             || (variable->mType == GeneratorVariableImpl::Type::CONSTANT)) {
-            res += mPimpl->generateVariableName(variable->mVariable) + " = " + variable->mVariable->initialValue() + mPimpl->mProfile->commandSeparatorString() + "\n";
+            res += mPimpl->generateInitializationCode(variable);
         }
     }
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::TRUE_CONSTANT) {
-            res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
+            res += mPimpl->generateEquationCode(equation);
         }
     }
 
@@ -2382,7 +2403,7 @@ std::string Generator::computeConstantEquations() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::VARIABLE_BASED_CONSTANT) {
-            res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
+            res += mPimpl->generateEquationCode(equation);
         }
     }
 
@@ -2399,11 +2420,7 @@ std::string Generator::computeRateEquations() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::RATE) {
-            for (const auto &dependency : equation->mDependencies) {
-                res += mPimpl->generateCode(dependency->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
-            }
-
-            res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
+            res += mPimpl->generateEquationCode(equation);
         }
     }
 
@@ -2420,7 +2437,7 @@ std::string Generator::computeAlgebraicEquations() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::ALGEBRAIC) {
-            res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
+            res += mPimpl->generateEquationCode(equation);
         }
     }
 
