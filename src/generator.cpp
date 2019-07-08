@@ -112,6 +112,7 @@ void GeneratorVariableImpl::makeState()
 
 struct GeneratorEquationAstImpl;
 using GeneratorEquationAstImplPtr = std::shared_ptr<GeneratorEquationAstImpl>;
+using GeneratorEquationAstImplWeakPtr = std::weak_ptr<GeneratorEquationAstImpl>;
 
 struct GeneratorEquationAstImpl
 {
@@ -227,7 +228,7 @@ struct GeneratorEquationAstImpl
     std::string mValue;
     VariablePtr mVariable = nullptr;
 
-    GeneratorEquationAstImplPtr mParent = nullptr;
+    GeneratorEquationAstImplWeakPtr mParent;
 
     GeneratorEquationAstImplPtr mLeft = nullptr;
     GeneratorEquationAstImplPtr mRight = nullptr;
@@ -981,7 +982,7 @@ GeneratorEquationImplPtr Generator::GeneratorImpl::processNode(const XmlNodePtr 
 
     // Actually process the node and return its corresponding equation.
 
-    processNode(node, equation->mAst, equation->mAst->mParent, component, equation);
+    processNode(node, equation->mAst, equation->mAst->mParent.lock(), component, equation);
 
     return equation;
 }
@@ -1056,9 +1057,9 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstImpl
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
 
-    GeneratorEquationAstImplPtr astParent = ast->mParent;
-    GeneratorEquationAstImplPtr astGrandParent = (astParent != nullptr) ? astParent->mParent : nullptr;
-    GeneratorEquationAstImplPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent : nullptr;
+    GeneratorEquationAstImplPtr astParent = ast->mParent.lock();
+    GeneratorEquationAstImplPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
+    GeneratorEquationAstImplPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;
 
     if ((ast->mType == GeneratorEquationAstImpl::Type::CI)
         && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstImpl::Type::BVAR)
@@ -1440,7 +1441,7 @@ std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &va
     std::string arrayName;
 
     if (generatorVariable->mType == GeneratorVariableImpl::Type::STATE) {
-        arrayName = ((ast != nullptr) && (ast->mParent->mType == GeneratorEquationAstImpl::Type::DIFF)) ?
+        arrayName = ((ast != nullptr) && (ast->mParent.lock()->mType == GeneratorEquationAstImpl::Type::DIFF)) ?
                         mProfile->ratesArrayString() :
                         mProfile->statesArrayString();
     } else {
