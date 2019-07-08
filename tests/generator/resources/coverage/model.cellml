@@ -193,6 +193,7 @@
         <variable initial_value="7.0" name="s" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
+                <!-- A non-MathML node needed for our coverage test. -->
                 <eq/>
                 <apply>
                     <diff/>
