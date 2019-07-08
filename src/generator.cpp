@@ -61,7 +61,7 @@ struct GeneratorVariableImpl
 
     VariablePtr mVariable;
 
-    bool mComputed = false;
+    bool mProcessed = false;
 
     explicit GeneratorVariableImpl(const VariablePtr &variable);
 
@@ -339,7 +339,7 @@ bool GeneratorEquationImpl::containsNonConstantVariables(const std::list<Generat
 
 bool GeneratorEquationImpl::knownVariable(const GeneratorVariableImplPtr &variable)
 {
-    return variable->mComputed
+    return variable->mProcessed
            || (variable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION)
            || (variable->mType == GeneratorVariableImpl::Type::STATE)
            || (variable->mType == GeneratorVariableImpl::Type::CONSTANT);
@@ -347,7 +347,7 @@ bool GeneratorEquationImpl::knownVariable(const GeneratorVariableImplPtr &variab
 
 bool GeneratorEquationImpl::knownOdeVariable(const GeneratorVariableImplPtr &odeVariable)
 {
-    return odeVariable->mComputed
+    return odeVariable->mProcessed
            || (odeVariable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION);
 }
 
@@ -414,7 +414,7 @@ bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
                                    ++stateIndex :
                                    ++variableIndex;
 
-            variable->mComputed = true;
+            variable->mProcessed = true;
 
             mType = (variable->mType == GeneratorVariableImpl::Type::STATE) ?
                         Type::RATE :
