@@ -144,6 +144,39 @@ TEST(Generator, non_first_order_odes)
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
+TEST(Generator, undefined_variables)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/undefined_variables.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'a' in component 'my_component' of model 'undefined_variables' is referenced in an equation, but it is not defined anywhere.",
+        "Variable 'b' in component 'my_component' of model 'undefined_variables' is referenced in an equation, but it is not defined anywhere."};
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
+    for (size_t i = 0; i < generator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
+    }
+
+    EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+}
+
 TEST(Generator, variable_initialized_twice)
 {
     libcellml::Parser parser;
