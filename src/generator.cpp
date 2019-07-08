@@ -37,11 +37,6 @@ limitations under the License.
 #    undef FALSE
 #endif
 
-//ISSUE359: remove the below code once we are done testing things.
-//#define TRACES
-#ifdef TRACES
-#    include <iostream>
-#endif
 namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
@@ -356,42 +351,6 @@ bool GeneratorEquationImpl::knownOdeVariable(const GeneratorVariableImplPtr &ode
            || (odeVariable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION);
 }
 
-#ifdef TRACES
-void outputVariables(const std::list<GeneratorVariableImplPtr> &variables, bool ode)
-{
-    for (const auto &variable : variables) {
-        std::string type;
-        switch (variable->mType) {
-        case GeneratorVariableImpl::Type::UNKNOWN:
-            type = "unknown";
-            break;
-        case GeneratorVariableImpl::Type::SHOULD_BE_STATE:
-            type = "should be state";
-            break;
-        case GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION:
-            type = "variable of integration";
-            break;
-        case GeneratorVariableImpl::Type::STATE:
-            type = ode ? "rate" : "state";
-            break;
-        case GeneratorVariableImpl::Type::CONSTANT:
-            type = "constant";
-            break;
-        case GeneratorVariableImpl::Type::COMPUTED_TRUE_CONSTANT:
-            type = "computed truly constant";
-            break;
-        case GeneratorVariableImpl::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
-            type = "computed variable-based constant";
-            break;
-        case GeneratorVariableImpl::Type::ALGEBRAIC:
-            type = "algebraic";
-            break;
-        }
-        std::cout << "                 " << variable->mVariable->name() << ": " << type << std::endl;
-    }
-}
-#endif
-
 bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
@@ -425,13 +384,6 @@ bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
                              && !containsNonConstantVariables(mOdeVariables);
 
     // Stop tracking (new) known (ODE) variables.
-#ifdef TRACES
-    std::cout << "---------------------------------------" << std::endl;
-    std::cout << "[" << this << "] [BEFORE] " << mVariables.size() << " | " << mOdeVariables.size() << std::endl;
-    outputVariables(mVariables, false);
-    std::cout << "                 ---" << std::endl;
-    outputVariables(mOdeVariables, true);
-#endif
 
     mVariables.remove_if(knownVariable);
     mOdeVariables.remove_if(knownOdeVariable);
@@ -477,13 +429,6 @@ bool GeneratorEquationImpl::check(size_t &equationOrder, size_t &stateIndex, siz
             relevantCheck = true;
         }
     }
-#ifdef TRACES
-    std::cout << "[" << this << "] [AFTER]  " << mVariables.size() << " | " << mOdeVariables.size() << std::endl;
-    outputVariables(mVariables, false);
-    std::cout << "                 ---" << std::endl;
-    outputVariables(mOdeVariables, true);
-    std::cout << "---------------------------------------" << std::endl;
-#endif
 
     return relevantCheck;
 }
@@ -2271,61 +2216,6 @@ void Generator::processModel(const ModelPtr &model)
     // Process the model.
 
     mPimpl->processModel(model);
-    //ISSUE359: remove the below code once we are done testing things.
-#ifdef TRACES
-    for (size_t i = 0; i < errorCount(); ++i) {
-        std::cout << "Generator error #" << i + 1 << ": " << error(i)->description() << std::endl;
-    }
-    if (errorCount() == 0) {
-        std::cout << "Number of variables: " << mPimpl->mVariables.size() << std::endl;
-        for (const auto &variable : mPimpl->mVariables) {
-            if (variable->mType == GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION) {
-                std::cout << "VOI: " << variable->mVariable->name().c_str()
-                          << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
-                          << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
-            }
-        }
-        for (const auto &variable : mPimpl->mVariables) {
-            if (variable->mType == GeneratorVariableImpl::Type::STATE) {
-                std::cout << "State #" << variable->mIndex << ": " << variable->mVariable->name().c_str()
-                          << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
-                          << "[comp: " << variable->mVariable->parentComponent()->name() << "]" << std::endl;
-            }
-        }
-        for (const auto &variable : mPimpl->mVariables) {
-            if ((variable->mType != GeneratorVariableImpl::Type::VARIABLE_OF_INTEGRATION)
-                && (variable->mType != GeneratorVariableImpl::Type::STATE)) {
-                std::cout << "Variable #" << variable->mIndex << ": " << variable->mVariable->name().c_str()
-                          << " " << (variable->mVariable->initialValue().empty() ? "" : std::string("[init: " + variable->mVariable->initialValue() + "] "))
-                          << "[comp: " << variable->mVariable->parentComponent()->name()
-                          << "] ["
-                          << std::string((variable->mType == GeneratorVariableImpl::Type::CONSTANT) ?
-                                             "constant" :
-                                             (variable->mType == GeneratorVariableImpl::Type::COMPUTED_TRUE_CONSTANT) ?
-                                             "true constant" :
-                                             (variable->mType == GeneratorVariableImpl::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
-                                             "variable-based constant" :
-                                             "algebraic")
-                          << "]" << std::endl;
-            }
-        }
-        std::cout << "vvvvvvvvvvvvvvvvvvv[neededMathMethods()]vvvvvvvvvvvvvvvvvvv" << std::endl;
-        std::cout << neededMathMethods() << std::endl;
-        std::cout << "^^^^^^^^^^^^^^^^^^^[neededMathMethods()]^^^^^^^^^^^^^^^^^^^" << std::endl;
-        std::cout << "vvvvvvvvvvvvvvvvvvv[initializeVariables()]vvvvvvvvvvvvvvvvvvv" << std::endl;
-        std::cout << initializeVariables() << std::endl;
-        std::cout << "^^^^^^^^^^^^^^^^^^^[initializeVariables()]^^^^^^^^^^^^^^^^^^^" << std::endl;
-        std::cout << "vvvvvvvvvvvvvvvvvvv[computeConstantEquations()]vvvvvvvvvvvvvvvvvvv" << std::endl;
-        std::cout << computeConstantEquations() << std::endl;
-        std::cout << "^^^^^^^^^^^^^^^^^^^[computeConstantEquations()]^^^^^^^^^^^^^^^^^^^" << std::endl;
-        std::cout << "vvvvvvvvvvvvvvvvvvv[computeRateEquations()]vvvvvvvvvvvvvvvvvvv" << std::endl;
-        std::cout << computeRateEquations() << std::endl;
-        std::cout << "^^^^^^^^^^^^^^^^^^^[computeRateEquations()]^^^^^^^^^^^^^^^^^^^" << std::endl;
-        std::cout << "vvvvvvvvvvvvvvvvvvv[computeAlgebraicEquations()]vvvvvvvvvvvvvvvvvvv" << std::endl;
-        std::cout << computeAlgebraicEquations() << std::endl;
-        std::cout << "^^^^^^^^^^^^^^^^^^^[computeAlgebraicEquations()]^^^^^^^^^^^^^^^^^^^" << std::endl;
-    }
-#endif
 }
 
 Generator::ModelType Generator::modelType() const
