@@ -278,11 +278,14 @@ struct GeneratorEquationImpl: public std::enable_shared_from_this<GeneratorEquat
         UNKNOWN,
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
+        DEPENDENCY,
         RATE,
         ALGEBRAIC
     };
 
     Type mType = Type::UNKNOWN;
+
+    std::list<GeneratorEquationImplPtr> mDependencies;
 
     bool mProcessed = false;
 
@@ -391,6 +394,29 @@ bool GeneratorEquationImpl::check(size_t &stateIndex, size_t &variableIndex)
     mVariableBasedConstant = mVariableBasedConstant
                              && !containsNonConstantVariables(mVariables)
                              && !containsNonConstantVariables(mOdeVariables);
+
+    // Add, as a dependency, the equations used to compute the (new) known (ODE)
+    // variables.
+
+    for (const auto &variable : mVariables) {
+        if (knownVariable(variable) && (variable->mEquation != nullptr)) {
+            if (variable->mEquation->mType == Type::ALGEBRAIC) {
+                variable->mEquation->mType = Type::DEPENDENCY;
+
+                mDependencies.push_back(variable->mEquation);
+            }
+        }
+    }
+
+    for (const auto &odeVariable : mOdeVariables) {
+        if (knownOdeVariable(odeVariable) && (odeVariable->mEquation != nullptr)) {
+            if (odeVariable->mEquation->mType == Type::ALGEBRAIC) {
+                odeVariable->mEquation->mType = Type::DEPENDENCY;
+
+                mDependencies.push_back(odeVariable->mEquation);
+            }
+        }
+    }
 
     // Stop tracking (new) known (ODE) variables.
 
@@ -1300,12 +1326,17 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Sort our variables and equations, if we have a valid model
+    // Sort our variables and equations (and their dependencies), if we have a
+    // valid model
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
         mVariables.sort(compareVariablesByTypeAndIndex);
         mEquations.sort(compareEquationsByVariable);
+
+        for (const auto &equation : mEquations) {
+            equation->mDependencies.sort(compareEquationsByVariable);
+        }
     }
 }
 
@@ -2352,6 +2383,10 @@ std::string Generator::computeRateEquations() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::RATE) {
+            for (const auto &dependency : equation->mDependencies) {
+                res += mPimpl->generateCode(dependency->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
+            }
+
             res += mPimpl->generateCode(equation->mAst) + mPimpl->mProfile->commandSeparatorString() + "\n";
         }
     }
