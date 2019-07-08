@@ -493,8 +493,8 @@ struct Generator::GeneratorImpl
     static bool compareVariablesByTypeAndIndex(const GeneratorVariableImplPtr &variable1,
                                                const GeneratorVariableImplPtr &variable2);
 
-    static bool compareEquationsByOrder(const GeneratorEquationImplPtr &equation1,
-                                        const GeneratorEquationImplPtr &equation2);
+    static bool compareEquationsByVariable(const GeneratorEquationImplPtr &equation1,
+                                           const GeneratorEquationImplPtr &equation2);
 
     void processNode(const XmlNodePtr &node, GeneratorEquationAstImplPtr &ast,
                      const GeneratorEquationAstImplPtr &astParent,
@@ -1141,10 +1141,10 @@ bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorVar
     return variable1->mType < variable2->mType;
 }
 
-bool Generator::GeneratorImpl::compareEquationsByOrder(const GeneratorEquationImplPtr &equation1,
-                                                       const GeneratorEquationImplPtr &equation2)
+bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationImplPtr &equation1,
+                                                          const GeneratorEquationImplPtr &equation2)
 {
-    return equation1->mOrder < equation2->mOrder;
+    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
@@ -1308,7 +1308,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
         mVariables.sort(compareVariablesByTypeAndIndex);
-        mEquations.sort(compareEquationsByOrder);
+        mEquations.sort(compareEquationsByVariable);
     }
 }
 
