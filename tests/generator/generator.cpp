@@ -530,6 +530,36 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs_one_component)
               generator.computeAlgebraicEquations());
 }
 
+TEST(Generator, cellml_mappings_and_encapsulations)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/cellml_mappings_and_encapsulations/model.cellml"));
+
+    //ISSUE359: the parser wrongly reports an error with the model, hence we
+    //          "expect" one parsing error...
+    EXPECT_EQ(size_t(1), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(2), generator.stateCount());
+    EXPECT_EQ(size_t(2), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/computeRateEquations.out"),
+              generator.computeRateEquations());
+    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/computeAlgebraicEquations.out"),
+              generator.computeAlgebraicEquations());
+}
+
 TEST(Generator, dependent_eqns)
 {
     libcellml::Parser parser;
