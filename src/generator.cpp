@@ -537,6 +537,7 @@ struct Generator::GeneratorImpl
     bool isXorOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstImplPtr &ast) const;
 
+    std::string generateDouble(const std::string &value);
     std::string generateVariableName(const VariablePtr &variable, const GeneratorEquationAstImplPtr &ast = nullptr);
 
     std::string generateOperatorCode(const std::string &op,
@@ -1430,6 +1431,21 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstIm
     return ast->mType == GeneratorEquationAstImpl::Type::PIECEWISE;
 }
 
+std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
+{
+    if (value.find('.') != std::string::npos) {
+        return value;
+    }
+
+    size_t ePos = value.find('e');
+
+    if (ePos == std::string::npos) {
+        return value+".0";
+    }
+
+    return value.substr(0, ePos)+".0"+value.substr(ePos);
+}
+
 std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &variable, const GeneratorEquationAstImplPtr &ast)
 {
     GeneratorVariableImplPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
@@ -2127,7 +2143,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         // Token elements
 
     case GeneratorEquationAstImpl::Type::CN:
-        code = ast->mValue;
+        code = generateDouble(ast->mValue);
 
         break;
     case GeneratorEquationAstImpl::Type::CI:
@@ -2177,7 +2193,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorVariableImplPtr &variable)
 {
-    return generateVariableName(variable->mVariable) + " = " + variable->mVariable->initialValue() + mProfile->commandSeparatorString() + "\n";
+    return generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationImplPtr &equation)
