@@ -5,7 +5,7 @@
     </units>
     <component name="my_component">
         <variable name="t" units="second"/>
-        <variable initial_value="0.0" name="x" units="dimensionless"/>
+        <variable initial_value="0" name="x" units="dimensionless"/>
         <variable name="eqnEq" units="dimensionless"/>
         <variable name="eqnNeq" units="dimensionless"/>
         <variable name="eqnLt" units="dimensionless"/>
@@ -184,13 +184,13 @@
         <variable name="eqnPi" units="dimensionless"/>
         <variable name="eqnInfinity" units="dimensionless"/>
         <variable name="eqnNotanumber" units="dimensionless"/>
-        <variable initial_value="1.0" name="m" units="dimensionless"/>
-        <variable initial_value="2.0" name="n" units="dimensionless"/>
-        <variable initial_value="3.0" name="o" units="dimensionless"/>
-        <variable initial_value="4.0" name="p" units="dimensionless"/>
-        <variable initial_value="5.0" name="q" units="dimensionless"/>
-        <variable initial_value="6.0" name="r" units="dimensionless"/>
-        <variable initial_value="7.0" name="s" units="dimensionless"/>
+        <variable initial_value="1" name="m" units="dimensionless"/>
+        <variable initial_value="2" name="n" units="dimensionless"/>
+        <variable initial_value="3" name="o" units="dimensionless"/>
+        <variable initial_value="4" name="p" units="dimensionless"/>
+        <variable initial_value="5" name="q" units="dimensionless"/>
+        <variable initial_value="6" name="r" units="dimensionless"/>
+        <variable initial_value="7" name="s" units="dimensionless"/>
         <math xmlns="http://www.w3.org/1998/Math/MathML">
             <apply>
                 <!-- A non-MathML node needed for our coverage test. -->
@@ -202,7 +202,7 @@
                     </bvar>
                     <ci>x</ci>
                 </apply>
-                <cn cellml:units="per_second">1.0</cn>
+                <cn cellml:units="per_second">1</cn>
             </apply>
             <apply>
                 <eq/>
@@ -760,7 +760,7 @@
                 <apply>
                     <power/>
                     <ci>m</ci>
-                    <cn cellml:units="dimensionless">2.0</cn>
+                    <cn cellml:units="dimensionless">2</cn>
                 </apply>
             </apply>
             <apply>
@@ -769,7 +769,7 @@
                 <apply>
                     <power/>
                     <ci>m</ci>
-                    <cn cellml:units="dimensionless">3.0</cn>
+                    <cn cellml:units="dimensionless">3</cn>
                 </apply>
             </apply>
             <apply>
@@ -1046,7 +1046,7 @@
                 <apply>
                     <root/>
                     <degree>
-                        <cn cellml:units="dimensionless">2.0</cn>
+                        <cn cellml:units="dimensionless">2</cn>
                     </degree>
                     <ci>m</ci>
                 </apply>
@@ -1057,7 +1057,7 @@
                 <apply>
                     <root/>
                     <degree>
-                        <cn cellml:units="dimensionless">3.0</cn>
+                        <cn cellml:units="dimensionless">3</cn>
                     </degree>
                     <ci>m</ci>
                 </apply>
@@ -1362,7 +1362,7 @@
                 <apply>
                     <log/>
                     <logbase>
-                        <cn cellml:units="dimensionless">2.0</cn>
+                        <cn cellml:units="dimensionless">2</cn>
                     </logbase>
                     <ci>m</ci>
                 </apply>
@@ -1373,7 +1373,7 @@
                 <apply>
                     <log/>
                     <logbase>
-                        <cn cellml:units="dimensionless">10.0</cn>
+                        <cn cellml:units="dimensionless">10</cn>
                     </logbase>
                     <ci>m</ci>
                 </apply>
@@ -2517,7 +2517,7 @@
             <apply>
                 <eq/>
                 <ci>eqnCn</ci>
-                <cn cellml:units="dimensionless">3.0</cn>
+                <cn cellml:units="dimensionless">3</cn>
             </apply>
             <apply>
                 <eq/>
