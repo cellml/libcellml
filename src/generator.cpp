@@ -396,25 +396,15 @@ bool GeneratorEquationImpl::check(size_t &stateIndex, size_t &variableIndex)
                              && !containsNonConstantVariables(mVariables)
                              && !containsNonConstantVariables(mOdeVariables);
 
-    // Add, as a dependency, the equations used to compute the (new) known (ODE)
-    // variables.
+    // Add, as a dependency, the equations used to compute the (new) known
+    // variables. (Note that we don't account for the (new) known ODE variables
+    // since their corresponding equation can obviously not be of algebraic
+    // type.)
 
     for (const auto &variable : mVariables) {
         GeneratorEquationImplPtr equation = variable->mEquation.lock();
 
         if (knownVariable(variable) && (equation != nullptr)) {
-            if (equation->mType == Type::ALGEBRAIC) {
-                equation->mType = Type::DEPENDENCY;
-
-                mDependencies.push_back(equation);
-            }
-        }
-    }
-
-    for (const auto &odeVariable : mOdeVariables) {
-        GeneratorEquationImplPtr equation = odeVariable->mEquation.lock();
-
-        if (knownOdeVariable(odeVariable) && (equation != nullptr)) {
             if (equation->mType == Type::ALGEBRAIC) {
                 equation->mType = Type::DEPENDENCY;
 
