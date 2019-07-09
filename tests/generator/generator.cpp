@@ -392,10 +392,10 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
               generator.computeAlgebraicEquations());
 }
 
-TEST(Generator, dependent_algebraic_eqns)
+TEST(Generator, dependent_eqns)
 {
     libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/dependent_algebraic_eqns/model.cellml"));
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/dependent_eqns/model.cellml"));
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
@@ -411,12 +411,12 @@ TEST(Generator, dependent_algebraic_eqns)
     EXPECT_EQ(size_t(2), generator.variableCount());
 
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
-    EXPECT_EQ(fileContents("generator/resources/dependent_algebraic_eqns/initializeVariables.out"),
+    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/dependent_algebraic_eqns/computeRateEquations.out"),
+    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/computeRateEquations.out"),
               generator.computeRateEquations());
-    EXPECT_EQ(fileContents("generator/resources/dependent_algebraic_eqns/computeAlgebraicEquations.out"),
+    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/computeAlgebraicEquations.out"),
               generator.computeAlgebraicEquations());
 }
 
