@@ -1440,10 +1440,10 @@ std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
     size_t ePos = value.find('e');
 
     if (ePos == std::string::npos) {
-        return value+".0";
+        return value + ".0";
     }
 
-    return value.substr(0, ePos)+".0"+value.substr(ePos);
+    return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
 std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &variable, const GeneratorEquationAstImplPtr &ast)
