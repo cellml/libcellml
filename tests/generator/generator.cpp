@@ -519,7 +519,7 @@ TEST(Generator, coverage)
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
 
     EXPECT_EQ(size_t(1), generator.stateCount());
-    EXPECT_EQ(size_t(185), generator.variableCount());
+    EXPECT_EQ(size_t(188), generator.variableCount());
 
     EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),

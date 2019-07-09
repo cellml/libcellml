@@ -176,7 +176,10 @@
         <variable name="eqnPiecewisePieceOtherwise" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePiece" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePieceOtherwise" units="dimensionless"/>
-        <variable name="eqnCn" units="dimensionless"/>
+        <variable name="eqnCnInteger" units="dimensionless"/>
+        <variable name="eqnCnDouble" units="dimensionless"/>
+        <variable name="eqnCnIntegerWithExponent" units="dimensionless"/>
+        <variable name="eqnCnDoubleWithExponent" units="dimensionless"/>
         <variable name="eqnCi" units="dimensionless"/>
         <variable name="eqnTrue" units="dimensionless"/>
         <variable name="eqnFalse" units="dimensionless"/>
@@ -2516,8 +2519,23 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnCn</ci>
-                <cn cellml:units="dimensionless">3</cn>
+                <ci>eqnCnInteger</ci>
+                <cn cellml:units="dimensionless">123</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCnDouble</ci>
+                <cn cellml:units="dimensionless">123.456789</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCnIntegerWithExponent</ci>
+                <cn cellml:units="dimensionless">123e99</cn>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnCnDoubleWithExponent</ci>
+                <cn cellml:units="dimensionless">123.456789e99</cn>
             </apply>
             <apply>
                 <eq/>
