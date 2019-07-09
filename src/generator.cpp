@@ -901,7 +901,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         if (mathmlChildCount(node) == 1) {
             // E-notation based CN value
 
-            ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CN, node->firstChild()->convertToString()+"e"+node->firstChild()->next()->next()->convertToString(), astParent);
+            ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
         } else {
             ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CN, node->firstChild()->convertToString(), astParent);
         }
