@@ -2530,12 +2530,12 @@
             <apply>
                 <eq/>
                 <ci>eqnCnIntegerWithExponent</ci>
-                <cn cellml:units="dimensionless">123e99</cn>
+                <cn cellml:units="dimensionless" type="e-notation">123<sep/>99</cn>
             </apply>
             <apply>
                 <eq/>
                 <ci>eqnCnDoubleWithExponent</ci>
-                <cn cellml:units="dimensionless">123.456789e99</cn>
+                <cn cellml:units="dimensionless" type="e-notation">123.456789<sep/>99</cn>
             </apply>
             <apply>
                 <eq/>
