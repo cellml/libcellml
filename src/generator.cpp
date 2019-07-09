@@ -43,6 +43,7 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 struct GeneratorEquationImpl;
 using GeneratorEquationImplPtr = std::shared_ptr<GeneratorEquationImpl>;
+using GeneratorEquationImplWeakPtr = std::weak_ptr<GeneratorEquationImpl>;
 
 struct GeneratorVariableImpl
 {
@@ -66,7 +67,7 @@ struct GeneratorVariableImpl
 
     bool mProcessed = false;
 
-    GeneratorEquationImplPtr mEquation;
+    GeneratorEquationImplWeakPtr mEquation;
 
     explicit GeneratorVariableImpl(const VariablePtr &variable);
 
@@ -399,21 +400,25 @@ bool GeneratorEquationImpl::check(size_t &stateIndex, size_t &variableIndex)
     // variables.
 
     for (const auto &variable : mVariables) {
-        if (knownVariable(variable) && (variable->mEquation != nullptr)) {
-            if (variable->mEquation->mType == Type::ALGEBRAIC) {
-                variable->mEquation->mType = Type::DEPENDENCY;
+        GeneratorEquationImplPtr equation = variable->mEquation.lock();
 
-                mDependencies.push_back(variable->mEquation);
+        if (knownVariable(variable) && (equation != nullptr)) {
+            if (equation->mType == Type::ALGEBRAIC) {
+                equation->mType = Type::DEPENDENCY;
+
+                mDependencies.push_back(equation);
             }
         }
     }
 
     for (const auto &odeVariable : mOdeVariables) {
-        if (knownOdeVariable(odeVariable) && (odeVariable->mEquation != nullptr)) {
-            if (odeVariable->mEquation->mType == Type::ALGEBRAIC) {
-                odeVariable->mEquation->mType = Type::DEPENDENCY;
+        GeneratorEquationImplPtr equation = odeVariable->mEquation.lock();
 
-                mDependencies.push_back(odeVariable->mEquation);
+        if (knownOdeVariable(odeVariable) && (equation != nullptr)) {
+            if (equation->mType == Type::ALGEBRAIC) {
+                equation->mType = Type::DEPENDENCY;
+
+                mDependencies.push_back(equation);
             }
         }
     }
