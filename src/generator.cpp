@@ -898,7 +898,13 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // Token elements
 
     } else if (node->isMathmlElement("cn")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CN, node->firstChild()->convertToString(), astParent);
+        if (mathmlChildCount(node) == 1) {
+            // E-notation based CN value
+
+            ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CN, node->firstChild()->convertToString()+"e"+node->firstChild()->next()->next()->convertToString(), astParent);
+        } else {
+            ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CN, node->firstChild()->convertToString(), astParent);
+        }
     } else if (node->isMathmlElement("ci")) {
         std::string variableName = node->firstChild()->convertToString();
         VariablePtr variable = component->variable(variableName);
