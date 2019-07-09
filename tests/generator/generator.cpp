@@ -338,6 +338,33 @@ TEST(Generator, unsuitably_constrained)
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
+TEST(Generator, algebraic_eqn_computed_var_on_rhs)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator.modelType());
+
+    EXPECT_EQ(size_t(0), generator.stateCount());
+    EXPECT_EQ(size_t(2), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/computeAlgebraicEquations.out"),
+              generator.computeAlgebraicEquations());
+}
+
 TEST(Generator, algebraic_eqn_constant_on_rhs)
 {
     libcellml::Parser parser;
