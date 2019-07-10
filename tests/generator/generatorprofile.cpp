@@ -148,6 +148,9 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("void computeRateEquations(double *states, double *rates, double *variables)\n", generatorProfile->beginComputeRateEquationsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeRateEquationsMethodString());
 
+    EXPECT_EQ("void computeAlgebraicEquations(double *states, double *rates, double *variables)\n", generatorProfile->beginComputeAlgebraicEquationsMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endComputeAlgebraicEquationsMethodString());
+
     EXPECT_EQ("    ", generatorProfile->indentString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
@@ -395,6 +398,9 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setBeginComputeRateEquationsMethodString(value);
     generatorProfile->setEndComputeRateEquationsMethodString(value);
 
+    generatorProfile->setBeginComputeAlgebraicEquationsMethodString(value);
+    generatorProfile->setEndComputeAlgebraicEquationsMethodString(value);
+
     generatorProfile->setIndentString(value);
 
     generatorProfile->setOpenArrayString(value);
@@ -416,6 +422,9 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->beginComputeRateEquationsMethodString());
     EXPECT_EQ(value, generatorProfile->endComputeRateEquationsMethodString());
+
+    EXPECT_EQ(value, generatorProfile->beginComputeAlgebraicEquationsMethodString());
+    EXPECT_EQ(value, generatorProfile->endComputeAlgebraicEquationsMethodString());
 
     EXPECT_EQ(value, generatorProfile->indentString());
 

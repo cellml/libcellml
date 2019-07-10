@@ -283,6 +283,12 @@ public:
     std::string endComputeRateEquationsMethodString() const;
     void setEndComputeRateEquationsMethodString(const std::string &endComputeRateEquationsMethodString);
 
+    std::string beginComputeAlgebraicEquationsMethodString() const;
+    void setBeginComputeAlgebraicEquationsMethodString(const std::string &beginComputeAlgebraicEquationsMethodString);
+
+    std::string endComputeAlgebraicEquationsMethodString() const;
+    void setEndComputeAlgebraicEquationsMethodString(const std::string &endComputeAlgebraicEquationsMethodString);
+
     std::string indentString() const;
     void setIndentString(const std::string &indentString);
 
