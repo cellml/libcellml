@@ -124,11 +124,13 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("double min(double x, double y)\n"
               "{\n"
               "     return (x < y)?x:y;\n"
-              "}\n", generatorProfile->minFunctionString());
+              "}\n",
+              generatorProfile->minFunctionString());
     EXPECT_EQ("double max(double x, double y)\n"
               "{\n"
               "     return (x > y)?x:y;\n"
-              "}\n", generatorProfile->maxFunctionString());
+              "}\n",
+              generatorProfile->maxFunctionString());
 
     // Miscellaneous
 
