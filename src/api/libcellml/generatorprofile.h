@@ -108,6 +108,9 @@ public:
     std::string floorString() const;
     void setFloorString(const std::string &floorString);
 
+    std::string remString() const;
+    void setRemString(const std::string &remString);
+
     bool hasPowerOperator() const;
     void setHasPowerOperator(bool hasPowerOperator);
 
@@ -192,11 +195,6 @@ public:
 
     std::string acothString() const;
     void setAcothString(const std::string &acothString);
-
-    // Extra operators
-
-    std::string remString() const;
-    void setRemString(const std::string &remString);
 
     // Piecewise statement
     // Note: the parentheses around #cond is not needed (because of precedence

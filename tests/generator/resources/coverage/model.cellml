@@ -138,6 +138,7 @@
         <variable name="eqnLogCi" units="dimensionless"/>
         <variable name="eqnCeiling" units="dimensionless"/>
         <variable name="eqnFloor" units="dimensionless"/>
+        <variable name="eqnRem" units="dimensionless"/>
         <variable name="eqnMin" units="dimensionless"/>
         <variable name="eqnMinMultiple" units="dimensionless"/>
         <variable name="eqnMax" units="dimensionless"/>
@@ -166,7 +167,6 @@
         <variable name="eqnArcsech" units="dimensionless"/>
         <variable name="eqnArccsch" units="dimensionless"/>
         <variable name="eqnArccoth" units="dimensionless"/>
-        <variable name="eqnRem" units="dimensionless"/>
         <variable name="eqnPiecewisePiece" units="dimensionless"/>
         <variable name="eqnPiecewisePieceOtherwise" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePiece" units="dimensionless"/>
@@ -2127,6 +2127,15 @@
             </apply>
             <apply>
                 <eq/>
+                <ci>eqnRem</ci>
+                <apply>
+                    <rem/>
+                    <ci>m</ci>
+                    <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
                 <ci>eqnMin</ci>
                 <apply>
                     <min/>
@@ -2357,15 +2366,6 @@
                 <apply>
                     <arccoth/>
                     <ci>m</ci>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
-                <ci>eqnRem</ci>
-                <apply>
-                    <rem/>
-                    <ci>m</ci>
-                    <ci>n</ci>
                 </apply>
             </apply>
             <apply>

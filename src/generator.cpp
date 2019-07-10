@@ -147,6 +147,7 @@ struct GeneratorEquationAstImpl
         LOG,
         CEILING,
         FLOOR,
+        REM,
 
         // Calculus elements
 
@@ -183,10 +184,6 @@ struct GeneratorEquationAstImpl
         ASECH,
         ACSCH,
         ACOTH,
-
-        // Extra operators
-
-        REM,
 
         // Piecewise statement
 
@@ -726,6 +723,8 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CEILING, astParent);
     } else if (node->isMathmlElement("floor")) {
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::FLOOR, astParent);
+    } else if (node->isMathmlElement("rem")) {
+        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::REM, astParent);
 
         // Calculus elements
 
@@ -817,11 +816,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::ACOTH, astParent);
 
         mNeedAcoth = true;
-
-        // Extra operators
-
-    } else if (node->isMathmlElement("rem")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::REM, astParent);
 
         // Piecewise statement
 
@@ -1927,6 +1921,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         code = mProfile->floorString() + "(" + generateCode(ast->mLeft) + ")";
 
         break;
+    case GeneratorEquationAstImpl::Type::REM:
+        code = mProfile->remString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+
+        break;
+
         // Calculus elements
 
     case GeneratorEquationAstImpl::Type::DIFF:
@@ -2049,13 +2048,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         break;
     case GeneratorEquationAstImpl::Type::ACOTH:
         code = mProfile->acothString() + "(" + generateCode(ast->mLeft) + ")";
-
-        break;
-
-        // Extra operators
-
-    case GeneratorEquationAstImpl::Type::REM:
-        code = mProfile->remString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
 
         break;
 
