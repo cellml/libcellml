@@ -2307,11 +2307,17 @@ std::string Generator::code() const
         return {};
     }
 
+    // Generate code for the header
+
+    std::string res = mPimpl->mProfile->headerString();
+
     // Generate code for extra mathematical functions.
 
-    std::string res;
-
     if (mPimpl->mNeedMin) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
         res += mPimpl->mProfile->minFunctionString();
     }
 
