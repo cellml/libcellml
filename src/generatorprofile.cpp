@@ -135,6 +135,7 @@ struct GeneratorProfile::GeneratorProfileImpl
                                            "{\n"
                                            "     return tgamma(x+1.0);\n"
                                            "}\n";
+
     std::string mMinFunctionString = "double min(double x, double y)\n"
                                      "{\n"
                                      "     return (x < y)?x:y;\n"
