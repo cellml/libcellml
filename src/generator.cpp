@@ -2199,7 +2199,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorVariableImplPtr &variable)
 {
-    return mProfile->indentString()+generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationImplPtr &equation)
@@ -2210,7 +2210,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
         res += generateEquationCode(dependency);
     }
 
-    res += mProfile->indentString()+generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
+    res += mProfile->indentString() + generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
 
     return res;
 }
