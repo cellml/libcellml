@@ -137,6 +137,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString = "rates";
     std::string mVariablesArrayString = "variables";
 
+    std::string mBeginInitializeModelMethodString = "void initializeModel(double *states, double *variables)\n";
+    std::string mEndInitializeModelMethodString = "}\n";
+
     std::string mIndentString = "    ";
 
     std::string mOpenArrayString = "[";
@@ -262,6 +265,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
+
+    mPimpl->mBeginInitializeModelMethodString = rhs.mPimpl->mBeginInitializeModelMethodString;
+    mPimpl->mEndInitializeModelMethodString = rhs.mPimpl->mEndInitializeModelMethodString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -996,6 +1002,26 @@ std::string GeneratorProfile::variablesArrayString() const
 void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
 {
     mPimpl->mVariablesArrayString = variablesArrayString;
+}
+
+std::string GeneratorProfile::beginInitializeModelMethodString() const
+{
+    return mPimpl->mBeginInitializeModelMethodString;
+}
+
+void GeneratorProfile::setBeginInitializeModelMethodString(const std::string &beginInitializeModelMethodString)
+{
+    mPimpl->mBeginInitializeModelMethodString = beginInitializeModelMethodString;
+}
+
+std::string GeneratorProfile::endInitializeModelMethodString() const
+{
+    return mPimpl->mEndInitializeModelMethodString;
+}
+
+void GeneratorProfile::setEndInitializeModelMethodString(const std::string &endInitializeModelMethodString)
+{
+    mPimpl->mEndInitializeModelMethodString = endInitializeModelMethodString;
 }
 
 std::string GeneratorProfile::indentString() const
