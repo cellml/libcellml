@@ -718,13 +718,7 @@ TEST(Generator, noble_model_1962)
     EXPECT_EQ(size_t(4), generator.stateCount());
     EXPECT_EQ(size_t(17), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/noble_model_1962/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/noble_model_1962/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(fileContents("generator/resources/noble_model_1962/computeAlgebraicEquations.out"),
-              generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/noble_model_1962/code.c"), generator.code());
 }
 
 TEST(Generator, van_der_pol_model_1928)
