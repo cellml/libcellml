@@ -241,6 +241,31 @@ public:
     std::string maxFunctionString() const;
     void setMaxFunctionString(const std::string &maxFunctionString);
 
+    std::string secFunctionString() const;
+    void setSecFunctionString(const std::string &secFunctionString);
+    std::string cscFunctionString() const;
+    void setCscFunctionString(const std::string &cscFunctionString);
+    std::string cotFunctionString() const;
+    void setCotFunctionString(const std::string &cotFunctionString);
+    std::string sechFunctionString() const;
+    void setSechFunctionString(const std::string &sechFunctionString);
+    std::string cschFunctionString() const;
+    void setCschFunctionString(const std::string &cschFunctionString);
+    std::string cothFunctionString() const;
+    void setCothFunctionString(const std::string &cothFunctionString);
+    std::string asecFunctionString() const;
+    void setAsecFunctionString(const std::string &asecFunctionString);
+    std::string acscFunctionString() const;
+    void setAcscFunctionString(const std::string &acscFunctionString);
+    std::string acotFunctionString() const;
+    void setAcotFunctionString(const std::string &acotFunctionString);
+    std::string asechFunctionString() const;
+    void setAsechFunctionString(const std::string &asechFunctionString);
+    std::string acschFunctionString() const;
+    void setAcschFunctionString(const std::string &acschFunctionString);
+    std::string acothFunctionString() const;
+    void setAcothFunctionString(const std::string &acothFunctionString);
+
     // Miscellaneous
 
     std::string variableOfIntegrationString() const;

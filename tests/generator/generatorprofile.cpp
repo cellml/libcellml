@@ -132,6 +132,73 @@ TEST(GeneratorProfile, defaultValues)
               "}\n",
               generatorProfile->maxFunctionString());
 
+    EXPECT_EQ("double sec(double x)\n"
+              "{\n"
+              "     return 1.0/cos(x);\n"
+              "}\n",
+              generatorProfile->secFunctionString());
+    EXPECT_EQ("double csc(double x)\n"
+              "{\n"
+              "     return 1.0/sin(x);\n"
+              "}\n",
+              generatorProfile->cscFunctionString());
+    EXPECT_EQ("double cot(double x)\n"
+              "{\n"
+              "     return 1.0/tan(x);\n"
+              "}\n",
+              generatorProfile->cotFunctionString());
+    EXPECT_EQ("double sech(double x)\n"
+              "{\n"
+              "     return 1.0/cosh(x);\n"
+              "}\n",
+              generatorProfile->sechFunctionString());
+    EXPECT_EQ("double csch(double x)\n"
+              "{\n"
+              "     return 1.0/sinh(x);\n"
+              "}\n",
+              generatorProfile->cschFunctionString());
+    EXPECT_EQ("double coth(double x)\n"
+              "{\n"
+              "     return 1.0/tanh(x);\n"
+              "}\n",
+              generatorProfile->cothFunctionString());
+    EXPECT_EQ("double asec(double x)\n"
+              "{\n"
+              "     return acos(1.0/x);\n"
+              "}\n",
+              generatorProfile->asecFunctionString());
+    EXPECT_EQ("double acsc(double x)\n"
+              "{\n"
+              "     return asin(1.0/x);\n"
+              "}\n",
+              generatorProfile->acscFunctionString());
+    EXPECT_EQ("double acot(double x)\n"
+              "{\n"
+              "     return atan(1.0/x);\n"
+              "}\n",
+              generatorProfile->acotFunctionString());
+    EXPECT_EQ("double asech(double x)\n"
+              "{\n"
+              "     double oneOverX = 1.0/x;"
+              ""
+              "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+              "}\n",
+              generatorProfile->asechFunctionString());
+    EXPECT_EQ("double acsch(double x)\n"
+              "{\n"
+              "     double oneOverX = 1.0/x;"
+              ""
+              "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+              "}\n",
+              generatorProfile->acschFunctionString());
+    EXPECT_EQ("double acoth(double x)\n"
+              "{\n"
+              "     double oneOverX = 1.0/x;"
+              ""
+              "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+              "}\n",
+              generatorProfile->acothFunctionString());
+
     // Miscellaneous
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
@@ -351,8 +418,34 @@ TEST(GeneratorProfile, specialMathematicalFunctions)
     generatorProfile->setMinFunctionString(value);
     generatorProfile->setMaxFunctionString(value);
 
+    generatorProfile->setSecFunctionString(value);
+    generatorProfile->setCscFunctionString(value);
+    generatorProfile->setCotFunctionString(value);
+    generatorProfile->setSechFunctionString(value);
+    generatorProfile->setCschFunctionString(value);
+    generatorProfile->setCothFunctionString(value);
+    generatorProfile->setAsecFunctionString(value);
+    generatorProfile->setAcscFunctionString(value);
+    generatorProfile->setAcotFunctionString(value);
+    generatorProfile->setAsechFunctionString(value);
+    generatorProfile->setAcschFunctionString(value);
+    generatorProfile->setAcothFunctionString(value);
+
     EXPECT_EQ(value, generatorProfile->minFunctionString());
     EXPECT_EQ(value, generatorProfile->maxFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->secFunctionString());
+    EXPECT_EQ(value, generatorProfile->cscFunctionString());
+    EXPECT_EQ(value, generatorProfile->cotFunctionString());
+    EXPECT_EQ(value, generatorProfile->sechFunctionString());
+    EXPECT_EQ(value, generatorProfile->cschFunctionString());
+    EXPECT_EQ(value, generatorProfile->cothFunctionString());
+    EXPECT_EQ(value, generatorProfile->asecFunctionString());
+    EXPECT_EQ(value, generatorProfile->acscFunctionString());
+    EXPECT_EQ(value, generatorProfile->acotFunctionString());
+    EXPECT_EQ(value, generatorProfile->asechFunctionString());
+    EXPECT_EQ(value, generatorProfile->acschFunctionString());
+    EXPECT_EQ(value, generatorProfile->acothFunctionString());
 }
 
 TEST(GeneratorProfile, miscellaneous)
