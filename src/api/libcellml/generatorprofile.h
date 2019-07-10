@@ -265,6 +265,12 @@ public:
     std::string variablesArrayString() const;
     void setVariablesArrayString(const std::string &variablesArrayString);
 
+    std::string beginInitializeModelMethodString() const;
+    void setBeginInitializeModelMethodString(const std::string &beginInitializeModelMethodString);
+
+    std::string endInitializeModelMethodString() const;
+    void setEndInitializeModelMethodString(const std::string &endInitializeModelMethodString);
+
     std::string indentString() const;
     void setIndentString(const std::string &indentString);
 
