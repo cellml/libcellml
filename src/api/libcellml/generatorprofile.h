@@ -234,7 +234,7 @@ public:
     std::string nanString() const;
     void setNanString(const std::string &nanString);
 
-    // "Special" mathematical functions
+    // Mathematical functions
 
     std::string minFunctionString() const;
     void setMinFunctionString(const std::string &minFunctionString);

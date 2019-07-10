@@ -119,7 +119,7 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("1.0/0.0", generatorProfile->infString());
     EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
 
-    // "Special" mathematical functions
+    // Mathematical functions
 
     EXPECT_EQ("double min(double x, double y)\n"
               "{\n"

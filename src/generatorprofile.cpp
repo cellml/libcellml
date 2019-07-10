@@ -114,7 +114,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInfString = "1.0/0.0";
     std::string mNanString = "sqrt(-1.0)";
 
-    // "Special" mathematical functions
+    // Mathematical functions
 
     std::string mMinFunctionString = "double min(double x, double y)\n"
                                      "{\n"
@@ -248,7 +248,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mInfString = rhs.mPimpl->mInfString;
     mPimpl->mNanString = rhs.mPimpl->mNanString;
 
-    // "Special" mathematical functions
+    // Mathematical functions
 
     mPimpl->mMinFunctionString = rhs.mPimpl->mMinFunctionString;
     mPimpl->mMaxFunctionString = rhs.mPimpl->mMaxFunctionString;
