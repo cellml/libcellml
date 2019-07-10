@@ -142,6 +142,9 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("void initializeModel(double *states, double *variables)\n", generatorProfile->beginInitializeModelMethodString());
     EXPECT_EQ("}\n", generatorProfile->endInitializeModelMethodString());
 
+    EXPECT_EQ("void computeConstantEquations(double *variables)\n", generatorProfile->beginComputeConstantEquationsMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endComputeConstantEquationsMethodString());
+
     EXPECT_EQ("    ", generatorProfile->indentString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
@@ -383,6 +386,9 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setBeginInitializeModelMethodString(value);
     generatorProfile->setEndInitializeModelMethodString(value);
 
+    generatorProfile->setBeginComputeConstantEquationsMethodString(value);
+    generatorProfile->setEndComputeConstantEquationsMethodString(value);
+
     generatorProfile->setIndentString(value);
 
     generatorProfile->setOpenArrayString(value);
@@ -398,6 +404,9 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->beginInitializeModelMethodString());
     EXPECT_EQ(value, generatorProfile->endInitializeModelMethodString());
+
+    EXPECT_EQ(value, generatorProfile->beginComputeConstantEquationsMethodString());
+    EXPECT_EQ(value, generatorProfile->endComputeConstantEquationsMethodString());
 
     EXPECT_EQ(value, generatorProfile->indentString());
 

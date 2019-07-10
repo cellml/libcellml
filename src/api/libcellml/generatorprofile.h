@@ -271,6 +271,12 @@ public:
     std::string endInitializeModelMethodString() const;
     void setEndInitializeModelMethodString(const std::string &endInitializeModelMethodString);
 
+    std::string beginComputeConstantEquationsMethodString() const;
+    void setBeginComputeConstantEquationsMethodString(const std::string &beginComputeConstantEquationsMethodString);
+
+    std::string endComputeConstantEquationsMethodString() const;
+    void setEndComputeConstantEquationsMethodString(const std::string &endComputeConstantEquationsMethodString);
+
     std::string indentString() const;
     void setIndentString(const std::string &indentString);
 
