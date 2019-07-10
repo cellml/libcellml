@@ -143,7 +143,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginComputeConstantEquationsMethodString = "void computeConstantEquations(double *variables)\n{\n";
     std::string mEndComputeConstantEquationsMethodString = "}\n";
 
-    std::string mBeginComputeRateEquationsMethodString = "void computeRateEquations(double *states, double *rates, double *variables)\n{\n";
+    std::string mBeginComputeRateEquationsMethodString = "void computeRateEquations(double voi, double *states, double *rates, double *variables)\n{\n";
     std::string mEndComputeRateEquationsMethodString = "}\n";
 
     std::string mBeginComputeAlgebraicEquationsMethodString = "void computeAlgebraicEquations(double *states, double *rates, double *variables)\n{\n";

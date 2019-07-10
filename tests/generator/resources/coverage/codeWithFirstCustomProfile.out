@@ -195,7 +195,7 @@ void computeConstantEquations(double *variables)
     variables[181] = variables[0];
 }
 
-void computeRateEquations(double *states, double *rates, double *variables)
+void computeRateEquations(double voi, double *states, double *rates, double *variables)
 {
     rates[0] = 1.0;
 }
