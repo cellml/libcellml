@@ -68,6 +68,7 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("log10", generatorProfile->commonLogarithmString());
     EXPECT_EQ("ceil", generatorProfile->ceilingString());
     EXPECT_EQ("floor", generatorProfile->floorString());
+    EXPECT_EQ("fmod", generatorProfile->remString());
 
     EXPECT_EQ(false, generatorProfile->hasPowerOperator());
 
@@ -102,10 +103,6 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("asech", generatorProfile->asechString());
     EXPECT_EQ("acsch", generatorProfile->acschString());
     EXPECT_EQ("acoth", generatorProfile->acothString());
-
-    // Extra operators
-
-    EXPECT_EQ("fmod", generatorProfile->remString());
 
     // Piecewise statement
 
@@ -220,6 +217,7 @@ TEST(GeneratorProfile, arithmeticOperators)
     generatorProfile->setCommonLogarithmString(value);
     generatorProfile->setCeilingString(value);
     generatorProfile->setFloorString(value);
+    generatorProfile->setRemString(value);
 
     generatorProfile->setHasPowerOperator(trueValue);
 
@@ -236,6 +234,7 @@ TEST(GeneratorProfile, arithmeticOperators)
     EXPECT_EQ(value, generatorProfile->commonLogarithmString());
     EXPECT_EQ(value, generatorProfile->ceilingString());
     EXPECT_EQ(value, generatorProfile->floorString());
+    EXPECT_EQ(value, generatorProfile->remString());
 
     EXPECT_EQ(trueValue, generatorProfile->hasPowerOperator());
 }
@@ -308,17 +307,6 @@ TEST(GeneratorProfile, trigonometricOperators)
     EXPECT_EQ(value, generatorProfile->asechString());
     EXPECT_EQ(value, generatorProfile->acschString());
     EXPECT_EQ(value, generatorProfile->acothString());
-}
-
-TEST(GeneratorProfile, extraOperators)
-{
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
-
-    const std::string value = "value";
-
-    generatorProfile->setRemString(value);
-
-    EXPECT_EQ(value, generatorProfile->remString());
 }
 
 TEST(GeneratorProfile, piecewiseStatement)

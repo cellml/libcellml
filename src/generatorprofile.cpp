@@ -60,6 +60,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCommonLogarithmString = "log10";
     std::string mCeilingString = "ceil";
     std::string mFloorString = "floor";
+    std::string mRemString = "fmod";
 
     bool mHasPowerOperator = false;
 
@@ -94,10 +95,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mAsechString = "asech";
     std::string mAcschString = "acsch";
     std::string mAcothString = "acoth";
-
-    // Extra operators
-
-    std::string mRemString = "fmod";
 
     // Piecewise statement
     // Note: the parentheses around #cond is not needed (because of precedence
@@ -203,6 +200,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mCommonLogarithmString = rhs.mPimpl->mCommonLogarithmString;
     mPimpl->mCeilingString = rhs.mPimpl->mCeilingString;
     mPimpl->mFloorString = rhs.mPimpl->mFloorString;
+    mPimpl->mRemString = rhs.mPimpl->mRemString;
 
     mPimpl->mHasPowerOperator = rhs.mPimpl->mHasPowerOperator;
 
@@ -237,10 +235,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mAsechString = rhs.mPimpl->mAsechString;
     mPimpl->mAcschString = rhs.mPimpl->mAcschString;
     mPimpl->mAcothString = rhs.mPimpl->mAcothString;
-
-    // Extra operators
-
-    mPimpl->mRemString = rhs.mPimpl->mRemString;
 
     // Piecewise statement
 
@@ -560,6 +554,16 @@ void GeneratorProfile::setFloorString(const std::string &floorString)
     mPimpl->mFloorString = floorString;
 }
 
+std::string GeneratorProfile::remString() const
+{
+    return mPimpl->mRemString;
+}
+
+void GeneratorProfile::setRemString(const std::string &remString)
+{
+    mPimpl->mRemString = remString;
+}
+
 bool GeneratorProfile::hasPowerOperator() const
 {
     return mPimpl->mHasPowerOperator;
@@ -828,16 +832,6 @@ std::string GeneratorProfile::acothString() const
 void GeneratorProfile::setAcothString(const std::string &acothString)
 {
     mPimpl->mAcothString = acothString;
-}
-
-std::string GeneratorProfile::remString() const
-{
-    return mPimpl->mRemString;
-}
-
-void GeneratorProfile::setRemString(const std::string &remString)
-{
-    mPimpl->mRemString = remString;
 }
 
 std::string GeneratorProfile::conditionalOperatorIfString() const
