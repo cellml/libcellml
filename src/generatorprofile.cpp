@@ -137,16 +137,16 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString = "rates";
     std::string mVariablesArrayString = "variables";
 
-    std::string mBeginInitializeModelMethodString = "void initializeModel(double *states, double *variables)\n";
+    std::string mBeginInitializeModelMethodString = "void initializeModel(double *states, double *variables)\n{\n";
     std::string mEndInitializeModelMethodString = "}\n";
 
-    std::string mBeginComputeConstantEquationsMethodString = "void computeConstantEquations(double *variables)\n";
+    std::string mBeginComputeConstantEquationsMethodString = "void computeConstantEquations(double *variables)\n{\n";
     std::string mEndComputeConstantEquationsMethodString = "}\n";
 
-    std::string mBeginComputeRateEquationsMethodString = "void computeRateEquations(double *states, double *rates, double *variables)\n";
+    std::string mBeginComputeRateEquationsMethodString = "void computeRateEquations(double *states, double *rates, double *variables)\n{\n";
     std::string mEndComputeRateEquationsMethodString = "}\n";
 
-    std::string mBeginComputeAlgebraicEquationsMethodString = "void computeAlgebraicEquations(double *states, double *rates, double *variables)\n";
+    std::string mBeginComputeAlgebraicEquationsMethodString = "void computeAlgebraicEquations(double *states, double *rates, double *variables)\n{\n";
     std::string mEndComputeAlgebraicEquationsMethodString = "}\n";
 
     std::string mIndentString = "    ";
