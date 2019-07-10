@@ -143,6 +143,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginComputeConstantEquationsMethodString = "void computeConstantEquations(double *variables)\n";
     std::string mEndComputeConstantEquationsMethodString = "}\n";
 
+    std::string mBeginComputeRateEquationsMethodString = "void computeRateEquations(double *states, double *rates, double *variables)\n";
+    std::string mEndComputeRateEquationsMethodString = "}\n";
+
     std::string mIndentString = "    ";
 
     std::string mOpenArrayString = "[";
@@ -274,6 +277,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mBeginComputeConstantEquationsMethodString = rhs.mPimpl->mBeginComputeConstantEquationsMethodString;
     mPimpl->mEndComputeConstantEquationsMethodString = rhs.mPimpl->mEndComputeConstantEquationsMethodString;
+
+    mPimpl->mBeginComputeRateEquationsMethodString = rhs.mPimpl->mBeginComputeRateEquationsMethodString;
+    mPimpl->mEndComputeRateEquationsMethodString = rhs.mPimpl->mEndComputeRateEquationsMethodString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -1048,6 +1054,26 @@ std::string GeneratorProfile::endComputeConstantEquationsMethodString() const
 void GeneratorProfile::setEndComputeConstantEquationsMethodString(const std::string &endComputeConstantEquationsMethodString)
 {
     mPimpl->mEndComputeConstantEquationsMethodString = endComputeConstantEquationsMethodString;
+}
+
+std::string GeneratorProfile::beginComputeRateEquationsMethodString() const
+{
+    return mPimpl->mBeginComputeRateEquationsMethodString;
+}
+
+void GeneratorProfile::setBeginComputeRateEquationsMethodString(const std::string &beginComputeRateEquationsMethodString)
+{
+    mPimpl->mBeginComputeRateEquationsMethodString = beginComputeRateEquationsMethodString;
+}
+
+std::string GeneratorProfile::endComputeRateEquationsMethodString() const
+{
+    return mPimpl->mEndComputeRateEquationsMethodString;
+}
+
+void GeneratorProfile::setEndComputeRateEquationsMethodString(const std::string &endComputeRateEquationsMethodString)
+{
+    mPimpl->mEndComputeRateEquationsMethodString = endComputeRateEquationsMethodString;
 }
 
 std::string GeneratorProfile::indentString() const
