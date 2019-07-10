@@ -518,7 +518,8 @@ struct Generator::GeneratorImpl
     bool isPiecewiseStatement(const GeneratorEquationAstImplPtr &ast) const;
 
     std::string generateDouble(const std::string &value);
-    std::string generateVariableName(const VariablePtr &variable, const GeneratorEquationAstImplPtr &ast = nullptr);
+    std::string generateVariableName(const VariablePtr &variable,
+                                     const GeneratorEquationAstImplPtr &ast = nullptr);
 
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstImplPtr &ast);
