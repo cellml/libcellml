@@ -665,6 +665,33 @@ TEST(Generator, ode_constant_on_rhs)
     EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
 }
 
+TEST(Generator, ode_constant_on_rhs_one_component)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/ode_constant_on_rhs_one_component/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(1), generator.stateCount());
+    EXPECT_EQ(size_t(0), generator.variableCount());
+
+    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
+    EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs_one_component/initializeVariables.out"),
+              generator.initializeVariables());
+    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
+    EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs_one_component/computeRateEquations.out"),
+              generator.computeRateEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+}
+
 TEST(Generator, cellml_mappings_and_encapsulations)
 {
     libcellml::Parser parser;
