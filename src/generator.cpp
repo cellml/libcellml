@@ -41,6 +41,43 @@ namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
+struct GeneratorVariable::GeneratorVariableImpl
+{
+};
+
+GeneratorVariable::GeneratorVariable()
+    : mPimpl(new GeneratorVariableImpl())
+{
+}
+
+GeneratorVariable::~GeneratorVariable()
+{
+    delete mPimpl;
+}
+
+GeneratorVariable::GeneratorVariable(const GeneratorVariable &rhs)
+    : mPimpl(new GeneratorVariableImpl())
+{
+    (void)rhs;
+}
+
+GeneratorVariable::GeneratorVariable(GeneratorVariable &&rhs) noexcept
+    : mPimpl(rhs.mPimpl)
+{
+    rhs.mPimpl = nullptr;
+}
+
+GeneratorVariable &GeneratorVariable::operator=(GeneratorVariable rhs)
+{
+    rhs.swap(*this);
+    return *this;
+}
+
+void GeneratorVariable::swap(GeneratorVariable &rhs)
+{
+    std::swap(mPimpl, rhs.mPimpl);
+}
+
 struct GeneratorEquationPriv;
 using GeneratorEquationPrivPtr = std::shared_ptr<GeneratorEquationPriv>;
 using GeneratorEquationPrivWeakPtr = std::weak_ptr<GeneratorEquationPriv>;
