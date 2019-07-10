@@ -526,8 +526,7 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value);
     std::string generatePiecewiseElseCode(const std::string &value);
-    std::string generateCode(const GeneratorEquationAstImplPtr &ast,
-                             const GeneratorEquationAstImplPtr &parentAst = nullptr);
+    std::string generateCode(const GeneratorEquationAstImplPtr &ast);
 
     std::string generateInitializationCode(const GeneratorVariableImplPtr &variable);
     std::string generateEquationCode(const GeneratorEquationImplPtr &equation);
@@ -1762,8 +1761,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
                    "#else", value);
 }
 
-std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImplPtr &ast,
-                                                   const GeneratorEquationAstImplPtr &parentAst)
+std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImplPtr &ast)
 {
     // Generate the code for the given AST.
 
@@ -1916,19 +1914,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
 
         break;
     case GeneratorEquationAstImpl::Type::MIN:
-        if (parentAst == nullptr) {
-            code = mProfile->minString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
-        } else {
-            code = generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
-        }
+        code = mProfile->minString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
 
         break;
     case GeneratorEquationAstImpl::Type::MAX:
-        if (parentAst == nullptr) {
-            code = mProfile->maxString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
-        } else {
-            code = generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
-        }
+        code = mProfile->maxString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
 
         break;
     case GeneratorEquationAstImpl::Type::REM:
