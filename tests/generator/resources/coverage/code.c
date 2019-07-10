@@ -99,7 +99,7 @@ void computeConstantEquations(double *variables)
     variables[11] = variables[0] > variables[1];
     variables[12] = variables[0] >= variables[1];
     variables[13] = variables[0] && variables[1];
-    variables[14] = variables[0] && variables[1] && variables[2] && variables[3] && variables[4];
+    variables[14] = variables[0] && variables[1] && variables[2];
     variables[15] = (variables[0] < variables[1]) && (variables[2] > variables[3]);
     variables[16] = (variables[0]+variables[1]) && (variables[2] > variables[3]);
     variables[17] = variables[0] && (variables[1] > variables[2]);
@@ -114,7 +114,7 @@ void computeConstantEquations(double *variables)
     variables[26] = (variables[0] < variables[1]) && pow(variables[2], variables[3]);
     variables[27] = (variables[0] < variables[1]) && pow(variables[2], 1.0/variables[3]);
     variables[28] = variables[0] || variables[1];
-    variables[29] = variables[0] || variables[1] || variables[2] || variables[3] || variables[4];
+    variables[29] = variables[0] || variables[1] || variables[2];
     variables[30] = (variables[0] < variables[1]) || (variables[2] > variables[3]);
     variables[31] = (variables[0]+variables[1]) || (variables[2] > variables[3]);
     variables[32] = variables[0] || (variables[1] > variables[2]);
@@ -129,7 +129,7 @@ void computeConstantEquations(double *variables)
     variables[41] = (variables[0] < variables[1]) || pow(variables[2], variables[3]);
     variables[42] = (variables[0] < variables[1]) || pow(variables[2], 1.0/variables[3]);
     variables[43] = variables[0]^variables[1];
-    variables[44] = variables[0]^variables[1]^variables[2]^variables[3]^variables[4];
+    variables[44] = variables[0]^variables[1]^variables[2];
     variables[45] = (variables[0] < variables[1])^(variables[2] > variables[3]);
     variables[46] = (variables[0]+variables[1])^(variables[2] > variables[3]);
     variables[47] = variables[0]^(variables[1] > variables[2]);
@@ -145,7 +145,7 @@ void computeConstantEquations(double *variables)
     variables[57] = (variables[0] < variables[1])^pow(variables[2], 1.0/variables[3]);
     variables[58] = !variables[0];
     variables[59] = variables[0]+variables[1];
-    variables[60] = variables[0]+variables[1]+variables[2]+variables[3]+variables[4];
+    variables[60] = variables[0]+variables[1]+variables[2];
     variables[61] = (variables[0] < variables[1])+(variables[2] > variables[3]);
     variables[62] = variables[0];
     variables[63] = variables[0]-variables[1];
@@ -155,7 +155,7 @@ void computeConstantEquations(double *variables)
     variables[67] = -variables[0];
     variables[68] = -(variables[0] < variables[1]);
     variables[69] = variables[0]*variables[1];
-    variables[70] = variables[0]*variables[1]*variables[2]*variables[3]*variables[4];
+    variables[70] = variables[0]*variables[1]*variables[2];
     variables[71] = (variables[0] < variables[1])*(variables[2] > variables[3]);
     variables[72] = (variables[0]+variables[1])*(variables[2] > variables[3]);
     variables[73] = variables[0]*(variables[1] > variables[2]);
@@ -225,9 +225,9 @@ void computeConstantEquations(double *variables)
     variables[137] = ceil(variables[0]);
     variables[138] = floor(variables[0]);
     variables[139] = min(variables[0], variables[1]);
-    variables[140] = min(variables[0], min(variables[1], min(variables[2], min(variables[3], variables[4]))));
+    variables[140] = min(variables[0], min(variables[1], variables[2]));
     variables[141] = max(variables[0], variables[1]);
-    variables[142] = max(variables[0], max(variables[1], max(variables[2], max(variables[3], variables[4]))));
+    variables[142] = max(variables[0], max(variables[1], variables[2]));
     variables[143] = fmod(variables[0], variables[1]);
     variables[144] = sin(variables[0]);
     variables[145] = cos(variables[0]);
