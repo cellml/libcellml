@@ -9,7 +9,7 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     rates[0] = variables[0];
 }
 
-void computeAlgebraicEquations(double *states, double *rates, double *variables)
+void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
 {
     variables[1] = 2.0*states[0];
 }
