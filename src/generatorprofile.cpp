@@ -888,9 +888,9 @@ std::string GeneratorProfile::commandSeparatorString() const
     return mPimpl->mCommandSeparatorString;
 }
 
-void GeneratorProfile::setCommandSeparatorString(const std::string &commandSeparator)
+void GeneratorProfile::setCommandSeparatorString(const std::string &commandSeparatorString)
 {
-    mPimpl->mCommandSeparatorString = commandSeparator;
+    mPimpl->mCommandSeparatorString = commandSeparatorString;
 }
 
 } // namespace libcellml
