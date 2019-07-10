@@ -153,7 +153,112 @@ GeneratorProfile::~GeneratorProfile()
 GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     : mPimpl(new GeneratorProfileImpl())
 {
-    (void)rhs;
+    // Relational operators
+
+    mPimpl->mEqString = rhs.mPimpl->mEqString;
+    mPimpl->mEqEqString = rhs.mPimpl->mEqEqString;
+    mPimpl->mNeqString = rhs.mPimpl->mNeqString;
+    mPimpl->mLtString = rhs.mPimpl->mLtString;
+    mPimpl->mLeqString = rhs.mPimpl->mLeqString;
+    mPimpl->mGtString = rhs.mPimpl->mGtString;
+    mPimpl->mGeqString = rhs.mPimpl->mGeqString;
+
+    // Arithmetic operators
+
+    mPimpl->mPlusString = rhs.mPimpl->mPlusString;
+    mPimpl->mMinusString = rhs.mPimpl->mMinusString;
+    mPimpl->mTimesString = rhs.mPimpl->mTimesString;
+    mPimpl->mDivideString = rhs.mPimpl->mDivideString;
+    mPimpl->mPowerString = rhs.mPimpl->mPowerString;
+    mPimpl->mSquareRootString = rhs.mPimpl->mSquareRootString;
+    mPimpl->mSquareString = rhs.mPimpl->mSquareString;
+    mPimpl->mAbsoluteValueString = rhs.mPimpl->mAbsoluteValueString;
+    mPimpl->mExponentialString = rhs.mPimpl->mExponentialString;
+    mPimpl->mNapierianLogarithmString = rhs.mPimpl->mNapierianLogarithmString;
+    mPimpl->mCommonLogarithmString = rhs.mPimpl->mCommonLogarithmString;
+    mPimpl->mCeilingString = rhs.mPimpl->mCeilingString;
+    mPimpl->mFloorString = rhs.mPimpl->mFloorString;
+    mPimpl->mFactorialString = rhs.mPimpl->mFactorialString;
+
+    mPimpl->mHasPowerOperator = rhs.mPimpl->mHasPowerOperator;
+
+    // Logical operators
+
+    mPimpl->mAndString = rhs.mPimpl->mAndString;
+    mPimpl->mOrString = rhs.mPimpl->mOrString;
+    mPimpl->mXorString = rhs.mPimpl->mXorString;
+    mPimpl->mNotString = rhs.mPimpl->mNotString;
+
+    mPimpl->mHasXorOperator = rhs.mPimpl->mHasXorOperator;
+
+    // Min/max operators
+
+    mPimpl->mMinString = rhs.mPimpl->mMinString;
+    mPimpl->mMaxString = rhs.mPimpl->mMaxString;
+
+    // Gcd/lcm operators
+
+    mPimpl->mGcdString = rhs.mPimpl->mGcdString;
+    mPimpl->mLcmString = rhs.mPimpl->mLcmString;
+
+    // Trigonometric operators
+
+    mPimpl->mSinString = rhs.mPimpl->mSinString;
+    mPimpl->mCosString = rhs.mPimpl->mCosString;
+    mPimpl->mTanString = rhs.mPimpl->mTanString;
+    mPimpl->mSecString = rhs.mPimpl->mSecString;
+    mPimpl->mCscString = rhs.mPimpl->mCscString;
+    mPimpl->mCotString = rhs.mPimpl->mCotString;
+    mPimpl->mSinhString = rhs.mPimpl->mSinhString;
+    mPimpl->mCoshString = rhs.mPimpl->mCoshString;
+    mPimpl->mTanhString = rhs.mPimpl->mTanhString;
+    mPimpl->mSechString = rhs.mPimpl->mSechString;
+    mPimpl->mCschString = rhs.mPimpl->mCschString;
+    mPimpl->mCothString = rhs.mPimpl->mCothString;
+    mPimpl->mAsinString = rhs.mPimpl->mAsinString;
+    mPimpl->mAcosString = rhs.mPimpl->mAcosString;
+    mPimpl->mAtanString = rhs.mPimpl->mAtanString;
+    mPimpl->mAsecString = rhs.mPimpl->mAsecString;
+    mPimpl->mAcscString = rhs.mPimpl->mAcscString;
+    mPimpl->mAcotString = rhs.mPimpl->mAcotString;
+    mPimpl->mAsinhString = rhs.mPimpl->mAsinhString;
+    mPimpl->mAcoshString = rhs.mPimpl->mAcoshString;
+    mPimpl->mAtanhString = rhs.mPimpl->mAtanhString;
+    mPimpl->mAsechString = rhs.mPimpl->mAsechString;
+    mPimpl->mAcschString = rhs.mPimpl->mAcschString;
+    mPimpl->mAcothString = rhs.mPimpl->mAcothString;
+
+    // Extra operators
+
+    mPimpl->mRemString = rhs.mPimpl->mRemString;
+
+    // Piecewise statement
+
+    mPimpl->mConditionalOperatorIfString = rhs.mPimpl->mConditionalOperatorIfString;
+    mPimpl->mConditionalOperatorElseString = rhs.mPimpl->mConditionalOperatorElseString;
+    mPimpl->mPiecewiseIfString = rhs.mPimpl->mPiecewiseIfString;
+    mPimpl->mPiecewiseElseString = rhs.mPimpl->mPiecewiseElseString;
+
+    mPimpl->mHasConditionalOperator = rhs.mPimpl->mHasConditionalOperator;
+
+    // Constants
+
+    mPimpl->mTrueString = rhs.mPimpl->mTrueString;
+    mPimpl->mFalseString = rhs.mPimpl->mFalseString;
+    mPimpl->mEString = rhs.mPimpl->mEString;
+    mPimpl->mPiString = rhs.mPimpl->mPiString;
+    mPimpl->mInfString = rhs.mPimpl->mInfString;
+    mPimpl->mNanString = rhs.mPimpl->mNanString;
+
+    // Miscellaneous
+
+    mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
+
+    mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
+    mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
+    mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
+
+    mPimpl->mCommandSeparatorString = rhs.mPimpl->mCommandSeparatorString;
 }
 
 GeneratorProfile::GeneratorProfile(GeneratorProfile &&rhs) noexcept
