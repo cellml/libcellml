@@ -2313,9 +2313,13 @@ size_t Generator::variableCount() const
     return res;
 }
 
-GeneratorVariablePtr Generator::variableOfIntegration() const
+VariablePtr Generator::variableOfIntegration() const
 {
-    return {};
+    if (!mPimpl->hasValidModel()) {
+        return {};
+    }
+
+    return mPimpl->mVariableOfIntegration;
 }
 
 GeneratorVariablePtr Generator::state(size_t index) const
