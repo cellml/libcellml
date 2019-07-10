@@ -265,6 +265,9 @@ public:
     std::string variablesArrayString() const;
     void setVariablesArrayString(const std::string &variablesArrayString);
 
+    std::string indentString() const;
+    void setIndentString(const std::string &indentString);
+
     std::string openArrayString() const;
     void setOpenArrayString(const std::string &openArrayString);
 
