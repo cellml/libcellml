@@ -29,7 +29,7 @@ public:
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
 
-    // Relational operators
+    // Relational and logical operators
 
     std::string eqString() const;
     void setEqString(const std::string &eqString);
@@ -51,6 +51,21 @@ public:
 
     std::string geqString() const;
     void setGeqString(const std::string &geqString);
+
+    std::string andString() const;
+    void setAndString(const std::string &andString);
+
+    std::string orString() const;
+    void setOrString(const std::string &orString);
+
+    std::string xorString() const;
+    void setXorString(const std::string &xorString);
+
+    std::string notString() const;
+    void setNotString(const std::string &notString);
+
+    bool hasXorOperator() const;
+    void setHasXorOperator(bool hasXorOperator);
 
     // Arithmetic operators
 
@@ -98,23 +113,6 @@ public:
 
     bool hasPowerOperator() const;
     void setHasPowerOperator(bool hasPowerOperator);
-
-    // Logical operators
-
-    std::string andString() const;
-    void setAndString(const std::string &andString);
-
-    std::string orString() const;
-    void setOrString(const std::string &orString);
-
-    std::string xorString() const;
-    void setXorString(const std::string &xorString);
-
-    std::string notString() const;
-    void setNotString(const std::string &notString);
-
-    bool hasXorOperator() const;
-    void setHasXorOperator(bool hasXorOperator);
 
     // Min/max operators
 
