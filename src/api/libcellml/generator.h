@@ -67,7 +67,7 @@ public:
     size_t stateCount() const;
     size_t variableCount() const;
 
-    GeneratorVariablePtr variableOfIntegration() const;
+    VariablePtr variableOfIntegration() const;
     GeneratorVariablePtr state(size_t index) const;
     GeneratorVariablePtr variable(size_t index) const;
 
