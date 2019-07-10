@@ -2386,9 +2386,16 @@ std::string Generator::code() const
         return {};
     }
 
-    // Generate code to initialise the model.
+    // Generate code for extra mathematical functions.
 
     std::string res;
+
+    if (mPimpl->mNeedFactorial) {
+        res += mPimpl->mProfile->factorialFunctionString();
+    }
+
+    // Generate code to initialise the model.
+
     std::string body;
 
     for (const auto &variable : mPimpl->mVariables) {
@@ -2405,6 +2412,10 @@ std::string Generator::code() const
     }
 
     if (!body.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
         res += mPimpl->mProfile->beginInitializeModelMethodString();
         res += body;
         res += mPimpl->mProfile->endInitializeModelMethodString();

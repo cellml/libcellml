@@ -1,3 +1,8 @@
+double fact(double x)
+{
+     return tgamma(x+1.0);
+}
+
 void initializeModel(double *states, double *variables)
 {
     states[0] = 0.0;

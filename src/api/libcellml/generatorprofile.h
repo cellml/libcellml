@@ -251,6 +251,11 @@ public:
     std::string nanString() const;
     void setNanString(const std::string &nanString);
 
+    // "Special" mathematical functions
+
+    std::string factorialFunctionString() const;
+    void setFactorialFunctionString(const std::string &factorialFunctionString);
+
     // Miscellaneous
 
     std::string variableOfIntegrationString() const;

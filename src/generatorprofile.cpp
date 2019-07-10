@@ -129,6 +129,13 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInfString = "1.0/0.0";
     std::string mNanString = "sqrt(-1.0)";
 
+    // "Special" mathematical functions
+
+    std::string mFactorialFunctionString = "double fact(double x)\n"
+                                           "{\n"
+                                           "     return tgamma(x+1.0);\n"
+                                           "}\n";
+
     // Miscellaneous
 
     std::string mVariableOfIntegrationString = "voi";
@@ -266,6 +273,10 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mPiString = rhs.mPimpl->mPiString;
     mPimpl->mInfString = rhs.mPimpl->mInfString;
     mPimpl->mNanString = rhs.mPimpl->mNanString;
+
+    // "Special" mathematical functions
+
+    mPimpl->mFactorialFunctionString = rhs.mPimpl->mFactorialFunctionString;
 
     // Miscellaneous
 
@@ -980,6 +991,16 @@ std::string GeneratorProfile::nanString() const
 void GeneratorProfile::setNanString(const std::string &nanString)
 {
     mPimpl->mNanString = nanString;
+}
+
+std::string GeneratorProfile::factorialFunctionString() const
+{
+    return mPimpl->mFactorialFunctionString;
+}
+
+void GeneratorProfile::setFactorialFunctionString(const std::string &factorialFunctionString)
+{
+    mPimpl->mFactorialFunctionString = factorialFunctionString;
 }
 
 std::string GeneratorProfile::variableOfIntegrationString() const
