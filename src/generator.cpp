@@ -147,7 +147,6 @@ struct GeneratorEquationAstImpl
         LOG,
         CEILING,
         FLOOR,
-        FACTORIAL,
 
         // Calculus elements
 
@@ -157,11 +156,6 @@ struct GeneratorEquationAstImpl
 
         MIN,
         MAX,
-
-        // Gcd/lcm operators
-
-        GCD,
-        LCM,
 
         // Trigonometric operators
 
@@ -475,13 +469,8 @@ struct Generator::GeneratorImpl
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    bool mNeedFactorial = false;
-
     bool mNeedMin = false;
     bool mNeedMax = false;
-
-    bool mNeedGcd = false;
-    bool mNeedLcm = false;
 
     bool mNeedSec = false;
     bool mNeedCsc = false;
@@ -737,10 +726,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CEILING, astParent);
     } else if (node->isMathmlElement("floor")) {
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::FLOOR, astParent);
-    } else if (node->isMathmlElement("factorial")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::FACTORIAL, astParent);
-
-        mNeedFactorial = true;
 
         // Calculus elements
 
@@ -757,17 +742,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::MAX, astParent);
 
         mNeedMax = true;
-
-        // Gcd/lcm operators
-
-    } else if (node->isMathmlElement("gcd")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::GCD, astParent);
-
-        mNeedGcd = true;
-    } else if (node->isMathmlElement("lcm")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::LCM, astParent);
-
-        mNeedLcm = true;
 
         // Trigonometric operators
 
@@ -1198,13 +1172,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mVariables.clear();
     mEquations.clear();
 
-    mNeedFactorial = false;
-
     mNeedMin = false;
     mNeedMax = false;
-
-    mNeedGcd = false;
-    mNeedLcm = false;
 
     mNeedSec = false;
     mNeedCsc = false;
@@ -1958,11 +1927,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         code = mProfile->floorString() + "(" + generateCode(ast->mLeft) + ")";
 
         break;
-    case GeneratorEquationAstImpl::Type::FACTORIAL:
-        code = mProfile->factorialString() + "(" + generateCode(ast->mLeft) + ")";
-
-        break;
-
         // Calculus elements
 
     case GeneratorEquationAstImpl::Type::DIFF:
@@ -1983,25 +1947,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
     case GeneratorEquationAstImpl::Type::MAX:
         if (parentAst == nullptr) {
             code = mProfile->maxString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
-        } else {
-            code = generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
-        }
-
-        break;
-
-        // Gcd/lcm operators
-
-    case GeneratorEquationAstImpl::Type::GCD:
-        if (parentAst == nullptr) {
-            code = mProfile->gcdString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
-        } else {
-            code = generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
-        }
-
-        break;
-    case GeneratorEquationAstImpl::Type::LCM:
-        if (parentAst == nullptr) {
-            code = mProfile->lcmString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
         } else {
             code = generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
         }
@@ -2232,13 +2177,8 @@ Generator::Generator(const Generator &rhs)
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
-    mPimpl->mNeedFactorial = rhs.mPimpl->mNeedFactorial;
-
     mPimpl->mNeedMin = rhs.mPimpl->mNeedMin;
     mPimpl->mNeedMax = rhs.mPimpl->mNeedMax;
-
-    mPimpl->mNeedGcd = rhs.mPimpl->mNeedGcd;
-    mPimpl->mNeedLcm = rhs.mPimpl->mNeedLcm;
 
     mPimpl->mNeedSec = rhs.mPimpl->mNeedSec;
     mPimpl->mNeedCsc = rhs.mPimpl->mNeedCsc;
@@ -2381,15 +2321,7 @@ std::string Generator::code() const
 
     std::string res;
 
-    if (mPimpl->mNeedFactorial) {
-        res += mPimpl->mProfile->factorialFunctionString();
-    }
-
     if (mPimpl->mNeedMin) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
         res += mPimpl->mProfile->minFunctionString();
     }
 

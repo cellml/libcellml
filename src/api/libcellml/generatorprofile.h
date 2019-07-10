@@ -108,9 +108,6 @@ public:
     std::string floorString() const;
     void setFloorString(const std::string &floorString);
 
-    std::string factorialString() const;
-    void setFactorialString(const std::string &factorialString);
-
     bool hasPowerOperator() const;
     void setHasPowerOperator(bool hasPowerOperator);
 
@@ -121,14 +118,6 @@ public:
 
     std::string maxString() const;
     void setMaxString(const std::string &maxString);
-
-    // Gcd/lcm operators
-
-    std::string gcdString() const;
-    void setGcdString(const std::string &gcdString);
-
-    std::string lcmString() const;
-    void setLcmString(const std::string &lcmString);
 
     // Trigonometric operators
 
@@ -250,9 +239,6 @@ public:
     void setNanString(const std::string &nanString);
 
     // "Special" mathematical functions
-
-    std::string factorialFunctionString() const;
-    void setFactorialFunctionString(const std::string &factorialFunctionString);
 
     std::string minFunctionString() const;
     void setMinFunctionString(const std::string &minFunctionString);

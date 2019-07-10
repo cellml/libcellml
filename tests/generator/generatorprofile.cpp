@@ -68,7 +68,6 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("log10", generatorProfile->commonLogarithmString());
     EXPECT_EQ("ceil", generatorProfile->ceilingString());
     EXPECT_EQ("floor", generatorProfile->floorString());
-    EXPECT_EQ("fact", generatorProfile->factorialString());
 
     EXPECT_EQ(false, generatorProfile->hasPowerOperator());
 
@@ -76,11 +75,6 @@ TEST(GeneratorProfile, defaultValues)
 
     EXPECT_EQ("min", generatorProfile->minString());
     EXPECT_EQ("max", generatorProfile->maxString());
-
-    // Gcd/lcm operators
-
-    EXPECT_EQ("gcd", generatorProfile->gcdString());
-    EXPECT_EQ("lcm", generatorProfile->lcmString());
 
     // Trigonometric operators
 
@@ -132,11 +126,6 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
 
     // "Special" mathematical functions
-
-    EXPECT_EQ("double fact(double x)\n"
-              "{\n"
-              "     return tgamma(x+1.0);\n"
-              "}\n", generatorProfile->factorialFunctionString());
 
     EXPECT_EQ("double min(double x, double y)\n"
               "{\n"
@@ -227,7 +216,6 @@ TEST(GeneratorProfile, arithmeticOperators)
     generatorProfile->setCommonLogarithmString(value);
     generatorProfile->setCeilingString(value);
     generatorProfile->setFloorString(value);
-    generatorProfile->setFactorialString(value);
 
     generatorProfile->setHasPowerOperator(trueValue);
     generatorProfile->setHasXorOperator(falseValue);
@@ -245,7 +233,6 @@ TEST(GeneratorProfile, arithmeticOperators)
     EXPECT_EQ(value, generatorProfile->commonLogarithmString());
     EXPECT_EQ(value, generatorProfile->ceilingString());
     EXPECT_EQ(value, generatorProfile->floorString());
-    EXPECT_EQ(value, generatorProfile->factorialString());
 
     EXPECT_EQ(trueValue, generatorProfile->hasPowerOperator());
     EXPECT_EQ(falseValue, generatorProfile->hasXorOperator());
@@ -262,19 +249,6 @@ TEST(GeneratorProfile, minMaxOperators)
 
     EXPECT_EQ(value, generatorProfile->minString());
     EXPECT_EQ(value, generatorProfile->maxString());
-}
-
-TEST(GeneratorProfile, gcdLcmOperators)
-{
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
-
-    const std::string value = "value";
-
-    generatorProfile->setGcdString(value);
-    generatorProfile->setLcmString(value);
-
-    EXPECT_EQ(value, generatorProfile->gcdString());
-    EXPECT_EQ(value, generatorProfile->lcmString());
 }
 
 TEST(GeneratorProfile, trigonometricOperators)
@@ -394,12 +368,8 @@ TEST(GeneratorProfile, specialMathematicalFunctions)
 
     const std::string value = "value";
 
-    generatorProfile->setFactorialFunctionString(value);
-
     generatorProfile->setMinFunctionString(value);
     generatorProfile->setMaxFunctionString(value);
-
-    EXPECT_EQ(value, generatorProfile->factorialFunctionString());
 
     EXPECT_EQ(value, generatorProfile->minFunctionString());
     EXPECT_EQ(value, generatorProfile->maxFunctionString());

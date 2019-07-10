@@ -1,8 +1,3 @@
-double fact(double x)
-{
-     return tgamma(x+1.0);
-}
-
 double min(double x, double y)
 {
      return (x < y)?x:y;
@@ -23,16 +18,16 @@ void initializeModel(double *states, double *variables)
     variables[4] = 5.0;
     variables[5] = 6.0;
     variables[6] = 7.0;
-    variables[177] = 123.0;
-    variables[178] = 123.456789;
-    variables[179] = 123.0e99;
-    variables[180] = 123.456789e99;
-    variables[182] = true;
-    variables[183] = false;
-    variables[184] = 2.71828182845905;
-    variables[185] = 3.14159265358979;
-    variables[186] = 1.0/0.0;
-    variables[187] = sqrt(-1.0);
+    variables[172] = 123.0;
+    variables[173] = 123.456789;
+    variables[174] = 123.0e99;
+    variables[175] = 123.456789e99;
+    variables[177] = true;
+    variables[178] = false;
+    variables[179] = 2.71828182845905;
+    variables[180] = 3.14159265358979;
+    variables[181] = 1.0/0.0;
+    variables[182] = sqrt(-1.0);
 }
 
 void computeConstantEquations(double *variables)
@@ -169,45 +164,40 @@ void computeConstantEquations(double *variables)
     variables[136] = log(variables[0])/log(variables[1]);
     variables[137] = ceil(variables[0]);
     variables[138] = floor(variables[0]);
-    variables[139] = fact(variables[0]);
-    variables[140] = min(variables[0], variables[1]);
-    variables[141] = min(variables[0], variables[1], variables[2], variables[3], variables[4]);
-    variables[142] = max(variables[0], variables[1]);
-    variables[143] = max(variables[0], variables[1], variables[2], variables[3], variables[4]);
-    variables[144] = gcd(variables[0], variables[1]);
-    variables[145] = gcd(variables[0], variables[1], variables[2], variables[3], variables[4]);
-    variables[146] = lcm(variables[0], variables[1]);
-    variables[147] = lcm(variables[0], variables[1], variables[2], variables[3], variables[4]);
-    variables[148] = sin(variables[0]);
-    variables[149] = cos(variables[0]);
-    variables[150] = tan(variables[0]);
-    variables[151] = sec(variables[0]);
-    variables[152] = csc(variables[0]);
-    variables[153] = cot(variables[0]);
-    variables[154] = sinh(variables[0]);
-    variables[155] = cosh(variables[0]);
-    variables[156] = tanh(variables[0]);
-    variables[157] = sech(variables[0]);
-    variables[158] = csch(variables[0]);
-    variables[159] = coth(variables[0]);
-    variables[160] = asin(variables[0]);
-    variables[161] = acos(variables[0]);
-    variables[162] = atan(variables[0]);
-    variables[163] = asec(variables[0]);
-    variables[164] = acsc(variables[0]);
-    variables[165] = acot(variables[0]);
-    variables[166] = asinh(variables[0]);
-    variables[167] = acosh(variables[0]);
-    variables[168] = atanh(variables[0]);
-    variables[169] = asech(variables[0]);
-    variables[170] = acsch(variables[0]);
-    variables[171] = acoth(variables[0]);
-    variables[172] = fmod(variables[0], variables[1]);
-    variables[173] = (variables[0] > variables[1])?variables[0]:sqrt(-1.0);
-    variables[174] = (variables[0] > variables[1])?variables[0]:variables[2];
-    variables[175] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:sqrt(-1.0);
-    variables[176] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:variables[6];
-    variables[181] = variables[0];
+    variables[139] = min(variables[0], variables[1]);
+    variables[140] = min(variables[0], variables[1], variables[2], variables[3], variables[4]);
+    variables[141] = max(variables[0], variables[1]);
+    variables[142] = max(variables[0], variables[1], variables[2], variables[3], variables[4]);
+    variables[143] = sin(variables[0]);
+    variables[144] = cos(variables[0]);
+    variables[145] = tan(variables[0]);
+    variables[146] = sec(variables[0]);
+    variables[147] = csc(variables[0]);
+    variables[148] = cot(variables[0]);
+    variables[149] = sinh(variables[0]);
+    variables[150] = cosh(variables[0]);
+    variables[151] = tanh(variables[0]);
+    variables[152] = sech(variables[0]);
+    variables[153] = csch(variables[0]);
+    variables[154] = coth(variables[0]);
+    variables[155] = asin(variables[0]);
+    variables[156] = acos(variables[0]);
+    variables[157] = atan(variables[0]);
+    variables[158] = asec(variables[0]);
+    variables[159] = acsc(variables[0]);
+    variables[160] = acot(variables[0]);
+    variables[161] = asinh(variables[0]);
+    variables[162] = acosh(variables[0]);
+    variables[163] = atanh(variables[0]);
+    variables[164] = asech(variables[0]);
+    variables[165] = acsch(variables[0]);
+    variables[166] = acoth(variables[0]);
+    variables[167] = fmod(variables[0], variables[1]);
+    variables[168] = (variables[0] > variables[1])?variables[0]:sqrt(-1.0);
+    variables[169] = (variables[0] > variables[1])?variables[0]:variables[2];
+    variables[170] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:sqrt(-1.0);
+    variables[171] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:variables[6];
+    variables[176] = variables[0];
 }
 
 void computeRateEquations(double voi, double *states, double *rates, double *variables)

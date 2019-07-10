@@ -61,7 +61,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCommonLogarithmString = "log10";
     std::string mCeilingString = "ceil";
     std::string mFloorString = "floor";
-    std::string mFactorialString = "fact";
 
     bool mHasPowerOperator = false;
 
@@ -69,11 +68,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mMinString = "min";
     std::string mMaxString = "max";
-
-    // Gcd/lcm operators
-
-    std::string mGcdString = "gcd";
-    std::string mLcmString = "lcm";
 
     // Trigonometric operators
 
@@ -128,11 +122,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mNanString = "sqrt(-1.0)";
 
     // "Special" mathematical functions
-
-    std::string mFactorialFunctionString = "double fact(double x)\n"
-                                           "{\n"
-                                           "     return tgamma(x+1.0);\n"
-                                           "}\n";
 
     std::string mMinFunctionString = "double min(double x, double y)\n"
                                      "{\n"
@@ -215,7 +204,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mCommonLogarithmString = rhs.mPimpl->mCommonLogarithmString;
     mPimpl->mCeilingString = rhs.mPimpl->mCeilingString;
     mPimpl->mFloorString = rhs.mPimpl->mFloorString;
-    mPimpl->mFactorialString = rhs.mPimpl->mFactorialString;
 
     mPimpl->mHasPowerOperator = rhs.mPimpl->mHasPowerOperator;
 
@@ -223,11 +211,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mMinString = rhs.mPimpl->mMinString;
     mPimpl->mMaxString = rhs.mPimpl->mMaxString;
-
-    // Gcd/lcm operators
-
-    mPimpl->mGcdString = rhs.mPimpl->mGcdString;
-    mPimpl->mLcmString = rhs.mPimpl->mLcmString;
 
     // Trigonometric operators
 
@@ -279,8 +262,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mNanString = rhs.mPimpl->mNanString;
 
     // "Special" mathematical functions
-
-    mPimpl->mFactorialFunctionString = rhs.mPimpl->mFactorialFunctionString;
 
     mPimpl->mMinFunctionString = rhs.mPimpl->mMinFunctionString;
     mPimpl->mMaxFunctionString = rhs.mPimpl->mMaxFunctionString;
@@ -530,16 +511,6 @@ void GeneratorProfile::setFloorString(const std::string &floorString)
     mPimpl->mFloorString = floorString;
 }
 
-std::string GeneratorProfile::factorialString() const
-{
-    return mPimpl->mFactorialString;
-}
-
-void GeneratorProfile::setFactorialString(const std::string &factorialString)
-{
-    mPimpl->mFactorialString = factorialString;
-}
-
 bool GeneratorProfile::hasPowerOperator() const
 {
     return mPimpl->mHasPowerOperator;
@@ -618,26 +589,6 @@ std::string GeneratorProfile::maxString() const
 void GeneratorProfile::setMaxString(const std::string &maxString)
 {
     mPimpl->mMaxString = maxString;
-}
-
-std::string GeneratorProfile::gcdString() const
-{
-    return mPimpl->mGcdString;
-}
-
-void GeneratorProfile::setGcdString(const std::string &gcdString)
-{
-    mPimpl->mGcdString = gcdString;
-}
-
-std::string GeneratorProfile::lcmString() const
-{
-    return mPimpl->mLcmString;
-}
-
-void GeneratorProfile::setLcmString(const std::string &lcmString)
-{
-    mPimpl->mLcmString = lcmString;
 }
 
 std::string GeneratorProfile::sinString() const
@@ -998,16 +949,6 @@ std::string GeneratorProfile::nanString() const
 void GeneratorProfile::setNanString(const std::string &nanString)
 {
     mPimpl->mNanString = nanString;
-}
-
-std::string GeneratorProfile::factorialFunctionString() const
-{
-    return mPimpl->mFactorialFunctionString;
-}
-
-void GeneratorProfile::setFactorialFunctionString(const std::string &factorialFunctionString)
-{
-    mPimpl->mFactorialFunctionString = factorialFunctionString;
 }
 
 std::string GeneratorProfile::minFunctionString() const
