@@ -131,6 +131,13 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("1.0/0.0", generatorProfile->infString());
     EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
 
+    // "Special" mathematical functions
+
+    EXPECT_EQ("double fact(double x)\n"
+              "{\n"
+              "     return tgamma(x+1.0);\n"
+              "}\n", generatorProfile->factorialFunctionString());
+
     // Miscellaneous
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
@@ -375,6 +382,17 @@ TEST(GeneratorProfile, constants)
     EXPECT_EQ(value, generatorProfile->piString());
     EXPECT_EQ(value, generatorProfile->infString());
     EXPECT_EQ(value, generatorProfile->nanString());
+}
+
+TEST(GeneratorProfile, specialMathematicalFunctions)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+
+    const std::string value = "value";
+
+    generatorProfile->setFactorialFunctionString(value);
+
+    EXPECT_EQ(value, generatorProfile->factorialFunctionString());
 }
 
 TEST(GeneratorProfile, miscellaneous)
