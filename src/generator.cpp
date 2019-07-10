@@ -524,6 +524,10 @@ struct Generator::GeneratorImpl
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstImplPtr &ast);
     std::string generateMinusUnaryCode(const GeneratorEquationAstImplPtr &ast);
+    std::string generateOneParameterFunctionCode(const std::string &function,
+                                                 const GeneratorEquationAstImplPtr &ast);
+    std::string generateTwoParameterFunctionCode(const std::string &function,
+                                                 const GeneratorEquationAstImplPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value);
     std::string generatePiecewiseElseCode(const std::string &value);
@@ -1744,6 +1748,18 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
     return mProfile->minusString() + left;
 }
 
+std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
+                                                                       const GeneratorEquationAstImplPtr &ast)
+{
+    return function + "(" + generateCode(ast->mLeft) + ")";
+}
+
+std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
+                                                                       const GeneratorEquationAstImplPtr &ast)
+{
+    return function + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+}
+
 std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string &condition,
                                                               const std::string &value)
 {
@@ -1811,7 +1827,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         if (mProfile->hasXorOperator()) {
             code = generateOperatorCode(mProfile->xorString(), ast);
         } else {
-            code = mProfile->xorString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+            code = generateTwoParameterFunctionCode(mProfile->xorString(), ast);
         }
 
         break;
@@ -1851,9 +1867,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         double doubleValue = convertToDouble(stringValue);
 
         if (isEqual(doubleValue, 0.5)) {
-            code = mProfile->squareRootString() + "(" + generateCode(ast->mLeft) + ")";
+            code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
         } else if (isEqual(doubleValue, 2.0)) {
-            code = mProfile->squareString() + "(" + generateCode(ast->mLeft) + ")";
+            code = generateOneParameterFunctionCode(mProfile->squareString(), ast);
         } else {
             code = mProfile->hasPowerOperator() ?
                        generateOperatorCode(mProfile->powerString(), ast) :
@@ -1875,20 +1891,20 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
                            mProfile->powerString() + "(" + generateCode(ast->mRight) + ", 1.0/" + stringValue + ")";
             }
         } else {
-            code = mProfile->squareRootString() + "(" + generateCode(ast->mLeft) + ")";
+            code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
         }
 
         break;
     case GeneratorEquationAstImpl::Type::ABS:
-        code = mProfile->absoluteValueString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->absoluteValueString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::EXP:
-        code = mProfile->exponentialString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->exponentialString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::LN:
-        code = mProfile->napierianLogarithmString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->napierianLogarithmString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::LOG:
@@ -1902,28 +1918,28 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
                 code = mProfile->napierianLogarithmString() + "(" + generateCode(ast->mRight) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
             }
         } else {
-            code = mProfile->commonLogarithmString() + "(" + generateCode(ast->mLeft) + ")";
+            code = generateOneParameterFunctionCode(mProfile->commonLogarithmString(), ast);
         }
 
         break;
     case GeneratorEquationAstImpl::Type::CEILING:
-        code = mProfile->ceilingString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->ceilingString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::FLOOR:
-        code = mProfile->floorString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->floorString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::MIN:
-        code = mProfile->minString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+        code = generateTwoParameterFunctionCode(mProfile->minString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::MAX:
-        code = mProfile->maxString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+        code = generateTwoParameterFunctionCode(mProfile->maxString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::REM:
-        code = mProfile->remString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+        code = generateTwoParameterFunctionCode(mProfile->remString(), ast);
 
         break;
 
@@ -1937,99 +1953,99 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         // Trigonometric operators
 
     case GeneratorEquationAstImpl::Type::SIN:
-        code = mProfile->sinString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->sinString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::COS:
-        code = mProfile->cosString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->cosString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::TAN:
-        code = mProfile->tanString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->tanString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::SEC:
-        code = mProfile->secString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->secString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::CSC:
-        code = mProfile->cscString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->cscString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::COT:
-        code = mProfile->cotString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->cotString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::SINH:
-        code = mProfile->sinhString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->sinhString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::COSH:
-        code = mProfile->coshString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->coshString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::TANH:
-        code = mProfile->tanhString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->tanhString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::SECH:
-        code = mProfile->sechString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->sechString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::CSCH:
-        code = mProfile->cschString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->cschString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::COTH:
-        code = mProfile->cothString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->cothString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ASIN:
-        code = mProfile->asinString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->asinString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ACOS:
-        code = mProfile->acosString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->acosString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ATAN:
-        code = mProfile->atanString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->atanString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ASEC:
-        code = mProfile->asecString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->asecString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ACSC:
-        code = mProfile->acscString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->acscString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ACOT:
-        code = mProfile->acotString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->acotString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ASINH:
-        code = mProfile->asinhString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->asinhString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ACOSH:
-        code = mProfile->acoshString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->acoshString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ATANH:
-        code = mProfile->atanhString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->atanhString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ASECH:
-        code = mProfile->asechString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->asechString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ACSCH:
-        code = mProfile->acschString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->acschString(), ast);
 
         break;
     case GeneratorEquationAstImpl::Type::ACOTH:
-        code = mProfile->acothString() + "(" + generateCode(ast->mLeft) + ")";
+        code = generateOneParameterFunctionCode(mProfile->acothString(), ast);
 
         break;
 
