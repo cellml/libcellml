@@ -655,13 +655,7 @@ TEST(Generator, cellml_mappings_and_encapsulations)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/computeAlgebraicEquations.out"),
-              generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/code.c"), generator.code());
 }
 
 TEST(Generator, dependent_eqns)
