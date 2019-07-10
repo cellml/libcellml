@@ -67,10 +67,9 @@ public:
     size_t stateCount() const;
     size_t variableCount() const;
 
-    //ISSUE359: to be done.
-    //    GeneratorVariablePtr variableOfIntegration() const;
-    //    GeneratorVariablePtr state(size_t index) const;
-    //    GeneratorVariablePtr variable(size_t index) const;
+    GeneratorVariablePtr variableOfIntegration() const;
+    GeneratorVariablePtr state(size_t index) const;
+    GeneratorVariablePtr variable(size_t index) const;
 
     std::string code() const;
 

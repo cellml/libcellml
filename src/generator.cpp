@@ -2313,30 +2313,24 @@ size_t Generator::variableCount() const
     return res;
 }
 
-/*ISSUE359: to be done.
 GeneratorVariablePtr Generator::variableOfIntegration() const
 {
     return {};
 }
-*/
 
-/*ISSUE359: to be done.
 GeneratorVariablePtr Generator::state(size_t index) const
 {
     (void)index;
 
     return {};
 }
-*/
 
-/*ISSUE359: to be done.
 GeneratorVariablePtr Generator::variable(size_t index) const
 {
     (void)index;
 
     return {};
 }
-*/
 
 std::string Generator::code() const
 {
