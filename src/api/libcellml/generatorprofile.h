@@ -256,6 +256,11 @@ public:
     std::string factorialFunctionString() const;
     void setFactorialFunctionString(const std::string &factorialFunctionString);
 
+    std::string minFunctionString() const;
+    void setMinFunctionString(const std::string &minFunctionString);
+    std::string maxFunctionString() const;
+    void setMaxFunctionString(const std::string &maxFunctionString);
+
     // Miscellaneous
 
     std::string variableOfIntegrationString() const;

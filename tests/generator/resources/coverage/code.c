@@ -3,6 +3,16 @@ double fact(double x)
      return tgamma(x+1.0);
 }
 
+double min(double x, double y)
+{
+     return (x < y)?x:y;
+}
+
+double max(double x, double y)
+{
+     return (x > y)?x:y;
+}
+
 void initializeModel(double *states, double *variables)
 {
     states[0] = 0.0;
