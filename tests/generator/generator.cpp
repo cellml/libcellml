@@ -739,13 +739,7 @@ TEST(Generator, coverage)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(188), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquations.out"),
-              generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/coverage/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/coverage/code.c"), generator.code());
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
 
@@ -755,23 +749,11 @@ TEST(Generator, coverage)
     profile->setHasPowerOperator(true);
     profile->setHasConditionalOperator(false);
 
-    EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithFirstCustomProfile.out"),
-              generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/coverage/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/coverage/codeWithFirstCustomProfile.out"), generator.code());
 
     profile->setPowerString("^");
     profile->setXorString("xor");
     profile->setHasXorOperator(false);
 
-    EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithSecondCustomProfile.out"),
-              generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/coverage/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/coverage/codeWithSecondCustomProfile.out"), generator.code());
 }
