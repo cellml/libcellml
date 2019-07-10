@@ -1,3 +1,5 @@
+#include <math.h>
+
 void initializeModel(double *states, double *variables)
 {
     states[0] = 0.01;

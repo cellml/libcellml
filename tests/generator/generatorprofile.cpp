@@ -201,6 +201,8 @@ TEST(GeneratorProfile, defaultValues)
 
     // Miscellaneous
 
+    EXPECT_EQ("#include <math.h>\n", generatorProfile->headerString());
+
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
 
     EXPECT_EQ("states", generatorProfile->statesArrayString());
@@ -454,6 +456,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     const std::string value = "value";
 
+    generatorProfile->setHeaderString(value);
+
     generatorProfile->setVariableOfIntegrationString(value);
 
     generatorProfile->setStatesArrayString(value);
@@ -478,6 +482,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setCloseArrayString(value);
 
     generatorProfile->setCommandSeparatorString(value);
+
+    EXPECT_EQ(value, generatorProfile->headerString());
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
 

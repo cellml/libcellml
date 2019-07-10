@@ -182,6 +182,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
+    std::string mHeaderString = "#include <math.h>\n";
+
     std::string mVariableOfIntegrationString = "voi";
 
     std::string mStatesArrayString = "states";
@@ -322,6 +324,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mAcothFunctionString = rhs.mPimpl->mAcothFunctionString;
 
     // Miscellaneous
+
+    mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
     mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
 
@@ -1144,6 +1148,16 @@ std::string GeneratorProfile::acothFunctionString() const
 void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionString)
 {
     mPimpl->mAcothFunctionString = acothFunctionString;
+}
+
+std::string GeneratorProfile::headerString() const
+{
+    return mPimpl->mHeaderString;
+}
+
+void GeneratorProfile::setHeaderString(const std::string &headerString)
+{
+    mPimpl->mHeaderString = headerString;
 }
 
 std::string GeneratorProfile::variableOfIntegrationString() const

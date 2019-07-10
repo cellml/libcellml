@@ -268,6 +268,9 @@ public:
 
     // Miscellaneous
 
+    std::string headerString() const;
+    void setHeaderString(const std::string &headerString);
+
     std::string variableOfIntegrationString() const;
     void setVariableOfIntegrationString(const std::string &variableOfIntegrationString);
 
