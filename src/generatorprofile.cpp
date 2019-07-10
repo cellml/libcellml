@@ -140,6 +140,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginInitializeModelMethodString = "void initializeModel(double *states, double *variables)\n";
     std::string mEndInitializeModelMethodString = "}\n";
 
+    std::string mBeginComputeConstantEquationsMethodString = "void computeConstantEquations(double *variables)\n";
+    std::string mEndComputeConstantEquationsMethodString = "}\n";
+
     std::string mIndentString = "    ";
 
     std::string mOpenArrayString = "[";
@@ -268,6 +271,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mBeginInitializeModelMethodString = rhs.mPimpl->mBeginInitializeModelMethodString;
     mPimpl->mEndInitializeModelMethodString = rhs.mPimpl->mEndInitializeModelMethodString;
+
+    mPimpl->mBeginComputeConstantEquationsMethodString = rhs.mPimpl->mBeginComputeConstantEquationsMethodString;
+    mPimpl->mEndComputeConstantEquationsMethodString = rhs.mPimpl->mEndComputeConstantEquationsMethodString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -1022,6 +1028,26 @@ std::string GeneratorProfile::endInitializeModelMethodString() const
 void GeneratorProfile::setEndInitializeModelMethodString(const std::string &endInitializeModelMethodString)
 {
     mPimpl->mEndInitializeModelMethodString = endInitializeModelMethodString;
+}
+
+std::string GeneratorProfile::beginComputeConstantEquationsMethodString() const
+{
+    return mPimpl->mBeginComputeConstantEquationsMethodString;
+}
+
+void GeneratorProfile::setBeginComputeConstantEquationsMethodString(const std::string &beginComputeConstantEquationsMethodString)
+{
+    mPimpl->mBeginComputeConstantEquationsMethodString = beginComputeConstantEquationsMethodString;
+}
+
+std::string GeneratorProfile::endComputeConstantEquationsMethodString() const
+{
+    return mPimpl->mEndComputeConstantEquationsMethodString;
+}
+
+void GeneratorProfile::setEndComputeConstantEquationsMethodString(const std::string &endComputeConstantEquationsMethodString)
+{
+    mPimpl->mEndComputeConstantEquationsMethodString = endComputeConstantEquationsMethodString;
 }
 
 std::string GeneratorProfile::indentString() const
