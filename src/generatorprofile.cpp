@@ -137,6 +137,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString = "rates";
     std::string mVariablesArrayString = "variables";
 
+    std::string mOpenArrayString = "[";
+    std::string mCloseArrayString = "]";
+
     std::string mCommandSeparatorString = ";";
 };
 
@@ -257,6 +260,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
+
+    mPimpl->mOpenArrayString = rhs.mPimpl->mOpenArrayString;
+    mPimpl->mCloseArrayString = rhs.mPimpl->mCloseArrayString;
 
     mPimpl->mCommandSeparatorString = rhs.mPimpl->mCommandSeparatorString;
 }
@@ -986,6 +992,26 @@ std::string GeneratorProfile::variablesArrayString() const
 void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
 {
     mPimpl->mVariablesArrayString = variablesArrayString;
+}
+
+std::string GeneratorProfile::openArrayString() const
+{
+    return mPimpl->mOpenArrayString;
+}
+
+void GeneratorProfile::setOpenArrayString(const std::string &openArrayString)
+{
+    mPimpl->mOpenArrayString = openArrayString;
+}
+
+std::string GeneratorProfile::closeArrayString() const
+{
+    return mPimpl->mCloseArrayString;
+}
+
+void GeneratorProfile::setCloseArrayString(const std::string &closeArrayString)
+{
+    mPimpl->mCloseArrayString = closeArrayString;
 }
 
 std::string GeneratorProfile::commandSeparatorString() const

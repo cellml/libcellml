@@ -1474,7 +1474,7 @@ std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &va
 
     index << generatorVariable->mIndex;
 
-    return arrayName + "[" + index.str() + "]";
+    return arrayName + mProfile->openArrayString() + index.str() + mProfile->closeArrayString();
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,

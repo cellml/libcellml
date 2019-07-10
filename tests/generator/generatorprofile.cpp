@@ -139,6 +139,9 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
+    EXPECT_EQ("[", generatorProfile->openArrayString());
+    EXPECT_EQ("]", generatorProfile->closeArrayString());
+
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
 }
 
@@ -372,6 +375,9 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
+    generatorProfile->setOpenArrayString(value);
+    generatorProfile->setCloseArrayString(value);
+
     generatorProfile->setCommandSeparatorString(value);
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
@@ -379,6 +385,9 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->statesArrayString());
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
+
+    EXPECT_EQ(value, generatorProfile->openArrayString());
+    EXPECT_EQ(value, generatorProfile->closeArrayString());
 
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
 }
