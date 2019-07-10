@@ -13,6 +13,10 @@ void initializeModel(double *states, double *variables)
     variables[4] = 400.0;
 }
 
+void computeConstantEquations(double *variables)
+{
+}
+
 void computeRateEquations(double voi, double *states, double *rates, double *variables)
 {
     variables[8] = 0.1*(-states[3]-48.0)/(exp((-states[3]-48.0)/15.0)-1.0);
@@ -31,4 +35,8 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     variables[13] = 1.2*pow(states[2], 4.0);
     variables[16] = (variables[12]+variables[13])*(states[3]+100.0);
     rates[3] = -(variables[7]+variables[16]+variables[5])/variables[2];
+}
+
+void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+{
 }
