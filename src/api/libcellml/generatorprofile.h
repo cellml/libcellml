@@ -108,19 +108,17 @@ public:
     std::string floorString() const;
     void setFloorString(const std::string &floorString);
 
-    std::string remString() const;
-    void setRemString(const std::string &remString);
-
-    bool hasPowerOperator() const;
-    void setHasPowerOperator(bool hasPowerOperator);
-
-    // Min/max operators
-
     std::string minString() const;
     void setMinString(const std::string &minString);
 
     std::string maxString() const;
     void setMaxString(const std::string &maxString);
+
+    std::string remString() const;
+    void setRemString(const std::string &remString);
+
+    bool hasPowerOperator() const;
+    void setHasPowerOperator(bool hasPowerOperator);
 
     // Trigonometric operators
 

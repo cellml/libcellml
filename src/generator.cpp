@@ -147,16 +147,13 @@ struct GeneratorEquationAstImpl
         LOG,
         CEILING,
         FLOOR,
+        MIN,
+        MAX,
         REM,
 
         // Calculus elements
 
         DIFF,
-
-        // Min/max operators
-
-        MIN,
-        MAX,
 
         // Trigonometric operators
 
@@ -723,16 +720,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::CEILING, astParent);
     } else if (node->isMathmlElement("floor")) {
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::FLOOR, astParent);
-    } else if (node->isMathmlElement("rem")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::REM, astParent);
-
-        // Calculus elements
-
-    } else if (node->isMathmlElement("diff")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::DIFF, astParent);
-
-        // Min/max operators
-
     } else if (node->isMathmlElement("min")) {
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::MIN, astParent);
 
@@ -741,6 +728,13 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::MAX, astParent);
 
         mNeedMax = true;
+    } else if (node->isMathmlElement("rem")) {
+        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::REM, astParent);
+
+        // Calculus elements
+
+    } else if (node->isMathmlElement("diff")) {
+        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::DIFF, astParent);
 
         // Trigonometric operators
 
@@ -1921,20 +1915,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         code = mProfile->floorString() + "(" + generateCode(ast->mLeft) + ")";
 
         break;
-    case GeneratorEquationAstImpl::Type::REM:
-        code = mProfile->remString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
-
-        break;
-
-        // Calculus elements
-
-    case GeneratorEquationAstImpl::Type::DIFF:
-        code = generateCode(ast->mRight);
-
-        break;
-
-        // Min/max operators
-
     case GeneratorEquationAstImpl::Type::MIN:
         if (parentAst == nullptr) {
             code = mProfile->minString() + "(" + generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast) + ")";
@@ -1949,6 +1929,17 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         } else {
             code = generateCode(ast->mLeft, ast) + ", " + generateCode(ast->mRight, ast);
         }
+
+        break;
+    case GeneratorEquationAstImpl::Type::REM:
+        code = mProfile->remString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+
+        break;
+
+        // Calculus elements
+
+    case GeneratorEquationAstImpl::Type::DIFF:
+        code = generateCode(ast->mRight);
 
         break;
 

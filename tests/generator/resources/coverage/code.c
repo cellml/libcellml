@@ -164,11 +164,11 @@ void computeConstantEquations(double *variables)
     variables[136] = log(variables[0])/log(variables[1]);
     variables[137] = ceil(variables[0]);
     variables[138] = floor(variables[0]);
-    variables[139] = fmod(variables[0], variables[1]);
-    variables[140] = min(variables[0], variables[1]);
-    variables[141] = min(variables[0], variables[1], variables[2], variables[3], variables[4]);
-    variables[142] = max(variables[0], variables[1]);
-    variables[143] = max(variables[0], variables[1], variables[2], variables[3], variables[4]);
+    variables[139] = min(variables[0], variables[1]);
+    variables[140] = min(variables[0], variables[1], variables[2], variables[3], variables[4]);
+    variables[141] = max(variables[0], variables[1]);
+    variables[142] = max(variables[0], variables[1], variables[2], variables[3], variables[4]);
+    variables[143] = fmod(variables[0], variables[1]);
     variables[144] = sin(variables[0]);
     variables[145] = cos(variables[0]);
     variables[146] = tan(variables[0]);
