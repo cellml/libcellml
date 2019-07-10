@@ -2398,14 +2398,20 @@ std::string Generator::code() const
         }
     }
 
-    if (!body.empty()) {
-        body += "\n";
-    }
+    std::string otherBody;
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::TRUE_CONSTANT) {
-            body += mPimpl->generateEquationCode(equation);
+            otherBody += mPimpl->generateEquationCode(equation);
         }
+    }
+
+    if (!otherBody.empty()) {
+        if (!body.empty()) {
+            body += "\n";
+        }
+
+        body += otherBody;
     }
 
     if (!body.empty()) {
