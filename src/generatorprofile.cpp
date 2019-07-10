@@ -137,6 +137,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString = "rates";
     std::string mVariablesArrayString = "variables";
 
+    std::string mIndentString = "    ";
+
     std::string mOpenArrayString = "[";
     std::string mCloseArrayString = "]";
 
@@ -260,6 +262,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
+
+    mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
     mPimpl->mOpenArrayString = rhs.mPimpl->mOpenArrayString;
     mPimpl->mCloseArrayString = rhs.mPimpl->mCloseArrayString;
@@ -992,6 +996,16 @@ std::string GeneratorProfile::variablesArrayString() const
 void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
 {
     mPimpl->mVariablesArrayString = variablesArrayString;
+}
+
+std::string GeneratorProfile::indentString() const
+{
+    return mPimpl->mIndentString;
+}
+
+void GeneratorProfile::setIndentString(const std::string &indentString)
+{
+    mPimpl->mIndentString = indentString;
 }
 
 std::string GeneratorProfile::openArrayString() const
