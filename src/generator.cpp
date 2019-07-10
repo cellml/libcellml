@@ -119,7 +119,7 @@ struct GeneratorEquationAstImpl
 {
     enum struct Type
     {
-        // Relational operators
+        // Relational and logical operators
 
         EQ,
         EQEQ,
@@ -128,6 +128,10 @@ struct GeneratorEquationAstImpl
         LEQ,
         GT,
         GEQ,
+        AND,
+        OR,
+        XOR,
+        NOT,
 
         // Arithmetic operators
 
@@ -144,13 +148,6 @@ struct GeneratorEquationAstImpl
         CEILING,
         FLOOR,
         FACTORIAL,
-
-        // Logical operators
-
-        AND,
-        OR,
-        XOR,
-        NOT,
 
         // Calculus elements
 
@@ -682,7 +679,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast->mRight = astRight;
         }
 
-        // Relational operators
+        // Relational and logical operators
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
@@ -705,6 +702,14 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::GT, astParent);
     } else if (node->isMathmlElement("geq")) {
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::GEQ, astParent);
+    } else if (node->isMathmlElement("and")) {
+        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::AND, astParent);
+    } else if (node->isMathmlElement("or")) {
+        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::OR, astParent);
+    } else if (node->isMathmlElement("xor")) {
+        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::XOR, astParent);
+    } else if (node->isMathmlElement("not")) {
+        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::NOT, astParent);
 
         // Arithmetic operators
 
@@ -736,17 +741,6 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::FACTORIAL, astParent);
 
         mNeedFactorial = true;
-
-        // Logical operators
-
-    } else if (node->isMathmlElement("and")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::AND, astParent);
-    } else if (node->isMathmlElement("or")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::OR, astParent);
-    } else if (node->isMathmlElement("xor")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::XOR, astParent);
-    } else if (node->isMathmlElement("not")) {
-        ast = std::make_shared<GeneratorEquationAstImpl>(GeneratorEquationAstImpl::Type::NOT, astParent);
 
         // Calculus elements
 
@@ -1819,7 +1813,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
     std::string code;
 
     switch (ast->mType) {
-        // Relational operators
+        // Relational and logical operators
 
     case GeneratorEquationAstImpl::Type::EQ:
         code = generateOperatorCode(mProfile->eqString(), ast);
@@ -1847,6 +1841,26 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         break;
     case GeneratorEquationAstImpl::Type::GEQ:
         code = generateOperatorCode(mProfile->geqString(), ast);
+
+        break;
+    case GeneratorEquationAstImpl::Type::AND:
+        code = generateOperatorCode(mProfile->andString(), ast);
+
+        break;
+    case GeneratorEquationAstImpl::Type::OR:
+        code = generateOperatorCode(mProfile->orString(), ast);
+
+        break;
+    case GeneratorEquationAstImpl::Type::XOR:
+        if (mProfile->hasXorOperator()) {
+            code = generateOperatorCode(mProfile->xorString(), ast);
+        } else {
+            code = mProfile->xorString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
+        }
+
+        break;
+    case GeneratorEquationAstImpl::Type::NOT:
+        code = mProfile->notString() + generateCode(ast->mLeft);
 
         break;
 
@@ -1946,29 +1960,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
         break;
     case GeneratorEquationAstImpl::Type::FACTORIAL:
         code = mProfile->factorialString() + "(" + generateCode(ast->mLeft) + ")";
-
-        break;
-
-        // Logical operators
-
-    case GeneratorEquationAstImpl::Type::AND:
-        code = generateOperatorCode(mProfile->andString(), ast);
-
-        break;
-    case GeneratorEquationAstImpl::Type::OR:
-        code = generateOperatorCode(mProfile->orString(), ast);
-
-        break;
-    case GeneratorEquationAstImpl::Type::XOR:
-        if (mProfile->hasXorOperator()) {
-            code = generateOperatorCode(mProfile->xorString(), ast);
-        } else {
-            code = mProfile->xorString() + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
-        }
-
-        break;
-    case GeneratorEquationAstImpl::Type::NOT:
-        code = mProfile->notString() + generateCode(ast->mLeft);
 
         break;
 

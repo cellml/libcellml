@@ -29,7 +29,7 @@ namespace libcellml {
 
 struct GeneratorProfile::GeneratorProfileImpl
 {
-    // Relational operators
+    // Relational and logical operators
 
     std::string mEqString = " = ";
     std::string mEqEqString = " == ";
@@ -38,6 +38,13 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mLeqString = " <= ";
     std::string mGtString = " > ";
     std::string mGeqString = " >= ";
+    std::string mAndString = " && ";
+    std::string mOrString = " || ";
+    std::string mXorString = "^";
+    std::string mNotString = "!";
+
+    bool mHasXorOperator = true;
+
 
     // Arithmetic operators
 
@@ -57,15 +64,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mFactorialString = "fact";
 
     bool mHasPowerOperator = false;
-
-    // Logical operators
-
-    std::string mAndString = " && ";
-    std::string mOrString = " || ";
-    std::string mXorString = "^";
-    std::string mNotString = "!";
-
-    bool mHasXorOperator = true;
 
     // Min/max operators
 
@@ -186,7 +184,7 @@ GeneratorProfile::~GeneratorProfile()
 GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     : mPimpl(new GeneratorProfileImpl())
 {
-    // Relational operators
+    // Relational and logical operators
 
     mPimpl->mEqString = rhs.mPimpl->mEqString;
     mPimpl->mEqEqString = rhs.mPimpl->mEqEqString;
@@ -195,6 +193,12 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mLeqString = rhs.mPimpl->mLeqString;
     mPimpl->mGtString = rhs.mPimpl->mGtString;
     mPimpl->mGeqString = rhs.mPimpl->mGeqString;
+    mPimpl->mAndString = rhs.mPimpl->mAndString;
+    mPimpl->mOrString = rhs.mPimpl->mOrString;
+    mPimpl->mXorString = rhs.mPimpl->mXorString;
+    mPimpl->mNotString = rhs.mPimpl->mNotString;
+
+    mPimpl->mHasXorOperator = rhs.mPimpl->mHasXorOperator;
 
     // Arithmetic operators
 
@@ -214,15 +218,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mFactorialString = rhs.mPimpl->mFactorialString;
 
     mPimpl->mHasPowerOperator = rhs.mPimpl->mHasPowerOperator;
-
-    // Logical operators
-
-    mPimpl->mAndString = rhs.mPimpl->mAndString;
-    mPimpl->mOrString = rhs.mPimpl->mOrString;
-    mPimpl->mXorString = rhs.mPimpl->mXorString;
-    mPimpl->mNotString = rhs.mPimpl->mNotString;
-
-    mPimpl->mHasXorOperator = rhs.mPimpl->mHasXorOperator;
 
     // Min/max operators
 
