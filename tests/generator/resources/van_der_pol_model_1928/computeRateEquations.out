@@ -1,2 +1,0 @@
-rates[0] = states[1]*1.0;
-rates[1] = (variables[0]*(1.0-sqr(states[0]))*states[1]-states[0])*1.0;
