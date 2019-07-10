@@ -2316,6 +2316,102 @@ std::string Generator::code() const
         res += mPimpl->mProfile->maxFunctionString();
     }
 
+    if (mPimpl->mNeedSec) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->secFunctionString();
+    }
+
+    if (mPimpl->mNeedCsc) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->cscFunctionString();
+    }
+
+    if (mPimpl->mNeedCot) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->cotFunctionString();
+    }
+
+    if (mPimpl->mNeedSech) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->sechFunctionString();
+    }
+
+    if (mPimpl->mNeedCsch) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->cschFunctionString();
+    }
+
+    if (mPimpl->mNeedCoth) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->cothFunctionString();
+    }
+
+    if (mPimpl->mNeedAsec) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->asecFunctionString();
+    }
+
+    if (mPimpl->mNeedAcsc) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->acscFunctionString();
+    }
+
+    if (mPimpl->mNeedAcot) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->acotFunctionString();
+    }
+
+    if (mPimpl->mNeedAsech) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->asechFunctionString();
+    }
+
+    if (mPimpl->mNeedAcsch) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->acschFunctionString();
+    }
+
+    if (mPimpl->mNeedAcoth) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->acothFunctionString();
+    }
+
     // Generate code to initialise the model.
 
     std::string body;

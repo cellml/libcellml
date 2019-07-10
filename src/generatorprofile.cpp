@@ -125,6 +125,61 @@ struct GeneratorProfile::GeneratorProfileImpl
                                      "     return (x > y)?x:y;\n"
                                      "}\n";
 
+    std::string mSecFunctionString = "double sec(double x)\n"
+                                     "{\n"
+                                     "     return 1.0/cos(x);\n"
+                                     "}\n";
+    std::string mCscFunctionString = "double csc(double x)\n"
+                                     "{\n"
+                                     "     return 1.0/sin(x);\n"
+                                     "}\n";
+    std::string mCotFunctionString = "double cot(double x)\n"
+                                     "{\n"
+                                     "     return 1.0/tan(x);\n"
+                                     "}\n";
+    std::string mSechFunctionString = "double sech(double x)\n"
+                                      "{\n"
+                                      "     return 1.0/cosh(x);\n"
+                                      "}\n";
+    std::string mCschFunctionString = "double csch(double x)\n"
+                                      "{\n"
+                                      "     return 1.0/sinh(x);\n"
+                                      "}\n";
+    std::string mCothFunctionString = "double coth(double x)\n"
+                                      "{\n"
+                                      "     return 1.0/tanh(x);\n"
+                                      "}\n";
+    std::string mAsecFunctionString = "double asec(double x)\n"
+                                      "{\n"
+                                      "     return acos(1.0/x);\n"
+                                      "}\n";
+    std::string mAcscFunctionString = "double acsc(double x)\n"
+                                      "{\n"
+                                      "     return asin(1.0/x);\n"
+                                      "}\n";
+    std::string mAcotFunctionString = "double acot(double x)\n"
+                                      "{\n"
+                                      "     return atan(1.0/x);\n"
+                                      "}\n";
+    std::string mAsechFunctionString = "double asech(double x)\n"
+                                       "{\n"
+                                       "     double oneOverX = 1.0/x;"
+                                       ""
+                                       "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+                                       "}\n";
+    std::string mAcschFunctionString = "double acsch(double x)\n"
+                                       "{\n"
+                                       "     double oneOverX = 1.0/x;"
+                                       ""
+                                       "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+                                       "}\n";
+    std::string mAcothFunctionString = "double acoth(double x)\n"
+                                       "{\n"
+                                       "     double oneOverX = 1.0/x;"
+                                       ""
+                                       "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+                                       "}\n";
+
     // Miscellaneous
 
     std::string mVariableOfIntegrationString = "voi";
@@ -252,6 +307,19 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mMinFunctionString = rhs.mPimpl->mMinFunctionString;
     mPimpl->mMaxFunctionString = rhs.mPimpl->mMaxFunctionString;
+
+    mPimpl->mSecFunctionString = rhs.mPimpl->mSecFunctionString;
+    mPimpl->mCscFunctionString = rhs.mPimpl->mCscFunctionString;
+    mPimpl->mCotFunctionString = rhs.mPimpl->mCotFunctionString;
+    mPimpl->mSechFunctionString = rhs.mPimpl->mSechFunctionString;
+    mPimpl->mCschFunctionString = rhs.mPimpl->mCschFunctionString;
+    mPimpl->mCothFunctionString = rhs.mPimpl->mCothFunctionString;
+    mPimpl->mAsecFunctionString = rhs.mPimpl->mAsecFunctionString;
+    mPimpl->mAcscFunctionString = rhs.mPimpl->mAcscFunctionString;
+    mPimpl->mAcotFunctionString = rhs.mPimpl->mAcotFunctionString;
+    mPimpl->mAsechFunctionString = rhs.mPimpl->mAsechFunctionString;
+    mPimpl->mAcschFunctionString = rhs.mPimpl->mAcschFunctionString;
+    mPimpl->mAcothFunctionString = rhs.mPimpl->mAcothFunctionString;
 
     // Miscellaneous
 
@@ -956,6 +1024,126 @@ std::string GeneratorProfile::maxFunctionString() const
 void GeneratorProfile::setMaxFunctionString(const std::string &maxFunctionString)
 {
     mPimpl->mMaxFunctionString = maxFunctionString;
+}
+
+std::string GeneratorProfile::secFunctionString() const
+{
+    return mPimpl->mSecFunctionString;
+}
+
+void GeneratorProfile::setSecFunctionString(const std::string &secFunctionString)
+{
+    mPimpl->mSecFunctionString = secFunctionString;
+}
+
+std::string GeneratorProfile::cscFunctionString() const
+{
+    return mPimpl->mCscFunctionString;
+}
+
+void GeneratorProfile::setCscFunctionString(const std::string &cscFunctionString)
+{
+    mPimpl->mCscFunctionString = cscFunctionString;
+}
+
+std::string GeneratorProfile::cotFunctionString() const
+{
+    return mPimpl->mCotFunctionString;
+}
+
+void GeneratorProfile::setCotFunctionString(const std::string &cotFunctionString)
+{
+    mPimpl->mCotFunctionString = cotFunctionString;
+}
+
+std::string GeneratorProfile::sechFunctionString() const
+{
+    return mPimpl->mSechFunctionString;
+}
+
+void GeneratorProfile::setSechFunctionString(const std::string &sechFunctionString)
+{
+    mPimpl->mSechFunctionString = sechFunctionString;
+}
+
+std::string GeneratorProfile::cschFunctionString() const
+{
+    return mPimpl->mCschFunctionString;
+}
+
+void GeneratorProfile::setCschFunctionString(const std::string &cschFunctionString)
+{
+    mPimpl->mCschFunctionString = cschFunctionString;
+}
+
+std::string GeneratorProfile::cothFunctionString() const
+{
+    return mPimpl->mCothFunctionString;
+}
+
+void GeneratorProfile::setCothFunctionString(const std::string &cothFunctionString)
+{
+    mPimpl->mCothFunctionString = cothFunctionString;
+}
+
+std::string GeneratorProfile::asecFunctionString() const
+{
+    return mPimpl->mAsecFunctionString;
+}
+
+void GeneratorProfile::setAsecFunctionString(const std::string &asecFunctionString)
+{
+    mPimpl->mAsecFunctionString = asecFunctionString;
+}
+
+std::string GeneratorProfile::acscFunctionString() const
+{
+    return mPimpl->mAcscFunctionString;
+}
+
+void GeneratorProfile::setAcscFunctionString(const std::string &acscFunctionString)
+{
+    mPimpl->mAcscFunctionString = acscFunctionString;
+}
+
+std::string GeneratorProfile::acotFunctionString() const
+{
+    return mPimpl->mAcotFunctionString;
+}
+
+void GeneratorProfile::setAcotFunctionString(const std::string &acotFunctionString)
+{
+    mPimpl->mAcotFunctionString = acotFunctionString;
+}
+
+std::string GeneratorProfile::asechFunctionString() const
+{
+    return mPimpl->mAsechFunctionString;
+}
+
+void GeneratorProfile::setAsechFunctionString(const std::string &asechFunctionString)
+{
+    mPimpl->mAsechFunctionString = asechFunctionString;
+}
+
+std::string GeneratorProfile::acschFunctionString() const
+{
+    return mPimpl->mAcschFunctionString;
+}
+
+void GeneratorProfile::setAcschFunctionString(const std::string &acschFunctionString)
+{
+    mPimpl->mAcschFunctionString = acschFunctionString;
+}
+
+std::string GeneratorProfile::acothFunctionString() const
+{
+    return mPimpl->mAcothFunctionString;
+}
+
+void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionString)
+{
+    mPimpl->mAcothFunctionString = acothFunctionString;
 }
 
 std::string GeneratorProfile::variableOfIntegrationString() const
