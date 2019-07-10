@@ -139,16 +139,16 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("void initializeModel(double *states, double *variables)\n", generatorProfile->beginInitializeModelMethodString());
+    EXPECT_EQ("void initializeModel(double *states, double *variables)\n{\n", generatorProfile->beginInitializeModelMethodString());
     EXPECT_EQ("}\n", generatorProfile->endInitializeModelMethodString());
 
-    EXPECT_EQ("void computeConstantEquations(double *variables)\n", generatorProfile->beginComputeConstantEquationsMethodString());
+    EXPECT_EQ("void computeConstantEquations(double *variables)\n{\n", generatorProfile->beginComputeConstantEquationsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeConstantEquationsMethodString());
 
-    EXPECT_EQ("void computeRateEquations(double *states, double *rates, double *variables)\n", generatorProfile->beginComputeRateEquationsMethodString());
+    EXPECT_EQ("void computeRateEquations(double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeRateEquationsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeRateEquationsMethodString());
 
-    EXPECT_EQ("void computeAlgebraicEquations(double *states, double *rates, double *variables)\n", generatorProfile->beginComputeAlgebraicEquationsMethodString());
+    EXPECT_EQ("void computeAlgebraicEquations(double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeAlgebraicEquationsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeAlgebraicEquationsMethodString());
 
     EXPECT_EQ("    ", generatorProfile->indentString());
