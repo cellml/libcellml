@@ -511,16 +511,16 @@ struct Generator::GeneratorImpl
     void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstImplPtr &ast) const;
+    bool isLogicalOperator(const GeneratorEquationAstImplPtr &ast) const;
+    bool isAndOperator(const GeneratorEquationAstImplPtr &ast) const;
+    bool isOrOperator(const GeneratorEquationAstImplPtr &ast) const;
+    bool isXorOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isPlusOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isMinusOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isTimesOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isDivideOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isPowerOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isRootOperator(const GeneratorEquationAstImplPtr &ast) const;
-    bool isLogicalOrBitwiseOperator(const GeneratorEquationAstImplPtr &ast) const;
-    bool isAndOperator(const GeneratorEquationAstImplPtr &ast) const;
-    bool isOrOperator(const GeneratorEquationAstImplPtr &ast) const;
-    bool isXorOperator(const GeneratorEquationAstImplPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstImplPtr &ast) const;
 
     std::string generateDouble(const std::string &value);
@@ -1339,6 +1339,32 @@ bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstIm
            || (ast->mType == GeneratorEquationAstImpl::Type::GEQ);
 }
 
+bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstImplPtr &ast) const
+{
+    // Note: GeneratorEquationAstImpl::Type::NOT is a unary logical operator,
+    //       hence we don't include it here since this method is only used to
+    //       determine whether parentheses should be added around some code.
+
+    return (ast->mType == GeneratorEquationAstImpl::Type::AND)
+           || (ast->mType == GeneratorEquationAstImpl::Type::OR)
+           || (ast->mType == GeneratorEquationAstImpl::Type::XOR);
+}
+
+bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstImplPtr &ast) const
+{
+    return ast->mType == GeneratorEquationAstImpl::Type::AND;
+}
+
+bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstImplPtr &ast) const
+{
+    return ast->mType == GeneratorEquationAstImpl::Type::OR;
+}
+
+bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstImplPtr &ast) const
+{
+    return ast->mType == GeneratorEquationAstImpl::Type::XOR;
+}
+
 bool Generator::GeneratorImpl::isPlusOperator(const GeneratorEquationAstImplPtr &ast) const
 {
     return ast->mType == GeneratorEquationAstImpl::Type::PLUS;
@@ -1367,32 +1393,6 @@ bool Generator::GeneratorImpl::isPowerOperator(const GeneratorEquationAstImplPtr
 bool Generator::GeneratorImpl::isRootOperator(const GeneratorEquationAstImplPtr &ast) const
 {
     return ast->mType == GeneratorEquationAstImpl::Type::ROOT;
-}
-
-bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstImplPtr &ast) const
-{
-    return ast->mType == GeneratorEquationAstImpl::Type::AND;
-}
-
-bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstImplPtr &ast) const
-{
-    return ast->mType == GeneratorEquationAstImpl::Type::OR;
-}
-
-bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstImplPtr &ast) const
-{
-    return ast->mType == GeneratorEquationAstImpl::Type::XOR;
-}
-
-bool Generator::GeneratorImpl::isLogicalOrBitwiseOperator(const GeneratorEquationAstImplPtr &ast) const
-{
-    // Note: GeneratorEquationAstImpl::Type::NOT is a unary logical operator,
-    //       hence we don't include it here since this method is only used to
-    //       determine whether parentheses should be added around some code.
-
-    return (ast->mType == GeneratorEquationAstImpl::Type::AND)
-           || (ast->mType == GeneratorEquationAstImpl::Type::OR)
-           || (ast->mType == GeneratorEquationAstImpl::Type::XOR);
 }
 
 bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstImplPtr &ast) const
@@ -1466,26 +1466,26 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
 
     if (isPlusOperator(ast)) {
         if (isRelationalOperator(ast->mLeft)
-            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isLogicalOperator(ast->mLeft)
             || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         }
 
         if (isRelationalOperator(ast->mRight)
-            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isLogicalOperator(ast->mRight)
             || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
         }
     } else if (isMinusOperator(ast)) {
         if (isRelationalOperator(ast->mLeft)
-            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isLogicalOperator(ast->mLeft)
             || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         }
 
         if (isRelationalOperator(ast->mRight)
+            || isLogicalOperator(ast->mRight)
             || isMinusOperator(ast->mRight)
-            || isLogicalOrBitwiseOperator(ast->mRight)
             || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
         } else if (isPlusOperator(ast->mRight)) {
@@ -1495,7 +1495,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isTimesOperator(ast)) {
         if (isRelationalOperator(ast->mLeft)
-            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isLogicalOperator(ast->mLeft)
             || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         } else if (isPlusOperator(ast->mLeft)
@@ -1506,7 +1506,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (isRelationalOperator(ast->mRight)
-            || isLogicalOrBitwiseOperator(ast->mRight)
+            || isLogicalOperator(ast->mRight)
             || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
         } else if (isPlusOperator(ast->mRight)
@@ -1517,7 +1517,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isDivideOperator(ast)) {
         if (isRelationalOperator(ast->mLeft)
-            || isLogicalOrBitwiseOperator(ast->mLeft)
+            || isLogicalOperator(ast->mLeft)
             || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         } else if (isPlusOperator(ast->mLeft)
@@ -1528,9 +1528,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (isRelationalOperator(ast->mRight)
+            || isLogicalOperator(ast->mRight)
             || isTimesOperator(ast->mRight)
             || isDivideOperator(ast->mRight)
-            || isLogicalOrBitwiseOperator(ast->mRight)
             || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
         } else if (isPlusOperator(ast->mRight)
@@ -1676,10 +1676,10 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isPowerOperator(ast)) {
         if (isRelationalOperator(ast->mLeft)
+            || isLogicalOperator(ast->mLeft)
             || isMinusOperator(ast->mLeft)
             || isTimesOperator(ast->mLeft)
             || isDivideOperator(ast->mLeft)
-            || isLogicalOrBitwiseOperator(ast->mLeft)
             || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         } else if (isPlusOperator(ast->mLeft)) {
@@ -1689,12 +1689,12 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (isRelationalOperator(ast->mRight)
+            || isLogicalOperator(ast->mRight)
             || isMinusOperator(ast->mLeft)
             || isTimesOperator(ast->mRight)
             || isDivideOperator(ast->mRight)
             || isPowerOperator(ast->mRight)
             || isRootOperator(ast->mRight)
-            || isLogicalOrBitwiseOperator(ast->mRight)
             || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
         } else if (isPlusOperator(ast->mRight)) {
@@ -1704,10 +1704,10 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
     } else if (isRootOperator(ast)) {
         if (isRelationalOperator(ast->mRight)
+            || isLogicalOperator(ast->mRight)
             || isMinusOperator(ast->mRight)
             || isTimesOperator(ast->mRight)
             || isDivideOperator(ast->mRight)
-            || isLogicalOrBitwiseOperator(ast->mRight)
             || isPiecewiseStatement(ast->mRight)) {
             right = "(" + right + ")";
         } else if (isPlusOperator(ast->mRight)) {
@@ -1717,12 +1717,12 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
         }
 
         if (isRelationalOperator(ast->mLeft)
+            || isLogicalOperator(ast->mLeft)
             || isMinusOperator(ast->mLeft)
             || isTimesOperator(ast->mLeft)
             || isDivideOperator(ast->mLeft)
             || isPowerOperator(ast->mLeft)
             || isRootOperator(ast->mLeft)
-            || isLogicalOrBitwiseOperator(ast->mLeft)
             || isPiecewiseStatement(ast->mLeft)) {
             left = "(" + left + ")";
         } else if (isPlusOperator(ast->mLeft)) {
@@ -1746,9 +1746,9 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
     // Determine whether parentheses should be added around the left code.
 
     if (isRelationalOperator(ast->mLeft)
+        || isLogicalOperator(ast->mLeft)
         || isPlusOperator(ast->mLeft)
         || isMinusOperator(ast->mLeft)
-        || isLogicalOrBitwiseOperator(ast->mLeft)
         || isPiecewiseStatement(ast->mLeft)) {
         left = "(" + left + ")";
     }

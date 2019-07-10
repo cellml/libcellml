@@ -169,6 +169,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     const std::string value = "value";
+    const bool falseValue = true;
 
     generatorProfile->setEqString(value);
     generatorProfile->setEqEqString(value);
@@ -182,6 +183,8 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     generatorProfile->setXorString(value);
     generatorProfile->setNotString(value);
 
+    generatorProfile->setHasXorOperator(falseValue);
+
     EXPECT_EQ(value, generatorProfile->eqString());
     EXPECT_EQ(value, generatorProfile->eqEqString());
     EXPECT_EQ(value, generatorProfile->neqString());
@@ -193,6 +196,8 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     EXPECT_EQ(value, generatorProfile->orString());
     EXPECT_EQ(value, generatorProfile->xorString());
     EXPECT_EQ(value, generatorProfile->notString());
+
+    EXPECT_EQ(falseValue, generatorProfile->hasXorOperator());
 }
 
 TEST(GeneratorProfile, arithmeticOperators)
@@ -201,7 +206,6 @@ TEST(GeneratorProfile, arithmeticOperators)
 
     const std::string value = "value";
     const bool trueValue = true;
-    const bool falseValue = true;
 
     generatorProfile->setPlusString(value);
     generatorProfile->setMinusString(value);
@@ -218,7 +222,6 @@ TEST(GeneratorProfile, arithmeticOperators)
     generatorProfile->setFloorString(value);
 
     generatorProfile->setHasPowerOperator(trueValue);
-    generatorProfile->setHasXorOperator(falseValue);
 
     EXPECT_EQ(value, generatorProfile->plusString());
     EXPECT_EQ(value, generatorProfile->minusString());
@@ -235,7 +238,6 @@ TEST(GeneratorProfile, arithmeticOperators)
     EXPECT_EQ(value, generatorProfile->floorString());
 
     EXPECT_EQ(trueValue, generatorProfile->hasPowerOperator());
-    EXPECT_EQ(falseValue, generatorProfile->hasXorOperator());
 }
 
 TEST(GeneratorProfile, minMaxOperators)

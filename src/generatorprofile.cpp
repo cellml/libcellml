@@ -45,7 +45,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     bool mHasXorOperator = true;
 
-
     // Arithmetic operators
 
     std::string mPlusString = "+";
@@ -381,6 +380,56 @@ void GeneratorProfile::setGeqString(const std::string &geqString)
     mPimpl->mGeqString = geqString;
 }
 
+std::string GeneratorProfile::andString() const
+{
+    return mPimpl->mAndString;
+}
+
+void GeneratorProfile::setAndString(const std::string &andString)
+{
+    mPimpl->mAndString = andString;
+}
+
+std::string GeneratorProfile::orString() const
+{
+    return mPimpl->mOrString;
+}
+
+void GeneratorProfile::setOrString(const std::string &orString)
+{
+    mPimpl->mOrString = orString;
+}
+
+std::string GeneratorProfile::xorString() const
+{
+    return mPimpl->mXorString;
+}
+
+void GeneratorProfile::setXorString(const std::string &xorString)
+{
+    mPimpl->mXorString = xorString;
+}
+
+std::string GeneratorProfile::notString() const
+{
+    return mPimpl->mNotString;
+}
+
+void GeneratorProfile::setNotString(const std::string &notString)
+{
+    mPimpl->mNotString = notString;
+}
+
+bool GeneratorProfile::hasXorOperator() const
+{
+    return mPimpl->mHasXorOperator;
+}
+
+void GeneratorProfile::setHasXorOperator(bool hasXorOperator)
+{
+    mPimpl->mHasXorOperator = hasXorOperator;
+}
+
 std::string GeneratorProfile::plusString() const
 {
     return mPimpl->mPlusString;
@@ -519,56 +568,6 @@ bool GeneratorProfile::hasPowerOperator() const
 void GeneratorProfile::setHasPowerOperator(bool hasPowerOperator)
 {
     mPimpl->mHasPowerOperator = hasPowerOperator;
-}
-
-std::string GeneratorProfile::andString() const
-{
-    return mPimpl->mAndString;
-}
-
-void GeneratorProfile::setAndString(const std::string &andString)
-{
-    mPimpl->mAndString = andString;
-}
-
-std::string GeneratorProfile::orString() const
-{
-    return mPimpl->mOrString;
-}
-
-void GeneratorProfile::setOrString(const std::string &orString)
-{
-    mPimpl->mOrString = orString;
-}
-
-std::string GeneratorProfile::xorString() const
-{
-    return mPimpl->mXorString;
-}
-
-void GeneratorProfile::setXorString(const std::string &xorString)
-{
-    mPimpl->mXorString = xorString;
-}
-
-std::string GeneratorProfile::notString() const
-{
-    return mPimpl->mNotString;
-}
-
-void GeneratorProfile::setNotString(const std::string &notString)
-{
-    mPimpl->mNotString = notString;
-}
-
-bool GeneratorProfile::hasXorOperator() const
-{
-    return mPimpl->mHasXorOperator;
-}
-
-void GeneratorProfile::setHasXorOperator(bool hasXorOperator)
-{
-    mPimpl->mHasXorOperator = hasXorOperator;
 }
 
 std::string GeneratorProfile::minString() const
