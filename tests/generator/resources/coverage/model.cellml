@@ -138,11 +138,11 @@
         <variable name="eqnLogCi" units="dimensionless"/>
         <variable name="eqnCeiling" units="dimensionless"/>
         <variable name="eqnFloor" units="dimensionless"/>
-        <variable name="eqnRem" units="dimensionless"/>
         <variable name="eqnMin" units="dimensionless"/>
         <variable name="eqnMinMultiple" units="dimensionless"/>
         <variable name="eqnMax" units="dimensionless"/>
         <variable name="eqnMaxMultiple" units="dimensionless"/>
+        <variable name="eqnRem" units="dimensionless"/>
         <variable name="eqnSin" units="dimensionless"/>
         <variable name="eqnCos" units="dimensionless"/>
         <variable name="eqnTan" units="dimensionless"/>
@@ -2127,15 +2127,6 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnRem</ci>
-                <apply>
-                    <rem/>
-                    <ci>m</ci>
-                    <ci>n</ci>
-                </apply>
-            </apply>
-            <apply>
-                <eq/>
                 <ci>eqnMin</ci>
                 <apply>
                     <min/>
@@ -2174,6 +2165,15 @@
                     <ci>o</ci>
                     <ci>p</ci>
                     <ci>q</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnRem</ci>
+                <apply>
+                    <rem/>
+                    <ci>m</ci>
+                    <ci>n</ci>
                 </apply>
             </apply>
             <apply>

@@ -60,14 +60,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCommonLogarithmString = "log10";
     std::string mCeilingString = "ceil";
     std::string mFloorString = "floor";
+    std::string mMinString = "min";
+    std::string mMaxString = "max";
     std::string mRemString = "fmod";
 
     bool mHasPowerOperator = false;
-
-    // Min/max operators
-
-    std::string mMinString = "min";
-    std::string mMaxString = "max";
 
     // Trigonometric operators
 
@@ -200,14 +197,11 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mCommonLogarithmString = rhs.mPimpl->mCommonLogarithmString;
     mPimpl->mCeilingString = rhs.mPimpl->mCeilingString;
     mPimpl->mFloorString = rhs.mPimpl->mFloorString;
+    mPimpl->mMinString = rhs.mPimpl->mMinString;
+    mPimpl->mMaxString = rhs.mPimpl->mMaxString;
     mPimpl->mRemString = rhs.mPimpl->mRemString;
 
     mPimpl->mHasPowerOperator = rhs.mPimpl->mHasPowerOperator;
-
-    // Min/max operators
-
-    mPimpl->mMinString = rhs.mPimpl->mMinString;
-    mPimpl->mMaxString = rhs.mPimpl->mMaxString;
 
     // Trigonometric operators
 
@@ -554,26 +548,6 @@ void GeneratorProfile::setFloorString(const std::string &floorString)
     mPimpl->mFloorString = floorString;
 }
 
-std::string GeneratorProfile::remString() const
-{
-    return mPimpl->mRemString;
-}
-
-void GeneratorProfile::setRemString(const std::string &remString)
-{
-    mPimpl->mRemString = remString;
-}
-
-bool GeneratorProfile::hasPowerOperator() const
-{
-    return mPimpl->mHasPowerOperator;
-}
-
-void GeneratorProfile::setHasPowerOperator(bool hasPowerOperator)
-{
-    mPimpl->mHasPowerOperator = hasPowerOperator;
-}
-
 std::string GeneratorProfile::minString() const
 {
     return mPimpl->mMinString;
@@ -592,6 +566,26 @@ std::string GeneratorProfile::maxString() const
 void GeneratorProfile::setMaxString(const std::string &maxString)
 {
     mPimpl->mMaxString = maxString;
+}
+
+std::string GeneratorProfile::remString() const
+{
+    return mPimpl->mRemString;
+}
+
+void GeneratorProfile::setRemString(const std::string &remString)
+{
+    mPimpl->mRemString = remString;
+}
+
+bool GeneratorProfile::hasPowerOperator() const
+{
+    return mPimpl->mHasPowerOperator;
+}
+
+void GeneratorProfile::setHasPowerOperator(bool hasPowerOperator)
+{
+    mPimpl->mHasPowerOperator = hasPowerOperator;
 }
 
 std::string GeneratorProfile::sinString() const

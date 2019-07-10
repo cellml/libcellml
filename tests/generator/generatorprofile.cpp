@@ -68,14 +68,11 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("log10", generatorProfile->commonLogarithmString());
     EXPECT_EQ("ceil", generatorProfile->ceilingString());
     EXPECT_EQ("floor", generatorProfile->floorString());
+    EXPECT_EQ("min", generatorProfile->minString());
+    EXPECT_EQ("max", generatorProfile->maxString());
     EXPECT_EQ("fmod", generatorProfile->remString());
 
     EXPECT_EQ(false, generatorProfile->hasPowerOperator());
-
-    // Min/max operators
-
-    EXPECT_EQ("min", generatorProfile->minString());
-    EXPECT_EQ("max", generatorProfile->maxString());
 
     // Trigonometric operators
 
@@ -217,6 +214,8 @@ TEST(GeneratorProfile, arithmeticOperators)
     generatorProfile->setCommonLogarithmString(value);
     generatorProfile->setCeilingString(value);
     generatorProfile->setFloorString(value);
+    generatorProfile->setMinString(value);
+    generatorProfile->setMaxString(value);
     generatorProfile->setRemString(value);
 
     generatorProfile->setHasPowerOperator(trueValue);
@@ -234,22 +233,11 @@ TEST(GeneratorProfile, arithmeticOperators)
     EXPECT_EQ(value, generatorProfile->commonLogarithmString());
     EXPECT_EQ(value, generatorProfile->ceilingString());
     EXPECT_EQ(value, generatorProfile->floorString());
+    EXPECT_EQ(value, generatorProfile->minString());
+    EXPECT_EQ(value, generatorProfile->maxString());
     EXPECT_EQ(value, generatorProfile->remString());
 
     EXPECT_EQ(trueValue, generatorProfile->hasPowerOperator());
-}
-
-TEST(GeneratorProfile, minMaxOperators)
-{
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
-
-    const std::string value = "value";
-
-    generatorProfile->setMinString(value);
-    generatorProfile->setMaxString(value);
-
-    EXPECT_EQ(value, generatorProfile->minString());
-    EXPECT_EQ(value, generatorProfile->maxString());
 }
 
 TEST(GeneratorProfile, trigonometricOperators)
