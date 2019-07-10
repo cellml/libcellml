@@ -778,8 +778,9 @@ TEST(Generator, cellml_mappings_and_encapsulations)
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/cellml_mappings_and_encapsulations/model.cellml"));
 
-    //ISSUE359: the parser wrongly reports an error with the model, hence we
-    //          "expect" one parsing error...
+    //TODO: currently, the parser wrongly reports an error with our model, hence
+    //      we "expect" one parsing error. Clearly, no parsing error should be
+    //      reported once issue #377 has been addressed.
     EXPECT_EQ(size_t(1), parser.errorCount());
 
     libcellml::Generator generator;
