@@ -37,3 +37,7 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14]);
     rates[3] = -(-variables[5]+variables[9]+variables[15]+variables[7])/variables[1];
 }
+
+void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+{
+}

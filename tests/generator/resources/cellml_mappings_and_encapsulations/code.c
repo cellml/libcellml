@@ -6,6 +6,10 @@ void initializeModel(double *states, double *variables)
     states[1] = 1.0;
 }
 
+void computeConstantEquations(double *variables)
+{
+}
+
 void computeRateEquations(double voi, double *states, double *rates, double *variables)
 {
     rates[0] = -states[1]*1.0;

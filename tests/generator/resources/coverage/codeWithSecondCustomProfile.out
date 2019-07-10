@@ -266,3 +266,7 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
 {
     rates[0] = 1.0;
 }
+
+void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+{
+}
