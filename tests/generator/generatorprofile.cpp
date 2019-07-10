@@ -138,6 +138,15 @@ TEST(GeneratorProfile, defaultValues)
               "     return tgamma(x+1.0);\n"
               "}\n", generatorProfile->factorialFunctionString());
 
+    EXPECT_EQ("double min(double x, double y)\n"
+              "{\n"
+              "     return (x < y)?x:y;\n"
+              "}\n", generatorProfile->minFunctionString());
+    EXPECT_EQ("double max(double x, double y)\n"
+              "{\n"
+              "     return (x > y)?x:y;\n"
+              "}\n", generatorProfile->maxFunctionString());
+
     // Miscellaneous
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
@@ -392,7 +401,13 @@ TEST(GeneratorProfile, specialMathematicalFunctions)
 
     generatorProfile->setFactorialFunctionString(value);
 
+    generatorProfile->setMinFunctionString(value);
+    generatorProfile->setMaxFunctionString(value);
+
     EXPECT_EQ(value, generatorProfile->factorialFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->minFunctionString());
+    EXPECT_EQ(value, generatorProfile->maxFunctionString());
 }
 
 TEST(GeneratorProfile, miscellaneous)

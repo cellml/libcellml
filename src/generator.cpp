@@ -2394,6 +2394,22 @@ std::string Generator::code() const
         res += mPimpl->mProfile->factorialFunctionString();
     }
 
+    if (mPimpl->mNeedMin) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->minFunctionString();
+    }
+
+    if (mPimpl->mNeedMax) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->maxFunctionString();
+    }
+
     // Generate code to initialise the model.
 
     std::string body;

@@ -135,6 +135,14 @@ struct GeneratorProfile::GeneratorProfileImpl
                                            "{\n"
                                            "     return tgamma(x+1.0);\n"
                                            "}\n";
+    std::string mMinFunctionString = "double min(double x, double y)\n"
+                                     "{\n"
+                                     "     return (x < y)?x:y;\n"
+                                     "}\n";
+    std::string mMaxFunctionString = "double max(double x, double y)\n"
+                                     "{\n"
+                                     "     return (x > y)?x:y;\n"
+                                     "}\n";
 
     // Miscellaneous
 
@@ -277,6 +285,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     // "Special" mathematical functions
 
     mPimpl->mFactorialFunctionString = rhs.mPimpl->mFactorialFunctionString;
+
+    mPimpl->mMinFunctionString = rhs.mPimpl->mMinFunctionString;
+    mPimpl->mMaxFunctionString = rhs.mPimpl->mMaxFunctionString;
 
     // Miscellaneous
 
@@ -1001,6 +1012,26 @@ std::string GeneratorProfile::factorialFunctionString() const
 void GeneratorProfile::setFactorialFunctionString(const std::string &factorialFunctionString)
 {
     mPimpl->mFactorialFunctionString = factorialFunctionString;
+}
+
+std::string GeneratorProfile::minFunctionString() const
+{
+    return mPimpl->mMinFunctionString;
+}
+
+void GeneratorProfile::setMinFunctionString(const std::string &minFunctionString)
+{
+    mPimpl->mMinFunctionString = minFunctionString;
+}
+
+std::string GeneratorProfile::maxFunctionString() const
+{
+    return mPimpl->mMaxFunctionString;
+}
+
+void GeneratorProfile::setMaxFunctionString(const std::string &maxFunctionString)
+{
+    mPimpl->mMaxFunctionString = maxFunctionString;
 }
 
 std::string GeneratorProfile::variableOfIntegrationString() const
