@@ -721,32 +721,6 @@ TEST(Generator, noble_model_1962)
     EXPECT_EQ(fileContents("generator/resources/noble_model_1962/code.c"), generator.code());
 }
 
-TEST(Generator, van_der_pol_model_1928)
-{
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/van_der_pol_model_1928/model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser.errorCount());
-
-    libcellml::Generator generator;
-
-    generator.processModel(model);
-
-    EXPECT_EQ(size_t(0), generator.errorCount());
-
-    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
-
-    EXPECT_EQ(size_t(2), generator.stateCount());
-    EXPECT_EQ(size_t(1), generator.variableCount());
-
-    EXPECT_EQ(fileContents("generator/resources/van_der_pol_model_1928/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/van_der_pol_model_1928/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
-}
-
 TEST(Generator, coverage)
 {
     libcellml::Parser parser;
