@@ -265,6 +265,12 @@ public:
     std::string variablesArrayString() const;
     void setVariablesArrayString(const std::string &variablesArrayString);
 
+    std::string openArrayString() const;
+    void setOpenArrayString(const std::string &openArrayString);
+
+    std::string closeArrayString() const;
+    void setCloseArrayString(const std::string &closeArrayString);
+
     std::string commandSeparatorString() const;
     void setCommandSeparatorString(const std::string &commandSeparatorString);
 
