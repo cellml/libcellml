@@ -495,7 +495,7 @@ struct Generator::GeneratorImpl
 
     VariablePtr mVariableOfIntegration;
 
-    std::list<GeneratorVariablePrivPtr> mVariables;
+    std::list<GeneratorVariablePrivPtr> mInternalVariables;
     std::list<GeneratorEquationPrivPtr> mEquations;
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
@@ -623,21 +623,21 @@ GeneratorVariablePrivPtr Generator::GeneratorImpl::generatorVariable(const Varia
     // Find and return, if there is one, the generator variable associated with
     // the given variable.
 
-    for (const auto &generatorVariable : mVariables) {
-        if ((variable == generatorVariable->mVariable)
-            || variable->hasEquivalentVariable(generatorVariable->mVariable)) {
-            return generatorVariable;
+    for (const auto &internalVariable : mInternalVariables) {
+        if ((variable == internalVariable->mVariable)
+            || variable->hasEquivalentVariable(internalVariable->mVariable)) {
+            return internalVariable;
         }
     }
 
     // No generator variable exists for the given variable, so create one, track
     // it and return it.
 
-    GeneratorVariablePrivPtr generatorVariable = std::make_shared<GeneratorVariablePriv>(variable);
+    GeneratorVariablePrivPtr internalVariable = std::make_shared<GeneratorVariablePriv>(variable);
 
-    mVariables.push_back(generatorVariable);
+    mInternalVariables.push_back(internalVariable);
 
-    return generatorVariable;
+    return internalVariable;
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
@@ -1198,7 +1198,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     mVariableOfIntegration = nullptr;
 
-    mVariables.clear();
+    mInternalVariables.clear();
     mEquations.clear();
 
     mNeedMin = false;
@@ -1238,13 +1238,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // determined using a given equation.
 
     if (mGenerator->errorCount() == 0) {
-        mVariables.sort(compareVariablesByName);
+        mInternalVariables.sort(compareVariablesByName);
 
         size_t variableIndex = MAX_SIZE_T;
 
-        for (const auto &variable : mVariables) {
-            if (variable->mType == GeneratorVariablePriv::Type::CONSTANT) {
-                variable->mIndex = ++variableIndex;
+        for (const auto &internalVariable : mInternalVariables) {
+            if (internalVariable->mType == GeneratorVariablePriv::Type::CONSTANT) {
+                internalVariable->mIndex = ++variableIndex;
             }
         }
 
@@ -1269,10 +1269,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // Make sure that all our variables are valid.
 
     if (mGenerator->errorCount() == 0) {
-        for (const auto &variable : mVariables) {
+        for (const auto &internalVariable : mInternalVariables) {
             std::string errorType;
 
-            switch (variable->mType) {
+            switch (internalVariable->mType) {
             case GeneratorVariablePriv::Type::UNKNOWN:
                 errorType = "is not computed";
 
@@ -1296,7 +1296,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
             if (!errorType.empty()) {
                 ErrorPtr err = std::make_shared<Error>();
-                VariablePtr realVariable = variable->mVariable;
+                VariablePtr realVariable = internalVariable->mVariable;
                 ComponentPtr realComponent = realVariable->parentComponent();
                 ModelPtr realModel = realComponent->parentModel();
 
@@ -1314,15 +1314,15 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // being invalid
 
     if (mModelType != Generator::ModelType::INVALID) {
-        bool hasUnderconstrainedVariables = std::find_if(mVariables.begin(), mVariables.end(), [](const GeneratorVariablePrivPtr &variable) {
+        bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorVariablePrivPtr &variable) {
                                                 return (variable->mType == GeneratorVariablePriv::Type::UNKNOWN)
                                                        || (variable->mType == GeneratorVariablePriv::Type::SHOULD_BE_STATE);
                                             })
-                                            != std::end(mVariables);
-        bool hasOverconstrainedVariables = std::find_if(mVariables.begin(), mVariables.end(), [](const GeneratorVariablePrivPtr &variable) {
+                                            != std::end(mInternalVariables);
+        bool hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorVariablePrivPtr &variable) {
                                                return variable->mType == GeneratorVariablePriv::Type::OVERCONSTRAINED;
                                            })
-                                           != std::end(mVariables);
+                                           != std::end(mInternalVariables);
 
         if (hasUnderconstrainedVariables) {
             if (hasOverconstrainedVariables) {
@@ -1334,7 +1334,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             mModelType = Generator::ModelType::OVERCONSTRAINED;
         } else if (mVariableOfIntegration != nullptr) {
             mModelType = Generator::ModelType::ODE;
-        } else if (!mVariables.empty()) {
+        } else if (!mInternalVariables.empty()) {
             mModelType = Generator::ModelType::ALGEBRAIC;
         }
     }
@@ -1344,7 +1344,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
-        mVariables.sort(compareVariablesByTypeAndIndex);
+        mInternalVariables.sort(compareVariablesByTypeAndIndex);
         mEquations.sort(compareEquationsByVariable);
 
         for (const auto &equation : mEquations) {
@@ -2199,7 +2199,7 @@ Generator::Generator(const Generator &rhs)
 
     mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
 
-    mPimpl->mVariables = rhs.mPimpl->mVariables;
+    mPimpl->mInternalVariables = rhs.mPimpl->mInternalVariables;
     mPimpl->mEquations = rhs.mPimpl->mEquations;
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
@@ -2284,8 +2284,8 @@ size_t Generator::stateCount() const
 
     size_t res = 0;
 
-    for (const auto &variable : mPimpl->mVariables) {
-        if (variable->mType == GeneratorVariablePriv::Type::STATE) {
+    for (const auto &internalVariable : mPimpl->mInternalVariables) {
+        if (internalVariable->mType == GeneratorVariablePriv::Type::STATE) {
             ++res;
         }
     }
@@ -2301,11 +2301,11 @@ size_t Generator::variableCount() const
 
     size_t res = 0;
 
-    for (const auto &variable : mPimpl->mVariables) {
-        if ((variable->mType == GeneratorVariablePriv::Type::ALGEBRAIC)
-            || (variable->mType == GeneratorVariablePriv::Type::CONSTANT)
-            || (variable->mType == GeneratorVariablePriv::Type::COMPUTED_TRUE_CONSTANT)
-            || (variable->mType == GeneratorVariablePriv::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
+    for (const auto &internalVariable : mPimpl->mInternalVariables) {
+        if ((internalVariable->mType == GeneratorVariablePriv::Type::ALGEBRAIC)
+            || (internalVariable->mType == GeneratorVariablePriv::Type::CONSTANT)
+            || (internalVariable->mType == GeneratorVariablePriv::Type::COMPUTED_TRUE_CONSTANT)
+            || (internalVariable->mType == GeneratorVariablePriv::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
             ++res;
         }
     }
@@ -2468,10 +2468,10 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->beginInitializeModelMethodString();
 
-    for (const auto &variable : mPimpl->mVariables) {
-        if ((variable->mType == GeneratorVariablePriv::Type::STATE)
-            || (variable->mType == GeneratorVariablePriv::Type::CONSTANT)) {
-            res += mPimpl->generateInitializationCode(variable);
+    for (const auto &internalVariable : mPimpl->mInternalVariables) {
+        if ((internalVariable->mType == GeneratorVariablePriv::Type::STATE)
+            || (internalVariable->mType == GeneratorVariablePriv::Type::CONSTANT)) {
+            res += mPimpl->generateInitializationCode(internalVariable);
         }
     }
 
