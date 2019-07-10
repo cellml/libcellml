@@ -493,10 +493,10 @@ struct Generator::GeneratorImpl
 
     Generator::ModelType mModelType = Generator::ModelType::UNKNOWN;
 
-    VariablePtr mVariableOfIntegration;
-
     std::list<GeneratorVariablePrivPtr> mInternalVariables;
     std::list<GeneratorEquationPrivPtr> mEquations;
+
+    VariablePtr mVariableOfIntegration;
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
@@ -1196,10 +1196,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
     mModelType = Generator::ModelType::UNKNOWN;
 
-    mVariableOfIntegration = nullptr;
-
     mInternalVariables.clear();
     mEquations.clear();
+
+    mVariableOfIntegration = nullptr;
 
     mNeedMin = false;
     mNeedMax = false;
@@ -2197,10 +2197,10 @@ Generator::Generator(const Generator &rhs)
 
     mPimpl->mModelType = rhs.mPimpl->mModelType;
 
-    mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
-
     mPimpl->mInternalVariables = rhs.mPimpl->mInternalVariables;
     mPimpl->mEquations = rhs.mPimpl->mEquations;
+
+    mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
