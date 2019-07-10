@@ -36,10 +36,7 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, initialized_variable_of_integration)
@@ -68,10 +65,7 @@ TEST(Generator, initialized_variable_of_integration)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, two_variables_of_integration)
@@ -100,10 +94,7 @@ TEST(Generator, two_variables_of_integration)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, non_first_order_odes)
@@ -134,10 +125,7 @@ TEST(Generator, non_first_order_odes)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, undefined_variables)
@@ -166,10 +154,7 @@ TEST(Generator, undefined_variables)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, variable_initialized_twice)
@@ -197,10 +182,7 @@ TEST(Generator, variable_initialized_twice)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, non_initialized_state)
@@ -228,10 +210,7 @@ TEST(Generator, non_initialized_state)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, underconstrained)
@@ -259,10 +238,7 @@ TEST(Generator, underconstrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, overconstrained)
@@ -290,10 +266,7 @@ TEST(Generator, overconstrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, unsuitably_constrained)
@@ -322,10 +295,7 @@ TEST(Generator, unsuitably_constrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
 TEST(Generator, algebraic_eqn_computed_var_on_rhs)
