@@ -18,7 +18,7 @@ void computeConstantEquations(double *variables)
     variables[14] = variables[2]+12.0;
 }
 
-void computeRateEquations(double *states, double *rates, double *variables)
+void computeRateEquations(double voi, double *states, double *rates, double *variables)
 {
     variables[10] = 0.1*(states[3]+25.0)/(exp((states[3]+25.0)/10.0)-1.0);
     variables[11] = 4.0*exp(states[3]/18.0);

@@ -145,7 +145,7 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("void computeConstantEquations(double *variables)\n{\n", generatorProfile->beginComputeConstantEquationsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeConstantEquationsMethodString());
 
-    EXPECT_EQ("void computeRateEquations(double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeRateEquationsMethodString());
+    EXPECT_EQ("void computeRateEquations(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeRateEquationsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeRateEquationsMethodString());
 
     EXPECT_EQ("void computeAlgebraicEquations(double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeAlgebraicEquationsMethodString());

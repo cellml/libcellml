@@ -11,7 +11,7 @@ void initializeModel(double *states, double *variables)
     variables[4] = 400.0;
 }
 
-void computeRateEquations(double *states, double *rates, double *variables)
+void computeRateEquations(double voi, double *states, double *rates, double *variables)
 {
     variables[8] = 0.1*(-states[3]-48.0)/(exp((-states[3]-48.0)/15.0)-1.0);
     variables[9] = 0.12*(states[3]+8.0)/(exp((states[3]+8.0)/5.0)-1.0);
