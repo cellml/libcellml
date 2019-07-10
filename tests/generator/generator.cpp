@@ -316,12 +316,7 @@ TEST(Generator, algebraic_eqn_computed_var_on_rhs)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
-    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/computeAlgebraicEquations.out"),
-              generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/code.c"), generator.code());
 }
 
 TEST(Generator, algebraic_eqn_const_var_on_rhs)
