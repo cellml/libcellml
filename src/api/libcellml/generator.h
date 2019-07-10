@@ -56,7 +56,6 @@ public:
     //    GeneratorVariablePtr state(size_t index) const;
     //    GeneratorVariablePtr variable(size_t index) const;
 
-    std::string neededMathMethods() const;
     std::string initializeVariables() const;
     std::string computeConstantEquations() const;
     std::string computeRateEquations() const;

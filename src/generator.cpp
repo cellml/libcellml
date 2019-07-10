@@ -2380,12 +2380,6 @@ GeneratorVariablePtr Generator::variable(size_t index) const
 }
 */
 
-std::string Generator::neededMathMethods() const
-{
-    //ISSUE359: to be done.
-    return {};
-}
-
 std::string Generator::initializeVariables() const
 {
     if (!mPimpl->hasValidModel()) {

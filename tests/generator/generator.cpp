@@ -36,7 +36,6 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -69,7 +68,6 @@ TEST(Generator, initialized_variable_of_integration)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -102,7 +100,6 @@ TEST(Generator, two_variables_of_integration)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -137,7 +134,6 @@ TEST(Generator, non_first_order_odes)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -170,7 +166,6 @@ TEST(Generator, undefined_variables)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -202,7 +197,6 @@ TEST(Generator, variable_initialized_twice)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -234,7 +228,6 @@ TEST(Generator, non_initialized_state)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -266,7 +259,6 @@ TEST(Generator, underconstrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -298,7 +290,6 @@ TEST(Generator, overconstrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -331,7 +322,6 @@ TEST(Generator, unsuitably_constrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(EMPTY_STRING, generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
     EXPECT_EQ(EMPTY_STRING, generator.computeRateEquations());
@@ -356,7 +346,6 @@ TEST(Generator, algebraic_eqn_computed_var_on_rhs)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -383,7 +372,6 @@ TEST(Generator, algebraic_eqn_const_var_on_rhs)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_const_var_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_const_var_on_rhs/computeConstantEquations.out"),
@@ -410,7 +398,6 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_constant_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -436,7 +423,6 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -464,7 +450,6 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -492,7 +477,6 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_state_var_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -520,7 +504,6 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_state_var_on_rhs_one_component/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -548,7 +531,6 @@ TEST(Generator, ode_computed_var_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_computed_var_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -575,7 +557,6 @@ TEST(Generator, ode_computed_var_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_computed_var_on_rhs_one_component/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -602,7 +583,6 @@ TEST(Generator, ode_const_var_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -629,7 +609,6 @@ TEST(Generator, ode_const_var_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs_one_component/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -656,7 +635,6 @@ TEST(Generator, ode_constant_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -683,7 +661,6 @@ TEST(Generator, ode_constant_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs_one_component/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -710,7 +687,6 @@ TEST(Generator, ode_multiple_dependent_odes)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -737,7 +713,6 @@ TEST(Generator, ode_multiple_dependent_odes_one_component)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes_one_component/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -764,7 +739,6 @@ TEST(Generator, ode_multiple_odes_with_same_name)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/ode_multiple_odes_with_same_name/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -794,7 +768,6 @@ TEST(Generator, cellml_mappings_and_encapsulations)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -822,7 +795,6 @@ TEST(Generator, dependent_eqns)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/dependent_eqns/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -850,7 +822,6 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
     EXPECT_EQ(size_t(4), generator.stateCount());
     EXPECT_EQ(size_t(18), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/computeConstantEquations.out"),
@@ -878,7 +849,6 @@ TEST(Generator, noble_model_1962)
     EXPECT_EQ(size_t(4), generator.stateCount());
     EXPECT_EQ(size_t(17), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/noble_model_1962/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -906,7 +876,6 @@ TEST(Generator, van_der_pol_model_1928)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/van_der_pol_model_1928/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
@@ -933,7 +902,6 @@ TEST(Generator, coverage)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(188), generator.variableCount());
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquations.out"),
@@ -950,7 +918,6 @@ TEST(Generator, coverage)
     profile->setHasPowerOperator(true);
     profile->setHasConditionalOperator(false);
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithFirstCustomProfile.out"),
@@ -963,7 +930,6 @@ TEST(Generator, coverage)
     profile->setXorString("xor");
     profile->setHasXorOperator(false);
 
-    EXPECT_EQ(EMPTY_STRING, generator.neededMathMethods());
     EXPECT_EQ(fileContents("generator/resources/coverage/initializeVariables.out"),
               generator.initializeVariables());
     EXPECT_EQ(fileContents("generator/resources/coverage/computeConstantEquationsWithSecondCustomProfile.out"),
