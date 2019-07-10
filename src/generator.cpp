@@ -2199,7 +2199,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstImp
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorVariableImplPtr &variable)
 {
-    return generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString()+generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationImplPtr &equation)
@@ -2210,7 +2210,7 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
         res += generateEquationCode(dependency);
     }
 
-    res += generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
+    res += mProfile->indentString()+generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
 
     return res;
 }
@@ -2380,76 +2380,99 @@ GeneratorVariablePtr Generator::variable(size_t index) const
 }
 */
 
-std::string Generator::initializeVariables() const
+std::string Generator::code() const
 {
     if (!mPimpl->hasValidModel()) {
         return {};
     }
 
+    // Generate code to initialise the model.
+
     std::string res;
+    std::string body;
 
     for (const auto &variable : mPimpl->mVariables) {
         if ((variable->mType == GeneratorVariableImpl::Type::STATE)
             || (variable->mType == GeneratorVariableImpl::Type::CONSTANT)) {
-            res += mPimpl->generateInitializationCode(variable);
+            body += mPimpl->generateInitializationCode(variable);
         }
+    }
+
+    if (!body.empty()) {
+        body += "\n";
     }
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::TRUE_CONSTANT) {
-            res += mPimpl->generateEquationCode(equation);
+            body += mPimpl->generateEquationCode(equation);
         }
     }
 
-    return res;
-}
-
-std::string Generator::computeConstantEquations() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return {};
+    if (!body.empty()) {
+        res += mPimpl->mProfile->beginInitializeModelMethodString();
+        res += body;
+        res += mPimpl->mProfile->endInitializeModelMethodString();
     }
 
-    std::string res;
+    // Generate code to compute the constant equations.
+
+    body = "";
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::VARIABLE_BASED_CONSTANT) {
-            res += mPimpl->generateEquationCode(equation);
+            body += mPimpl->generateEquationCode(equation);
         }
     }
 
-    return res;
-}
+    if (!body.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
 
-std::string Generator::computeRateEquations() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return {};
+        res += mPimpl->mProfile->beginComputeConstantEquationsMethodString();
+        res += body;
+        res += mPimpl->mProfile->endComputeConstantEquationsMethodString();
     }
 
-    std::string res;
+    // Generate code to compute the rate equations (and the algebraic equations
+    // on which they depend).
+
+    body = "";
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::RATE) {
-            res += mPimpl->generateEquationCode(equation);
+            body += mPimpl->generateEquationCode(equation);
         }
     }
 
-    return res;
-}
+    if (!body.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
 
-std::string Generator::computeAlgebraicEquations() const
-{
-    if (!mPimpl->hasValidModel()) {
-        return {};
+        res += mPimpl->mProfile->beginComputeRateEquationsMethodString();
+        res += body;
+        res += mPimpl->mProfile->endComputeRateEquationsMethodString();
     }
 
-    std::string res;
+    // Generate code to compute the (remaining) algebraic equations.
+
+    body = "";
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquationImpl::Type::ALGEBRAIC) {
-            res += mPimpl->generateEquationCode(equation);
+            body += mPimpl->generateEquationCode(equation);
         }
+    }
+
+    if (!body.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->beginComputeAlgebraicEquationsMethodString();
+        res += body;
+        res += mPimpl->mProfile->endComputeAlgebraicEquationsMethodString();
     }
 
     return res;
