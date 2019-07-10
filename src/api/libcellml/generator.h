@@ -56,10 +56,7 @@ public:
     //    GeneratorVariablePtr state(size_t index) const;
     //    GeneratorVariablePtr variable(size_t index) const;
 
-    std::string initializeVariables() const;
-    std::string computeConstantEquations() const;
-    std::string computeRateEquations() const;
-    std::string computeAlgebraicEquations() const;
+    std::string code() const;
 
 private:
     void swap(Generator &rhs); /**< Swap method required for C++ 11 move semantics. */
