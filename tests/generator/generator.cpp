@@ -505,12 +505,7 @@ TEST(Generator, ode_const_var_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs/code.c"), generator.code());
 }
 
 TEST(Generator, ode_const_var_on_rhs_one_component)
@@ -531,12 +526,7 @@ TEST(Generator, ode_const_var_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs_one_component/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs_one_component/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs_one_component/code.c"), generator.code());
 }
 
 TEST(Generator, ode_constant_on_rhs)
