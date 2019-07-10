@@ -589,12 +589,7 @@ TEST(Generator, ode_multiple_dependent_odes)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes/code.c"), generator.code());
 }
 
 TEST(Generator, ode_multiple_dependent_odes_one_component)
@@ -615,12 +610,7 @@ TEST(Generator, ode_multiple_dependent_odes_one_component)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes_one_component/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes_one_component/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(EMPTY_STRING, generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes_one_component/code.c"), generator.code());
 }
 
 TEST(Generator, ode_multiple_odes_with_same_name)
