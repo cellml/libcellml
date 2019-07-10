@@ -676,13 +676,7 @@ TEST(Generator, dependent_eqns)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/initializeVariables.out"),
-              generator.initializeVariables());
-    EXPECT_EQ(EMPTY_STRING, generator.computeConstantEquations());
-    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/computeRateEquations.out"),
-              generator.computeRateEquations());
-    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/computeAlgebraicEquations.out"),
-              generator.computeAlgebraicEquations());
+    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/code.c"), generator.code());
 }
 
 TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
