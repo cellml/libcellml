@@ -230,3 +230,16 @@ TEST(Coverage, generatorProfile)
     vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
 }
+
+TEST(Coverage, generatorVariable)
+{
+    libcellml::GeneratorVariable rgp;
+    libcellml::GeneratorVariable ao;
+
+    ao = rgp;
+
+    std::vector<libcellml::GeneratorVariable> vec;
+
+    vec.push_back(rgp);
+    vec.insert(vec.begin(), ao);
+}
