@@ -269,24 +269,24 @@ struct GeneratorEquationAst
 
     explicit GeneratorEquationAst();
     explicit GeneratorEquationAst(Type type,
-                                      const GeneratorEquationAstPtr &parent);
+                                  const GeneratorEquationAstPtr &parent);
     explicit GeneratorEquationAst(Type type, const std::string &value,
-                                      const GeneratorEquationAstPtr &parent);
+                                  const GeneratorEquationAstPtr &parent);
     explicit GeneratorEquationAst(Type type, const VariablePtr &variable,
-                                      const GeneratorEquationAstPtr &parent);
+                                  const GeneratorEquationAstPtr &parent);
 };
 
 GeneratorEquationAst::GeneratorEquationAst() = default;
 
 GeneratorEquationAst::GeneratorEquationAst(Type type,
-                                                   const GeneratorEquationAstPtr &parent)
+                                           const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mParent(parent)
 {
 }
 
 GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value,
-                                                   const GeneratorEquationAstPtr &parent)
+                                           const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mValue(value)
     , mParent(parent)
@@ -294,7 +294,7 @@ GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value,
 }
 
 GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variable,
-                                                   const GeneratorEquationAstPtr &parent)
+                                           const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mVariable(variable)
     , mParent(parent)
@@ -549,7 +549,7 @@ struct Generator::GeneratorImpl
                      const ComponentPtr &component,
                      const GeneratorEquationPtr &equation);
     GeneratorEquationPtr processNode(const XmlNodePtr &node,
-                                         const ComponentPtr &component);
+                                     const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
     void processEquationAst(const GeneratorEquationAstPtr &ast);
     void processModel(const ModelPtr &model);
@@ -985,7 +985,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 }
 
 GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                                               const ComponentPtr &component)
+                                                           const ComponentPtr &component)
 {
     // Create and keep track of the equation associated with the given node.
 
@@ -1373,7 +1373,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             } else if ((internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
                        || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-                       || (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)){
+                       || (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
                 GeneratorVariablePtr variable = std::make_shared<GeneratorVariable>();
 
                 mVariables.push_back(variable);
