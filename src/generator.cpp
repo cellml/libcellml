@@ -497,6 +497,8 @@ struct Generator::GeneratorImpl
     std::list<GeneratorEquationPrivPtr> mEquations;
 
     VariablePtr mVariableOfIntegration;
+    std::vector<GeneratorVariablePtr> mStates;
+    std::vector<GeneratorVariablePtr> mVariables;
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
@@ -1200,6 +1202,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mEquations.clear();
 
     mVariableOfIntegration = nullptr;
+    mStates.clear();
+    mVariables.clear();
 
     mNeedMin = false;
     mNeedMax = false;
@@ -2201,6 +2205,8 @@ Generator::Generator(const Generator &rhs)
     mPimpl->mEquations = rhs.mPimpl->mEquations;
 
     mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
+    mPimpl->mStates = rhs.mPimpl->mStates;
+    mPimpl->mVariables = rhs.mPimpl->mVariables;
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
@@ -2282,15 +2288,7 @@ size_t Generator::stateCount() const
         return 0;
     }
 
-    size_t res = 0;
-
-    for (const auto &internalVariable : mPimpl->mInternalVariables) {
-        if (internalVariable->mType == GeneratorVariablePriv::Type::STATE) {
-            ++res;
-        }
-    }
-
-    return res;
+    return mPimpl->mStates.size();
 }
 
 size_t Generator::variableCount() const
@@ -2299,18 +2297,7 @@ size_t Generator::variableCount() const
         return 0;
     }
 
-    size_t res = 0;
-
-    for (const auto &internalVariable : mPimpl->mInternalVariables) {
-        if ((internalVariable->mType == GeneratorVariablePriv::Type::ALGEBRAIC)
-            || (internalVariable->mType == GeneratorVariablePriv::Type::CONSTANT)
-            || (internalVariable->mType == GeneratorVariablePriv::Type::COMPUTED_TRUE_CONSTANT)
-            || (internalVariable->mType == GeneratorVariablePriv::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
-            ++res;
-        }
-    }
-
-    return res;
+    return mPimpl->mVariables.size();
 }
 
 VariablePtr Generator::variableOfIntegration() const
@@ -2324,16 +2311,20 @@ VariablePtr Generator::variableOfIntegration() const
 
 GeneratorVariablePtr Generator::state(size_t index) const
 {
-    (void)index;
+    if (!mPimpl->hasValidModel() || (index >= mPimpl->mStates.size())) {
+        return {};
+    }
 
-    return {};
+    return mPimpl->mStates[index];
 }
 
 GeneratorVariablePtr Generator::variable(size_t index) const
 {
-    (void)index;
+    if (!mPimpl->hasValidModel() || (index >= mPimpl->mVariables.size())) {
+        return {};
+    }
 
-    return {};
+    return mPimpl->mVariables[index];
 }
 
 std::string Generator::code() const
