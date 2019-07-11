@@ -1943,7 +1943,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         if (isEqual(doubleValue, 0.5)) {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
-        } else if (isEqual(doubleValue, 2.0)) {
+        } else if (isEqual(doubleValue, 2.0) && !mProfile->squareString().empty()) {
             code = generateOneParameterFunctionCode(mProfile->squareString(), ast);
         } else {
             code = mProfile->hasPowerOperator() ?

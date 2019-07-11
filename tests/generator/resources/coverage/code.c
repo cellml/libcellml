@@ -180,7 +180,7 @@ void computeConstantEquations(double *variables)
     variables[90] = (variables[0] < variables[1])/(variables[2]*variables[3]);
     variables[91] = (variables[0] < variables[1])/(variables[2]/variables[3]);
     variables[92] = sqrt(variables[0]);
-    variables[93] = sqr(variables[0]);
+    variables[93] = pow(variables[0], 2.0);
     variables[94] = pow(variables[0], 3.0);
     variables[95] = pow(variables[0], variables[1]);
     variables[96] = pow(variables[0] < variables[1], variables[2] > variables[3]);

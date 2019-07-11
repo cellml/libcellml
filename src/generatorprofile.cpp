@@ -53,7 +53,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mDivideString = "/";
     std::string mPowerString = "pow";
     std::string mSquareRootString = "sqrt";
-    std::string mSquareString = "sqr";
+    std::string mSquareString = "";
     std::string mAbsoluteValueString = "fabs";
     std::string mExponentialString = "exp";
     std::string mNapierianLogarithmString = "log";

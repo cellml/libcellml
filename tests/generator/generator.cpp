@@ -907,6 +907,7 @@ TEST(Generator, coverage)
     generator.setProfile(profile);
 
     profile->setPowerString("^^");
+    profile->setSquareString("sqr");
     profile->setHasPowerOperator(true);
     profile->setHasConditionalOperator(false);
 
