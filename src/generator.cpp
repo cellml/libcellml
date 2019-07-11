@@ -471,11 +471,11 @@ bool GeneratorEquation::check(size_t &stateIndex, size_t &variableIndex)
             || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
             || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
             || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
-            variable->mEquation = shared_from_this();
-
             variable->mIndex = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
                                    ++stateIndex :
                                    ++variableIndex;
+
+            variable->mEquation = shared_from_this();
             mType = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
                         Type::RATE :
                         (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
