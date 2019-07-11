@@ -315,11 +315,10 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
         ALGEBRAIC
     };
 
+    size_t mOrder = MAX_SIZE_T;
     Type mType = Type::UNKNOWN;
 
     std::list<GeneratorEquationPtr> mDependencies;
-
-    bool mProcessed = false;
 
     GeneratorEquationAstPtr mAst;
 
@@ -342,7 +341,7 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     static bool knownVariable(const GeneratorInternalVariablePtr &variable);
     static bool knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
 
-    bool check(size_t & stateIndex, size_t & variableIndex);
+    bool check(size_t &equationOrder, size_t & stateIndex, size_t & variableIndex);
 };
 
 GeneratorEquation::GeneratorEquation()
@@ -395,13 +394,14 @@ bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &ode
            || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
-bool GeneratorEquation::check(size_t &stateIndex, size_t &variableIndex)
+bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
+                              size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine) or if there is one known (ODE) variable left (i.e.
     // this equation is an overconstraint).
 
-    if (mProcessed) {
+    if (mOrder != MAX_SIZE_T) {
         return false;
     }
 
@@ -476,6 +476,8 @@ bool GeneratorEquation::check(size_t &stateIndex, size_t &variableIndex)
                                    ++variableIndex;
 
             variable->mEquation = shared_from_this();
+
+            mOrder = ++equationOrder;
             mType = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
                         Type::RATE :
                         (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
@@ -484,7 +486,6 @@ bool GeneratorEquation::check(size_t &stateIndex, size_t &variableIndex)
                         Type::VARIABLE_BASED_CONSTANT :
                         Type::ALGEBRAIC;
 
-            mProcessed = true;
             mVariable = variable;
 
             relevantCheck = true;
@@ -1214,13 +1215,14 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         }
 
+        size_t equationOrder = MAX_SIZE_T;
         size_t stateIndex = MAX_SIZE_T;
 
         for (;;) {
             bool relevantCheck = false;
 
             for (const auto &equation : mEquations) {
-                relevantCheck = equation->check(stateIndex, variableIndex)
+                relevantCheck = equation->check(equationOrder, stateIndex, variableIndex)
                                 || relevantCheck;
             }
 
