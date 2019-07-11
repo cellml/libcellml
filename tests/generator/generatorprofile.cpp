@@ -61,7 +61,7 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("/", generatorProfile->divideString());
     EXPECT_EQ("pow", generatorProfile->powerString());
     EXPECT_EQ("sqrt", generatorProfile->squareRootString());
-    EXPECT_EQ("sqr", generatorProfile->squareString());
+    EXPECT_EQ("", generatorProfile->squareString());
     EXPECT_EQ("fabs", generatorProfile->absoluteValueString());
     EXPECT_EQ("exp", generatorProfile->exponentialString());
     EXPECT_EQ("log", generatorProfile->napierianLogarithmString());
