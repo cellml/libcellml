@@ -915,7 +915,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
 
             // Have our equation track the (ODE) variable (by ODE variable, we
-            // mean a variable that is used in a "diff" element)
+            // mean a variable that is used in a "diff" element).
 
             GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
@@ -939,7 +939,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         }
     } else if (node->isMathmlElement("cn")) {
         if (mathmlChildCount(node) == 1) {
-            // E-notation based CN value
+            // We are dealing with an e-notation based CN value.
 
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
         } else {
@@ -1172,7 +1172,8 @@ bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVar
     // TODO: we can't currently instatiate imports, which means that we can't
     //       have variables in different models. This also means that we can't
     //       have code to check for the name of a model since this would fail
-    //       coverage test.
+    //       coverage test. So, once we can instantiate imports, we will need to
+    //       account the name of a model.
     VariablePtr realVariable1 = variable1->mVariable;
     VariablePtr realVariable2 = variable2->mVariable;
     ComponentPtr realComponent1 = realVariable1->parentComponent();
@@ -1326,7 +1327,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 
     // Determine the type of our model, if it hasn't already been categorised as
-    // being invalid
+    // being invalid.
 
     if (mModelType != Generator::ModelType::INVALID) {
         bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorInternalVariablePtr &variable) {
@@ -1355,7 +1356,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 
     // Sort our variables and equations (and their dependencies), if we have a
-    // valid model
+    // valid model.
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
@@ -2344,7 +2345,7 @@ std::string Generator::code() const
         return {};
     }
 
-    // Generate code for the header
+    // Generate code for the header.
 
     std::string res = mPimpl->mProfile->headerString();
 
