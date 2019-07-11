@@ -822,6 +822,60 @@ TEST(Generator, dependent_eqns)
     EXPECT_EQ(fileContents("generator/resources/dependent_eqns/code.c"), generator.code());
 }
 
+TEST(Generator, fabbri_fantini_wilders_severi_human_san_model_2017)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/fabbri_fantini_wilders_severi_human_san_model_2017/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(33), generator.stateCount());
+    EXPECT_EQ(size_t(217), generator.variableCount());
+
+    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.state(0));
+    EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
+    EXPECT_NE(nullptr, generator.variable(0));
+    EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
+
+    EXPECT_EQ(fileContents("generator/resources/fabbri_fantini_wilders_severi_human_san_model_2017/code.c"), generator.code());
+}
+
+TEST(Generator, garny_kohl_hunter_boyett_noble_rabbit_san_model_2003)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/resources/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
+
+    EXPECT_EQ(size_t(15), generator.stateCount());
+    EXPECT_EQ(size_t(185), generator.variableCount());
+
+    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.state(0));
+    EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
+    EXPECT_NE(nullptr, generator.variable(0));
+    EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
+
+    EXPECT_EQ(fileContents("generator/resources/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/code.c"), generator.code());
+}
+
 TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
 {
     libcellml::Parser parser;
