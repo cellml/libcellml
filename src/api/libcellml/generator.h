@@ -22,9 +22,21 @@ limitations under the License.
 
 namespace libcellml {
 
+class Generator;
+
 class LIBCELLML_EXPORT GeneratorVariable
 {
+    friend class Generator;
+
 public:
+    enum class Type
+    {
+        STATE,
+        CONSTANT,
+        COMPUTED_CONSTANT,
+        ALGEBRAIC
+    };
+
     GeneratorVariable(); /**< Constructor */
     ~GeneratorVariable(); /**< Destructor */
     GeneratorVariable(const GeneratorVariable &rhs); /**< Copy constructor */

@@ -43,7 +43,18 @@ static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
 struct GeneratorVariable::GeneratorVariableImpl
 {
+    VariablePtr mVariable;
+    GeneratorVariable::Type mType = GeneratorVariable::Type::CONSTANT;
+
+    void populate(const VariablePtr &variable, GeneratorVariable::Type type);
 };
+
+void GeneratorVariable::GeneratorVariableImpl::populate(const VariablePtr &variable,
+                                                        GeneratorVariable::Type type)
+{
+    mVariable = variable;
+    mType = type;
+}
 
 GeneratorVariable::GeneratorVariable()
     : mPimpl(new GeneratorVariableImpl())
