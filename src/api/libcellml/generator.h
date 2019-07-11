@@ -31,7 +31,6 @@ class LIBCELLML_EXPORT GeneratorVariable
 public:
     enum class Type
     {
-        STATE,
         CONSTANT,
         COMPUTED_CONSTANT,
         ALGEBRAIC
@@ -80,7 +79,7 @@ public:
     size_t variableCount() const;
 
     VariablePtr variableOfIntegration() const;
-    GeneratorVariablePtr state(size_t index) const;
+    VariablePtr state(size_t index) const;
     GeneratorVariablePtr variable(size_t index) const;
 
     std::string code() const;

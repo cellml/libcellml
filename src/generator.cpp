@@ -508,7 +508,7 @@ struct Generator::GeneratorImpl
     std::list<GeneratorEquationPtr> mEquations;
 
     VariablePtr mVariableOfIntegration;
-    std::vector<GeneratorVariablePtr> mStates;
+    std::vector<VariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
@@ -1356,7 +1356,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 
     // Sort our variables and equations (and their dependencies), if we have a
-    // valid model.
+    // valid model, and make our internal variables available through our API.
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
@@ -1365,6 +1365,28 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
         for (const auto &equation : mEquations) {
             equation->mDependencies.sort(compareEquationsByVariable);
+        }
+
+        for (const auto &internalVariable : mInternalVariables) {
+            if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
+                mStates.push_back(internalVariable->mVariable);
+            } else if ((internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)
+                       || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                       || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
+                       || (internalVariable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)){
+                GeneratorVariablePtr variable = std::make_shared<GeneratorVariable>();
+
+                mVariables.push_back(variable);
+
+                if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
+                    variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::CONSTANT);
+                } else if ((internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                           || (internalVariable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)) {
+                    variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::COMPUTED_CONSTANT);
+                } else {
+                    variable->mPimpl->populate(internalVariable->mVariable, GeneratorVariable::Type::ALGEBRAIC);
+                }
+            }
         }
     }
 }
@@ -2321,7 +2343,7 @@ VariablePtr Generator::variableOfIntegration() const
     return mPimpl->mVariableOfIntegration;
 }
 
-GeneratorVariablePtr Generator::state(size_t index) const
+VariablePtr Generator::state(size_t index) const
 {
     if (!mPimpl->hasValidModel() || (index >= mPimpl->mStates.size())) {
         return {};
