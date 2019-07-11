@@ -89,11 +89,11 @@ void GeneratorVariable::swap(GeneratorVariable &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-struct GeneratorEquationPriv;
-using GeneratorEquationPrivPtr = std::shared_ptr<GeneratorEquationPriv>;
-using GeneratorEquationPrivWeakPtr = std::weak_ptr<GeneratorEquationPriv>;
+struct GeneratorEquation;
+using GeneratorEquationPtr = std::shared_ptr<GeneratorEquation>;
+using GeneratorEquationWeakPtr = std::weak_ptr<GeneratorEquation>;
 
-struct GeneratorVariablePriv
+struct GeneratorInternalVariable
 {
     enum struct Type
     {
@@ -115,9 +115,9 @@ struct GeneratorVariablePriv
 
     bool mProcessed = false;
 
-    GeneratorEquationPrivWeakPtr mEquation;
+    GeneratorEquationWeakPtr mEquation;
 
-    explicit GeneratorVariablePriv(const VariablePtr &variable);
+    explicit GeneratorInternalVariable(const VariablePtr &variable);
 
     void setVariable(const VariablePtr &variable);
 
@@ -125,14 +125,14 @@ struct GeneratorVariablePriv
     void makeState();
 };
 
-using GeneratorVariablePrivPtr = std::shared_ptr<GeneratorVariablePriv>;
+using GeneratorInternalVariablePtr = std::shared_ptr<GeneratorInternalVariable>;
 
-GeneratorVariablePriv::GeneratorVariablePriv(const VariablePtr &variable)
+GeneratorInternalVariable::GeneratorInternalVariable(const VariablePtr &variable)
 {
     setVariable(variable);
 }
 
-void GeneratorVariablePriv::setVariable(const VariablePtr &variable)
+void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
 {
     mVariable = variable;
 
@@ -145,12 +145,12 @@ void GeneratorVariablePriv::setVariable(const VariablePtr &variable)
     }
 }
 
-void GeneratorVariablePriv::makeVariableOfIntegration()
+void GeneratorInternalVariable::makeVariableOfIntegration()
 {
     mType = Type::VARIABLE_OF_INTEGRATION;
 }
 
-void GeneratorVariablePriv::makeState()
+void GeneratorInternalVariable::makeState()
 {
     if (mType == Type::UNKNOWN) {
         mType = Type::SHOULD_BE_STATE;
@@ -159,11 +159,11 @@ void GeneratorVariablePriv::makeState()
     }
 }
 
-struct GeneratorEquationAstPriv;
-using GeneratorEquationAstPrivPtr = std::shared_ptr<GeneratorEquationAstPriv>;
-using GeneratorEquationAstPrivWeakPtr = std::weak_ptr<GeneratorEquationAstPriv>;
+struct GeneratorEquationAst;
+using GeneratorEquationAstPtr = std::shared_ptr<GeneratorEquationAst>;
+using GeneratorEquationAstWeakPtr = std::weak_ptr<GeneratorEquationAst>;
 
-struct GeneratorEquationAstPriv
+struct GeneratorEquationAst
 {
     enum struct Type
     {
@@ -262,39 +262,39 @@ struct GeneratorEquationAstPriv
     std::string mValue;
     VariablePtr mVariable = nullptr;
 
-    GeneratorEquationAstPrivWeakPtr mParent;
+    GeneratorEquationAstWeakPtr mParent;
 
-    GeneratorEquationAstPrivPtr mLeft = nullptr;
-    GeneratorEquationAstPrivPtr mRight = nullptr;
+    GeneratorEquationAstPtr mLeft = nullptr;
+    GeneratorEquationAstPtr mRight = nullptr;
 
-    explicit GeneratorEquationAstPriv();
-    explicit GeneratorEquationAstPriv(Type type,
-                                      const GeneratorEquationAstPrivPtr &parent);
-    explicit GeneratorEquationAstPriv(Type type, const std::string &value,
-                                      const GeneratorEquationAstPrivPtr &parent);
-    explicit GeneratorEquationAstPriv(Type type, const VariablePtr &variable,
-                                      const GeneratorEquationAstPrivPtr &parent);
+    explicit GeneratorEquationAst();
+    explicit GeneratorEquationAst(Type type,
+                                      const GeneratorEquationAstPtr &parent);
+    explicit GeneratorEquationAst(Type type, const std::string &value,
+                                      const GeneratorEquationAstPtr &parent);
+    explicit GeneratorEquationAst(Type type, const VariablePtr &variable,
+                                      const GeneratorEquationAstPtr &parent);
 };
 
-GeneratorEquationAstPriv::GeneratorEquationAstPriv() = default;
+GeneratorEquationAst::GeneratorEquationAst() = default;
 
-GeneratorEquationAstPriv::GeneratorEquationAstPriv(Type type,
-                                                   const GeneratorEquationAstPrivPtr &parent)
+GeneratorEquationAst::GeneratorEquationAst(Type type,
+                                                   const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mParent(parent)
 {
 }
 
-GeneratorEquationAstPriv::GeneratorEquationAstPriv(Type type, const std::string &value,
-                                                   const GeneratorEquationAstPrivPtr &parent)
+GeneratorEquationAst::GeneratorEquationAst(Type type, const std::string &value,
+                                                   const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mValue(value)
     , mParent(parent)
 {
 }
 
-GeneratorEquationAstPriv::GeneratorEquationAstPriv(Type type, const VariablePtr &variable,
-                                                   const GeneratorEquationAstPrivPtr &parent)
+GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variable,
+                                                   const GeneratorEquationAstPtr &parent)
     : mType(type)
     , mVariable(variable)
     , mParent(parent)
@@ -302,9 +302,9 @@ GeneratorEquationAstPriv::GeneratorEquationAstPriv(Type type, const VariablePtr 
 }
 
 #ifdef SWIG
-struct GeneratorEquationPriv
+struct GeneratorEquation
 #else
-struct GeneratorEquationPriv: public std::enable_shared_from_this<GeneratorEquationPriv>
+struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
 #endif
 {
     enum struct Type
@@ -319,85 +319,85 @@ struct GeneratorEquationPriv: public std::enable_shared_from_this<GeneratorEquat
 
     Type mType = Type::UNKNOWN;
 
-    std::list<GeneratorEquationPrivPtr> mDependencies;
+    std::list<GeneratorEquationPtr> mDependencies;
 
     bool mProcessed = false;
 
-    GeneratorEquationAstPrivPtr mAst;
+    GeneratorEquationAstPtr mAst;
 
-    std::list<GeneratorVariablePrivPtr> mVariables;
-    std::list<GeneratorVariablePrivPtr> mOdeVariables;
+    std::list<GeneratorInternalVariablePtr> mVariables;
+    std::list<GeneratorInternalVariablePtr> mOdeVariables;
 
-    GeneratorVariablePrivPtr mVariable = nullptr;
+    GeneratorInternalVariablePtr mVariable = nullptr;
 
     bool mTrulyConstant = true;
     bool mVariableBasedConstant = true;
 
-    explicit GeneratorEquationPriv();
+    explicit GeneratorEquation();
 
-    void addVariable(const GeneratorVariablePrivPtr &variable);
-    void addOdeVariable(const GeneratorVariablePrivPtr &odeVariable);
+    void addVariable(const GeneratorInternalVariablePtr &variable);
+    void addOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
 
-    static bool containsNonTrueConstantVariables(const std::list<GeneratorVariablePrivPtr> &variables);
-    static bool containsNonConstantVariables(const std::list<GeneratorVariablePrivPtr> &variables);
+    static bool containsNonTrueConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables);
+    static bool containsNonConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables);
 
-    static bool knownVariable(const GeneratorVariablePrivPtr &variable);
-    static bool knownOdeVariable(const GeneratorVariablePrivPtr &odeVariable);
+    static bool knownVariable(const GeneratorInternalVariablePtr &variable);
+    static bool knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
 
     bool check(size_t & stateIndex, size_t & variableIndex);
 };
 
-GeneratorEquationPriv::GeneratorEquationPriv()
-    : mAst(std::make_shared<GeneratorEquationAstPriv>())
+GeneratorEquation::GeneratorEquation()
+    : mAst(std::make_shared<GeneratorEquationAst>())
 {
 }
 
-void GeneratorEquationPriv::addVariable(const GeneratorVariablePrivPtr &variable)
+void GeneratorEquation::addVariable(const GeneratorInternalVariablePtr &variable)
 {
     if (std::find(mVariables.begin(), mVariables.end(), variable) == mVariables.end()) {
         mVariables.push_back(variable);
     }
 }
 
-void GeneratorEquationPriv::addOdeVariable(const GeneratorVariablePrivPtr &odeVariable)
+void GeneratorEquation::addOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
 {
     if (std::find(mOdeVariables.begin(), mOdeVariables.end(), odeVariable) == mOdeVariables.end()) {
         mOdeVariables.push_back(odeVariable);
     }
 }
 
-bool GeneratorEquationPriv::containsNonTrueConstantVariables(const std::list<GeneratorVariablePrivPtr> &variables)
+bool GeneratorEquation::containsNonTrueConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables)
 {
-    return std::find_if(variables.begin(), variables.end(), [](const GeneratorVariablePrivPtr &variable) {
-               return (variable->mType != GeneratorVariablePriv::Type::UNKNOWN);
+    return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
+               return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN);
            })
            != std::end(variables);
 }
 
-bool GeneratorEquationPriv::containsNonConstantVariables(const std::list<GeneratorVariablePrivPtr> &variables)
+bool GeneratorEquation::containsNonConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables)
 {
-    return std::find_if(variables.begin(), variables.end(), [](const GeneratorVariablePrivPtr &variable) {
-               return (variable->mType != GeneratorVariablePriv::Type::UNKNOWN)
-                      && (variable->mType != GeneratorVariablePriv::Type::CONSTANT);
+    return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
+               return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
+                      && (variable->mType != GeneratorInternalVariable::Type::CONSTANT);
            })
            != std::end(variables);
 }
 
-bool GeneratorEquationPriv::knownVariable(const GeneratorVariablePrivPtr &variable)
+bool GeneratorEquation::knownVariable(const GeneratorInternalVariablePtr &variable)
 {
     return variable->mProcessed
-           || (variable->mType == GeneratorVariablePriv::Type::VARIABLE_OF_INTEGRATION)
-           || (variable->mType == GeneratorVariablePriv::Type::STATE)
-           || (variable->mType == GeneratorVariablePriv::Type::CONSTANT);
+           || (variable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION)
+           || (variable->mType == GeneratorInternalVariable::Type::STATE)
+           || (variable->mType == GeneratorInternalVariable::Type::CONSTANT);
 }
 
-bool GeneratorEquationPriv::knownOdeVariable(const GeneratorVariablePrivPtr &odeVariable)
+bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
 {
     return odeVariable->mProcessed
-           || (odeVariable->mType == GeneratorVariablePriv::Type::VARIABLE_OF_INTEGRATION);
+           || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
-bool GeneratorEquationPriv::check(size_t &stateIndex, size_t &variableIndex)
+bool GeneratorEquation::check(size_t &stateIndex, size_t &variableIndex)
 {
     // Nothing to check if the equation has already been given an order (i.e.
     // everything is fine) or if there is one known (ODE) variable left (i.e.
@@ -408,12 +408,12 @@ bool GeneratorEquationPriv::check(size_t &stateIndex, size_t &variableIndex)
     }
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
-        GeneratorVariablePrivPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
-        if ((variable->mType != GeneratorVariablePriv::Type::UNKNOWN)
-            && (variable->mType != GeneratorVariablePriv::Type::SHOULD_BE_STATE)
+        if ((variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
+            && (variable->mType != GeneratorInternalVariable::Type::SHOULD_BE_STATE)
             && (variable->mIndex != MAX_SIZE_T)) {
-            variable->mType = GeneratorVariablePriv::Type::OVERCONSTRAINED;
+            variable->mType = GeneratorInternalVariable::Type::OVERCONSTRAINED;
 
             return false;
         }
@@ -435,7 +435,7 @@ bool GeneratorEquationPriv::check(size_t &stateIndex, size_t &variableIndex)
     // type.)
 
     for (const auto &variable : mVariables) {
-        GeneratorEquationPrivPtr equation = variable->mEquation.lock();
+        GeneratorEquationPtr equation = variable->mEquation.lock();
 
         if (knownVariable(variable) && (equation != nullptr)) {
             if (equation->mType == Type::ALGEBRAIC) {
@@ -459,32 +459,32 @@ bool GeneratorEquationPriv::check(size_t &stateIndex, size_t &variableIndex)
     bool relevantCheck = false;
 
     if (mVariables.size() + mOdeVariables.size() == 1) {
-        GeneratorVariablePrivPtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
+        GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
-        if (variable->mType == GeneratorVariablePriv::Type::UNKNOWN) {
+        if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
             variable->mType = mTrulyConstant ?
-                                  GeneratorVariablePriv::Type::COMPUTED_TRUE_CONSTANT :
+                                  GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT :
                                   mVariableBasedConstant ?
-                                  GeneratorVariablePriv::Type::COMPUTED_VARIABLE_BASED_CONSTANT :
-                                  GeneratorVariablePriv::Type::ALGEBRAIC;
+                                  GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT :
+                                  GeneratorInternalVariable::Type::ALGEBRAIC;
         }
 
-        if ((variable->mType == GeneratorVariablePriv::Type::STATE)
-            || (variable->mType == GeneratorVariablePriv::Type::COMPUTED_TRUE_CONSTANT)
-            || (variable->mType == GeneratorVariablePriv::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
-            || (variable->mType == GeneratorVariablePriv::Type::ALGEBRAIC)) {
-            variable->mIndex = (variable->mType == GeneratorVariablePriv::Type::STATE) ?
+        if ((variable->mType == GeneratorInternalVariable::Type::STATE)
+            || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+            || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
+            || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
+            variable->mIndex = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
                                    ++stateIndex :
                                    ++variableIndex;
 
             variable->mProcessed = true;
             variable->mEquation = shared_from_this();
 
-            mType = (variable->mType == GeneratorVariablePriv::Type::STATE) ?
+            mType = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
                         Type::RATE :
-                        (variable->mType == GeneratorVariablePriv::Type::COMPUTED_TRUE_CONSTANT) ?
+                        (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
                         Type::TRUE_CONSTANT :
-                        (variable->mType == GeneratorVariablePriv::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
+                        (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT) ?
                         Type::VARIABLE_BASED_CONSTANT :
                         Type::ALGEBRAIC;
 
@@ -504,8 +504,8 @@ struct Generator::GeneratorImpl
 
     Generator::ModelType mModelType = Generator::ModelType::UNKNOWN;
 
-    std::list<GeneratorVariablePrivPtr> mInternalVariables;
-    std::list<GeneratorEquationPrivPtr> mEquations;
+    std::list<GeneratorInternalVariablePtr> mInternalVariables;
+    std::list<GeneratorEquationPtr> mEquations;
 
     VariablePtr mVariableOfIntegration;
     std::vector<GeneratorVariablePtr> mStates;
@@ -534,57 +534,57 @@ struct Generator::GeneratorImpl
     size_t mathmlChildCount(const XmlNodePtr &node) const;
     XmlNodePtr mathmlChildNode(const XmlNodePtr &node, size_t index) const;
 
-    GeneratorVariablePrivPtr generatorVariable(const VariablePtr &variable);
+    GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
 
-    static bool compareVariablesByName(const GeneratorVariablePrivPtr &variable1,
-                                       const GeneratorVariablePrivPtr &variable2);
-    static bool compareVariablesByTypeAndIndex(const GeneratorVariablePrivPtr &variable1,
-                                               const GeneratorVariablePrivPtr &variable2);
+    static bool compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
+                                       const GeneratorInternalVariablePtr &variable2);
+    static bool compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
+                                               const GeneratorInternalVariablePtr &variable2);
 
-    static bool compareEquationsByVariable(const GeneratorEquationPrivPtr &equation1,
-                                           const GeneratorEquationPrivPtr &equation2);
+    static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
+                                           const GeneratorEquationPtr &equation2);
 
-    void processNode(const XmlNodePtr &node, GeneratorEquationAstPrivPtr &ast,
-                     const GeneratorEquationAstPrivPtr &astParent,
+    void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
+                     const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component,
-                     const GeneratorEquationPrivPtr &equation);
-    GeneratorEquationPrivPtr processNode(const XmlNodePtr &node,
+                     const GeneratorEquationPtr &equation);
+    GeneratorEquationPtr processNode(const XmlNodePtr &node,
                                          const ComponentPtr &component);
     void processComponent(const ComponentPtr &component);
-    void processEquationAst(const GeneratorEquationAstPrivPtr &ast);
+    void processEquationAst(const GeneratorEquationAstPtr &ast);
     void processModel(const ModelPtr &model);
 
-    bool isRelationalOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isLogicalOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isAndOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isOrOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isXorOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isPlusOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isMinusOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isTimesOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isDivideOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isPowerOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isRootOperator(const GeneratorEquationAstPrivPtr &ast) const;
-    bool isPiecewiseStatement(const GeneratorEquationAstPrivPtr &ast) const;
+    bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isLogicalOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isAndOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isOrOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isXorOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isPlusOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isMinusOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isTimesOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isDivideOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isPowerOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isRootOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
 
     std::string generateDouble(const std::string &value);
     std::string generateVariableName(const VariablePtr &variable,
-                                     const GeneratorEquationAstPrivPtr &ast = nullptr);
+                                     const GeneratorEquationAstPtr &ast = nullptr);
 
     std::string generateOperatorCode(const std::string &op,
-                                     const GeneratorEquationAstPrivPtr &ast);
-    std::string generateMinusUnaryCode(const GeneratorEquationAstPrivPtr &ast);
+                                     const GeneratorEquationAstPtr &ast);
+    std::string generateMinusUnaryCode(const GeneratorEquationAstPtr &ast);
     std::string generateOneParameterFunctionCode(const std::string &function,
-                                                 const GeneratorEquationAstPrivPtr &ast);
+                                                 const GeneratorEquationAstPtr &ast);
     std::string generateTwoParameterFunctionCode(const std::string &function,
-                                                 const GeneratorEquationAstPrivPtr &ast);
+                                                 const GeneratorEquationAstPtr &ast);
     std::string generatePiecewiseIfCode(const std::string &condition,
                                         const std::string &value);
     std::string generatePiecewiseElseCode(const std::string &value);
-    std::string generateCode(const GeneratorEquationAstPrivPtr &ast);
+    std::string generateCode(const GeneratorEquationAstPtr &ast);
 
-    std::string generateInitializationCode(const GeneratorVariablePrivPtr &variable);
-    std::string generateEquationCode(const GeneratorEquationPrivPtr &equation);
+    std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
+    std::string generateEquationCode(const GeneratorEquationPtr &equation);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -631,7 +631,7 @@ XmlNodePtr Generator::GeneratorImpl::mathmlChildNode(const XmlNodePtr &node, siz
     return res;
 }
 
-GeneratorVariablePrivPtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable)
+GeneratorInternalVariablePtr Generator::GeneratorImpl::generatorVariable(const VariablePtr &variable)
 {
     // Find and return, if there is one, the generator variable associated with
     // the given variable.
@@ -646,7 +646,7 @@ GeneratorVariablePrivPtr Generator::GeneratorImpl::generatorVariable(const Varia
     // No generator variable exists for the given variable, so create one, track
     // it and return it.
 
-    GeneratorVariablePrivPtr internalVariable = std::make_shared<GeneratorVariablePriv>(variable);
+    GeneratorInternalVariablePtr internalVariable = std::make_shared<GeneratorInternalVariable>(variable);
 
     mInternalVariables.push_back(internalVariable);
 
@@ -654,10 +654,10 @@ GeneratorVariablePrivPtr Generator::GeneratorImpl::generatorVariable(const Varia
 }
 
 void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
-                                           GeneratorEquationAstPrivPtr &ast,
-                                           const GeneratorEquationAstPrivPtr &astParent,
+                                           GeneratorEquationAstPtr &ast,
+                                           const GeneratorEquationAstPtr &astParent,
                                            const ComponentPtr &component,
-                                           const GeneratorEquationPrivPtr &equation)
+                                           const GeneratorEquationPtr &equation)
 {
     // Basic content elements
 
@@ -694,8 +694,8 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         processNode(mathmlChildNode(node, 1), ast->mLeft, ast, component, equation);
 
         if (childCount >= 3) {
-            GeneratorEquationAstPrivPtr astRight;
-            GeneratorEquationAstPrivPtr tempAst;
+            GeneratorEquationAstPtr astRight;
+            GeneratorEquationAstPtr tempAst;
 
             processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
@@ -724,144 +724,144 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // "math" element then it means that it is used to describe "a = b"
         // otherwise it is used to describe "a == b". In the former case, there
         // is nothing more we need to do since `ast` is already of
-        // GeneratorEquationAstPriv::Type::EQ type.
+        // GeneratorEquationAst::Type::EQ type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
-            ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::EQEQ, astParent);
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ, astParent);
         }
     } else if (node->isMathmlElement("neq")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::NEQ, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NEQ, astParent);
     } else if (node->isMathmlElement("lt")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::LT, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LT, astParent);
     } else if (node->isMathmlElement("leq")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::LEQ, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LEQ, astParent);
     } else if (node->isMathmlElement("gt")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::GT, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GT, astParent);
     } else if (node->isMathmlElement("geq")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::GEQ, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GEQ, astParent);
     } else if (node->isMathmlElement("and")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::AND, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::AND, astParent);
     } else if (node->isMathmlElement("or")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::OR, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OR, astParent);
     } else if (node->isMathmlElement("xor")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::XOR, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::XOR, astParent);
     } else if (node->isMathmlElement("not")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::NOT, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NOT, astParent);
 
         // Arithmetic operators
 
     } else if (node->isMathmlElement("plus")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::PLUS, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PLUS, astParent);
     } else if (node->isMathmlElement("minus")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::MINUS, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MINUS, astParent);
     } else if (node->isMathmlElement("times")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::TIMES, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TIMES, astParent);
     } else if (node->isMathmlElement("divide")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::DIVIDE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE, astParent);
     } else if (node->isMathmlElement("power")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::POWER, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::POWER, astParent);
     } else if (node->isMathmlElement("root")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ROOT, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ROOT, astParent);
     } else if (node->isMathmlElement("abs")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ABS, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ABS, astParent);
     } else if (node->isMathmlElement("exp")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::EXP, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EXP, astParent);
     } else if (node->isMathmlElement("ln")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::LN, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LN, astParent);
     } else if (node->isMathmlElement("log")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::LOG, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOG, astParent);
     } else if (node->isMathmlElement("ceiling")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::CEILING, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CEILING, astParent);
     } else if (node->isMathmlElement("floor")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::FLOOR, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FLOOR, astParent);
     } else if (node->isMathmlElement("min")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::MIN, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MIN, astParent);
 
         mNeedMin = true;
     } else if (node->isMathmlElement("max")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::MAX, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::MAX, astParent);
 
         mNeedMax = true;
     } else if (node->isMathmlElement("rem")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::REM, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::REM, astParent);
 
         // Calculus elements
 
     } else if (node->isMathmlElement("diff")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::DIFF, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIFF, astParent);
 
         // Trigonometric operators
 
     } else if (node->isMathmlElement("sin")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::SIN, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SIN, astParent);
     } else if (node->isMathmlElement("cos")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::COS, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COS, astParent);
     } else if (node->isMathmlElement("tan")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::TAN, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TAN, astParent);
     } else if (node->isMathmlElement("sec")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::SEC, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SEC, astParent);
 
         mNeedSec = true;
     } else if (node->isMathmlElement("csc")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::CSC, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSC, astParent);
 
         mNeedCsc = true;
     } else if (node->isMathmlElement("cot")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::COT, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COT, astParent);
 
         mNeedCot = true;
     } else if (node->isMathmlElement("sinh")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::SINH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SINH, astParent);
     } else if (node->isMathmlElement("cosh")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::COSH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COSH, astParent);
     } else if (node->isMathmlElement("tanh")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::TANH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TANH, astParent);
     } else if (node->isMathmlElement("sech")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::SECH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SECH, astParent);
 
         mNeedSech = true;
     } else if (node->isMathmlElement("csch")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::CSCH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CSCH, astParent);
 
         mNeedCsch = true;
     } else if (node->isMathmlElement("coth")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::COTH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::COTH, astParent);
 
         mNeedCoth = true;
     } else if (node->isMathmlElement("arcsin")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ASIN, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASIN, astParent);
     } else if (node->isMathmlElement("arccos")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ACOS, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOS, astParent);
     } else if (node->isMathmlElement("arctan")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ATAN, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATAN, astParent);
     } else if (node->isMathmlElement("arcsec")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ASEC, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASEC, astParent);
 
         mNeedAsec = true;
     } else if (node->isMathmlElement("arccsc")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ACSC, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSC, astParent);
 
         mNeedAcsc = true;
     } else if (node->isMathmlElement("arccot")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ACOT, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOT, astParent);
 
         mNeedAcot = true;
     } else if (node->isMathmlElement("arcsinh")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ASINH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASINH, astParent);
     } else if (node->isMathmlElement("arccosh")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ACOSH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOSH, astParent);
     } else if (node->isMathmlElement("arctanh")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ATANH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ATANH, astParent);
     } else if (node->isMathmlElement("arcsech")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ASECH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ASECH, astParent);
 
         mNeedAsech = true;
     } else if (node->isMathmlElement("arccsch")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ACSCH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACSCH, astParent);
 
         mNeedAcsch = true;
     } else if (node->isMathmlElement("arccoth")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::ACOTH, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::ACOTH, astParent);
 
         mNeedAcoth = true;
 
@@ -870,18 +870,18 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("piecewise")) {
         size_t childCount = mathmlChildCount(node);
 
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::PIECEWISE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
 
         if (childCount >= 2) {
-            GeneratorEquationAstPrivPtr astRight;
-            GeneratorEquationAstPrivPtr tempAst;
+            GeneratorEquationAstPtr astRight;
+            GeneratorEquationAstPtr tempAst;
 
             processNode(mathmlChildNode(node, childCount - 1), astRight, nullptr, component, equation);
 
             for (size_t i = childCount - 2; i > 0; --i) {
-                tempAst = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::PIECEWISE, astParent);
+                tempAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECEWISE, astParent);
 
                 processNode(mathmlChildNode(node, i), tempAst->mLeft, tempAst, component, equation);
 
@@ -896,12 +896,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast->mRight = astRight;
         }
     } else if (node->isMathmlElement("piece")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::PIECE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PIECE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
         processNode(mathmlChildNode(node, 1), ast->mRight, ast, component, equation);
     } else if (node->isMathmlElement("otherwise")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::OTHERWISE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OTHERWISE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
 
@@ -912,12 +912,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         VariablePtr variable = component->variable(variableName);
 
         if (variable != nullptr) {
-            ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::CI, variable, astParent);
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CI, variable, astParent);
 
             // Have our equation track the (ODE) variable (by ODE variable, we
             // mean a variable that is used in a "diff" element)
 
-            GeneratorVariablePrivPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+            GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
             if (node->parent()->firstChild()->isMathmlElement("diff")) {
                 equation->addOdeVariable(generatorVariable);
@@ -941,23 +941,23 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         if (mathmlChildCount(node) == 1) {
             // E-notation based CN value
 
-            ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString() + "e" + node->firstChild()->next()->next()->convertToString(), astParent);
         } else {
-            ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::CN, node->firstChild()->convertToString(), astParent);
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
         }
 
         // Qualifier elements
 
     } else if (node->isMathmlElement("degree")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::DEGREE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DEGREE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
     } else if (node->isMathmlElement("logbase")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::LOGBASE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LOGBASE, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
     } else if (node->isMathmlElement("bvar")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::BVAR, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::BVAR, astParent);
 
         processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
 
@@ -970,26 +970,26 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // Constants
 
     } else if (node->isMathmlElement("true")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::TRUE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TRUE, astParent);
     } else if (node->isMathmlElement("false")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::FALSE, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::FALSE, astParent);
     } else if (node->isMathmlElement("exponentiale")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::E, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::E, astParent);
     } else if (node->isMathmlElement("pi")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::PI, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PI, astParent);
     } else if (node->isMathmlElement("infinity")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::INF, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::INF, astParent);
     } else if (node->isMathmlElement("notanumber")) {
-        ast = std::make_shared<GeneratorEquationAstPriv>(GeneratorEquationAstPriv::Type::NAN, astParent);
+        ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NAN, astParent);
     }
 }
 
-GeneratorEquationPrivPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
+GeneratorEquationPtr Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                                                const ComponentPtr &component)
 {
     // Create and keep track of the equation associated with the given node.
 
-    GeneratorEquationPrivPtr equation = std::make_shared<GeneratorEquationPriv>();
+    GeneratorEquationPtr equation = std::make_shared<GeneratorEquation>();
 
     mEquations.push_back(equation);
 
@@ -1027,7 +1027,7 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         // Retrieve the variable's corresponding generator variable.
 
         VariablePtr variable = component->variable(i);
-        GeneratorVariablePrivPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+        GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
         // Replace the variable held by `generatorVariable`, in case the
         // existing one has no initial value while `variable` does. Otherwise,
@@ -1065,18 +1065,18 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
     }
 }
 
-void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPrivPtr &ast)
+void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr &ast)
 {
     // Look for the definition of a variable of integration and make sure that
     // we don't have more than one of it and that it's not initialised.
 
-    GeneratorEquationAstPrivPtr astParent = ast->mParent.lock();
-    GeneratorEquationAstPrivPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
-    GeneratorEquationAstPrivPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;
+    GeneratorEquationAstPtr astParent = ast->mParent.lock();
+    GeneratorEquationAstPtr astGrandParent = (astParent != nullptr) ? astParent->mParent.lock() : nullptr;
+    GeneratorEquationAstPtr astGreatGrandParent = (astGrandParent != nullptr) ? astGrandParent->mParent.lock() : nullptr;
 
-    if ((ast->mType == GeneratorEquationAstPriv::Type::CI)
-        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstPriv::Type::BVAR)
-        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAstPriv::Type::DIFF)) {
+    if ((ast->mType == GeneratorEquationAst::Type::CI)
+        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::BVAR)
+        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         VariablePtr variable = ast->mVariable;
 
         generatorVariable(variable)->makeVariableOfIntegration();
@@ -1128,10 +1128,10 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPriv
 
     // Make sure that we only use first-order ODEs.
 
-    if ((ast->mType == GeneratorEquationAstPriv::Type::CN)
-        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstPriv::Type::DEGREE)
-        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAstPriv::Type::BVAR)
-        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAstPriv::Type::DIFF)) {
+    if ((ast->mType == GeneratorEquationAst::Type::CN)
+        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::DEGREE)
+        && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::BVAR)
+        && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         if (convertToDouble(ast->mValue) != 1.0) {
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
             ComponentPtr component = variable->parentComponent();
@@ -1150,8 +1150,8 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPriv
 
     // Make a variable a state if it is used in an ODE.
 
-    if ((ast->mType == GeneratorEquationAstPriv::Type::CI)
-        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAstPriv::Type::DIFF)) {
+    if ((ast->mType == GeneratorEquationAst::Type::CI)
+        && (astParent != nullptr) && (astParent->mType == GeneratorEquationAst::Type::DIFF)) {
         generatorVariable(ast->mVariable)->makeState();
     }
 
@@ -1166,8 +1166,8 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPriv
     }
 }
 
-bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorVariablePrivPtr &variable1,
-                                                      const GeneratorVariablePrivPtr &variable2)
+bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
+                                                      const GeneratorInternalVariablePtr &variable2)
 {
     // TODO: we can't currently instatiate imports, which means that we can't
     //       have variables in different models. This also means that we can't
@@ -1185,8 +1185,8 @@ bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorVariablePri
     return realComponent1->name() < realComponent2->name();
 }
 
-bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorVariablePrivPtr &variable1,
-                                                              const GeneratorVariablePrivPtr &variable2)
+bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
+                                                              const GeneratorInternalVariablePtr &variable2)
 {
     if (variable1->mType == variable2->mType) {
         return variable1->mIndex < variable2->mIndex;
@@ -1195,8 +1195,8 @@ bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorVar
     return variable1->mType < variable2->mType;
 }
 
-bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPrivPtr &equation1,
-                                                          const GeneratorEquationPrivPtr &equation2)
+bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
+                                                          const GeneratorEquationPtr &equation2)
 {
     return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
@@ -1258,7 +1258,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         size_t variableIndex = MAX_SIZE_T;
 
         for (const auto &internalVariable : mInternalVariables) {
-            if (internalVariable->mType == GeneratorVariablePriv::Type::CONSTANT) {
+            if (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT) {
                 internalVariable->mIndex = ++variableIndex;
             }
         }
@@ -1288,22 +1288,22 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             std::string errorType;
 
             switch (internalVariable->mType) {
-            case GeneratorVariablePriv::Type::UNKNOWN:
+            case GeneratorInternalVariable::Type::UNKNOWN:
                 errorType = "is not computed";
 
                 break;
-            case GeneratorVariablePriv::Type::SHOULD_BE_STATE:
+            case GeneratorInternalVariable::Type::SHOULD_BE_STATE:
                 errorType = "is used in an ODE, but it is not initialised";
 
                 break;
-            case GeneratorVariablePriv::Type::VARIABLE_OF_INTEGRATION:
-            case GeneratorVariablePriv::Type::STATE:
-            case GeneratorVariablePriv::Type::CONSTANT:
-            case GeneratorVariablePriv::Type::COMPUTED_TRUE_CONSTANT:
-            case GeneratorVariablePriv::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
-            case GeneratorVariablePriv::Type::ALGEBRAIC:
+            case GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION:
+            case GeneratorInternalVariable::Type::STATE:
+            case GeneratorInternalVariable::Type::CONSTANT:
+            case GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT:
+            case GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT:
+            case GeneratorInternalVariable::Type::ALGEBRAIC:
                 break;
-            case GeneratorVariablePriv::Type::OVERCONSTRAINED:
+            case GeneratorInternalVariable::Type::OVERCONSTRAINED:
                 errorType = "is computed more than once";
 
                 break;
@@ -1329,13 +1329,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     // being invalid
 
     if (mModelType != Generator::ModelType::INVALID) {
-        bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorVariablePrivPtr &variable) {
-                                                return (variable->mType == GeneratorVariablePriv::Type::UNKNOWN)
-                                                       || (variable->mType == GeneratorVariablePriv::Type::SHOULD_BE_STATE);
+        bool hasUnderconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorInternalVariablePtr &variable) {
+                                                return (variable->mType == GeneratorInternalVariable::Type::UNKNOWN)
+                                                       || (variable->mType == GeneratorInternalVariable::Type::SHOULD_BE_STATE);
                                             })
                                             != std::end(mInternalVariables);
-        bool hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorVariablePrivPtr &variable) {
-                                               return variable->mType == GeneratorVariablePriv::Type::OVERCONSTRAINED;
+        bool hasOverconstrainedVariables = std::find_if(mInternalVariables.begin(), mInternalVariables.end(), [](const GeneratorInternalVariablePtr &variable) {
+                                               return variable->mType == GeneratorInternalVariable::Type::OVERCONSTRAINED;
                                            })
                                            != std::end(mInternalVariables);
 
@@ -1373,75 +1373,75 @@ std::string replace(const std::string &string, const std::string &from, const st
     return std::string(string).replace(string.find(from), from.length(), to);
 }
 
-bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAstPriv::Type::EQEQ)
-           || (ast->mType == GeneratorEquationAstPriv::Type::NEQ)
-           || (ast->mType == GeneratorEquationAstPriv::Type::LT)
-           || (ast->mType == GeneratorEquationAstPriv::Type::LEQ)
-           || (ast->mType == GeneratorEquationAstPriv::Type::GT)
-           || (ast->mType == GeneratorEquationAstPriv::Type::GEQ);
+    return (ast->mType == GeneratorEquationAst::Type::EQEQ)
+           || (ast->mType == GeneratorEquationAst::Type::NEQ)
+           || (ast->mType == GeneratorEquationAst::Type::LT)
+           || (ast->mType == GeneratorEquationAst::Type::LEQ)
+           || (ast->mType == GeneratorEquationAst::Type::GT)
+           || (ast->mType == GeneratorEquationAst::Type::GEQ);
 }
 
-bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPtr &ast) const
 {
-    // Note: GeneratorEquationAstPriv::Type::NOT is a unary logical operator,
-    //       hence we don't include it here since this method is only used to
+    // Note: GeneratorEquationAst::Type::NOT is a unary logical operator, hence
+    //       we don't include it here since this method is only used to
     //       determine whether parentheses should be added around some code.
 
-    return (ast->mType == GeneratorEquationAstPriv::Type::AND)
-           || (ast->mType == GeneratorEquationAstPriv::Type::OR)
-           || (ast->mType == GeneratorEquationAstPriv::Type::XOR);
+    return (ast->mType == GeneratorEquationAst::Type::AND)
+           || (ast->mType == GeneratorEquationAst::Type::OR)
+           || (ast->mType == GeneratorEquationAst::Type::XOR);
 }
 
-bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::AND;
+    return ast->mType == GeneratorEquationAst::Type::AND;
 }
 
-bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::OR;
+    return ast->mType == GeneratorEquationAst::Type::OR;
 }
 
-bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::XOR;
+    return ast->mType == GeneratorEquationAst::Type::XOR;
 }
 
-bool Generator::GeneratorImpl::isPlusOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isPlusOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::PLUS;
+    return ast->mType == GeneratorEquationAst::Type::PLUS;
 }
 
-bool Generator::GeneratorImpl::isMinusOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isMinusOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::MINUS;
+    return ast->mType == GeneratorEquationAst::Type::MINUS;
 }
 
-bool Generator::GeneratorImpl::isTimesOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isTimesOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::TIMES;
+    return ast->mType == GeneratorEquationAst::Type::TIMES;
 }
 
-bool Generator::GeneratorImpl::isDivideOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isDivideOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::DIVIDE;
+    return ast->mType == GeneratorEquationAst::Type::DIVIDE;
 }
 
-bool Generator::GeneratorImpl::isPowerOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isPowerOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::POWER;
+    return ast->mType == GeneratorEquationAst::Type::POWER;
 }
 
-bool Generator::GeneratorImpl::isRootOperator(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isRootOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::ROOT;
+    return ast->mType == GeneratorEquationAst::Type::ROOT;
 }
 
-bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPrivPtr &ast) const
+bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAstPriv::Type::PIECEWISE;
+    return ast->mType == GeneratorEquationAst::Type::PIECEWISE;
 }
 
 std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
@@ -1459,18 +1459,18 @@ std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
-std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &variable, const GeneratorEquationAstPrivPtr &ast)
+std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
 {
-    GeneratorVariablePrivPtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
+    GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
-    if (generatorVariable->mType == GeneratorVariablePriv::Type::VARIABLE_OF_INTEGRATION) {
+    if (generatorVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION) {
         return mProfile->variableOfIntegrationString();
     }
 
     std::string arrayName;
 
-    if (generatorVariable->mType == GeneratorVariablePriv::Type::STATE) {
-        arrayName = ((ast != nullptr) && (ast->mParent.lock()->mType == GeneratorEquationAstPriv::Type::DIFF)) ?
+    if (generatorVariable->mType == GeneratorInternalVariable::Type::STATE) {
+        arrayName = ((ast != nullptr) && (ast->mParent.lock()->mType == GeneratorEquationAst::Type::DIFF)) ?
                         mProfile->ratesArrayString() :
                         mProfile->statesArrayString();
     } else {
@@ -1485,7 +1485,7 @@ std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &va
 }
 
 std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op,
-                                                           const GeneratorEquationAstPrivPtr &ast)
+                                                           const GeneratorEquationAstPtr &ast)
 {
     // Generate the code for the left and right branches of the given AST.
 
@@ -1781,7 +1781,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     return left + op + right;
 }
 
-std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEquationAstPrivPtr &ast)
+std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEquationAstPtr &ast)
 {
     // Generate the code for the left branch of the given AST.
 
@@ -1801,13 +1801,13 @@ std::string Generator::GeneratorImpl::generateMinusUnaryCode(const GeneratorEqua
 }
 
 std::string Generator::GeneratorImpl::generateOneParameterFunctionCode(const std::string &function,
-                                                                       const GeneratorEquationAstPrivPtr &ast)
+                                                                       const GeneratorEquationAstPtr &ast)
 {
     return function + "(" + generateCode(ast->mLeft) + ")";
 }
 
 std::string Generator::GeneratorImpl::generateTwoParameterFunctionCode(const std::string &function,
-                                                                       const GeneratorEquationAstPrivPtr &ast)
+                                                                       const GeneratorEquationAstPtr &ast)
 {
     return function + "(" + generateCode(ast->mLeft) + ", " + generateCode(ast->mRight) + ")";
 }
@@ -1830,7 +1830,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
                    "#else", value);
 }
 
-std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPrivPtr &ast)
+std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &ast)
 {
     // Generate the code for the given AST.
 
@@ -1839,43 +1839,43 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
     switch (ast->mType) {
         // Relational and logical operators
 
-    case GeneratorEquationAstPriv::Type::EQ:
+    case GeneratorEquationAst::Type::EQ:
         code = generateOperatorCode(mProfile->eqString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::EQEQ:
+    case GeneratorEquationAst::Type::EQEQ:
         code = generateOperatorCode(mProfile->eqEqString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::NEQ:
+    case GeneratorEquationAst::Type::NEQ:
         code = generateOperatorCode(mProfile->neqString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::LT:
+    case GeneratorEquationAst::Type::LT:
         code = generateOperatorCode(mProfile->ltString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::LEQ:
+    case GeneratorEquationAst::Type::LEQ:
         code = generateOperatorCode(mProfile->leqString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::GT:
+    case GeneratorEquationAst::Type::GT:
         code = generateOperatorCode(mProfile->gtString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::GEQ:
+    case GeneratorEquationAst::Type::GEQ:
         code = generateOperatorCode(mProfile->geqString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::AND:
+    case GeneratorEquationAst::Type::AND:
         code = generateOperatorCode(mProfile->andString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::OR:
+    case GeneratorEquationAst::Type::OR:
         code = generateOperatorCode(mProfile->orString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::XOR:
+    case GeneratorEquationAst::Type::XOR:
         if (mProfile->hasXorOperator()) {
             code = generateOperatorCode(mProfile->xorString(), ast);
         } else {
@@ -1883,14 +1883,14 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
         }
 
         break;
-    case GeneratorEquationAstPriv::Type::NOT:
+    case GeneratorEquationAst::Type::NOT:
         code = mProfile->notString() + generateCode(ast->mLeft);
 
         break;
 
         // Arithmetic operators
 
-    case GeneratorEquationAstPriv::Type::PLUS:
+    case GeneratorEquationAst::Type::PLUS:
         if (ast->mRight != nullptr) {
             code = generateOperatorCode(mProfile->plusString(), ast);
         } else {
@@ -1898,7 +1898,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
         }
 
         break;
-    case GeneratorEquationAstPriv::Type::MINUS:
+    case GeneratorEquationAst::Type::MINUS:
         if (ast->mRight != nullptr) {
             code = generateOperatorCode(mProfile->minusString(), ast);
         } else {
@@ -1906,15 +1906,15 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
         }
 
         break;
-    case GeneratorEquationAstPriv::Type::TIMES:
+    case GeneratorEquationAst::Type::TIMES:
         code = generateOperatorCode(mProfile->timesString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::DIVIDE:
+    case GeneratorEquationAst::Type::DIVIDE:
         code = generateOperatorCode(mProfile->divideString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::POWER: {
+    case GeneratorEquationAst::Type::POWER: {
         std::string stringValue = generateCode(ast->mRight);
         double doubleValue = convertToDouble(stringValue);
 
@@ -1930,7 +1930,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
 
         break;
     }
-    case GeneratorEquationAstPriv::Type::ROOT:
+    case GeneratorEquationAst::Type::ROOT:
         if (ast->mRight != nullptr) {
             std::string stringValue = generateCode(ast->mLeft);
             double doubleValue = convertToDouble(stringValue);
@@ -1947,19 +1947,19 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
         }
 
         break;
-    case GeneratorEquationAstPriv::Type::ABS:
+    case GeneratorEquationAst::Type::ABS:
         code = generateOneParameterFunctionCode(mProfile->absoluteValueString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::EXP:
+    case GeneratorEquationAst::Type::EXP:
         code = generateOneParameterFunctionCode(mProfile->exponentialString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::LN:
+    case GeneratorEquationAst::Type::LN:
         code = generateOneParameterFunctionCode(mProfile->napierianLogarithmString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::LOG:
+    case GeneratorEquationAst::Type::LOG:
         if (ast->mRight != nullptr) {
             std::string stringValue = generateCode(ast->mLeft);
             double doubleValue = convertToDouble(stringValue);
@@ -1974,138 +1974,138 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
         }
 
         break;
-    case GeneratorEquationAstPriv::Type::CEILING:
+    case GeneratorEquationAst::Type::CEILING:
         code = generateOneParameterFunctionCode(mProfile->ceilingString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::FLOOR:
+    case GeneratorEquationAst::Type::FLOOR:
         code = generateOneParameterFunctionCode(mProfile->floorString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::MIN:
+    case GeneratorEquationAst::Type::MIN:
         code = generateTwoParameterFunctionCode(mProfile->minString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::MAX:
+    case GeneratorEquationAst::Type::MAX:
         code = generateTwoParameterFunctionCode(mProfile->maxString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::REM:
+    case GeneratorEquationAst::Type::REM:
         code = generateTwoParameterFunctionCode(mProfile->remString(), ast);
 
         break;
 
         // Calculus elements
 
-    case GeneratorEquationAstPriv::Type::DIFF:
+    case GeneratorEquationAst::Type::DIFF:
         code = generateCode(ast->mRight);
 
         break;
 
         // Trigonometric operators
 
-    case GeneratorEquationAstPriv::Type::SIN:
+    case GeneratorEquationAst::Type::SIN:
         code = generateOneParameterFunctionCode(mProfile->sinString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::COS:
+    case GeneratorEquationAst::Type::COS:
         code = generateOneParameterFunctionCode(mProfile->cosString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::TAN:
+    case GeneratorEquationAst::Type::TAN:
         code = generateOneParameterFunctionCode(mProfile->tanString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::SEC:
+    case GeneratorEquationAst::Type::SEC:
         code = generateOneParameterFunctionCode(mProfile->secString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::CSC:
+    case GeneratorEquationAst::Type::CSC:
         code = generateOneParameterFunctionCode(mProfile->cscString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::COT:
+    case GeneratorEquationAst::Type::COT:
         code = generateOneParameterFunctionCode(mProfile->cotString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::SINH:
+    case GeneratorEquationAst::Type::SINH:
         code = generateOneParameterFunctionCode(mProfile->sinhString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::COSH:
+    case GeneratorEquationAst::Type::COSH:
         code = generateOneParameterFunctionCode(mProfile->coshString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::TANH:
+    case GeneratorEquationAst::Type::TANH:
         code = generateOneParameterFunctionCode(mProfile->tanhString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::SECH:
+    case GeneratorEquationAst::Type::SECH:
         code = generateOneParameterFunctionCode(mProfile->sechString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::CSCH:
+    case GeneratorEquationAst::Type::CSCH:
         code = generateOneParameterFunctionCode(mProfile->cschString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::COTH:
+    case GeneratorEquationAst::Type::COTH:
         code = generateOneParameterFunctionCode(mProfile->cothString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ASIN:
+    case GeneratorEquationAst::Type::ASIN:
         code = generateOneParameterFunctionCode(mProfile->asinString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ACOS:
+    case GeneratorEquationAst::Type::ACOS:
         code = generateOneParameterFunctionCode(mProfile->acosString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ATAN:
+    case GeneratorEquationAst::Type::ATAN:
         code = generateOneParameterFunctionCode(mProfile->atanString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ASEC:
+    case GeneratorEquationAst::Type::ASEC:
         code = generateOneParameterFunctionCode(mProfile->asecString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ACSC:
+    case GeneratorEquationAst::Type::ACSC:
         code = generateOneParameterFunctionCode(mProfile->acscString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ACOT:
+    case GeneratorEquationAst::Type::ACOT:
         code = generateOneParameterFunctionCode(mProfile->acotString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ASINH:
+    case GeneratorEquationAst::Type::ASINH:
         code = generateOneParameterFunctionCode(mProfile->asinhString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ACOSH:
+    case GeneratorEquationAst::Type::ACOSH:
         code = generateOneParameterFunctionCode(mProfile->acoshString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ATANH:
+    case GeneratorEquationAst::Type::ATANH:
         code = generateOneParameterFunctionCode(mProfile->atanhString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ASECH:
+    case GeneratorEquationAst::Type::ASECH:
         code = generateOneParameterFunctionCode(mProfile->asechString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ACSCH:
+    case GeneratorEquationAst::Type::ACSCH:
         code = generateOneParameterFunctionCode(mProfile->acschString(), ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::ACOTH:
+    case GeneratorEquationAst::Type::ACOTH:
         code = generateOneParameterFunctionCode(mProfile->acothString(), ast);
 
         break;
 
         // Piecewise statement
 
-    case GeneratorEquationAstPriv::Type::PIECEWISE:
+    case GeneratorEquationAst::Type::PIECEWISE:
         if (ast->mRight != nullptr) {
-            if (ast->mRight->mType == GeneratorEquationAstPriv::Type::PIECE) {
+            if (ast->mRight->mType == GeneratorEquationAst::Type::PIECE) {
                 code = generateCode(ast->mLeft) + generatePiecewiseElseCode(generateCode(ast->mRight) + generatePiecewiseElseCode(mProfile->nanString()));
             } else {
                 code = generateCode(ast->mLeft) + generatePiecewiseElseCode(generateCode(ast->mRight));
@@ -2115,58 +2115,58 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
         }
 
         break;
-    case GeneratorEquationAstPriv::Type::PIECE:
+    case GeneratorEquationAst::Type::PIECE:
         code = generatePiecewiseIfCode(generateCode(ast->mRight), generateCode(ast->mLeft));
 
         break;
-    case GeneratorEquationAstPriv::Type::OTHERWISE:
+    case GeneratorEquationAst::Type::OTHERWISE:
         code = generateCode(ast->mLeft);
 
         break;
 
         // Token elements
 
-    case GeneratorEquationAstPriv::Type::CI:
+    case GeneratorEquationAst::Type::CI:
         code = generateVariableName(ast->mVariable, ast);
 
         break;
-    case GeneratorEquationAstPriv::Type::CN:
+    case GeneratorEquationAst::Type::CN:
         code = generateDouble(ast->mValue);
 
         break;
 
         // Qualifier elements
 
-    case GeneratorEquationAstPriv::Type::DEGREE:
-    case GeneratorEquationAstPriv::Type::LOGBASE:
-    case GeneratorEquationAstPriv::Type::BVAR:
+    case GeneratorEquationAst::Type::DEGREE:
+    case GeneratorEquationAst::Type::LOGBASE:
+    case GeneratorEquationAst::Type::BVAR:
         code = generateCode(ast->mLeft);
 
         break;
 
         // Constants
 
-    case GeneratorEquationAstPriv::Type::TRUE:
+    case GeneratorEquationAst::Type::TRUE:
         code = mProfile->trueString();
 
         break;
-    case GeneratorEquationAstPriv::Type::FALSE:
+    case GeneratorEquationAst::Type::FALSE:
         code = mProfile->falseString();
 
         break;
-    case GeneratorEquationAstPriv::Type::E:
+    case GeneratorEquationAst::Type::E:
         code = mProfile->eString();
 
         break;
-    case GeneratorEquationAstPriv::Type::PI:
+    case GeneratorEquationAst::Type::PI:
         code = mProfile->piString();
 
         break;
-    case GeneratorEquationAstPriv::Type::INF:
+    case GeneratorEquationAst::Type::INF:
         code = mProfile->infString();
 
         break;
-    case GeneratorEquationAstPriv::Type::NAN:
+    case GeneratorEquationAst::Type::NAN:
         code = mProfile->nanString();
 
         break;
@@ -2175,12 +2175,12 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPri
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorVariablePrivPtr &variable)
+std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
     return mProfile->indentString() + generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPrivPtr &equation)
+std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation)
 {
     std::string res;
 
@@ -2471,14 +2471,14 @@ std::string Generator::code() const
     res += mPimpl->mProfile->beginInitializeModelMethodString();
 
     for (const auto &internalVariable : mPimpl->mInternalVariables) {
-        if ((internalVariable->mType == GeneratorVariablePriv::Type::STATE)
-            || (internalVariable->mType == GeneratorVariablePriv::Type::CONSTANT)) {
+        if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
+            || (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)) {
             res += mPimpl->generateInitializationCode(internalVariable);
         }
     }
 
     for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquationPriv::Type::TRUE_CONSTANT) {
+        if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
             res += mPimpl->generateEquationCode(equation);
         }
     }
@@ -2491,7 +2491,7 @@ std::string Generator::code() const
     res += mPimpl->mProfile->beginComputeConstantEquationsMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquationPriv::Type::VARIABLE_BASED_CONSTANT) {
+        if (equation->mType == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
             res += mPimpl->generateEquationCode(equation);
         }
     }
@@ -2505,7 +2505,7 @@ std::string Generator::code() const
     res += mPimpl->mProfile->beginComputeRateEquationsMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquationPriv::Type::RATE) {
+        if (equation->mType == GeneratorEquation::Type::RATE) {
             res += mPimpl->generateEquationCode(equation);
         }
     }
@@ -2518,7 +2518,7 @@ std::string Generator::code() const
     res += mPimpl->mProfile->beginComputeAlgebraicEquationsMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquationPriv::Type::ALGEBRAIC) {
+        if (equation->mType == GeneratorEquation::Type::ALGEBRAIC) {
             res += mPimpl->generateEquationCode(equation);
         }
     }
