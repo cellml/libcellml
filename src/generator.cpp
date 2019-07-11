@@ -108,12 +108,10 @@ struct GeneratorInternalVariable
         OVERCONSTRAINED
     };
 
-    Type mType = Type::UNKNOWN;
     size_t mIndex = MAX_SIZE_T;
+    Type mType = Type::UNKNOWN;
 
     VariablePtr mVariable;
-
-    bool mProcessed = false;
 
     GeneratorEquationWeakPtr mEquation;
 
@@ -385,7 +383,7 @@ bool GeneratorEquation::containsNonConstantVariables(const std::list<GeneratorIn
 
 bool GeneratorEquation::knownVariable(const GeneratorInternalVariablePtr &variable)
 {
-    return variable->mProcessed
+    return (variable->mIndex != MAX_SIZE_T)
            || (variable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION)
            || (variable->mType == GeneratorInternalVariable::Type::STATE)
            || (variable->mType == GeneratorInternalVariable::Type::CONSTANT);
@@ -393,7 +391,7 @@ bool GeneratorEquation::knownVariable(const GeneratorInternalVariablePtr &variab
 
 bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
 {
-    return odeVariable->mProcessed
+    return (odeVariable->mIndex != MAX_SIZE_T)
            || (odeVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION);
 }
 
@@ -410,9 +408,9 @@ bool GeneratorEquation::check(size_t &stateIndex, size_t &variableIndex)
     if (mVariables.size() + mOdeVariables.size() == 1) {
         GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
-        if ((variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
-            && (variable->mType != GeneratorInternalVariable::Type::SHOULD_BE_STATE)
-            && (variable->mIndex != MAX_SIZE_T)) {
+        if ((variable->mIndex != MAX_SIZE_T)
+            && (variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
+            && (variable->mType != GeneratorInternalVariable::Type::SHOULD_BE_STATE)) {
             variable->mType = GeneratorInternalVariable::Type::OVERCONSTRAINED;
 
             return false;
@@ -473,13 +471,11 @@ bool GeneratorEquation::check(size_t &stateIndex, size_t &variableIndex)
             || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
             || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT)
             || (variable->mType == GeneratorInternalVariable::Type::ALGEBRAIC)) {
+            variable->mEquation = shared_from_this();
+
             variable->mIndex = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
                                    ++stateIndex :
                                    ++variableIndex;
-
-            variable->mProcessed = true;
-            variable->mEquation = shared_from_this();
-
             mType = (variable->mType == GeneratorInternalVariable::Type::STATE) ?
                         Type::RATE :
                         (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT) ?
