@@ -310,7 +310,6 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
         UNKNOWN,
         TRUE_CONSTANT,
         VARIABLE_BASED_CONSTANT,
-        DEPENDENCY,
         RATE,
         ALGEBRAIC
     };
@@ -436,11 +435,7 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
         GeneratorEquationPtr equation = variable->mEquation.lock();
 
         if (knownVariable(variable) && (equation != nullptr)) {
-            if (equation->mType == Type::ALGEBRAIC) {
-                equation->mType = Type::DEPENDENCY;
-
-                mDependencies.push_back(equation);
-            }
+            mDependencies.push_back(equation);
         }
     }
 
@@ -576,7 +571,8 @@ struct Generator::GeneratorImpl
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
-    std::string generateEquationCode(const GeneratorEquationPtr &equation);
+    std::string generateEquationCode(const GeneratorEquationPtr &equation,
+                                     std::vector<GeneratorEquationPtr> &remainingEquations);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -2159,15 +2155,22 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const Generator
     return mProfile->indentString() + generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
-std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation)
+std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
+                                                           std::vector<GeneratorEquationPtr> &remainingEquations)
 {
     std::string res;
 
     for (const auto &dependency : equation->mDependencies) {
-        res += generateEquationCode(dependency);
+        res += generateEquationCode(dependency, remainingEquations);
     }
 
-    res += mProfile->indentString() + generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
+    auto equationIter = std::find(remainingEquations.begin(), remainingEquations.end(), equation);
+
+    if (equationIter != remainingEquations.end()) {
+        res += mProfile->indentString() + generateCode(equation->mAst) + mProfile->commandSeparatorString() + "\n";
+
+        remainingEquations.erase(equationIter);
+    }
 
     return res;
 }
@@ -2456,9 +2459,11 @@ std::string Generator::code() const
         }
     }
 
+    std::vector<GeneratorEquationPtr> remainingEquations { std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations) };
+
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
-            res += mPimpl->generateEquationCode(equation);
+            res += mPimpl->generateEquationCode(equation, remainingEquations);
         }
     }
 
@@ -2471,7 +2476,7 @@ std::string Generator::code() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
-            res += mPimpl->generateEquationCode(equation);
+            res += mPimpl->generateEquationCode(equation, remainingEquations);
         }
     }
 
@@ -2485,7 +2490,7 @@ std::string Generator::code() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::RATE) {
-            res += mPimpl->generateEquationCode(equation);
+            res += mPimpl->generateEquationCode(equation, remainingEquations);
         }
     }
 
@@ -2498,7 +2503,7 @@ std::string Generator::code() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::ALGEBRAIC) {
-            res += mPimpl->generateEquationCode(equation);
+            res += mPimpl->generateEquationCode(equation, remainingEquations);
         }
     }
 

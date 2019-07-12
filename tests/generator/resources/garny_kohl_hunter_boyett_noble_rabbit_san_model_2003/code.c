@@ -144,9 +144,9 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     variables[126] = (variables[1] == 0.0)?pow(1.0/(1.0+exp(-states[14]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[14]+30.32)/5.46)), 1.0/3.0);
     variables[127] = (variables[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[14]+56.7))+0.627*exp(0.082*(states[14]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[14]+56.7062))+0.6274*exp(0.0823*(states[14]+65.0131)))+4.569e-5;
     rates[0] = (variables[126]-states[0])/variables[127];
+    variables[130] = 1.0/(1.0+exp((states[14]+66.1)/6.4));
     variables[132] = 3.717e-6*exp(-0.2815*(states[14]+17.11))/(1.0+0.003732*exp(-0.3426*(states[14]+37.76)))+0.0005977;
     rates[1] = (variables[130]-states[1])/variables[132];
-    variables[130] = 1.0/(1.0+exp((states[14]+66.1)/6.4));
     variables[131] = variables[130];
     variables[133] = 3.186e-8*exp(-0.6219*(states[14]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[14]+34.07)))+0.003556;
     rates[2] = (variables[131]-states[2])/variables[133];
@@ -176,9 +176,9 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     variables[160] = 1.0/(1.0+exp(-(states[14]-10.93)/19.7));
     variables[161] = (variables[1] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[14]+30.61))+0.369*exp(-0.12*(states[14]+23.84)))):(variables[1] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[14]+30.61))+0.369*exp(-0.119*(states[14]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[14]+30.61))+0.369*exp(-0.119*(states[14]+23.84))));
     rates[8] = (variables[160]-states[8])/variables[161];
+    variables[164] = (variables[1] != 2.0)?1.0/(1.0+exp(-(states[14]+14.2)/10.6)):1.0/(1.0+exp(-(states[14]+13.2)/10.6));
     variables[165] = (variables[1] != 2.0)?1.0/(37.2*exp((states[14]-9.0)/15.9)+0.96*exp(-(states[14]-9.0)/22.5)):1.0/(37.2*exp((states[14]-10.0)/15.9)+0.96*exp(-(states[14]-10.0)/22.5));
     rates[9] = (variables[164]-states[9])/variables[165];
-    variables[164] = (variables[1] != 2.0)?1.0/(1.0+exp(-(states[14]+14.2)/10.6)):1.0/(1.0+exp(-(states[14]+13.2)/10.6));
     variables[166] = variables[164];
     variables[167] = (variables[1] != 2.0)?1.0/(4.2*exp((states[14]-9.0)/17.0)+0.15*exp(-(states[14]-9.0)/21.6)):1.0/(4.2*exp((states[14]-10.0)/17.0)+0.15*exp(-(states[14]-10.0)/21.6));
     rates[10] = (variables[166]-states[10])/variables[167];
