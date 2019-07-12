@@ -2459,7 +2459,7 @@ std::string Generator::code() const
         }
     }
 
-    std::vector<GeneratorEquationPtr> remainingEquations { std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations) };
+    std::vector<GeneratorEquationPtr> remainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
