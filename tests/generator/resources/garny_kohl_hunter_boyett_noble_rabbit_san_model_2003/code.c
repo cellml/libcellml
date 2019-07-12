@@ -141,41 +141,6 @@ void computeConstantEquations(double *variables)
 
 void computeRateEquations(double voi, double *states, double *rates, double *variables)
 {
-    variables[111] = variables[3]+variables[110]*(variables[4]-variables[3]);
-    variables[119] = (variables[1] == 0.0)?variables[47]+variables[110]*(variables[48]-variables[47]):(variables[1] == 1.0)?variables[51]+variables[110]*(variables[52]-variables[51]):variables[49]+variables[110]*(variables[50]-variables[49]);
-    variables[120] = variables[119]*variables[36]/(variables[36]+0.0004);
-    variables[117] = (variables[1] == 0.0)?variables[38]+variables[110]*(variables[39]-variables[38]):(variables[1] == 1.0)?variables[42]+variables[110]*(variables[43]-variables[42]):variables[40]+variables[110]*(variables[41]-variables[40]);
-    variables[118] = variables[117]*pow(variables[32]/(variables[46]+variables[32]), 3.0)*pow(variables[44]/(variables[45]+variables[44]), 2.0)*1.6/(1.5+exp(-(states[14]+60.0)/40.0));
-    variables[115] = (variables[1] == 0.0)?variables[26]+variables[110]*(variables[27]-variables[26]):(variables[1] == 1.0)?variables[30]+variables[110]*(variables[31]-variables[30]):variables[28]+variables[110]*(variables[29]-variables[28]);
-    variables[116] = (variables[1] == 0.0)?variables[115]*(pow(variables[32], 3.0)*variables[34]*exp(0.03743*states[14]*variables[33])-pow(variables[35], 3.0)*variables[36]*exp(0.0374*states[14]*(variables[33]-1.0)))/(1.0+variables[37]*(variables[36]*pow(variables[35], 3.0)+variables[34]*pow(variables[32], 3.0))):variables[115]*(pow(variables[32], 3.0)*variables[34]*exp(0.03743*states[14]*variables[33])-pow(variables[35], 3.0)*variables[36]*exp(0.03743*states[14]*(variables[33]-1.0)))/(1.0+variables[37]*(variables[36]*pow(variables[35], 3.0)+variables[34]*pow(variables[32], 3.0)));
-    variables[176] = (variables[1] == 0.0)?variables[104]+variables[110]*(variables[105]-variables[104]):(variables[1] == 1.0)?variables[108]+variables[110]*(variables[109]-variables[108]):variables[106]+variables[110]*(variables[107]-variables[106]);
-    variables[177] = (variables[1] != 2.0)?variables[176]*states[13]*(states[14]-variables[122]):variables[176]*states[13]*(states[14]+102.0);
-    variables[174] = (variables[1] == 0.0)?variables[98]+variables[110]*(variables[99]-variables[98]):(variables[1] == 1.0)?variables[102]+variables[110]*(variables[103]-variables[102]):variables[100]+variables[110]*(variables[101]-variables[100]);
-    variables[175] = (variables[1] != 2.0)?variables[174]*states[13]*(states[14]-variables[121]):variables[174]*states[13]*(states[14]-77.6);
-    variables[170] = (variables[1] == 0.0)?variables[92]+variables[110]*(variables[93]-variables[92]):(variables[1] == 1.0)?variables[96]+variables[110]*(variables[97]-variables[96]):variables[94]+variables[110]*(variables[95]-variables[94]);
-    variables[171] = variables[170]*pow(states[12], 2.0)*(states[14]-variables[124]);
-    variables[155] = (variables[1] == 0.0)?variables[80]+variables[110]*(variables[81]-variables[80]):(variables[1] == 1.0)?variables[84]+variables[110]*(variables[85]-variables[84]):variables[82]+variables[110]*(variables[83]-variables[82]);
-    variables[157] = variables[155]*states[8]*(states[14]-variables[122]);
-    variables[154] = (variables[1] == 0.0)?variables[74]+variables[110]*(variables[75]-variables[74]):(variables[1] == 1.0)?variables[78]+variables[110]*(variables[79]-variables[78]):variables[76]+variables[110]*(variables[77]-variables[76]);
-    variables[156] = variables[154]*states[7]*states[8]*(states[14]-variables[122]);
-    variables[144] = (variables[1] == 0.0)?variables[67]+variables[110]*(variables[68]-variables[67]):(variables[1] == 1.0)?variables[71]+variables[110]*(variables[72]-variables[71]):variables[69]+variables[110]*(variables[70]-variables[69]);
-    variables[145] = variables[144]*states[5]*states[6]*(states[14]-variables[73]);
-    variables[134] = (variables[1] == 0.0)?variables[60]+variables[110]*(variables[61]-variables[60]):(variables[1] == 1.0)?variables[64]+variables[110]*(variables[65]-variables[64]):variables[62]+variables[110]*(variables[63]-variables[62]);
-    variables[135] = variables[134]*(states[4]*states[3]+0.006/(1.0+exp(-(states[14]+14.1)/6.0)))*(states[14]-variables[66]);
-    variables[125] = (variables[1] == 0.0)?variables[54]+variables[110]*(variables[55]-variables[54]):(variables[1] == 1.0)?variables[58]+variables[110]*(variables[59]-variables[58]):variables[56]+variables[110]*(variables[57]-variables[56]);
-    variables[128] = (variables[1] == 0.0)?0.0952*exp(-0.063*(states[14]+34.4))/(1.0+1.66*exp(-0.225*(states[14]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[14]+34.4))/(1.0+1.662*exp(-0.2251*(states[14]+63.7)))+0.08693;
-    variables[129] = (1.0-variables[128])*states[1]+variables[128]*states[2];
-    variables[183] = variables[125]*pow(states[0], 3.0)*variables[129]*variables[35]*pow(variables[7], 2.0)/(variables[5]*variables[6])*(exp((states[14]-variables[121])*variables[7]/(variables[5]*variables[6]))-1.0)/(exp(states[14]*variables[7]/(variables[5]*variables[6]))-1.0)*states[14];
-    variables[113] = (variables[1] == 0.0)?variables[14]+variables[110]*(variables[15]-variables[14]):(variables[1] == 1.0)?variables[18]+variables[110]*(variables[19]-variables[18]):variables[16]+variables[110]*(variables[17]-variables[16]);
-    variables[181] = variables[113]*(states[14]-variables[122]);
-    variables[114] = (variables[1] == 0.0)?variables[20]+variables[110]*(variables[21]-variables[20]):(variables[1] == 1.0)?variables[24]+variables[110]*(variables[25]-variables[24]):variables[22]+variables[110]*(variables[23]-variables[22]);
-    variables[182] = variables[114]*(states[14]-variables[123]);
-    variables[112] = (variables[1] == 0.0)?variables[8]+variables[110]*(variables[9]-variables[8]):(variables[1] == 1.0)?variables[12]+variables[110]*(variables[13]-variables[12]):variables[10]+variables[110]*(variables[11]-variables[10]);
-    variables[180] = variables[112]*(states[14]-variables[121]);
-    variables[162] = (variables[1] == 0.0)?variables[86]+variables[110]*(variables[87]-variables[86]):(variables[1] == 1.0)?variables[90]+variables[110]*(variables[91]-variables[90]):variables[88]+variables[110]*(variables[89]-variables[88]);
-    variables[163] = 0.6*states[9]+0.4*states[10];
-    variables[184] = variables[162]*variables[163]*states[11]*(states[14]-variables[122]);
-    rates[14] = -1.0/variables[111]*(variables[183]+variables[135]+variables[145]+variables[156]+variables[157]+variables[184]+variables[171]+variables[175]+variables[177]+variables[180]+variables[182]+variables[181]+variables[116]+variables[118]+variables[120]);
     variables[126] = (variables[1] == 0.0)?pow(1.0/(1.0+exp(-states[14]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[14]+30.32)/5.46)), 1.0/3.0);
     variables[127] = (variables[1] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[14]+56.7))+0.627*exp(0.082*(states[14]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[14]+56.7062))+0.6274*exp(0.0823*(states[14]+65.0131)))+4.569e-5;
     rates[0] = (variables[126]-states[0])/variables[127];
@@ -225,6 +190,41 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     variables[178] = (variables[1] == 0.0)?1.0*exp(-(states[14]+78.91)/26.62):1.0*exp(-(states[14]+78.91)/26.63);
     variables[179] = 1.0*exp((states[14]+75.13)/21.25);
     rates[13] = variables[178]*(1.0-states[13])-variables[179]*states[13];
+    variables[111] = variables[3]+variables[110]*(variables[4]-variables[3]);
+    variables[119] = (variables[1] == 0.0)?variables[47]+variables[110]*(variables[48]-variables[47]):(variables[1] == 1.0)?variables[51]+variables[110]*(variables[52]-variables[51]):variables[49]+variables[110]*(variables[50]-variables[49]);
+    variables[120] = variables[119]*variables[36]/(variables[36]+0.0004);
+    variables[117] = (variables[1] == 0.0)?variables[38]+variables[110]*(variables[39]-variables[38]):(variables[1] == 1.0)?variables[42]+variables[110]*(variables[43]-variables[42]):variables[40]+variables[110]*(variables[41]-variables[40]);
+    variables[118] = variables[117]*pow(variables[32]/(variables[46]+variables[32]), 3.0)*pow(variables[44]/(variables[45]+variables[44]), 2.0)*1.6/(1.5+exp(-(states[14]+60.0)/40.0));
+    variables[115] = (variables[1] == 0.0)?variables[26]+variables[110]*(variables[27]-variables[26]):(variables[1] == 1.0)?variables[30]+variables[110]*(variables[31]-variables[30]):variables[28]+variables[110]*(variables[29]-variables[28]);
+    variables[116] = (variables[1] == 0.0)?variables[115]*(pow(variables[32], 3.0)*variables[34]*exp(0.03743*states[14]*variables[33])-pow(variables[35], 3.0)*variables[36]*exp(0.0374*states[14]*(variables[33]-1.0)))/(1.0+variables[37]*(variables[36]*pow(variables[35], 3.0)+variables[34]*pow(variables[32], 3.0))):variables[115]*(pow(variables[32], 3.0)*variables[34]*exp(0.03743*states[14]*variables[33])-pow(variables[35], 3.0)*variables[36]*exp(0.03743*states[14]*(variables[33]-1.0)))/(1.0+variables[37]*(variables[36]*pow(variables[35], 3.0)+variables[34]*pow(variables[32], 3.0)));
+    variables[176] = (variables[1] == 0.0)?variables[104]+variables[110]*(variables[105]-variables[104]):(variables[1] == 1.0)?variables[108]+variables[110]*(variables[109]-variables[108]):variables[106]+variables[110]*(variables[107]-variables[106]);
+    variables[177] = (variables[1] != 2.0)?variables[176]*states[13]*(states[14]-variables[122]):variables[176]*states[13]*(states[14]+102.0);
+    variables[174] = (variables[1] == 0.0)?variables[98]+variables[110]*(variables[99]-variables[98]):(variables[1] == 1.0)?variables[102]+variables[110]*(variables[103]-variables[102]):variables[100]+variables[110]*(variables[101]-variables[100]);
+    variables[175] = (variables[1] != 2.0)?variables[174]*states[13]*(states[14]-variables[121]):variables[174]*states[13]*(states[14]-77.6);
+    variables[170] = (variables[1] == 0.0)?variables[92]+variables[110]*(variables[93]-variables[92]):(variables[1] == 1.0)?variables[96]+variables[110]*(variables[97]-variables[96]):variables[94]+variables[110]*(variables[95]-variables[94]);
+    variables[171] = variables[170]*pow(states[12], 2.0)*(states[14]-variables[124]);
+    variables[155] = (variables[1] == 0.0)?variables[80]+variables[110]*(variables[81]-variables[80]):(variables[1] == 1.0)?variables[84]+variables[110]*(variables[85]-variables[84]):variables[82]+variables[110]*(variables[83]-variables[82]);
+    variables[157] = variables[155]*states[8]*(states[14]-variables[122]);
+    variables[154] = (variables[1] == 0.0)?variables[74]+variables[110]*(variables[75]-variables[74]):(variables[1] == 1.0)?variables[78]+variables[110]*(variables[79]-variables[78]):variables[76]+variables[110]*(variables[77]-variables[76]);
+    variables[156] = variables[154]*states[7]*states[8]*(states[14]-variables[122]);
+    variables[144] = (variables[1] == 0.0)?variables[67]+variables[110]*(variables[68]-variables[67]):(variables[1] == 1.0)?variables[71]+variables[110]*(variables[72]-variables[71]):variables[69]+variables[110]*(variables[70]-variables[69]);
+    variables[145] = variables[144]*states[5]*states[6]*(states[14]-variables[73]);
+    variables[134] = (variables[1] == 0.0)?variables[60]+variables[110]*(variables[61]-variables[60]):(variables[1] == 1.0)?variables[64]+variables[110]*(variables[65]-variables[64]):variables[62]+variables[110]*(variables[63]-variables[62]);
+    variables[135] = variables[134]*(states[4]*states[3]+0.006/(1.0+exp(-(states[14]+14.1)/6.0)))*(states[14]-variables[66]);
+    variables[125] = (variables[1] == 0.0)?variables[54]+variables[110]*(variables[55]-variables[54]):(variables[1] == 1.0)?variables[58]+variables[110]*(variables[59]-variables[58]):variables[56]+variables[110]*(variables[57]-variables[56]);
+    variables[128] = (variables[1] == 0.0)?0.0952*exp(-0.063*(states[14]+34.4))/(1.0+1.66*exp(-0.225*(states[14]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[14]+34.4))/(1.0+1.662*exp(-0.2251*(states[14]+63.7)))+0.08693;
+    variables[129] = (1.0-variables[128])*states[1]+variables[128]*states[2];
+    variables[183] = variables[125]*pow(states[0], 3.0)*variables[129]*variables[35]*pow(variables[7], 2.0)/(variables[5]*variables[6])*(exp((states[14]-variables[121])*variables[7]/(variables[5]*variables[6]))-1.0)/(exp(states[14]*variables[7]/(variables[5]*variables[6]))-1.0)*states[14];
+    variables[113] = (variables[1] == 0.0)?variables[14]+variables[110]*(variables[15]-variables[14]):(variables[1] == 1.0)?variables[18]+variables[110]*(variables[19]-variables[18]):variables[16]+variables[110]*(variables[17]-variables[16]);
+    variables[181] = variables[113]*(states[14]-variables[122]);
+    variables[114] = (variables[1] == 0.0)?variables[20]+variables[110]*(variables[21]-variables[20]):(variables[1] == 1.0)?variables[24]+variables[110]*(variables[25]-variables[24]):variables[22]+variables[110]*(variables[23]-variables[22]);
+    variables[182] = variables[114]*(states[14]-variables[123]);
+    variables[112] = (variables[1] == 0.0)?variables[8]+variables[110]*(variables[9]-variables[8]):(variables[1] == 1.0)?variables[12]+variables[110]*(variables[13]-variables[12]):variables[10]+variables[110]*(variables[11]-variables[10]);
+    variables[180] = variables[112]*(states[14]-variables[121]);
+    variables[162] = (variables[1] == 0.0)?variables[86]+variables[110]*(variables[87]-variables[86]):(variables[1] == 1.0)?variables[90]+variables[110]*(variables[91]-variables[90]):variables[88]+variables[110]*(variables[89]-variables[88]);
+    variables[163] = 0.6*states[9]+0.4*states[10];
+    variables[184] = variables[162]*variables[163]*states[11]*(states[14]-variables[122]);
+    rates[14] = -1.0/variables[111]*(variables[183]+variables[135]+variables[145]+variables[156]+variables[157]+variables[184]+variables[171]+variables[175]+variables[177]+variables[180]+variables[182]+variables[181]+variables[116]+variables[118]+variables[120]);
 }
 
 void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)

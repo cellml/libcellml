@@ -533,6 +533,9 @@ struct Generator::GeneratorImpl
 
     GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
 
+    static bool compareEquationsByOrder(const GeneratorEquationPtr &equation1,
+                                        const GeneratorEquationPtr &equation2);
+
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
                      const ComponentPtr &component,
@@ -1155,6 +1158,12 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
+bool Generator::GeneratorImpl::compareEquationsByOrder(const GeneratorEquationPtr &equation1,
+                                                       const GeneratorEquationPtr &equation2)
+{
+    return equation1->mOrder < equation2->mOrder;
+}
+
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 {
     // Reset a few things in case we were to process the model more than once.
@@ -1307,11 +1316,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Make our internal variables available through our API, should we have a
-    // valid model.
+    // Sort our equations, should we have a valid model, and make our internal
+    // variables available through our API.
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
+        mEquations.sort(compareEquationsByOrder);
+
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
                 mStates.push_back(internalVariable->mVariable);
