@@ -334,7 +334,7 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     void addVariable(const GeneratorInternalVariablePtr &variable);
     void addOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
 
-    static bool containsNonTrueConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables);
+    static bool containsNonUnknownVariables(const std::list<GeneratorInternalVariablePtr> &variables);
     static bool containsNonConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables);
 
     static bool knownVariable(const GeneratorInternalVariablePtr &variable);
@@ -362,7 +362,7 @@ void GeneratorEquation::addOdeVariable(const GeneratorInternalVariablePtr &odeVa
     }
 }
 
-bool GeneratorEquation::containsNonTrueConstantVariables(const std::list<GeneratorInternalVariablePtr> &variables)
+bool GeneratorEquation::containsNonUnknownVariables(const std::list<GeneratorInternalVariablePtr> &variables)
 {
     return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
                return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN);
@@ -422,8 +422,8 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     // truly constant or variable-based constant.
 
     mTrulyConstant = mTrulyConstant
-                     && !containsNonTrueConstantVariables(mVariables)
-                     && !containsNonTrueConstantVariables(mOdeVariables);
+                     && !containsNonUnknownVariables(mVariables)
+                     && !containsNonUnknownVariables(mOdeVariables);
     mVariableBasedConstant = mVariableBasedConstant
                              && !containsNonConstantVariables(mVariables)
                              && !containsNonConstantVariables(mOdeVariables);
