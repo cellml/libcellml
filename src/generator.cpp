@@ -528,8 +528,13 @@ struct Generator::GeneratorImpl
 
     GeneratorInternalVariablePtr generatorVariable(const VariablePtr &variable);
 
-    static bool compareEquationsByOrder(const GeneratorEquationPtr &equation1,
-                                        const GeneratorEquationPtr &equation2);
+    static bool compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
+                                       const GeneratorInternalVariablePtr &variable2);
+    static bool compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
+                                               const GeneratorInternalVariablePtr &variable2);
+
+    static bool compareEquationsByVariable(const GeneratorEquationPtr &equation1,
+                                           const GeneratorEquationPtr &equation2);
 
     void processNode(const XmlNodePtr &node, GeneratorEquationAstPtr &ast,
                      const GeneratorEquationAstPtr &astParent,
@@ -1154,10 +1159,40 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
     }
 }
 
-bool Generator::GeneratorImpl::compareEquationsByOrder(const GeneratorEquationPtr &equation1,
-                                                       const GeneratorEquationPtr &equation2)
+bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVariablePtr &variable1,
+                                                      const GeneratorInternalVariablePtr &variable2)
 {
-    return equation1->mOrder < equation2->mOrder;
+    // TODO: we can't currently instatiate imports, which means that we can't
+    //       have variables in different models. This also means that we can't
+    //       have code to check for the name of a model since this would fail
+    //       coverage test. So, once we can instantiate imports, we will need to
+    //       account the name of a model.
+    VariablePtr realVariable1 = variable1->mVariable;
+    VariablePtr realVariable2 = variable2->mVariable;
+    ComponentPtr realComponent1 = realVariable1->parentComponent();
+    ComponentPtr realComponent2 = realVariable2->parentComponent();
+
+    if (realComponent1->name() == realComponent2->name()) {
+        return realVariable1->name() < realVariable2->name();
+    }
+
+    return realComponent1->name() < realComponent2->name();
+}
+
+bool Generator::GeneratorImpl::compareVariablesByTypeAndIndex(const GeneratorInternalVariablePtr &variable1,
+                                                              const GeneratorInternalVariablePtr &variable2)
+{
+    if (variable1->mType == variable2->mType) {
+        return variable1->mIndex < variable2->mIndex;
+    }
+
+    return variable1->mType < variable2->mType;
+}
+
+bool Generator::GeneratorImpl::compareEquationsByVariable(const GeneratorEquationPtr &equation1,
+                                                          const GeneratorEquationPtr &equation2)
+{
+    return compareVariablesByTypeAndIndex(equation1->mVariable, equation2->mVariable);
 }
 
 void Generator::GeneratorImpl::processModel(const ModelPtr &model)
@@ -1207,11 +1242,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Determine the index of our constant variables and then loop over our
-    // equations, checking wich variables, if any, can be determined using a
-    // given equation.
+    // Sort our variables, determine the index of our constant variables and
+    // then loop over our equations, checking wich variables, if any, can be
+    // determined using a given equation.
 
     if (mGenerator->errorCount() == 0) {
+        mInternalVariables.sort(compareVariablesByName);
+
         size_t variableIndex = MAX_SIZE_T;
 
         for (const auto &internalVariable : mInternalVariables) {
@@ -1312,12 +1349,13 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         }
     }
 
-    // Sort our equations, should we have a valid model, and make our internal
-    // variables available through our API.
+    // Sort our variables and equations, should we have a valid model, and make
+    // our internal variables available through our API.
 
     if ((mModelType == Generator::ModelType::ODE)
         || (mModelType == Generator::ModelType::ALGEBRAIC)) {
-        mEquations.sort(compareEquationsByOrder);
+        mInternalVariables.sort(compareVariablesByTypeAndIndex);
+        mEquations.sort(compareEquationsByVariable);
 
         for (const auto &internalVariable : mInternalVariables) {
             if (internalVariable->mType == GeneratorInternalVariable::Type::STATE) {
