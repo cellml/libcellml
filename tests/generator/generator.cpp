@@ -313,8 +313,8 @@ TEST(Generator, unsuitably_constrained)
     EXPECT_EQ(size_t(0), parser.errorCount());
 
     const std::vector<std::string> expectedErrors = {
-        "Variable 'x' in component 'my_component' of model 'my_model' is not computed.",
-        "Variable 'y' in component 'my_component' of model 'my_model' is computed more than once."};
+        "Variable 'y' in component 'my_component' of model 'my_model' is computed more than once.",
+        "Variable 'x' in component 'my_component' of model 'my_model' is not computed."};
 
     libcellml::Generator generator;
 
