@@ -133,10 +133,18 @@ void computeConstantEquations(double *variables)
     variables[92] = (variables[46] > 0.0)?1.2:1.0;
     variables[94] = variables[38]/(variables[72]+variables[38]);
     variables[101] = (variables[46] > 0.0)?-0.25:(variables[45] > 0.0)?0.7*variables[45]/(0.00009+variables[45]):0.0;
+    variables[102] = variables[25]*(1.0-variables[101]);
     variables[112] = 0.000000001*3.14159265358979*pow(variables[31], 2.0)*variables[29];
     variables[113] = 0.000000001*2.0*3.14159265358979*variables[30]*(variables[31]-variables[30]/2.0)*variables[29];
+    variables[114] = variables[33]*variables[112];
+    variables[115] = variables[32]*variables[112]-variables[113];
+    variables[116] = variables[34]*variables[112];
     variables[117] = variables[41]*variables[42]/variables[40];
     variables[119] = variables[88]/(variables[37]/(variables[37]+variables[85]));
+    variables[120] = variables[119]/(variables[86]+1.0);
+    variables[121] = variables[86]*variables[120];
+    variables[122] = variables[121]*variables[37]/(variables[37]+variables[85]);
+    variables[123] = variables[120]*variables[37]/(variables[37]+variables[85]);
     variables[124] = (variables[45] > 0.0)?-1.0-9.898*pow(1.0*variables[45], 0.618)/(pow(1.0*variables[45], 0.618)+0.00122423):0.0;
     variables[125] = (variables[46] > 0.0)?7.5:0.0;
     variables[127] = (variables[46] > 0.0)?1.23:1.0;
@@ -146,6 +154,7 @@ void computeConstantEquations(double *variables)
     variables[133] = (variables[46] > 0.0)?1.2*variables[63]:variables[63];
     variables[135] = (variables[46] > 0.0)?-14.0:0.0;
     variables[136] = (3.5988-0.025641)/(1.0+0.0000012155/pow(1.0*variables[45], 1.6951))+0.025641;
+    variables[138] = variables[117]*log(variables[37]/variables[36]);
 }
 
 void computeRateEquations(double voi, double *states, double *rates, double *variables)
@@ -176,12 +185,8 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     rates[10] = variables[110];
     rates[11] = variables[111];
     variables[103] = (states[30]-states[12])/variables[27];
-    variables[102] = variables[25]*(1.0-variables[101]);
     variables[104] = variables[102]/(1.0+exp((-states[12]+variables[24])/variables[26]));
-    variables[116] = variables[34]*variables[112];
-    variables[115] = variables[32]*variables[112]-variables[113];
     rates[12] = 1.0*(variables[103]*variables[113]-variables[104]*variables[116])/variables[115]-(variables[9]*variables[109]+variables[12]*variables[106]+variables[13]*variables[107]);
-    variables[114] = variables[33]*variables[112];
     rates[13] = variables[104]-variables[105]*variables[114]/variables[116];
     variables[118] = ((voi > variables[49]) && (voi < variables[49]+variables[50]))?variables[48]:variables[47];
     variables[140] = (variables[43] >= 1.0)?variables[118]:states[31];
@@ -262,13 +267,8 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     variables[213] = variables[207]*variables[93]*(variables[209]+variables[208])+variables[206]*variables[209]*(variables[93]+variables[199]);
     variables[215] = (1.0-variables[80])*variables[73]*(variables[212]*variables[208]-variables[211]*variables[206])/(variables[211]+variables[212]+variables[213]+variables[214]);
     rates[30] = variables[95]*variables[114]/variables[113]-((variables[163]+variables[172]-2.0*variables[215])/(2.0*variables[40]*variables[113])+variables[103]+variables[9]*variables[110]);
-    variables[120] = variables[119]/(variables[86]+1.0);
-    variables[121] = variables[86]*variables[120];
-    variables[122] = variables[121]*variables[37]/(variables[37]+variables[85]);
     variables[137] = variables[117]*log(variables[38]/variables[91]);
     variables[141] = states[14]*variables[122]*(variables[140]-variables[137])*(1.0-variables[87]);
-    variables[123] = variables[120]*variables[37]/(variables[37]+variables[85]);
-    variables[138] = variables[117]*log(variables[37]/variables[36]);
     variables[142] = states[14]*variables[123]*(variables[140]-variables[138])*(1.0-variables[87]);
     variables[143] = variables[141]+variables[142];
     variables[158] = variables[64]*states[26]*states[27]*(variables[140]-variables[138]);

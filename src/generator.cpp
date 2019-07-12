@@ -374,7 +374,9 @@ bool GeneratorEquation::containsNonConstantVariables(const std::list<GeneratorIn
 {
     return std::find_if(variables.begin(), variables.end(), [](const GeneratorInternalVariablePtr &variable) {
                return (variable->mType != GeneratorInternalVariable::Type::UNKNOWN)
-                      && (variable->mType != GeneratorInternalVariable::Type::CONSTANT);
+                      && (variable->mType != GeneratorInternalVariable::Type::CONSTANT)
+                      && (variable->mType != GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+                      && (variable->mType != GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
            })
            != std::end(variables);
 }
