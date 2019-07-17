@@ -459,7 +459,7 @@ TEST(Units, unitAttributes)
     EXPECT_DOUBLE_EQ(1.0, exponent);
     EXPECT_DOUBLE_EQ(1.8, multiplier);
 
-    u->addUnit("NewUnit", 4.0, 1.05, 17.0);
+    u->addUnit("NewUnit", 4, 1.05, 17.0);
     u->unitAttributes(1, reference, prefix, exponent, multiplier, id);
     EXPECT_EQ("NewUnit", reference);
     EXPECT_EQ("4", prefix);
