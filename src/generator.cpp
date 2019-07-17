@@ -386,7 +386,9 @@ bool GeneratorEquation::knownVariable(const GeneratorInternalVariablePtr &variab
     return (variable->mIndex != MAX_SIZE_T)
            || (variable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION)
            || (variable->mType == GeneratorInternalVariable::Type::STATE)
-           || (variable->mType == GeneratorInternalVariable::Type::CONSTANT);
+           || (variable->mType == GeneratorInternalVariable::Type::CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT)
+           || (variable->mType == GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT);
 }
 
 bool GeneratorEquation::knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable)
