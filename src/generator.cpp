@@ -326,8 +326,8 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
 
     GeneratorInternalVariablePtr mVariable = nullptr;
 
-    bool mTrulyConstant = true;
-    bool mVariableBasedConstant = true;
+    bool mComputedTrueConstant = true;
+    bool mComputedVariableBasedConstant = true;
 
     explicit GeneratorEquation();
 
@@ -423,12 +423,12 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     // Determine, from the (new) known (ODE) variables, whether the equation is
     // truly constant or variable-based constant.
 
-    mTrulyConstant = mTrulyConstant
-                     && !containsNonUnknownVariables(mVariables)
-                     && !containsNonUnknownVariables(mOdeVariables);
-    mVariableBasedConstant = mVariableBasedConstant
-                             && !containsNonConstantVariables(mVariables)
-                             && !containsNonConstantVariables(mOdeVariables);
+    mComputedTrueConstant = mComputedTrueConstant
+                            && !containsNonUnknownVariables(mVariables)
+                            && !containsNonUnknownVariables(mOdeVariables);
+    mComputedVariableBasedConstant = mComputedVariableBasedConstant
+                                     && !containsNonConstantVariables(mVariables)
+                                     && !containsNonConstantVariables(mOdeVariables);
 
     // Add, as a dependency, the equations used to compute the (new) known
     // variables. (Note that we don't account for the (new) known ODE variables
@@ -459,9 +459,9 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
         GeneratorInternalVariablePtr variable = (mVariables.size() == 1) ? mVariables.front() : mOdeVariables.front();
 
         if (variable->mType == GeneratorInternalVariable::Type::UNKNOWN) {
-            variable->mType = mTrulyConstant ?
+            variable->mType = mComputedTrueConstant ?
                                   GeneratorInternalVariable::Type::COMPUTED_TRUE_CONSTANT :
-                                  mVariableBasedConstant ?
+                                  mComputedVariableBasedConstant ?
                                   GeneratorInternalVariable::Type::COMPUTED_VARIABLE_BASED_CONSTANT :
                                   GeneratorInternalVariable::Type::ALGEBRAIC;
         }
