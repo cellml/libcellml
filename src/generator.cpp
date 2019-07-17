@@ -447,9 +447,9 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     mOdeVariables.remove_if(knownOdeVariable);
 
     // If there is one (ODE) variable left then update its type (if it is
-    // currently unknown), determine its index, consider it computed, and
-    // determine the type of our equation and set its order, if the (ODE)
-    // variable is a state, computed constant or algebraic variable.
+    // currently unknown), determine its index and determine the type of our
+    // equation and set its order, if the (ODE) variable is a state, computed
+    // constant or algebraic variable.
 
     bool relevantCheck = false;
 
