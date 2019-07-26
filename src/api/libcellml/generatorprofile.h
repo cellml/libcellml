@@ -307,11 +307,11 @@ public:
     std::string endComputeAlgebraicEquationsMethodString() const;
     void setEndComputeAlgebraicEquationsMethodString(const std::string &endComputeAlgebraicEquationsMethodString);
 
-    std::string beginComputeStateBasedAlgebraicEquationsMethodString() const;
-    void setBeginComputeStateBasedAlgebraicEquationsMethodString(const std::string &beginComputeStateBasedAlgebraicEquationsMethodString);
+    std::string beginComputeStateOrRateBasedAlgebraicEquationsMethodString() const;
+    void setBeginComputeStateOrRateBasedAlgebraicEquationsMethodString(const std::string &beginComputeStateOrRateBasedAlgebraicEquationsMethodString);
 
-    std::string endComputeStateBasedAlgebraicEquationsMethodString() const;
-    void setEndComputeStateBasedAlgebraicEquationsMethodString(const std::string &endComputeStateBasedAlgebraicEquationsMethodString);
+    std::string endComputeStateOrRateBasedAlgebraicEquationsMethodString() const;
+    void setEndComputeStateOrRateBasedAlgebraicEquationsMethodString(const std::string &endComputeStateOrRateBasedAlgebraicEquationsMethodString);
 
     std::string indentString() const;
     void setIndentString(const std::string &indentString);
