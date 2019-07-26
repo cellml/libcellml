@@ -329,6 +329,8 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
 
+    bool mIsStateOrRateBased = false;
+
     explicit GeneratorEquation();
 
     void addVariable(const GeneratorInternalVariablePtr &variable);
@@ -430,16 +432,28 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
                                      && !containsNonConstantVariables(mVariables)
                                      && !containsNonConstantVariables(mOdeVariables);
 
-    // Add, as a dependency, the equations used to compute the (new) known
-    // variables. (Note that we don't account for the (new) known ODE variables
-    // since their corresponding equation can obviously not be of algebraic
-    // type.)
+    // Determine whether the equation is state/rate based and add, as a
+    // dependency, the equations used to compute the (new) known variables.
+    // (Note that we don't account for the (new) known ODE variables since their
+    // corresponding equation can obviously not be of algebraic type.)
+
+    if (!mIsStateOrRateBased) {
+        mIsStateOrRateBased = !mOdeVariables.empty();
+    }
 
     for (const auto &variable : mVariables) {
-        GeneratorEquationPtr equation = variable->mEquation.lock();
+        if (knownVariable(variable)) {
+            GeneratorEquationPtr equation = variable->mEquation.lock();
 
-        if (knownVariable(variable) && (equation != nullptr)) {
-            mDependencies.push_back(equation);
+            if (!mIsStateOrRateBased) {
+                mIsStateOrRateBased = (equation == nullptr) ?
+                                          (variable->mType == GeneratorInternalVariable::Type::STATE) :
+                                          equation->mIsStateOrRateBased;
+            }
+
+            if (equation != nullptr) {
+                mDependencies.push_back(equation);
+            }
         }
     }
 
@@ -581,7 +595,8 @@ struct Generator::GeneratorImpl
 
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
-                                     std::vector<GeneratorEquationPtr> &remainingEquations);
+                                     std::vector<GeneratorEquationPtr> &remainingEquations,
+                                     bool onlyStateOrRateBasedEquations = false);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -2198,12 +2213,17 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const Generator
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
-                                                           std::vector<GeneratorEquationPtr> &remainingEquations)
+                                                           std::vector<GeneratorEquationPtr> &remainingEquations,
+                                                           bool onlyStateOrRateBasedEquations)
 {
     std::string res;
 
     for (const auto &dependency : equation->mDependencies) {
-        res += generateEquationCode(dependency, remainingEquations);
+        if (!onlyStateOrRateBasedEquations
+            || ((dependency->mType == GeneratorEquation::Type::ALGEBRAIC)
+                && dependency->mIsStateOrRateBased)) {
+            res += generateEquationCode(dependency, remainingEquations, onlyStateOrRateBasedEquations);
+        }
     }
 
     auto equationIter = std::find(remainingEquations.begin(), remainingEquations.end(), equation);
@@ -2550,6 +2570,29 @@ std::string Generator::code() const
     }
 
     res += mPimpl->mProfile->endComputeAlgebraicEquationsMethodString();
+
+    // Generate code to update our state/rate-based algebraic variables.
+    // Note: this method is typically called after having integrated a model and
+    //       in case some equations are directly or indirectly dependendent on
+    //       the value of some states/rates. We could recompute the rate and
+    //       algebraic equations, but this might result in recomputing
+    //       unnecessary equations and would also recompute our rates, which
+    //       we don't want to do. So, instead, we have this method, which only
+    //       computes state/rate-based algebraic equations.
+
+    remainingEquations = {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
+
+    res += "\n";
+    res += mPimpl->mProfile->beginComputeStateOrRateBasedAlgebraicEquationsMethodString();
+
+    for (const auto &equation : mPimpl->mEquations) {
+        if ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
+            && equation->mIsStateOrRateBased) {
+            res += mPimpl->generateEquationCode(equation, remainingEquations, true);
+        }
+    }
+
+    res += mPimpl->mProfile->endComputeStateOrRateBasedAlgebraicEquationsMethodString();
 
     return res;
 }
