@@ -21,3 +21,9 @@ void computeAlgebraicEquations(double voi, double *states, double *rates, double
     variables[0] = states[1]+5.0*states[1]/3.0+1.0*exp(states[1]/2.0);
     variables[1] = 2.0*states[0];
 }
+
+void computeStateOrRateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+{
+    variables[0] = states[1]+5.0*states[1]/3.0+1.0*exp(states[1]/2.0);
+    variables[1] = 2.0*states[0];
+}

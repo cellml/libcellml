@@ -230,3 +230,59 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
 void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
 {
 }
+
+void computeStateOrRateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+{
+    variables[116] = (variables[56] == 0.0)?variables[115]*(pow(variables[48], 3.0)*variables[45]*exp(0.03743*states[14]*variables[89])-pow(variables[49], 3.0)*variables[44]*exp(0.0374*states[14]*(variables[89]-1.0)))/(1.0+variables[88]*(variables[44]*pow(variables[49], 3.0)+variables[45]*pow(variables[48], 3.0))):variables[115]*(pow(variables[48], 3.0)*variables[45]*exp(0.03743*states[14]*variables[89])-pow(variables[49], 3.0)*variables[44]*exp(0.03743*states[14]*(variables[89]-1.0)))/(1.0+variables[88]*(variables[44]*pow(variables[49], 3.0)+variables[45]*pow(variables[48], 3.0)));
+    variables[118] = variables[117]*pow(variables[48]/(variables[103]+variables[48]), 3.0)*pow(variables[47]/(variables[102]+variables[47]), 2.0)*1.6/(1.5+exp(-(states[14]+60.0)/40.0));
+    variables[126] = (variables[56] == 0.0)?pow(1.0/(1.0+exp(-states[14]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[14]+30.32)/5.46)), 1.0/3.0);
+    variables[127] = (variables[56] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[14]+56.7))+0.627*exp(0.082*(states[14]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[14]+56.7062))+0.6274*exp(0.0823*(states[14]+65.0131)))+4.569e-5;
+    variables[128] = (variables[56] == 0.0)?0.0952*exp(-0.063*(states[14]+34.4))/(1.0+1.66*exp(-0.225*(states[14]+63.7)))+0.0869:0.09518*exp(-0.06306*(states[14]+34.4))/(1.0+1.662*exp(-0.2251*(states[14]+63.7)))+0.08693;
+    variables[129] = (1.0-variables[128])*states[1]+variables[128]*states[2];
+    variables[130] = 1.0/(1.0+exp((states[14]+66.1)/6.4));
+    variables[131] = variables[130];
+    variables[132] = 3.717e-6*exp(-0.2815*(states[14]+17.11))/(1.0+0.003732*exp(-0.3426*(states[14]+37.76)))+0.0005977;
+    variables[133] = 3.186e-8*exp(-0.6219*(states[14]+18.8))/(1.0+7.189e-5*exp(-0.6683*(states[14]+34.07)))+0.003556;
+    variables[135] = variables[134]*(states[4]*states[3]+0.006/(1.0+exp(-(states[14]+14.1)/6.0)))*(states[14]-variables[0]);
+    variables[136] = (variables[56] == 0.0)?-28.38*(states[14]+35.0)/(exp(-(states[14]+35.0)/2.5)-1.0)-84.9*states[14]/(exp(-0.208*states[14])-1.0):(variables[56] == 1.0)?-28.39*(states[14]+35.0)/(exp(-(states[14]+35.0)/2.5)-1.0)-84.9*states[14]/(exp(-0.208*states[14])-1.0):-28.4*(states[14]+35.0)/(exp(-(states[14]+35.0)/2.5)-1.0)-84.9*states[14]/(exp(-0.208*states[14])-1.0);
+    variables[137] = (variables[56] == 1.0)?11.43*(states[14]-5.0)/(exp(0.4*(states[14]-5.0))-1.0):11.42*(states[14]-5.0)/(exp(0.4*(states[14]-5.0))-1.0);
+    variables[138] = 2.0/(variables[136]+variables[137]);
+    variables[139] = (variables[56] == 0.0)?1.0/(1.0+exp(-(states[14]+23.1)/6.0)):(variables[56] == 1.0)?1.0/(1.0+exp(-(states[14]+22.3+0.8*variables[110])/6.0)):1.0/(1.0+exp(-(states[14]+22.2)/6.0));
+    variables[140] = (variables[56] == 1.0)?3.75*(states[14]+28.0)/(exp((states[14]+28.0)/4.0)-1.0):3.12*(states[14]+28.0)/(exp((states[14]+28.0)/4.0)-1.0);
+    variables[141] = (variables[56] == 1.0)?30.0/(1.0+exp(-(states[14]+28.0)/4.0)):25.0/(1.0+exp(-(states[14]+28.0)/4.0));
+    variables[142] = (variables[56] == 1.0)?(1.2-0.2*variables[110])/(variables[140]+variables[141]):1.0/(variables[140]+variables[141]);
+    variables[143] = 1.0/(1.0+exp((states[14]+45.0)/5.0));
+    variables[145] = variables[144]*states[5]*states[6]*(states[14]-variables[7]);
+    variables[146] = 1068.0*exp((states[14]+26.3)/30.0);
+    variables[147] = 1068.0*exp(-(states[14]+26.3)/30.0);
+    variables[148] = 1.0/(variables[146]+variables[147]);
+    variables[149] = 1.0/(1.0+exp(-(states[14]+37.0)/6.8));
+    variables[150] = (variables[56] == 1.0)?15.3*exp(-(states[14]+71.0+0.7*variables[110])/83.3):15.3*exp(-(states[14]+71.7)/83.3);
+    variables[151] = (variables[56] == 1.0)?15.0*exp((states[14]+71.0)/15.38):15.0*exp((states[14]+71.7)/15.38);
+    variables[152] = 1.0/(variables[150]+variables[151]);
+    variables[153] = 1.0/(1.0+exp((states[14]+71.0)/9.0));
+    variables[156] = variables[154]*states[7]*states[8]*(states[14]-variables[122]);
+    variables[157] = variables[155]*states[8]*(states[14]-variables[122]);
+    variables[158] = 1.0/(1.0+exp((states[14]+59.37)/13.1));
+    variables[159] = (variables[56] == 0.0)?0.0101+0.06517/(0.57*exp(-0.08*(states[14]+49.0)))+2.4e-5*exp(0.1*(states[14]+50.93)):(variables[56] == 1.0)?0.001/3.0*(30.31+195.5/(0.5686*exp(-0.08161*(states[14]+39.0+10.0*variables[110]))+0.7174*exp((0.2719-0.1719*variables[110])*1.0*(states[14]+40.93+10.0*variables[110])))):0.0101+0.06517/(0.5686*exp(-0.08161*(states[14]+39.0))+0.7174*exp(0.2719*(states[14]+40.93)));
+    variables[160] = 1.0/(1.0+exp(-(states[14]-10.93)/19.7));
+    variables[161] = (variables[56] == 0.0)?0.001*(2.98+15.59/(1.037*exp(0.09*(states[14]+30.61))+0.369*exp(-0.12*(states[14]+23.84)))):(variables[56] == 1.0)?0.0025*(1.191+7.838/(1.037*exp(0.09012*(states[14]+30.61))+0.369*exp(-0.119*(states[14]+23.84)))):0.001*(2.98+19.59/(1.037*exp(0.09012*(states[14]+30.61))+0.369*exp(-0.119*(states[14]+23.84))));
+    variables[163] = 0.6*states[9]+0.4*states[10];
+    variables[164] = (variables[56] != 2.0)?1.0/(1.0+exp(-(states[14]+14.2)/10.6)):1.0/(1.0+exp(-(states[14]+13.2)/10.6));
+    variables[165] = (variables[56] != 2.0)?1.0/(37.2*exp((states[14]-9.0)/15.9)+0.96*exp(-(states[14]-9.0)/22.5)):1.0/(37.2*exp((states[14]-10.0)/15.9)+0.96*exp(-(states[14]-10.0)/22.5));
+    variables[166] = variables[164];
+    variables[167] = (variables[56] != 2.0)?1.0/(4.2*exp((states[14]-9.0)/17.0)+0.15*exp(-(states[14]-9.0)/21.6)):1.0/(4.2*exp((states[14]-10.0)/17.0)+0.15*exp(-(states[14]-10.0)/21.6));
+    variables[169] = 1.0/(1.0+exp((states[14]+18.6)/10.1));
+    variables[171] = variables[170]*pow(states[12], 2.0)*(states[14]-variables[124]);
+    variables[172] = 14.0/(1.0+exp(-(states[14]-40.0)/9.0));
+    variables[173] = 1.0*exp(-states[14]/45.0);
+    variables[175] = (variables[56] != 2.0)?variables[174]*states[13]*(states[14]-variables[121]):variables[174]*states[13]*(states[14]-77.6);
+    variables[177] = (variables[56] != 2.0)?variables[176]*states[13]*(states[14]-variables[122]):variables[176]*states[13]*(states[14]+102.0);
+    variables[178] = (variables[56] == 0.0)?1.0*exp(-(states[14]+78.91)/26.62):1.0*exp(-(states[14]+78.91)/26.63);
+    variables[179] = 1.0*exp((states[14]+75.13)/21.25);
+    variables[180] = variables[112]*(states[14]-variables[121]);
+    variables[181] = variables[113]*(states[14]-variables[122]);
+    variables[182] = variables[114]*(states[14]-variables[123]);
+    variables[183] = variables[125]*pow(states[0], 3.0)*variables[129]*variables[49]*pow(variables[52], 2.0)/(variables[54]*variables[55])*(exp((states[14]-variables[121])*variables[52]/(variables[54]*variables[55]))-1.0)/(exp(states[14]*variables[52]/(variables[54]*variables[55]))-1.0)*states[14];
+    variables[184] = variables[162]*variables[163]*states[11]*(states[14]-variables[122]);
+}
