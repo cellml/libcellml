@@ -202,6 +202,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginComputeAlgebraicEquationsMethodString = "void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)\n{\n";
     std::string mEndComputeAlgebraicEquationsMethodString = "}\n";
 
+    std::string mBeginComputeStateBasedAlgebraicEquationsMethodString = "void computeStateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)\n{\n";
+    std::string mEndComputeStateBasedAlgebraicEquationsMethodString = "}\n";
+
     std::string mIndentString = "    ";
 
     std::string mOpenArrayString = "[";
@@ -344,6 +347,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mBeginComputeAlgebraicEquationsMethodString = rhs.mPimpl->mBeginComputeAlgebraicEquationsMethodString;
     mPimpl->mEndComputeAlgebraicEquationsMethodString = rhs.mPimpl->mEndComputeAlgebraicEquationsMethodString;
+
+    mPimpl->mBeginComputeStateBasedAlgebraicEquationsMethodString = rhs.mPimpl->mBeginComputeStateBasedAlgebraicEquationsMethodString;
+    mPimpl->mEndComputeStateBasedAlgebraicEquationsMethodString = rhs.mPimpl->mEndComputeStateBasedAlgebraicEquationsMethodString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -1278,6 +1284,26 @@ std::string GeneratorProfile::endComputeAlgebraicEquationsMethodString() const
 void GeneratorProfile::setEndComputeAlgebraicEquationsMethodString(const std::string &endComputeAlgebraicEquationsMethodString)
 {
     mPimpl->mEndComputeAlgebraicEquationsMethodString = endComputeAlgebraicEquationsMethodString;
+}
+
+std::string GeneratorProfile::beginComputeStateBasedAlgebraicEquationsMethodString() const
+{
+    return mPimpl->mBeginComputeStateBasedAlgebraicEquationsMethodString;
+}
+
+void GeneratorProfile::setBeginComputeStateBasedAlgebraicEquationsMethodString(const std::string &beginComputeStateBasedAlgebraicEquationsMethodString)
+{
+    mPimpl->mBeginComputeStateBasedAlgebraicEquationsMethodString = beginComputeStateBasedAlgebraicEquationsMethodString;
+}
+
+std::string GeneratorProfile::endComputeStateBasedAlgebraicEquationsMethodString() const
+{
+    return mPimpl->mEndComputeStateBasedAlgebraicEquationsMethodString;
+}
+
+void GeneratorProfile::setEndComputeStateBasedAlgebraicEquationsMethodString(const std::string &endComputeStateBasedAlgebraicEquationsMethodString)
+{
+    mPimpl->mEndComputeStateBasedAlgebraicEquationsMethodString = endComputeStateBasedAlgebraicEquationsMethodString;
 }
 
 std::string GeneratorProfile::indentString() const
