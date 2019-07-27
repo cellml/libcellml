@@ -69,7 +69,8 @@ GeneratorVariable::~GeneratorVariable()
 GeneratorVariable::GeneratorVariable(const GeneratorVariable &rhs)
     : mPimpl(new GeneratorVariableImpl())
 {
-    (void)rhs;
+    mPimpl->mVariable = rhs.mPimpl->mVariable;
+    mPimpl->mType = rhs.mPimpl->mType;
 }
 
 GeneratorVariable::GeneratorVariable(GeneratorVariable &&rhs) noexcept
