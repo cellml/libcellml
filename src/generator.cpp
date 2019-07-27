@@ -329,7 +329,7 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     bool mComputedTrueConstant = true;
     bool mComputedVariableBasedConstant = true;
 
-    bool mIsStateOrRateBased = false;
+    bool mIsStateRateBased = false;
 
     explicit GeneratorEquation();
 
@@ -437,18 +437,18 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     // (Note that we don't account for the (new) known ODE variables since their
     // corresponding equation can obviously not be of algebraic type.)
 
-    if (!mIsStateOrRateBased) {
-        mIsStateOrRateBased = !mOdeVariables.empty();
+    if (!mIsStateRateBased) {
+        mIsStateRateBased = !mOdeVariables.empty();
     }
 
     for (const auto &variable : mVariables) {
         if (knownVariable(variable)) {
             GeneratorEquationPtr equation = variable->mEquation.lock();
 
-            if (!mIsStateOrRateBased) {
-                mIsStateOrRateBased = (equation == nullptr) ?
+            if (!mIsStateRateBased) {
+                mIsStateRateBased = (equation == nullptr) ?
                                           (variable->mType == GeneratorInternalVariable::Type::STATE) :
-                                          equation->mIsStateOrRateBased;
+                                          equation->mIsStateRateBased;
             }
 
             if (equation != nullptr) {
@@ -596,7 +596,7 @@ struct Generator::GeneratorImpl
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
-                                     bool onlyStateOrRateBasedEquations = false);
+                                     bool onlyStateRateBasedEquations = false);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -2214,15 +2214,15 @@ std::string Generator::GeneratorImpl::generateInitializationCode(const Generator
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
                                                            std::vector<GeneratorEquationPtr> &remainingEquations,
-                                                           bool onlyStateOrRateBasedEquations)
+                                                           bool onlyStateRateBasedEquations)
 {
     std::string res;
 
     for (const auto &dependency : equation->mDependencies) {
-        if (!onlyStateOrRateBasedEquations
+        if (!onlyStateRateBasedEquations
             || ((dependency->mType == GeneratorEquation::Type::ALGEBRAIC)
-                && dependency->mIsStateOrRateBased)) {
-            res += generateEquationCode(dependency, remainingEquations, onlyStateOrRateBasedEquations);
+                && dependency->mIsStateRateBased)) {
+            res += generateEquationCode(dependency, remainingEquations, onlyStateRateBasedEquations);
         }
     }
 
@@ -2587,7 +2587,7 @@ std::string Generator::code() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
-            && equation->mIsStateOrRateBased) {
+            && equation->mIsStateRateBased) {
             res += mPimpl->generateEquationCode(equation, remainingEquations, true);
         }
     }
