@@ -270,7 +270,3 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
 }
-
-void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
-{
-}

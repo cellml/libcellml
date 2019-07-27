@@ -2531,7 +2531,7 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->endInitializeConstantsMethodString();
 
-    // Generate code to compute the constant equations.
+    // Generate code to compute our computed constants.
 
     res += "\n";
     res += mPimpl->mProfile->beginComputeComputedConstantsMethodString();
@@ -2544,8 +2544,8 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->endComputeComputedConstantsMethodString();
 
-    // Generate code to compute the rate equations (and the algebraic equations
-    // on which they depend).
+    // Generate code to compute our rates (and any variables on which they
+    // depend).
 
     res += "\n";
     res += mPimpl->mProfile->beginComputeRatesMethodString();
@@ -2558,41 +2558,27 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->endComputeRatesMethodString();
 
-    // Generate code to compute the (remaining) algebraic equations.
+    // Generate code to compute our variables.
+    // Note: this method computes all the remaining variables, i.e. the ones not
+    //       needed to compute our rates, but also the variables that depend on
+    //       the value of some states/rates. Indeed, this method is typically
+    //       called after having integrated a model, thus ensuring that
+    //       variables that rely on the value of some states/rates are fine.
+
+    std::vector<GeneratorEquationPtr> newRemainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
 
     res += "\n";
     res += mPimpl->mProfile->beginComputeVariablesMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquation::Type::ALGEBRAIC) {
-            res += mPimpl->generateEquationCode(equation, remainingEquations);
+        if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
+            || ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
+                && equation->mIsStateRateBased)) {
+            res += mPimpl->generateEquationCode(equation, newRemainingEquations, true);
         }
     }
 
     res += mPimpl->mProfile->endComputeVariablesMethodString();
-
-    // Generate code to update our state/rate-based algebraic variables.
-    // Note: this method is typically called after having integrated a model and
-    //       in case some equations are directly or indirectly dependendent on
-    //       the value of some states/rates. We could recompute the rate and
-    //       algebraic equations, but this might result in recomputing
-    //       unnecessary equations and would also recompute our rates, which
-    //       we don't want to do. So, instead, we have this method, which only
-    //       computes state/rate-based algebraic equations.
-
-    remainingEquations = {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
-
-    res += "\n";
-    res += mPimpl->mProfile->beginComputeStateRateBasedVariablesMethodString();
-
-    for (const auto &equation : mPimpl->mEquations) {
-        if ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
-            && equation->mIsStateRateBased) {
-            res += mPimpl->generateEquationCode(equation, remainingEquations, true);
-        }
-    }
-
-    res += mPimpl->mProfile->endComputeStateRateBasedVariablesMethodString();
 
     return res;
 }
