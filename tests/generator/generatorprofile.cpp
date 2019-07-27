@@ -221,9 +221,6 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeVariablesMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeVariablesMethodString());
 
-    EXPECT_EQ("void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeStateRateBasedVariablesMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endComputeStateRateBasedVariablesMethodString());
-
     EXPECT_EQ("    ", generatorProfile->indentString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
@@ -479,9 +476,6 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setBeginComputeVariablesMethodString(value);
     generatorProfile->setEndComputeVariablesMethodString(value);
 
-    generatorProfile->setBeginComputeStateRateBasedVariablesMethodString(value);
-    generatorProfile->setEndComputeStateRateBasedVariablesMethodString(value);
-
     generatorProfile->setIndentString(value);
 
     generatorProfile->setOpenArrayString(value);
@@ -508,9 +502,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->beginComputeVariablesMethodString());
     EXPECT_EQ(value, generatorProfile->endComputeVariablesMethodString());
-
-    EXPECT_EQ(value, generatorProfile->beginComputeStateRateBasedVariablesMethodString());
-    EXPECT_EQ(value, generatorProfile->endComputeStateRateBasedVariablesMethodString());
 
     EXPECT_EQ(value, generatorProfile->indentString());
 

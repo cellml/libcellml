@@ -202,9 +202,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n";
     std::string mEndComputeVariablesMethodString = "}\n";
 
-    std::string mBeginComputeStateRateBasedVariablesMethodString = "void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)\n{\n";
-    std::string mEndComputeStateRateBasedVariablesMethodString = "}\n";
-
     std::string mIndentString = "    ";
 
     std::string mOpenArrayString = "[";
@@ -347,9 +344,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mBeginComputeVariablesMethodString = rhs.mPimpl->mBeginComputeVariablesMethodString;
     mPimpl->mEndComputeVariablesMethodString = rhs.mPimpl->mEndComputeVariablesMethodString;
-
-    mPimpl->mBeginComputeStateRateBasedVariablesMethodString = rhs.mPimpl->mBeginComputeStateRateBasedVariablesMethodString;
-    mPimpl->mEndComputeStateRateBasedVariablesMethodString = rhs.mPimpl->mEndComputeStateRateBasedVariablesMethodString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -1284,26 +1278,6 @@ std::string GeneratorProfile::endComputeVariablesMethodString() const
 void GeneratorProfile::setEndComputeVariablesMethodString(const std::string &endComputeVariablesMethodString)
 {
     mPimpl->mEndComputeVariablesMethodString = endComputeVariablesMethodString;
-}
-
-std::string GeneratorProfile::beginComputeStateRateBasedVariablesMethodString() const
-{
-    return mPimpl->mBeginComputeStateRateBasedVariablesMethodString;
-}
-
-void GeneratorProfile::setBeginComputeStateRateBasedVariablesMethodString(const std::string &beginComputeStateRateBasedVariablesMethodString)
-{
-    mPimpl->mBeginComputeStateRateBasedVariablesMethodString = beginComputeStateRateBasedVariablesMethodString;
-}
-
-std::string GeneratorProfile::endComputeStateRateBasedVariablesMethodString() const
-{
-    return mPimpl->mEndComputeStateRateBasedVariablesMethodString;
-}
-
-void GeneratorProfile::setEndComputeStateRateBasedVariablesMethodString(const std::string &endComputeStateRateBasedVariablesMethodString)
-{
-    mPimpl->mEndComputeStateRateBasedVariablesMethodString = endComputeStateRateBasedVariablesMethodString;
 }
 
 std::string GeneratorProfile::indentString() const
