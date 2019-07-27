@@ -598,6 +598,8 @@ struct Generator::GeneratorImpl
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
+
+    std::string generateMethodBodyCode(const std::string &methodBody);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -2238,6 +2240,15 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
     return res;
 }
 
+std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody)
+{
+    return methodBody.empty() ?
+               mProfile->emptyMethodString().empty() ?
+               "" :
+               mProfile->indentString() + mProfile->emptyMethodString() :
+               methodBody;
+}
+
 Generator::Generator()
     : mPimpl(new GeneratorImpl())
 {
@@ -2515,10 +2526,12 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->beginInitializeConstantsMethodString();
 
+    std::string methodBody;
+
     for (const auto &internalVariable : mPimpl->mInternalVariables) {
         if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
             || (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)) {
-            res += mPimpl->generateInitializationCode(internalVariable);
+            methodBody += mPimpl->generateInitializationCode(internalVariable);
         }
     }
 
@@ -2526,10 +2539,11 @@ std::string Generator::code() const
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
-            res += mPimpl->generateEquationCode(equation, remainingEquations);
+            methodBody += mPimpl->generateEquationCode(equation, remainingEquations);
         }
     }
 
+    res += mPimpl->generateMethodBodyCode(methodBody);
     res += mPimpl->mProfile->endInitializeConstantsMethodString();
 
     // Generate code to compute our computed constants.
@@ -2537,12 +2551,15 @@ std::string Generator::code() const
     res += "\n";
     res += mPimpl->mProfile->beginComputeComputedConstantsMethodString();
 
+    methodBody = "";
+
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
-            res += mPimpl->generateEquationCode(equation, remainingEquations);
+            methodBody += mPimpl->generateEquationCode(equation, remainingEquations);
         }
     }
 
+    res += mPimpl->generateMethodBodyCode(methodBody);
     res += mPimpl->mProfile->endComputeComputedConstantsMethodString();
 
     // Generate code to compute our rates (and any variables on which they
@@ -2551,12 +2568,15 @@ std::string Generator::code() const
     res += "\n";
     res += mPimpl->mProfile->beginComputeRatesMethodString();
 
+    methodBody = "";
+
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::RATE) {
-            res += mPimpl->generateEquationCode(equation, remainingEquations);
+            methodBody += mPimpl->generateEquationCode(equation, remainingEquations);
         }
     }
 
+    res += mPimpl->generateMethodBodyCode(methodBody);
     res += mPimpl->mProfile->endComputeRatesMethodString();
 
     // Generate code to compute our variables.
@@ -2571,14 +2591,17 @@ std::string Generator::code() const
     res += "\n";
     res += mPimpl->mProfile->beginComputeVariablesMethodString();
 
+    methodBody = "";
+
     for (const auto &equation : mPimpl->mEquations) {
         if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
             || ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
                 && equation->mIsStateRateBased)) {
-            res += mPimpl->generateEquationCode(equation, newRemainingEquations, true);
+            methodBody += mPimpl->generateEquationCode(equation, newRemainingEquations, true);
         }
     }
 
+    res += mPimpl->generateMethodBodyCode(methodBody);
     res += mPimpl->mProfile->endComputeVariablesMethodString();
 
     return res;
