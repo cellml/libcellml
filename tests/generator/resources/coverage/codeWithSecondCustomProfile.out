@@ -70,7 +70,7 @@ double acoth(double x)
      double oneOverX = 1.0/x;     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-void initializeModel(double *states, double *variables)
+void initializeConstants(double *states, double *variables)
 {
     states[0] = 0.0;
     variables[0] = 1.0;
@@ -92,7 +92,7 @@ void initializeModel(double *states, double *variables)
     variables[182] = sqrt(-1.0);
 }
 
-void computeConstantEquations(double *variables)
+void computeComputedConstants(double *variables)
 {
     variables[7] = variables[0] == variables[1];
     variables[8] = variables[0] != variables[1];
@@ -262,15 +262,15 @@ void computeConstantEquations(double *variables)
     variables[176] = variables[0];
 }
 
-void computeRateEquations(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *variables)
 {
     rates[0] = 1.0;
 }
 
-void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *variables)
 {
 }
 
-void computeStateOrRateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
 {
 }

@@ -1,6 +1,6 @@
 #include <math.h>
 
-void initializeModel(double *states, double *variables)
+void initializeConstants(double *states, double *variables)
 {
     states[0] = 0.092361701692;
     states[1] = 0.015905380261;
@@ -129,7 +129,7 @@ void initializeModel(double *states, double *variables)
     variables[109] = 0.16;
 }
 
-void computeConstantEquations(double *variables)
+void computeComputedConstants(double *variables)
 {
     variables[110] = (variables[56] == 0.0)?1.07*(3.0*variables[57]-0.1)/(3.0*(1.0+0.7745*exp(-(3.0*variables[57]-2.05)/0.295))):(variables[56] == 1.0)?variables[53]*variables[57]/(1.0+0.7745*exp(-(3.0*variables[57]-2.05)/0.295)):1.07*29.0*variables[57]/(30.0*(1.0+0.7745*exp(-(29.0*variables[57]-24.5)/1.95)));
     variables[111] = variables[50]+variables[110]*(variables[51]-variables[50]);
@@ -156,7 +156,7 @@ void computeConstantEquations(double *variables)
     variables[176] = (variables[56] == 0.0)?variables[34]+variables[110]*(variables[37]-variables[34]):(variables[56] == 1.0)?variables[32]+variables[110]*(variables[35]-variables[32]):variables[33]+variables[110]*(variables[36]-variables[33]);
 }
 
-void computeRateEquations(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *variables)
 {
     variables[126] = (variables[56] == 0.0)?pow(1.0/(1.0+exp(-states[14]/5.46)), 1.0/3.0):pow(1.0/(1.0+exp(-(states[14]+30.32)/5.46)), 1.0/3.0);
     variables[127] = (variables[56] == 0.0)?0.0006247/(0.832*exp(-0.335*(states[14]+56.7))+0.627*exp(0.082*(states[14]+65.01)))+4.0e-5:0.0006247/(0.8322166*exp(-0.33566*(states[14]+56.7062))+0.6274*exp(0.0823*(states[14]+65.0131)))+4.569e-5;
@@ -227,11 +227,11 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     rates[14] = -1.0/variables[111]*(variables[183]+variables[135]+variables[145]+variables[156]+variables[157]+variables[184]+variables[171]+variables[175]+variables[177]+variables[180]+variables[182]+variables[181]+variables[116]+variables[118]+variables[120]);
 }
 
-void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *variables)
 {
 }
 
-void computeStateOrRateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
 {
     variables[116] = (variables[56] == 0.0)?variables[115]*(pow(variables[48], 3.0)*variables[45]*exp(0.03743*states[14]*variables[89])-pow(variables[49], 3.0)*variables[44]*exp(0.0374*states[14]*(variables[89]-1.0)))/(1.0+variables[88]*(variables[44]*pow(variables[49], 3.0)+variables[45]*pow(variables[48], 3.0))):variables[115]*(pow(variables[48], 3.0)*variables[45]*exp(0.03743*states[14]*variables[89])-pow(variables[49], 3.0)*variables[44]*exp(0.03743*states[14]*(variables[89]-1.0)))/(1.0+variables[88]*(variables[44]*pow(variables[49], 3.0)+variables[45]*pow(variables[48], 3.0)));
     variables[118] = variables[117]*pow(variables[48]/(variables[103]+variables[48]), 3.0)*pow(variables[47]/(variables[102]+variables[47]), 2.0)*1.6/(1.5+exp(-(states[14]+60.0)/40.0));

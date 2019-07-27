@@ -1,6 +1,6 @@
 #include <math.h>
 
-void initializeModel(double *states, double *variables)
+void initializeConstants(double *states, double *variables)
 {
     states[0] = 0.05;
     states[1] = 0.6;
@@ -13,14 +13,14 @@ void initializeModel(double *states, double *variables)
     variables[4] = 120.0;
 }
 
-void computeConstantEquations(double *variables)
+void computeComputedConstants(double *variables)
 {
     variables[6] = variables[2]-10.613;
     variables[8] = variables[2]-115.0;
     variables[14] = variables[2]+12.0;
 }
 
-void computeRateEquations(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *variables)
 {
     variables[10] = 0.1*(states[3]+25.0)/(exp((states[3]+25.0)/10.0)-1.0);
     variables[11] = 4.0*exp(states[3]/18.0);
@@ -38,11 +38,11 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     rates[3] = -(-variables[5]+variables[9]+variables[15]+variables[7])/variables[1];
 }
 
-void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *variables)
 {
 }
 
-void computeStateOrRateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
 {
     variables[7] = variables[0]*(states[3]-variables[6]);
     variables[9] = variables[4]*pow(states[0], 3.0)*states[1]*(states[3]-variables[8]);
