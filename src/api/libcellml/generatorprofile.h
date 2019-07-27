@@ -307,12 +307,6 @@ public:
     std::string endComputeVariablesMethodString() const;
     void setEndComputeVariablesMethodString(const std::string &endComputeVariablesMethodString);
 
-    std::string beginComputeStateRateBasedVariablesMethodString() const;
-    void setBeginComputeStateRateBasedVariablesMethodString(const std::string &beginComputeStateRateBasedVariablesMethodString);
-
-    std::string endComputeStateRateBasedVariablesMethodString() const;
-    void setEndComputeStateRateBasedVariablesMethodString(const std::string &endComputeStateRateBasedVariablesMethodString);
-
     std::string indentString() const;
     void setIndentString(const std::string &indentString);
 
