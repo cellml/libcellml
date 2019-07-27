@@ -283,35 +283,35 @@ public:
     std::string variablesArrayString() const;
     void setVariablesArrayString(const std::string &variablesArrayString);
 
-    std::string beginInitializeModelMethodString() const;
-    void setBeginInitializeModelMethodString(const std::string &beginInitializeModelMethodString);
+    std::string beginInitializeConstantsMethodString() const;
+    void setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString);
 
-    std::string endInitializeModelMethodString() const;
-    void setEndInitializeModelMethodString(const std::string &endInitializeModelMethodString);
+    std::string endInitializeConstantsMethodString() const;
+    void setEndInitializeConstantsMethodString(const std::string &endInitializeConstantsMethodString);
 
-    std::string beginComputeConstantEquationsMethodString() const;
-    void setBeginComputeConstantEquationsMethodString(const std::string &beginComputeConstantEquationsMethodString);
+    std::string beginComputeComputedConstantsMethodString() const;
+    void setBeginComputeComputedConstantsMethodString(const std::string &beginComputeComputedConstantsMethodString);
 
-    std::string endComputeConstantEquationsMethodString() const;
-    void setEndComputeConstantEquationsMethodString(const std::string &endComputeConstantEquationsMethodString);
+    std::string endComputeComputedConstantsMethodString() const;
+    void setEndComputeComputedConstantsMethodString(const std::string &endComputeComputedConstantsMethodString);
 
-    std::string beginComputeRateEquationsMethodString() const;
-    void setBeginComputeRateEquationsMethodString(const std::string &beginComputeRateEquationsMethodString);
+    std::string beginComputeRatesMethodString() const;
+    void setBeginComputeRatesMethodString(const std::string &beginComputeRatesMethodString);
 
-    std::string endComputeRateEquationsMethodString() const;
-    void setEndComputeRateEquationsMethodString(const std::string &endComputeRateEquationsMethodString);
+    std::string endComputeRatesMethodString() const;
+    void setEndComputeRatesMethodString(const std::string &endComputeRatesMethodString);
 
-    std::string beginComputeAlgebraicEquationsMethodString() const;
-    void setBeginComputeAlgebraicEquationsMethodString(const std::string &beginComputeAlgebraicEquationsMethodString);
+    std::string beginComputeVariablesMethodString() const;
+    void setBeginComputeVariablesMethodString(const std::string &beginComputeVariablesMethodString);
 
-    std::string endComputeAlgebraicEquationsMethodString() const;
-    void setEndComputeAlgebraicEquationsMethodString(const std::string &endComputeAlgebraicEquationsMethodString);
+    std::string endComputeVariablesMethodString() const;
+    void setEndComputeVariablesMethodString(const std::string &endComputeVariablesMethodString);
 
-    std::string beginComputeStateOrRateBasedAlgebraicEquationsMethodString() const;
-    void setBeginComputeStateOrRateBasedAlgebraicEquationsMethodString(const std::string &beginComputeStateOrRateBasedAlgebraicEquationsMethodString);
+    std::string beginComputeStateRateBasedVariablesMethodString() const;
+    void setBeginComputeStateRateBasedVariablesMethodString(const std::string &beginComputeStateRateBasedVariablesMethodString);
 
-    std::string endComputeStateOrRateBasedAlgebraicEquationsMethodString() const;
-    void setEndComputeStateOrRateBasedAlgebraicEquationsMethodString(const std::string &endComputeStateOrRateBasedAlgebraicEquationsMethodString);
+    std::string endComputeStateRateBasedVariablesMethodString() const;
+    void setEndComputeStateRateBasedVariablesMethodString(const std::string &endComputeStateRateBasedVariablesMethodString);
 
     std::string indentString() const;
     void setIndentString(const std::string &indentString);
