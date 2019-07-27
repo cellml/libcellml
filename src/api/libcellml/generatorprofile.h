@@ -23,11 +23,19 @@ namespace libcellml {
 class LIBCELLML_EXPORT GeneratorProfile
 {
 public:
-    GeneratorProfile(); /**< Constructor */
+    enum class Profile
+    {
+        C,
+        PYTHON,
+    };
+
+    explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
     ~GeneratorProfile(); /**< Destructor */
     GeneratorProfile(const GeneratorProfile &rhs); /**< Copy constructor */
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
+
+    void loadProfile(Profile profile);
 
     // Relational and logical operators
 

@@ -31,188 +31,330 @@ struct GeneratorProfile::GeneratorProfileImpl
 {
     // Relational and logical operators
 
-    std::string mEqString = " = ";
-    std::string mEqEqString = " == ";
-    std::string mNeqString = " != ";
-    std::string mLtString = " < ";
-    std::string mLeqString = " <= ";
-    std::string mGtString = " > ";
-    std::string mGeqString = " >= ";
-    std::string mAndString = " && ";
-    std::string mOrString = " || ";
-    std::string mXorString = "^";
-    std::string mNotString = "!";
+    std::string mEqString;
+    std::string mEqEqString;
+    std::string mNeqString;
+    std::string mLtString;
+    std::string mLeqString;
+    std::string mGtString;
+    std::string mGeqString;
+    std::string mAndString;
+    std::string mOrString;
+    std::string mXorString;
+    std::string mNotString;
 
     bool mHasXorOperator = true;
 
     // Arithmetic operators
 
-    std::string mPlusString = "+";
-    std::string mMinusString = "-";
-    std::string mTimesString = "*";
-    std::string mDivideString = "/";
-    std::string mPowerString = "pow";
-    std::string mSquareRootString = "sqrt";
-    std::string mSquareString = "";
-    std::string mAbsoluteValueString = "fabs";
-    std::string mExponentialString = "exp";
-    std::string mNapierianLogarithmString = "log";
-    std::string mCommonLogarithmString = "log10";
-    std::string mCeilingString = "ceil";
-    std::string mFloorString = "floor";
-    std::string mMinString = "min";
-    std::string mMaxString = "max";
-    std::string mRemString = "fmod";
+    std::string mPlusString;
+    std::string mMinusString;
+    std::string mTimesString;
+    std::string mDivideString;
+    std::string mPowerString;
+    std::string mSquareRootString;
+    std::string mSquareString;
+    std::string mAbsoluteValueString;
+    std::string mExponentialString;
+    std::string mNapierianLogarithmString;
+    std::string mCommonLogarithmString;
+    std::string mCeilingString;
+    std::string mFloorString;
+    std::string mMinString;
+    std::string mMaxString;
+    std::string mRemString;
 
     bool mHasPowerOperator = false;
 
     // Trigonometric operators
 
-    std::string mSinString = "sin";
-    std::string mCosString = "cos";
-    std::string mTanString = "tan";
-    std::string mSecString = "sec";
-    std::string mCscString = "csc";
-    std::string mCotString = "cot";
-    std::string mSinhString = "sinh";
-    std::string mCoshString = "cosh";
-    std::string mTanhString = "tanh";
-    std::string mSechString = "sech";
-    std::string mCschString = "csch";
-    std::string mCothString = "coth";
-    std::string mAsinString = "asin";
-    std::string mAcosString = "acos";
-    std::string mAtanString = "atan";
-    std::string mAsecString = "asec";
-    std::string mAcscString = "acsc";
-    std::string mAcotString = "acot";
-    std::string mAsinhString = "asinh";
-    std::string mAcoshString = "acosh";
-    std::string mAtanhString = "atanh";
-    std::string mAsechString = "asech";
-    std::string mAcschString = "acsch";
-    std::string mAcothString = "acoth";
+    std::string mSinString;
+    std::string mCosString;
+    std::string mTanString;
+    std::string mSecString;
+    std::string mCscString;
+    std::string mCotString;
+    std::string mSinhString;
+    std::string mCoshString;
+    std::string mTanhString;
+    std::string mSechString;
+    std::string mCschString;
+    std::string mCothString;
+    std::string mAsinString;
+    std::string mAcosString;
+    std::string mAtanString;
+    std::string mAsecString;
+    std::string mAcscString;
+    std::string mAcotString;
+    std::string mAsinhString;
+    std::string mAcoshString;
+    std::string mAtanhString;
+    std::string mAsechString;
+    std::string mAcschString;
+    std::string mAcothString;
 
     // Piecewise statement
-    // Note: the parentheses around #cond is not needed (because of precedence
-    //       rules). It's just that it looks better/clearer to have them
-    //       (somewhat subjective indeed).
 
-    std::string mConditionalOperatorIfString = "(#cond)?#if";
-    std::string mConditionalOperatorElseString = ":#else";
-    std::string mPiecewiseIfString = "piecewise(#cond, #if";
-    std::string mPiecewiseElseString = ", #else)";
+    std::string mConditionalOperatorIfString;
+    std::string mConditionalOperatorElseString;
+    std::string mPiecewiseIfString;
+    std::string mPiecewiseElseString;
 
     bool mHasConditionalOperator = true;
 
     // Constants
 
-    std::string mTrueString = "true";
-    std::string mFalseString = "false";
-    std::string mEString = convertDoubleToString(exp(1.0));
-    std::string mPiString = convertDoubleToString(M_PI);
-    std::string mInfString = "1.0/0.0";
-    std::string mNanString = "sqrt(-1.0)";
+    std::string mTrueString;
+    std::string mFalseString;
+    std::string mEString;
+    std::string mPiString;
+    std::string mInfString;
+    std::string mNanString;
 
     // Mathematical functions
 
-    std::string mMinFunctionString = "double min(double x, double y)\n"
-                                     "{\n"
-                                     "     return (x < y)?x:y;\n"
-                                     "}\n";
-    std::string mMaxFunctionString = "double max(double x, double y)\n"
-                                     "{\n"
-                                     "     return (x > y)?x:y;\n"
-                                     "}\n";
+    std::string mMinFunctionString;
+    std::string mMaxFunctionString;
 
-    std::string mSecFunctionString = "double sec(double x)\n"
-                                     "{\n"
-                                     "     return 1.0/cos(x);\n"
-                                     "}\n";
-    std::string mCscFunctionString = "double csc(double x)\n"
-                                     "{\n"
-                                     "     return 1.0/sin(x);\n"
-                                     "}\n";
-    std::string mCotFunctionString = "double cot(double x)\n"
-                                     "{\n"
-                                     "     return 1.0/tan(x);\n"
-                                     "}\n";
-    std::string mSechFunctionString = "double sech(double x)\n"
-                                      "{\n"
-                                      "     return 1.0/cosh(x);\n"
-                                      "}\n";
-    std::string mCschFunctionString = "double csch(double x)\n"
-                                      "{\n"
-                                      "     return 1.0/sinh(x);\n"
-                                      "}\n";
-    std::string mCothFunctionString = "double coth(double x)\n"
-                                      "{\n"
-                                      "     return 1.0/tanh(x);\n"
-                                      "}\n";
-    std::string mAsecFunctionString = "double asec(double x)\n"
-                                      "{\n"
-                                      "     return acos(1.0/x);\n"
-                                      "}\n";
-    std::string mAcscFunctionString = "double acsc(double x)\n"
-                                      "{\n"
-                                      "     return asin(1.0/x);\n"
-                                      "}\n";
-    std::string mAcotFunctionString = "double acot(double x)\n"
-                                      "{\n"
-                                      "     return atan(1.0/x);\n"
-                                      "}\n";
-    std::string mAsechFunctionString = "double asech(double x)\n"
-                                       "{\n"
-                                       "     double oneOverX = 1.0/x;"
-                                       ""
-                                       "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
-                                       "}\n";
-    std::string mAcschFunctionString = "double acsch(double x)\n"
-                                       "{\n"
-                                       "     double oneOverX = 1.0/x;"
-                                       ""
-                                       "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
-                                       "}\n";
-    std::string mAcothFunctionString = "double acoth(double x)\n"
-                                       "{\n"
-                                       "     double oneOverX = 1.0/x;"
-                                       ""
-                                       "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
-                                       "}\n";
+    std::string mSecFunctionString;
+    std::string mCscFunctionString;
+    std::string mCotFunctionString;
+    std::string mSechFunctionString;
+    std::string mCschFunctionString;
+    std::string mCothFunctionString;
+    std::string mAsecFunctionString;
+    std::string mAcscFunctionString;
+    std::string mAcotFunctionString;
+    std::string mAsechFunctionString;
+    std::string mAcschFunctionString;
+    std::string mAcothFunctionString;
 
     // Miscellaneous
 
-    std::string mHeaderString = "#include <math.h>\n";
+    std::string mHeaderString;
 
-    std::string mVariableOfIntegrationString = "voi";
+    std::string mVariableOfIntegrationString;
 
-    std::string mStatesArrayString = "states";
-    std::string mRatesArrayString = "rates";
-    std::string mVariablesArrayString = "variables";
+    std::string mStatesArrayString;
+    std::string mRatesArrayString;
+    std::string mVariablesArrayString;
 
-    std::string mBeginInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n";
-    std::string mEndInitializeConstantsMethodString = "}\n";
+    std::string mBeginInitializeConstantsMethodString;
+    std::string mEndInitializeConstantsMethodString;
 
-    std::string mBeginComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n{\n";
-    std::string mEndComputeComputedConstantsMethodString = "}\n";
+    std::string mBeginComputeComputedConstantsMethodString;
+    std::string mEndComputeComputedConstantsMethodString;
 
-    std::string mBeginComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n";
-    std::string mEndComputeRatesMethodString = "}\n";
+    std::string mBeginComputeRatesMethodString;
+    std::string mEndComputeRatesMethodString;
 
-    std::string mBeginComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n";
-    std::string mEndComputeVariablesMethodString = "}\n";
+    std::string mBeginComputeVariablesMethodString;
+    std::string mEndComputeVariablesMethodString;
 
-    std::string mIndentString = "    ";
+    std::string mIndentString;
 
-    std::string mOpenArrayString = "[";
-    std::string mCloseArrayString = "]";
+    std::string mOpenArrayString;
+    std::string mCloseArrayString;
 
-    std::string mCommandSeparatorString = ";";
+    std::string mCommandSeparatorString;
+
+    void loadProfile(GeneratorProfile::Profile profile);
 };
 
-GeneratorProfile::GeneratorProfile()
+void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profile profile)
+{
+    switch (profile) {
+    case GeneratorProfile::Profile::C:
+        // Relational and logical operators
+
+        mEqString = " = ";
+        mEqEqString = " == ";
+        mNeqString = " != ";
+        mLtString = " < ";
+        mLeqString = " <= ";
+        mGtString = " > ";
+        mGeqString = " >= ";
+        mAndString = " && ";
+        mOrString = " || ";
+        mXorString = "^";
+        mNotString = "!";
+
+        mHasXorOperator = true;
+
+        // Arithmetic operators
+
+        mPlusString = "+";
+        mMinusString = "-";
+        mTimesString = "*";
+        mDivideString = "/";
+        mPowerString = "pow";
+        mSquareRootString = "sqrt";
+        mSquareString = "";
+        mAbsoluteValueString = "fabs";
+        mExponentialString = "exp";
+        mNapierianLogarithmString = "log";
+        mCommonLogarithmString = "log10";
+        mCeilingString = "ceil";
+        mFloorString = "floor";
+        mMinString = "min";
+        mMaxString = "max";
+        mRemString = "fmod";
+
+        mHasPowerOperator = false;
+
+        // Trigonometric operators
+
+        mSinString = "sin";
+        mCosString = "cos";
+        mTanString = "tan";
+        mSecString = "sec";
+        mCscString = "csc";
+        mCotString = "cot";
+        mSinhString = "sinh";
+        mCoshString = "cosh";
+        mTanhString = "tanh";
+        mSechString = "sech";
+        mCschString = "csch";
+        mCothString = "coth";
+        mAsinString = "asin";
+        mAcosString = "acos";
+        mAtanString = "atan";
+        mAsecString = "asec";
+        mAcscString = "acsc";
+        mAcotString = "acot";
+        mAsinhString = "asinh";
+        mAcoshString = "acosh";
+        mAtanhString = "atanh";
+        mAsechString = "asech";
+        mAcschString = "acsch";
+        mAcothString = "acoth";
+
+        // Piecewise statement
+        // Note: the parentheses around #cond is not needed (because of precedence
+        //       rules). It's just that it looks better/clearer to have them
+        //       (somewhat subjective indeed).
+
+        mConditionalOperatorIfString = "(#cond)?#if";
+        mConditionalOperatorElseString = ":#else";
+        mPiecewiseIfString = "piecewise(#cond, #if";
+        mPiecewiseElseString = ", #else)";
+
+        mHasConditionalOperator = true;
+
+        // Constants
+
+        mTrueString = "true";
+        mFalseString = "false";
+        mEString = convertDoubleToString(exp(1.0));
+        mPiString = convertDoubleToString(M_PI);
+        mInfString = "1.0/0.0";
+        mNanString = "sqrt(-1.0)";
+
+        // Mathematical functions
+
+        mMinFunctionString = "double min(double x, double y)\n"
+                             "{\n"
+                             "     return (x < y)?x:y;\n"
+                             "}\n";
+        mMaxFunctionString = "double max(double x, double y)\n"
+                             "{\n"
+                             "     return (x > y)?x:y;\n"
+                             "}\n";
+
+        mSecFunctionString = "double sec(double x)\n"
+                             "{\n"
+                             "     return 1.0/cos(x);\n"
+                             "}\n";
+        mCscFunctionString = "double csc(double x)\n"
+                             "{\n"
+                             "     return 1.0/sin(x);\n"
+                             "}\n";
+        mCotFunctionString = "double cot(double x)\n"
+                             "{\n"
+                             "     return 1.0/tan(x);\n"
+                             "}\n";
+        mSechFunctionString = "double sech(double x)\n"
+                              "{\n"
+                              "     return 1.0/cosh(x);\n"
+                              "}\n";
+        mCschFunctionString = "double csch(double x)\n"
+                              "{\n"
+                              "     return 1.0/sinh(x);\n"
+                              "}\n";
+        mCothFunctionString = "double coth(double x)\n"
+                              "{\n"
+                              "     return 1.0/tanh(x);\n"
+                              "}\n";
+        mAsecFunctionString = "double asec(double x)\n"
+                              "{\n"
+                              "     return acos(1.0/x);\n"
+                              "}\n";
+        mAcscFunctionString = "double acsc(double x)\n"
+                              "{\n"
+                              "     return asin(1.0/x);\n"
+                              "}\n";
+        mAcotFunctionString = "double acot(double x)\n"
+                              "{\n"
+                              "     return atan(1.0/x);\n"
+                              "}\n";
+        mAsechFunctionString = "double asech(double x)\n"
+                               "{\n"
+                               "     double oneOverX = 1.0/x;"
+                               ""
+                               "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+                               "}\n";
+        mAcschFunctionString = "double acsch(double x)\n"
+                               "{\n"
+                               "     double oneOverX = 1.0/x;"
+                               ""
+                               "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+                               "}\n";
+        mAcothFunctionString = "double acoth(double x)\n"
+                               "{\n"
+                               "     double oneOverX = 1.0/x;"
+                               ""
+                               "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+                               "}\n";
+
+        // Miscellaneous
+
+        mHeaderString = "#include <math.h>\n";
+
+        mVariableOfIntegrationString = "voi";
+
+        mStatesArrayString = "states";
+        mRatesArrayString = "rates";
+        mVariablesArrayString = "variables";
+
+        mBeginInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n";
+        mEndInitializeConstantsMethodString = "}\n";
+
+        mBeginComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n{\n";
+        mEndComputeComputedConstantsMethodString = "}\n";
+
+        mBeginComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n";
+        mEndComputeRatesMethodString = "}\n";
+
+        mBeginComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n";
+        mEndComputeVariablesMethodString = "}\n";
+
+        mIndentString = "    ";
+
+        mOpenArrayString = "[";
+        mCloseArrayString = "]";
+
+        mCommandSeparatorString = ";";
+
+        break;
+    case GeneratorProfile::Profile::PYTHON:
+        break;
+    }
+}
+
+GeneratorProfile::GeneratorProfile(Profile profile)
     : mPimpl(new GeneratorProfileImpl())
 {
+    loadProfile(profile);
 }
 
 GeneratorProfile::~GeneratorProfile()
@@ -368,6 +510,11 @@ GeneratorProfile &GeneratorProfile::operator=(GeneratorProfile rhs)
 void GeneratorProfile::swap(GeneratorProfile &rhs)
 {
     std::swap(mPimpl, rhs.mPimpl);
+}
+
+void GeneratorProfile::loadProfile(Profile profile)
+{
+    mPimpl->loadProfile(profile);
 }
 
 std::string GeneratorProfile::eqString() const
