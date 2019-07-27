@@ -292,15 +292,6 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-    variables[96] = states[4]-states[30];
-    variables[100] = states[0]+states[1]+states[2]+states[3];
-    variables[139] = 0.5*variables[117]*log(variables[35]/states[30]);
-    variables[183] = 1.0/(1.0+exp(-(variables[140]+23.2)/6.6))/(0.84655354/(37.2*exp(variables[140]/11.9)+0.96*exp(-variables[140]/18.5)));
-    variables[184] = 4.0*((37.2*exp(variables[140]/15.9)+0.96*exp(-variables[140]/22.5))/0.84655354-1.0/(1.0+exp(-(variables[140]+23.2)/10.6))/(0.84655354/(37.2*exp(variables[140]/15.9)+0.96*exp(-variables[140]/22.5))));
-}
-
-void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
-{
     variables[91] = states[32];
     variables[93] = variables[91]/(variables[71]+variables[91]);
     variables[95] = variables[8]*states[1]*(states[4]-states[30]);

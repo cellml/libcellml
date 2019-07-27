@@ -19,8 +19,3 @@ void computeVariables(double voi, double *states, double *rates, double *variabl
 {
     variables[1] = rates[0];
 }
-
-void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
-{
-    variables[1] = rates[0];
-}

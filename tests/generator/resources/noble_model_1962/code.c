@@ -39,10 +39,6 @@ void computeRates(double voi, double *states, double *rates, double *variables)
 
 void computeVariables(double voi, double *states, double *rates, double *variables)
 {
-}
-
-void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
-{
     variables[5] = variables[1]*(states[3]-variables[0]);
     variables[6] = pow(states[0], 3.0)*states[1]*variables[4];
     variables[7] = (variables[6]+0.14)*(states[3]-variables[3]);
