@@ -447,8 +447,8 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
 
             if (!mIsStateRateBased) {
                 mIsStateRateBased = (equation == nullptr) ?
-                                          (variable->mType == GeneratorInternalVariable::Type::STATE) :
-                                          equation->mIsStateRateBased;
+                                        (variable->mType == GeneratorInternalVariable::Type::STATE) :
+                                        equation->mIsStateRateBased;
             }
 
             if (equation != nullptr) {
