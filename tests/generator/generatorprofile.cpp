@@ -221,6 +221,8 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeVariablesMethodString());
     EXPECT_EQ("}\n", generatorProfile->endComputeVariablesMethodString());
 
+    EXPECT_EQ("", generatorProfile->emptyMethodString());
+
     EXPECT_EQ("    ", generatorProfile->indentString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
@@ -476,6 +478,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setBeginComputeVariablesMethodString(value);
     generatorProfile->setEndComputeVariablesMethodString(value);
 
+    generatorProfile->setEmptyMethodString(value);
+
     generatorProfile->setIndentString(value);
 
     generatorProfile->setOpenArrayString(value);
@@ -502,6 +506,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->beginComputeVariablesMethodString());
     EXPECT_EQ(value, generatorProfile->endComputeVariablesMethodString());
+
+    EXPECT_EQ(value, generatorProfile->emptyMethodString());
 
     EXPECT_EQ(value, generatorProfile->indentString());
 

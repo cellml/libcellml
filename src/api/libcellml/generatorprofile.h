@@ -315,6 +315,9 @@ public:
     std::string endComputeVariablesMethodString() const;
     void setEndComputeVariablesMethodString(const std::string &endComputeVariablesMethodString);
 
+    std::string emptyMethodString() const;
+    void setEmptyMethodString(const std::string &emptyMethodString);
+
     std::string indentString() const;
     void setIndentString(const std::string &indentString);
 
