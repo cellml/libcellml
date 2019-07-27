@@ -2512,7 +2512,7 @@ std::string Generator::code() const
         res += "\n";
     }
 
-    res += mPimpl->mProfile->beginInitializeModelMethodString();
+    res += mPimpl->mProfile->beginInitializeConstantsMethodString();
 
     for (const auto &internalVariable : mPimpl->mInternalVariables) {
         if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
@@ -2529,12 +2529,12 @@ std::string Generator::code() const
         }
     }
 
-    res += mPimpl->mProfile->endInitializeModelMethodString();
+    res += mPimpl->mProfile->endInitializeConstantsMethodString();
 
     // Generate code to compute the constant equations.
 
     res += "\n";
-    res += mPimpl->mProfile->beginComputeConstantEquationsMethodString();
+    res += mPimpl->mProfile->beginComputeComputedConstantsMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
@@ -2542,13 +2542,13 @@ std::string Generator::code() const
         }
     }
 
-    res += mPimpl->mProfile->endComputeConstantEquationsMethodString();
+    res += mPimpl->mProfile->endComputeComputedConstantsMethodString();
 
     // Generate code to compute the rate equations (and the algebraic equations
     // on which they depend).
 
     res += "\n";
-    res += mPimpl->mProfile->beginComputeRateEquationsMethodString();
+    res += mPimpl->mProfile->beginComputeRatesMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::RATE) {
@@ -2556,12 +2556,12 @@ std::string Generator::code() const
         }
     }
 
-    res += mPimpl->mProfile->endComputeRateEquationsMethodString();
+    res += mPimpl->mProfile->endComputeRatesMethodString();
 
     // Generate code to compute the (remaining) algebraic equations.
 
     res += "\n";
-    res += mPimpl->mProfile->beginComputeAlgebraicEquationsMethodString();
+    res += mPimpl->mProfile->beginComputeVariablesMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
         if (equation->mType == GeneratorEquation::Type::ALGEBRAIC) {
@@ -2569,7 +2569,7 @@ std::string Generator::code() const
         }
     }
 
-    res += mPimpl->mProfile->endComputeAlgebraicEquationsMethodString();
+    res += mPimpl->mProfile->endComputeVariablesMethodString();
 
     // Generate code to update our state/rate-based algebraic variables.
     // Note: this method is typically called after having integrated a model and
@@ -2583,7 +2583,7 @@ std::string Generator::code() const
     remainingEquations = {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
 
     res += "\n";
-    res += mPimpl->mProfile->beginComputeStateOrRateBasedAlgebraicEquationsMethodString();
+    res += mPimpl->mProfile->beginComputeStateRateBasedVariablesMethodString();
 
     for (const auto &equation : mPimpl->mEquations) {
         if ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
@@ -2592,7 +2592,7 @@ std::string Generator::code() const
         }
     }
 
-    res += mPimpl->mProfile->endComputeStateOrRateBasedAlgebraicEquationsMethodString();
+    res += mPimpl->mProfile->endComputeStateRateBasedVariablesMethodString();
 
     return res;
 }

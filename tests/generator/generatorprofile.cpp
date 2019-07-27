@@ -209,20 +209,20 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("void initializeModel(double *states, double *variables)\n{\n", generatorProfile->beginInitializeModelMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endInitializeModelMethodString());
+    EXPECT_EQ("void initializeConstants(double *states, double *variables)\n{\n", generatorProfile->beginInitializeConstantsMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endInitializeConstantsMethodString());
 
-    EXPECT_EQ("void computeConstantEquations(double *variables)\n{\n", generatorProfile->beginComputeConstantEquationsMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endComputeConstantEquationsMethodString());
+    EXPECT_EQ("void computeComputedConstants(double *variables)\n{\n", generatorProfile->beginComputeComputedConstantsMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endComputeComputedConstantsMethodString());
 
-    EXPECT_EQ("void computeRateEquations(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeRateEquationsMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endComputeRateEquationsMethodString());
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeRatesMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endComputeRatesMethodString());
 
-    EXPECT_EQ("void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeAlgebraicEquationsMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endComputeAlgebraicEquationsMethodString());
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeVariablesMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endComputeVariablesMethodString());
 
-    EXPECT_EQ("void computeStateOrRateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeStateOrRateBasedAlgebraicEquationsMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endComputeStateOrRateBasedAlgebraicEquationsMethodString());
+    EXPECT_EQ("void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)\n{\n", generatorProfile->beginComputeStateRateBasedVariablesMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endComputeStateRateBasedVariablesMethodString());
 
     EXPECT_EQ("    ", generatorProfile->indentString());
 
@@ -467,20 +467,20 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
-    generatorProfile->setBeginInitializeModelMethodString(value);
-    generatorProfile->setEndInitializeModelMethodString(value);
+    generatorProfile->setBeginInitializeConstantsMethodString(value);
+    generatorProfile->setEndInitializeConstantsMethodString(value);
 
-    generatorProfile->setBeginComputeConstantEquationsMethodString(value);
-    generatorProfile->setEndComputeConstantEquationsMethodString(value);
+    generatorProfile->setBeginComputeComputedConstantsMethodString(value);
+    generatorProfile->setEndComputeComputedConstantsMethodString(value);
 
-    generatorProfile->setBeginComputeRateEquationsMethodString(value);
-    generatorProfile->setEndComputeRateEquationsMethodString(value);
+    generatorProfile->setBeginComputeRatesMethodString(value);
+    generatorProfile->setEndComputeRatesMethodString(value);
 
-    generatorProfile->setBeginComputeAlgebraicEquationsMethodString(value);
-    generatorProfile->setEndComputeAlgebraicEquationsMethodString(value);
+    generatorProfile->setBeginComputeVariablesMethodString(value);
+    generatorProfile->setEndComputeVariablesMethodString(value);
 
-    generatorProfile->setBeginComputeStateOrRateBasedAlgebraicEquationsMethodString(value);
-    generatorProfile->setEndComputeStateOrRateBasedAlgebraicEquationsMethodString(value);
+    generatorProfile->setBeginComputeStateRateBasedVariablesMethodString(value);
+    generatorProfile->setEndComputeStateRateBasedVariablesMethodString(value);
 
     generatorProfile->setIndentString(value);
 
@@ -497,20 +497,20 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
 
-    EXPECT_EQ(value, generatorProfile->beginInitializeModelMethodString());
-    EXPECT_EQ(value, generatorProfile->endInitializeModelMethodString());
+    EXPECT_EQ(value, generatorProfile->beginInitializeConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->endInitializeConstantsMethodString());
 
-    EXPECT_EQ(value, generatorProfile->beginComputeConstantEquationsMethodString());
-    EXPECT_EQ(value, generatorProfile->endComputeConstantEquationsMethodString());
+    EXPECT_EQ(value, generatorProfile->beginComputeComputedConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->endComputeComputedConstantsMethodString());
 
-    EXPECT_EQ(value, generatorProfile->beginComputeRateEquationsMethodString());
-    EXPECT_EQ(value, generatorProfile->endComputeRateEquationsMethodString());
+    EXPECT_EQ(value, generatorProfile->beginComputeRatesMethodString());
+    EXPECT_EQ(value, generatorProfile->endComputeRatesMethodString());
 
-    EXPECT_EQ(value, generatorProfile->beginComputeAlgebraicEquationsMethodString());
-    EXPECT_EQ(value, generatorProfile->endComputeAlgebraicEquationsMethodString());
+    EXPECT_EQ(value, generatorProfile->beginComputeVariablesMethodString());
+    EXPECT_EQ(value, generatorProfile->endComputeVariablesMethodString());
 
-    EXPECT_EQ(value, generatorProfile->beginComputeStateOrRateBasedAlgebraicEquationsMethodString());
-    EXPECT_EQ(value, generatorProfile->endComputeStateOrRateBasedAlgebraicEquationsMethodString());
+    EXPECT_EQ(value, generatorProfile->beginComputeStateRateBasedVariablesMethodString());
+    EXPECT_EQ(value, generatorProfile->endComputeStateRateBasedVariablesMethodString());
 
     EXPECT_EQ(value, generatorProfile->indentString());
 

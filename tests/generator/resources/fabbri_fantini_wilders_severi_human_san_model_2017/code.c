@@ -1,6 +1,6 @@
 #include <math.h>
 
-void initializeModel(double *states, double *variables)
+void initializeConstants(double *states, double *variables)
 {
     states[0] = 0.9308;
     states[1] = 6.181512e-9;
@@ -128,7 +128,7 @@ void initializeModel(double *states, double *variables)
     variables[90] = 3.5e-3;
 }
 
-void computeConstantEquations(double *variables)
+void computeComputedConstants(double *variables)
 {
     variables[92] = (variables[46] > 0.0)?1.2:1.0;
     variables[94] = variables[38]/(variables[72]+variables[38]);
@@ -157,7 +157,7 @@ void computeConstantEquations(double *variables)
     variables[138] = variables[117]*log(variables[37]/variables[36]);
 }
 
-void computeRateEquations(double voi, double *states, double *rates, double *variables)
+void computeRates(double voi, double *states, double *rates, double *variables)
 {
     variables[97] = variables[2]-(variables[2]-variables[3])/(1.0+pow(variables[0]/states[4], variables[1]));
     variables[99] = variables[4]*variables[97];
@@ -290,7 +290,7 @@ void computeRateEquations(double voi, double *states, double *rates, double *var
     rates[32] = (1.0-variables[44])*-1.0*(variables[148]+variables[141]+variables[165]+3.0*variables[198]+3.0*variables[215])/(1.0*(variables[115]+variables[113])*variables[40]);
 }
 
-void computeAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeVariables(double voi, double *states, double *rates, double *variables)
 {
     variables[96] = states[4]-states[30];
     variables[100] = states[0]+states[1]+states[2]+states[3];
@@ -299,7 +299,7 @@ void computeAlgebraicEquations(double voi, double *states, double *rates, double
     variables[184] = 4.0*((37.2*exp(variables[140]/15.9)+0.96*exp(-variables[140]/22.5))/0.84655354-1.0/(1.0+exp(-(variables[140]+23.2)/10.6))/(0.84655354/(37.2*exp(variables[140]/15.9)+0.96*exp(-variables[140]/22.5))));
 }
 
-void computeStateOrRateBasedAlgebraicEquations(double voi, double *states, double *rates, double *variables)
+void computeStateRateBasedVariables(double voi, double *states, double *rates, double *variables)
 {
     variables[91] = states[32];
     variables[93] = variables[91]/(variables[71]+variables[91]);
