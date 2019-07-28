@@ -418,8 +418,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         //       rules). It's just that it looks better/clearer to have them
         //       (somewhat subjective indeed).
 
-        mConditionalOperatorIfString = "(#cond)?#if";
-        mConditionalOperatorElseString = ":#else";
+        mConditionalOperatorIfString = "(#cond) if #if";
+        mConditionalOperatorElseString = " else #else";
 
         mHasConditionalOperator = true;
 
@@ -434,69 +434,41 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions
 
-        mMinFunctionString = "double min(double x, double y)\n"
-                             "{\n"
-                             "     return (x < y)?x:y;\n"
-                             "}\n";
-        mMaxFunctionString = "double max(double x, double y)\n"
-                             "{\n"
-                             "     return (x > y)?x:y;\n"
-                             "}\n";
+        mMinFunctionString = "def min(x, y):\n"
+                             "     return (x < y) if x else y\n";
+        mMaxFunctionString = "def max(x, y):\n"
+                             "     return (x > y) if x else y\n";
 
-        mSecFunctionString = "double sec(double x)\n"
-                             "{\n"
-                             "     return 1.0/cos(x);\n"
-                             "}\n";
-        mCscFunctionString = "double csc(double x)\n"
-                             "{\n"
-                             "     return 1.0/sin(x);\n"
-                             "}\n";
-        mCotFunctionString = "double cot(double x)\n"
-                             "{\n"
-                             "     return 1.0/tan(x);\n"
-                             "}\n";
-        mSechFunctionString = "double sech(double x)\n"
-                              "{\n"
-                              "     return 1.0/cosh(x);\n"
-                              "}\n";
-        mCschFunctionString = "double csch(double x)\n"
-                              "{\n"
-                              "     return 1.0/sinh(x);\n"
-                              "}\n";
-        mCothFunctionString = "double coth(double x)\n"
-                              "{\n"
-                              "     return 1.0/tanh(x);\n"
-                              "}\n";
-        mAsecFunctionString = "double asec(double x)\n"
-                              "{\n"
-                              "     return acos(1.0/x);\n"
-                              "}\n";
-        mAcscFunctionString = "double acsc(double x)\n"
-                              "{\n"
-                              "     return asin(1.0/x);\n"
-                              "}\n";
-        mAcotFunctionString = "double acot(double x)\n"
-                              "{\n"
-                              "     return atan(1.0/x);\n"
-                              "}\n";
-        mAsechFunctionString = "double asech(double x)\n"
-                               "{\n"
-                               "     double oneOverX = 1.0/x;\n"
+        mSecFunctionString = "def sec(x):\n"
+                             "     return 1.0/cos(x)\n";
+        mCscFunctionString = "def csc(x):\n"
+                             "     return 1.0/sin(x)\n";
+        mCotFunctionString = "def cot(x):\n"
+                             "     return 1.0/tan(x)\n";
+        mSechFunctionString = "def sech(x):\n"
+                              "     return 1.0/cosh(x)\n";
+        mCschFunctionString = "def csch(x):\n"
+                              "     return 1.0/sinh(x)\n";
+        mCothFunctionString = "def coth(x):\n"
+                              "     return 1.0/tanh(x)\n";
+        mAsecFunctionString = "def asec(x):\n"
+                              "     return acos(1.0/x)\n";
+        mAcscFunctionString = "def acsc(x):\n"
+                              "     return asin(1.0/x)\n";
+        mAcotFunctionString = "def acot(x):\n"
+                              "     return atan(1.0/x)\n";
+        mAsechFunctionString = "def asech(x):\n"
+                               "     oneOverX = 1.0/x\n"
                                "\n"
-                               "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
-                               "}\n";
-        mAcschFunctionString = "double acsch(double x)\n"
-                               "{\n"
-                               "     double oneOverX = 1.0/x;\n"
+                               "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0))\n";
+        mAcschFunctionString = "def acsch(x):\n"
+                               "     oneOverX = 1.0/x\n"
                                "\n"
-                               "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
-                               "}\n";
-        mAcothFunctionString = "double acoth(double x)\n"
-                               "{\n"
-                               "     double oneOverX = 1.0/x;\n"
+                               "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0))\n";
+        mAcothFunctionString = "def acoth(x):\n"
+                               "     oneOverX = 1.0/x\n"
                                "\n"
-                               "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
-                               "}\n";
+                               "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX))\n";
 
         // Miscellaneous
 
