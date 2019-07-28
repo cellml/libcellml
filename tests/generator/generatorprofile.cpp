@@ -105,8 +105,8 @@ TEST(GeneratorProfile, defaultValues)
 
     EXPECT_EQ("(#cond)?#if", generatorProfile->conditionalOperatorIfString());
     EXPECT_EQ(":#else", generatorProfile->conditionalOperatorElseString());
-    EXPECT_EQ("piecewise(#cond, #if", generatorProfile->piecewiseIfString());
-    EXPECT_EQ(", #else)", generatorProfile->piecewiseElseString());
+    EXPECT_EQ("", generatorProfile->piecewiseIfString());
+    EXPECT_EQ("", generatorProfile->piecewiseElseString());
 
     EXPECT_EQ(true, generatorProfile->hasConditionalOperator());
 
