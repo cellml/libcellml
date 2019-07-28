@@ -358,8 +358,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mLeqString = " <= ";
         mGtString = " > ";
         mGeqString = " >= ";
-        mAndString = " && ";
-        mOrString = " || ";
+        mAndString = " & ";
+        mOrString = " | ";
         mXorString = "^";
         mNotString = "!";
 
