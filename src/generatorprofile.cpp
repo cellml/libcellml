@@ -432,40 +432,40 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Mathematical functions
 
         mMinFunctionString = "def min(x, y):\n"
-                             "     return (x < y) if x else y\n";
+                             "    return x if (x < y) else y\n";
         mMaxFunctionString = "def max(x, y):\n"
-                             "     return (x > y) if x else y\n";
+                             "    return x if (x > y) else y\n";
 
         mSecFunctionString = "def sec(x):\n"
-                             "     return 1.0/cos(x)\n";
+                             "    return 1.0/cos(x)\n";
         mCscFunctionString = "def csc(x):\n"
-                             "     return 1.0/sin(x)\n";
+                             "    return 1.0/sin(x)\n";
         mCotFunctionString = "def cot(x):\n"
-                             "     return 1.0/tan(x)\n";
+                             "    return 1.0/tan(x)\n";
         mSechFunctionString = "def sech(x):\n"
-                              "     return 1.0/cosh(x)\n";
+                              "    return 1.0/cosh(x)\n";
         mCschFunctionString = "def csch(x):\n"
-                              "     return 1.0/sinh(x)\n";
+                              "    return 1.0/sinh(x)\n";
         mCothFunctionString = "def coth(x):\n"
-                              "     return 1.0/tanh(x)\n";
+                              "    return 1.0/tanh(x)\n";
         mAsecFunctionString = "def asec(x):\n"
-                              "     return acos(1.0/x)\n";
+                              "    return acos(1.0/x)\n";
         mAcscFunctionString = "def acsc(x):\n"
-                              "     return asin(1.0/x)\n";
+                              "    return asin(1.0/x)\n";
         mAcotFunctionString = "def acot(x):\n"
-                              "     return atan(1.0/x)\n";
+                              "    return atan(1.0/x)\n";
         mAsechFunctionString = "def asech(x):\n"
-                               "     oneOverX = 1.0/x\n"
+                               "    oneOverX = 1.0/x\n"
                                "\n"
-                               "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0))\n";
+                               "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0))\n";
         mAcschFunctionString = "def acsch(x):\n"
-                               "     oneOverX = 1.0/x\n"
+                               "    oneOverX = 1.0/x\n"
                                "\n"
-                               "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0))\n";
+                               "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0))\n";
         mAcothFunctionString = "def acoth(x):\n"
-                               "     oneOverX = 1.0/x\n"
+                               "    oneOverX = 1.0/x\n"
                                "\n"
-                               "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX))\n";
+                               "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX))\n";
 
         // Miscellaneous
 
