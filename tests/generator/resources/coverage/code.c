@@ -57,17 +57,23 @@ double acot(double x)
 
 double asech(double x)
 {
-     double oneOverX = 1.0/x;     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));
+     double oneOverX = 1.0/x;
+
+     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));
 }
 
 double acsch(double x)
 {
-     double oneOverX = 1.0/x;     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));
+     double oneOverX = 1.0/x;
+
+     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));
 }
 
 double acoth(double x)
 {
-     double oneOverX = 1.0/x;     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
+     double oneOverX = 1.0/x;
+
+     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
 void initializeConstants(double *states, double *variables)

@@ -362,6 +362,12 @@ TEST(Generator, algebraic_eqn_computed_var_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_computed_var_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, algebraic_eqn_const_var_on_rhs)
@@ -388,6 +394,12 @@ TEST(Generator, algebraic_eqn_const_var_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_const_var_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_const_var_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, algebraic_eqn_constant_on_rhs)
@@ -414,6 +426,12 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_constant_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_constant_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, algebraic_eqn_derivative_on_rhs)
@@ -441,6 +459,12 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
@@ -468,6 +492,12 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_derivative_on_rhs_one_component/code.py"), generator.code());
 }
 
 TEST(Generator, algebraic_eqn_state_var_on_rhs)
@@ -495,6 +525,12 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_state_var_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_state_var_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, algebraic_eqn_state_var_on_rhs_one_component)
@@ -522,6 +558,12 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs_one_component)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_state_var_on_rhs_one_component/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/algebraic_eqn_state_var_on_rhs_one_component/code.py"), generator.code());
 }
 
 TEST(Generator, ode_computed_var_on_rhs)
@@ -549,6 +591,12 @@ TEST(Generator, ode_computed_var_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/ode_computed_var_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_computed_var_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, ode_computed_var_on_rhs_one_component)
@@ -576,6 +624,12 @@ TEST(Generator, ode_computed_var_on_rhs_one_component)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/ode_computed_var_on_rhs_one_component/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_computed_var_on_rhs_one_component/code.py"), generator.code());
 }
 
 TEST(Generator, ode_const_var_on_rhs)
@@ -603,6 +657,12 @@ TEST(Generator, ode_const_var_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, ode_const_var_on_rhs_one_component)
@@ -630,6 +690,12 @@ TEST(Generator, ode_const_var_on_rhs_one_component)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs_one_component/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_const_var_on_rhs_one_component/code.py"), generator.code());
 }
 
 TEST(Generator, ode_constant_on_rhs)
@@ -656,6 +722,12 @@ TEST(Generator, ode_constant_on_rhs)
     EXPECT_EQ(nullptr, generator.variable(0));
 
     EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs/code.py"), generator.code());
 }
 
 TEST(Generator, ode_constant_on_rhs_one_component)
@@ -682,6 +754,12 @@ TEST(Generator, ode_constant_on_rhs_one_component)
     EXPECT_EQ(nullptr, generator.variable(0));
 
     EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs_one_component/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_constant_on_rhs_one_component/code.py"), generator.code());
 }
 
 TEST(Generator, ode_multiple_dependent_odes)
@@ -709,6 +787,12 @@ TEST(Generator, ode_multiple_dependent_odes)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes/code.py"), generator.code());
 }
 
 TEST(Generator, ode_multiple_dependent_odes_one_component)
@@ -736,6 +820,12 @@ TEST(Generator, ode_multiple_dependent_odes_one_component)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes_one_component/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_multiple_dependent_odes_one_component/code.py"), generator.code());
 }
 
 TEST(Generator, ode_multiple_odes_with_same_name)
@@ -763,6 +853,12 @@ TEST(Generator, ode_multiple_odes_with_same_name)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/ode_multiple_odes_with_same_name/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/ode_multiple_odes_with_same_name/code.py"), generator.code());
 }
 
 TEST(Generator, cellml_mappings_and_encapsulations)
@@ -793,6 +889,12 @@ TEST(Generator, cellml_mappings_and_encapsulations)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/cellml_mappings_and_encapsulations/code.py"), generator.code());
 }
 
 TEST(Generator, dependent_eqns)
@@ -820,6 +922,12 @@ TEST(Generator, dependent_eqns)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/dependent_eqns/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/dependent_eqns/code.py"), generator.code());
 }
 
 TEST(Generator, fabbri_fantini_wilders_severi_human_san_model_2017)
@@ -847,6 +955,12 @@ TEST(Generator, fabbri_fantini_wilders_severi_human_san_model_2017)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/fabbri_fantini_wilders_severi_human_san_model_2017/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/fabbri_fantini_wilders_severi_human_san_model_2017/code.py"), generator.code());
 }
 
 TEST(Generator, garny_kohl_hunter_boyett_noble_rabbit_san_model_2003)
@@ -874,6 +988,12 @@ TEST(Generator, garny_kohl_hunter_boyett_noble_rabbit_san_model_2003)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/code.py"), generator.code());
 }
 
 TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
@@ -901,6 +1021,12 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/code.py"), generator.code());
 }
 
 TEST(Generator, noble_model_1962)
@@ -928,6 +1054,12 @@ TEST(Generator, noble_model_1962)
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
     EXPECT_EQ(fileContents("generator/resources/noble_model_1962/code.c"), generator.code());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/noble_model_1962/code.py"), generator.code());
 }
 
 TEST(Generator, coverage)
@@ -974,4 +1106,10 @@ TEST(Generator, coverage)
     profile->setHasXorOperator(false);
 
     EXPECT_EQ(fileContents("generator/resources/coverage/codeWithSecondCustomProfile.out"), generator.code());
+
+    profile->loadProfile(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/resources/coverage/code.py"), generator.code());
 }
