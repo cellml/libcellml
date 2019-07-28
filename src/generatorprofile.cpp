@@ -299,20 +299,20 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                               "}\n";
         mAsechFunctionString = "double asech(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;"
-                               ""
+                               "     double oneOverX = 1.0/x;\n"
+                               "\n"
                                "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
                                "}\n";
         mAcschFunctionString = "double acsch(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;"
-                               ""
+                               "     double oneOverX = 1.0/x;\n"
+                               "\n"
                                "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
                                "}\n";
         mAcothFunctionString = "double acoth(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;"
-                               ""
+                               "     double oneOverX = 1.0/x;\n"
+                               "\n"
                                "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
                                "}\n";
 
@@ -481,20 +481,20 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                               "}\n";
         mAsechFunctionString = "double asech(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;"
-                               ""
+                               "     double oneOverX = 1.0/x;\n"
+                               "\n"
                                "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
                                "}\n";
         mAcschFunctionString = "double acsch(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;"
-                               ""
+                               "     double oneOverX = 1.0/x;\n"
+                               "\n"
                                "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
                                "}\n";
         mAcothFunctionString = "double acoth(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;"
-                               ""
+                               "     double oneOverX = 1.0/x;\n"
+                               "\n"
                                "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
                                "}\n";
 

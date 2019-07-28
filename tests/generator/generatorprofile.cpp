@@ -179,22 +179,22 @@ TEST(GeneratorProfile, defaultValues)
               generatorProfile->acotFunctionString());
     EXPECT_EQ("double asech(double x)\n"
               "{\n"
-              "     double oneOverX = 1.0/x;"
-              ""
+              "     double oneOverX = 1.0/x;\n"
+              "\n"
               "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
               "}\n",
               generatorProfile->asechFunctionString());
     EXPECT_EQ("double acsch(double x)\n"
               "{\n"
-              "     double oneOverX = 1.0/x;"
-              ""
+              "     double oneOverX = 1.0/x;\n"
+              "\n"
               "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
               "}\n",
               generatorProfile->acschFunctionString());
     EXPECT_EQ("double acoth(double x)\n"
               "{\n"
-              "     double oneOverX = 1.0/x;"
-              ""
+              "     double oneOverX = 1.0/x;\n"
+              "\n"
               "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
               "}\n",
               generatorProfile->acothFunctionString());
