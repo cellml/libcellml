@@ -256,71 +256,71 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mXorFunctionString = "double xor(double x, double y)\n"
                              "{\n"
-                             "     return (x != 1.0) ^ (y != 0.0);\n"
+                             "    return (x != 1.0) ^ (y != 0.0);\n"
                              "}\n";
 
         mMinFunctionString = "double min(double x, double y)\n"
                              "{\n"
-                             "     return (x < y)?x:y;\n"
+                             "    return (x < y)?x:y;\n"
                              "}\n";
         mMaxFunctionString = "double max(double x, double y)\n"
                              "{\n"
-                             "     return (x > y)?x:y;\n"
+                             "    return (x > y)?x:y;\n"
                              "}\n";
 
         mSecFunctionString = "double sec(double x)\n"
                              "{\n"
-                             "     return 1.0/cos(x);\n"
+                             "    return 1.0/cos(x);\n"
                              "}\n";
         mCscFunctionString = "double csc(double x)\n"
                              "{\n"
-                             "     return 1.0/sin(x);\n"
+                             "    return 1.0/sin(x);\n"
                              "}\n";
         mCotFunctionString = "double cot(double x)\n"
                              "{\n"
-                             "     return 1.0/tan(x);\n"
+                             "    return 1.0/tan(x);\n"
                              "}\n";
         mSechFunctionString = "double sech(double x)\n"
                               "{\n"
-                              "     return 1.0/cosh(x);\n"
+                              "    return 1.0/cosh(x);\n"
                               "}\n";
         mCschFunctionString = "double csch(double x)\n"
                               "{\n"
-                              "     return 1.0/sinh(x);\n"
+                              "    return 1.0/sinh(x);\n"
                               "}\n";
         mCothFunctionString = "double coth(double x)\n"
                               "{\n"
-                              "     return 1.0/tanh(x);\n"
+                              "    return 1.0/tanh(x);\n"
                               "}\n";
         mAsecFunctionString = "double asec(double x)\n"
                               "{\n"
-                              "     return acos(1.0/x);\n"
+                              "    return acos(1.0/x);\n"
                               "}\n";
         mAcscFunctionString = "double acsc(double x)\n"
                               "{\n"
-                              "     return asin(1.0/x);\n"
+                              "    return asin(1.0/x);\n"
                               "}\n";
         mAcotFunctionString = "double acot(double x)\n"
                               "{\n"
-                              "     return atan(1.0/x);\n"
+                              "    return atan(1.0/x);\n"
                               "}\n";
         mAsechFunctionString = "double asech(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;\n"
+                               "    double oneOverX = 1.0/x;\n"
                                "\n"
-                               "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+                               "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
                                "}\n";
         mAcschFunctionString = "double acsch(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;\n"
+                               "    double oneOverX = 1.0/x;\n"
                                "\n"
-                               "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+                               "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
                                "}\n";
         mAcothFunctionString = "double acoth(double x)\n"
                                "{\n"
-                               "     double oneOverX = 1.0/x;\n"
+                               "    double oneOverX = 1.0/x;\n"
                                "\n"
-                               "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+                               "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
                                "}\n";
 
         // Miscellaneous
