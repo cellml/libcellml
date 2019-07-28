@@ -184,7 +184,7 @@
         <variable name="eqnNotanumber" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
-        <variable initial_value="3" name="o" units="dimensionless"/>
+        <variable initial_value="13" name="o" units="dimensionless"/>
         <variable initial_value="4" name="p" units="dimensionless"/>
         <variable initial_value="5" name="q" units="dimensionless"/>
         <variable initial_value="6" name="r" units="dimensionless"/>
