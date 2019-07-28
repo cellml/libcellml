@@ -472,7 +472,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
-        mHeaderString = "";
+        mHeaderString = "from math import *\n";
 
         mVariableOfIntegrationString = "voi";
 

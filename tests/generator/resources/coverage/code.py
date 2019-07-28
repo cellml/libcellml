@@ -1,3 +1,5 @@
+from math import *
+
 def min(x, y):
      return (x < y) if x else y
 
