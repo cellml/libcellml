@@ -52,6 +52,7 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("!", generatorProfile->notString());
 
     EXPECT_EQ(true, generatorProfile->hasXorOperator());
+    EXPECT_EQ(true, generatorProfile->hasNotOperator());
 
     // Arithmetic operators
 
@@ -251,6 +252,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     generatorProfile->setNotString(value);
 
     generatorProfile->setHasXorOperator(falseValue);
+    generatorProfile->setHasNotOperator(falseValue);
 
     EXPECT_EQ(value, generatorProfile->eqString());
     EXPECT_EQ(value, generatorProfile->eqEqString());
@@ -265,6 +267,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     EXPECT_EQ(value, generatorProfile->notString());
 
     EXPECT_EQ(falseValue, generatorProfile->hasXorOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasNotOperator());
 }
 
 TEST(GeneratorProfile, arithmeticOperators)

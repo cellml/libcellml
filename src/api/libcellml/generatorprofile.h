@@ -75,6 +75,9 @@ public:
     bool hasXorOperator() const;
     void setHasXorOperator(bool hasXorOperator);
 
+    bool hasNotOperator() const;
+    void setHasNotOperator(bool hasNotOperator);
+
     // Arithmetic operators
 
     std::string plusString() const;
