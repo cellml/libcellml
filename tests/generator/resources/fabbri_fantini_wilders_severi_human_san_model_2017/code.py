@@ -127,9 +127,9 @@ def initializeConstants(states, variables):
     variables[90] = 3.5e-3
 
 def computeComputedConstants(variables):
-    variables[92] = (variables[46] > 0.0) if 1.2 else 1.0
+    variables[92] = 1.2 if (variables[46] > 0.0) else 1.0
     variables[94] = variables[38]/(variables[72]+variables[38])
-    variables[101] = (variables[46] > 0.0) if -0.25 else (variables[45] > 0.0) if 0.7*variables[45]/(0.00009+variables[45]) else 0.0
+    variables[101] = -0.25 if (variables[46] > 0.0) else 0.7*variables[45]/(0.00009+variables[45]) if (variables[45] > 0.0) else 0.0
     variables[102] = variables[25]*(1.0-variables[101])
     variables[112] = 0.000000001*3.14159265358979*pow(variables[31], 2.0)*variables[29]
     variables[113] = 0.000000001*2.0*3.14159265358979*variables[30]*(variables[31]-variables[30]/2.0)*variables[29]
@@ -142,14 +142,14 @@ def computeComputedConstants(variables):
     variables[121] = variables[86]*variables[120]
     variables[122] = variables[121]*variables[37]/(variables[37]+variables[85])
     variables[123] = variables[120]*variables[37]/(variables[37]+variables[85])
-    variables[124] = (variables[45] > 0.0) if -1.0-9.898*pow(1.0*variables[45], 0.618)/(pow(1.0*variables[45], 0.618)+0.00122423) else 0.0
-    variables[125] = (variables[46] > 0.0) if 7.5 else 0.0
-    variables[127] = (variables[46] > 0.0) if 1.23 else 1.0
+    variables[124] = -1.0-9.898*pow(1.0*variables[45], 0.618)/(pow(1.0*variables[45], 0.618)+0.00122423) if (variables[45] > 0.0) else 0.0
+    variables[125] = 7.5 if (variables[46] > 0.0) else 0.0
+    variables[127] = 1.23 if (variables[46] > 0.0) else 1.0
     variables[128] = 0.31*variables[45]/(variables[45]+0.00009)
-    variables[129] = (variables[46] > 0.0) if -8.0 else 0.0
-    variables[130] = (variables[46] > 0.0) if -27.0 else 0.0
-    variables[133] = (variables[46] > 0.0) if 1.2*variables[63] else variables[63]
-    variables[135] = (variables[46] > 0.0) if -14.0 else 0.0
+    variables[129] = -8.0 if (variables[46] > 0.0) else 0.0
+    variables[130] = -27.0 if (variables[46] > 0.0) else 0.0
+    variables[133] = 1.2*variables[63] if (variables[46] > 0.0) else variables[63]
+    variables[135] = -14.0 if (variables[46] > 0.0) else 0.0
     variables[136] = (3.5988-0.025641)/(1.0+0.0000012155/pow(1.0*variables[45], 1.6951))+0.025641
     variables[138] = variables[117]*log(variables[37]/variables[36])
 
@@ -183,14 +183,14 @@ def computeRates(voi, states, rates, variables):
     variables[104] = variables[102]/(1.0+exp((-states[12]+variables[24])/variables[26]))
     rates[12] = 1.0*(variables[103]*variables[113]-variables[104]*variables[116])/variables[115]-(variables[9]*variables[109]+variables[12]*variables[106]+variables[13]*variables[107])
     rates[13] = variables[104]-variables[105]*variables[114]/variables[116]
-    variables[118] = ((voi > variables[49]) & (voi < variables[49]+variables[50])) if variables[48] else variables[47]
-    variables[140] = (variables[43] >= 1.0) if variables[118] else states[31]
-    variables[145] = (variables[140] < -(80.0-variables[124]-variables[125]-variables[89])) if 0.01329+0.99921/(1.0+exp((variables[140]+97.134-variables[124]-variables[125]-variables[89])/8.1752)) else 0.0002501*exp(-(variables[140]-variables[124]-variables[125]-variables[89])/12.861)
+    variables[118] = variables[48] if ((voi > variables[49]) & (voi < variables[49]+variables[50])) else variables[47]
+    variables[140] = variables[118] if (variables[43] >= 1.0) else states[31]
+    variables[145] = 0.01329+0.99921/(1.0+exp((variables[140]+97.134-variables[124]-variables[125]-variables[89])/8.1752)) if (variables[140] < -(80.0-variables[124]-variables[125]-variables[89])) else 0.0002501*exp(-(variables[140]-variables[124]-variables[125]-variables[89])/12.861)
     variables[144] = 1.0/(0.36*(variables[140]+148.8-variables[124]-variables[125])/(exp(0.066*(variables[140]+148.8-variables[124]-variables[125]))-1.0)+0.1*(variables[140]+87.3-variables[124]-variables[125])/(1.0-exp(-0.2*(variables[140]+87.3-variables[124]-variables[125]))))-0.054
     rates[14] = (variables[145]-states[14])/variables[144]
     variables[149] = 1.0/(1.0+exp(-(variables[140]+42.0504)/8.3106))
     variables[150] = variables[140]+41.0
-    variables[151] = (fabs(variables[150]) < variables[84]) if 2000.0 else 200.0*variables[150]/(1.0-exp(-0.1*variables[150]))
+    variables[151] = 2000.0 if (fabs(variables[150]) < variables[84]) else 200.0*variables[150]/(1.0-exp(-0.1*variables[150]))
     variables[152] = 8000.0*exp(-0.056*(variables[140]+66.0))
     variables[153] = 1.0/(variables[151]+variables[152])
     rates[15] = (variables[149]-states[15])/variables[153]
@@ -238,9 +238,9 @@ def computeRates(voi, states, rates, variables):
     variables[205] = 1.0/(variables[192]+variables[193])
     rates[28] = (variables[191]-states[28])/variables[205]
     variables[167] = 1.0/(1.0+exp(-(variables[140]-variables[52]-variables[129])/(variables[53]*(1.0+variables[130]/100.0))))
-    variables[168] = (variables[140] == -41.8) if -41.80001 else (variables[140] == 0.0) if 0.0 else (variables[140] == -6.8) if -6.80001 else variables[140]
+    variables[168] = -41.80001 if (variables[140] == -41.8) else 0.0 if (variables[140] == 0.0) else -6.80001 if (variables[140] == -6.8) else variables[140]
     variables[203] = -0.02839*(variables[168]+41.8)/(exp(-(variables[168]+41.8)/2.5)-1.0)-0.0849*(variables[168]+6.8)/(exp(-(variables[168]+6.8)/4.8)-1.0)
-    variables[169] = (variables[140] == -1.8) if -1.80001 else variables[140]
+    variables[169] = -1.80001 if (variables[140] == -1.8) else variables[140]
     variables[204] = 0.01143*(variables[169]+1.8)/(exp((variables[169]+1.8)/2.5)-1.0)
     variables[210] = 0.001/(variables[203]+variables[204])
     rates[29] = (variables[167]-states[29])/variables[210]
@@ -267,7 +267,7 @@ def computeRates(voi, states, rates, variables):
     variables[142] = states[14]*variables[123]*(variables[140]-variables[138])*(1.0-variables[87])
     variables[143] = variables[141]+variables[142]
     variables[158] = variables[64]*states[26]*states[27]*(variables[140]-variables[138])
-    variables[194] = (variables[45] > 0.0) if variables[60]*variables[61]*(variables[140]-variables[138])*(1.0+exp((variables[140]+20.0)/20.0))*states[25] else 0.0
+    variables[194] = variables[60]*variables[61]*(variables[140]-variables[138])*(1.0+exp((variables[140]+20.0)/20.0))*states[25] if (variables[45] > 0.0) else 0.0
     variables[165] = 0.0000185*variables[51]*(variables[140]-0.0)/(variables[117]*(1.0-exp(-1.0*(variables[140]-0.0)/variables[117])))*(variables[91]-variables[38]*exp(-1.0*(variables[140]-0.0)/variables[117]))*states[29]*states[17]*states[5]
     variables[164] = 0.000365*variables[51]*(variables[140]-0.0)/(variables[117]*(1.0-exp(-1.0*(variables[140]-0.0)/variables[117])))*(variables[36]-variables[37]*exp(-1.0*(variables[140]-0.0)/variables[117]))*states[29]*states[17]*states[5]
     variables[166] = (variables[163]+variables[164]+variables[165])*(1.0-variables[128])*1.0*variables[127]
@@ -308,18 +308,18 @@ def computeVariables(voi, states, rates, variables):
     variables[134] = variables[117]*log((variables[37]+0.12*variables[38])/(variables[36]+0.12*variables[91]))
     variables[137] = variables[117]*log(variables[38]/variables[91])
     variables[139] = 0.5*variables[117]*log(variables[35]/states[30])
-    variables[140] = (variables[43] >= 1.0) if variables[118] else states[31]
+    variables[140] = variables[118] if (variables[43] >= 1.0) else states[31]
     variables[141] = states[14]*variables[122]*(variables[140]-variables[137])*(1.0-variables[87])
     variables[142] = states[14]*variables[123]*(variables[140]-variables[138])*(1.0-variables[87])
     variables[143] = variables[141]+variables[142]
     variables[144] = 1.0/(0.36*(variables[140]+148.8-variables[124]-variables[125])/(exp(0.066*(variables[140]+148.8-variables[124]-variables[125]))-1.0)+0.1*(variables[140]+87.3-variables[124]-variables[125])/(1.0-exp(-0.2*(variables[140]+87.3-variables[124]-variables[125]))))-0.054
-    variables[145] = (variables[140] < -(80.0-variables[124]-variables[125]-variables[89])) if 0.01329+0.99921/(1.0+exp((variables[140]+97.134-variables[124]-variables[125]-variables[89])/8.1752)) else 0.0002501*exp(-(variables[140]-variables[124]-variables[125]-variables[89])/12.861)
+    variables[145] = 0.01329+0.99921/(1.0+exp((variables[140]+97.134-variables[124]-variables[125]-variables[89])/8.1752)) if (variables[140] < -(80.0-variables[124]-variables[125]-variables[89])) else 0.0002501*exp(-(variables[140]-variables[124]-variables[125]-variables[89])/12.861)
     variables[146] = variables[65]*pow(states[15], 3.0)*states[16]*(variables[140]-variables[126])
     variables[147] = variables[66]*pow(states[15], 3.0)*(variables[140]-variables[126])
     variables[148] = variables[146]+variables[147]
     variables[149] = 1.0/(1.0+exp(-(variables[140]+42.0504)/8.3106))
     variables[150] = variables[140]+41.0
-    variables[151] = (fabs(variables[150]) < variables[84]) if 2000.0 else 200.0*variables[150]/(1.0-exp(-0.1*variables[150]))
+    variables[151] = 2000.0 if (fabs(variables[150]) < variables[84]) else 200.0*variables[150]/(1.0-exp(-0.1*variables[150]))
     variables[152] = 8000.0*exp(-0.056*(variables[140]+66.0))
     variables[153] = 1.0/(variables[151]+variables[152])
     variables[154] = 1.0/(1.0+exp((variables[140]+69.804)/4.4565))
@@ -336,8 +336,8 @@ def computeVariables(voi, states, rates, variables):
     variables[165] = 0.0000185*variables[51]*(variables[140]-0.0)/(variables[117]*(1.0-exp(-1.0*(variables[140]-0.0)/variables[117])))*(variables[91]-variables[38]*exp(-1.0*(variables[140]-0.0)/variables[117]))*states[29]*states[17]*states[5]
     variables[166] = (variables[163]+variables[164]+variables[165])*(1.0-variables[128])*1.0*variables[127]
     variables[167] = 1.0/(1.0+exp(-(variables[140]-variables[52]-variables[129])/(variables[53]*(1.0+variables[130]/100.0))))
-    variables[168] = (variables[140] == -41.8) if -41.80001 else (variables[140] == 0.0) if 0.0 else (variables[140] == -6.8) if -6.80001 else variables[140]
-    variables[169] = (variables[140] == -1.8) if -1.80001 else variables[140]
+    variables[168] = -41.80001 if (variables[140] == -41.8) else 0.0 if (variables[140] == 0.0) else -6.80001 if (variables[140] == -6.8) else variables[140]
+    variables[169] = -1.80001 if (variables[140] == -1.8) else variables[140]
     variables[170] = 1.0/(1.0+exp((variables[140]+37.4+variables[57])/(5.3+variables[56])))
     variables[171] = 0.001*(44.3+230.0*exp(-pow((variables[140]+36.0)/10.0, 2.0)))
     variables[172] = 2.0*variables[58]*variables[140]/(variables[117]*(1.0-exp(-1.0*variables[140]*2.0/variables[117])))*(states[30]-variables[35]*exp(-2.0*variables[140]/variables[117]))*states[18]*states[19]
@@ -362,7 +362,7 @@ def computeVariables(voi, states, rates, variables):
     variables[191] = sqrt(1.0/(1.0+exp(-(variables[140]+0.6383-variables[135])/10.7071)))
     variables[192] = 28.0/(1.0+exp(-(variables[140]-40.0-variables[135])/3.0))
     variables[193] = 1.0*exp(-(variables[140]-variables[135]-5.0)/25.0)
-    variables[194] = (variables[45] > 0.0) if variables[60]*variables[61]*(variables[140]-variables[138])*(1.0+exp((variables[140]+20.0)/20.0))*states[25] else 0.0
+    variables[194] = variables[60]*variables[61]*(variables[140]-variables[138])*(1.0+exp((variables[140]+20.0)/20.0))*states[25] if (variables[45] > 0.0) else 0.0
     variables[195] = 10.0*exp(0.0133*(variables[140]+40.0))
     variables[196] = variables[136]/(variables[136]+variables[195])
     variables[197] = 1.0/(variables[136]+variables[195])
