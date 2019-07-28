@@ -1,52 +1,52 @@
 from math import *
 
 def min(x, y):
-     return (x < y) if x else y
+    return x if (x < y) else y
 
 def max(x, y):
-     return (x > y) if x else y
+    return x if (x > y) else y
 
 def sec(x):
-     return 1.0/cos(x)
+    return 1.0/cos(x)
 
 def csc(x):
-     return 1.0/sin(x)
+    return 1.0/sin(x)
 
 def cot(x):
-     return 1.0/tan(x)
+    return 1.0/tan(x)
 
 def sech(x):
-     return 1.0/cosh(x)
+    return 1.0/cosh(x)
 
 def csch(x):
-     return 1.0/sinh(x)
+    return 1.0/sinh(x)
 
 def coth(x):
-     return 1.0/tanh(x)
+    return 1.0/tanh(x)
 
 def asec(x):
-     return acos(1.0/x)
+    return acos(1.0/x)
 
 def acsc(x):
-     return asin(1.0/x)
+    return asin(1.0/x)
 
 def acot(x):
-     return atan(1.0/x)
+    return atan(1.0/x)
 
 def asech(x):
-     oneOverX = 1.0/x
+    oneOverX = 1.0/x
 
-     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0))
+    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0))
 
 def acsch(x):
-     oneOverX = 1.0/x
+    oneOverX = 1.0/x
 
-     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0))
+    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0))
 
 def acoth(x):
-     oneOverX = 1.0/x
+    oneOverX = 1.0/x
 
-     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX))
+    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX))
 
 def initializeConstants(states, variables):
     states[0] = 0.0
