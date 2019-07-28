@@ -524,6 +524,9 @@ struct Generator::GeneratorImpl
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
+    bool mNeedXor = false;
+    bool mNeedNot = false;
+
     bool mNeedMin = false;
     bool mNeedMax = false;
 
@@ -760,8 +763,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OR, astParent);
     } else if (node->isMathmlElement("xor")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::XOR, astParent);
+
+        mNeedXor = true;
     } else if (node->isMathmlElement("not")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NOT, astParent);
+
+        mNeedNot = true;
 
         // Arithmetic operators
 
@@ -2283,6 +2290,9 @@ Generator::Generator(const Generator &rhs)
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
+    mPimpl->mNeedXor = rhs.mPimpl->mNeedXor;
+    mPimpl->mNeedNot = rhs.mPimpl->mNeedNot;
+
     mPimpl->mNeedMin = rhs.mPimpl->mNeedMin;
     mPimpl->mNeedMax = rhs.mPimpl->mNeedMax;
 
@@ -2411,6 +2421,24 @@ std::string Generator::code() const
     std::string res = mPimpl->mProfile->headerString();
 
     // Generate code for extra mathematical functions.
+
+    if (mPimpl->mNeedXor && !mPimpl->mProfile->hasXorOperator()
+        && !mPimpl->mProfile->xorFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->xorFunctionString();
+    }
+
+    if (mPimpl->mNeedNot && !mPimpl->mProfile->hasNotOperator()
+        && !mPimpl->mProfile->notFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->notFunctionString();
+    }
 
     if (mPimpl->mNeedMin) {
         if (!res.empty()) {

@@ -247,6 +247,11 @@ public:
 
     // Mathematical functions
 
+    std::string xorFunctionString() const;
+    void setXorFunctionString(const std::string &xorFunctionString);
+    std::string notFunctionString() const;
+    void setNotFunctionString(const std::string &notFunctionString);
+
     std::string minFunctionString() const;
     void setMinFunctionString(const std::string &minFunctionString);
     std::string maxFunctionString() const;

@@ -1,5 +1,11 @@
 from math import *
 
+def xor(x, y):
+    return (x != 1.0) ^ (y != 0.0)
+
+def not(x):
+    return 1.0 if (x == 0.0) else 0.0
+
 def min(x, y):
     return x if (x < y) else y
 

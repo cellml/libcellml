@@ -114,6 +114,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Mathematical functions
 
+    std::string mXorFunctionString;
+    std::string mNotFunctionString;
+
     std::string mMinFunctionString;
     std::string mMaxFunctionString;
 
@@ -179,10 +182,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mGeqString = " >= ";
         mAndString = " && ";
         mOrString = " || ";
-        mXorString = "^";
+        mXorString = "xor";
         mNotString = "!";
 
-        mHasXorOperator = true;
+        mHasXorOperator = false;
         mHasNotOperator = true;
 
         // Arithmetic operators
@@ -250,6 +253,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mNanString = "sqrt(-1.0)";
 
         // Mathematical functions
+
+        mXorFunctionString = "double xor(double x, double y)\n"
+                             "{\n"
+                             "     return (x != 1.0) ^ (y != 0.0);\n"
+                             "}\n";
 
         mMinFunctionString = "double min(double x, double y)\n"
                              "{\n"
@@ -430,6 +438,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mNanString = "sqrt(-1.0)";
 
         // Mathematical functions
+
+        mXorFunctionString = "def xor(x, y):\n"
+                             "    return (x != 1.0) ^ (y != 0.0)\n";
+        mNotFunctionString = "def not(x):\n"
+                             "    return 1.0 if (x == 0.0) else 0.0\n";
 
         mMinFunctionString = "def min(x, y):\n"
                              "    return x if (x < y) else y\n";
@@ -1319,6 +1332,26 @@ std::string GeneratorProfile::nanString() const
 void GeneratorProfile::setNanString(const std::string &nanString)
 {
     mPimpl->mNanString = nanString;
+}
+
+std::string GeneratorProfile::xorFunctionString() const
+{
+    return mPimpl->mXorFunctionString;
+}
+
+void GeneratorProfile::setXorFunctionString(const std::string &xorFunctionString)
+{
+    mPimpl->mXorFunctionString = xorFunctionString;
+}
+
+std::string GeneratorProfile::notFunctionString() const
+{
+    return mPimpl->mNotFunctionString;
+}
+
+void GeneratorProfile::setNotFunctionString(const std::string &notFunctionString)
+{
+    mPimpl->mNotFunctionString = notFunctionString;
 }
 
 std::string GeneratorProfile::minFunctionString() const
