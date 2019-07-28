@@ -90,8 +90,8 @@ void initializeConstants(double *states, double *variables)
     variables[173] = 123.456789;
     variables[174] = 123.0e99;
     variables[175] = 123.456789e99;
-    variables[177] = true;
-    variables[178] = false;
+    variables[177] = 1.0;
+    variables[178] = 0.0;
     variables[179] = 2.71828182845905;
     variables[180] = 3.14159265358979;
     variables[181] = 1.0/0.0;
