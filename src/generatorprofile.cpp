@@ -418,7 +418,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         //       rules). It's just that it looks better/clearer to have them
         //       (somewhat subjective indeed).
 
-        mConditionalOperatorIfString = "(#cond) if #if";
+        mConditionalOperatorIfString = "#if if (#cond)";
         mConditionalOperatorElseString = " else #else";
 
         mHasConditionalOperator = true;

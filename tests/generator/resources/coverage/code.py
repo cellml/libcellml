@@ -230,10 +230,10 @@ def computeComputedConstants(variables):
     variables[165] = asech(variables[0])
     variables[166] = acsch(variables[0])
     variables[167] = acoth(variables[0])
-    variables[168] = (variables[0] > variables[1]) if variables[0] else sqrt(-1.0)
-    variables[169] = (variables[0] > variables[1]) if variables[0] else variables[2]
-    variables[170] = (variables[0] > variables[1]) if variables[0] else (variables[2] > variables[3]) if variables[2] else (variables[4] > variables[5]) if variables[4] else sqrt(-1.0)
-    variables[171] = (variables[0] > variables[1]) if variables[0] else (variables[2] > variables[3]) if variables[2] else (variables[4] > variables[5]) if variables[4] else variables[6]
+    variables[168] = variables[0] if (variables[0] > variables[1]) else sqrt(-1.0)
+    variables[169] = variables[0] if (variables[0] > variables[1]) else variables[2]
+    variables[170] = variables[0] if (variables[0] > variables[1]) else variables[2] if (variables[2] > variables[3]) else variables[4] if (variables[4] > variables[5]) else sqrt(-1.0)
+    variables[171] = variables[0] if (variables[0] > variables[1]) else variables[2] if (variables[2] > variables[3]) else variables[4] if (variables[4] > variables[5]) else variables[6]
     variables[176] = variables[0]
 
 def computeRates(voi, states, rates, variables):
