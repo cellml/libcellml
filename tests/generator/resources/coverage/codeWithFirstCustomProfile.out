@@ -1,10 +1,5 @@
 #include <math.h>
 
-double xor(double x, double y)
-{
-    return (x != 1.0) ^ (y != 0.0);
-}
-
 double min(double x, double y)
 {
     return (x < y)?x:y;
@@ -141,21 +136,21 @@ void computeComputedConstants(double *variables)
     variables[40] = (variables[0] < variables[1]) || -variables[2];
     variables[41] = (variables[0] < variables[1]) || (variables[2]^^variables[3]);
     variables[42] = (variables[0] < variables[1]) || (variables[2]^^(1.0/variables[3]));
-    variables[43] = xor(variables[0], variables[1]);
-    variables[44] = xor(variables[0], xor(variables[1], variables[2]));
-    variables[45] = xor(variables[0] < variables[1], variables[2] > variables[3]);
-    variables[46] = xor(variables[0]+variables[1], variables[2] > variables[3]);
-    variables[47] = xor(variables[0], variables[1] > variables[2]);
-    variables[48] = xor(variables[0]-variables[1], variables[2] > variables[3]);
-    variables[49] = xor(-variables[0], variables[1] > variables[2]);
-    variables[50] = xor(variables[0]^^variables[1], variables[2] > variables[3]);
-    variables[51] = xor(variables[0]^^(1.0/variables[1]), variables[2] > variables[3]);
-    variables[52] = xor(variables[0] < variables[1], variables[2]+variables[3]);
-    variables[53] = xor(variables[0] < variables[1], variables[2]);
-    variables[54] = xor(variables[0] < variables[1], variables[2]-variables[3]);
-    variables[55] = xor(variables[0] < variables[1], -variables[2]);
-    variables[56] = xor(variables[0] < variables[1], variables[2]^^variables[3]);
-    variables[57] = xor(variables[0] < variables[1], variables[2]^^(1.0/variables[3]));
+    variables[43] = variables[0]^variables[1];
+    variables[44] = variables[0]^variables[1]^variables[2];
+    variables[45] = (variables[0] < variables[1])^(variables[2] > variables[3]);
+    variables[46] = (variables[0]+variables[1])^(variables[2] > variables[3]);
+    variables[47] = variables[0]^(variables[1] > variables[2]);
+    variables[48] = (variables[0]-variables[1])^(variables[2] > variables[3]);
+    variables[49] = -variables[0]^(variables[1] > variables[2]);
+    variables[50] = (variables[0]^^variables[1])^(variables[2] > variables[3]);
+    variables[51] = (variables[0]^^(1.0/variables[1]))^(variables[2] > variables[3]);
+    variables[52] = (variables[0] < variables[1])^(variables[2]+variables[3]);
+    variables[53] = (variables[0] < variables[1])^variables[2];
+    variables[54] = (variables[0] < variables[1])^(variables[2]-variables[3]);
+    variables[55] = (variables[0] < variables[1])^-variables[2];
+    variables[56] = (variables[0] < variables[1])^(variables[2]^^variables[3]);
+    variables[57] = (variables[0] < variables[1])^(variables[2]^^(1.0/variables[3]));
     variables[58] = !variables[0];
     variables[59] = variables[0]+variables[1];
     variables[60] = variables[0]+variables[1]+variables[2];

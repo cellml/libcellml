@@ -1094,9 +1094,11 @@ TEST(Generator, coverage)
 
     profile->setPowerString("^^");
     profile->setSquareString("sqr");
+    profile->setXorString("^");
     profile->setHasPowerOperator(true);
     profile->setPiecewiseIfString("piecewise(#cond, #if");
     profile->setPiecewiseElseString(", #else)");
+    profile->setHasXorOperator(true);
     profile->setHasConditionalOperator(false);
 
     EXPECT_EQ(fileContents("generator/resources/coverage/codeWithFirstCustomProfile.out"), generator.code());
