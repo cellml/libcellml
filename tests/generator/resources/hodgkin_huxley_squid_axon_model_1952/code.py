@@ -1,3 +1,5 @@
+from math import *
+
 def initializeConstants(states, variables):
     states[0] = 0.05
     states[1] = 0.6
