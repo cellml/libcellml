@@ -963,6 +963,8 @@ TEST(Generator, coverage)
     profile->setPowerString("^^");
     profile->setSquareString("sqr");
     profile->setHasPowerOperator(true);
+    profile->setPiecewiseIfString("piecewise(#cond, #if");
+    profile->setPiecewiseElseString(", #else)");
     profile->setHasConditionalOperator(false);
 
     EXPECT_EQ(fileContents("generator/resources/coverage/codeWithFirstCustomProfile.out"), generator.code());
