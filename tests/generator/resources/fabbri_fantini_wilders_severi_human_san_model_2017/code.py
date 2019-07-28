@@ -183,7 +183,7 @@ def computeRates(voi, states, rates, variables):
     variables[104] = variables[102]/(1.0+exp((-states[12]+variables[24])/variables[26]))
     rates[12] = 1.0*(variables[103]*variables[113]-variables[104]*variables[116])/variables[115]-(variables[9]*variables[109]+variables[12]*variables[106]+variables[13]*variables[107])
     rates[13] = variables[104]-variables[105]*variables[114]/variables[116]
-    variables[118] = ((voi > variables[49]) && (voi < variables[49]+variables[50])) if variables[48] else variables[47]
+    variables[118] = ((voi > variables[49]) & (voi < variables[49]+variables[50])) if variables[48] else variables[47]
     variables[140] = (variables[43] >= 1.0) if variables[118] else states[31]
     variables[145] = (variables[140] < -(80.0-variables[124]-variables[125]-variables[89])) if 0.01329+0.99921/(1.0+exp((variables[140]+97.134-variables[124]-variables[125]-variables[89])/8.1752)) else 0.0002501*exp(-(variables[140]-variables[124]-variables[125]-variables[89])/12.861)
     variables[144] = 1.0/(0.36*(variables[140]+148.8-variables[124]-variables[125])/(exp(0.066*(variables[140]+148.8-variables[124]-variables[125]))-1.0)+0.1*(variables[140]+87.3-variables[124]-variables[125])/(1.0-exp(-0.2*(variables[140]+87.3-variables[124]-variables[125]))))-0.054
