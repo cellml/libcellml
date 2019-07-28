@@ -48,10 +48,10 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ(" >= ", generatorProfile->geqString());
     EXPECT_EQ(" && ", generatorProfile->andString());
     EXPECT_EQ(" || ", generatorProfile->orString());
-    EXPECT_EQ("^", generatorProfile->xorString());
+    EXPECT_EQ("xor", generatorProfile->xorString());
     EXPECT_EQ("!", generatorProfile->notString());
 
-    EXPECT_EQ(true, generatorProfile->hasXorOperator());
+    EXPECT_EQ(false, generatorProfile->hasXorOperator());
     EXPECT_EQ(true, generatorProfile->hasNotOperator());
 
     // Arithmetic operators
@@ -121,6 +121,13 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
 
     // Mathematical functions
+
+    EXPECT_EQ("double xor(double x, double y)\n"
+              "{\n"
+              "     return (x != 1.0) ^ (y != 0.0);\n"
+              "}\n",
+              generatorProfile->xorFunctionString());
+    EXPECT_EQ("", generatorProfile->notFunctionString());
 
     EXPECT_EQ("double min(double x, double y)\n"
               "{\n"
