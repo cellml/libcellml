@@ -1405,7 +1405,9 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
 std::string replace(const std::string &string, const std::string &from, const std::string &to)
 {
-    return std::string(string).replace(string.find(from), from.length(), to);
+    return string.empty() ?
+               "" :
+               std::string(string).replace(string.find(from), from.length(), to);
 }
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
