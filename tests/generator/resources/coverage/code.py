@@ -3,7 +3,7 @@ from math import *
 def xor(x, y):
     return (x != 1.0) ^ (y != 0.0)
 
-def not(x):
+def notFunc(x):
     return 1.0 if (x == 0.0) else 0.0
 
 def min(x, y):
@@ -126,7 +126,7 @@ def computeComputedConstants(variables):
     variables[55] = xor(variables[0] < variables[1], -variables[2])
     variables[56] = xor(variables[0] < variables[1], pow(variables[2], variables[3]))
     variables[57] = xor(variables[0] < variables[1], pow(variables[2], 1.0/variables[3]))
-    variables[58] = not(variables[0])
+    variables[58] = notFunc(variables[0])
     variables[59] = variables[0]+variables[1]
     variables[60] = variables[0]+variables[1]+variables[2]
     variables[61] = (variables[0] < variables[1])+(variables[2] > variables[3])

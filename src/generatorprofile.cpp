@@ -368,7 +368,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAndString = " & ";
         mOrString = " | ";
         mXorString = "xor";
-        mNotString = "not";
+        mNotString = "notFunc";
 
         mHasXorOperator = false;
         mHasNotOperator = false;
@@ -441,7 +441,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mXorFunctionString = "def xor(x, y):\n"
                              "    return (x != 1.0) ^ (y != 0.0)\n";
-        mNotFunctionString = "def not(x):\n"
+        mNotFunctionString = "def notFunc(x):\n"
                              "    return 1.0 if (x == 0.0) else 0.0\n";
 
         mMinFunctionString = "def min(x, y):\n"
