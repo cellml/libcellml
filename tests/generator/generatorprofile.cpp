@@ -112,8 +112,8 @@ TEST(GeneratorProfile, defaultValues)
 
     // Constants
 
-    EXPECT_EQ("true", generatorProfile->trueString());
-    EXPECT_EQ("false", generatorProfile->falseString());
+    EXPECT_EQ("1.0", generatorProfile->trueString());
+    EXPECT_EQ("0.0", generatorProfile->falseString());
     EXPECT_EQ(convertDoubleToString(exp(1.0)), generatorProfile->eString());
     EXPECT_EQ(convertDoubleToString(M_PI), generatorProfile->piString());
     EXPECT_EQ("1.0/0.0", generatorProfile->infString());

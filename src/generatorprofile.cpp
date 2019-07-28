@@ -243,8 +243,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Constants
 
-        mTrueString = "true";
-        mFalseString = "false";
+        mTrueString = "1.0";
+        mFalseString = "0.0";
         mEString = convertDoubleToString(exp(1.0));
         mPiString = convertDoubleToString(M_PI);
         mInfString = "1.0/0.0";
@@ -425,8 +425,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Constants
 
-        mTrueString = "true";
-        mFalseString = "false";
+        mTrueString = "1.0";
+        mFalseString = "0.0";
         mEString = convertDoubleToString(exp(1.0));
         mPiString = convertDoubleToString(M_PI);
         mInfString = "1.0/0.0";
