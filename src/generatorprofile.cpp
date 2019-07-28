@@ -44,6 +44,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mNotString;
 
     bool mHasXorOperator = true;
+    bool mHasNotOperator = true;
 
     // Arithmetic operators
 
@@ -182,6 +183,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mNotString = "!";
 
         mHasXorOperator = true;
+        mHasNotOperator = true;
 
         // Arithmetic operators
 
@@ -357,10 +359,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mGeqString = " >= ";
         mAndString = " & ";
         mOrString = " | ";
-        mXorString = "^";
-        mNotString = "!";
+        mXorString = "xor";
+        mNotString = "not";
 
-        mHasXorOperator = true;
+        mHasXorOperator = false;
+        mHasNotOperator = false;
 
         // Arithmetic operators
 
@@ -528,6 +531,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mNotString = rhs.mPimpl->mNotString;
 
     mPimpl->mHasXorOperator = rhs.mPimpl->mHasXorOperator;
+    mPimpl->mHasNotOperator = rhs.mPimpl->mHasNotOperator;
 
     // Arithmetic operators
 
@@ -785,6 +789,16 @@ bool GeneratorProfile::hasXorOperator() const
 void GeneratorProfile::setHasXorOperator(bool hasXorOperator)
 {
     mPimpl->mHasXorOperator = hasXorOperator;
+}
+
+bool GeneratorProfile::hasNotOperator() const
+{
+    return mPimpl->mHasNotOperator;
+}
+
+void GeneratorProfile::setHasNotOperator(bool hasNotOperator)
+{
+    mPimpl->mHasNotOperator = hasNotOperator;
 }
 
 std::string GeneratorProfile::plusString() const

@@ -1103,7 +1103,9 @@ TEST(Generator, coverage)
 
     profile->setPowerString("^");
     profile->setXorString("xor");
+    profile->setNotString("not");
     profile->setHasXorOperator(false);
+    profile->setHasNotOperator(false);
 
     EXPECT_EQ(fileContents("generator/resources/coverage/codeWithSecondCustomProfile.out"), generator.code());
 

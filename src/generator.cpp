@@ -1921,7 +1921,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
     case GeneratorEquationAst::Type::NOT:
-        code = mProfile->notString() + generateCode(ast->mLeft);
+        if (mProfile->hasNotOperator()) {
+            code = mProfile->notString() + generateCode(ast->mLeft);
+        } else {
+            code = generateOneParameterFunctionCode(mProfile->notString(), ast);
+        }
 
         break;
 
