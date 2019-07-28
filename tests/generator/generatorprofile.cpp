@@ -124,86 +124,86 @@ TEST(GeneratorProfile, defaultValues)
 
     EXPECT_EQ("double xor(double x, double y)\n"
               "{\n"
-              "     return (x != 1.0) ^ (y != 0.0);\n"
+              "    return (x != 1.0) ^ (y != 0.0);\n"
               "}\n",
               generatorProfile->xorFunctionString());
     EXPECT_EQ("", generatorProfile->notFunctionString());
 
     EXPECT_EQ("double min(double x, double y)\n"
               "{\n"
-              "     return (x < y)?x:y;\n"
+              "    return (x < y)?x:y;\n"
               "}\n",
               generatorProfile->minFunctionString());
     EXPECT_EQ("double max(double x, double y)\n"
               "{\n"
-              "     return (x > y)?x:y;\n"
+              "    return (x > y)?x:y;\n"
               "}\n",
               generatorProfile->maxFunctionString());
 
     EXPECT_EQ("double sec(double x)\n"
               "{\n"
-              "     return 1.0/cos(x);\n"
+              "    return 1.0/cos(x);\n"
               "}\n",
               generatorProfile->secFunctionString());
     EXPECT_EQ("double csc(double x)\n"
               "{\n"
-              "     return 1.0/sin(x);\n"
+              "    return 1.0/sin(x);\n"
               "}\n",
               generatorProfile->cscFunctionString());
     EXPECT_EQ("double cot(double x)\n"
               "{\n"
-              "     return 1.0/tan(x);\n"
+              "    return 1.0/tan(x);\n"
               "}\n",
               generatorProfile->cotFunctionString());
     EXPECT_EQ("double sech(double x)\n"
               "{\n"
-              "     return 1.0/cosh(x);\n"
+              "    return 1.0/cosh(x);\n"
               "}\n",
               generatorProfile->sechFunctionString());
     EXPECT_EQ("double csch(double x)\n"
               "{\n"
-              "     return 1.0/sinh(x);\n"
+              "    return 1.0/sinh(x);\n"
               "}\n",
               generatorProfile->cschFunctionString());
     EXPECT_EQ("double coth(double x)\n"
               "{\n"
-              "     return 1.0/tanh(x);\n"
+              "    return 1.0/tanh(x);\n"
               "}\n",
               generatorProfile->cothFunctionString());
     EXPECT_EQ("double asec(double x)\n"
               "{\n"
-              "     return acos(1.0/x);\n"
+              "    return acos(1.0/x);\n"
               "}\n",
               generatorProfile->asecFunctionString());
     EXPECT_EQ("double acsc(double x)\n"
               "{\n"
-              "     return asin(1.0/x);\n"
+              "    return asin(1.0/x);\n"
               "}\n",
               generatorProfile->acscFunctionString());
     EXPECT_EQ("double acot(double x)\n"
               "{\n"
-              "     return atan(1.0/x);\n"
+              "    return atan(1.0/x);\n"
               "}\n",
               generatorProfile->acotFunctionString());
     EXPECT_EQ("double asech(double x)\n"
               "{\n"
-              "     double oneOverX = 1.0/x;\n"
+              "    double oneOverX = 1.0/x;\n"
               "\n"
-              "     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+              "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
               "}\n",
               generatorProfile->asechFunctionString());
     EXPECT_EQ("double acsch(double x)\n"
               "{\n"
-              "     double oneOverX = 1.0/x;\n"
+              "    double oneOverX = 1.0/x;\n"
               "\n"
-              "     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+              "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
               "}\n",
               generatorProfile->acschFunctionString());
     EXPECT_EQ("double acoth(double x)\n"
               "{\n"
-              "     double oneOverX = 1.0/x;\n"
+              "    double oneOverX = 1.0/x;\n"
               "\n"
-              "     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+              "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
               "}\n",
               generatorProfile->acothFunctionString());
 

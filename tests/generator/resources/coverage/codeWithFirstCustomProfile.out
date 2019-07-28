@@ -2,83 +2,83 @@
 
 double xor(double x, double y)
 {
-     return (x != 1.0) ^ (y != 0.0);
+    return (x != 1.0) ^ (y != 0.0);
 }
 
 double min(double x, double y)
 {
-     return (x < y)?x:y;
+    return (x < y)?x:y;
 }
 
 double max(double x, double y)
 {
-     return (x > y)?x:y;
+    return (x > y)?x:y;
 }
 
 double sec(double x)
 {
-     return 1.0/cos(x);
+    return 1.0/cos(x);
 }
 
 double csc(double x)
 {
-     return 1.0/sin(x);
+    return 1.0/sin(x);
 }
 
 double cot(double x)
 {
-     return 1.0/tan(x);
+    return 1.0/tan(x);
 }
 
 double sech(double x)
 {
-     return 1.0/cosh(x);
+    return 1.0/cosh(x);
 }
 
 double csch(double x)
 {
-     return 1.0/sinh(x);
+    return 1.0/sinh(x);
 }
 
 double coth(double x)
 {
-     return 1.0/tanh(x);
+    return 1.0/tanh(x);
 }
 
 double asec(double x)
 {
-     return acos(1.0/x);
+    return acos(1.0/x);
 }
 
 double acsc(double x)
 {
-     return asin(1.0/x);
+    return asin(1.0/x);
 }
 
 double acot(double x)
 {
-     return atan(1.0/x);
+    return atan(1.0/x);
 }
 
 double asech(double x)
 {
-     double oneOverX = 1.0/x;
+    double oneOverX = 1.0/x;
 
-     return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));
+    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));
 }
 
 double acsch(double x)
 {
-     double oneOverX = 1.0/x;
+    double oneOverX = 1.0/x;
 
-     return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));
+    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));
 }
 
 double acoth(double x)
 {
-     double oneOverX = 1.0/x;
+    double oneOverX = 1.0/x;
 
-     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
+    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
 void initializeConstants(double *states, double *variables)
