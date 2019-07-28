@@ -232,9 +232,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAcothString = "acoth";
 
         // Piecewise statement
-        // Note: the parentheses around #cond is not needed (because of precedence
-        //       rules). It's just that it looks better/clearer to have them
-        //       (somewhat subjective indeed).
 
         mConditionalOperatorIfString = "(#cond)?#if";
         mConditionalOperatorElseString = ":#else";
@@ -414,9 +411,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAcothString = "acoth";
 
         // Piecewise statement
-        // Note: the parentheses around #cond is not needed (because of precedence
-        //       rules). It's just that it looks better/clearer to have them
-        //       (somewhat subjective indeed).
 
         mConditionalOperatorIfString = "#if if (#cond)";
         mConditionalOperatorElseString = " else #else";
