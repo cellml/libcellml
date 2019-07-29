@@ -499,7 +499,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mXorFunctionString = "def xorFunc(x, y):\n"
                              "    return 1.0 if (bool(x) ^ bool(y)) else 0.0\n";
         mNotFunctionString = "def notFunc(x):\n"
-                             "    return 1.0 if (bool(x)) else 0.0\n";
+                             "    return 1.0 if (not bool(x)) else 0.0\n";
 
         mMinFunctionString = "def min(x, y):\n"
                              "    return x if (x < y) else y\n";
