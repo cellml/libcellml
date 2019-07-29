@@ -1020,6 +1020,32 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
     EXPECT_NE(nullptr, generator.variable(0));
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
 
+    const std::vector<libcellml::GeneratorVariable::Type> expectedTypes = {
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::CONSTANT,
+        libcellml::GeneratorVariable::Type::COMPUTED_CONSTANT,
+        libcellml::GeneratorVariable::Type::COMPUTED_CONSTANT,
+        libcellml::GeneratorVariable::Type::COMPUTED_CONSTANT,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC,
+        libcellml::GeneratorVariable::Type::ALGEBRAIC
+    };
+
+    for (size_t i = 0; i < generator.variableCount(); ++i) {
+        EXPECT_NE(nullptr, generator.variable(i)->variable());
+        EXPECT_EQ(expectedTypes[i], generator.variable(i)->type());
+    }
+
     EXPECT_EQ(fileContents("generator/resources/hodgkin_huxley_squid_axon_model_1952/code.c"), generator.code());
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);

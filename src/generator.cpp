@@ -90,6 +90,16 @@ void GeneratorVariable::swap(GeneratorVariable &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
+VariablePtr GeneratorVariable::variable() const
+{
+    return mPimpl->mVariable;
+}
+
+GeneratorVariable::Type GeneratorVariable::type() const
+{
+    return mPimpl->mType;
+}
+
 struct GeneratorEquation;
 using GeneratorEquationPtr = std::shared_ptr<GeneratorEquation>;
 using GeneratorEquationWeakPtr = std::weak_ptr<GeneratorEquation>;

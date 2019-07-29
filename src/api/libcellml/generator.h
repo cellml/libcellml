@@ -42,6 +42,9 @@ public:
     GeneratorVariable(GeneratorVariable &&rhs) noexcept; /**< Move constructor */
     GeneratorVariable &operator=(GeneratorVariable rhs); /**< Assignment operator */
 
+    VariablePtr variable() const;
+    GeneratorVariable::Type type() const;
+
 private:
     void swap(GeneratorVariable &rhs); /**< Swap method required for C++ 11 move semantics. */
 
