@@ -1,5 +1,14 @@
 from math import *
 
+def leqFunc(x, y):
+    return 1.0 if (x <= y) else 0.0
+
+def geqFunc(x, y):
+    return 1.0 if (x >= y) else 0.0
+
+def andFunc(x, y):
+    return 1.0 if (bool(x) & bool(y)) else 0.0
+
 def initializeConstants(states, variables):
     states[0] = 0.05
     states[1] = 0.6
@@ -26,7 +35,7 @@ def computeRates(voi, states, rates, variables):
     variables[16] = 0.01*(states[3]+10.0)/(exp((states[3]+10.0)/10.0)-1.0)
     variables[17] = 0.125*exp(states[3]/80.0)
     rates[2] = variables[16]*(1.0-states[2])-variables[17]*states[2]
-    variables[5] = -20.0 if ((voi >= 10.0) & (voi <= 10.5)) else 0.0
+    variables[5] = -20.0 if (andFunc(geqFunc(voi, 10.0), leqFunc(voi, 10.5))) else 0.0
     variables[7] = variables[0]*(states[3]-variables[6])
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14])
     variables[9] = variables[4]*pow(states[0], 3.0)*states[1]*(states[3]-variables[8])

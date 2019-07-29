@@ -72,6 +72,30 @@ public:
     std::string notString() const;
     void setNotString(const std::string &notString);
 
+    bool hasEqEqOperator() const;
+    void setHasEqEqOperator(bool hasEqEqOperator);
+
+    bool hasNeqOperator() const;
+    void setHasNeqOperator(bool hasNeqOperator);
+
+    bool hasLtOperator() const;
+    void setHasLtOperator(bool hasLtOperator);
+
+    bool hasLeqOperator() const;
+    void setHasLeqOperator(bool hasLeqOperator);
+
+    bool hasGtOperator() const;
+    void setHasGtOperator(bool hasGtOperator);
+
+    bool hasGeqOperator() const;
+    void setHasGeqOperator(bool hasGeqOperator);
+
+    bool hasAndOperator() const;
+    void setHasAndOperator(bool hasAndOperator);
+
+    bool hasOrOperator() const;
+    void setHasOrOperator(bool hasOrOperator);
+
     bool hasXorOperator() const;
     void setHasXorOperator(bool hasXorOperator);
 
@@ -247,6 +271,22 @@ public:
 
     // Mathematical functions
 
+    std::string eqEqFunctionString() const;
+    void setEqEqFunctionString(const std::string &eqEqFunctionString);
+    std::string neqFunctionString() const;
+    void setNeqFunctionString(const std::string &neqFunctionString);
+    std::string ltFunctionString() const;
+    void setLtFunctionString(const std::string &ltFunctionString);
+    std::string leqFunctionString() const;
+    void setLeqFunctionString(const std::string &leqFunctionString);
+    std::string gtFunctionString() const;
+    void setGtFunctionString(const std::string &gtFunctionString);
+    std::string geqFunctionString() const;
+    void setGeqFunctionString(const std::string &geqFunctionString);
+    std::string andFunctionString() const;
+    void setAndFunctionString(const std::string &andFunctionString);
+    std::string orFunctionString() const;
+    void setOrFunctionString(const std::string &orFunctionString);
     std::string xorFunctionString() const;
     void setXorFunctionString(const std::string &xorFunctionString);
     std::string notFunctionString() const;

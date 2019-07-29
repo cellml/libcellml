@@ -2,7 +2,7 @@
 
 double xor(double x, double y)
 {
-    return (x != 1.0) ^ (y != 0.0);
+    return (x != 0.0) ^ (y != 0.0);
 }
 
 double min(double x, double y)
@@ -86,7 +86,7 @@ void initializeConstants(double *states, double *variables)
     states[0] = 0.0;
     variables[0] = 1.0;
     variables[1] = 2.0;
-    variables[2] = 13.0;
+    variables[2] = 3.0;
     variables[3] = 4.0;
     variables[4] = 5.0;
     variables[5] = 6.0;
@@ -179,11 +179,11 @@ void computeComputedConstants(double *variables)
     variables[78] = (variables[0] < variables[1])*(variables[2]-variables[3]);
     variables[79] = (variables[0] < variables[1])*-variables[2];
     variables[80] = variables[0]/variables[1];
-    variables[81] = (variables[0] < variables[1])/(variables[2] > variables[3]);
-    variables[82] = (variables[0]+variables[1])/(variables[2] > variables[3]);
-    variables[83] = variables[0]/(variables[1] > variables[2]);
-    variables[84] = (variables[0]-variables[1])/(variables[2] > variables[3]);
-    variables[85] = -variables[0]/(variables[1] > variables[2]);
+    variables[81] = (variables[0] < variables[1])/(variables[3] > variables[2]);
+    variables[82] = (variables[0]+variables[1])/(variables[3] > variables[2]);
+    variables[83] = variables[0]/(variables[2] > variables[1]);
+    variables[84] = (variables[0]-variables[1])/(variables[3] > variables[2]);
+    variables[85] = -variables[0]/(variables[2] > variables[1]);
     variables[86] = (variables[0] < variables[1])/(variables[2]+variables[3]);
     variables[87] = (variables[0] < variables[1])/variables[2];
     variables[88] = (variables[0] < variables[1])/(variables[2]-variables[3]);
@@ -213,13 +213,13 @@ void computeComputedConstants(double *variables)
     variables[112] = sqrt(variables[0]);
     variables[113] = pow(variables[0], 1.0/3.0);
     variables[114] = pow(variables[0], 1.0/variables[1]);
-    variables[115] = pow(variables[0] < variables[1], 1.0/variables[2] > variables[3]);
-    variables[116] = pow(variables[0]+variables[1], 1.0/variables[2] > variables[3]);
-    variables[117] = pow(variables[0], 1.0/variables[1] > variables[2]);
-    variables[118] = pow(variables[0]-variables[1], 1.0/variables[2] > variables[3]);
-    variables[119] = pow(-variables[0], 1.0/variables[1] > variables[2]);
-    variables[120] = pow(variables[0]*variables[1], 1.0/variables[2] > variables[3]);
-    variables[121] = pow(variables[0]/variables[1], 1.0/variables[2] > variables[3]);
+    variables[115] = pow(variables[0] < variables[1], 1.0/variables[3] > variables[2]);
+    variables[116] = pow(variables[0]+variables[1], 1.0/variables[3] > variables[2]);
+    variables[117] = pow(variables[0], 1.0/variables[2] > variables[1]);
+    variables[118] = pow(variables[0]-variables[1], 1.0/variables[3] > variables[2]);
+    variables[119] = pow(-variables[0], 1.0/variables[2] > variables[1]);
+    variables[120] = pow(variables[0]*variables[1], 1.0/variables[3] > variables[2]);
+    variables[121] = pow(variables[0]/variables[1], 1.0/variables[3] > variables[2]);
     variables[122] = pow(variables[0] < variables[1], 1.0/variables[2]+variables[3]);
     variables[123] = pow(variables[0] < variables[1], 1.0/variables[2]);
     variables[124] = pow(variables[0] < variables[1], 1.0/variables[2]-variables[3]);
@@ -262,10 +262,10 @@ void computeComputedConstants(double *variables)
     variables[161] = acot(variables[0]);
     variables[162] = asinh(variables[0]);
     variables[163] = acosh(variables[0]);
-    variables[164] = atanh(variables[0]);
+    variables[164] = atanh(variables[0]/2.0);
     variables[165] = asech(variables[0]);
     variables[166] = acsch(variables[0]);
-    variables[167] = acoth(variables[0]);
+    variables[167] = acoth(2.0*variables[0]);
     variables[168] = (variables[0] > variables[1])?variables[0]:sqrt(-1.0);
     variables[169] = (variables[0] > variables[1])?variables[0]:variables[2];
     variables[170] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:sqrt(-1.0);

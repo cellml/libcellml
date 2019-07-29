@@ -1092,24 +1092,18 @@ TEST(Generator, coverage)
 
     generator.setProfile(profile);
 
+    profile->setXorString("^");
+    profile->setHasXorOperator(true);
+
     profile->setPowerString("^^");
     profile->setSquareString("sqr");
-    profile->setXorString("^");
     profile->setHasPowerOperator(true);
+
     profile->setPiecewiseIfString("piecewise(#cond, #if");
     profile->setPiecewiseElseString(", #else)");
-    profile->setHasXorOperator(true);
     profile->setHasConditionalOperator(false);
 
-    EXPECT_EQ(fileContents("generator/resources/coverage/codeWithFirstCustomProfile.out"), generator.code());
-
-    profile->setPowerString("^");
-    profile->setXorString("xor");
-    profile->setNotString("not");
-    profile->setHasXorOperator(false);
-    profile->setHasNotOperator(false);
-
-    EXPECT_EQ(fileContents("generator/resources/coverage/codeWithSecondCustomProfile.out"), generator.code());
+    EXPECT_EQ(fileContents("generator/resources/coverage/codeWithCustomProfile.out"), generator.code());
 
     profile->loadProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
