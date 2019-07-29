@@ -101,7 +101,7 @@ void initializeConstants(double *states, double *variables)
 void computeComputedConstants(double *variables)
 {
     variables[7] = variables[0] == variables[1];
-    variables[8] = variables[0]/(variables[1] == variables[2]);
+    variables[8] = variables[0]/(variables[1] == variables[1]);
     variables[9] = variables[0] != variables[1];
     variables[10] = variables[0]/(variables[1] != variables[2]);
     variables[11] = variables[0] < variables[1];

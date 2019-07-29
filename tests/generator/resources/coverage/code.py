@@ -100,7 +100,7 @@ def initializeConstants(states, variables):
 
 def computeComputedConstants(variables):
     variables[7] = eqEqFunc(variables[0], variables[1])
-    variables[8] = variables[0]/eqEqFunc(variables[1], variables[2])
+    variables[8] = variables[0]/eqEqFunc(variables[1], variables[1])
     variables[9] = neqFunc(variables[0], variables[1])
     variables[10] = variables[0]/neqFunc(variables[1], variables[2])
     variables[11] = ltFunc(variables[0], variables[1])
