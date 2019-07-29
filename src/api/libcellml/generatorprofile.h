@@ -35,41 +35,202 @@ public:
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
 
+    /**
+     * @brief Set the @c Profile.
+     *
+     * Set this @c GeneratorProfile to the given @c Profile .
+     *
+     * @param profile The @c Profile to use.
+     */
     void setProfile(Profile profile);
 
     // Relational and logical operators
 
+    /**
+     * @brief Get the @c std::string for the assignment operator.
+     *
+     * Return the @c std::string for the assignment operator.
+     *
+     * @return The @c std::string for the assignment operator.
+     */
     std::string eqString() const;
+    /**
+     * @brief Set the @c std::string for the assignment operator.
+     *
+     * Set this @c std::string for the assignment operator.
+     *
+     * @param eqString The @c std::string to use for the assignment operator.
+     */
     void setEqString(const std::string &eqString);
 
+    /**
+     * @brief Get the @c std::string for the == relational operator.
+     *
+     * Return the @c std::string for the == relational operator.
+     *
+     * @return The @c std::string for the == relational operator.
+     */
     std::string eqEqString() const;
+    /**
+     * @brief Set the @c std::string for the == relational operator.
+     *
+     * Set this @c std::string for the == relational operator.
+     *
+     * @param eqString The @c std::string to use for the == relational operator.
+     */
     void setEqEqString(const std::string &eqEqString);
 
+    /**
+     * @brief Get the @c std::string for the != relational operator.
+     *
+     * Return the @c std::string for the != relational operator.
+     *
+     * @return The @c std::string for the != relational operator.
+     */
     std::string neqString() const;
+    /**
+     * @brief Set the @c std::string for the != relational operator.
+     *
+     * Set this @c std::string for the != relational operator.
+     *
+     * @param eqString The @c std::string to use for the != relational operator.
+     */
     void setNeqString(const std::string &neqString);
 
+    /**
+     * @brief Get the @c std::string for the < relational operator.
+     *
+     * Return the @c std::string for the < relational operator.
+     *
+     * @return The @c std::string for the < relational operator.
+     */
     std::string ltString() const;
+    /**
+     * @brief Set the @c std::string for the < relational operator.
+     *
+     * Set this @c std::string for the < relational operator.
+     *
+     * @param eqString The @c std::string to use for the < relational operator.
+     */
     void setLtString(const std::string &ltString);
 
+    /**
+     * @brief Get the @c std::string for the <= relational operator.
+     *
+     * Return the @c std::string for the <= relational operator.
+     *
+     * @return The @c std::string for the <= relational operator.
+     */
     std::string leqString() const;
+    /**
+     * @brief Set the @c std::string for the <= relational operator.
+     *
+     * Set this @c std::string for the <= relational operator.
+     *
+     * @param eqString The @c std::string to use for the <= relational operator.
+     */
     void setLeqString(const std::string &leqString);
 
+    /**
+     * @brief Get the @c std::string for the > relational operator.
+     *
+     * Return the @c std::string for the > relational operator.
+     *
+     * @return The @c std::string for the > relational operator.
+     */
     std::string gtString() const;
+    /**
+     * @brief Set the @c std::string for the > relational operator.
+     *
+     * Set this @c std::string for the > relational operator.
+     *
+     * @param eqString The @c std::string to use for the > relational operator.
+     */
     void setGtString(const std::string &gtString);
 
+    /**
+     * @brief Get the @c std::string for the >= relational operator.
+     *
+     * Return the @c std::string for the >= relational operator.
+     *
+     * @return The @c std::string for the >= relational operator.
+     */
     std::string geqString() const;
+    /**
+     * @brief Set the @c std::string for the >= relational operator.
+     *
+     * Set this @c std::string for the >= relational operator.
+     *
+     * @param eqString The @c std::string to use for the >= relational operator.
+     */
     void setGeqString(const std::string &geqString);
 
+    /**
+     * @brief Get the @c std::string for the and logical operator.
+     *
+     * Return the @c std::string for the and logical operator.
+     *
+     * @return The @c std::string for the and logical operator.
+     */
     std::string andString() const;
+    /**
+     * @brief Set the @c std::string for the and logical operator.
+     *
+     * Set this @c std::string for the and logical operator.
+     *
+     * @param eqString The @c std::string to use for the and logical operator.
+     */
     void setAndString(const std::string &andString);
 
+    /**
+     * @brief Get the @c std::string for the or logical operator.
+     *
+     * Return the @c std::string for the or logical operator.
+     *
+     * @return The @c std::string for the or logical operator.
+     */
     std::string orString() const;
+    /**
+     * @brief Set the @c std::string for the or logical operator.
+     *
+     * Set this @c std::string for the or logical operator.
+     *
+     * @param eqString The @c std::string to use for the or logical operator.
+     */
     void setOrString(const std::string &orString);
 
+    /**
+     * @brief Get the @c std::string for the xor logical operator.
+     *
+     * Return the @c std::string for the xor logical operator.
+     *
+     * @return The @c std::string for the xor logical operator.
+     */
     std::string xorString() const;
+    /**
+     * @brief Set the @c std::string for the xor logical operator.
+     *
+     * Set this @c std::string for the xor logical operator.
+     *
+     * @param eqString The @c std::string to use for the xor logical operator.
+     */
     void setXorString(const std::string &xorString);
 
+    /**
+     * @brief Get the @c std::string for the not logical operator.
+     *
+     * Return the @c std::string for the not logical operator.
+     *
+     * @return The @c std::string for the not logical operator.
+     */
     std::string notString() const;
+    /**
+     * @brief Set the @c std::string for the not logical operator.
+     *
+     * Set this @c std::string for the not logical operator.
+     *
+     * @param eqString The @c std::string to use for the not logical operator.
+     */
     void setNotString(const std::string &notString);
 
     bool hasEqEqOperator() const;
