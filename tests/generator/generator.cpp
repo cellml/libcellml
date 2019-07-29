@@ -1038,8 +1038,7 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
         libcellml::GeneratorVariable::Type::ALGEBRAIC,
         libcellml::GeneratorVariable::Type::ALGEBRAIC,
         libcellml::GeneratorVariable::Type::ALGEBRAIC,
-        libcellml::GeneratorVariable::Type::ALGEBRAIC
-    };
+        libcellml::GeneratorVariable::Type::ALGEBRAIC};
 
     for (size_t i = 0; i < generator.variableCount(); ++i) {
         EXPECT_NE(nullptr, generator.variable(i)->variable());
