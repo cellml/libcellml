@@ -575,7 +575,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 GeneratorProfile::GeneratorProfile(Profile profile)
     : mPimpl(new GeneratorProfileImpl())
 {
-    loadProfile(profile);
+    setProfile(profile);
 }
 
 GeneratorProfile::~GeneratorProfile()
@@ -736,7 +736,7 @@ void GeneratorProfile::swap(GeneratorProfile &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-void GeneratorProfile::loadProfile(Profile profile)
+void GeneratorProfile::setProfile(Profile profile)
 {
     mPimpl->loadProfile(profile);
 }
