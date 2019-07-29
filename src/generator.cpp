@@ -273,6 +273,8 @@ struct GeneratorEquationAst
                                   const GeneratorEquationAstPtr &parent);
     explicit GeneratorEquationAst(Type type, const VariablePtr &variable,
                                   const GeneratorEquationAstPtr &parent);
+    explicit GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
+                                  const GeneratorEquationAstPtr &parent);
 };
 
 GeneratorEquationAst::GeneratorEquationAst() = default;
@@ -297,6 +299,16 @@ GeneratorEquationAst::GeneratorEquationAst(Type type, const VariablePtr &variabl
     : mType(type)
     , mVariable(variable)
     , mParent(parent)
+{
+}
+
+GeneratorEquationAst::GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
+                                           const GeneratorEquationAstPtr &parent)
+    : mType(ast->mType)
+    , mVariable(ast->mVariable)
+    , mParent(parent)
+    , mLeft(ast->mLeft)
+    , mRight(ast->mRight)
 {
 }
 
@@ -2022,15 +2034,19 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     }
     case GeneratorEquationAst::Type::ROOT:
         if (ast->mRight != nullptr) {
-            std::string stringValue = generateCode(ast->mLeft);
-            double doubleValue = convertToDouble(stringValue);
+            double doubleValue = convertToDouble(generateCode(ast->mLeft));
 
             if (isEqual(doubleValue, 2.0)) {
                 code = mProfile->squareRootString() + "(" + generateCode(ast->mRight) + ")";
             } else {
+                GeneratorEquationAstPtr rootValueAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE, ast);
+
+                rootValueAst->mLeft = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, "1.0", rootValueAst);
+                rootValueAst->mRight = std::make_shared<GeneratorEquationAst>(ast->mLeft, rootValueAst);
+
                 code = mProfile->hasPowerOperator() ?
                            generateOperatorCode(mProfile->powerString(), ast) :
-                           mProfile->powerString() + "(" + generateCode(ast->mRight) + ", 1.0/" + stringValue + ")";
+                           mProfile->powerString() + "(" + generateCode(ast->mRight) + ", " + generateOperatorCode(mProfile->divideString(), rootValueAst) + ")";
             }
         } else {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
