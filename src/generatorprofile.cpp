@@ -43,6 +43,14 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mXorString;
     std::string mNotString;
 
+    bool mHasEqEqOperator = true;
+    bool mHasNeqOperator = true;
+    bool mHasLtOperator = true;
+    bool mHasLeqOperator = true;
+    bool mHasGtOperator = true;
+    bool mHasGeqOperator = true;
+    bool mHasAndOperator = true;
+    bool mHasOrOperator = true;
     bool mHasXorOperator = true;
     bool mHasNotOperator = true;
 
@@ -114,6 +122,14 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Mathematical functions
 
+    std::string mEqEqFunctionString;
+    std::string mNeqFunctionString;
+    std::string mLtFunctionString;
+    std::string mLeqFunctionString;
+    std::string mGtFunctionString;
+    std::string mGeqFunctionString;
+    std::string mAndFunctionString;
+    std::string mOrFunctionString;
     std::string mXorFunctionString;
     std::string mNotFunctionString;
 
@@ -185,6 +201,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mXorString = "xor";
         mNotString = "!";
 
+        mHasEqEqOperator = true;
+        mHasNeqOperator = true;
+        mHasLtOperator = true;
+        mHasLeqOperator = true;
+        mHasGtOperator = true;
+        mHasGeqOperator = true;
+        mHasAndOperator = true;
+        mHasOrOperator = true;
         mHasXorOperator = false;
         mHasNotOperator = true;
 
@@ -254,10 +278,19 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions
 
+        mEqEqFunctionString = "";
+        mNeqFunctionString = "";
+        mLtFunctionString = "";
+        mLeqFunctionString = "";
+        mGtFunctionString = "";
+        mGeqFunctionString = "";
+        mAndFunctionString = "";
+        mOrFunctionString = "";
         mXorFunctionString = "double xor(double x, double y)\n"
                              "{\n"
-                             "    return (x != 1.0) ^ (y != 0.0);\n"
+                             "    return (x != 0.0) ^ (y != 0.0);\n"
                              "}\n";
+        mNotFunctionString = "";
 
         mMinFunctionString = "double min(double x, double y)\n"
                              "{\n"
@@ -359,17 +392,25 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Relational and logical operators
 
         mEqString = " = ";
-        mEqEqString = " == ";
-        mNeqString = " != ";
-        mLtString = " < ";
-        mLeqString = " <= ";
-        mGtString = " > ";
-        mGeqString = " >= ";
-        mAndString = " & ";
-        mOrString = " | ";
-        mXorString = "xor";
+        mEqEqString = "eqEqFunc";
+        mNeqString = "neqFunc";
+        mLtString = "ltFunc";
+        mLeqString = "leqFunc";
+        mGtString = "gtFunc";
+        mGeqString = "geqFunc";
+        mAndString = "andFunc";
+        mOrString = "orFunc";
+        mXorString = "xorFunc";
         mNotString = "notFunc";
 
+        mHasEqEqOperator = false;
+        mHasNeqOperator = false;
+        mHasLtOperator = false;
+        mHasLeqOperator = false;
+        mHasGtOperator = false;
+        mHasGeqOperator = false;
+        mHasAndOperator = false;
+        mHasOrOperator = false;
         mHasXorOperator = false;
         mHasNotOperator = false;
 
@@ -434,15 +475,31 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mFalseString = "0.0";
         mEString = convertDoubleToString(exp(1.0));
         mPiString = convertDoubleToString(M_PI);
-        mInfString = "1.0/0.0";
-        mNanString = "sqrt(-1.0)";
+        mInfString = "inf";
+        mNanString = "nan";
 
         // Mathematical functions
 
-        mXorFunctionString = "def xor(x, y):\n"
-                             "    return (x != 1.0) ^ (y != 0.0)\n";
+        mEqEqFunctionString = "def eqEqFunc(x, y):\n"
+                              "    return 1.0 if (x == y) else 0.0\n";
+        mNeqFunctionString = "def neqFunc(x, y):\n"
+                             "    return 1.0 if (x != y) else 0.0\n";
+        mLtFunctionString = "def ltFunc(x, y):\n"
+                            "    return 1.0 if (x < y) else 0.0\n";
+        mLeqFunctionString = "def leqFunc(x, y):\n"
+                             "    return 1.0 if (x <= y) else 0.0\n";
+        mGtFunctionString = "def gtFunc(x, y):\n"
+                            "    return 1.0 if (x > y) else 0.0\n";
+        mGeqFunctionString = "def geqFunc(x, y):\n"
+                             "    return 1.0 if (x >= y) else 0.0\n";
+        mAndFunctionString = "def andFunc(x, y):\n"
+                             "    return 1.0 if (bool(x) & bool(y)) else 0.0\n";
+        mOrFunctionString = "def orFunc(x, y):\n"
+                            "    return 1.0 if (bool(x) | bool(y)) else 0.0\n";
+        mXorFunctionString = "def xorFunc(x, y):\n"
+                             "    return 1.0 if (bool(x) ^ bool(y)) else 0.0\n";
         mNotFunctionString = "def notFunc(x):\n"
-                             "    return 1.0 if (x == 0.0) else 0.0\n";
+                             "    return 1.0 if (bool(x)) else 0.0\n";
 
         mMinFunctionString = "def min(x, y):\n"
                              "    return x if (x < y) else y\n";
@@ -792,6 +849,86 @@ std::string GeneratorProfile::notString() const
 void GeneratorProfile::setNotString(const std::string &notString)
 {
     mPimpl->mNotString = notString;
+}
+
+bool GeneratorProfile::hasEqEqOperator() const
+{
+    return mPimpl->mHasEqEqOperator;
+}
+
+void GeneratorProfile::setHasEqEqOperator(bool hasEqEqOperator)
+{
+    mPimpl->mHasEqEqOperator = hasEqEqOperator;
+}
+
+bool GeneratorProfile::hasNeqOperator() const
+{
+    return mPimpl->mHasNeqOperator;
+}
+
+void GeneratorProfile::setHasNeqOperator(bool hasNeqOperator)
+{
+    mPimpl->mHasNeqOperator = hasNeqOperator;
+}
+
+bool GeneratorProfile::hasLtOperator() const
+{
+    return mPimpl->mHasLtOperator;
+}
+
+void GeneratorProfile::setHasLtOperator(bool hasLtOperator)
+{
+    mPimpl->mHasLtOperator = hasLtOperator;
+}
+
+bool GeneratorProfile::hasLeqOperator() const
+{
+    return mPimpl->mHasLeqOperator;
+}
+
+void GeneratorProfile::setHasLeqOperator(bool hasLeqOperator)
+{
+    mPimpl->mHasLeqOperator = hasLeqOperator;
+}
+
+bool GeneratorProfile::hasGtOperator() const
+{
+    return mPimpl->mHasGtOperator;
+}
+
+void GeneratorProfile::setHasGtOperator(bool hasGtOperator)
+{
+    mPimpl->mHasGtOperator = hasGtOperator;
+}
+
+bool GeneratorProfile::hasGeqOperator() const
+{
+    return mPimpl->mHasGeqOperator;
+}
+
+void GeneratorProfile::setHasGeqOperator(bool hasGeqOperator)
+{
+    mPimpl->mHasGeqOperator = hasGeqOperator;
+}
+
+bool GeneratorProfile::hasAndOperator() const
+{
+    return mPimpl->mHasAndOperator;
+}
+
+void GeneratorProfile::setHasAndOperator(bool hasAndOperator)
+{
+    mPimpl->mHasAndOperator = hasAndOperator;
+}
+
+bool GeneratorProfile::hasOrOperator() const
+{
+    return mPimpl->mHasOrOperator;
+}
+
+void GeneratorProfile::setHasOrOperator(bool hasOrOperator)
+{
+    mPimpl->mHasOrOperator = hasOrOperator;
 }
 
 bool GeneratorProfile::hasXorOperator() const
@@ -1332,6 +1469,86 @@ std::string GeneratorProfile::nanString() const
 void GeneratorProfile::setNanString(const std::string &nanString)
 {
     mPimpl->mNanString = nanString;
+}
+
+std::string GeneratorProfile::eqEqFunctionString() const
+{
+    return mPimpl->mEqEqFunctionString;
+}
+
+void GeneratorProfile::setEqEqFunctionString(const std::string &eqEqFunctionString)
+{
+    mPimpl->mEqEqFunctionString = eqEqFunctionString;
+}
+
+std::string GeneratorProfile::neqFunctionString() const
+{
+    return mPimpl->mNeqFunctionString;
+}
+
+void GeneratorProfile::setNeqFunctionString(const std::string &neqFunctionString)
+{
+    mPimpl->mNeqFunctionString = neqFunctionString;
+}
+
+std::string GeneratorProfile::ltFunctionString() const
+{
+    return mPimpl->mLtFunctionString;
+}
+
+void GeneratorProfile::setLtFunctionString(const std::string &ltFunctionString)
+{
+    mPimpl->mLtFunctionString = ltFunctionString;
+}
+
+std::string GeneratorProfile::leqFunctionString() const
+{
+    return mPimpl->mLeqFunctionString;
+}
+
+void GeneratorProfile::setLeqFunctionString(const std::string &leqFunctionString)
+{
+    mPimpl->mLeqFunctionString = leqFunctionString;
+}
+
+std::string GeneratorProfile::gtFunctionString() const
+{
+    return mPimpl->mGtFunctionString;
+}
+
+void GeneratorProfile::setGtFunctionString(const std::string &gtFunctionString)
+{
+    mPimpl->mGtFunctionString = gtFunctionString;
+}
+
+std::string GeneratorProfile::geqFunctionString() const
+{
+    return mPimpl->mGeqFunctionString;
+}
+
+void GeneratorProfile::setGeqFunctionString(const std::string &geqFunctionString)
+{
+    mPimpl->mGeqFunctionString = geqFunctionString;
+}
+
+std::string GeneratorProfile::andFunctionString() const
+{
+    return mPimpl->mAndFunctionString;
+}
+
+void GeneratorProfile::setAndFunctionString(const std::string &andFunctionString)
+{
+    mPimpl->mAndFunctionString = andFunctionString;
+}
+
+std::string GeneratorProfile::orFunctionString() const
+{
+    return mPimpl->mOrFunctionString;
+}
+
+void GeneratorProfile::setOrFunctionString(const std::string &orFunctionString)
+{
+    mPimpl->mOrFunctionString = orFunctionString;
 }
 
 std::string GeneratorProfile::xorFunctionString() const

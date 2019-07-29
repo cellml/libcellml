@@ -524,6 +524,14 @@ struct Generator::GeneratorImpl
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
+    bool mNeedEqEq = false;
+    bool mNeedNeq = false;
+    bool mNeedLt = false;
+    bool mNeedLeq = false;
+    bool mNeedGt = false;
+    bool mNeedGeq = false;
+    bool mNeedAnd = false;
+    bool mNeedOr = false;
     bool mNeedXor = false;
     bool mNeedNot = false;
 
@@ -569,10 +577,10 @@ struct Generator::GeneratorImpl
     void processModel(const ModelPtr &model);
 
     bool isRelationalOperator(const GeneratorEquationAstPtr &ast) const;
-    bool isLogicalOperator(const GeneratorEquationAstPtr &ast) const;
     bool isAndOperator(const GeneratorEquationAstPtr &ast) const;
     bool isOrOperator(const GeneratorEquationAstPtr &ast) const;
     bool isXorOperator(const GeneratorEquationAstPtr &ast) const;
+    bool isLogicalOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPlusOperator(const GeneratorEquationAstPtr &ast) const;
     bool isMinusOperator(const GeneratorEquationAstPtr &ast) const;
     bool isTimesOperator(const GeneratorEquationAstPtr &ast) const;
@@ -746,21 +754,37 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ, astParent);
+
+            mNeedEqEq = true;
         }
     } else if (node->isMathmlElement("neq")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NEQ, astParent);
+
+        mNeedNeq = true;
     } else if (node->isMathmlElement("lt")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LT, astParent);
+
+        mNeedLt = true;
     } else if (node->isMathmlElement("leq")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::LEQ, astParent);
+
+        mNeedLeq = true;
     } else if (node->isMathmlElement("gt")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GT, astParent);
+
+        mNeedGt = true;
     } else if (node->isMathmlElement("geq")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::GEQ, astParent);
+
+        mNeedGeq = true;
     } else if (node->isMathmlElement("and")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::AND, astParent);
+
+        mNeedAnd = true;
     } else if (node->isMathmlElement("or")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::OR, astParent);
+
+        mNeedOr = true;
     } else if (node->isMathmlElement("xor")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::XOR, astParent);
 
@@ -1419,12 +1443,36 @@ std::string replace(const std::string &string, const std::string &from, const st
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return (ast->mType == GeneratorEquationAst::Type::EQEQ)
-           || (ast->mType == GeneratorEquationAst::Type::NEQ)
-           || (ast->mType == GeneratorEquationAst::Type::LT)
-           || (ast->mType == GeneratorEquationAst::Type::LEQ)
-           || (ast->mType == GeneratorEquationAst::Type::GT)
-           || (ast->mType == GeneratorEquationAst::Type::GEQ);
+    return ((ast->mType == GeneratorEquationAst::Type::EQEQ)
+            && mProfile->hasEqEqOperator())
+           || ((ast->mType == GeneratorEquationAst::Type::NEQ)
+               && mProfile->hasNeqOperator())
+           || ((ast->mType == GeneratorEquationAst::Type::LT)
+               && mProfile->hasLtOperator())
+           || ((ast->mType == GeneratorEquationAst::Type::LEQ)
+               && mProfile->hasLeqOperator())
+           || ((ast->mType == GeneratorEquationAst::Type::GT)
+               && mProfile->hasGtOperator())
+           || ((ast->mType == GeneratorEquationAst::Type::GEQ)
+               && mProfile->hasGeqOperator());
+}
+
+bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return (ast->mType == GeneratorEquationAst::Type::AND)
+           && mProfile->hasAndOperator();
+}
+
+bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return (ast->mType == GeneratorEquationAst::Type::OR)
+           && mProfile->hasOrOperator();
+}
+
+bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstPtr &ast) const
+{
+    return (ast->mType == GeneratorEquationAst::Type::XOR)
+           && mProfile->hasXorOperator();
 }
 
 bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPtr &ast) const
@@ -1433,24 +1481,7 @@ bool Generator::GeneratorImpl::isLogicalOperator(const GeneratorEquationAstPtr &
     //       we don't include it here since this method is only used to
     //       determine whether parentheses should be added around some code.
 
-    return (ast->mType == GeneratorEquationAst::Type::AND)
-           || (ast->mType == GeneratorEquationAst::Type::OR)
-           || (ast->mType == GeneratorEquationAst::Type::XOR);
-}
-
-bool Generator::GeneratorImpl::isAndOperator(const GeneratorEquationAstPtr &ast) const
-{
-    return ast->mType == GeneratorEquationAst::Type::AND;
-}
-
-bool Generator::GeneratorImpl::isOrOperator(const GeneratorEquationAstPtr &ast) const
-{
-    return ast->mType == GeneratorEquationAst::Type::OR;
-}
-
-bool Generator::GeneratorImpl::isXorOperator(const GeneratorEquationAstPtr &ast) const
-{
-    return ast->mType == GeneratorEquationAst::Type::XOR;
+    return isAndOperator(ast) || isOrOperator(ast) || isXorOperator(ast);
 }
 
 bool Generator::GeneratorImpl::isPlusOperator(const GeneratorEquationAstPtr &ast) const
@@ -1888,35 +1919,67 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
     case GeneratorEquationAst::Type::EQEQ:
-        code = generateOperatorCode(mProfile->eqEqString(), ast);
+        if (mProfile->hasEqEqOperator()) {
+            code = generateOperatorCode(mProfile->eqEqString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->eqEqString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::NEQ:
-        code = generateOperatorCode(mProfile->neqString(), ast);
+        if (mProfile->hasNeqOperator()) {
+            code = generateOperatorCode(mProfile->neqString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->neqString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::LT:
-        code = generateOperatorCode(mProfile->ltString(), ast);
+        if (mProfile->hasLtOperator()) {
+            code = generateOperatorCode(mProfile->ltString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->ltString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::LEQ:
-        code = generateOperatorCode(mProfile->leqString(), ast);
+        if (mProfile->hasLeqOperator()) {
+            code = generateOperatorCode(mProfile->leqString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->leqString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::GT:
-        code = generateOperatorCode(mProfile->gtString(), ast);
+        if (mProfile->hasGtOperator()) {
+            code = generateOperatorCode(mProfile->gtString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->gtString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::GEQ:
-        code = generateOperatorCode(mProfile->geqString(), ast);
+        if (mProfile->hasGeqOperator()) {
+            code = generateOperatorCode(mProfile->geqString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->geqString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::AND:
-        code = generateOperatorCode(mProfile->andString(), ast);
+        if (mProfile->hasAndOperator()) {
+            code = generateOperatorCode(mProfile->andString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->andString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::OR:
-        code = generateOperatorCode(mProfile->orString(), ast);
+        if (mProfile->hasOrOperator()) {
+            code = generateOperatorCode(mProfile->orString(), ast);
+        } else {
+            code = generateTwoParameterFunctionCode(mProfile->orString(), ast);
+        }
 
         break;
     case GeneratorEquationAst::Type::XOR:
@@ -2290,6 +2353,14 @@ Generator::Generator(const Generator &rhs)
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
+    mPimpl->mNeedEqEq = rhs.mPimpl->mNeedEqEq;
+    mPimpl->mNeedNeq = rhs.mPimpl->mNeedNeq;
+    mPimpl->mNeedLt = rhs.mPimpl->mNeedLt;
+    mPimpl->mNeedLeq = rhs.mPimpl->mNeedLeq;
+    mPimpl->mNeedGt = rhs.mPimpl->mNeedGt;
+    mPimpl->mNeedGeq = rhs.mPimpl->mNeedGeq;
+    mPimpl->mNeedAnd = rhs.mPimpl->mNeedAnd;
+    mPimpl->mNeedOr = rhs.mPimpl->mNeedOr;
     mPimpl->mNeedXor = rhs.mPimpl->mNeedXor;
     mPimpl->mNeedNot = rhs.mPimpl->mNeedNot;
 
@@ -2421,6 +2492,78 @@ std::string Generator::code() const
     std::string res = mPimpl->mProfile->headerString();
 
     // Generate code for extra mathematical functions.
+
+    if (mPimpl->mNeedEqEq && !mPimpl->mProfile->hasEqEqOperator()
+        && !mPimpl->mProfile->eqEqFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->eqEqFunctionString();
+    }
+
+    if (mPimpl->mNeedNeq && !mPimpl->mProfile->hasNeqOperator()
+        && !mPimpl->mProfile->neqFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->neqFunctionString();
+    }
+
+    if (mPimpl->mNeedLt && !mPimpl->mProfile->hasLtOperator()
+        && !mPimpl->mProfile->ltFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->ltFunctionString();
+    }
+
+    if (mPimpl->mNeedLeq && !mPimpl->mProfile->hasLeqOperator()
+        && !mPimpl->mProfile->leqFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->leqFunctionString();
+    }
+
+    if (mPimpl->mNeedGt && !mPimpl->mProfile->hasGtOperator()
+        && !mPimpl->mProfile->gtFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->gtFunctionString();
+    }
+
+    if (mPimpl->mNeedGeq && !mPimpl->mProfile->hasGeqOperator()
+        && !mPimpl->mProfile->geqFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->geqFunctionString();
+    }
+
+    if (mPimpl->mNeedAnd && !mPimpl->mProfile->hasAndOperator()
+        && !mPimpl->mProfile->andFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->andFunctionString();
+    }
+
+    if (mPimpl->mNeedOr && !mPimpl->mProfile->hasOrOperator()
+        && !mPimpl->mProfile->orFunctionString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += mPimpl->mProfile->orFunctionString();
+    }
 
     if (mPimpl->mNeedXor && !mPimpl->mProfile->hasXorOperator()
         && !mPimpl->mProfile->xorFunctionString().empty()) {

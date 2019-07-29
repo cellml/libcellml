@@ -33,11 +33,9 @@ std::string convertDoubleToString(double value)
     return strs.str();
 }
 
-TEST(GeneratorProfile, defaultValues)
+TEST(GeneratorProfile, defaultRelationalAndLogicalOperatorValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
-
-    // Relational and logical operators
 
     EXPECT_EQ(" = ", generatorProfile->eqString());
     EXPECT_EQ(" == ", generatorProfile->eqEqString());
@@ -51,10 +49,21 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("xor", generatorProfile->xorString());
     EXPECT_EQ("!", generatorProfile->notString());
 
+    EXPECT_EQ(true, generatorProfile->hasEqEqOperator());
+    EXPECT_EQ(true, generatorProfile->hasNeqOperator());
+    EXPECT_EQ(true, generatorProfile->hasLtOperator());
+    EXPECT_EQ(true, generatorProfile->hasLeqOperator());
+    EXPECT_EQ(true, generatorProfile->hasGtOperator());
+    EXPECT_EQ(true, generatorProfile->hasGeqOperator());
+    EXPECT_EQ(true, generatorProfile->hasAndOperator());
+    EXPECT_EQ(true, generatorProfile->hasOrOperator());
     EXPECT_EQ(false, generatorProfile->hasXorOperator());
     EXPECT_EQ(true, generatorProfile->hasNotOperator());
+}
 
-    // Arithmetic operators
+TEST(GeneratorProfile, defaultArithmeticOperatorValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("+", generatorProfile->plusString());
     EXPECT_EQ("-", generatorProfile->minusString());
@@ -74,8 +83,11 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("fmod", generatorProfile->remString());
 
     EXPECT_EQ(false, generatorProfile->hasPowerOperator());
+}
 
-    // Trigonometric operators
+TEST(GeneratorProfile, defaultTrigonometricOperatorValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("sin", generatorProfile->sinString());
     EXPECT_EQ("cos", generatorProfile->cosString());
@@ -101,8 +113,11 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("asech", generatorProfile->asechString());
     EXPECT_EQ("acsch", generatorProfile->acschString());
     EXPECT_EQ("acoth", generatorProfile->acothString());
+}
 
-    // Piecewise statement
+TEST(GeneratorProfile, defaultPiecewiseStatementValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("(#cond)?#if", generatorProfile->conditionalOperatorIfString());
     EXPECT_EQ(":#else", generatorProfile->conditionalOperatorElseString());
@@ -110,8 +125,11 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ("", generatorProfile->piecewiseElseString());
 
     EXPECT_EQ(true, generatorProfile->hasConditionalOperator());
+}
 
-    // Constants
+TEST(GeneratorProfile, defaultConstantValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("1.0", generatorProfile->trueString());
     EXPECT_EQ("0.0", generatorProfile->falseString());
@@ -119,12 +137,23 @@ TEST(GeneratorProfile, defaultValues)
     EXPECT_EQ(convertDoubleToString(M_PI), generatorProfile->piString());
     EXPECT_EQ("1.0/0.0", generatorProfile->infString());
     EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
+}
 
-    // Mathematical functions
+TEST(GeneratorProfile, defaultMathematicalFunctionValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
+    EXPECT_EQ("", generatorProfile->eqEqFunctionString());
+    EXPECT_EQ("", generatorProfile->neqFunctionString());
+    EXPECT_EQ("", generatorProfile->ltFunctionString());
+    EXPECT_EQ("", generatorProfile->leqFunctionString());
+    EXPECT_EQ("", generatorProfile->gtFunctionString());
+    EXPECT_EQ("", generatorProfile->geqFunctionString());
+    EXPECT_EQ("", generatorProfile->andFunctionString());
+    EXPECT_EQ("", generatorProfile->orFunctionString());
     EXPECT_EQ("double xor(double x, double y)\n"
               "{\n"
-              "    return (x != 1.0) ^ (y != 0.0);\n"
+              "    return (x != 0.0) ^ (y != 0.0);\n"
               "}\n",
               generatorProfile->xorFunctionString());
     EXPECT_EQ("", generatorProfile->notFunctionString());
@@ -206,8 +235,11 @@ TEST(GeneratorProfile, defaultValues)
               "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
               "}\n",
               generatorProfile->acothFunctionString());
+}
 
-    // Miscellaneous
+TEST(GeneratorProfile, defaultMiscellaneousValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("#include <math.h>\n", generatorProfile->headerString());
 
@@ -244,7 +276,8 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     const std::string value = "value";
-    const bool falseValue = true;
+    const bool trueValue = true;
+    const bool falseValue = false;
 
     generatorProfile->setEqString(value);
     generatorProfile->setEqEqString(value);
@@ -258,7 +291,15 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     generatorProfile->setXorString(value);
     generatorProfile->setNotString(value);
 
-    generatorProfile->setHasXorOperator(falseValue);
+    generatorProfile->setHasEqEqOperator(falseValue);
+    generatorProfile->setHasNeqOperator(falseValue);
+    generatorProfile->setHasLtOperator(falseValue);
+    generatorProfile->setHasLeqOperator(falseValue);
+    generatorProfile->setHasGtOperator(falseValue);
+    generatorProfile->setHasGeqOperator(falseValue);
+    generatorProfile->setHasAndOperator(falseValue);
+    generatorProfile->setHasOrOperator(falseValue);
+    generatorProfile->setHasXorOperator(trueValue);
     generatorProfile->setHasNotOperator(falseValue);
 
     EXPECT_EQ(value, generatorProfile->eqString());
@@ -273,7 +314,15 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     EXPECT_EQ(value, generatorProfile->xorString());
     EXPECT_EQ(value, generatorProfile->notString());
 
-    EXPECT_EQ(falseValue, generatorProfile->hasXorOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasEqEqOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasNeqOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasLtOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasLeqOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasGtOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasGeqOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasAndOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasOrOperator());
+    EXPECT_EQ(trueValue, generatorProfile->hasXorOperator());
     EXPECT_EQ(falseValue, generatorProfile->hasNotOperator());
 }
 
@@ -423,11 +472,22 @@ TEST(GeneratorProfile, constants)
     EXPECT_EQ(value, generatorProfile->nanString());
 }
 
-TEST(GeneratorProfile, specialMathematicalFunctions)
+TEST(GeneratorProfile, mathematicalFunctions)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     const std::string value = "value";
+
+    generatorProfile->setEqEqFunctionString(value);
+    generatorProfile->setNeqFunctionString(value);
+    generatorProfile->setLtFunctionString(value);
+    generatorProfile->setLeqFunctionString(value);
+    generatorProfile->setGtFunctionString(value);
+    generatorProfile->setGeqFunctionString(value);
+    generatorProfile->setAndFunctionString(value);
+    generatorProfile->setOrFunctionString(value);
+    generatorProfile->setXorFunctionString(value);
+    generatorProfile->setNotFunctionString(value);
 
     generatorProfile->setMinFunctionString(value);
     generatorProfile->setMaxFunctionString(value);
@@ -444,6 +504,17 @@ TEST(GeneratorProfile, specialMathematicalFunctions)
     generatorProfile->setAsechFunctionString(value);
     generatorProfile->setAcschFunctionString(value);
     generatorProfile->setAcothFunctionString(value);
+
+    EXPECT_EQ(value, generatorProfile->eqEqFunctionString());
+    EXPECT_EQ(value, generatorProfile->neqFunctionString());
+    EXPECT_EQ(value, generatorProfile->ltFunctionString());
+    EXPECT_EQ(value, generatorProfile->leqFunctionString());
+    EXPECT_EQ(value, generatorProfile->gtFunctionString());
+    EXPECT_EQ(value, generatorProfile->geqFunctionString());
+    EXPECT_EQ(value, generatorProfile->andFunctionString());
+    EXPECT_EQ(value, generatorProfile->orFunctionString());
+    EXPECT_EQ(value, generatorProfile->xorFunctionString());
+    EXPECT_EQ(value, generatorProfile->notFunctionString());
 
     EXPECT_EQ(value, generatorProfile->minFunctionString());
     EXPECT_EQ(value, generatorProfile->maxFunctionString());

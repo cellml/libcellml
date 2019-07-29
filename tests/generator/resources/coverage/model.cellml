@@ -184,7 +184,7 @@
         <variable name="eqnNotanumber" units="dimensionless"/>
         <variable initial_value="1" name="m" units="dimensionless"/>
         <variable initial_value="2" name="n" units="dimensionless"/>
-        <variable initial_value="13" name="o" units="dimensionless"/>
+        <variable initial_value="3" name="o" units="dimensionless"/>
         <variable initial_value="4" name="p" units="dimensionless"/>
         <variable initial_value="5" name="q" units="dimensionless"/>
         <variable initial_value="6" name="r" units="dimensionless"/>
@@ -1284,8 +1284,8 @@
                     </apply>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1301,8 +1301,8 @@
                     </apply>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1317,8 +1317,8 @@
                     </apply>
                     <apply>
                         <gt/>
-                        <ci>n</ci>
                         <ci>o</ci>
+                        <ci>n</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1334,8 +1334,8 @@
                     </apply>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1350,8 +1350,8 @@
                     </apply>
                     <apply>
                         <gt/>
-                        <ci>n</ci>
                         <ci>o</ci>
+                        <ci>n</ci>
                     </apply>
                 </apply>
             </apply>
@@ -1790,8 +1790,8 @@
                     <root/>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                     <apply>
                         <lt/>
@@ -1807,8 +1807,8 @@
                     <root/>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                     <apply>
                         <plus/>
@@ -1824,8 +1824,8 @@
                     <root/>
                     <apply>
                         <gt/>
-                        <ci>n</ci>
                         <ci>o</ci>
+                        <ci>n</ci>
                     </apply>
                     <apply>
                         <plus/>
@@ -1840,8 +1840,8 @@
                     <root/>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                     <apply>
                         <minus/>
@@ -1857,8 +1857,8 @@
                     <root/>
                     <apply>
                         <gt/>
-                        <ci>n</ci>
                         <ci>o</ci>
+                        <ci>n</ci>
                     </apply>
                     <apply>
                         <minus/>
@@ -1873,8 +1873,8 @@
                     <root/>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                     <apply>
                         <times/>
@@ -1890,8 +1890,8 @@
                     <root/>
                     <apply>
                         <gt/>
-                        <ci>o</ci>
                         <ci>p</ci>
+                        <ci>o</ci>
                     </apply>
                     <apply>
                         <divide/>
@@ -2327,7 +2327,11 @@
                 <ci>eqnArctanh</ci>
                 <apply>
                     <arctanh/>
-                    <ci>m</ci>
+                    <apply>
+                        <divide/>
+                        <ci>m</ci>
+                        <cn cellml:units="dimensionless">2</cn>
+                    </apply>
                 </apply>
             </apply>
             <apply>
@@ -2351,7 +2355,11 @@
                 <ci>eqnArccoth</ci>
                 <apply>
                     <arccoth/>
-                    <ci>m</ci>
+                    <apply>
+                        <times/>
+                        <cn cellml:units="dimensionless">2</cn>
+                        <ci>m</ci>
+                    </apply>
                 </apply>
             </apply>
             <apply>
