@@ -35,7 +35,7 @@ public:
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
 
-    void loadProfile(Profile profile);
+    void setProfile(Profile profile);
 
     // Relational and logical operators
 
