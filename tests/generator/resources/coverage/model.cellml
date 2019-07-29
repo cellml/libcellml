@@ -6,8 +6,10 @@
     <component name="my_component">
         <variable name="t" units="second"/>
         <variable initial_value="0" name="x" units="dimensionless"/>
-        <variable name="eqnEq" units="dimensionless"/>
+        <variable name="eqnEqEq" units="dimensionless"/>
+        <variable name="eqnEqEqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnNeq" units="dimensionless"/>
+        <variable name="eqnNeqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnLt" units="dimensionless"/>
         <variable name="eqnLeq" units="dimensionless"/>
         <variable name="eqnGt" units="dimensionless"/>
@@ -204,11 +206,24 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnEq</ci>
+                <ci>eqnEqEq</ci>
                 <apply>
                     <eq/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnEqEqCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <eq/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
                 </apply>
             </apply>
             <apply>
@@ -218,6 +233,19 @@
                     <neq/>
                     <ci>m</ci>
                     <ci>n</ci>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnNeqCoverageParentheses</ci>
+                <apply>
+                    <divide/>
+                    <ci>m</ci>
+                    <apply>
+                        <neq/>
+                        <ci>n</ci>
+                        <ci>o</ci>
+                    </apply>
                 </apply>
             </apply>
             <apply>
