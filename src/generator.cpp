@@ -1506,17 +1506,20 @@ bool Generator::GeneratorImpl::isDivideOperator(const GeneratorEquationAstPtr &a
 
 bool Generator::GeneratorImpl::isPowerOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAst::Type::POWER;
+    return (ast->mType == GeneratorEquationAst::Type::POWER)
+           && mProfile->hasPowerOperator();
 }
 
 bool Generator::GeneratorImpl::isRootOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAst::Type::ROOT;
+    return (ast->mType == GeneratorEquationAst::Type::ROOT)
+           && mProfile->hasPowerOperator();
 }
 
 bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const
 {
-    return ast->mType == GeneratorEquationAst::Type::PIECEWISE;
+    return (ast->mType == GeneratorEquationAst::Type::PIECEWISE)
+           && mProfile->hasConditionalOperator();
 }
 
 std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
@@ -1675,13 +1678,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 left = "(" + left + ")";
             }
         } else if (isPowerOperator(ast->mLeft)) {
-            if (mProfile->hasPowerOperator()) {
-                left = "(" + left + ")";
-            }
+            left = "(" + left + ")";
         } else if (isRootOperator(ast->mLeft)) {
-            if (mProfile->hasPowerOperator()) {
-                left = "(" + left + ")";
-            }
+            left = "(" + left + ")";
         }
 
         if (isRelationalOperator(ast->mRight)
@@ -1695,13 +1694,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "(" + right + ")";
             }
         } else if (isPowerOperator(ast->mRight)) {
-            if (mProfile->hasPowerOperator()) {
-                right = "(" + right + ")";
-            }
+            right = "(" + right + ")";
         } else if (isRootOperator(ast->mRight)) {
-            if (mProfile->hasPowerOperator()) {
-                right = "(" + right + ")";
-            }
+            right = "(" + right + ")";
         }
     } else if (isOrOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
@@ -1720,13 +1715,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 left = "(" + left + ")";
             }
         } else if (isPowerOperator(ast->mLeft)) {
-            if (mProfile->hasPowerOperator()) {
-                left = "(" + left + ")";
-            }
+            left = "(" + left + ")";
         } else if (isRootOperator(ast->mLeft)) {
-            if (mProfile->hasPowerOperator()) {
-                left = "(" + left + ")";
-            }
+            left = "(" + left + ")";
         }
 
         if (isRelationalOperator(ast->mRight)
@@ -1740,13 +1731,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "(" + right + ")";
             }
         } else if (isPowerOperator(ast->mRight)) {
-            if (mProfile->hasPowerOperator()) {
-                right = "(" + right + ")";
-            }
+            right = "(" + right + ")";
         } else if (isRootOperator(ast->mRight)) {
-            if (mProfile->hasPowerOperator()) {
-                right = "(" + right + ")";
-            }
+            right = "(" + right + ")";
         }
     } else if (isXorOperator(ast)) {
         // Note: according to the precedence rules above, we only need to add
@@ -1765,13 +1752,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 left = "(" + left + ")";
             }
         } else if (isPowerOperator(ast->mLeft)) {
-            if (mProfile->hasPowerOperator()) {
-                left = "(" + left + ")";
-            }
+            left = "(" + left + ")";
         } else if (isRootOperator(ast->mLeft)) {
-            if (mProfile->hasPowerOperator()) {
-                left = "(" + left + ")";
-            }
+            left = "(" + left + ")";
         }
 
         if (isRelationalOperator(ast->mRight)
@@ -1785,13 +1768,9 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
                 right = "(" + right + ")";
             }
         } else if (isPowerOperator(ast->mRight)) {
-            if (mProfile->hasPowerOperator()) {
-                right = "(" + right + ")";
-            }
+            right = "(" + right + ")";
         } else if (isRootOperator(ast->mRight)) {
-            if (mProfile->hasPowerOperator()) {
-                right = "(" + right + ")";
-            }
+            right = "(" + right + ")";
         }
     } else if (isPowerOperator(ast)) {
         if (isRelationalOperator(ast->mLeft)
