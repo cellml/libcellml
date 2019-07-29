@@ -123,7 +123,6 @@ public:
      * @return The number of states.
      */
     size_t stateCount() const;
-
     /**
      * @brief Get the number of variables in the @c Model.
      *
@@ -143,7 +142,6 @@ public:
      * @return The @c Type.
      */
     VariablePtr variableOfIntegration() const;
-
     /**
      * @brief Get the state at @p index.
      *
@@ -153,7 +151,6 @@ public:
      * @param index The index of the state to return.
      */
     VariablePtr state(size_t index) const;
-
     /**
      * @brief Get the variable at @p index.
      *
