@@ -28,7 +28,7 @@ def xorFunc(x, y):
     return 1.0 if (bool(x) ^ bool(y)) else 0.0
 
 def notFunc(x):
-    return 1.0 if (bool(x)) else 0.0
+    return 1.0 if (not bool(x)) else 0.0
 
 def min(x, y):
     return x if (x < y) else y
