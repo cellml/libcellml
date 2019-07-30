@@ -929,7 +929,8 @@ public:
      *
      * Set this @c std::string for inverse hyperbolic cosecant.
      *
-     * @param eqString The @c std::string to use for inverse hyperbolic cosecant.
+     * @param eqString The @c std::string to use for inverse hyperbolic
+     * cosecant.
      */
     void setAcschString(const std::string &acschString);
 
@@ -946,7 +947,8 @@ public:
      *
      * Set this @c std::string for inverse hyperbolic cotangent.
      *
-     * @param eqString The @c std::string to use for inverse hyperbolic cotangent.
+     * @param eqString The @c std::string to use for inverse hyperbolic
+     * cotangent.
      */
     void setAcothString(const std::string &acothString);
 
@@ -955,16 +957,76 @@ public:
     //       rules). It's just that it looks better/clearer to have them
     //       (somewhat subjective indeed).
 
+    /**
+     * @brief Get the @c std::string for the if part of a condition statement.
+     *
+     * Return the @c std::string for the if part of a condition statement.
+     *
+     * @return The @c std::string for the if part of a condition statement.
+     */
     std::string conditionalOperatorIfString() const;
+    /**
+     * @brief Set the @c std::string for the if part of a condition statement.
+     *
+     * Set this @c std::string for the if part of a condition statement.
+     *
+     * @param eqString The @c std::string to use for the if part of a condition
+     * statement.
+     */
     void setConditionalOperatorIfString(const std::string &conditionalOperatorIfString);
 
+    /**
+     * @brief Get the @c std::string for the else part of a condition statement.
+     *
+     * Return the @c std::string for the else part of a condition statement.
+     *
+     * @return The @c std::string for the else part of a condition statement.
+     */
     std::string conditionalOperatorElseString() const;
+    /**
+     * @brief Set the @c std::string for the else part of a condition statement.
+     *
+     * Set this @c std::string for the else part of a condition statement.
+     *
+     * @param eqString The @c std::string to use for the else part of a
+     * condition statement.
+     */
     void setConditionalOperatorElseString(const std::string &conditionalOperatorElseString);
 
+    /**
+     * @brief Get the @c std::string for the if part of a piecewise statement.
+     *
+     * Return the @c std::string for the if part of a piecewise statement.
+     *
+     * @return The @c std::string for the if part of a piecewise statement.
+     */
     std::string piecewiseIfString() const;
+    /**
+     * @brief Set the @c std::string for the if part of a piecewise statement.
+     *
+     * Set this @c std::string for the if part of a piecewise statement.
+     *
+     * @param eqString The @c std::string to use for the if part of a piecewise
+     * statement.
+     */
     void setPiecewiseIfString(const std::string &piecewiseIfString);
 
+    /**
+     * @brief Get the @c std::string for the else part of a piecewise statement.
+     *
+     * Return the @c std::string for the else part of a piecewise statement.
+     *
+     * @return The @c std::string for the else part of a piecewise statement.
+     */
     std::string piecewiseElseString() const;
+    /**
+     * @brief Set the @c std::string for the else part of a piecewise statement.
+     *
+     * Set this @c std::string for the else part of a piecewise statement.
+     *
+     * @param eqString The @c std::string to use for the else part of a
+     * piecewise statement.
+     */
     void setPiecewiseElseString(const std::string &piecewiseElseString);
 
     bool hasConditionalOperator() const;
@@ -972,131 +1034,889 @@ public:
 
     // Constants
 
+    /**
+     * @brief Get the @c std::string for true.
+     *
+     * Return the @c std::string for true.
+     *
+     * @return The @c std::string for true.
+     */
     std::string trueString() const;
+    /**
+     * @brief Set the @c std::string for true.
+     *
+     * Set this @c std::string for true.
+     *
+     * @param eqString The @c std::string to use for true.
+     */
     void setTrueString(const std::string &trueString);
 
+    /**
+     * @brief Get the @c std::string for false.
+     *
+     * Return the @c std::string for false.
+     *
+     * @return The @c std::string for false.
+     */
     std::string falseString() const;
+    /**
+     * @brief Set the @c std::string for false.
+     *
+     * Set this @c std::string for false.
+     *
+     * @param eqString The @c std::string to use for false.
+     */
     void setFalseString(const std::string &falseString);
 
+    /**
+     * @brief Get the @c std::string for exponential constant.
+     *
+     * Return the @c std::string for exponential constant.
+     *
+     * @return The @c std::string for exponential constant.
+     */
     std::string eString() const;
+    /**
+     * @brief Set the @c std::string for exponential constant.
+     *
+     * Set this @c std::string for exponential constant.
+     *
+     * @param eqString The @c std::string to use for exponential constant.
+     */
     void setEString(const std::string &eString);
 
+    /**
+     * @brief Get the @c std::string for π.
+     *
+     * Return the @c std::string for π.
+     *
+     * @return The @c std::string for π.
+     */
     std::string piString() const;
+    /**
+     * @brief Set the @c std::string for π.
+     *
+     * Set this @c std::string for π.
+     *
+     * @param eqString The @c std::string to use for π.
+     */
     void setPiString(const std::string &piString);
 
+    /**
+     * @brief Get the @c std::string for infinity.
+     *
+     * Return the @c std::string for infinity.
+     *
+     * @return The @c std::string for infinity.
+     */
     std::string infString() const;
+    /**
+     * @brief Set the @c std::string for infinity.
+     *
+     * Set this @c std::string for infinity.
+     *
+     * @param eqString The @c std::string to use for infinity.
+     */
     void setInfString(const std::string &infString);
 
+    /**
+     * @brief Get the @c std::string for NaN.
+     *
+     * Return the @c std::string for NaN.
+     *
+     * @return The @c std::string for NaN.
+     */
     std::string nanString() const;
+    /**
+     * @brief Set the @c std::string for NaN.
+     *
+     * Set this @c std::string for NaN.
+     *
+     * @param eqString The @c std::string to use for NaN.
+     */
     void setNanString(const std::string &nanString);
 
     // Mathematical functions
 
+    /**
+     * @brief Get the @c std::string for the equivalence function.
+     *
+     * Return the @c std::string for the equivalence function.
+     *
+     * @return The @c std::string for the equivalence function.
+     */
     std::string eqEqFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the equivalence function.
+     *
+     * Set this @c std::string for the equivalence function.
+     *
+     * @param eqString The @c std::string to use for the equivalence function.
+     */
     void setEqEqFunctionString(const std::string &eqEqFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the nonequivalence function.
+     *
+     * Return the @c std::string for the nonequivalence function.
+     *
+     * @return The @c std::string for the nonequivalence function.
+     */
     std::string neqFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the nonequivalence function.
+     *
+     * Set this @c std::string for the nonequivalence function.
+     *
+     * @param eqString The @c std::string to use for the nonequivalence
+     * function.
+     */
     void setNeqFunctionString(const std::string &neqFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the lower than function.
+     *
+     * Return the @c std::string for the lower than function.
+     *
+     * @return The @c std::string for the lower than function.
+     */
     std::string ltFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the lower than function.
+     *
+     * Set this @c std::string for the lower than function.
+     *
+     * @param eqString The @c std::string to use for the lower than function.
+     */
     void setLtFunctionString(const std::string &ltFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the lower or equal than function.
+     *
+     * Return the @c std::string for the lower or equal than function.
+     *
+     * @return The @c std::string for the lower or equal than function.
+     */
     std::string leqFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the lower or equal than function.
+     *
+     * Set this @c std::string for the lower or equal than function.
+     *
+     * @param eqString The @c std::string to use for the lower or equal than
+     * function.
+     */
     void setLeqFunctionString(const std::string &leqFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the greater than function.
+     *
+     * Return the @c std::string for the greater than function.
+     *
+     * @return The @c std::string for the greater than function.
+     */
     std::string gtFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the greater than function.
+     *
+     * Set this @c std::string for the greater than function.
+     *
+     * @param eqString The @c std::string to use for the greater than function.
+     */
     void setGtFunctionString(const std::string &gtFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the greater or equal than function.
+     *
+     * Return the @c std::string for the greater or equal than function.
+     *
+     * @return The @c std::string for the greater or equal than function.
+     */
     std::string geqFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the greater or equal than function.
+     *
+     * Set this @c std::string for the greater or equal than function.
+     *
+     * @param eqString The @c std::string to use for the greater or equal than
+     * function.
+     */
     void setGeqFunctionString(const std::string &geqFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the and function.
+     *
+     * Return the @c std::string for the and function.
+     *
+     * @return The @c std::string for the and function.
+     */
     std::string andFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the and function.
+     *
+     * Set this @c std::string for the and function.
+     *
+     * @param eqString The @c std::string to use for the and function.
+     */
     void setAndFunctionString(const std::string &andFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the or function.
+     *
+     * Return the @c std::string for the or function.
+     *
+     * @return The @c std::string for the or function.
+     */
     std::string orFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the or function.
+     *
+     * Set this @c std::string for the or function.
+     *
+     * @param eqString The @c std::string to use for the or function.
+     */
     void setOrFunctionString(const std::string &orFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the xor function.
+     *
+     * Return the @c std::string for the xor function.
+     *
+     * @return The @c std::string for the xor function.
+     */
     std::string xorFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the xor function.
+     *
+     * Set this @c std::string for the xor function.
+     *
+     * @param eqString The @c std::string to use for the xor function.
+     */
     void setXorFunctionString(const std::string &xorFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the not function.
+     *
+     * Return the @c std::string for the not function.
+     *
+     * @return The @c std::string for the not function.
+     */
     std::string notFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the not function.
+     *
+     * Set this @c std::string for the not function.
+     *
+     * @param eqString The @c std::string to use for the not function.
+     */
     void setNotFunctionString(const std::string &notFunctionString);
 
+    /**
+     * @brief Get the @c std::string for the minimum function.
+     *
+     * Return the @c std::string for the minimum function.
+     *
+     * @return The @c std::string for the minimum function.
+     */
     std::string minFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the minimum function.
+     *
+     * Set this @c std::string for the minimum function.
+     *
+     * @param eqString The @c std::string to use for the minimum function.
+     */
     void setMinFunctionString(const std::string &minFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the maximum function.
+     *
+     * Return the @c std::string for the maximum function.
+     *
+     * @return The @c std::string for the maximum function.
+     */
     std::string maxFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the maximum function.
+     *
+     * Set this @c std::string for the maximum function.
+     *
+     * @param eqString The @c std::string to use for the maximum function.
+     */
     void setMaxFunctionString(const std::string &maxFunctionString);
 
+    /**
+     * @brief Get the @c std::string for the secant function.
+     *
+     * Return the @c std::string for the secant function.
+     *
+     * @return The @c std::string for the secant function.
+     */
     std::string secFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the secant function.
+     *
+     * Set this @c std::string for the secant function.
+     *
+     * @param eqString The @c std::string to use for the secant function.
+     */
     void setSecFunctionString(const std::string &secFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the cosecant function.
+     *
+     * Return the @c std::string for the cosecant function.
+     *
+     * @return The @c std::string for the cosecant function.
+     */
     std::string cscFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the cosecant function.
+     *
+     * Set this @c std::string for the cosecant function.
+     *
+     * @param eqString The @c std::string to use for the cosecant function.
+     */
     void setCscFunctionString(const std::string &cscFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the cotangent function.
+     *
+     * Return the @c std::string for the cotangent function.
+     *
+     * @return The @c std::string for the cotangent function.
+     */
     std::string cotFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the cotangent function.
+     *
+     * Set this @c std::string for the cotangent function.
+     *
+     * @param eqString The @c std::string to use for the cotangent function.
+     */
     void setCotFunctionString(const std::string &cotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the hyperbolic secant function.
+     *
+     * Return the @c std::string for the hyperbolic secant function.
+     *
+     * @return The @c std::string for the hyperbolic secant function.
+     */
     std::string sechFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the hyperbolic secant function.
+     *
+     * Set this @c std::string for the hyperbolic secant function.
+     *
+     * @param eqString The @c std::string to use for the hyperbolic secant
+     * function.
+     */
     void setSechFunctionString(const std::string &sechFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the hyperbolic cosecant function.
+     *
+     * Return the @c std::string for the hyperbolic cosecant function.
+     *
+     * @return The @c std::string for the hyperbolic cosecant function.
+     */
     std::string cschFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the hyperbolic cosecant function.
+     *
+     * Set this @c std::string for the hyperbolic cosecant function.
+     *
+     * @param eqString The @c std::string to use for the hyperbolic cosecant
+     * function.
+     */
     void setCschFunctionString(const std::string &cschFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the hyperbolic cotangent function.
+     *
+     * Return the @c std::string for the hyperbolic cotangent function.
+     *
+     * @return The @c std::string for the hyperbolic cotangent function.
+     */
     std::string cothFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the hyperbolic cotangent function.
+     *
+     * Set this @c std::string for the hyperbolic cotangent function.
+     *
+     * @param eqString The @c std::string to use for the hyperbolic cotangent
+     * function.
+     */
     void setCothFunctionString(const std::string &cothFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the inverse secant function.
+     *
+     * Return the @c std::string for the inverse secant function.
+     *
+     * @return The @c std::string for the inverse secant function.
+     */
     std::string asecFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the inverse secant function.
+     *
+     * Set this @c std::string for the inverse secant function.
+     *
+     * @param eqString The @c std::string to use for the inverse secant function.
+     */
     void setAsecFunctionString(const std::string &asecFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the inverse cosecant function.
+     *
+     * Return the @c std::string for the inverse cosecant function.
+     *
+     * @return The @c std::string for the inverse cosecant function.
+     */
     std::string acscFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the inverse cosecant function.
+     *
+     * Set this @c std::string for the inverse cosecant function.
+     *
+     * @param eqString The @c std::string to use for the inverse cosecant function.
+     */
     void setAcscFunctionString(const std::string &acscFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the inverse cotangent function.
+     *
+     * Return the @c std::string for the inverse cotangent function.
+     *
+     * @return The @c std::string for the inverse cotangent function.
+     */
     std::string acotFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the inverse cotangent function.
+     *
+     * Set this @c std::string for the inverse cotangent function.
+     *
+     * @param eqString The @c std::string to use for the inverse cotangent
+     * function.
+     */
     void setAcotFunctionString(const std::string &acotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the inverse hyperbolic secant function.
+     *
+     * Return the @c std::string for the inverse hyperbolic secant function.
+     *
+     * @return The @c std::string for the inverse hyperbolic secant function.
+     */
     std::string asechFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the inverse hyperbolic secant function.
+     *
+     * Set this @c std::string for the inverse hyperbolic secant function.
+     *
+     * @param eqString The @c std::string to use for the inverse hyperbolic
+     * secant function.
+     */
     void setAsechFunctionString(const std::string &asechFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the inverse hyperbolic cosecant
+     * function.
+     *
+     * Return the @c std::string for the inverse hyperbolic cosecant function.
+     *
+     * @return The @c std::string for the inverse hyperbolic cosecant function.
+     */
     std::string acschFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the inverse hyperbolic cosecant
+     * function.
+     *
+     * Set this @c std::string for the inverse hyperbolic cosecant function.
+     *
+     * @param eqString The @c std::string to use for the inverse hyperbolic
+     * cosecant function.
+     */
     void setAcschFunctionString(const std::string &acschFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the inverse hyperbolic cotangent
+     * function.
+     *
+     * Return the @c std::string for the inverse hyperbolic cotangent function.
+     *
+     * @return The @c std::string for the inverse hyperbolic cotangent function.
+     */
     std::string acothFunctionString() const;
+    /**
+     * @brief Set the @c std::string for the inverse hyperbolic cotangent
+     * function.
+     *
+     * Set this @c std::string for the inverse hyperbolic cotangent function.
+     *
+     * @param eqString The @c std::string to use for the inverse hyperbolic
+     * cotangent function.
+     */
     void setAcothFunctionString(const std::string &acothFunctionString);
 
     // Miscellaneous
 
+    /**
+     * @brief Get the @c std::string for some header.
+     *
+     * Return the @c std::string for some header.
+     *
+     * @return The @c std::string for some header.
+     */
     std::string headerString() const;
+    /**
+     * @brief Set the @c std::string for some header.
+     *
+     * Set this @c std::string for some header.
+     *
+     * @param eqString The @c std::string to use for some header.
+     */
     void setHeaderString(const std::string &headerString);
 
+    /**
+     * @brief Get the @c std::string for the name of the variable of
+     * integration.
+     *
+     * Return the @c std::string for the name of the variable of integration.
+     *
+     * @return The @c std::string for the name of the variable of integration.
+     */
     std::string variableOfIntegrationString() const;
+    /**
+     * @brief Set the @c std::string for the name of the variable of
+     * integration.
+     *
+     * Set this @c std::string for the name of the variable of integration.
+     *
+     * @param eqString The @c std::string to use for the name of the variable of
+     * integration.
+     */
     void setVariableOfIntegrationString(const std::string &variableOfIntegrationString);
 
+    /**
+     * @brief Get the @c std::string for the name of the states array.
+     *
+     * Return the @c std::string for the name of the states array.
+     *
+     * @return The @c std::string for the name of the states array.
+     */
     std::string statesArrayString() const;
+    /**
+     * @brief Set the @c std::string for the name of the states array.
+     *
+     * Set this @c std::string for the name of the states array.
+     *
+     * @param eqString The @c std::string to use for the name of the states
+     * array.
+     */
     void setStatesArrayString(const std::string &statesArrayString);
 
+    /**
+     * @brief Get the @c std::string for the name of the rates array.
+     *
+     * Return the @c std::string for the name of the rates array.
+     *
+     * @return The @c std::string for the name of the rates array.
+     */
     std::string ratesArrayString() const;
+    /**
+     * @brief Set the @c std::string for the name of the rates array.
+     *
+     * Set this @c std::string for the name of the rates array.
+     *
+     * @param eqString The @c std::string to use for the name of the rates
+     * array.
+     */
     void setRatesArrayString(const std::string &ratesArrayString);
 
+    /**
+     * @brief Get the @c std::string for the name of the variables array.
+     *
+     * Return the @c std::string for the name of the variables array.
+     *
+     * @return The @c std::string for the name of the variables array.
+     */
     std::string variablesArrayString() const;
+    /**
+     * @brief Set the @c std::string for the name of the variables array.
+     *
+     * Set this @c std::string for the name of the variables array.
+     *
+     * @param eqString The @c std::string to use for the name of the variables
+     * array.
+     */
     void setVariablesArrayString(const std::string &variablesArrayString);
 
+    /**
+     * @brief Get the @c std::string for the beginning of the method that
+     * initialises constants.
+     *
+     * Return the @c std::string for the beginning of the method that
+     * initialises constants.
+     *
+     * @return The @c std::string for the beginning of the method that
+     * initialises constants.
+     */
     std::string beginInitializeConstantsMethodString() const;
+    /**
+     * @brief Set the @c std::string for the beginning of the method that
+     * initialises constants.
+     *
+     * Set this @c std::string for the beginning of the method that initialises
+     * constants.
+     *
+     * @param eqString The @c std::string to use for the beginning of the method
+     * that initialises constants.
+     */
     void setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString);
 
+    /**
+     * @brief Get the @c std::string for the end of the method that initialises
+     * constants.
+     *
+     * Return the @c std::string for the end of the method that initialises
+     * constants.
+     *
+     * @return The @c std::string for the end of the method that initialises
+     * constants.
+     */
     std::string endInitializeConstantsMethodString() const;
+    /**
+     * @brief Set the @c std::string for the end of the method that initialises
+     * constants.
+     *
+     * Set this @c std::string for the end of the method that initialises
+     * constants.
+     *
+     * @param eqString The @c std::string to use for the end of the method that
+     * initialises constants.
+     */
     void setEndInitializeConstantsMethodString(const std::string &endInitializeConstantsMethodString);
 
+    /**
+     * @brief Get the @c std::string for the beginning of the method that
+     * computes computed constants.
+     *
+     * Return the @c std::string for the beginning of the method that computes
+     * computed constants.
+     *
+     * @return The @c std::string for the beginning of the method that computes
+     * computed constants.
+     */
     std::string beginComputeComputedConstantsMethodString() const;
+    /**
+     * @brief Set the @c std::string for the beginning of the method that
+     * computes computed constants.
+     *
+     * Set this @c std::string for the beginning of the method that computes
+     * computed constants.
+     *
+     * @param eqString The @c std::string to use for the beginning of the method
+     * that computes computed constants.
+     */
     void setBeginComputeComputedConstantsMethodString(const std::string &beginComputeComputedConstantsMethodString);
 
+    /**
+     * @brief Get the @c std::string for the end of the method that computes
+     * computed constants.
+     *
+     * Return the @c std::string for the end of the method that computes
+     * computed constants.
+     *
+     * @return The @c std::string for the end of the method that computes
+     * computed constants.
+     */
     std::string endComputeComputedConstantsMethodString() const;
+    /**
+     * @brief Set the @c std::string for the end of the method that computes
+     * computed constants.
+     *
+     * Set this @c std::string for the end of the method that computes computed
+     * constants.
+     *
+     * @param eqString The @c std::string to use for the end of the method that
+     * computes computed constants.
+     */
     void setEndComputeComputedConstantsMethodString(const std::string &endComputeComputedConstantsMethodString);
 
+    /**
+     * @brief Get the @c std::string for the beginning of the method that
+     * computes rates.
+     *
+     * Return the @c std::string for the beginning of the method that computes
+     * rates.
+     *
+     * @return The @c std::string for the beginning of the method that computes
+     * rates.
+     */
     std::string beginComputeRatesMethodString() const;
+    /**
+     * @brief Set the @c std::string for the beginning of the method that
+     * computes rates.
+     *
+     * Set this @c std::string for the beginning of the method that computes
+     * rates.
+     *
+     * @param eqString The @c std::string to use for the beginning of the method
+     * that computes rates.
+     */
     void setBeginComputeRatesMethodString(const std::string &beginComputeRatesMethodString);
 
+    /**
+     * @brief Get the @c std::string for the end of the method that computes
+     * rates.
+     *
+     * Return the @c std::string for the end of the method that computes rates.
+     *
+     * @return The @c std::string for the end of the method that computes rates.
+     */
     std::string endComputeRatesMethodString() const;
+    /**
+     * @brief Set the @c std::string for the end of the method that computes
+     * rates.
+     *
+     * Set this @c std::string for the end of the method that computes rates.
+     *
+     * @param eqString The @c std::string to use for the end of the method that
+     * computes rates.
+     */
     void setEndComputeRatesMethodString(const std::string &endComputeRatesMethodString);
 
+    /**
+     * @brief Get the @c std::string for the beginning of the method that
+     * computes variables.
+     *
+     * Return the @c std::string for the beginning of the method that computes
+     * variables.
+     *
+     * @return The @c std::string for the beginning of the method that computes
+     * variables.
+     */
     std::string beginComputeVariablesMethodString() const;
+    /**
+     * @brief Set the @c std::string for the beginning of the method that
+     * computes variables.
+     *
+     * Set this @c std::string for the beginning of the method that computes
+     * variables.
+     *
+     * @param eqString The @c std::string to use for the beginning of the method
+     * that computes variables.
+     */
     void setBeginComputeVariablesMethodString(const std::string &beginComputeVariablesMethodString);
 
+    /**
+     * @brief Get the @c std::string for the end of the method that computes
+     * variables.
+     *
+     * Return the @c std::string for the end of the method that computes
+     * variables.
+     *
+     * @return The @c std::string for the end of the method that computes
+     * variables.
+     */
     std::string endComputeVariablesMethodString() const;
+    /**
+     * @brief Set the @c std::string for the end of the method that computes
+     * variables.
+     *
+     * Set this @c std::string for the end of the method that computes
+     * variables.
+     *
+     * @param eqString The @c std::string to use for the end of the method that
+     * computes variables.
+     */
     void setEndComputeVariablesMethodString(const std::string &endComputeVariablesMethodString);
 
+    /**
+     * @brief Get the @c std::string for an empty method.
+     *
+     * Return the @c std::string for an empty method.
+     *
+     * @return The @c std::string for an empty method.
+     */
     std::string emptyMethodString() const;
+    /**
+     * @brief Set the @c std::string for an empty method.
+     *
+     * Set this @c std::string for an empty method.
+     *
+     * @param eqString The @c std::string to use for an empty method.
+     */
     void setEmptyMethodString(const std::string &emptyMethodString);
 
+    /**
+     * @brief Get the @c std::string for an indent.
+     *
+     * Return the @c std::string for an indent.
+     *
+     * @return The @c std::string for an indent.
+     */
     std::string indentString() const;
+    /**
+     * @brief Set the @c std::string for an indent.
+     *
+     * Set this @c std::string for an indent.
+     *
+     * @param eqString The @c std::string to use for an indent.
+     */
     void setIndentString(const std::string &indentString);
 
+    /**
+     * @brief Get the @c std::string for opening an array.
+     *
+     * Return the @c std::string for opening an array.
+     *
+     * @return The @c std::string for opening an array.
+     */
     std::string openArrayString() const;
+    /**
+     * @brief Set the @c std::string for opening an array.
+     *
+     * Set this @c std::string for opening an array.
+     *
+     * @param eqString The @c std::string to use for opening an array.
+     */
     void setOpenArrayString(const std::string &openArrayString);
 
+    /**
+     * @brief Get the @c std::string for closing an array.
+     *
+     * Return the @c std::string for closing an array.
+     *
+     * @return The @c std::string for closing an array.
+     */
     std::string closeArrayString() const;
+    /**
+     * @brief Set the @c std::string for closing an array.
+     *
+     * Set this @c std::string for closing an array.
+     *
+     * @param eqString The @c std::string to use for closing an array.
+     */
     void setCloseArrayString(const std::string &closeArrayString);
 
+    /**
+     * @brief Get the @c std::string for a command separator.
+     *
+     * Return the @c std::string for a command separator.
+     *
+     * @return The @c std::string for a command separator.
+     */
     std::string commandSeparatorString() const;
+    /**
+     * @brief Set the @c std::string for a command separator.
+     *
+     * Set this @c std::string for a command separator.
+     *
+     * @param eqString The @c std::string to use for a command separator.
+     */
     void setCommandSeparatorString(const std::string &commandSeparatorString);
 
 private:
