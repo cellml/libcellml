@@ -47,189 +47,191 @@ public:
     // Relational and logical operators
 
     /**
-     * @brief Get the @c std::string for an assignment.
+     * @brief Get the @c std::string for the assignment operator.
      *
-     * Return the @c std::string for an assignment.
+     * Return the @c std::string for the assignment operator.
      *
-     * @return The @c std::string for an assignment.
+     * @return The @c std::string for the assignment operator.
      */
     std::string eqString() const;
     /**
-     * @brief Set the @c std::string for an assignment.
+     * @brief Set the @c std::string for the assignment operator.
      *
-     * Set this @c std::string for an assignment.
+     * Set this @c std::string for the assignment operator.
      *
-     * @param eqString The @c std::string to use for an assignment.
+     * @param eqString The @c std::string to use for the assignment operator.
      */
     void setEqString(const std::string &eqString);
 
     /**
-     * @brief Get the @c std::string for an equivalence.
+     * @brief Get the @c std::string for the equivalence operator.
      *
-     * Return the @c std::string for an equivalence.
+     * Return the @c std::string for the equivalence operator.
      *
-     * @return The @c std::string for an equivalence.
+     * @return The @c std::string for the equivalence operator.
      */
     std::string eqEqString() const;
     /**
-     * @brief Set the @c std::string for an equivalence.
+     * @brief Set the @c std::string for the equivalence operator.
      *
-     * Set this @c std::string for an equivalence.
+     * Set this @c std::string for the equivalence operator.
      *
-     * @param eqString The @c std::string to use for an equivalence.
+     * @param eqString The @c std::string to use for the equivalence operator.
      */
     void setEqEqString(const std::string &eqEqString);
 
     /**
-     * @brief Get the @c std::string for a nonequivalence.
+     * @brief Get the @c std::string for the nonequivalence operator.
      *
-     * Return the @c std::string for a nonequivalence.
+     * Return the @c std::string for the nonequivalence operator.
      *
-     * @return The @c std::string for a nonequivalence.
+     * @return The @c std::string for the nonequivalence operator.
      */
     std::string neqString() const;
     /**
-     * @brief Set the @c std::string for a nonequivalence.
+     * @brief Set the @c std::string for the nonequivalence operator.
      *
-     * Set this @c std::string for a nonequivalence.
+     * Set this @c std::string for the nonequivalence operator.
      *
-     * @param eqString The @c std::string to use for a nonequivalence.
+     * @param eqString The @c std::string to use for the nonequivalence operator.
      */
     void setNeqString(const std::string &neqString);
 
     /**
-     * @brief Get the @c std::string for lower than.
+     * @brief Get the @c std::string for the lower than operator.
      *
-     * Return the @c std::string for lower than.
+     * Return the @c std::string for the lower than operator.
      *
-     * @return The @c std::string for lower than.
+     * @return The @c std::string for the lower than operator.
      */
     std::string ltString() const;
     /**
-     * @brief Set the @c std::string for lower than.
+     * @brief Set the @c std::string for the lower than operator.
      *
-     * Set this @c std::string for lower than.
+     * Set this @c std::string for the lower than operator.
      *
-     * @param eqString The @c std::string to use for lower than.
+     * @param eqString The @c std::string to use for the lower than operator.
      */
     void setLtString(const std::string &ltString);
 
     /**
-     * @brief Get the @c std::string for lower or equal than.
+     * @brief Get the @c std::string for the lower or equal than operator.
      *
-     * Return the @c std::string for lower or equal than.
+     * Return the @c std::string for the lower or equal than operator.
      *
-     * @return The @c std::string for lower or equal than.
+     * @return The @c std::string for the lower or equal than operator.
      */
     std::string leqString() const;
     /**
-     * @brief Set the @c std::string for lower or equal than.
+     * @brief Set the @c std::string for the lower or equal than operator.
      *
-     * Set this @c std::string for lower or equal than.
+     * Set this @c std::string for the lower or equal than operator.
      *
-     * @param eqString The @c std::string to use for lower or equal than.
+     * @param eqString The @c std::string to use for the lower or equal than
+     * operator.
      */
     void setLeqString(const std::string &leqString);
 
     /**
-     * @brief Get the @c std::string for greater than.
+     * @brief Get the @c std::string for the greater than operator.
      *
-     * Return the @c std::string for greater than.
+     * Return the @c std::string for the greater than operator.
      *
-     * @return The @c std::string for greater than.
+     * @return The @c std::string for the greater than operator.
      */
     std::string gtString() const;
     /**
-     * @brief Set the @c std::string for greater than.
+     * @brief Set the @c std::string for the greater than operator.
      *
-     * Set this @c std::string for greater than.
+     * Set this @c std::string for the greater than operator.
      *
-     * @param eqString The @c std::string to use for greater than.
+     * @param eqString The @c std::string to use for the greater than operator.
      */
     void setGtString(const std::string &gtString);
 
     /**
-     * @brief Get the @c std::string for greater or equal than.
+     * @brief Get the @c std::string for the greater or equal than operator.
      *
-     * Return the @c std::string for greater or equal than.
+     * Return the @c std::string for the greater or equal than operator.
      *
-     * @return The @c std::string for greater or equal than.
+     * @return The @c std::string for the greater or equal than operator.
      */
     std::string geqString() const;
     /**
-     * @brief Set the @c std::string for greater or equal than.
+     * @brief Set the @c std::string for the greater or equal than operator.
      *
-     * Set this @c std::string for greater or equal than.
+     * Set this @c std::string for the greater or equal than operator.
      *
-     * @param eqString The @c std::string to use for greater or equal than.
+     * @param eqString The @c std::string to use for the greater or equal than
+     * operator.
      */
     void setGeqString(const std::string &geqString);
 
     /**
-     * @brief Get the @c std::string for and.
+     * @brief Get the @c std::string for the and operator.
      *
-     * Return the @c std::string for and.
+     * Return the @c std::string for the and operator.
      *
-     * @return The @c std::string for and.
+     * @return The @c std::string for the and operator.
      */
     std::string andString() const;
     /**
-     * @brief Set the @c std::string for and.
+     * @brief Set the @c std::string for the and operator.
      *
-     * Set this @c std::string for and.
+     * Set this @c std::string for the and operator.
      *
-     * @param eqString The @c std::string to use for and.
+     * @param eqString The @c std::string to use for the and operator.
      */
     void setAndString(const std::string &andString);
 
     /**
-     * @brief Get the @c std::string for or.
+     * @brief Get the @c std::string for the or operator.
      *
-     * Return the @c std::string for or.
+     * Return the @c std::string for the or operator.
      *
-     * @return The @c std::string for or.
+     * @return The @c std::string for the or operator.
      */
     std::string orString() const;
     /**
-     * @brief Set the @c std::string for or.
+     * @brief Set the @c std::string for the or operator.
      *
-     * Set this @c std::string for or.
+     * Set this @c std::string for the or operator.
      *
-     * @param eqString The @c std::string to use for or.
+     * @param eqString The @c std::string to use for the or operator.
      */
     void setOrString(const std::string &orString);
 
     /**
-     * @brief Get the @c std::string for xor.
+     * @brief Get the @c std::string for the xor operator.
      *
-     * Return the @c std::string for xor.
+     * Return the @c std::string for the xor operator.
      *
-     * @return The @c std::string for xor.
+     * @return The @c std::string for the xor operator.
      */
     std::string xorString() const;
     /**
-     * @brief Set the @c std::string for xor.
+     * @brief Set the @c std::string for the xor operator.
      *
-     * Set this @c std::string for xor.
+     * Set this @c std::string for the xor operator.
      *
-     * @param eqString The @c std::string to use for xor.
+     * @param eqString The @c std::string to use for the xor operator.
      */
     void setXorString(const std::string &xorString);
 
     /**
-     * @brief Get the @c std::string for not.
+     * @brief Get the @c std::string for the not operator.
      *
-     * Return the @c std::string for not.
+     * Return the @c std::string for the not operator.
      *
-     * @return The @c std::string for not.
+     * @return The @c std::string for the not operator.
      */
     std::string notString() const;
     /**
-     * @brief Set the @c std::string for not.
+     * @brief Set the @c std::string for the not operator.
      *
-     * Set this @c std::string for not.
+     * Set this @c std::string for the not operator.
      *
-     * @param eqString The @c std::string to use for not.
+     * @param eqString The @c std::string to use for the not operator.
      */
     void setNotString(const std::string &notString);
 
@@ -334,206 +336,206 @@ public:
     void setDivideString(const std::string &divideString);
 
     /**
-     * @brief Get the @c std::string for power.
+     * @brief Get the @c std::string for a power.
      *
-     * Return the @c std::string for power.
+     * Return the @c std::string for a power.
      *
-     * @return The @c std::string for power.
+     * @return The @c std::string for a power.
      */
     std::string powerString() const;
     /**
-     * @brief Set the @c std::string for power.
+     * @brief Set the @c std::string for a power.
      *
-     * Set this @c std::string for power.
+     * Set this @c std::string for a power.
      *
-     * @param eqString The @c std::string to use for power.
+     * @param eqString The @c std::string to use for a power.
      */
     void setPowerString(const std::string &powerString);
 
     /**
-     * @brief Get the @c std::string for square root.
+     * @brief Get the @c std::string for a square root.
      *
-     * Return the @c std::string for square root.
+     * Return the @c std::string for a square root.
      *
-     * @return The @c std::string for square root.
+     * @return The @c std::string for a square root.
      */
     std::string squareRootString() const;
     /**
-     * @brief Set the @c std::string for square root.
+     * @brief Set the @c std::string for a square root.
      *
-     * Set this @c std::string for square root.
+     * Set this @c std::string for a square root.
      *
-     * @param eqString The @c std::string to use for square root.
+     * @param eqString The @c std::string to use for a square root.
      */
     void setSquareRootString(const std::string &squareRootString);
 
     /**
-     * @brief Get the @c std::string for square.
+     * @brief Get the @c std::string for a square.
      *
-     * Return the @c std::string for square.
+     * Return the @c std::string for a square.
      *
-     * @return The @c std::string for square.
+     * @return The @c std::string for a square.
      */
     std::string squareString() const;
     /**
-     * @brief Set the @c std::string for square.
+     * @brief Set the @c std::string for a square.
      *
-     * Set this @c std::string for square.
+     * Set this @c std::string for a square.
      *
-     * @param eqString The @c std::string to use for square.
+     * @param eqString The @c std::string to use for a square.
      */
     void setSquareString(const std::string &squareString);
 
     /**
-     * @brief Get the @c std::string for absolute.
+     * @brief Get the @c std::string for an absolute value.
      *
-     * Return the @c std::string for absolute.
+     * Return the @c std::string for an absolute value.
      *
-     * @return The @c std::string for absolute.
+     * @return The @c std::string for an absolute value.
      */
     std::string absoluteValueString() const;
     /**
-     * @brief Set the @c std::string for absolute.
+     * @brief Set the @c std::string for an absolute value.
      *
-     * Set this @c std::string for absolute.
+     * Set this @c std::string for an absolute value.
      *
-     * @param eqString The @c std::string to use for absolute.
+     * @param eqString The @c std::string to use for an absolute value.
      */
     void setAbsoluteValueString(const std::string &absoluteValueString);
 
     /**
-     * @brief Get the @c std::string for exponential.
+     * @brief Get the @c std::string for an exponential.
      *
-     * Return the @c std::string for exponential.
+     * Return the @c std::string for an exponential.
      *
-     * @return The @c std::string for exponential.
+     * @return The @c std::string for an exponential.
      */
     std::string exponentialString() const;
     /**
-     * @brief Set the @c std::string for exponential.
+     * @brief Set the @c std::string for an exponential.
      *
-     * Set this @c std::string for exponential.
+     * Set this @c std::string for an exponential.
      *
-     * @param eqString The @c std::string to use for exponential.
+     * @param eqString The @c std::string to use for an exponential.
      */
     void setExponentialString(const std::string &exponentialString);
 
     /**
-     * @brief Get the @c std::string for Napierian logarithm.
+     * @brief Get the @c std::string for a Napierian logarithm.
      *
-     * Return the @c std::string for Napierian logarithm.
+     * Return the @c std::string for a Napierian logarithm.
      *
-     * @return The @c std::string for Napierian logarithm.
+     * @return The @c std::string for a Napierian logarithm.
      */
     std::string napierianLogarithmString() const;
     /**
-     * @brief Set the @c std::string for Napierian logarithm.
+     * @brief Set the @c std::string for a Napierian logarithm.
      *
-     * Set this @c std::string for Napierian logarithm.
+     * Set this @c std::string for a Napierian logarithm.
      *
-     * @param eqString The @c std::string to use for Napierian logarithm.
+     * @param eqString The @c std::string to use for a Napierian logarithm.
      */
     void setNapierianLogarithmString(const std::string &napierianLogarithmString);
 
     /**
-     * @brief Get the @c std::string for common logarithm.
+     * @brief Get the @c std::string for a common logarithm.
      *
-     * Return the @c std::string for common logarithm.
+     * Return the @c std::string for a common logarithm.
      *
-     * @return The @c std::string for common logarithm.
+     * @return The @c std::string for a common logarithm.
      */
     std::string commonLogarithmString() const;
     /**
-     * @brief Set the @c std::string for common logarithm.
+     * @brief Set the @c std::string for a common logarithm.
      *
-     * Set this @c std::string for common logarithm.
+     * Set this @c std::string for a common logarithm.
      *
-     * @param eqString The @c std::string to use for common logarithm.
+     * @param eqString The @c std::string to use for a common logarithm.
      */
     void setCommonLogarithmString(const std::string &commonLogarithmString);
 
     /**
-     * @brief Get the @c std::string for ceiling.
+     * @brief Get the @c std::string for a ceiling.
      *
-     * Return the @c std::string for ceiling.
+     * Return the @c std::string for a ceiling.
      *
-     * @return The @c std::string for ceiling.
+     * @return The @c std::string for a ceiling.
      */
     std::string ceilingString() const;
     /**
-     * @brief Set the @c std::string for ceiling.
+     * @brief Set the @c std::string for a ceiling.
      *
-     * Set this @c std::string for ceiling.
+     * Set this @c std::string for a ceiling.
      *
-     * @param eqString The @c std::string to use for ceiling.
+     * @param eqString The @c std::string to use for a ceiling.
      */
     void setCeilingString(const std::string &ceilingString);
 
     /**
-     * @brief Get the @c std::string for floor.
+     * @brief Get the @c std::string for a floor.
      *
-     * Return the @c std::string for floor.
+     * Return the @c std::string for a floor.
      *
-     * @return The @c std::string for floor.
+     * @return The @c std::string for a floor.
      */
     std::string floorString() const;
     /**
-     * @brief Set the @c std::string for floor.
+     * @brief Set the @c std::string for a floor.
      *
-     * Set this @c std::string for floor.
+     * Set this @c std::string for a floor.
      *
-     * @param eqString The @c std::string to use for floor.
+     * @param eqString The @c std::string to use for a floor.
      */
     void setFloorString(const std::string &floorString);
 
     /**
-     * @brief Get the @c std::string for minimum.
+     * @brief Get the @c std::string for a minimum.
      *
-     * Return the @c std::string for minimum.
+     * Return the @c std::string for a minimum.
      *
-     * @return The @c std::string for minimum.
+     * @return The @c std::string for a minimum.
      */
     std::string minString() const;
     /**
-     * @brief Set the @c std::string for minimum.
+     * @brief Set the @c std::string for a minimum.
      *
-     * Set this @c std::string for minimum.
+     * Set this @c std::string for a minimum.
      *
-     * @param eqString The @c std::string to use for minimum.
+     * @param eqString The @c std::string to use for a minimum.
      */
     void setMinString(const std::string &minString);
 
     /**
-     * @brief Get the @c std::string for maximum.
+     * @brief Get the @c std::string for a maximum.
      *
-     * Return the @c std::string for maximum.
+     * Return the @c std::string for a maximum.
      *
-     * @return The @c std::string for maximum.
+     * @return The @c std::string for a maximum.
      */
     std::string maxString() const;
     /**
-     * @brief Set the @c std::string for maximum.
+     * @brief Set the @c std::string for a maximum.
      *
-     * Set this @c std::string for maximum.
+     * Set this @c std::string for a maximum.
      *
-     * @param eqString The @c std::string to use for maximum.
+     * @param eqString The @c std::string to use for a maximum.
      */
     void setMaxString(const std::string &maxString);
 
     /**
-     * @brief Get the @c std::string for remainder.
+     * @brief Get the @c std::string for a remainder.
      *
-     * Return the @c std::string for remainder.
+     * Return the @c std::string for a remainder.
      *
-     * @return The @c std::string for remainder.
+     * @return The @c std::string for a remainder.
      */
     std::string remString() const;
     /**
-     * @brief Set the @c std::string for remainder.
+     * @brief Set the @c std::string for a remainder.
      *
-     * Set this @c std::string for remainder.
+     * Set this @c std::string for a remainder.
      *
-     * @param eqString The @c std::string to use for remainder.
+     * @param eqString The @c std::string to use for a remainder.
      */
     void setRemString(const std::string &remString);
 
