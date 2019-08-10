@@ -1,13 +1,18 @@
 from math import *
 
-def initializeConstants(states, variables):
+
+def initialize_constants(states, variables):
     variables[0] = 1.0
 
-def computeComputedConstants(variables):
+
+def compute_computed_constants(variables):
     variables[1] = variables[0]
 
-def computeRates(voi, states, rates, variables):
+
+def compute_rates(voi, states, rates, variables):
     pass
 
-def computeVariables(voi, states, rates, variables):
+
+def compute_variables(voi, states, rates, variables):
     pass
+

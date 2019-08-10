@@ -392,16 +392,16 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Relational and logical operators
 
         mEqString = " = ";
-        mEqEqString = "eqEqFunc";
-        mNeqString = "neqFunc";
-        mLtString = "ltFunc";
-        mLeqString = "leqFunc";
-        mGtString = "gtFunc";
-        mGeqString = "geqFunc";
-        mAndString = "andFunc";
-        mOrString = "orFunc";
-        mXorString = "xorFunc";
-        mNotString = "notFunc";
+        mEqEqString = "eq_eq_func";
+        mNeqString = "neq_func";
+        mLtString = "lt_func";
+        mLeqString = "leq_func";
+        mGtString = "gt_func";
+        mGeqString = "geq_func";
+        mAndString = "and_func";
+        mOrString = "or_func";
+        mXorString = "xor_func";
+        mNotString = "not_func";
 
         mHasEqEqOperator = false;
         mHasNeqOperator = false;
@@ -464,7 +464,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Piecewise statement
 
-        mConditionalOperatorIfString = "#if if (#cond)";
+        mConditionalOperatorIfString = "#if if #cond";
         mConditionalOperatorElseString = " else #else";
 
         mHasConditionalOperator = true;
@@ -480,66 +480,66 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions
 
-        mEqEqFunctionString = "def eqEqFunc(x, y):\n"
-                              "    return 1.0 if (x == y) else 0.0\n";
-        mNeqFunctionString = "def neqFunc(x, y):\n"
-                             "    return 1.0 if (x != y) else 0.0\n";
-        mLtFunctionString = "def ltFunc(x, y):\n"
-                            "    return 1.0 if (x < y) else 0.0\n";
-        mLeqFunctionString = "def leqFunc(x, y):\n"
-                             "    return 1.0 if (x <= y) else 0.0\n";
-        mGtFunctionString = "def gtFunc(x, y):\n"
-                            "    return 1.0 if (x > y) else 0.0\n";
-        mGeqFunctionString = "def geqFunc(x, y):\n"
-                             "    return 1.0 if (x >= y) else 0.0\n";
-        mAndFunctionString = "def andFunc(x, y):\n"
-                             "    return 1.0 if (bool(x) & bool(y)) else 0.0\n";
-        mOrFunctionString = "def orFunc(x, y):\n"
-                            "    return 1.0 if (bool(x) | bool(y)) else 0.0\n";
-        mXorFunctionString = "def xorFunc(x, y):\n"
-                             "    return 1.0 if (bool(x) ^ bool(y)) else 0.0\n";
-        mNotFunctionString = "def notFunc(x):\n"
-                             "    return 1.0 if (not bool(x)) else 0.0\n";
+        mEqEqFunctionString = "def eq_eq_func(x, y):\n"
+                              "    return 1.0 if (x == y) else 0.0\n\n";
+        mNeqFunctionString = "def neq_func(x, y):\n"
+                             "    return 1.0 if (x != y) else 0.0\n\n";
+        mLtFunctionString = "def lt_func(x, y):\n"
+                            "    return 1.0 if (x < y) else 0.0\n\n";
+        mLeqFunctionString = "def leq_func(x, y):\n"
+                             "    return 1.0 if (x <= y) else 0.0\n\n";
+        mGtFunctionString = "def gt_func(x, y):\n"
+                            "    return 1.0 if (x > y) else 0.0\n\n";
+        mGeqFunctionString = "def geq_func(x, y):\n"
+                             "    return 1.0 if (x >= y) else 0.0\n\n";
+        mAndFunctionString = "def and_func(x, y):\n"
+                             "    return 1.0 if (bool(x) & bool(y)) else 0.0\n\n";
+        mOrFunctionString = "def or_func(x, y):\n"
+                            "    return 1.0 if (bool(x) | bool(y)) else 0.0\n\n";
+        mXorFunctionString = "def xor_func(x, y):\n"
+                             "    return 1.0 if (bool(x) ^ bool(y)) else 0.0\n\n";
+        mNotFunctionString = "def not_func(x):\n"
+                             "    return 1.0 if (not bool(x)) else 0.0\n\n";
 
         mMinFunctionString = "def min(x, y):\n"
-                             "    return x if (x < y) else y\n";
+                             "    return x if (x < y) else y\n\n";
         mMaxFunctionString = "def max(x, y):\n"
-                             "    return x if (x > y) else y\n";
+                             "    return x if (x > y) else y\n\n";
 
         mSecFunctionString = "def sec(x):\n"
-                             "    return 1.0/cos(x)\n";
+                             "    return 1.0/cos(x)\n\n";
         mCscFunctionString = "def csc(x):\n"
-                             "    return 1.0/sin(x)\n";
+                             "    return 1.0/sin(x)\n\n";
         mCotFunctionString = "def cot(x):\n"
-                             "    return 1.0/tan(x)\n";
+                             "    return 1.0/tan(x)\n\n";
         mSechFunctionString = "def sech(x):\n"
-                              "    return 1.0/cosh(x)\n";
+                              "    return 1.0/cosh(x)\n\n";
         mCschFunctionString = "def csch(x):\n"
-                              "    return 1.0/sinh(x)\n";
+                              "    return 1.0/sinh(x)\n\n";
         mCothFunctionString = "def coth(x):\n"
-                              "    return 1.0/tanh(x)\n";
+                              "    return 1.0/tanh(x)\n\n";
         mAsecFunctionString = "def asec(x):\n"
-                              "    return acos(1.0/x)\n";
+                              "    return acos(1.0/x)\n\n";
         mAcscFunctionString = "def acsc(x):\n"
-                              "    return asin(1.0/x)\n";
+                              "    return asin(1.0/x)\n\n";
         mAcotFunctionString = "def acot(x):\n"
-                              "    return atan(1.0/x)\n";
+                              "    return atan(1.0/x)\n\n";
         mAsechFunctionString = "def asech(x):\n"
-                               "    oneOverX = 1.0/x\n"
+                               "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0))\n";
+                               "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n\n";
         mAcschFunctionString = "def acsch(x):\n"
-                               "    oneOverX = 1.0/x\n"
+                               "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0))\n";
+                               "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n\n";
         mAcothFunctionString = "def acoth(x):\n"
-                               "    oneOverX = 1.0/x\n"
+                               "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX))\n";
+                               "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n\n";
 
         // Miscellaneous
 
-        mHeaderString = "from math import *\n";
+        mHeaderString = "from math import *\n\n";
 
         mVariableOfIntegrationString = "voi";
 
@@ -547,17 +547,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mBeginInitializeConstantsMethodString = "def initializeConstants(states, variables):\n";
-        mEndInitializeConstantsMethodString = "";
+        mBeginInitializeConstantsMethodString = "def initialize_constants(states, variables):\n";
+        mEndInitializeConstantsMethodString = "\n";
 
-        mBeginComputeComputedConstantsMethodString = "def computeComputedConstants(variables):\n";
-        mEndComputeComputedConstantsMethodString = "";
+        mBeginComputeComputedConstantsMethodString = "def compute_computed_constants(variables):\n";
+        mEndComputeComputedConstantsMethodString = "\n";
 
-        mBeginComputeRatesMethodString = "def computeRates(voi, states, rates, variables):\n";
-        mEndComputeRatesMethodString = "";
+        mBeginComputeRatesMethodString = "def compute_rates(voi, states, rates, variables):\n";
+        mEndComputeRatesMethodString = "\n";
 
-        mBeginComputeVariablesMethodString = "def computeVariables(voi, states, rates, variables):\n";
-        mEndComputeVariablesMethodString = "";
+        mBeginComputeVariablesMethodString = "def compute_variables(voi, states, rates, variables):\n";
+        mEndComputeVariablesMethodString = "\n";
 
         mEmptyMethodString = "pass\n";
 
