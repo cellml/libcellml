@@ -627,6 +627,7 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value);
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
+    std::string generateCreateArrayCode(size_t arraySize);
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
@@ -2291,6 +2292,17 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     return code;
 }
 
+std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
+{
+    std::string arraySizeValueString = std::to_string(arraySize);
+    std::string defineArraySizeString = mProfile->defineArraySizeString();
+    std::string templateString = mProfile->indentString() + mProfile->returnCreatedArrayString();
+    size_t startIndex = templateString.find(defineArraySizeString);
+    templateString.replace(startIndex, defineArraySizeString.length(), arraySizeValueString);
+
+    return templateString;
+}
+
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
     return mProfile->indentString() + generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
@@ -2706,9 +2718,40 @@ std::string Generator::code() const
         res += "\n";
     }
 
+    std::string methodBody;
+
+    res += mPimpl->mProfile->beginCreateStateVectorMethodString();
+
+    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mStates.size());
+    res += mPimpl->generateMethodBodyCode(methodBody);
+
+    res += mPimpl->mProfile->endCreateStateVectorMethodString();
+
+    res += "\n";
+    res += mPimpl->mProfile->beginCreateRateVectorMethodString();
+
+    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mStates.size());
+    res += mPimpl->generateMethodBodyCode(methodBody);
+
+    res += mPimpl->mProfile->endCreateRateVectorMethodString();
+
+    res += "\n";
+    res += mPimpl->mProfile->beginCreateVariableVectorMethodString();
+
+    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mVariables.size());
+    res += mPimpl->generateMethodBodyCode(methodBody);
+
+    res += mPimpl->mProfile->endCreateVariableVectorMethodString();
+
+    if (mPimpl->mProfile->freeVectorFunctionString().length()) {
+        res += "\n";
+        res += mPimpl->mProfile->freeVectorFunctionString();
+    }
+
+    res += "\n";
     res += mPimpl->mProfile->beginInitializeConstantsMethodString();
 
-    std::string methodBody;
+    methodBody = "";
 
     for (const auto &internalVariable : mPimpl->mInternalVariables) {
         if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
