@@ -1860,6 +1860,9 @@ public:
 
     // Miscellaneous
 
+    void setFreeVectorFunctionString(const std::string &freeVectorFunctionString);
+    std::string freeVectorFunctionString() const;
+
     /**
      * @brief Get the @c std::string for some header.
      *
@@ -1955,6 +1958,21 @@ public:
      * array.
      */
     void setVariablesArrayString(const std::string &variablesArrayString);
+
+    std::string beginCreateStateVectorMethodString() const;
+    void setBeginCreateStateVectorMethodString(const std::string &beginCreateStateVectorMethodString);
+    std::string endCreateStateVectorMethodString() const;
+    void setEndCreateStateVectorMethodString(const std::string &endCreateStateVectorMethodString);
+
+    std::string beginCreateRateVectorMethodString() const;
+    void setBeginCreateRateVectorMethodString(const std::string &beginCreateRateVectorMethodString);
+    std::string endCreateRateVectorMethodString() const;
+    void setEndCreateRateVectorMethodString(const std::string &endCreateRateVectorMethodString);
+
+    std::string beginCreateVariableVectorMethodString() const;
+    void setBeginCreateVariableVectorMethodString(const std::string &beginCreateVariableVectorMethodString);
+    std::string endCreateVariableVectorMethodString() const;
+    void setEndCreateVariableVectorMethodString(const std::string &endCreateVariableVectorMethodString);
 
     /**
      * @brief Get the @c std::string for the beginning of the method that
@@ -2162,6 +2180,12 @@ public:
      * @param eqString The @c std::string to use for an empty method.
      */
     void setEmptyMethodString(const std::string &emptyMethodString);
+
+    std::string defineArraySizeString() const;
+    void setDefineArraySizeString(const std::string &defineArraySizeString);
+
+    std::string returnCreatedArrayString() const;
+    void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
 
     /**
      * @brief Get the @c std::string for an indent.

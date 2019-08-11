@@ -151,6 +151,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
+    std::string mFreeVectorFunctionString;
     std::string mHeaderString;
 
     std::string mVariableOfIntegrationString;
@@ -158,6 +159,15 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mStatesArrayString;
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
+
+    std::string mBeginCreateStateVectorMethodString;
+    std::string mEndCreateStateVectorMethodString;
+
+    std::string mBeginCreateRateVectorMethodString;
+    std::string mEndCreateRateVectorMethodString;
+
+    std::string mBeginCreateVariableVectorMethodString;
+    std::string mEndCreateVariableVectorMethodString;
 
     std::string mBeginInitializeConstantsMethodString;
     std::string mEndInitializeConstantsMethodString;
@@ -172,6 +182,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mEndComputeVariablesMethodString;
 
     std::string mEmptyMethodString;
+    std::string mDefineArraySizeString;
+    std::string mReturnCreatedArrayString;
 
     std::string mIndentString;
 
@@ -358,6 +370,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
+        mFreeVectorFunctionString = "void freeVector(double *array)\n"
+                                    "{\n"
+                                    "   free(array);\n"
+                                    "}\n";
+
         mHeaderString = "#include <math.h>\n";
 
         mVariableOfIntegrationString = "voi";
@@ -365,6 +382,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
+
+        mBeginCreateStateVectorMethodString = "double *createStateVector()\n{\n";
+        mEndCreateStateVectorMethodString = "}\n";
+
+        mBeginCreateRateVectorMethodString = "double *createRateVector()\n{\n";
+        mEndCreateRateVectorMethodString = "}\n";
+
+        mBeginCreateVariableVectorMethodString = "double *createVariableVector()\n{\n";
+        mEndCreateVariableVectorMethodString = "}\n";
 
         mBeginInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n";
         mEndInitializeConstantsMethodString = "}\n";
@@ -379,6 +405,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mEndComputeVariablesMethodString = "}\n";
 
         mEmptyMethodString = "";
+        mDefineArraySizeString = "arraySize";
+        mReturnCreatedArrayString = "return (double *)malloc(arraySize * sizeof (double));\n";
 
         mIndentString = "    ";
 
@@ -539,6 +567,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
+        mFreeVectorFunctionString = "";
         mHeaderString = "from math import *\n\n";
 
         mVariableOfIntegrationString = "voi";
@@ -546,6 +575,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
+
+        mBeginCreateStateVectorMethodString = "def create_state_vector():\n";
+        mEndCreateStateVectorMethodString = "\n";
+
+        mBeginCreateRateVectorMethodString = "def create_rate_vector():\n";
+        mEndCreateRateVectorMethodString = "\n";
+
+        mBeginCreateVariableVectorMethodString = "def create_variable_vector():\n";
+        mEndCreateVariableVectorMethodString = "\n";
 
         mBeginInitializeConstantsMethodString = "def initialize_constants(states, variables):\n";
         mEndInitializeConstantsMethodString = "\n";
@@ -560,6 +598,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mEndComputeVariablesMethodString = "\n";
 
         mEmptyMethodString = "pass\n";
+        mDefineArraySizeString = "array_size";
+        mReturnCreatedArrayString = "return [nan]*array_size\n";
 
         mIndentString = "    ";
 
@@ -689,6 +729,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     // Miscellaneous
 
+    mPimpl->mFreeVectorFunctionString = rhs.mPimpl->mFreeVectorFunctionString;
     mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
     mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
@@ -696,6 +737,15 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
+
+    mPimpl->mBeginCreateStateVectorMethodString = rhs.mPimpl->mBeginCreateStateVectorMethodString;
+    mPimpl->mEndCreateStateVectorMethodString = rhs.mPimpl->mEndCreateStateVectorMethodString;
+
+    mPimpl->mBeginCreateRateVectorMethodString = rhs.mPimpl->mBeginCreateRateVectorMethodString;
+    mPimpl->mEndCreateRateVectorMethodString = rhs.mPimpl->mEndCreateRateVectorMethodString;
+
+    mPimpl->mBeginCreateVariableVectorMethodString = rhs.mPimpl->mBeginCreateVariableVectorMethodString;
+    mPimpl->mEndCreateVariableVectorMethodString = rhs.mPimpl->mEndCreateVariableVectorMethodString;
 
     mPimpl->mBeginInitializeConstantsMethodString = rhs.mPimpl->mBeginInitializeConstantsMethodString;
     mPimpl->mEndInitializeConstantsMethodString = rhs.mPimpl->mEndInitializeConstantsMethodString;
@@ -710,6 +760,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mEndComputeVariablesMethodString = rhs.mPimpl->mEndComputeVariablesMethodString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
+    mPimpl->mDefineArraySizeString = rhs.mPimpl->mDefineArraySizeString;
+    mPimpl->mReturnCreatedArrayString = rhs.mPimpl->mReturnCreatedArrayString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -1711,6 +1763,16 @@ void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionSt
     mPimpl->mAcothFunctionString = acothFunctionString;
 }
 
+std::string GeneratorProfile::freeVectorFunctionString() const
+{
+    return mPimpl->mFreeVectorFunctionString;
+}
+
+void GeneratorProfile::setFreeVectorFunctionString(const std::string &freeVectorFunctionString)
+{
+    mPimpl->mFreeVectorFunctionString = freeVectorFunctionString;
+}
+
 std::string GeneratorProfile::headerString() const
 {
     return mPimpl->mHeaderString;
@@ -1764,6 +1826,66 @@ void GeneratorProfile::setVariablesArrayString(const std::string &variablesArray
 std::string GeneratorProfile::beginInitializeConstantsMethodString() const
 {
     return mPimpl->mBeginInitializeConstantsMethodString;
+}
+
+std::string GeneratorProfile::beginCreateStateVectorMethodString() const
+{
+    return mPimpl->mBeginCreateStateVectorMethodString;
+}
+
+void GeneratorProfile::setBeginCreateStateVectorMethodString(const std::string &beginCreateStateVectorMethodString)
+{
+    mPimpl->mBeginCreateStateVectorMethodString = beginCreateStateVectorMethodString;
+}
+
+std::string GeneratorProfile::endCreateStateVectorMethodString() const
+{
+    return mPimpl->mEndCreateStateVectorMethodString;
+}
+
+void GeneratorProfile::setEndCreateStateVectorMethodString(const std::string &endCreateStateVectorMethodString)
+{
+    mPimpl->mEndCreateStateVectorMethodString = endCreateStateVectorMethodString;
+}
+
+std::string GeneratorProfile::beginCreateRateVectorMethodString() const
+{
+    return mPimpl->mBeginCreateRateVectorMethodString;
+}
+
+void GeneratorProfile::setBeginCreateRateVectorMethodString(const std::string &beginCreateRateVectorMethodString)
+{
+    mPimpl->mBeginCreateRateVectorMethodString = beginCreateRateVectorMethodString;
+}
+
+std::string GeneratorProfile::endCreateRateVectorMethodString() const
+{
+    return mPimpl->mEndCreateRateVectorMethodString;
+}
+
+void GeneratorProfile::setEndCreateRateVectorMethodString(const std::string &endCreateRateVectorMethodString)
+{
+    mPimpl->mEndCreateRateVectorMethodString = endCreateRateVectorMethodString;
+}
+
+std::string GeneratorProfile::beginCreateVariableVectorMethodString() const
+{
+    return mPimpl->mBeginCreateVariableVectorMethodString;
+}
+
+void GeneratorProfile::setBeginCreateVariableVectorMethodString(const std::string &beginCreateVariableVectorMethodString)
+{
+    mPimpl->mBeginCreateVariableVectorMethodString = beginCreateVariableVectorMethodString;
+}
+
+std::string GeneratorProfile::endCreateVariableVectorMethodString() const
+{
+    return mPimpl->mEndCreateVariableVectorMethodString;
+}
+
+void GeneratorProfile::setEndCreateVariableVectorMethodString(const std::string &endCreateVariableVectorMethodString)
+{
+    mPimpl->mEndCreateVariableVectorMethodString = endCreateVariableVectorMethodString;
 }
 
 void GeneratorProfile::setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString)
@@ -1849,6 +1971,26 @@ std::string GeneratorProfile::emptyMethodString() const
 void GeneratorProfile::setEmptyMethodString(const std::string &emptyMethodString)
 {
     mPimpl->mEmptyMethodString = emptyMethodString;
+}
+
+std::string GeneratorProfile::defineArraySizeString() const
+{
+    return mPimpl->mDefineArraySizeString;
+}
+
+void GeneratorProfile::setDefineArraySizeString(const std::string &defineArraySizeString)
+{
+    mPimpl->mDefineArraySizeString = defineArraySizeString;
+}
+
+std::string GeneratorProfile::returnCreatedArrayString() const
+{
+    return mPimpl->mReturnCreatedArrayString;
+}
+
+void GeneratorProfile::setReturnCreatedArrayString(const std::string &returnCreatedArrayString)
+{
+    mPimpl->mReturnCreatedArrayString = returnCreatedArrayString;
 }
 
 std::string GeneratorProfile::indentString() const
