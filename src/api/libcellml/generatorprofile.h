@@ -2181,11 +2181,38 @@ public:
      */
     void setEmptyMethodString(const std::string &emptyMethodString);
 
-    std::string defineArraySizeString() const;
-    void setDefineArraySizeString(const std::string &defineArraySizeString);
+    std::string defineValueReplacementString() const;
+    void setDefineValueReplacementString(const std::string &defineValueReplacementString);
 
     std::string returnCreatedArrayString() const;
     void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
+
+    std::string defineStateVectorSizeConstantString() const;
+    void setDefineStateVectorSizeConstantString(const std::string &defineStateVectorSizeConstantString);
+
+    std::string defineVariableVectorSizeConstantString() const;
+    void setDefineVariableVectorSizeConstantString(const std::string &defineVariableVectorSizeConstantString);
+
+    std::string defineTemplateVoiConstantString() const;
+    void setDefineTemplateVoiConstantString(const std::string &defineTemplateVoiConstantString);
+
+    std::string declareVariableInformationObjectString() const;
+    void setDeclareVariableInformationObjectString(const std::string &declareVariableInformationObjectString);
+
+    std::string templateVariableInformationEntryString() const;
+    void setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString);
+
+    std::string beginStateVectorInformationArrayString() const;
+    void setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString);
+
+    std::string endStateVectorInformationArrayString() const;
+    void setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString);
+
+    std::string beginVariableVectorInformationArrayString() const;
+    void setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString);
+
+    std::string endVariableVectorInformationArrayString() const;
+    void setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString);
 
     /**
      * @brief Get the @c std::string for an indent.
@@ -2240,6 +2267,9 @@ public:
      * @param eqString The @c std::string to use for closing an array.
      */
     void setCloseArrayString(const std::string &closeArrayString);
+
+    std::string arrayElementSeparatorString() const;
+    void setArrayElementSeparatorString(const std::string &arrayElementSeparatorString);
 
     /**
      * @brief Get the @c std::string for a command separator.

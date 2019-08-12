@@ -1,4 +1,45 @@
+#include <stddef.h>
+#include <stdlib.h>
 #include <math.h>
+
+struct VARIABLE_INFO {
+    char name[32];
+    char units[32];
+};
+
+const size_t STATE_VECTOR_SIZE = 2;
+const size_t VARIABLE_VECTOR_SIZE = 2;
+const struct VARIABLE_INFO VOI = {"t", "ms"};
+
+const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
+    {"x", "mM"},
+    {"y", "mM"},
+};
+
+const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+    {"local_complex_maths", "mM"},
+    {"two_x", "milli_mole"},
+};
+
+double *createStateVector()
+{
+    return (double *)malloc(2 * sizeof (double));
+}
+
+double *createRateVector()
+{
+    return (double *)malloc(2 * sizeof (double));
+}
+
+double *createVariableVector()
+{
+    return (double *)malloc(2 * sizeof (double));
+}
+
+void freeVector(double *array)
+{
+   free(array);
+}
 
 void initializeConstants(double *states, double *variables)
 {

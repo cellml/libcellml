@@ -1,6 +1,50 @@
 from math import *
 
 
+STATE_VECTOR_SIZE = 4
+VARIABLE_VECTOR_SIZE = 17
+VOI = {"name": "time", "units": "millisecond"}
+
+STATE_VECTOR_INFORMATION_ARRAY = [
+    {"name": "m", "units": "dimensionless"},
+    {"name": "h", "units": "dimensionless"},
+    {"name": "n", "units": "dimensionless"},
+    {"name": "V", "units": "millivolt"},
+]
+
+VARIABLE_VECTOR_INFORMATION_ARRAY = [
+    {"name": "E_L", "units": "millivolt"},
+    {"name": "g_L", "units": "milliS_per_cm2"},
+    {"name": "Cm", "units": "microF_per_cm2"},
+    {"name": "E_Na", "units": "millivolt"},
+    {"name": "g_Na_max", "units": "milliS_per_cm2"},
+    {"name": "i_Leak", "units": "microA_per_cm2"},
+    {"name": "g_Na", "units": "milliS_per_cm2"},
+    {"name": "i_Na", "units": "microA_per_cm2"},
+    {"name": "alpha_m", "units": "per_millisecond"},
+    {"name": "beta_m", "units": "per_millisecond"},
+    {"name": "alpha_h", "units": "per_millisecond"},
+    {"name": "beta_h", "units": "per_millisecond"},
+    {"name": "g_K1", "units": "milliS_per_cm2"},
+    {"name": "g_K2", "units": "milliS_per_cm2"},
+    {"name": "alpha_n", "units": "per_millisecond"},
+    {"name": "beta_n", "units": "per_millisecond"},
+    {"name": "i_K", "units": "microA_per_cm2"},
+]
+
+
+def create_state_vector():
+    return [nan]*4
+
+
+def create_rate_vector():
+    return [nan]*4
+
+
+def create_variable_vector():
+    return [nan]*17
+
+
 def initialize_constants(states, variables):
     states[0] = 0.01
     states[1] = 0.8
@@ -49,4 +93,3 @@ def compute_variables(voi, states, rates, variables):
     variables[14] = 0.0001*(-states[3]-50.0)/(exp((-states[3]-50.0)/10.0)-1.0)
     variables[15] = 0.002*exp((-states[3]-90.0)/80.0)
     variables[16] = (variables[12]+variables[13])*(states[3]+100.0)
-

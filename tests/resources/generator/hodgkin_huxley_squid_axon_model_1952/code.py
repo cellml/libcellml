@@ -1,6 +1,39 @@
 from math import *
 
 
+STATE_VECTOR_SIZE = 4
+VARIABLE_VECTOR_SIZE = 18
+VOI = {"name": "time", "units": "millisecond"}
+
+STATE_VECTOR_INFORMATION_ARRAY = [
+    {"name": "m", "units": "dimensionless"},
+    {"name": "h", "units": "dimensionless"},
+    {"name": "n", "units": "dimensionless"},
+    {"name": "V", "units": "millivolt"},
+]
+
+VARIABLE_VECTOR_INFORMATION_ARRAY = [
+    {"name": "g_L", "units": "milliS_per_cm2"},
+    {"name": "Cm", "units": "microF_per_cm2"},
+    {"name": "E_R", "units": "millivolt"},
+    {"name": "g_K", "units": "milliS_per_cm2"},
+    {"name": "g_Na", "units": "milliS_per_cm2"},
+    {"name": "E_L", "units": "millivolt"},
+    {"name": "E_Na", "units": "millivolt"},
+    {"name": "E_K", "units": "millivolt"},
+    {"name": "i_Stim", "units": "microA_per_cm2"},
+    {"name": "i_L", "units": "microA_per_cm2"},
+    {"name": "i_Na", "units": "microA_per_cm2"},
+    {"name": "alpha_m", "units": "per_millisecond"},
+    {"name": "beta_m", "units": "per_millisecond"},
+    {"name": "alpha_h", "units": "per_millisecond"},
+    {"name": "beta_h", "units": "per_millisecond"},
+    {"name": "i_K", "units": "microA_per_cm2"},
+    {"name": "alpha_n", "units": "per_millisecond"},
+    {"name": "beta_n", "units": "per_millisecond"},
+]
+
+
 def leq_func(x, y):
     return 1.0 if (x <= y) else 0.0
 
@@ -11,6 +44,18 @@ def geq_func(x, y):
 
 def and_func(x, y):
     return 1.0 if (bool(x) & bool(y)) else 0.0
+
+
+def create_state_vector():
+    return [nan]*4
+
+
+def create_rate_vector():
+    return [nan]*4
+
+
+def create_variable_vector():
+    return [nan]*18
 
 
 def initialize_constants(states, variables):
@@ -58,4 +103,3 @@ def compute_variables(voi, states, rates, variables):
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14])
     variables[16] = 0.01*(states[3]+10.0)/(exp((states[3]+10.0)/10.0)-1.0)
     variables[17] = 0.125*exp(states[3]/80.0)
-
