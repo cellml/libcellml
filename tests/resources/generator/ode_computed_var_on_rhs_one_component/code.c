@@ -1,4 +1,43 @@
+#include <stddef.h>
+#include <stdlib.h>
 #include <math.h>
+
+struct VARIABLE_INFO {
+    char name[32];
+    char units[32];
+};
+
+const size_t STATE_VECTOR_SIZE = 1;
+const size_t VARIABLE_VECTOR_SIZE = 1;
+const struct VARIABLE_INFO VOI = {"t", "second"};
+
+const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
+    {"x", "dimensionless"},
+};
+
+const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+    {"a", "per_s"},
+};
+
+double *createStateVector()
+{
+    return (double *)malloc(1 * sizeof (double));
+}
+
+double *createRateVector()
+{
+    return (double *)malloc(1 * sizeof (double));
+}
+
+double *createVariableVector()
+{
+    return (double *)malloc(1 * sizeof (double));
+}
+
+void freeVector(double *array)
+{
+   free(array);
+}
 
 void initializeConstants(double *states, double *variables)
 {

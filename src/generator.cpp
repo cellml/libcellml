@@ -628,6 +628,13 @@ struct Generator::GeneratorImpl
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
     std::string generateCreateArrayCode(size_t arraySize);
+    std::string substituteValue(std::string templateString, size_t value);
+    std::string substituteValue(std::string templateString, std::string value);
+    std::string substituteMultipleValues(std::string templateString, std::vector<std::string> substitutions);
+
+    std::string generateStateInformationArray();
+    std::string generateVariableInformationArray();
+
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
@@ -2295,12 +2302,64 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
 {
     std::string arraySizeValueString = std::to_string(arraySize);
-    std::string defineArraySizeString = mProfile->defineArraySizeString();
+    std::string defineValueReplacementString = mProfile->defineValueReplacementString();
     std::string templateString = mProfile->indentString() + mProfile->returnCreatedArrayString();
-    size_t startIndex = templateString.find(defineArraySizeString);
-    templateString.replace(startIndex, defineArraySizeString.length(), arraySizeValueString);
+    size_t startIndex = templateString.find(defineValueReplacementString);
+    templateString.replace(startIndex, defineValueReplacementString.length(), arraySizeValueString);
 
     return templateString;
+}
+
+std::string Generator::GeneratorImpl::substituteValue(std::string templateString, size_t value)
+{
+    std::string valueString = std::to_string(value);
+    return substituteValue(templateString, valueString);
+}
+
+std::string Generator::GeneratorImpl::substituteValue(std::string templateString, std::string value)
+{
+    std::string defineValueReplacementString = mProfile->defineValueReplacementString();
+    size_t startIndex = templateString.find(defineValueReplacementString);
+    templateString.replace(startIndex, defineValueReplacementString.length(), value);
+
+    return templateString;
+}
+
+std::string Generator::GeneratorImpl::substituteMultipleValues(std::string templateString, std::vector<std::string> substitutions)
+{
+    for (const auto &entry: substitutions) {
+        templateString = substituteValue(templateString, entry);
+    }
+
+    return templateString;
+}
+
+std::string Generator::GeneratorImpl::generateStateInformationArray()
+{
+    std::string res;
+    res += mProfile->beginStateVectorInformationArrayString();
+    for (const auto &state: mStates) {
+        std::vector<std::string> details = {state->name(), state->units()};
+        res += mProfile->indentString() + substituteMultipleValues(mProfile->templateVariableInformationEntryString(), details)
+                + mProfile->arrayElementSeparatorString() + "\n";
+    }
+    res += mProfile->endStateVectorInformationArrayString();
+
+    return res;
+}
+
+std::string Generator::GeneratorImpl::generateVariableInformationArray()
+{
+    std::string res;
+    res += mProfile->beginVariableVectorInformationArrayString();
+    for (const auto &variable: mVariables) {
+        std::vector<std::string> details = {variable->variable()->name(), variable->variable()->units()};
+        res += mProfile->indentString() + substituteMultipleValues(mProfile->templateVariableInformationEntryString(), details)
+                + mProfile->arrayElementSeparatorString() + "\n";
+    }
+    res += mProfile->endVariableVectorInformationArrayString();
+
+    return res;
 }
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
@@ -2507,6 +2566,29 @@ std::string Generator::code() const
     // Generate code for the header.
 
     std::string res = mPimpl->mProfile->headerString();
+
+    if (!mPimpl->mProfile->declareVariableInformationObjectString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+        res += mPimpl->mProfile->declareVariableInformationObjectString();
+    }
+
+    // Generate constants.
+
+    res += "\n";
+    res += mPimpl->substituteValue(mPimpl->mProfile->defineStateVectorSizeConstantString(), mPimpl->mStates.size());
+    res += mPimpl->substituteValue(mPimpl->mProfile->defineVariableVectorSizeConstantString(), mPimpl->mVariables.size());
+    if (mPimpl->mVariableOfIntegration != nullptr) {
+        std::vector<std::string> details = {mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
+        res += mPimpl->substituteMultipleValues(mPimpl->mProfile->defineTemplateVoiConstantString(), details);
+    }
+
+    res += "\n";
+    res += mPimpl->generateStateInformationArray();
+
+    res += "\n";
+    res += mPimpl->generateVariableInformationArray();
 
     // Generate code for extra mathematical functions.
 

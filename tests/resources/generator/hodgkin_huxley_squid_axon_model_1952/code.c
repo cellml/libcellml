@@ -1,4 +1,63 @@
+#include <stddef.h>
+#include <stdlib.h>
 #include <math.h>
+
+struct VARIABLE_INFO {
+    char name[32];
+    char units[32];
+};
+
+const size_t STATE_VECTOR_SIZE = 4;
+const size_t VARIABLE_VECTOR_SIZE = 18;
+const struct VARIABLE_INFO VOI = {"time", "millisecond"};
+
+const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
+    {"m", "dimensionless"},
+    {"h", "dimensionless"},
+    {"n", "dimensionless"},
+    {"V", "millivolt"},
+};
+
+const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+    {"g_L", "milliS_per_cm2"},
+    {"Cm", "microF_per_cm2"},
+    {"E_R", "millivolt"},
+    {"g_K", "milliS_per_cm2"},
+    {"g_Na", "milliS_per_cm2"},
+    {"E_L", "millivolt"},
+    {"E_Na", "millivolt"},
+    {"E_K", "millivolt"},
+    {"i_Stim", "microA_per_cm2"},
+    {"i_L", "microA_per_cm2"},
+    {"i_Na", "microA_per_cm2"},
+    {"alpha_m", "per_millisecond"},
+    {"beta_m", "per_millisecond"},
+    {"alpha_h", "per_millisecond"},
+    {"beta_h", "per_millisecond"},
+    {"i_K", "microA_per_cm2"},
+    {"alpha_n", "per_millisecond"},
+    {"beta_n", "per_millisecond"},
+};
+
+double *createStateVector()
+{
+    return (double *)malloc(4 * sizeof (double));
+}
+
+double *createRateVector()
+{
+    return (double *)malloc(4 * sizeof (double));
+}
+
+double *createVariableVector()
+{
+    return (double *)malloc(18 * sizeof (double));
+}
+
+void freeVector(double *array)
+{
+   free(array);
+}
 
 void initializeConstants(double *states, double *variables)
 {

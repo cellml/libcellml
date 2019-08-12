@@ -1,6 +1,32 @@
 from math import *
 
 
+STATE_VECTOR_SIZE = 1
+VARIABLE_VECTOR_SIZE = 2
+VOI = {"name": "time", "units": "second"}
+
+STATE_VECTOR_INFORMATION_ARRAY = [
+    {"name": "x", "units": "dimensionless"},
+]
+
+VARIABLE_VECTOR_INFORMATION_ARRAY = [
+    {"name": "b", "units": "second"},
+    {"name": "a", "units": "second"},
+]
+
+
+def create_state_vector():
+    return [nan]*1
+
+
+def create_rate_vector():
+    return [nan]*1
+
+
+def create_variable_vector():
+    return [nan]*2
+
+
 def initialize_constants(states, variables):
     states[0] = 0.0
 
@@ -16,4 +42,3 @@ def compute_rates(voi, states, rates, variables):
 def compute_variables(voi, states, rates, variables):
     variables[0] = 2.0*voi
     variables[1] = 3.0*variables[0]
-

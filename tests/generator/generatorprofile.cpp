@@ -241,7 +241,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ("#include <math.h>\n", generatorProfile->headerString());
+    EXPECT_EQ("#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n", generatorProfile->headerString());
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
 
