@@ -1,6 +1,8 @@
 from math import *
 
 
+__version__ = "0.2.0"
+
 STATE_VECTOR_SIZE = 4
 VARIABLE_VECTOR_SIZE = 18
 VOI = {"name": "time", "units": "millisecond"}
