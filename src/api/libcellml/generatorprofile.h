@@ -2196,6 +2196,9 @@ public:
     std::string defineTemplateVoiConstantString() const;
     void setDefineTemplateVoiConstantString(const std::string &defineTemplateVoiConstantString);
 
+    std::string defineTemplateVersionString() const;
+    void setDefineTemplateVersionString(const std::string &defineTemplateVersionString);
+
     std::string declareVariableInformationObjectString() const;
     void setDeclareVariableInformationObjectString(const std::string &declareVariableInformationObjectString);
 

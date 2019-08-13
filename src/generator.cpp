@@ -23,6 +23,7 @@ limitations under the License.
 #include "libcellml/model.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
+#include "libcellml/version.h"
 
 #include <algorithm>
 #include <limits>
@@ -2566,6 +2567,13 @@ std::string Generator::code() const
     // Generate code for the header.
 
     std::string res = mPimpl->mProfile->headerString();
+
+    // Set the version for the generated code.
+
+    res += "\n";
+    res += mPimpl->substituteValue(mPimpl->mProfile->defineTemplateVersionString(), versionString());
+
+    // Declare any data structures.
 
     if (!mPimpl->mProfile->declareVariableInformationObjectString().empty()) {
         if (!res.empty()) {
