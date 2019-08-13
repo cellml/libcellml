@@ -187,6 +187,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mDefineStateVectorSizeConstantString;
     std::string mDefineVariableVectorSizeConstantString;
     std::string mDefineTemplateVoiConstantString;
+    std::string mDefineTemplateVersionString;
 
     std::string mDeclareVariableInformationObjectString;
     std::string mTemplateVariableInformationEntryString;
@@ -423,6 +424,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mDefineStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
         mDefineVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
         mDefineTemplateVoiConstantString = "const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\"};\n";
+        mDefineTemplateVersionString = "const char version[] = \"VALUE\";\n";
 
         mDeclareVariableInformationObjectString = "struct VARIABLE_INFO {\n"
                                                   "    char name[32];\n"
@@ -631,6 +633,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mDefineStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
         mDefineVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
         mDefineTemplateVoiConstantString = "VOI = {\"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
+        mDefineTemplateVersionString = "__version__ = \"VALUE\"\n";
 
         mDeclareVariableInformationObjectString = "";
         mTemplateVariableInformationEntryString = "{\"name\": \"VALUE\", \"units\": \"VALUE\"}";
@@ -800,6 +803,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mDefineStateVectorSizeConstantString = rhs.mPimpl->mDefineStateVectorSizeConstantString;
     mPimpl->mDefineVariableVectorSizeConstantString = rhs.mPimpl->mDefineVariableVectorSizeConstantString;
     mPimpl->mDefineTemplateVoiConstantString = rhs.mPimpl->mDefineTemplateVoiConstantString;
+    mPimpl->mDefineTemplateVersionString = rhs.mPimpl->mDefineTemplateVersionString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
     mPimpl->mDefineValueReplacementString = rhs.mPimpl->mDefineValueReplacementString;
@@ -2062,6 +2066,16 @@ std::string GeneratorProfile::defineTemplateVoiConstantString() const
 void GeneratorProfile::setDefineTemplateVoiConstantString(const std::string &defineTemplateVoiConstantString)
 {
     mPimpl->mDefineTemplateVoiConstantString = defineTemplateVoiConstantString;
+}
+
+std::string GeneratorProfile::defineTemplateVersionString() const
+{
+    return mPimpl->mDefineTemplateVersionString;
+}
+
+void GeneratorProfile::setDefineTemplateVersionString(const std::string &defineTemplateVersionString)
+{
+    mPimpl->mDefineTemplateVersionString = defineTemplateVersionString;
 }
 
 std::string GeneratorProfile::returnCreatedArrayString() const
