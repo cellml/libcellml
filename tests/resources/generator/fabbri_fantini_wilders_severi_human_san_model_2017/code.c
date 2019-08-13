@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-const char version[] = "0.2.0"
+const char version[] = "0.2.0";
 
 struct VARIABLE_INFO {
     char name[32];
