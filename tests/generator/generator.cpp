@@ -338,6 +338,33 @@ TEST(Generator, unsuitably_constrained)
     EXPECT_EQ(EMPTY_STRING, generator.code());
 }
 
+TEST(Generator, invalidReplacementString)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("resources/generator/template_replacement/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(size_t(0), generator.errorCount());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    profile->setTemplateReplacementString("");
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("resources/generator/template_replacement/no_replacement_text.py"), generator.code());
+
+    profile->setTemplateOriginCommentString("This string has no template replacament.");
+    profile->setTemplateReplacementString("PLACEHOLDER");
+
+    EXPECT_EQ(fileContents("resources/generator/template_replacement/no_matching_replacement.py"), generator.code());
+}
+
 TEST(Generator, algebraic_eqn_computed_var_on_rhs)
 {
     libcellml::Parser parser;

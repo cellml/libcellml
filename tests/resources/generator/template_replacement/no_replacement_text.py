@@ -1,0 +1,47 @@
+# 0.2.0The contents of this file was generated from version VALUE of libCellML.
+from math import *
+
+
+0.2.0__version__ = "VALUE"
+
+1STATE_VECTOR_SIZE = VALUE
+2VARIABLE_VECTOR_SIZE = VALUE
+secondtVOI = {"name": "VALUE", "units": "VALUE"}
+
+STATE_VECTOR_INFORMATION_ARRAY = [
+    dimensionlessv{"name": "VALUE", "units": "VALUE"},
+]
+
+VARIABLE_VECTOR_INFORMATION_ARRAY = [
+    per_sa{"name": "VALUE", "units": "VALUE"},
+    per_sx{"name": "VALUE", "units": "VALUE"},
+]
+
+
+def create_state_vector():
+1    return [nan]*VALUE
+
+
+def create_rate_vector():
+1    return [nan]*VALUE
+
+
+def create_variable_vector():
+2    return [nan]*VALUE
+
+
+def initialize_constants(states, variables):
+    states[0] = 1.0
+    variables[0] = 1.0
+
+
+def compute_computed_constants(variables):
+    pass
+
+
+def compute_rates(voi, states, rates, variables):
+    rates[0] = variables[0]
+
+
+def compute_variables(voi, states, rates, variables):
+    variables[1] = rates[0]

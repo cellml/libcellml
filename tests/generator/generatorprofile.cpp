@@ -294,7 +294,7 @@ TEST(GeneratorProfile, defaultTemplateValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ("VALUE", generatorProfile->defineReplacementString());
+    EXPECT_EQ("VALUE", generatorProfile->templateReplacementString());
 
     EXPECT_EQ("The contents of this file was generated from version VALUE of libCellML.", generatorProfile->templateOriginCommentString());
     EXPECT_EQ("return (double *)malloc(VALUE * sizeof (double));\n", generatorProfile->templateReturnCreatedArrayString());
@@ -673,9 +673,9 @@ TEST(GeneratorProfile, templateValues)
 
     const std::string value = "placeholder";
 
-    generatorProfile->setDefineReplacementString(value);
+    generatorProfile->setTemplateReplacementString(value);
 
-    EXPECT_EQ(value, generatorProfile->defineReplacementString());
+    EXPECT_EQ(value, generatorProfile->templateReplacementString());
 
     generatorProfile->setTemplateOriginCommentString(value);
     generatorProfile->setTemplateReturnCreatedArrayString(value);
