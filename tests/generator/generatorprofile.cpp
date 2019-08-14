@@ -241,6 +241,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
+    EXPECT_EQ("void freeVector(double *array)\n{\n   free(array);\n}\n", generatorProfile->freeVectorFunctionString());
     EXPECT_EQ("#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n", generatorProfile->headerString());
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
@@ -248,6 +249,15 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("states", generatorProfile->statesArrayString());
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
+
+    EXPECT_EQ("double *createStateVector()\n{\n", generatorProfile->beginCreateStateVectorMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endCreateStateVectorMethodString());
+
+    EXPECT_EQ("double *createRateVector()\n{\n", generatorProfile->beginCreateRateVectorMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endCreateRateVectorMethodString());
+
+    EXPECT_EQ("double *createVariableVector()\n{\n", generatorProfile->beginCreateVariableVectorMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endCreateVariableVectorMethodString());
 
     EXPECT_EQ("void initializeConstants(double *states, double *variables)\n{\n", generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endInitializeConstantsMethodString());
@@ -263,12 +273,37 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("", generatorProfile->emptyMethodString());
 
+    EXPECT_EQ("const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginStateVectorInformationArrayString());
+    EXPECT_EQ("};\n", generatorProfile->endStateVectorInformationArrayString());
+    EXPECT_EQ("const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginVariableVectorInformationArrayString());
+    EXPECT_EQ("};\n", generatorProfile->endVariableVectorInformationArrayString());
+
     EXPECT_EQ("    ", generatorProfile->indentString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
     EXPECT_EQ("]", generatorProfile->closeArrayString());
 
+    EXPECT_EQ(",", generatorProfile->arrayElementSeparatorString());
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
+
+    EXPECT_EQ("/* ", generatorProfile->beginCommentString());
+    EXPECT_EQ(" */\n", generatorProfile->endCommentString());
+}
+
+TEST(GeneratorProfile, defaultTemplateValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+
+    EXPECT_EQ("VALUE", generatorProfile->defineReplacementString());
+
+    EXPECT_EQ("The contents of this file was generated from version VALUE of libCellML.", generatorProfile->templateOriginCommentString());
+    EXPECT_EQ("return (double *)malloc(VALUE * sizeof (double));\n", generatorProfile->templateReturnCreatedArrayString());
+    EXPECT_EQ("const size_t STATE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateStateVectorSizeConstantString());
+    EXPECT_EQ("{\"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
+    EXPECT_EQ("struct VARIABLE_INFO {\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
+    EXPECT_EQ("const size_t VARIABLE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateVariableVectorSizeConstantString());
+    EXPECT_EQ("const char version[] = \"VALUE\";\n", generatorProfile->templateVersionString());
+    EXPECT_EQ("const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
 }
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)
@@ -539,6 +574,7 @@ TEST(GeneratorProfile, miscellaneous)
 
     const std::string value = "value";
 
+    generatorProfile->setFreeVectorFunctionString(value);
     generatorProfile->setHeaderString(value);
 
     generatorProfile->setVariableOfIntegrationString(value);
@@ -546,6 +582,13 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setStatesArrayString(value);
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
+
+    generatorProfile->setBeginCreateStateVectorMethodString(value);
+    generatorProfile->setEndCreateStateVectorMethodString(value);
+    generatorProfile->setBeginCreateRateVectorMethodString(value);
+    generatorProfile->setEndCreateRateVectorMethodString(value);
+    generatorProfile->setBeginCreateVariableVectorMethodString(value);
+    generatorProfile->setEndCreateVariableVectorMethodString(value);
 
     generatorProfile->setBeginInitializeConstantsMethodString(value);
     generatorProfile->setEndInitializeConstantsMethodString(value);
@@ -561,13 +604,23 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setEmptyMethodString(value);
 
+    generatorProfile->setBeginStateVectorInformationArrayString(value);
+    generatorProfile->setEndStateVectorInformationArrayString(value);
+    generatorProfile->setBeginVariableVectorInformationArrayString(value);
+    generatorProfile->setEndVariableVectorInformationArrayString(value);
+
     generatorProfile->setIndentString(value);
 
     generatorProfile->setOpenArrayString(value);
     generatorProfile->setCloseArrayString(value);
 
+    generatorProfile->setArrayElementSeparatorString(value);
     generatorProfile->setCommandSeparatorString(value);
 
+    generatorProfile->setBeginCommentString(value);
+    generatorProfile->setEndCommentString(value);
+
+    EXPECT_EQ(value, generatorProfile->freeVectorFunctionString());
     EXPECT_EQ(value, generatorProfile->headerString());
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
@@ -575,6 +628,13 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->statesArrayString());
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
+
+    EXPECT_EQ(value, generatorProfile->beginCreateStateVectorMethodString());
+    EXPECT_EQ(value, generatorProfile->endCreateStateVectorMethodString());
+    EXPECT_EQ(value, generatorProfile->beginCreateRateVectorMethodString());
+    EXPECT_EQ(value, generatorProfile->endCreateRateVectorMethodString());
+    EXPECT_EQ(value, generatorProfile->beginCreateVariableVectorMethodString());
+    EXPECT_EQ(value, generatorProfile->endCreateVariableVectorMethodString());
 
     EXPECT_EQ(value, generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->endInitializeConstantsMethodString());
@@ -590,10 +650,48 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->emptyMethodString());
 
+    EXPECT_EQ(value, generatorProfile->beginStateVectorInformationArrayString());
+    EXPECT_EQ(value, generatorProfile->endStateVectorInformationArrayString());
+    EXPECT_EQ(value, generatorProfile->beginVariableVectorInformationArrayString());
+    EXPECT_EQ(value, generatorProfile->endVariableVectorInformationArrayString());
+
     EXPECT_EQ(value, generatorProfile->indentString());
 
     EXPECT_EQ(value, generatorProfile->openArrayString());
     EXPECT_EQ(value, generatorProfile->closeArrayString());
 
+    EXPECT_EQ(value, generatorProfile->arrayElementSeparatorString());
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
+
+    EXPECT_EQ(value, generatorProfile->beginCommentString());
+    EXPECT_EQ(value, generatorProfile->endCommentString());
+}
+
+TEST(GeneratorProfile, templateValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+
+    const std::string value = "placeholder";
+
+    generatorProfile->setDefineReplacementString(value);
+
+    EXPECT_EQ(value, generatorProfile->defineReplacementString());
+
+    generatorProfile->setTemplateOriginCommentString(value);
+    generatorProfile->setTemplateReturnCreatedArrayString(value);
+    generatorProfile->setTemplateStateVectorSizeConstantString(value);
+    generatorProfile->setTemplateVariableInformationEntryString(value);
+    generatorProfile->setTemplateVariableInformationObjectString(value);
+    generatorProfile->setTemplateVariableVectorSizeConstantString(value);
+    generatorProfile->setTemplateVersionString(value);
+    generatorProfile->setTemplateVoiConstantString(value);
+
+    EXPECT_EQ(value, generatorProfile->templateOriginCommentString());
+    EXPECT_EQ(value, generatorProfile->templateReturnCreatedArrayString());
+    EXPECT_EQ(value, generatorProfile->templateStateVectorSizeConstantString());
+    EXPECT_EQ(value, generatorProfile->templateVariableInformationEntryString());
+    EXPECT_EQ(value, generatorProfile->templateVariableInformationObjectString());
+    EXPECT_EQ(value, generatorProfile->templateVariableVectorSizeConstantString());
+    EXPECT_EQ(value, generatorProfile->templateVersionString());
+    EXPECT_EQ(value, generatorProfile->templateVoiConstantString());
 }

@@ -2303,7 +2303,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
 {
-    return replaceTemplateValue(mProfile->indentString() + mProfile->returnCreatedArrayString(), arraySize);
+    return replaceTemplateValue(mProfile->indentString() + mProfile->templateReturnCreatedArrayString(), arraySize);
 }
 
 std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateString, size_t value)
@@ -2314,13 +2314,13 @@ std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateS
 
 std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateString, std::string value)
 {
-    return replace(templateString, mProfile->defineValueReplacementString(), value);
+    return replace(templateString, mProfile->defineReplacementString(), value);
 }
 
 std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<std::string> replacements)
 {
     for (const auto &entry: replacements) {
-        templateString = replace(templateString, mProfile->defineValueReplacementString(), entry);
+        templateString = replace(templateString, mProfile->defineReplacementString(), entry);
     }
 
     return templateString;
@@ -2329,7 +2329,7 @@ std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string 
 std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<size_t> replacements)
 {
     for (const auto &entry: replacements) {
-        templateString = replace(templateString, mProfile->defineValueReplacementString(), std::to_string(entry));
+        templateString = replace(templateString, mProfile->defineReplacementString(), std::to_string(entry));
     }
 
     return templateString;
@@ -2359,7 +2359,7 @@ std::string Generator::GeneratorImpl::generateVariableInformationObjectString()
 
     std::vector<size_t> values = {max_name_length, max_units_length};
 
-    return replaceMultipleTemplateValues(mProfile->declareTemplateVariableInformationObjectString(), values);
+    return replaceMultipleTemplateValues(mProfile->templateVariableInformationObjectString(), values);
 }
 
 std::string Generator::GeneratorImpl::generateStateInformationArray()
@@ -2602,11 +2602,11 @@ std::string Generator::code() const
     // Set the version for the generated code.
 
     res += "\n";
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->defineTemplateVersionString(), versionString());
+    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVersionString(), versionString());
 
     // Declare any data structures.
 
-    if (!mPimpl->mProfile->declareTemplateVariableInformationObjectString().empty()) {
+    if (!mPimpl->mProfile->templateVariableInformationObjectString().empty()) {
         if (!res.empty()) {
             res += "\n";
         }
@@ -2616,11 +2616,11 @@ std::string Generator::code() const
     // Generate constants.
 
     res += "\n";
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->defineStateVectorSizeConstantString(), mPimpl->mStates.size());
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->defineVariableVectorSizeConstantString(), mPimpl->mVariables.size());
+    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateStateVectorSizeConstantString(), mPimpl->mStates.size());
+    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVariableVectorSizeConstantString(), mPimpl->mVariables.size());
     if (mPimpl->mVariableOfIntegration != nullptr) {
         std::vector<std::string> details = {mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
-        res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->defineTemplateVoiConstantString(), details);
+        res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
     }
 
     res += "\n";
