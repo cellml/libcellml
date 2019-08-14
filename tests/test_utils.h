@@ -25,3 +25,6 @@ void printErrors(const libcellml::Parser &p);
 
 libcellml::ModelPtr createModel(const std::string &name = "");
 libcellml::ModelPtr createModelWithComponent(const std::string &name = "");
+
+
+const std::string resourcePath(const std::string &resourceRelativePath);
