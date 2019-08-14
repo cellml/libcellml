@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "test_resources.h"
+#include "test_utils.h"
 
 #include "gtest/gtest.h"
 
@@ -27,14 +28,8 @@ limitations under the License.
 
 TEST(ResolveImports, resolveSineModelFromFile)
 {
-    std::ifstream t(TestResources::location(
-        TestResources::CELLML_SINE_MODEL_RESOURCE));
-
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("sine_approximations.xml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
     EXPECT_FALSE(model->hasUnresolvedImports());
@@ -42,88 +37,58 @@ TEST(ResolveImports, resolveSineModelFromFile)
 
 TEST(ResolveImports, resolveSineImportsModelFromFile)
 {
-    const std::string modelLocation = TestResources::location(
-        TestResources::CELLML_SINE_IMPORTS_MODEL_RESOURCE);
-    std::ifstream t(modelLocation);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("sine_approximations_import.xml"));
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(modelLocation);
+    model->resolveImports(resourcePath(""));
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveComplexImportsModelFromFile)
 {
-    const std::string modelLocation = TestResources::location(
-        TestResources::CELLML_COMPLEX_IMPORTS_MODEL_RESOURCE);
-    std::ifstream t(modelLocation);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("complex_imports.xml"));
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(modelLocation);
+    model->resolveImports(resourcePath(""));
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveUnitsImportFromFile)
 {
-    const std::string modelLocation = TestResources::location(
-        TestResources::CELLML_UNITS_IMPORT_MODEL_RESOURCE);
-    std::ifstream t(modelLocation);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("import_units_model.cellml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(modelLocation);
+    model->resolveImports(resourcePath(""));
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveImportsFromFileLevel0)
 {
-    const std::string modelLocation = TestResources::location(
-        TestResources::CELLML_IMPORT_LEVEL0_MODEL_RESOURCE);
-    std::ifstream t(modelLocation);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("level0.xml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(modelLocation);
+    model->resolveImports(resourcePath(""));
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
 TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable)
 {
-    const std::string modelLocation = TestResources::location(
-        TestResources::CELLML_IMPORT_LEVEL0_UNRESOLVABLE_MODEL_RESOURCE);
-    std::ifstream t(modelLocation);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-
     libcellml::Parser p;
-    libcellml::ModelPtr model = p.parseModel(buffer.str());
+    libcellml::ModelPtr model = p.parseModel(fileContents("level0-broken-imports.xml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(modelLocation);
+    model->resolveImports(resourcePath(""));
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
