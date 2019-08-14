@@ -2181,29 +2181,29 @@ public:
      */
     void setEmptyMethodString(const std::string &emptyMethodString);
 
-    std::string defineValueReplacementString() const;
-    void setDefineValueReplacementString(const std::string &defineValueReplacementString);
+    std::string defineReplacementString() const;
+    void setDefineReplacementString(const std::string &defineReplacementString);
 
-    std::string returnCreatedArrayString() const;
-    void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
+    std::string templateReturnCreatedArrayString() const;
+    void setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString);
 
-    std::string defineStateVectorSizeConstantString() const;
-    void setDefineStateVectorSizeConstantString(const std::string &defineStateVectorSizeConstantString);
+    std::string templateStateVectorSizeConstantString() const;
+    void setTemplateStateVectorSizeConstantString(const std::string &templateStateVectorSizeConstantString);
 
-    std::string defineVariableVectorSizeConstantString() const;
-    void setDefineVariableVectorSizeConstantString(const std::string &defineVariableVectorSizeConstantString);
+    std::string templateVariableVectorSizeConstantString() const;
+    void setTemplateVariableVectorSizeConstantString(const std::string &templateVariableVectorSizeConstantString);
 
-    std::string defineTemplateVoiConstantString() const;
-    void setDefineTemplateVoiConstantString(const std::string &defineTemplateVoiConstantString);
+    std::string templateVoiConstantString() const;
+    void setTemplateVoiConstantString(const std::string &templateVoiConstantString);
 
-    std::string defineTemplateVersionString() const;
-    void setDefineTemplateVersionString(const std::string &defineTemplateVersionString);
+    std::string templateVersionString() const;
+    void setTemplateVersionString(const std::string &templateVersionString);
 
     std::string templateOriginCommentString() const;
     void setTemplateOriginCommentString(const std::string &templateOriginCommentString);
 
-    std::string declareTemplateVariableInformationObjectString() const;
-    void setDeclareTemplateVariableInformationObjectString(const std::string &declareTemplateVariableInformationObjectString);
+    std::string templateVariableInformationObjectString() const;
+    void setTemplateVariableInformationObjectString(const std::string &templateVariableInformationObjectString);
 
     std::string templateVariableInformationEntryString() const;
     void setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString);

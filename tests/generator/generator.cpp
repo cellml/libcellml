@@ -1128,6 +1128,8 @@ TEST(Generator, coverage)
     profile->setPiecewiseElseString(", #else)");
     profile->setHasConditionalOperator(false);
 
+    profile->setTemplateOriginCommentString("");
+
     EXPECT_EQ(fileContents("resources/generator/coverage/codeWithCustomProfile.out"), generator.code());
 
     profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
@@ -1135,4 +1137,16 @@ TEST(Generator, coverage)
     generator.setProfile(profile);
 
     EXPECT_EQ(fileContents("resources/generator/coverage/code.py"), generator.code());
+}
+
+TEST(Generator, coverForIsPiecewiseStatement)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("resources/generator/coverage/piecewiseCover.cellml"));
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_LT(size_t(2000), generator.code().length());
 }
