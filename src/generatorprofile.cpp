@@ -181,6 +181,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginComputeVariablesMethodString;
     std::string mEndComputeVariablesMethodString;
 
+    std::string mBeginCommentString;
+    std::string mEndCommentString;
+
     std::string mEmptyMethodString;
     std::string mDefineValueReplacementString;
     std::string mReturnCreatedArrayString;
@@ -188,8 +191,9 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mDefineVariableVectorSizeConstantString;
     std::string mDefineTemplateVoiConstantString;
     std::string mDefineTemplateVersionString;
+    std::string mTemplateOriginCommentString;
 
-    std::string mDeclareVariableInformationObjectString;
+    std::string mDeclareTemplateVariableInformationObjectString;
     std::string mTemplateVariableInformationEntryString;
     std::string mBeginStateVectorInformationArrayString;
     std::string mEndStateVectorInformationArrayString;
@@ -425,11 +429,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mDefineVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
         mDefineTemplateVoiConstantString = "const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\"};\n";
         mDefineTemplateVersionString = "const char version[] = \"VALUE\";\n";
+        mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
 
-        mDeclareVariableInformationObjectString = "struct VARIABLE_INFO {\n"
-                                                  "    char name[32];\n"
-                                                  "    char units[32];\n"
-                                                  "};\n";
+        mDeclareTemplateVariableInformationObjectString = "struct VARIABLE_INFO {\n"
+                                                          "    char name[VALUE];\n"
+                                                          "    char units[VALUE];\n"
+                                                          "};\n";
         mTemplateVariableInformationEntryString = "{\"VALUE\", \"VALUE\"}";
         mBeginStateVectorInformationArrayString = "const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {\n";
         mEndStateVectorInformationArrayString = "};\n";
@@ -443,6 +448,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = ";";
+
+        mBeginCommentString = "/* ";
+        mEndCommentString = " */\n";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
@@ -634,8 +642,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mDefineVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
         mDefineTemplateVoiConstantString = "VOI = {\"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
         mDefineTemplateVersionString = "__version__ = \"VALUE\"\n";
+        mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
 
-        mDeclareVariableInformationObjectString = "";
+        mDeclareTemplateVariableInformationObjectString = "";
         mTemplateVariableInformationEntryString = "{\"name\": \"VALUE\", \"units\": \"VALUE\"}";
         mBeginStateVectorInformationArrayString = "STATE_VECTOR_INFORMATION_ARRAY = [\n";
         mEndStateVectorInformationArrayString = "]\n";
@@ -649,6 +658,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = "";
+
+        mBeginCommentString = "# ";
+        mEndCommentString = "\n";
 
         break;
     }
@@ -809,7 +821,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mDefineValueReplacementString = rhs.mPimpl->mDefineValueReplacementString;
     mPimpl->mReturnCreatedArrayString = rhs.mPimpl->mReturnCreatedArrayString;
 
-    mPimpl->mDeclareVariableInformationObjectString = rhs.mPimpl->mDeclareVariableInformationObjectString;
+    mPimpl->mDeclareTemplateVariableInformationObjectString = rhs.mPimpl->mDeclareTemplateVariableInformationObjectString;
     mPimpl->mTemplateVariableInformationEntryString = rhs.mPimpl->mTemplateVariableInformationEntryString;
     mPimpl->mBeginStateVectorInformationArrayString = rhs.mPimpl->mBeginStateVectorInformationArrayString;
     mPimpl->mEndStateVectorInformationArrayString = rhs.mPimpl->mEndStateVectorInformationArrayString;
@@ -2078,6 +2090,16 @@ void GeneratorProfile::setDefineTemplateVersionString(const std::string &defineT
     mPimpl->mDefineTemplateVersionString = defineTemplateVersionString;
 }
 
+std::string GeneratorProfile::templateOriginCommentString() const
+{
+    return mPimpl->mTemplateOriginCommentString;
+}
+
+void GeneratorProfile::setTemplateOriginCommentString(const std::string &templateOriginCommentString)
+{
+    mPimpl->mTemplateOriginCommentString = templateOriginCommentString;
+}
+
 std::string GeneratorProfile::returnCreatedArrayString() const
 {
     return mPimpl->mReturnCreatedArrayString;
@@ -2088,14 +2110,14 @@ void GeneratorProfile::setReturnCreatedArrayString(const std::string &returnCrea
     mPimpl->mReturnCreatedArrayString = returnCreatedArrayString;
 }
 
-std::string GeneratorProfile::declareVariableInformationObjectString() const
+std::string GeneratorProfile::declareTemplateVariableInformationObjectString() const
 {
-    return mPimpl->mDeclareVariableInformationObjectString;
+    return mPimpl->mDeclareTemplateVariableInformationObjectString;
 }
 
-void GeneratorProfile::setDeclareVariableInformationObjectString(const std::string &declareVariableInformationObjectString)
+void GeneratorProfile::setDeclareTemplateVariableInformationObjectString(const std::string &declareTemplateVariableInformationObjectString)
 {
-    mPimpl->mDeclareVariableInformationObjectString = declareVariableInformationObjectString;
+    mPimpl->mDeclareTemplateVariableInformationObjectString = declareTemplateVariableInformationObjectString;
 }
 
 std::string GeneratorProfile::templateVariableInformationEntryString() const
@@ -2196,6 +2218,26 @@ std::string GeneratorProfile::commandSeparatorString() const
 void GeneratorProfile::setCommandSeparatorString(const std::string &commandSeparatorString)
 {
     mPimpl->mCommandSeparatorString = commandSeparatorString;
+}
+
+std::string GeneratorProfile::beginCommentString() const
+{
+    return mPimpl->mBeginCommentString;
+}
+
+void GeneratorProfile::setBeginCommentString(const std::string &beginCommentString)
+{
+    mPimpl->mBeginCommentString = beginCommentString;
+}
+
+std::string GeneratorProfile::endCommentString() const
+{
+    return mPimpl->mEndCommentString;
+}
+
+void GeneratorProfile::setEndCommentString(const std::string &endCommentString)
+{
+    mPimpl->mEndCommentString = endCommentString;
 }
 
 } // namespace libcellml

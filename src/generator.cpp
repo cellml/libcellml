@@ -635,7 +635,7 @@ struct Generator::GeneratorImpl
 
     std::string generateStateInformationArray();
     std::string generateVariableInformationArray();
-
+    std::string generateVariableInformationObjectString();
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
@@ -2335,6 +2335,32 @@ std::string Generator::GeneratorImpl::substituteMultipleValues(std::string templ
     return templateString;
 }
 
+std::string Generator::GeneratorImpl::generateVariableInformationObjectString()
+{
+    std::string res;
+    size_t max_name_length = 1;
+    size_t max_units_length = 1;
+
+    if (mVariableOfIntegration != nullptr) {
+        max_name_length = max_name_length > mVariableOfIntegration->name().length() ? max_name_length : mVariableOfIntegration->name().length();
+        max_units_length = max_units_length > mVariableOfIntegration->units().length() ? max_units_length : mVariableOfIntegration->units().length();
+    }
+    for (const auto &state: mStates) {
+        max_name_length = max_name_length > state->name().length() ? max_name_length : state->name().length();
+        max_units_length = max_units_length > state->units().length() ? max_units_length : state->units().length();
+    }
+    for (const auto &variable: mVariables) {
+        max_name_length = max_name_length > variable->variable()->name().length() ? max_name_length : variable->variable()->name().length();
+        max_units_length = max_units_length > variable->variable()->units().length() ? max_units_length : variable->variable()->units().length();
+    }
+    // Add extra for end of string termination.
+    max_name_length += 1;
+    max_units_length += 1;
+
+    res = substituteValue(mProfile->declareTemplateVariableInformationObjectString(), max_name_length);
+    return substituteValue(res, max_units_length);
+}
+
 std::string Generator::GeneratorImpl::generateStateInformationArray()
 {
     std::string res;
@@ -2564,9 +2590,13 @@ std::string Generator::code() const
         return {};
     }
 
+    // Generate origin comment.
+
+    std::string res = mPimpl->mProfile->beginCommentString() + mPimpl->substituteValue(mPimpl->mProfile->templateOriginCommentString(), versionString()) + mPimpl->mProfile->endCommentString();
+
     // Generate code for the header.
 
-    std::string res = mPimpl->mProfile->headerString();
+    res += mPimpl->mProfile->headerString();
 
     // Set the version for the generated code.
 
@@ -2575,11 +2605,11 @@ std::string Generator::code() const
 
     // Declare any data structures.
 
-    if (!mPimpl->mProfile->declareVariableInformationObjectString().empty()) {
+    if (!mPimpl->mProfile->declareTemplateVariableInformationObjectString().empty()) {
         if (!res.empty()) {
             res += "\n";
         }
-        res += mPimpl->mProfile->declareVariableInformationObjectString();
+        res += mPimpl->generateVariableInformationObjectString();
     }
 
     // Generate constants.

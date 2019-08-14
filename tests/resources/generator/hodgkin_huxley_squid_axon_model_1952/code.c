@@ -6,8 +6,8 @@
 const char version[] = "0.2.0";
 
 struct VARIABLE_INFO {
-    char name[32];
-    char units[32];
+    char name[8];
+    char units[16];
 };
 
 const size_t STATE_VECTOR_SIZE = 4;
