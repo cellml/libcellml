@@ -135,7 +135,7 @@ if(LIBCELLML_LLVM_COVERAGE)
     COMMENT "Running LLVM coverage tests")
 
   add_custom_target(llvm_coverage_missing_lines
-    COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=html -line-coverage-lt=100 -Xdemangler c++filt -Xdemangler -n
+    COMMAND ${LLVM_COV_EXE} show $<TARGET_FILE:cellml> -instr-profile=${DATA_PROFILE_FILENAME} -format=html -Xdemangler c++filt -Xdemangler -n -o coverage_report
     DEPENDS prepare_llvm_coverage
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Running LLVM coverage missing lines command")
