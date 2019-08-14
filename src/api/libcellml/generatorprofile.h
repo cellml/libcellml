@@ -2181,8 +2181,8 @@ public:
      */
     void setEmptyMethodString(const std::string &emptyMethodString);
 
-    std::string defineReplacementString() const;
-    void setDefineReplacementString(const std::string &defineReplacementString);
+    std::string templateReplacementString() const;
+    void setTemplateReplacementString(const std::string &templateReplacementString);
 
     std::string templateReturnCreatedArrayString() const;
     void setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString);

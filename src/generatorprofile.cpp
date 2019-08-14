@@ -2044,12 +2044,12 @@ void GeneratorProfile::setEmptyMethodString(const std::string &emptyMethodString
     mPimpl->mEmptyMethodString = emptyMethodString;
 }
 
-std::string GeneratorProfile::defineReplacementString() const
+std::string GeneratorProfile::templateReplacementString() const
 {
     return mPimpl->mDefineReplacementString;
 }
 
-void GeneratorProfile::setDefineReplacementString(const std::string &defineReplacementString)
+void GeneratorProfile::setTemplateReplacementString(const std::string &defineReplacementString)
 {
     mPimpl->mDefineReplacementString = defineReplacementString;
 }

@@ -1468,7 +1468,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
 std::string replace(std::string string, const std::string &from, const std::string &to)
 {
-    return string.empty() ?
+    return string.empty() || (string.find(from) == std::string::npos) ?
                "" :
                string.replace(string.find(from), from.length(), to);
 }
@@ -2314,13 +2314,13 @@ std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateS
 
 std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateString, std::string value)
 {
-    return replace(templateString, mProfile->defineReplacementString(), value);
+    return replace(templateString, mProfile->templateReplacementString(), value);
 }
 
 std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<std::string> replacements)
 {
     for (const auto &entry: replacements) {
-        templateString = replace(templateString, mProfile->defineReplacementString(), entry);
+        templateString = replace(templateString, mProfile->templateReplacementString(), entry);
     }
 
     return templateString;
@@ -2329,7 +2329,7 @@ std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string 
 std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<size_t> replacements)
 {
     for (const auto &entry: replacements) {
-        templateString = replace(templateString, mProfile->defineReplacementString(), std::to_string(entry));
+        templateString = replace(templateString, mProfile->templateReplacementString(), std::to_string(entry));
     }
 
     return templateString;
