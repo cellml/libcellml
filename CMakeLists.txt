@@ -114,10 +114,10 @@ if(NOT IS_MULTI_CONFIG)
   endif()
 endif()
 unset(BUILD_TYPE CACHE)
-if(LIBCELLML_MEMCHECK OR LIBCELLML_COVERAGE)
+if(LIBCELLML_MEMCHECK)
   if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Configuration confusion:
-      Release build requested but memchecking or coverage has also been requested.
+    message(WARNING "Configuration confusion:
+      Release build requested but memchecking has also been requested.
       This is not possible so forcing the build type to 'Debug' to make it possible.
       ")
     set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
