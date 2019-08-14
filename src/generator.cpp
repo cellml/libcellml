@@ -1468,9 +1468,10 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
 std::string replace(std::string string, const std::string &from, const std::string &to)
 {
-    return string.empty() || (string.find(from) == std::string::npos) ?
+    auto found_index = string.find(from);
+    return string.empty() || (found_index == std::string::npos) ?
                "" :
-               string.replace(string.find(from), from.length(), to);
+               string.replace(found_index, from.length(), to);
 }
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
