@@ -44,7 +44,7 @@ public:
      */
     void setProfile(Profile profile);
 
-    // Relational and logical operators
+    // Assignment
 
     /**
      * @brief Get the @c std::string for the assignment operator.
@@ -53,16 +53,18 @@ public:
      *
      * @return The @c std::string for the assignment operator.
      */
-    std::string eqString() const;
+    std::string assignmentString() const;
 
     /**
      * @brief Set the @c std::string for the assignment operator.
      *
      * Set this @c std::string for the assignment operator.
      *
-     * @param eqString The @c std::string to use for the assignment operator.
+     * @param assignmentString The @c std::string to use for the assignment operator.
      */
-    void setEqString(const std::string &eqString);
+    void setAssignmentString(const std::string &assignmentString);
+
+    // Relational and logical operators
 
     /**
      * @brief Get the @c std::string for the equivalence operator.

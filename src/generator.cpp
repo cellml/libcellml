@@ -177,9 +177,12 @@ struct GeneratorEquationAst
 {
     enum struct Type
     {
+        // Assignment
+
+        AS,
+
         // Relational and logical operators
 
-        EQ,
         EQEQ,
         NEQ,
         LT,
@@ -267,7 +270,7 @@ struct GeneratorEquationAst
         NAN
     };
 
-    Type mType = Type::EQ;
+    Type mType = Type::AS;
 
     std::string mValue;
     VariablePtr mVariable = nullptr;
@@ -774,7 +777,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast->mRight = astRight;
         }
 
-        // Relational and logical operators
+        // Assignment, relational, and logical operators
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
@@ -782,7 +785,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // "math" element then it means that it is used to describe "a = b"
         // otherwise it is used to describe "a == b". In the former case, there
         // is nothing more we need to do since `ast` is already of
-        // GeneratorEquationAst::Type::EQ type.
+        // GeneratorEquationAst::Type::AS type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ, astParent);
@@ -1924,12 +1927,15 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     std::string code;
 
     switch (ast->mType) {
-        // Relational and logical operators
+        // Assignment
 
-    case GeneratorEquationAst::Type::EQ:
-        code = generateOperatorCode(mProfile->eqString(), ast);
+    case GeneratorEquationAst::Type::AS:
+        code = generateOperatorCode(mProfile->assignmentString(), ast);
 
         break;
+
+        // Relational and logical operators
+
     case GeneratorEquationAst::Type::EQEQ:
         if (mProfile->hasEqEqOperator()) {
             code = generateOperatorCode(mProfile->eqEqString(), ast);

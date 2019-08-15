@@ -37,7 +37,7 @@ TEST(GeneratorProfile, defaultRelationalAndLogicalOperatorValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ(" = ", generatorProfile->eqString());
+    EXPECT_EQ(" = ", generatorProfile->assignmentString());
     EXPECT_EQ(" == ", generatorProfile->eqEqString());
     EXPECT_EQ(" != ", generatorProfile->neqString());
     EXPECT_EQ(" < ", generatorProfile->ltString());
@@ -314,7 +314,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     const bool trueValue = true;
     const bool falseValue = false;
 
-    generatorProfile->setEqString(value);
+    generatorProfile->setAssignmentString(value);
     generatorProfile->setEqEqString(value);
     generatorProfile->setNeqString(value);
     generatorProfile->setLtString(value);
@@ -337,7 +337,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     generatorProfile->setHasXorOperator(trueValue);
     generatorProfile->setHasNotOperator(falseValue);
 
-    EXPECT_EQ(value, generatorProfile->eqString());
+    EXPECT_EQ(value, generatorProfile->assignmentString());
     EXPECT_EQ(value, generatorProfile->eqEqString());
     EXPECT_EQ(value, generatorProfile->neqString());
     EXPECT_EQ(value, generatorProfile->ltString());

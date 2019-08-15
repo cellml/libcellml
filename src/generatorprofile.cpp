@@ -29,9 +29,12 @@ namespace libcellml {
 
 struct GeneratorProfile::GeneratorProfileImpl
 {
+    // Assignment
+
+    std::string mAssignmentString;
+
     // Relational and logical operators
 
-    std::string mEqString;
     std::string mEqEqString;
     std::string mNeqString;
     std::string mLtString;
@@ -215,9 +218,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 {
     switch (profile) {
     case GeneratorProfile::Profile::C:
+        // Assignment
+
+        mAssignmentString = " = ";
+
         // Relational and logical operators
 
-        mEqString = " = ";
         mEqEqString = " == ";
         mNeqString = " != ";
         mLtString = " < ";
@@ -456,9 +462,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         break;
     case GeneratorProfile::Profile::PYTHON:
+        // Assignment
+
+        mAssignmentString = " = ";
+
         // Relational and logical operators
 
-        mEqString = " = ";
         mEqEqString = "eq_eq_func";
         mNeqString = "neq_func";
         mLtString = "lt_func";
@@ -685,9 +694,12 @@ GeneratorProfile::~GeneratorProfile()
 GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     : mPimpl(new GeneratorProfileImpl())
 {
+    // Assignment
+
+    mPimpl->mAssignmentString = rhs.mPimpl->mAssignmentString;
+
     // Relational and logical operators
 
-    mPimpl->mEqString = rhs.mPimpl->mEqString;
     mPimpl->mEqEqString = rhs.mPimpl->mEqEqString;
     mPimpl->mNeqString = rhs.mPimpl->mNeqString;
     mPimpl->mLtString = rhs.mPimpl->mLtString;
@@ -864,14 +876,14 @@ void GeneratorProfile::setProfile(Profile profile)
     mPimpl->loadProfile(profile);
 }
 
-std::string GeneratorProfile::eqString() const
+std::string GeneratorProfile::assignmentString() const
 {
-    return mPimpl->mEqString;
+    return mPimpl->mAssignmentString;
 }
 
-void GeneratorProfile::setEqString(const std::string &eqString)
+void GeneratorProfile::setAssignmentString(const std::string &assignmentString)
 {
-    mPimpl->mEqString = eqString;
+    mPimpl->mAssignmentString = assignmentString;
 }
 
 std::string GeneratorProfile::eqEqString() const
