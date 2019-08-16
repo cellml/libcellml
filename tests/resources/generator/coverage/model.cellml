@@ -6,8 +6,8 @@
     <component name="my_component">
         <variable name="t" units="second"/>
         <variable initial_value="0" name="x" units="dimensionless"/>
-        <variable name="eqnEqEq" units="dimensionless"/>
-        <variable name="eqnEqEqCoverageParentheses" units="dimensionless"/>
+        <variable name="eqnEq" units="dimensionless"/>
+        <variable name="eqnEqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnNeq" units="dimensionless"/>
         <variable name="eqnNeqCoverageParentheses" units="dimensionless"/>
         <variable name="eqnLt" units="dimensionless"/>
@@ -206,7 +206,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnEqEq</ci>
+                <ci>eqnEq</ci>
                 <apply>
                     <eq/>
                     <ci>m</ci>
@@ -215,7 +215,7 @@
             </apply>
             <apply>
                 <eq/>
-                <ci>eqnEqEqCoverageParentheses</ci>
+                <ci>eqnEqCoverageParentheses</ci>
                 <apply>
                     <divide/>
                     <ci>m</ci>
