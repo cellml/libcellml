@@ -1,0 +1,22 @@
+name: A workflow for building and testing libCellML
+on: push
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, ubuntu-18.04]
+        build_type: ["Debug", "Release"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout
+    - name: configure
+      run: cmake .
+    - name: build
+      run: cmake -DBUILD_TYPE=${{ matrix.build_type }} --build .
+    - name: test
+      run: ctest -C ${{ matrix.build_type }}
+
