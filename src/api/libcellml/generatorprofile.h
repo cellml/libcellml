@@ -54,6 +54,7 @@ public:
      * @return The @c std::string for the assignment operator.
      */
     std::string eqString() const;
+
     /**
      * @brief Set the @c std::string for the assignment operator.
      *
@@ -71,6 +72,7 @@ public:
      * @return The @c std::string for the equivalence operator.
      */
     std::string eqEqString() const;
+
     /**
      * @brief Set the @c std::string for the equivalence operator.
      *
@@ -88,6 +90,7 @@ public:
      * @return The @c std::string for the nonequivalence operator.
      */
     std::string neqString() const;
+
     /**
      * @brief Set the @c std::string for the nonequivalence operator.
      *
@@ -105,6 +108,7 @@ public:
      * @return The @c std::string for the lower than operator.
      */
     std::string ltString() const;
+
     /**
      * @brief Set the @c std::string for the lower than operator.
      *
@@ -122,6 +126,7 @@ public:
      * @return The @c std::string for the lower or equal than operator.
      */
     std::string leqString() const;
+
     /**
      * @brief Set the @c std::string for the lower or equal than operator.
      *
@@ -140,6 +145,7 @@ public:
      * @return The @c std::string for the greater than operator.
      */
     std::string gtString() const;
+
     /**
      * @brief Set the @c std::string for the greater than operator.
      *
@@ -157,6 +163,7 @@ public:
      * @return The @c std::string for the greater or equal than operator.
      */
     std::string geqString() const;
+
     /**
      * @brief Set the @c std::string for the greater or equal than operator.
      *
@@ -175,6 +182,7 @@ public:
      * @return The @c std::string for the and operator.
      */
     std::string andString() const;
+
     /**
      * @brief Set the @c std::string for the and operator.
      *
@@ -192,6 +200,7 @@ public:
      * @return The @c std::string for the or operator.
      */
     std::string orString() const;
+
     /**
      * @brief Set the @c std::string for the or operator.
      *
@@ -209,6 +218,7 @@ public:
      * @return The @c std::string for the xor operator.
      */
     std::string xorString() const;
+
     /**
      * @brief Set the @c std::string for the xor operator.
      *
@@ -226,6 +236,7 @@ public:
      * @return The @c std::string for the not operator.
      */
     std::string notString() const;
+
     /**
      * @brief Set the @c std::string for the not operator.
      *
@@ -244,6 +255,7 @@ public:
      * @c false otherwise.
      */
     bool hasEqEqOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has an equivalence operator.
      *
@@ -263,6 +275,7 @@ public:
      * @c false otherwise.
      */
     bool hasNeqOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a nonequivalence operator.
      *
@@ -282,6 +295,7 @@ public:
      * @c false otherwise.
      */
     bool hasLtOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a lower than operator.
      *
@@ -303,6 +317,7 @@ public:
      * @c false otherwise.
      */
     bool hasLeqOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a lower or equal than
      *  operator.
@@ -323,6 +338,7 @@ public:
      * @c false otherwise.
      */
     bool hasGtOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a greater than operator.
      *
@@ -344,6 +360,7 @@ public:
      * @c false otherwise.
      */
     bool hasGeqOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a greater or equal than
      *  operator.
@@ -365,6 +382,7 @@ public:
      * @c false otherwise.
      */
     bool hasAndOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has an and operator.
      *
@@ -384,6 +402,7 @@ public:
      * @c false otherwise.
      */
     bool hasOrOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has an or operator.
      *
@@ -403,6 +422,7 @@ public:
      * @c false otherwise.
      */
     bool hasXorOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a xor operator.
      *
@@ -422,6 +442,7 @@ public:
      * @c false otherwise.
      */
     bool hasNotOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a not operator.
      *
@@ -442,6 +463,7 @@ public:
      * @return The @c std::string for an addition.
      */
     std::string plusString() const;
+
     /**
      * @brief Set the @c std::string for an addition.
      *
@@ -459,6 +481,7 @@ public:
      * @return The @c std::string for a subtraction.
      */
     std::string minusString() const;
+
     /**
      * @brief Set the @c std::string for a subtraction.
      *
@@ -476,6 +499,7 @@ public:
      * @return The @c std::string for a multiplication.
      */
     std::string timesString() const;
+
     /**
      * @brief Set the @c std::string for a multiplication.
      *
@@ -493,6 +517,7 @@ public:
      * @return The @c std::string for a division.
      */
     std::string divideString() const;
+
     /**
      * @brief Set the @c std::string for a division.
      *
@@ -510,6 +535,7 @@ public:
      * @return The @c std::string for a power.
      */
     std::string powerString() const;
+
     /**
      * @brief Set the @c std::string for a power.
      *
@@ -527,6 +553,7 @@ public:
      * @return The @c std::string for a square root.
      */
     std::string squareRootString() const;
+
     /**
      * @brief Set the @c std::string for a square root.
      *
@@ -544,6 +571,7 @@ public:
      * @return The @c std::string for a square.
      */
     std::string squareString() const;
+
     /**
      * @brief Set the @c std::string for a square.
      *
@@ -561,6 +589,7 @@ public:
      * @return The @c std::string for an absolute value.
      */
     std::string absoluteValueString() const;
+
     /**
      * @brief Set the @c std::string for an absolute value.
      *
@@ -578,6 +607,7 @@ public:
      * @return The @c std::string for an exponential.
      */
     std::string exponentialString() const;
+
     /**
      * @brief Set the @c std::string for an exponential.
      *
@@ -595,6 +625,7 @@ public:
      * @return The @c std::string for a Napierian logarithm.
      */
     std::string napierianLogarithmString() const;
+
     /**
      * @brief Set the @c std::string for a Napierian logarithm.
      *
@@ -612,6 +643,7 @@ public:
      * @return The @c std::string for a common logarithm.
      */
     std::string commonLogarithmString() const;
+
     /**
      * @brief Set the @c std::string for a common logarithm.
      *
@@ -629,6 +661,7 @@ public:
      * @return The @c std::string for a ceiling.
      */
     std::string ceilingString() const;
+
     /**
      * @brief Set the @c std::string for a ceiling.
      *
@@ -646,6 +679,7 @@ public:
      * @return The @c std::string for a floor.
      */
     std::string floorString() const;
+
     /**
      * @brief Set the @c std::string for a floor.
      *
@@ -663,6 +697,7 @@ public:
      * @return The @c std::string for a minimum.
      */
     std::string minString() const;
+
     /**
      * @brief Set the @c std::string for a minimum.
      *
@@ -680,6 +715,7 @@ public:
      * @return The @c std::string for a maximum.
      */
     std::string maxString() const;
+
     /**
      * @brief Set the @c std::string for a maximum.
      *
@@ -697,6 +733,7 @@ public:
      * @return The @c std::string for a remainder.
      */
     std::string remString() const;
+
     /**
      * @brief Set the @c std::string for a remainder.
      *
@@ -715,6 +752,7 @@ public:
      * @c false otherwise.
      */
     bool hasPowerOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a power operator.
      *
@@ -735,6 +773,7 @@ public:
      * @return The @c std::string for sine.
      */
     std::string sinString() const;
+
     /**
      * @brief Set the @c std::string for sine.
      *
@@ -752,6 +791,7 @@ public:
      * @return The @c std::string for cosine.
      */
     std::string cosString() const;
+
     /**
      * @brief Set the @c std::string for cosine.
      *
@@ -769,6 +809,7 @@ public:
      * @return The @c std::string for tangent.
      */
     std::string tanString() const;
+
     /**
      * @brief Set the @c std::string for tangent.
      *
@@ -786,6 +827,7 @@ public:
      * @return The @c std::string for secant.
      */
     std::string secString() const;
+
     /**
      * @brief Set the @c std::string for secant.
      *
@@ -803,6 +845,7 @@ public:
      * @return The @c std::string for cosecant.
      */
     std::string cscString() const;
+
     /**
      * @brief Set the @c std::string for cosecant.
      *
@@ -820,6 +863,7 @@ public:
      * @return The @c std::string for cotangent.
      */
     std::string cotString() const;
+
     /**
      * @brief Set the @c std::string for cotangent.
      *
@@ -837,6 +881,7 @@ public:
      * @return The @c std::string for hyperbolic sine.
      */
     std::string sinhString() const;
+
     /**
      * @brief Set the @c std::string for hyperbolic sine.
      *
@@ -854,6 +899,7 @@ public:
      * @return The @c std::string for hyperbolic cosine.
      */
     std::string coshString() const;
+
     /**
      * @brief Set the @c std::string for hyperbolic cosine.
      *
@@ -871,6 +917,7 @@ public:
      * @return The @c std::string for hyperbolic tangent.
      */
     std::string tanhString() const;
+
     /**
      * @brief Set the @c std::string for hyperbolic tangent.
      *
@@ -888,6 +935,7 @@ public:
      * @return The @c std::string for hyperbolic secant.
      */
     std::string sechString() const;
+
     /**
      * @brief Set the @c std::string for hyperbolic secant.
      *
@@ -905,6 +953,7 @@ public:
      * @return The @c std::string for hyperbolic cosecant.
      */
     std::string cschString() const;
+
     /**
      * @brief Set the @c std::string for hyperbolic cosecant.
      *
@@ -922,6 +971,7 @@ public:
      * @return The @c std::string for hyperbolic cotangent.
      */
     std::string cothString() const;
+
     /**
      * @brief Set the @c std::string for hyperbolic cotangent.
      *
@@ -939,6 +989,7 @@ public:
      * @return The @c std::string for inverse sine.
      */
     std::string asinString() const;
+
     /**
      * @brief Set the @c std::string for inverse sine.
      *
@@ -956,6 +1007,7 @@ public:
      * @return The @c std::string for inverse cosine.
      */
     std::string acosString() const;
+
     /**
      * @brief Set the @c std::string for inverse cosine.
      *
@@ -973,6 +1025,7 @@ public:
      * @return The @c std::string for inverse tangent.
      */
     std::string atanString() const;
+
     /**
      * @brief Set the @c std::string for inverse tangent.
      *
@@ -990,6 +1043,7 @@ public:
      * @return The @c std::string for inverse secant.
      */
     std::string asecString() const;
+
     /**
      * @brief Set the @c std::string for inverse secant.
      *
@@ -1007,6 +1061,7 @@ public:
      * @return The @c std::string for inverse cosecant.
      */
     std::string acscString() const;
+
     /**
      * @brief Set the @c std::string for inverse cosecant.
      *
@@ -1024,6 +1079,7 @@ public:
      * @return The @c std::string for inverse cotangent.
      */
     std::string acotString() const;
+
     /**
      * @brief Set the @c std::string for inverse cotangent.
      *
@@ -1041,6 +1097,7 @@ public:
      * @return The @c std::string for inverse hyperbolic sine.
      */
     std::string asinhString() const;
+
     /**
      * @brief Set the @c std::string for inverse hyperbolic sine.
      *
@@ -1058,6 +1115,7 @@ public:
      * @return The @c std::string for inverse hyperbolic cosine.
      */
     std::string acoshString() const;
+
     /**
      * @brief Set the @c std::string for inverse hyperbolic cosine.
      *
@@ -1075,6 +1133,7 @@ public:
      * @return The @c std::string for inverse hyperbolic tangent.
      */
     std::string atanhString() const;
+
     /**
      * @brief Set the @c std::string for inverse hyperbolic tangent.
      *
@@ -1092,6 +1151,7 @@ public:
      * @return The @c std::string for inverse hyperbolic secant.
      */
     std::string asechString() const;
+
     /**
      * @brief Set the @c std::string for inverse hyperbolic secant.
      *
@@ -1109,6 +1169,7 @@ public:
      * @return The @c std::string for inverse hyperbolic cosecant.
      */
     std::string acschString() const;
+
     /**
      * @brief Set the @c std::string for inverse hyperbolic cosecant.
      *
@@ -1127,6 +1188,7 @@ public:
      * @return The @c std::string for inverse hyperbolic cotangent.
      */
     std::string acothString() const;
+
     /**
      * @brief Set the @c std::string for inverse hyperbolic cotangent.
      *
@@ -1150,6 +1212,7 @@ public:
      * @return The @c std::string for the if part of a condition statement.
      */
     std::string conditionalOperatorIfString() const;
+
     /**
      * @brief Set the @c std::string for the if part of a condition statement.
      *
@@ -1168,6 +1231,7 @@ public:
      * @return The @c std::string for the else part of a condition statement.
      */
     std::string conditionalOperatorElseString() const;
+
     /**
      * @brief Set the @c std::string for the else part of a condition statement.
      *
@@ -1186,6 +1250,7 @@ public:
      * @return The @c std::string for the if part of a piecewise statement.
      */
     std::string piecewiseIfString() const;
+
     /**
      * @brief Set the @c std::string for the if part of a piecewise statement.
      *
@@ -1204,6 +1269,7 @@ public:
      * @return The @c std::string for the else part of a piecewise statement.
      */
     std::string piecewiseElseString() const;
+
     /**
      * @brief Set the @c std::string for the else part of a piecewise statement.
      *
@@ -1223,6 +1289,7 @@ public:
      * @c false otherwise.
      */
     bool hasConditionalOperator() const;
+
     /**
      * @brief Set whether this @c GeneratorProfile has a conditional operator.
      *
@@ -1243,6 +1310,7 @@ public:
      * @return The @c std::string for true.
      */
     std::string trueString() const;
+
     /**
      * @brief Set the @c std::string for true.
      *
@@ -1260,6 +1328,7 @@ public:
      * @return The @c std::string for false.
      */
     std::string falseString() const;
+
     /**
      * @brief Set the @c std::string for false.
      *
@@ -1277,6 +1346,7 @@ public:
      * @return The @c std::string for exponential constant.
      */
     std::string eString() const;
+
     /**
      * @brief Set the @c std::string for exponential constant.
      *
@@ -1294,6 +1364,7 @@ public:
      * @return The @c std::string for π.
      */
     std::string piString() const;
+
     /**
      * @brief Set the @c std::string for π.
      *
@@ -1311,6 +1382,7 @@ public:
      * @return The @c std::string for infinity.
      */
     std::string infString() const;
+
     /**
      * @brief Set the @c std::string for infinity.
      *
@@ -1328,6 +1400,7 @@ public:
      * @return The @c std::string for NaN.
      */
     std::string nanString() const;
+
     /**
      * @brief Set the @c std::string for NaN.
      *
@@ -1347,6 +1420,7 @@ public:
      * @return The @c std::string for the equivalence function.
      */
     std::string eqEqFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the equivalence function.
      *
@@ -1364,6 +1438,7 @@ public:
      * @return The @c std::string for the nonequivalence function.
      */
     std::string neqFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the nonequivalence function.
      *
@@ -1382,6 +1457,7 @@ public:
      * @return The @c std::string for the lower than function.
      */
     std::string ltFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the lower than function.
      *
@@ -1399,6 +1475,7 @@ public:
      * @return The @c std::string for the lower or equal than function.
      */
     std::string leqFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the lower or equal than function.
      *
@@ -1417,6 +1494,7 @@ public:
      * @return The @c std::string for the greater than function.
      */
     std::string gtFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the greater than function.
      *
@@ -1434,6 +1512,7 @@ public:
      * @return The @c std::string for the greater or equal than function.
      */
     std::string geqFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the greater or equal than function.
      *
@@ -1452,6 +1531,7 @@ public:
      * @return The @c std::string for the and function.
      */
     std::string andFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the and function.
      *
@@ -1469,6 +1549,7 @@ public:
      * @return The @c std::string for the or function.
      */
     std::string orFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the or function.
      *
@@ -1486,6 +1567,7 @@ public:
      * @return The @c std::string for the xor function.
      */
     std::string xorFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the xor function.
      *
@@ -1503,6 +1585,7 @@ public:
      * @return The @c std::string for the not function.
      */
     std::string notFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the not function.
      *
@@ -1520,6 +1603,7 @@ public:
      * @return The @c std::string for the minimum function.
      */
     std::string minFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the minimum function.
      *
@@ -1537,6 +1621,7 @@ public:
      * @return The @c std::string for the maximum function.
      */
     std::string maxFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the maximum function.
      *
@@ -1554,6 +1639,7 @@ public:
      * @return The @c std::string for the secant function.
      */
     std::string secFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the secant function.
      *
@@ -1571,6 +1657,7 @@ public:
      * @return The @c std::string for the cosecant function.
      */
     std::string cscFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the cosecant function.
      *
@@ -1588,6 +1675,7 @@ public:
      * @return The @c std::string for the cotangent function.
      */
     std::string cotFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the cotangent function.
      *
@@ -1605,6 +1693,7 @@ public:
      * @return The @c std::string for the hyperbolic secant function.
      */
     std::string sechFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the hyperbolic secant function.
      *
@@ -1623,6 +1712,7 @@ public:
      * @return The @c std::string for the hyperbolic cosecant function.
      */
     std::string cschFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the hyperbolic cosecant function.
      *
@@ -1641,6 +1731,7 @@ public:
      * @return The @c std::string for the hyperbolic cotangent function.
      */
     std::string cothFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the hyperbolic cotangent function.
      *
@@ -1659,6 +1750,7 @@ public:
      * @return The @c std::string for the inverse secant function.
      */
     std::string asecFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the inverse secant function.
      *
@@ -1676,6 +1768,7 @@ public:
      * @return The @c std::string for the inverse cosecant function.
      */
     std::string acscFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the inverse cosecant function.
      *
@@ -1693,6 +1786,7 @@ public:
      * @return The @c std::string for the inverse cotangent function.
      */
     std::string acotFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the inverse cotangent function.
      *
@@ -1711,6 +1805,7 @@ public:
      * @return The @c std::string for the inverse hyperbolic secant function.
      */
     std::string asechFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the inverse hyperbolic secant function.
      *
@@ -1730,6 +1825,7 @@ public:
      * @return The @c std::string for the inverse hyperbolic cosecant function.
      */
     std::string acschFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the inverse hyperbolic cosecant
      * function.
@@ -1750,6 +1846,7 @@ public:
      * @return The @c std::string for the inverse hyperbolic cotangent function.
      */
     std::string acothFunctionString() const;
+
     /**
      * @brief Set the @c std::string for the inverse hyperbolic cotangent
      * function.
@@ -1771,6 +1868,7 @@ public:
      * @return The @c std::string for some header.
      */
     std::string headerString() const;
+
     /**
      * @brief Set the @c std::string for some header.
      *
@@ -1789,6 +1887,7 @@ public:
      * @return The @c std::string for the name of the variable of integration.
      */
     std::string variableOfIntegrationString() const;
+
     /**
      * @brief Set the @c std::string for the name of the variable of
      * integration.
@@ -1808,6 +1907,7 @@ public:
      * @return The @c std::string for the name of the states array.
      */
     std::string statesArrayString() const;
+
     /**
      * @brief Set the @c std::string for the name of the states array.
      *
@@ -1826,6 +1926,7 @@ public:
      * @return The @c std::string for the name of the rates array.
      */
     std::string ratesArrayString() const;
+
     /**
      * @brief Set the @c std::string for the name of the rates array.
      *
@@ -1844,6 +1945,7 @@ public:
      * @return The @c std::string for the name of the variables array.
      */
     std::string variablesArrayString() const;
+
     /**
      * @brief Set the @c std::string for the name of the variables array.
      *
@@ -1865,6 +1967,7 @@ public:
      * initialises constants.
      */
     std::string beginInitializeConstantsMethodString() const;
+
     /**
      * @brief Set the @c std::string for the beginning of the method that
      * initialises constants.
@@ -1888,6 +1991,7 @@ public:
      * constants.
      */
     std::string endInitializeConstantsMethodString() const;
+
     /**
      * @brief Set the @c std::string for the end of the method that initialises
      * constants.
@@ -1911,6 +2015,7 @@ public:
      * computed constants.
      */
     std::string beginComputeComputedConstantsMethodString() const;
+
     /**
      * @brief Set the @c std::string for the beginning of the method that
      * computes computed constants.
@@ -1934,6 +2039,7 @@ public:
      * computed constants.
      */
     std::string endComputeComputedConstantsMethodString() const;
+
     /**
      * @brief Set the @c std::string for the end of the method that computes
      * computed constants.
@@ -1957,6 +2063,7 @@ public:
      * rates.
      */
     std::string beginComputeRatesMethodString() const;
+
     /**
      * @brief Set the @c std::string for the beginning of the method that
      * computes rates.
@@ -1978,6 +2085,7 @@ public:
      * @return The @c std::string for the end of the method that computes rates.
      */
     std::string endComputeRatesMethodString() const;
+
     /**
      * @brief Set the @c std::string for the end of the method that computes
      * rates.
@@ -2000,6 +2108,7 @@ public:
      * variables.
      */
     std::string beginComputeVariablesMethodString() const;
+
     /**
      * @brief Set the @c std::string for the beginning of the method that
      * computes variables.
@@ -2023,6 +2132,7 @@ public:
      * variables.
      */
     std::string endComputeVariablesMethodString() const;
+
     /**
      * @brief Set the @c std::string for the end of the method that computes
      * variables.
@@ -2043,6 +2153,7 @@ public:
      * @return The @c std::string for an empty method.
      */
     std::string emptyMethodString() const;
+
     /**
      * @brief Set the @c std::string for an empty method.
      *
@@ -2060,6 +2171,7 @@ public:
      * @return The @c std::string for an indent.
      */
     std::string indentString() const;
+
     /**
      * @brief Set the @c std::string for an indent.
      *
@@ -2077,6 +2189,7 @@ public:
      * @return The @c std::string for opening an array.
      */
     std::string openArrayString() const;
+
     /**
      * @brief Set the @c std::string for opening an array.
      *
@@ -2094,6 +2207,7 @@ public:
      * @return The @c std::string for closing an array.
      */
     std::string closeArrayString() const;
+
     /**
      * @brief Set the @c std::string for closing an array.
      *
@@ -2111,6 +2225,7 @@ public:
      * @return The @c std::string for a command separator.
      */
     std::string commandSeparatorString() const;
+
     /**
      * @brief Set the @c std::string for a command separator.
      *
