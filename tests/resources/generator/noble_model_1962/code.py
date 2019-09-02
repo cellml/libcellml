@@ -49,4 +49,3 @@ def compute_variables(voi, states, rates, variables):
     variables[14] = 0.0001*(-states[3]-50.0)/(exp((-states[3]-50.0)/10.0)-1.0)
     variables[15] = 0.002*exp((-states[3]-90.0)/80.0)
     variables[16] = (variables[12]+variables[13])*(states[3]+100.0)
-

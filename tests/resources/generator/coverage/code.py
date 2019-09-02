@@ -301,4 +301,3 @@ def compute_rates(voi, states, rates, variables):
 
 def compute_variables(voi, states, rates, variables):
     pass
-

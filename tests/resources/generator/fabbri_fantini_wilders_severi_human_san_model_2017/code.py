@@ -409,4 +409,3 @@ def compute_variables(voi, states, rates, variables):
     variables[214] = variables[209]*variables[94]*(variables[207]+variables[206])+variables[207]*variables[208]*(variables[94]+variables[201])
     variables[215] = (1.0-variables[80])*variables[73]*(variables[212]*variables[208]-variables[211]*variables[206])/(variables[211]+variables[212]+variables[213]+variables[214])
     variables[216] = variables[143]+variables[182]+variables[190]+variables[177]+variables[198]+variables[215]+variables[148]+variables[166]+variables[172]+variables[194]+variables[158]
-

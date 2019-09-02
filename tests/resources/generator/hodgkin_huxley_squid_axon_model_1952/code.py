@@ -58,4 +58,3 @@ def compute_variables(voi, states, rates, variables):
     variables[15] = variables[3]*pow(states[2], 4.0)*(states[3]-variables[14])
     variables[16] = 0.01*(states[3]+10.0)/(exp((states[3]+10.0)/10.0)-1.0)
     variables[17] = 0.125*exp(states[3]/80.0)
-
