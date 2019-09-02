@@ -286,4 +286,3 @@ def compute_variables(voi, states, rates, variables):
     variables[182] = variables[114]*(states[14]-variables[123])
     variables[183] = variables[125]*pow(states[0], 3.0)*variables[129]*variables[49]*pow(variables[52], 2.0)/(variables[54]*variables[55])*(exp((states[14]-variables[121])*variables[52]/(variables[54]*variables[55]))-1.0)/(exp(states[14]*variables[52]/(variables[54]*variables[55]))-1.0)*states[14]
     variables[184] = variables[162]*variables[163]*states[11]*(states[14]-variables[122])
-
