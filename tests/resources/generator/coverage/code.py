@@ -1,84 +1,109 @@
 from math import *
 
-def eqEqFunc(x, y):
-    return 1.0 if (x == y) else 0.0
 
-def neqFunc(x, y):
-    return 1.0 if (x != y) else 0.0
+def eq_eq_func(x, y):
+    return 1.0 if x == y else 0.0
 
-def ltFunc(x, y):
-    return 1.0 if (x < y) else 0.0
 
-def leqFunc(x, y):
-    return 1.0 if (x <= y) else 0.0
+def neq_func(x, y):
+    return 1.0 if x != y else 0.0
 
-def gtFunc(x, y):
-    return 1.0 if (x > y) else 0.0
 
-def geqFunc(x, y):
-    return 1.0 if (x >= y) else 0.0
+def lt_func(x, y):
+    return 1.0 if x < y else 0.0
 
-def andFunc(x, y):
-    return 1.0 if (bool(x) & bool(y)) else 0.0
 
-def orFunc(x, y):
-    return 1.0 if (bool(x) | bool(y)) else 0.0
+def leq_func(x, y):
+    return 1.0 if x <= y else 0.0
 
-def xorFunc(x, y):
-    return 1.0 if (bool(x) ^ bool(y)) else 0.0
 
-def notFunc(x):
-    return 1.0 if (not bool(x)) else 0.0
+def gt_func(x, y):
+    return 1.0 if x > y else 0.0
+
+
+def geq_func(x, y):
+    return 1.0 if x >= y else 0.0
+
+
+def and_func(x, y):
+    return 1.0 if bool(x) & bool(y) else 0.0
+
+
+def or_func(x, y):
+    return 1.0 if bool(x) | bool(y) else 0.0
+
+
+def xor_func(x, y):
+    return 1.0 if bool(x) ^ bool(y) else 0.0
+
+
+def not_func(x):
+    return 1.0 if not bool(x) else 0.0
+
 
 def min(x, y):
-    return x if (x < y) else y
+    return x if x < y else y
+
 
 def max(x, y):
-    return x if (x > y) else y
+    return x if x > y else y
+
 
 def sec(x):
     return 1.0/cos(x)
 
+
 def csc(x):
     return 1.0/sin(x)
+
 
 def cot(x):
     return 1.0/tan(x)
 
+
 def sech(x):
     return 1.0/cosh(x)
+
 
 def csch(x):
     return 1.0/sinh(x)
 
+
 def coth(x):
     return 1.0/tanh(x)
+
 
 def asec(x):
     return acos(1.0/x)
 
+
 def acsc(x):
     return asin(1.0/x)
+
 
 def acot(x):
     return atan(1.0/x)
 
-def asech(x):
-    oneOverX = 1.0/x
 
-    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0))
+def asech(x):
+    one_over_x = 1.0/x
+
+    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))
+
 
 def acsch(x):
-    oneOverX = 1.0/x
+    one_over_x = 1.0/x
 
-    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0))
+    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))
+
 
 def acoth(x):
-    oneOverX = 1.0/x
+    one_over_x = 1.0/x
 
-    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX))
+    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))
 
-def initializeConstants(states, variables):
+
+def initialize_constants(states, variables):
     states[0] = 0.0
     variables[0] = 1.0
     variables[1] = 2.0
@@ -98,132 +123,133 @@ def initializeConstants(states, variables):
     variables[183] = inf
     variables[184] = nan
 
-def computeComputedConstants(variables):
-    variables[7] = eqEqFunc(variables[0], variables[1])
-    variables[8] = variables[0]/eqEqFunc(variables[1], variables[1])
-    variables[9] = neqFunc(variables[0], variables[1])
-    variables[10] = variables[0]/neqFunc(variables[1], variables[2])
-    variables[11] = ltFunc(variables[0], variables[1])
-    variables[12] = leqFunc(variables[0], variables[1])
-    variables[13] = gtFunc(variables[0], variables[1])
-    variables[14] = geqFunc(variables[0], variables[1])
-    variables[15] = andFunc(variables[0], variables[1])
-    variables[16] = andFunc(variables[0], andFunc(variables[1], variables[2]))
-    variables[17] = andFunc(ltFunc(variables[0], variables[1]), gtFunc(variables[2], variables[3]))
-    variables[18] = andFunc(variables[0]+variables[1], gtFunc(variables[2], variables[3]))
-    variables[19] = andFunc(variables[0], gtFunc(variables[1], variables[2]))
-    variables[20] = andFunc(variables[0]-variables[1], gtFunc(variables[2], variables[3]))
-    variables[21] = andFunc(-variables[0], gtFunc(variables[1], variables[2]))
-    variables[22] = andFunc(pow(variables[0], variables[1]), gtFunc(variables[2], variables[3]))
-    variables[23] = andFunc(pow(variables[0], 1.0/variables[1]), gtFunc(variables[2], variables[3]))
-    variables[24] = andFunc(ltFunc(variables[0], variables[1]), variables[2]+variables[3])
-    variables[25] = andFunc(ltFunc(variables[0], variables[1]), variables[2])
-    variables[26] = andFunc(ltFunc(variables[0], variables[1]), variables[2]-variables[3])
-    variables[27] = andFunc(ltFunc(variables[0], variables[1]), -variables[2])
-    variables[28] = andFunc(ltFunc(variables[0], variables[1]), pow(variables[2], variables[3]))
-    variables[29] = andFunc(ltFunc(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
-    variables[30] = orFunc(variables[0], variables[1])
-    variables[31] = orFunc(variables[0], orFunc(variables[1], variables[2]))
-    variables[32] = orFunc(ltFunc(variables[0], variables[1]), gtFunc(variables[2], variables[3]))
-    variables[33] = orFunc(variables[0]+variables[1], gtFunc(variables[2], variables[3]))
-    variables[34] = orFunc(variables[0], gtFunc(variables[1], variables[2]))
-    variables[35] = orFunc(variables[0]-variables[1], gtFunc(variables[2], variables[3]))
-    variables[36] = orFunc(-variables[0], gtFunc(variables[1], variables[2]))
-    variables[37] = orFunc(pow(variables[0], variables[1]), gtFunc(variables[2], variables[3]))
-    variables[38] = orFunc(pow(variables[0], 1.0/variables[1]), gtFunc(variables[2], variables[3]))
-    variables[39] = orFunc(ltFunc(variables[0], variables[1]), variables[2]+variables[3])
-    variables[40] = orFunc(ltFunc(variables[0], variables[1]), variables[2])
-    variables[41] = orFunc(ltFunc(variables[0], variables[1]), variables[2]-variables[3])
-    variables[42] = orFunc(ltFunc(variables[0], variables[1]), -variables[2])
-    variables[43] = orFunc(ltFunc(variables[0], variables[1]), pow(variables[2], variables[3]))
-    variables[44] = orFunc(ltFunc(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
-    variables[45] = xorFunc(variables[0], variables[1])
-    variables[46] = xorFunc(variables[0], xorFunc(variables[1], variables[2]))
-    variables[47] = xorFunc(ltFunc(variables[0], variables[1]), gtFunc(variables[2], variables[3]))
-    variables[48] = xorFunc(variables[0]+variables[1], gtFunc(variables[2], variables[3]))
-    variables[49] = xorFunc(variables[0], gtFunc(variables[1], variables[2]))
-    variables[50] = xorFunc(variables[0]-variables[1], gtFunc(variables[2], variables[3]))
-    variables[51] = xorFunc(-variables[0], gtFunc(variables[1], variables[2]))
-    variables[52] = xorFunc(pow(variables[0], variables[1]), gtFunc(variables[2], variables[3]))
-    variables[53] = xorFunc(pow(variables[0], 1.0/variables[1]), gtFunc(variables[2], variables[3]))
-    variables[54] = xorFunc(ltFunc(variables[0], variables[1]), variables[2]+variables[3])
-    variables[55] = xorFunc(ltFunc(variables[0], variables[1]), variables[2])
-    variables[56] = xorFunc(ltFunc(variables[0], variables[1]), variables[2]-variables[3])
-    variables[57] = xorFunc(ltFunc(variables[0], variables[1]), -variables[2])
-    variables[58] = xorFunc(ltFunc(variables[0], variables[1]), pow(variables[2], variables[3]))
-    variables[59] = xorFunc(ltFunc(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
-    variables[60] = notFunc(variables[0])
+
+def compute_computed_constants(variables):
+    variables[7] = eq_eq_func(variables[0], variables[1])
+    variables[8] = variables[0]/eq_eq_func(variables[1], variables[1])
+    variables[9] = neq_func(variables[0], variables[1])
+    variables[10] = variables[0]/neq_func(variables[1], variables[2])
+    variables[11] = lt_func(variables[0], variables[1])
+    variables[12] = leq_func(variables[0], variables[1])
+    variables[13] = gt_func(variables[0], variables[1])
+    variables[14] = geq_func(variables[0], variables[1])
+    variables[15] = and_func(variables[0], variables[1])
+    variables[16] = and_func(variables[0], and_func(variables[1], variables[2]))
+    variables[17] = and_func(lt_func(variables[0], variables[1]), gt_func(variables[2], variables[3]))
+    variables[18] = and_func(variables[0]+variables[1], gt_func(variables[2], variables[3]))
+    variables[19] = and_func(variables[0], gt_func(variables[1], variables[2]))
+    variables[20] = and_func(variables[0]-variables[1], gt_func(variables[2], variables[3]))
+    variables[21] = and_func(-variables[0], gt_func(variables[1], variables[2]))
+    variables[22] = and_func(pow(variables[0], variables[1]), gt_func(variables[2], variables[3]))
+    variables[23] = and_func(pow(variables[0], 1.0/variables[1]), gt_func(variables[2], variables[3]))
+    variables[24] = and_func(lt_func(variables[0], variables[1]), variables[2]+variables[3])
+    variables[25] = and_func(lt_func(variables[0], variables[1]), variables[2])
+    variables[26] = and_func(lt_func(variables[0], variables[1]), variables[2]-variables[3])
+    variables[27] = and_func(lt_func(variables[0], variables[1]), -variables[2])
+    variables[28] = and_func(lt_func(variables[0], variables[1]), pow(variables[2], variables[3]))
+    variables[29] = and_func(lt_func(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
+    variables[30] = or_func(variables[0], variables[1])
+    variables[31] = or_func(variables[0], or_func(variables[1], variables[2]))
+    variables[32] = or_func(lt_func(variables[0], variables[1]), gt_func(variables[2], variables[3]))
+    variables[33] = or_func(variables[0]+variables[1], gt_func(variables[2], variables[3]))
+    variables[34] = or_func(variables[0], gt_func(variables[1], variables[2]))
+    variables[35] = or_func(variables[0]-variables[1], gt_func(variables[2], variables[3]))
+    variables[36] = or_func(-variables[0], gt_func(variables[1], variables[2]))
+    variables[37] = or_func(pow(variables[0], variables[1]), gt_func(variables[2], variables[3]))
+    variables[38] = or_func(pow(variables[0], 1.0/variables[1]), gt_func(variables[2], variables[3]))
+    variables[39] = or_func(lt_func(variables[0], variables[1]), variables[2]+variables[3])
+    variables[40] = or_func(lt_func(variables[0], variables[1]), variables[2])
+    variables[41] = or_func(lt_func(variables[0], variables[1]), variables[2]-variables[3])
+    variables[42] = or_func(lt_func(variables[0], variables[1]), -variables[2])
+    variables[43] = or_func(lt_func(variables[0], variables[1]), pow(variables[2], variables[3]))
+    variables[44] = or_func(lt_func(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
+    variables[45] = xor_func(variables[0], variables[1])
+    variables[46] = xor_func(variables[0], xor_func(variables[1], variables[2]))
+    variables[47] = xor_func(lt_func(variables[0], variables[1]), gt_func(variables[2], variables[3]))
+    variables[48] = xor_func(variables[0]+variables[1], gt_func(variables[2], variables[3]))
+    variables[49] = xor_func(variables[0], gt_func(variables[1], variables[2]))
+    variables[50] = xor_func(variables[0]-variables[1], gt_func(variables[2], variables[3]))
+    variables[51] = xor_func(-variables[0], gt_func(variables[1], variables[2]))
+    variables[52] = xor_func(pow(variables[0], variables[1]), gt_func(variables[2], variables[3]))
+    variables[53] = xor_func(pow(variables[0], 1.0/variables[1]), gt_func(variables[2], variables[3]))
+    variables[54] = xor_func(lt_func(variables[0], variables[1]), variables[2]+variables[3])
+    variables[55] = xor_func(lt_func(variables[0], variables[1]), variables[2])
+    variables[56] = xor_func(lt_func(variables[0], variables[1]), variables[2]-variables[3])
+    variables[57] = xor_func(lt_func(variables[0], variables[1]), -variables[2])
+    variables[58] = xor_func(lt_func(variables[0], variables[1]), pow(variables[2], variables[3]))
+    variables[59] = xor_func(lt_func(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
+    variables[60] = not_func(variables[0])
     variables[61] = variables[0]+variables[1]
     variables[62] = variables[0]+variables[1]+variables[2]
-    variables[63] = ltFunc(variables[0], variables[1])+gtFunc(variables[2], variables[3])
+    variables[63] = lt_func(variables[0], variables[1])+gt_func(variables[2], variables[3])
     variables[64] = variables[0]
     variables[65] = variables[0]-variables[1]
-    variables[66] = ltFunc(variables[0], variables[1])-gtFunc(variables[2], variables[3])
-    variables[67] = ltFunc(variables[0], variables[1])-(variables[2]+variables[3])
-    variables[68] = ltFunc(variables[0], variables[1])-variables[2]
+    variables[66] = lt_func(variables[0], variables[1])-gt_func(variables[2], variables[3])
+    variables[67] = lt_func(variables[0], variables[1])-(variables[2]+variables[3])
+    variables[68] = lt_func(variables[0], variables[1])-variables[2]
     variables[69] = -variables[0]
-    variables[70] = -ltFunc(variables[0], variables[1])
+    variables[70] = -lt_func(variables[0], variables[1])
     variables[71] = variables[0]*variables[1]
     variables[72] = variables[0]*variables[1]*variables[2]
-    variables[73] = ltFunc(variables[0], variables[1])*gtFunc(variables[2], variables[3])
-    variables[74] = (variables[0]+variables[1])*gtFunc(variables[2], variables[3])
-    variables[75] = variables[0]*gtFunc(variables[1], variables[2])
-    variables[76] = (variables[0]-variables[1])*gtFunc(variables[2], variables[3])
-    variables[77] = -variables[0]*gtFunc(variables[1], variables[2])
-    variables[78] = ltFunc(variables[0], variables[1])*(variables[2]+variables[3])
-    variables[79] = ltFunc(variables[0], variables[1])*variables[2]
-    variables[80] = ltFunc(variables[0], variables[1])*(variables[2]-variables[3])
-    variables[81] = ltFunc(variables[0], variables[1])*-variables[2]
+    variables[73] = lt_func(variables[0], variables[1])*gt_func(variables[2], variables[3])
+    variables[74] = (variables[0]+variables[1])*gt_func(variables[2], variables[3])
+    variables[75] = variables[0]*gt_func(variables[1], variables[2])
+    variables[76] = (variables[0]-variables[1])*gt_func(variables[2], variables[3])
+    variables[77] = -variables[0]*gt_func(variables[1], variables[2])
+    variables[78] = lt_func(variables[0], variables[1])*(variables[2]+variables[3])
+    variables[79] = lt_func(variables[0], variables[1])*variables[2]
+    variables[80] = lt_func(variables[0], variables[1])*(variables[2]-variables[3])
+    variables[81] = lt_func(variables[0], variables[1])*-variables[2]
     variables[82] = variables[0]/variables[1]
-    variables[83] = ltFunc(variables[0], variables[1])/gtFunc(variables[3], variables[2])
-    variables[84] = (variables[0]+variables[1])/gtFunc(variables[3], variables[2])
-    variables[85] = variables[0]/gtFunc(variables[2], variables[1])
-    variables[86] = (variables[0]-variables[1])/gtFunc(variables[3], variables[2])
-    variables[87] = -variables[0]/gtFunc(variables[2], variables[1])
-    variables[88] = ltFunc(variables[0], variables[1])/(variables[2]+variables[3])
-    variables[89] = ltFunc(variables[0], variables[1])/variables[2]
-    variables[90] = ltFunc(variables[0], variables[1])/(variables[2]-variables[3])
-    variables[91] = ltFunc(variables[0], variables[1])/-variables[2]
-    variables[92] = ltFunc(variables[0], variables[1])/(variables[2]*variables[3])
-    variables[93] = ltFunc(variables[0], variables[1])/(variables[2]/variables[3])
+    variables[83] = lt_func(variables[0], variables[1])/gt_func(variables[3], variables[2])
+    variables[84] = (variables[0]+variables[1])/gt_func(variables[3], variables[2])
+    variables[85] = variables[0]/gt_func(variables[2], variables[1])
+    variables[86] = (variables[0]-variables[1])/gt_func(variables[3], variables[2])
+    variables[87] = -variables[0]/gt_func(variables[2], variables[1])
+    variables[88] = lt_func(variables[0], variables[1])/(variables[2]+variables[3])
+    variables[89] = lt_func(variables[0], variables[1])/variables[2]
+    variables[90] = lt_func(variables[0], variables[1])/(variables[2]-variables[3])
+    variables[91] = lt_func(variables[0], variables[1])/-variables[2]
+    variables[92] = lt_func(variables[0], variables[1])/(variables[2]*variables[3])
+    variables[93] = lt_func(variables[0], variables[1])/(variables[2]/variables[3])
     variables[94] = sqrt(variables[0])
     variables[95] = pow(variables[0], 2.0)
     variables[96] = pow(variables[0], 3.0)
     variables[97] = pow(variables[0], variables[1])
-    variables[98] = pow(ltFunc(variables[0], variables[1]), gtFunc(variables[2], variables[3]))
-    variables[99] = pow(variables[0]+variables[1], gtFunc(variables[2], variables[3]))
-    variables[100] = pow(variables[0], gtFunc(variables[1], variables[2]))
-    variables[101] = pow(variables[0]-variables[1], gtFunc(variables[2], variables[3]))
-    variables[102] = pow(-variables[0], gtFunc(variables[1], variables[2]))
-    variables[103] = pow(variables[0]*variables[1], gtFunc(variables[2], variables[3]))
-    variables[104] = pow(variables[0]/variables[1], gtFunc(variables[2], variables[3]))
-    variables[105] = pow(ltFunc(variables[0], variables[1]), variables[2]+variables[3])
-    variables[106] = pow(ltFunc(variables[0], variables[1]), variables[2])
-    variables[107] = pow(ltFunc(variables[0], variables[1]), variables[2]-variables[3])
-    variables[108] = pow(ltFunc(variables[0], variables[1]), -variables[2])
-    variables[109] = pow(ltFunc(variables[0], variables[1]), variables[2]*variables[3])
-    variables[110] = pow(ltFunc(variables[0], variables[1]), variables[2]/variables[3])
-    variables[111] = pow(ltFunc(variables[0], variables[1]), pow(variables[2], variables[3]))
-    variables[112] = pow(ltFunc(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
+    variables[98] = pow(lt_func(variables[0], variables[1]), gt_func(variables[2], variables[3]))
+    variables[99] = pow(variables[0]+variables[1], gt_func(variables[2], variables[3]))
+    variables[100] = pow(variables[0], gt_func(variables[1], variables[2]))
+    variables[101] = pow(variables[0]-variables[1], gt_func(variables[2], variables[3]))
+    variables[102] = pow(-variables[0], gt_func(variables[1], variables[2]))
+    variables[103] = pow(variables[0]*variables[1], gt_func(variables[2], variables[3]))
+    variables[104] = pow(variables[0]/variables[1], gt_func(variables[2], variables[3]))
+    variables[105] = pow(lt_func(variables[0], variables[1]), variables[2]+variables[3])
+    variables[106] = pow(lt_func(variables[0], variables[1]), variables[2])
+    variables[107] = pow(lt_func(variables[0], variables[1]), variables[2]-variables[3])
+    variables[108] = pow(lt_func(variables[0], variables[1]), -variables[2])
+    variables[109] = pow(lt_func(variables[0], variables[1]), variables[2]*variables[3])
+    variables[110] = pow(lt_func(variables[0], variables[1]), variables[2]/variables[3])
+    variables[111] = pow(lt_func(variables[0], variables[1]), pow(variables[2], variables[3]))
+    variables[112] = pow(lt_func(variables[0], variables[1]), pow(variables[2], 1.0/variables[3]))
     variables[113] = sqrt(variables[0])
     variables[114] = sqrt(variables[0])
     variables[115] = pow(variables[0], 1.0/3.0)
     variables[116] = pow(variables[0], 1.0/variables[1])
-    variables[117] = pow(ltFunc(variables[0], variables[1]), 1.0/gtFunc(variables[3], variables[2]))
-    variables[118] = pow(variables[0]+variables[1], 1.0/gtFunc(variables[3], variables[2]))
-    variables[119] = pow(variables[0], 1.0/gtFunc(variables[2], variables[1]))
-    variables[120] = pow(variables[0]-variables[1], 1.0/gtFunc(variables[3], variables[2]))
-    variables[121] = pow(-variables[0], 1.0/gtFunc(variables[2], variables[1]))
-    variables[122] = pow(variables[0]*variables[1], 1.0/gtFunc(variables[3], variables[2]))
-    variables[123] = pow(variables[0]/variables[1], 1.0/gtFunc(variables[3], variables[2]))
-    variables[124] = pow(ltFunc(variables[0], variables[1]), 1.0/(variables[2]+variables[3]))
-    variables[125] = pow(ltFunc(variables[0], variables[1]), 1.0/variables[2])
-    variables[126] = pow(ltFunc(variables[0], variables[1]), 1.0/(variables[2]-variables[3]))
-    variables[127] = pow(ltFunc(variables[0], variables[1]), 1.0/-variables[2])
-    variables[128] = pow(ltFunc(variables[0], variables[1]), 1.0/(variables[2]*variables[3]))
-    variables[129] = pow(ltFunc(variables[0], variables[1]), 1.0/(variables[2]/variables[3]))
-    variables[130] = pow(ltFunc(variables[0], variables[1]), 1.0/pow(variables[2], variables[3]))
-    variables[131] = pow(ltFunc(variables[0], variables[1]), 1.0/pow(variables[2], 1.0/variables[3]))
+    variables[117] = pow(lt_func(variables[0], variables[1]), 1.0/gt_func(variables[3], variables[2]))
+    variables[118] = pow(variables[0]+variables[1], 1.0/gt_func(variables[3], variables[2]))
+    variables[119] = pow(variables[0], 1.0/gt_func(variables[2], variables[1]))
+    variables[120] = pow(variables[0]-variables[1], 1.0/gt_func(variables[3], variables[2]))
+    variables[121] = pow(-variables[0], 1.0/gt_func(variables[2], variables[1]))
+    variables[122] = pow(variables[0]*variables[1], 1.0/gt_func(variables[3], variables[2]))
+    variables[123] = pow(variables[0]/variables[1], 1.0/gt_func(variables[3], variables[2]))
+    variables[124] = pow(lt_func(variables[0], variables[1]), 1.0/(variables[2]+variables[3]))
+    variables[125] = pow(lt_func(variables[0], variables[1]), 1.0/variables[2])
+    variables[126] = pow(lt_func(variables[0], variables[1]), 1.0/(variables[2]-variables[3]))
+    variables[127] = pow(lt_func(variables[0], variables[1]), 1.0/-variables[2])
+    variables[128] = pow(lt_func(variables[0], variables[1]), 1.0/(variables[2]*variables[3]))
+    variables[129] = pow(lt_func(variables[0], variables[1]), 1.0/(variables[2]/variables[3]))
+    variables[130] = pow(lt_func(variables[0], variables[1]), 1.0/pow(variables[2], variables[3]))
+    variables[131] = pow(lt_func(variables[0], variables[1]), 1.0/pow(variables[2], 1.0/variables[3]))
     variables[132] = fabs(variables[0])
     variables[133] = exp(variables[0])
     variables[134] = log(variables[0])
@@ -262,14 +288,16 @@ def computeComputedConstants(variables):
     variables[167] = asech(variables[0])
     variables[168] = acsch(variables[0])
     variables[169] = acoth(2.0*variables[0])
-    variables[170] = variables[0] if (gtFunc(variables[0], variables[1])) else nan
-    variables[171] = variables[0] if (gtFunc(variables[0], variables[1])) else variables[2]
-    variables[172] = variables[0] if (gtFunc(variables[0], variables[1])) else variables[2] if (gtFunc(variables[2], variables[3])) else variables[4] if (gtFunc(variables[4], variables[5])) else nan
-    variables[173] = variables[0] if (gtFunc(variables[0], variables[1])) else variables[2] if (gtFunc(variables[2], variables[3])) else variables[4] if (gtFunc(variables[4], variables[5])) else variables[6]
+    variables[170] = variables[0] if gt_func(variables[0], variables[1]) else nan
+    variables[171] = variables[0] if gt_func(variables[0], variables[1]) else variables[2]
+    variables[172] = variables[0] if gt_func(variables[0], variables[1]) else variables[2] if gt_func(variables[2], variables[3]) else variables[4] if gt_func(variables[4], variables[5]) else nan
+    variables[173] = variables[0] if gt_func(variables[0], variables[1]) else variables[2] if gt_func(variables[2], variables[3]) else variables[4] if gt_func(variables[4], variables[5]) else variables[6]
     variables[178] = variables[0]
 
-def computeRates(voi, states, rates, variables):
+
+def compute_rates(voi, states, rates, variables):
     rates[0] = 1.0
 
-def computeVariables(voi, states, rates, variables):
+
+def compute_variables(voi, states, rates, variables):
     pass
