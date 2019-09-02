@@ -70,6 +70,7 @@ TEST(Reset, printResetWithVariable)
         "    <reset variable=\"A\"/>\n"
         "  </component>\n"
         "</model>\n";
+
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
@@ -139,6 +140,7 @@ TEST(Reset, printResetWithOrder)
         "    <reset order=\"1\"/>\n"
         "  </component>\n"
         "</model>\n";
+
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
@@ -161,6 +163,7 @@ TEST(Reset, printResetWithNegativeOrder)
         "    <reset order=\"-1\"/>\n"
         "  </component>\n"
         "</model>\n";
+
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
@@ -183,6 +186,7 @@ TEST(Reset, printResetWithOrderAndVariable)
         "    <reset variable=\"B\" order=\"1\"/>\n"
         "  </component>\n"
         "</model>\n";
+
     libcellml::ModelPtr m = createModelWithComponent();
     libcellml::ComponentPtr c = m->component(0);
     libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();

@@ -57,110 +57,115 @@ public:
     VariablePtr variable() const;
 
     /**
-     * @brief Set the @c TestVariable for this @c Reset.
+     * @brief Set the test @c Variable for this @c Reset.
      *
-     * Set the @c TestVariable for this @c Reset.
+     * Set the test @c Variable for this @c Reset.
      *
-     * @param variable The @c TestVariable to set.
+     * @param variable The test @c Variable to set.
      */
     void setTestVariable(const VariablePtr &variable);
 
     /**
-     * @brief Get the @c TestVariable for this @c Reset.
+     * @brief Get the test variable for this @c Reset.
      *
-     * Return the @c TestVariable of this @c Reset.
+     * Return the @c Variable used in the test condition of this @c Reset.
      *
-     * @return The @c TestVariable.
+     * @return The @c Variable used in the test condition.
      */
     VariablePtr testVariable() const;
 
     /**
-     * @brief Append the argument to the testValue string for this reset.
+     * @brief Append the argument to the test value string for this reset.
      *
-     * Append @p math to the existing testValue string for this reset.
+     * Append @p math to the existing test value string for this reset.
      *
      * @param math The @c std::string to append for this reset.
      */
     void appendTestValue(const std::string &math);
 
     /**
-     * @brief Get the testValue string for this reset.
+     * @brief Get the test value string for this reset.
      *
-     * Return a testValue string if one has been appended for this reset. Returns
-     * an empty string if testValue has not been appended (or has been removed).
+     * Return a test value string if one has been appended for this reset. Returns
+     * an empty string if a test value has not been appended (or has been removed).
      *
-     * @return @c std::string testValue for this reset.
+     * @return @c std::string test value for this reset.
      */
     std::string testValue() const;
 
     /**
-     * @brief Set the TestValue string for this reset.
+     * @brief Set the test value string for this reset.
      *
-     * Set the TestValue string for this reset. If @p math is an empty
-     * string, TestValue will be removed from the reset.
+     * Set the test value string for this reset. If @p math is an empty
+     * string, the test value will effectively be removed from the reset.
      *
      * @param math The @c std::string to append for this reset.
      */
     void setTestValue(const std::string &math);
 
     /**
-     * @brief Set the TestValueId string for this reset.
+     * @brief Set an identifier to the test value for this reset.
      *
-     * Set the TestValueId string for this reset. 
+     * Set the identifier to the test value string for this reset.  Setting
+     * the @p id to the empty string will effectively remove the identifier.
      *
-     * @param id The @c std::string to set for this reset's test_value.
+     * @param id The @c std::string to set for this reset's test value.
      */
     void setTestValueId(const std::string &id);
 
     /**
-     * @brief Return the TestValueId string for this reset.
+     * @brief Return the identifier of the test value for this reset.
      *
-     * Get the TestValueId string for this reset. 
+     * Get the identifier of the test value for this reset.
+     *
+     * @return @c std::string The identifier of the test value for this reset.
      */
     std::string testValueId() const;
 
     /**
-     * @brief Append the argument to the resetValue string for this reset.
+     * @brief Append the argument to the reset value for this reset.
      *
-     * Append @p math to the existing resetValue string for this reset.
+     * Append @p math to the existing reset value for this reset.
      *
-     * @param math The @c std::string to append for this reset.
+     * @param math The @c std::string to append to the reset value for this reset.
      */
     void appendResetValue(const std::string &math);
 
     /**
-     * @brief Get the resetValue string for this reset.
+     * @brief Get the reset value string for this reset.
      *
      * Return a math string if one has been appended for this reset. Returns
      * an empty string if math has not been appended (or has been removed).
      *
-     * @return @c std::string resetValue for this reset.
+     * @return @c std::string reset value for this reset.
      */
     std::string resetValue() const;
 
     /**
-     * @brief Set the resetValue math string for this reset.
+     * @brief Set the reset value math for this reset.
      *
-     * Set the math string for this reset. If @p math is an empty
-     * string, resetValue will be removed from the reset.
+     * Set the math to the reset value for this reset. If @p math is an empty
+     * string, reset value will effectively be removed from the reset.
      *
      * @param math The @c std::string to append for this reset.
      */
     void setResetValue(const std::string &math);
 
     /**
-     * @brief Set the ResetValueId string for this reset.
+     * @brief Set an identifier to the reset value for this reset.
      *
-     * Set the ResetValueId string for this reset. 
+     * Set an identifier to the reset value for this reset.
      *
-     * @param id The @c std::string to set for this reset's reset_value.
+     * @param id The @c std::string to set for this reset's reset value identifier.
      */
     void setResetValueId(const std::string &id);
 
     /**
-     * @brief Return the ResetValueId string for this reset.
+     * @brief Return the identifier of the reset value for this reset.
      *
-     * Get the ResetValueId string for this reset. 
+     * Get the identifier of the reset value for this reset.
+     *
+     * @return @c std::string The identifier of the reset value for this reset.
      */
     std::string resetValueId() const;
 
