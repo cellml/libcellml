@@ -2,23 +2,23 @@ from math import *
 
 
 def eq_eq_func(x, y):
-    return 1.0 if (x == y) else 0.0
+    return 1.0 if x == y else 0.0
 
 
 def lt_func(x, y):
-    return 1.0 if (x < y) else 0.0
+    return 1.0 if x < y else 0.0
 
 
 def gt_func(x, y):
-    return 1.0 if (x > y) else 0.0
+    return 1.0 if x > y else 0.0
 
 
 def geq_func(x, y):
-    return 1.0 if (x >= y) else 0.0
+    return 1.0 if x >= y else 0.0
 
 
 def and_func(x, y):
-    return 1.0 if (bool(x) & bool(y)) else 0.0
+    return 1.0 if bool(x) & bool(y) else 0.0
 
 
 def initialize_constants(states, variables):

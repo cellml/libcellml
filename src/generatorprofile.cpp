@@ -481,30 +481,30 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Mathematical functions
 
         mEqEqFunctionString = "def eq_eq_func(x, y):\n"
-                              "    return 1.0 if (x == y) else 0.0\n\n";
+                              "    return 1.0 if x == y else 0.0\n\n";
         mNeqFunctionString = "def neq_func(x, y):\n"
-                             "    return 1.0 if (x != y) else 0.0\n\n";
+                             "    return 1.0 if x != y else 0.0\n\n";
         mLtFunctionString = "def lt_func(x, y):\n"
-                            "    return 1.0 if (x < y) else 0.0\n\n";
+                            "    return 1.0 if x < y else 0.0\n\n";
         mLeqFunctionString = "def leq_func(x, y):\n"
-                             "    return 1.0 if (x <= y) else 0.0\n\n";
+                             "    return 1.0 if x <= y else 0.0\n\n";
         mGtFunctionString = "def gt_func(x, y):\n"
-                            "    return 1.0 if (x > y) else 0.0\n\n";
+                            "    return 1.0 if x > y else 0.0\n\n";
         mGeqFunctionString = "def geq_func(x, y):\n"
-                             "    return 1.0 if (x >= y) else 0.0\n\n";
+                             "    return 1.0 if x >= y else 0.0\n\n";
         mAndFunctionString = "def and_func(x, y):\n"
-                             "    return 1.0 if (bool(x) & bool(y)) else 0.0\n\n";
+                             "    return 1.0 if bool(x) & bool(y) else 0.0\n\n";
         mOrFunctionString = "def or_func(x, y):\n"
-                            "    return 1.0 if (bool(x) | bool(y)) else 0.0\n\n";
+                            "    return 1.0 if bool(x) | bool(y) else 0.0\n\n";
         mXorFunctionString = "def xor_func(x, y):\n"
-                             "    return 1.0 if (bool(x) ^ bool(y)) else 0.0\n\n";
+                             "    return 1.0 if bool(x) ^ bool(y) else 0.0\n\n";
         mNotFunctionString = "def not_func(x):\n"
-                             "    return 1.0 if (not bool(x)) else 0.0\n\n";
+                             "    return 1.0 if not bool(x) else 0.0\n\n";
 
         mMinFunctionString = "def min(x, y):\n"
-                             "    return x if (x < y) else y\n\n";
+                             "    return x if x < y else y\n\n";
         mMaxFunctionString = "def max(x, y):\n"
-                             "    return x if (x > y) else y\n\n";
+                             "    return x if x > y else y\n\n";
 
         mSecFunctionString = "def sec(x):\n"
                              "    return 1.0/cos(x)\n\n";
