@@ -38,15 +38,15 @@ VARIABLE_VECTOR_INFORMATION_ARRAY = [
 
 
 def leq_func(x, y):
-    return 1.0 if (x <= y) else 0.0
+    return 1.0 if x <= y else 0.0
 
 
 def geq_func(x, y):
-    return 1.0 if (x >= y) else 0.0
+    return 1.0 if x >= y else 0.0
 
 
 def and_func(x, y):
-    return 1.0 if (bool(x) & bool(y)) else 0.0
+    return 1.0 if bool(x) & bool(y) else 0.0
 
 
 def create_state_vector():

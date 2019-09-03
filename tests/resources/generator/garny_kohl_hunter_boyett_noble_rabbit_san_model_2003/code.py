@@ -216,11 +216,11 @@ VARIABLE_VECTOR_INFORMATION_ARRAY = [
 
 
 def eq_eq_func(x, y):
-    return 1.0 if (x == y) else 0.0
+    return 1.0 if x == y else 0.0
 
 
 def neq_func(x, y):
-    return 1.0 if (x != y) else 0.0
+    return 1.0 if x != y else 0.0
 
 
 def create_state_vector():
