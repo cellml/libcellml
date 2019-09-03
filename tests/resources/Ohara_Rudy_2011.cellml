@@ -61,28 +61,28 @@ http://www.cellml.org/
     <units name="microF">
         <unit prefix="micro" units="farad"/>
     </units>
-    <units name="micrometer_3">
+    <units name="micrometre_3">
         <unit exponent="3" prefix="micro" units="metre"/>
     </units>
-    <units name="per_micrometer_3">
+    <units name="per_micrometre_3">
         <unit exponent="-3" prefix="micro" units="metre"/>
     </units>
     <units name="mm2">
         <unit exponent="2" prefix="milli" units="metre"/>
     </units>
-    <units name="centimeter">
+    <units name="centimetre">
         <unit prefix="centi" units="metre"/>
     </units>
-    <units name="centimeter_squared">
-        <unit exponent="2" units="centimeter"/>
+    <units name="centimetre_squared">
+        <unit exponent="2" units="centimetre"/>
     </units>
-    <units name="microlitre_per_centimeter_cubed">
+    <units name="microlitre_per_centimetre_cubed">
         <unit units="microlitre"/>
-        <unit exponent="-3" units="centimeter"/>
+        <unit exponent="-3" units="centimetre"/>
     </units>
-    <units name="microF_per_centimeter_squared">
+    <units name="microF_per_centimetre_squared">
         <unit units="microF"/>
-        <unit exponent="-1" units="centimeter_squared"/>
+        <unit exponent="-1" units="centimetre_squared"/>
     </units>
     <units name="microlitre">
         <unit prefix="micro" units="litre"/>
@@ -129,7 +129,7 @@ http://www.cellml.org/
                 <ci>vcell</ci>
                 <apply>
                     <times/>
-                    <cn cellml:units="microlitre_per_centimeter_cubed">1000</cn>
+                    <cn cellml:units="microlitre_per_centimetre_cubed">1000</cn>
                     <cn cellml:units="dimensionless">3.14</cn>
                     <ci>rad</ci>
                     <ci>rad</ci>
