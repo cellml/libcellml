@@ -202,51 +202,51 @@ VARIABLE_VECTOR_INFORMATION_ARRAY = [
 
 
 def eq_eq_func(x, y):
-    return 1.0 if (x == y) else 0.0
+    return 1.0 if x == y else 0.0
 
 
 def neq_func(x, y):
-    return 1.0 if (x != y) else 0.0
+    return 1.0 if x != y else 0.0
 
 
 def lt_func(x, y):
-    return 1.0 if (x < y) else 0.0
+    return 1.0 if x < y else 0.0
 
 
 def leq_func(x, y):
-    return 1.0 if (x <= y) else 0.0
+    return 1.0 if x <= y else 0.0
 
 
 def gt_func(x, y):
-    return 1.0 if (x > y) else 0.0
+    return 1.0 if x > y else 0.0
 
 
 def geq_func(x, y):
-    return 1.0 if (x >= y) else 0.0
+    return 1.0 if x >= y else 0.0
 
 
 def and_func(x, y):
-    return 1.0 if (bool(x) & bool(y)) else 0.0
+    return 1.0 if bool(x) & bool(y) else 0.0
 
 
 def or_func(x, y):
-    return 1.0 if (bool(x) | bool(y)) else 0.0
+    return 1.0 if bool(x) | bool(y) else 0.0
 
 
 def xor_func(x, y):
-    return 1.0 if (bool(x) ^ bool(y)) else 0.0
+    return 1.0 if bool(x) ^ bool(y) else 0.0
 
 
 def not_func(x):
-    return 1.0 if (not bool(x)) else 0.0
+    return 1.0 if not bool(x) else 0.0
 
 
 def min(x, y):
-    return x if (x < y) else y
+    return x if x < y else y
 
 
 def max(x, y):
-    return x if (x > y) else y
+    return x if x > y else y
 
 
 def sec(x):
