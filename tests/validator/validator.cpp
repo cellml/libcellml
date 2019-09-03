@@ -1187,6 +1187,48 @@ TEST(Validator, unitEquivalenceStandardUnitsToBaseUnits)
     }
 }
 
+TEST(Validator, unitEquivalenceBasicDimensionlessUnits)
+{
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("tomayto");
+    v2->setName("tomahto");
+
+    m->setName("callthewholethingoff");
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp1->setName("comp1");
+    comp2->setName("comp2");
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    // u1 = u2: testing that cancelled units become dimensionless
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("metrepermetre");
+    u1->addUnit("metre", 1.0);
+    u1->addUnit("metre", 0, -1.0, 1.0);
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("ratio");
+    u2->addUnit("dimensionless");
+
+    v1->setUnits(u1);
+    v2->setUnits(u2);
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    validator.validateModel(m);
+    EXPECT_EQ(size_t(0), validator.errorCount());
+}
+
 TEST(Validator, unitEquivalenceDimensionlessUnits)
 {
     libcellml::Validator validator;
@@ -1214,7 +1256,7 @@ TEST(Validator, unitEquivalenceDimensionlessUnits)
     m->addComponent(comp2);
     m->addComponent(comp3);
 
-    // u1 = u2 = u3: testing that cancelled units become dimensionless
+    // u1 = u2 = u3: testing that cancelled units become dimensionless and equivalent to radians, steradians etc
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("testunit5");
     u1->addUnit("metre", 0, -2.0, 1.0);
@@ -1568,7 +1610,55 @@ TEST(Validator, unitUserCreatedBaseUnits)
     }
 }
 
-TEST(Validator, unitNoCycles)
+TEST(Validator, unitSimpleCycle)
+{
+    // Testing that indirect dependence is caught in the unit cycles.  The network is:
+    //
+    //      grandfather(u1) <- father(u2) <- child (u3) <-|
+    //           |                                        |
+    //           |----------------------------------------|
+
+    const std::string expectedError = "Cyclic units exist: 'grandfather' -> 'child' -> 'father' -> 'grandfather'";
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+
+    m->setName("model");
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u3);
+
+    u1->setName("grandfather"); // base unit
+
+    u2->setName("father"); // first generation
+    u2->addUnit("grandfather", 0.0, 1.0, 1.0);
+
+    u3->setName("child"); // second generation
+    u3->addUnit("father", 0.0, 1.0, 1.0);
+
+    // Network valid at this stage
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1
+    u1->addUnit("child", 0.0, 1.0, 1.0);
+    v.validateModel(m);
+
+    EXPECT_EQ(size_t(1), v.errorCount());
+    EXPECT_EQ(expectedError, v.error(0)->description());
+}
+
+TEST(Validator, unitNoCyclesBranching)
 {
     // Simple testing for the directional dependency of units.  The first network is:
     //
@@ -1579,7 +1669,8 @@ TEST(Validator, unitNoCycles)
     //                            <- sisterFromAnotherMister (u6)
     //
     // There is an _undirected_ loop between u1-u2-u3-u5 but the directionality of the
-    // dependencies here means the network is still valid.
+    // dependencies here means the network is still valid.  Keeping this here to test that
+    // the directionality does indeed protect it from forming a cycle.
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
