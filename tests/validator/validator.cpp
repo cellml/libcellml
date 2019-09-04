@@ -1610,7 +1610,7 @@ TEST(Validator, unitUserCreatedBaseUnits)
 
 TEST(Validator, unitSimpleCycle)
 {
-    // Testing that indirect dependence is caught in the unit cycles.  The network is:
+    // Testing that indirect dependence is caught in the unit cycles. The network is:
     //
     //      grandfather(u1) <- father(u2) <- child (u3) <-|
     //           |                                        |
@@ -1620,11 +1620,6 @@ TEST(Validator, unitSimpleCycle)
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
@@ -1636,19 +1631,19 @@ TEST(Validator, unitSimpleCycle)
     m->addUnits(u2);
     m->addUnits(u3);
 
-    u1->setName("grandfather"); // base unit
+    u1->setName("grandfather"); // Base unit.
 
-    u2->setName("father"); // first generation
+    u2->setName("father"); // First generation.
     u2->addUnit("grandfather");
 
-    u3->setName("child"); // second generation
+    u3->setName("child"); // Second generation.
     u3->addUnit("father");
 
-    // Network valid at this stage
+    // Network valid at this stage.
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
-    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1.
     u1->addUnit("child");
     v.validateModel(m);
 
@@ -1656,27 +1651,22 @@ TEST(Validator, unitSimpleCycle)
     EXPECT_EQ(expectedError, v.error(0)->description());
 }
 
-TEST(Validator, unitNoCyclesBranching)
+TEST(Validator, unitComplexCycle)
 {
-    // Simple testing for the directional dependency of units.  The first network is:
+    // Simple testing for the directional dependency of units. The first network is:
     //
     //                            <- brotherFromAnotherMother (u4)
     //                 <- father (u2)  <-|
     //     grandfather (u1)              | <- childOfIncest (u5)
     //                 <- mother (u3)  <-|
-    //                            <- sisterFromAnotherMister (u6)
+    //                            <- sisterFromAnotherFather (u6)
     //
     // There is an _undirected_ loop between u1-u2-u3-u5 but the directionality of the
-    // dependencies here means the network is still valid.  Keeping this here to test that
+    // dependencies here means the network is still valid. Keeping this here to test that
     // the directionality does indeed protect it from forming a cycle.
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
@@ -1694,31 +1684,28 @@ TEST(Validator, unitNoCyclesBranching)
     m->addUnits(u5);
     m->addUnits(u6);
 
-    u1->setName("grandfather"); // base unit
+    u1->setName("grandfather"); // Base unit.
 
-    u2->setName("father"); // first generation
+    u2->setName("father"); // First generation.
     u2->addUnit("grandfather");
 
-    u3->setName("mother"); // first generation
+    u3->setName("mother"); // First generation.
     u3->addUnit("grandfather");
 
-    u4->setName("brotherFromAnotherMother"); // second generation
+    u4->setName("brotherFromAnotherMother"); // Second generation.
     u4->addUnit("father");
 
-    // second generation depending on both first gen children, still valid, no loops because of directionality
+    // Second generation depending on both first gen children, still valid, no loops because of directionality.
     u5->setName("childOfIncest_ButThatsOKApparently");
     u5->addUnit("mother");
     u5->addUnit("father");
 
-    u6->setName("sisterFromAnotherMister"); // second generation
+    u6->setName("sisterFromAnotherFather"); // Second generation.
     u6->addUnit("mother");
 
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
-}
 
-TEST(Validator, unitCyclesFound)
-{
     // As soon as a dependency of the grandfather on the brotherFromAnotherMother is added, then a
     // _directed_ loop (u1->u2->u4->u1) is created and the network is no longer valid:
     //
@@ -1728,58 +1715,11 @@ TEST(Validator, unitCyclesFound)
     //     |            <- father (u2)  <-|
     //     <- grandfather (u1)            | <- childOfIncest (u5)
     //                  <- mother (u3)  <-|
-    //                             <- sisterFromAnotherMister (u6)
+    //                             <- sisterFromAnotherFather (u6)
 
     const std::string expectedError = "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'";
 
-    libcellml::Validator v;
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
-
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u6 = std::make_shared<libcellml::Units>();
-
-    m->setName("model");
-
-    m->addUnits(u1);
-    m->addUnits(u2);
-    m->addUnits(u3);
-    m->addUnits(u4);
-    m->addUnits(u5);
-    m->addUnits(u6);
-
-    u1->setName("grandfather"); // base unit
-
-    u2->setName("father"); // first generation
-    u2->addUnit("grandfather");
-
-    u3->setName("mother"); // first generation
-    u3->addUnit("grandfather");
-
-    u4->setName("brotherFromAnotherMother"); // second generation
-    u4->addUnit("father");
-
-    // second generation depending on both first gen children, still valid, no loops because of directionality
-    u5->setName("childOfIncest_ButThatsOKApparently");
-    u5->addUnit("mother");
-    u5->addUnit("father");
-
-    u6->setName("sisterFromAnotherMister"); // second generation
-    u6->addUnit("mother");
-
-    // Network valid because of directionality
-    v.validateModel(m);
-    EXPECT_EQ(size_t(0), v.errorCount());
-
-    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1
+    // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1.
     u1->addUnit("brotherFromAnotherMother");
     v.validateModel(m);
 
