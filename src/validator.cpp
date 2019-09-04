@@ -230,7 +230,7 @@ struct Validator::ValidatorImpl
     * @brief Validate that equivalent variable pairs in the @p model
     * have equivalent units.
     * @cellml2_19 Validate that equivalent variable pairs in the @p model
-    * have equivalent units
+    * have equivalent units.
     * Any errors will be logged in the @c Validator.
     *
     * @param model The model containing the variables
