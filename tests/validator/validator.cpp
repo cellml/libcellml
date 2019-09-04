@@ -994,12 +994,10 @@ TEST(Validator, whens)
 
     r1->setOrder(300);
     r1->addWhen(w1);
-    //r2->setOrder(400);
     r2->addWhen(w2);
     r2->addWhen(w3);
     r3->setOrder(500);
     r3->addWhen(w4);
-    // r1->setVariable(var);
     r2->setVariable(var);
     r3->setVariable(var);
 
@@ -1086,7 +1084,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     m->addComponent(comp1);
     m->addComponent(comp2);
 
-    // u1 = u2: different spelling of meter/metre
+    // u1 = u2: different spelling of meter/metre.
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("testunit1");
     u1->addUnit("metre");
@@ -1104,7 +1102,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1, ",
         "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' with non-matching units of 'testunit1'. The mismatch is: metre^-1, "};
 
-    // This one is now an error
+    // This one is now an error.
     libcellml::Variable::addEquivalence(v1, v2);
     validator.validateModel(m);
 
@@ -1208,11 +1206,11 @@ TEST(Validator, unitEquivalenceBasicDimensionlessUnits)
     m->addComponent(comp1);
     m->addComponent(comp2);
 
-    // u1 = u2: testing that cancelled units become dimensionless
+    // u1 = u2: testing that cancelled units become dimensionless.
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("metrepermetre");
-    u1->addUnit("metre", 1.0);
-    u1->addUnit("metre", 0, -1.0, 1.0);
+    u1->addUnit("metre");
+    u1->addUnit("metre", -1.0);
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("ratio");
     u2->addUnit("dimensionless");
@@ -1256,11 +1254,11 @@ TEST(Validator, unitEquivalenceDimensionlessUnits)
     m->addComponent(comp2);
     m->addComponent(comp3);
 
-    // u1 = u2 = u3: testing that cancelled units become dimensionless and equivalent to radians, steradians etc
+    // u1 = u2 = u3: testing that cancelled units become dimensionless and equivalent to radians, steradians, etc.
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("testunit5");
-    u1->addUnit("metre", 0, -2.0, 1.0);
-    u1->addUnit("metre", 0, 2.0, 1.0);
+    u1->addUnit("metre", -2.0);
+    u1->addUnit("metre", 2.0);
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("testunit6");
     u2->addUnit("dimensionless");
