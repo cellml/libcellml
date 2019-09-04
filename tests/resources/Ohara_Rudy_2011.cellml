@@ -70,21 +70,21 @@ http://www.cellml.org/
     <units name="mm2">
         <unit exponent="2" prefix="milli" units="metre"/>
     </units>
-    <units name="centimetre">
+    <units name="centimeter">
         <unit prefix="centi" units="metre"/>
     </units>
-    <units name="centimetre_squared">
-        <unit exponent="2" units="centimetre"/>
+    <units name="centimeter_squared">
+        <unit exponent="2" units="centimeter"/>
     </units>
-    <units name="microlitre_per_centimetre_cubed">
-        <unit units="microlitre"/>
-        <unit exponent="-3" units="centimetre"/>
+    <units name="microliter_per_centimeter_cubed">
+        <unit units="microliter"/>
+        <unit exponent="-3" units="centimeter"/>
     </units>
-    <units name="microF_per_centimetre_squared">
+    <units name="microF_per_centimeter_squared">
         <unit units="microF"/>
-        <unit exponent="-1" units="centimetre_squared"/>
+        <unit exponent="-1" units="centimeter_squared"/>
     </units>
-    <units name="microlitre">
+    <units name="microliter">
         <unit prefix="micro" units="litre"/>
     </units>
     <units name="joule_per_kilomole_kelvin">
@@ -129,7 +129,7 @@ http://www.cellml.org/
                 <ci>vcell</ci>
                 <apply>
                     <times/>
-                    <cn cellml:units="microlitre_per_centimetre_cubed">1000</cn>
+                    <cn cellml:units="microliter_per_centimeter_cubed">1000</cn>
                     <cn cellml:units="dimensionless">3.14</cn>
                     <ci>rad</ci>
                     <ci>rad</ci>
