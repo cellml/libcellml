@@ -1048,8 +1048,8 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 if (variable->equivalentVariableCount() > 0) {
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
-                        // TODO: validate variable interfaces according to 17.10.8
-                        // TODO: add check for cyclical connections (17.10.5)
+                        // TODO: validate variable interfaces according to 17.10.8.
+                        // TODO: add check for cyclical connections (17.10.5).
 
                         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
                             ErrorPtr err = std::make_shared<Error>();
@@ -1083,7 +1083,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 }
 
-// TODO: validateEncapsulations
+// TODO: validateEncapsulations.
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
 {

@@ -1305,16 +1305,16 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
     m->addComponent(comp2);
     m->addComponent(comp3);
 
-    // u1 = u2 = u3: testing multiplier or prefix don't affect base unit equivalence
+    // u1 = u2 = u3: testing multiplier or prefix don't affect base unit equivalence.
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("testunit10");
-    u1->addUnit("gram", 0, 2.0, 1000.0);
+    u1->addUnit("gram", 2.0, 1000.0);
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("testunit11");
-    u2->addUnit("kilogram", 0, 2.0, 1.0);
+    u2->addUnit("kilogram", 2.0);
     libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
     u3->setName("testunit12");
-    u3->addUnit("gram", "kilo", 2.0, 1.0);
+    u3->addUnit("gram", "kilo", 2.0);
 
     v1->setUnits(u1);
     v2->setUnits(u2);
@@ -1375,27 +1375,27 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     u1->setName("testunit1");
     u1->addUnit("metre");
 
-    // u8 = u9: testing more complicated compound units, newton/(siever.pascal) = second^2.radian^3.steradian^-4
+    // u8 = u9: testing more complicated compound units, newton/(sievert.pascal) = second^2.radian^3.steradian^-4.
     libcellml::UnitsPtr u8 = std::make_shared<libcellml::Units>();
     u8->setName("testunit8");
-    u8->addUnit("newton", 0, 1, 1);
-    u8->addUnit("pascal", 0, -1, 1);
-    u8->addUnit("sievert", 0, -1, 1);
+    u8->addUnit("newton", 1.0);
+    u8->addUnit("pascal", -1.0);
+    u8->addUnit("sievert", -1.0);
     libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
     u9->setName("testunit9");
-    u9->addUnit("second", 0, 2, 1);
-    u9->addUnit("radian", 0, -4, 1);
-    u9->addUnit("steradian", 0, 2, 1);
+    u9->addUnit("second", 2.0);
+    u9->addUnit("radian", -4.0);
+    u9->addUnit("steradian", 2.0);
 
-    // u13 != u14: testing that the mismatch is reported correctly
+    // u13 != u14: testing that the mismatch is reported correctly.
     libcellml::UnitsPtr u13 = std::make_shared<libcellml::Units>();
     u13->setName("testunit13");
-    u13->addUnit("testunit1", "kilo", 2.0, 1.0);
-    u13->addUnit("testunit8", 0, 2.0, 1.0);
+    u13->addUnit("testunit1", "kilo", 2.0);
+    u13->addUnit("testunit8", 2.0);
     libcellml::UnitsPtr u14 = std::make_shared<libcellml::Units>();
     u14->setName("testunit14");
-    u14->addUnit("testunit1", 0, 1.0, 1.0);
-    u14->addUnit("testunit9", 0, 2.0, 1.0);
+    u14->addUnit("testunit1", 1.0);
+    u14->addUnit("testunit9", 2.0);
 
     v1->setUnits(u1);
     v8->setUnits(u8);
@@ -1409,10 +1409,10 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
     m->addUnits(u13);
     m->addUnits(u14);
 
-    // This one is fine but complicated: newton/(siever.pascal) = second^2.radian^3.steradian^-4
+    // This one is fine but complicated: newton/(sievert.pascal) = second^2.radian^3.steradian^-4.
     libcellml::Variable::addEquivalence(v8, v9);
 
-    // Off by (metre)^1: testing nested unit equivalence
+    // Off by (metre)^1: testing nested unit equivalence.
     libcellml::Variable::addEquivalence(v13, v14);
 
     validator.validateModel(m);
@@ -1426,8 +1426,8 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
 {
     // This test is intended to demonstrate that the effect of different multiplicator sources (prefix, multiplier term)
-    // do not affect the equivalence of the underlying base variables.  TODO When warnings are implemented then the
-    // multiplier testing can be reinstated.
+    // does not affect the equivalence of the underlying base variables.
+    // TODO: when warnings are implemented then the multiplier testing can be reinstated.
 
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -1444,29 +1444,29 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
     // millimetres
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("u1");
-    u1->addUnit("metre", "milli", 1.0, 1.0); // standard, prefix, exponent, multiplier
+    u1->addUnit("metre", "milli"); // standard, prefix.
 
     // mm^3
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("u2");
-    u2->addUnit("u1", 0, 3.0, 1.0); // standard, prefix, exponent, multiplier
+    u2->addUnit("u1", 3.0); // standard, exponent.
 
     // mm^6
     libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
     u3->setName("u3");
-    u3->addUnit("u2", 0, 2.0, 1.0); // standard, prefix, exponent, multiplier
+    u3->addUnit("u2", 2.0); // standard, exponent.
 
     // m^6
     libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
     u4->setName("u4");
-    u4->addUnit("u3", 15, 1.0, 1000.0); // standard, prefix, exponent, multiplier
+    u4->addUnit("u3", 15, 1.0); // standard, prefix, exponent.
 
     libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
     u5->setName("u5");
-    u5->addUnit("metre", 0, 6.0, 1.0);
+    u5->addUnit("metre", 6.0); // standard, exponent.
 
-    // u4 = u5: Units will be equivalent, testing that prefix, multiplier, and exponent validation is correct
-    // TODO: see issue in specification: https://github.com/cellml/cellml-specification/issues/19
+    // u4 = u5: Units will be equivalent, testing that prefix, multiplier, and exponent validation is correct.
+    // TODO: see issue in specification: https://github.com/cellml/cellml-specification/issues/19.
     v1->setUnits(u4);
     v2->setUnits(u5);
 
@@ -1547,15 +1547,15 @@ TEST(Validator, unitUserCreatedBaseUnits)
 
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("bushell_of_apples");
-    u1->addUnit("apple", 0, 10.0, 1.0);
+    u1->addUnit("apple", 10.0);
 
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("bunch_of_bananas");
-    u2->addUnit("banana", 0, 5.0, 1.0);
+    u2->addUnit("banana", 5.0);
 
     libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
     u9->setName("big_barrel");
-    u9->addUnit("metre", 0, 3.0, 1.0);
+    u9->addUnit("metre", 3.0);
 
     v1->setUnits(u1); // bushell of apples - testing user-defined base units
     v2->setUnits(u2); // bunch of bananas - testing user-defined base units
@@ -1639,17 +1639,17 @@ TEST(Validator, unitSimpleCycle)
     u1->setName("grandfather"); // base unit
 
     u2->setName("father"); // first generation
-    u2->addUnit("grandfather", 0, 1.0, 1.0);
+    u2->addUnit("grandfather");
 
     u3->setName("child"); // second generation
-    u3->addUnit("father", 0, 1.0, 1.0);
+    u3->addUnit("father");
 
     // Network valid at this stage
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u3 -> u2 -> u1
-    u1->addUnit("child", 0, 1.0, 1.0);
+    u1->addUnit("child");
     v.validateModel(m);
 
     EXPECT_EQ(size_t(1), v.errorCount());
@@ -1697,21 +1697,21 @@ TEST(Validator, unitNoCyclesBranching)
     u1->setName("grandfather"); // base unit
 
     u2->setName("father"); // first generation
-    u2->addUnit("grandfather", 0, 1.0, 1.0);
+    u2->addUnit("grandfather");
 
     u3->setName("mother"); // first generation
-    u3->addUnit("grandfather", 0, 1.0, 1.0);
+    u3->addUnit("grandfather");
 
     u4->setName("brotherFromAnotherMother"); // second generation
-    u4->addUnit("father", 0, 1.0, 1.0);
+    u4->addUnit("father");
 
     // second generation depending on both first gen children, still valid, no loops because of directionality
     u5->setName("childOfIncest_ButThatsOKApparently");
-    u5->addUnit("mother", 0, 1.0, 1.0);
-    u5->addUnit("father", 0, 1.0, 1.0);
+    u5->addUnit("mother");
+    u5->addUnit("father");
 
     u6->setName("sisterFromAnotherMister"); // second generation
-    u6->addUnit("mother", 0, 1.0, 1.0);
+    u6->addUnit("mother");
 
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
@@ -1759,28 +1759,28 @@ TEST(Validator, unitCyclesFound)
     u1->setName("grandfather"); // base unit
 
     u2->setName("father"); // first generation
-    u2->addUnit("grandfather", 0, 1.0, 1.0);
+    u2->addUnit("grandfather");
 
     u3->setName("mother"); // first generation
-    u3->addUnit("grandfather", 0, 1.0, 1.0);
+    u3->addUnit("grandfather");
 
     u4->setName("brotherFromAnotherMother"); // second generation
-    u4->addUnit("father", 0, 1.0, 1.0);
+    u4->addUnit("father");
 
     // second generation depending on both first gen children, still valid, no loops because of directionality
     u5->setName("childOfIncest_ButThatsOKApparently");
-    u5->addUnit("mother", 0, 1.0, 1.0);
-    u5->addUnit("father", 0, 1.0, 1.0);
+    u5->addUnit("mother");
+    u5->addUnit("father");
 
     u6->setName("sisterFromAnotherMister"); // second generation
-    u6->addUnit("mother", 0, 1.0, 1.0);
+    u6->addUnit("mother");
 
     // Network valid because of directionality
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
     // Time loop Grandfather paradox created! u1 no longer a base variable: u1 -> u4 -> u2 -> u1
-    u1->addUnit("brotherFromAnotherMother", 0, 1.0, 1.0);
+    u1->addUnit("brotherFromAnotherMother");
     v.validateModel(m);
 
     EXPECT_EQ(size_t(1), v.errorCount());
