@@ -1230,20 +1230,20 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
     if (model->hasUnits(uName)) {
         libcellml::UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
-            std::string myRef;
-            std::string myPre;
-            std::string myId;
-            double myExp;
-            double myMult;
+            std::string ref;
+            std::string pre;
+            std::string id;
+            double exp;
+            double mult;
             double expMult;
             for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->unitAttributes(i, myRef, myPre, myExp, expMult, myId);
-                myMult = std::log10(expMult);
-                if (!isStandardUnitName(myRef)) {
-                    updateBaseUnitCount(model, unitMap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp, direction);
+                u->unitAttributes(i, ref, pre, exp, expMult, id);
+                mult = std::log10(expMult);
+                if (!isStandardUnitName(ref)) {
+                    updateBaseUnitCount(model, unitMap, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
                 } else {
-                    for (const auto &iter : standardUnitsList.at(myRef)) {
-                        unitMap.at(iter.first) += direction * (iter.second * myExp * uExp);
+                    for (const auto &iter : standardUnitsList.at(ref)) {
+                        unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
                     }
                 }
             }
