@@ -1502,9 +1502,9 @@ TEST(Validator, unitUserCreatedBaseUnits)
         "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1, second^-1, ",
         "Variable 'v8' has units of 'banana' and an equivalent variable 'v7' with non-matching units of 'apple'. The mismatch is: apple^-1, banana^1, ",
         "Variable 'v3' has units of 'litre' and an equivalent variable 'v4' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3, ",
-        // "Variable 'v3' has units of 'litre' and an equivalent variable 'v9' with non-matching units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3, ", // removed until multiplication checking is turned on
+        // "Variable 'v3' has units of 'litre' and an equivalent variable 'v9' with non-matching units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3, ", // NOTE: removed until multiplication checking is turned on.
         "Variable 'v6' has units of 'second' and an equivalent variable 'v5' with non-matching units of 'metre'. The mismatch is: metre^-1, second^1, ",
-        // "Variable 'v9' has units of 'big_barrel' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: multiplication factor of 10^3, ", // removed until multiplication checking is turned on
+        // "Variable 'v9' has units of 'big_barrel' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: multiplication factor of 10^3, ", // NOTE: removed until multiplication checking is turned on.
     };
 
     libcellml::Validator validator;
@@ -1557,13 +1557,13 @@ TEST(Validator, unitUserCreatedBaseUnits)
     u9->setName("big_barrel");
     u9->addUnit("metre", 3.0);
 
-    v1->setUnits(u1); // bushell of apples - testing user-defined base units
-    v2->setUnits(u2); // bunch of bananas - testing user-defined base units
+    v1->setUnits(u1); // Bushell of apples - testing user-defined base units.
+    v2->setUnits(u2); // Bunch of bananas - testing user-defined base units.
 
-    v3->setUnits("litre"); // testing standard units which are not base units
+    v3->setUnits("litre"); // Testing standard units which are not base units.
     v4->setUnits("gram");
 
-    v5->setUnits("metre"); // testing built-in base units
+    v5->setUnits("metre"); // Testing built-in base units.
     v6->setUnits("second");
 
     v7->setUnits("apple");
@@ -1593,11 +1593,11 @@ TEST(Validator, unitUserCreatedBaseUnits)
     m->addUnits(uApple);
     m->addUnits(uBanana);
 
-    libcellml::Variable::addEquivalence(v1, v2); // bushell of apples != bunch of bananas
-    libcellml::Variable::addEquivalence(v3, v4); // litre != gram
-    libcellml::Variable::addEquivalence(v5, v6); // metre != second
-    libcellml::Variable::addEquivalence(v7, v8); // apple != banana
-    libcellml::Variable::addEquivalence(v3, v9); // litre != big_barrel, multiplier factor difference TODO not currently reported
+    libcellml::Variable::addEquivalence(v1, v2); // Bushell of apples != bunch of bananas.
+    libcellml::Variable::addEquivalence(v3, v4); // Litre != gram.
+    libcellml::Variable::addEquivalence(v5, v6); // Metre != second.
+    libcellml::Variable::addEquivalence(v7, v8); // Apple != banana.
+    libcellml::Variable::addEquivalence(v3, v9); // Litre != big_barrel, multiplier factor difference TODO: not currently reported.
 
     validator.validateModel(m);
 
