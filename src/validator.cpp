@@ -1189,8 +1189,8 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     std::map<std::string, double> unitMap = {};
 
-    for (const auto &pos : baseUnitsList) {
-        unitMap[pos] = 0.0;
+    for (const auto &baseUnits : baseUnitsList) {
+        unitMap[baseUnits] = 0.0;
     }
 
     std::string myRef;
@@ -1220,14 +1220,14 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     unitMap.erase("dimensionless");
 
     status = true;
-    for (const auto &basepair : unitMap) {
-        if (basepair.second != 0.0) {
-            std::string num = std::to_string(basepair.second);
+    for (const auto &basePair : unitMap) {
+        if (basePair.second != 0.0) {
+            std::string num = std::to_string(basePair.second);
             num.erase(num.find_last_not_of('0') + 1, num.length());
             if (num.back() == '.') {
                 num.pop_back();
             }
-            hints += basepair.first + "^" + num + ", ";
+            hints += basePair.first + "^" + num + ", ";
             status = false;
         }
     }
