@@ -253,14 +253,12 @@ struct Validator::ValidatorImpl
     *
     * @param model The model containing the variables.
     * @param unitMap A list of the exponents of base variables.
-    * @param multMap The unit multiplier (??).
     * @param uName String name of the current variable being investigated.
     * @param standardList Nested map of the conversion between built-in units and the base units they contain
     * @param uExp Exponent of the current unit in its parent.
     */
     void incrementBaseUnitCount(const ModelPtr &model,
                                 std::map<std::string, double> &unitMap,
-                                double &multMap,
                                 const std::string &uName,
                                 const double &uExp,
                                 const double &logMult);
@@ -270,14 +268,12 @@ struct Validator::ValidatorImpl
     *
     * @param model The model containing the variables.
     * @param unitMap A list of the exponents of base variables.
-    * @param multMap The unit multiplier (??).
     * @param uName String name of the current variable being investigated.
     * @param standardList Nested map of the conversion between built-in units and the base units they contain.
     * @param uExp Exponent of the current unit in its parent.
     */
     void decrementBaseUnitCount(const ModelPtr &model,
                                 std::map<std::string, double> &unitMap,
-                                double &multMap,
                                 const std::string &uName,
                                 const double &uExp,
                                 const double &logMult);
@@ -1184,7 +1180,6 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
                                                   std::string &hints)
 {
     bool status;
-    double multMap = 0.0;
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     std::map<std::string, double> unitMap = {};
@@ -1198,22 +1193,22 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
 
     if (model->hasUnits(v1->units())) {
         u1 = model->units(v1->units());
-        incrementBaseUnitCount(model, unitMap, multMap, u1->name(), 1, 0);
+        incrementBaseUnitCount(model, unitMap, u1->name(), 1, 0);
     } else if (unitMap.find(v1->units()) != unitMap.end()) {
         myRef = v1->units();
         unitMap.at(myRef) += 1.0;
     } else if (isStandardUnitName(v1->units())) {
-        incrementBaseUnitCount(model, unitMap, multMap, v1->units(), 1, 0);
+        incrementBaseUnitCount(model, unitMap, v1->units(), 1, 0);
     }
 
     if (model->hasUnits(v2->units())) {
         u2 = model->units(v2->units());
-        decrementBaseUnitCount(model, unitMap, multMap, u2->name(), 1, 0);
+        decrementBaseUnitCount(model, unitMap, u2->name(), 1, 0);
     } else if (unitMap.find(v2->units()) != unitMap.end()) {
         myRef = v2->units();
         unitMap.at(v2->units()) -= 1.0;
     } else if (isStandardUnitName(v2->units())) {
-        decrementBaseUnitCount(model, unitMap, multMap, v2->units(), 1, 0);
+        decrementBaseUnitCount(model, unitMap, v2->units(), 1, 0);
     }
 
     // Remove "dimensionless" from base unit testing
@@ -1237,7 +1232,6 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
 
 void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                                                       std::map<std::string, double> &unitMap,
-                                                      double &multMap,
                                                       const std::string &uName,
                                                       const double &uExp,
                                                       const double &logMult)
@@ -1258,31 +1252,27 @@ void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, myRef, myPre, myExp, m, myId);
                 myMult = std::log10(m);
                 if (!isStandardUnitName(myRef)) {
-                    incrementBaseUnitCount(model, unitMap, multMap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp);
+                    incrementBaseUnitCount(model, unitMap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp);
                 } else {
                     myBase = standardUnitsList.at(myRef);
                     for (const auto &iter : myBase) {
                         unitMap.at(iter.first) += iter.second * myExp * uExp;
                     }
-                    multMap += logMult + (standardMultiplierList.at(myRef) + myMult + standardPrefixList.at(myPre)) * uExp;
                 }
             }
         } else if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, uExp));
-            multMap += logMult;
         }
     } else if (isStandardUnitName(uName)) {
         myBase = standardUnitsList.at(uName);
         for (const auto &iter : myBase) {
             unitMap.at(iter.first) += iter.second * uExp;
         }
-        multMap += logMult + standardMultiplierList.at(uName);
     }
 }
 
 void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                                                       std::map<std::string, double> &unitMap,
-                                                      double &multMap,
                                                       const std::string &uName,
                                                       const double &uExp,
                                                       const double &logMult)
@@ -1303,25 +1293,22 @@ void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
                 u->unitAttributes(i, myRef, myPre, myExp, m, myId);
                 myMult = std::log10(m);
                 if (!isStandardUnitName(myRef)) {
-                    decrementBaseUnitCount(model, unitMap, multMap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp);
+                    decrementBaseUnitCount(model, unitMap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp);
                 } else {
                     myBase = standardUnitsList.at(myRef);
                     for (const auto &iter : myBase) {
                         unitMap.at(iter.first) -= iter.second * myExp * uExp;
                     }
-                    multMap -= logMult + (standardMultiplierList.at(myRef) + myMult + standardPrefixList.at(myPre)) * uExp;
                 }
             }
         } else if (unitMap.find(uName) == unitMap.end()) {
             unitMap.emplace(std::pair<std::string, double>(uName, -1.0 * uExp));
-            multMap -= logMult;
         }
     } else if (isStandardUnitName(uName)) {
         myBase = standardUnitsList.at(uName);
         for (const auto &iter : myBase) {
             unitMap.at(iter.first) -= iter.second * uExp;
         }
-        multMap -= logMult + standardMultiplierList.at(uName);
     }
 }
 
