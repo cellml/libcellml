@@ -586,7 +586,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         if (!isStandardPrefixName(prefix)) {
             if (!isCellMLInteger(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or a SI prefix.");
+                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
