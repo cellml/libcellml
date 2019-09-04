@@ -1156,9 +1156,6 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
                                                   const VariablePtr &v2,
                                                   std::string &hints)
 {
-    bool status;
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     std::map<std::string, double> unitMap = {};
 
     for (const auto &baseUnits : baseUnitsList) {
@@ -1169,6 +1166,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     hints = "";
 
     if (model->hasUnits(v1->units())) {
+        libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
         u1 = model->units(v1->units());
         updateBaseUnitCount(model, unitMap, u1->name(), 1, 0, 1);
     } else if (unitMap.find(v1->units()) != unitMap.end()) {
@@ -1179,6 +1177,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     }
 
     if (model->hasUnits(v2->units())) {
+        libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
         u2 = model->units(v2->units());
         updateBaseUnitCount(model, unitMap, u2->name(), 1, 0, -1);
     } else if (unitMap.find(v2->units()) != unitMap.end()) {
@@ -1191,7 +1190,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     // Remove "dimensionless" from base unit testing
     unitMap.erase("dimensionless");
 
-    status = true;
+    bool status = true;
     for (const auto &basePair : unitMap) {
         if (basePair.second != 0.0) {
             std::string num = std::to_string(basePair.second);
@@ -1213,26 +1212,22 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
                                                    double uExp, double logMult,
                                                    int direction)
 {
-    std::string myRef;
-    std::string myPre;
-    std::string myId;
-    double myExp;
-    double myMult;
-    double m;
-    std::map<std::string, double> myBase;
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-
     if (model->hasUnits(uName)) {
-        u = model->units(uName);
+        libcellml::UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
+            std::string myRef;
+            std::string myPre;
+            std::string myId;
+            double myExp;
+            double myMult;
+            double m;
             for (size_t i = 0; i < u->unitCount(); ++i) {
                 u->unitAttributes(i, myRef, myPre, myExp, m, myId);
                 myMult = std::log10(m);
                 if (!isStandardUnitName(myRef)) {
                     updateBaseUnitCount(model, unitMap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp, direction);
                 } else {
-                    myBase = standardUnitsList.at(myRef);
-                    for (const auto &iter : myBase) {
+                    for (const auto &iter : standardUnitsList.at(myRef)) {
                         unitMap.at(iter.first) += direction * (iter.second * myExp * uExp);
                     }
                 }
@@ -1241,8 +1236,7 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
             unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
         }
     } else if (isStandardUnitName(uName)) {
-        myBase = standardUnitsList.at(uName);
-        for (const auto &iter : myBase) {
+        for (const auto &iter : standardUnitsList.at(uName)) {
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
     }
