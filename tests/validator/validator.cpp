@@ -1464,7 +1464,9 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
     u5->setName("u5");
     u5->addUnit("metre", 6.0); // standard, exponent.
 
-    // u4 = u5: Units will be equivalent, testing that prefix, multiplier, and exponent validation is correct.
+    // u4 ~= u5: Units will be equivalent, testing that prefix, multiplier, and exponent validation is correct.
+    // Note: there is a factor of 1000 between u4 and u5 since u4 = 10^15*u3 (rather than 10^18*u3), which is
+    //       fine since we only need units to be equivalent.
     // TODO: see issue in specification: https://github.com/cellml/cellml-specification/issues/19.
     v1->setUnits(u4);
     v2->setUnits(u5);
@@ -1594,8 +1596,6 @@ TEST(Validator, unitUserCreatedBaseUnits)
     libcellml::Variable::addEquivalence(v3, v9); // Litre != big_barrel, multiplier factor difference TODO: not currently reported.
 
     validator.validateModel(m);
-
-    printErrors(validator);
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
 
