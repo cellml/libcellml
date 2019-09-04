@@ -1099,14 +1099,14 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
 
     const std::vector<std::string> expectedErrors = {
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1, ",
-        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' with non-matching units of 'testunit1'. The mismatch is: metre^-1, "};
+        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
+    };
 
     // This one is now an error.
     libcellml::Variable::addEquivalence(v1, v2);
     validator.validateModel(m);
 
-    EXPECT_EQ(size_t(3), validator.errorCount());
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
 
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
@@ -1334,8 +1334,7 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     std::vector<std::string> expectedErrors = {
-        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, ",
-        "Variable 'pajamas' has units of 'testunit14' and an equivalent variable 'pjs' with non-matching units of 'testunit13'. The mismatch is: metre^-1, "};
+        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1."};
 
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1417,7 +1416,7 @@ TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 
     validator.validateModel(m);
 
-    EXPECT_EQ(size_t(2), validator.errorCount());
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
@@ -1495,16 +1494,11 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
 TEST(Validator, unitUserCreatedBaseUnits)
 {
     std::vector<std::string> expectedErrors = {
-        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5, ",
-        "Variable 'v4' has units of 'gram' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: kilogram^1, metre^-3, ",
-        "Variable 'v7' has units of 'apple' and an equivalent variable 'v8' with non-matching units of 'banana'. The mismatch is: apple^1, banana^-1, ",
-        "Variable 'v2' has units of 'bunch_of_bananas' and an equivalent variable 'v1' with non-matching units of 'bushell_of_apples'. The mismatch is: apple^-10, banana^5, ",
-        "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1, second^-1, ",
-        "Variable 'v8' has units of 'banana' and an equivalent variable 'v7' with non-matching units of 'apple'. The mismatch is: apple^-1, banana^1, ",
-        "Variable 'v3' has units of 'litre' and an equivalent variable 'v4' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3, ",
+        "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
+        "Variable 'v4' has units of 'gram' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: kilogram^1, metre^-3.",
+        "Variable 'v7' has units of 'apple' and an equivalent variable 'v8' with non-matching units of 'banana'. The mismatch is: apple^1, banana^-1.",
+        "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
         // "Variable 'v3' has units of 'litre' and an equivalent variable 'v9' with non-matching units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3, ", // NOTE: removed until multiplication checking is turned on.
-        "Variable 'v6' has units of 'second' and an equivalent variable 'v5' with non-matching units of 'metre'. The mismatch is: metre^-1, second^1, ",
-        // "Variable 'v9' has units of 'big_barrel' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: multiplication factor of 10^3, ", // NOTE: removed until multiplication checking is turned on.
     };
 
     libcellml::Validator validator;
@@ -1600,6 +1594,8 @@ TEST(Validator, unitUserCreatedBaseUnits)
     libcellml::Variable::addEquivalence(v3, v9); // Litre != big_barrel, multiplier factor difference TODO: not currently reported.
 
     validator.validateModel(m);
+
+    printErrors(validator);
 
     EXPECT_EQ(expectedErrors.size(), validator.errorCount());
 

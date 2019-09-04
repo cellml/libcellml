@@ -229,8 +229,6 @@ struct Validator::ValidatorImpl
     /**
     * @brief Validate that equivalent variable pairs in the @p model
     * have equivalent units.
-    * @cellml2_19 Validate that equivalent variable pairs in the @p model
-    * have equivalent units.
     * Any errors will be logged in the @c Validator.
     *
     * @param model The model containing the variables
@@ -1037,6 +1035,8 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
     std::string hints;
+    std::vector<std::pair<libcellml::VariablePtr, libcellml::VariablePtr>> checkedPairs;
+
     // Check the components in this model.
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
@@ -1048,33 +1048,43 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 if (variable->equivalentVariableCount() > 0) {
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
-                        // TODO: validate variable interfaces according to 17.10.8.
-                        // TODO: add check for cyclical connections (17.10.5).
 
-                        if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
-                            err->setModel(model);
-                            err->setKind(Error::Kind::UNITS);
-                            mValidator->addError(err);
-                        }
+                        // Skip if this pairing has been checked before
+                        auto checkPairing = std::make_pair(variable, equivalentVariable);
 
-                        if (equivalentVariable->hasEquivalentVariable(variable)) {
-                            // Check that the equivalent variable has a valid parent component.
-                            auto component2 = static_cast<Component *>(equivalentVariable->parent());
-                            if (!component2->hasVariable(equivalentVariable)) {
+                        if (std::find(checkedPairs.begin(), checkedPairs.end(), checkPairing) == checkedPairs.end()) {
+                            // Swap the order for storage in the pair
+                            checkPairing = std::make_pair(equivalentVariable, variable);
+                            checkedPairs.push_back(checkPairing);
+
+                            // TODO: validate variable interfaces according to 17.10.8.
+                            // TODO: add check for cyclical connections (17.10.5).
+
+                            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
+                                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
+                                err->setModel(model);
+                                err->setKind(Error::Kind::UNITS);
+                                mValidator->addError(err);
+                            }
+
+                            if (equivalentVariable->hasEquivalentVariable(variable)) {
+                                // Check that the equivalent variable has a valid parent component.
+                                auto component2 = static_cast<Component *>(equivalentVariable->parent());
+                                if (!component2->hasVariable(equivalentVariable)) {
+                                    ErrorPtr err = std::make_shared<Error>();
+                                    err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
+                                    err->setModel(model);
+                                    err->setKind(Error::Kind::CONNECTION);
+                                    mValidator->addError(err);
+                                }
+                            } else {
+                                ErrorPtr err = std::make_shared<Error>();
+                                err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "'  which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                                 err->setModel(model);
                                 err->setKind(Error::Kind::CONNECTION);
                                 mValidator->addError(err);
                             }
-                        } else {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "'  which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
-                            err->setModel(model);
-                            err->setKind(Error::Kind::CONNECTION);
-                            mValidator->addError(err);
                         }
                     }
                 }
@@ -1187,7 +1197,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         updateBaseUnitCount(model, unitMap, v2->units(), 1, 0, -1);
     }
 
-    // Remove "dimensionless" from base unit testing
+    // Remove "dimensionless" from base unit testing.
     unitMap.erase("dimensionless");
 
     bool status = true;
@@ -1201,6 +1211,11 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
             hints += basePair.first + "^" + num + ", ";
             status = false;
         }
+    }
+    // Remove the final trailing comma from the hints string.
+    if (hints.length() > 2) {
+        hints.pop_back();
+        hints.back() = '.';
     }
 
     return status;
@@ -1220,10 +1235,10 @@ void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
             std::string myId;
             double myExp;
             double myMult;
-            double m;
+            double expMult;
             for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->unitAttributes(i, myRef, myPre, myExp, m, myId);
-                myMult = std::log10(m);
+                u->unitAttributes(i, myRef, myPre, myExp, expMult, myId);
+                myMult = std::log10(expMult);
                 if (!isStandardUnitName(myRef)) {
                     updateBaseUnitCount(model, unitMap, myRef, myExp * uExp, logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp, direction);
                 } else {
