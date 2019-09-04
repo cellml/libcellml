@@ -726,7 +726,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
         "Unit in units 'stark' does not have a valid units reference.",
-        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid integer or a SI prefix.",
+        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid integer or an SI prefix.",
     };
 
     libcellml::Parser p;
