@@ -19,22 +19,13 @@ limitations under the License.
 #include "xmldoc.h"
 
 #include "libcellml/component.h"
-#include "libcellml/error.h"
 #include "libcellml/importsource.h"
-#include "libcellml/model.h"
 #include "libcellml/reset.h"
-#include "libcellml/units.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
 #include <cmath>
-#include <iostream>
-#include <map>
-#include <regex>
-#include <sstream>
-#include <string>
-#include <vector>
 
 #include <libxml/uri.h>
 
