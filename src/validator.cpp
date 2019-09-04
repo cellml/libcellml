@@ -25,6 +25,7 @@ limitations under the License.
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <algorithm>
 #include <cmath>
 
 #include <libxml/uri.h>
