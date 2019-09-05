@@ -745,7 +745,7 @@ TEST(Validator, validateInvalidConnections)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
-        "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable."};
+        "Variable 'variable2' has an equivalent variable 'variable1_2' which does not reciprocally have 'variable2' set as an equivalent variable."};
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
