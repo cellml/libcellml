@@ -629,10 +629,14 @@ struct Generator::GeneratorImpl
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
     std::string generateCreateArrayCode(size_t arraySize);
-    std::string replaceTemplateValue(std::string templateString, size_t value);
-    std::string replaceTemplateValue(std::string templateString, std::string value);
-    std::string replaceMultipleTemplateValues(std::string templateString, std::vector<std::string> replacements);
-    std::string replaceMultipleTemplateValues(std::string templateString, std::vector<size_t> replacements);
+    std::string replaceTemplateValue(const std::string &templateString,
+                                     size_t value);
+    std::string replaceTemplateValue(const std::string &templateString,
+                                     const std::string &value);
+    std::string replaceMultipleTemplateValues(std::string templateString,
+                                              const std::vector<std::string> &replacements);
+    std::string replaceMultipleTemplateValues(std::string templateString,
+                                              const std::vector<size_t> &replacements);
 
     std::string generateStateInformationArray();
     std::string generateVariableInformationArray();
@@ -1468,10 +1472,11 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
 std::string replace(std::string string, const std::string &from, const std::string &to)
 {
-    auto found_index = string.find(from);
-    return string.empty() || (found_index == std::string::npos) ?
+    auto index = string.find(from);
+
+    return (string.empty() || (index == std::string::npos)) ?
                "" :
-               string.replace(found_index, from.length(), to);
+               string.replace(index, from.length(), to);
 }
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
@@ -2307,29 +2312,29 @@ std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
     return replaceTemplateValue(mProfile->indentString() + mProfile->templateReturnCreatedArrayString(), arraySize);
 }
 
-std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateString, size_t value)
+std::string Generator::GeneratorImpl::replaceTemplateValue(const std::string &templateString, size_t value)
 {
     std::string valueString = std::to_string(value);
     return replaceTemplateValue(templateString, valueString);
 }
 
-std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateString, std::string value)
+std::string Generator::GeneratorImpl::replaceTemplateValue(const std::string &templateString, const std::string &value)
 {
     return replace(templateString, mProfile->templateReplacementString(), value);
 }
 
-std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<std::string> replacements)
+std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, const std::vector<std::string> &replacements)
 {
-    for (const auto &entry: replacements) {
+    for (const auto &entry : replacements) {
         templateString = replace(templateString, mProfile->templateReplacementString(), entry);
     }
 
     return templateString;
 }
 
-std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<size_t> replacements)
+std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, const std::vector<size_t> &replacements)
 {
-    for (const auto &entry: replacements) {
+    for (const auto &entry : replacements) {
         templateString = replace(templateString, mProfile->templateReplacementString(), std::to_string(entry));
     }
 
@@ -2345,11 +2350,11 @@ std::string Generator::GeneratorImpl::generateVariableInformationObjectString()
         max_name_length = mVariableOfIntegration->name().length();
         max_units_length = mVariableOfIntegration->units().length();
     }
-    for (const auto &state: mStates) {
+    for (const auto &state : mStates) {
         max_name_length = max_name_length > state->name().length() ? max_name_length : state->name().length();
         max_units_length = max_units_length > state->units().length() ? max_units_length : state->units().length();
     }
-    for (const auto &variable: mVariables) {
+    for (const auto &variable : mVariables) {
         max_name_length = max_name_length > variable->variable()->name().length() ? max_name_length : variable->variable()->name().length();
         max_units_length = max_units_length > variable->variable()->units().length() ? max_units_length : variable->variable()->units().length();
     }
@@ -2367,10 +2372,10 @@ std::string Generator::GeneratorImpl::generateStateInformationArray()
 {
     std::string res;
     res += mProfile->beginStateVectorInformationArrayString();
-    for (const auto &state: mStates) {
+    for (const auto &state : mStates) {
         std::vector<std::string> details = {state->name(), state->units()};
         res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
-                + mProfile->arrayElementSeparatorString() + "\n";
+               + mProfile->arrayElementSeparatorString() + "\n";
     }
     res += mProfile->endStateVectorInformationArrayString();
 
@@ -2381,10 +2386,10 @@ std::string Generator::GeneratorImpl::generateVariableInformationArray()
 {
     std::string res;
     res += mProfile->beginVariableVectorInformationArrayString();
-    for (const auto &variable: mVariables) {
+    for (const auto &variable : mVariables) {
         std::vector<std::string> details = {variable->variable()->name(), variable->variable()->units()};
         res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
-                + mProfile->arrayElementSeparatorString() + "\n";
+               + mProfile->arrayElementSeparatorString() + "\n";
     }
     res += mProfile->endVariableVectorInformationArrayString();
 
@@ -2865,7 +2870,7 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->endCreateVariableVectorMethodString();
 
-    if (mPimpl->mProfile->freeVectorFunctionString().length()) {
+    if (!mPimpl->mProfile->freeVectorFunctionString().empty()) {
         res += "\n";
         res += mPimpl->mProfile->freeVectorFunctionString();
     }
