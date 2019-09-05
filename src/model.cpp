@@ -40,9 +40,10 @@ namespace libcellml {
  */
 struct Model::ModelImpl
 {
+    std::vector<UnitsPtr> mUnits;
+
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-    std::vector<UnitsPtr> mUnits;
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
