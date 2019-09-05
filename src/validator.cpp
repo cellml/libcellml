@@ -445,7 +445,7 @@ void Validator::validateModel(const ModelPtr &model)
         }
     }
 
-    // Check that unit relationships are not cyclical
+    // Check that unit relationships are not cyclical.
     if (model->unitsCount() > 0) {
         mPimpl->validateNoUnitsAreCyclic(model);
     }
@@ -1049,11 +1049,11 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
 
-                        // Skip if this pairing has been checked before
+                        // Skip if this pairing has been checked before.
                         auto checkPairing = std::make_pair(variable, equivalentVariable);
 
                         if (std::find(checkedPairs.begin(), checkedPairs.end(), checkPairing) == checkedPairs.end()) {
-                            // Swap the order for storage in the pair
+                            // Swap the order for storage in the pair.
                             checkPairing = std::make_pair(equivalentVariable, variable);
                             checkedPairs.push_back(checkPairing);
 
@@ -1212,6 +1212,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
             status = false;
         }
     }
+
     // Remove the final trailing comma from the hints string.
     if (hints.length() > 2) {
         hints.pop_back();
