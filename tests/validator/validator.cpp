@@ -726,8 +726,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
         "Units reference 'ned' in units 'stark' is not a valid reference to a local units or a standard unit type.",
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
         "Unit in units 'stark' does not have a valid units reference.",
-        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid integer or an SI prefix.",
-    };
+        "Prefix 'wolf' of a unit referencing 'metre' in units 'stark' is not a valid integer or an SI prefix."};
 
     libcellml::Parser p;
     libcellml::ModelPtr m = p.parseModel(input);
@@ -746,8 +745,7 @@ TEST(Validator, validateInvalidConnections)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
-        "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
-    };
+        "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable."};
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -906,8 +904,7 @@ TEST(Validator, resets)
         "Reset in component 'comp' does not have an order set, referencing variable 'var' does not have at least one child When.",
         "Reset in component 'comp' does not have an order set, does not reference a variable.",
         "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable, does not have at least one child When.",
-    };
+        "Reset in component 'comp' does not have an order set, does not reference a variable, does not have at least one child When."};
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -978,8 +975,7 @@ TEST(Validator, whens)
         "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
         "Reset in component 'comp' does not have an order set, referencing variable 'var' has multiple whens with order '250'.",
         "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML value set.",
-        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML condition set.",
-    };
+        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML condition set."};
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -1099,8 +1095,7 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
 
     const std::vector<std::string> expectedErrors = {
         "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1.",
-    };
+        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' with non-matching units of 'testunit2'. The mismatch is: metre^1."};
 
     // This one is now an error.
     libcellml::Variable::addEquivalence(v1, v2);
@@ -1606,9 +1601,9 @@ TEST(Validator, unitSimpleCycle)
 {
     // Testing that indirect dependence is caught in the unit cycles. The network is:
     //
-    //      grandfather(u1) <- father(u2) <- child (u3) <-|
+    //      grandfather(u1) <- father(u2) <- child (u3) <-+
     //           |                                        |
-    //           |----------------------------------------|
+    //           +----------------------------------------+
 
     const std::string expectedError = "Cyclic units exist: 'grandfather' -> 'child' -> 'father' -> 'grandfather'";
 
@@ -1650,9 +1645,9 @@ TEST(Validator, unitComplexCycle)
     // Simple testing for the directional dependency of units. The first network is:
     //
     //                            <- brotherFromAnotherMother (u4)
-    //                 <- father (u2)  <-|
+    //                 <- father (u2)  <-+
     //     grandfather (u1)              | <- childOfIncest (u5)
-    //                 <- mother (u3)  <-|
+    //                 <- mother (u3)  <-+
     //                            <- sisterFromAnotherFather (u6)
     //
     // There is an _undirected_ loop between u1-u2-u3-u5 but the directionality of the
@@ -1703,12 +1698,12 @@ TEST(Validator, unitComplexCycle)
     // As soon as a dependency of the grandfather on the brotherFromAnotherMother is added, then a
     // _directed_ loop (u1->u2->u4->u1) is created and the network is no longer valid:
     //
-    //      -------------------------------------------------------->
-    //     ^                                                         |
-    //     |                       <- brotherFromAnotherMother (u4) <-
-    //     |            <- father (u2)  <-|
-    //     <- grandfather (u1)            | <- childOfIncest (u5)
-    //                  <- mother (u3)  <-|
+    //     +----------------------------------------------------------+
+    //     |                                                          |
+    //     |                       <- brotherFromAnotherMother (u4) <-+
+    //     |            <- father (u2)  <-+
+    //     +- grandfather (u1)            | <- childOfIncest (u5)
+    //                  <- mother (u3)  <-+
     //                             <- sisterFromAnotherFather (u6)
 
     const std::string expectedError = "Cyclic units exist: 'grandfather' -> 'brotherFromAnotherMother' -> 'father' -> 'grandfather'";
