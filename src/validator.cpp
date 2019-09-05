@@ -1172,7 +1172,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         unitMap[baseUnits] = 0.0;
     }
 
-    std::string myRef;
+    std::string ref;
     hints = "";
 
     if (model->hasUnits(v1->units())) {
@@ -1180,8 +1180,8 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         u1 = model->units(v1->units());
         updateBaseUnitCount(model, unitMap, u1->name(), 1, 0, 1);
     } else if (unitMap.find(v1->units()) != unitMap.end()) {
-        myRef = v1->units();
-        unitMap.at(myRef) += 1.0;
+        ref = v1->units();
+        unitMap.at(ref) += 1.0;
     } else if (isStandardUnitName(v1->units())) {
         updateBaseUnitCount(model, unitMap, v1->units(), 1, 0, 1);
     }
@@ -1191,7 +1191,7 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
         u2 = model->units(v2->units());
         updateBaseUnitCount(model, unitMap, u2->name(), 1, 0, -1);
     } else if (unitMap.find(v2->units()) != unitMap.end()) {
-        myRef = v2->units();
+        ref = v2->units();
         unitMap.at(v2->units()) -= 1.0;
     } else if (isStandardUnitName(v2->units())) {
         updateBaseUnitCount(model, unitMap, v2->units(), 1, 0, -1);
