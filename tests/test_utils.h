@@ -18,6 +18,8 @@ limitations under the License.
 
 #include <libcellml>
 
+std::string resourcePath(const std::string &resourceRelativePath = "");
+
 std::string fileContents(const std::string &fileName);
 
 void printErrors(const libcellml::Validator &v);
@@ -25,6 +27,3 @@ void printErrors(const libcellml::Parser &p);
 
 libcellml::ModelPtr createModel(const std::string &name = "");
 libcellml::ModelPtr createModelWithComponent(const std::string &name = "");
-
-
-const std::string resourcePath(const std::string &resourceRelativePath);

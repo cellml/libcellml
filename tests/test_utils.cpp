@@ -21,8 +21,7 @@ limitations under the License.
 #include <iostream>
 #include <sstream>
 
-
-const std::string resourcePath(const std::string &resourceRelativePath)
+std::string resourcePath(const std::string &resourceRelativePath)
 {
     return std::string(TESTS_RESOURCE_LOCATION + "/").append(resourceRelativePath);
 }
