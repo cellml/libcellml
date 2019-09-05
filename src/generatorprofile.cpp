@@ -185,7 +185,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mEndCommentString;
 
     std::string mEmptyMethodString;
-    std::string mDefineReplacementString;
+    std::string mTemplateReplacementString;
     std::string mTemplateReturnCreatedArrayString;
     std::string mTemplateStateVectorSizeConstantString;
     std::string mTemplateVariableVectorSizeConstantString;
@@ -440,7 +440,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Templated
 
-        mDefineReplacementString = "VALUE";
+        mTemplateReplacementString = "VALUE";
 
         mTemplateReturnCreatedArrayString = "return (double *)malloc(VALUE * sizeof (double));\n";
         mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
@@ -656,7 +656,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Templated
 
-        mDefineReplacementString = "VALUE";
+        mTemplateReplacementString = "VALUE";
 
         mTemplateReturnCreatedArrayString = "return [nan]*VALUE\n";
         mTemplateStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
@@ -823,7 +823,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mTemplateVersionString = rhs.mPimpl->mTemplateVersionString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
-    mPimpl->mDefineReplacementString = rhs.mPimpl->mDefineReplacementString;
+    mPimpl->mTemplateReplacementString = rhs.mPimpl->mTemplateReplacementString;
     mPimpl->mTemplateReturnCreatedArrayString = rhs.mPimpl->mTemplateReturnCreatedArrayString;
 
     mPimpl->mTemplateVariableInformationObjectString = rhs.mPimpl->mTemplateVariableInformationObjectString;
@@ -2046,12 +2046,12 @@ void GeneratorProfile::setEmptyMethodString(const std::string &emptyMethodString
 
 std::string GeneratorProfile::templateReplacementString() const
 {
-    return mPimpl->mDefineReplacementString;
+    return mPimpl->mTemplateReplacementString;
 }
 
-void GeneratorProfile::setTemplateReplacementString(const std::string &defineReplacementString)
+void GeneratorProfile::setTemplateReplacementString(const std::string &templateReplacementString)
 {
-    mPimpl->mDefineReplacementString = defineReplacementString;
+    mPimpl->mTemplateReplacementString = templateReplacementString;
 }
 
 std::string GeneratorProfile::templateStateVectorSizeConstantString() const
