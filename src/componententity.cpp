@@ -87,7 +87,7 @@ ComponentEntity &ComponentEntity::operator=(ComponentEntity rhs)
 
 void ComponentEntity::swap(ComponentEntity &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void ComponentEntity::addComponent(const ComponentPtr &component)
@@ -227,6 +227,7 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
         mPimpl->mComponents.erase(result);
+        foundComponent->clearParent();
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
             foundComponent = component(i)->takeComponent(name, searchEncapsulated);

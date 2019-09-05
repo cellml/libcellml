@@ -46,17 +46,18 @@ TEST(Coverage, connectionComment)
 
 TEST(Coverage, import)
 {
-    const std::string e;
+    const std::string id = "id";
+
     libcellml::ImportSource i;
     libcellml::ImportSource im;
 
+    i.setId(id);
+
     im = std::move(i);
 
-    // Copy constructor
     libcellml::ImportSource ic(im);
 
-    const std::string a = ic.id();
-    EXPECT_EQ(e, a);
+    EXPECT_EQ(id, ic.id());
 }
 
 TEST(Coverage, importWithNonHrefXlink)
@@ -87,18 +88,21 @@ TEST(Coverage, printer)
     libcellml::Printer p;
     libcellml::Printer pm;
 
+    libcellml::ErrorPtr error = std::make_shared<libcellml::Error>();
+
+    p.addError(error);
+
     pm = std::move(p);
 
-    // Copy constructor
     libcellml::Printer pc(pm);
 
-    size_t error_count = pc.errorCount();
-    EXPECT_EQ(size_t(0), error_count);
+    EXPECT_EQ(size_t(1), pc.errorCount());
 }
 
 TEST(Coverage, units)
 {
-    const std::string e = "<units name=\"dimensionless\"/>\n";
+    const std::string n = "dimensionless";
+
     libcellml::Units u;
     libcellml::Units um;
 
@@ -106,172 +110,95 @@ TEST(Coverage, units)
 
     um = std::move(u);
 
-    // Copy constructor
     libcellml::Units uc(um);
 
-    EXPECT_EQ("dimensionless", uc.name());
+    EXPECT_EQ(n, uc.name());
 }
 
 TEST(Coverage, when)
 {
-    const std::string randomValue = "4738";
+    const std::string id = "id";
 
     libcellml::When w;
     libcellml::When wm;
-    libcellml::Reset r;
 
-    w.setValue(randomValue);
+    w.setId(id);
+
     wm = std::move(w);
 
     libcellml::When wc(wm);
 
-    libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
-    r.addWhen(wp);
-
-    EXPECT_EQ(randomValue, wc.value());
-}
-
-TEST(Coverage, unitsGetVariations)
-{
-    libcellml::Model m;
-
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("a_unit");
-
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u);
-
-    libcellml::UnitsPtr un = m.units(0);
-    EXPECT_EQ("a_unit", un->name());
-    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).units(0);
-    EXPECT_EQ("a_unit", uSn->name());
-
-    libcellml::UnitsPtr uns = m.units("a_unit");
-    EXPECT_EQ("a_unit", uns->name());
-    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).units("a_unit");
-    EXPECT_EQ("a_unit", uSns->name());
-
-    EXPECT_EQ(nullptr, m.units("b_unit"));
-    EXPECT_EQ(nullptr, m.units(4));
-}
-
-TEST(Coverage, prefixToString)
-{
-    libcellml::Model m;
-    libcellml::Printer printer;
-
-    std::vector<std::string> prefixString =
-        {"atto",
-         "centi",
-         "deca",
-         "deci",
-         "exa",
-         "femto",
-         "giga",
-         "hecto",
-         "kilo",
-         "mega",
-         "micro",
-         "milli",
-         "nano",
-         "peta",
-         "pico",
-         "tera",
-         "yocto",
-         "yotta",
-         "zepto",
-         "zetta"};
-    std::vector<libcellml::Prefix> prefixEnum =
-        {libcellml::Prefix::ATTO,
-         libcellml::Prefix::CENTI,
-         libcellml::Prefix::DECA,
-         libcellml::Prefix::DECI,
-         libcellml::Prefix::EXA,
-         libcellml::Prefix::FEMTO,
-         libcellml::Prefix::GIGA,
-         libcellml::Prefix::HECTO,
-         libcellml::Prefix::KILO,
-         libcellml::Prefix::MEGA,
-         libcellml::Prefix::MICRO,
-         libcellml::Prefix::MILLI,
-         libcellml::Prefix::NANO,
-         libcellml::Prefix::PETA,
-         libcellml::Prefix::PICO,
-         libcellml::Prefix::TERA,
-         libcellml::Prefix::YOCTO,
-         libcellml::Prefix::YOTTA,
-         libcellml::Prefix::ZEPTO,
-         libcellml::Prefix::ZETTA};
-    for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
-        libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-        u->setName("abcdefg");
-        u->addUnit("empty", prefixEnum[i]);
-
-        m.addUnits(u);
-
-        const std::string a = printer.printModel(m);
-        std::size_t found = a.find(prefixString[i]);
-        EXPECT_NE(std::string::npos, found);
-        m.removeAllUnits();
-    }
+    EXPECT_EQ(id, wc.id());
 }
 
 TEST(Coverage, variable)
 {
-    const std::string e = "<variable units=\"dimensionless\" initial_value=\"1\" interface=\"public\"/>\n";
-    const std::string dimensionless = "dimensionless";
+    const std::string n = "dimensionless";
+
     libcellml::Variable v;
     libcellml::Variable vm;
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
 
-    v.setInitialValue(1.0);
-    v.setInterfaceType("public");
-    u->setName(dimensionless);
+    u->setName(n);
     v.setUnits(u);
 
     vm = std::move(v);
 
-    // Copy constructor
     libcellml::Variable vc(vm);
 
-    EXPECT_EQ(dimensionless, vc.units());
+    EXPECT_EQ(n, vc.units());
 }
 
 TEST(Coverage, component)
 {
-    const std::string math = "<1+1=2>\n";
-    libcellml::Component c;
-    libcellml::Component cm;
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    const std::string n = "name";
 
-    c.setName("name");
-    c.addVariable(v);
-    c.setMath(math);
+    libcellml::Component rc;
+    libcellml::Component ao;
 
-    EXPECT_EQ(size_t(1), c.variableCount());
+    rc.setName(n);
 
-    cm = std::move(c);
-    EXPECT_EQ(size_t(1), cm.variableCount());
+    ao = rc;
 
-    // Copy constructor
-    libcellml::Component cc(cm);
-    EXPECT_EQ(size_t(1), cc.variableCount());
+    EXPECT_EQ(n, ao.name());
+
+    std::vector<libcellml::Component> vec;
+
+    vec.push_back(rc);
+    vec.insert(vec.begin(), ao);
 }
 
 TEST(Coverage, error)
 {
-    libcellml::ErrorPtr err = std::make_shared<libcellml::Error>();
-    libcellml::Error e;
-    libcellml::Error em;
     const std::string description = "test";
 
+    libcellml::Error e;
+    libcellml::Error em;
+
     e.setDescription(description);
-    e.setKind(libcellml::Error::Kind::XML);
 
     em = std::move(e);
-    // Copy constructor
+
     libcellml::Error ec(em);
 
     EXPECT_EQ(description, ec.description());
-    EXPECT_EQ(libcellml::Error::Kind::XML, ec.kind());
+}
+
+TEST(Coverage, model)
+{
+    const std::string n = "model";
+
+    libcellml::Model rm;
+    libcellml::Model ao;
+
+    rm.setName(n);
+
+    ao = rm;
+
+    EXPECT_EQ(n, ao.name());
+
+    std::vector<libcellml::Model> vec;
+
+    vec.push_back(rm);
+    vec.insert(vec.begin(), ao);
 }
