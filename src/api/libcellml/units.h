@@ -70,12 +70,10 @@ public:
         KATAL, /**< Derived SI unit katal. */
         KELVIN, /**< Base SI unit kelvin. */
         KILOGRAM, /**< Base SI unit kilogram. */
-        LITER, /**< Convenience unit liter (alternative spelling). */
         LITRE, /**< Convenience unit litre. */
         LUMEN, /**< Derived SI unit lumen. */
         LUX, /**< Derived SI unit lux. */
-        METER, /**< Base SI unit meter. */
-        METRE, /**< Base SI unit metre (alternative spelling). */
+        METRE, /**< Base SI unit metre. */
         MOLE, /**< Base SI unit mole. */
         NEWTON, /**< Derived SI unit newton. */
         OHM, /**< Derived SI unit ohm. */
