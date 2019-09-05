@@ -31,8 +31,9 @@ struct Reset::ResetImpl
 {
     int mOrder = 0; /**< An integer for determining relative order.*/
     VariablePtr mVariable; /**< The associated variable for the reset.*/
-    std::vector<WhenPtr>::iterator findWhen(const WhenPtr &when);
     std::vector<WhenPtr> mWhens;
+
+    std::vector<WhenPtr>::iterator findWhen(const WhenPtr &when);
 };
 
 std::vector<WhenPtr>::iterator Reset::ResetImpl::findWhen(const WhenPtr &when)
