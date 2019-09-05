@@ -57,8 +57,7 @@ TEST(Validator, invalidCellMLIdentifiersWithSpecificationHeading)
         "CellML identifiers must not contain any characters other than [a-zA-Z0-9_].",
         "Component does not have a valid name attribute.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Component does not have a valid name attribute.",
-    };
+        "Component does not have a valid name attribute."};
     const std::vector<std::string> expectedSpecificationHeadings = {
         "3.1.4",
         "4.2.1",
@@ -504,7 +503,7 @@ TEST(Validator, invalidMathMLElements)
         "Math has a 'addition' element that is not a supported MathML element.",
         "No declaration for element equals.",
         "No declaration for element addition."};
-    // NOTE: The MathML DTD also gives errors that list every possible operator when an
+    // Note: the MathML DTD also gives errors that list every possible operator when an
     //       invalid option is given. We'll just explicitly check the less verbose errors here.
 
     libcellml::Validator v;
@@ -699,8 +698,9 @@ TEST(Validator, invalidMathMLCiAndCnElementsWithCellMLUnits)
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
 
-    // NOTE: We're not checking the exact message of the last error as older versions of
-    //       libxml may not include the namespace in the error message.
+    // Note: we are not checking the exact message of the last error as older
+    //       versions of libxml may not include the namespace in the error
+    //       message.
     for (size_t i = 0; i < v.errorCount() - 1; ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
     }
@@ -1499,9 +1499,7 @@ TEST(Validator, unitUserCreatedBaseUnits)
         "Variable 'v1' has units of 'bushell_of_apples' and an equivalent variable 'v2' with non-matching units of 'bunch_of_bananas'. The mismatch is: apple^10, banana^-5.",
         "Variable 'v4' has units of 'gram' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: kilogram^1, metre^-3.",
         "Variable 'v7' has units of 'apple' and an equivalent variable 'v8' with non-matching units of 'banana'. The mismatch is: apple^1, banana^-1.",
-        "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1, second^-1.",
-        // "Variable 'v3' has units of 'litre' and an equivalent variable 'v9' with non-matching units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3, ", // NOTE: removed until multiplication checking is turned on.
-    };
+        "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1, second^-1."};
 
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
