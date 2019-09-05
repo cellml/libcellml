@@ -1048,6 +1048,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 if (variable->equivalentVariableCount() > 0) {
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
+
                         // Skip if this pairing has been checked before.
                         auto checkPairing = std::make_pair(variable, equivalentVariable);
 
