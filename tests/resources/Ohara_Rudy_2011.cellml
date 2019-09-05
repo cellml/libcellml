@@ -85,7 +85,7 @@ http://www.cellml.org/
         <unit exponent="-1" units="centimeter_squared"/>
     </units>
     <units name="microliter">
-        <unit prefix="micro" units="liter"/>
+        <unit prefix="micro" units="litre"/>
     </units>
     <units name="joule_per_kilomole_kelvin">
         <unit units="joule"/>
