@@ -2064,7 +2064,6 @@ void GeneratorProfile::setTemplateStateVectorSizeConstantString(const std::strin
     mPimpl->mTemplateStateVectorSizeConstantString = templateStateVectorSizeConstantString;
 }
 
-
 std::string GeneratorProfile::templateVariableVectorSizeConstantString() const
 {
     return mPimpl->mTemplateVariableVectorSizeConstantString;
