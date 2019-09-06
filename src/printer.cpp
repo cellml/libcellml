@@ -24,7 +24,6 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
 
 #include <iostream>
 #include <map>
@@ -56,7 +55,6 @@ struct Printer::PrinterImpl
     std::string printEncapsulation(const ComponentPtr &component, const std::string &indent = "") const;
     std::string printVariable(const VariablePtr &variable, const std::string &indent = "") const;
     std::string printReset(const ResetPtr &reset, const std::string &indent = "") const;
-    std::string printWhen(const WhenPtr &when, const std::string &indent) const;
 };
 
 static const std::string tabIndent = "  ";
@@ -351,56 +349,58 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
 std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
     std::string repr = indent + "<reset";
-    std::string id = reset->id();
+    std::string rid = reset->id();
+    std::string tvid = reset->testValueId();
+    std::string rvid = reset->resetValueId();
+    std::string s;
     VariablePtr variable = reset->variable();
+    VariablePtr testVariable = reset->testVariable();
+    bool hasTestValue = false;
+    bool hasResetValue = false;
+
     if (variable) {
         repr += " variable=\"" + variable->name() + "\"";
+    }
+    if (testVariable) {
+        repr += " test_variable=\"" + testVariable->name() + "\"";
     }
     if (reset->isOrderSet()) {
         repr += " order=\"" + convertIntToString(reset->order()) + "\"";
     }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
+    if (!rid.empty()) {
+        repr += " id=\"" + rid + "\"";
     }
-    size_t when_count = reset->whenCount();
-    if (when_count > 0) {
-        repr += ">\n";
-        for (size_t i = 0; i < when_count; ++i) {
-            repr += printWhen(reset->when(i), indent + tabIndent);
-        }
-        repr += indent + "</reset>\n";
-    } else {
-        repr += "/>\n";
-    }
-    return repr;
-}
 
-std::string Printer::PrinterImpl::printWhen(const WhenPtr &when, const std::string &indent) const
-{
-    std::string repr = indent + "<when";
-    std::string id = when->id();
-    if (when->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(when->order()) + "\"";
-    }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
-    }
-    std::string condition = when->condition();
-    bool hasCondition = !condition.empty();
-    if (hasCondition) {
+    s = reset->testValue();
+    if (!s.empty()) {
         repr += ">\n";
-        repr += printMath(condition, indent + tabIndent);
+        repr += indent + tabIndent + "<test_value";
+        if (!tvid.empty()) {
+            repr += " id=\"" + tvid + "\"";
+        }
+        repr += ">\n";
+        repr += printMath(s, indent + tabIndent + tabIndent);
+        repr += indent + tabIndent + "</test_value>\n";
+        hasTestValue = true;
     }
-    std::string value = when->value();
-    bool hasValue = !value.empty();
-    if (hasValue) {
-        if (!hasCondition) {
+    s = reset->resetValue();
+    if (!s.empty()) {
+        if (!hasTestValue) {
             repr += ">\n";
         }
-        repr += printMath(value, indent + tabIndent);
+        repr += indent + tabIndent + "<reset_value";
+        if (!rvid.empty()) {
+            repr += " id=\"" + rvid + "\"";
+        }
+        repr += ">\n";
+
+        repr += printMath(s, indent + tabIndent + tabIndent);
+        repr += indent + tabIndent + "</reset_value>\n";
+        hasResetValue = true;
     }
-    if (hasCondition || hasValue) {
-        repr += indent + "</when>\n";
+
+    if ((hasTestValue) || (hasResetValue)) {
+        repr += indent + "</reset>\n";
     } else {
         repr += "/>\n";
     }
