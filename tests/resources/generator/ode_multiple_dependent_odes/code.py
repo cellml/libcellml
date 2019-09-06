@@ -6,7 +6,8 @@ __version__ = "0.2.0"
 
 STATE_VECTOR_SIZE = 2
 VARIABLE_VECTOR_SIZE = 1
-VOI = {"component": "my_x_ode", "name": "t", "units": "second"}
+
+VOI_INFORMATION = {"component": "my_x_ode", "name": "t", "units": "second"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "my_x_ode", "name": "x", "units": "dimensionless"},

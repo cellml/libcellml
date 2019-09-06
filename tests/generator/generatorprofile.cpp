@@ -242,7 +242,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("void freeVector(double *array)\n{\n   free(array);\n}\n", generatorProfile->freeVectorFunctionString());
-    EXPECT_EQ("#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n", generatorProfile->headerString());
+    EXPECT_EQ("#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n", generatorProfile->headerString());
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
 
@@ -273,9 +273,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("", generatorProfile->emptyMethodString());
 
-    EXPECT_EQ("const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginStateVectorInformationArrayString());
+    EXPECT_EQ("const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginStateVectorInformationArrayString());
     EXPECT_EQ("};\n", generatorProfile->endStateVectorInformationArrayString());
-    EXPECT_EQ("const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginVariableVectorInformationArrayString());
+    EXPECT_EQ("const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginVariableVectorInformationArrayString());
     EXPECT_EQ("};\n", generatorProfile->endVariableVectorInformationArrayString());
 
     EXPECT_EQ("    ", generatorProfile->indentString());
@@ -300,10 +300,10 @@ TEST(GeneratorProfile, defaultTemplateValues)
     EXPECT_EQ("return (double *)malloc(VALUE * sizeof (double));\n", generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ("const size_t STATE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateStateVectorSizeConstantString());
     EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
-    EXPECT_EQ("struct VARIABLE_INFO {\n    char component[VALUE];\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
+    EXPECT_EQ("struct VariableInfo {\n    char component[VALUE];\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
     EXPECT_EQ("const size_t VARIABLE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateVariableVectorSizeConstantString());
-    EXPECT_EQ("const char version[] = \"VALUE\";\n", generatorProfile->templateVersionString());
-    EXPECT_EQ("const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
+    EXPECT_EQ("const char VERSION[] = \"VALUE\";\n", generatorProfile->templateVersionString());
+    EXPECT_EQ("const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
 }
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)

@@ -6,7 +6,8 @@ __version__ = "0.2.0"
 
 STATE_VECTOR_SIZE = 4
 VARIABLE_VECTOR_SIZE = 18
-VOI = {"component": "membrane", "name": "time", "units": "millisecond"}
+
+VOI_INFORMATION = {"component": "membrane", "name": "time", "units": "millisecond"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "sodium_channel_m_gate", "name": "m", "units": "dimensionless"},

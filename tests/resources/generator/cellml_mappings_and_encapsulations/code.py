@@ -6,7 +6,8 @@ __version__ = "0.2.0"
 
 STATE_VECTOR_SIZE = 2
 VARIABLE_VECTOR_SIZE = 2
-VOI = {"component": "circle_x", "name": "t", "units": "ms"}
+
+VOI_INFORMATION = {"component": "circle_x", "name": "t", "units": "ms"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "circle_x_source", "name": "x", "units": "mM"},
