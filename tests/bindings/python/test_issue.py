@@ -75,10 +75,11 @@ class IssueTestCase(unittest.TestCase):
         self.assertIsInstance(SpecificationRule.VARIABLE_INTERFACE, int)
         self.assertIsInstance(SpecificationRule.VARIABLE_INITIAL_VALUE, int)
         self.assertIsInstance(SpecificationRule.RESET_VARIABLE_REFERENCE, int)
+        self.assertIsInstance(SpecificationRule.RESET_TEST_VARIABLE_REFERENCE, int)
         self.assertIsInstance(SpecificationRule.RESET_ORDER, int)
         self.assertIsInstance(SpecificationRule.RESET_CHILD, int)
-        self.assertIsInstance(SpecificationRule.WHEN_ORDER, int)
-        self.assertIsInstance(SpecificationRule.WHEN_CHILD, int)
+        self.assertIsInstance(SpecificationRule.RESET_RESET_VALUE, int)
+        self.assertIsInstance(SpecificationRule.RESET_TEST_VALUE, int)
         self.assertIsInstance(SpecificationRule.MATH_MATHML, int)
         self.assertIsInstance(SpecificationRule.MATH_CHILD, int)
         self.assertIsInstance(SpecificationRule.MATH_CI_VARIABLE_REFERENCE, int)
@@ -288,26 +289,6 @@ class IssueTestCase(unittest.TestCase):
         e.setReset(r)
         self.assertIsInstance(e.reset(), Reset)
         self.assertEqual(e.reset().id(), name)
-
-    def test_set_when(self):
-        from libcellml import Issue, When
-
-        # void setWhen(const WhenPtr &when);
-        e = Issue()
-        e.setWhen(When())
-
-    def test_when(self):
-        from libcellml import Issue, When
-
-        # WhenPtr when() const;
-        e = Issue()
-        self.assertIsNone(e.when())
-        name = 'var'
-        w = When()
-        w.setId(name)
-        e.setWhen(w)
-        self.assertIsInstance(e.when(), When)
-        self.assertEqual(e.when().id(), name)
 
 
 if __name__ == '__main__':

@@ -39,7 +39,6 @@ struct Issue::IssueImpl
     UnitsPtr mUnits; /**< Pointer to the units that the error occurred in. */
     VariablePtr mVariable; /**< Pointer to the variable that the error occurred in. */
     ResetPtr mReset; /**< Pointer to the reset that the error ocurred in. */
-    WhenPtr mWhen; /**< Pointer to the when that the error ocurred in. */
 };
 
 Issue::Issue()
@@ -64,8 +63,6 @@ Issue::Issue(const Issue &rhs)
     mPimpl->mUnits = rhs.mPimpl->mUnits;
     mPimpl->mVariable = rhs.mPimpl->mVariable;
     mPimpl->mReset = rhs.mPimpl->mReset;
-    mPimpl->mWhen = rhs.mPimpl->mWhen;
-    mPimpl->mType = rhs.mPimpl->mType;
 }
 
 Issue::Issue(Issue &&rhs) noexcept
@@ -125,13 +122,6 @@ Issue::Issue(const ResetPtr &reset)
 {
     mPimpl->mReset = reset;
     mPimpl->mCause = Issue::Cause::RESET;
-}
-
-Issue::Issue(const WhenPtr &when)
-    : mPimpl(new IssueImpl())
-{
-    mPimpl->mWhen = when;
-    mPimpl->mCause = Issue::Cause::WHEN;
 }
 
 void Issue::setDescription(const std::string &description)
@@ -258,17 +248,6 @@ ResetPtr Issue::reset() const
     return mPimpl->mReset;
 }
 
-void Issue::setWhen(const WhenPtr &when)
-{
-    mPimpl->mWhen = when;
-    mPimpl->mCause = Issue::Cause::WHEN;
-}
-
-WhenPtr Issue::when() const
-{
-    return mPimpl->mWhen;
-}
-
 /**
  * @brief Map SpecificationRules to their section titles.
  *
@@ -312,10 +291,11 @@ static const std::map<SpecificationRule, const std::string> ruleToHeading = {
     {SpecificationRule::VARIABLE_INTERFACE, "11.1.2.1"},
     {SpecificationRule::VARIABLE_INITIAL_VALUE, "11.1.2.2"},
     {SpecificationRule::RESET_VARIABLE_REFERENCE, "12.1.1.1"},
+    {SpecificationRule::RESET_TEST_VARIABLE_REFERENCE, "12.1.1.1"},
     {SpecificationRule::RESET_ORDER, "12.1.1.2"},
     {SpecificationRule::RESET_CHILD, "12.1.2"},
-    {SpecificationRule::WHEN_ORDER, "13.1.1"},
-    {SpecificationRule::WHEN_CHILD, "13.1.2"},
+    {SpecificationRule::RESET_TEST_VALUE, "12.1.2"},
+    {SpecificationRule::RESET_RESET_VALUE, "12.1.2"},
     {SpecificationRule::MATH_MATHML, "14.1.1"},
     {SpecificationRule::MATH_CHILD, "14.1.2"},
     {SpecificationRule::MATH_CI_VARIABLE_REFERENCE, "14.1.3"},
