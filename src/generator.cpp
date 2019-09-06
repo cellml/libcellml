@@ -2867,14 +2867,6 @@ std::string Generator::code() const
     res += mPimpl->mProfile->endCreateStateVectorMethodString();
 
     res += "\n";
-    res += mPimpl->mProfile->beginCreateRateVectorMethodString();
-
-    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mStates.size());
-    res += mPimpl->generateMethodBodyCode(methodBody);
-
-    res += mPimpl->mProfile->endCreateRateVectorMethodString();
-
-    res += "\n";
     res += mPimpl->mProfile->beginCreateVariableVectorMethodString();
 
     methodBody = mPimpl->generateCreateArrayCode(mPimpl->mVariables.size());

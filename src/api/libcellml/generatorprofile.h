@@ -1964,11 +1964,6 @@ public:
     std::string endCreateStateVectorMethodString() const;
     void setEndCreateStateVectorMethodString(const std::string &endCreateStateVectorMethodString);
 
-    std::string beginCreateRateVectorMethodString() const;
-    void setBeginCreateRateVectorMethodString(const std::string &beginCreateRateVectorMethodString);
-    std::string endCreateRateVectorMethodString() const;
-    void setEndCreateRateVectorMethodString(const std::string &endCreateRateVectorMethodString);
-
     std::string beginCreateVariableVectorMethodString() const;
     void setBeginCreateVariableVectorMethodString(const std::string &beginCreateVariableVectorMethodString);
     std::string endCreateVariableVectorMethodString() const;

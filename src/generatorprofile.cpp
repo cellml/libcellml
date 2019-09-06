@@ -163,9 +163,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginCreateStateVectorMethodString;
     std::string mEndCreateStateVectorMethodString;
 
-    std::string mBeginCreateRateVectorMethodString;
-    std::string mEndCreateRateVectorMethodString;
-
     std::string mBeginCreateVariableVectorMethodString;
     std::string mEndCreateVariableVectorMethodString;
 
@@ -402,9 +399,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mBeginCreateStateVectorMethodString = "double *createStateVector()\n{\n";
         mEndCreateStateVectorMethodString = "}\n";
 
-        mBeginCreateRateVectorMethodString = "double *createRateVector()\n{\n";
-        mEndCreateRateVectorMethodString = "}\n";
-
         mBeginCreateVariableVectorMethodString = "double *createVariableVector()\n{\n";
         mEndCreateVariableVectorMethodString = "}\n";
 
@@ -619,9 +613,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mBeginCreateStateVectorMethodString = "def create_state_vector():\n";
         mEndCreateStateVectorMethodString = "\n";
 
-        mBeginCreateRateVectorMethodString = "def create_rate_vector():\n";
-        mEndCreateRateVectorMethodString = "\n";
-
         mBeginCreateVariableVectorMethodString = "def create_variable_vector():\n";
         mEndCreateVariableVectorMethodString = "\n";
 
@@ -800,9 +791,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mBeginCreateStateVectorMethodString = rhs.mPimpl->mBeginCreateStateVectorMethodString;
     mPimpl->mEndCreateStateVectorMethodString = rhs.mPimpl->mEndCreateStateVectorMethodString;
-
-    mPimpl->mBeginCreateRateVectorMethodString = rhs.mPimpl->mBeginCreateRateVectorMethodString;
-    mPimpl->mEndCreateRateVectorMethodString = rhs.mPimpl->mEndCreateRateVectorMethodString;
 
     mPimpl->mBeginCreateVariableVectorMethodString = rhs.mPimpl->mBeginCreateVariableVectorMethodString;
     mPimpl->mEndCreateVariableVectorMethodString = rhs.mPimpl->mEndCreateVariableVectorMethodString;
@@ -1918,26 +1906,6 @@ std::string GeneratorProfile::endCreateStateVectorMethodString() const
 void GeneratorProfile::setEndCreateStateVectorMethodString(const std::string &endCreateStateVectorMethodString)
 {
     mPimpl->mEndCreateStateVectorMethodString = endCreateStateVectorMethodString;
-}
-
-std::string GeneratorProfile::beginCreateRateVectorMethodString() const
-{
-    return mPimpl->mBeginCreateRateVectorMethodString;
-}
-
-void GeneratorProfile::setBeginCreateRateVectorMethodString(const std::string &beginCreateRateVectorMethodString)
-{
-    mPimpl->mBeginCreateRateVectorMethodString = beginCreateRateVectorMethodString;
-}
-
-std::string GeneratorProfile::endCreateRateVectorMethodString() const
-{
-    return mPimpl->mEndCreateRateVectorMethodString;
-}
-
-void GeneratorProfile::setEndCreateRateVectorMethodString(const std::string &endCreateRateVectorMethodString)
-{
-    mPimpl->mEndCreateRateVectorMethodString = endCreateRateVectorMethodString;
 }
 
 std::string GeneratorProfile::beginCreateVariableVectorMethodString() const
