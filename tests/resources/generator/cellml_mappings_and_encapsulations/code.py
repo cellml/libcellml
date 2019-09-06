@@ -6,16 +6,16 @@ __version__ = "0.2.0"
 
 STATE_VECTOR_SIZE = 2
 VARIABLE_VECTOR_SIZE = 2
-VOI = {"name": "t", "units": "ms"}
+VOI = {"component": "circle_x", "name": "t", "units": "ms"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "x", "units": "mM"},
-    {"name": "y", "units": "mM"},
+    {"component": "circle_x_source", "name": "x", "units": "mM"},
+    {"component": "circle_y_implementation", "name": "y", "units": "mM"},
 ]
 
 VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "local_complex_maths", "units": "mM"},
-    {"name": "two_x", "units": "milli_mole"},
+    {"component": "circle_sibling", "name": "local_complex_maths", "units": "mM"},
+    {"component": "circle_x_sibling", "name": "two_x", "units": "milli_mole"},
 ]
 
 

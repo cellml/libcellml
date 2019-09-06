@@ -445,14 +445,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReturnCreatedArrayString = "return (double *)malloc(VALUE * sizeof (double));\n";
         mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
         mTemplateVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
-        mTemplateVoiConstantString = "const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\"};\n";
+        mTemplateVoiConstantString = "const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
         mTemplateVersionString = "const char version[] = \"VALUE\";\n";
         mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
         mTemplateVariableInformationObjectString = "struct VARIABLE_INFO {\n"
+                                                   "    char component[VALUE];\n"
                                                    "    char name[VALUE];\n"
                                                    "    char units[VALUE];\n"
                                                    "};\n";
-        mTemplateVariableInformationEntryString = "{\"VALUE\", \"VALUE\"}";
+        mTemplateVariableInformationEntryString = "{\"VALUE\", \"VALUE\", \"VALUE\"}";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
@@ -661,11 +662,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReturnCreatedArrayString = "return [nan]*VALUE\n";
         mTemplateStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
         mTemplateVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
-        mTemplateVoiConstantString = "VOI = {\"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
+        mTemplateVoiConstantString = "VOI = {\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
         mTemplateVersionString = "__version__ = \"VALUE\"\n";
         mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
         mTemplateVariableInformationObjectString = "";
-        mTemplateVariableInformationEntryString = "{\"name\": \"VALUE\", \"units\": \"VALUE\"}";
+        mTemplateVariableInformationEntryString = "{\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}";
 
         break;
     }

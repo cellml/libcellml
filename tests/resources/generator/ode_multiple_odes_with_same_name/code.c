@@ -6,21 +6,22 @@
 const char version[] = "0.2.0";
 
 struct VARIABLE_INFO {
+    char component[14];
     char name[2];
     char units[14];
 };
 
 const size_t STATE_VECTOR_SIZE = 2;
 const size_t VARIABLE_VECTOR_SIZE = 1;
-const struct VARIABLE_INFO VOI = {"t", "second"};
+const struct VARIABLE_INFO VOI = {"my_first_ode", "t", "second"};
 
 const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
-    {"x", "dimensionless"},
-    {"x", "dimensionless"},
+    {"my_first_ode", "x", "dimensionless"},
+    {"my_second_ode", "x", "dimensionless"},
 };
 
 const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
-    {"a", "per_s"},
+    {"my_second_ode", "a", "per_s"},
 };
 
 double *createStateVector()

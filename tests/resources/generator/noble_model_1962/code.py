@@ -6,33 +6,33 @@ __version__ = "0.2.0"
 
 STATE_VECTOR_SIZE = 4
 VARIABLE_VECTOR_SIZE = 17
-VOI = {"name": "time", "units": "millisecond"}
+VOI = {"component": "membrane", "name": "time", "units": "millisecond"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "m", "units": "dimensionless"},
-    {"name": "h", "units": "dimensionless"},
-    {"name": "n", "units": "dimensionless"},
-    {"name": "V", "units": "millivolt"},
+    {"component": "sodium_channel_m_gate", "name": "m", "units": "dimensionless"},
+    {"component": "sodium_channel_h_gate", "name": "h", "units": "dimensionless"},
+    {"component": "potassium_channel_n_gate", "name": "n", "units": "dimensionless"},
+    {"component": "membrane", "name": "V", "units": "millivolt"},
 ]
 
 VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "E_L", "units": "millivolt"},
-    {"name": "g_L", "units": "milliS_per_cm2"},
-    {"name": "Cm", "units": "microF_per_cm2"},
-    {"name": "E_Na", "units": "millivolt"},
-    {"name": "g_Na_max", "units": "milliS_per_cm2"},
-    {"name": "i_Leak", "units": "microA_per_cm2"},
-    {"name": "g_Na", "units": "milliS_per_cm2"},
-    {"name": "i_Na", "units": "microA_per_cm2"},
-    {"name": "alpha_m", "units": "per_millisecond"},
-    {"name": "beta_m", "units": "per_millisecond"},
-    {"name": "alpha_h", "units": "per_millisecond"},
-    {"name": "beta_h", "units": "per_millisecond"},
-    {"name": "g_K1", "units": "milliS_per_cm2"},
-    {"name": "g_K2", "units": "milliS_per_cm2"},
-    {"name": "alpha_n", "units": "per_millisecond"},
-    {"name": "beta_n", "units": "per_millisecond"},
-    {"name": "i_K", "units": "microA_per_cm2"},
+    {"component": "leakage_current", "name": "E_L", "units": "millivolt"},
+    {"component": "leakage_current", "name": "g_L", "units": "milliS_per_cm2"},
+    {"component": "membrane", "name": "Cm", "units": "microF_per_cm2"},
+    {"component": "sodium_channel", "name": "E_Na", "units": "millivolt"},
+    {"component": "sodium_channel", "name": "g_Na_max", "units": "milliS_per_cm2"},
+    {"component": "membrane", "name": "i_Leak", "units": "microA_per_cm2"},
+    {"component": "sodium_channel", "name": "g_Na", "units": "milliS_per_cm2"},
+    {"component": "membrane", "name": "i_Na", "units": "microA_per_cm2"},
+    {"component": "sodium_channel_m_gate", "name": "alpha_m", "units": "per_millisecond"},
+    {"component": "sodium_channel_m_gate", "name": "beta_m", "units": "per_millisecond"},
+    {"component": "sodium_channel_h_gate", "name": "alpha_h", "units": "per_millisecond"},
+    {"component": "sodium_channel_h_gate", "name": "beta_h", "units": "per_millisecond"},
+    {"component": "potassium_channel", "name": "g_K1", "units": "milliS_per_cm2"},
+    {"component": "potassium_channel", "name": "g_K2", "units": "milliS_per_cm2"},
+    {"component": "potassium_channel_n_gate", "name": "alpha_n", "units": "per_millisecond"},
+    {"component": "potassium_channel_n_gate", "name": "beta_n", "units": "per_millisecond"},
+    {"component": "membrane", "name": "i_K", "units": "microA_per_cm2"},
 ]
 
 

@@ -2336,29 +2336,39 @@ std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string 
     return templateString;
 }
 
+void determineMaxLengths(size_t &max_component_name_length, size_t &max_variable_name_length, size_t &max_units_length, VariablePtr variable)
+{
+    auto component_name_length = variable->parentComponent()->name().length();
+    auto state_name_length = variable->name().length();
+    auto state_units_length = variable->units().length();
+    max_component_name_length = max_component_name_length > component_name_length ? max_component_name_length : component_name_length;
+    max_variable_name_length = max_variable_name_length > state_name_length ? max_variable_name_length : state_name_length;
+    max_units_length = max_units_length > state_units_length ? max_units_length : state_units_length;
+}
+
 std::string Generator::GeneratorImpl::generateVariableInformationObjectString()
 {
-    size_t max_name_length = 0;
+    size_t max_component_name_length = 0;
+    size_t max_variable_name_length = 0;
     size_t max_units_length = 0;
 
     if (mVariableOfIntegration != nullptr) {
-        max_name_length = mVariableOfIntegration->name().length();
-        max_units_length = mVariableOfIntegration->units().length();
+        determineMaxLengths(max_component_name_length, max_variable_name_length, max_units_length, mVariableOfIntegration);
     }
     for (const auto &state: mStates) {
-        max_name_length = max_name_length > state->name().length() ? max_name_length : state->name().length();
-        max_units_length = max_units_length > state->units().length() ? max_units_length : state->units().length();
+        determineMaxLengths(max_component_name_length, max_variable_name_length, max_units_length, state);
     }
-    for (const auto &variable: mVariables) {
-        max_name_length = max_name_length > variable->variable()->name().length() ? max_name_length : variable->variable()->name().length();
-        max_units_length = max_units_length > variable->variable()->units().length() ? max_units_length : variable->variable()->units().length();
+    for (const auto &generatorVariable: mVariables) {
+        auto variable = generatorVariable->variable();
+        determineMaxLengths(max_component_name_length, max_variable_name_length, max_units_length, variable);
     }
 
     // Add extra for end of string termination.
-    max_name_length += 1;
+    max_component_name_length += 1;
+    max_variable_name_length += 1;
     max_units_length += 1;
 
-    std::vector<size_t> values = {max_name_length, max_units_length};
+    std::vector<size_t> values = {max_component_name_length, max_variable_name_length, max_units_length};
 
     return replaceMultipleTemplateValues(mProfile->templateVariableInformationObjectString(), values);
 }
@@ -2368,7 +2378,7 @@ std::string Generator::GeneratorImpl::generateStateInformationArray()
     std::string res;
     res += mProfile->beginStateVectorInformationArrayString();
     for (const auto &state: mStates) {
-        std::vector<std::string> details = {state->name(), state->units()};
+        std::vector<std::string> details = {state->parentComponent()->name(), state->name(), state->units()};
         res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
                 + mProfile->arrayElementSeparatorString() + "\n";
     }
@@ -2381,8 +2391,9 @@ std::string Generator::GeneratorImpl::generateVariableInformationArray()
 {
     std::string res;
     res += mProfile->beginVariableVectorInformationArrayString();
-    for (const auto &variable: mVariables) {
-        std::vector<std::string> details = {variable->variable()->name(), variable->variable()->units()};
+    for (const auto &generatorVariable: mVariables) {
+        auto variable = generatorVariable->variable();
+        std::vector<std::string> details = {variable->parentComponent()->name(), variable->name(), variable->units()};
         res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
                 + mProfile->arrayElementSeparatorString() + "\n";
     }
@@ -2620,7 +2631,7 @@ std::string Generator::code() const
     res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateStateVectorSizeConstantString(), mPimpl->mStates.size());
     res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVariableVectorSizeConstantString(), mPimpl->mVariables.size());
     if (mPimpl->mVariableOfIntegration != nullptr) {
-        std::vector<std::string> details = {mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
+        std::vector<std::string> details = {mPimpl->mVariableOfIntegration->parentComponent()->name(), mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
         res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
     }
 

@@ -11,8 +11,8 @@ STATE_VECTOR_INFORMATION_ARRAY = [
 ]
 
 VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "a", "units": "dimensionless"},
-    {"name": "x", "units": "dimensionless"},
+    {"component": "my_algebraic_eqn", "name": "a", "units": "dimensionless"},
+    {"component": "my_algebraic_eqn", "name": "x", "units": "dimensionless"},
 ]
 
 

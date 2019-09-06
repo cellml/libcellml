@@ -299,11 +299,11 @@ TEST(GeneratorProfile, defaultTemplateValues)
     EXPECT_EQ("The contents of this file was generated from version VALUE of libCellML.", generatorProfile->templateOriginCommentString());
     EXPECT_EQ("return (double *)malloc(VALUE * sizeof (double));\n", generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ("const size_t STATE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateStateVectorSizeConstantString());
-    EXPECT_EQ("{\"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
-    EXPECT_EQ("struct VARIABLE_INFO {\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
+    EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
+    EXPECT_EQ("struct VARIABLE_INFO {\n    char component[VALUE];\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
     EXPECT_EQ("const size_t VARIABLE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateVariableVectorSizeConstantString());
     EXPECT_EQ("const char version[] = \"VALUE\";\n", generatorProfile->templateVersionString());
-    EXPECT_EQ("const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
+    EXPECT_EQ("const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
 }
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)

@@ -6,6 +6,7 @@
 const char version[] = "0.2.0";
 
 struct VARIABLE_INFO {
+    char component[13];
     char name[2];
     char units[14];
 };
@@ -17,7 +18,7 @@ const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
 };
 
 const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
-    {"x", "dimensionless"},
+    {"my_component", "x", "dimensionless"},
 };
 
 double *createStateVector()

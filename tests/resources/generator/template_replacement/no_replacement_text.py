@@ -6,15 +6,15 @@ from math import *
 
 1STATE_VECTOR_SIZE = VALUE
 2VARIABLE_VECTOR_SIZE = VALUE
-secondtVOI = {"name": "VALUE", "units": "VALUE"}
+secondtmy_odeVOI = {"component": "VALUE", "name": "VALUE", "units": "VALUE"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
-    dimensionlessv{"name": "VALUE", "units": "VALUE"},
+    dimensionlessvmy_ode{"component": "VALUE", "name": "VALUE", "units": "VALUE"},
 ]
 
 VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    per_sa{"name": "VALUE", "units": "VALUE"},
-    per_sx{"name": "VALUE", "units": "VALUE"},
+    per_samy_ode{"component": "VALUE", "name": "VALUE", "units": "VALUE"},
+    per_sxmy_algebraic_eqn{"component": "VALUE", "name": "VALUE", "units": "VALUE"},
 ]
 
 

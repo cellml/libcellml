@@ -6,15 +6,15 @@ __version__ = "0.2.0"
 
 STATE_VECTOR_SIZE = 2
 VARIABLE_VECTOR_SIZE = 1
-VOI = {"name": "t", "units": "second"}
+VOI = {"component": "my_first_ode", "name": "t", "units": "second"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "x", "units": "dimensionless"},
-    {"name": "x", "units": "dimensionless"},
+    {"component": "my_first_ode", "name": "x", "units": "dimensionless"},
+    {"component": "my_second_ode", "name": "x", "units": "dimensionless"},
 ]
 
 VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "a", "units": "per_s"},
+    {"component": "my_second_ode", "name": "a", "units": "per_s"},
 ]
 
 
