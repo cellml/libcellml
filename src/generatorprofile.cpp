@@ -662,7 +662,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReturnCreatedArrayString = "return [nan]*VALUE\n";
         mTemplateStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
         mTemplateVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
-        mTemplateVoiConstantString = "VOI = {\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
+        mTemplateVoiConstantString = "VOI_INFORMATION = {\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
         mTemplateVersionString = "__version__ = \"VALUE\"\n";
         mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
         mTemplateVariableInformationObjectString = "";
