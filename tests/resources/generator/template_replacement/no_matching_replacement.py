@@ -19,10 +19,6 @@ def create_state_vector():
     pass
 
 
-def create_rate_vector():
-    pass
-
-
 def create_variable_vector():
     pass
 

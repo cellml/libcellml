@@ -253,9 +253,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("double *createStateVector()\n{\n", generatorProfile->beginCreateStateVectorMethodString());
     EXPECT_EQ("}\n", generatorProfile->endCreateStateVectorMethodString());
 
-    EXPECT_EQ("double *createRateVector()\n{\n", generatorProfile->beginCreateRateVectorMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endCreateRateVectorMethodString());
-
     EXPECT_EQ("double *createVariableVector()\n{\n", generatorProfile->beginCreateVariableVectorMethodString());
     EXPECT_EQ("}\n", generatorProfile->endCreateVariableVectorMethodString());
 
@@ -585,8 +582,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setBeginCreateStateVectorMethodString(value);
     generatorProfile->setEndCreateStateVectorMethodString(value);
-    generatorProfile->setBeginCreateRateVectorMethodString(value);
-    generatorProfile->setEndCreateRateVectorMethodString(value);
     generatorProfile->setBeginCreateVariableVectorMethodString(value);
     generatorProfile->setEndCreateVariableVectorMethodString(value);
 
@@ -631,8 +626,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->beginCreateStateVectorMethodString());
     EXPECT_EQ(value, generatorProfile->endCreateStateVectorMethodString());
-    EXPECT_EQ(value, generatorProfile->beginCreateRateVectorMethodString());
-    EXPECT_EQ(value, generatorProfile->endCreateRateVectorMethodString());
     EXPECT_EQ(value, generatorProfile->beginCreateVariableVectorMethodString());
     EXPECT_EQ(value, generatorProfile->endCreateVariableVectorMethodString());
 
