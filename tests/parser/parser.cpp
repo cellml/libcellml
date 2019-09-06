@@ -1650,6 +1650,7 @@ TEST(Parser, parseResetsWithErrors)
     const std::vector<std::string> expectedErrors = {
         "Reset referencing variable 'variable3' is not a valid reference for a variable in component 'component2'.",
         "Reset referencing test_variable 'variable1' is not a valid reference for a variable in component 'component2'.",
+        "Reset in component 'component2' does not reference a variable in the component.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the test_value block of 'one_invalid_attribute'.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has an unexpected attribute in the reset_value block of 'another_invalid_attribute'.",
         "Reset in component 'component2' referencing variable '' and test_variable '' has multiple test_value blocks.",

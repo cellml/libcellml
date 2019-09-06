@@ -88,7 +88,7 @@ return Type::ERROR.";
 %ignore libcellml::Issue::Issue(Issue &&);
 %ignore libcellml::Issue::operator =;
 
-// %include "libcellml/exportdefinitions.h"
+%include "libcellml/exportdefinitions.h"
 %include "libcellml/specificationrules.h"
 %include "libcellml/types.h"
 %include "libcellml/issue.h"
