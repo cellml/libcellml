@@ -42,7 +42,7 @@ TEST(ResolveImports, resolveSineImportsModelFromFile)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
@@ -53,7 +53,7 @@ TEST(ResolveImports, resolveComplexImportsModelFromFile)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
@@ -65,7 +65,7 @@ TEST(ResolveImports, resolveUnitsImportFromFile)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
@@ -77,7 +77,7 @@ TEST(ResolveImports, resolveImportsFromFileLevel0)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_FALSE(model->hasUnresolvedImports());
 }
 
@@ -89,6 +89,6 @@ TEST(ResolveImports, resolveImportsFromFileLevel0Unresolvable)
     EXPECT_EQ(size_t(0), p.errorCount());
 
     EXPECT_TRUE(model->hasUnresolvedImports());
-    model->resolveImports(resourcePath(""));
+    model->resolveImports(resourcePath());
     EXPECT_TRUE(model->hasUnresolvedImports());
 }
