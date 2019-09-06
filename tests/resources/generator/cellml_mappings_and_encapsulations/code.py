@@ -24,10 +24,6 @@ def create_state_vector():
     return [nan]*2
 
 
-def create_rate_vector():
-    return [nan]*2
-
-
 def create_variable_vector():
     return [nan]*2
 

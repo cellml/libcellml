@@ -227,11 +227,6 @@ double *createStateVector()
     return (double *)malloc(15 * sizeof (double));
 }
 
-double *createRateVector()
-{
-    return (double *)malloc(15 * sizeof (double));
-}
-
 double *createVariableVector()
 {
     return (double *)malloc(185 * sizeof (double));
