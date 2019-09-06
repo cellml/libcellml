@@ -81,12 +81,6 @@ return Type::ERROR.";
 %feature("docstring") libcellml::Issue::setReset
 "Sets the :class:`Reset` that this issue is relevant to (``None`` to unset).";
 
-%feature("docstring") libcellml::Issue::when
-"Get the :class:`When` that this issue is relevant to (or ``None``).";
-
-%feature("docstring") libcellml::Issue::setWhen
-"Sets the :class:`When` that this issue is relevant to (``None`` to unset).";
-
 %{
 #include "libcellml/issue.h"
 %}
@@ -94,7 +88,7 @@ return Type::ERROR.";
 %ignore libcellml::Issue::Issue(Issue &&);
 %ignore libcellml::Issue::operator =;
 
-%include "libcellml/exportdefinitions.h"
+// %include "libcellml/exportdefinitions.h"
 %include "libcellml/specificationrules.h"
 %include "libcellml/types.h"
 %include "libcellml/issue.h"

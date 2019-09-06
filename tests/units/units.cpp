@@ -608,6 +608,6 @@ TEST(Units, unitsWithPrefixOutOfRange)
     m->addUnits(u);
 
     validator.validateModel(m);
-    EXPECT_EQ(size_t(1), validator.errorCount());
-    EXPECT_EQ(e, validator.error(0)->description());
+    EXPECT_EQ(size_t(1), validator.issueCount());
+    EXPECT_EQ(e, validator.issue(0)->description());
 }

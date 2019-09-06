@@ -48,15 +48,6 @@ public:
     explicit Issue(const ModelPtr &model);
 
     /**
-     * @brief Constructs an Issue for the when.
-     *
-     * Convienence constructor for creating an issue for the when.
-     *
-     * @param when The when the issue references.
-     */
-    explicit Issue(const WhenPtr &when);
-
-    /**
      * @brief Constructs an Issue for the component.
      *
      * Convienence constructor for creating an issue for the component.
@@ -118,7 +109,6 @@ public:
         UNDEFINED,
         UNITS,
         VARIABLE,
-        WHEN,
         XML
     };
 
@@ -359,25 +349,6 @@ public:
      * If no reset has been set for this issue, return a @c nullptr.
      */
     ResetPtr reset() const;
-
-    /**
-     * @brief Set the when for this issue.
-     *
-     * Set the @p when that this issue is relevant to.
-     *
-     * @param when A pointer to the when this issue is relevant to.
-     */
-    void setWhen(const WhenPtr &when);
-
-    /**
-     * @brief Get the when for this issue.
-     *
-     * Get the when that this issue is relevant to.
-     *
-     * @return A pointer to the when this when issue was raised on.
-     * If no when has been set for this issue, return a @c nullptr.
-     */
-    WhenPtr when() const;
 
 private:
     void swap(Issue &rhs); /**< Swap method required for C++ 11 move semantics. */

@@ -28,9 +28,9 @@ class Validator; /**< Forward declaration of Validator class. */
 class Component; /**< Forward declaration of Component class. */
 using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
-typedef std::shared_ptr<ComponentEntity> ComponentEntityPtr; /**< Type definition for shared component entity pointer. */
+using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
 class Issue; /**< Forward declaration of Issue class. */
-typedef std::shared_ptr<Issue> IssuePtr; /**< Type definition for shared error pointer. */
+using IssuePtr = std::shared_ptr<Issue>; /**< Type definition for shared error pointer. */
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
