@@ -11,7 +11,7 @@ STATE_VECTOR_INFORMATION_ARRAY = [
 ]
 
 VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "x", "units": "dimensionless"},
+    {"component": "my_component", "name": "x", "units": "dimensionless"},
 ]
 
 
