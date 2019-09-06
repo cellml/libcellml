@@ -6,7 +6,8 @@ from math import *
 
 1STATE_VECTOR_SIZE = VALUE
 2VARIABLE_VECTOR_SIZE = VALUE
-secondtmy_odeVOI = {"component": "VALUE", "name": "VALUE", "units": "VALUE"}
+
+secondtmy_odeVOI_INFORMATION = {"component": "VALUE", "name": "VALUE", "units": "VALUE"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     dimensionlessvmy_ode{"component": "VALUE", "name": "VALUE", "units": "VALUE"},

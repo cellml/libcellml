@@ -6,7 +6,8 @@ __version__ = "0.2.0"
 
 STATE_VECTOR_SIZE = 33
 VARIABLE_VECTOR_SIZE = 217
-VOI = {"component": "Nai_concentration", "name": "time", "units": "second"}
+
+VOI_INFORMATION = {"component": "Nai_concentration", "name": "time", "units": "second"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "Ca_SR_release", "name": "R", "units": "dimensionless"},

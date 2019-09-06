@@ -1,11 +1,11 @@
 /* The contents of this file was generated from version 0.2.0 of libCellML. */
+#include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <math.h>
 
-const char version[] = "0.2.0";
+const char VERSION[] = "0.2.0";
 
-struct VARIABLE_INFO {
+struct VariableInfo {
     char component[53];
     char name[31];
     char units[27];
@@ -13,9 +13,10 @@ struct VARIABLE_INFO {
 
 const size_t STATE_VECTOR_SIZE = 15;
 const size_t VARIABLE_VECTOR_SIZE = 185;
-const struct VARIABLE_INFO VOI = {"membrane", "time", "second"};
 
-const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VOI_INFORMATION = {"membrane", "time", "second"};
+
+const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
     {"sodium_current_m_gate", "m", "dimensionless"},
     {"sodium_current_h_gate", "h1", "dimensionless"},
     {"sodium_current_h_gate", "h2", "dimensionless"},
@@ -33,7 +34,7 @@ const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
     {"membrane", "V", "millivolt"},
 };
 
-const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
     {"L_type_Ca_channel", "E_Ca_L", "millivolt"},
     {"L_type_Ca_channel", "g_Ca_L_Centre_0DCapable", "microS"},
     {"L_type_Ca_channel", "g_Ca_L_Centre_1DCapable", "microS"},

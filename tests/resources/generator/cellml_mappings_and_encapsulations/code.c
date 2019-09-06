@@ -1,11 +1,11 @@
 /* The contents of this file was generated from version 0.2.0 of libCellML. */
+#include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <math.h>
 
-const char version[] = "0.2.0";
+const char VERSION[] = "0.2.0";
 
-struct VARIABLE_INFO {
+struct VariableInfo {
     char component[24];
     char name[20];
     char units[11];
@@ -13,14 +13,15 @@ struct VARIABLE_INFO {
 
 const size_t STATE_VECTOR_SIZE = 2;
 const size_t VARIABLE_VECTOR_SIZE = 2;
-const struct VARIABLE_INFO VOI = {"circle_x", "t", "ms"};
 
-const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VOI_INFORMATION = {"circle_x", "t", "ms"};
+
+const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
     {"circle_x_source", "x", "mM"},
     {"circle_y_implementation", "y", "mM"},
 };
 
-const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
     {"circle_sibling", "local_complex_maths", "mM"},
     {"circle_x_sibling", "two_x", "milli_mole"},
 };
