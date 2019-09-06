@@ -112,25 +112,6 @@ TEST(Coverage, units)
     EXPECT_EQ("dimensionless", uc.name());
 }
 
-TEST(Coverage, when)
-{
-    const std::string randomValue = "4738";
-
-    libcellml::When w;
-    libcellml::When wm;
-    libcellml::Reset r;
-
-    w.setValue(randomValue);
-    wm = std::move(w);
-
-    libcellml::When wc(wm);
-
-    libcellml::WhenPtr wp = std::make_shared<libcellml::When>(wc);
-    r.addWhen(wp);
-
-    EXPECT_EQ(randomValue, wc.value());
-}
-
 TEST(Coverage, unitsGetVariations)
 {
     libcellml::Model m;
