@@ -15,9 +15,9 @@ limitations under the License.
 */
 
 #include "libcellml/reset.h"
-#include "libcellml/when.h"
 
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
 namespace libcellml {
@@ -31,15 +31,12 @@ struct Reset::ResetImpl
 {
     int mOrder = 0; /**< An integer for determining relative order.*/
     VariablePtr mVariable; /**< The associated variable for the reset.*/
-    std::vector<WhenPtr>::iterator findWhen(const WhenPtr &when);
-    std::vector<WhenPtr> mWhens;
+    VariablePtr mTestVariable; /**< The associated test_variable for the reset.*/
+    std::string mTestValue = ""; /**< The mathml string for the test_value.*/
+    std::string mTestValueId = ""; /**< The id of the test_value block */
+    std::string mResetValue = ""; /**< The mathml string for the reset_value.*/
+    std::string mResetValueId = ""; /**< The id of the reset_value block */
 };
-
-std::vector<WhenPtr>::iterator Reset::ResetImpl::findWhen(const WhenPtr &when)
-{
-    return std::find_if(mWhens.begin(), mWhens.end(),
-                        [=](const WhenPtr &w) -> bool { return w == when; });
-}
 
 Reset::Reset()
     : mPimpl(new ResetImpl())
@@ -57,7 +54,11 @@ Reset::Reset(const Reset &rhs)
 {
     mPimpl->mOrder = rhs.mPimpl->mOrder;
     mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mWhens = rhs.mPimpl->mWhens;
+    mPimpl->mTestVariable = rhs.mPimpl->mTestVariable;
+    mPimpl->mTestValue = rhs.mPimpl->mTestValue;
+    mPimpl->mResetValue = rhs.mPimpl->mResetValue;
+    mPimpl->mTestValueId = rhs.mPimpl->mTestValueId;
+    mPimpl->mResetValueId = rhs.mPimpl->mResetValueId;
 }
 
 Reset::Reset(Reset &&rhs) noexcept
@@ -89,86 +90,64 @@ VariablePtr Reset::variable() const
     return mPimpl->mVariable;
 }
 
-void Reset::addWhen(const WhenPtr &when)
+void Reset::setTestVariable(const VariablePtr &variable)
 {
-    mPimpl->mWhens.push_back(when);
+    mPimpl->mTestVariable = variable;
 }
 
-bool Reset::removeWhen(size_t index)
+VariablePtr Reset::testVariable() const
 {
-    bool status = false;
-
-    if (index < mPimpl->mWhens.size()) {
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + int64_t(index));
-        status = true;
-    }
-
-    return status;
+    return mPimpl->mTestVariable;
 }
 
-bool Reset::removeWhen(const WhenPtr &when)
+void Reset::appendTestValue(const std::string &math)
 {
-    bool status = false;
-    auto result = mPimpl->findWhen(when);
-    if (result != mPimpl->mWhens.end()) {
-        mPimpl->mWhens.erase(result);
-        status = true;
-    }
-
-    return status;
+    mPimpl->mTestValue.append(math);
 }
 
-void Reset::removeAllWhens()
+std::string Reset::testValue() const
 {
-    mPimpl->mWhens.clear();
+    return mPimpl->mTestValue;
 }
 
-bool Reset::containsWhen(const WhenPtr &when) const
+void Reset::setTestValueId(const std::string &id)
 {
-    bool status = false;
-    auto result = mPimpl->findWhen(when);
-    if (result != mPimpl->mWhens.end()) {
-        status = true;
-    }
-
-    return status;
+    mPimpl->mTestValueId = id;
 }
 
-WhenPtr Reset::when(size_t index) const
+std::string Reset::testValueId() const
 {
-    WhenPtr when = nullptr;
-    if (index < mPimpl->mWhens.size()) {
-        when = mPimpl->mWhens.at(index);
-    }
-
-    return when;
+    return mPimpl->mTestValueId;
 }
 
-WhenPtr Reset::takeWhen(size_t index)
+void Reset::setTestValue(const std::string &math)
 {
-    WhenPtr when = nullptr;
-    if (index < mPimpl->mWhens.size()) {
-        when = mPimpl->mWhens.at(index);
-        mPimpl->mWhens.erase(mPimpl->mWhens.begin() + int64_t(index));
-    }
-
-    return when;
+    mPimpl->mTestValue = math;
 }
 
-bool Reset::replaceWhen(size_t index, const WhenPtr &when)
+void Reset::appendResetValue(const std::string &math)
 {
-    bool status = false;
-    if (removeWhen(index)) {
-        mPimpl->mWhens.insert(mPimpl->mWhens.begin() + int64_t(index), when);
-        status = true;
-    }
-
-    return status;
+    mPimpl->mResetValue.append(math);
 }
 
-size_t Reset::whenCount() const
+std::string Reset::resetValue() const
 {
-    return mPimpl->mWhens.size();
+    return mPimpl->mResetValue;
+}
+
+void Reset::setResetValue(const std::string &math)
+{
+    mPimpl->mResetValue = math;
+}
+
+void Reset::setResetValueId(const std::string &id)
+{
+    mPimpl->mResetValueId = id;
+}
+
+std::string Reset::resetValueId() const
+{
+    return mPimpl->mResetValueId;
 }
 
 } // namespace libcellml
