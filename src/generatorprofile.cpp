@@ -391,7 +391,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "   free(array);\n"
                                     "}\n";
 
-        mHeaderString = "#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n";
+        mHeaderString = "#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n";
 
         mVariableOfIntegrationString = "voi";
 
@@ -422,9 +422,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mEmptyMethodString = "";
 
-        mBeginStateVectorInformationArrayString = "const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {\n";
+        mBeginStateVectorInformationArrayString = "const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {\n";
         mEndStateVectorInformationArrayString = "};\n";
-        mBeginVariableVectorInformationArrayString = "const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n";
+        mBeginVariableVectorInformationArrayString = "const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n";
         mEndVariableVectorInformationArrayString = "};\n";
 
         mIndentString = "    ";
@@ -445,10 +445,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReturnCreatedArrayString = "return (double *)malloc(VALUE * sizeof (double));\n";
         mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
         mTemplateVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
-        mTemplateVoiConstantString = "const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
-        mTemplateVersionString = "const char version[] = \"VALUE\";\n";
+        mTemplateVoiConstantString = "const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
+        mTemplateVersionString = "const char VERSION[] = \"VALUE\";\n";
         mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
-        mTemplateVariableInformationObjectString = "struct VARIABLE_INFO {\n"
+        mTemplateVariableInformationObjectString = "struct VariableInfo {\n"
                                                    "    char component[VALUE];\n"
                                                    "    char name[VALUE];\n"
                                                    "    char units[VALUE];\n"

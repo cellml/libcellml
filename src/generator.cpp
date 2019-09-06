@@ -2636,6 +2636,7 @@ std::string Generator::code() const
     res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateStateVectorSizeConstantString(), mPimpl->mStates.size());
     res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVariableVectorSizeConstantString(), mPimpl->mVariables.size());
     if (mPimpl->mVariableOfIntegration != nullptr) {
+        res += "\n";
         std::vector<std::string> details = {mPimpl->mVariableOfIntegration->parentComponent()->name(), mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
         res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
     }
