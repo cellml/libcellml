@@ -41,7 +41,7 @@ public:
     /**
      * @brief Set the @c Variable for this @c Reset.
      *
-     * Set the @c Variable for this @c Reset.
+     * Sets the @c Variable for this @c Reset.
      *
      * @param variable The @c Variable to set.
      */
@@ -50,124 +50,114 @@ public:
     /**
      * @brief Get the @c Variable for this @c Reset.
      *
-     * Return the @c Variable of this @c Reset.
+     * Returns the @c Variable of this @c Reset.
      *
      * @return The @c Variable.
      */
     VariablePtr variable() const;
 
     /**
-     * @brief Set the test @c Variable for this @c Reset.
+     * @brief Add a child when to this @c Reset.
      *
-     * Set the test @c Variable for this @c Reset.
+     * Add a copy of the given @p when as a child @c When of this @c Reset.
      *
-     * @param variable The test @c Variable to set.
+     * @param when The @c When to add.
      */
-    void setTestVariable(const VariablePtr &variable);
+    void addWhen(const WhenPtr &when);
 
     /**
-     * @brief Get the test variable for this @c Reset.
+     * @brief Remove the @c When at the given @p index.
      *
-     * Return the @c Variable used in the test condition of this @c Reset.
+     * Remove the @c When with the given @p index. @p index must
+     * be in the range [0, \#Whens).
      *
-     * @return The @c Variable used in the test condition.
+     * @param index The index of the @c When to remove.
+     *
+     * @return True if the @c When was removed, false otherwise.
      */
-    VariablePtr testVariable() const;
+    bool removeWhen(size_t index);
 
     /**
-     * @brief Append the argument to the test value string for this reset.
+     * @brief Remove the @c When with the given pointer.
      *
-     * Append @p math to the existing test value string for this reset.
+     * Remove the @c When with the pointer @p when.
      *
-     * @param math The @c std::string to append for this reset.
+     * @overload
+     *
+     * @param when The pointer to the @c When to remove.
+     * @return True if the @c When was removed, false otherwise.
      */
-    void appendTestValue(const std::string &math);
+    bool removeWhen(const WhenPtr &when);
 
     /**
-     * @brief Get the test value string for this reset.
+     * @brief Remove all @c Whens stored in this @c Reset.
      *
-     * Return a test value string if one has been appended for this reset. Returns
-     * an empty string if a test value has not been appended (or has been removed).
-     *
-     * @return @c std::string test value for this reset.
+     * Clears all @c Whens that have been added to this @c Reset.
      */
-    std::string testValue() const;
+    void removeAllWhens();
 
     /**
-     * @brief Set the test value string for this reset.
+     * @brief Tests to see if the @c When pointer is contained within this @c Reset.
      *
-     * Set the test value string for this reset. If @p math is an empty
-     * string, the test value will effectively be removed from the reset.
+     * Tests to see if the argument @c When pointer @p when is contained
+     * within this @c When entity. Returns @c true if the @c When is within this @c Reset
+     * entity and @c false otherwise.
      *
-     * @param math The @c std::string to append for this reset.
+     * @overload
+     *
+     * @param when The @c When pointer to test for existence in this @c Reset.
+     *
+     * @return @c true if the @c When is in the @c Reset and @c false otherwise.
      */
-    void setTestValue(const std::string &math);
+    bool containsWhen(const WhenPtr &when) const;
 
     /**
-     * @brief Set an identifier to the test value for this reset.
+     * @brief Get a @c When at the given @p index.
      *
-     * Set the identifier to the test value string for this reset.  Setting
-     * the @p id to the empty string will effectively remove the identifier.
+     * Returns a reference to a @c When at the given @p index.  @p index must
+     * be in the range [0, \#Whens).
      *
-     * @param id The @c std::string to set for this reset's test value.
+     * @overload
+     *
+     * @param index The index of the @c When to return.
+     *
+     * @return The @c When at the given @p index on success, @c nullptr on failure.
      */
-    void setTestValueId(const std::string &id);
+    WhenPtr when(size_t index) const;
 
     /**
-     * @brief Return the identifier of the test value for this reset.
+     * @brief Take the @c When at the given @p index and return it.
      *
-     * Get the identifier of the test value for this reset.
+     * Removes the @c When at the given @p index position and returns it.
+     * @p index must be in the range [0, \#Whens).
      *
-     * @return @c std::string The identifier of the test value for this reset.
+     * @param index The index of the @c When to take.
+     *
+     * @return The @c When at the given @p index, @c nullptr on failure.
      */
-    std::string testValueId() const;
+    WhenPtr takeWhen(size_t index);
 
     /**
-     * @brief Append the argument to the reset value for this reset.
+     * @brief Replace a @c When at the given @p index.
      *
-     * Append @p math to the existing reset value for this reset.
+     * Replaces the @c When at the @p index with @p when. @p index must be in
+     * the range [0, \#Whens).
      *
-     * @param math The @c std::string to append to the reset value for this reset.
+     * @param index Index of the @c When to replace.
+     * @param when The @c When to be used as a replacement.
+     *
+     * @return True if the @c When was replaced, false otherwise.
      */
-    void appendResetValue(const std::string &math);
+    bool replaceWhen(size_t index, const WhenPtr &when);
 
     /**
-     * @brief Get the reset value string for this reset.
+     * @brief Get the number of @c Whens in the @c Reset.
      *
-     * Return a math string if one has been appended for this reset. Returns
-     * an empty string if math has not been appended (or has been removed).
+     * Returns the number of @c Whens the @c Reset contains.
      *
-     * @return @c std::string reset value for this reset.
+     * @return The number of @c Whens.
      */
-    std::string resetValue() const;
-
-    /**
-     * @brief Set the reset value math for this reset.
-     *
-     * Set the math to the reset value for this reset. If @p math is an empty
-     * string, reset value will effectively be removed from the reset.
-     *
-     * @param math The @c std::string to append for this reset.
-     */
-    void setResetValue(const std::string &math);
-
-    /**
-     * @brief Set an identifier to the reset value for this reset.
-     *
-     * Set an identifier to the reset value for this reset.
-     *
-     * @param id The @c std::string to set for this reset's reset value identifier.
-     */
-    void setResetValueId(const std::string &id);
-
-    /**
-     * @brief Return the identifier of the reset value for this reset.
-     *
-     * Get the identifier of the reset value for this reset.
-     *
-     * @return @c std::string The identifier of the reset value for this reset.
-     */
-    std::string resetValueId() const;
+    size_t whenCount() const;
 
 private:
     void swap(Reset &rhs); /**< Swap method required for C++ 11 move semantics. */

@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "test_utils.h"
-
 #include "gtest/gtest.h"
 
 #include <libcellml>
@@ -138,7 +136,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
         "    <unit prefix=\"micro\" units=\"ampere\"/>\n"
         "    <unit units=\"kelvin\"/>\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>\n"
-        "    <unit prefix=\"1.7e310\" units=\"metre\"/>\n"
+        "    <unit prefix=\"1.7e310\" units=\"meter\"/>\n"
         "  </units>\n"
         "</model>\n";
 
@@ -150,7 +148,7 @@ TEST(Units, compoundUnitsUsingDefinesAndStringUnitsAndPrefix)
     u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u->addUnit("kelvin");
     u->addUnit("siemens", "milli", -1.0);
-    u->addUnit("metre", "1.7e310");
+    u->addUnit("meter", "1.7e310");
 
     m.addUnits(u);
 
@@ -168,7 +166,7 @@ TEST(Units, removeUnitsMethodsAndCount)
         "    <unit prefix=\"micro\" units=\"ampere\"/>\n"
         "    <unit units=\"kelvin\"/>\n"
         "    <unit exponent=\"-1\" prefix=\"milli\" units=\"siemens\"/>\n"
-        "    <unit prefix=\"1.7e10\" units=\"metre\"/>\n"
+        "    <unit prefix=\"1.7e10\" units=\"meter\"/>\n"
         "  </units>\n"
         "  <units name=\"simple_unit_2\"/>\n"
         "  <units name=\"simple_unit_3\"/>\n"
@@ -207,7 +205,7 @@ TEST(Units, removeUnitsMethodsAndCount)
     u1->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u1->addUnit("kelvin");
     u1->addUnit("siemens", "milli", -1.0);
-    u1->addUnit("metre", "1.7e10");
+    u1->addUnit("meter", "1.7e10");
     m.addUnits(u1);
     m.addUnits(u2);
     m.addUnits(u3);
@@ -525,7 +523,7 @@ TEST(Units, removeUnit)
     u.addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
     u.addUnit("kelvin");
     u.addUnit("siemens", "milli", -1.0);
-    u.addUnit("metre", "1.7e10");
+    u.addUnit("meter", "1.7e10");
 
     EXPECT_EQ(size_t(4), u.unitCount());
     EXPECT_TRUE(u.removeUnit("siemens"));
@@ -588,8 +586,6 @@ TEST(Units, unitsWithPrefixOutOfRange)
 {
     // int limit is 18,446,744,073,709,551,615
 
-    const std::string e = "Prefix '18446744073709551616' of a unit referencing 'second' in units 'myUnits' is out of the integer range.";
-
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     m->setName("myModel");
@@ -609,6 +605,5 @@ TEST(Units, unitsWithPrefixOutOfRange)
 
     validator.validateModel(m);
 
-    EXPECT_EQ(size_t(1), validator.errorCount());
-    EXPECT_EQ(e, validator.error(0)->description());
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }

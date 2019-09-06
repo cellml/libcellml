@@ -17,6 +17,7 @@ set(TEST_SRCS
   test_variable.py
   test_validator.py
   test_version.py
+  test_when.py
   test_docstrings.py
 )
 
