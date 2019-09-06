@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// TODO remove this comment - only added to see if I can merge
-
 #include "test_utils.h"
 
 #include "gtest/gtest.h"
