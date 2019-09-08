@@ -255,7 +255,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("double * createVariablesArray()\n{\n", generatorProfile->beginCreateVariablesArrayMethodString());
     EXPECT_EQ("}\n", generatorProfile->endCreateVariablesArrayMethodString());
 
-    EXPECT_EQ("void freeArray(double *array)\n{\n    free(array);\n}\n", generatorProfile->freeArrayMethodString());
+    EXPECT_EQ("void deleteArray(double *array)\n{\n    free(array);\n}\n", generatorProfile->deleteArrayMethodString());
 
     EXPECT_EQ("void initializeConstants(double *states, double *variables)\n{\n", generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endInitializeConstantsMethodString());
@@ -586,7 +586,7 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setBeginCreateVariablesArrayMethodString(value);
     generatorProfile->setEndCreateVariablesArrayMethodString(value);
 
-    generatorProfile->setFreeArrayMethodString(value);
+    generatorProfile->setDeleteArrayMethodString(value);
 
     generatorProfile->setBeginInitializeConstantsMethodString(value);
     generatorProfile->setEndInitializeConstantsMethodString(value);
@@ -632,7 +632,7 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->beginCreateVariablesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->endCreateVariablesArrayMethodString());
 
-    EXPECT_EQ(value, generatorProfile->freeArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->deleteArrayMethodString());
 
     EXPECT_EQ(value, generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->endInitializeConstantsMethodString());

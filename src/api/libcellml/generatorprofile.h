@@ -1966,8 +1966,8 @@ public:
     std::string endCreateVariablesArrayMethodString() const;
     void setEndCreateVariablesArrayMethodString(const std::string &endCreateVariablesArrayMethodString);
 
-    std::string freeArrayMethodString() const;
-    void setFreeArrayMethodString(const std::string &freeArrayMethodString);
+    std::string deleteArrayMethodString() const;
+    void setDeleteArrayMethodString(const std::string &deleteArrayMethodString);
 
     /**
      * @brief Get the @c std::string for the beginning of the method that

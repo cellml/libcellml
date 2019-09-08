@@ -165,7 +165,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginCreateVariablesArrayMethodString;
     std::string mEndCreateVariablesArrayMethodString;
 
-    std::string mFreeArrayMethodString;
+    std::string mDeleteArrayMethodString;
 
     std::string mBeginInitializeConstantsMethodString;
     std::string mEndInitializeConstantsMethodString;
@@ -398,10 +398,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mBeginCreateVariablesArrayMethodString = "double * createVariablesArray()\n{\n";
         mEndCreateVariablesArrayMethodString = "}\n";
 
-        mFreeArrayMethodString = "void freeArray(double *array)\n"
-                                 "{\n"
-                                 "    free(array);\n"
-                                 "}\n";
+        mDeleteArrayMethodString = "void deleteArray(double *array)\n"
+                                   "{\n"
+                                   "    free(array);\n"
+                                   "}\n";
 
         mBeginInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n";
         mEndInitializeConstantsMethodString = "}\n";
@@ -616,7 +616,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mBeginCreateVariablesArrayMethodString = "def create_variables_array():\n";
         mEndCreateVariablesArrayMethodString = "\n";
 
-        mFreeArrayMethodString = "";
+        mDeleteArrayMethodString = "";
 
         mBeginInitializeConstantsMethodString = "def initialize_constants(states, variables):\n";
         mEndInitializeConstantsMethodString = "\n";
@@ -796,7 +796,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mBeginCreateVariablesArrayMethodString = rhs.mPimpl->mBeginCreateVariablesArrayMethodString;
     mPimpl->mEndCreateVariablesArrayMethodString = rhs.mPimpl->mEndCreateVariablesArrayMethodString;
 
-    mPimpl->mFreeArrayMethodString = rhs.mPimpl->mFreeArrayMethodString;
+    mPimpl->mDeleteArrayMethodString = rhs.mPimpl->mDeleteArrayMethodString;
 
     mPimpl->mBeginInitializeConstantsMethodString = rhs.mPimpl->mBeginInitializeConstantsMethodString;
     mPimpl->mEndInitializeConstantsMethodString = rhs.mPimpl->mEndInitializeConstantsMethodString;
@@ -1921,14 +1921,14 @@ void GeneratorProfile::setEndCreateVariablesArrayMethodString(const std::string 
     mPimpl->mEndCreateVariablesArrayMethodString = endCreateVariablesArrayMethodString;
 }
 
-std::string GeneratorProfile::freeArrayMethodString() const
+std::string GeneratorProfile::deleteArrayMethodString() const
 {
-    return mPimpl->mFreeArrayMethodString;
+    return mPimpl->mDeleteArrayMethodString;
 }
 
-void GeneratorProfile::setFreeArrayMethodString(const std::string &freeArrayMethodString)
+void GeneratorProfile::setDeleteArrayMethodString(const std::string &deleteArrayMethodString)
 {
-    mPimpl->mFreeArrayMethodString = freeArrayMethodString;
+    mPimpl->mDeleteArrayMethodString = deleteArrayMethodString;
 }
 
 void GeneratorProfile::setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString)

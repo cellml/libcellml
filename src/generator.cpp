@@ -2874,9 +2874,9 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->endCreateVariablesArrayMethodString();
 
-    if (!mPimpl->mProfile->freeArrayMethodString().empty()) {
+    if (!mPimpl->mProfile->deleteArrayMethodString().empty()) {
         res += "\n";
-        res += mPimpl->mProfile->freeArrayMethodString();
+        res += mPimpl->mProfile->deleteArrayMethodString();
     }
 
     res += "\n";
