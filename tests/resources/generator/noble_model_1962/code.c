@@ -53,9 +53,9 @@ double * createVariables()
     return (double *) malloc(17 * sizeof(double));
 }
 
-void freeVector(double *array)
+void freeArray(double *array)
 {
-   free(array);
+    free(array);
 }
 
 void initializeConstants(double *states, double *variables)

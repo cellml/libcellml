@@ -2874,9 +2874,9 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->endCreateVariablesMethodString();
 
-    if (!mPimpl->mProfile->freeVectorFunctionString().empty()) {
+    if (!mPimpl->mProfile->freeArrayMethodString().empty()) {
         res += "\n";
-        res += mPimpl->mProfile->freeVectorFunctionString();
+        res += mPimpl->mProfile->freeArrayMethodString();
     }
 
     res += "\n";
