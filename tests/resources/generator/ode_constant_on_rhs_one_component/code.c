@@ -23,12 +23,12 @@ const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
 const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
 };
 
-double * createStates()
+double * createStatesArray()
 {
     return (double *) malloc(1 * sizeof(double));
 }
 
-double * createVariables()
+double * createVariablesArray()
 {
     return (double *) malloc(0 * sizeof(double));
 }

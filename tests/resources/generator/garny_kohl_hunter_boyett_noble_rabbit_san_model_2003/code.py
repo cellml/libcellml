@@ -224,11 +224,11 @@ def neq_func(x, y):
     return 1.0 if x != y else 0.0
 
 
-def create_states():
+def create_states_array():
     return [nan]*15
 
 
-def create_variables():
+def create_variables_array():
     return [nan]*185
 
 

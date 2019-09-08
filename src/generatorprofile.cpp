@@ -159,11 +159,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
-    std::string mBeginCreateStatesMethodString;
-    std::string mEndCreateStatesMethodString;
+    std::string mBeginCreateStatesArrayMethodString;
+    std::string mEndCreateStatesArrayMethodString;
 
-    std::string mBeginCreateVariablesMethodString;
-    std::string mEndCreateVariablesMethodString;
+    std::string mBeginCreateVariablesArrayMethodString;
+    std::string mEndCreateVariablesArrayMethodString;
 
     std::string mFreeArrayMethodString;
 
@@ -392,11 +392,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mBeginCreateStatesMethodString = "double * createStates()\n{\n";
-        mEndCreateStatesMethodString = "}\n";
+        mBeginCreateStatesArrayMethodString = "double * createStatesArray()\n{\n";
+        mEndCreateStatesArrayMethodString = "}\n";
 
-        mBeginCreateVariablesMethodString = "double * createVariables()\n{\n";
-        mEndCreateVariablesMethodString = "}\n";
+        mBeginCreateVariablesArrayMethodString = "double * createVariablesArray()\n{\n";
+        mEndCreateVariablesArrayMethodString = "}\n";
 
         mFreeArrayMethodString = "void freeArray(double *array)\n"
                                  "{\n"
@@ -610,11 +610,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mBeginCreateStatesMethodString = "def create_states():\n";
-        mEndCreateStatesMethodString = "\n";
+        mBeginCreateStatesArrayMethodString = "def create_states_array():\n";
+        mEndCreateStatesArrayMethodString = "\n";
 
-        mBeginCreateVariablesMethodString = "def create_variables():\n";
-        mEndCreateVariablesMethodString = "\n";
+        mBeginCreateVariablesArrayMethodString = "def create_variables_array():\n";
+        mEndCreateVariablesArrayMethodString = "\n";
 
         mFreeArrayMethodString = "";
 
@@ -790,11 +790,11 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
 
-    mPimpl->mBeginCreateStatesMethodString = rhs.mPimpl->mBeginCreateStatesMethodString;
-    mPimpl->mEndCreateStatesMethodString = rhs.mPimpl->mEndCreateStatesMethodString;
+    mPimpl->mBeginCreateStatesArrayMethodString = rhs.mPimpl->mBeginCreateStatesArrayMethodString;
+    mPimpl->mEndCreateStatesArrayMethodString = rhs.mPimpl->mEndCreateStatesArrayMethodString;
 
-    mPimpl->mBeginCreateVariablesMethodString = rhs.mPimpl->mBeginCreateVariablesMethodString;
-    mPimpl->mEndCreateVariablesMethodString = rhs.mPimpl->mEndCreateVariablesMethodString;
+    mPimpl->mBeginCreateVariablesArrayMethodString = rhs.mPimpl->mBeginCreateVariablesArrayMethodString;
+    mPimpl->mEndCreateVariablesArrayMethodString = rhs.mPimpl->mEndCreateVariablesArrayMethodString;
 
     mPimpl->mFreeArrayMethodString = rhs.mPimpl->mFreeArrayMethodString;
 
@@ -1881,44 +1881,44 @@ std::string GeneratorProfile::beginInitializeConstantsMethodString() const
     return mPimpl->mBeginInitializeConstantsMethodString;
 }
 
-std::string GeneratorProfile::beginCreateStatesMethodString() const
+std::string GeneratorProfile::beginCreateStatesArrayMethodString() const
 {
-    return mPimpl->mBeginCreateStatesMethodString;
+    return mPimpl->mBeginCreateStatesArrayMethodString;
 }
 
-void GeneratorProfile::setBeginCreateStatesMethodString(const std::string &beginCreateStatesMethodString)
+void GeneratorProfile::setBeginCreateStatesArrayMethodString(const std::string &beginCreateStatesArrayMethodString)
 {
-    mPimpl->mBeginCreateStatesMethodString = beginCreateStatesMethodString;
+    mPimpl->mBeginCreateStatesArrayMethodString = beginCreateStatesArrayMethodString;
 }
 
-std::string GeneratorProfile::endCreateStatesMethodString() const
+std::string GeneratorProfile::endCreateStatesArrayMethodString() const
 {
-    return mPimpl->mEndCreateStatesMethodString;
+    return mPimpl->mEndCreateStatesArrayMethodString;
 }
 
-void GeneratorProfile::setEndCreateStatesMethodString(const std::string &endCreateStatesMethodString)
+void GeneratorProfile::setEndCreateStatesArrayMethodString(const std::string &endCreateStatesArrayMethodString)
 {
-    mPimpl->mEndCreateStatesMethodString = endCreateStatesMethodString;
+    mPimpl->mEndCreateStatesArrayMethodString = endCreateStatesArrayMethodString;
 }
 
-std::string GeneratorProfile::beginCreateVariablesMethodString() const
+std::string GeneratorProfile::beginCreateVariablesArrayMethodString() const
 {
-    return mPimpl->mBeginCreateVariablesMethodString;
+    return mPimpl->mBeginCreateVariablesArrayMethodString;
 }
 
-void GeneratorProfile::setBeginCreateVariablesMethodString(const std::string &beginCreateVariablesMethodString)
+void GeneratorProfile::setBeginCreateVariablesArrayMethodString(const std::string &beginCreateVariablesArrayMethodString)
 {
-    mPimpl->mBeginCreateVariablesMethodString = beginCreateVariablesMethodString;
+    mPimpl->mBeginCreateVariablesArrayMethodString = beginCreateVariablesArrayMethodString;
 }
 
-std::string GeneratorProfile::endCreateVariablesMethodString() const
+std::string GeneratorProfile::endCreateVariablesArrayMethodString() const
 {
-    return mPimpl->mEndCreateVariablesMethodString;
+    return mPimpl->mEndCreateVariablesArrayMethodString;
 }
 
-void GeneratorProfile::setEndCreateVariablesMethodString(const std::string &endCreateVariablesMethodString)
+void GeneratorProfile::setEndCreateVariablesArrayMethodString(const std::string &endCreateVariablesArrayMethodString)
 {
-    mPimpl->mEndCreateVariablesMethodString = endCreateVariablesMethodString;
+    mPimpl->mEndCreateVariablesArrayMethodString = endCreateVariablesArrayMethodString;
 }
 
 std::string GeneratorProfile::freeArrayMethodString() const

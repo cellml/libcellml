@@ -249,11 +249,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("double * createStates()\n{\n", generatorProfile->beginCreateStatesMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endCreateStatesMethodString());
+    EXPECT_EQ("double * createStatesArray()\n{\n", generatorProfile->beginCreateStatesArrayMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endCreateStatesArrayMethodString());
 
-    EXPECT_EQ("double * createVariables()\n{\n", generatorProfile->beginCreateVariablesMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endCreateVariablesMethodString());
+    EXPECT_EQ("double * createVariablesArray()\n{\n", generatorProfile->beginCreateVariablesArrayMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endCreateVariablesArrayMethodString());
 
     EXPECT_EQ("void freeArray(double *array)\n{\n    free(array);\n}\n", generatorProfile->freeArrayMethodString());
 
@@ -580,11 +580,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
-    generatorProfile->setBeginCreateStatesMethodString(value);
-    generatorProfile->setEndCreateStatesMethodString(value);
+    generatorProfile->setBeginCreateStatesArrayMethodString(value);
+    generatorProfile->setEndCreateStatesArrayMethodString(value);
 
-    generatorProfile->setBeginCreateVariablesMethodString(value);
-    generatorProfile->setEndCreateVariablesMethodString(value);
+    generatorProfile->setBeginCreateVariablesArrayMethodString(value);
+    generatorProfile->setEndCreateVariablesArrayMethodString(value);
 
     generatorProfile->setFreeArrayMethodString(value);
 
@@ -626,11 +626,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
 
-    EXPECT_EQ(value, generatorProfile->beginCreateStatesMethodString());
-    EXPECT_EQ(value, generatorProfile->endCreateStatesMethodString());
+    EXPECT_EQ(value, generatorProfile->beginCreateStatesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->endCreateStatesArrayMethodString());
 
-    EXPECT_EQ(value, generatorProfile->beginCreateVariablesMethodString());
-    EXPECT_EQ(value, generatorProfile->endCreateVariablesMethodString());
+    EXPECT_EQ(value, generatorProfile->beginCreateVariablesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->endCreateVariablesArrayMethodString());
 
     EXPECT_EQ(value, generatorProfile->freeArrayMethodString());
 

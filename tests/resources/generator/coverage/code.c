@@ -289,12 +289,12 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-double * createStates()
+double * createStatesArray()
 {
     return (double *) malloc(1 * sizeof(double));
 }
 
-double * createVariables()
+double * createVariablesArray()
 {
     return (double *) malloc(185 * sizeof(double));
 }
