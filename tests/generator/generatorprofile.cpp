@@ -241,7 +241,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ("void freeVector(double *array)\n{\n   free(array);\n}\n", generatorProfile->freeVectorFunctionString());
     EXPECT_EQ("#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n", generatorProfile->headerString());
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
@@ -255,6 +254,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("double * createVariables()\n{\n", generatorProfile->beginCreateVariablesMethodString());
     EXPECT_EQ("}\n", generatorProfile->endCreateVariablesMethodString());
+
+    EXPECT_EQ("void freeVector(double *array)\n{\n   free(array);\n}\n", generatorProfile->freeVectorFunctionString());
 
     EXPECT_EQ("void initializeConstants(double *states, double *variables)\n{\n", generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endInitializeConstantsMethodString());
@@ -571,7 +572,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     const std::string value = "value";
 
-    generatorProfile->setFreeVectorFunctionString(value);
     generatorProfile->setHeaderString(value);
 
     generatorProfile->setVariableOfIntegrationString(value);
@@ -585,6 +585,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setBeginCreateVariablesMethodString(value);
     generatorProfile->setEndCreateVariablesMethodString(value);
+
+    generatorProfile->setFreeVectorFunctionString(value);
 
     generatorProfile->setBeginInitializeConstantsMethodString(value);
     generatorProfile->setEndInitializeConstantsMethodString(value);
@@ -616,7 +618,6 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setBeginCommentString(value);
     generatorProfile->setEndCommentString(value);
 
-    EXPECT_EQ(value, generatorProfile->freeVectorFunctionString());
     EXPECT_EQ(value, generatorProfile->headerString());
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
@@ -630,6 +631,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->beginCreateVariablesMethodString());
     EXPECT_EQ(value, generatorProfile->endCreateVariablesMethodString());
+
+    EXPECT_EQ(value, generatorProfile->freeVectorFunctionString());
 
     EXPECT_EQ(value, generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->endInitializeConstantsMethodString());

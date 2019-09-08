@@ -1860,9 +1860,6 @@ public:
 
     // Miscellaneous
 
-    void setFreeVectorFunctionString(const std::string &freeVectorFunctionString);
-    std::string freeVectorFunctionString() const;
-
     /**
      * @brief Get the @c std::string for some header.
      *
@@ -1968,6 +1965,9 @@ public:
     void setBeginCreateVariablesMethodString(const std::string &beginCreateVariablesMethodString);
     std::string endCreateVariablesMethodString() const;
     void setEndCreateVariablesMethodString(const std::string &endCreateVariablesMethodString);
+
+    std::string freeVectorFunctionString() const;
+    void setFreeVectorFunctionString(const std::string &freeVectorFunctionString);
 
     /**
      * @brief Get the @c std::string for the beginning of the method that
