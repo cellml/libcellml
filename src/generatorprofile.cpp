@@ -151,7 +151,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
-    std::string mFreeVectorFunctionString;
     std::string mHeaderString;
 
     std::string mVariableOfIntegrationString;
@@ -165,6 +164,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mBeginCreateVariablesMethodString;
     std::string mEndCreateVariablesMethodString;
+
+    std::string mFreeVectorFunctionString;
 
     std::string mBeginInitializeConstantsMethodString;
     std::string mEndInitializeConstantsMethodString;
@@ -383,11 +384,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
-        mFreeVectorFunctionString = "void freeVector(double *array)\n"
-                                    "{\n"
-                                    "   free(array);\n"
-                                    "}\n";
-
         mHeaderString = "#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n";
 
         mVariableOfIntegrationString = "voi";
@@ -401,6 +397,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mBeginCreateVariablesMethodString = "double * createVariables()\n{\n";
         mEndCreateVariablesMethodString = "}\n";
+
+        mFreeVectorFunctionString = "void freeVector(double *array)\n"
+                                    "{\n"
+                                    "   free(array);\n"
+                                    "}\n";
 
         mBeginInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n";
         mEndInitializeConstantsMethodString = "}\n";
@@ -601,7 +602,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
-        mFreeVectorFunctionString = "";
         mHeaderString = "from math import *\n\n";
 
         mVariableOfIntegrationString = "voi";
@@ -615,6 +615,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mBeginCreateVariablesMethodString = "def create_variables():\n";
         mEndCreateVariablesMethodString = "\n";
+
+        mFreeVectorFunctionString = "";
 
         mBeginInitializeConstantsMethodString = "def initialize_constants(states, variables):\n";
         mEndInitializeConstantsMethodString = "\n";
@@ -780,7 +782,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     // Miscellaneous
 
-    mPimpl->mFreeVectorFunctionString = rhs.mPimpl->mFreeVectorFunctionString;
     mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
     mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
@@ -794,6 +795,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mBeginCreateVariablesMethodString = rhs.mPimpl->mBeginCreateVariablesMethodString;
     mPimpl->mEndCreateVariablesMethodString = rhs.mPimpl->mEndCreateVariablesMethodString;
+
+    mPimpl->mFreeVectorFunctionString = rhs.mPimpl->mFreeVectorFunctionString;
 
     mPimpl->mBeginInitializeConstantsMethodString = rhs.mPimpl->mBeginInitializeConstantsMethodString;
     mPimpl->mEndInitializeConstantsMethodString = rhs.mPimpl->mEndInitializeConstantsMethodString;
@@ -1823,16 +1826,6 @@ void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionSt
     mPimpl->mAcothFunctionString = acothFunctionString;
 }
 
-std::string GeneratorProfile::freeVectorFunctionString() const
-{
-    return mPimpl->mFreeVectorFunctionString;
-}
-
-void GeneratorProfile::setFreeVectorFunctionString(const std::string &freeVectorFunctionString)
-{
-    mPimpl->mFreeVectorFunctionString = freeVectorFunctionString;
-}
-
 std::string GeneratorProfile::headerString() const
 {
     return mPimpl->mHeaderString;
@@ -1926,6 +1919,16 @@ std::string GeneratorProfile::endCreateVariablesMethodString() const
 void GeneratorProfile::setEndCreateVariablesMethodString(const std::string &endCreateVariablesMethodString)
 {
     mPimpl->mEndCreateVariablesMethodString = endCreateVariablesMethodString;
+}
+
+std::string GeneratorProfile::freeVectorFunctionString() const
+{
+    return mPimpl->mFreeVectorFunctionString;
+}
+
+void GeneratorProfile::setFreeVectorFunctionString(const std::string &freeVectorFunctionString)
+{
+    mPimpl->mFreeVectorFunctionString = freeVectorFunctionString;
 }
 
 void GeneratorProfile::setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString)
