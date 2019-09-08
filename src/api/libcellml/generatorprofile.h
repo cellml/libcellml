@@ -1959,15 +1959,15 @@ public:
      */
     void setVariablesArrayString(const std::string &variablesArrayString);
 
-    std::string beginCreateStateVectorMethodString() const;
-    void setBeginCreateStateVectorMethodString(const std::string &beginCreateStateVectorMethodString);
-    std::string endCreateStateVectorMethodString() const;
-    void setEndCreateStateVectorMethodString(const std::string &endCreateStateVectorMethodString);
+    std::string beginCreateStatesMethodString() const;
+    void setBeginCreateStatesMethodString(const std::string &beginCreateStatesMethodString);
+    std::string endCreateStatesMethodString() const;
+    void setEndCreateStatesMethodString(const std::string &endCreateStatesMethodString);
 
-    std::string beginCreateVariableVectorMethodString() const;
-    void setBeginCreateVariableVectorMethodString(const std::string &beginCreateVariableVectorMethodString);
-    std::string endCreateVariableVectorMethodString() const;
-    void setEndCreateVariableVectorMethodString(const std::string &endCreateVariableVectorMethodString);
+    std::string beginCreateVariablesMethodString() const;
+    void setBeginCreateVariablesMethodString(const std::string &beginCreateVariablesMethodString);
+    std::string endCreateVariablesMethodString() const;
+    void setEndCreateVariablesMethodString(const std::string &endCreateVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for the beginning of the method that

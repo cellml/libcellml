@@ -286,11 +286,11 @@ def and_func(x, y):
     return 1.0 if bool(x) & bool(y) else 0.0
 
 
-def create_state_vector():
+def create_states():
     return [nan]*33
 
 
-def create_variable_vector():
+def create_variables():
     return [nan]*217
 
 

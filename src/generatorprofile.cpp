@@ -160,11 +160,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
-    std::string mBeginCreateStateVectorMethodString;
-    std::string mEndCreateStateVectorMethodString;
+    std::string mBeginCreateStatesMethodString;
+    std::string mEndCreateStatesMethodString;
 
-    std::string mBeginCreateVariableVectorMethodString;
-    std::string mEndCreateVariableVectorMethodString;
+    std::string mBeginCreateVariablesMethodString;
+    std::string mEndCreateVariablesMethodString;
 
     std::string mBeginInitializeConstantsMethodString;
     std::string mEndInitializeConstantsMethodString;
@@ -396,11 +396,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mBeginCreateStateVectorMethodString = "double *createStateVector()\n{\n";
-        mEndCreateStateVectorMethodString = "}\n";
+        mBeginCreateStatesMethodString = "double * createStates()\n{\n";
+        mEndCreateStatesMethodString = "}\n";
 
-        mBeginCreateVariableVectorMethodString = "double *createVariableVector()\n{\n";
-        mEndCreateVariableVectorMethodString = "}\n";
+        mBeginCreateVariablesMethodString = "double * createVariables()\n{\n";
+        mEndCreateVariablesMethodString = "}\n";
 
         mBeginInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n";
         mEndInitializeConstantsMethodString = "}\n";
@@ -436,7 +436,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mTemplateReplacementString = "VALUE";
 
-        mTemplateReturnCreatedArrayString = "return (double *)malloc(VALUE * sizeof (double));\n";
+        mTemplateReturnCreatedArrayString = "return (double *) malloc(VALUE * sizeof(double));\n";
         mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
         mTemplateVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
         mTemplateVoiConstantString = "const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
@@ -610,11 +610,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mBeginCreateStateVectorMethodString = "def create_state_vector():\n";
-        mEndCreateStateVectorMethodString = "\n";
+        mBeginCreateStatesMethodString = "def create_states():\n";
+        mEndCreateStatesMethodString = "\n";
 
-        mBeginCreateVariableVectorMethodString = "def create_variable_vector():\n";
-        mEndCreateVariableVectorMethodString = "\n";
+        mBeginCreateVariablesMethodString = "def create_variables():\n";
+        mEndCreateVariablesMethodString = "\n";
 
         mBeginInitializeConstantsMethodString = "def initialize_constants(states, variables):\n";
         mEndInitializeConstantsMethodString = "\n";
@@ -789,11 +789,11 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
 
-    mPimpl->mBeginCreateStateVectorMethodString = rhs.mPimpl->mBeginCreateStateVectorMethodString;
-    mPimpl->mEndCreateStateVectorMethodString = rhs.mPimpl->mEndCreateStateVectorMethodString;
+    mPimpl->mBeginCreateStatesMethodString = rhs.mPimpl->mBeginCreateStatesMethodString;
+    mPimpl->mEndCreateStatesMethodString = rhs.mPimpl->mEndCreateStatesMethodString;
 
-    mPimpl->mBeginCreateVariableVectorMethodString = rhs.mPimpl->mBeginCreateVariableVectorMethodString;
-    mPimpl->mEndCreateVariableVectorMethodString = rhs.mPimpl->mEndCreateVariableVectorMethodString;
+    mPimpl->mBeginCreateVariablesMethodString = rhs.mPimpl->mBeginCreateVariablesMethodString;
+    mPimpl->mEndCreateVariablesMethodString = rhs.mPimpl->mEndCreateVariablesMethodString;
 
     mPimpl->mBeginInitializeConstantsMethodString = rhs.mPimpl->mBeginInitializeConstantsMethodString;
     mPimpl->mEndInitializeConstantsMethodString = rhs.mPimpl->mEndInitializeConstantsMethodString;
@@ -1888,44 +1888,44 @@ std::string GeneratorProfile::beginInitializeConstantsMethodString() const
     return mPimpl->mBeginInitializeConstantsMethodString;
 }
 
-std::string GeneratorProfile::beginCreateStateVectorMethodString() const
+std::string GeneratorProfile::beginCreateStatesMethodString() const
 {
-    return mPimpl->mBeginCreateStateVectorMethodString;
+    return mPimpl->mBeginCreateStatesMethodString;
 }
 
-void GeneratorProfile::setBeginCreateStateVectorMethodString(const std::string &beginCreateStateVectorMethodString)
+void GeneratorProfile::setBeginCreateStatesMethodString(const std::string &beginCreateStatesMethodString)
 {
-    mPimpl->mBeginCreateStateVectorMethodString = beginCreateStateVectorMethodString;
+    mPimpl->mBeginCreateStatesMethodString = beginCreateStatesMethodString;
 }
 
-std::string GeneratorProfile::endCreateStateVectorMethodString() const
+std::string GeneratorProfile::endCreateStatesMethodString() const
 {
-    return mPimpl->mEndCreateStateVectorMethodString;
+    return mPimpl->mEndCreateStatesMethodString;
 }
 
-void GeneratorProfile::setEndCreateStateVectorMethodString(const std::string &endCreateStateVectorMethodString)
+void GeneratorProfile::setEndCreateStatesMethodString(const std::string &endCreateStatesMethodString)
 {
-    mPimpl->mEndCreateStateVectorMethodString = endCreateStateVectorMethodString;
+    mPimpl->mEndCreateStatesMethodString = endCreateStatesMethodString;
 }
 
-std::string GeneratorProfile::beginCreateVariableVectorMethodString() const
+std::string GeneratorProfile::beginCreateVariablesMethodString() const
 {
-    return mPimpl->mBeginCreateVariableVectorMethodString;
+    return mPimpl->mBeginCreateVariablesMethodString;
 }
 
-void GeneratorProfile::setBeginCreateVariableVectorMethodString(const std::string &beginCreateVariableVectorMethodString)
+void GeneratorProfile::setBeginCreateVariablesMethodString(const std::string &beginCreateVariablesMethodString)
 {
-    mPimpl->mBeginCreateVariableVectorMethodString = beginCreateVariableVectorMethodString;
+    mPimpl->mBeginCreateVariablesMethodString = beginCreateVariablesMethodString;
 }
 
-std::string GeneratorProfile::endCreateVariableVectorMethodString() const
+std::string GeneratorProfile::endCreateVariablesMethodString() const
 {
-    return mPimpl->mEndCreateVariableVectorMethodString;
+    return mPimpl->mEndCreateVariablesMethodString;
 }
 
-void GeneratorProfile::setEndCreateVariableVectorMethodString(const std::string &endCreateVariableVectorMethodString)
+void GeneratorProfile::setEndCreateVariablesMethodString(const std::string &endCreateVariablesMethodString)
 {
-    mPimpl->mEndCreateVariableVectorMethodString = endCreateVariableVectorMethodString;
+    mPimpl->mEndCreateVariablesMethodString = endCreateVariablesMethodString;
 }
 
 void GeneratorProfile::setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString)

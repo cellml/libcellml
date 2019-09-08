@@ -250,11 +250,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("double *createStateVector()\n{\n", generatorProfile->beginCreateStateVectorMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endCreateStateVectorMethodString());
+    EXPECT_EQ("double * createStates()\n{\n", generatorProfile->beginCreateStatesMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endCreateStatesMethodString());
 
-    EXPECT_EQ("double *createVariableVector()\n{\n", generatorProfile->beginCreateVariableVectorMethodString());
-    EXPECT_EQ("}\n", generatorProfile->endCreateVariableVectorMethodString());
+    EXPECT_EQ("double * createVariables()\n{\n", generatorProfile->beginCreateVariablesMethodString());
+    EXPECT_EQ("}\n", generatorProfile->endCreateVariablesMethodString());
 
     EXPECT_EQ("void initializeConstants(double *states, double *variables)\n{\n", generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ("}\n", generatorProfile->endInitializeConstantsMethodString());
@@ -294,7 +294,7 @@ TEST(GeneratorProfile, defaultTemplateValues)
     EXPECT_EQ("VALUE", generatorProfile->templateReplacementString());
 
     EXPECT_EQ("The contents of this file was generated from version VALUE of libCellML.", generatorProfile->templateOriginCommentString());
-    EXPECT_EQ("return (double *)malloc(VALUE * sizeof (double));\n", generatorProfile->templateReturnCreatedArrayString());
+    EXPECT_EQ("return (double *) malloc(VALUE * sizeof(double));\n", generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ("const size_t STATE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateStateVectorSizeConstantString());
     EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
     EXPECT_EQ("struct VariableInfo {\n    char component[VALUE];\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
@@ -580,10 +580,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
-    generatorProfile->setBeginCreateStateVectorMethodString(value);
-    generatorProfile->setEndCreateStateVectorMethodString(value);
-    generatorProfile->setBeginCreateVariableVectorMethodString(value);
-    generatorProfile->setEndCreateVariableVectorMethodString(value);
+    generatorProfile->setBeginCreateStatesMethodString(value);
+    generatorProfile->setEndCreateStatesMethodString(value);
+
+    generatorProfile->setBeginCreateVariablesMethodString(value);
+    generatorProfile->setEndCreateVariablesMethodString(value);
 
     generatorProfile->setBeginInitializeConstantsMethodString(value);
     generatorProfile->setEndInitializeConstantsMethodString(value);
@@ -624,10 +625,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
 
-    EXPECT_EQ(value, generatorProfile->beginCreateStateVectorMethodString());
-    EXPECT_EQ(value, generatorProfile->endCreateStateVectorMethodString());
-    EXPECT_EQ(value, generatorProfile->beginCreateVariableVectorMethodString());
-    EXPECT_EQ(value, generatorProfile->endCreateVariableVectorMethodString());
+    EXPECT_EQ(value, generatorProfile->beginCreateStatesMethodString());
+    EXPECT_EQ(value, generatorProfile->endCreateStatesMethodString());
+
+    EXPECT_EQ(value, generatorProfile->beginCreateVariablesMethodString());
+    EXPECT_EQ(value, generatorProfile->endCreateVariablesMethodString());
 
     EXPECT_EQ(value, generatorProfile->beginInitializeConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->endInitializeConstantsMethodString());

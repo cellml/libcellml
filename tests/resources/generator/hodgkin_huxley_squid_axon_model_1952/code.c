@@ -44,14 +44,14 @@ const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
     {"potassium_channel_n_gate", "beta_n", "per_millisecond"},
 };
 
-double *createStateVector()
+double * createStates()
 {
-    return (double *)malloc(4 * sizeof (double));
+    return (double *) malloc(4 * sizeof(double));
 }
 
-double *createVariableVector()
+double * createVariables()
 {
-    return (double *)malloc(18 * sizeof (double));
+    return (double *) malloc(18 * sizeof(double));
 }
 
 void freeVector(double *array)

@@ -304,11 +304,11 @@ def acoth(x):
     return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))
 
 
-def create_state_vector():
+def create_states():
     return [nan]*1
 
 
-def create_variable_vector():
+def create_variables():
     return [nan]*185
 
 
