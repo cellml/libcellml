@@ -31,7 +31,7 @@ double * createVariablesArray()
     return (double *) malloc(1 * sizeof(double));
 }
 
-void freeArray(double *array)
+void deleteArray(double *array)
 {
     free(array);
 }
