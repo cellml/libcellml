@@ -222,12 +222,12 @@ const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
     {"membrane", "i_K_r", "nanoA"},
 };
 
-double * createStates()
+double * createStatesArray()
 {
     return (double *) malloc(15 * sizeof(double));
 }
 
-double * createVariables()
+double * createVariablesArray()
 {
     return (double *) malloc(185 * sizeof(double));
 }

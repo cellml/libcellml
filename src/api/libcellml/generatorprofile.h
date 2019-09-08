@@ -1956,15 +1956,15 @@ public:
      */
     void setVariablesArrayString(const std::string &variablesArrayString);
 
-    std::string beginCreateStatesMethodString() const;
-    void setBeginCreateStatesMethodString(const std::string &beginCreateStatesMethodString);
-    std::string endCreateStatesMethodString() const;
-    void setEndCreateStatesMethodString(const std::string &endCreateStatesMethodString);
+    std::string beginCreateStatesArrayMethodString() const;
+    void setBeginCreateStatesArrayMethodString(const std::string &beginCreateStatesArrayMethodString);
+    std::string endCreateStatesArrayMethodString() const;
+    void setEndCreateStatesArrayMethodString(const std::string &endCreateStatesArrayMethodString);
 
-    std::string beginCreateVariablesMethodString() const;
-    void setBeginCreateVariablesMethodString(const std::string &beginCreateVariablesMethodString);
-    std::string endCreateVariablesMethodString() const;
-    void setEndCreateVariablesMethodString(const std::string &endCreateVariablesMethodString);
+    std::string beginCreateVariablesArrayMethodString() const;
+    void setBeginCreateVariablesArrayMethodString(const std::string &beginCreateVariablesArrayMethodString);
+    std::string endCreateVariablesArrayMethodString() const;
+    void setEndCreateVariablesArrayMethodString(const std::string &endCreateVariablesArrayMethodString);
 
     std::string freeArrayMethodString() const;
     void setFreeArrayMethodString(const std::string &freeArrayMethodString);
