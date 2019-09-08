@@ -2859,20 +2859,20 @@ std::string Generator::code() const
 
     std::string methodBody;
 
-    res += mPimpl->mProfile->beginCreateStateVectorMethodString();
+    res += mPimpl->mProfile->beginCreateStatesMethodString();
 
     methodBody = mPimpl->generateCreateArrayCode(mPimpl->mStates.size());
     res += mPimpl->generateMethodBodyCode(methodBody);
 
-    res += mPimpl->mProfile->endCreateStateVectorMethodString();
+    res += mPimpl->mProfile->endCreateStatesMethodString();
 
     res += "\n";
-    res += mPimpl->mProfile->beginCreateVariableVectorMethodString();
+    res += mPimpl->mProfile->beginCreateVariablesMethodString();
 
     methodBody = mPimpl->generateCreateArrayCode(mPimpl->mVariables.size());
     res += mPimpl->generateMethodBodyCode(methodBody);
 
-    res += mPimpl->mProfile->endCreateVariableVectorMethodString();
+    res += mPimpl->mProfile->endCreateVariablesMethodString();
 
     if (!mPimpl->mProfile->freeVectorFunctionString().empty()) {
         res += "\n";

@@ -289,14 +289,14 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-double *createStateVector()
+double * createStates()
 {
-    return (double *)malloc(1 * sizeof (double));
+    return (double *) malloc(1 * sizeof(double));
 }
 
-double *createVariableVector()
+double * createVariables()
 {
-    return (double *)malloc(185 * sizeof (double));
+    return (double *) malloc(185 * sizeof(double));
 }
 
 void freeVector(double *array)

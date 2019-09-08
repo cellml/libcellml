@@ -272,14 +272,14 @@ const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
     {"Membrane", "i_tot", "nanoA"},
 };
 
-double *createStateVector()
+double * createStates()
 {
-    return (double *)malloc(33 * sizeof (double));
+    return (double *) malloc(33 * sizeof(double));
 }
 
-double *createVariableVector()
+double * createVariables()
 {
-    return (double *)malloc(217 * sizeof (double));
+    return (double *) malloc(217 * sizeof(double));
 }
 
 void freeVector(double *array)

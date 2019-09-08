@@ -18,11 +18,11 @@ VARIABLE_VECTOR_INFORMATION_ARRAY = [
 ]
 
 
-def create_state_vector():
+def create_states():
     return [nan]*1
 
 
-def create_variable_vector():
+def create_variables():
     return [nan]*1
 
 
