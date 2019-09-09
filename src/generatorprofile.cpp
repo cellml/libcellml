@@ -288,8 +288,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Piecewise statement
 
-        mConditionalOperatorIfString = "(#cond)?#if";
-        mConditionalOperatorElseString = ":#else";
+        mConditionalOperatorIfString = "(<CONDITION>)?<IF_STATEMENT>";
+        mConditionalOperatorElseString = ":<ELSE_STATEMENT>";
 
         mHasConditionalOperator = true;
 
@@ -527,8 +527,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Piecewise statement
 
-        mConditionalOperatorIfString = "#if if #cond";
-        mConditionalOperatorElseString = " else #else";
+        mConditionalOperatorIfString = "<IF_STATEMENT> if <CONDITION>";
+        mConditionalOperatorElseString = " else <ELSE_STATEMENT>";
 
         mHasConditionalOperator = true;
 
