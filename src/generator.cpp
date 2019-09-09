@@ -2614,10 +2614,10 @@ std::string Generator::code() const
     // Generate code for the origin comment.
 
     std::string res;
-    std::string comment = mPimpl->replaceTemplateValue(mPimpl->mProfile->templateOriginCommentString(), versionString());
+    std::string originComment = mPimpl->replace(mPimpl->mProfile->originCommentString(), "<VERSION>", versionString());
 
-    if (!comment.empty()) {
-        res += mPimpl->mProfile->beginCommentString() + comment + mPimpl->mProfile->endCommentString() + "\n";
+    if (!originComment.empty()) {
+        res += mPimpl->mProfile->beginCommentString() + originComment + mPimpl->mProfile->endCommentString() + "\n";
     }
 
     // Generate code for the header.
