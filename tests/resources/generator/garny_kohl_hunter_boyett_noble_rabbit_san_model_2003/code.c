@@ -6,14 +6,14 @@
 
 const char VERSION[] = "0.2.0";
 
+const size_t STATE_COUNT = 15;
+const size_t VARIABLE_COUNT = 185;
+
 struct VariableInfo {
     char component[53];
     char name[31];
     char units[27];
 };
-
-const size_t STATE_VECTOR_SIZE = 15;
-const size_t VARIABLE_VECTOR_SIZE = 185;
 
 const struct VariableInfo VOI_INFORMATION = {"membrane", "time", "second"};
 

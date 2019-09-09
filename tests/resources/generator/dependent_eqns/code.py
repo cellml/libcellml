@@ -5,8 +5,8 @@ from math import *
 
 __version__ = "0.2.0"
 
-STATE_VECTOR_SIZE = 1
-VARIABLE_VECTOR_SIZE = 2
+STATE_COUNT = 1
+VARIABLE_COUNT = 2
 
 VOI_INFORMATION = {"component": "my_component", "name": "time", "units": "second"}
 
