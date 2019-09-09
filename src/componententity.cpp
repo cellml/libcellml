@@ -33,10 +33,11 @@ namespace libcellml {
  */
 struct ComponentEntity::ComponentEntityImpl
 {
-    std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
-    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
     std::vector<ComponentPtr> mComponents;
     std::string mEncapsulationId;
+
+    std::vector<ComponentPtr>::iterator findComponent(const std::string &name);
+    std::vector<ComponentPtr>::iterator findComponent(const ComponentPtr &component);
 };
 
 std::vector<ComponentPtr>::iterator ComponentEntity::ComponentEntityImpl::findComponent(const std::string &name)
@@ -86,7 +87,7 @@ ComponentEntity &ComponentEntity::operator=(ComponentEntity rhs)
 
 void ComponentEntity::swap(ComponentEntity &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void ComponentEntity::addComponent(const ComponentPtr &component)
@@ -200,7 +201,7 @@ ComponentPtr ComponentEntity::component(const std::string &name, bool searchEnca
         foundComponent = *result;
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
-            foundComponent = ComponentEntity::component(i)->component(name, searchEncapsulated);
+            foundComponent = component(i)->component(name, searchEncapsulated);
         }
     }
 
@@ -226,9 +227,10 @@ ComponentPtr ComponentEntity::takeComponent(const std::string &name, bool search
     if (result != mPimpl->mComponents.end()) {
         foundComponent = *result;
         mPimpl->mComponents.erase(result);
+        foundComponent->clearParent();
     } else if (searchEncapsulated) {
         for (size_t i = 0; i < componentCount() && !foundComponent; ++i) {
-            foundComponent = ComponentEntity::component(i)->takeComponent(name, searchEncapsulated);
+            foundComponent = component(i)->takeComponent(name, searchEncapsulated);
         }
     }
 
@@ -263,7 +265,7 @@ bool ComponentEntity::replaceComponent(const ComponentPtr &oldComponent, const C
     bool status = replaceComponent(size_t(mPimpl->findComponent(oldComponent) - mPimpl->mComponents.begin()), newComponent);
     if (searchEncapsulated && !status) {
         for (size_t i = 0; i < componentCount() && !status; ++i) {
-            status = ComponentEntity::component(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
+            status = component(i)->replaceComponent(oldComponent, newComponent, searchEncapsulated);
         }
     }
 

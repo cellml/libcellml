@@ -73,11 +73,9 @@ static const std::map<Units::StandardUnit, const std::string> standardUnitToStri
     {Units::StandardUnit::KATAL, "katal"},
     {Units::StandardUnit::KELVIN, "kelvin"},
     {Units::StandardUnit::KILOGRAM, "kilogram"},
-    {Units::StandardUnit::LITER, "liter"},
     {Units::StandardUnit::LITRE, "litre"},
     {Units::StandardUnit::LUMEN, "lumen"},
     {Units::StandardUnit::LUX, "lux"},
-    {Units::StandardUnit::METER, "meter"},
     {Units::StandardUnit::METRE, "metre"},
     {Units::StandardUnit::MOLE, "mole"},
     {Units::StandardUnit::NEWTON, "newton"},
@@ -116,8 +114,9 @@ struct Unit
  */
 struct Units::UnitsImpl
 {
-    std::vector<Unit>::iterator findUnit(const std::string &reference);
     std::vector<Unit> mUnits; /**< A vector of unit defined for this Units.*/
+
+    std::vector<Unit>::iterator findUnit(const std::string &reference);
 };
 
 std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &reference)
@@ -162,7 +161,7 @@ Units &Units::operator=(Units rhs)
 
 void Units::swap(Units &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 bool Units::isBaseUnit() const
