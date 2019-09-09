@@ -241,6 +241,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
+    EXPECT_EQ("/* ", generatorProfile->beginCommentString());
+    EXPECT_EQ(" */", generatorProfile->endCommentString());
+
     EXPECT_EQ("#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n", generatorProfile->headerString());
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
@@ -283,9 +286,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ(",", generatorProfile->arrayElementSeparatorString());
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
-
-    EXPECT_EQ("/* ", generatorProfile->beginCommentString());
-    EXPECT_EQ(" */\n", generatorProfile->endCommentString());
 }
 
 TEST(GeneratorProfile, defaultTemplateValues)
@@ -572,6 +572,9 @@ TEST(GeneratorProfile, miscellaneous)
 
     const std::string value = "value";
 
+    generatorProfile->setBeginCommentString(value);
+    generatorProfile->setEndCommentString(value);
+
     generatorProfile->setHeaderString(value);
 
     generatorProfile->setVariableOfIntegrationString(value);
@@ -615,8 +618,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setArrayElementSeparatorString(value);
     generatorProfile->setCommandSeparatorString(value);
 
-    generatorProfile->setBeginCommentString(value);
-    generatorProfile->setEndCommentString(value);
+    EXPECT_EQ(value, generatorProfile->beginCommentString());
+    EXPECT_EQ(value, generatorProfile->endCommentString());
 
     EXPECT_EQ(value, generatorProfile->headerString());
 
@@ -660,9 +663,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->arrayElementSeparatorString());
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
-
-    EXPECT_EQ(value, generatorProfile->beginCommentString());
-    EXPECT_EQ(value, generatorProfile->endCommentString());
 }
 
 TEST(GeneratorProfile, templateValues)
