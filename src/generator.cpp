@@ -2608,7 +2608,7 @@ std::string Generator::code() const
         return {};
     }
 
-    // Generate origin comment.
+    // Generate code for the origin comment.
 
     std::string res;
     std::string comment = mPimpl->replaceTemplateValue(mPimpl->mProfile->templateOriginCommentString(), versionString());
@@ -2627,7 +2627,7 @@ std::string Generator::code() const
         res += mPimpl->mProfile->headerString();
     }
 
-    // Set the version for the generated code.
+    // Generate the code for the version of libCellML.
 
     std::string libcellmlVersion = mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVersionString(), versionString());
 
