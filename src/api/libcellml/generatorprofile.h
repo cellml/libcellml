@@ -1899,6 +1899,24 @@ public:
     std::string variableInfoObjectString() const;
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
+    std::string templateVoiConstantString() const;
+    void setTemplateVoiConstantString(const std::string &templateVoiConstantString);
+
+    std::string templateVariableInformationEntryString() const;
+    void setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString);
+
+    std::string beginStateVectorInformationArrayString() const;
+    void setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString);
+
+    std::string endStateVectorInformationArrayString() const;
+    void setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString);
+
+    std::string beginVariableVectorInformationArrayString() const;
+    void setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString);
+
+    std::string endVariableVectorInformationArrayString() const;
+    void setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString);
+
     /**
      * @brief Get the @c std::string for the name of the variable of
      * integration.
@@ -2202,24 +2220,6 @@ public:
 
     std::string templateReturnCreatedArrayString() const;
     void setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString);
-
-    std::string templateVoiConstantString() const;
-    void setTemplateVoiConstantString(const std::string &templateVoiConstantString);
-
-    std::string templateVariableInformationEntryString() const;
-    void setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString);
-
-    std::string beginStateVectorInformationArrayString() const;
-    void setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString);
-
-    std::string endStateVectorInformationArrayString() const;
-    void setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString);
-
-    std::string beginVariableVectorInformationArrayString() const;
-    void setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString);
-
-    std::string endVariableVectorInformationArrayString() const;
-    void setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString);
 
     /**
      * @brief Get the @c std::string for an indent.

@@ -1926,6 +1926,66 @@ void GeneratorProfile::setVariableInfoObjectString(const std::string &variableIn
     mPimpl->mVariableInfoObjectString = variableInfoObjectString;
 }
 
+std::string GeneratorProfile::templateVoiConstantString() const
+{
+    return mPimpl->mTemplateVoiConstantString;
+}
+
+void GeneratorProfile::setTemplateVoiConstantString(const std::string &templateVoiConstantString)
+{
+    mPimpl->mTemplateVoiConstantString = templateVoiConstantString;
+}
+
+std::string GeneratorProfile::templateVariableInformationEntryString() const
+{
+    return mPimpl->mTemplateVariableInformationEntryString;
+}
+
+void GeneratorProfile::setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString)
+{
+    mPimpl->mTemplateVariableInformationEntryString = templateVariableInformationEntryString;
+}
+
+std::string GeneratorProfile::beginStateVectorInformationArrayString() const
+{
+    return mPimpl->mBeginStateVectorInformationArrayString;
+}
+
+void GeneratorProfile::setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString)
+{
+    mPimpl->mBeginStateVectorInformationArrayString = beginStateVectorInformationArrayString;
+}
+
+std::string GeneratorProfile::endStateVectorInformationArrayString() const
+{
+    return mPimpl->mEndStateVectorInformationArrayString;
+}
+
+void GeneratorProfile::setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString)
+{
+    mPimpl->mEndStateVectorInformationArrayString = endStateVectorInformationArrayString;
+}
+
+std::string GeneratorProfile::beginVariableVectorInformationArrayString() const
+{
+    return mPimpl->mBeginVariableVectorInformationArrayString;
+}
+
+void GeneratorProfile::setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString)
+{
+    mPimpl->mBeginVariableVectorInformationArrayString = beginVariableVectorInformationArrayString;
+}
+
+std::string GeneratorProfile::endVariableVectorInformationArrayString() const
+{
+    return mPimpl->mEndVariableVectorInformationArrayString;
+}
+
+void GeneratorProfile::setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString)
+{
+    mPimpl->mEndVariableVectorInformationArrayString = endVariableVectorInformationArrayString;
+}
+
 std::string GeneratorProfile::variableOfIntegrationString() const
 {
     return mPimpl->mVariableOfIntegrationString;
@@ -2116,16 +2176,6 @@ void GeneratorProfile::setTemplateReplacementString(const std::string &templateR
     mPimpl->mTemplateReplacementString = templateReplacementString;
 }
 
-std::string GeneratorProfile::templateVoiConstantString() const
-{
-    return mPimpl->mTemplateVoiConstantString;
-}
-
-void GeneratorProfile::setTemplateVoiConstantString(const std::string &templateVoiConstantString)
-{
-    mPimpl->mTemplateVoiConstantString = templateVoiConstantString;
-}
-
 std::string GeneratorProfile::templateReturnCreatedArrayString() const
 {
     return mPimpl->mTemplateReturnCreatedArrayString;
@@ -2134,56 +2184,6 @@ std::string GeneratorProfile::templateReturnCreatedArrayString() const
 void GeneratorProfile::setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString)
 {
     mPimpl->mTemplateReturnCreatedArrayString = templateReturnCreatedArrayString;
-}
-
-std::string GeneratorProfile::templateVariableInformationEntryString() const
-{
-    return mPimpl->mTemplateVariableInformationEntryString;
-}
-
-void GeneratorProfile::setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString)
-{
-    mPimpl->mTemplateVariableInformationEntryString = templateVariableInformationEntryString;
-}
-
-std::string GeneratorProfile::beginStateVectorInformationArrayString() const
-{
-    return mPimpl->mBeginStateVectorInformationArrayString;
-}
-
-void GeneratorProfile::setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString)
-{
-    mPimpl->mBeginStateVectorInformationArrayString = beginStateVectorInformationArrayString;
-}
-
-std::string GeneratorProfile::endStateVectorInformationArrayString() const
-{
-    return mPimpl->mEndStateVectorInformationArrayString;
-}
-
-void GeneratorProfile::setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString)
-{
-    mPimpl->mEndStateVectorInformationArrayString = endStateVectorInformationArrayString;
-}
-
-std::string GeneratorProfile::beginVariableVectorInformationArrayString() const
-{
-    return mPimpl->mBeginVariableVectorInformationArrayString;
-}
-
-void GeneratorProfile::setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString)
-{
-    mPimpl->mBeginVariableVectorInformationArrayString = beginVariableVectorInformationArrayString;
-}
-
-std::string GeneratorProfile::endVariableVectorInformationArrayString() const
-{
-    return mPimpl->mEndVariableVectorInformationArrayString;
-}
-
-void GeneratorProfile::setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString)
-{
-    mPimpl->mEndVariableVectorInformationArrayString = endVariableVectorInformationArrayString;
 }
 
 std::string GeneratorProfile::indentString() const
