@@ -624,6 +624,48 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
         err->setReset(reset);
         err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
         mValidator->addError(err);
+        noVariable = true;
+    } else {
+        description += "with variable '" + reset->variable()->name() + "', ";
+        auto var = reset->variable();
+        auto varParent = var->parentComponent();
+        varParentName = varParent->name();
+        if (varParentName != component->name()) {
+            varOutsideComponent = true;
+        }
+    }
+
+    if (reset->testVariable() == nullptr) {
+        variableString = "does not reference a test variable";
+        variableContinuation = ",";
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
+        mValidator->addError(err);
+        noTestVariable = true;
+    } else {
+        description += "with test_variable '" + reset->testVariable()->name() + "', ";
+
+        auto var = reset->testVariable();
+        auto varParent = var->parentComponent();
+        testVarParentName = varParent->name();
+        if (testVarParentName != component->name()) {
+            testVarOutsideComponent = true;
+        }
+    }
+
+    // Check that the contents of test_value and reset_value are valid MathML
+    std::string testValueString = reset->testValue();
+    std::string resetValueString = reset->resetValue();
+
+    if ((testValueString.empty()) || (std::all_of(testValueString.begin(), testValueString.end(), isspace))) {
+        noTestValue = true;
+    } else {
+        validateMath(testValueString, component);
+    }
+    if ((resetValueString.empty()) || (std::all_of(resetValueString.begin(), resetValueString.end(), isspace))) {
+        noResetValue = true;
     } else {
         variableString = "referencing variable '" + reset->variable()->name() + "'";
     }
