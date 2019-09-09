@@ -38,7 +38,7 @@ namespace libcellml {
  */
 struct Validator::ValidatorImpl
 {
-    Validator *mValidator;
+    Validator *mValidator = nullptr;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -294,7 +294,7 @@ Validator &Validator::operator=(Validator rhs)
 
 void Validator::swap(Validator &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Validator::validateModel(const ModelPtr &model)
@@ -510,7 +510,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         // Check for a matching standard units.
         if (isStandardUnitName(units->name())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Units is named '" + units->name() + "', which is a protected standard unit name.");
+            err->setDescription("Units is named '" + units->name() + "' which is a protected standard unit name.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNITS_STANDARD);
             mValidator->addError(err);
@@ -590,8 +590,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
-        auto component = static_cast<Component *>(variable->parent());
-        auto model = static_cast<Model *>(component->parent());
+        ComponentPtr component = variable->parentComponent();
+        ModelPtr model = component->parentModel();
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
@@ -835,7 +835,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) && (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("MathML ci element has the child text '" + textNode + "', which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
+                            err->setDescription("MathML ci element has the child text '" + textNode + "' which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
                             err->setComponent(component);
                             err->setKind(Error::Kind::MATHML);
                             mValidator->addError(err);
@@ -898,7 +898,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            auto model = static_cast<Model *>(component->parent());
+            ModelPtr model = component->parentModel();
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
@@ -1030,9 +1030,9 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 mValidator->addError(err);
                             }
 
-                            if (equivalentVariable->hasEquivalentVariable(variable)) {
+                            if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
-                                auto component2 = static_cast<Component *>(equivalentVariable->parent());
+                                auto component2 = equivalentVariable->parentComponent();
                                 if (!component2->hasVariable(equivalentVariable)) {
                                     ErrorPtr err = std::make_shared<Error>();
                                     err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
@@ -1042,7 +1042,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 }
                             } else {
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "'  which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
+                                err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                                 err->setModel(model);
                                 err->setKind(Error::Kind::CONNECTION);
                                 mValidator->addError(err);

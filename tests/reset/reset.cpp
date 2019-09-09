@@ -228,7 +228,6 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
-
     const std::string e2 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -247,7 +246,6 @@ TEST(Reset, addRemoveResetFromComponentMethods)
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
-
     const std::string e3 =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
@@ -335,11 +333,10 @@ TEST(Reset, resetFromComponentMethod)
     EXPECT_EQ(r2.get(), rMethod1.get());
 
     // Get const by index
-    const libcellml::ResetPtr vMethod2 = static_cast<const libcellml::Component>(c).reset(3);
+    const libcellml::ResetPtr vMethod2 = c.reset(3);
     EXPECT_EQ(r4.get(), vMethod2.get());
 
     // Get invalid index
-    EXPECT_EQ(nullptr, static_cast<const libcellml::Component>(c).reset(42));
     EXPECT_EQ(nullptr, c.reset(7));
 }
 
