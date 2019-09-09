@@ -151,6 +151,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
+    std::string mBeginCommentString;
+    std::string mEndCommentString;
+
     std::string mHeaderString;
 
     std::string mVariableOfIntegrationString;
@@ -178,9 +181,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mBeginComputeVariablesMethodString;
     std::string mEndComputeVariablesMethodString;
-
-    std::string mBeginCommentString;
-    std::string mEndCommentString;
 
     std::string mEmptyMethodString;
     std::string mTemplateReplacementString;
@@ -384,6 +384,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
+        mBeginCommentString = "/* ";
+        mEndCommentString = " */\n";
+
         mHeaderString = "#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n";
 
         mVariableOfIntegrationString = "voi";
@@ -429,9 +432,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = ";";
-
-        mBeginCommentString = "/* ";
-        mEndCommentString = " */\n";
 
         // Templated
 
@@ -602,6 +602,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
+        mBeginCommentString = "# ";
+        mEndCommentString = "\n";
+
         mHeaderString = "from math import *\n\n";
 
         mVariableOfIntegrationString = "voi";
@@ -644,9 +647,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = "";
-
-        mBeginCommentString = "# ";
-        mEndCommentString = "\n";
 
         // Templated
 
@@ -1826,6 +1826,26 @@ void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionSt
     mPimpl->mAcothFunctionString = acothFunctionString;
 }
 
+std::string GeneratorProfile::beginCommentString() const
+{
+    return mPimpl->mBeginCommentString;
+}
+
+void GeneratorProfile::setBeginCommentString(const std::string &beginCommentString)
+{
+    mPimpl->mBeginCommentString = beginCommentString;
+}
+
+std::string GeneratorProfile::endCommentString() const
+{
+    return mPimpl->mEndCommentString;
+}
+
+void GeneratorProfile::setEndCommentString(const std::string &endCommentString)
+{
+    mPimpl->mEndCommentString = endCommentString;
+}
+
 std::string GeneratorProfile::headerString() const
 {
     return mPimpl->mHeaderString;
@@ -2194,26 +2214,6 @@ std::string GeneratorProfile::commandSeparatorString() const
 void GeneratorProfile::setCommandSeparatorString(const std::string &commandSeparatorString)
 {
     mPimpl->mCommandSeparatorString = commandSeparatorString;
-}
-
-std::string GeneratorProfile::beginCommentString() const
-{
-    return mPimpl->mBeginCommentString;
-}
-
-void GeneratorProfile::setBeginCommentString(const std::string &beginCommentString)
-{
-    mPimpl->mBeginCommentString = beginCommentString;
-}
-
-std::string GeneratorProfile::endCommentString() const
-{
-    return mPimpl->mEndCommentString;
-}
-
-void GeneratorProfile::setEndCommentString(const std::string &endCommentString)
-{
-    mPimpl->mEndCommentString = endCommentString;
 }
 
 } // namespace libcellml
