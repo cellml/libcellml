@@ -1884,6 +1884,9 @@ public:
      */
     void setHeaderString(const std::string &headerString);
 
+    std::string versionString() const;
+    void setVersionString(const std::string &versionString);
+
     /**
      * @brief Get the @c std::string for the name of the variable of
      * integration.
@@ -2196,9 +2199,6 @@ public:
 
     std::string templateVoiConstantString() const;
     void setTemplateVoiConstantString(const std::string &templateVoiConstantString);
-
-    std::string templateVersionString() const;
-    void setTemplateVersionString(const std::string &templateVersionString);
 
     std::string templateOriginCommentString() const;
     void setTemplateOriginCommentString(const std::string &templateOriginCommentString);

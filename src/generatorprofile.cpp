@@ -156,6 +156,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mHeaderString;
 
+    std::string mVersionString;
+
     std::string mVariableOfIntegrationString;
 
     std::string mStatesArrayString;
@@ -188,7 +190,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mTemplateStateVectorSizeConstantString;
     std::string mTemplateVariableVectorSizeConstantString;
     std::string mTemplateVoiConstantString;
-    std::string mTemplateVersionString;
     std::string mTemplateOriginCommentString;
 
     std::string mTemplateVariableInformationObjectString;
@@ -391,6 +392,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                         "#include <stddef.h>\n"
                         "#include <stdlib.h>\n";
 
+        mVersionString = "const char VERSION[] = \"<VERSION>\";\n";
+
         mVariableOfIntegrationString = "voi";
 
         mStatesArrayString = "states";
@@ -443,7 +446,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
         mTemplateVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
         mTemplateVoiConstantString = "const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
-        mTemplateVersionString = "const char VERSION[] = \"VALUE\";\n";
         mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
         mTemplateVariableInformationObjectString = "struct VariableInfo {\n"
                                                    "    char component[VALUE];\n"
@@ -609,6 +611,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mHeaderString = "from math import *\n\n";
 
+        mVersionString = "__version__ = \"<VERSION>\"\n";
+
         mVariableOfIntegrationString = "voi";
 
         mStatesArrayString = "states";
@@ -658,7 +662,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
         mTemplateVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
         mTemplateVoiConstantString = "VOI_INFORMATION = {\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
-        mTemplateVersionString = "__version__ = \"VALUE\"\n";
         mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
         mTemplateVariableInformationObjectString = "";
         mTemplateVariableInformationEntryString = "{\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}";
@@ -789,6 +792,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
+    mPimpl->mVersionString = rhs.mPimpl->mVersionString;
+
     mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
 
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
@@ -817,7 +822,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mTemplateStateVectorSizeConstantString = rhs.mPimpl->mTemplateStateVectorSizeConstantString;
     mPimpl->mTemplateVariableVectorSizeConstantString = rhs.mPimpl->mTemplateVariableVectorSizeConstantString;
     mPimpl->mTemplateVoiConstantString = rhs.mPimpl->mTemplateVoiConstantString;
-    mPimpl->mTemplateVersionString = rhs.mPimpl->mTemplateVersionString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
     mPimpl->mTemplateReplacementString = rhs.mPimpl->mTemplateReplacementString;
@@ -1861,6 +1865,16 @@ void GeneratorProfile::setHeaderString(const std::string &headerString)
     mPimpl->mHeaderString = headerString;
 }
 
+std::string GeneratorProfile::versionString() const
+{
+    return mPimpl->mVersionString;
+}
+
+void GeneratorProfile::setVersionString(const std::string &versionString)
+{
+    mPimpl->mVersionString = versionString;
+}
+
 std::string GeneratorProfile::variableOfIntegrationString() const
 {
     return mPimpl->mVariableOfIntegrationString;
@@ -2079,16 +2093,6 @@ std::string GeneratorProfile::templateVoiConstantString() const
 void GeneratorProfile::setTemplateVoiConstantString(const std::string &templateVoiConstantString)
 {
     mPimpl->mTemplateVoiConstantString = templateVoiConstantString;
-}
-
-std::string GeneratorProfile::templateVersionString() const
-{
-    return mPimpl->mTemplateVersionString;
-}
-
-void GeneratorProfile::setTemplateVersionString(const std::string &templateVersionString)
-{
-    mPimpl->mTemplateVersionString = templateVersionString;
 }
 
 std::string GeneratorProfile::templateOriginCommentString() const
