@@ -1554,7 +1554,9 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPt
            && mProfile->hasConditionalOperator();
 }
 
-std::string Generator::GeneratorImpl::replace(std::string string, const std::string &from, const std::string &to)
+std::string Generator::GeneratorImpl::replace(std::string string,
+                                              const std::string &from,
+                                              const std::string &to)
 {
     auto index = string.find(from);
 
