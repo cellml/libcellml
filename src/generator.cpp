@@ -2677,7 +2677,8 @@ std::string Generator::code() const
         res += mPimpl->generateVariableInfoObjectString();
     }
 
-    // Generate code for the constants.
+    // Generate code for the information about the variable of integration,
+    // states and (other) variables.
 
     if (mPimpl->mVariableOfIntegration != nullptr) {
         if (!res.empty()) {
