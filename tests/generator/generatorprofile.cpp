@@ -252,6 +252,12 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("const char VERSION[] = \"<VERSION>\";\n", generatorProfile->versionString());
 
+    EXPECT_EQ("struct VariableInfo {\n"
+              "    char component[<COMPONENT_SIZE>];\n"
+              "    char name[<NAME_SIZE>];\n"
+              "    char units[<UNITS_SIZE>];\n"
+              "};\n", generatorProfile->variableInfoObjectString());
+
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
 
     EXPECT_EQ("states", generatorProfile->statesArrayString());
@@ -303,7 +309,6 @@ TEST(GeneratorProfile, defaultTemplateValues)
     EXPECT_EQ("return (double *) malloc(VALUE * sizeof(double));\n", generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ("const size_t STATE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateStateVectorSizeConstantString());
     EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
-    EXPECT_EQ("struct VariableInfo {\n    char component[VALUE];\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
     EXPECT_EQ("const size_t VARIABLE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateVariableVectorSizeConstantString());
     EXPECT_EQ("const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
 }
@@ -585,6 +590,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setVersionString(value);
 
+    generatorProfile->setVariableInfoObjectString(value);
+
     generatorProfile->setVariableOfIntegrationString(value);
 
     generatorProfile->setStatesArrayString(value);
@@ -634,6 +641,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->headerString());
 
     EXPECT_EQ(value, generatorProfile->versionString());
+
+    EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
 
@@ -690,14 +699,12 @@ TEST(GeneratorProfile, templateValues)
     generatorProfile->setTemplateReturnCreatedArrayString(value);
     generatorProfile->setTemplateStateVectorSizeConstantString(value);
     generatorProfile->setTemplateVariableInformationEntryString(value);
-    generatorProfile->setTemplateVariableInformationObjectString(value);
     generatorProfile->setTemplateVariableVectorSizeConstantString(value);
     generatorProfile->setTemplateVoiConstantString(value);
 
     EXPECT_EQ(value, generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ(value, generatorProfile->templateStateVectorSizeConstantString());
     EXPECT_EQ(value, generatorProfile->templateVariableInformationEntryString());
-    EXPECT_EQ(value, generatorProfile->templateVariableInformationObjectString());
     EXPECT_EQ(value, generatorProfile->templateVariableVectorSizeConstantString());
     EXPECT_EQ(value, generatorProfile->templateVoiConstantString());
 }

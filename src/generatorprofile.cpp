@@ -160,6 +160,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mVersionString;
 
+    std::string mVariableInfoObjectString;
+
     std::string mVariableOfIntegrationString;
 
     std::string mStatesArrayString;
@@ -193,7 +195,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mTemplateVariableVectorSizeConstantString;
     std::string mTemplateVoiConstantString;
 
-    std::string mTemplateVariableInformationObjectString;
     std::string mTemplateVariableInformationEntryString;
     std::string mBeginStateVectorInformationArrayString;
     std::string mEndStateVectorInformationArrayString;
@@ -397,6 +398,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVersionString = "const char VERSION[] = \"<VERSION>\";\n";
 
+        mVariableInfoObjectString = "struct VariableInfo {\n"
+                                    "    char component[<COMPONENT_SIZE>];\n"
+                                    "    char name[<NAME_SIZE>];\n"
+                                    "    char units[<UNITS_SIZE>];\n"
+                                    "};\n";
+
         mVariableOfIntegrationString = "voi";
 
         mStatesArrayString = "states";
@@ -449,11 +456,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
         mTemplateVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
         mTemplateVoiConstantString = "const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
-        mTemplateVariableInformationObjectString = "struct VariableInfo {\n"
-                                                   "    char component[VALUE];\n"
-                                                   "    char name[VALUE];\n"
-                                                   "    char units[VALUE];\n"
-                                                   "};\n";
         mTemplateVariableInformationEntryString = "{\"VALUE\", \"VALUE\", \"VALUE\"}";
 
         break;
@@ -617,6 +619,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVersionString = "__version__ = \"<VERSION>\"\n";
 
+        mVariableInfoObjectString = "";
+
         mVariableOfIntegrationString = "voi";
 
         mStatesArrayString = "states";
@@ -666,7 +670,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
         mTemplateVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
         mTemplateVoiConstantString = "VOI_INFORMATION = {\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
-        mTemplateVariableInformationObjectString = "";
         mTemplateVariableInformationEntryString = "{\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}";
 
         break;
@@ -797,6 +800,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mVersionString = rhs.mPimpl->mVersionString;
 
+    mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
+
     mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
 
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
@@ -830,7 +835,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mTemplateReplacementString = rhs.mPimpl->mTemplateReplacementString;
     mPimpl->mTemplateReturnCreatedArrayString = rhs.mPimpl->mTemplateReturnCreatedArrayString;
 
-    mPimpl->mTemplateVariableInformationObjectString = rhs.mPimpl->mTemplateVariableInformationObjectString;
     mPimpl->mTemplateVariableInformationEntryString = rhs.mPimpl->mTemplateVariableInformationEntryString;
     mPimpl->mBeginStateVectorInformationArrayString = rhs.mPimpl->mBeginStateVectorInformationArrayString;
     mPimpl->mEndStateVectorInformationArrayString = rhs.mPimpl->mEndStateVectorInformationArrayString;
@@ -1888,6 +1892,16 @@ void GeneratorProfile::setVersionString(const std::string &versionString)
     mPimpl->mVersionString = versionString;
 }
 
+std::string GeneratorProfile::variableInfoObjectString() const
+{
+    return mPimpl->mVariableInfoObjectString;
+}
+
+void GeneratorProfile::setVariableInfoObjectString(const std::string &variableInfoObjectString)
+{
+    mPimpl->mVariableInfoObjectString = variableInfoObjectString;
+}
+
 std::string GeneratorProfile::variableOfIntegrationString() const
 {
     return mPimpl->mVariableOfIntegrationString;
@@ -2116,16 +2130,6 @@ std::string GeneratorProfile::templateReturnCreatedArrayString() const
 void GeneratorProfile::setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString)
 {
     mPimpl->mTemplateReturnCreatedArrayString = templateReturnCreatedArrayString;
-}
-
-std::string GeneratorProfile::templateVariableInformationObjectString() const
-{
-    return mPimpl->mTemplateVariableInformationObjectString;
-}
-
-void GeneratorProfile::setTemplateVariableInformationObjectString(const std::string &templateVariableInformationObjectString)
-{
-    mPimpl->mTemplateVariableInformationObjectString = templateVariableInformationObjectString;
 }
 
 std::string GeneratorProfile::templateVariableInformationEntryString() const
