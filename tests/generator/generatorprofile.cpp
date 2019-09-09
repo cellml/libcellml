@@ -244,7 +244,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("/* ", generatorProfile->beginCommentString());
     EXPECT_EQ(" */", generatorProfile->endCommentString());
 
-    EXPECT_EQ("#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n", generatorProfile->headerString());
+    EXPECT_EQ("#include <math.h>\n"
+              "#include <stddef.h>\n"
+              "#include <stdlib.h>\n", generatorProfile->headerString());
 
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
 
