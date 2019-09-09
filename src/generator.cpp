@@ -2627,7 +2627,10 @@ std::string Generator::code() const
 
     // Set the version for the generated code.
 
-    res += "\n";
+    if (!res.empty()) {
+        res += "\n";
+    }
+
     res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVersionString(), versionString());
 
     // Declare any data structures.
