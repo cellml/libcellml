@@ -244,6 +244,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("/* ", generatorProfile->beginCommentString());
     EXPECT_EQ(" */", generatorProfile->endCommentString());
 
+    EXPECT_EQ("The contents of this file was generated from version <VERSION> of libCellML.", generatorProfile->originCommentString());
+
     EXPECT_EQ("#include <math.h>\n"
               "#include <stddef.h>\n"
               "#include <stdlib.h>\n", generatorProfile->headerString());
@@ -298,7 +300,6 @@ TEST(GeneratorProfile, defaultTemplateValues)
 
     EXPECT_EQ("VALUE", generatorProfile->templateReplacementString());
 
-    EXPECT_EQ("The contents of this file was generated from version VALUE of libCellML.", generatorProfile->templateOriginCommentString());
     EXPECT_EQ("return (double *) malloc(VALUE * sizeof(double));\n", generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ("const size_t STATE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateStateVectorSizeConstantString());
     EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
@@ -578,6 +579,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setBeginCommentString(value);
     generatorProfile->setEndCommentString(value);
 
+    generatorProfile->setOriginCommentString(value);
+
     generatorProfile->setHeaderString(value);
 
     generatorProfile->setVersionString(value);
@@ -625,6 +628,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->beginCommentString());
     EXPECT_EQ(value, generatorProfile->endCommentString());
+
+    EXPECT_EQ(value, generatorProfile->originCommentString());
 
     EXPECT_EQ(value, generatorProfile->headerString());
 
@@ -682,7 +687,6 @@ TEST(GeneratorProfile, templateValues)
 
     EXPECT_EQ(value, generatorProfile->templateReplacementString());
 
-    generatorProfile->setTemplateOriginCommentString(value);
     generatorProfile->setTemplateReturnCreatedArrayString(value);
     generatorProfile->setTemplateStateVectorSizeConstantString(value);
     generatorProfile->setTemplateVariableInformationEntryString(value);
@@ -690,7 +694,6 @@ TEST(GeneratorProfile, templateValues)
     generatorProfile->setTemplateVariableVectorSizeConstantString(value);
     generatorProfile->setTemplateVoiConstantString(value);
 
-    EXPECT_EQ(value, generatorProfile->templateOriginCommentString());
     EXPECT_EQ(value, generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ(value, generatorProfile->templateStateVectorSizeConstantString());
     EXPECT_EQ(value, generatorProfile->templateVariableInformationEntryString());

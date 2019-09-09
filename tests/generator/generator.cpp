@@ -359,7 +359,7 @@ TEST(Generator, invalidReplacementString)
 
     EXPECT_EQ(fileContents("generator/template_replacement/no_replacement_text.py"), generator.code());
 
-    profile->setTemplateOriginCommentString("This string has no template replacament.");
+    profile->setOriginCommentString("This string has no template replacement.");
     profile->setTemplateReplacementString("PLACEHOLDER");
 
     EXPECT_EQ(fileContents("generator/template_replacement/no_matching_replacement.py"), generator.code());
@@ -1155,7 +1155,7 @@ TEST(Generator, coverage)
     profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
     profile->setHasConditionalOperator(false);
 
-    profile->setTemplateOriginCommentString("");
+    profile->setOriginCommentString("");
 
     EXPECT_EQ(fileContents("generator/coverage/codeWithCustomProfile.out"), generator.code());
 

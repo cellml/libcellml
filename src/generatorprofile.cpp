@@ -154,6 +154,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mBeginCommentString;
     std::string mEndCommentString;
 
+    std::string mOriginCommentString;
+
     std::string mHeaderString;
 
     std::string mVersionString;
@@ -190,7 +192,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mTemplateStateVectorSizeConstantString;
     std::string mTemplateVariableVectorSizeConstantString;
     std::string mTemplateVoiConstantString;
-    std::string mTemplateOriginCommentString;
 
     std::string mTemplateVariableInformationObjectString;
     std::string mTemplateVariableInformationEntryString;
@@ -388,6 +389,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mBeginCommentString = "/* ";
         mEndCommentString = " */";
 
+        mOriginCommentString = "The contents of this file was generated from version <VERSION> of libCellML.";
+
         mHeaderString = "#include <math.h>\n"
                         "#include <stddef.h>\n"
                         "#include <stdlib.h>\n";
@@ -446,7 +449,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
         mTemplateVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
         mTemplateVoiConstantString = "const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
-        mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
         mTemplateVariableInformationObjectString = "struct VariableInfo {\n"
                                                    "    char component[VALUE];\n"
                                                    "    char name[VALUE];\n"
@@ -609,6 +611,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mBeginCommentString = "# ";
         mEndCommentString = "";
 
+        mOriginCommentString = "The contents of this file was generated from version <VERSION> of libCellML.";
+
         mHeaderString = "from math import *\n\n";
 
         mVersionString = "__version__ = \"<VERSION>\"\n";
@@ -662,7 +666,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
         mTemplateVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
         mTemplateVoiConstantString = "VOI_INFORMATION = {\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
-        mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
         mTemplateVariableInformationObjectString = "";
         mTemplateVariableInformationEntryString = "{\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}";
 
@@ -1855,6 +1858,16 @@ void GeneratorProfile::setEndCommentString(const std::string &endCommentString)
     mPimpl->mEndCommentString = endCommentString;
 }
 
+std::string GeneratorProfile::originCommentString() const
+{
+    return mPimpl->mOriginCommentString;
+}
+
+void GeneratorProfile::setOriginCommentString(const std::string &originCommentString)
+{
+    mPimpl->mOriginCommentString = originCommentString;
+}
+
 std::string GeneratorProfile::headerString() const
 {
     return mPimpl->mHeaderString;
@@ -2093,16 +2106,6 @@ std::string GeneratorProfile::templateVoiConstantString() const
 void GeneratorProfile::setTemplateVoiConstantString(const std::string &templateVoiConstantString)
 {
     mPimpl->mTemplateVoiConstantString = templateVoiConstantString;
-}
-
-std::string GeneratorProfile::templateOriginCommentString() const
-{
-    return mPimpl->mTemplateOriginCommentString;
-}
-
-void GeneratorProfile::setTemplateOriginCommentString(const std::string &templateOriginCommentString)
-{
-    mPimpl->mTemplateOriginCommentString = templateOriginCommentString;
 }
 
 std::string GeneratorProfile::templateReturnCreatedArrayString() const

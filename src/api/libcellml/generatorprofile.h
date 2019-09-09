@@ -1866,6 +1866,9 @@ public:
     std::string endCommentString() const;
     void setEndCommentString(const std::string &endCommentString);
 
+    std::string originCommentString() const;
+    void setOriginCommentString(const std::string &originCommentString);
+
     /**
      * @brief Get the @c std::string for some header.
      *
@@ -2199,9 +2202,6 @@ public:
 
     std::string templateVoiConstantString() const;
     void setTemplateVoiConstantString(const std::string &templateVoiConstantString);
-
-    std::string templateOriginCommentString() const;
-    void setTemplateOriginCommentString(const std::string &templateOriginCommentString);
 
     std::string templateVariableInformationObjectString() const;
     void setTemplateVariableInformationObjectString(const std::string &templateVariableInformationObjectString);
