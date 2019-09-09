@@ -131,7 +131,7 @@ struct GeneratorInternalVariable
 
     void setVariable(const VariablePtr &variable);
 
-    void makeVariableOfIntegration();
+    void makeVoi();
     void makeState();
 };
 
@@ -155,7 +155,7 @@ void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
     }
 }
 
-void GeneratorInternalVariable::makeVariableOfIntegration()
+void GeneratorInternalVariable::makeVoi()
 {
     mType = Type::VARIABLE_OF_INTEGRATION;
 }
@@ -541,7 +541,7 @@ struct Generator::GeneratorImpl
     std::list<GeneratorInternalVariablePtr> mInternalVariables;
     std::list<GeneratorEquationPtr> mEquations;
 
-    VariablePtr mVariableOfIntegration;
+    VariablePtr mVoi;
     std::vector<VariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
@@ -1169,14 +1169,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         VariablePtr variable = ast->mVariable;
 
-        generatorVariable(variable)->makeVariableOfIntegration();
+        generatorVariable(variable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
         //       cases (i.e. even if there is, for example, already another
         //       variable of integration) otherwise unnecessary error messages
         //       may be reported (since the type of the variable would be
         //       unknown).
 
-        if (mVariableOfIntegration == nullptr) {
+        if (mVoi == nullptr) {
             // Before keeping track of the variable of integration, make sure
             // that it is not initialised.
 
@@ -1193,17 +1193,17 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
                 mGenerator->addError(err);
             } else {
-                mVariableOfIntegration = variable;
+                mVoi = variable;
             }
-        } else if ((variable != mVariableOfIntegration)
-                   && !variable->hasEquivalentVariable(mVariableOfIntegration)) {
-            ComponentPtr voiComponent = mVariableOfIntegration->parentComponent();
+        } else if ((variable != mVoi)
+                   && !variable->hasEquivalentVariable(mVoi)) {
+            ComponentPtr voiComponent = mVoi->parentComponent();
             ModelPtr voiModel = voiComponent->parentModel();
             ComponentPtr component = variable->parentComponent();
             ModelPtr model = component->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '" + mVariableOfIntegration->name()
+            err->setDescription("Variable '" + mVoi->name()
                                 + "' in component '" + voiComponent->name()
                                 + "' of model '" + voiModel->name()
                                 + "' and variable '" + variable->name()
@@ -1303,7 +1303,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mInternalVariables.clear();
     mEquations.clear();
 
-    mVariableOfIntegration = nullptr;
+    mVoi = nullptr;
     mStates.clear();
     mVariables.clear();
 
@@ -1439,7 +1439,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         } else if (hasOverconstrainedVariables) {
             mModelType = Generator::ModelType::OVERCONSTRAINED;
-        } else if (mVariableOfIntegration != nullptr) {
+        } else if (mVoi != nullptr) {
             mModelType = Generator::ModelType::ODE;
         } else if (!mInternalVariables.empty()) {
             mModelType = Generator::ModelType::ALGEBRAIC;
@@ -1591,8 +1591,8 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectString()
     size_t nameSize = 0;
     size_t unitsSize = 0;
 
-    if (mVariableOfIntegration != nullptr) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mVariableOfIntegration);
+    if (mVoi != nullptr) {
+        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mVoi);
     }
 
     for (const auto &state : mStates) {
@@ -1631,7 +1631,7 @@ std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &va
     GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
     if (generatorVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION) {
-        return mProfile->variableOfIntegrationString();
+        return mProfile->voiString();
     }
 
     std::string arrayName;
@@ -2482,7 +2482,7 @@ Generator::Generator(const Generator &rhs)
     mPimpl->mInternalVariables = rhs.mPimpl->mInternalVariables;
     mPimpl->mEquations = rhs.mPimpl->mEquations;
 
-    mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
+    mPimpl->mVoi = rhs.mPimpl->mVoi;
     mPimpl->mStates = rhs.mPimpl->mStates;
     mPimpl->mVariables = rhs.mPimpl->mVariables;
 
@@ -2589,13 +2589,13 @@ size_t Generator::variableCount() const
     return mPimpl->mVariables.size();
 }
 
-VariablePtr Generator::variableOfIntegration() const
+VariablePtr Generator::voi() const
 {
     if (!mPimpl->hasValidModel()) {
         return {};
     }
 
-    return mPimpl->mVariableOfIntegration;
+    return mPimpl->mVoi;
 }
 
 VariablePtr Generator::state(size_t index) const
@@ -2680,12 +2680,12 @@ std::string Generator::code() const
     // Generate code for the information about the variable of integration,
     // states and (other) variables.
 
-    if (mPimpl->mVariableOfIntegration != nullptr) {
+    if (mPimpl->mVoi != nullptr) {
         if (!res.empty()) {
             res += "\n";
         }
 
-        std::vector<std::string> details = {mPimpl->mVariableOfIntegration->parentComponent()->name(), mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
+        std::vector<std::string> details = {mPimpl->mVoi->parentComponent()->name(), mPimpl->mVoi->name(), mPimpl->mVoi->units()};
         res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
     }
 

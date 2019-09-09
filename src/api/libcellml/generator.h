@@ -141,7 +141,7 @@ public:
      *
      * @return The @c Type.
      */
-    VariablePtr variableOfIntegration() const;
+    VariablePtr voi() const;
 
     /**
      * @brief Get the state at @p index.

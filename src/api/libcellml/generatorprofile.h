@@ -1925,7 +1925,7 @@ public:
      *
      * @return The @c std::string for the name of the variable of integration.
      */
-    std::string variableOfIntegrationString() const;
+    std::string voiString() const;
 
     /**
      * @brief Set the @c std::string for the name of the variable of
@@ -1936,7 +1936,7 @@ public:
      * @param eqString The @c std::string to use for the name of the variable of
      * integration.
      */
-    void setVariableOfIntegrationString(const std::string &variableOfIntegrationString);
+    void setVoiString(const std::string &voiString);
 
     /**
      * @brief Get the @c std::string for the name of the states array.
