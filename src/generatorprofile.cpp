@@ -385,7 +385,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Miscellaneous
 
         mBeginCommentString = "/* ";
-        mEndCommentString = " */\n";
+        mEndCommentString = " */";
 
         mHeaderString = "#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n";
 
@@ -603,7 +603,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Miscellaneous
 
         mBeginCommentString = "# ";
-        mEndCommentString = "\n";
+        mEndCommentString = "";
 
         mHeaderString = "from math import *\n\n";
 
