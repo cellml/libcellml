@@ -39,7 +39,7 @@ namespace libcellml {
  */
 struct Parser::ParserImpl
 {
-    Parser *mParser;
+    Parser *mParser = nullptr;
 
     /**
      * @brief Update the @p model with attributes parsed from a @c std::string.
@@ -202,7 +202,7 @@ Parser &Parser::operator=(Parser rhs)
 
 void Parser::swap(Parser &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 ModelPtr Parser::parseModel(const std::string &input)
