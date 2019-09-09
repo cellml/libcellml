@@ -24,7 +24,6 @@ limitations under the License.
 #include "libcellml/reset.h"
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
 
 #include <iostream>
 #include <map>
@@ -40,7 +39,7 @@ using VariablePair = std::pair<VariablePtr, VariablePtr>; /**< Type definition f
 using VariableMap = std::vector<VariablePair>; /**< Type definition for vector of VariablePair.*/
 using VariableMapIterator = VariableMap::const_iterator; /**< Type definition of const iterator for vector of VariablePair.*/
 // ComponentMap
-using ComponentPair = std::pair<Component *, Component *>; /**< Type definition for Component pointer pair.*/
+using ComponentPair = std::pair<ComponentPtr, ComponentPtr>; /**< Type definition for Component pointer pair.*/
 using ComponentMap = std::vector<ComponentPair>; /**< Type definition for vector of ComponentPair.*/
 using ComponentMapIterator = ComponentMap::const_iterator; /**< Type definition of const iterator for vector of ComponentPair.*/
 
@@ -56,7 +55,6 @@ struct Printer::PrinterImpl
     std::string printEncapsulation(const ComponentPtr &component, const std::string &indent = "") const;
     std::string printVariable(const VariablePtr &variable, const std::string &indent = "") const;
     std::string printReset(const ResetPtr &reset, const std::string &indent = "") const;
-    std::string printWhen(const WhenPtr &when, const std::string &indent) const;
 };
 
 static const std::string tabIndent = "  ";
@@ -82,8 +80,8 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
     ComponentMap serialisedComponentMap;
     size_t componentMapIndex1 = 0;
     for (auto iterPair = componentMap.begin(); iterPair < componentMap.end(); ++iterPair) {
-        Component *currentComponent1 = iterPair->first;
-        Component *currentComponent2 = iterPair->second;
+        ComponentPtr currentComponent1 = iterPair->first;
+        ComponentPtr currentComponent2 = iterPair->second;
         ComponentPair currentComponentPair = std::make_pair(currentComponent1, currentComponent2);
         ComponentPair reciprocalCurrentComponentPair = std::make_pair(currentComponent2, currentComponent1);
         // Check whether this set of connections has already been serialised.
@@ -106,8 +104,8 @@ std::string printConnections(const ComponentMap &componentMap, const VariableMap
         // Check for subsequent variable equivalence pairs with the same parent components.
         size_t componentMapIndex2 = componentMapIndex1 + 1;
         for (auto iterPair2 = iterPair + 1; iterPair2 < componentMap.end(); ++iterPair2) {
-            Component *nextComponent1 = iterPair2->first;
-            Component *nextComponent2 = iterPair2->second;
+            ComponentPtr nextComponent1 = iterPair2->first;
+            ComponentPtr nextComponent2 = iterPair2->second;
             VariablePair variablePair2 = variableMap.at(componentMapIndex2);
             if ((currentComponent1 == nextComponent1) && (currentComponent2 == nextComponent2)) {
                 mappingVariables += printMapVariables(variablePair2, indent + tabIndent);
@@ -157,7 +155,7 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
             if (variable->equivalentVariableCount() > 0) {
                 for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                     VariablePtr equivalentVariable = variable->equivalentVariable(k);
-                    if (equivalentVariable->hasEquivalentVariable(variable)) {
+                    if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                         VariablePair variablePair = std::make_pair(variable, equivalentVariable);
                         VariablePair reciprocalVariablePair = std::make_pair(equivalentVariable, variable);
                         bool pairFound = false;
@@ -169,8 +167,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            auto component1 = static_cast<Component *>(variable->parent());
-                            auto component2 = static_cast<Component *>(equivalentVariable->parent());
+                            ComponentPtr component1 = variable->parentComponent();
+                            ComponentPtr component2 = equivalentVariable->parentComponent();
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2 != nullptr) {
@@ -181,8 +179,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                             // Add new unique variable equivalence pair to the VariableMap.
                             variableMap.push_back(variablePair);
                             // Also create a component map pair corresponding with the variable map pair.
-                            ComponentPair iterPair = std::make_pair(component1, component2);
-                            componentMap.push_back(iterPair);
+                            ComponentPair componentPair = std::make_pair(component1, component2);
+                            componentMap.push_back(componentPair);
                         }
                     }
                 }
@@ -351,56 +349,58 @@ std::string Printer::PrinterImpl::printVariable(const VariablePtr &variable, con
 std::string Printer::PrinterImpl::printReset(const ResetPtr &reset, const std::string &indent) const
 {
     std::string repr = indent + "<reset";
-    std::string id = reset->id();
+    std::string rid = reset->id();
+    std::string tvid = reset->testValueId();
+    std::string rvid = reset->resetValueId();
+    std::string s;
     VariablePtr variable = reset->variable();
+    VariablePtr testVariable = reset->testVariable();
+    bool hasTestValue = false;
+    bool hasResetValue = false;
+
     if (variable) {
         repr += " variable=\"" + variable->name() + "\"";
+    }
+    if (testVariable) {
+        repr += " test_variable=\"" + testVariable->name() + "\"";
     }
     if (reset->isOrderSet()) {
         repr += " order=\"" + convertIntToString(reset->order()) + "\"";
     }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
+    if (!rid.empty()) {
+        repr += " id=\"" + rid + "\"";
     }
-    size_t when_count = reset->whenCount();
-    if (when_count > 0) {
-        repr += ">\n";
-        for (size_t i = 0; i < when_count; ++i) {
-            repr += printWhen(reset->when(i), indent + tabIndent);
-        }
-        repr += indent + "</reset>\n";
-    } else {
-        repr += "/>\n";
-    }
-    return repr;
-}
 
-std::string Printer::PrinterImpl::printWhen(const WhenPtr &when, const std::string &indent) const
-{
-    std::string repr = indent + "<when";
-    std::string id = when->id();
-    if (when->isOrderSet()) {
-        repr += " order=\"" + convertIntToString(when->order()) + "\"";
-    }
-    if (!id.empty()) {
-        repr += " id=\"" + id + "\"";
-    }
-    std::string condition = when->condition();
-    bool hasCondition = !condition.empty();
-    if (hasCondition) {
+    s = reset->testValue();
+    if (!s.empty()) {
         repr += ">\n";
-        repr += printMath(condition, indent + tabIndent);
+        repr += indent + tabIndent + "<test_value";
+        if (!tvid.empty()) {
+            repr += " id=\"" + tvid + "\"";
+        }
+        repr += ">\n";
+        repr += printMath(s, indent + tabIndent + tabIndent);
+        repr += indent + tabIndent + "</test_value>\n";
+        hasTestValue = true;
     }
-    std::string value = when->value();
-    bool hasValue = !value.empty();
-    if (hasValue) {
-        if (!hasCondition) {
+    s = reset->resetValue();
+    if (!s.empty()) {
+        if (!hasTestValue) {
             repr += ">\n";
         }
-        repr += printMath(value, indent + tabIndent);
+        repr += indent + tabIndent + "<reset_value";
+        if (!rvid.empty()) {
+            repr += " id=\"" + rvid + "\"";
+        }
+        repr += ">\n";
+
+        repr += printMath(s, indent + tabIndent + tabIndent);
+        repr += indent + tabIndent + "</reset_value>\n";
+        hasResetValue = true;
     }
-    if (hasCondition || hasValue) {
-        repr += indent + "</when>\n";
+
+    if ((hasTestValue) || (hasResetValue)) {
+        repr += indent + "</reset>\n";
     } else {
         repr += "/>\n";
     }

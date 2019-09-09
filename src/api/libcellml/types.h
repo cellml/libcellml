@@ -43,7 +43,5 @@ class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
-class When; /**< Forward declaration of When class. */
-using WhenPtr = std::shared_ptr<When>; /**< Type definition for shared when pointer. */
 
 } // namespace libcellml
