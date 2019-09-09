@@ -2619,11 +2619,13 @@ std::string Generator::code() const
 
     // Generate code for the header.
 
-    if (!res.empty()) {
-        res += "\n";
-    }
+    if (!mPimpl->mProfile->headerString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
 
-    res += mPimpl->mProfile->headerString();
+        res += mPimpl->mProfile->headerString();
+    }
 
     // Set the version for the generated code.
 
