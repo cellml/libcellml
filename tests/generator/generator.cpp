@@ -36,7 +36,7 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -69,7 +69,7 @@ TEST(Generator, initialized_variable_of_integration)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -102,7 +102,7 @@ TEST(Generator, two_variables_of_integration)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -137,7 +137,7 @@ TEST(Generator, non_first_order_odes)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -170,7 +170,7 @@ TEST(Generator, undefined_variables)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -202,7 +202,7 @@ TEST(Generator, variable_initialized_twice)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -234,7 +234,7 @@ TEST(Generator, non_initialized_state)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -266,7 +266,7 @@ TEST(Generator, underconstrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -298,7 +298,7 @@ TEST(Generator, overconstrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -331,7 +331,7 @@ TEST(Generator, unsuitably_constrained)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.variable(0));
 
@@ -383,7 +383,7 @@ TEST(Generator, algebraic_eqn_computed_var_on_rhs)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_NE(nullptr, generator.variable(0));
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
@@ -415,7 +415,7 @@ TEST(Generator, algebraic_eqn_const_var_on_rhs)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_NE(nullptr, generator.variable(0));
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
@@ -447,7 +447,7 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
     EXPECT_EQ(size_t(0), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_EQ(nullptr, generator.variableOfIntegration());
+    EXPECT_EQ(nullptr, generator.voi());
     EXPECT_EQ(nullptr, generator.state(0));
     EXPECT_NE(nullptr, generator.variable(0));
     EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
@@ -479,7 +479,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -512,7 +512,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -545,7 +545,7 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -578,7 +578,7 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -611,7 +611,7 @@ TEST(Generator, ode_computed_var_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -644,7 +644,7 @@ TEST(Generator, ode_computed_var_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -677,7 +677,7 @@ TEST(Generator, ode_const_var_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -710,7 +710,7 @@ TEST(Generator, ode_const_var_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -743,7 +743,7 @@ TEST(Generator, ode_constant_on_rhs)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_EQ(nullptr, generator.variable(0));
@@ -775,7 +775,7 @@ TEST(Generator, ode_constant_on_rhs_one_component)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(0), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_EQ(nullptr, generator.variable(0));
@@ -807,7 +807,7 @@ TEST(Generator, ode_multiple_dependent_odes)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -840,7 +840,7 @@ TEST(Generator, ode_multiple_dependent_odes_one_component)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -873,7 +873,7 @@ TEST(Generator, ode_multiple_odes_with_same_name)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(1), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -909,7 +909,7 @@ TEST(Generator, cellml_mappings_and_encapsulations)
     EXPECT_EQ(size_t(2), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -942,7 +942,7 @@ TEST(Generator, dependent_eqns)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(2), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -975,7 +975,7 @@ TEST(Generator, fabbri_fantini_wilders_severi_human_san_model_2017)
     EXPECT_EQ(size_t(33), generator.stateCount());
     EXPECT_EQ(size_t(217), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -1008,7 +1008,7 @@ TEST(Generator, garny_kohl_hunter_boyett_noble_rabbit_san_model_2003)
     EXPECT_EQ(size_t(15), generator.stateCount());
     EXPECT_EQ(size_t(185), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -1041,7 +1041,7 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
     EXPECT_EQ(size_t(4), generator.stateCount());
     EXPECT_EQ(size_t(18), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -1099,7 +1099,7 @@ TEST(Generator, noble_model_1962)
     EXPECT_EQ(size_t(4), generator.stateCount());
     EXPECT_EQ(size_t(17), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));
@@ -1132,7 +1132,7 @@ TEST(Generator, coverage)
     EXPECT_EQ(size_t(1), generator.stateCount());
     EXPECT_EQ(size_t(185), generator.variableCount());
 
-    EXPECT_NE(nullptr, generator.variableOfIntegration());
+    EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
     EXPECT_EQ(nullptr, generator.state(generator.stateCount()));
     EXPECT_NE(nullptr, generator.variable(0));

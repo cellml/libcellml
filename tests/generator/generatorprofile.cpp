@@ -261,7 +261,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    char units[<UNITS_SIZE>];\n"
               "};\n", generatorProfile->variableInfoObjectString());
 
-    EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
+    EXPECT_EQ("voi", generatorProfile->voiString());
 
     EXPECT_EQ("states", generatorProfile->statesArrayString());
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
@@ -596,7 +596,7 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setVariableInfoObjectString(value);
 
-    generatorProfile->setVariableOfIntegrationString(value);
+    generatorProfile->setVoiString(value);
 
     generatorProfile->setStatesArrayString(value);
     generatorProfile->setRatesArrayString(value);
@@ -651,7 +651,7 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
 
-    EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
+    EXPECT_EQ(value, generatorProfile->voiString());
 
     EXPECT_EQ(value, generatorProfile->statesArrayString());
     EXPECT_EQ(value, generatorProfile->ratesArrayString());

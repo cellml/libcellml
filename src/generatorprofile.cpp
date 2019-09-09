@@ -165,7 +165,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mVariableInfoObjectString;
 
-    std::string mVariableOfIntegrationString;
+    std::string mVoiString;
 
     std::string mStatesArrayString;
     std::string mRatesArrayString;
@@ -408,7 +408,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "    char units[<UNITS_SIZE>];\n"
                                     "};\n";
 
-        mVariableOfIntegrationString = "voi";
+        mVoiString = "voi";
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
@@ -626,7 +626,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVariableInfoObjectString = "";
 
-        mVariableOfIntegrationString = "voi";
+        mVoiString = "voi";
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
@@ -808,7 +808,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
 
-    mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
+    mPimpl->mVoiString = rhs.mPimpl->mVoiString;
 
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
@@ -1986,14 +1986,14 @@ void GeneratorProfile::setEndVariableVectorInformationArrayString(const std::str
     mPimpl->mEndVariableVectorInformationArrayString = endVariableVectorInformationArrayString;
 }
 
-std::string GeneratorProfile::variableOfIntegrationString() const
+std::string GeneratorProfile::voiString() const
 {
-    return mPimpl->mVariableOfIntegrationString;
+    return mPimpl->mVoiString;
 }
 
-void GeneratorProfile::setVariableOfIntegrationString(const std::string &variableOfIntegrationString)
+void GeneratorProfile::setVoiString(const std::string &voiString)
 {
-    mPimpl->mVariableOfIntegrationString = variableOfIntegrationString;
+    mPimpl->mVoiString = voiString;
 }
 
 std::string GeneratorProfile::statesArrayString() const
