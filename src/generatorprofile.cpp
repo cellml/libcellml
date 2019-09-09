@@ -784,6 +784,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     // Miscellaneous
 
+    mPimpl->mBeginCommentString = rhs.mPimpl->mBeginCommentString;
+    mPimpl->mEndCommentString = rhs.mPimpl->mEndCommentString;
+
     mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
     mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
