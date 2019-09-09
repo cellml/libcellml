@@ -2653,6 +2653,20 @@ std::string Generator::code() const
         res += version;
     }
 
+    // Generate code for the number of states and variables.
+
+    std::string stateCount = mPimpl->replace(mPimpl->mProfile->stateCountString(), "<STATE_COUNT>", std::to_string(mPimpl->mStates.size()));
+    std::string variableCount = mPimpl->replace(mPimpl->mProfile->variableCountString(), "<VARIABLE_COUNT>", std::to_string(mPimpl->mVariables.size()));
+
+    if (!stateCount.empty() || !variableCount.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += stateCount;
+        res += variableCount;
+    }
+
     // Generate code for the data structure.
 
     if (!mPimpl->mProfile->variableInfoObjectString().empty()) {
@@ -2665,15 +2679,11 @@ std::string Generator::code() const
 
     // Generate code for the constants.
 
-    if (!res.empty()) {
-        res += "\n";
-    }
-
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateStateVectorSizeConstantString(), mPimpl->mStates.size());
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVariableVectorSizeConstantString(), mPimpl->mVariables.size());
-
     if (mPimpl->mVariableOfIntegration != nullptr) {
-        res += "\n";
+        if (!res.empty()) {
+            res += "\n";
+        }
+
         std::vector<std::string> details = {mPimpl->mVariableOfIntegration->parentComponent()->name(), mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
         res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
     }

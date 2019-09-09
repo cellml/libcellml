@@ -5,8 +5,8 @@ from math import *
 
 __version__ = "0.2.0"
 
-STATE_VECTOR_SIZE = 0
-VARIABLE_VECTOR_SIZE = 2
+STATE_COUNT = 0
+VARIABLE_COUNT = 2
 
 STATE_VECTOR_INFORMATION_ARRAY = [
 ]

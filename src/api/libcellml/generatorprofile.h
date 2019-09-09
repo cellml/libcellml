@@ -1890,6 +1890,12 @@ public:
     std::string versionString() const;
     void setVersionString(const std::string &versionString);
 
+    std::string stateCountString() const;
+    void setStateCountString(const std::string &stateCountString);
+
+    std::string variableCountString() const;
+    void setVariableCountString(const std::string &variableCountString);
+
     std::string variableInfoObjectString() const;
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
@@ -2196,12 +2202,6 @@ public:
 
     std::string templateReturnCreatedArrayString() const;
     void setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString);
-
-    std::string templateStateVectorSizeConstantString() const;
-    void setTemplateStateVectorSizeConstantString(const std::string &templateStateVectorSizeConstantString);
-
-    std::string templateVariableVectorSizeConstantString() const;
-    void setTemplateVariableVectorSizeConstantString(const std::string &templateVariableVectorSizeConstantString);
 
     std::string templateVoiConstantString() const;
     void setTemplateVoiConstantString(const std::string &templateVoiConstantString);

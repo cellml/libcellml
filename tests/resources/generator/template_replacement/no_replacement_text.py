@@ -5,8 +5,8 @@ from math import *
 
 __version__ = "0.2.0"
 
-1STATE_VECTOR_SIZE = VALUE
-2VARIABLE_VECTOR_SIZE = VALUE
+STATE_COUNT = 1
+VARIABLE_COUNT = 2
 
 secondtmy_odeVOI_INFORMATION = {"component": "VALUE", "name": "VALUE", "units": "VALUE"}
 

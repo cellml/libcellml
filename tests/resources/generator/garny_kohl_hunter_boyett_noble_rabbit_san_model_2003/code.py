@@ -5,8 +5,8 @@ from math import *
 
 __version__ = "0.2.0"
 
-STATE_VECTOR_SIZE = 15
-VARIABLE_VECTOR_SIZE = 185
+STATE_COUNT = 15
+VARIABLE_COUNT = 185
 
 VOI_INFORMATION = {"component": "membrane", "name": "time", "units": "second"}
 
