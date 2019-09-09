@@ -612,6 +612,9 @@ struct Generator::GeneratorImpl
     bool isRootOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
 
+    std::string replace(std::string string, const std::string &from,
+                        const std::string &to);
+
     std::string generateDouble(const std::string &value);
     std::string generateVariableName(const VariablePtr &variable,
                                      const GeneratorEquationAstPtr &ast = nullptr);
@@ -1470,15 +1473,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 }
 
-std::string replace(std::string string, const std::string &from, const std::string &to)
-{
-    auto index = string.find(from);
-
-    return (string.empty() || (index == std::string::npos)) ?
-               "" :
-               string.replace(index, from.length(), to);
-}
-
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
 {
     return ((ast->mType == GeneratorEquationAst::Type::EQEQ)
@@ -1558,6 +1552,15 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPt
 {
     return (ast->mType == GeneratorEquationAst::Type::PIECEWISE)
            && mProfile->hasConditionalOperator();
+}
+
+std::string Generator::GeneratorImpl::replace(std::string string, const std::string &from, const std::string &to)
+{
+    auto index = string.find(from);
+
+    return (string.empty() || (index == std::string::npos)) ?
+               "" :
+               string.replace(index, from.length(), to);
 }
 
 std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
