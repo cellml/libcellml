@@ -387,7 +387,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mBeginCommentString = "/* ";
         mEndCommentString = " */";
 
-        mHeaderString = "#include <math.h>\n#include <stddef.h>\n#include <stdlib.h>\n";
+        mHeaderString = "#include <math.h>\n"
+                        "#include <stddef.h>\n"
+                        "#include <stdlib.h>\n";
 
         mVariableOfIntegrationString = "voi";
 
