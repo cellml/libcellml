@@ -75,9 +75,9 @@ TEST(Maths, appendSerialiseAndParseMathModel)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    m.addComponent(c);
+    m->addComponent(c);
     c->appendMath(EMPTY_MATH);
 
     libcellml::Printer printer;
@@ -104,7 +104,7 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -115,7 +115,7 @@ TEST(Maths, modelWithTwoVariablesAndTwoInvalidMaths)
     c->addVariable(v2);
     c->appendMath(EMPTY_MATH);
     c->appendMath(EMPTY_MATH);
-    m.addComponent(c);
+    m->addComponent(c);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -134,7 +134,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -146,7 +146,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndInvalidMath)
     c->addVariable(v1);
     c->addVariable(v2);
     c->appendMath(EMPTY_MATH);
-    m.addComponent(c);
+    m->addComponent(c);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -188,7 +188,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -200,7 +200,7 @@ TEST(Maths, modelWithTwoVariablesWithInitialValuesAndValidMath)
     c->addVariable(v1);
     c->addVariable(v2);
     c->appendMath(math);
-    m.addComponent(c);
+    m->addComponent(c);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -272,7 +272,7 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
         "  </apply>\n"
         "</math>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
@@ -293,8 +293,8 @@ TEST(Maths, twoComponentsWithMathAndConnectionAndParse)
     comp2->addVariable(v22);
     comp1->appendMath(math1);
     comp2->appendMath(math2);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
     libcellml::Variable::addEquivalence(v11, v21);
 
     libcellml::Printer printer;

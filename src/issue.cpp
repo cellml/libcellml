@@ -79,7 +79,7 @@ Issue &Issue::operator=(Issue rhs)
 
 void Issue::swap(Issue &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 Issue::Issue(const ModelPtr &model)

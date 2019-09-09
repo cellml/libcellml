@@ -244,7 +244,7 @@ TEST(Parser, parseModelWithInvalidAttributeAndGetError)
     // Get const modelError and check.
     const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(parser).issue(0);
     libcellml::Issue *rawErr = err.get();
-    const libcellml::ModelPtr modelFromError = static_cast<const libcellml::Issue *>(rawErr)->model();
+    const libcellml::ModelPtr modelFromError = rawErr->model();
     EXPECT_EQ(model, modelFromError);
 }
 
@@ -357,7 +357,7 @@ TEST(Parser, parseModelWithNamedComponentWithInvalidBaseUnitsAttributeAndGetErro
     EXPECT_EQ(unitsExpected, parser.issue(0)->units());
 
     // Get const units from error and check.
-    const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(parser).issue(0);
+    const libcellml::IssuePtr err = parser.issue(0);
     const libcellml::UnitsPtr unitsFromError = err->units();
     EXPECT_EQ(unitsExpected, unitsFromError);
 }
@@ -384,7 +384,7 @@ TEST(Parser, parseModelWithInvalidComponentAttributeAndGetError)
     // Get const component from error and check.
     const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(parser).issue(0);
     libcellml::Issue *rawErr = err.get();
-    const libcellml::ComponentPtr componentFromError = static_cast<const libcellml::Issue *>(rawErr)->component();
+    const libcellml::ComponentPtr componentFromError = rawErr->component();
     EXPECT_EQ(component, componentFromError);
 
     // Get non-existent error
@@ -841,9 +841,9 @@ TEST(Parser, invalidVariableAttributesAndGetVariableError)
     // Get variable from error and check.
     EXPECT_EQ(variableExpected, p.issue(0)->variable());
     // Get const variable from error and check.
-    libcellml::IssuePtr err = static_cast<const libcellml::Parser>(p).issue(0);
+    libcellml::IssuePtr err = p.issue(0);
     libcellml::Issue *rawErr = err.get();
-    const libcellml::VariablePtr variableFromError = static_cast<const libcellml::Issue *>(rawErr)->variable();
+    const libcellml::VariablePtr variableFromError = rawErr->variable();
     EXPECT_EQ(variableExpected, variableFromError);
 }
 
@@ -1251,9 +1251,9 @@ TEST(Parser, invalidImportsAndGetError)
     // Get import from error and check.
     EXPECT_EQ(import, p.issue(0)->importSource());
     // Get const import from error and check.
-    const libcellml::IssuePtr err = static_cast<const libcellml::Parser>(p).issue(0);
+    const libcellml::IssuePtr err = p.issue(0);
     libcellml::Issue *rawErr = err.get();
-    const libcellml::ImportSourcePtr importFromError = static_cast<const libcellml::Issue *>(rawErr)->importSource();
+    const libcellml::ImportSourcePtr importFromError = rawErr->importSource();
     EXPECT_EQ(import, importFromError);
 }
 

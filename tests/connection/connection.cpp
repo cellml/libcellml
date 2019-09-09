@@ -67,14 +67,14 @@ TEST(Variable, hasNoEquivalentVariable)
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     EXPECT_FALSE(v1->hasEquivalentVariable(v2));
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
 
     libcellml::Variable::addEquivalence(v1, v2);
     c->addVariable(v1);
     c->addVariable(v2);
 
-    m.addComponent(c);
+    m->addComponent(c);
     EXPECT_TRUE(v1->hasEquivalentVariable(v2));
 
     c->removeVariable(v2);
@@ -104,7 +104,7 @@ TEST(Connection, componentlessVariableInvalidConnection)
         "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
         "  </connection>\n"
         "</model>\n";
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -112,7 +112,7 @@ TEST(Connection, componentlessVariableInvalidConnection)
     v1->setName("variable1");
     v2->setName("variable2");
     comp1->addVariable(v1);
-    m.addComponent(comp1);
+    m->addComponent(comp1);
     libcellml::Variable::addEquivalence(v1, v2);
 
     libcellml::Printer printer;
@@ -132,7 +132,7 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
         "    <map_variables variable_1=\"variable2\" variable_2=\"variable1\"/>\n"
         "  </connection>\n"
         "</model>\n";
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
@@ -145,11 +145,11 @@ TEST(Connection, componentlessVariableInvalidConnectionClearParentCheck)
         libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
         comp1->setName("component1");
         comp1->addVariable(v1);
-        m.addComponent(comp1);
+        m->addComponent(comp1);
     }
-    m.addComponent(comp2);
+    m->addComponent(comp2);
     libcellml::Variable::addEquivalence(v1, v2);
-    m.removeComponent("component1");
+    m->removeComponent("component1");
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
     EXPECT_EQ(e, a);
@@ -170,7 +170,7 @@ TEST(Connection, validConnectionAndParse)
         "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
         "  </connection>\n"
         "</model>\n";
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -181,8 +181,8 @@ TEST(Connection, validConnectionAndParse)
     v2->setName("variable2");
     comp1->addVariable(v1);
     comp2->addVariable(v2);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
@@ -239,7 +239,7 @@ TEST(Connection, twoMapVariablesConnection)
         "  </connection>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
@@ -258,8 +258,8 @@ TEST(Connection, twoMapVariablesConnection)
     comp1->addVariable(v12);
     comp2->addVariable(v21);
     comp2->addVariable(v22);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
     libcellml::Variable::addEquivalence(v11, v21);
     libcellml::Variable::addEquivalence(v12, v22);
 
@@ -290,7 +290,7 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate)
         "  </connection>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v11 = std::make_shared<libcellml::Variable>();
@@ -315,8 +315,8 @@ TEST(Connection, threeMapVariablesConnectionOneDuplicate)
     comp2->addVariable(v21);
     comp2->addVariable(v22);
     comp2->addVariable(v23);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
 
     libcellml::Variable::addEquivalence(v23, v13);
     libcellml::Variable::addEquivalence(v21, v11);
@@ -366,7 +366,7 @@ TEST(Connection, nineVariablesTenConnectionsAndParse)
         "  </connection>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
@@ -402,9 +402,9 @@ TEST(Connection, nineVariablesTenConnectionsAndParse)
     comp3->addVariable(v31);
     comp3->addVariable(v32);
     comp3->addVariable(v33);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
-    m.addComponent(comp3);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
 
     libcellml::Variable::addEquivalence(v11, v21);
     libcellml::Variable::addEquivalence(v31, v11);
@@ -450,7 +450,7 @@ TEST(Connection, twoValidConnections)
         "  </connection>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
@@ -466,9 +466,9 @@ TEST(Connection, twoValidConnections)
     comp1->addVariable(v1);
     comp2->addVariable(v2);
     comp3->addVariable(v3);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
-    m.addComponent(comp3);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v1, v3);
     libcellml::Printer printer;
@@ -533,7 +533,7 @@ TEST(Connection, removeEquivalentVariableMethods)
         "  </component>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
@@ -551,9 +551,9 @@ TEST(Connection, removeEquivalentVariableMethods)
     comp1->addVariable(v1);
     comp2->addVariable(v2);
     comp3->addVariable(v3);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
-    m.addComponent(comp3);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
     libcellml::Variable::addEquivalence(v1, v2);
     libcellml::Variable::addEquivalence(v1, v3);
     libcellml::Variable::setEquivalenceConnectionId(v1, v3, "con2Id");
@@ -691,7 +691,7 @@ TEST(Connection, removeVariablesFromConnections)
         "  <component name=\"component4\"/>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
@@ -716,10 +716,10 @@ TEST(Connection, removeVariablesFromConnections)
     comp2->addVariable(v2);
     comp3->addVariable(v3);
     comp4->addVariable(v4);
-    m.addComponent(comp1);
-    m.addComponent(comp2);
-    m.addComponent(comp3);
-    m.addComponent(comp4);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+    m->addComponent(comp4);
     libcellml::Variable::addEquivalence(v1_1, v2);
     libcellml::Variable::addEquivalence(v1_2, v2);
     libcellml::Variable::setEquivalenceConnectionId(v1_2, v2, "conId");
@@ -776,7 +776,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
@@ -791,7 +791,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     v2->setName("variable2");
     v3->setName("variable3");
 
-    m.addComponent(parent);
+    m->addComponent(parent);
     parent->addComponent(child1);
     parent->addComponent(child2);
     parent->addVariable(v1);
@@ -836,7 +836,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
@@ -851,7 +851,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndMixedInterfaces
     v2->setName("variable2");
     v3->setName("variable3");
 
-    m.addComponent(parent);
+    m->addComponent(parent);
     parent->addComponent(child1);
     parent->addComponent(child2);
     parent->addVariable(v1);
@@ -899,7 +899,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
         "  </encapsulation>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
@@ -914,7 +914,7 @@ TEST(Connection, twoEncapsulatedChildComponentsWithConnectionsAndPublicInterface
     v2->setName("variable2");
     v3->setName("variable3");
 
-    m.addComponent(parent);
+    m->addComponent(parent);
     parent->addComponent(child1);
     parent->addComponent(child2);
     parent->addVariable(v1);
@@ -947,7 +947,7 @@ TEST(Connection, importedComponentConnectionAndParse)
         "  </connection>\n"
         "</model>\n";
 
-    libcellml::Model m;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ImportSourcePtr imp = std::make_shared<libcellml::ImportSource>();
     libcellml::ComponentPtr componentImported = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr componentBob = std::make_shared<libcellml::Component>();
@@ -962,8 +962,8 @@ TEST(Connection, importedComponentConnectionAndParse)
     variableBob->setName("variable_bob");
     variableBob->setUnits("seconds");
 
-    m.addComponent(componentImported);
-    m.addComponent(componentBob);
+    m->addComponent(componentImported);
+    m->addComponent(componentBob);
     componentImported->addVariable(variableImported);
     componentBob->addVariable(variableBob);
     EXPECT_EQ(componentImported->variable(0), variableImported);

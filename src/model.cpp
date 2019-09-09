@@ -40,9 +40,10 @@ namespace libcellml {
  */
 struct Model::ModelImpl
 {
+    std::vector<UnitsPtr> mUnits;
+
     std::vector<UnitsPtr>::iterator findUnits(const std::string &name);
     std::vector<UnitsPtr>::iterator findUnits(const UnitsPtr &units);
-    std::vector<UnitsPtr> mUnits;
 };
 
 std::vector<UnitsPtr>::iterator Model::ModelImpl::findUnits(const std::string &name)
@@ -93,14 +94,14 @@ Model &Model::operator=(Model rhs)
 
 void Model::swap(Model &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Model::doAddComponent(const ComponentPtr &component)
 {
     // Check for cycles.
-    if (!hasParent(component.get())) {
-        component->setParent(this);
+    if (!hasParent(component)) {
+        component->setParent(shared_from_this());
         ComponentEntity::doAddComponent(component);
     }
 }
