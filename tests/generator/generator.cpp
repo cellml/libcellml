@@ -1151,8 +1151,8 @@ TEST(Generator, coverage)
     profile->setSquareString("sqr");
     profile->setHasPowerOperator(true);
 
-    profile->setPiecewiseIfString("piecewise(#cond, #if");
-    profile->setPiecewiseElseString(", #else)");
+    profile->setPiecewiseIfString("piecewise(<CONDITION>, <IF_STATEMENT>");
+    profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
     profile->setHasConditionalOperator(false);
 
     profile->setTemplateOriginCommentString("");

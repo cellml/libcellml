@@ -119,8 +119,8 @@ TEST(GeneratorProfile, defaultPiecewiseStatementValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ("(#cond)?#if", generatorProfile->conditionalOperatorIfString());
-    EXPECT_EQ(":#else", generatorProfile->conditionalOperatorElseString());
+    EXPECT_EQ("(<CONDITION>)?<IF_STATEMENT>", generatorProfile->conditionalOperatorIfString());
+    EXPECT_EQ(":<ELSE_STATEMENT>", generatorProfile->conditionalOperatorElseString());
     EXPECT_EQ("", generatorProfile->piecewiseIfString());
     EXPECT_EQ("", generatorProfile->piecewiseElseString());
 

@@ -1910,8 +1910,8 @@ std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string 
     return replace(replace(mProfile->hasConditionalOperator() ?
                                mProfile->conditionalOperatorIfString() :
                                mProfile->piecewiseIfString(),
-                           "#cond", condition),
-                   "#if", value);
+                           "<CONDITION>", condition),
+                   "<IF_STATEMENT>", value);
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value)
@@ -1919,7 +1919,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
     return replace(mProfile->hasConditionalOperator() ?
                        mProfile->conditionalOperatorElseString() :
                        mProfile->piecewiseElseString(),
-                   "#else", value);
+                   "<ELSE_STATEMENT>", value);
 }
 
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &ast)
