@@ -88,16 +88,16 @@ TEST(Coverage, printer)
     libcellml::Printer p;
     libcellml::Printer pm;
 
-    libcellml::ErrorPtr error = std::make_shared<libcellml::Error>();
+    libcellml::IssuePtr issue = std::make_shared<libcellml::Issue>();
 
-    p.addError(error);
+    p.addIssue(issue);
 
     pm = std::move(p);
 
     libcellml::Printer pc(pm);
 
-    size_t error_count = pc.issueCount();
-    EXPECT_EQ(size_t(1), error_count);
+    size_t issue_count = pc.issueCount();
+    EXPECT_EQ(size_t(1), issue_count);
 }
 
 TEST(Coverage, units)
