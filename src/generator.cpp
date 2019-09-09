@@ -2645,24 +2645,35 @@ std::string Generator::code() const
         if (!res.empty()) {
             res += "\n";
         }
+
         res += mPimpl->generateVariableInformationObjectString();
     }
 
     // Generate constants.
 
-    res += "\n";
+    if (!res.empty()) {
+        res += "\n";
+    }
+
     res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateStateVectorSizeConstantString(), mPimpl->mStates.size());
     res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVariableVectorSizeConstantString(), mPimpl->mVariables.size());
+
     if (mPimpl->mVariableOfIntegration != nullptr) {
         res += "\n";
         std::vector<std::string> details = {mPimpl->mVariableOfIntegration->parentComponent()->name(), mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
         res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
     }
 
-    res += "\n";
+    if (!res.empty()) {
+        res += "\n";
+    }
+
     res += mPimpl->generateStateInformationArray();
 
-    res += "\n";
+    if (!res.empty()) {
+        res += "\n";
+    }
+
     res += mPimpl->generateVariableInformationArray();
 
     // Generate code for extra mathematical functions.
