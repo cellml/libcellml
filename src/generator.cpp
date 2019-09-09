@@ -620,6 +620,7 @@ struct Generator::GeneratorImpl
                                  const VariablePtr &variable);
 
     std::string generateVariableInfoObjectString();
+    std::string generateVoiInfoString();
 
     std::string generateDouble(const std::string &value);
     std::string generateVariableName(const VariablePtr &variable,
@@ -1609,6 +1610,18 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectString()
                                    "<COMPONENT_SIZE>", std::to_string(componentSize)),
                            "<NAME_SIZE>", std::to_string(nameSize)),
                    "<UNITS_SIZE>", std::to_string(unitsSize));
+}
+
+std::string Generator::GeneratorImpl::generateVoiInfoString()
+{
+    std::string component = (mVoi != nullptr)?mVoi->parentComponent()->name():"";
+    std::string name = (mVoi != nullptr)?mVoi->name():"";
+    std::string units = (mVoi != nullptr)?mVoi->units():"";
+
+    return replace(replace(replace(mProfile->voiInfoString(),
+                                   "<COMPONENT>", component),
+                           "<NAME>", name),
+                   "<UNITS>", units);
 }
 
 std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
@@ -2680,13 +2693,12 @@ std::string Generator::code() const
     // Generate code for the information about the variable of integration,
     // states and (other) variables.
 
-    if (mPimpl->mVoi != nullptr) {
+    if (!mPimpl->mProfile->voiInfoString().empty()) {
         if (!res.empty()) {
             res += "\n";
         }
 
-        std::vector<std::string> details = {mPimpl->mVoi->parentComponent()->name(), mPimpl->mVoi->name(), mPimpl->mVoi->units()};
-        res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
+        res += mPimpl->generateVoiInfoString();
     }
 
     if (!res.empty()) {

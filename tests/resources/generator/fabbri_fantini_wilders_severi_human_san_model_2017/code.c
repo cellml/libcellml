@@ -15,7 +15,7 @@ struct VariableInfo {
     char units[26];
 };
 
-const struct VariableInfo VOI_INFORMATION = {"Nai_concentration", "time", "second"};
+const struct VariableInfo VOI_INFO = {"Nai_concentration", "time", "second"};
 
 const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
     {"Ca_SR_release", "R", "dimensionless"},

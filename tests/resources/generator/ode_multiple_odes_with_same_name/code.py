@@ -8,7 +8,7 @@ __version__ = "0.2.0"
 STATE_COUNT = 2
 VARIABLE_COUNT = 1
 
-VOI_INFORMATION = {"component": "my_first_ode", "name": "t", "units": "second"}
+VOI_INFO = {"component": "my_first_ode", "name": "t", "units": "second"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "my_first_ode", "name": "x", "units": "dimensionless"},

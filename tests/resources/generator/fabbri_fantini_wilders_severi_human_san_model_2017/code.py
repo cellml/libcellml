@@ -8,7 +8,7 @@ __version__ = "0.2.0"
 STATE_COUNT = 33
 VARIABLE_COUNT = 217
 
-VOI_INFORMATION = {"component": "Nai_concentration", "name": "time", "units": "second"}
+VOI_INFO = {"component": "Nai_concentration", "name": "time", "units": "second"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "Ca_SR_release", "name": "R", "units": "dimensionless"},

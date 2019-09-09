@@ -8,7 +8,7 @@ __version__ = "0.2.0"
 STATE_COUNT = 15
 VARIABLE_COUNT = 185
 
-VOI_INFORMATION = {"component": "membrane", "name": "time", "units": "second"}
+VOI_INFO = {"component": "membrane", "name": "time", "units": "second"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "sodium_current_m_gate", "name": "m", "units": "dimensionless"},
