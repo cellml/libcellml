@@ -2641,7 +2641,7 @@ std::string Generator::code() const
         res += mPimpl->mProfile->headerString();
     }
 
-    // Generate the code for the version of libCellML.
+    // Generate code for the version of libCellML.
 
     std::string libcellmlVersion = mPimpl->replace(mPimpl->mProfile->versionString(), "<VERSION>", versionString());
 
@@ -2653,7 +2653,7 @@ std::string Generator::code() const
         res += libcellmlVersion;
     }
 
-    // Declare any data structures.
+    // Generate code for the data structure.
 
     if (!mPimpl->mProfile->variableInfoObjectString().empty()) {
         if (!res.empty()) {
@@ -2663,7 +2663,7 @@ std::string Generator::code() const
         res += mPimpl->generateVariableInfoObjectString();
     }
 
-    // Generate constants.
+    // Generate code for the constants.
 
     if (!res.empty()) {
         res += "\n";
