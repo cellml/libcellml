@@ -1860,6 +1860,12 @@ public:
 
     // Miscellaneous
 
+    std::string beginCommentString() const;
+    void setBeginCommentString(const std::string &beginCommentString);
+
+    std::string endCommentString() const;
+    void setEndCommentString(const std::string &endCommentString);
+
     /**
      * @brief Get the @c std::string for some header.
      *
@@ -2289,12 +2295,6 @@ public:
      * @param eqString The @c std::string to use for a command separator.
      */
     void setCommandSeparatorString(const std::string &commandSeparatorString);
-
-    std::string beginCommentString() const;
-    void setBeginCommentString(const std::string &beginCommentString);
-
-    std::string endCommentString() const;
-    void setEndCommentString(const std::string &endCommentString);
 
 private:
     void swap(GeneratorProfile &rhs); /**< Swap method required for C++ 11 move semantics. */
