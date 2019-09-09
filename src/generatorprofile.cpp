@@ -165,6 +165,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mVariableInfoObjectString;
 
+    std::string mVoiInfoString;
+
     std::string mVoiString;
 
     std::string mStatesArrayString;
@@ -194,7 +196,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mEmptyMethodString;
     std::string mTemplateReplacementString;
     std::string mTemplateReturnCreatedArrayString;
-    std::string mTemplateVoiConstantString;
 
     std::string mTemplateVariableInformationEntryString;
     std::string mBeginStateVectorInformationArrayString;
@@ -408,6 +409,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "    char units[<UNITS_SIZE>];\n"
                                     "};\n";
 
+        mVoiInfoString = "const struct VariableInfo VOI_INFO = {\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"};\n";
+
         mVoiString = "voi";
 
         mStatesArrayString = "states";
@@ -457,7 +460,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReplacementString = "VALUE";
 
         mTemplateReturnCreatedArrayString = "return (double *) malloc(VALUE * sizeof(double));\n";
-        mTemplateVoiConstantString = "const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n";
         mTemplateVariableInformationEntryString = "{\"VALUE\", \"VALUE\", \"VALUE\"}";
 
         break;
@@ -626,6 +628,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVariableInfoObjectString = "";
 
+        mVoiInfoString = "VOI_INFO = {\"component\": \"<COMPONENT>\", \"name\": \"<NAME>\", \"units\": \"<UNITS>\"}\n";
+
         mVoiString = "voi";
 
         mStatesArrayString = "states";
@@ -672,7 +676,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReplacementString = "VALUE";
 
         mTemplateReturnCreatedArrayString = "return [nan]*VALUE\n";
-        mTemplateVoiConstantString = "VOI_INFORMATION = {\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
         mTemplateVariableInformationEntryString = "{\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}";
 
         break;
@@ -808,6 +811,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
 
+    mPimpl->mVoiInfoString = rhs.mPimpl->mVoiInfoString;
+
     mPimpl->mVoiString = rhs.mPimpl->mVoiString;
 
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
@@ -833,7 +838,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mBeginComputeVariablesMethodString = rhs.mPimpl->mBeginComputeVariablesMethodString;
     mPimpl->mEndComputeVariablesMethodString = rhs.mPimpl->mEndComputeVariablesMethodString;
-    mPimpl->mTemplateVoiConstantString = rhs.mPimpl->mTemplateVoiConstantString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
     mPimpl->mTemplateReplacementString = rhs.mPimpl->mTemplateReplacementString;
@@ -1926,14 +1930,14 @@ void GeneratorProfile::setVariableInfoObjectString(const std::string &variableIn
     mPimpl->mVariableInfoObjectString = variableInfoObjectString;
 }
 
-std::string GeneratorProfile::templateVoiConstantString() const
+std::string GeneratorProfile::voiInfoString() const
 {
-    return mPimpl->mTemplateVoiConstantString;
+    return mPimpl->mVoiInfoString;
 }
 
-void GeneratorProfile::setTemplateVoiConstantString(const std::string &templateVoiConstantString)
+void GeneratorProfile::setVoiInfoString(const std::string &voiInfoString)
 {
-    mPimpl->mTemplateVoiConstantString = templateVoiConstantString;
+    mPimpl->mVoiInfoString = voiInfoString;
 }
 
 std::string GeneratorProfile::templateVariableInformationEntryString() const

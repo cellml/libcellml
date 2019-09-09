@@ -15,7 +15,7 @@ struct VariableInfo {
     char units[11];
 };
 
-const struct VariableInfo VOI_INFORMATION = {"circle_x", "t", "ms"};
+const struct VariableInfo VOI_INFO = {"circle_x", "t", "ms"};
 
 const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
     {"circle_x_source", "x", "mM"},

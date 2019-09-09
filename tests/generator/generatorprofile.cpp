@@ -261,6 +261,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    char units[<UNITS_SIZE>];\n"
               "};\n", generatorProfile->variableInfoObjectString());
 
+    EXPECT_EQ("const struct VariableInfo VOI_INFO = {\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"};\n", generatorProfile->voiInfoString());
+
     EXPECT_EQ("voi", generatorProfile->voiString());
 
     EXPECT_EQ("states", generatorProfile->statesArrayString());
@@ -311,7 +313,6 @@ TEST(GeneratorProfile, defaultTemplateValues)
 
     EXPECT_EQ("return (double *) malloc(VALUE * sizeof(double));\n", generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
-    EXPECT_EQ("const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
 }
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)
@@ -596,6 +597,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setVariableInfoObjectString(value);
 
+    generatorProfile->setVoiInfoString(value);
+
     generatorProfile->setVoiString(value);
 
     generatorProfile->setStatesArrayString(value);
@@ -651,6 +654,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
 
+    EXPECT_EQ(value, generatorProfile->voiInfoString());
+
     EXPECT_EQ(value, generatorProfile->voiString());
 
     EXPECT_EQ(value, generatorProfile->statesArrayString());
@@ -705,9 +710,7 @@ TEST(GeneratorProfile, templateValues)
 
     generatorProfile->setTemplateReturnCreatedArrayString(value);
     generatorProfile->setTemplateVariableInformationEntryString(value);
-    generatorProfile->setTemplateVoiConstantString(value);
 
     EXPECT_EQ(value, generatorProfile->templateReturnCreatedArrayString());
     EXPECT_EQ(value, generatorProfile->templateVariableInformationEntryString());
-    EXPECT_EQ(value, generatorProfile->templateVoiConstantString());
 }

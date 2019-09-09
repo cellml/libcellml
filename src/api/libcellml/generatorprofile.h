@@ -1899,8 +1899,8 @@ public:
     std::string variableInfoObjectString() const;
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
-    std::string templateVoiConstantString() const;
-    void setTemplateVoiConstantString(const std::string &templateVoiConstantString);
+    std::string voiInfoString() const;
+    void setVoiInfoString(const std::string &voiInfoString);
 
     std::string templateVariableInformationEntryString() const;
     void setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString);

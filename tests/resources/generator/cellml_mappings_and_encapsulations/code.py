@@ -8,7 +8,7 @@ __version__ = "0.2.0"
 STATE_COUNT = 2
 VARIABLE_COUNT = 2
 
-VOI_INFORMATION = {"component": "circle_x", "name": "t", "units": "ms"}
+VOI_INFO = {"component": "circle_x", "name": "t", "units": "ms"}
 
 STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "circle_x_source", "name": "x", "units": "mM"},
