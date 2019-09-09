@@ -2629,11 +2629,15 @@ std::string Generator::code() const
 
     // Set the version for the generated code.
 
-    if (!res.empty()) {
-        res += "\n";
-    }
+    std::string libcellmlVersion = mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVersionString(), versionString());
 
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVersionString(), versionString());
+    if (!libcellmlVersion.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += libcellmlVersion;
+    }
 
     // Declare any data structures.
 

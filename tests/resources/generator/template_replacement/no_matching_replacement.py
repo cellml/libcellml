@@ -3,7 +3,6 @@ from math import *
 
 
 
-
 STATE_VECTOR_INFORMATION_ARRAY = [
     ,
 ]
