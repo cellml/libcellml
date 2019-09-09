@@ -3,7 +3,7 @@
 from math import *
 
 
-0.2.0__version__ = "VALUE"
+__version__ = "0.2.0"
 
 1STATE_VECTOR_SIZE = VALUE
 2VARIABLE_VECTOR_SIZE = VALUE

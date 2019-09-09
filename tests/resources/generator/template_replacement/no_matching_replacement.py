@@ -1,6 +1,8 @@
 from math import *
 
 
+__version__ = "0.2.0"
+
 
 
 STATE_VECTOR_INFORMATION_ARRAY = [

@@ -248,6 +248,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "#include <stddef.h>\n"
               "#include <stdlib.h>\n", generatorProfile->headerString());
 
+    EXPECT_EQ("const char VERSION[] = \"<VERSION>\";\n", generatorProfile->versionString());
+
     EXPECT_EQ("voi", generatorProfile->variableOfIntegrationString());
 
     EXPECT_EQ("states", generatorProfile->statesArrayString());
@@ -302,7 +304,6 @@ TEST(GeneratorProfile, defaultTemplateValues)
     EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
     EXPECT_EQ("struct VariableInfo {\n    char component[VALUE];\n    char name[VALUE];\n    char units[VALUE];\n};\n", generatorProfile->templateVariableInformationObjectString());
     EXPECT_EQ("const size_t VARIABLE_VECTOR_SIZE = VALUE;\n", generatorProfile->templateVariableVectorSizeConstantString());
-    EXPECT_EQ("const char VERSION[] = \"VALUE\";\n", generatorProfile->templateVersionString());
     EXPECT_EQ("const struct VariableInfo VOI_INFORMATION = {\"VALUE\", \"VALUE\", \"VALUE\"};\n", generatorProfile->templateVoiConstantString());
 }
 
@@ -579,6 +580,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setHeaderString(value);
 
+    generatorProfile->setVersionString(value);
+
     generatorProfile->setVariableOfIntegrationString(value);
 
     generatorProfile->setStatesArrayString(value);
@@ -624,6 +627,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->endCommentString());
 
     EXPECT_EQ(value, generatorProfile->headerString());
+
+    EXPECT_EQ(value, generatorProfile->versionString());
 
     EXPECT_EQ(value, generatorProfile->variableOfIntegrationString());
 
@@ -683,7 +688,6 @@ TEST(GeneratorProfile, templateValues)
     generatorProfile->setTemplateVariableInformationEntryString(value);
     generatorProfile->setTemplateVariableInformationObjectString(value);
     generatorProfile->setTemplateVariableVectorSizeConstantString(value);
-    generatorProfile->setTemplateVersionString(value);
     generatorProfile->setTemplateVoiConstantString(value);
 
     EXPECT_EQ(value, generatorProfile->templateOriginCommentString());
@@ -692,6 +696,5 @@ TEST(GeneratorProfile, templateValues)
     EXPECT_EQ(value, generatorProfile->templateVariableInformationEntryString());
     EXPECT_EQ(value, generatorProfile->templateVariableInformationObjectString());
     EXPECT_EQ(value, generatorProfile->templateVariableVectorSizeConstantString());
-    EXPECT_EQ(value, generatorProfile->templateVersionString());
     EXPECT_EQ(value, generatorProfile->templateVoiConstantString());
 }

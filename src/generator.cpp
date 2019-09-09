@@ -2632,7 +2632,7 @@ std::string Generator::code() const
 
     // Generate the code for the version of libCellML.
 
-    std::string libcellmlVersion = mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVersionString(), versionString());
+    std::string libcellmlVersion = mPimpl->replace(mPimpl->mProfile->versionString(), "<VERSION>", versionString());
 
     if (!libcellmlVersion.empty()) {
         if (!res.empty()) {
