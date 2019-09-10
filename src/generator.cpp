@@ -2956,7 +2956,7 @@ std::string Generator::code() const
         res += mPimpl->mProfile->acothFunctionString();
     }
 
-    // Generate code to initialise the model.
+    // Generate code to create and delete arrays.
 
     if (!res.empty()) {
         res += "\n";
@@ -2984,7 +2984,12 @@ std::string Generator::code() const
         res += mPimpl->mProfile->deleteArrayMethodString();
     }
 
-    res += "\n";
+    // Generate code to initialise the model.
+
+    if (!res.empty()) {
+        res += "\n";
+    }
+
     res += mPimpl->mProfile->beginInitializeConstantsMethodString();
 
     methodBody = "";
