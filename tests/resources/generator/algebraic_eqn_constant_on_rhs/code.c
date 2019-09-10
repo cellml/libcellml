@@ -15,8 +15,6 @@ struct VariableInfo {
     char units[14];
 };
 
-const struct VariableInfo VOI_INFO = {"", "", ""};
-
 const struct VariableInfo STATE_INFO[] = {
 };
 
