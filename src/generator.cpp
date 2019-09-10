@@ -631,9 +631,10 @@ struct Generator::GeneratorImpl
     std::string generateInfoCode(const std::string &beginInfoString,
                                  const std::string &endInfoString,
                                  const std::vector<VariablePtr> &variables);
-    std::string generateVoiInfoCode();
-    std::string generateStateInfoCode();
-    std::string generateVariableInfoCode();
+
+    void addVoiInfoCode(std::string &code);
+    void addStateInfoCode(std::string &code);
+    void addVariableInfoCode(std::string &code);
 
     std::string generateCreateArrayCode(size_t arraySize);
 
@@ -1644,9 +1645,9 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code)
 
 void Generator::GeneratorImpl::addVariableInfoObjectCode(std::string &code)
 {
-    if (!mPimpl->mProfile->variableInfoObjectString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
+    if (!mProfile->variableInfoObjectString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
         size_t componentSize = 0;
@@ -1711,35 +1712,56 @@ std::string Generator::GeneratorImpl::generateInfoCode(const std::string &beginI
     return beginInfoString + infoElements + endInfoString;
 }
 
-std::string Generator::GeneratorImpl::generateVoiInfoCode()
+void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
 {
-    std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
-    std::string name = (mVoi != nullptr) ? mVoi->name() : "";
-    std::string units = (mVoi != nullptr) ? mVoi->units() : "";
+    if (!mProfile->beginVoiInfoString().empty()
+        && !mProfile->variableInfoEntryString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
 
-    return mProfile->beginVoiInfoString()
-           + generateVariableInfoEntryCode(component, name, units)
-           + mProfile->endVoiInfoString();
-}
+        std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
+        std::string name = (mVoi != nullptr) ? mVoi->name() : "";
+        std::string units = (mVoi != nullptr) ? mVoi->units() : "";
 
-std::string Generator::GeneratorImpl::generateStateInfoCode()
-{
-    return generateInfoCode(mProfile->beginStateInfoString(),
-                            mProfile->endStateInfoString(),
-                            mStates);
-}
-
-std::string Generator::GeneratorImpl::generateVariableInfoCode()
-{
-    std::vector<VariablePtr> variables;
-
-    for (const auto &variable : mVariables) {
-        variables.push_back(variable->variable());
+        code += mProfile->beginVoiInfoString()
+                + generateVariableInfoEntryCode(component, name, units)
+                + mProfile->endVoiInfoString();
     }
+}
 
-    return generateInfoCode(mProfile->beginVariableInfoString(),
-                            mProfile->endVariableInfoString(),
-                            variables);
+void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
+{
+    if (!mProfile->beginStateInfoString().empty()
+        && !mProfile->variableInfoEntryString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += generateInfoCode(mProfile->beginStateInfoString(),
+                                 mProfile->endStateInfoString(),
+                                 mStates);
+    }
+}
+
+void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
+{
+    if (!mProfile->beginVariableInfoString().empty()
+        && !mProfile->variableInfoEntryString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        std::vector<VariablePtr> variables;
+
+        for (const auto &variable : mVariables) {
+            variables.push_back(variable->variable());
+        }
+
+        code += generateInfoCode(mProfile->beginVariableInfoString(),
+                                 mProfile->endVariableInfoString(),
+                                 variables);
+    }
 }
 
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
@@ -2722,38 +2744,12 @@ std::string Generator::code() const
 
     mPimpl->addVariableInfoObjectCode(res);
 
-    // Generate code for the information about the variable of integration,
-    // states and (other) variables.
+    // Add code for the information about the variable of integration, states
+    // and (other) variables.
 
-    std::string voiInfo = mPimpl->generateVoiInfoCode();
-
-    if (!voiInfo.empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += voiInfo;
-    }
-
-    std::string stateInfo = mPimpl->generateStateInfoCode();
-
-    if (!stateInfo.empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += stateInfo;
-    }
-
-    std::string variableInfo = mPimpl->generateVariableInfoCode();
-
-    if (!variableInfo.empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += variableInfo;
-    }
+    mPimpl->addVoiInfoCode(res);
+    mPimpl->addStateInfoCode(res);
+    mPimpl->addVariableInfoCode(res);
 
     // Generate code for extra mathematical functions.
 
