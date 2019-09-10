@@ -1899,8 +1899,11 @@ public:
     std::string variableInfoObjectString() const;
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
-    std::string voiInfoString() const;
-    void setVoiInfoString(const std::string &voiInfoString);
+    std::string beginVoiInfoString() const;
+    void setBeginVoiInfoString(const std::string &beginVoiInfoString);
+
+    std::string endVoiInfoString() const;
+    void setEndVoiInfoString(const std::string &endVoiInfoString);
 
     std::string beginStateInfoString() const;
     void setBeginStateInfoString(const std::string &beginStateInfoString);

@@ -1618,10 +1618,12 @@ std::string Generator::GeneratorImpl::generateVoiInfoString()
     std::string name = (mVoi != nullptr)?mVoi->name():"";
     std::string units = (mVoi != nullptr)?mVoi->units():"";
 
-    return replace(replace(replace(mProfile->voiInfoString(),
-                                   "<COMPONENT>", component),
-                           "<NAME>", name),
-                   "<UNITS>", units);
+    return mProfile->beginVoiInfoString()
+           + replace(replace(replace(mProfile->variableInfoEntryString(),
+                                     "<COMPONENT>", component),
+                             "<NAME>", name),
+                     "<UNITS>", units)
+           + mProfile->endVoiInfoString();
 }
 
 std::string Generator::GeneratorImpl::generateStateInfoString()
@@ -2702,12 +2704,14 @@ std::string Generator::code() const
     // Generate code for the information about the variable of integration,
     // states and (other) variables.
 
-    if (!mPimpl->mProfile->voiInfoString().empty()) {
+    std::string voiInfo = mPimpl->generateVoiInfoString();
+
+    if (!voiInfo.empty()) {
         if (!res.empty()) {
             res += "\n";
         }
 
-        res += mPimpl->generateVoiInfoString();
+        res += voiInfo;
     }
 
     std::string stateInfo = mPimpl->generateStateInfoString();

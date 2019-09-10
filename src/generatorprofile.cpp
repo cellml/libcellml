@@ -165,7 +165,8 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mVariableInfoObjectString;
 
-    std::string mVoiInfoString;
+    std::string mBeginVoiInfoString;
+    std::string mEndVoiInfoString;
 
     std::string mBeginStateInfoString;
     std::string mEndStateInfoString;
@@ -411,7 +412,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "    char units[<UNITS_SIZE>];\n"
                                     "};\n";
 
-        mVoiInfoString = "const struct VariableInfo VOI_INFO = {\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"};\n";
+        mBeginVoiInfoString = "const struct VariableInfo VOI_INFO = ";
+        mEndVoiInfoString = ";\n";
 
         mBeginStateInfoString = "const struct VariableInfo STATE_INFO[] = {\n";
         mEndStateInfoString = "};\n";
@@ -632,7 +634,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVariableInfoObjectString = "";
 
-        mVoiInfoString = "VOI_INFO = {\"component\": \"<COMPONENT>\", \"name\": \"<NAME>\", \"units\": \"<UNITS>\"}\n";
+        mBeginVoiInfoString = "VOI_INFO = ";
+        mEndVoiInfoString = "\n";
 
         mBeginStateInfoString = "STATE_INFO = [\n";
         mEndStateInfoString = "]\n";
@@ -817,7 +820,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
 
-    mPimpl->mVoiInfoString = rhs.mPimpl->mVoiInfoString;
+    mPimpl->mBeginVoiInfoString = rhs.mPimpl->mBeginVoiInfoString;
+    mPimpl->mEndVoiInfoString = rhs.mPimpl->mEndVoiInfoString;
 
     mPimpl->mBeginStateInfoString = rhs.mPimpl->mBeginStateInfoString;
     mPimpl->mEndStateInfoString = rhs.mPimpl->mEndStateInfoString;
@@ -1938,14 +1942,24 @@ void GeneratorProfile::setVariableInfoObjectString(const std::string &variableIn
     mPimpl->mVariableInfoObjectString = variableInfoObjectString;
 }
 
-std::string GeneratorProfile::voiInfoString() const
+std::string GeneratorProfile::beginVoiInfoString() const
 {
-    return mPimpl->mVoiInfoString;
+    return mPimpl->mBeginVoiInfoString;
 }
 
-void GeneratorProfile::setVoiInfoString(const std::string &voiInfoString)
+void GeneratorProfile::setBeginVoiInfoString(const std::string &beginVoiInfoString)
 {
-    mPimpl->mVoiInfoString = voiInfoString;
+    mPimpl->mBeginVoiInfoString = beginVoiInfoString;
+}
+
+std::string GeneratorProfile::endVoiInfoString() const
+{
+    return mPimpl->mEndVoiInfoString;
+}
+
+void GeneratorProfile::setEndVoiInfoString(const std::string &endVoiInfoString)
+{
+    mPimpl->mEndVoiInfoString = endVoiInfoString;
 }
 
 std::string GeneratorProfile::beginStateInfoString() const

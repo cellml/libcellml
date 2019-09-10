@@ -248,7 +248,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("#include <math.h>\n"
               "#include <stddef.h>\n"
-              "#include <stdlib.h>\n", generatorProfile->headerString());
+              "#include <stdlib.h>\n",
+              generatorProfile->headerString());
 
     EXPECT_EQ("const char VERSION[] = \"<VERSION>\";\n", generatorProfile->versionString());
 
@@ -259,9 +260,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "    char component[<COMPONENT_SIZE>];\n"
               "    char name[<NAME_SIZE>];\n"
               "    char units[<UNITS_SIZE>];\n"
-              "};\n", generatorProfile->variableInfoObjectString());
+              "};\n",
+              generatorProfile->variableInfoObjectString());
 
-    EXPECT_EQ("const struct VariableInfo VOI_INFO = {\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"};\n", generatorProfile->voiInfoString());
+    EXPECT_EQ("const struct VariableInfo VOI_INFO = ", generatorProfile->beginVoiInfoString());
+    EXPECT_EQ(";\n", generatorProfile->endVoiInfoString());
 
     EXPECT_EQ("const struct VariableInfo STATE_INFO[] = {\n", generatorProfile->beginStateInfoString());
     EXPECT_EQ("};\n", generatorProfile->endStateInfoString());
@@ -599,7 +602,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setVariableInfoObjectString(value);
 
-    generatorProfile->setVoiInfoString(value);
+    generatorProfile->setBeginVoiInfoString(value);
+    generatorProfile->setEndVoiInfoString(value);
 
     generatorProfile->setBeginStateInfoString(value);
     generatorProfile->setEndStateInfoString(value);
@@ -659,7 +663,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
 
-    EXPECT_EQ(value, generatorProfile->voiInfoString());
+    EXPECT_EQ(value, generatorProfile->beginVoiInfoString());
+    EXPECT_EQ(value, generatorProfile->endVoiInfoString());
 
     EXPECT_EQ(value, generatorProfile->beginStateInfoString());
     EXPECT_EQ(value, generatorProfile->endStateInfoString());
