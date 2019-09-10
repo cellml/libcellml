@@ -635,6 +635,7 @@ struct Generator::GeneratorImpl
     void addVoiInfoCode(std::string &code);
     void addStateInfoCode(std::string &code);
     void addVariableInfoCode(std::string &code);
+    void addExtraMathFunctionsCode(std::string &code);
 
     std::string generateCreateArrayCode(size_t arraySize);
 
@@ -1748,6 +1749,211 @@ void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
     addInfoCode(mProfile->variableInfoString(), variables, code);
 }
 
+void Generator::GeneratorImpl::addExtraMathFunctionsCode(std::string &code)
+{
+    if (mNeedEqEq && !mProfile->hasEqEqOperator()
+        && !mProfile->eqEqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->eqEqFunctionString();
+    }
+
+    if (mNeedNeq && !mProfile->hasNeqOperator()
+        && !mProfile->neqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->neqFunctionString();
+    }
+
+    if (mNeedLt && !mProfile->hasLtOperator()
+        && !mProfile->ltFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->ltFunctionString();
+    }
+
+    if (mNeedLeq && !mProfile->hasLeqOperator()
+        && !mProfile->leqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->leqFunctionString();
+    }
+
+    if (mNeedGt && !mProfile->hasGtOperator()
+        && !mProfile->gtFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->gtFunctionString();
+    }
+
+    if (mNeedGeq && !mProfile->hasGeqOperator()
+        && !mProfile->geqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->geqFunctionString();
+    }
+
+    if (mNeedAnd && !mProfile->hasAndOperator()
+        && !mProfile->andFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->andFunctionString();
+    }
+
+    if (mNeedOr && !mProfile->hasOrOperator()
+        && !mProfile->orFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->orFunctionString();
+    }
+
+    if (mNeedXor && !mProfile->hasXorOperator()
+        && !mProfile->xorFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->xorFunctionString();
+    }
+
+    if (mNeedNot && !mProfile->hasNotOperator()
+        && !mProfile->notFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->notFunctionString();
+    }
+
+    if (mNeedMin) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->minFunctionString();
+    }
+
+    if (mNeedMax) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->maxFunctionString();
+    }
+
+    if (mNeedSec) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->secFunctionString();
+    }
+
+    if (mNeedCsc) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cscFunctionString();
+    }
+
+    if (mNeedCot) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cotFunctionString();
+    }
+
+    if (mNeedSech) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->sechFunctionString();
+    }
+
+    if (mNeedCsch) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cschFunctionString();
+    }
+
+    if (mNeedCoth) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cothFunctionString();
+    }
+
+    if (mNeedAsec) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->asecFunctionString();
+    }
+
+    if (mNeedAcsc) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acscFunctionString();
+    }
+
+    if (mNeedAcot) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acotFunctionString();
+    }
+
+    if (mNeedAsech) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->asechFunctionString();
+    }
+
+    if (mNeedAcsch) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acschFunctionString();
+    }
+
+    if (mNeedAcoth) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acothFunctionString();
+    }
+}
+
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
 {
     if (mProfile->returnCreatedArrayString().empty()) {
@@ -2735,209 +2941,9 @@ std::string Generator::code() const
     mPimpl->addStateInfoCode(res);
     mPimpl->addVariableInfoCode(res);
 
-    // Generate code for extra mathematical functions.
+    // Add code for extra mathematical functions.
 
-    if (mPimpl->mNeedEqEq && !mPimpl->mProfile->hasEqEqOperator()
-        && !mPimpl->mProfile->eqEqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->eqEqFunctionString();
-    }
-
-    if (mPimpl->mNeedNeq && !mPimpl->mProfile->hasNeqOperator()
-        && !mPimpl->mProfile->neqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->neqFunctionString();
-    }
-
-    if (mPimpl->mNeedLt && !mPimpl->mProfile->hasLtOperator()
-        && !mPimpl->mProfile->ltFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->ltFunctionString();
-    }
-
-    if (mPimpl->mNeedLeq && !mPimpl->mProfile->hasLeqOperator()
-        && !mPimpl->mProfile->leqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->leqFunctionString();
-    }
-
-    if (mPimpl->mNeedGt && !mPimpl->mProfile->hasGtOperator()
-        && !mPimpl->mProfile->gtFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->gtFunctionString();
-    }
-
-    if (mPimpl->mNeedGeq && !mPimpl->mProfile->hasGeqOperator()
-        && !mPimpl->mProfile->geqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->geqFunctionString();
-    }
-
-    if (mPimpl->mNeedAnd && !mPimpl->mProfile->hasAndOperator()
-        && !mPimpl->mProfile->andFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->andFunctionString();
-    }
-
-    if (mPimpl->mNeedOr && !mPimpl->mProfile->hasOrOperator()
-        && !mPimpl->mProfile->orFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->orFunctionString();
-    }
-
-    if (mPimpl->mNeedXor && !mPimpl->mProfile->hasXorOperator()
-        && !mPimpl->mProfile->xorFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->xorFunctionString();
-    }
-
-    if (mPimpl->mNeedNot && !mPimpl->mProfile->hasNotOperator()
-        && !mPimpl->mProfile->notFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->notFunctionString();
-    }
-
-    if (mPimpl->mNeedMin) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->minFunctionString();
-    }
-
-    if (mPimpl->mNeedMax) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->maxFunctionString();
-    }
-
-    if (mPimpl->mNeedSec) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->secFunctionString();
-    }
-
-    if (mPimpl->mNeedCsc) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cscFunctionString();
-    }
-
-    if (mPimpl->mNeedCot) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cotFunctionString();
-    }
-
-    if (mPimpl->mNeedSech) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->sechFunctionString();
-    }
-
-    if (mPimpl->mNeedCsch) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cschFunctionString();
-    }
-
-    if (mPimpl->mNeedCoth) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cothFunctionString();
-    }
-
-    if (mPimpl->mNeedAsec) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->asecFunctionString();
-    }
-
-    if (mPimpl->mNeedAcsc) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acscFunctionString();
-    }
-
-    if (mPimpl->mNeedAcot) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acotFunctionString();
-    }
-
-    if (mPimpl->mNeedAsech) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->asechFunctionString();
-    }
-
-    if (mPimpl->mNeedAcsch) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acschFunctionString();
-    }
-
-    if (mPimpl->mNeedAcoth) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acothFunctionString();
-    }
+    mPimpl->addExtraMathFunctionsCode(res);
 
     // Generate code to create and delete arrays.
 
