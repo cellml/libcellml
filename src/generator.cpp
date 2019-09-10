@@ -1638,41 +1638,51 @@ std::string Generator::GeneratorImpl::generateVoiInfoCode()
 
 std::string Generator::GeneratorImpl::generateStateInfoCode()
 {
-    size_t stateIndex = 0;
-    size_t stateCount = mStates.size();
-    std::string res = mProfile->beginStateInfoString();
+    std::string stateInfoElements;
 
     for (const auto &state : mStates) {
-        res += mProfile->indentString()
-               + generateVariableInfoEntryCode(state->parentComponent()->name(),
-                                               state->name(), state->units())
-               + ((++stateIndex != stateCount) ? mProfile->arrayElementSeparatorString() : "") + "\n";
+        if (!stateInfoElements.empty()) {
+            stateInfoElements += mProfile->arrayElementSeparatorString() + "\n";
+        }
+
+        stateInfoElements += mProfile->indentString()
+                             + generateVariableInfoEntryCode(state->parentComponent()->name(),
+                                                             state->name(), state->units());
     }
 
-    res += mProfile->endStateInfoString();
+    if (!stateInfoElements.empty()) {
+        stateInfoElements += "\n";
+    }
 
-    return res;
+    return mProfile->beginStateInfoString()
+           + stateInfoElements
+           + mProfile->endStateInfoString();
 }
 
 std::string Generator::GeneratorImpl::generateVariableInfoCode()
 {
-    size_t variableIndex = 0;
-    size_t variableCount = mVariables.size();
-    std::string res = mProfile->beginVariableInfoString();
+    std::string variableInfoElements;
 
     for (const auto &generatorVariable : mVariables) {
         auto variable = generatorVariable->variable();
 
-        res += mProfile->indentString()
-               + generateVariableInfoEntryCode(variable->parentComponent()->name(),
-                                               variable->name(),
-                                               variable->units())
-               + ((++variableIndex != variableCount) ? mProfile->arrayElementSeparatorString() : "") + "\n";
+        if (!variableInfoElements.empty()) {
+            variableInfoElements += mProfile->arrayElementSeparatorString() + "\n";
+        }
+
+        variableInfoElements += mProfile->indentString()
+                                + generateVariableInfoEntryCode(variable->parentComponent()->name(),
+                                                                variable->name(),
+                                                                variable->units());
     }
 
-    res += mProfile->endVariableInfoString();
+    if (!variableInfoElements.empty()) {
+        variableInfoElements += "\n";
+    }
 
-    return res;
+    return mProfile->beginVariableInfoString()
+           + variableInfoElements
+           + mProfile->endVariableInfoString();
 }
 
 std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
