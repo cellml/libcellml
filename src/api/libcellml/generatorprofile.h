@@ -1860,11 +1860,8 @@ public:
 
     // Miscellaneous
 
-    std::string beginCommentString() const;
-    void setBeginCommentString(const std::string &beginCommentString);
-
-    std::string endCommentString() const;
-    void setEndCommentString(const std::string &endCommentString);
+    std::string commentString() const;
+    void setCommentString(const std::string &commentString);
 
     std::string originCommentString() const;
     void setOriginCommentString(const std::string &originCommentString);

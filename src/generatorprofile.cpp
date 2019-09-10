@@ -151,9 +151,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
-    std::string mBeginCommentString;
-    std::string mEndCommentString;
-
+    std::string mCommentString;
     std::string mOriginCommentString;
 
     std::string mHeaderString;
@@ -392,9 +390,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
-        mBeginCommentString = "/* ";
-        mEndCommentString = " */";
-
+        mCommentString = "/* <CODE> */";
         mOriginCommentString = "The contents of this file was generated from version <VERSION> of libCellML.";
 
         mHeaderString = "#include <math.h>\n"
@@ -616,9 +612,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
-        mBeginCommentString = "# ";
-        mEndCommentString = "";
-
+        mCommentString = "# <CODE>";
         mOriginCommentString = "The contents of this file was generated from version <VERSION> of libCellML.";
 
         mHeaderString = "from math import *\n\n";
@@ -800,8 +794,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     // Miscellaneous
 
-    mPimpl->mBeginCommentString = rhs.mPimpl->mBeginCommentString;
-    mPimpl->mEndCommentString = rhs.mPimpl->mEndCommentString;
+    mPimpl->mCommentString = rhs.mPimpl->mCommentString;
+    mPimpl->mOriginCommentString = rhs.mPimpl->mOriginCommentString;
 
     mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
@@ -1854,24 +1848,14 @@ void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionSt
     mPimpl->mAcothFunctionString = acothFunctionString;
 }
 
-std::string GeneratorProfile::beginCommentString() const
+std::string GeneratorProfile::commentString() const
 {
-    return mPimpl->mBeginCommentString;
+    return mPimpl->mCommentString;
 }
 
-void GeneratorProfile::setBeginCommentString(const std::string &beginCommentString)
+void GeneratorProfile::setCommentString(const std::string &commentString)
 {
-    mPimpl->mBeginCommentString = beginCommentString;
-}
-
-std::string GeneratorProfile::endCommentString() const
-{
-    return mPimpl->mEndCommentString;
-}
-
-void GeneratorProfile::setEndCommentString(const std::string &endCommentString)
-{
-    mPimpl->mEndCommentString = endCommentString;
+    mPimpl->mCommentString = commentString;
 }
 
 std::string GeneratorProfile::originCommentString() const
