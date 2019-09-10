@@ -619,10 +619,13 @@ struct Generator::GeneratorImpl
                                  size_t &unitsSize,
                                  const VariablePtr &variable);
 
-    std::string generateVariableInfoObjectString();
-    std::string generateVoiInfoString();
-    std::string generateStateInfoString();
-    std::string generateVariableInfoString();
+    std::string generateVariableInfoObjectCode();
+    std::string generateVariableInfoEntryCode(const std::string &component,
+                                              const std::string &name,
+                                              const std::string &units);
+    std::string generateVoiInfoCode();
+    std::string generateStateInfoCode();
+    std::string generateVariableInfoCode();
 
     std::string generateDoubleCode(const std::string &value);
     std::string generateVariableNameCode(const VariablePtr &variable,
@@ -1586,7 +1589,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
     unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
 }
 
-std::string Generator::GeneratorImpl::generateVariableInfoObjectString()
+std::string Generator::GeneratorImpl::generateVariableInfoObjectCode()
 {
     size_t componentSize = 0;
     size_t nameSize = 0;
@@ -1612,30 +1615,35 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectString()
                    "<UNITS_SIZE>", std::to_string(unitsSize));
 }
 
-std::string Generator::GeneratorImpl::generateVoiInfoString()
+std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &component,
+                                                                    const std::string &name,
+                                                                    const std::string &units)
+{
+    return replace(replace(replace(mProfile->variableInfoEntryString(),
+                                   "<COMPONENT>", component),
+                           "<NAME>", name),
+                   "<UNITS>", units);
+}
+
+std::string Generator::GeneratorImpl::generateVoiInfoCode()
 {
     std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
     std::string name = (mVoi != nullptr) ? mVoi->name() : "";
     std::string units = (mVoi != nullptr) ? mVoi->units() : "";
 
     return mProfile->beginVoiInfoString()
-           + replace(replace(replace(mProfile->variableInfoEntryString(),
-                                     "<COMPONENT>", component),
-                             "<NAME>", name),
-                     "<UNITS>", units)
+           + generateVariableInfoEntryCode(component, name, units)
            + mProfile->endVoiInfoString();
 }
 
-std::string Generator::GeneratorImpl::generateStateInfoString()
+std::string Generator::GeneratorImpl::generateStateInfoCode()
 {
     std::string res = mProfile->beginStateInfoString();
 
     for (const auto &state : mStates) {
         res += mProfile->indentString()
-               + replace(replace(replace(mProfile->variableInfoEntryString(),
-                                         "<COMPONENT>", state->parentComponent()->name()),
-                                 "<NAME>", state->name()),
-                         "<UNITS>", state->units())
+               + generateVariableInfoEntryCode(state->parentComponent()->name(),
+                                               state->name(), state->units())
                + mProfile->arrayElementSeparatorString() + "\n";
     }
 
@@ -1644,7 +1652,7 @@ std::string Generator::GeneratorImpl::generateStateInfoString()
     return res;
 }
 
-std::string Generator::GeneratorImpl::generateVariableInfoString()
+std::string Generator::GeneratorImpl::generateVariableInfoCode()
 {
     std::string res = mProfile->beginVariableInfoString();
 
@@ -1652,10 +1660,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoString()
         auto variable = generatorVariable->variable();
 
         res += mProfile->indentString()
-               + replace(replace(replace(mProfile->variableInfoEntryString(),
-                                         "<COMPONENT>", variable->parentComponent()->name()),
-                                 "<NAME>", variable->name()),
-                         "<UNITS>", variable->units())
+               + generateVariableInfoEntryCode(variable->parentComponent()->name(),
+                                               variable->name(),
+                                               variable->units())
                + mProfile->arrayElementSeparatorString() + "\n";
     }
 
@@ -2698,13 +2705,13 @@ std::string Generator::code() const
             res += "\n";
         }
 
-        res += mPimpl->generateVariableInfoObjectString();
+        res += mPimpl->generateVariableInfoObjectCode();
     }
 
     // Generate code for the information about the variable of integration,
     // states and (other) variables.
 
-    std::string voiInfo = mPimpl->generateVoiInfoString();
+    std::string voiInfo = mPimpl->generateVoiInfoCode();
 
     if (!voiInfo.empty()) {
         if (!res.empty()) {
@@ -2714,7 +2721,7 @@ std::string Generator::code() const
         res += voiInfo;
     }
 
-    std::string stateInfo = mPimpl->generateStateInfoString();
+    std::string stateInfo = mPimpl->generateStateInfoCode();
 
     if (!stateInfo.empty()) {
         if (!res.empty()) {
@@ -2724,7 +2731,7 @@ std::string Generator::code() const
         res += stateInfo;
     }
 
-    std::string variableInfo = mPimpl->generateVariableInfoString();
+    std::string variableInfo = mPimpl->generateVariableInfoCode();
 
     if (!variableInfo.empty()) {
         if (!res.empty()) {
