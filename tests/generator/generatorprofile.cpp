@@ -261,15 +261,15 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "};\n",
               generatorProfile->variableInfoObjectString());
 
-    EXPECT_EQ("const struct VariableInfo VOI_INFO = ", generatorProfile->beginVoiInfoString());
-    EXPECT_EQ(";\n", generatorProfile->endVoiInfoString());
-
-    EXPECT_EQ("const struct VariableInfo STATE_INFO[] = {\n", generatorProfile->beginStateInfoString());
-    EXPECT_EQ("};\n", generatorProfile->endStateInfoString());
-
-    EXPECT_EQ("const struct VariableInfo VARIABLE_INFO[] = {\n", generatorProfile->beginVariableInfoString());
-    EXPECT_EQ("};\n", generatorProfile->endVariableInfoString());
-
+    EXPECT_EQ("const struct VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->voiInfoString());
+    EXPECT_EQ("const struct VariableInfo STATE_INFO[] = {\n"
+              "<CODE>"
+              "};\n",
+              generatorProfile->stateInfoString());
+    EXPECT_EQ("const struct VariableInfo VARIABLE_INFO[] = {\n"
+              "<CODE>"
+              "};\n",
+              generatorProfile->variableInfoString());
     EXPECT_EQ("{\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"}", generatorProfile->variableInfoEntryString());
 
     EXPECT_EQ("voi", generatorProfile->voiString());
@@ -591,15 +591,9 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setVariableInfoObjectString(value);
 
-    generatorProfile->setBeginVoiInfoString(value);
-    generatorProfile->setEndVoiInfoString(value);
-
-    generatorProfile->setBeginStateInfoString(value);
-    generatorProfile->setEndStateInfoString(value);
-
-    generatorProfile->setBeginVariableInfoString(value);
-    generatorProfile->setEndVariableInfoString(value);
-
+    generatorProfile->setVoiInfoString(value);
+    generatorProfile->setStateInfoString(value);
+    generatorProfile->setVariableInfoString(value);
     generatorProfile->setVariableInfoEntryString(value);
 
     generatorProfile->setVoiString(value);
@@ -652,15 +646,9 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
 
-    EXPECT_EQ(value, generatorProfile->beginVoiInfoString());
-    EXPECT_EQ(value, generatorProfile->endVoiInfoString());
-
-    EXPECT_EQ(value, generatorProfile->beginStateInfoString());
-    EXPECT_EQ(value, generatorProfile->endStateInfoString());
-
-    EXPECT_EQ(value, generatorProfile->beginVariableInfoString());
-    EXPECT_EQ(value, generatorProfile->endVariableInfoString());
-
+    EXPECT_EQ(value, generatorProfile->voiInfoString());
+    EXPECT_EQ(value, generatorProfile->stateInfoString());
+    EXPECT_EQ(value, generatorProfile->variableInfoString());
     EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
 
     EXPECT_EQ(value, generatorProfile->voiString());

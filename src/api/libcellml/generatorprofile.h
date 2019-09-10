@@ -1896,23 +1896,14 @@ public:
     std::string variableInfoObjectString() const;
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
-    std::string beginVoiInfoString() const;
-    void setBeginVoiInfoString(const std::string &beginVoiInfoString);
+    std::string voiInfoString() const;
+    void setVoiInfoString(const std::string &voiInfoString);
 
-    std::string endVoiInfoString() const;
-    void setEndVoiInfoString(const std::string &endVoiInfoString);
+    std::string stateInfoString() const;
+    void setStateInfoString(const std::string &stateInfoString);
 
-    std::string beginStateInfoString() const;
-    void setBeginStateInfoString(const std::string &beginStateInfoString);
-
-    std::string endStateInfoString() const;
-    void setEndStateInfoString(const std::string &endStateInfoString);
-
-    std::string beginVariableInfoString() const;
-    void setBeginVariableInfoString(const std::string &beginVariableInfoString);
-
-    std::string endVariableInfoString() const;
-    void setEndVariableInfoString(const std::string &endVariableInfoString);
+    std::string variableInfoString() const;
+    void setVariableInfoString(const std::string &variableInfoString);
 
     std::string variableInfoEntryString() const;
     void setVariableInfoEntryString(const std::string &variableInfoEntryString);
