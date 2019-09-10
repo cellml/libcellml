@@ -22,7 +22,7 @@ const struct VariableInfo STATE_INFO[] = {
 
 const struct VariableInfo VARIABLE_INFO[] = {
     {"my_algebraic_eqn", "a", "dimensionless"},
-    {"my_algebraic_eqn", "x", "dimensionless"},
+    {"my_algebraic_eqn", "x", "dimensionless"}
 };
 
 double * createStatesArray()

@@ -14,7 +14,7 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"component": "my_component", "name": "x", "units": "dimensionless"},
+    {"component": "my_component", "name": "x", "units": "dimensionless"}
 ]
 
 

@@ -32,7 +32,7 @@ const struct VariableInfo STATE_INFO[] = {
     {"rapid_delayed_rectifying_potassium_current_P_i_gate", "P_i", "dimensionless"},
     {"slow_delayed_rectifying_potassium_current_xs_gate", "xs", "dimensionless"},
     {"hyperpolarisation_activated_current_y_gate", "y", "dimensionless"},
-    {"membrane", "V", "millivolt"},
+    {"membrane", "V", "millivolt"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
@@ -220,7 +220,7 @@ const struct VariableInfo VARIABLE_INFO[] = {
     {"membrane", "i_b_K", "nanoA"},
     {"membrane", "i_b_Ca", "nanoA"},
     {"membrane", "i_Na", "nanoA"},
-    {"membrane", "i_K_r", "nanoA"},
+    {"membrane", "i_K_r", "nanoA"}
 };
 
 double * createStatesArray()

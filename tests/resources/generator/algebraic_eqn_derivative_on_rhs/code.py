@@ -11,12 +11,12 @@ VARIABLE_COUNT = 2
 VOI_INFO = {"component": "my_ode", "name": "t", "units": "second"}
 
 STATE_INFO = [
-    {"component": "my_ode", "name": "v", "units": "dimensionless"},
+    {"component": "my_ode", "name": "v", "units": "dimensionless"}
 ]
 
 VARIABLE_INFO = [
     {"component": "my_ode", "name": "a", "units": "per_s"},
-    {"component": "my_algebraic_eqn", "name": "x", "units": "per_s"},
+    {"component": "my_algebraic_eqn", "name": "x", "units": "per_s"}
 ]
 
 

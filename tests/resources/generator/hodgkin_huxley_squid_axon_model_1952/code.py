@@ -14,7 +14,7 @@ STATE_INFO = [
     {"component": "sodium_channel_m_gate", "name": "m", "units": "dimensionless"},
     {"component": "sodium_channel_h_gate", "name": "h", "units": "dimensionless"},
     {"component": "potassium_channel_n_gate", "name": "n", "units": "dimensionless"},
-    {"component": "membrane", "name": "V", "units": "millivolt"},
+    {"component": "membrane", "name": "V", "units": "millivolt"}
 ]
 
 VARIABLE_INFO = [
@@ -35,7 +35,7 @@ VARIABLE_INFO = [
     {"component": "sodium_channel_h_gate", "name": "beta_h", "units": "per_millisecond"},
     {"component": "membrane", "name": "i_K", "units": "microA_per_cm2"},
     {"component": "potassium_channel_n_gate", "name": "alpha_n", "units": "per_millisecond"},
-    {"component": "potassium_channel_n_gate", "name": "beta_n", "units": "per_millisecond"},
+    {"component": "potassium_channel_n_gate", "name": "beta_n", "units": "per_millisecond"}
 ]
 
 

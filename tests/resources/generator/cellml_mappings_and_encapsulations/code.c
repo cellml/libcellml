@@ -19,12 +19,12 @@ const struct VariableInfo VOI_INFO = {"circle_x", "t", "ms"};
 
 const struct VariableInfo STATE_INFO[] = {
     {"circle_x_source", "x", "mM"},
-    {"circle_y_implementation", "y", "mM"},
+    {"circle_y_implementation", "y", "mM"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
     {"circle_sibling", "local_complex_maths", "mM"},
-    {"circle_x_sibling", "two_x", "milli_mole"},
+    {"circle_x_sibling", "two_x", "milli_mole"}
 };
 
 double * createStatesArray()

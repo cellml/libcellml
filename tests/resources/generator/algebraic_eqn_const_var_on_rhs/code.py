@@ -15,7 +15,7 @@ STATE_INFO = [
 
 VARIABLE_INFO = [
     {"component": "my_algebraic_eqn", "name": "a", "units": "dimensionless"},
-    {"component": "my_algebraic_eqn", "name": "x", "units": "dimensionless"},
+    {"component": "my_algebraic_eqn", "name": "x", "units": "dimensionless"}
 ]
 
 

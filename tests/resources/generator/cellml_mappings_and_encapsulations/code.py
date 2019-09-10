@@ -12,12 +12,12 @@ VOI_INFO = {"component": "circle_x", "name": "t", "units": "ms"}
 
 STATE_INFO = [
     {"component": "circle_x_source", "name": "x", "units": "mM"},
-    {"component": "circle_y_implementation", "name": "y", "units": "mM"},
+    {"component": "circle_y_implementation", "name": "y", "units": "mM"}
 ]
 
 VARIABLE_INFO = [
     {"component": "circle_sibling", "name": "local_complex_maths", "units": "mM"},
-    {"component": "circle_x_sibling", "name": "two_x", "units": "milli_mole"},
+    {"component": "circle_x_sibling", "name": "two_x", "units": "milli_mole"}
 ]
 
 

@@ -21,7 +21,7 @@ const struct VariableInfo STATE_INFO[] = {
     {"sodium_channel_m_gate", "m", "dimensionless"},
     {"sodium_channel_h_gate", "h", "dimensionless"},
     {"potassium_channel_n_gate", "n", "dimensionless"},
-    {"membrane", "V", "millivolt"},
+    {"membrane", "V", "millivolt"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
@@ -42,7 +42,7 @@ const struct VariableInfo VARIABLE_INFO[] = {
     {"sodium_channel_h_gate", "beta_h", "per_millisecond"},
     {"membrane", "i_K", "microA_per_cm2"},
     {"potassium_channel_n_gate", "alpha_n", "per_millisecond"},
-    {"potassium_channel_n_gate", "beta_n", "per_millisecond"},
+    {"potassium_channel_n_gate", "beta_n", "per_millisecond"}
 };
 
 double * createStatesArray()

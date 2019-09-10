@@ -21,7 +21,7 @@ const struct VariableInfo STATE_INFO[] = {
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
-    {"my_component", "x", "dimensionless"},
+    {"my_component", "x", "dimensionless"}
 };
 
 double * createStatesArray()
