@@ -280,6 +280,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
+    EXPECT_EQ("return (double *) malloc(<ARRAY_SIZE> * sizeof(double));\n", generatorProfile->returnCreatedArrayString());
+
     EXPECT_EQ("double * createStatesArray()\n{\n", generatorProfile->beginCreateStatesArrayMethodString());
     EXPECT_EQ("}\n", generatorProfile->endCreateStatesArrayMethodString());
 
@@ -316,8 +318,6 @@ TEST(GeneratorProfile, defaultTemplateValues)
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("VALUE", generatorProfile->templateReplacementString());
-
-    EXPECT_EQ("return (double *) malloc(VALUE * sizeof(double));\n", generatorProfile->templateReturnCreatedArrayString());
 }
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)
@@ -619,6 +619,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setRatesArrayString(value);
     generatorProfile->setVariablesArrayString(value);
 
+    generatorProfile->setReturnCreatedArrayString(value);
+
     generatorProfile->setBeginCreateStatesArrayMethodString(value);
     generatorProfile->setEndCreateStatesArrayMethodString(value);
 
@@ -680,6 +682,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->ratesArrayString());
     EXPECT_EQ(value, generatorProfile->variablesArrayString());
 
+    EXPECT_EQ(value, generatorProfile->returnCreatedArrayString());
+
     EXPECT_EQ(value, generatorProfile->beginCreateStatesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->endCreateStatesArrayMethodString());
 
@@ -720,8 +724,4 @@ TEST(GeneratorProfile, templateValues)
     generatorProfile->setTemplateReplacementString(value);
 
     EXPECT_EQ(value, generatorProfile->templateReplacementString());
-
-    generatorProfile->setTemplateReturnCreatedArrayString(value);
-
-    EXPECT_EQ(value, generatorProfile->templateReturnCreatedArrayString());
 }

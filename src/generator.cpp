@@ -629,6 +629,7 @@ struct Generator::GeneratorImpl
     std::string generateVoiInfoCode();
     std::string generateStateInfoCode();
     std::string generateVariableInfoCode();
+    std::string generateCreateArrayCode(size_t arraySize);
 
     std::string generateDoubleCode(const std::string &value);
     std::string generateVariableNameCode(const VariablePtr &variable,
@@ -646,7 +647,6 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value);
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
-    std::string generateCreateArrayCode(size_t arraySize);
     std::string replaceTemplateValue(const std::string &templateString,
                                      size_t value);
     std::string replaceTemplateValue(const std::string &templateString,
@@ -1682,6 +1682,16 @@ std::string Generator::GeneratorImpl::generateVariableInfoCode()
                             variables);
 }
 
+std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
+{
+    if (mProfile->returnCreatedArrayString().empty()) {
+        return {};
+    }
+
+    return replace(mProfile->indentString() + mProfile->returnCreatedArrayString(),
+                   "<ARRAY_SIZE>", std::to_string(arraySize));
+}
+
 std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
 {
     if (value.find('.') != std::string::npos) {
@@ -2429,11 +2439,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
-{
-    return replaceTemplateValue(mProfile->indentString() + mProfile->templateReturnCreatedArrayString(), arraySize);
-}
-
 std::string Generator::GeneratorImpl::replaceTemplateValue(const std::string &templateString, size_t value)
 {
     std::string valueString = std::to_string(value);
@@ -2958,29 +2963,35 @@ std::string Generator::code() const
 
     // Generate code to create and delete arrays.
 
-    if (!res.empty()) {
-        res += "\n";
+    std::string createStatesArrayMethodCode = mPimpl->mProfile->beginCreateStatesArrayMethodString()
+                                              + mPimpl->generateMethodBodyCode(mPimpl->generateCreateArrayCode(mPimpl->mStates.size()))
+                                              + mPimpl->mProfile->endCreateStatesArrayMethodString();
+
+    if (!createStatesArrayMethodCode.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += createStatesArrayMethodCode;
     }
 
-    std::string methodBody;
+    std::string createVariablesArrayMethodCode = mPimpl->mProfile->beginCreateVariablesArrayMethodString()
+                                                 + mPimpl->generateMethodBodyCode(mPimpl->generateCreateArrayCode(mPimpl->mVariables.size()))
+                                                 + mPimpl->mProfile->endCreateVariablesArrayMethodString();
 
-    res += mPimpl->mProfile->beginCreateStatesArrayMethodString();
+    if (!createVariablesArrayMethodCode.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
 
-    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mStates.size());
-    res += mPimpl->generateMethodBodyCode(methodBody);
-
-    res += mPimpl->mProfile->endCreateStatesArrayMethodString();
-
-    res += "\n";
-    res += mPimpl->mProfile->beginCreateVariablesArrayMethodString();
-
-    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mVariables.size());
-    res += mPimpl->generateMethodBodyCode(methodBody);
-
-    res += mPimpl->mProfile->endCreateVariablesArrayMethodString();
+        res += createVariablesArrayMethodCode;
+    }
 
     if (!mPimpl->mProfile->deleteArrayMethodString().empty()) {
-        res += "\n";
+        if (!res.empty()) {
+            res += "\n";
+        }
+
         res += mPimpl->mProfile->deleteArrayMethodString();
     }
 
@@ -2992,7 +3003,7 @@ std::string Generator::code() const
 
     res += mPimpl->mProfile->beginInitializeConstantsMethodString();
 
-    methodBody = "";
+    std::string methodBody;
 
     for (const auto &internalVariable : mPimpl->mInternalVariables) {
         if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
