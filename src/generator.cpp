@@ -1587,11 +1587,11 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 
 std::string Generator::GeneratorImpl::generateOriginCommentCode()
 {
-    if (!mProfile->beginCommentString().empty()
+    if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
-        return mProfile->beginCommentString()
-               + replace(mProfile->originCommentString(), "<VERSION>", versionString())
-               + mProfile->endCommentString() + "\n";
+        return replace(mProfile->commentString(), "<CODE>",
+                       replace(mProfile->originCommentString(), "<VERSION>", versionString()))
+               + "\n";
     }
 
     return {};

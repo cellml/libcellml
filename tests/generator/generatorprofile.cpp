@@ -241,9 +241,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ("/* ", generatorProfile->beginCommentString());
-    EXPECT_EQ(" */", generatorProfile->endCommentString());
-
+    EXPECT_EQ("/* <CODE> */", generatorProfile->commentString());
     EXPECT_EQ("The contents of this file was generated from version <VERSION> of libCellML.", generatorProfile->originCommentString());
 
     EXPECT_EQ("#include <math.h>\n"
@@ -581,9 +579,7 @@ TEST(GeneratorProfile, miscellaneous)
 
     const std::string value = "value";
 
-    generatorProfile->setBeginCommentString(value);
-    generatorProfile->setEndCommentString(value);
-
+    generatorProfile->setCommentString(value);
     generatorProfile->setOriginCommentString(value);
 
     generatorProfile->setHeaderString(value);
@@ -644,9 +640,7 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setArrayElementSeparatorString(value);
     generatorProfile->setCommandSeparatorString(value);
 
-    EXPECT_EQ(value, generatorProfile->beginCommentString());
-    EXPECT_EQ(value, generatorProfile->endCommentString());
-
+    EXPECT_EQ(value, generatorProfile->commentString());
     EXPECT_EQ(value, generatorProfile->originCommentString());
 
     EXPECT_EQ(value, generatorProfile->headerString());

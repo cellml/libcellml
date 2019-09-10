@@ -1128,9 +1128,7 @@ TEST(Generator, coverage)
     profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
     profile->setHasConditionalOperator(false);
 
-    profile->setBeginCommentString("");
-    profile->setEndCommentString("");
-
+    profile->setCommentString("");
     profile->setOriginCommentString("");
 
     profile->setHeaderString("");
