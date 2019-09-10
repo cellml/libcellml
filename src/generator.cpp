@@ -619,7 +619,8 @@ struct Generator::GeneratorImpl
                                  size_t &unitsSize,
                                  const VariablePtr &variable);
 
-    std::string generateOriginCommentCode();
+    void addOriginCommentCode(std::string &code);
+
     std::string generateVariableInfoObjectCode();
     std::string generateVariableInfoEntryCode(const std::string &component,
                                               const std::string &name,
@@ -1585,13 +1586,16 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
     unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
 }
 
-std::string Generator::GeneratorImpl::generateOriginCommentCode()
+void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
 {
     if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
-        return replace(mProfile->commentString(), "<CODE>",
-                       replace(mProfile->originCommentString(), "<VERSION>", versionString()))
-               + "\n";
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += replace(mProfile->commentString(), "<CODE>",
+                        replace(mProfile->originCommentString(), "<VERSION>", versionString()));
     }
 
     return {};
@@ -2653,7 +2657,7 @@ std::string Generator::code() const
 
     std::string res;
 
-    res += mPimpl->generateOriginCommentCode();
+    mPimpl->addOriginCommentCode(res);
 
     // Generate code for the header.
 
