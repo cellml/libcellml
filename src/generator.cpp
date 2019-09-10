@@ -624,14 +624,14 @@ struct Generator::GeneratorImpl
     void addVersionCode(std::string &code);
     void addStateAndVariableCountCode(std::string &code);
     void addVariableInfoObjectCode(std::string &code);
-
-    std::string generateVariableInfoEntryCode(const std::string &component,
-                                              const std::string &name,
-                                              const std::string &units);
-    std::string generateInfoCode(const std::string &beginInfoString,
-                                 const std::string &endInfoString,
-                                 const std::vector<VariablePtr> &variables);
-
+    void addVariableInfoEntryCode(const std::string &component,
+                                  const std::string &name,
+                                  const std::string &units,
+                                  std::string &code);
+    void addInfoCode(const std::string &beginInfoString,
+                     const std::string &endInfoString,
+                     const std::vector<VariablePtr> &variables,
+                     std::string &code);
     void addVoiInfoCode(std::string &code);
     void addStateInfoCode(std::string &code);
     void addVariableInfoCode(std::string &code);
@@ -1675,24 +1675,22 @@ void Generator::GeneratorImpl::addVariableInfoObjectCode(std::string &code)
     }
 }
 
-std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &component,
-                                                                    const std::string &name,
-                                                                    const std::string &units)
+void Generator::GeneratorImpl::addVariableInfoEntryCode(const std::string &component,
+                                                        const std::string &name,
+                                                        const std::string &units,
+                                                        std::string &code)
 {
-    return replace(replace(replace(mProfile->variableInfoEntryString(),
-                                   "<COMPONENT>", component),
-                           "<NAME>", name),
-                   "<UNITS>", units);
+    code += replace(replace(replace(mProfile->variableInfoEntryString(),
+                                    "<COMPONENT>", component),
+                            "<NAME>", name),
+                    "<UNITS>", units);
 }
 
-std::string Generator::GeneratorImpl::generateInfoCode(const std::string &beginInfoString,
-                                                       const std::string &endInfoString,
-                                                       const std::vector<VariablePtr> &variables)
+void Generator::GeneratorImpl::addInfoCode(const std::string &beginInfoString,
+                                           const std::string &endInfoString,
+                                           const std::vector<VariablePtr> &variables,
+                                           std::string &code)
 {
-    if (mProfile->variableInfoEntryString().empty()) {
-        return {};
-    }
-
     std::string infoElements;
 
     for (const auto &variable : variables) {
@@ -1700,16 +1698,18 @@ std::string Generator::GeneratorImpl::generateInfoCode(const std::string &beginI
             infoElements += mProfile->arrayElementSeparatorString() + "\n";
         }
 
-        infoElements += mProfile->indentString()
-                        + generateVariableInfoEntryCode(variable->parentComponent()->name(),
-                                                        variable->name(), variable->units());
+        infoElements += mProfile->indentString();
+
+        addVariableInfoEntryCode(variable->parentComponent()->name(),
+                                 variable->name(), variable->units(),
+                                 infoElements);
     }
 
     if (!infoElements.empty()) {
         infoElements += "\n";
     }
 
-    return beginInfoString + infoElements + endInfoString;
+    code += beginInfoString + infoElements + endInfoString;
 }
 
 void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
@@ -1724,9 +1724,11 @@ void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
         std::string name = (mVoi != nullptr) ? mVoi->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->units() : "";
 
-        code += mProfile->beginVoiInfoString()
-                + generateVariableInfoEntryCode(component, name, units)
-                + mProfile->endVoiInfoString();
+        code += mProfile->beginVoiInfoString();
+
+        addVariableInfoEntryCode(component, name, units, code);
+
+        code += mProfile->endVoiInfoString();
     }
 }
 
@@ -1738,9 +1740,9 @@ void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
             code += "\n";
         }
 
-        code += generateInfoCode(mProfile->beginStateInfoString(),
-                                 mProfile->endStateInfoString(),
-                                 mStates);
+        addInfoCode(mProfile->beginStateInfoString(),
+                    mProfile->endStateInfoString(),
+                    mStates, code);
     }
 }
 
@@ -1758,9 +1760,9 @@ void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
             variables.push_back(variable->variable());
         }
 
-        code += generateInfoCode(mProfile->beginVariableInfoString(),
-                                 mProfile->endVariableInfoString(),
-                                 variables);
+        addInfoCode(mProfile->beginVariableInfoString(),
+                    mProfile->endVariableInfoString(),
+                    variables, code);
     }
 }
 
