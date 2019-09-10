@@ -10,7 +10,7 @@ VARIABLE_COUNT = 217
 
 VOI_INFO = {"component": "Nai_concentration", "name": "time", "units": "second"}
 
-STATE_VECTOR_INFORMATION_ARRAY = [
+STATE_INFO = [
     {"component": "Ca_SR_release", "name": "R", "units": "dimensionless"},
     {"component": "Ca_SR_release", "name": "O", "units": "dimensionless"},
     {"component": "Ca_SR_release", "name": "I", "units": "dimensionless"},
@@ -46,7 +46,7 @@ STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "Nai_concentration", "name": "Nai_", "units": "millimolar"},
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
+VARIABLE_INFO = [
     {"component": "Ca_SR_release", "name": "EC50_SR", "units": "millimolar"},
     {"component": "Ca_SR_release", "name": "HSR", "units": "dimensionless"},
     {"component": "Ca_SR_release", "name": "MaxSR", "units": "dimensionless"},

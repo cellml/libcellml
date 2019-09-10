@@ -17,7 +17,7 @@ struct VariableInfo {
 
 const struct VariableInfo VOI_INFO = {"Nai_concentration", "time", "second"};
 
-const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo STATE_INFO[] = {
     {"Ca_SR_release", "R", "dimensionless"},
     {"Ca_SR_release", "O", "dimensionless"},
     {"Ca_SR_release", "I", "dimensionless"},
@@ -53,7 +53,7 @@ const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
     {"Nai_concentration", "Nai_", "millimolar"},
 };
 
-const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VARIABLE_INFO[] = {
     {"Ca_SR_release", "EC50_SR", "millimolar"},
     {"Ca_SR_release", "HSR", "dimensionless"},
     {"Ca_SR_release", "MaxSR", "dimensionless"},

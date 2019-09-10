@@ -1902,20 +1902,20 @@ public:
     std::string voiInfoString() const;
     void setVoiInfoString(const std::string &voiInfoString);
 
-    std::string templateVariableInformationEntryString() const;
-    void setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString);
+    std::string beginStateInfoString() const;
+    void setBeginStateInfoString(const std::string &beginStateInfoString);
 
-    std::string beginStateVectorInformationArrayString() const;
-    void setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString);
+    std::string endStateInfoString() const;
+    void setEndStateInfoString(const std::string &endStateInfoString);
 
-    std::string endStateVectorInformationArrayString() const;
-    void setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString);
+    std::string beginVariableInfoString() const;
+    void setBeginVariableInfoString(const std::string &beginVariableInfoString);
 
-    std::string beginVariableVectorInformationArrayString() const;
-    void setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString);
+    std::string endVariableInfoString() const;
+    void setEndVariableInfoString(const std::string &endVariableInfoString);
 
-    std::string endVariableVectorInformationArrayString() const;
-    void setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString);
+    std::string variableInfoEntryString() const;
+    void setVariableInfoEntryString(const std::string &variableInfoEntryString);
 
     /**
      * @brief Get the @c std::string for the name of the variable of

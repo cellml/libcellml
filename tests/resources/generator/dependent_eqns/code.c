@@ -17,11 +17,11 @@ struct VariableInfo {
 
 const struct VariableInfo VOI_INFO = {"my_component", "time", "second"};
 
-const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo STATE_INFO[] = {
     {"my_component", "x", "dimensionless"},
 };
 
-const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VARIABLE_INFO[] = {
     {"my_component", "b", "second"},
     {"my_component", "a", "second"},
 };

@@ -10,10 +10,10 @@ VARIABLE_COUNT = 2
 
 VOI_INFO = {"component": "", "name": "", "units": ""}
 
-STATE_VECTOR_INFORMATION_ARRAY = [
+STATE_INFO = [
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
+VARIABLE_INFO = [
     {"component": "my_algebraic_eqn", "name": "a", "units": "dimensionless"},
     {"component": "my_algebraic_eqn", "name": "x", "units": "dimensionless"},
 ]

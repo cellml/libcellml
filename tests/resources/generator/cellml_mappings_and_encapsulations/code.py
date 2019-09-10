@@ -10,12 +10,12 @@ VARIABLE_COUNT = 2
 
 VOI_INFO = {"component": "circle_x", "name": "t", "units": "ms"}
 
-STATE_VECTOR_INFORMATION_ARRAY = [
+STATE_INFO = [
     {"component": "circle_x_source", "name": "x", "units": "mM"},
     {"component": "circle_y_implementation", "name": "y", "units": "mM"},
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
+VARIABLE_INFO = [
     {"component": "circle_sibling", "name": "local_complex_maths", "units": "mM"},
     {"component": "circle_x_sibling", "name": "two_x", "units": "milli_mole"},
 ]

@@ -10,14 +10,14 @@ VARIABLE_COUNT = 18
 
 VOI_INFO = {"component": "membrane", "name": "time", "units": "millisecond"}
 
-STATE_VECTOR_INFORMATION_ARRAY = [
+STATE_INFO = [
     {"component": "sodium_channel_m_gate", "name": "m", "units": "dimensionless"},
     {"component": "sodium_channel_h_gate", "name": "h", "units": "dimensionless"},
     {"component": "potassium_channel_n_gate", "name": "n", "units": "dimensionless"},
     {"component": "membrane", "name": "V", "units": "millivolt"},
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
+VARIABLE_INFO = [
     {"component": "leakage_current", "name": "g_L", "units": "milliS_per_cm2"},
     {"component": "membrane", "name": "Cm", "units": "microF_per_cm2"},
     {"component": "membrane", "name": "E_R", "units": "millivolt"},
