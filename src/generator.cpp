@@ -622,6 +622,7 @@ struct Generator::GeneratorImpl
     void addOriginCommentCode(std::string &code);
     void addHeaderCode(std::string &code);
     void addVersionCode(std::string &code);
+    void addStateAndVariableCountCode(std::string &code);
 
     std::string generateVariableInfoObjectCode();
     std::string generateVariableInfoEntryCode(const std::string &component,
@@ -1620,6 +1621,24 @@ void Generator::GeneratorImpl::addVersionCode(std::string &code)
         }
 
         code += replace(mProfile->versionString(), "<VERSION>", versionString());
+    }
+}
+
+void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code)
+{
+    if (!mProfile->stateCountString().empty()
+        || !mProfile->variableCountString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        if (!mProfile->stateCountString().empty()) {
+            code += replace(mProfile->stateCountString(), "<STATE_COUNT>", std::to_string(mStates.size()));
+        }
+
+        if (!mProfile->variableCountString().empty()) {
+            code += replace(mProfile->variableCountString(), "<VARIABLE_COUNT>", std::to_string(mVariables.size()));
+        }
     }
 }
 
@@ -2691,17 +2710,7 @@ std::string Generator::code() const
 
     // Generate code for the number of states and variables.
 
-    std::string stateCount = mPimpl->replace(mPimpl->mProfile->stateCountString(), "<STATE_COUNT>", std::to_string(mPimpl->mStates.size()));
-    std::string variableCount = mPimpl->replace(mPimpl->mProfile->variableCountString(), "<VARIABLE_COUNT>", std::to_string(mPimpl->mVariables.size()));
-
-    if (!stateCount.empty() || !variableCount.empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += stateCount;
-        res += variableCount;
-    }
+    mPimpl->addStateAndVariableCountCode(res);
 
     // Generate code for the data structure.
 
