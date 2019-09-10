@@ -618,7 +618,6 @@ struct Generator::GeneratorImpl
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
                                  const VariablePtr &variable);
-
     std::string generateVariableInfoObjectCode();
     std::string generateVariableInfoEntryCode(const std::string &component,
                                               const std::string &name,
@@ -629,6 +628,7 @@ struct Generator::GeneratorImpl
     std::string generateVoiInfoCode();
     std::string generateStateInfoCode();
     std::string generateVariableInfoCode();
+
     std::string generateCreateArrayCode(size_t arraySize);
 
     std::string generateDoubleCode(const std::string &value);
@@ -1561,11 +1561,9 @@ std::string Generator::GeneratorImpl::replace(std::string string,
                                               const std::string &from,
                                               const std::string &to)
 {
-    auto index = string.find(from);
-
-    return (string.empty() || (index == std::string::npos)) ?
+    return (string.empty()) ?
                "" :
-               string.replace(index, from.length(), to);
+               string.replace(string.find(from), from.length(), to);
 }
 
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
