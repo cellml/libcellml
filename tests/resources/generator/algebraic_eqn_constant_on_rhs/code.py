@@ -8,8 +8,6 @@ __version__ = "0.2.0"
 STATE_COUNT = 0
 VARIABLE_COUNT = 1
 
-VOI_INFO = {"component": "", "name": "", "units": ""}
-
 STATE_INFO = [
 ]
 
