@@ -623,8 +623,8 @@ struct Generator::GeneratorImpl
     void addHeaderCode(std::string &code);
     void addVersionCode(std::string &code);
     void addStateAndVariableCountCode(std::string &code);
+    void addVariableInfoObjectCode(std::string &code);
 
-    std::string generateVariableInfoObjectCode();
     std::string generateVariableInfoEntryCode(const std::string &component,
                                               const std::string &name,
                                               const std::string &units);
@@ -1642,30 +1642,36 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code)
     }
 }
 
-std::string Generator::GeneratorImpl::generateVariableInfoObjectCode()
+void Generator::GeneratorImpl::addVariableInfoObjectCode(std::string &code)
 {
-    size_t componentSize = 0;
-    size_t nameSize = 0;
-    size_t unitsSize = 0;
+    if (!mPimpl->mProfile->variableInfoObjectString().empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
 
-    if (mVoi != nullptr) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, mVoi);
+        size_t componentSize = 0;
+        size_t nameSize = 0;
+        size_t unitsSize = 0;
+
+        if (mVoi != nullptr) {
+            updateVariableInfoSizes(componentSize, nameSize, unitsSize, mVoi);
+        }
+
+        for (const auto &state : mStates) {
+            updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
+        }
+
+        for (const auto &generatorVariable : mVariables) {
+            auto variable = generatorVariable->variable();
+
+            updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
+        }
+
+        code += replace(replace(replace(mProfile->variableInfoObjectString(),
+                                        "<COMPONENT_SIZE>", std::to_string(componentSize)),
+                                "<NAME_SIZE>", std::to_string(nameSize)),
+                        "<UNITS_SIZE>", std::to_string(unitsSize));
     }
-
-    for (const auto &state : mStates) {
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
-    }
-
-    for (const auto &generatorVariable : mVariables) {
-        auto variable = generatorVariable->variable();
-
-        updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
-    }
-
-    return replace(replace(replace(mProfile->variableInfoObjectString(),
-                                   "<COMPONENT_SIZE>", std::to_string(componentSize)),
-                           "<NAME_SIZE>", std::to_string(nameSize)),
-                   "<UNITS_SIZE>", std::to_string(unitsSize));
 }
 
 std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &component,
@@ -2712,15 +2718,9 @@ std::string Generator::code() const
 
     mPimpl->addStateAndVariableCountCode(res);
 
-    // Generate code for the data structure.
+    // Add code for the variable information object.
 
-    if (!mPimpl->mProfile->variableInfoObjectString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->generateVariableInfoObjectCode();
-    }
+    mPimpl->addVariableInfoObjectCode(res);
 
     // Generate code for the information about the variable of integration,
     // states and (other) variables.
