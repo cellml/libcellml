@@ -639,6 +639,10 @@ struct Generator::GeneratorImpl
 
     std::string generateCreateArrayCode(size_t arraySize);
 
+    void addCreateStatesArrayCode(std::string &code);
+    void addCreateVariablesArrayCode(std::string &code);
+    void addDeleteArrayMethodCode(std::string &code);
+
     std::string generateDoubleCode(const std::string &value);
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          const GeneratorEquationAstPtr &ast = nullptr);
@@ -1956,12 +1960,47 @@ void Generator::GeneratorImpl::addExtraMathFunctionsCode(std::string &code)
 
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
 {
-    if (mProfile->returnCreatedArrayString().empty()) {
-        return {};
-    }
+    return replace(mProfile->returnCreatedArrayString(), "<ARRAY_SIZE>",
+                   std::to_string(arraySize));
+}
 
-    return replace(mProfile->indentString() + mProfile->returnCreatedArrayString(),
-                   "<ARRAY_SIZE>", std::to_string(arraySize));
+void Generator::GeneratorImpl::addCreateStatesArrayCode(std::string &code)
+{
+    if (!mProfile->beginCreateStatesArrayMethodString().empty()
+        && !mProfile->returnCreatedArrayString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->beginCreateStatesArrayMethodString()
+                + mProfile->indentString() + generateCreateArrayCode(mStates.size())
+                + mProfile->endCreateStatesArrayMethodString();
+    }
+}
+
+void Generator::GeneratorImpl::addCreateVariablesArrayCode(std::string &code)
+{
+    if (!mProfile->beginCreateVariablesArrayMethodString().empty()
+        && !mProfile->returnCreatedArrayString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->beginCreateVariablesArrayMethodString()
+                + mProfile->indentString() + generateCreateArrayCode(mVariables.size())
+                + mProfile->endCreateVariablesArrayMethodString();
+    }
+}
+
+void Generator::GeneratorImpl::addDeleteArrayMethodCode(std::string &code)
+{
+    if (!mProfile->deleteArrayMethodString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->deleteArrayMethodString();
+    }
 }
 
 std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
@@ -2947,37 +2986,9 @@ std::string Generator::code() const
 
     // Generate code to create and delete arrays.
 
-    std::string createStatesArrayMethodCode = mPimpl->mProfile->beginCreateStatesArrayMethodString()
-                                              + mPimpl->generateMethodBodyCode(mPimpl->generateCreateArrayCode(mPimpl->mStates.size()))
-                                              + mPimpl->mProfile->endCreateStatesArrayMethodString();
-
-    if (!createStatesArrayMethodCode.empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += createStatesArrayMethodCode;
-    }
-
-    std::string createVariablesArrayMethodCode = mPimpl->mProfile->beginCreateVariablesArrayMethodString()
-                                                 + mPimpl->generateMethodBodyCode(mPimpl->generateCreateArrayCode(mPimpl->mVariables.size()))
-                                                 + mPimpl->mProfile->endCreateVariablesArrayMethodString();
-
-    if (!createVariablesArrayMethodCode.empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += createVariablesArrayMethodCode;
-    }
-
-    if (!mPimpl->mProfile->deleteArrayMethodString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->deleteArrayMethodString();
-    }
+    mPimpl->addCreateStatesArrayCode(res);
+    mPimpl->addCreateVariablesArrayCode(res);
+    mPimpl->addDeleteArrayMethodCode(res);
 
     // Generate code to initialise the model.
 
