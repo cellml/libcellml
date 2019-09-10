@@ -618,6 +618,8 @@ struct Generator::GeneratorImpl
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
                                  const VariablePtr &variable);
+
+    std::string generateOriginCommentCode();
     std::string generateVariableInfoObjectCode();
     std::string generateVariableInfoEntryCode(const std::string &component,
                                               const std::string &name,
@@ -1579,6 +1581,18 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
     componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
     nameSize = (nameSize > variableNameSize) ? nameSize : variableNameSize;
     unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
+}
+
+std::string Generator::GeneratorImpl::generateOriginCommentCode()
+{
+    if (!mProfile->beginCommentString().empty()
+        && !mProfile->originCommentString().empty()) {
+        return mProfile->beginCommentString()
+               + replace(mProfile->originCommentString(), "<VERSION>", versionString())
+               + mProfile->endCommentString() + "\n";
+    }
+
+    return {};
 }
 
 std::string Generator::GeneratorImpl::generateVariableInfoObjectCode()
@@ -2636,11 +2650,8 @@ std::string Generator::code() const
     // Generate code for the origin comment.
 
     std::string res;
-    std::string originComment = mPimpl->replace(mPimpl->mProfile->originCommentString(), "<VERSION>", versionString());
 
-    if (!originComment.empty()) {
-        res += mPimpl->mProfile->beginCommentString() + originComment + mPimpl->mProfile->endCommentString() + "\n";
-    }
+    res += mPimpl->generateOriginCommentCode();
 
     // Generate code for the header.
 
