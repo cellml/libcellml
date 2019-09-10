@@ -621,6 +621,7 @@ struct Generator::GeneratorImpl
 
     void addOriginCommentCode(std::string &code);
     void addHeaderCode(std::string &code);
+    void addVersionCode(std::string &code);
 
     std::string generateVariableInfoObjectCode();
     std::string generateVariableInfoEntryCode(const std::string &component,
@@ -1608,6 +1609,17 @@ void Generator::GeneratorImpl::addHeaderCode(std::string &code)
         }
 
         code += mProfile->headerString();
+    }
+}
+
+void Generator::GeneratorImpl::addVersionCode(std::string &code)
+{
+    if (!mProfile->versionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += replace(mProfile->versionString(), "<VERSION>", versionString());
     }
 }
 
@@ -2673,17 +2685,9 @@ std::string Generator::code() const
 
     mPimpl->addHeaderCode(res);
 
-    // Generate code for the version of libCellML.
+    // Generate code for the version (of libCellML).
 
-    std::string version = mPimpl->replace(mPimpl->mProfile->versionString(), "<VERSION>", versionString());
-
-    if (!version.empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += version;
-    }
+    mPimpl->addVersionCode(res);
 
     // Generate code for the number of states and variables.
 
