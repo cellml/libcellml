@@ -313,13 +313,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
 }
 
-TEST(GeneratorProfile, defaultTemplateValues)
-{
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
-
-    EXPECT_EQ("VALUE", generatorProfile->templateReplacementString());
-}
-
 TEST(GeneratorProfile, relationalAndLogicalOperators)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
@@ -713,15 +706,4 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->arrayElementSeparatorString());
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
-}
-
-TEST(GeneratorProfile, templateValues)
-{
-    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
-
-    const std::string value = "placeholder";
-
-    generatorProfile->setTemplateReplacementString(value);
-
-    EXPECT_EQ(value, generatorProfile->templateReplacementString());
 }

@@ -2221,9 +2221,6 @@ public:
      */
     void setEmptyMethodString(const std::string &emptyMethodString);
 
-    std::string templateReplacementString() const;
-    void setTemplateReplacementString(const std::string &templateReplacementString);
-
     /**
      * @brief Get the @c std::string for an indent.
      *
