@@ -10,10 +10,10 @@ VARIABLE_COUNT = 1
 
 VOI_INFO = {"component": "", "name": "", "units": ""}
 
-STATE_VECTOR_INFORMATION_ARRAY = [
+STATE_INFO = [
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
+VARIABLE_INFO = [
     {"component": "my_component", "name": "x", "units": "dimensionless"},
 ]
 

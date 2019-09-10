@@ -621,6 +621,8 @@ struct Generator::GeneratorImpl
 
     std::string generateVariableInfoObjectString();
     std::string generateVoiInfoString();
+    std::string generateStateInfoString();
+    std::string generateVariableInfoString();
 
     std::string generateDouble(const std::string &value);
     std::string generateVariableName(const VariablePtr &variable,
@@ -648,8 +650,6 @@ struct Generator::GeneratorImpl
     std::string replaceMultipleTemplateValues(std::string templateString,
                                               const std::vector<size_t> &replacements);
 
-    std::string generateStateInformationArray();
-    std::string generateVariableInformationArray();
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
@@ -1624,6 +1624,46 @@ std::string Generator::GeneratorImpl::generateVoiInfoString()
                    "<UNITS>", units);
 }
 
+std::string Generator::GeneratorImpl::generateStateInfoString()
+{
+    std::string res = mProfile->beginStateInfoString();
+
+    for (const auto &state : mStates) {
+        res += mProfile->indentString()
+                + replace(replace(replace(mProfile->variableInfoEntryString(),
+                                       "<COMPONENT>", state->parentComponent()->name()),
+                               "<NAME>", state->name()),
+                       "<UNITS>", state->units())
+                + mProfile->arrayElementSeparatorString() + "\n";
+    }
+
+    res += mProfile->endStateInfoString();
+
+    return res;
+}
+
+std::string Generator::GeneratorImpl::generateVariableInfoString()
+{
+    std::string res = mProfile->beginVariableInfoString();
+
+    for (const auto &generatorVariable : mVariables) {
+        auto variable = generatorVariable->variable();
+
+        std::vector<std::string> details = {variable->parentComponent()->name(), variable->name(), variable->units()};
+
+        res += mProfile->indentString()
+                + replace(replace(replace(mProfile->variableInfoEntryString(),
+                                       "<COMPONENT>", variable->parentComponent()->name()),
+                               "<NAME>", variable->name()),
+                       "<UNITS>", variable->units())
+                + mProfile->arrayElementSeparatorString() + "\n";
+    }
+
+    res += mProfile->endVariableInfoString();
+
+    return res;
+}
+
 std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
 {
     if (value.find('.') != std::string::npos) {
@@ -2405,35 +2445,6 @@ std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string 
     return templateString;
 }
 
-std::string Generator::GeneratorImpl::generateStateInformationArray()
-{
-    std::string res;
-    res += mProfile->beginStateVectorInformationArrayString();
-    for (const auto &state : mStates) {
-        std::vector<std::string> details = {state->parentComponent()->name(), state->name(), state->units()};
-        res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
-               + mProfile->arrayElementSeparatorString() + "\n";
-    }
-    res += mProfile->endStateVectorInformationArrayString();
-
-    return res;
-}
-
-std::string Generator::GeneratorImpl::generateVariableInformationArray()
-{
-    std::string res;
-    res += mProfile->beginVariableVectorInformationArrayString();
-    for (const auto &generatorVariable : mVariables) {
-        auto variable = generatorVariable->variable();
-        std::vector<std::string> details = {variable->parentComponent()->name(), variable->name(), variable->units()};
-        res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
-               + mProfile->arrayElementSeparatorString() + "\n";
-    }
-    res += mProfile->endVariableVectorInformationArrayString();
-
-    return res;
-}
-
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
     return mProfile->indentString() + generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
@@ -2701,17 +2712,25 @@ std::string Generator::code() const
         res += mPimpl->generateVoiInfoString();
     }
 
-    if (!res.empty()) {
-        res += "\n";
+    std::string stateInfo = mPimpl->generateStateInfoString();
+
+    if (!stateInfo.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += stateInfo;
     }
 
-    res += mPimpl->generateStateInformationArray();
+    std::string variableInfo = mPimpl->generateVariableInfoString();
 
-    if (!res.empty()) {
-        res += "\n";
+    if (!variableInfo.empty()) {
+        if (!res.empty()) {
+            res += "\n";
+        }
+
+        res += variableInfo;
     }
-
-    res += mPimpl->generateVariableInformationArray();
 
     // Generate code for extra mathematical functions.
 

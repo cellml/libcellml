@@ -10,7 +10,7 @@ VARIABLE_COUNT = 185
 
 VOI_INFO = {"component": "membrane", "name": "time", "units": "second"}
 
-STATE_VECTOR_INFORMATION_ARRAY = [
+STATE_INFO = [
     {"component": "sodium_current_m_gate", "name": "m", "units": "dimensionless"},
     {"component": "sodium_current_h_gate", "name": "h1", "units": "dimensionless"},
     {"component": "sodium_current_h_gate", "name": "h2", "units": "dimensionless"},
@@ -28,7 +28,7 @@ STATE_VECTOR_INFORMATION_ARRAY = [
     {"component": "membrane", "name": "V", "units": "millivolt"},
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
+VARIABLE_INFO = [
     {"component": "L_type_Ca_channel", "name": "E_Ca_L", "units": "millivolt"},
     {"component": "L_type_Ca_channel", "name": "g_Ca_L_Centre_0DCapable", "units": "microS"},
     {"component": "L_type_Ca_channel", "name": "g_Ca_L_Centre_1DCapable", "units": "microS"},

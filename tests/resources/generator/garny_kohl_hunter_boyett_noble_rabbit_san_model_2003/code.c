@@ -17,7 +17,7 @@ struct VariableInfo {
 
 const struct VariableInfo VOI_INFO = {"membrane", "time", "second"};
 
-const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo STATE_INFO[] = {
     {"sodium_current_m_gate", "m", "dimensionless"},
     {"sodium_current_h_gate", "h1", "dimensionless"},
     {"sodium_current_h_gate", "h2", "dimensionless"},
@@ -35,7 +35,7 @@ const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
     {"membrane", "V", "millivolt"},
 };
 
-const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VARIABLE_INFO[] = {
     {"L_type_Ca_channel", "E_Ca_L", "millivolt"},
     {"L_type_Ca_channel", "g_Ca_L_Centre_0DCapable", "microS"},
     {"L_type_Ca_channel", "g_Ca_L_Centre_1DCapable", "microS"},

@@ -167,6 +167,14 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mVoiInfoString;
 
+    std::string mBeginStateInfoString;
+    std::string mEndStateInfoString;
+
+    std::string mBeginVariableInfoString;
+    std::string mEndVariableInfoString;
+
+    std::string mVariableInfoEntryString;
+
     std::string mVoiString;
 
     std::string mStatesArrayString;
@@ -196,12 +204,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mEmptyMethodString;
     std::string mTemplateReplacementString;
     std::string mTemplateReturnCreatedArrayString;
-
-    std::string mTemplateVariableInformationEntryString;
-    std::string mBeginStateVectorInformationArrayString;
-    std::string mEndStateVectorInformationArrayString;
-    std::string mBeginVariableVectorInformationArrayString;
-    std::string mEndVariableVectorInformationArrayString;
 
     std::string mIndentString;
 
@@ -411,6 +413,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVoiInfoString = "const struct VariableInfo VOI_INFO = {\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"};\n";
 
+        mBeginStateInfoString = "const struct VariableInfo STATE_INFO[] = {\n";
+        mEndStateInfoString = "};\n";
+
+        mBeginVariableInfoString = "const struct VariableInfo VARIABLE_INFO[] = {\n";
+        mEndVariableInfoString = "};\n";
+
+        mVariableInfoEntryString = "{\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"}";
+
         mVoiString = "voi";
 
         mStatesArrayString = "states";
@@ -442,11 +452,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mEmptyMethodString = "";
 
-        mBeginStateVectorInformationArrayString = "const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {\n";
-        mEndStateVectorInformationArrayString = "};\n";
-        mBeginVariableVectorInformationArrayString = "const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n";
-        mEndVariableVectorInformationArrayString = "};\n";
-
         mIndentString = "    ";
 
         mOpenArrayString = "[";
@@ -460,7 +465,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReplacementString = "VALUE";
 
         mTemplateReturnCreatedArrayString = "return (double *) malloc(VALUE * sizeof(double));\n";
-        mTemplateVariableInformationEntryString = "{\"VALUE\", \"VALUE\", \"VALUE\"}";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
@@ -630,6 +634,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mVoiInfoString = "VOI_INFO = {\"component\": \"<COMPONENT>\", \"name\": \"<NAME>\", \"units\": \"<UNITS>\"}\n";
 
+        mBeginStateInfoString = "STATE_INFO = [\n";
+        mEndStateInfoString = "]\n";
+
+        mBeginVariableInfoString = "VARIABLE_INFO = [\n";
+        mEndVariableInfoString = "]\n\n";
+
+        mVariableInfoEntryString = "{\"component\": \"<COMPONENT>\", \"name\": \"<NAME>\", \"units\": \"<UNITS>\"}";
+
         mVoiString = "voi";
 
         mStatesArrayString = "states";
@@ -658,11 +670,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mEmptyMethodString = "pass\n";
 
-        mBeginStateVectorInformationArrayString = "STATE_VECTOR_INFORMATION_ARRAY = [\n";
-        mEndStateVectorInformationArrayString = "]\n";
-        mBeginVariableVectorInformationArrayString = "VARIABLE_VECTOR_INFORMATION_ARRAY = [\n";
-        mEndVariableVectorInformationArrayString = "]\n\n";
-
         mIndentString = "    ";
 
         mOpenArrayString = "[";
@@ -676,7 +683,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mTemplateReplacementString = "VALUE";
 
         mTemplateReturnCreatedArrayString = "return [nan]*VALUE\n";
-        mTemplateVariableInformationEntryString = "{\"component\": \"VALUE\", \"name\": \"VALUE\", \"units\": \"VALUE\"}";
 
         break;
     }
@@ -813,6 +819,14 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mVoiInfoString = rhs.mPimpl->mVoiInfoString;
 
+    mPimpl->mBeginStateInfoString = rhs.mPimpl->mBeginStateInfoString;
+    mPimpl->mEndStateInfoString = rhs.mPimpl->mEndStateInfoString;
+
+    mPimpl->mBeginVariableInfoString = rhs.mPimpl->mBeginVariableInfoString;
+    mPimpl->mEndVariableInfoString = rhs.mPimpl->mEndVariableInfoString;
+
+    mPimpl->mVariableInfoEntryString = rhs.mPimpl->mVariableInfoEntryString;
+
     mPimpl->mVoiString = rhs.mPimpl->mVoiString;
 
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
@@ -842,12 +856,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
     mPimpl->mTemplateReplacementString = rhs.mPimpl->mTemplateReplacementString;
     mPimpl->mTemplateReturnCreatedArrayString = rhs.mPimpl->mTemplateReturnCreatedArrayString;
-
-    mPimpl->mTemplateVariableInformationEntryString = rhs.mPimpl->mTemplateVariableInformationEntryString;
-    mPimpl->mBeginStateVectorInformationArrayString = rhs.mPimpl->mBeginStateVectorInformationArrayString;
-    mPimpl->mEndStateVectorInformationArrayString = rhs.mPimpl->mEndStateVectorInformationArrayString;
-    mPimpl->mBeginVariableVectorInformationArrayString = rhs.mPimpl->mBeginVariableVectorInformationArrayString;
-    mPimpl->mEndVariableVectorInformationArrayString = rhs.mPimpl->mEndVariableVectorInformationArrayString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -1940,54 +1948,54 @@ void GeneratorProfile::setVoiInfoString(const std::string &voiInfoString)
     mPimpl->mVoiInfoString = voiInfoString;
 }
 
-std::string GeneratorProfile::templateVariableInformationEntryString() const
+std::string GeneratorProfile::beginStateInfoString() const
 {
-    return mPimpl->mTemplateVariableInformationEntryString;
+    return mPimpl->mBeginStateInfoString;
 }
 
-void GeneratorProfile::setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString)
+void GeneratorProfile::setBeginStateInfoString(const std::string &beginStateInfoString)
 {
-    mPimpl->mTemplateVariableInformationEntryString = templateVariableInformationEntryString;
+    mPimpl->mBeginStateInfoString = beginStateInfoString;
 }
 
-std::string GeneratorProfile::beginStateVectorInformationArrayString() const
+std::string GeneratorProfile::endStateInfoString() const
 {
-    return mPimpl->mBeginStateVectorInformationArrayString;
+    return mPimpl->mEndStateInfoString;
 }
 
-void GeneratorProfile::setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString)
+void GeneratorProfile::setEndStateInfoString(const std::string &endStateInfoString)
 {
-    mPimpl->mBeginStateVectorInformationArrayString = beginStateVectorInformationArrayString;
+    mPimpl->mEndStateInfoString = endStateInfoString;
 }
 
-std::string GeneratorProfile::endStateVectorInformationArrayString() const
+std::string GeneratorProfile::beginVariableInfoString() const
 {
-    return mPimpl->mEndStateVectorInformationArrayString;
+    return mPimpl->mBeginVariableInfoString;
 }
 
-void GeneratorProfile::setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString)
+void GeneratorProfile::setBeginVariableInfoString(const std::string &beginVariableInfoString)
 {
-    mPimpl->mEndStateVectorInformationArrayString = endStateVectorInformationArrayString;
+    mPimpl->mBeginVariableInfoString = beginVariableInfoString;
 }
 
-std::string GeneratorProfile::beginVariableVectorInformationArrayString() const
+std::string GeneratorProfile::endVariableInfoString() const
 {
-    return mPimpl->mBeginVariableVectorInformationArrayString;
+    return mPimpl->mEndVariableInfoString;
 }
 
-void GeneratorProfile::setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString)
+void GeneratorProfile::setEndVariableInfoString(const std::string &endVariableInfoString)
 {
-    mPimpl->mBeginVariableVectorInformationArrayString = beginVariableVectorInformationArrayString;
+    mPimpl->mEndVariableInfoString = endVariableInfoString;
 }
 
-std::string GeneratorProfile::endVariableVectorInformationArrayString() const
+std::string GeneratorProfile::variableInfoEntryString() const
 {
-    return mPimpl->mEndVariableVectorInformationArrayString;
+    return mPimpl->mVariableInfoEntryString;
 }
 
-void GeneratorProfile::setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString)
+void GeneratorProfile::setVariableInfoEntryString(const std::string &variableInfoEntryString)
 {
-    mPimpl->mEndVariableVectorInformationArrayString = endVariableVectorInformationArrayString;
+    mPimpl->mVariableInfoEntryString = variableInfoEntryString;
 }
 
 std::string GeneratorProfile::voiString() const

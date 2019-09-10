@@ -17,12 +17,12 @@ struct VariableInfo {
 
 const struct VariableInfo VOI_INFO = {"my_first_ode", "t", "second"};
 
-const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo STATE_INFO[] = {
     {"my_first_ode", "x", "dimensionless"},
     {"my_second_ode", "x", "dimensionless"},
 };
 
-const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VARIABLE_INFO[] = {
     {"my_second_ode", "a", "per_s"},
 };
 

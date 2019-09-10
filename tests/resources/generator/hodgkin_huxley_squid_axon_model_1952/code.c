@@ -17,14 +17,14 @@ struct VariableInfo {
 
 const struct VariableInfo VOI_INFO = {"membrane", "time", "millisecond"};
 
-const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo STATE_INFO[] = {
     {"sodium_channel_m_gate", "m", "dimensionless"},
     {"sodium_channel_h_gate", "h", "dimensionless"},
     {"potassium_channel_n_gate", "n", "dimensionless"},
     {"membrane", "V", "millivolt"},
 };
 
-const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
+const struct VariableInfo VARIABLE_INFO[] = {
     {"leakage_current", "g_L", "milliS_per_cm2"},
     {"membrane", "Cm", "microF_per_cm2"},
     {"membrane", "E_R", "millivolt"},

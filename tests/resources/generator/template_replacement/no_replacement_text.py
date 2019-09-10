@@ -10,13 +10,13 @@ VARIABLE_COUNT = 2
 
 VOI_INFO = {"component": "my_ode", "name": "t", "units": "second"}
 
-STATE_VECTOR_INFORMATION_ARRAY = [
-    dimensionlessvmy_ode{"component": "VALUE", "name": "VALUE", "units": "VALUE"},
+STATE_INFO = [
+    {"component": "my_ode", "name": "v", "units": "dimensionless"},
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    per_samy_ode{"component": "VALUE", "name": "VALUE", "units": "VALUE"},
-    per_sxmy_algebraic_eqn{"component": "VALUE", "name": "VALUE", "units": "VALUE"},
+VARIABLE_INFO = [
+    {"component": "my_ode", "name": "a", "units": "per_s"},
+    {"component": "my_algebraic_eqn", "name": "x", "units": "per_s"},
 ]
 
 

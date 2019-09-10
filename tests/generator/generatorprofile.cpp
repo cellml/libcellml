@@ -263,6 +263,14 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("const struct VariableInfo VOI_INFO = {\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"};\n", generatorProfile->voiInfoString());
 
+    EXPECT_EQ("const struct VariableInfo STATE_INFO[] = {\n", generatorProfile->beginStateInfoString());
+    EXPECT_EQ("};\n", generatorProfile->endStateInfoString());
+
+    EXPECT_EQ("const struct VariableInfo VARIABLE_INFO[] = {\n", generatorProfile->beginVariableInfoString());
+    EXPECT_EQ("};\n", generatorProfile->endVariableInfoString());
+
+    EXPECT_EQ("{\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"}", generatorProfile->variableInfoEntryString());
+
     EXPECT_EQ("voi", generatorProfile->voiString());
 
     EXPECT_EQ("states", generatorProfile->statesArrayString());
@@ -291,11 +299,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("", generatorProfile->emptyMethodString());
 
-    EXPECT_EQ("const struct VariableInfo STATE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginStateVectorInformationArrayString());
-    EXPECT_EQ("};\n", generatorProfile->endStateVectorInformationArrayString());
-    EXPECT_EQ("const struct VariableInfo VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n", generatorProfile->beginVariableVectorInformationArrayString());
-    EXPECT_EQ("};\n", generatorProfile->endVariableVectorInformationArrayString());
-
     EXPECT_EQ("    ", generatorProfile->indentString());
 
     EXPECT_EQ("[", generatorProfile->openArrayString());
@@ -312,7 +315,6 @@ TEST(GeneratorProfile, defaultTemplateValues)
     EXPECT_EQ("VALUE", generatorProfile->templateReplacementString());
 
     EXPECT_EQ("return (double *) malloc(VALUE * sizeof(double));\n", generatorProfile->templateReturnCreatedArrayString());
-    EXPECT_EQ("{\"VALUE\", \"VALUE\", \"VALUE\"}", generatorProfile->templateVariableInformationEntryString());
 }
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)
@@ -599,6 +601,14 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setVoiInfoString(value);
 
+    generatorProfile->setBeginStateInfoString(value);
+    generatorProfile->setEndStateInfoString(value);
+
+    generatorProfile->setBeginVariableInfoString(value);
+    generatorProfile->setEndVariableInfoString(value);
+
+    generatorProfile->setVariableInfoEntryString(value);
+
     generatorProfile->setVoiString(value);
 
     generatorProfile->setStatesArrayString(value);
@@ -627,11 +637,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setEmptyMethodString(value);
 
-    generatorProfile->setBeginStateVectorInformationArrayString(value);
-    generatorProfile->setEndStateVectorInformationArrayString(value);
-    generatorProfile->setBeginVariableVectorInformationArrayString(value);
-    generatorProfile->setEndVariableVectorInformationArrayString(value);
-
     generatorProfile->setIndentString(value);
 
     generatorProfile->setOpenArrayString(value);
@@ -655,6 +660,14 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
 
     EXPECT_EQ(value, generatorProfile->voiInfoString());
+
+    EXPECT_EQ(value, generatorProfile->beginStateInfoString());
+    EXPECT_EQ(value, generatorProfile->endStateInfoString());
+
+    EXPECT_EQ(value, generatorProfile->beginVariableInfoString());
+    EXPECT_EQ(value, generatorProfile->endVariableInfoString());
+
+    EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
 
     EXPECT_EQ(value, generatorProfile->voiString());
 
@@ -684,11 +697,6 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->emptyMethodString());
 
-    EXPECT_EQ(value, generatorProfile->beginStateVectorInformationArrayString());
-    EXPECT_EQ(value, generatorProfile->endStateVectorInformationArrayString());
-    EXPECT_EQ(value, generatorProfile->beginVariableVectorInformationArrayString());
-    EXPECT_EQ(value, generatorProfile->endVariableVectorInformationArrayString());
-
     EXPECT_EQ(value, generatorProfile->indentString());
 
     EXPECT_EQ(value, generatorProfile->openArrayString());
@@ -709,8 +717,6 @@ TEST(GeneratorProfile, templateValues)
     EXPECT_EQ(value, generatorProfile->templateReplacementString());
 
     generatorProfile->setTemplateReturnCreatedArrayString(value);
-    generatorProfile->setTemplateVariableInformationEntryString(value);
 
     EXPECT_EQ(value, generatorProfile->templateReturnCreatedArrayString());
-    EXPECT_EQ(value, generatorProfile->templateVariableInformationEntryString());
 }
