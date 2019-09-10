@@ -21,11 +21,11 @@ VARIABLE_INFO = [
 
 
 def create_states_array():
-1    return [nan]*VALUE
+    return [nan]*1
 
 
 def create_variables_array():
-2    return [nan]*VALUE
+    return [nan]*2
 
 
 def initialize_constants(states, variables):

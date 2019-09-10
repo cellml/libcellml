@@ -182,6 +182,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
+    std::string mReturnCreatedArrayString;
+
     std::string mBeginCreateStatesArrayMethodString;
     std::string mEndCreateStatesArrayMethodString;
 
@@ -204,7 +206,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mEmptyMethodString;
     std::string mTemplateReplacementString;
-    std::string mTemplateReturnCreatedArrayString;
 
     std::string mIndentString;
 
@@ -429,6 +430,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
+        mReturnCreatedArrayString = "return (double *) malloc(<ARRAY_SIZE> * sizeof(double));\n";
+
         mBeginCreateStatesArrayMethodString = "double * createStatesArray()\n{\n";
         mEndCreateStatesArrayMethodString = "}\n";
 
@@ -465,8 +468,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Templated
 
         mTemplateReplacementString = "VALUE";
-
-        mTemplateReturnCreatedArrayString = "return (double *) malloc(VALUE * sizeof(double));\n";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
@@ -651,6 +652,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
+        mReturnCreatedArrayString = "return [nan]*<ARRAY_SIZE>\n";
+
         mBeginCreateStatesArrayMethodString = "def create_states_array():\n";
         mEndCreateStatesArrayMethodString = "\n";
 
@@ -684,8 +687,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Templated
 
         mTemplateReplacementString = "VALUE";
-
-        mTemplateReturnCreatedArrayString = "return [nan]*VALUE\n";
 
         break;
     }
@@ -837,6 +838,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
 
+    mPimpl->mReturnCreatedArrayString = rhs.mPimpl->mReturnCreatedArrayString;
+
     mPimpl->mBeginCreateStatesArrayMethodString = rhs.mPimpl->mBeginCreateStatesArrayMethodString;
     mPimpl->mEndCreateStatesArrayMethodString = rhs.mPimpl->mEndCreateStatesArrayMethodString;
 
@@ -859,7 +862,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
     mPimpl->mTemplateReplacementString = rhs.mPimpl->mTemplateReplacementString;
-    mPimpl->mTemplateReturnCreatedArrayString = rhs.mPimpl->mTemplateReturnCreatedArrayString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -2057,6 +2059,16 @@ std::string GeneratorProfile::beginInitializeConstantsMethodString() const
     return mPimpl->mBeginInitializeConstantsMethodString;
 }
 
+std::string GeneratorProfile::returnCreatedArrayString() const
+{
+    return mPimpl->mReturnCreatedArrayString;
+}
+
+void GeneratorProfile::setReturnCreatedArrayString(const std::string &returnCreatedArrayString)
+{
+    mPimpl->mReturnCreatedArrayString = returnCreatedArrayString;
+}
+
 std::string GeneratorProfile::beginCreateStatesArrayMethodString() const
 {
     return mPimpl->mBeginCreateStatesArrayMethodString;
@@ -2200,16 +2212,6 @@ std::string GeneratorProfile::templateReplacementString() const
 void GeneratorProfile::setTemplateReplacementString(const std::string &templateReplacementString)
 {
     mPimpl->mTemplateReplacementString = templateReplacementString;
-}
-
-std::string GeneratorProfile::templateReturnCreatedArrayString() const
-{
-    return mPimpl->mTemplateReturnCreatedArrayString;
-}
-
-void GeneratorProfile::setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString)
-{
-    mPimpl->mTemplateReturnCreatedArrayString = templateReturnCreatedArrayString;
 }
 
 std::string GeneratorProfile::indentString() const

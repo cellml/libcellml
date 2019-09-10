@@ -1998,6 +1998,9 @@ public:
      */
     void setVariablesArrayString(const std::string &variablesArrayString);
 
+    std::string returnCreatedArrayString() const;
+    void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
+
     std::string beginCreateStatesArrayMethodString() const;
     void setBeginCreateStatesArrayMethodString(const std::string &beginCreateStatesArrayMethodString);
     std::string endCreateStatesArrayMethodString() const;
@@ -2220,9 +2223,6 @@ public:
 
     std::string templateReplacementString() const;
     void setTemplateReplacementString(const std::string &templateReplacementString);
-
-    std::string templateReturnCreatedArrayString() const;
-    void setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString);
 
     /**
      * @brief Get the @c std::string for an indent.
