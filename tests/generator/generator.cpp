@@ -1138,15 +1138,3 @@ TEST(Generator, coverage)
 
     EXPECT_EQ(fileContents("generator/coverage/code.py"), generator.code());
 }
-
-TEST(Generator, coverForIsPiecewiseStatement)
-{
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/coverage/piecewiseCover.cellml"));
-
-    libcellml::Generator generator;
-
-    generator.processModel(model);
-
-    EXPECT_LT(size_t(2000), generator.code().length());
-}
