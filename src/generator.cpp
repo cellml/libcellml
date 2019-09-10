@@ -1649,8 +1649,6 @@ std::string Generator::GeneratorImpl::generateVariableInfoString()
     for (const auto &generatorVariable : mVariables) {
         auto variable = generatorVariable->variable();
 
-        std::vector<std::string> details = {variable->parentComponent()->name(), variable->name(), variable->units()};
-
         res += mProfile->indentString()
                 + replace(replace(replace(mProfile->variableInfoEntryString(),
                                        "<COMPONENT>", variable->parentComponent()->name()),
