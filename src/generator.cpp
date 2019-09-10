@@ -2694,21 +2694,21 @@ std::string Generator::code() const
         return {};
     }
 
-    // Generate code for the origin comment.
+    // Add code for the origin comment.
 
     std::string res;
 
     mPimpl->addOriginCommentCode(res);
 
-    // Generate code for the header.
+    // Add code for the header.
 
     mPimpl->addHeaderCode(res);
 
-    // Generate code for the version (of libCellML).
+    // Add code for the version (of libCellML).
 
     mPimpl->addVersionCode(res);
 
-    // Generate code for the number of states and variables.
+    // Add code for the number of states and variables.
 
     mPimpl->addStateAndVariableCountCode(res);
 
