@@ -624,9 +624,9 @@ struct Generator::GeneratorImpl
     std::string generateStateInfoString();
     std::string generateVariableInfoString();
 
-    std::string generateDouble(const std::string &value);
-    std::string generateVariableName(const VariablePtr &variable,
-                                     const GeneratorEquationAstPtr &ast = nullptr);
+    std::string generateDoubleCode(const std::string &value);
+    std::string generateVariableNameCode(const VariablePtr &variable,
+                                         const GeneratorEquationAstPtr &ast = nullptr);
 
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstPtr &ast);
@@ -1664,7 +1664,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoString()
     return res;
 }
 
-std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
+std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
 {
     if (value.find('.') != std::string::npos) {
         return value;
@@ -1679,7 +1679,7 @@ std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
-std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
+std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
 {
     GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
@@ -2363,11 +2363,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         // Token elements
 
     case GeneratorEquationAst::Type::CI:
-        code = generateVariableName(ast->mVariable, ast);
+        code = generateVariableNameCode(ast->mVariable, ast);
 
         break;
     case GeneratorEquationAst::Type::CN:
-        code = generateDouble(ast->mValue);
+        code = generateDoubleCode(ast->mValue);
 
         break;
 
@@ -2447,7 +2447,7 @@ std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string 
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
-    return mProfile->indentString() + generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
