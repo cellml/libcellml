@@ -1140,15 +1140,9 @@ TEST(Generator, coverage)
 
     profile->setVariableInfoObjectString("");
 
-    profile->setBeginVoiInfoString("");
-    profile->setEndVoiInfoString("");
-
-    profile->setBeginStateInfoString("");
-    profile->setEndStateInfoString("");
-
-    profile->setBeginVariableInfoString("");
-    profile->setEndVariableInfoString("");
-
+    profile->setVoiInfoString("");
+    profile->setStateInfoString("");
+    profile->setVariableInfoString("");
     profile->setVariableInfoEntryString("");
 
     profile->setReturnCreatedArrayString("");

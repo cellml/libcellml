@@ -624,12 +624,12 @@ struct Generator::GeneratorImpl
     void addVersionCode(std::string &code);
     void addStateAndVariableCountCode(std::string &code);
     void addVariableInfoObjectCode(std::string &code);
-    void addVariableInfoEntryCode(const std::string &component,
-                                  const std::string &name,
-                                  const std::string &units,
-                                  std::string &code);
-    void addInfoCode(const std::string &beginInfoString,
-                     const std::string &endInfoString,
+
+    std::string generateVariableInfoEntryCode(const std::string &component,
+                                              const std::string &name,
+                                              const std::string &units);
+
+    void addInfoCode(const std::string &infoString,
                      const std::vector<VariablePtr> &variables,
                      std::string &code);
     void addVoiInfoCode(std::string &code);
@@ -1675,46 +1675,49 @@ void Generator::GeneratorImpl::addVariableInfoObjectCode(std::string &code)
     }
 }
 
-void Generator::GeneratorImpl::addVariableInfoEntryCode(const std::string &component,
-                                                        const std::string &name,
-                                                        const std::string &units,
-                                                        std::string &code)
+std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &component,
+                                                                    const std::string &name,
+                                                                    const std::string &units)
 {
-    code += replace(replace(replace(mProfile->variableInfoEntryString(),
-                                    "<COMPONENT>", component),
-                            "<NAME>", name),
-                    "<UNITS>", units);
+    return replace(replace(replace(mProfile->variableInfoEntryString(),
+                                   "<COMPONENT>", component),
+                           "<NAME>", name),
+                   "<UNITS>", units);
 }
 
-void Generator::GeneratorImpl::addInfoCode(const std::string &beginInfoString,
-                                           const std::string &endInfoString,
+void Generator::GeneratorImpl::addInfoCode(const std::string &infoString,
                                            const std::vector<VariablePtr> &variables,
                                            std::string &code)
 {
-    std::string infoElements;
-
-    for (const auto &variable : variables) {
-        if (!infoElements.empty()) {
-            infoElements += mProfile->arrayElementSeparatorString() + "\n";
+    if (!infoString.empty() && !mProfile->variableInfoEntryString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        infoElements += mProfile->indentString();
+        std::string infoElements;
 
-        addVariableInfoEntryCode(variable->parentComponent()->name(),
-                                 variable->name(), variable->units(),
-                                 infoElements);
+        for (const auto &variable : variables) {
+            if (!infoElements.empty()) {
+                infoElements += mProfile->arrayElementSeparatorString() + "\n";
+            }
+
+            infoElements += mProfile->indentString()
+                            + generateVariableInfoEntryCode(variable->parentComponent()->name(),
+                                                            variable->name(),
+                                                            variable->units());
+        }
+
+        if (!infoElements.empty()) {
+            infoElements += "\n";
+        }
+
+        code += replace(infoString, "<CODE>", infoElements);
     }
-
-    if (!infoElements.empty()) {
-        infoElements += "\n";
-    }
-
-    code += beginInfoString + infoElements + endInfoString;
 }
 
 void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
 {
-    if (!mProfile->beginVoiInfoString().empty()
+    if (!mProfile->voiInfoString().empty()
         && !mProfile->variableInfoEntryString().empty()) {
         if (!code.empty()) {
             code += "\n";
@@ -1724,46 +1727,25 @@ void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
         std::string name = (mVoi != nullptr) ? mVoi->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->units() : "";
 
-        code += mProfile->beginVoiInfoString();
-
-        addVariableInfoEntryCode(component, name, units, code);
-
-        code += mProfile->endVoiInfoString();
+        code += replace(mProfile->voiInfoString(), "<CODE>",
+                        generateVariableInfoEntryCode(component, name, units));
     }
 }
 
 void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
 {
-    if (!mProfile->beginStateInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
-        }
-
-        addInfoCode(mProfile->beginStateInfoString(),
-                    mProfile->endStateInfoString(),
-                    mStates, code);
-    }
+    addInfoCode(mProfile->stateInfoString(), mStates, code);
 }
 
 void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
 {
-    if (!mProfile->beginVariableInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
-        }
+    std::vector<VariablePtr> variables;
 
-        std::vector<VariablePtr> variables;
-
-        for (const auto &variable : mVariables) {
-            variables.push_back(variable->variable());
-        }
-
-        addInfoCode(mProfile->beginVariableInfoString(),
-                    mProfile->endVariableInfoString(),
-                    variables, code);
+    for (const auto &variable : mVariables) {
+        variables.push_back(variable->variable());
     }
+
+    addInfoCode(mProfile->variableInfoString(), variables, code);
 }
 
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
