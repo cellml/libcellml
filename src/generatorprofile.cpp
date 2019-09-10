@@ -205,7 +205,6 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mEndComputeVariablesMethodString;
 
     std::string mEmptyMethodString;
-    std::string mTemplateReplacementString;
 
     std::string mIndentString;
 
@@ -465,10 +464,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = ";";
 
-        // Templated
-
-        mTemplateReplacementString = "VALUE";
-
         break;
     case GeneratorProfile::Profile::PYTHON:
         // Relational and logical operators
@@ -684,10 +679,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = "";
 
-        // Templated
-
-        mTemplateReplacementString = "VALUE";
-
         break;
     }
 }
@@ -861,7 +852,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mEndComputeVariablesMethodString = rhs.mPimpl->mEndComputeVariablesMethodString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
-    mPimpl->mTemplateReplacementString = rhs.mPimpl->mTemplateReplacementString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -2202,16 +2192,6 @@ std::string GeneratorProfile::emptyMethodString() const
 void GeneratorProfile::setEmptyMethodString(const std::string &emptyMethodString)
 {
     mPimpl->mEmptyMethodString = emptyMethodString;
-}
-
-std::string GeneratorProfile::templateReplacementString() const
-{
-    return mPimpl->mTemplateReplacementString;
-}
-
-void GeneratorProfile::setTemplateReplacementString(const std::string &templateReplacementString)
-{
-    mPimpl->mTemplateReplacementString = templateReplacementString;
 }
 
 std::string GeneratorProfile::indentString() const

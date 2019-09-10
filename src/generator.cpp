@@ -647,15 +647,6 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value);
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
-    std::string replaceTemplateValue(const std::string &templateString,
-                                     size_t value);
-    std::string replaceTemplateValue(const std::string &templateString,
-                                     const std::string &value);
-    std::string replaceMultipleTemplateValues(std::string templateString,
-                                              const std::vector<std::string> &replacements);
-    std::string replaceMultipleTemplateValues(std::string templateString,
-                                              const std::vector<size_t> &replacements);
-
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
@@ -2437,35 +2428,6 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     }
 
     return code;
-}
-
-std::string Generator::GeneratorImpl::replaceTemplateValue(const std::string &templateString, size_t value)
-{
-    std::string valueString = std::to_string(value);
-    return replaceTemplateValue(templateString, valueString);
-}
-
-std::string Generator::GeneratorImpl::replaceTemplateValue(const std::string &templateString, const std::string &value)
-{
-    return replace(templateString, mProfile->templateReplacementString(), value);
-}
-
-std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, const std::vector<std::string> &replacements)
-{
-    for (const auto &entry : replacements) {
-        templateString = replace(templateString, mProfile->templateReplacementString(), entry);
-    }
-
-    return templateString;
-}
-
-std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, const std::vector<size_t> &replacements)
-{
-    for (const auto &entry : replacements) {
-        templateString = replace(templateString, mProfile->templateReplacementString(), std::to_string(entry));
-    }
-
-    return templateString;
 }
 
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
