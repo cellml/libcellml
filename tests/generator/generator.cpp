@@ -1128,7 +1128,40 @@ TEST(Generator, coverage)
     profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
     profile->setHasConditionalOperator(false);
 
+    profile->setBeginCommentString("");
+    profile->setEndCommentString("");
+
     profile->setOriginCommentString("");
+
+    profile->setHeaderString("");
+
+    profile->setVersionString("");
+
+    profile->setStateCountString("");
+    profile->setVariableCountString("");
+
+    profile->setVariableInfoObjectString("");
+
+    profile->setBeginVoiInfoString("");
+    profile->setEndVoiInfoString("");
+
+    profile->setBeginStateInfoString("");
+    profile->setEndStateInfoString("");
+
+    profile->setBeginVariableInfoString("");
+    profile->setEndVariableInfoString("");
+
+    profile->setVariableInfoEntryString("");
+
+    profile->setReturnCreatedArrayString("");
+
+    profile->setBeginCreateStatesArrayMethodString("");
+    profile->setEndCreateStatesArrayMethodString("");
+
+    profile->setBeginCreateVariablesArrayMethodString("");
+    profile->setEndCreateVariablesArrayMethodString("");
+
+    profile->setDeleteArrayMethodString("");
 
     EXPECT_EQ(fileContents("generator/coverage/codeWithCustomProfile.out"), generator.code());
 

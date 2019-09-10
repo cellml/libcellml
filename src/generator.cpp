@@ -1623,6 +1623,10 @@ std::string Generator::GeneratorImpl::generateInfoCode(const std::string &beginI
                                                        const std::string &endInfoString,
                                                        const std::vector<VariablePtr> &variables)
 {
+    if (mProfile->variableInfoEntryString().empty()) {
+        return {};
+    }
+
     std::string infoElements;
 
     for (const auto &variable : variables) {
