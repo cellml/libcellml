@@ -623,6 +623,9 @@ struct Generator::GeneratorImpl
     std::string generateVariableInfoEntryCode(const std::string &component,
                                               const std::string &name,
                                               const std::string &units);
+    std::string generateInfoCode(const std::string &beginInfoString,
+                                 const std::string &endInfoString,
+                                 const std::vector<VariablePtr> &variables);
     std::string generateVoiInfoCode();
     std::string generateStateInfoCode();
     std::string generateVariableInfoCode();
@@ -1625,6 +1628,29 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                    "<UNITS>", units);
 }
 
+std::string Generator::GeneratorImpl::generateInfoCode(const std::string &beginInfoString,
+                                                       const std::string &endInfoString,
+                                                       const std::vector<VariablePtr> &variables)
+{
+    std::string infoElements;
+
+    for (const auto &variable : variables) {
+        if (!infoElements.empty()) {
+            infoElements += mProfile->arrayElementSeparatorString() + "\n";
+        }
+
+        infoElements += mProfile->indentString()
+                        + generateVariableInfoEntryCode(variable->parentComponent()->name(),
+                                                        variable->name(), variable->units());
+    }
+
+    if (!infoElements.empty()) {
+        infoElements += "\n";
+    }
+
+    return beginInfoString + infoElements + endInfoString;
+}
+
 std::string Generator::GeneratorImpl::generateVoiInfoCode()
 {
     std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
@@ -1638,51 +1664,22 @@ std::string Generator::GeneratorImpl::generateVoiInfoCode()
 
 std::string Generator::GeneratorImpl::generateStateInfoCode()
 {
-    std::string stateInfoElements;
-
-    for (const auto &state : mStates) {
-        if (!stateInfoElements.empty()) {
-            stateInfoElements += mProfile->arrayElementSeparatorString() + "\n";
-        }
-
-        stateInfoElements += mProfile->indentString()
-                             + generateVariableInfoEntryCode(state->parentComponent()->name(),
-                                                             state->name(), state->units());
-    }
-
-    if (!stateInfoElements.empty()) {
-        stateInfoElements += "\n";
-    }
-
-    return mProfile->beginStateInfoString()
-           + stateInfoElements
-           + mProfile->endStateInfoString();
+    return generateInfoCode(mProfile->beginStateInfoString(),
+                            mProfile->endStateInfoString(),
+                            mStates);
 }
 
 std::string Generator::GeneratorImpl::generateVariableInfoCode()
 {
-    std::string variableInfoElements;
+    std::vector<VariablePtr> variables;
 
-    for (const auto &generatorVariable : mVariables) {
-        auto variable = generatorVariable->variable();
-
-        if (!variableInfoElements.empty()) {
-            variableInfoElements += mProfile->arrayElementSeparatorString() + "\n";
-        }
-
-        variableInfoElements += mProfile->indentString()
-                                + generateVariableInfoEntryCode(variable->parentComponent()->name(),
-                                                                variable->name(),
-                                                                variable->units());
+    for (const auto &variable : mVariables) {
+        variables.push_back(variable->variable());
     }
 
-    if (!variableInfoElements.empty()) {
-        variableInfoElements += "\n";
-    }
-
-    return mProfile->beginVariableInfoString()
-           + variableInfoElements
-           + mProfile->endVariableInfoString();
+    return generateInfoCode(mProfile->beginVariableInfoString(),
+                            mProfile->endVariableInfoString(),
+                            variables);
 }
 
 std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
