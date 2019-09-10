@@ -1563,9 +1563,11 @@ std::string Generator::GeneratorImpl::replace(std::string string,
                                               const std::string &from,
                                               const std::string &to)
 {
-    return (string.empty()) ?
+    auto index = string.find(from);
+
+    return (string.empty() || (index == std::string::npos)) ?
                "" :
-               string.replace(string.find(from), from.length(), to);
+               string.replace(index, from.length(), to);
 }
 
 void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
