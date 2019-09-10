@@ -1576,9 +1576,9 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const VariablePtr &variable)
 {
-    auto variableComponentSize = variable->parentComponent()->name().length()+1;
-    auto variableNameSize = variable->name().length()+1;
-    auto variableUnitsSize = variable->units().length()+1;
+    auto variableComponentSize = variable->parentComponent()->name().length() + 1;
+    auto variableNameSize = variable->name().length() + 1;
+    auto variableUnitsSize = variable->units().length() + 1;
     // Note: +1 to account for the end of string termination.
 
     componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
@@ -1630,11 +1630,11 @@ std::string Generator::GeneratorImpl::generateStateInfoString()
 
     for (const auto &state : mStates) {
         res += mProfile->indentString()
-                + replace(replace(replace(mProfile->variableInfoEntryString(),
-                                       "<COMPONENT>", state->parentComponent()->name()),
-                               "<NAME>", state->name()),
-                       "<UNITS>", state->units())
-                + mProfile->arrayElementSeparatorString() + "\n";
+               + replace(replace(replace(mProfile->variableInfoEntryString(),
+                                         "<COMPONENT>", state->parentComponent()->name()),
+                                 "<NAME>", state->name()),
+                         "<UNITS>", state->units())
+               + mProfile->arrayElementSeparatorString() + "\n";
     }
 
     res += mProfile->endStateInfoString();
@@ -1650,11 +1650,11 @@ std::string Generator::GeneratorImpl::generateVariableInfoString()
         auto variable = generatorVariable->variable();
 
         res += mProfile->indentString()
-                + replace(replace(replace(mProfile->variableInfoEntryString(),
-                                       "<COMPONENT>", variable->parentComponent()->name()),
-                               "<NAME>", variable->name()),
-                       "<UNITS>", variable->units())
-                + mProfile->arrayElementSeparatorString() + "\n";
+               + replace(replace(replace(mProfile->variableInfoEntryString(),
+                                         "<COMPONENT>", variable->parentComponent()->name()),
+                                 "<NAME>", variable->name()),
+                         "<UNITS>", variable->units())
+               + mProfile->arrayElementSeparatorString() + "\n";
     }
 
     res += mProfile->endVariableInfoString();
