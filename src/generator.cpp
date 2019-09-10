@@ -1614,9 +1614,9 @@ std::string Generator::GeneratorImpl::generateVariableInfoObjectString()
 
 std::string Generator::GeneratorImpl::generateVoiInfoString()
 {
-    std::string component = (mVoi != nullptr)?mVoi->parentComponent()->name():"";
-    std::string name = (mVoi != nullptr)?mVoi->name():"";
-    std::string units = (mVoi != nullptr)?mVoi->units():"";
+    std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
+    std::string name = (mVoi != nullptr) ? mVoi->name() : "";
+    std::string units = (mVoi != nullptr) ? mVoi->units() : "";
 
     return mProfile->beginVoiInfoString()
            + replace(replace(replace(mProfile->variableInfoEntryString(),
