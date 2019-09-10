@@ -19,11 +19,11 @@ const struct VariableInfo VOI_INFO = {"my_first_ode", "t", "second"};
 
 const struct VariableInfo STATE_INFO[] = {
     {"my_first_ode", "x", "dimensionless"},
-    {"my_second_ode", "x", "dimensionless"},
+    {"my_second_ode", "x", "dimensionless"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
-    {"my_second_ode", "a", "per_s"},
+    {"my_second_ode", "a", "per_s"}
 };
 
 double * createStatesArray()

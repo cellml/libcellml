@@ -1638,13 +1638,15 @@ std::string Generator::GeneratorImpl::generateVoiInfoCode()
 
 std::string Generator::GeneratorImpl::generateStateInfoCode()
 {
+    size_t stateIndex = 0;
+    size_t stateCount = mStates.size();
     std::string res = mProfile->beginStateInfoString();
 
     for (const auto &state : mStates) {
         res += mProfile->indentString()
                + generateVariableInfoEntryCode(state->parentComponent()->name(),
                                                state->name(), state->units())
-               + mProfile->arrayElementSeparatorString() + "\n";
+               + ((++stateIndex != stateCount) ? mProfile->arrayElementSeparatorString() : "") + "\n";
     }
 
     res += mProfile->endStateInfoString();
@@ -1654,6 +1656,8 @@ std::string Generator::GeneratorImpl::generateStateInfoCode()
 
 std::string Generator::GeneratorImpl::generateVariableInfoCode()
 {
+    size_t variableIndex = 0;
+    size_t variableCount = mVariables.size();
     std::string res = mProfile->beginVariableInfoString();
 
     for (const auto &generatorVariable : mVariables) {
@@ -1663,7 +1667,7 @@ std::string Generator::GeneratorImpl::generateVariableInfoCode()
                + generateVariableInfoEntryCode(variable->parentComponent()->name(),
                                                variable->name(),
                                                variable->units())
-               + mProfile->arrayElementSeparatorString() + "\n";
+               + ((++variableIndex != variableCount) ? mProfile->arrayElementSeparatorString() : "") + "\n";
     }
 
     res += mProfile->endVariableInfoString();

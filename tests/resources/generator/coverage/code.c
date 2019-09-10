@@ -18,7 +18,7 @@ struct VariableInfo {
 const struct VariableInfo VOI_INFO = {"my_component", "t", "second"};
 
 const struct VariableInfo STATE_INFO[] = {
-    {"my_component", "x", "dimensionless"},
+    {"my_component", "x", "dimensionless"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
@@ -206,7 +206,7 @@ const struct VariableInfo VARIABLE_INFO[] = {
     {"my_component", "eqnPiecewisePieceOtherwise", "dimensionless"},
     {"my_component", "eqnPiecewisePiecePiecePiece", "dimensionless"},
     {"my_component", "eqnPiecewisePiecePiecePieceOtherwise", "dimensionless"},
-    {"my_component", "eqnCi", "dimensionless"},
+    {"my_component", "eqnCi", "dimensionless"}
 };
 
 double xor(double x, double y)

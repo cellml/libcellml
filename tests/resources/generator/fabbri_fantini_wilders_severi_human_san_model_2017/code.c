@@ -50,7 +50,7 @@ const struct VariableInfo STATE_INFO[] = {
     {"i_CaL_dL_gate", "dL", "dimensionless"},
     {"Ca_dynamics", "Ca_sub", "millimolar"},
     {"Membrane", "V_ode", "millivolt"},
-    {"Nai_concentration", "Nai_", "millimolar"},
+    {"Nai_concentration", "Nai_", "millimolar"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
@@ -270,7 +270,7 @@ const struct VariableInfo VARIABLE_INFO[] = {
     {"i_NaCa", "x3", "dimensionless"},
     {"i_NaCa", "x4", "dimensionless"},
     {"Nai_concentration", "i_NaCa", "nanoA"},
-    {"Membrane", "i_tot", "nanoA"},
+    {"Membrane", "i_tot", "nanoA"}
 };
 
 double * createStatesArray()

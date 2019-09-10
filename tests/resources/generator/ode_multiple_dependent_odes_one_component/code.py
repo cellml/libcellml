@@ -12,11 +12,11 @@ VOI_INFO = {"component": "my_component", "name": "t", "units": "second"}
 
 STATE_INFO = [
     {"component": "my_component", "name": "x", "units": "dimensionless"},
-    {"component": "my_component", "name": "y", "units": "dimensionless"},
+    {"component": "my_component", "name": "y", "units": "dimensionless"}
 ]
 
 VARIABLE_INFO = [
-    {"component": "my_component", "name": "epsilon", "units": "dimensionless"},
+    {"component": "my_component", "name": "epsilon", "units": "dimensionless"}
 ]
 
 

@@ -25,7 +25,7 @@ STATE_INFO = [
     {"component": "rapid_delayed_rectifying_potassium_current_P_i_gate", "name": "P_i", "units": "dimensionless"},
     {"component": "slow_delayed_rectifying_potassium_current_xs_gate", "name": "xs", "units": "dimensionless"},
     {"component": "hyperpolarisation_activated_current_y_gate", "name": "y", "units": "dimensionless"},
-    {"component": "membrane", "name": "V", "units": "millivolt"},
+    {"component": "membrane", "name": "V", "units": "millivolt"}
 ]
 
 VARIABLE_INFO = [
@@ -213,7 +213,7 @@ VARIABLE_INFO = [
     {"component": "membrane", "name": "i_b_K", "units": "nanoA"},
     {"component": "membrane", "name": "i_b_Ca", "units": "nanoA"},
     {"component": "membrane", "name": "i_Na", "units": "nanoA"},
-    {"component": "membrane", "name": "i_K_r", "units": "nanoA"},
+    {"component": "membrane", "name": "i_K_r", "units": "nanoA"}
 ]
 
 

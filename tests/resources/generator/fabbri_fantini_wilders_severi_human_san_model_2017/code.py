@@ -43,7 +43,7 @@ STATE_INFO = [
     {"component": "i_CaL_dL_gate", "name": "dL", "units": "dimensionless"},
     {"component": "Ca_dynamics", "name": "Ca_sub", "units": "millimolar"},
     {"component": "Membrane", "name": "V_ode", "units": "millivolt"},
-    {"component": "Nai_concentration", "name": "Nai_", "units": "millimolar"},
+    {"component": "Nai_concentration", "name": "Nai_", "units": "millimolar"}
 ]
 
 VARIABLE_INFO = [
@@ -263,7 +263,7 @@ VARIABLE_INFO = [
     {"component": "i_NaCa", "name": "x3", "units": "dimensionless"},
     {"component": "i_NaCa", "name": "x4", "units": "dimensionless"},
     {"component": "Nai_concentration", "name": "i_NaCa", "units": "nanoA"},
-    {"component": "Membrane", "name": "i_tot", "units": "nanoA"},
+    {"component": "Membrane", "name": "i_tot", "units": "nanoA"}
 ]
 
 

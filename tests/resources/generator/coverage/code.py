@@ -11,7 +11,7 @@ VARIABLE_COUNT = 185
 VOI_INFO = {"component": "my_component", "name": "t", "units": "second"}
 
 STATE_INFO = [
-    {"component": "my_component", "name": "x", "units": "dimensionless"},
+    {"component": "my_component", "name": "x", "units": "dimensionless"}
 ]
 
 VARIABLE_INFO = [
@@ -199,7 +199,7 @@ VARIABLE_INFO = [
     {"component": "my_component", "name": "eqnPiecewisePieceOtherwise", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnPiecewisePiecePiecePiece", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnPiecewisePiecePiecePieceOtherwise", "units": "dimensionless"},
-    {"component": "my_component", "name": "eqnCi", "units": "dimensionless"},
+    {"component": "my_component", "name": "eqnCi", "units": "dimensionless"}
 ]
 
 

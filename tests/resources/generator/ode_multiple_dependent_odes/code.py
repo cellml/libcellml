@@ -12,11 +12,11 @@ VOI_INFO = {"component": "my_x_ode", "name": "t", "units": "second"}
 
 STATE_INFO = [
     {"component": "my_x_ode", "name": "x", "units": "dimensionless"},
-    {"component": "my_y_ode", "name": "y", "units": "dimensionless"},
+    {"component": "my_y_ode", "name": "y", "units": "dimensionless"}
 ]
 
 VARIABLE_INFO = [
-    {"component": "my_y_ode", "name": "epsilon", "units": "dimensionless"},
+    {"component": "my_y_ode", "name": "epsilon", "units": "dimensionless"}
 ]
 
 

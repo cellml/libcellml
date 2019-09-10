@@ -18,7 +18,7 @@ struct VariableInfo {
 const struct VariableInfo VOI_INFO = {"my_component", "t", "second"};
 
 const struct VariableInfo STATE_INFO[] = {
-    {"my_component", "x", "dimensionless"},
+    {"my_component", "x", "dimensionless"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {

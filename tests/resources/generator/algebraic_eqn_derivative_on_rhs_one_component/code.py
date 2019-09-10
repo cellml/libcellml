@@ -11,12 +11,12 @@ VARIABLE_COUNT = 2
 VOI_INFO = {"component": "my_component", "name": "t", "units": "second"}
 
 STATE_INFO = [
-    {"component": "my_component", "name": "v", "units": "dimensionless"},
+    {"component": "my_component", "name": "v", "units": "dimensionless"}
 ]
 
 VARIABLE_INFO = [
     {"component": "my_component", "name": "a", "units": "per_s"},
-    {"component": "my_component", "name": "x", "units": "per_s"},
+    {"component": "my_component", "name": "x", "units": "per_s"}
 ]
 
 
