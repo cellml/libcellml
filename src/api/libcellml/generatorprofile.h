@@ -1890,7 +1890,7 @@ public:
      * @brief Set the @c std::string for a comment.
      *
      * Set this @c std::string for a comment. To be useful, the string should
-     * contain the <CODE> tag, which will get replaced with a (proper) comment.
+     * contain the <CODE> tag, which will be replaced with a (proper) comment.
      *
      * @param commentString The @c std::string to use for a comment.
      */
@@ -1909,7 +1909,7 @@ public:
      * @brief Set the @c std::string for an origin comment.
      *
      * Set this @c std::string for an origin comment. To be useful, the string
-     * should contain a <VERSION> tag, which will get replaced with the version
+     * should contain a <VERSION> tag, which will be replaced with the version
      * of libCellML that is used.
      *
      * @param originCommentString The @c std::string to use for an origin
@@ -1948,7 +1948,7 @@ public:
      * @brief Set the @c std::string for the version constant.
      *
      * Set this @c std::string for the version constant. To be useful, the
-     * string should contain a <VERSION> tag, which will get replaced with the
+     * string should contain a <VERSION> tag, which will be replaced with the
      * version of libCellML that is used.
      *
      * @param versionString The @c std::string to use for the version constant.
