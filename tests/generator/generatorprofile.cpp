@@ -37,8 +37,8 @@ TEST(GeneratorProfile, defaultRelationalAndLogicalOperatorValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ(" = ", generatorProfile->eqString());
-    EXPECT_EQ(" == ", generatorProfile->eqEqString());
+    EXPECT_EQ(" = ", generatorProfile->assignmentString());
+    EXPECT_EQ(" == ", generatorProfile->eqString());
     EXPECT_EQ(" != ", generatorProfile->neqString());
     EXPECT_EQ(" < ", generatorProfile->ltString());
     EXPECT_EQ(" <= ", generatorProfile->leqString());
@@ -49,7 +49,7 @@ TEST(GeneratorProfile, defaultRelationalAndLogicalOperatorValues)
     EXPECT_EQ("xor", generatorProfile->xorString());
     EXPECT_EQ("!", generatorProfile->notString());
 
-    EXPECT_EQ(true, generatorProfile->hasEqEqOperator());
+    EXPECT_EQ(true, generatorProfile->hasEqOperator());
     EXPECT_EQ(true, generatorProfile->hasNeqOperator());
     EXPECT_EQ(true, generatorProfile->hasLtOperator());
     EXPECT_EQ(true, generatorProfile->hasLeqOperator());
@@ -143,7 +143,7 @@ TEST(GeneratorProfile, defaultMathematicalFunctionValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ("", generatorProfile->eqEqFunctionString());
+    EXPECT_EQ("", generatorProfile->eqFunctionString());
     EXPECT_EQ("", generatorProfile->neqFunctionString());
     EXPECT_EQ("", generatorProfile->ltFunctionString());
     EXPECT_EQ("", generatorProfile->leqFunctionString());
@@ -331,8 +331,8 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     const bool trueValue = true;
     const bool falseValue = false;
 
+    generatorProfile->setAssignmentString(value);
     generatorProfile->setEqString(value);
-    generatorProfile->setEqEqString(value);
     generatorProfile->setNeqString(value);
     generatorProfile->setLtString(value);
     generatorProfile->setLeqString(value);
@@ -343,7 +343,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     generatorProfile->setXorString(value);
     generatorProfile->setNotString(value);
 
-    generatorProfile->setHasEqEqOperator(falseValue);
+    generatorProfile->setHasEqOperator(falseValue);
     generatorProfile->setHasNeqOperator(falseValue);
     generatorProfile->setHasLtOperator(falseValue);
     generatorProfile->setHasLeqOperator(falseValue);
@@ -354,8 +354,8 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     generatorProfile->setHasXorOperator(trueValue);
     generatorProfile->setHasNotOperator(falseValue);
 
+    EXPECT_EQ(value, generatorProfile->assignmentString());
     EXPECT_EQ(value, generatorProfile->eqString());
-    EXPECT_EQ(value, generatorProfile->eqEqString());
     EXPECT_EQ(value, generatorProfile->neqString());
     EXPECT_EQ(value, generatorProfile->ltString());
     EXPECT_EQ(value, generatorProfile->leqString());
@@ -366,7 +366,7 @@ TEST(GeneratorProfile, relationalAndLogicalOperators)
     EXPECT_EQ(value, generatorProfile->xorString());
     EXPECT_EQ(value, generatorProfile->notString());
 
-    EXPECT_EQ(falseValue, generatorProfile->hasEqEqOperator());
+    EXPECT_EQ(falseValue, generatorProfile->hasEqOperator());
     EXPECT_EQ(falseValue, generatorProfile->hasNeqOperator());
     EXPECT_EQ(falseValue, generatorProfile->hasLtOperator());
     EXPECT_EQ(falseValue, generatorProfile->hasLeqOperator());
@@ -530,7 +530,7 @@ TEST(GeneratorProfile, mathematicalFunctions)
 
     const std::string value = "value";
 
-    generatorProfile->setEqEqFunctionString(value);
+    generatorProfile->setEqFunctionString(value);
     generatorProfile->setNeqFunctionString(value);
     generatorProfile->setLtFunctionString(value);
     generatorProfile->setLeqFunctionString(value);
@@ -557,7 +557,7 @@ TEST(GeneratorProfile, mathematicalFunctions)
     generatorProfile->setAcschFunctionString(value);
     generatorProfile->setAcothFunctionString(value);
 
-    EXPECT_EQ(value, generatorProfile->eqEqFunctionString());
+    EXPECT_EQ(value, generatorProfile->eqFunctionString());
     EXPECT_EQ(value, generatorProfile->neqFunctionString());
     EXPECT_EQ(value, generatorProfile->ltFunctionString());
     EXPECT_EQ(value, generatorProfile->leqFunctionString());

@@ -32,8 +32,8 @@ VARIABLE_INFO = [
     {"component": "my_component", "name": "eqnPi", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnInfinity", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnNotanumber", "units": "dimensionless"},
-    {"component": "my_component", "name": "eqnEqEq", "units": "dimensionless"},
-    {"component": "my_component", "name": "eqnEqEqCoverageParentheses", "units": "dimensionless"},
+    {"component": "my_component", "name": "eqnEq", "units": "dimensionless"},
+    {"component": "my_component", "name": "eqnEqCoverageParentheses", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnNeq", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnNeqCoverageParentheses", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnLt", "units": "dimensionless"},
@@ -204,7 +204,7 @@ VARIABLE_INFO = [
 ]
 
 
-def eq_eq_func(x, y):
+def eq_func(x, y):
     return 1.0 if x == y else 0.0
 
 
@@ -336,8 +336,8 @@ def initialize_constants(states, variables):
 
 
 def compute_computed_constants(variables):
-    variables[7] = eq_eq_func(variables[0], variables[1])
-    variables[8] = variables[0]/eq_eq_func(variables[1], variables[1])
+    variables[7] = eq_func(variables[0], variables[1])
+    variables[8] = variables[0]/eq_func(variables[1], variables[1])
     variables[9] = neq_func(variables[0], variables[1])
     variables[10] = variables[0]/neq_func(variables[1], variables[2])
     variables[11] = lt_func(variables[0], variables[1])
