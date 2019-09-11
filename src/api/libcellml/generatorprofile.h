@@ -2267,7 +2267,23 @@ public:
      */
     void setCreateVariablesArrayMethodString(const std::string &createVariablesArrayMethodString);
 
+    /**
+     * @brief Get the @c std::string for deleting an array.
+     *
+     * Return the @c std::string for deleting an array.
+     *
+     * @return The @c std::string for deleting an array.
+     */
     std::string deleteArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for deleting an array.
+     *
+     * Set this @c std::string for deleting an array.
+     *
+     * @param createVariablesArrayMethodString The @c std::string to use for
+     * deleting an array.
+     */
     void setDeleteArrayMethodString(const std::string &deleteArrayMethodString);
 
     /**
