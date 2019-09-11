@@ -159,7 +159,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mHeaderString;
 
-    std::string mVersionString;
+    std::string mLibcellmlVersionString;
 
     std::string mStateCountString;
     std::string mVariableCountString;
@@ -380,13 +380,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Miscellaneous
 
         mCommentString = "/* <CODE> */\n";
-        mOriginCommentString = "The contents of this file were generated from version <VERSION> of libCellML.";
+        mOriginCommentString = "The contents of this file were generated from version <LIBCELLML_VERSION> of libCellML.";
 
         mHeaderString = "#include <math.h>\n"
                         "#include <stddef.h>\n"
                         "#include <stdlib.h>\n";
 
-        mVersionString = "const char VERSION[] = \"<VERSION>\";\n";
+        mLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
 
         mStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
         mVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
@@ -628,12 +628,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Miscellaneous
 
         mCommentString = "# <CODE>\n";
-        mOriginCommentString = "The contents of this file were generated from version <VERSION> of libCellML.";
+        mOriginCommentString = "The contents of this file were generated from version <LIBCELLML_VERSION> of libCellML.";
 
         mHeaderString = "from math import *\n"
                         "\n";
 
-        mVersionString = "__version__ = \"<VERSION>\"\n";
+        mLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
 
         mStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
         mVariableCountString = "VARIABLE_COUNT = <VARIABLE_COUNT>\n";
@@ -817,7 +817,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
-    mPimpl->mVersionString = rhs.mPimpl->mVersionString;
+    mPimpl->mLibcellmlVersionString = rhs.mPimpl->mLibcellmlVersionString;
 
     mPimpl->mStateCountString = rhs.mPimpl->mStateCountString;
     mPimpl->mVariableCountString = rhs.mPimpl->mVariableCountString;
@@ -1879,14 +1879,14 @@ void GeneratorProfile::setHeaderString(const std::string &headerString)
     mPimpl->mHeaderString = headerString;
 }
 
-std::string GeneratorProfile::versionString() const
+std::string GeneratorProfile::libcellmlVersionString() const
 {
-    return mPimpl->mVersionString;
+    return mPimpl->mLibcellmlVersionString;
 }
 
-void GeneratorProfile::setVersionString(const std::string &versionString)
+void GeneratorProfile::setLibcellmlVersionString(const std::string &libcellmlVersionString)
 {
-    mPimpl->mVersionString = versionString;
+    mPimpl->mLibcellmlVersionString = libcellmlVersionString;
 }
 
 std::string GeneratorProfile::stateCountString() const

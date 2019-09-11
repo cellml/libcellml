@@ -1133,7 +1133,7 @@ TEST(Generator, coverage)
 
     profile->setHeaderString("");
 
-    profile->setVersionString("");
+    profile->setLibcellmlVersionString("");
 
     profile->setStateCountString("");
     profile->setVariableCountString("");
