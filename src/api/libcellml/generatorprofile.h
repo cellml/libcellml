@@ -1999,193 +1999,84 @@ public:
     void setDeleteArrayMethodString(const std::string &deleteArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the beginning of the method that
-     * initialises constants.
+     * @brief Get the @c std::string for the method that initialises constants.
      *
-     * Return the @c std::string for the beginning of the method that
-     * initialises constants.
+     * Return the @c std::string for the method that initialises constants.
      *
-     * @return The @c std::string for the beginning of the method that
-     * initialises constants.
+     * @return The @c std::string for the method that initialises constants.
      */
-    std::string beginInitializeConstantsMethodString() const;
+    std::string initializeConstantsMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the beginning of the method that
-     * initialises constants.
+     * @brief Set the @c std::string for the method that initialises constants.
      *
-     * Set this @c std::string for the beginning of the method that initialises
-     * constants.
+     * Set this @c std::string for the method that initialises constants.
      *
-     * @param eqString The @c std::string to use for the beginning of the method
-     * that initialises constants.
-     */
-    void setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString);
-
-    /**
-     * @brief Get the @c std::string for the end of the method that initialises
-     * constants.
-     *
-     * Return the @c std::string for the end of the method that initialises
-     * constants.
-     *
-     * @return The @c std::string for the end of the method that initialises
+     * @param eqString The @c std::string to use for the method that initialises
      * constants.
      */
-    std::string endInitializeConstantsMethodString() const;
+    void setInitializeConstantsMethodString(const std::string &initializeConstantsMethodString);
 
     /**
-     * @brief Set the @c std::string for the end of the method that initialises
+     * @brief Get the @c std::string for the method that computes computed
      * constants.
      *
-     * Set this @c std::string for the end of the method that initialises
+     * Return the @c std::string for the method that computes computed
      * constants.
      *
-     * @param eqString The @c std::string to use for the end of the method that
-     * initialises constants.
+     * @return The @c std::string for the method that computes computed
+     * constants.
      */
-    void setEndInitializeConstantsMethodString(const std::string &endInitializeConstantsMethodString);
+    std::string computeComputedConstantsMethodString() const;
 
     /**
-     * @brief Get the @c std::string for the beginning of the method that
-     * computes computed constants.
-     *
-     * Return the @c std::string for the beginning of the method that computes
-     * computed constants.
-     *
-     * @return The @c std::string for the beginning of the method that computes
-     * computed constants.
-     */
-    std::string beginComputeComputedConstantsMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the beginning of the method that
-     * computes computed constants.
-     *
-     * Set this @c std::string for the beginning of the method that computes
-     * computed constants.
-     *
-     * @param eqString The @c std::string to use for the beginning of the method
-     * that computes computed constants.
-     */
-    void setBeginComputeComputedConstantsMethodString(const std::string &beginComputeComputedConstantsMethodString);
-
-    /**
-     * @brief Get the @c std::string for the end of the method that computes
-     * computed constants.
-     *
-     * Return the @c std::string for the end of the method that computes
-     * computed constants.
-     *
-     * @return The @c std::string for the end of the method that computes
-     * computed constants.
-     */
-    std::string endComputeComputedConstantsMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the end of the method that computes
-     * computed constants.
-     *
-     * Set this @c std::string for the end of the method that computes computed
+     * @brief Set the @c std::string for the method that computes computed
      * constants.
      *
-     * @param eqString The @c std::string to use for the end of the method that
-     * computes computed constants.
+     * Set this @c std::string for the method that computes computed constants.
+     *
+     * @param eqString The @c std::string to use for the method that computes
+     * computed constants.
      */
-    void setEndComputeComputedConstantsMethodString(const std::string &endComputeComputedConstantsMethodString);
+    void setComputeComputedConstantsMethodString(const std::string &computeComputedConstantsMethodString);
 
     /**
-     * @brief Get the @c std::string for the beginning of the method that
-     * computes rates.
+     * @brief Get the @c std::string for the method that computes rates.
      *
-     * Return the @c std::string for the beginning of the method that computes
-     * rates.
+     * Return the @c std::string for the method that computes rates.
      *
-     * @return The @c std::string for the beginning of the method that computes
+     * @return The @c std::string for the method that computes rates.
+     */
+    std::string computeRatesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the method that computes rates.
+     *
+     * Set this @c std::string for the method that computes rates.
+     *
+     * @param eqString The @c std::string to use for the method that computes
      * rates.
      */
-    std::string beginComputeRatesMethodString() const;
+    void setComputeRatesMethodString(const std::string &computeRatesMethodString);
 
     /**
-     * @brief Set the @c std::string for the beginning of the method that
-     * computes rates.
+     * @brief Get the @c std::string for the method that computes variables.
      *
-     * Set this @c std::string for the beginning of the method that computes
-     * rates.
+     * Return the @c std::string for the method that computes variables.
      *
-     * @param eqString The @c std::string to use for the beginning of the method
-     * that computes rates.
+     * @return The @c std::string for the method that computes variables.
      */
-    void setBeginComputeRatesMethodString(const std::string &beginComputeRatesMethodString);
+    std::string computeVariablesMethodString() const;
 
     /**
-     * @brief Get the @c std::string for the end of the method that computes
-     * rates.
+     * @brief Set the @c std::string for the method that computes variables.
      *
-     * Return the @c std::string for the end of the method that computes rates.
+     * Set this @c std::string for the method that computes variables.
      *
-     * @return The @c std::string for the end of the method that computes rates.
-     */
-    std::string endComputeRatesMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the end of the method that computes
-     * rates.
-     *
-     * Set this @c std::string for the end of the method that computes rates.
-     *
-     * @param eqString The @c std::string to use for the end of the method that
-     * computes rates.
-     */
-    void setEndComputeRatesMethodString(const std::string &endComputeRatesMethodString);
-
-    /**
-     * @brief Get the @c std::string for the beginning of the method that
-     * computes variables.
-     *
-     * Return the @c std::string for the beginning of the method that computes
-     * variables.
-     *
-     * @return The @c std::string for the beginning of the method that computes
+     * @param eqString The @c std::string to use for the method that computes
      * variables.
      */
-    std::string beginComputeVariablesMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the beginning of the method that
-     * computes variables.
-     *
-     * Set this @c std::string for the beginning of the method that computes
-     * variables.
-     *
-     * @param eqString The @c std::string to use for the beginning of the method
-     * that computes variables.
-     */
-    void setBeginComputeVariablesMethodString(const std::string &beginComputeVariablesMethodString);
-
-    /**
-     * @brief Get the @c std::string for the end of the method that computes
-     * variables.
-     *
-     * Return the @c std::string for the end of the method that computes
-     * variables.
-     *
-     * @return The @c std::string for the end of the method that computes
-     * variables.
-     */
-    std::string endComputeVariablesMethodString() const;
-
-    /**
-     * @brief Set the @c std::string for the end of the method that computes
-     * variables.
-     *
-     * Set this @c std::string for the end of the method that computes
-     * variables.
-     *
-     * @param eqString The @c std::string to use for the end of the method that
-     * computes variables.
-     */
-    void setEndComputeVariablesMethodString(const std::string &endComputeVariablesMethodString);
+    void setComputeVariablesMethodString(const std::string &computeVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for an empty method.
