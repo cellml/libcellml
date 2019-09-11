@@ -1935,7 +1935,24 @@ public:
      */
     void setHeaderString(const std::string &headerString);
 
+    /**
+     * @brief Get the @c std::string for the version constant.
+     *
+     * Return the @c std::string for the version constant.
+     *
+     * @return The @c std::string for the version constant.
+     */
     std::string versionString() const;
+
+    /**
+     * @brief Set the @c std::string for the version constant.
+     *
+     * Set this @c std::string for the version constant. To be useful, the
+     * string should contain a <VERSION> tag, which will get replaced with the
+     * version of libCellML that is used.
+     *
+     * @param versionString The @c std::string to use for the version constant.
+     */
     void setVersionString(const std::string &versionString);
 
     std::string stateCountString() const;
