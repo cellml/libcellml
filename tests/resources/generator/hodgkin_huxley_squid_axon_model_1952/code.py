@@ -1,4 +1,42 @@
+# The contents of this file was generated from version 0.2.0 of libCellML.
+
 from math import *
+
+
+__version__ = "0.2.0"
+
+STATE_COUNT = 4
+VARIABLE_COUNT = 18
+
+VOI_INFO = {"component": "membrane", "name": "time", "units": "millisecond"}
+
+STATE_INFO = [
+    {"component": "sodium_channel_m_gate", "name": "m", "units": "dimensionless"},
+    {"component": "sodium_channel_h_gate", "name": "h", "units": "dimensionless"},
+    {"component": "potassium_channel_n_gate", "name": "n", "units": "dimensionless"},
+    {"component": "membrane", "name": "V", "units": "millivolt"}
+]
+
+VARIABLE_INFO = [
+    {"component": "leakage_current", "name": "g_L", "units": "milliS_per_cm2"},
+    {"component": "membrane", "name": "Cm", "units": "microF_per_cm2"},
+    {"component": "membrane", "name": "E_R", "units": "millivolt"},
+    {"component": "potassium_channel", "name": "g_K", "units": "milliS_per_cm2"},
+    {"component": "sodium_channel", "name": "g_Na", "units": "milliS_per_cm2"},
+    {"component": "leakage_current", "name": "E_L", "units": "millivolt"},
+    {"component": "sodium_channel", "name": "E_Na", "units": "millivolt"},
+    {"component": "potassium_channel", "name": "E_K", "units": "millivolt"},
+    {"component": "membrane", "name": "i_Stim", "units": "microA_per_cm2"},
+    {"component": "membrane", "name": "i_L", "units": "microA_per_cm2"},
+    {"component": "membrane", "name": "i_Na", "units": "microA_per_cm2"},
+    {"component": "sodium_channel_m_gate", "name": "alpha_m", "units": "per_millisecond"},
+    {"component": "sodium_channel_m_gate", "name": "beta_m", "units": "per_millisecond"},
+    {"component": "sodium_channel_h_gate", "name": "alpha_h", "units": "per_millisecond"},
+    {"component": "sodium_channel_h_gate", "name": "beta_h", "units": "per_millisecond"},
+    {"component": "membrane", "name": "i_K", "units": "microA_per_cm2"},
+    {"component": "potassium_channel_n_gate", "name": "alpha_n", "units": "per_millisecond"},
+    {"component": "potassium_channel_n_gate", "name": "beta_n", "units": "per_millisecond"}
+]
 
 
 def leq_func(x, y):
@@ -11,6 +49,14 @@ def geq_func(x, y):
 
 def and_func(x, y):
     return 1.0 if bool(x) & bool(y) else 0.0
+
+
+def create_states_array():
+    return [nan]*4
+
+
+def create_variables_array():
+    return [nan]*18
 
 
 def initialize_constants(states, variables):

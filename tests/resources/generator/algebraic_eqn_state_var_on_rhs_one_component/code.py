@@ -1,4 +1,31 @@
+# The contents of this file was generated from version 0.2.0 of libCellML.
+
 from math import *
+
+
+__version__ = "0.2.0"
+
+STATE_COUNT = 1
+VARIABLE_COUNT = 2
+
+VOI_INFO = {"component": "my_model", "name": "t", "units": "second"}
+
+STATE_INFO = [
+    {"component": "my_model", "name": "x", "units": "dimensionless"}
+]
+
+VARIABLE_INFO = [
+    {"component": "my_model", "name": "a", "units": "per_s"},
+    {"component": "my_model", "name": "xx", "units": "dimensionless"}
+]
+
+
+def create_states_array():
+    return [nan]*1
+
+
+def create_variables_array():
+    return [nan]*2
 
 
 def initialize_constants(states, variables):

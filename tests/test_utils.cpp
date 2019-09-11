@@ -21,9 +21,14 @@ limitations under the License.
 #include <iostream>
 #include <sstream>
 
+std::string resourcePath(const std::string &resourceRelativePath)
+{
+    return std::string(TESTS_RESOURCE_LOCATION + "/").append(resourceRelativePath);
+}
+
 std::string fileContents(const std::string &fileName)
 {
-    std::ifstream file(TestResources::resourcePath(fileName));
+    std::ifstream file(resourcePath(fileName));
     std::stringstream buffer;
 
     buffer << file.rdbuf();
