@@ -1955,7 +1955,25 @@ public:
      */
     void setVersionString(const std::string &versionString);
 
+    /**
+     * @brief Get the @c std::string for the state count constant.
+     *
+     * Return the @c std::string for the state count constant.
+     *
+     * @return The @c std::string for the state count constant.
+     */
     std::string stateCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the state count constant.
+     *
+     * Set this @c std::string for the state count constant. To be useful, the
+     * string should contain a <STATE_COUNT> tag, which will be replaced with
+     * the number of states in the model.
+     *
+     * @param versionString The @c std::string to use for the state count
+     * constant.
+     */
     void setStateCountString(const std::string &stateCountString);
 
     std::string variableCountString() const;
