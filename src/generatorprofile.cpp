@@ -542,61 +542,85 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Mathematical functions
 
         mEqEqFunctionString = "def eq_eq_func(x, y):\n"
-                              "    return 1.0 if x == y else 0.0\n\n";
+                              "    return 1.0 if x == y else 0.0\n"
+                              "\n";
         mNeqFunctionString = "def neq_func(x, y):\n"
-                             "    return 1.0 if x != y else 0.0\n\n";
+                             "    return 1.0 if x != y else 0.0\n"
+                             "\n";
         mLtFunctionString = "def lt_func(x, y):\n"
-                            "    return 1.0 if x < y else 0.0\n\n";
+                            "    return 1.0 if x < y else 0.0\n"
+                            "\n";
         mLeqFunctionString = "def leq_func(x, y):\n"
-                             "    return 1.0 if x <= y else 0.0\n\n";
+                             "    return 1.0 if x <= y else 0.0\n"
+                             "\n";
         mGtFunctionString = "def gt_func(x, y):\n"
-                            "    return 1.0 if x > y else 0.0\n\n";
+                            "    return 1.0 if x > y else 0.0\n"
+                            "\n";
         mGeqFunctionString = "def geq_func(x, y):\n"
-                             "    return 1.0 if x >= y else 0.0\n\n";
+                             "    return 1.0 if x >= y else 0.0\n"
+                             "\n";
         mAndFunctionString = "def and_func(x, y):\n"
-                             "    return 1.0 if bool(x) & bool(y) else 0.0\n\n";
+                             "    return 1.0 if bool(x) & bool(y) else 0.0\n"
+                             "\n";
         mOrFunctionString = "def or_func(x, y):\n"
-                            "    return 1.0 if bool(x) | bool(y) else 0.0\n\n";
+                            "    return 1.0 if bool(x) | bool(y) else 0.0\n"
+                            "\n";
         mXorFunctionString = "def xor_func(x, y):\n"
-                             "    return 1.0 if bool(x) ^ bool(y) else 0.0\n\n";
+                             "    return 1.0 if bool(x) ^ bool(y) else 0.0\n"
+                             "\n";
         mNotFunctionString = "def not_func(x):\n"
-                             "    return 1.0 if not bool(x) else 0.0\n\n";
+                             "    return 1.0 if not bool(x) else 0.0\n"
+                             "\n";
 
         mMinFunctionString = "def min(x, y):\n"
-                             "    return x if x < y else y\n\n";
+                             "    return x if x < y else y\n"
+                             "\n";
         mMaxFunctionString = "def max(x, y):\n"
-                             "    return x if x > y else y\n\n";
+                             "    return x if x > y else y\n"
+                             "\n";
 
         mSecFunctionString = "def sec(x):\n"
-                             "    return 1.0/cos(x)\n\n";
+                             "    return 1.0/cos(x)\n"
+                             "\n";
         mCscFunctionString = "def csc(x):\n"
-                             "    return 1.0/sin(x)\n\n";
+                             "    return 1.0/sin(x)\n"
+                             "\n";
         mCotFunctionString = "def cot(x):\n"
-                             "    return 1.0/tan(x)\n\n";
+                             "    return 1.0/tan(x)\n"
+                             "\n";
         mSechFunctionString = "def sech(x):\n"
-                              "    return 1.0/cosh(x)\n\n";
+                              "    return 1.0/cosh(x)\n"
+                              "\n";
         mCschFunctionString = "def csch(x):\n"
-                              "    return 1.0/sinh(x)\n\n";
+                              "    return 1.0/sinh(x)\n"
+                              "\n";
         mCothFunctionString = "def coth(x):\n"
-                              "    return 1.0/tanh(x)\n\n";
+                              "    return 1.0/tanh(x)\n"
+                              "\n";
         mAsecFunctionString = "def asec(x):\n"
-                              "    return acos(1.0/x)\n\n";
+                              "    return acos(1.0/x)\n"
+                              "\n";
         mAcscFunctionString = "def acsc(x):\n"
-                              "    return asin(1.0/x)\n\n";
+                              "    return asin(1.0/x)\n"
+                              "\n";
         mAcotFunctionString = "def acot(x):\n"
-                              "    return atan(1.0/x)\n\n";
+                              "    return atan(1.0/x)\n"
+                              "\n";
         mAsechFunctionString = "def asech(x):\n"
                                "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n\n";
+                               "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n"
+                               "\n";
         mAcschFunctionString = "def acsch(x):\n"
                                "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n\n";
+                               "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n"
+                               "\n";
         mAcothFunctionString = "def acoth(x):\n"
                                "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n\n";
+                               "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n"
+                               "\n";
 
         // Miscellaneous
 
