@@ -313,6 +313,6 @@ bool isCellMLReal(const std::string &candidate);
  *
  * @return @c true if @p value1 and @p value2 are equal and @c false otherwise.
  */
-bool isEqual(double value1, double value2);
+bool areEqual(double value1, double value2);
 
 } // namespace libcellml
