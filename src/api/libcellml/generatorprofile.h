@@ -2367,7 +2367,23 @@ public:
      */
     void setCloseArrayString(const std::string &closeArrayString);
 
+    /**
+     * @brief Get the @c std::string for separating elements in an array.
+     *
+     * Return the @c std::string for separating elements in an array.
+     *
+     * @return The @c std::string for separating elements in an array.
+     */
     std::string arrayElementSeparatorString() const;
+
+    /**
+     * @brief Set the @c std::string for separating elements in an array.
+     *
+     * Set this @c std::string for separating elements in an array.
+     *
+     * @param closeArrayString The @c std::string to use for separating elements
+     * in an array.
+     */
     void setArrayElementSeparatorString(const std::string &arrayElementSeparatorString);
 
     /**
