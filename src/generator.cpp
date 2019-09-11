@@ -1763,13 +1763,13 @@ void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
 
 void Generator::GeneratorImpl::addExtraMathFunctionsCode(std::string &code)
 {
-    if (mNeedEqEq && !mProfile->hasEqEqOperator()
-        && !mProfile->eqEqFunctionString().empty()) {
+    if (mNeedEq && !mProfile->hasEqOperator()
+        && !mProfile->eqFunctionString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += mProfile->eqEqFunctionString();
+        code += mProfile->eqFunctionString();
     }
 
     if (mNeedNeq && !mProfile->hasNeqOperator()

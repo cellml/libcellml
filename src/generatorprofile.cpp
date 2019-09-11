@@ -456,7 +456,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Relational and logical operators
 
-        mEqString = "eq_eq_func";
+        mEqString = "eq_func";
         mNeqString = "neq_func";
         mLtString = "lt_func";
         mLeqString = "leq_func";
