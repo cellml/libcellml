@@ -380,7 +380,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Miscellaneous
 
         mCommentString = "/* <CODE> */\n";
-        mOriginCommentString = "The contents of this file were generated from version <LIBCELLML_VERSION> of libCellML.";
+        mOriginCommentString = "The content of this file was generated from version <LIBCELLML_VERSION> of libCellML.";
 
         mHeaderString = "#include <math.h>\n"
                         "#include <stddef.h>\n"
@@ -628,7 +628,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         // Miscellaneous
 
         mCommentString = "# <CODE>\n";
-        mOriginCommentString = "The contents of this file were generated from version <LIBCELLML_VERSION> of libCellML.";
+        mOriginCommentString = "The content of this file was generated from version <LIBCELLML_VERSION> of libCellML.";
 
         mHeaderString = "from math import *\n"
                         "\n";
