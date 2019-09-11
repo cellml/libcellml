@@ -2049,7 +2049,29 @@ public:
      */
     void setVoiInfoString(const std::string &voiInfoString);
 
+    /**
+     * @brief Get the @c std::string for some information about the different
+     * states.
+     *
+     * Return the @c std::string for some information about the different
+     * states.
+     *
+     * @return The @c std::string for some information about the different
+     * states.
+     */
     std::string stateInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for some information about the different
+     * states.
+     *
+     * Set this @c std::string for some information about the different states.
+     * To be useful, the string should contain a <CODE> tag, which will be
+     * replaced with some information about the different states.
+     *
+     * @param versionString The @c std::string to use for some information about
+     * the different states.
+     */
     void setStateInfoString(const std::string &stateInfoString);
 
     std::string variableInfoString() const;
