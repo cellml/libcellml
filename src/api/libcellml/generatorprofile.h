@@ -1877,7 +1877,23 @@ public:
 
     // Miscellaneous
 
+    /**
+     * @brief Get the @c std::string for a comment.
+     *
+     * Return the @c std::string for a comment.
+     *
+     * @return The @c std::string for a comment.
+     */
     std::string commentString() const;
+
+    /**
+     * @brief Set the @c std::string for a comment.
+     *
+     * Set this @c std::string for a comment. To be useful, the string should
+     * contain the <CODE> tag, which will get replaced with a (proper) comment.
+     *
+     * @param commentString The @c std::string to use for a comment.
+     */
     void setCommentString(const std::string &commentString);
 
     std::string originCommentString() const;
