@@ -723,6 +723,14 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mXorString = rhs.mPimpl->mXorString;
     mPimpl->mNotString = rhs.mPimpl->mNotString;
 
+    mPimpl->mHasEqOperator = rhs.mPimpl->mHasEqOperator;
+    mPimpl->mHasNeqOperator = rhs.mPimpl->mHasNeqOperator;
+    mPimpl->mHasLtOperator = rhs.mPimpl->mHasLtOperator;
+    mPimpl->mHasLeqOperator = rhs.mPimpl->mHasLeqOperator;
+    mPimpl->mHasGtOperator = rhs.mPimpl->mHasGtOperator;
+    mPimpl->mHasGeqOperator = rhs.mPimpl->mHasGeqOperator;
+    mPimpl->mHasAndOperator = rhs.mPimpl->mHasAndOperator;
+    mPimpl->mHasOrOperator = rhs.mPimpl->mHasOrOperator;
     mPimpl->mHasXorOperator = rhs.mPimpl->mHasXorOperator;
     mPimpl->mHasNotOperator = rhs.mPimpl->mHasNotOperator;
 
@@ -793,6 +801,17 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mNanString = rhs.mPimpl->mNanString;
 
     // Mathematical functions
+
+    mPimpl->mEqFunctionString = rhs.mPimpl->mEqFunctionString;
+    mPimpl->mNeqFunctionString = rhs.mPimpl->mNeqFunctionString;
+    mPimpl->mLtFunctionString = rhs.mPimpl->mLtFunctionString;
+    mPimpl->mLeqFunctionString = rhs.mPimpl->mLeqFunctionString;
+    mPimpl->mGtFunctionString = rhs.mPimpl->mGtFunctionString;
+    mPimpl->mGeqFunctionString = rhs.mPimpl->mGeqFunctionString;
+    mPimpl->mAndFunctionString = rhs.mPimpl->mAndFunctionString;
+    mPimpl->mOrFunctionString = rhs.mPimpl->mOrFunctionString;
+    mPimpl->mXorFunctionString = rhs.mPimpl->mXorFunctionString;
+    mPimpl->mNotFunctionString = rhs.mPimpl->mNotFunctionString;
 
     mPimpl->mMinFunctionString = rhs.mPimpl->mMinFunctionString;
     mPimpl->mMaxFunctionString = rhs.mPimpl->mMaxFunctionString;
