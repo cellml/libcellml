@@ -1611,8 +1611,9 @@ void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
 {
     if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
-        code += replace(mProfile->commentString(), "<CODE>",
-                        replace(mProfile->originCommentString(), "<LIBCELLML_VERSION>", versionString()));
+        code += replace(mProfile->commentString(),
+                        "<CODE>", replace(mProfile->originCommentString(),
+                                          "<LIBCELLML_VERSION>", versionString()));
     }
 }
 
@@ -1634,7 +1635,8 @@ void Generator::GeneratorImpl::addVersionCode(std::string &code)
             code += "\n";
         }
 
-        code += replace(mProfile->libcellmlVersionString(), "<LIBCELLML_VERSION>", versionString());
+        code += replace(mProfile->libcellmlVersionString(),
+                        "<LIBCELLML_VERSION>", versionString());
     }
 }
 
@@ -1647,11 +1649,13 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code)
         }
 
         if (!mProfile->stateCountString().empty()) {
-            code += replace(mProfile->stateCountString(), "<STATE_COUNT>", std::to_string(mStates.size()));
+            code += replace(mProfile->stateCountString(),
+                            "<STATE_COUNT>", std::to_string(mStates.size()));
         }
 
         if (!mProfile->variableCountString().empty()) {
-            code += replace(mProfile->variableCountString(), "<VARIABLE_COUNT>", std::to_string(mVariables.size()));
+            code += replace(mProfile->variableCountString(),
+                            "<VARIABLE_COUNT>", std::to_string(mVariables.size()));
         }
     }
 }
@@ -1724,7 +1728,8 @@ void Generator::GeneratorImpl::addInfoCode(const std::string &infoString,
             infoElements += "\n";
         }
 
-        code += replace(infoString, "<CODE>", infoElements);
+        code += replace(infoString,
+                        "<CODE>", infoElements);
     }
 }
 
@@ -1740,8 +1745,8 @@ void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
         std::string name = (mVoi != nullptr) ? mVoi->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->units() : "";
 
-        code += replace(mProfile->voiInfoString(), "<CODE>",
-                        generateVariableInfoEntryCode(component, name, units));
+        code += replace(mProfile->voiInfoString(),
+                        "<CODE>", generateVariableInfoEntryCode(component, name, units));
     }
 }
 
@@ -1968,8 +1973,8 @@ void Generator::GeneratorImpl::addExtraMathFunctionsCode(std::string &code)
 
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
 {
-    return replace(mProfile->returnCreatedArrayString(), "<ARRAY_SIZE>",
-                   std::to_string(arraySize));
+    return replace(mProfile->returnCreatedArrayString(),
+                   "<ARRAY_SIZE>", std::to_string(arraySize));
 }
 
 void Generator::GeneratorImpl::addCreateStatesArrayCode(std::string &code)
@@ -1980,8 +1985,8 @@ void Generator::GeneratorImpl::addCreateStatesArrayCode(std::string &code)
             code += "\n";
         }
 
-        code += replace(mProfile->createStatesArrayMethodString(), "<CODE>",
-                        mProfile->indentString() + generateCreateArrayCode(mStates.size()));
+        code += replace(mProfile->createStatesArrayMethodString(),
+                        "<CODE>", mProfile->indentString() + generateCreateArrayCode(mStates.size()));
     }
 }
 
@@ -1993,8 +1998,8 @@ void Generator::GeneratorImpl::addCreateVariablesArrayCode(std::string &code)
             code += "\n";
         }
 
-        code += replace(mProfile->createVariablesArrayMethodString(), "<CODE>",
-                        mProfile->indentString() + generateCreateArrayCode(mVariables.size()));
+        code += replace(mProfile->createVariablesArrayMethodString(),
+                        "<CODE>", mProfile->indentString() + generateCreateArrayCode(mVariables.size()));
     }
 }
 
@@ -2821,8 +2826,8 @@ void Generator::GeneratorImpl::addInitializeConstantsMethodCode(std::string &cod
             }
         }
 
-        code += replace(mProfile->initializeConstantsMethodString(), "<CODE>",
-                        generateMethodBodyCode(methodBody));
+        code += replace(mProfile->initializeConstantsMethodString(),
+                        "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2842,8 +2847,8 @@ void Generator::GeneratorImpl::addComputeComputedConstantsMethodCode(std::string
             }
         }
 
-        code += replace(mProfile->computeComputedConstantsMethodString(), "<CODE>",
-                        generateMethodBodyCode(methodBody));
+        code += replace(mProfile->computeComputedConstantsMethodString(),
+                        "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2863,8 +2868,8 @@ void Generator::GeneratorImpl::addComputeRatesMethodCode(std::string &code,
             }
         }
 
-        code += replace(mProfile->computeRatesMethodString(), "<CODE>",
-                        generateMethodBodyCode(methodBody));
+        code += replace(mProfile->computeRatesMethodString(),
+                        "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
@@ -2888,8 +2893,8 @@ void Generator::GeneratorImpl::addComputeVariablesMethodCode(std::string &code,
             }
         }
 
-        code += replace(mProfile->computeVariablesMethodString(), "<CODE>",
-                        generateMethodBodyCode(methodBody));
+        code += replace(mProfile->computeVariablesMethodString(),
+                        "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
