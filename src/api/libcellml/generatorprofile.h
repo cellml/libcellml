@@ -1433,7 +1433,8 @@ public:
      *
      * Set this @c std::string for the equivalence function.
      *
-     * @param eqFunctionString The @c std::string to use for the equivalence function.
+     * @param eqFunctionString The @c std::string to use for the equivalence
+     * function.
      */
     void setEqFunctionString(const std::string &eqFunctionString);
 
@@ -1470,7 +1471,8 @@ public:
      *
      * Set this @c std::string for the lower than function.
      *
-     * @param ltFunctionString The @c std::string to use for the lower than function.
+     * @param ltFunctionString The @c std::string to use for the lower than
+     * function.
      */
     void setLtFunctionString(const std::string &ltFunctionString);
 
@@ -1488,8 +1490,8 @@ public:
      *
      * Set this @c std::string for the lower or equal than function.
      *
-     * @param leqFunctionString The @c std::string to use for the lower or equal than
-     * function.
+     * @param leqFunctionString The @c std::string to use for the lower or equal
+     * than function.
      */
     void setLeqFunctionString(const std::string &leqFunctionString);
 
@@ -1507,7 +1509,8 @@ public:
      *
      * Set this @c std::string for the greater than function.
      *
-     * @param gtFunctionString The @c std::string to use for the greater than function.
+     * @param gtFunctionString The @c std::string to use for the greater than
+     * function.
      */
     void setGtFunctionString(const std::string &gtFunctionString);
 
@@ -1525,8 +1528,8 @@ public:
      *
      * Set this @c std::string for the greater or equal than function.
      *
-     * @param geqFunctionString The @c std::string to use for the greater or equal than
-     * function.
+     * @param geqFunctionString The @c std::string to use for the greater or
+     * equal than function.
      */
     void setGeqFunctionString(const std::string &geqFunctionString);
 
@@ -1616,7 +1619,8 @@ public:
      *
      * Set this @c std::string for the minimum function.
      *
-     * @param minFunctionString The @c std::string to use for the minimum function.
+     * @param minFunctionString The @c std::string to use for the minimum
+     * function.
      */
     void setMinFunctionString(const std::string &minFunctionString);
 
@@ -1634,7 +1638,8 @@ public:
      *
      * Set this @c std::string for the maximum function.
      *
-     * @param maxFunctionString The @c std::string to use for the maximum function.
+     * @param maxFunctionString The @c std::string to use for the maximum
+     * function.
      */
     void setMaxFunctionString(const std::string &maxFunctionString);
 
@@ -1652,7 +1657,8 @@ public:
      *
      * Set this @c std::string for the secant function.
      *
-     * @param secFunctionString The @c std::string to use for the secant function.
+     * @param secFunctionString The @c std::string to use for the secant
+     * function.
      */
     void setSecFunctionString(const std::string &secFunctionString);
 
@@ -1670,7 +1676,8 @@ public:
      *
      * Set this @c std::string for the cosecant function.
      *
-     * @param cscFunctionString The @c std::string to use for the cosecant function.
+     * @param cscFunctionString The @c std::string to use for the cosecant
+     * function.
      */
     void setCscFunctionString(const std::string &cscFunctionString);
 
@@ -1688,7 +1695,8 @@ public:
      *
      * Set this @c std::string for the cotangent function.
      *
-     * @param cotFunctionString The @c std::string to use for the cotangent function.
+     * @param cotFunctionString The @c std::string to use for the cotangent
+     * function.
      */
     void setCotFunctionString(const std::string &cotFunctionString);
 
@@ -1706,8 +1714,8 @@ public:
      *
      * Set this @c std::string for the hyperbolic secant function.
      *
-     * @param sechFunctionString The @c std::string to use for the hyperbolic secant
-     * function.
+     * @param sechFunctionString The @c std::string to use for the hyperbolic
+     * secant function.
      */
     void setSechFunctionString(const std::string &sechFunctionString);
 
@@ -1725,8 +1733,8 @@ public:
      *
      * Set this @c std::string for the hyperbolic cosecant function.
      *
-     * @param cschFunctionString The @c std::string to use for the hyperbolic cosecant
-     * function.
+     * @param cschFunctionString The @c std::string to use for the hyperbolic
+     * cosecant function.
      */
     void setCschFunctionString(const std::string &cschFunctionString);
 
@@ -1744,8 +1752,8 @@ public:
      *
      * Set this @c std::string for the hyperbolic cotangent function.
      *
-     * @param cothFunctionString The @c std::string to use for the hyperbolic cotangent
-     * function.
+     * @param cothFunctionString The @c std::string to use for the hyperbolic
+     * cotangent function.
      */
     void setCothFunctionString(const std::string &cothFunctionString);
 
@@ -1763,7 +1771,8 @@ public:
      *
      * Set this @c std::string for the inverse secant function.
      *
-     * @param asecFunctionString The @c std::string to use for the inverse secant function.
+     * @param asecFunctionString The @c std::string to use for the inverse
+     * secant function.
      */
     void setAsecFunctionString(const std::string &asecFunctionString);
 
@@ -1781,7 +1790,8 @@ public:
      *
      * Set this @c std::string for the inverse cosecant function.
      *
-     * @param acscFunctionString The @c std::string to use for the inverse cosecant function.
+     * @param acscFunctionString The @c std::string to use for the inverse
+     * cosecant function.
      */
     void setAcscFunctionString(const std::string &acscFunctionString);
 
@@ -1799,8 +1809,8 @@ public:
      *
      * Set this @c std::string for the inverse cotangent function.
      *
-     * @param acotFunctionString The @c std::string to use for the inverse cotangent
-     * function.
+     * @param acotFunctionString The @c std::string to use for the inverse
+     * cotangent function.
      */
     void setAcotFunctionString(const std::string &acotFunctionString);
 
@@ -1818,8 +1828,8 @@ public:
      *
      * Set this @c std::string for the inverse hyperbolic secant function.
      *
-     * @param asechFunctionString The @c std::string to use for the inverse hyperbolic
-     * secant function.
+     * @param asechFunctionString The @c std::string to use for the inverse
+     * hyperbolic secant function.
      */
     void setAsechFunctionString(const std::string &asechFunctionString);
 
@@ -1839,8 +1849,8 @@ public:
      *
      * Set this @c std::string for the inverse hyperbolic cosecant function.
      *
-     * @param acschFunctionString The @c std::string to use for the inverse hyperbolic
-     * cosecant function.
+     * @param acschFunctionString The @c std::string to use for the inverse
+     * hyperbolic cosecant function.
      */
     void setAcschFunctionString(const std::string &acschFunctionString);
 
@@ -1860,8 +1870,8 @@ public:
      *
      * Set this @c std::string for the inverse hyperbolic cotangent function.
      *
-     * @param acothFunctionString The @c std::string to use for the inverse hyperbolic
-     * cotangent function.
+     * @param acothFunctionString The @c std::string to use for the inverse
+     * hyperbolic cotangent function.
      */
     void setAcothFunctionString(const std::string &acothFunctionString);
 
@@ -1950,8 +1960,8 @@ public:
      *
      * Set this @c std::string for the name of the states array.
      *
-     * @param statesArrayString The @c std::string to use for the name of the states
-     * array.
+     * @param statesArrayString The @c std::string to use for the name of the
+     * states array.
      */
     void setStatesArrayString(const std::string &statesArrayString);
 
@@ -1969,8 +1979,8 @@ public:
      *
      * Set this @c std::string for the name of the rates array.
      *
-     * @param ratesArrayString The @c std::string to use for the name of the rates
-     * array.
+     * @param ratesArrayString The @c std::string to use for the name of the
+     * rates array.
      */
     void setRatesArrayString(const std::string &ratesArrayString);
 
@@ -1988,8 +1998,8 @@ public:
      *
      * Set this @c std::string for the name of the variables array.
      *
-     * @param variablesArrayString The @c std::string to use for the name of the variables
-     * array.
+     * @param variablesArrayString The @c std::string to use for the name of the
+     * variables array.
      */
     void setVariablesArrayString(const std::string &variablesArrayString);
 
