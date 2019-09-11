@@ -2225,7 +2225,25 @@ public:
      */
     void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
 
+    /**
+     * @brief Get the @c std::string for creating the states array.
+     *
+     * Return the @c std::string for creating the states array.
+     *
+     * @return The @c std::string for creating the states array.
+     */
     std::string createStatesArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for creating the states array.
+     *
+     * Set this @c std::string for creating the states array. To be useful, the
+     * string should contain the <CODE> tag, which will be replaced with some
+     * code to create the states array.
+     *
+     * @param createStatesArrayMethodString The @c std::string to use for
+     * creating the states array.
+     */
     void setCreateStatesArrayMethodString(const std::string &createStatesArrayMethodString);
 
     std::string createVariablesArrayMethodString() const;
