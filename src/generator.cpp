@@ -177,10 +177,13 @@ struct GeneratorEquationAst
 {
     enum struct Type
     {
+        // Assignment
+
+        ASSIGNMENT,
+
         // Relational and logical operators
 
         EQ,
-        EQEQ,
         NEQ,
         LT,
         LEQ,
@@ -267,7 +270,7 @@ struct GeneratorEquationAst
         NAN
     };
 
-    Type mType = Type::EQ;
+    Type mType = Type::ASSIGNMENT;
 
     std::string mValue;
     VariablePtr mVariable = nullptr;
@@ -547,7 +550,7 @@ struct Generator::GeneratorImpl
 
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    bool mNeedEqEq = false;
+    bool mNeedEq = false;
     bool mNeedNeq = false;
     bool mNeedLt = false;
     bool mNeedLeq = false;
@@ -805,7 +808,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast->mRight = astRight;
         }
 
-        // Relational and logical operators
+        // Assignment, and relational and logical operators
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
@@ -813,12 +816,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // "math" element then it means that it is used to describe "a = b"
         // otherwise it is used to describe "a == b". In the former case, there
         // is nothing more we need to do since `ast` is already of
-        // GeneratorEquationAst::Type::EQ type.
+        // GeneratorEquationAst::Type::ASSIGNMENT type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
-            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQEQ, astParent);
+            ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQ, astParent);
 
-            mNeedEqEq = true;
+            mNeedEq = true;
         }
     } else if (node->isMathmlElement("neq")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::NEQ, astParent);
@@ -1499,8 +1502,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
 {
-    return ((ast->mType == GeneratorEquationAst::Type::EQEQ)
-            && mProfile->hasEqEqOperator())
+    return ((ast->mType == GeneratorEquationAst::Type::EQ)
+            && mProfile->hasEqOperator())
            || ((ast->mType == GeneratorEquationAst::Type::NEQ)
                && mProfile->hasNeqOperator())
            || ((ast->mType == GeneratorEquationAst::Type::LT)
@@ -1760,13 +1763,13 @@ void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
 
 void Generator::GeneratorImpl::addExtraMathFunctionsCode(std::string &code)
 {
-    if (mNeedEqEq && !mProfile->hasEqEqOperator()
-        && !mProfile->eqEqFunctionString().empty()) {
+    if (mNeedEq && !mProfile->hasEqOperator()
+        && !mProfile->eqFunctionString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += mProfile->eqEqFunctionString();
+        code += mProfile->eqFunctionString();
     }
 
     if (mNeedNeq && !mProfile->hasNeqOperator()
@@ -2073,7 +2076,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     //  4. TIMES, DIVIDE                                         [Left to right]
     //  5. PLUS, MINUS                                           [Left to right]
     //  6. LT, LEQ, GT, GEQ                                      [Left to right]
-    //  7. EQEQ, NEQ                                             [Left to right]
+    //  7. EQ, NEQ                                               [Left to right]
     //  8. XOR (bitwise)                                         [Left to right]
     //  9. AND (logical)                                         [Left to right]
     // 10. OR (logical)                                          [Left to right]
@@ -2384,17 +2387,20 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     std::string code;
 
     switch (ast->mType) {
+        // Assignment
+
+    case GeneratorEquationAst::Type::ASSIGNMENT:
+        code = generateOperatorCode(mProfile->assignmentString(), ast);
+
+        break;
+
         // Relational and logical operators
 
     case GeneratorEquationAst::Type::EQ:
-        code = generateOperatorCode(mProfile->eqString(), ast);
-
-        break;
-    case GeneratorEquationAst::Type::EQEQ:
-        if (mProfile->hasEqEqOperator()) {
-            code = generateOperatorCode(mProfile->eqEqString(), ast);
+        if (mProfile->hasEqOperator()) {
+            code = generateOperatorCode(mProfile->eqString(), ast);
         } else {
-            code = generateTwoParameterFunctionCode(mProfile->eqEqString(), ast);
+            code = generateTwoParameterFunctionCode(mProfile->eqString(), ast);
         }
 
         break;
@@ -2915,7 +2921,7 @@ Generator::Generator(const Generator &rhs)
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
-    mPimpl->mNeedEqEq = rhs.mPimpl->mNeedEqEq;
+    mPimpl->mNeedEq = rhs.mPimpl->mNeedEq;
     mPimpl->mNeedNeq = rhs.mPimpl->mNeedNeq;
     mPimpl->mNeedLt = rhs.mPimpl->mNeedLt;
     mPimpl->mNeedLeq = rhs.mPimpl->mNeedLeq;

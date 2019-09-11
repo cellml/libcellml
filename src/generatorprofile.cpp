@@ -29,10 +29,13 @@ namespace libcellml {
 
 struct GeneratorProfile::GeneratorProfileImpl
 {
+    // Assignment
+
+    std::string mAssignmentString;
+
     // Relational and logical operators
 
     std::string mEqString;
-    std::string mEqEqString;
     std::string mNeqString;
     std::string mLtString;
     std::string mLeqString;
@@ -43,7 +46,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mXorString;
     std::string mNotString;
 
-    bool mHasEqEqOperator = true;
+    bool mHasEqOperator = true;
     bool mHasNeqOperator = true;
     bool mHasLtOperator = true;
     bool mHasLeqOperator = true;
@@ -122,7 +125,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Mathematical functions
 
-    std::string mEqEqFunctionString;
+    std::string mEqFunctionString;
     std::string mNeqFunctionString;
     std::string mLtFunctionString;
     std::string mLeqFunctionString;
@@ -202,10 +205,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 {
     switch (profile) {
     case GeneratorProfile::Profile::C:
+        // Assignment
+
+        mAssignmentString = " = ";
+
         // Relational and logical operators
 
-        mEqString = " = ";
-        mEqEqString = " == ";
+        mEqString = " == ";
         mNeqString = " != ";
         mLtString = " < ";
         mLeqString = " <= ";
@@ -216,7 +222,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mXorString = "xor";
         mNotString = "!";
 
-        mHasEqEqOperator = true;
+        mHasEqOperator = true;
         mHasNeqOperator = true;
         mHasLtOperator = true;
         mHasLeqOperator = true;
@@ -293,7 +299,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions
 
-        mEqEqFunctionString = "";
+        mEqFunctionString = "";
         mNeqFunctionString = "";
         mLtFunctionString = "";
         mLeqFunctionString = "";
@@ -444,10 +450,13 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         break;
     case GeneratorProfile::Profile::PYTHON:
+        // Assignment
+
+        mAssignmentString = " = ";
+
         // Relational and logical operators
 
-        mEqString = " = ";
-        mEqEqString = "eq_eq_func";
+        mEqString = "eq_func";
         mNeqString = "neq_func";
         mLtString = "lt_func";
         mLeqString = "leq_func";
@@ -458,7 +467,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mXorString = "xor_func";
         mNotString = "not_func";
 
-        mHasEqEqOperator = false;
+        mHasEqOperator = false;
         mHasNeqOperator = false;
         mHasLtOperator = false;
         mHasLeqOperator = false;
@@ -535,9 +544,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions
 
-        mEqEqFunctionString = "\n"
-                              "def eq_eq_func(x, y):\n"
-                              "    return 1.0 if x == y else 0.0\n";
+        mEqFunctionString = "\n"
+                            "def eq_func(x, y):\n"
+                            "    return 1.0 if x == y else 0.0\n";
         mNeqFunctionString = "\n"
                              "def neq_func(x, y):\n"
                              "    return 1.0 if x != y else 0.0\n";
@@ -697,10 +706,13 @@ GeneratorProfile::~GeneratorProfile()
 GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     : mPimpl(new GeneratorProfileImpl())
 {
+    // Assignment
+
+    mPimpl->mAssignmentString = rhs.mPimpl->mAssignmentString;
+
     // Relational and logical operators
 
     mPimpl->mEqString = rhs.mPimpl->mEqString;
-    mPimpl->mEqEqString = rhs.mPimpl->mEqEqString;
     mPimpl->mNeqString = rhs.mPimpl->mNeqString;
     mPimpl->mLtString = rhs.mPimpl->mLtString;
     mPimpl->mLeqString = rhs.mPimpl->mLeqString;
@@ -867,6 +879,16 @@ void GeneratorProfile::setProfile(Profile profile)
     mPimpl->loadProfile(profile);
 }
 
+std::string GeneratorProfile::assignmentString() const
+{
+    return mPimpl->mAssignmentString;
+}
+
+void GeneratorProfile::setAssignmentString(const std::string &assignmentString)
+{
+    mPimpl->mAssignmentString = assignmentString;
+}
+
 std::string GeneratorProfile::eqString() const
 {
     return mPimpl->mEqString;
@@ -875,16 +897,6 @@ std::string GeneratorProfile::eqString() const
 void GeneratorProfile::setEqString(const std::string &eqString)
 {
     mPimpl->mEqString = eqString;
-}
-
-std::string GeneratorProfile::eqEqString() const
-{
-    return mPimpl->mEqEqString;
-}
-
-void GeneratorProfile::setEqEqString(const std::string &eqEqString)
-{
-    mPimpl->mEqEqString = eqEqString;
 }
 
 std::string GeneratorProfile::neqString() const
@@ -977,14 +989,14 @@ void GeneratorProfile::setNotString(const std::string &notString)
     mPimpl->mNotString = notString;
 }
 
-bool GeneratorProfile::hasEqEqOperator() const
+bool GeneratorProfile::hasEqOperator() const
 {
-    return mPimpl->mHasEqEqOperator;
+    return mPimpl->mHasEqOperator;
 }
 
-void GeneratorProfile::setHasEqEqOperator(bool hasEqEqOperator)
+void GeneratorProfile::setHasEqOperator(bool hasEqOperator)
 {
-    mPimpl->mHasEqEqOperator = hasEqEqOperator;
+    mPimpl->mHasEqOperator = hasEqOperator;
 }
 
 bool GeneratorProfile::hasNeqOperator() const
@@ -1597,14 +1609,14 @@ void GeneratorProfile::setNanString(const std::string &nanString)
     mPimpl->mNanString = nanString;
 }
 
-std::string GeneratorProfile::eqEqFunctionString() const
+std::string GeneratorProfile::eqFunctionString() const
 {
-    return mPimpl->mEqEqFunctionString;
+    return mPimpl->mEqFunctionString;
 }
 
-void GeneratorProfile::setEqEqFunctionString(const std::string &eqEqFunctionString)
+void GeneratorProfile::setEqFunctionString(const std::string &eqFunctionString)
 {
-    mPimpl->mEqEqFunctionString = eqEqFunctionString;
+    mPimpl->mEqFunctionString = eqFunctionString;
 }
 
 std::string GeneratorProfile::neqFunctionString() const

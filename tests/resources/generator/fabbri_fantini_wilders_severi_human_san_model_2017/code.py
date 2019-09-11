@@ -267,7 +267,7 @@ VARIABLE_INFO = [
 ]
 
 
-def eq_eq_func(x, y):
+def eq_func(x, y):
     return 1.0 if x == y else 0.0
 
 
@@ -535,9 +535,9 @@ def compute_rates(voi, states, rates, variables):
     variables[205] = 1.0/(variables[192]+variables[193])
     rates[28] = (variables[191]-states[28])/variables[205]
     variables[167] = 1.0/(1.0+exp(-(variables[140]-variables[52]-variables[129])/(variables[53]*(1.0+variables[130]/100.0))))
-    variables[168] = -41.80001 if eq_eq_func(variables[140], -41.8) else 0.0 if eq_eq_func(variables[140], 0.0) else -6.80001 if eq_eq_func(variables[140], -6.8) else variables[140]
+    variables[168] = -41.80001 if eq_func(variables[140], -41.8) else 0.0 if eq_func(variables[140], 0.0) else -6.80001 if eq_func(variables[140], -6.8) else variables[140]
     variables[203] = -0.02839*(variables[168]+41.8)/(exp(-(variables[168]+41.8)/2.5)-1.0)-0.0849*(variables[168]+6.8)/(exp(-(variables[168]+6.8)/4.8)-1.0)
-    variables[169] = -1.80001 if eq_eq_func(variables[140], -1.8) else variables[140]
+    variables[169] = -1.80001 if eq_func(variables[140], -1.8) else variables[140]
     variables[204] = 0.01143*(variables[169]+1.8)/(exp((variables[169]+1.8)/2.5)-1.0)
     variables[210] = 0.001/(variables[203]+variables[204])
     rates[29] = (variables[167]-states[29])/variables[210]
@@ -634,8 +634,8 @@ def compute_variables(voi, states, rates, variables):
     variables[165] = 0.0000185*variables[51]*(variables[140]-0.0)/(variables[117]*(1.0-exp(-1.0*(variables[140]-0.0)/variables[117])))*(variables[91]-variables[38]*exp(-1.0*(variables[140]-0.0)/variables[117]))*states[29]*states[17]*states[5]
     variables[166] = (variables[163]+variables[164]+variables[165])*(1.0-variables[128])*1.0*variables[127]
     variables[167] = 1.0/(1.0+exp(-(variables[140]-variables[52]-variables[129])/(variables[53]*(1.0+variables[130]/100.0))))
-    variables[168] = -41.80001 if eq_eq_func(variables[140], -41.8) else 0.0 if eq_eq_func(variables[140], 0.0) else -6.80001 if eq_eq_func(variables[140], -6.8) else variables[140]
-    variables[169] = -1.80001 if eq_eq_func(variables[140], -1.8) else variables[140]
+    variables[168] = -41.80001 if eq_func(variables[140], -41.8) else 0.0 if eq_func(variables[140], 0.0) else -6.80001 if eq_func(variables[140], -6.8) else variables[140]
+    variables[169] = -1.80001 if eq_func(variables[140], -1.8) else variables[140]
     variables[170] = 1.0/(1.0+exp((variables[140]+37.4+variables[57])/(5.3+variables[56])))
     variables[171] = 0.001*(44.3+230.0*exp(-pow((variables[140]+36.0)/10.0, 2.0)))
     variables[172] = 2.0*variables[58]*variables[140]/(variables[117]*(1.0-exp(-1.0*variables[140]*2.0/variables[117])))*(states[30]-variables[35]*exp(-2.0*variables[140]/variables[117]))*states[18]*states[19]
