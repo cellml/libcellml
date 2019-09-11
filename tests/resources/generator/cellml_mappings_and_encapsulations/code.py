@@ -1,4 +1,32 @@
+# The contents of this file was generated from version 0.2.0 of libCellML.
+
 from math import *
+
+
+__version__ = "0.2.0"
+
+STATE_COUNT = 2
+VARIABLE_COUNT = 2
+
+VOI_INFO = {"component": "circle_x", "name": "t", "units": "ms"}
+
+STATE_INFO = [
+    {"component": "circle_x_source", "name": "x", "units": "mM"},
+    {"component": "circle_y_implementation", "name": "y", "units": "mM"}
+]
+
+VARIABLE_INFO = [
+    {"component": "circle_sibling", "name": "local_complex_maths", "units": "mM"},
+    {"component": "circle_x_sibling", "name": "two_x", "units": "milli_mole"}
+]
+
+
+def create_states_array():
+    return [nan]*2
+
+
+def create_variables_array():
+    return [nan]*2
 
 
 def initialize_constants(states, variables):
