@@ -1584,8 +1584,8 @@ std::string Generator::GeneratorImpl::replace(std::string string,
 {
     auto index = string.find(from);
 
-    return (string.empty() || (index == std::string::npos)) ?
-               "" :
+    return (index == std::string::npos) ?
+               string :
                string.replace(index, from.length(), to);
 }
 
