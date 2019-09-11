@@ -1910,7 +1910,7 @@ public:
      *
      * Set this @c std::string for an origin comment. To be useful, the string
      * should contain the <LIBCELLML_VERSION> tag, which will be replaced with
-     * the version of libCellML that is used.
+     * the version of libCellML used.
      *
      * @param originCommentString The @c std::string to use for an origin
      * comment.
@@ -1949,7 +1949,7 @@ public:
      *
      * Set this @c std::string for the libCellML version constant. To be useful,
      * the string should contain the <LIBCELLML_VERSION> tag, which will be
-     * replaced with the version of libCellML that is used.
+     * replaced with the version of libCellML used.
      *
      * @param versionString The @c std::string to use for the libCellML version
      * constant.
