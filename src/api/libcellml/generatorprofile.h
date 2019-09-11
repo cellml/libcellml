@@ -1896,7 +1896,25 @@ public:
      */
     void setCommentString(const std::string &commentString);
 
+    /**
+     * @brief Get the @c std::string for an origin comment.
+     *
+     * Return the @c std::string for an origin comment.
+     *
+     * @return The @c std::string for an origin comment.
+     */
     std::string originCommentString() const;
+
+    /**
+     * @brief Set the @c std::string for an origin comment.
+     *
+     * Set this @c std::string for an origin comment. To be useful, the string
+     * should contain a <VERSION> tag, which will get replaced with the version
+     * of libCellML that is used.
+     *
+     * @param originCommentString The @c std::string to use for an origin
+     * comment.
+     */
     void setOriginCommentString(const std::string &originCommentString);
 
     /**
