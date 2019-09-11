@@ -149,7 +149,7 @@ bool isCellMLReal(const std::string &candidate)
     return isReal;
 }
 
-bool isEqual(double value1, double value2)
+bool areEqual(double value1, double value2)
 {
     return std::abs(value1 - value2) < std::numeric_limits<double>::epsilon();
 }

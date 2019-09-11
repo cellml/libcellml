@@ -2507,9 +2507,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         std::string stringValue = generateCode(ast->mRight);
         double doubleValue = convertToDouble(stringValue);
 
-        if (isEqual(doubleValue, 0.5)) {
+        if (areEqual(doubleValue, 0.5)) {
             code = generateOneParameterFunctionCode(mProfile->squareRootString(), ast);
-        } else if (isEqual(doubleValue, 2.0) && !mProfile->squareString().empty()) {
+        } else if (areEqual(doubleValue, 2.0) && !mProfile->squareString().empty()) {
             code = generateOneParameterFunctionCode(mProfile->squareString(), ast);
         } else {
             code = mProfile->hasPowerOperator() ?
@@ -2523,7 +2523,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         if (ast->mRight != nullptr) {
             double doubleValue = convertToDouble(generateCode(ast->mLeft));
 
-            if (isEqual(doubleValue, 2.0)) {
+            if (areEqual(doubleValue, 2.0)) {
                 code = mProfile->squareRootString() + "(" + generateCode(ast->mRight) + ")";
             } else {
                 GeneratorEquationAstPtr rootValueAst = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIVIDE, ast);
@@ -2557,7 +2557,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
             std::string stringValue = generateCode(ast->mLeft);
             double doubleValue = convertToDouble(stringValue);
 
-            if (isEqual(doubleValue, 10.0)) {
+            if (areEqual(doubleValue, 10.0)) {
                 code = mProfile->commonLogarithmString() + "(" + generateCode(ast->mRight) + ")";
             } else {
                 code = mProfile->napierianLogarithmString() + "(" + generateCode(ast->mRight) + ")/" + mProfile->napierianLogarithmString() + "(" + stringValue + ")";
