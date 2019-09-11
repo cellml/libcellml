@@ -1285,7 +1285,7 @@ bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVar
     //       have variables in different models. This also means that we can't
     //       have code to check for the name of a model since this would fail
     //       coverage test. So, once we can instantiate imports, we will need to
-    //       account the name of a model.
+    //       account for the name of a model.
     VariablePtr realVariable1 = variable1->mVariable;
     VariablePtr realVariable2 = variable2->mVariable;
     ComponentPtr realComponent1 = realVariable1->parentComponent();
@@ -1362,7 +1362,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     }
 
     // Sort our variables, determine the index of our constant variables and
-    // then loop over our equations, checking wich variables, if any, can be
+    // then loop over our equations, checking which variables, if any, can be
     // determined using a given equation.
 
     if (mGenerator->errorCount() == 0) {
