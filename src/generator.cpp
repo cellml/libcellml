@@ -1966,29 +1966,27 @@ std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
 
 void Generator::GeneratorImpl::addCreateStatesArrayCode(std::string &code)
 {
-    if (!mProfile->beginCreateStatesArrayMethodString().empty()
+    if (!mProfile->createStatesArrayMethodString().empty()
         && !mProfile->returnCreatedArrayString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += mProfile->beginCreateStatesArrayMethodString()
-                + mProfile->indentString() + generateCreateArrayCode(mStates.size())
-                + mProfile->endCreateStatesArrayMethodString();
+        code += replace(mProfile->createStatesArrayMethodString(), "<CODE>",
+                        mProfile->indentString() + generateCreateArrayCode(mStates.size()));
     }
 }
 
 void Generator::GeneratorImpl::addCreateVariablesArrayCode(std::string &code)
 {
-    if (!mProfile->beginCreateVariablesArrayMethodString().empty()
+    if (!mProfile->createVariablesArrayMethodString().empty()
         && !mProfile->returnCreatedArrayString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += mProfile->beginCreateVariablesArrayMethodString()
-                + mProfile->indentString() + generateCreateArrayCode(mVariables.size())
-                + mProfile->endCreateVariablesArrayMethodString();
+        code += replace(mProfile->createVariablesArrayMethodString(), "<CODE>",
+                        mProfile->indentString() + generateCreateArrayCode(mVariables.size()));
     }
 }
 

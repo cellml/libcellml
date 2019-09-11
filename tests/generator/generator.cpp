@@ -1147,12 +1147,8 @@ TEST(Generator, coverage)
 
     profile->setReturnCreatedArrayString("");
 
-    profile->setBeginCreateStatesArrayMethodString("");
-    profile->setEndCreateStatesArrayMethodString("");
-
-    profile->setBeginCreateVariablesArrayMethodString("");
-    profile->setEndCreateVariablesArrayMethodString("");
-
+    profile->setCreateStatesArrayMethodString("");
+    profile->setCreateVariablesArrayMethodString("");
     profile->setDeleteArrayMethodString("");
 
     EXPECT_EQ(fileContents("generator/coverage/codeWithCustomProfile.out"), generator.code());
