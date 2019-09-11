@@ -2799,12 +2799,10 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
 void Generator::GeneratorImpl::addInitializeConstantsMethodCode(std::string &code,
                                                                 std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->beginInitializeConstantsMethodString().empty()) {
+    if (!mProfile->initializeConstantsMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
-
-        code += mProfile->beginInitializeConstantsMethodString();
 
         std::string methodBody;
 
@@ -2821,20 +2819,18 @@ void Generator::GeneratorImpl::addInitializeConstantsMethodCode(std::string &cod
             }
         }
 
-        code += generateMethodBodyCode(methodBody);
-        code += mProfile->endInitializeConstantsMethodString();
+        code += replace(mProfile->initializeConstantsMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
     }
 }
 
 void Generator::GeneratorImpl::addComputeComputedConstantsMethodCode(std::string &code,
                                                                      std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->beginComputeComputedConstantsMethodString().empty()) {
+    if (!mProfile->computeComputedConstantsMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
-
-        code += mProfile->beginComputeComputedConstantsMethodString();
 
         std::string methodBody;
 
@@ -2844,20 +2840,18 @@ void Generator::GeneratorImpl::addComputeComputedConstantsMethodCode(std::string
             }
         }
 
-        code += generateMethodBodyCode(methodBody);
-        code += mProfile->endComputeComputedConstantsMethodString();
+        code += replace(mProfile->computeComputedConstantsMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
     }
 }
 
 void Generator::GeneratorImpl::addComputeRatesMethodCode(std::string &code,
                                                          std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->beginComputeRatesMethodString().empty()) {
+    if (!mProfile->computeRatesMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
-
-        code += mProfile->beginComputeRatesMethodString();
 
         std::string methodBody;
 
@@ -2867,22 +2861,20 @@ void Generator::GeneratorImpl::addComputeRatesMethodCode(std::string &code,
             }
         }
 
-        code += generateMethodBodyCode(methodBody);
-        code += mProfile->endComputeRatesMethodString();
+        code += replace(mProfile->computeRatesMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
     }
 }
 
 void Generator::GeneratorImpl::addComputeVariablesMethodCode(std::string &code,
                                                              std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->beginComputeVariablesMethodString().empty()) {
+    if (!mProfile->computeVariablesMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
         std::vector<GeneratorEquationPtr> newRemainingEquations {std::begin(mEquations), std::end(mEquations)};
-
-        code += mProfile->beginComputeVariablesMethodString();
 
         std::string methodBody;
 
@@ -2894,8 +2886,8 @@ void Generator::GeneratorImpl::addComputeVariablesMethodCode(std::string &code,
             }
         }
 
-        code += generateMethodBodyCode(methodBody);
-        code += mProfile->endComputeVariablesMethodString();
+        code += replace(mProfile->computeVariablesMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
     }
 }
 
