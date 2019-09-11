@@ -1909,7 +1909,7 @@ public:
      * @brief Set the @c std::string for an origin comment.
      *
      * Set this @c std::string for an origin comment. To be useful, the string
-     * should contain a <VERSION> tag, which will be replaced with the version
+     * should contain the <VERSION> tag, which will be replaced with the version
      * of libCellML that is used.
      *
      * @param originCommentString The @c std::string to use for an origin
@@ -1948,7 +1948,7 @@ public:
      * @brief Set the @c std::string for the version constant.
      *
      * Set this @c std::string for the version constant. To be useful, the
-     * string should contain a <VERSION> tag, which will be replaced with the
+     * string should contain the <VERSION> tag, which will be replaced with the
      * version of libCellML that is used.
      *
      * @param versionString The @c std::string to use for the version constant.
@@ -1968,10 +1968,10 @@ public:
      * @brief Set the @c std::string for the state count constant.
      *
      * Set this @c std::string for the state count constant. To be useful, the
-     * string should contain a <STATE_COUNT> tag, which will be replaced with
+     * string should contain the <STATE_COUNT> tag, which will be replaced with
      * the number of states in the model.
      *
-     * @param versionString The @c std::string to use for the state count
+     * @param stateCountString The @c std::string to use for the state count
      * constant.
      */
     void setStateCountString(const std::string &stateCountString);
@@ -1989,11 +1989,11 @@ public:
      * @brief Set the @c std::string for the variable count constant.
      *
      * Set this @c std::string for the variable count constant. To be useful,
-     * the string should contain a <VARIABLE_COUNT> tag, which will be replaced
-     * with the number of states in the model.
+     * the string should contain the <VARIABLE_COUNT> tag, which will be
+     * replaced with the number of states in the model.
      *
-     * @param versionString The @c std::string to use for the variable count
-     * constant.
+     * @param variableCountString The @c std::string to use for the variable
+     * count constant.
      */
     void setVariableCountString(const std::string &variableCountString);
 
@@ -2019,8 +2019,8 @@ public:
      * maximum size of a string for holding the name of a component, variable
      * and units, respectively.
      *
-     * @param versionString The @c std::string to use for the variable
-     * information object data structure.
+     * @param variableInfoObjectString The @c std::string to use for the
+     * variable information object data structure.
      */
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
@@ -2041,10 +2041,11 @@ public:
      * integration.
      *
      * Set this @c std::string for some information about the variable of
-     * integration. To be useful, the string should contain a <CODE> tag, which
-     * will be replaced with some information about the variable of integration.
+     * integration. To be useful, the string should contain the <CODE> tag,
+     * which will be replaced with some information about the variable of
+     * integration.
      *
-     * @param versionString The @c std::string to use for some information about
+     * @param voiInfoString The @c std::string to use for some information about
      * the variable of integration.
      */
     void setVoiInfoString(const std::string &voiInfoString);
@@ -2066,11 +2067,11 @@ public:
      * states.
      *
      * Set this @c std::string for some information about the different states.
-     * To be useful, the string should contain a <CODE> tag, which will be
+     * To be useful, the string should contain the <CODE> tag, which will be
      * replaced with some information about the different states.
      *
-     * @param versionString The @c std::string to use for some information about
-     * the different states.
+     * @param stateInfoString The @c std::string to use for some information
+     * about the different states.
      */
     void setStateInfoString(const std::string &stateInfoString);
 
@@ -2091,11 +2092,11 @@ public:
      * variables.
      *
      * Set this @c std::string for some information about the different
-     * variables. To be useful, the string should contain a <CODE> tag, which
+     * variables. To be useful, the string should contain the <CODE> tag, which
      * will be replaced with some information about the different variables.
      *
-     * @param versionString The @c std::string to use for some information about
-     * the different variables.
+     * @param variableInfoString The @c std::string to use for some information
+     * about the different variables.
      */
     void setVariableInfoString(const std::string &variableInfoString);
 
@@ -2120,8 +2121,8 @@ public:
      * <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the
      * name of the component, name and units of a variable.
      *
-     * @param versionString The @c std::string to use for an entry in an array
-     * for some information about a variable.
+     * @param variableInfoEntryString The @c std::string to use for an entry in
+     * an array for some information about a variable.
      */
     void setVariableInfoEntryString(const std::string &variableInfoEntryString);
 
@@ -2141,8 +2142,8 @@ public:
      *
      * Set this @c std::string for the name of the variable of integration.
      *
-     * @param variableOfIntegrationString The @c std::string to use for the name
-     * of the variable of integration.
+     * @param voiString The @c std::string to use for the name of the variable
+     * of integration.
      */
     void setVoiString(const std::string &voiString);
 
@@ -2271,8 +2272,8 @@ public:
      *
      * Set this @c std::string for the method that computes rates.
      *
-     * @param endComputeRatesMethodString The @c std::string to use for the
-     * method that computes rates.
+     * @param computeRatesMethodString The @c std::string to use for the method
+     * that computes rates.
      */
     void setComputeRatesMethodString(const std::string &computeRatesMethodString);
 
@@ -2381,8 +2382,8 @@ public:
      *
      * Set this @c std::string for separating elements in an array.
      *
-     * @param closeArrayString The @c std::string to use for separating elements
-     * in an array.
+     * @param arrayElementSeparatorString The @c std::string to use for
+     * separating elements in an array.
      */
     void setArrayElementSeparatorString(const std::string &arrayElementSeparatorString);
 
