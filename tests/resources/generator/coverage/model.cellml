@@ -173,6 +173,7 @@
         <variable name="eqnPiecewisePieceOtherwise" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePiece" units="dimensionless"/>
         <variable name="eqnPiecewisePiecePiecePieceOtherwise" units="dimensionless"/>
+        <variable name="eqnWithPiecewise" units="dimensionless"/>
         <variable name="eqnCnInteger" units="dimensionless"/>
         <variable name="eqnCnDouble" units="dimensionless"/>
         <variable name="eqnCnIntegerWithExponent" units="dimensionless"/>
@@ -2483,6 +2484,24 @@
                         <ci>s</ci>
                     </otherwise>
                 </piecewise>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>eqnWithPiecewise</ci>
+                <apply>
+                    <plus/>
+                    <cn cellml:units="dimensionless">123</cn>
+                    <piecewise>
+                        <piece>
+                            <ci>m</ci>
+                            <apply>
+                                <gt/>
+                                <ci>m</ci>
+                                <ci>n</ci>
+                            </apply>
+                        </piece>
+                    </piecewise>
+                </apply>
             </apply>
             <apply>
                 <eq/>

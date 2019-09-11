@@ -1,32 +1,30 @@
 # The contents of this file was generated from version 0.2.0 of libCellML.
+
 from math import *
 
 
 __version__ = "0.2.0"
 
-STATE_VECTOR_SIZE = 1
-VARIABLE_VECTOR_SIZE = 2
-VOI = {"name": "t", "units": "second"}
+STATE_COUNT = 1
+VARIABLE_COUNT = 2
 
-STATE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "v", "units": "dimensionless"},
+VOI_INFO = {"component": "my_component", "name": "t", "units": "second"}
+
+STATE_INFO = [
+    {"component": "my_component", "name": "v", "units": "dimensionless"}
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "a", "units": "per_s"},
-    {"name": "x", "units": "per_s"},
+VARIABLE_INFO = [
+    {"component": "my_component", "name": "a", "units": "per_s"},
+    {"component": "my_component", "name": "x", "units": "per_s"}
 ]
 
 
-def create_state_vector():
+def create_states_array():
     return [nan]*1
 
 
-def create_rate_vector():
-    return [nan]*1
-
-
-def create_variable_vector():
+def create_variables_array():
     return [nan]*2
 
 

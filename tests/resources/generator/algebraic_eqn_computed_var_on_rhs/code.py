@@ -1,30 +1,29 @@
 # The contents of this file was generated from version 0.2.0 of libCellML.
+
 from math import *
 
 
 __version__ = "0.2.0"
 
-STATE_VECTOR_SIZE = 0
-VARIABLE_VECTOR_SIZE = 2
+STATE_COUNT = 0
+VARIABLE_COUNT = 2
 
-STATE_VECTOR_INFORMATION_ARRAY = [
+VOI_INFO = {"component": "", "name": "", "units": ""}
+
+STATE_INFO = [
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "a", "units": "dimensionless"},
-    {"name": "x", "units": "dimensionless"},
+VARIABLE_INFO = [
+    {"component": "my_algebraic_eqn", "name": "a", "units": "dimensionless"},
+    {"component": "my_algebraic_eqn", "name": "x", "units": "dimensionless"}
 ]
 
 
-def create_state_vector():
+def create_states_array():
     return [nan]*0
 
 
-def create_rate_vector():
-    return [nan]*0
-
-
-def create_variable_vector():
+def create_variables_array():
     return [nan]*2
 
 

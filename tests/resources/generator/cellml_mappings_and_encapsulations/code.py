@@ -1,33 +1,31 @@
 # The contents of this file was generated from version 0.2.0 of libCellML.
+
 from math import *
 
 
 __version__ = "0.2.0"
 
-STATE_VECTOR_SIZE = 2
-VARIABLE_VECTOR_SIZE = 2
-VOI = {"name": "t", "units": "ms"}
+STATE_COUNT = 2
+VARIABLE_COUNT = 2
 
-STATE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "x", "units": "mM"},
-    {"name": "y", "units": "mM"},
+VOI_INFO = {"component": "circle_x", "name": "t", "units": "ms"}
+
+STATE_INFO = [
+    {"component": "circle_x_source", "name": "x", "units": "mM"},
+    {"component": "circle_y_implementation", "name": "y", "units": "mM"}
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "local_complex_maths", "units": "mM"},
-    {"name": "two_x", "units": "milli_mole"},
+VARIABLE_INFO = [
+    {"component": "circle_sibling", "name": "local_complex_maths", "units": "mM"},
+    {"component": "circle_x_sibling", "name": "two_x", "units": "milli_mole"}
 ]
 
 
-def create_state_vector():
+def create_states_array():
     return [nan]*2
 
 
-def create_rate_vector():
-    return [nan]*2
-
-
-def create_variable_vector():
+def create_variables_array():
     return [nan]*2
 
 
