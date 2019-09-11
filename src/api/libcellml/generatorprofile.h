@@ -2141,8 +2141,8 @@ public:
      *
      * Set this @c std::string for the name of the variable of integration.
      *
-     * @param variableOfIntegrationString The @c std::string to use for the name of the variable of
-     * integration.
+     * @param variableOfIntegrationString The @c std::string to use for the name
+     * of the variable of integration.
      */
     void setVoiString(const std::string &voiString);
 
