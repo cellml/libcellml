@@ -1976,7 +1976,25 @@ public:
      */
     void setStateCountString(const std::string &stateCountString);
 
+    /**
+     * @brief Get the @c std::string for the variable count constant.
+     *
+     * Return the @c std::string for the variable count constant.
+     *
+     * @return The @c std::string for the variable count constant.
+     */
     std::string variableCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the variable count constant.
+     *
+     * Set this @c std::string for the variable count constant. To be useful,
+     * the string should contain a <VARIABLE_COUNT> tag, which will be replaced
+     * with the number of states in the model.
+     *
+     * @param versionString The @c std::string to use for the variable count
+     * constant.
+     */
     void setVariableCountString(const std::string &variableCountString);
 
     std::string variableInfoObjectString() const;
