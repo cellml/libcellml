@@ -1884,20 +1884,20 @@ public:
     void setOriginCommentString(const std::string &originCommentString);
 
     /**
-     * @brief Get the @c std::string for some header.
+     * @brief Get the @c std::string for a header.
      *
-     * Return the @c std::string for some header.
+     * Return the @c std::string for a header.
      *
-     * @return The @c std::string for some header.
+     * @return The @c std::string for a header.
      */
     std::string headerString() const;
 
     /**
-     * @brief Set the @c std::string for some header.
+     * @brief Set the @c std::string for a header.
      *
-     * Set this @c std::string for some header.
+     * Set this @c std::string for a header.
      *
-     * @param headerString The @c std::string to use for some header.
+     * @param headerString The @c std::string to use for a header.
      */
     void setHeaderString(const std::string &headerString);
 
