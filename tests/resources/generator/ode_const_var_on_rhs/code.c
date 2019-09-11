@@ -1,45 +1,43 @@
 /* The contents of this file was generated from version 0.2.0 of libCellML. */
+
+#include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <math.h>
 
-const char version[] = "0.2.0";
+const char VERSION[] = "0.2.0";
 
-struct VARIABLE_INFO {
+const size_t STATE_COUNT = 1;
+const size_t VARIABLE_COUNT = 1;
+
+struct VariableInfo {
+    char component[7];
     char name[2];
     char units[14];
 };
 
-const size_t STATE_VECTOR_SIZE = 1;
-const size_t VARIABLE_VECTOR_SIZE = 1;
-const struct VARIABLE_INFO VOI = {"t", "second"};
+const struct VariableInfo VOI_INFO = {"my_ode", "t", "second"};
 
-const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
-    {"x", "dimensionless"},
+const struct VariableInfo STATE_INFO[] = {
+    {"my_ode", "x", "dimensionless"}
 };
 
-const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
-    {"a", "per_s"},
+const struct VariableInfo VARIABLE_INFO[] = {
+    {"my_ode", "a", "per_s"}
 };
 
-double *createStateVector()
+double * createStatesArray()
 {
-    return (double *)malloc(1 * sizeof (double));
+    return (double *) malloc(1 * sizeof(double));
 }
 
-double *createRateVector()
+double * createVariablesArray()
 {
-    return (double *)malloc(1 * sizeof (double));
+    return (double *) malloc(1 * sizeof(double));
 }
 
-double *createVariableVector()
+void deleteArray(double *array)
 {
-    return (double *)malloc(1 * sizeof (double));
-}
-
-void freeVector(double *array)
-{
-   free(array);
+    free(array);
 }
 
 void initializeConstants(double *states, double *variables)

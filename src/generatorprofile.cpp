@@ -154,54 +154,41 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Miscellaneous
 
-    std::string mFreeVectorFunctionString;
+    std::string mCommentString;
+    std::string mOriginCommentString;
+
     std::string mHeaderString;
 
-    std::string mVariableOfIntegrationString;
+    std::string mVersionString;
+
+    std::string mStateCountString;
+    std::string mVariableCountString;
+
+    std::string mVariableInfoObjectString;
+
+    std::string mVoiInfoString;
+    std::string mStateInfoString;
+    std::string mVariableInfoString;
+    std::string mVariableInfoEntryString;
+
+    std::string mVoiString;
 
     std::string mStatesArrayString;
     std::string mRatesArrayString;
     std::string mVariablesArrayString;
 
-    std::string mBeginCreateStateVectorMethodString;
-    std::string mEndCreateStateVectorMethodString;
+    std::string mReturnCreatedArrayString;
 
-    std::string mBeginCreateRateVectorMethodString;
-    std::string mEndCreateRateVectorMethodString;
+    std::string mCreateStatesArrayMethodString;
+    std::string mCreateVariablesArrayMethodString;
+    std::string mDeleteArrayMethodString;
 
-    std::string mBeginCreateVariableVectorMethodString;
-    std::string mEndCreateVariableVectorMethodString;
-
-    std::string mBeginInitializeConstantsMethodString;
-    std::string mEndInitializeConstantsMethodString;
-
-    std::string mBeginComputeComputedConstantsMethodString;
-    std::string mEndComputeComputedConstantsMethodString;
-
-    std::string mBeginComputeRatesMethodString;
-    std::string mEndComputeRatesMethodString;
-
-    std::string mBeginComputeVariablesMethodString;
-    std::string mEndComputeVariablesMethodString;
-
-    std::string mBeginCommentString;
-    std::string mEndCommentString;
+    std::string mInitializeConstantsMethodString;
+    std::string mComputeComputedConstantsMethodString;
+    std::string mComputeRatesMethodString;
+    std::string mComputeVariablesMethodString;
 
     std::string mEmptyMethodString;
-    std::string mDefineReplacementString;
-    std::string mTemplateReturnCreatedArrayString;
-    std::string mTemplateStateVectorSizeConstantString;
-    std::string mTemplateVariableVectorSizeConstantString;
-    std::string mTemplateVoiConstantString;
-    std::string mTemplateVersionString;
-    std::string mTemplateOriginCommentString;
-
-    std::string mTemplateVariableInformationObjectString;
-    std::string mTemplateVariableInformationEntryString;
-    std::string mBeginStateVectorInformationArrayString;
-    std::string mEndStateVectorInformationArrayString;
-    std::string mBeginVariableVectorInformationArrayString;
-    std::string mEndVariableVectorInformationArrayString;
 
     std::string mIndentString;
 
@@ -296,8 +283,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Piecewise statement
 
-        mConditionalOperatorIfString = "(#cond)?#if";
-        mConditionalOperatorElseString = ":#else";
+        mConditionalOperatorIfString = "(<CONDITION>)?<IF_STATEMENT>";
+        mConditionalOperatorElseString = ":<ELSE_STATEMENT>";
 
         mHasConditionalOperator = true;
 
@@ -392,46 +379,66 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Miscellaneous
 
-        mFreeVectorFunctionString = "void freeVector(double *array)\n"
-                                    "{\n"
-                                    "   free(array);\n"
-                                    "}\n";
+        mCommentString = "/* <CODE> */\n";
+        mOriginCommentString = "The contents of this file was generated from version <VERSION> of libCellML.";
 
-        mHeaderString = "#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n";
+        mHeaderString = "#include <math.h>\n"
+                        "#include <stddef.h>\n"
+                        "#include <stdlib.h>\n";
 
-        mVariableOfIntegrationString = "voi";
+        mVersionString = "const char VERSION[] = \"<VERSION>\";\n";
+
+        mStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
+        mVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
+
+        mVariableInfoObjectString = "struct VariableInfo {\n"
+                                    "    char component[<COMPONENT_SIZE>];\n"
+                                    "    char name[<NAME_SIZE>];\n"
+                                    "    char units[<UNITS_SIZE>];\n"
+                                    "};\n";
+
+        mVoiInfoString = "const struct VariableInfo VOI_INFO = <CODE>;\n";
+        mStateInfoString = "const struct VariableInfo STATE_INFO[] = {\n"
+                           "<CODE>"
+                           "};\n";
+        mVariableInfoString = "const struct VariableInfo VARIABLE_INFO[] = {\n"
+                              "<CODE>"
+                              "};\n";
+        mVariableInfoEntryString = "{\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"}";
+
+        mVoiString = "voi";
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mBeginCreateStateVectorMethodString = "double *createStateVector()\n{\n";
-        mEndCreateStateVectorMethodString = "}\n";
+        mReturnCreatedArrayString = "return (double *) malloc(<ARRAY_SIZE> * sizeof(double));\n";
 
-        mBeginCreateRateVectorMethodString = "double *createRateVector()\n{\n";
-        mEndCreateRateVectorMethodString = "}\n";
+        mCreateStatesArrayMethodString = "double * createStatesArray()\n{\n"
+                                         "<CODE>"
+                                         "}\n";
+        mCreateVariablesArrayMethodString = "double * createVariablesArray()\n{\n"
+                                            "<CODE>"
+                                            "}\n";
+        mDeleteArrayMethodString = "void deleteArray(double *array)\n"
+                                   "{\n"
+                                   "    free(array);\n"
+                                   "}\n";
 
-        mBeginCreateVariableVectorMethodString = "double *createVariableVector()\n{\n";
-        mEndCreateVariableVectorMethodString = "}\n";
-
-        mBeginInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n";
-        mEndInitializeConstantsMethodString = "}\n";
-
-        mBeginComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n{\n";
-        mEndComputeComputedConstantsMethodString = "}\n";
-
-        mBeginComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n";
-        mEndComputeRatesMethodString = "}\n";
-
-        mBeginComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n";
-        mEndComputeVariablesMethodString = "}\n";
+        mInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n"
+                                           "<CODE>"
+                                           "}\n";
+        mComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n{\n"
+                                                "<CODE>"
+                                                "}\n";
+        mComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+                                    "<CODE>"
+                                    "}\n";
+        mComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n"
+                                        "<CODE>"
+                                        "}\n";
 
         mEmptyMethodString = "";
-
-        mBeginStateVectorInformationArrayString = "const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {\n";
-        mEndStateVectorInformationArrayString = "};\n";
-        mBeginVariableVectorInformationArrayString = "const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {\n";
-        mEndVariableVectorInformationArrayString = "};\n";
 
         mIndentString = "    ";
 
@@ -440,25 +447,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = ";";
-
-        mBeginCommentString = "/* ";
-        mEndCommentString = " */\n";
-
-        // Templated
-
-        mDefineReplacementString = "VALUE";
-
-        mTemplateReturnCreatedArrayString = "return (double *)malloc(VALUE * sizeof (double));\n";
-        mTemplateStateVectorSizeConstantString = "const size_t STATE_VECTOR_SIZE = VALUE;\n";
-        mTemplateVariableVectorSizeConstantString = "const size_t VARIABLE_VECTOR_SIZE = VALUE;\n";
-        mTemplateVoiConstantString = "const struct VARIABLE_INFO VOI = {\"VALUE\", \"VALUE\"};\n";
-        mTemplateVersionString = "const char version[] = \"VALUE\";\n";
-        mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
-        mTemplateVariableInformationObjectString = "struct VARIABLE_INFO {\n"
-                                                   "    char name[VALUE];\n"
-                                                   "    char units[VALUE];\n"
-                                                   "};\n";
-        mTemplateVariableInformationEntryString = "{\"VALUE\", \"VALUE\"}";
 
         break;
     case GeneratorProfile::Profile::PYTHON:
@@ -540,8 +528,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Piecewise statement
 
-        mConditionalOperatorIfString = "#if if #cond";
-        mConditionalOperatorElseString = " else #else";
+        mConditionalOperatorIfString = "<IF_STATEMENT> if <CONDITION>";
+        mConditionalOperatorElseString = " else <ELSE_STATEMENT>";
 
         mHasConditionalOperator = true;
 
@@ -556,101 +544,141 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions
 
-        mEqFunctionString = "def eq_eq_func(x, y):\n"
-                              "    return 1.0 if (x == y) else 0.0\n\n";
-        mNeqFunctionString = "def neq_func(x, y):\n"
-                             "    return 1.0 if (x != y) else 0.0\n\n";
-        mLtFunctionString = "def lt_func(x, y):\n"
-                            "    return 1.0 if (x < y) else 0.0\n\n";
-        mLeqFunctionString = "def leq_func(x, y):\n"
-                             "    return 1.0 if (x <= y) else 0.0\n\n";
-        mGtFunctionString = "def gt_func(x, y):\n"
-                            "    return 1.0 if (x > y) else 0.0\n\n";
-        mGeqFunctionString = "def geq_func(x, y):\n"
-                             "    return 1.0 if (x >= y) else 0.0\n\n";
-        mAndFunctionString = "def and_func(x, y):\n"
-                             "    return 1.0 if (bool(x) & bool(y)) else 0.0\n\n";
-        mOrFunctionString = "def or_func(x, y):\n"
-                            "    return 1.0 if (bool(x) | bool(y)) else 0.0\n\n";
-        mXorFunctionString = "def xor_func(x, y):\n"
-                             "    return 1.0 if (bool(x) ^ bool(y)) else 0.0\n\n";
-        mNotFunctionString = "def not_func(x):\n"
-                             "    return 1.0 if (not bool(x)) else 0.0\n\n";
+        mEqFunctionString = "\n"
+                            "def eq_func(x, y):\n"
+                            "    return 1.0 if x == y else 0.0\n";
+        mNeqFunctionString = "\n"
+                             "def neq_func(x, y):\n"
+                             "    return 1.0 if x != y else 0.0\n";
+        mLtFunctionString = "\n"
+                            "def lt_func(x, y):\n"
+                            "    return 1.0 if x < y else 0.0\n";
+        mLeqFunctionString = "\n"
+                             "def leq_func(x, y):\n"
+                             "    return 1.0 if x <= y else 0.0\n";
+        mGtFunctionString = "\n"
+                            "def gt_func(x, y):\n"
+                            "    return 1.0 if x > y else 0.0\n";
+        mGeqFunctionString = "\n"
+                             "def geq_func(x, y):\n"
+                             "    return 1.0 if x >= y else 0.0\n";
+        mAndFunctionString = "\n"
+                             "def and_func(x, y):\n"
+                             "    return 1.0 if bool(x) & bool(y) else 0.0\n";
+        mOrFunctionString = "\n"
+                            "def or_func(x, y):\n"
+                            "    return 1.0 if bool(x) | bool(y) else 0.0\n";
+        mXorFunctionString = "\n"
+                             "def xor_func(x, y):\n"
+                             "    return 1.0 if bool(x) ^ bool(y) else 0.0\n";
+        mNotFunctionString = "\n"
+                             "def not_func(x):\n"
+                             "    return 1.0 if not bool(x) else 0.0\n";
 
-        mMinFunctionString = "def min(x, y):\n"
-                             "    return x if (x < y) else y\n\n";
-        mMaxFunctionString = "def max(x, y):\n"
-                             "    return x if (x > y) else y\n\n";
+        mMinFunctionString = "\n"
+                             "def min(x, y):\n"
+                             "    return x if x < y else y\n";
+        mMaxFunctionString = "\n"
+                             "def max(x, y):\n"
+                             "    return x if x > y else y\n";
 
-        mSecFunctionString = "def sec(x):\n"
-                             "    return 1.0/cos(x)\n\n";
-        mCscFunctionString = "def csc(x):\n"
-                             "    return 1.0/sin(x)\n\n";
-        mCotFunctionString = "def cot(x):\n"
-                             "    return 1.0/tan(x)\n\n";
-        mSechFunctionString = "def sech(x):\n"
-                              "    return 1.0/cosh(x)\n\n";
-        mCschFunctionString = "def csch(x):\n"
-                              "    return 1.0/sinh(x)\n\n";
-        mCothFunctionString = "def coth(x):\n"
-                              "    return 1.0/tanh(x)\n\n";
-        mAsecFunctionString = "def asec(x):\n"
-                              "    return acos(1.0/x)\n\n";
-        mAcscFunctionString = "def acsc(x):\n"
-                              "    return asin(1.0/x)\n\n";
-        mAcotFunctionString = "def acot(x):\n"
-                              "    return atan(1.0/x)\n\n";
-        mAsechFunctionString = "def asech(x):\n"
+        mSecFunctionString = "\n"
+                             "def sec(x):\n"
+                             "    return 1.0/cos(x)\n";
+        mCscFunctionString = "\n"
+                             "def csc(x):\n"
+                             "    return 1.0/sin(x)\n";
+        mCotFunctionString = "\n"
+                             "def cot(x):\n"
+                             "    return 1.0/tan(x)\n";
+        mSechFunctionString = "\n"
+                              "def sech(x):\n"
+                              "    return 1.0/cosh(x)\n";
+        mCschFunctionString = "\n"
+                              "def csch(x):\n"
+                              "    return 1.0/sinh(x)\n";
+        mCothFunctionString = "\n"
+                              "def coth(x):\n"
+                              "    return 1.0/tanh(x)\n";
+        mAsecFunctionString = "\n"
+                              "def asec(x):\n"
+                              "    return acos(1.0/x)\n";
+        mAcscFunctionString = "\n"
+                              "def acsc(x):\n"
+                              "    return asin(1.0/x)\n";
+        mAcotFunctionString = "\n"
+                              "def acot(x):\n"
+                              "    return atan(1.0/x)\n";
+        mAsechFunctionString = "\n"
+                               "def asech(x):\n"
                                "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n\n";
-        mAcschFunctionString = "def acsch(x):\n"
+                               "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n";
+        mAcschFunctionString = "\n"
+                               "def acsch(x):\n"
                                "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n\n";
-        mAcothFunctionString = "def acoth(x):\n"
+                               "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n";
+        mAcothFunctionString = "\n"
+                               "def acoth(x):\n"
                                "    one_over_x = 1.0/x\n"
                                "\n"
-                               "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n\n";
+                               "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n";
 
         // Miscellaneous
 
-        mFreeVectorFunctionString = "";
-        mHeaderString = "from math import *\n\n";
+        mCommentString = "# <CODE>\n";
+        mOriginCommentString = "The contents of this file was generated from version <VERSION> of libCellML.";
 
-        mVariableOfIntegrationString = "voi";
+        mHeaderString = "from math import *\n"
+                        "\n";
+
+        mVersionString = "__version__ = \"<VERSION>\"\n";
+
+        mStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
+        mVariableCountString = "VARIABLE_COUNT = <VARIABLE_COUNT>\n";
+
+        mVariableInfoObjectString = "";
+
+        mVoiInfoString = "VOI_INFO = <CODE>\n";
+        mStateInfoString = "STATE_INFO = [\n"
+                           "<CODE>"
+                           "]\n";
+        mVariableInfoString = "VARIABLE_INFO = [\n"
+                              "<CODE>"
+                              "]\n";
+        mVariableInfoEntryString = "{\"component\": \"<COMPONENT>\", \"name\": \"<NAME>\", \"units\": \"<UNITS>\"}";
+
+        mVoiString = "voi";
 
         mStatesArrayString = "states";
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mBeginCreateStateVectorMethodString = "def create_state_vector():\n";
-        mEndCreateStateVectorMethodString = "\n";
+        mReturnCreatedArrayString = "return [nan]*<ARRAY_SIZE>\n";
 
-        mBeginCreateRateVectorMethodString = "def create_rate_vector():\n";
-        mEndCreateRateVectorMethodString = "\n";
+        mCreateStatesArrayMethodString = "\n"
+                                         "def create_states_array():\n"
+                                         "<CODE>";
+        mCreateVariablesArrayMethodString = "\n"
+                                            "def create_variables_array():\n"
+                                            "<CODE>";
+        mDeleteArrayMethodString = "";
 
-        mBeginCreateVariableVectorMethodString = "def create_variable_vector():\n";
-        mEndCreateVariableVectorMethodString = "\n";
-
-        mBeginInitializeConstantsMethodString = "def initialize_constants(states, variables):\n";
-        mEndInitializeConstantsMethodString = "\n";
-
-        mBeginComputeComputedConstantsMethodString = "def compute_computed_constants(variables):\n";
-        mEndComputeComputedConstantsMethodString = "\n";
-
-        mBeginComputeRatesMethodString = "def compute_rates(voi, states, rates, variables):\n";
-        mEndComputeRatesMethodString = "\n";
-
-        mBeginComputeVariablesMethodString = "def compute_variables(voi, states, rates, variables):\n";
-        mEndComputeVariablesMethodString = "";
+        mInitializeConstantsMethodString = "\n"
+                                           "def initialize_constants(states, variables):\n"
+                                           "<CODE>";
+        mComputeComputedConstantsMethodString = "\n"
+                                                "def compute_computed_constants(variables):\n"
+                                                "<CODE>";
+        mComputeRatesMethodString = "\n"
+                                    "def compute_rates(voi, states, rates, variables):\n"
+                                    "<CODE>";
+        mComputeVariablesMethodString = "\n"
+                                        "def compute_variables(voi, states, rates, variables):\n"
+                                        "<CODE>";
 
         mEmptyMethodString = "pass\n";
-
-        mBeginStateVectorInformationArrayString = "STATE_VECTOR_INFORMATION_ARRAY = [\n";
-        mEndStateVectorInformationArrayString = "]\n";
-        mBeginVariableVectorInformationArrayString = "VARIABLE_VECTOR_INFORMATION_ARRAY = [\n";
-        mEndVariableVectorInformationArrayString = "]\n\n";
 
         mIndentString = "    ";
 
@@ -659,22 +687,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = "";
-
-        mBeginCommentString = "# ";
-        mEndCommentString = "\n";
-
-        // Templated
-
-        mDefineReplacementString = "VALUE";
-
-        mTemplateReturnCreatedArrayString = "return [nan]*VALUE\n";
-        mTemplateStateVectorSizeConstantString = "STATE_VECTOR_SIZE = VALUE\n";
-        mTemplateVariableVectorSizeConstantString = "VARIABLE_VECTOR_SIZE = VALUE\n";
-        mTemplateVoiConstantString = "VOI = {\"name\": \"VALUE\", \"units\": \"VALUE\"}\n";
-        mTemplateVersionString = "__version__ = \"VALUE\"\n";
-        mTemplateOriginCommentString = "The contents of this file was generated from version VALUE of libCellML.";
-        mTemplateVariableInformationObjectString = "";
-        mTemplateVariableInformationEntryString = "{\"name\": \"VALUE\", \"units\": \"VALUE\"}";
 
         break;
     }
@@ -800,50 +812,41 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     // Miscellaneous
 
-    mPimpl->mFreeVectorFunctionString = rhs.mPimpl->mFreeVectorFunctionString;
+    mPimpl->mCommentString = rhs.mPimpl->mCommentString;
+    mPimpl->mOriginCommentString = rhs.mPimpl->mOriginCommentString;
+
     mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
 
-    mPimpl->mVariableOfIntegrationString = rhs.mPimpl->mVariableOfIntegrationString;
+    mPimpl->mVersionString = rhs.mPimpl->mVersionString;
+
+    mPimpl->mStateCountString = rhs.mPimpl->mStateCountString;
+    mPimpl->mVariableCountString = rhs.mPimpl->mVariableCountString;
+
+    mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
+
+    mPimpl->mVoiInfoString = rhs.mPimpl->mVoiInfoString;
+    mPimpl->mStateInfoString = rhs.mPimpl->mStateInfoString;
+    mPimpl->mVariableInfoString = rhs.mPimpl->mVariableInfoString;
+    mPimpl->mVariableInfoEntryString = rhs.mPimpl->mVariableInfoEntryString;
+
+    mPimpl->mVoiString = rhs.mPimpl->mVoiString;
 
     mPimpl->mStatesArrayString = rhs.mPimpl->mStatesArrayString;
     mPimpl->mRatesArrayString = rhs.mPimpl->mRatesArrayString;
     mPimpl->mVariablesArrayString = rhs.mPimpl->mVariablesArrayString;
 
-    mPimpl->mBeginCreateStateVectorMethodString = rhs.mPimpl->mBeginCreateStateVectorMethodString;
-    mPimpl->mEndCreateStateVectorMethodString = rhs.mPimpl->mEndCreateStateVectorMethodString;
+    mPimpl->mReturnCreatedArrayString = rhs.mPimpl->mReturnCreatedArrayString;
 
-    mPimpl->mBeginCreateRateVectorMethodString = rhs.mPimpl->mBeginCreateRateVectorMethodString;
-    mPimpl->mEndCreateRateVectorMethodString = rhs.mPimpl->mEndCreateRateVectorMethodString;
+    mPimpl->mCreateStatesArrayMethodString = rhs.mPimpl->mCreateStatesArrayMethodString;
+    mPimpl->mCreateVariablesArrayMethodString = rhs.mPimpl->mCreateVariablesArrayMethodString;
+    mPimpl->mDeleteArrayMethodString = rhs.mPimpl->mDeleteArrayMethodString;
 
-    mPimpl->mBeginCreateVariableVectorMethodString = rhs.mPimpl->mBeginCreateVariableVectorMethodString;
-    mPimpl->mEndCreateVariableVectorMethodString = rhs.mPimpl->mEndCreateVariableVectorMethodString;
-
-    mPimpl->mBeginInitializeConstantsMethodString = rhs.mPimpl->mBeginInitializeConstantsMethodString;
-    mPimpl->mEndInitializeConstantsMethodString = rhs.mPimpl->mEndInitializeConstantsMethodString;
-
-    mPimpl->mBeginComputeComputedConstantsMethodString = rhs.mPimpl->mBeginComputeComputedConstantsMethodString;
-    mPimpl->mEndComputeComputedConstantsMethodString = rhs.mPimpl->mEndComputeComputedConstantsMethodString;
-
-    mPimpl->mBeginComputeRatesMethodString = rhs.mPimpl->mBeginComputeRatesMethodString;
-    mPimpl->mEndComputeRatesMethodString = rhs.mPimpl->mEndComputeRatesMethodString;
-
-    mPimpl->mBeginComputeVariablesMethodString = rhs.mPimpl->mBeginComputeVariablesMethodString;
-    mPimpl->mEndComputeVariablesMethodString = rhs.mPimpl->mEndComputeVariablesMethodString;
-    mPimpl->mTemplateStateVectorSizeConstantString = rhs.mPimpl->mTemplateStateVectorSizeConstantString;
-    mPimpl->mTemplateVariableVectorSizeConstantString = rhs.mPimpl->mTemplateVariableVectorSizeConstantString;
-    mPimpl->mTemplateVoiConstantString = rhs.mPimpl->mTemplateVoiConstantString;
-    mPimpl->mTemplateVersionString = rhs.mPimpl->mTemplateVersionString;
+    mPimpl->mInitializeConstantsMethodString = rhs.mPimpl->mInitializeConstantsMethodString;
+    mPimpl->mComputeComputedConstantsMethodString = rhs.mPimpl->mComputeComputedConstantsMethodString;
+    mPimpl->mComputeRatesMethodString = rhs.mPimpl->mComputeRatesMethodString;
+    mPimpl->mComputeVariablesMethodString = rhs.mPimpl->mComputeVariablesMethodString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
-    mPimpl->mDefineReplacementString = rhs.mPimpl->mDefineReplacementString;
-    mPimpl->mTemplateReturnCreatedArrayString = rhs.mPimpl->mTemplateReturnCreatedArrayString;
-
-    mPimpl->mTemplateVariableInformationObjectString = rhs.mPimpl->mTemplateVariableInformationObjectString;
-    mPimpl->mTemplateVariableInformationEntryString = rhs.mPimpl->mTemplateVariableInformationEntryString;
-    mPimpl->mBeginStateVectorInformationArrayString = rhs.mPimpl->mBeginStateVectorInformationArrayString;
-    mPimpl->mEndStateVectorInformationArrayString = rhs.mPimpl->mEndStateVectorInformationArrayString;
-    mPimpl->mBeginVariableVectorInformationArrayString = rhs.mPimpl->mBeginVariableVectorInformationArrayString;
-    mPimpl->mEndVariableVectorInformationArrayString = rhs.mPimpl->mEndVariableVectorInformationArrayString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
@@ -1846,14 +1849,24 @@ void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionSt
     mPimpl->mAcothFunctionString = acothFunctionString;
 }
 
-std::string GeneratorProfile::freeVectorFunctionString() const
+std::string GeneratorProfile::commentString() const
 {
-    return mPimpl->mFreeVectorFunctionString;
+    return mPimpl->mCommentString;
 }
 
-void GeneratorProfile::setFreeVectorFunctionString(const std::string &freeVectorFunctionString)
+void GeneratorProfile::setCommentString(const std::string &commentString)
 {
-    mPimpl->mFreeVectorFunctionString = freeVectorFunctionString;
+    mPimpl->mCommentString = commentString;
+}
+
+std::string GeneratorProfile::originCommentString() const
+{
+    return mPimpl->mOriginCommentString;
+}
+
+void GeneratorProfile::setOriginCommentString(const std::string &originCommentString)
+{
+    mPimpl->mOriginCommentString = originCommentString;
 }
 
 std::string GeneratorProfile::headerString() const
@@ -1866,14 +1879,94 @@ void GeneratorProfile::setHeaderString(const std::string &headerString)
     mPimpl->mHeaderString = headerString;
 }
 
-std::string GeneratorProfile::variableOfIntegrationString() const
+std::string GeneratorProfile::versionString() const
 {
-    return mPimpl->mVariableOfIntegrationString;
+    return mPimpl->mVersionString;
 }
 
-void GeneratorProfile::setVariableOfIntegrationString(const std::string &variableOfIntegrationString)
+void GeneratorProfile::setVersionString(const std::string &versionString)
 {
-    mPimpl->mVariableOfIntegrationString = variableOfIntegrationString;
+    mPimpl->mVersionString = versionString;
+}
+
+std::string GeneratorProfile::stateCountString() const
+{
+    return mPimpl->mStateCountString;
+}
+
+void GeneratorProfile::setStateCountString(const std::string &stateCountString)
+{
+    mPimpl->mStateCountString = stateCountString;
+}
+
+std::string GeneratorProfile::variableCountString() const
+{
+    return mPimpl->mVariableCountString;
+}
+
+void GeneratorProfile::setVariableCountString(const std::string &variableCountString)
+{
+    mPimpl->mVariableCountString = variableCountString;
+}
+
+std::string GeneratorProfile::variableInfoObjectString() const
+{
+    return mPimpl->mVariableInfoObjectString;
+}
+
+void GeneratorProfile::setVariableInfoObjectString(const std::string &variableInfoObjectString)
+{
+    mPimpl->mVariableInfoObjectString = variableInfoObjectString;
+}
+
+std::string GeneratorProfile::voiInfoString() const
+{
+    return mPimpl->mVoiInfoString;
+}
+
+void GeneratorProfile::setVoiInfoString(const std::string &voiInfoString)
+{
+    mPimpl->mVoiInfoString = voiInfoString;
+}
+
+std::string GeneratorProfile::stateInfoString() const
+{
+    return mPimpl->mStateInfoString;
+}
+
+void GeneratorProfile::setStateInfoString(const std::string &stateInfoString)
+{
+    mPimpl->mStateInfoString = stateInfoString;
+}
+
+std::string GeneratorProfile::variableInfoString() const
+{
+    return mPimpl->mVariableInfoString;
+}
+
+void GeneratorProfile::setVariableInfoString(const std::string &variableInfoString)
+{
+    mPimpl->mVariableInfoString = variableInfoString;
+}
+
+std::string GeneratorProfile::variableInfoEntryString() const
+{
+    return mPimpl->mVariableInfoEntryString;
+}
+
+void GeneratorProfile::setVariableInfoEntryString(const std::string &variableInfoEntryString)
+{
+    mPimpl->mVariableInfoEntryString = variableInfoEntryString;
+}
+
+std::string GeneratorProfile::voiString() const
+{
+    return mPimpl->mVoiString;
+}
+
+void GeneratorProfile::setVoiString(const std::string &voiString)
+{
+    mPimpl->mVoiString = voiString;
 }
 
 std::string GeneratorProfile::statesArrayString() const
@@ -1906,144 +1999,84 @@ void GeneratorProfile::setVariablesArrayString(const std::string &variablesArray
     mPimpl->mVariablesArrayString = variablesArrayString;
 }
 
-std::string GeneratorProfile::beginInitializeConstantsMethodString() const
+std::string GeneratorProfile::returnCreatedArrayString() const
 {
-    return mPimpl->mBeginInitializeConstantsMethodString;
+    return mPimpl->mReturnCreatedArrayString;
 }
 
-std::string GeneratorProfile::beginCreateStateVectorMethodString() const
+void GeneratorProfile::setReturnCreatedArrayString(const std::string &returnCreatedArrayString)
 {
-    return mPimpl->mBeginCreateStateVectorMethodString;
+    mPimpl->mReturnCreatedArrayString = returnCreatedArrayString;
 }
 
-void GeneratorProfile::setBeginCreateStateVectorMethodString(const std::string &beginCreateStateVectorMethodString)
+std::string GeneratorProfile::createStatesArrayMethodString() const
 {
-    mPimpl->mBeginCreateStateVectorMethodString = beginCreateStateVectorMethodString;
+    return mPimpl->mCreateStatesArrayMethodString;
 }
 
-std::string GeneratorProfile::endCreateStateVectorMethodString() const
+void GeneratorProfile::setCreateStatesArrayMethodString(const std::string &createStatesArrayMethodString)
 {
-    return mPimpl->mEndCreateStateVectorMethodString;
+    mPimpl->mCreateStatesArrayMethodString = createStatesArrayMethodString;
 }
 
-void GeneratorProfile::setEndCreateStateVectorMethodString(const std::string &endCreateStateVectorMethodString)
+std::string GeneratorProfile::createVariablesArrayMethodString() const
 {
-    mPimpl->mEndCreateStateVectorMethodString = endCreateStateVectorMethodString;
+    return mPimpl->mCreateVariablesArrayMethodString;
 }
 
-std::string GeneratorProfile::beginCreateRateVectorMethodString() const
+void GeneratorProfile::setCreateVariablesArrayMethodString(const std::string &createVariablesArrayMethodString)
 {
-    return mPimpl->mBeginCreateRateVectorMethodString;
+    mPimpl->mCreateVariablesArrayMethodString = createVariablesArrayMethodString;
 }
 
-void GeneratorProfile::setBeginCreateRateVectorMethodString(const std::string &beginCreateRateVectorMethodString)
+std::string GeneratorProfile::deleteArrayMethodString() const
 {
-    mPimpl->mBeginCreateRateVectorMethodString = beginCreateRateVectorMethodString;
+    return mPimpl->mDeleteArrayMethodString;
 }
 
-std::string GeneratorProfile::endCreateRateVectorMethodString() const
+void GeneratorProfile::setDeleteArrayMethodString(const std::string &deleteArrayMethodString)
 {
-    return mPimpl->mEndCreateRateVectorMethodString;
+    mPimpl->mDeleteArrayMethodString = deleteArrayMethodString;
 }
 
-void GeneratorProfile::setEndCreateRateVectorMethodString(const std::string &endCreateRateVectorMethodString)
+std::string GeneratorProfile::initializeConstantsMethodString() const
 {
-    mPimpl->mEndCreateRateVectorMethodString = endCreateRateVectorMethodString;
+    return mPimpl->mInitializeConstantsMethodString;
 }
 
-std::string GeneratorProfile::beginCreateVariableVectorMethodString() const
+void GeneratorProfile::setInitializeConstantsMethodString(const std::string &initializeConstantsMethodString)
 {
-    return mPimpl->mBeginCreateVariableVectorMethodString;
+    mPimpl->mInitializeConstantsMethodString = initializeConstantsMethodString;
 }
 
-void GeneratorProfile::setBeginCreateVariableVectorMethodString(const std::string &beginCreateVariableVectorMethodString)
+std::string GeneratorProfile::computeComputedConstantsMethodString() const
 {
-    mPimpl->mBeginCreateVariableVectorMethodString = beginCreateVariableVectorMethodString;
+    return mPimpl->mComputeComputedConstantsMethodString;
 }
 
-std::string GeneratorProfile::endCreateVariableVectorMethodString() const
+void GeneratorProfile::setComputeComputedConstantsMethodString(const std::string &computeComputedConstantsMethodString)
 {
-    return mPimpl->mEndCreateVariableVectorMethodString;
+    mPimpl->mComputeComputedConstantsMethodString = computeComputedConstantsMethodString;
 }
 
-void GeneratorProfile::setEndCreateVariableVectorMethodString(const std::string &endCreateVariableVectorMethodString)
+std::string GeneratorProfile::computeRatesMethodString() const
 {
-    mPimpl->mEndCreateVariableVectorMethodString = endCreateVariableVectorMethodString;
+    return mPimpl->mComputeRatesMethodString;
 }
 
-void GeneratorProfile::setBeginInitializeConstantsMethodString(const std::string &beginInitializeConstantsMethodString)
+void GeneratorProfile::setComputeRatesMethodString(const std::string &computeRatesMethodString)
 {
-    mPimpl->mBeginInitializeConstantsMethodString = beginInitializeConstantsMethodString;
+    mPimpl->mComputeRatesMethodString = computeRatesMethodString;
 }
 
-std::string GeneratorProfile::endInitializeConstantsMethodString() const
+std::string GeneratorProfile::computeVariablesMethodString() const
 {
-    return mPimpl->mEndInitializeConstantsMethodString;
+    return mPimpl->mComputeVariablesMethodString;
 }
 
-void GeneratorProfile::setEndInitializeConstantsMethodString(const std::string &endInitializeConstantsMethodString)
+void GeneratorProfile::setComputeVariablesMethodString(const std::string &computeVariablesMethodString)
 {
-    mPimpl->mEndInitializeConstantsMethodString = endInitializeConstantsMethodString;
-}
-
-std::string GeneratorProfile::beginComputeComputedConstantsMethodString() const
-{
-    return mPimpl->mBeginComputeComputedConstantsMethodString;
-}
-
-void GeneratorProfile::setBeginComputeComputedConstantsMethodString(const std::string &beginComputeComputedConstantsMethodString)
-{
-    mPimpl->mBeginComputeComputedConstantsMethodString = beginComputeComputedConstantsMethodString;
-}
-
-std::string GeneratorProfile::endComputeComputedConstantsMethodString() const
-{
-    return mPimpl->mEndComputeComputedConstantsMethodString;
-}
-
-void GeneratorProfile::setEndComputeComputedConstantsMethodString(const std::string &endComputeComputedConstantsMethodString)
-{
-    mPimpl->mEndComputeComputedConstantsMethodString = endComputeComputedConstantsMethodString;
-}
-
-std::string GeneratorProfile::beginComputeRatesMethodString() const
-{
-    return mPimpl->mBeginComputeRatesMethodString;
-}
-
-void GeneratorProfile::setBeginComputeRatesMethodString(const std::string &beginComputeRatesMethodString)
-{
-    mPimpl->mBeginComputeRatesMethodString = beginComputeRatesMethodString;
-}
-
-std::string GeneratorProfile::endComputeRatesMethodString() const
-{
-    return mPimpl->mEndComputeRatesMethodString;
-}
-
-void GeneratorProfile::setEndComputeRatesMethodString(const std::string &endComputeRatesMethodString)
-{
-    mPimpl->mEndComputeRatesMethodString = endComputeRatesMethodString;
-}
-
-std::string GeneratorProfile::beginComputeVariablesMethodString() const
-{
-    return mPimpl->mBeginComputeVariablesMethodString;
-}
-
-void GeneratorProfile::setBeginComputeVariablesMethodString(const std::string &beginComputeVariablesMethodString)
-{
-    mPimpl->mBeginComputeVariablesMethodString = beginComputeVariablesMethodString;
-}
-
-std::string GeneratorProfile::endComputeVariablesMethodString() const
-{
-    return mPimpl->mEndComputeVariablesMethodString;
-}
-
-void GeneratorProfile::setEndComputeVariablesMethodString(const std::string &endComputeVariablesMethodString)
-{
-    mPimpl->mEndComputeVariablesMethodString = endComputeVariablesMethodString;
+    mPimpl->mComputeVariablesMethodString = computeVariablesMethodString;
 }
 
 std::string GeneratorProfile::emptyMethodString() const
@@ -2054,137 +2087,6 @@ std::string GeneratorProfile::emptyMethodString() const
 void GeneratorProfile::setEmptyMethodString(const std::string &emptyMethodString)
 {
     mPimpl->mEmptyMethodString = emptyMethodString;
-}
-
-std::string GeneratorProfile::templateReplacementString() const
-{
-    return mPimpl->mDefineReplacementString;
-}
-
-void GeneratorProfile::setTemplateReplacementString(const std::string &defineReplacementString)
-{
-    mPimpl->mDefineReplacementString = defineReplacementString;
-}
-
-std::string GeneratorProfile::templateStateVectorSizeConstantString() const
-{
-    return mPimpl->mTemplateStateVectorSizeConstantString;
-}
-
-void GeneratorProfile::setTemplateStateVectorSizeConstantString(const std::string &templateStateVectorSizeConstantString)
-{
-    mPimpl->mTemplateStateVectorSizeConstantString = templateStateVectorSizeConstantString;
-}
-
-
-std::string GeneratorProfile::templateVariableVectorSizeConstantString() const
-{
-    return mPimpl->mTemplateVariableVectorSizeConstantString;
-}
-
-void GeneratorProfile::setTemplateVariableVectorSizeConstantString(const std::string &templateVariableVectorSizeConstantString)
-{
-    mPimpl->mTemplateVariableVectorSizeConstantString = templateVariableVectorSizeConstantString;
-}
-
-std::string GeneratorProfile::templateVoiConstantString() const
-{
-    return mPimpl->mTemplateVoiConstantString;
-}
-
-void GeneratorProfile::setTemplateVoiConstantString(const std::string &templateVoiConstantString)
-{
-    mPimpl->mTemplateVoiConstantString = templateVoiConstantString;
-}
-
-std::string GeneratorProfile::templateVersionString() const
-{
-    return mPimpl->mTemplateVersionString;
-}
-
-void GeneratorProfile::setTemplateVersionString(const std::string &templateVersionString)
-{
-    mPimpl->mTemplateVersionString = templateVersionString;
-}
-
-std::string GeneratorProfile::templateOriginCommentString() const
-{
-    return mPimpl->mTemplateOriginCommentString;
-}
-
-void GeneratorProfile::setTemplateOriginCommentString(const std::string &templateOriginCommentString)
-{
-    mPimpl->mTemplateOriginCommentString = templateOriginCommentString;
-}
-
-std::string GeneratorProfile::templateReturnCreatedArrayString() const
-{
-    return mPimpl->mTemplateReturnCreatedArrayString;
-}
-
-void GeneratorProfile::setTemplateReturnCreatedArrayString(const std::string &templateReturnCreatedArrayString)
-{
-    mPimpl->mTemplateReturnCreatedArrayString = templateReturnCreatedArrayString;
-}
-
-std::string GeneratorProfile::templateVariableInformationObjectString() const
-{
-    return mPimpl->mTemplateVariableInformationObjectString;
-}
-
-void GeneratorProfile::setTemplateVariableInformationObjectString(const std::string &templateVariableInformationObjectString)
-{
-    mPimpl->mTemplateVariableInformationObjectString = templateVariableInformationObjectString;
-}
-
-std::string GeneratorProfile::templateVariableInformationEntryString() const
-{
-    return mPimpl->mTemplateVariableInformationEntryString;
-}
-
-void GeneratorProfile::setTemplateVariableInformationEntryString(const std::string &templateVariableInformationEntryString)
-{
-    mPimpl->mTemplateVariableInformationEntryString = templateVariableInformationEntryString;
-}
-
-std::string GeneratorProfile::beginStateVectorInformationArrayString() const
-{
-    return mPimpl->mBeginStateVectorInformationArrayString;
-}
-
-void GeneratorProfile::setBeginStateVectorInformationArrayString(const std::string &beginStateVectorInformationArrayString)
-{
-    mPimpl->mBeginStateVectorInformationArrayString = beginStateVectorInformationArrayString;
-}
-
-std::string GeneratorProfile::endStateVectorInformationArrayString() const
-{
-    return mPimpl->mEndStateVectorInformationArrayString;
-}
-
-void GeneratorProfile::setEndStateVectorInformationArrayString(const std::string &endStateVectorInformationArrayString)
-{
-    mPimpl->mEndStateVectorInformationArrayString = endStateVectorInformationArrayString;
-}
-
-std::string GeneratorProfile::beginVariableVectorInformationArrayString() const
-{
-    return mPimpl->mBeginVariableVectorInformationArrayString;
-}
-
-void GeneratorProfile::setBeginVariableVectorInformationArrayString(const std::string &beginVariableVectorInformationArrayString)
-{
-    mPimpl->mBeginVariableVectorInformationArrayString = beginVariableVectorInformationArrayString;
-}
-
-std::string GeneratorProfile::endVariableVectorInformationArrayString() const
-{
-    return mPimpl->mEndVariableVectorInformationArrayString;
-}
-
-void GeneratorProfile::setEndVariableVectorInformationArrayString(const std::string &endVariableVectorInformationArrayString)
-{
-    mPimpl->mEndVariableVectorInformationArrayString = endVariableVectorInformationArrayString;
 }
 
 std::string GeneratorProfile::indentString() const
@@ -2235,26 +2137,6 @@ std::string GeneratorProfile::commandSeparatorString() const
 void GeneratorProfile::setCommandSeparatorString(const std::string &commandSeparatorString)
 {
     mPimpl->mCommandSeparatorString = commandSeparatorString;
-}
-
-std::string GeneratorProfile::beginCommentString() const
-{
-    return mPimpl->mBeginCommentString;
-}
-
-void GeneratorProfile::setBeginCommentString(const std::string &beginCommentString)
-{
-    mPimpl->mBeginCommentString = beginCommentString;
-}
-
-std::string GeneratorProfile::endCommentString() const
-{
-    return mPimpl->mEndCommentString;
-}
-
-void GeneratorProfile::setEndCommentString(const std::string &endCommentString)
-{
-    mPimpl->mEndCommentString = endCommentString;
 }
 
 } // namespace libcellml

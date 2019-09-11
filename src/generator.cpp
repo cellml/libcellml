@@ -131,7 +131,7 @@ struct GeneratorInternalVariable
 
     void setVariable(const VariablePtr &variable);
 
-    void makeVariableOfIntegration();
+    void makeVoi();
     void makeState();
 };
 
@@ -155,7 +155,7 @@ void GeneratorInternalVariable::setVariable(const VariablePtr &variable)
     }
 }
 
-void GeneratorInternalVariable::makeVariableOfIntegration()
+void GeneratorInternalVariable::makeVoi()
 {
     mType = Type::VARIABLE_OF_INTEGRATION;
 }
@@ -179,7 +179,7 @@ struct GeneratorEquationAst
     {
         // Assignment
 
-        AS,
+        ASSIGNMENT,
 
         // Relational and logical operators
 
@@ -270,7 +270,7 @@ struct GeneratorEquationAst
         NAN
     };
 
-    Type mType = Type::AS;
+    Type mType = Type::ASSIGNMENT;
 
     std::string mValue;
     VariablePtr mVariable = nullptr;
@@ -544,7 +544,7 @@ struct Generator::GeneratorImpl
     std::list<GeneratorInternalVariablePtr> mInternalVariables;
     std::list<GeneratorEquationPtr> mEquations;
 
-    VariablePtr mVariableOfIntegration;
+    VariablePtr mVoi;
     std::vector<VariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
@@ -615,9 +615,42 @@ struct Generator::GeneratorImpl
     bool isRootOperator(const GeneratorEquationAstPtr &ast) const;
     bool isPiecewiseStatement(const GeneratorEquationAstPtr &ast) const;
 
-    std::string generateDouble(const std::string &value);
-    std::string generateVariableName(const VariablePtr &variable,
-                                     const GeneratorEquationAstPtr &ast = nullptr);
+    std::string replace(std::string string, const std::string &from,
+                        const std::string &to);
+
+    void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
+                                 size_t &unitsSize,
+                                 const VariablePtr &variable);
+
+    void addOriginCommentCode(std::string &code);
+    void addHeaderCode(std::string &code);
+    void addVersionCode(std::string &code);
+    void addStateAndVariableCountCode(std::string &code);
+    void addVariableInfoObjectCode(std::string &code);
+
+    std::string generateVariableInfoEntryCode(const std::string &component,
+                                              const std::string &name,
+                                              const std::string &units);
+
+    void addInfoCode(const std::string &infoString,
+                     const std::vector<VariablePtr> &variables,
+                     std::string &code);
+    void addVoiInfoCode(std::string &code);
+    void addStateInfoCode(std::string &code);
+    void addVariableInfoCode(std::string &code);
+    void addExtraMathFunctionsCode(std::string &code);
+
+    std::string generateCreateArrayCode(size_t arraySize);
+
+    void addCreateStatesArrayCode(std::string &code);
+    void addCreateVariablesArrayCode(std::string &code);
+    void addDeleteArrayMethodCode(std::string &code);
+
+    std::string generateMethodBodyCode(const std::string &methodBody);
+
+    std::string generateDoubleCode(const std::string &value);
+    std::string generateVariableNameCode(const VariablePtr &variable,
+                                         const GeneratorEquationAstPtr &ast = nullptr);
 
     std::string generateOperatorCode(const std::string &op,
                                      const GeneratorEquationAstPtr &ast);
@@ -631,21 +664,19 @@ struct Generator::GeneratorImpl
     std::string generatePiecewiseElseCode(const std::string &value);
     std::string generateCode(const GeneratorEquationAstPtr &ast);
 
-    std::string generateCreateArrayCode(size_t arraySize);
-    std::string replaceTemplateValue(std::string templateString, size_t value);
-    std::string replaceTemplateValue(std::string templateString, std::string value);
-    std::string replaceMultipleTemplateValues(std::string templateString, std::vector<std::string> replacements);
-    std::string replaceMultipleTemplateValues(std::string templateString, std::vector<size_t> replacements);
-
-    std::string generateStateInformationArray();
-    std::string generateVariableInformationArray();
-    std::string generateVariableInformationObjectString();
     std::string generateInitializationCode(const GeneratorInternalVariablePtr &variable);
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
 
-    std::string generateMethodBodyCode(const std::string &methodBody);
+    void addInitializeConstantsMethodCode(std::string &code,
+                                          std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addComputeComputedConstantsMethodCode(std::string &code,
+                                               std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addComputeRatesMethodCode(std::string &code,
+                                   std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addComputeVariablesMethodCode(std::string &code,
+                                       std::vector<GeneratorEquationPtr> &remainingEquations);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -777,7 +808,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast->mRight = astRight;
         }
 
-        // Assignment, relational, and logical operators
+        // Assignment, and relational and logical operators
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
@@ -785,7 +816,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
         // "math" element then it means that it is used to describe "a = b"
         // otherwise it is used to describe "a == b". In the former case, there
         // is nothing more we need to do since `ast` is already of
-        // GeneratorEquationAst::Type::AS type.
+        // GeneratorEquationAst::Type::ASSIGNMENT type.
 
         if (!node->parent()->parent()->isMathmlElement("math")) {
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::EQ, astParent);
@@ -1160,14 +1191,14 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astGrandParent != nullptr) && (astGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         VariablePtr variable = ast->mVariable;
 
-        generatorVariable(variable)->makeVariableOfIntegration();
+        generatorVariable(variable)->makeVoi();
         // Note: we must make the variable a variable of integration in all
         //       cases (i.e. even if there is, for example, already another
         //       variable of integration) otherwise unnecessary error messages
         //       may be reported (since the type of the variable would be
         //       unknown).
 
-        if (mVariableOfIntegration == nullptr) {
+        if (mVoi == nullptr) {
             // Before keeping track of the variable of integration, make sure
             // that it is not initialised.
 
@@ -1184,17 +1215,17 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
 
                 mGenerator->addError(err);
             } else {
-                mVariableOfIntegration = variable;
+                mVoi = variable;
             }
-        } else if ((variable != mVariableOfIntegration)
-                   && !variable->hasEquivalentVariable(mVariableOfIntegration)) {
-            ComponentPtr voiComponent = mVariableOfIntegration->parentComponent();
+        } else if ((variable != mVoi)
+                   && !variable->hasEquivalentVariable(mVoi)) {
+            ComponentPtr voiComponent = mVoi->parentComponent();
             ModelPtr voiModel = voiComponent->parentModel();
             ComponentPtr component = variable->parentComponent();
             ModelPtr model = component->parentModel();
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '" + mVariableOfIntegration->name()
+            err->setDescription("Variable '" + mVoi->name()
                                 + "' in component '" + voiComponent->name()
                                 + "' of model '" + voiModel->name()
                                 + "' and variable '" + variable->name()
@@ -1294,7 +1325,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
     mInternalVariables.clear();
     mEquations.clear();
 
-    mVariableOfIntegration = nullptr;
+    mVoi = nullptr;
     mStates.clear();
     mVariables.clear();
 
@@ -1430,7 +1461,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         } else if (hasOverconstrainedVariables) {
             mModelType = Generator::ModelType::OVERCONSTRAINED;
-        } else if (mVariableOfIntegration != nullptr) {
+        } else if (mVoi != nullptr) {
             mModelType = Generator::ModelType::ODE;
         } else if (!mInternalVariables.empty()) {
             mModelType = Generator::ModelType::ALGEBRAIC;
@@ -1467,14 +1498,6 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             }
         }
     }
-}
-
-std::string replace(std::string string, const std::string &from, const std::string &to)
-{
-    auto found_index = string.find(from);
-    return string.empty() || (found_index == std::string::npos) ?
-               "" :
-               string.replace(found_index, from.length(), to);
 }
 
 bool Generator::GeneratorImpl::isRelationalOperator(const GeneratorEquationAstPtr &ast) const
@@ -1558,7 +1581,444 @@ bool Generator::GeneratorImpl::isPiecewiseStatement(const GeneratorEquationAstPt
            && mProfile->hasConditionalOperator();
 }
 
-std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
+std::string Generator::GeneratorImpl::replace(std::string string,
+                                              const std::string &from,
+                                              const std::string &to)
+{
+    auto index = string.find(from);
+
+    return (index == std::string::npos) ?
+               string :
+               string.replace(index, from.length(), to);
+}
+
+void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
+                                                       size_t &nameSize,
+                                                       size_t &unitsSize,
+                                                       const VariablePtr &variable)
+{
+    auto variableComponentSize = variable->parentComponent()->name().length() + 1;
+    auto variableNameSize = variable->name().length() + 1;
+    auto variableUnitsSize = variable->units().length() + 1;
+    // Note: +1 to account for the end of string termination.
+
+    componentSize = (componentSize > variableComponentSize) ? componentSize : variableComponentSize;
+    nameSize = (nameSize > variableNameSize) ? nameSize : variableNameSize;
+    unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
+}
+
+void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
+{
+    if (!mProfile->commentString().empty()
+        && !mProfile->originCommentString().empty()) {
+        code += replace(mProfile->commentString(), "<CODE>",
+                        replace(mProfile->originCommentString(), "<VERSION>", versionString()));
+    }
+}
+
+void Generator::GeneratorImpl::addHeaderCode(std::string &code)
+{
+    if (!mProfile->headerString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->headerString();
+    }
+}
+
+void Generator::GeneratorImpl::addVersionCode(std::string &code)
+{
+    if (!mProfile->versionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += replace(mProfile->versionString(), "<VERSION>", versionString());
+    }
+}
+
+void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code)
+{
+    if (!mProfile->stateCountString().empty()
+        || !mProfile->variableCountString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        if (!mProfile->stateCountString().empty()) {
+            code += replace(mProfile->stateCountString(), "<STATE_COUNT>", std::to_string(mStates.size()));
+        }
+
+        if (!mProfile->variableCountString().empty()) {
+            code += replace(mProfile->variableCountString(), "<VARIABLE_COUNT>", std::to_string(mVariables.size()));
+        }
+    }
+}
+
+void Generator::GeneratorImpl::addVariableInfoObjectCode(std::string &code)
+{
+    if (!mProfile->variableInfoObjectString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        size_t componentSize = 0;
+        size_t nameSize = 0;
+        size_t unitsSize = 0;
+
+        if (mVoi != nullptr) {
+            updateVariableInfoSizes(componentSize, nameSize, unitsSize, mVoi);
+        }
+
+        for (const auto &state : mStates) {
+            updateVariableInfoSizes(componentSize, nameSize, unitsSize, state);
+        }
+
+        for (const auto &generatorVariable : mVariables) {
+            auto variable = generatorVariable->variable();
+
+            updateVariableInfoSizes(componentSize, nameSize, unitsSize, variable);
+        }
+
+        code += replace(replace(replace(mProfile->variableInfoObjectString(),
+                                        "<COMPONENT_SIZE>", std::to_string(componentSize)),
+                                "<NAME_SIZE>", std::to_string(nameSize)),
+                        "<UNITS_SIZE>", std::to_string(unitsSize));
+    }
+}
+
+std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &component,
+                                                                    const std::string &name,
+                                                                    const std::string &units)
+{
+    return replace(replace(replace(mProfile->variableInfoEntryString(),
+                                   "<COMPONENT>", component),
+                           "<NAME>", name),
+                   "<UNITS>", units);
+}
+
+void Generator::GeneratorImpl::addInfoCode(const std::string &infoString,
+                                           const std::vector<VariablePtr> &variables,
+                                           std::string &code)
+{
+    if (!infoString.empty() && !mProfile->variableInfoEntryString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        std::string infoElements;
+
+        for (const auto &variable : variables) {
+            if (!infoElements.empty()) {
+                infoElements += mProfile->arrayElementSeparatorString() + "\n";
+            }
+
+            infoElements += mProfile->indentString()
+                            + generateVariableInfoEntryCode(variable->parentComponent()->name(),
+                                                            variable->name(),
+                                                            variable->units());
+        }
+
+        if (!infoElements.empty()) {
+            infoElements += "\n";
+        }
+
+        code += replace(infoString, "<CODE>", infoElements);
+    }
+}
+
+void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
+{
+    if (!mProfile->voiInfoString().empty()
+        && !mProfile->variableInfoEntryString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
+        std::string name = (mVoi != nullptr) ? mVoi->name() : "";
+        std::string units = (mVoi != nullptr) ? mVoi->units() : "";
+
+        code += replace(mProfile->voiInfoString(), "<CODE>",
+                        generateVariableInfoEntryCode(component, name, units));
+    }
+}
+
+void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
+{
+    addInfoCode(mProfile->stateInfoString(), mStates, code);
+}
+
+void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
+{
+    std::vector<VariablePtr> variables;
+
+    for (const auto &variable : mVariables) {
+        variables.push_back(variable->variable());
+    }
+
+    addInfoCode(mProfile->variableInfoString(), variables, code);
+}
+
+void Generator::GeneratorImpl::addExtraMathFunctionsCode(std::string &code)
+{
+    if (mNeedEqEq && !mProfile->hasEqEqOperator()
+        && !mProfile->eqEqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->eqEqFunctionString();
+    }
+
+    if (mNeedNeq && !mProfile->hasNeqOperator()
+        && !mProfile->neqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->neqFunctionString();
+    }
+
+    if (mNeedLt && !mProfile->hasLtOperator()
+        && !mProfile->ltFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->ltFunctionString();
+    }
+
+    if (mNeedLeq && !mProfile->hasLeqOperator()
+        && !mProfile->leqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->leqFunctionString();
+    }
+
+    if (mNeedGt && !mProfile->hasGtOperator()
+        && !mProfile->gtFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->gtFunctionString();
+    }
+
+    if (mNeedGeq && !mProfile->hasGeqOperator()
+        && !mProfile->geqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->geqFunctionString();
+    }
+
+    if (mNeedAnd && !mProfile->hasAndOperator()
+        && !mProfile->andFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->andFunctionString();
+    }
+
+    if (mNeedOr && !mProfile->hasOrOperator()
+        && !mProfile->orFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->orFunctionString();
+    }
+
+    if (mNeedXor && !mProfile->hasXorOperator()
+        && !mProfile->xorFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->xorFunctionString();
+    }
+
+    if (mNeedNot && !mProfile->hasNotOperator()
+        && !mProfile->notFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->notFunctionString();
+    }
+
+    if (mNeedMin) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->minFunctionString();
+    }
+
+    if (mNeedMax) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->maxFunctionString();
+    }
+
+    if (mNeedSec) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->secFunctionString();
+    }
+
+    if (mNeedCsc) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cscFunctionString();
+    }
+
+    if (mNeedCot) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cotFunctionString();
+    }
+
+    if (mNeedSech) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->sechFunctionString();
+    }
+
+    if (mNeedCsch) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cschFunctionString();
+    }
+
+    if (mNeedCoth) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->cothFunctionString();
+    }
+
+    if (mNeedAsec) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->asecFunctionString();
+    }
+
+    if (mNeedAcsc) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acscFunctionString();
+    }
+
+    if (mNeedAcot) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acotFunctionString();
+    }
+
+    if (mNeedAsech) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->asechFunctionString();
+    }
+
+    if (mNeedAcsch) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acschFunctionString();
+    }
+
+    if (mNeedAcoth) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->acothFunctionString();
+    }
+}
+
+std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
+{
+    return replace(mProfile->returnCreatedArrayString(), "<ARRAY_SIZE>",
+                   std::to_string(arraySize));
+}
+
+void Generator::GeneratorImpl::addCreateStatesArrayCode(std::string &code)
+{
+    if (!mProfile->createStatesArrayMethodString().empty()
+        && !mProfile->returnCreatedArrayString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += replace(mProfile->createStatesArrayMethodString(), "<CODE>",
+                        mProfile->indentString() + generateCreateArrayCode(mStates.size()));
+    }
+}
+
+void Generator::GeneratorImpl::addCreateVariablesArrayCode(std::string &code)
+{
+    if (!mProfile->createVariablesArrayMethodString().empty()
+        && !mProfile->returnCreatedArrayString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += replace(mProfile->createVariablesArrayMethodString(), "<CODE>",
+                        mProfile->indentString() + generateCreateArrayCode(mVariables.size()));
+    }
+}
+
+void Generator::GeneratorImpl::addDeleteArrayMethodCode(std::string &code)
+{
+    if (!mProfile->deleteArrayMethodString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->deleteArrayMethodString();
+    }
+}
+
+std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody)
+{
+    return methodBody.empty() ?
+               mProfile->emptyMethodString().empty() ?
+               "" :
+               mProfile->indentString() + mProfile->emptyMethodString() :
+               methodBody;
+}
+
+std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
 {
     if (value.find('.') != std::string::npos) {
         return value;
@@ -1573,12 +2033,12 @@ std::string Generator::GeneratorImpl::generateDouble(const std::string &value)
     return value.substr(0, ePos) + ".0" + value.substr(ePos);
 }
 
-std::string Generator::GeneratorImpl::generateVariableName(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
+std::string Generator::GeneratorImpl::generateVariableNameCode(const VariablePtr &variable, const GeneratorEquationAstPtr &ast)
 {
     GeneratorInternalVariablePtr generatorVariable = Generator::GeneratorImpl::generatorVariable(variable);
 
     if (generatorVariable->mType == GeneratorInternalVariable::Type::VARIABLE_OF_INTEGRATION) {
-        return mProfile->variableOfIntegrationString();
+        return mProfile->voiString();
     }
 
     std::string arrayName;
@@ -1616,7 +2076,7 @@ std::string Generator::GeneratorImpl::generateOperatorCode(const std::string &op
     //  4. TIMES, DIVIDE                                         [Left to right]
     //  5. PLUS, MINUS                                           [Left to right]
     //  6. LT, LEQ, GT, GEQ                                      [Left to right]
-    //  7. EQ, NEQ                                             [Left to right]
+    //  7. EQ, NEQ                                               [Left to right]
     //  8. XOR (bitwise)                                         [Left to right]
     //  9. AND (logical)                                         [Left to right]
     // 10. OR (logical)                                          [Left to right]
@@ -1908,8 +2368,8 @@ std::string Generator::GeneratorImpl::generatePiecewiseIfCode(const std::string 
     return replace(replace(mProfile->hasConditionalOperator() ?
                                mProfile->conditionalOperatorIfString() :
                                mProfile->piecewiseIfString(),
-                           "#cond", condition),
-                   "#if", value);
+                           "<CONDITION>", condition),
+                   "<IF_STATEMENT>", value);
 }
 
 std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::string &value)
@@ -1917,7 +2377,7 @@ std::string Generator::GeneratorImpl::generatePiecewiseElseCode(const std::strin
     return replace(mProfile->hasConditionalOperator() ?
                        mProfile->conditionalOperatorElseString() :
                        mProfile->piecewiseElseString(),
-                   "#else", value);
+                   "<ELSE_STATEMENT>", value);
 }
 
 std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr &ast)
@@ -1929,7 +2389,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     switch (ast->mType) {
         // Assignment
 
-    case GeneratorEquationAst::Type::AS:
+    case GeneratorEquationAst::Type::ASSIGNMENT:
         code = generateOperatorCode(mProfile->assignmentString(), ast);
 
         break;
@@ -2260,11 +2720,11 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
         // Token elements
 
     case GeneratorEquationAst::Type::CI:
-        code = generateVariableName(ast->mVariable, ast);
+        code = generateVariableNameCode(ast->mVariable, ast);
 
         break;
     case GeneratorEquationAst::Type::CN:
-        code = generateDouble(ast->mValue);
+        code = generateDoubleCode(ast->mValue);
 
         break;
 
@@ -2308,98 +2768,9 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     return code;
 }
 
-std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
-{
-    return replaceTemplateValue(mProfile->indentString() + mProfile->templateReturnCreatedArrayString(), arraySize);
-}
-
-std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateString, size_t value)
-{
-    std::string valueString = std::to_string(value);
-    return replaceTemplateValue(templateString, valueString);
-}
-
-std::string Generator::GeneratorImpl::replaceTemplateValue(std::string templateString, std::string value)
-{
-    return replace(templateString, mProfile->templateReplacementString(), value);
-}
-
-std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<std::string> replacements)
-{
-    for (const auto &entry: replacements) {
-        templateString = replace(templateString, mProfile->templateReplacementString(), entry);
-    }
-
-    return templateString;
-}
-
-std::string Generator::GeneratorImpl::replaceMultipleTemplateValues(std::string templateString, std::vector<size_t> replacements)
-{
-    for (const auto &entry: replacements) {
-        templateString = replace(templateString, mProfile->templateReplacementString(), std::to_string(entry));
-    }
-
-    return templateString;
-}
-
-std::string Generator::GeneratorImpl::generateVariableInformationObjectString()
-{
-    size_t max_name_length = 0;
-    size_t max_units_length = 0;
-
-    if (mVariableOfIntegration != nullptr) {
-        max_name_length = mVariableOfIntegration->name().length();
-        max_units_length = mVariableOfIntegration->units().length();
-    }
-    for (const auto &state: mStates) {
-        max_name_length = max_name_length > state->name().length() ? max_name_length : state->name().length();
-        max_units_length = max_units_length > state->units().length() ? max_units_length : state->units().length();
-    }
-    for (const auto &variable: mVariables) {
-        max_name_length = max_name_length > variable->variable()->name().length() ? max_name_length : variable->variable()->name().length();
-        max_units_length = max_units_length > variable->variable()->units().length() ? max_units_length : variable->variable()->units().length();
-    }
-
-    // Add extra for end of string termination.
-    max_name_length += 1;
-    max_units_length += 1;
-
-    std::vector<size_t> values = {max_name_length, max_units_length};
-
-    return replaceMultipleTemplateValues(mProfile->templateVariableInformationObjectString(), values);
-}
-
-std::string Generator::GeneratorImpl::generateStateInformationArray()
-{
-    std::string res;
-    res += mProfile->beginStateVectorInformationArrayString();
-    for (const auto &state: mStates) {
-        std::vector<std::string> details = {state->name(), state->units()};
-        res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
-                + mProfile->arrayElementSeparatorString() + "\n";
-    }
-    res += mProfile->endStateVectorInformationArrayString();
-
-    return res;
-}
-
-std::string Generator::GeneratorImpl::generateVariableInformationArray()
-{
-    std::string res;
-    res += mProfile->beginVariableVectorInformationArrayString();
-    for (const auto &variable: mVariables) {
-        std::vector<std::string> details = {variable->variable()->name(), variable->variable()->units()};
-        res += mProfile->indentString() + replaceMultipleTemplateValues(mProfile->templateVariableInformationEntryString(), details)
-                + mProfile->arrayElementSeparatorString() + "\n";
-    }
-    res += mProfile->endVariableVectorInformationArrayString();
-
-    return res;
-}
-
 std::string Generator::GeneratorImpl::generateInitializationCode(const GeneratorInternalVariablePtr &variable)
 {
-    return mProfile->indentString() + generateVariableName(variable->mVariable) + " = " + generateDouble(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
+    return mProfile->indentString() + generateVariableNameCode(variable->mVariable) + " = " + generateDoubleCode(variable->mVariable->initialValue()) + mProfile->commandSeparatorString() + "\n";
 }
 
 std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquationPtr &equation,
@@ -2427,13 +2798,99 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
     return res;
 }
 
-std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody)
+void Generator::GeneratorImpl::addInitializeConstantsMethodCode(std::string &code,
+                                                                std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    return methodBody.empty() ?
-               mProfile->emptyMethodString().empty() ?
-               "" :
-               mProfile->indentString() + mProfile->emptyMethodString() :
-               methodBody;
+    if (!mProfile->initializeConstantsMethodString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        std::string methodBody;
+
+        for (const auto &internalVariable : mInternalVariables) {
+            if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
+                || (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)) {
+                methodBody += generateInitializationCode(internalVariable);
+            }
+        }
+
+        for (const auto &equation : mEquations) {
+            if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
+                methodBody += generateEquationCode(equation, remainingEquations);
+            }
+        }
+
+        code += replace(mProfile->initializeConstantsMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
+    }
+}
+
+void Generator::GeneratorImpl::addComputeComputedConstantsMethodCode(std::string &code,
+                                                                     std::vector<GeneratorEquationPtr> &remainingEquations)
+{
+    if (!mProfile->computeComputedConstantsMethodString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        std::string methodBody;
+
+        for (const auto &equation : mEquations) {
+            if (equation->mType == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
+                methodBody += generateEquationCode(equation, remainingEquations);
+            }
+        }
+
+        code += replace(mProfile->computeComputedConstantsMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
+    }
+}
+
+void Generator::GeneratorImpl::addComputeRatesMethodCode(std::string &code,
+                                                         std::vector<GeneratorEquationPtr> &remainingEquations)
+{
+    if (!mProfile->computeRatesMethodString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        std::string methodBody;
+
+        for (const auto &equation : mEquations) {
+            if (equation->mType == GeneratorEquation::Type::RATE) {
+                methodBody += generateEquationCode(equation, remainingEquations);
+            }
+        }
+
+        code += replace(mProfile->computeRatesMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
+    }
+}
+
+void Generator::GeneratorImpl::addComputeVariablesMethodCode(std::string &code,
+                                                             std::vector<GeneratorEquationPtr> &remainingEquations)
+{
+    if (!mProfile->computeVariablesMethodString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        std::vector<GeneratorEquationPtr> newRemainingEquations {std::begin(mEquations), std::end(mEquations)};
+
+        std::string methodBody;
+
+        for (const auto &equation : mEquations) {
+            if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
+                || ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
+                    && equation->mIsStateRateBased)) {
+                methodBody += generateEquationCode(equation, newRemainingEquations, true);
+            }
+        }
+
+        code += replace(mProfile->computeVariablesMethodString(), "<CODE>",
+                        generateMethodBodyCode(methodBody));
+    }
 }
 
 Generator::Generator()
@@ -2458,7 +2915,7 @@ Generator::Generator(const Generator &rhs)
     mPimpl->mInternalVariables = rhs.mPimpl->mInternalVariables;
     mPimpl->mEquations = rhs.mPimpl->mEquations;
 
-    mPimpl->mVariableOfIntegration = rhs.mPimpl->mVariableOfIntegration;
+    mPimpl->mVoi = rhs.mPimpl->mVoi;
     mPimpl->mStates = rhs.mPimpl->mStates;
     mPimpl->mVariables = rhs.mPimpl->mVariables;
 
@@ -2565,13 +3022,13 @@ size_t Generator::variableCount() const
     return mPimpl->mVariables.size();
 }
 
-VariablePtr Generator::variableOfIntegration() const
+VariablePtr Generator::voi() const
 {
     if (!mPimpl->hasValidModel()) {
         return {};
     }
 
-    return mPimpl->mVariableOfIntegration;
+    return mPimpl->mVoi;
 }
 
 VariablePtr Generator::state(size_t index) const
@@ -2598,364 +3055,69 @@ std::string Generator::code() const
         return {};
     }
 
-    // Generate origin comment.
+    // Add code for the origin comment.
 
-    std::string res = mPimpl->mProfile->beginCommentString() + mPimpl->replaceTemplateValue(mPimpl->mProfile->templateOriginCommentString(), versionString()) + mPimpl->mProfile->endCommentString();
+    std::string res;
 
-    // Generate code for the header.
+    mPimpl->addOriginCommentCode(res);
 
-    res += mPimpl->mProfile->headerString();
+    // Add code for the header.
 
-    // Set the version for the generated code.
+    mPimpl->addHeaderCode(res);
 
-    res += "\n";
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVersionString(), versionString());
+    // Add code for the version (of libCellML).
 
-    // Declare any data structures.
+    mPimpl->addVersionCode(res);
 
-    if (!mPimpl->mProfile->templateVariableInformationObjectString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-        res += mPimpl->generateVariableInformationObjectString();
-    }
+    // Add code for the number of states and variables.
 
-    // Generate constants.
+    mPimpl->addStateAndVariableCountCode(res);
 
-    res += "\n";
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateStateVectorSizeConstantString(), mPimpl->mStates.size());
-    res += mPimpl->replaceTemplateValue(mPimpl->mProfile->templateVariableVectorSizeConstantString(), mPimpl->mVariables.size());
-    if (mPimpl->mVariableOfIntegration != nullptr) {
-        std::vector<std::string> details = {mPimpl->mVariableOfIntegration->name(), mPimpl->mVariableOfIntegration->units()};
-        res += mPimpl->replaceMultipleTemplateValues(mPimpl->mProfile->templateVoiConstantString(), details);
-    }
+    // Add code for the variable information object.
 
-    res += "\n";
-    res += mPimpl->generateStateInformationArray();
-
-    res += "\n";
-    res += mPimpl->generateVariableInformationArray();
-
-    // Generate code for extra mathematical functions.
+    mPimpl->addVariableInfoObjectCode(res);
 
-    if (mPimpl->mNeedEq && !mPimpl->mProfile->hasEqOperator()
-        && !mPimpl->mProfile->eqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->eqFunctionString();
-    }
+    // Add code for the information about the variable of integration, states
+    // and (other) variables.
 
-    if (mPimpl->mNeedNeq && !mPimpl->mProfile->hasNeqOperator()
-        && !mPimpl->mProfile->neqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
+    mPimpl->addVoiInfoCode(res);
+    mPimpl->addStateInfoCode(res);
+    mPimpl->addVariableInfoCode(res);
 
-        res += mPimpl->mProfile->neqFunctionString();
-    }
-
-    if (mPimpl->mNeedLt && !mPimpl->mProfile->hasLtOperator()
-        && !mPimpl->mProfile->ltFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
+    // Add code for extra mathematical functions.
 
-        res += mPimpl->mProfile->ltFunctionString();
-    }
-
-    if (mPimpl->mNeedLeq && !mPimpl->mProfile->hasLeqOperator()
-        && !mPimpl->mProfile->leqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
+    mPimpl->addExtraMathFunctionsCode(res);
 
-        res += mPimpl->mProfile->leqFunctionString();
-    }
+    // Add code to create and delete arrays.
 
-    if (mPimpl->mNeedGt && !mPimpl->mProfile->hasGtOperator()
-        && !mPimpl->mProfile->gtFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->gtFunctionString();
-    }
+    mPimpl->addCreateStatesArrayCode(res);
+    mPimpl->addCreateVariablesArrayCode(res);
+    mPimpl->addDeleteArrayMethodCode(res);
 
-    if (mPimpl->mNeedGeq && !mPimpl->mProfile->hasGeqOperator()
-        && !mPimpl->mProfile->geqFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->geqFunctionString();
-    }
-
-    if (mPimpl->mNeedAnd && !mPimpl->mProfile->hasAndOperator()
-        && !mPimpl->mProfile->andFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->andFunctionString();
-    }
-
-    if (mPimpl->mNeedOr && !mPimpl->mProfile->hasOrOperator()
-        && !mPimpl->mProfile->orFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->orFunctionString();
-    }
-
-    if (mPimpl->mNeedXor && !mPimpl->mProfile->hasXorOperator()
-        && !mPimpl->mProfile->xorFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->xorFunctionString();
-    }
-
-    if (mPimpl->mNeedNot && !mPimpl->mProfile->hasNotOperator()
-        && !mPimpl->mProfile->notFunctionString().empty()) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->notFunctionString();
-    }
-
-    if (mPimpl->mNeedMin) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->minFunctionString();
-    }
-
-    if (mPimpl->mNeedMax) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->maxFunctionString();
-    }
-
-    if (mPimpl->mNeedSec) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->secFunctionString();
-    }
-
-    if (mPimpl->mNeedCsc) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cscFunctionString();
-    }
-
-    if (mPimpl->mNeedCot) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cotFunctionString();
-    }
-
-    if (mPimpl->mNeedSech) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->sechFunctionString();
-    }
-
-    if (mPimpl->mNeedCsch) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cschFunctionString();
-    }
-
-    if (mPimpl->mNeedCoth) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->cothFunctionString();
-    }
-
-    if (mPimpl->mNeedAsec) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->asecFunctionString();
-    }
-
-    if (mPimpl->mNeedAcsc) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acscFunctionString();
-    }
-
-    if (mPimpl->mNeedAcot) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acotFunctionString();
-    }
-
-    if (mPimpl->mNeedAsech) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->asechFunctionString();
-    }
-
-    if (mPimpl->mNeedAcsch) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acschFunctionString();
-    }
-
-    if (mPimpl->mNeedAcoth) {
-        if (!res.empty()) {
-            res += "\n";
-        }
-
-        res += mPimpl->mProfile->acothFunctionString();
-    }
-
-    // Generate code to initialise the model.
-
-    if (!res.empty()) {
-        res += "\n";
-    }
-
-    std::string methodBody;
-
-    res += mPimpl->mProfile->beginCreateStateVectorMethodString();
-
-    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mStates.size());
-    res += mPimpl->generateMethodBodyCode(methodBody);
-
-    res += mPimpl->mProfile->endCreateStateVectorMethodString();
-
-    res += "\n";
-    res += mPimpl->mProfile->beginCreateRateVectorMethodString();
-
-    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mStates.size());
-    res += mPimpl->generateMethodBodyCode(methodBody);
-
-    res += mPimpl->mProfile->endCreateRateVectorMethodString();
-
-    res += "\n";
-    res += mPimpl->mProfile->beginCreateVariableVectorMethodString();
-
-    methodBody = mPimpl->generateCreateArrayCode(mPimpl->mVariables.size());
-    res += mPimpl->generateMethodBodyCode(methodBody);
-
-    res += mPimpl->mProfile->endCreateVariableVectorMethodString();
-
-    if (mPimpl->mProfile->freeVectorFunctionString().length()) {
-        res += "\n";
-        res += mPimpl->mProfile->freeVectorFunctionString();
-    }
-
-    res += "\n";
-    res += mPimpl->mProfile->beginInitializeConstantsMethodString();
-
-    methodBody = "";
-
-    for (const auto &internalVariable : mPimpl->mInternalVariables) {
-        if ((internalVariable->mType == GeneratorInternalVariable::Type::STATE)
-            || (internalVariable->mType == GeneratorInternalVariable::Type::CONSTANT)) {
-            methodBody += mPimpl->generateInitializationCode(internalVariable);
-        }
-    }
+    // Add code to initialise the model.
 
     std::vector<GeneratorEquationPtr> remainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
 
-    for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquation::Type::TRUE_CONSTANT) {
-            methodBody += mPimpl->generateEquationCode(equation, remainingEquations);
-        }
-    }
-
-    res += mPimpl->generateMethodBodyCode(methodBody);
-    res += mPimpl->mProfile->endInitializeConstantsMethodString();
+    mPimpl->addInitializeConstantsMethodCode(res, remainingEquations);
 
     // Generate code to compute our computed constants.
 
-    res += "\n";
-    res += mPimpl->mProfile->beginComputeComputedConstantsMethodString();
-
-    methodBody = "";
-
-    for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquation::Type::VARIABLE_BASED_CONSTANT) {
-            methodBody += mPimpl->generateEquationCode(equation, remainingEquations);
-        }
-    }
-
-    res += mPimpl->generateMethodBodyCode(methodBody);
-    res += mPimpl->mProfile->endComputeComputedConstantsMethodString();
+    mPimpl->addComputeComputedConstantsMethodCode(res, remainingEquations);
 
     // Generate code to compute our rates (and any variables on which they
     // depend).
 
-    res += "\n";
-    res += mPimpl->mProfile->beginComputeRatesMethodString();
-
-    methodBody = "";
-
-    for (const auto &equation : mPimpl->mEquations) {
-        if (equation->mType == GeneratorEquation::Type::RATE) {
-            methodBody += mPimpl->generateEquationCode(equation, remainingEquations);
-        }
-    }
-
-    res += mPimpl->generateMethodBodyCode(methodBody);
-    res += mPimpl->mProfile->endComputeRatesMethodString();
+    mPimpl->addComputeRatesMethodCode(res, remainingEquations);
 
     // Generate code to compute our variables.
     // Note: this method computes all the remaining variables, i.e. the ones not
     //       needed to compute our rates, but also the variables that depend on
     //       the value of some states/rates. Indeed, this method is typically
     //       called after having integrated a model, thus ensuring that
-    //       variables that rely on the value of some states/rates are fine.
+    //       variables that rely on the value of some states/rates are up to
+    //       date.
 
-    std::vector<GeneratorEquationPtr> newRemainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
-
-    res += "\n";
-    res += mPimpl->mProfile->beginComputeVariablesMethodString();
-
-    methodBody = "";
-
-    for (const auto &equation : mPimpl->mEquations) {
-        if ((std::find(remainingEquations.begin(), remainingEquations.end(), equation) != remainingEquations.end())
-            || ((equation->mType == GeneratorEquation::Type::ALGEBRAIC)
-                && equation->mIsStateRateBased)) {
-            methodBody += mPimpl->generateEquationCode(equation, newRemainingEquations, true);
-        }
-    }
-
-    res += mPimpl->generateMethodBodyCode(methodBody);
-    res += mPimpl->mProfile->endComputeVariablesMethodString();
+    mPimpl->addComputeVariablesMethodCode(res, remainingEquations);
 
     return res;
 }

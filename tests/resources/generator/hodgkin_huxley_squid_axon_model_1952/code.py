@@ -1,63 +1,61 @@
 # The contents of this file was generated from version 0.2.0 of libCellML.
+
 from math import *
 
 
 __version__ = "0.2.0"
 
-STATE_VECTOR_SIZE = 4
-VARIABLE_VECTOR_SIZE = 18
-VOI = {"name": "time", "units": "millisecond"}
+STATE_COUNT = 4
+VARIABLE_COUNT = 18
 
-STATE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "m", "units": "dimensionless"},
-    {"name": "h", "units": "dimensionless"},
-    {"name": "n", "units": "dimensionless"},
-    {"name": "V", "units": "millivolt"},
+VOI_INFO = {"component": "membrane", "name": "time", "units": "millisecond"}
+
+STATE_INFO = [
+    {"component": "sodium_channel_m_gate", "name": "m", "units": "dimensionless"},
+    {"component": "sodium_channel_h_gate", "name": "h", "units": "dimensionless"},
+    {"component": "potassium_channel_n_gate", "name": "n", "units": "dimensionless"},
+    {"component": "membrane", "name": "V", "units": "millivolt"}
 ]
 
-VARIABLE_VECTOR_INFORMATION_ARRAY = [
-    {"name": "g_L", "units": "milliS_per_cm2"},
-    {"name": "Cm", "units": "microF_per_cm2"},
-    {"name": "E_R", "units": "millivolt"},
-    {"name": "g_K", "units": "milliS_per_cm2"},
-    {"name": "g_Na", "units": "milliS_per_cm2"},
-    {"name": "E_L", "units": "millivolt"},
-    {"name": "E_Na", "units": "millivolt"},
-    {"name": "E_K", "units": "millivolt"},
-    {"name": "i_Stim", "units": "microA_per_cm2"},
-    {"name": "i_L", "units": "microA_per_cm2"},
-    {"name": "i_Na", "units": "microA_per_cm2"},
-    {"name": "alpha_m", "units": "per_millisecond"},
-    {"name": "beta_m", "units": "per_millisecond"},
-    {"name": "alpha_h", "units": "per_millisecond"},
-    {"name": "beta_h", "units": "per_millisecond"},
-    {"name": "i_K", "units": "microA_per_cm2"},
-    {"name": "alpha_n", "units": "per_millisecond"},
-    {"name": "beta_n", "units": "per_millisecond"},
+VARIABLE_INFO = [
+    {"component": "leakage_current", "name": "g_L", "units": "milliS_per_cm2"},
+    {"component": "membrane", "name": "Cm", "units": "microF_per_cm2"},
+    {"component": "membrane", "name": "E_R", "units": "millivolt"},
+    {"component": "potassium_channel", "name": "g_K", "units": "milliS_per_cm2"},
+    {"component": "sodium_channel", "name": "g_Na", "units": "milliS_per_cm2"},
+    {"component": "leakage_current", "name": "E_L", "units": "millivolt"},
+    {"component": "sodium_channel", "name": "E_Na", "units": "millivolt"},
+    {"component": "potassium_channel", "name": "E_K", "units": "millivolt"},
+    {"component": "membrane", "name": "i_Stim", "units": "microA_per_cm2"},
+    {"component": "membrane", "name": "i_L", "units": "microA_per_cm2"},
+    {"component": "membrane", "name": "i_Na", "units": "microA_per_cm2"},
+    {"component": "sodium_channel_m_gate", "name": "alpha_m", "units": "per_millisecond"},
+    {"component": "sodium_channel_m_gate", "name": "beta_m", "units": "per_millisecond"},
+    {"component": "sodium_channel_h_gate", "name": "alpha_h", "units": "per_millisecond"},
+    {"component": "sodium_channel_h_gate", "name": "beta_h", "units": "per_millisecond"},
+    {"component": "membrane", "name": "i_K", "units": "microA_per_cm2"},
+    {"component": "potassium_channel_n_gate", "name": "alpha_n", "units": "per_millisecond"},
+    {"component": "potassium_channel_n_gate", "name": "beta_n", "units": "per_millisecond"}
 ]
 
 
 def leq_func(x, y):
-    return 1.0 if (x <= y) else 0.0
+    return 1.0 if x <= y else 0.0
 
 
 def geq_func(x, y):
-    return 1.0 if (x >= y) else 0.0
+    return 1.0 if x >= y else 0.0
 
 
 def and_func(x, y):
-    return 1.0 if (bool(x) & bool(y)) else 0.0
+    return 1.0 if bool(x) & bool(y) else 0.0
 
 
-def create_state_vector():
+def create_states_array():
     return [nan]*4
 
 
-def create_rate_vector():
-    return [nan]*4
-
-
-def create_variable_vector():
+def create_variables_array():
     return [nan]*18
 
 

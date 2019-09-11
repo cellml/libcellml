@@ -1,209 +1,213 @@
 /* The contents of this file was generated from version 0.2.0 of libCellML. */
+
+#include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <math.h>
 
-const char version[] = "0.2.0";
+const char VERSION[] = "0.2.0";
 
-struct VARIABLE_INFO {
+const size_t STATE_COUNT = 1;
+const size_t VARIABLE_COUNT = 186;
+
+struct VariableInfo {
+    char component[13];
     char name[38];
     char units[14];
 };
 
-const size_t STATE_VECTOR_SIZE = 1;
-const size_t VARIABLE_VECTOR_SIZE = 185;
-const struct VARIABLE_INFO VOI = {"t", "second"};
+const struct VariableInfo VOI_INFO = {"my_component", "t", "second"};
 
-const struct VARIABLE_INFO STATE_VECTOR_INFORMATION_ARRAY[] = {
-    {"x", "dimensionless"},
+const struct VariableInfo STATE_INFO[] = {
+    {"my_component", "x", "dimensionless"}
 };
 
-const struct VARIABLE_INFO VARIABLE_VECTOR_INFORMATION_ARRAY[] = {
-    {"m", "dimensionless"},
-    {"n", "dimensionless"},
-    {"o", "dimensionless"},
-    {"p", "dimensionless"},
-    {"q", "dimensionless"},
-    {"r", "dimensionless"},
-    {"s", "dimensionless"},
-    {"eqnCnInteger", "dimensionless"},
-    {"eqnCnDouble", "dimensionless"},
-    {"eqnCnIntegerWithExponent", "dimensionless"},
-    {"eqnCnDoubleWithExponent", "dimensionless"},
-    {"eqnTrue", "dimensionless"},
-    {"eqnFalse", "dimensionless"},
-    {"eqnExponentiale", "dimensionless"},
-    {"eqnPi", "dimensionless"},
-    {"eqnInfinity", "dimensionless"},
-    {"eqnNotanumber", "dimensionless"},
-    {"eqnEq", "dimensionless"},
-    {"eqnEqCoverageParentheses", "dimensionless"},
-    {"eqnNeq", "dimensionless"},
-    {"eqnNeqCoverageParentheses", "dimensionless"},
-    {"eqnLt", "dimensionless"},
-    {"eqnLeq", "dimensionless"},
-    {"eqnGt", "dimensionless"},
-    {"eqnGeq", "dimensionless"},
-    {"eqnAnd", "dimensionless"},
-    {"eqnAndMultiple", "dimensionless"},
-    {"eqnAndParentheses", "dimensionless"},
-    {"eqnAndParenthesesLeftPlusWith", "dimensionless"},
-    {"eqnAndParenthesesLeftPlusWithout", "dimensionless"},
-    {"eqnAndParenthesesLeftMinusWith", "dimensionless"},
-    {"eqnAndParenthesesLeftMinusWithout", "dimensionless"},
-    {"eqnAndParenthesesLeftPower", "dimensionless"},
-    {"eqnAndParenthesesLeftRoot", "dimensionless"},
-    {"eqnAndParenthesesRightPlusWith", "dimensionless"},
-    {"eqnAndParenthesesRightPlusWithout", "dimensionless"},
-    {"eqnAndParenthesesRightMinusWith", "dimensionless"},
-    {"eqnAndParenthesesRightMinusWithout", "dimensionless"},
-    {"eqnAndParenthesesRightPower", "dimensionless"},
-    {"eqnAndParenthesesRightRoot", "dimensionless"},
-    {"eqnOr", "dimensionless"},
-    {"eqnOrMultiple", "dimensionless"},
-    {"eqnOrParentheses", "dimensionless"},
-    {"eqnOrParenthesesLeftPlusWith", "dimensionless"},
-    {"eqnOrParenthesesLeftPlusWithout", "dimensionless"},
-    {"eqnOrParenthesesLeftMinusWith", "dimensionless"},
-    {"eqnOrParenthesesLeftMinusWithout", "dimensionless"},
-    {"eqnOrParenthesesLeftPower", "dimensionless"},
-    {"eqnOrParenthesesLeftRoot", "dimensionless"},
-    {"eqnOrParenthesesRightPlusWith", "dimensionless"},
-    {"eqnOrParenthesesRightPlusWithout", "dimensionless"},
-    {"eqnOrParenthesesRightMinusWith", "dimensionless"},
-    {"eqnOrParenthesesRightMinusWithout", "dimensionless"},
-    {"eqnOrParenthesesRightPower", "dimensionless"},
-    {"eqnOrParenthesesRightRoot", "dimensionless"},
-    {"eqnXor", "dimensionless"},
-    {"eqnXorMultiple", "dimensionless"},
-    {"eqnXorParentheses", "dimensionless"},
-    {"eqnXorParenthesesLeftPlusWith", "dimensionless"},
-    {"eqnXorParenthesesLeftPlusWithout", "dimensionless"},
-    {"eqnXorParenthesesLeftMinusWith", "dimensionless"},
-    {"eqnXorParenthesesLeftMinusWithout", "dimensionless"},
-    {"eqnXorParenthesesLeftPower", "dimensionless"},
-    {"eqnXorParenthesesLeftRoot", "dimensionless"},
-    {"eqnXorParenthesesRightPlusWith", "dimensionless"},
-    {"eqnXorParenthesesRightPlusWithout", "dimensionless"},
-    {"eqnXorParenthesesRightMinusWith", "dimensionless"},
-    {"eqnXorParenthesesRightMinusWithout", "dimensionless"},
-    {"eqnXorParenthesesRightPower", "dimensionless"},
-    {"eqnXorParenthesesRightRoot", "dimensionless"},
-    {"eqnNot", "dimensionless"},
-    {"eqnPlus", "dimensionless"},
-    {"eqnPlusMultiple", "dimensionless"},
-    {"eqnPlusParentheses", "dimensionless"},
-    {"eqnPlusUnary", "dimensionless"},
-    {"eqnMinus", "dimensionless"},
-    {"eqnMinusParentheses", "dimensionless"},
-    {"eqnMinusParenthesesPlusWith", "dimensionless"},
-    {"eqnMinusParenthesesPlusWithout", "dimensionless"},
-    {"eqnMinusUnary", "dimensionless"},
-    {"eqnMinusUnaryParentheses", "dimensionless"},
-    {"eqnTimes", "dimensionless"},
-    {"eqnTimesMultiple", "dimensionless"},
-    {"eqnTimesParentheses", "dimensionless"},
-    {"eqnTimesParenthesesLeftPlusWith", "dimensionless"},
-    {"eqnTimesParenthesesLeftPlusWithout", "dimensionless"},
-    {"eqnTimesParenthesesLeftMinusWith", "dimensionless"},
-    {"eqnTimesParenthesesLeftMinusWithout", "dimensionless"},
-    {"eqnTimesParenthesesRightPlusWith", "dimensionless"},
-    {"eqnTimesParenthesesRightPlusWithout", "dimensionless"},
-    {"eqnTimesParenthesesRightMinusWith", "dimensionless"},
-    {"eqnTimesParenthesesRightMinusWithout", "dimensionless"},
-    {"eqnDivide", "dimensionless"},
-    {"eqnDivideParentheses", "dimensionless"},
-    {"eqnDivideParenthesesLeftPlusWith", "dimensionless"},
-    {"eqnDivideParenthesesLeftPlusWithout", "dimensionless"},
-    {"eqnDivideParenthesesLeftMinusWith", "dimensionless"},
-    {"eqnDivideParenthesesLeftMinusWithout", "dimensionless"},
-    {"eqnDivideParenthesesRightPlusWith", "dimensionless"},
-    {"eqnDivideParenthesesRightPlusWithout", "dimensionless"},
-    {"eqnDivideParenthesesRightMinusWith", "dimensionless"},
-    {"eqnDivideParenthesesRightMinusWithout", "dimensionless"},
-    {"eqnDivideParenthesesRightTimes", "dimensionless"},
-    {"eqnDivideParenthesesRightDivide", "dimensionless"},
-    {"eqnPowerSqrt", "dimensionless"},
-    {"eqnPowerSqr", "dimensionless"},
-    {"eqnPowerCube", "dimensionless"},
-    {"eqnPowerCi", "dimensionless"},
-    {"eqnPowerParentheses", "dimensionless"},
-    {"eqnPowerParenthesesLeftPlusWith", "dimensionless"},
-    {"eqnPowerParenthesesLeftPlusWithout", "dimensionless"},
-    {"eqnPowerParenthesesLeftMinusWith", "dimensionless"},
-    {"eqnPowerParenthesesLeftMinusWithout", "dimensionless"},
-    {"eqnPowerParenthesesLeftTimes", "dimensionless"},
-    {"eqnPowerParenthesesLeftDivide", "dimensionless"},
-    {"eqnPowerParenthesesRightPlusWith", "dimensionless"},
-    {"eqnPowerParenthesesRightPlusWithout", "dimensionless"},
-    {"eqnPowerParenthesesRightMinusWith", "dimensionless"},
-    {"eqnPowerParenthesesRightMinusWithout", "dimensionless"},
-    {"eqnPowerParenthesesRightTimes", "dimensionless"},
-    {"eqnPowerParenthesesRightDivide", "dimensionless"},
-    {"eqnPowerParenthesesRightPower", "dimensionless"},
-    {"eqnPowerParenthesesRightRoot", "dimensionless"},
-    {"eqnRootSqrt", "dimensionless"},
-    {"eqnRootSqrtOther", "dimensionless"},
-    {"eqnRootCube", "dimensionless"},
-    {"eqnRootCi", "dimensionless"},
-    {"eqnRootParentheses", "dimensionless"},
-    {"eqnRootParenthesesLeftPlusWith", "dimensionless"},
-    {"eqnRootParenthesesLeftPlusWithout", "dimensionless"},
-    {"eqnRootParenthesesLeftMinusWith", "dimensionless"},
-    {"eqnRootParenthesesLeftMinusWithout", "dimensionless"},
-    {"eqnRootParenthesesLeftTimes", "dimensionless"},
-    {"eqnRootParenthesesLeftDivide", "dimensionless"},
-    {"eqnRootParenthesesRightPlusWith", "dimensionless"},
-    {"eqnRootParenthesesRightPlusWithout", "dimensionless"},
-    {"eqnRootParenthesesRightMinusWith", "dimensionless"},
-    {"eqnRootParenthesesRightMinusWithout", "dimensionless"},
-    {"eqnRootParenthesesRightTimes", "dimensionless"},
-    {"eqnRootParenthesesRightDivide", "dimensionless"},
-    {"eqnRootParenthesesRightPower", "dimensionless"},
-    {"eqnRootParenthesesRightRoot", "dimensionless"},
-    {"eqnAbs", "dimensionless"},
-    {"eqnExp", "dimensionless"},
-    {"eqnLn", "dimensionless"},
-    {"eqnLog", "dimensionless"},
-    {"eqnLog2", "dimensionless"},
-    {"eqnLog10", "dimensionless"},
-    {"eqnLogCi", "dimensionless"},
-    {"eqnCeiling", "dimensionless"},
-    {"eqnFloor", "dimensionless"},
-    {"eqnMin", "dimensionless"},
-    {"eqnMinMultiple", "dimensionless"},
-    {"eqnMax", "dimensionless"},
-    {"eqnMaxMultiple", "dimensionless"},
-    {"eqnRem", "dimensionless"},
-    {"eqnSin", "dimensionless"},
-    {"eqnCos", "dimensionless"},
-    {"eqnTan", "dimensionless"},
-    {"eqnSec", "dimensionless"},
-    {"eqnCsc", "dimensionless"},
-    {"eqnCot", "dimensionless"},
-    {"eqnSinh", "dimensionless"},
-    {"eqnCosh", "dimensionless"},
-    {"eqnTanh", "dimensionless"},
-    {"eqnSech", "dimensionless"},
-    {"eqnCsch", "dimensionless"},
-    {"eqnCoth", "dimensionless"},
-    {"eqnArcsin", "dimensionless"},
-    {"eqnArccos", "dimensionless"},
-    {"eqnArctan", "dimensionless"},
-    {"eqnArcsec", "dimensionless"},
-    {"eqnArccsc", "dimensionless"},
-    {"eqnArccot", "dimensionless"},
-    {"eqnArcsinh", "dimensionless"},
-    {"eqnArccosh", "dimensionless"},
-    {"eqnArctanh", "dimensionless"},
-    {"eqnArcsech", "dimensionless"},
-    {"eqnArccsch", "dimensionless"},
-    {"eqnArccoth", "dimensionless"},
-    {"eqnPiecewisePiece", "dimensionless"},
-    {"eqnPiecewisePieceOtherwise", "dimensionless"},
-    {"eqnPiecewisePiecePiecePiece", "dimensionless"},
-    {"eqnPiecewisePiecePiecePieceOtherwise", "dimensionless"},
-    {"eqnCi", "dimensionless"},
+const struct VariableInfo VARIABLE_INFO[] = {
+    {"my_component", "m", "dimensionless"},
+    {"my_component", "n", "dimensionless"},
+    {"my_component", "o", "dimensionless"},
+    {"my_component", "p", "dimensionless"},
+    {"my_component", "q", "dimensionless"},
+    {"my_component", "r", "dimensionless"},
+    {"my_component", "s", "dimensionless"},
+    {"my_component", "eqnCnInteger", "dimensionless"},
+    {"my_component", "eqnCnDouble", "dimensionless"},
+    {"my_component", "eqnCnIntegerWithExponent", "dimensionless"},
+    {"my_component", "eqnCnDoubleWithExponent", "dimensionless"},
+    {"my_component", "eqnTrue", "dimensionless"},
+    {"my_component", "eqnFalse", "dimensionless"},
+    {"my_component", "eqnExponentiale", "dimensionless"},
+    {"my_component", "eqnPi", "dimensionless"},
+    {"my_component", "eqnInfinity", "dimensionless"},
+    {"my_component", "eqnNotanumber", "dimensionless"},
+    {"my_component", "eqnEqEq", "dimensionless"},
+    {"my_component", "eqnEqEqCoverageParentheses", "dimensionless"},
+    {"my_component", "eqnNeq", "dimensionless"},
+    {"my_component", "eqnNeqCoverageParentheses", "dimensionless"},
+    {"my_component", "eqnLt", "dimensionless"},
+    {"my_component", "eqnLeq", "dimensionless"},
+    {"my_component", "eqnGt", "dimensionless"},
+    {"my_component", "eqnGeq", "dimensionless"},
+    {"my_component", "eqnAnd", "dimensionless"},
+    {"my_component", "eqnAndMultiple", "dimensionless"},
+    {"my_component", "eqnAndParentheses", "dimensionless"},
+    {"my_component", "eqnAndParenthesesLeftPlusWith", "dimensionless"},
+    {"my_component", "eqnAndParenthesesLeftPlusWithout", "dimensionless"},
+    {"my_component", "eqnAndParenthesesLeftMinusWith", "dimensionless"},
+    {"my_component", "eqnAndParenthesesLeftMinusWithout", "dimensionless"},
+    {"my_component", "eqnAndParenthesesLeftPower", "dimensionless"},
+    {"my_component", "eqnAndParenthesesLeftRoot", "dimensionless"},
+    {"my_component", "eqnAndParenthesesRightPlusWith", "dimensionless"},
+    {"my_component", "eqnAndParenthesesRightPlusWithout", "dimensionless"},
+    {"my_component", "eqnAndParenthesesRightMinusWith", "dimensionless"},
+    {"my_component", "eqnAndParenthesesRightMinusWithout", "dimensionless"},
+    {"my_component", "eqnAndParenthesesRightPower", "dimensionless"},
+    {"my_component", "eqnAndParenthesesRightRoot", "dimensionless"},
+    {"my_component", "eqnOr", "dimensionless"},
+    {"my_component", "eqnOrMultiple", "dimensionless"},
+    {"my_component", "eqnOrParentheses", "dimensionless"},
+    {"my_component", "eqnOrParenthesesLeftPlusWith", "dimensionless"},
+    {"my_component", "eqnOrParenthesesLeftPlusWithout", "dimensionless"},
+    {"my_component", "eqnOrParenthesesLeftMinusWith", "dimensionless"},
+    {"my_component", "eqnOrParenthesesLeftMinusWithout", "dimensionless"},
+    {"my_component", "eqnOrParenthesesLeftPower", "dimensionless"},
+    {"my_component", "eqnOrParenthesesLeftRoot", "dimensionless"},
+    {"my_component", "eqnOrParenthesesRightPlusWith", "dimensionless"},
+    {"my_component", "eqnOrParenthesesRightPlusWithout", "dimensionless"},
+    {"my_component", "eqnOrParenthesesRightMinusWith", "dimensionless"},
+    {"my_component", "eqnOrParenthesesRightMinusWithout", "dimensionless"},
+    {"my_component", "eqnOrParenthesesRightPower", "dimensionless"},
+    {"my_component", "eqnOrParenthesesRightRoot", "dimensionless"},
+    {"my_component", "eqnXor", "dimensionless"},
+    {"my_component", "eqnXorMultiple", "dimensionless"},
+    {"my_component", "eqnXorParentheses", "dimensionless"},
+    {"my_component", "eqnXorParenthesesLeftPlusWith", "dimensionless"},
+    {"my_component", "eqnXorParenthesesLeftPlusWithout", "dimensionless"},
+    {"my_component", "eqnXorParenthesesLeftMinusWith", "dimensionless"},
+    {"my_component", "eqnXorParenthesesLeftMinusWithout", "dimensionless"},
+    {"my_component", "eqnXorParenthesesLeftPower", "dimensionless"},
+    {"my_component", "eqnXorParenthesesLeftRoot", "dimensionless"},
+    {"my_component", "eqnXorParenthesesRightPlusWith", "dimensionless"},
+    {"my_component", "eqnXorParenthesesRightPlusWithout", "dimensionless"},
+    {"my_component", "eqnXorParenthesesRightMinusWith", "dimensionless"},
+    {"my_component", "eqnXorParenthesesRightMinusWithout", "dimensionless"},
+    {"my_component", "eqnXorParenthesesRightPower", "dimensionless"},
+    {"my_component", "eqnXorParenthesesRightRoot", "dimensionless"},
+    {"my_component", "eqnNot", "dimensionless"},
+    {"my_component", "eqnPlus", "dimensionless"},
+    {"my_component", "eqnPlusMultiple", "dimensionless"},
+    {"my_component", "eqnPlusParentheses", "dimensionless"},
+    {"my_component", "eqnPlusUnary", "dimensionless"},
+    {"my_component", "eqnMinus", "dimensionless"},
+    {"my_component", "eqnMinusParentheses", "dimensionless"},
+    {"my_component", "eqnMinusParenthesesPlusWith", "dimensionless"},
+    {"my_component", "eqnMinusParenthesesPlusWithout", "dimensionless"},
+    {"my_component", "eqnMinusUnary", "dimensionless"},
+    {"my_component", "eqnMinusUnaryParentheses", "dimensionless"},
+    {"my_component", "eqnTimes", "dimensionless"},
+    {"my_component", "eqnTimesMultiple", "dimensionless"},
+    {"my_component", "eqnTimesParentheses", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesLeftPlusWith", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesLeftPlusWithout", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesLeftMinusWith", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesLeftMinusWithout", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesRightPlusWith", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesRightPlusWithout", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesRightMinusWith", "dimensionless"},
+    {"my_component", "eqnTimesParenthesesRightMinusWithout", "dimensionless"},
+    {"my_component", "eqnDivide", "dimensionless"},
+    {"my_component", "eqnDivideParentheses", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesLeftPlusWith", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesLeftPlusWithout", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesLeftMinusWith", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesLeftMinusWithout", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesRightPlusWith", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesRightPlusWithout", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesRightMinusWith", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesRightMinusWithout", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesRightTimes", "dimensionless"},
+    {"my_component", "eqnDivideParenthesesRightDivide", "dimensionless"},
+    {"my_component", "eqnPowerSqrt", "dimensionless"},
+    {"my_component", "eqnPowerSqr", "dimensionless"},
+    {"my_component", "eqnPowerCube", "dimensionless"},
+    {"my_component", "eqnPowerCi", "dimensionless"},
+    {"my_component", "eqnPowerParentheses", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesLeftPlusWith", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesLeftPlusWithout", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesLeftMinusWith", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesLeftMinusWithout", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesLeftTimes", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesLeftDivide", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightPlusWith", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightPlusWithout", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightMinusWith", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightMinusWithout", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightTimes", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightDivide", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightPower", "dimensionless"},
+    {"my_component", "eqnPowerParenthesesRightRoot", "dimensionless"},
+    {"my_component", "eqnRootSqrt", "dimensionless"},
+    {"my_component", "eqnRootSqrtOther", "dimensionless"},
+    {"my_component", "eqnRootCube", "dimensionless"},
+    {"my_component", "eqnRootCi", "dimensionless"},
+    {"my_component", "eqnRootParentheses", "dimensionless"},
+    {"my_component", "eqnRootParenthesesLeftPlusWith", "dimensionless"},
+    {"my_component", "eqnRootParenthesesLeftPlusWithout", "dimensionless"},
+    {"my_component", "eqnRootParenthesesLeftMinusWith", "dimensionless"},
+    {"my_component", "eqnRootParenthesesLeftMinusWithout", "dimensionless"},
+    {"my_component", "eqnRootParenthesesLeftTimes", "dimensionless"},
+    {"my_component", "eqnRootParenthesesLeftDivide", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightPlusWith", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightPlusWithout", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightMinusWith", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightMinusWithout", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightTimes", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightDivide", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightPower", "dimensionless"},
+    {"my_component", "eqnRootParenthesesRightRoot", "dimensionless"},
+    {"my_component", "eqnAbs", "dimensionless"},
+    {"my_component", "eqnExp", "dimensionless"},
+    {"my_component", "eqnLn", "dimensionless"},
+    {"my_component", "eqnLog", "dimensionless"},
+    {"my_component", "eqnLog2", "dimensionless"},
+    {"my_component", "eqnLog10", "dimensionless"},
+    {"my_component", "eqnLogCi", "dimensionless"},
+    {"my_component", "eqnCeiling", "dimensionless"},
+    {"my_component", "eqnFloor", "dimensionless"},
+    {"my_component", "eqnMin", "dimensionless"},
+    {"my_component", "eqnMinMultiple", "dimensionless"},
+    {"my_component", "eqnMax", "dimensionless"},
+    {"my_component", "eqnMaxMultiple", "dimensionless"},
+    {"my_component", "eqnRem", "dimensionless"},
+    {"my_component", "eqnSin", "dimensionless"},
+    {"my_component", "eqnCos", "dimensionless"},
+    {"my_component", "eqnTan", "dimensionless"},
+    {"my_component", "eqnSec", "dimensionless"},
+    {"my_component", "eqnCsc", "dimensionless"},
+    {"my_component", "eqnCot", "dimensionless"},
+    {"my_component", "eqnSinh", "dimensionless"},
+    {"my_component", "eqnCosh", "dimensionless"},
+    {"my_component", "eqnTanh", "dimensionless"},
+    {"my_component", "eqnSech", "dimensionless"},
+    {"my_component", "eqnCsch", "dimensionless"},
+    {"my_component", "eqnCoth", "dimensionless"},
+    {"my_component", "eqnArcsin", "dimensionless"},
+    {"my_component", "eqnArccos", "dimensionless"},
+    {"my_component", "eqnArctan", "dimensionless"},
+    {"my_component", "eqnArcsec", "dimensionless"},
+    {"my_component", "eqnArccsc", "dimensionless"},
+    {"my_component", "eqnArccot", "dimensionless"},
+    {"my_component", "eqnArcsinh", "dimensionless"},
+    {"my_component", "eqnArccosh", "dimensionless"},
+    {"my_component", "eqnArctanh", "dimensionless"},
+    {"my_component", "eqnArcsech", "dimensionless"},
+    {"my_component", "eqnArccsch", "dimensionless"},
+    {"my_component", "eqnArccoth", "dimensionless"},
+    {"my_component", "eqnPiecewisePiece", "dimensionless"},
+    {"my_component", "eqnPiecewisePieceOtherwise", "dimensionless"},
+    {"my_component", "eqnPiecewisePiecePiecePiece", "dimensionless"},
+    {"my_component", "eqnPiecewisePiecePiecePieceOtherwise", "dimensionless"},
+    {"my_component", "eqnWithPiecewise", "dimensionless"},
+    {"my_component", "eqnCi", "dimensionless"}
 };
 
 double xor(double x, double y)
@@ -287,24 +291,19 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-double *createStateVector()
+double * createStatesArray()
 {
-    return (double *)malloc(1 * sizeof (double));
+    return (double *) malloc(1 * sizeof(double));
 }
 
-double *createRateVector()
+double * createVariablesArray()
 {
-    return (double *)malloc(1 * sizeof (double));
+    return (double *) malloc(186 * sizeof(double));
 }
 
-double *createVariableVector()
+void deleteArray(double *array)
 {
-    return (double *)malloc(185 * sizeof (double));
-}
-
-void freeVector(double *array)
-{
-   free(array);
+    free(array);
 }
 
 void initializeConstants(double *states, double *variables)
@@ -317,16 +316,16 @@ void initializeConstants(double *states, double *variables)
     variables[4] = 5.0;
     variables[5] = 6.0;
     variables[6] = 7.0;
-    variables[174] = 123.0;
-    variables[175] = 123.456789;
-    variables[176] = 123.0e99;
-    variables[177] = 123.456789e99;
-    variables[179] = 1.0;
-    variables[180] = 0.0;
-    variables[181] = 2.71828182845905;
-    variables[182] = 3.14159265358979;
-    variables[183] = 1.0/0.0;
-    variables[184] = sqrt(-1.0);
+    variables[175] = 123.0;
+    variables[176] = 123.456789;
+    variables[177] = 123.0e99;
+    variables[178] = 123.456789e99;
+    variables[180] = 1.0;
+    variables[181] = 0.0;
+    variables[182] = 2.71828182845905;
+    variables[183] = 3.14159265358979;
+    variables[184] = 1.0/0.0;
+    variables[185] = sqrt(-1.0);
 }
 
 void computeComputedConstants(double *variables)
@@ -498,7 +497,8 @@ void computeComputedConstants(double *variables)
     variables[171] = (variables[0] > variables[1])?variables[0]:variables[2];
     variables[172] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:sqrt(-1.0);
     variables[173] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:variables[6];
-    variables[178] = variables[0];
+    variables[174] = 123.0+((variables[0] > variables[1])?variables[0]:sqrt(-1.0));
+    variables[179] = variables[0];
 }
 
 void computeRates(double voi, double *states, double *rates, double *variables)
