@@ -643,6 +643,8 @@ struct Generator::GeneratorImpl
     void addCreateVariablesArrayCode(std::string &code);
     void addDeleteArrayMethodCode(std::string &code);
 
+    std::string generateMethodBodyCode(const std::string &methodBody);
+
     std::string generateDoubleCode(const std::string &value);
     std::string generateVariableNameCode(const VariablePtr &variable,
                                          const GeneratorEquationAstPtr &ast = nullptr);
@@ -663,8 +665,6 @@ struct Generator::GeneratorImpl
     std::string generateEquationCode(const GeneratorEquationPtr &equation,
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
-
-    std::string generateMethodBodyCode(const std::string &methodBody);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -2001,6 +2001,15 @@ void Generator::GeneratorImpl::addDeleteArrayMethodCode(std::string &code)
     }
 }
 
+std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody)
+{
+    return methodBody.empty() ?
+               mProfile->emptyMethodString().empty() ?
+               "" :
+               mProfile->indentString() + mProfile->emptyMethodString() :
+               methodBody;
+}
+
 std::string Generator::GeneratorImpl::generateDoubleCode(const std::string &value)
 {
     if (value.find('.') != std::string::npos) {
@@ -2778,15 +2787,6 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
     return res;
 }
 
-std::string Generator::GeneratorImpl::generateMethodBodyCode(const std::string &methodBody)
-{
-    return methodBody.empty() ?
-               mProfile->emptyMethodString().empty() ?
-               "" :
-               mProfile->indentString() + mProfile->emptyMethodString() :
-               methodBody;
-}
-
 Generator::Generator()
     : mPimpl(new GeneratorImpl())
 {
@@ -2982,7 +2982,7 @@ std::string Generator::code() const
 
     mPimpl->addExtraMathFunctionsCode(res);
 
-    // Generate code to create and delete arrays.
+    // Add code to create and delete arrays.
 
     mPimpl->addCreateStatesArrayCode(res);
     mPimpl->addCreateVariablesArrayCode(res);
