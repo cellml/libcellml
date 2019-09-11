@@ -2024,7 +2024,29 @@ public:
      */
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
+    /**
+     * @brief Get the @c std::string for some information about the variable of
+     * integration.
+     *
+     * Return the @c std::string for some information about the variable of
+     * integration.
+     *
+     * @return The @c std::string for some information about the variable of
+     * integration.
+     */
     std::string voiInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for some information about the variable of
+     * integration.
+     *
+     * Set this @c std::string for some information about the variable of
+     * integration. To be useful, the string should contain a <CODE> tag, which
+     * will be replaced with some information about the variable of integration.
+     *
+     * @param versionString The @c std::string to use for some information about
+     * the variable of integration.
+     */
     void setVoiInfoString(const std::string &voiInfoString);
 
     std::string stateInfoString() const;
