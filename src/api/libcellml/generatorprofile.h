@@ -2099,7 +2099,30 @@ public:
      */
     void setVariableInfoString(const std::string &variableInfoString);
 
+    /**
+     * @brief Get the @c std::string for an entry in an array for some
+     * information about a variable.
+     *
+     * Return the @c std::string for an entry in an array for some information
+     * about a variable.
+     *
+     * @return The @c std::string for an entry in an array for some information
+     * about a variable.
+     */
     std::string variableInfoEntryString() const;
+
+    /**
+     * @brief Set the @c std::string for an entry in an array for some
+     * information about a variable.
+     *
+     * Set this @c std::string for an entry in an array for some information
+     * about a variable. To be useful, the string should contain the
+     * <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced with the
+     * name of the component, name and units of a variable.
+     *
+     * @param versionString The @c std::string to use for an entry in an array
+     * for some information about a variable.
+     */
     void setVariableInfoEntryString(const std::string &variableInfoEntryString);
 
     /**
