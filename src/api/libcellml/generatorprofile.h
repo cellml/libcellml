@@ -2246,7 +2246,25 @@ public:
      */
     void setCreateStatesArrayMethodString(const std::string &createStatesArrayMethodString);
 
+    /**
+     * @brief Get the @c std::string for creating the variables array.
+     *
+     * Return the @c std::string for creating the variables array.
+     *
+     * @return The @c std::string for creating the variables array.
+     */
     std::string createVariablesArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for creating the variables array.
+     *
+     * Set this @c std::string for creating the variables array. To be useful,
+     * the string should contain the <CODE> tag, which will be replaced with
+     * some code to create the variables array.
+     *
+     * @param createVariablesArrayMethodString The @c std::string to use for
+     * creating the variables array.
+     */
     void setCreateVariablesArrayMethodString(const std::string &createVariablesArrayMethodString);
 
     std::string deleteArrayMethodString() const;
