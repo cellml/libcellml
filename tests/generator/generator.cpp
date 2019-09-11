@@ -1103,7 +1103,7 @@ TEST(Generator, coverage)
     EXPECT_EQ(libcellml::Generator::ModelType::ODE, generator.modelType());
 
     EXPECT_EQ(size_t(1), generator.stateCount());
-    EXPECT_EQ(size_t(185), generator.variableCount());
+    EXPECT_EQ(size_t(186), generator.variableCount());
 
     EXPECT_NE(nullptr, generator.voi());
     EXPECT_NE(nullptr, generator.state(0));
@@ -1150,6 +1150,10 @@ TEST(Generator, coverage)
     profile->setCreateStatesArrayMethodString("");
     profile->setCreateVariablesArrayMethodString("");
     profile->setDeleteArrayMethodString("");
+
+    profile->setComputeVariablesMethodString("// We should have computeVariables() here, but we replaced it with this comment\n"
+                                             "// and no code template that can be replaced so that our replace() method can\n"
+                                             "// is forced to return an empty string, ensuring 100% coverage using llvm-cov...\n");
 
     EXPECT_EQ(fileContents("generator/coverage/codeWithCustomProfile.out"), generator.code());
 

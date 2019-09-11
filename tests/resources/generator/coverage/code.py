@@ -6,7 +6,7 @@ from math import *
 __version__ = "0.2.0"
 
 STATE_COUNT = 1
-VARIABLE_COUNT = 185
+VARIABLE_COUNT = 186
 
 VOI_INFO = {"component": "my_component", "name": "t", "units": "second"}
 
@@ -199,6 +199,7 @@ VARIABLE_INFO = [
     {"component": "my_component", "name": "eqnPiecewisePieceOtherwise", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnPiecewisePiecePiecePiece", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnPiecewisePiecePiecePieceOtherwise", "units": "dimensionless"},
+    {"component": "my_component", "name": "eqnWithPiecewise", "units": "dimensionless"},
     {"component": "my_component", "name": "eqnCi", "units": "dimensionless"}
 ]
 
@@ -310,7 +311,7 @@ def create_states_array():
 
 
 def create_variables_array():
-    return [nan]*185
+    return [nan]*186
 
 
 def initialize_constants(states, variables):
@@ -322,16 +323,16 @@ def initialize_constants(states, variables):
     variables[4] = 5.0
     variables[5] = 6.0
     variables[6] = 7.0
-    variables[174] = 123.0
-    variables[175] = 123.456789
-    variables[176] = 123.0e99
-    variables[177] = 123.456789e99
-    variables[179] = 1.0
-    variables[180] = 0.0
-    variables[181] = 2.71828182845905
-    variables[182] = 3.14159265358979
-    variables[183] = inf
-    variables[184] = nan
+    variables[175] = 123.0
+    variables[176] = 123.456789
+    variables[177] = 123.0e99
+    variables[178] = 123.456789e99
+    variables[180] = 1.0
+    variables[181] = 0.0
+    variables[182] = 2.71828182845905
+    variables[183] = 3.14159265358979
+    variables[184] = inf
+    variables[185] = nan
 
 
 def compute_computed_constants(variables):
@@ -502,7 +503,8 @@ def compute_computed_constants(variables):
     variables[171] = variables[0] if gt_func(variables[0], variables[1]) else variables[2]
     variables[172] = variables[0] if gt_func(variables[0], variables[1]) else variables[2] if gt_func(variables[2], variables[3]) else variables[4] if gt_func(variables[4], variables[5]) else nan
     variables[173] = variables[0] if gt_func(variables[0], variables[1]) else variables[2] if gt_func(variables[2], variables[3]) else variables[4] if gt_func(variables[4], variables[5]) else variables[6]
-    variables[178] = variables[0]
+    variables[174] = 123.0+(variables[0] if gt_func(variables[0], variables[1]) else nan)
+    variables[179] = variables[0]
 
 
 def compute_rates(voi, states, rates, variables):

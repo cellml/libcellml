@@ -7,7 +7,7 @@
 const char VERSION[] = "0.2.0";
 
 const size_t STATE_COUNT = 1;
-const size_t VARIABLE_COUNT = 185;
+const size_t VARIABLE_COUNT = 186;
 
 struct VariableInfo {
     char component[13];
@@ -206,6 +206,7 @@ const struct VariableInfo VARIABLE_INFO[] = {
     {"my_component", "eqnPiecewisePieceOtherwise", "dimensionless"},
     {"my_component", "eqnPiecewisePiecePiecePiece", "dimensionless"},
     {"my_component", "eqnPiecewisePiecePiecePieceOtherwise", "dimensionless"},
+    {"my_component", "eqnWithPiecewise", "dimensionless"},
     {"my_component", "eqnCi", "dimensionless"}
 };
 
@@ -297,7 +298,7 @@ double * createStatesArray()
 
 double * createVariablesArray()
 {
-    return (double *) malloc(185 * sizeof(double));
+    return (double *) malloc(186 * sizeof(double));
 }
 
 void deleteArray(double *array)
@@ -315,16 +316,16 @@ void initializeConstants(double *states, double *variables)
     variables[4] = 5.0;
     variables[5] = 6.0;
     variables[6] = 7.0;
-    variables[174] = 123.0;
-    variables[175] = 123.456789;
-    variables[176] = 123.0e99;
-    variables[177] = 123.456789e99;
-    variables[179] = 1.0;
-    variables[180] = 0.0;
-    variables[181] = 2.71828182845905;
-    variables[182] = 3.14159265358979;
-    variables[183] = 1.0/0.0;
-    variables[184] = sqrt(-1.0);
+    variables[175] = 123.0;
+    variables[176] = 123.456789;
+    variables[177] = 123.0e99;
+    variables[178] = 123.456789e99;
+    variables[180] = 1.0;
+    variables[181] = 0.0;
+    variables[182] = 2.71828182845905;
+    variables[183] = 3.14159265358979;
+    variables[184] = 1.0/0.0;
+    variables[185] = sqrt(-1.0);
 }
 
 void computeComputedConstants(double *variables)
@@ -496,7 +497,8 @@ void computeComputedConstants(double *variables)
     variables[171] = (variables[0] > variables[1])?variables[0]:variables[2];
     variables[172] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:sqrt(-1.0);
     variables[173] = (variables[0] > variables[1])?variables[0]:(variables[2] > variables[3])?variables[2]:(variables[4] > variables[5])?variables[4]:variables[6];
-    variables[178] = variables[0];
+    variables[174] = 123.0+((variables[0] > variables[1])?variables[0]:sqrt(-1.0));
+    variables[179] = variables[0];
 }
 
 void computeRates(double voi, double *states, double *rates, double *variables)
