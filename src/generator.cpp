@@ -1608,10 +1608,6 @@ void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
 {
     if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
-        }
-
         code += replace(mProfile->commentString(), "<CODE>",
                         replace(mProfile->originCommentString(), "<VERSION>", versionString()));
     }
