@@ -1,4 +1,4 @@
-# The contents of this file were generated from version 0.2.0 of libCellML.
+# The content of this file was generated from version 0.2.0 of libCellML.
 
 from math import *
 
