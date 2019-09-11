@@ -2074,7 +2074,29 @@ public:
      */
     void setStateInfoString(const std::string &stateInfoString);
 
+    /**
+     * @brief Get the @c std::string for some information about the different
+     * variables.
+     *
+     * Return the @c std::string for some information about the different
+     * variables.
+     *
+     * @return The @c std::string for some information about the different
+     * variables.
+     */
     std::string variableInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for some information about the different
+     * variables.
+     *
+     * Set this @c std::string for some information about the different
+     * variables. To be useful, the string should contain a <CODE> tag, which
+     * will be replaced with some information about the different variables.
+     *
+     * @param versionString The @c std::string to use for some information about
+     * the different variables.
+     */
     void setVariableInfoString(const std::string &variableInfoString);
 
     std::string variableInfoEntryString() const;
