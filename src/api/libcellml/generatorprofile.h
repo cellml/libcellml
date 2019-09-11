@@ -2204,7 +2204,25 @@ public:
      */
     void setVariablesArrayString(const std::string &variablesArrayString);
 
+    /**
+     * @brief Get the @c std::string for returning a created array.
+     *
+     * Return the @c std::string for returning a created array.
+     *
+     * @return The @c std::string for returning a created array.
+     */
     std::string returnCreatedArrayString() const;
+
+    /**
+     * @brief Set the @c std::string for returning a created array.
+     *
+     * Set this @c std::string for returning a created array. To be useful, the
+     * string should contain the <ARRAY_SIZE> tag, which will be replaced with
+     * the size of the array to be created.
+     *
+     * @param returnCreatedArrayString The @c std::string to use for returning
+     * a created array.
+     */
     void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
 
     std::string createStatesArrayMethodString() const;
