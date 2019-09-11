@@ -1989,15 +1989,11 @@ public:
     std::string returnCreatedArrayString() const;
     void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
 
-    std::string beginCreateStatesArrayMethodString() const;
-    void setBeginCreateStatesArrayMethodString(const std::string &beginCreateStatesArrayMethodString);
-    std::string endCreateStatesArrayMethodString() const;
-    void setEndCreateStatesArrayMethodString(const std::string &endCreateStatesArrayMethodString);
+    std::string createStatesArrayMethodString() const;
+    void setCreateStatesArrayMethodString(const std::string &createStatesArrayMethodString);
 
-    std::string beginCreateVariablesArrayMethodString() const;
-    void setBeginCreateVariablesArrayMethodString(const std::string &beginCreateVariablesArrayMethodString);
-    std::string endCreateVariablesArrayMethodString() const;
-    void setEndCreateVariablesArrayMethodString(const std::string &endCreateVariablesArrayMethodString);
+    std::string createVariablesArrayMethodString() const;
+    void setCreateVariablesArrayMethodString(const std::string &createVariablesArrayMethodString);
 
     std::string deleteArrayMethodString() const;
     void setDeleteArrayMethodString(const std::string &deleteArrayMethodString);
