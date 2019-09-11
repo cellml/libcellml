@@ -242,14 +242,14 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
-    EXPECT_EQ("The contents of this file were generated from version <VERSION> of libCellML.", generatorProfile->originCommentString());
+    EXPECT_EQ("The contents of this file were generated from version <LIBCELLML_VERSION> of libCellML.", generatorProfile->originCommentString());
 
     EXPECT_EQ("#include <math.h>\n"
               "#include <stddef.h>\n"
               "#include <stdlib.h>\n",
               generatorProfile->headerString());
 
-    EXPECT_EQ("const char VERSION[] = \"<VERSION>\";\n", generatorProfile->versionString());
+    EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->libcellmlVersionString());
 
     EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->stateCountString());
     EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->variableCountString());
@@ -596,7 +596,7 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setHeaderString(value);
 
-    generatorProfile->setVersionString(value);
+    generatorProfile->setLibcellmlVersionString(value);
 
     generatorProfile->setStateCountString(value);
     generatorProfile->setVariableCountString(value);
@@ -640,7 +640,7 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->headerString());
 
-    EXPECT_EQ(value, generatorProfile->versionString());
+    EXPECT_EQ(value, generatorProfile->libcellmlVersionString());
 
     EXPECT_EQ(value, generatorProfile->stateCountString());
     EXPECT_EQ(value, generatorProfile->variableCountString());

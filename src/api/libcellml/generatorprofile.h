@@ -1909,8 +1909,8 @@ public:
      * @brief Set the @c std::string for an origin comment.
      *
      * Set this @c std::string for an origin comment. To be useful, the string
-     * should contain the <VERSION> tag, which will be replaced with the version
-     * of libCellML that is used.
+     * should contain the <LIBCELLML_VERSION> tag, which will be replaced with
+     * the version of libCellML that is used.
      *
      * @param originCommentString The @c std::string to use for an origin
      * comment.
@@ -1936,24 +1936,25 @@ public:
     void setHeaderString(const std::string &headerString);
 
     /**
-     * @brief Get the @c std::string for the version constant.
+     * @brief Get the @c std::string for the libCellML version constant.
      *
-     * Return the @c std::string for the version constant.
+     * Return the @c std::string for the libCellML version constant.
      *
-     * @return The @c std::string for the version constant.
+     * @return The @c std::string for the libCellML version constant.
      */
-    std::string versionString() const;
+    std::string libcellmlVersionString() const;
 
     /**
-     * @brief Set the @c std::string for the version constant.
+     * @brief Set the @c std::string for the libCellML version constant.
      *
-     * Set this @c std::string for the version constant. To be useful, the
-     * string should contain the <VERSION> tag, which will be replaced with the
-     * version of libCellML that is used.
+     * Set this @c std::string for the libCellML version constant. To be useful,
+     * the string should contain the <LIBCELLML_VERSION> tag, which will be
+     * replaced with the version of libCellML that is used.
      *
-     * @param versionString The @c std::string to use for the version constant.
+     * @param versionString The @c std::string to use for the libCellML version
+     * constant.
      */
-    void setVersionString(const std::string &versionString);
+    void setLibcellmlVersionString(const std::string &libcellmlVersionString);
 
     /**
      * @brief Get the @c std::string for the state count constant.

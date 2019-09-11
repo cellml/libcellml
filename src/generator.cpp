@@ -1612,7 +1612,7 @@ void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
     if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
         code += replace(mProfile->commentString(), "<CODE>",
-                        replace(mProfile->originCommentString(), "<VERSION>", versionString()));
+                        replace(mProfile->originCommentString(), "<LIBCELLML_VERSION>", versionString()));
     }
 }
 
@@ -1629,12 +1629,12 @@ void Generator::GeneratorImpl::addHeaderCode(std::string &code)
 
 void Generator::GeneratorImpl::addVersionCode(std::string &code)
 {
-    if (!mProfile->versionString().empty()) {
+    if (!mProfile->libcellmlVersionString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += replace(mProfile->versionString(), "<VERSION>", versionString());
+        code += replace(mProfile->libcellmlVersionString(), "<LIBCELLML_VERSION>", versionString());
     }
 }
 
