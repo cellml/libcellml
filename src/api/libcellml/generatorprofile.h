@@ -26,7 +26,7 @@ public:
     enum class Profile
     {
         C,
-        PYTHON,
+        PYTHON
     };
 
     explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
