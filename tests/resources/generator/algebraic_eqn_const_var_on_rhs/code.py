@@ -34,7 +34,7 @@ def create_variables_array():
     return [nan]*2
 
 
-def initialize_constants(states, variables):
+def initialize_states_and_constants(states, variables):
     variables[0] = 1.0
 
 

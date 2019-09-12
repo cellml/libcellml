@@ -2440,23 +2440,28 @@ public:
     void setDeleteArrayMethodString(const std::string &deleteArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the method that initialises constants.
+     * @brief Get the @c std::string for the method that initialises states and
+     * constants.
      *
-     * Return the @c std::string for the method that initialises constants.
+     * Return the @c std::string for the method that initialises states and
+     * constants.
      *
-     * @return The @c std::string for the method that initialises constants.
+     * @return The @c std::string for the method that initialises states and
+     * constants.
      */
-    std::string initializeConstantsMethodString() const;
+    std::string initializeStatesAndConstantsMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the method that initialises constants.
+     * @brief Set the @c std::string for the method that initialises states and
+     * constants.
      *
-     * Set this @c std::string for the method that initialises constants.
+     * Set this @c std::string for the method that initialises states and
+     * constants.
      *
-     * @param initializeConstantsMethodString The @c std::string to use for the
-     * method that initialises constants.
+     * @param initializeStatesAndConstantsMethodString The @c std::string to use
+     * for the method that initialises states and constants.
      */
-    void setInitializeConstantsMethodString(const std::string &initializeConstantsMethodString);
+    void setInitializeStatesAndConstantsMethodString(const std::string &initializeStatesAndConstantsMethodString);
 
     /**
      * @brief Get the @c std::string for the method that computes computed

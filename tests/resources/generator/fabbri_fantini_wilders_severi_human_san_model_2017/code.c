@@ -301,7 +301,7 @@ void deleteArray(double *array)
     free(array);
 }
 
-void initializeConstants(double *states, double *variables)
+void initializeStatesAndConstants(double *states, double *variables)
 {
     states[0] = 0.9308;
     states[1] = 6.181512e-9;
