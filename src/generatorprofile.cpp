@@ -685,7 +685,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "class VariableType(Enum):\n"
                                     "    CONSTANT = 1\n"
                                     "    COMPUTED_CONSTANT = 2\n"
-                                    "    ALGEBRAIC = 3\n";
+                                    "    ALGEBRAIC = 3\n"
+                                    "\n";
 
         mConstantVariableType = "VariableType.CONSTANT";
         mComputedConstantVariableType = "VariableType.COMPUTED_CONSTANT";
