@@ -242,7 +242,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
-    EXPECT_EQ("The content of this file was generated from version <LIBCELLML_VERSION> of libCellML.", generatorProfile->originCommentString());
+    EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
 
     EXPECT_EQ("#include <math.h>\n"
               "#include <stddef.h>\n"
