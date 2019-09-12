@@ -254,19 +254,19 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->stateCountString());
     EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->variableCountString());
 
-    EXPECT_EQ("struct VariableInfo {\n"
+    EXPECT_EQ("typedef struct {\n"
               "    char name[<NAME_SIZE>];\n"
               "    char units[<UNITS_SIZE>];\n"
               "    char component[<COMPONENT_SIZE>];\n"
-              "};\n",
+              "} VariableInfo;\n",
               generatorProfile->variableInfoObjectString());
 
-    EXPECT_EQ("const struct VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->voiInfoString());
-    EXPECT_EQ("const struct VariableInfo STATE_INFO[] = {\n"
+    EXPECT_EQ("const VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->voiInfoString());
+    EXPECT_EQ("const VariableInfo STATE_INFO[] = {\n"
               "<CODE>"
               "};\n",
               generatorProfile->stateInfoString());
-    EXPECT_EQ("const struct VariableInfo VARIABLE_INFO[] = {\n"
+    EXPECT_EQ("const VariableInfo VARIABLE_INFO[] = {\n"
               "<CODE>"
               "};\n",
               generatorProfile->variableInfoString());

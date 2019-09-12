@@ -9,15 +9,15 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 33;
 const size_t VARIABLE_COUNT = 217;
 
-struct VariableInfo {
+typedef struct {
     char name[15];
     char units[26];
     char component[28];
-};
+} VariableInfo;
 
-const struct VariableInfo VOI_INFO = {"time", "second", "Nai_concentration"};
+const VariableInfo VOI_INFO = {"time", "second", "Nai_concentration"};
 
-const struct VariableInfo STATE_INFO[] = {
+const VariableInfo STATE_INFO[] = {
     {"R", "dimensionless", "Ca_SR_release"},
     {"O", "dimensionless", "Ca_SR_release"},
     {"I", "dimensionless", "Ca_SR_release"},
@@ -53,7 +53,7 @@ const struct VariableInfo STATE_INFO[] = {
     {"Nai_", "millimolar", "Nai_concentration"}
 };
 
-const struct VariableInfo VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"EC50_SR", "millimolar", "Ca_SR_release"},
     {"HSR", "dimensionless", "Ca_SR_release"},
     {"MaxSR", "dimensionless", "Ca_SR_release"},
