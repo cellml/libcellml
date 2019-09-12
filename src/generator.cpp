@@ -1771,7 +1771,8 @@ void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
 void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
 {
     if (!mProfile->stateInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()) {
+        && !mProfile->variableInfoEntryString().empty()
+        && !mProfile->arrayElementSeparatorString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
@@ -1801,7 +1802,11 @@ void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
 void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
 {
     if (!mProfile->variableInfoString().empty()
-        && !mProfile->variableInfoEntryString().empty()) {
+        && !mProfile->variableInfoWithTypeEntryString().empty()
+        && !mProfile->arrayElementSeparatorString().empty()
+        && !mProfile->constantVariableTypeString().empty()
+        && !mProfile->computedConstantVariableTypeString().empty()
+        && !mProfile->algebraicVariableTypeString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
