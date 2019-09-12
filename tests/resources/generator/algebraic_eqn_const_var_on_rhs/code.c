@@ -10,9 +10,9 @@ const size_t STATE_COUNT = 0;
 const size_t VARIABLE_COUNT = 2;
 
 struct VariableInfo {
-    char component[17];
     char name[2];
     char units[14];
+    char component[17];
 };
 
 const struct VariableInfo VOI_INFO = {"", "", ""};
@@ -21,8 +21,8 @@ const struct VariableInfo STATE_INFO[] = {
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
-    {"my_algebraic_eqn", "a", "dimensionless"},
-    {"my_algebraic_eqn", "x", "dimensionless"}
+    {"a", "dimensionless", "my_algebraic_eqn"},
+    {"x", "dimensionless", "my_algebraic_eqn"}
 };
 
 double * createStatesArray()

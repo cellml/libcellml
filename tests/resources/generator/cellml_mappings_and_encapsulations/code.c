@@ -10,21 +10,21 @@ const size_t STATE_COUNT = 2;
 const size_t VARIABLE_COUNT = 2;
 
 struct VariableInfo {
-    char component[24];
     char name[20];
     char units[11];
+    char component[24];
 };
 
-const struct VariableInfo VOI_INFO = {"circle_x", "t", "ms"};
+const struct VariableInfo VOI_INFO = {"t", "ms", "circle_x"};
 
 const struct VariableInfo STATE_INFO[] = {
-    {"circle_x_source", "x", "mM"},
-    {"circle_y_implementation", "y", "mM"}
+    {"x", "mM", "circle_x_source"},
+    {"y", "mM", "circle_y_implementation"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
-    {"circle_sibling", "local_complex_maths", "mM"},
-    {"circle_x_sibling", "two_x", "milli_mole"}
+    {"local_complex_maths", "mM", "circle_sibling"},
+    {"two_x", "milli_mole", "circle_x_sibling"}
 };
 
 double * createStatesArray()

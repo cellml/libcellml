@@ -10,20 +10,20 @@ const size_t STATE_COUNT = 1;
 const size_t VARIABLE_COUNT = 2;
 
 struct VariableInfo {
-    char component[13];
     char name[5];
     char units[14];
+    char component[13];
 };
 
-const struct VariableInfo VOI_INFO = {"my_component", "time", "second"};
+const struct VariableInfo VOI_INFO = {"time", "second", "my_component"};
 
 const struct VariableInfo STATE_INFO[] = {
-    {"my_component", "x", "dimensionless"}
+    {"x", "dimensionless", "my_component"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
-    {"my_component", "b", "second"},
-    {"my_component", "a", "second"}
+    {"b", "second", "my_component"},
+    {"a", "second", "my_component"}
 };
 
 double * createStatesArray()

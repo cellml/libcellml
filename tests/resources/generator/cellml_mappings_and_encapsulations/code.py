@@ -8,16 +8,16 @@ LIBCELLML_VERSION = "0.2.0"
 STATE_COUNT = 2
 VARIABLE_COUNT = 2
 
-VOI_INFO = {"component": "circle_x", "name": "t", "units": "ms"}
+VOI_INFO = {"name": "t", "units": "ms", "component": "circle_x"}
 
 STATE_INFO = [
-    {"component": "circle_x_source", "name": "x", "units": "mM"},
-    {"component": "circle_y_implementation", "name": "y", "units": "mM"}
+    {"name": "x", "units": "mM", "component": "circle_x_source"},
+    {"name": "y", "units": "mM", "component": "circle_y_implementation"}
 ]
 
 VARIABLE_INFO = [
-    {"component": "circle_sibling", "name": "local_complex_maths", "units": "mM"},
-    {"component": "circle_x_sibling", "name": "two_x", "units": "milli_mole"}
+    {"name": "local_complex_maths", "units": "mM", "component": "circle_sibling"},
+    {"name": "two_x", "units": "milli_mole", "component": "circle_x_sibling"}
 ]
 
 

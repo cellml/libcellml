@@ -255,9 +255,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->variableCountString());
 
     EXPECT_EQ("struct VariableInfo {\n"
-              "    char component[<COMPONENT_SIZE>];\n"
               "    char name[<NAME_SIZE>];\n"
               "    char units[<UNITS_SIZE>];\n"
+              "    char component[<COMPONENT_SIZE>];\n"
               "};\n",
               generatorProfile->variableInfoObjectString());
 
@@ -270,7 +270,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "<CODE>"
               "};\n",
               generatorProfile->variableInfoString());
-    EXPECT_EQ("{\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"}", generatorProfile->variableInfoEntryString());
+    EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}", generatorProfile->variableInfoEntryString());
 
     EXPECT_EQ("voi", generatorProfile->voiString());
 

@@ -10,38 +10,38 @@ const size_t STATE_COUNT = 4;
 const size_t VARIABLE_COUNT = 17;
 
 struct VariableInfo {
-    char component[25];
     char name[9];
     char units[16];
+    char component[25];
 };
 
-const struct VariableInfo VOI_INFO = {"membrane", "time", "millisecond"};
+const struct VariableInfo VOI_INFO = {"time", "millisecond", "membrane"};
 
 const struct VariableInfo STATE_INFO[] = {
-    {"sodium_channel_m_gate", "m", "dimensionless"},
-    {"sodium_channel_h_gate", "h", "dimensionless"},
-    {"potassium_channel_n_gate", "n", "dimensionless"},
-    {"membrane", "V", "millivolt"}
+    {"m", "dimensionless", "sodium_channel_m_gate"},
+    {"h", "dimensionless", "sodium_channel_h_gate"},
+    {"n", "dimensionless", "potassium_channel_n_gate"},
+    {"V", "millivolt", "membrane"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
-    {"leakage_current", "E_L", "millivolt"},
-    {"leakage_current", "g_L", "milliS_per_cm2"},
-    {"membrane", "Cm", "microF_per_cm2"},
-    {"sodium_channel", "E_Na", "millivolt"},
-    {"sodium_channel", "g_Na_max", "milliS_per_cm2"},
-    {"membrane", "i_Leak", "microA_per_cm2"},
-    {"sodium_channel", "g_Na", "milliS_per_cm2"},
-    {"membrane", "i_Na", "microA_per_cm2"},
-    {"sodium_channel_m_gate", "alpha_m", "per_millisecond"},
-    {"sodium_channel_m_gate", "beta_m", "per_millisecond"},
-    {"sodium_channel_h_gate", "alpha_h", "per_millisecond"},
-    {"sodium_channel_h_gate", "beta_h", "per_millisecond"},
-    {"potassium_channel", "g_K1", "milliS_per_cm2"},
-    {"potassium_channel", "g_K2", "milliS_per_cm2"},
-    {"potassium_channel_n_gate", "alpha_n", "per_millisecond"},
-    {"potassium_channel_n_gate", "beta_n", "per_millisecond"},
-    {"membrane", "i_K", "microA_per_cm2"}
+    {"E_L", "millivolt", "leakage_current"},
+    {"g_L", "milliS_per_cm2", "leakage_current"},
+    {"Cm", "microF_per_cm2", "membrane"},
+    {"E_Na", "millivolt", "sodium_channel"},
+    {"g_Na_max", "milliS_per_cm2", "sodium_channel"},
+    {"i_Leak", "microA_per_cm2", "membrane"},
+    {"g_Na", "milliS_per_cm2", "sodium_channel"},
+    {"i_Na", "microA_per_cm2", "membrane"},
+    {"alpha_m", "per_millisecond", "sodium_channel_m_gate"},
+    {"beta_m", "per_millisecond", "sodium_channel_m_gate"},
+    {"alpha_h", "per_millisecond", "sodium_channel_h_gate"},
+    {"beta_h", "per_millisecond", "sodium_channel_h_gate"},
+    {"g_K1", "milliS_per_cm2", "potassium_channel"},
+    {"g_K2", "milliS_per_cm2", "potassium_channel"},
+    {"alpha_n", "per_millisecond", "potassium_channel_n_gate"},
+    {"beta_n", "per_millisecond", "potassium_channel_n_gate"},
+    {"i_K", "microA_per_cm2", "membrane"}
 };
 
 double * createStatesArray()

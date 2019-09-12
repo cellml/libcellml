@@ -8,14 +8,14 @@ LIBCELLML_VERSION = "0.2.0"
 STATE_COUNT = 0
 VARIABLE_COUNT = 2
 
-VOI_INFO = {"component": "", "name": "", "units": ""}
+VOI_INFO = {"name": "", "units": "", "component": ""}
 
 STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"component": "my_algebraic_eqn", "name": "a", "units": "dimensionless"},
-    {"component": "my_algebraic_eqn", "name": "x", "units": "dimensionless"}
+    {"name": "a", "units": "dimensionless", "component": "my_algebraic_eqn"},
+    {"name": "x", "units": "dimensionless", "component": "my_algebraic_eqn"}
 ]
 
 

@@ -10,15 +10,15 @@ const size_t STATE_COUNT = 1;
 const size_t VARIABLE_COUNT = 0;
 
 struct VariableInfo {
-    char component[7];
     char name[2];
     char units[14];
+    char component[7];
 };
 
-const struct VariableInfo VOI_INFO = {"my_ode", "t", "second"};
+const struct VariableInfo VOI_INFO = {"t", "second", "my_ode"};
 
 const struct VariableInfo STATE_INFO[] = {
-    {"my_ode", "x", "dimensionless"}
+    {"x", "dimensionless", "my_ode"}
 };
 
 const struct VariableInfo VARIABLE_INFO[] = {
