@@ -3142,7 +3142,17 @@ GeneratorVariablePtr Generator::variable(size_t index) const
 
 std::string Generator::interfaceCode() const
 {
-    return {};
+    if (!mPimpl->hasValidModel() || !mPimpl->mProfile->hasInterface()) {
+        return {};
+    }
+
+    // Add code for the origin comment.
+
+    std::string res;
+
+    mPimpl->addOriginCommentCode(res);
+
+    return res;
 }
 
 std::string Generator::implementationCode() const

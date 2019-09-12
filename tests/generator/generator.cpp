@@ -1170,6 +1170,8 @@ TEST(Generator, coverage)
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
 
+    profile->setHasInterface(false);
+
     profile->setXorString("^");
     profile->setHasXorOperator(true);
 
