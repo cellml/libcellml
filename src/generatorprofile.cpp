@@ -33,6 +33,10 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     GeneratorProfile::Profile mProfile = Profile::C;
 
+    // Whether the profile requires an interface to be generated
+
+    bool mHasInterface = true;
+
     // Assignment
 
     std::string mAssignmentString;
@@ -219,6 +223,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
     mProfile = profile;
 
     if (profile == GeneratorProfile::Profile::C) {
+        // Whether the profile requires an interface to be generated
+
+        mHasInterface = true;
+
         // Assignment
 
         mAssignmentString = " = ";
@@ -480,6 +488,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = ";";
     } else if (profile == GeneratorProfile::Profile::PYTHON) {
+        // Whether the profile requires an interface to be generated
+
+        mHasInterface = false;
+
         // Assignment
 
         mAssignmentString = " = ";
@@ -752,6 +764,10 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
+    // Whether the profile requires an interface to be generated
+
+    mPimpl->mHasInterface = rhs.mPimpl->mHasInterface;
+
     // Assignment
 
     mPimpl->mAssignmentString = rhs.mPimpl->mAssignmentString;
@@ -956,6 +972,20 @@ GeneratorProfile::Profile GeneratorProfile::profile() const
 void GeneratorProfile::setProfile(Profile profile)
 {
     mPimpl->loadProfile(profile);
+}
+
+bool GeneratorProfile::hasInterface() const
+{
+    return mPimpl->mHasInterface;
+}
+
+void GeneratorProfile::setHasInterface(bool hasInterface)
+{
+    if (mPimpl->mHasInterface != hasInterface) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mHasInterface = hasInterface;
 }
 
 std::string GeneratorProfile::assignmentString() const

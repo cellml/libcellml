@@ -36,6 +36,8 @@ public:
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
 
+    // Whether the profile is official
+
     /**
      * @brief Get the @c Profile for this @c GeneratorProfile.
      *
@@ -53,6 +55,33 @@ public:
      * @param profile The @c Profile to use.
      */
     void setProfile(Profile profile);
+
+    // Whether the profile requires an interface to be generated
+
+    /**
+     * @brief Test if this @c GeneratorProfile requires an interface to be
+     * generated.
+     *
+     * Test if this @c GeneratorProfile has an requires an interface to be
+     * generated.
+     *
+     * @return @c true if the @c GeneratorProfile has an requires an interface
+     * to be generated,
+     * @c false otherwise.
+     */
+    bool hasInterface() const;
+
+    /**
+     * @brief Set whether this @c GeneratorProfile has an requires an interface
+     * to be generated.
+     *
+     * Set whether this @c GeneratorProfile has an requires an interface to be
+     * generated.
+     *
+     * @param hasInterface A @c bool to determine whether this
+     * @c GeneratorProfile has an requires an interface to be generated.
+     */
+    void setHasInterface(bool hasInterface);
 
     // Assignment
 

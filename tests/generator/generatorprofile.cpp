@@ -33,6 +33,15 @@ std::string convertDoubleToString(double value)
     return strs.str();
 }
 
+TEST(GeneratorProfile, defaultGeneralValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+
+    EXPECT_EQ(libcellml::GeneratorProfile::Profile::C, generatorProfile->profile());
+
+    EXPECT_EQ(true, generatorProfile->hasInterface());
+}
+
 TEST(GeneratorProfile, defaultRelationalAndLogicalOperatorValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
@@ -341,6 +350,23 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ(",", generatorProfile->arrayElementSeparatorString());
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
+}
+
+
+TEST(GeneratorProfile, generalSettings)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+
+    const libcellml::GeneratorProfile::Profile profile = libcellml::GeneratorProfile::Profile::PYTHON;
+    const bool falseValue = false;
+
+    generatorProfile->setProfile(profile);
+
+    generatorProfile->setHasInterface(falseValue);
+
+    EXPECT_EQ(profile, generatorProfile->profile());
+
+    EXPECT_EQ(falseValue, generatorProfile->hasInterface());
 }
 
 TEST(GeneratorProfile, relationalAndLogicalOperators)
