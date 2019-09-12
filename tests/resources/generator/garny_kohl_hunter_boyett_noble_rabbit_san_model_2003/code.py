@@ -9,6 +9,7 @@ LIBCELLML_VERSION = "0.2.0"
 STATE_COUNT = 15
 VARIABLE_COUNT = 185
 
+
 class VariableType(Enum):
     CONSTANT = 1
     COMPUTED_CONSTANT = 2
