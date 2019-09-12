@@ -8,15 +8,15 @@ LIBCELLML_VERSION = "0.2.0"
 STATE_COUNT = 2
 VARIABLE_COUNT = 1
 
-VOI_INFO = {"component": "my_x_ode", "name": "t", "units": "second"}
+VOI_INFO = {"name": "t", "units": "second", "component": "my_x_ode"}
 
 STATE_INFO = [
-    {"component": "my_x_ode", "name": "x", "units": "dimensionless"},
-    {"component": "my_y_ode", "name": "y", "units": "dimensionless"}
+    {"name": "x", "units": "dimensionless", "component": "my_x_ode"},
+    {"name": "y", "units": "dimensionless", "component": "my_y_ode"}
 ]
 
 VARIABLE_INFO = [
-    {"component": "my_y_ode", "name": "epsilon", "units": "dimensionless"}
+    {"name": "epsilon", "units": "dimensionless", "component": "my_y_ode"}
 ]
 
 

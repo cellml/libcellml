@@ -397,9 +397,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
 
         mVariableInfoObjectString = "struct VariableInfo {\n"
-                                    "    char component[<COMPONENT_SIZE>];\n"
                                     "    char name[<NAME_SIZE>];\n"
                                     "    char units[<UNITS_SIZE>];\n"
+                                    "    char component[<COMPONENT_SIZE>];\n"
                                     "};\n";
 
         mVoiInfoString = "const struct VariableInfo VOI_INFO = <CODE>;\n";
@@ -409,7 +409,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableInfoString = "const struct VariableInfo VARIABLE_INFO[] = {\n"
                               "<CODE>"
                               "};\n";
-        mVariableInfoEntryString = "{\"<COMPONENT>\", \"<NAME>\", \"<UNITS>\"}";
+        mVariableInfoEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}";
 
         mVoiString = "voi";
 
@@ -650,7 +650,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableInfoString = "VARIABLE_INFO = [\n"
                               "<CODE>"
                               "]\n";
-        mVariableInfoEntryString = "{\"component\": \"<COMPONENT>\", \"name\": \"<NAME>\", \"units\": \"<UNITS>\"}";
+        mVariableInfoEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\"}";
 
         mVoiString = "voi";
 
