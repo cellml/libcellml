@@ -254,23 +254,43 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->stateCountString());
     EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->variableCountString());
 
+    EXPECT_EQ("typedef enum {\n"
+              "    CONSTANT,\n"
+              "    COMPUTED_CONSTANT,\n"
+              "    ALGEBRAIC\n"
+              "} VariableType;\n",
+              generatorProfile->variableTypeObjectString());
+
+    EXPECT_EQ("CONSTANT", generatorProfile->constantVariableTypeString());
+    EXPECT_EQ("COMPUTED_CONSTANT", generatorProfile->computedConstantVariableTypeString());
+    EXPECT_EQ("ALGEBRAIC", generatorProfile->algebraicVariableTypeString());
+
     EXPECT_EQ("typedef struct {\n"
               "    char name[<NAME_SIZE>];\n"
               "    char units[<UNITS_SIZE>];\n"
               "    char component[<COMPONENT_SIZE>];\n"
               "} VariableInfo;\n",
               generatorProfile->variableInfoObjectString());
+    EXPECT_EQ("typedef struct {\n"
+              "    char name[<NAME_SIZE>];\n"
+              "    char units[<UNITS_SIZE>];\n"
+              "    char component[<COMPONENT_SIZE>];\n"
+              "    VariableType type;\n"
+              "} VariableInfoWithType;\n",
+              generatorProfile->variableInfoWithTypeObjectString());
 
     EXPECT_EQ("const VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->voiInfoString());
     EXPECT_EQ("const VariableInfo STATE_INFO[] = {\n"
               "<CODE>"
               "};\n",
               generatorProfile->stateInfoString());
-    EXPECT_EQ("const VariableInfo VARIABLE_INFO[] = {\n"
+    EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[] = {\n"
               "<CODE>"
               "};\n",
               generatorProfile->variableInfoString());
+
     EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}", generatorProfile->variableInfoEntryString());
+    EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}", generatorProfile->variableInfoWithTypeEntryString());
 
     EXPECT_EQ("voi", generatorProfile->voiString());
 
@@ -601,12 +621,21 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setStateCountString(value);
     generatorProfile->setVariableCountString(value);
 
+    generatorProfile->setVariableTypeObjectString(value);
+
+    generatorProfile->setConstantVariableTypeString(value);
+    generatorProfile->setComputedConstantVariableTypeString(value);
+    generatorProfile->setAlgebraicVariableTypeString(value);
+
     generatorProfile->setVariableInfoObjectString(value);
+    generatorProfile->setVariableInfoWithTypeObjectString(value);
 
     generatorProfile->setVoiInfoString(value);
     generatorProfile->setStateInfoString(value);
     generatorProfile->setVariableInfoString(value);
+
     generatorProfile->setVariableInfoEntryString(value);
+    generatorProfile->setVariableInfoWithTypeEntryString(value);
 
     generatorProfile->setVoiString(value);
 
@@ -645,12 +674,21 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->stateCountString());
     EXPECT_EQ(value, generatorProfile->variableCountString());
 
+    EXPECT_EQ(value, generatorProfile->variableTypeObjectString());
+
+    EXPECT_EQ(value, generatorProfile->constantVariableTypeString());
+    EXPECT_EQ(value, generatorProfile->computedConstantVariableTypeString());
+    EXPECT_EQ(value, generatorProfile->algebraicVariableTypeString());
+
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
+    EXPECT_EQ(value, generatorProfile->variableInfoWithTypeObjectString());
 
     EXPECT_EQ(value, generatorProfile->voiInfoString());
     EXPECT_EQ(value, generatorProfile->stateInfoString());
     EXPECT_EQ(value, generatorProfile->variableInfoString());
+
     EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
+    EXPECT_EQ(value, generatorProfile->variableInfoWithTypeEntryString());
 
     EXPECT_EQ(value, generatorProfile->voiString());
 

@@ -1,5 +1,6 @@
 # The content of this file was generated using the Python profile of libCellML 0.2.0.
 
+from enum import Enum
 from math import *
 
 
@@ -7,6 +8,11 @@ LIBCELLML_VERSION = "0.2.0"
 
 STATE_COUNT = 2
 VARIABLE_COUNT = 1
+
+class VariableType(Enum):
+    CONSTANT = 1
+    COMPUTED_CONSTANT = 2
+    ALGEBRAIC = 3
 
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component"}
 
@@ -16,7 +22,7 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "epsilon", "units": "dimensionless", "component": "my_component"}
+    {"name": "epsilon", "units": "dimensionless", "component": "my_component", "type": VariableType.CONSTANT}
 ]
 
 

@@ -168,12 +168,21 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mStateCountString;
     std::string mVariableCountString;
 
+    std::string mVariableTypeObjectString;
+
+    std::string mConstantVariableType;
+    std::string mComputedConstantVariableType;
+    std::string mAlgebraicVariableType;
+
     std::string mVariableInfoObjectString;
+    std::string mVariableInfoWithTypeObjectString;
 
     std::string mVoiInfoString;
     std::string mStateInfoString;
     std::string mVariableInfoString;
+
     std::string mVariableInfoEntryString;
+    std::string mVariableInfoWithTypeEntryString;
 
     std::string mVoiString;
 
@@ -396,20 +405,38 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
         mVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
 
+        mVariableTypeObjectString = "typedef enum {\n"
+                                    "    CONSTANT,\n"
+                                    "    COMPUTED_CONSTANT,\n"
+                                    "    ALGEBRAIC\n"
+                                    "} VariableType;\n";
+
+        mConstantVariableType = "CONSTANT";
+        mComputedConstantVariableType = "COMPUTED_CONSTANT";
+        mAlgebraicVariableType = "ALGEBRAIC";
+
         mVariableInfoObjectString = "typedef struct {\n"
                                     "    char name[<NAME_SIZE>];\n"
                                     "    char units[<UNITS_SIZE>];\n"
                                     "    char component[<COMPONENT_SIZE>];\n"
                                     "} VariableInfo;\n";
+        mVariableInfoWithTypeObjectString = "typedef struct {\n"
+                                            "    char name[<NAME_SIZE>];\n"
+                                            "    char units[<UNITS_SIZE>];\n"
+                                            "    char component[<COMPONENT_SIZE>];\n"
+                                            "    VariableType type;\n"
+                                            "} VariableInfoWithType;\n";
 
         mVoiInfoString = "const VariableInfo VOI_INFO = <CODE>;\n";
         mStateInfoString = "const VariableInfo STATE_INFO[] = {\n"
                            "<CODE>"
                            "};\n";
-        mVariableInfoString = "const VariableInfo VARIABLE_INFO[] = {\n"
+        mVariableInfoString = "const VariableInfoWithType VARIABLE_INFO[] = {\n"
                               "<CODE>"
                               "};\n";
+
         mVariableInfoEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}";
+        mVariableInfoWithTypeEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}";
 
         mVoiString = "voi";
 
@@ -633,7 +660,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCommentString = "# <CODE>\n";
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
 
-        mHeaderString = "from math import *\n"
+        mHeaderString = "from enum import Enum\n"
+                        "from math import *\n"
                         "\n";
 
         mLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
@@ -641,7 +669,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
         mVariableCountString = "VARIABLE_COUNT = <VARIABLE_COUNT>\n";
 
+        mVariableTypeObjectString = "class VariableType(Enum):\n"
+                                    "    CONSTANT = 1\n"
+                                    "    COMPUTED_CONSTANT = 2\n"
+                                    "    ALGEBRAIC = 3\n";
+
+        mConstantVariableType = "VariableType.CONSTANT";
+        mComputedConstantVariableType = "VariableType.COMPUTED_CONSTANT";
+        mAlgebraicVariableType = "VariableType.ALGEBRAIC";
+
         mVariableInfoObjectString = "";
+        mVariableInfoWithTypeObjectString = "";
 
         mVoiInfoString = "VOI_INFO = <CODE>\n";
         mStateInfoString = "STATE_INFO = [\n"
@@ -650,7 +688,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableInfoString = "VARIABLE_INFO = [\n"
                               "<CODE>"
                               "]\n";
+
         mVariableInfoEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\"}";
+        mVariableInfoWithTypeEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\", \"type\": <TYPE>}";
 
         mVoiString = "voi";
 
@@ -846,12 +886,21 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mStateCountString = rhs.mPimpl->mStateCountString;
     mPimpl->mVariableCountString = rhs.mPimpl->mVariableCountString;
 
+    mPimpl->mVariableTypeObjectString = rhs.mPimpl->mVariableTypeObjectString;
+
+    mPimpl->mConstantVariableType = rhs.mPimpl->mConstantVariableType;
+    mPimpl->mComputedConstantVariableType = rhs.mPimpl->mComputedConstantVariableType;
+    mPimpl->mAlgebraicVariableType = rhs.mPimpl->mAlgebraicVariableType;
+
     mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
+    mPimpl->mVariableInfoWithTypeObjectString = rhs.mPimpl->mVariableInfoWithTypeObjectString;
 
     mPimpl->mVoiInfoString = rhs.mPimpl->mVoiInfoString;
     mPimpl->mStateInfoString = rhs.mPimpl->mStateInfoString;
     mPimpl->mVariableInfoString = rhs.mPimpl->mVariableInfoString;
+
     mPimpl->mVariableInfoEntryString = rhs.mPimpl->mVariableInfoEntryString;
+    mPimpl->mVariableInfoWithTypeEntryString = rhs.mPimpl->mVariableInfoWithTypeEntryString;
 
     mPimpl->mVoiString = rhs.mPimpl->mVoiString;
 
@@ -2350,6 +2399,62 @@ void GeneratorProfile::setVariableCountString(const std::string &variableCountSt
     mPimpl->mVariableCountString = variableCountString;
 }
 
+std::string GeneratorProfile::variableTypeObjectString() const
+{
+    return mPimpl->mVariableTypeObjectString;
+}
+
+void GeneratorProfile::setVariableTypeObjectString(const std::string &variableTypeObjectString)
+{
+    if (mPimpl->mVariableTypeObjectString != variableTypeObjectString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mVariableTypeObjectString = variableTypeObjectString;
+}
+
+std::string GeneratorProfile::constantVariableTypeString() const
+{
+    return mPimpl->mConstantVariableType;
+}
+
+void GeneratorProfile::setConstantVariableTypeString(const std::string &constantVariableTypeString)
+{
+    if (mPimpl->mConstantVariableType != constantVariableTypeString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mConstantVariableType = constantVariableTypeString;
+}
+
+std::string GeneratorProfile::computedConstantVariableTypeString() const
+{
+    return mPimpl->mComputedConstantVariableType;
+}
+
+void GeneratorProfile::setComputedConstantVariableTypeString(const std::string &computedConstantVariableTypeString)
+{
+    if (mPimpl->mComputedConstantVariableType != computedConstantVariableTypeString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mComputedConstantVariableType = computedConstantVariableTypeString;
+}
+
+std::string GeneratorProfile::algebraicVariableTypeString() const
+{
+    return mPimpl->mAlgebraicVariableType;
+}
+
+void GeneratorProfile::setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString)
+{
+    if (mPimpl->mAlgebraicVariableType != algebraicVariableTypeString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mAlgebraicVariableType = algebraicVariableTypeString;
+}
+
 std::string GeneratorProfile::variableInfoObjectString() const
 {
     return mPimpl->mVariableInfoObjectString;
@@ -2362,6 +2467,20 @@ void GeneratorProfile::setVariableInfoObjectString(const std::string &variableIn
     }
 
     mPimpl->mVariableInfoObjectString = variableInfoObjectString;
+}
+
+std::string GeneratorProfile::variableInfoWithTypeObjectString() const
+{
+    return mPimpl->mVariableInfoWithTypeObjectString;
+}
+
+void GeneratorProfile::setVariableInfoWithTypeObjectString(const std::string &variableInfoWithTypeObjectString)
+{
+    if (mPimpl->mVariableInfoWithTypeObjectString != variableInfoWithTypeObjectString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mVariableInfoWithTypeObjectString = variableInfoWithTypeObjectString;
 }
 
 std::string GeneratorProfile::voiInfoString() const
@@ -2418,6 +2537,20 @@ void GeneratorProfile::setVariableInfoEntryString(const std::string &variableInf
     }
 
     mPimpl->mVariableInfoEntryString = variableInfoEntryString;
+}
+
+std::string GeneratorProfile::variableInfoWithTypeEntryString() const
+{
+    return mPimpl->mVariableInfoWithTypeEntryString;
+}
+
+void GeneratorProfile::setVariableInfoWithTypeEntryString(const std::string &variableInfoWithTypeEntryString)
+{
+    if (mPimpl->mVariableInfoWithTypeEntryString != variableInfoWithTypeEntryString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mVariableInfoWithTypeEntryString = variableInfoWithTypeEntryString;
 }
 
 std::string GeneratorProfile::voiString() const

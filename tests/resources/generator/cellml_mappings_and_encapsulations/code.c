@@ -9,11 +9,24 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 2;
 const size_t VARIABLE_COUNT = 2;
 
+typedef enum {
+    CONSTANT,
+    COMPUTED_CONSTANT,
+    ALGEBRAIC
+} VariableType;
+
 typedef struct {
     char name[20];
     char units[11];
     char component[24];
 } VariableInfo;
+
+typedef struct {
+    char name[20];
+    char units[11];
+    char component[24];
+    VariableType type;
+} VariableInfoWithType;
 
 const VariableInfo VOI_INFO = {"t", "ms", "circle_x"};
 
@@ -22,9 +35,9 @@ const VariableInfo STATE_INFO[] = {
     {"y", "mM", "circle_y_implementation"}
 };
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"local_complex_maths", "mM", "circle_sibling"},
-    {"two_x", "milli_mole", "circle_x_sibling"}
+const VariableInfoWithType VARIABLE_INFO[] = {
+    {"local_complex_maths", "mM", "circle_sibling", ALGEBRAIC},
+    {"two_x", "milli_mole", "circle_x_sibling", ALGEBRAIC}
 };
 
 double * createStatesArray()
