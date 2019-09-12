@@ -29,19 +29,19 @@ namespace libcellml {
 
 struct GeneratorProfile::GeneratorProfileImpl
 {
-    // Whether the profile is official
+    // Whether the profile is official.
 
     GeneratorProfile::Profile mProfile = Profile::C;
 
-    // Whether the profile requires an interface to be generated
+    // Whether the profile requires an interface to be generated.
 
     bool mHasInterface = true;
 
-    // Assignment
+    // Assignment.
 
     std::string mAssignmentString;
 
-    // Relational and logical operators
+    // Relational and logical operators.
 
     std::string mEqString;
     std::string mNeqString;
@@ -65,7 +65,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     bool mHasXorOperator = true;
     bool mHasNotOperator = true;
 
-    // Arithmetic operators
+    // Arithmetic operators.
 
     std::string mPlusString;
     std::string mMinusString;
@@ -86,7 +86,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     bool mHasPowerOperator = false;
 
-    // Trigonometric operators
+    // Trigonometric operators.
 
     std::string mSinString;
     std::string mCosString;
@@ -113,7 +113,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mAcschString;
     std::string mAcothString;
 
-    // Piecewise statement
+    // Piecewise statement.
 
     std::string mConditionalOperatorIfString;
     std::string mConditionalOperatorElseString;
@@ -122,7 +122,7 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     bool mHasConditionalOperator = true;
 
-    // Constants
+    // Constants.
 
     std::string mTrueString;
     std::string mFalseString;
@@ -131,7 +131,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInfString;
     std::string mNanString;
 
-    // Mathematical functions
+    // Mathematical functions.
 
     std::string mEqFunctionString;
     std::string mNeqFunctionString;
@@ -160,7 +160,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mAcschFunctionString;
     std::string mAcothFunctionString;
 
-    // Miscellaneous
+    // Miscellaneous.
 
     std::string mCommentString;
     std::string mOriginCommentString;
@@ -223,15 +223,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
     mProfile = profile;
 
     if (profile == GeneratorProfile::Profile::C) {
-        // Whether the profile requires an interface to be generated
+        // Whether the profile requires an interface to be generated.
 
         mHasInterface = true;
 
-        // Assignment
+        // Assignment.
 
         mAssignmentString = " = ";
 
-        // Relational and logical operators
+        // Relational and logical operators.
 
         mEqString = " == ";
         mNeqString = " != ";
@@ -255,7 +255,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mHasXorOperator = false;
         mHasNotOperator = true;
 
-        // Arithmetic operators
+        // Arithmetic operators.
 
         mPlusString = "+";
         mMinusString = "-";
@@ -276,7 +276,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mHasPowerOperator = false;
 
-        // Trigonometric operators
+        // Trigonometric operators.
 
         mSinString = "sin";
         mCosString = "cos";
@@ -303,14 +303,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAcschString = "acsch";
         mAcothString = "acoth";
 
-        // Piecewise statement
+        // Piecewise statement.
 
         mConditionalOperatorIfString = "(<CONDITION>)?<IF_STATEMENT>";
         mConditionalOperatorElseString = ":<ELSE_STATEMENT>";
 
         mHasConditionalOperator = true;
 
-        // Constants
+        // Constants.
 
         mTrueString = "1.0";
         mFalseString = "0.0";
@@ -319,7 +319,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInfString = "1.0/0.0";
         mNanString = "sqrt(-1.0)";
 
-        // Mathematical functions
+        // Mathematical functions.
 
         mEqFunctionString = "";
         mNeqFunctionString = "";
@@ -399,7 +399,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
                                "}\n";
 
-        // Miscellaneous
+        // Miscellaneous.
 
         mCommentString = "/* <CODE> */\n";
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
@@ -488,15 +488,15 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mArrayElementSeparatorString = ",";
         mCommandSeparatorString = ";";
     } else if (profile == GeneratorProfile::Profile::PYTHON) {
-        // Whether the profile requires an interface to be generated
+        // Whether the profile requires an interface to be generated.
 
         mHasInterface = false;
 
-        // Assignment
+        // Assignment.
 
         mAssignmentString = " = ";
 
-        // Relational and logical operators
+        // Relational and logical operators.
 
         mEqString = "eq_func";
         mNeqString = "neq_func";
@@ -520,7 +520,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mHasXorOperator = false;
         mHasNotOperator = false;
 
-        // Arithmetic operators
+        // Arithmetic operators.
 
         mPlusString = "+";
         mMinusString = "-";
@@ -541,7 +541,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mHasPowerOperator = false;
 
-        // Trigonometric operators
+        // Trigonometric operators.
 
         mSinString = "sin";
         mCosString = "cos";
@@ -568,14 +568,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mAcschString = "acsch";
         mAcothString = "acoth";
 
-        // Piecewise statement
+        // Piecewise statement.
 
         mConditionalOperatorIfString = "<IF_STATEMENT> if <CONDITION>";
         mConditionalOperatorElseString = " else <ELSE_STATEMENT>";
 
         mHasConditionalOperator = true;
 
-        // Constants
+        // Constants.
 
         mTrueString = "1.0";
         mFalseString = "0.0";
@@ -584,7 +584,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInfString = "inf";
         mNanString = "nan";
 
-        // Mathematical functions
+        // Mathematical functions.
 
         mEqFunctionString = "\n"
                             "def eq_func(x, y):\n"
@@ -667,7 +667,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                "\n"
                                "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n";
 
-        // Miscellaneous
+        // Miscellaneous.
 
         mCommentString = "# <CODE>\n";
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
@@ -760,19 +760,19 @@ GeneratorProfile::~GeneratorProfile()
 GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     : mPimpl(new GeneratorProfileImpl())
 {
-    // Whether the profile is official
+    // Whether the profile is official.
 
     mPimpl->mProfile = rhs.mPimpl->mProfile;
 
-    // Whether the profile requires an interface to be generated
+    // Whether the profile requires an interface to be generated.
 
     mPimpl->mHasInterface = rhs.mPimpl->mHasInterface;
 
-    // Assignment
+    // Assignment.
 
     mPimpl->mAssignmentString = rhs.mPimpl->mAssignmentString;
 
-    // Relational and logical operators
+    // Relational and logical operators.
 
     mPimpl->mEqString = rhs.mPimpl->mEqString;
     mPimpl->mNeqString = rhs.mPimpl->mNeqString;
@@ -796,7 +796,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mHasXorOperator = rhs.mPimpl->mHasXorOperator;
     mPimpl->mHasNotOperator = rhs.mPimpl->mHasNotOperator;
 
-    // Arithmetic operators
+    // Arithmetic operators.
 
     mPimpl->mPlusString = rhs.mPimpl->mPlusString;
     mPimpl->mMinusString = rhs.mPimpl->mMinusString;
@@ -817,7 +817,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mHasPowerOperator = rhs.mPimpl->mHasPowerOperator;
 
-    // Trigonometric operators
+    // Trigonometric operators.
 
     mPimpl->mSinString = rhs.mPimpl->mSinString;
     mPimpl->mCosString = rhs.mPimpl->mCosString;
@@ -844,7 +844,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mAcschString = rhs.mPimpl->mAcschString;
     mPimpl->mAcothString = rhs.mPimpl->mAcothString;
 
-    // Piecewise statement
+    // Piecewise statement.
 
     mPimpl->mConditionalOperatorIfString = rhs.mPimpl->mConditionalOperatorIfString;
     mPimpl->mConditionalOperatorElseString = rhs.mPimpl->mConditionalOperatorElseString;
@@ -853,7 +853,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mHasConditionalOperator = rhs.mPimpl->mHasConditionalOperator;
 
-    // Constants
+    // Constants.
 
     mPimpl->mTrueString = rhs.mPimpl->mTrueString;
     mPimpl->mFalseString = rhs.mPimpl->mFalseString;
@@ -862,7 +862,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mInfString = rhs.mPimpl->mInfString;
     mPimpl->mNanString = rhs.mPimpl->mNanString;
 
-    // Mathematical functions
+    // Mathematical functions.
 
     mPimpl->mEqFunctionString = rhs.mPimpl->mEqFunctionString;
     mPimpl->mNeqFunctionString = rhs.mPimpl->mNeqFunctionString;
@@ -891,7 +891,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mAcschFunctionString = rhs.mPimpl->mAcschFunctionString;
     mPimpl->mAcothFunctionString = rhs.mPimpl->mAcothFunctionString;
 
-    // Miscellaneous
+    // Miscellaneous.
 
     mPimpl->mCommentString = rhs.mPimpl->mCommentString;
     mPimpl->mOriginCommentString = rhs.mPimpl->mOriginCommentString;

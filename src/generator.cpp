@@ -177,11 +177,11 @@ struct GeneratorEquationAst
 {
     enum struct Type
     {
-        // Assignment
+        // Assignment.
 
         ASSIGNMENT,
 
-        // Relational and logical operators
+        // Relational and logical operators.
 
         EQ,
         NEQ,
@@ -194,7 +194,7 @@ struct GeneratorEquationAst
         XOR,
         NOT,
 
-        // Arithmetic operators
+        // Arithmetic operators.
 
         PLUS,
         MINUS,
@@ -212,11 +212,11 @@ struct GeneratorEquationAst
         MAX,
         REM,
 
-        // Calculus elements
+        // Calculus elements.
 
         DIFF,
 
-        // Trigonometric operators
+        // Trigonometric operators.
 
         SIN,
         COS,
@@ -243,24 +243,24 @@ struct GeneratorEquationAst
         ACSCH,
         ACOTH,
 
-        // Piecewise statement
+        // Piecewise statement.
 
         PIECEWISE,
         PIECE,
         OTHERWISE,
 
-        // Token elements
+        // Token elements.
 
         CI,
         CN,
 
-        // Qualifier elements
+        // Qualifier elements.
 
         DEGREE,
         LOGBASE,
         BVAR,
 
-        // Constants
+        // Constants.
 
         TRUE,
         FALSE,
@@ -753,7 +753,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                                            const ComponentPtr &component,
                                            const GeneratorEquationPtr &equation)
 {
-    // Basic content elements
+    // Basic content elements.
 
     if (node->isMathmlElement("apply")) {
         // We may have 2, 3 or more child nodes, e.g.
@@ -810,7 +810,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast->mRight = astRight;
         }
 
-        // Assignment, and relational and logical operators
+        // Assignment, and relational and logical operators.
 
     } else if (node->isMathmlElement("eq")) {
         // This element is used both to describe "a = b" and "a == b". We can
@@ -862,7 +862,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         mNeedNot = true;
 
-        // Arithmetic operators
+        // Arithmetic operators.
 
     } else if (node->isMathmlElement("plus")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::PLUS, astParent);
@@ -899,12 +899,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
     } else if (node->isMathmlElement("rem")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::REM, astParent);
 
-        // Calculus elements
+        // Calculus elements.
 
     } else if (node->isMathmlElement("diff")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DIFF, astParent);
 
-        // Trigonometric operators
+        // Trigonometric operators.
 
     } else if (node->isMathmlElement("sin")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::SIN, astParent);
@@ -979,7 +979,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         mNeedAcoth = true;
 
-        // Piecewise statement
+        // Piecewise statement.
 
     } else if (node->isMathmlElement("piecewise")) {
         size_t childCount = mathmlChildCount(node);
@@ -1019,7 +1019,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
 
         processNode(mathmlChildNode(node, 0), ast->mLeft, ast, component, equation);
 
-        // Token elements
+        // Token elements.
 
     } else if (node->isMathmlElement("ci")) {
         std::string variableName = node->firstChild()->convertToString();
@@ -1060,7 +1060,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::CN, node->firstChild()->convertToString(), astParent);
         }
 
-        // Qualifier elements
+        // Qualifier elements.
 
     } else if (node->isMathmlElement("degree")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::DEGREE, astParent);
@@ -1081,7 +1081,7 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
             processNode(rightNode, ast->mRight, ast, component, equation);
         }
 
-        // Constants
+        // Constants.
 
     } else if (node->isMathmlElement("true")) {
         ast = std::make_shared<GeneratorEquationAst>(GeneratorEquationAst::Type::TRUE, astParent);
@@ -2478,14 +2478,14 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
     std::string code;
 
     switch (ast->mType) {
-        // Assignment
+        // Assignment.
 
     case GeneratorEquationAst::Type::ASSIGNMENT:
         code = generateOperatorCode(mProfile->assignmentString(), ast);
 
         break;
 
-        // Relational and logical operators
+        // Relational and logical operators.
 
     case GeneratorEquationAst::Type::EQ:
         if (mProfile->hasEqOperator()) {
@@ -2568,7 +2568,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
 
-        // Arithmetic operators
+        // Arithmetic operators.
 
     case GeneratorEquationAst::Type::PLUS:
         if (ast->mRight != nullptr) {
@@ -2679,14 +2679,14 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
 
-        // Calculus elements
+        // Calculus elements.
 
     case GeneratorEquationAst::Type::DIFF:
         code = generateCode(ast->mRight);
 
         break;
 
-        // Trigonometric operators
+        // Trigonometric operators.
 
     case GeneratorEquationAst::Type::SIN:
         code = generateOneParameterFunctionCode(mProfile->sinString(), ast);
@@ -2785,7 +2785,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
 
-        // Piecewise statement
+        // Piecewise statement.
 
     case GeneratorEquationAst::Type::PIECEWISE:
         if (ast->mRight != nullptr) {
@@ -2808,7 +2808,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
 
-        // Token elements
+        // Token elements.
 
     case GeneratorEquationAst::Type::CI:
         code = generateVariableNameCode(ast->mVariable, ast);
@@ -2819,7 +2819,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
 
-        // Qualifier elements
+        // Qualifier elements.
 
     case GeneratorEquationAst::Type::DEGREE:
     case GeneratorEquationAst::Type::LOGBASE:
@@ -2828,7 +2828,7 @@ std::string Generator::GeneratorImpl::generateCode(const GeneratorEquationAstPtr
 
         break;
 
-        // Constants
+        // Constants.
 
     case GeneratorEquationAst::Type::TRUE:
         code = mProfile->trueString();
