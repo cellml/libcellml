@@ -669,7 +669,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
         mVariableCountString = "VARIABLE_COUNT = <VARIABLE_COUNT>\n";
 
-        mVariableTypeObjectString = "class VariableType(Enum):\n"
+        mVariableTypeObjectString = "\n"
+                                    "class VariableType(Enum):\n"
                                     "    CONSTANT = 1\n"
                                     "    COMPUTED_CONSTANT = 2\n"
                                     "    ALGEBRAIC = 3\n";
