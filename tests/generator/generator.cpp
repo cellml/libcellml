@@ -1152,7 +1152,7 @@ TEST(Generator, coverage)
 
     generator.setProfile(profile);
 
-    EXPECT_EQ(fileContents("generator/coverage/codeWithCustomProfile.out"), generator.code());
+    EXPECT_EQ(fileContents("generator/coverage/code.out"), generator.code());
 
     profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
