@@ -1611,9 +1611,29 @@ void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
 {
     if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
+        std::string profileInformation;
+
+        switch (mProfile->profile()) {
+        case GeneratorProfile::Profile::C:
+            profileInformation = "the C profile of";
+
+            break;
+        case GeneratorProfile::Profile::PYTHON:
+            profileInformation = "the Python profile of";
+
+            break;
+        case GeneratorProfile::Profile::CUSTOM:
+            profileInformation = "a customized profile and";
+
+            break;
+        }
+
+        std::string commentCode = replace(replace(mProfile->originCommentString(),
+                                                  "<PROFILE_INFORMATION>", profileInformation),
+                                          "<LIBCELLML_VERSION>", versionString());
+
         code += replace(mProfile->commentString(),
-                        "<CODE>", replace(mProfile->originCommentString(),
-                                          "<LIBCELLML_VERSION>", versionString()));
+                        "<CODE>", commentCode);
     }
 }
 

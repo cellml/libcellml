@@ -1115,8 +1115,6 @@ TEST(Generator, coverage)
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
 
-    generator.setProfile(profile);
-
     profile->setXorString("^");
     profile->setHasXorOperator(true);
 
@@ -1127,9 +1125,6 @@ TEST(Generator, coverage)
     profile->setPiecewiseIfString("piecewise(<CONDITION>, <IF_STATEMENT>");
     profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
     profile->setHasConditionalOperator(false);
-
-    profile->setCommentString("");
-    profile->setOriginCommentString("");
 
     profile->setHeaderString("");
 
@@ -1154,6 +1149,8 @@ TEST(Generator, coverage)
     profile->setComputeVariablesMethodString("// We should have computeVariables() here, but we replaced it with this comment\n"
                                              "// and no code template that can be replaced so that our replace() method can\n"
                                              "// is forced to return an empty string, ensuring 100% coverage using llvm-cov...\n");
+
+    generator.setProfile(profile);
 
     EXPECT_EQ(fileContents("generator/coverage/codeWithCustomProfile.out"), generator.code());
 

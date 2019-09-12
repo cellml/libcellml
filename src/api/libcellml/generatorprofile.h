@@ -26,7 +26,8 @@ public:
     enum class Profile
     {
         C,
-        PYTHON
+        PYTHON,
+        CUSTOM
     };
 
     explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
@@ -34,6 +35,15 @@ public:
     GeneratorProfile(const GeneratorProfile &rhs); /**< Copy constructor */
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
+
+    /**
+     * @brief Get the @c Profile for this @c GeneratorProfile.
+     *
+     * Return the @c Profile for this @c GeneratorProfile.
+     *
+     * @return The @c Profile for this @c GeneratorProfile.
+     */
+    Profile profile() const;
 
     /**
      * @brief Set the @c Profile.
@@ -1909,8 +1919,9 @@ public:
      * @brief Set the @c std::string for an origin comment.
      *
      * Set this @c std::string for an origin comment. To be useful, the string
-     * should contain the <LIBCELLML_VERSION> tag, which will be replaced with
-     * the version of libCellML used.
+     * should contain the <PROFILE_INFORMATION> and <LIBCELLML_VERSION> tags,
+     * which will be replaced with some profile information and the the version
+     * of libCellML used.
      *
      * @param originCommentString The @c std::string to use for an origin
      * comment.
