@@ -671,8 +671,8 @@ struct Generator::GeneratorImpl
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
 
-    void addInitializeConstantsMethodCode(std::string &code,
-                                          std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addInitializeStatesAndConstantsMethodCode(std::string &code,
+                                                   std::vector<GeneratorEquationPtr> &remainingEquations);
     void addComputeComputedConstantsMethodCode(std::string &code,
                                                std::vector<GeneratorEquationPtr> &remainingEquations);
     void addComputeRatesMethodCode(std::string &code,
@@ -2889,10 +2889,10 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
     return res;
 }
 
-void Generator::GeneratorImpl::addInitializeConstantsMethodCode(std::string &code,
-                                                                std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addInitializeStatesAndConstantsMethodCode(std::string &code,
+                                                                         std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->initializeConstantsMethodString().empty()) {
+    if (!mProfile->initializeStatesAndConstantsMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
@@ -2912,7 +2912,7 @@ void Generator::GeneratorImpl::addInitializeConstantsMethodCode(std::string &cod
             }
         }
 
-        code += replace(mProfile->initializeConstantsMethodString(),
+        code += replace(mProfile->initializeStatesAndConstantsMethodString(),
                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
@@ -3192,11 +3192,11 @@ std::string Generator::implementationCode() const
     mPimpl->addCreateVariablesArrayCode(res);
     mPimpl->addDeleteArrayMethodCode(res);
 
-    // Add code to initialise the model.
+    // Add code to initialise our states and constants.
 
     std::vector<GeneratorEquationPtr> remainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
 
-    mPimpl->addInitializeConstantsMethodCode(res, remainingEquations);
+    mPimpl->addInitializeStatesAndConstantsMethodCode(res, remainingEquations);
 
     // Generate code to compute our computed constants.
 

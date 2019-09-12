@@ -315,10 +315,10 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->deleteArrayMethodString());
 
-    EXPECT_EQ("void initializeConstants(double *states, double *variables)\n{\n"
+    EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables)\n{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->initializeConstantsMethodString());
+              generatorProfile->initializeStatesAndConstantsMethodString());
     EXPECT_EQ("void computeComputedConstants(double *variables)\n{\n"
               "<CODE>"
               "}\n",
@@ -649,7 +649,7 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setCreateVariablesArrayMethodString(value);
     generatorProfile->setDeleteArrayMethodString(value);
 
-    generatorProfile->setInitializeConstantsMethodString(value);
+    generatorProfile->setInitializeStatesAndConstantsMethodString(value);
     generatorProfile->setComputeComputedConstantsMethodString(value);
     generatorProfile->setComputeRatesMethodString(value);
     generatorProfile->setComputeVariablesMethodString(value);
@@ -702,7 +702,7 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->createVariablesArrayMethodString());
     EXPECT_EQ(value, generatorProfile->deleteArrayMethodString());
 
-    EXPECT_EQ(value, generatorProfile->initializeConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->initializeStatesAndConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->computeComputedConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->computeRatesMethodString());
     EXPECT_EQ(value, generatorProfile->computeVariablesMethodString());

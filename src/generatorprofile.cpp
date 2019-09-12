@@ -196,7 +196,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCreateVariablesArrayMethodString;
     std::string mDeleteArrayMethodString;
 
-    std::string mInitializeConstantsMethodString;
+    std::string mInitializeStatesAndConstantsMethodString;
     std::string mComputeComputedConstantsMethodString;
     std::string mComputeRatesMethodString;
     std::string mComputeVariablesMethodString;
@@ -457,9 +457,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                    "    free(array);\n"
                                    "}\n";
 
-        mInitializeConstantsMethodString = "void initializeConstants(double *states, double *variables)\n{\n"
-                                           "<CODE>"
-                                           "}\n";
+        mInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables)\n{\n"
+                                                    "<CODE>"
+                                                    "}\n";
         mComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n{\n"
                                                 "<CODE>"
                                                 "}\n";
@@ -709,9 +709,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                             "<CODE>";
         mDeleteArrayMethodString = "";
 
-        mInitializeConstantsMethodString = "\n"
-                                           "def initialize_constants(states, variables):\n"
-                                           "<CODE>";
+        mInitializeStatesAndConstantsMethodString = "\n"
+                                                    "def initialize_states_and_constants(states, variables):\n"
+                                                    "<CODE>";
         mComputeComputedConstantsMethodString = "\n"
                                                 "def compute_computed_constants(variables):\n"
                                                 "<CODE>";
@@ -915,7 +915,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mCreateVariablesArrayMethodString = rhs.mPimpl->mCreateVariablesArrayMethodString;
     mPimpl->mDeleteArrayMethodString = rhs.mPimpl->mDeleteArrayMethodString;
 
-    mPimpl->mInitializeConstantsMethodString = rhs.mPimpl->mInitializeConstantsMethodString;
+    mPimpl->mInitializeStatesAndConstantsMethodString = rhs.mPimpl->mInitializeStatesAndConstantsMethodString;
     mPimpl->mComputeComputedConstantsMethodString = rhs.mPimpl->mComputeComputedConstantsMethodString;
     mPimpl->mComputeRatesMethodString = rhs.mPimpl->mComputeRatesMethodString;
     mPimpl->mComputeVariablesMethodString = rhs.mPimpl->mComputeVariablesMethodString;
@@ -2666,18 +2666,18 @@ void GeneratorProfile::setDeleteArrayMethodString(const std::string &deleteArray
     mPimpl->mDeleteArrayMethodString = deleteArrayMethodString;
 }
 
-std::string GeneratorProfile::initializeConstantsMethodString() const
+std::string GeneratorProfile::initializeStatesAndConstantsMethodString() const
 {
-    return mPimpl->mInitializeConstantsMethodString;
+    return mPimpl->mInitializeStatesAndConstantsMethodString;
 }
 
-void GeneratorProfile::setInitializeConstantsMethodString(const std::string &initializeConstantsMethodString)
+void GeneratorProfile::setInitializeStatesAndConstantsMethodString(const std::string &initializeStatesAndConstantsMethodString)
 {
-    if (mPimpl->mInitializeConstantsMethodString != initializeConstantsMethodString) {
+    if (mPimpl->mInitializeStatesAndConstantsMethodString != initializeStatesAndConstantsMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mInitializeConstantsMethodString = initializeConstantsMethodString;
+    mPimpl->mInitializeStatesAndConstantsMethodString = initializeStatesAndConstantsMethodString;
 }
 
 std::string GeneratorProfile::computeComputedConstantsMethodString() const

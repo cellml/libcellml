@@ -302,7 +302,7 @@ def create_variables_array():
     return [nan]*217
 
 
-def initialize_constants(states, variables):
+def initialize_states_and_constants(states, variables):
     states[0] = 0.9308
     states[1] = 6.181512e-9
     states[2] = 4.595622e-10
