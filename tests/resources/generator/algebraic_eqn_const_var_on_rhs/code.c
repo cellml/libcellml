@@ -9,18 +9,18 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 0;
 const size_t VARIABLE_COUNT = 2;
 
-struct VariableInfo {
+typedef struct {
     char name[2];
     char units[14];
     char component[17];
+} VariableInfo;
+
+const VariableInfo VOI_INFO = {"", "", ""};
+
+const VariableInfo STATE_INFO[] = {
 };
 
-const struct VariableInfo VOI_INFO = {"", "", ""};
-
-const struct VariableInfo STATE_INFO[] = {
-};
-
-const struct VariableInfo VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"a", "dimensionless", "my_algebraic_eqn"},
     {"x", "dimensionless", "my_algebraic_eqn"}
 };

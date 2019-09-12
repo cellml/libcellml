@@ -396,17 +396,17 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
         mVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
 
-        mVariableInfoObjectString = "struct VariableInfo {\n"
+        mVariableInfoObjectString = "typedef struct {\n"
                                     "    char name[<NAME_SIZE>];\n"
                                     "    char units[<UNITS_SIZE>];\n"
                                     "    char component[<COMPONENT_SIZE>];\n"
-                                    "};\n";
+                                    "} VariableInfo;\n";
 
-        mVoiInfoString = "const struct VariableInfo VOI_INFO = <CODE>;\n";
-        mStateInfoString = "const struct VariableInfo STATE_INFO[] = {\n"
+        mVoiInfoString = "const VariableInfo VOI_INFO = <CODE>;\n";
+        mStateInfoString = "const VariableInfo STATE_INFO[] = {\n"
                            "<CODE>"
                            "};\n";
-        mVariableInfoString = "const struct VariableInfo VARIABLE_INFO[] = {\n"
+        mVariableInfoString = "const VariableInfo VARIABLE_INFO[] = {\n"
                               "<CODE>"
                               "};\n";
         mVariableInfoEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}";

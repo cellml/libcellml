@@ -9,20 +9,20 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 2;
 const size_t VARIABLE_COUNT = 1;
 
-struct VariableInfo {
+typedef struct {
     char name[2];
     char units[14];
     char component[14];
-};
+} VariableInfo;
 
-const struct VariableInfo VOI_INFO = {"t", "second", "my_first_ode"};
+const VariableInfo VOI_INFO = {"t", "second", "my_first_ode"};
 
-const struct VariableInfo STATE_INFO[] = {
+const VariableInfo STATE_INFO[] = {
     {"x", "dimensionless", "my_first_ode"},
     {"x", "dimensionless", "my_second_ode"}
 };
 
-const struct VariableInfo VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"a", "per_s", "my_second_ode"}
 };
 

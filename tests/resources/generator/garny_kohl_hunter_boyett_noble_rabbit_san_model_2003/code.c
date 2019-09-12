@@ -9,15 +9,15 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 15;
 const size_t VARIABLE_COUNT = 185;
 
-struct VariableInfo {
+typedef struct {
     char name[31];
     char units[27];
     char component[53];
-};
+} VariableInfo;
 
-const struct VariableInfo VOI_INFO = {"time", "second", "membrane"};
+const VariableInfo VOI_INFO = {"time", "second", "membrane"};
 
-const struct VariableInfo STATE_INFO[] = {
+const VariableInfo STATE_INFO[] = {
     {"m", "dimensionless", "sodium_current_m_gate"},
     {"h1", "dimensionless", "sodium_current_h_gate"},
     {"h2", "dimensionless", "sodium_current_h_gate"},
@@ -35,7 +35,7 @@ const struct VariableInfo STATE_INFO[] = {
     {"V", "millivolt", "membrane"}
 };
 
-const struct VariableInfo VARIABLE_INFO[] = {
+const VariableInfo VARIABLE_INFO[] = {
     {"E_Ca_L", "millivolt", "L_type_Ca_channel"},
     {"g_Ca_L_Centre_0DCapable", "microS", "L_type_Ca_channel"},
     {"g_Ca_L_Centre_1DCapable", "microS", "L_type_Ca_channel"},
