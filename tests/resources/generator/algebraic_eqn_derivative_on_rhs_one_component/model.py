@@ -15,6 +15,7 @@ class VariableType(Enum):
     COMPUTED_CONSTANT = 2
     ALGEBRAIC = 3
 
+
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component"}
 
 STATE_INFO = [
