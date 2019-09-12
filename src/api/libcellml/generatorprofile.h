@@ -2010,29 +2010,29 @@ public:
     void setVariableCountString(const std::string &variableCountString);
 
     /**
-     * @brief Get the @c std::string for the variable information object data
-     * structure.
+     * @brief Get the @c std::string for the data structure for the variable
+     * information object.
      *
-     * Return the @c std::string for the variable information object data
-     * structure.
+     * Return the @c std::string for the data structure for the variable
+     * information object.
      *
-     * @return The @c std::string for the variable information object data
-     * structure.
+     * @return The @c std::string for the data structure for the variable
+     * information object.
      */
     std::string variableInfoObjectString() const;
 
     /**
-     * @brief Set the @c std::string for the variable information object data
-     * structure.
+     * @brief Set the @c std::string for the data structure for the variable
+     * information object.
      *
-     * Set this @c std::string for the variable information object data
-     * structure. To be useful, the string should contain the <COMPONENT_SIZE>,
-     * <NAME_SIZE> and <UNITS_SIZE> tags, which will be replaced with the
-     * maximum size of a string for holding the name of a component, variable
-     * and units, respectively.
+     * Set this @c std::string for the data structure for the variable
+     * information object. To be useful, the string should contain the
+     * <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which will be
+     * replaced with the maximum size of a string for holding the name of a
+     * component, variable and units, respectively.
      *
-     * @param variableInfoObjectString The @c std::string to use for the
-     * variable information object data structure.
+     * @param variableInfoObjectString The @c std::string to use for the data
+     * structure for the variable information object.
      */
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
 
