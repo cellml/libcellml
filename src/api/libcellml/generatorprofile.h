@@ -36,7 +36,7 @@ public:
     GeneratorProfile(GeneratorProfile &&rhs) noexcept; /**< Move constructor */
     GeneratorProfile &operator=(GeneratorProfile rhs); /**< Assignment operator */
 
-    // Whether the profile is official
+    // Whether the profile is official.
 
     /**
      * @brief Get the @c Profile for this @c GeneratorProfile.
@@ -56,7 +56,7 @@ public:
      */
     void setProfile(Profile profile);
 
-    // Whether the profile requires an interface to be generated
+    // Whether the profile requires an interface to be generated.
 
     /**
      * @brief Test if this @c GeneratorProfile requires an interface to be
@@ -83,7 +83,7 @@ public:
      */
     void setHasInterface(bool hasInterface);
 
-    // Assignment
+    // Assignment.
 
     /**
      * @brief Get the @c std::string for the assignment operator.
@@ -104,7 +104,7 @@ public:
      */
     void setAssignmentString(const std::string &assignmentString);
 
-    // Relational and logical operators
+    // Relational and logical operators.
 
     /**
      * @brief Get the @c std::string for the equivalence operator.
@@ -496,7 +496,7 @@ public:
      */
     void setHasNotOperator(bool hasNotOperator);
 
-    // Arithmetic operators
+    // Arithmetic operators.
 
     /**
      * @brief Get the @c std::string for an addition.
@@ -809,7 +809,7 @@ public:
      */
     void setHasPowerOperator(bool hasPowerOperator);
 
-    // Trigonometric operators
+    // Trigonometric operators.
 
     /**
      * @brief Get the @c std::string for sine.
@@ -1248,7 +1248,7 @@ public:
      */
     void setAcothString(const std::string &acothString);
 
-    // Piecewise statement
+    // Piecewise statement.
 
     /**
      * @brief Get the @c std::string for the if part of a condition statement.
@@ -1346,7 +1346,7 @@ public:
      */
     void setHasConditionalOperator(bool hasConditionalOperator);
 
-    // Constants
+    // Constants.
 
     /**
      * @brief Get the @c std::string for true.
@@ -1456,7 +1456,7 @@ public:
      */
     void setNanString(const std::string &nanString);
 
-    // Mathematical functions
+    // Mathematical functions.
 
     /**
      * @brief Get the @c std::string for the equivalence function.
@@ -1914,7 +1914,7 @@ public:
      */
     void setAcothFunctionString(const std::string &acothFunctionString);
 
-    // Miscellaneous
+    // Miscellaneous.
 
     /**
      * @brief Get the @c std::string for a comment.
