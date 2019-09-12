@@ -3140,7 +3140,12 @@ GeneratorVariablePtr Generator::variable(size_t index) const
     return mPimpl->mVariables[index];
 }
 
-std::string Generator::code() const
+std::string Generator::interfaceCode() const
+{
+    return {};
+}
+
+std::string Generator::implementationCode() const
 {
     if (!mPimpl->hasValidModel()) {
         return {};

@@ -164,14 +164,24 @@ public:
     GeneratorVariablePtr variable(size_t index) const;
 
     /**
-     * @brief Get the code for the @c Model.
+     * @brief Get the interface code for the @c Model.
      *
-     * Return the code for the @c Model processed by this @c Generator, using
-     * its @c GeneratorProfile.
+     * Return the interface code for the @c Model processed by this
+     * @c Generator, using its @c GeneratorProfile.
      *
      * @return The code.
      */
-    std::string code() const;
+    std::string interfaceCode() const;
+
+    /**
+     * @brief Get the implementation code for the @c Model.
+     *
+     * Return the implementation code for the @c Model processed by this
+     * @c Generator, using its @c GeneratorProfile.
+     *
+     * @return The code.
+     */
+    std::string implementationCode() const;
 
 private:
     void swap(Generator &rhs); /**< Swap method required for C++ 11 move semantics. */
