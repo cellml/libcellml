@@ -1,5 +1,6 @@
 # The content of this file was generated using the Python profile of libCellML 0.2.0.
 
+from enum import Enum
 from math import *
 
 
@@ -8,6 +9,11 @@ LIBCELLML_VERSION = "0.2.0"
 STATE_COUNT = 1
 VARIABLE_COUNT = 2
 
+class VariableType(Enum):
+    CONSTANT = 1
+    COMPUTED_CONSTANT = 2
+    ALGEBRAIC = 3
+
 VOI_INFO = {"name": "t", "units": "second", "component": "my_component"}
 
 STATE_INFO = [
@@ -15,8 +21,8 @@ STATE_INFO = [
 ]
 
 VARIABLE_INFO = [
-    {"name": "a", "units": "per_s", "component": "my_component"},
-    {"name": "x", "units": "per_s", "component": "my_component"}
+    {"name": "a", "units": "per_s", "component": "my_component", "type": VariableType.COMPUTED_CONSTANT},
+    {"name": "x", "units": "per_s", "component": "my_component", "type": VariableType.ALGEBRAIC}
 ]
 
 

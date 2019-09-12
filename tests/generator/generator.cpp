@@ -1133,12 +1133,21 @@ TEST(Generator, coverage)
     profile->setStateCountString("");
     profile->setVariableCountString("");
 
+    profile->setVariableTypeObjectString("");
+
+    profile->setConstantVariableTypeString("");
+    profile->setComputedConstantVariableTypeString("");
+    profile->setAlgebraicVariableTypeString("");
+
     profile->setVariableInfoObjectString("");
+    profile->setVariableInfoWithTypeObjectString("");
 
     profile->setVoiInfoString("");
     profile->setStateInfoString("");
     profile->setVariableInfoString("");
+
     profile->setVariableInfoEntryString("");
+    profile->setVariableInfoWithTypeEntryString("");
 
     profile->setReturnCreatedArrayString("");
 

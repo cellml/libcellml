@@ -2011,6 +2011,94 @@ public:
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
+     * type object.
+     *
+     * Return the @c std::string for the data structure for the variable type
+     * object.
+     *
+     * @return The @c std::string for the data structure for the variable type
+     * object.
+     */
+    std::string variableTypeObjectString() const;
+
+    /**
+     * @brief Set the @c std::string for the data structure for the variable
+     * type object.
+     *
+     * Set this @c std::string for the data structure for the variable
+     * type object.
+     *
+     * @param variableTypeObjectString The @c std::string to use for the data
+     * structure for the variable type object.
+     */
+    void setVariableTypeObjectString(const std::string &variableTypeObjectString);
+
+    /**
+     * @brief Get the @c std::string for the name of the constant variable type.
+     *
+     * Return the @c std::string for the name of the constant variable type.
+     *
+     * @return The @c std::string for the name of the constant variable type.
+     */
+    std::string constantVariableTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the constant variable type.
+     *
+     * Set this @c std::string for the name of the constant variable type.
+     *
+     * @param statesArrayString The @c std::string to use for the name of the
+     * constant variable type.
+     */
+    void setConstantVariableTypeString(const std::string &constantVariableTypeString);
+
+    /**
+     * @brief Get the @c std::string for the name of the computed constant
+     * variable type.
+     *
+     * Return the @c std::string for the name of the computed constant variable
+     * type.
+     *
+     * @return The @c std::string for the name of the computed constant variable
+     * type.
+     */
+    std::string computedConstantVariableTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the computed constant
+     * variable type.
+     *
+     * Set this @c std::string for the name of the computed constant variable
+     * type.
+     *
+     * @param statesArrayString The @c std::string to use for the name of the
+     * computed constant variable type.
+     */
+    void setComputedConstantVariableTypeString(const std::string &computedConstantVariableTypeString);
+
+    /**
+     * @brief Get the @c std::string for the name of the algebraic variable
+     * type.
+     *
+     * Return the @c std::string for the name of the algebraic variable type.
+     *
+     * @return The @c std::string for the name of the algebraic variable type.
+     */
+    std::string algebraicVariableTypeString() const;
+
+    /**
+     * @brief Set the @c std::string for the name of the algebraic variable
+     * type.
+     *
+     * Set this @c std::string for the name of the algebraic variable type.
+     *
+     * @param statesArrayString The @c std::string to use for the name of the
+     * algebraic variable type.
+     */
+    void setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString);
+
+    /**
+     * @brief Get the @c std::string for the data structure for the variable
      * information object.
      *
      * Return the @c std::string for the data structure for the variable
@@ -2035,6 +2123,33 @@ public:
      * structure for the variable information object.
      */
     void setVariableInfoObjectString(const std::string &variableInfoObjectString);
+
+    /**
+     * @brief Get the @c std::string for the data structure for the variable
+     * information (incl. its type) object.
+     *
+     * Return the @c std::string for the data structure for the variable
+     * information (incl. its type) object.
+     *
+     * @return The @c std::string for the data structure for the variable
+     * information (incl. its type) object.
+     */
+    std::string variableInfoWithTypeObjectString() const;
+
+    /**
+     * @brief Set the @c std::string for the data structure for the variable
+     * information (incl. its type) object.
+     *
+     * Set this @c std::string for the data structure for the variable
+     * information (incl. its type) object. To be useful, the string should
+     * contain the <NAME_SIZE>, <UNITS_SIZE> and <COMPONENT_SIZE> tags, which
+     * will be replaced with the maximum size of a string for holding the name
+     * of a component, variable and units, respectively.
+     *
+     * @param variableInfoWithTypeObjectString The @c std::string to use for the
+     * data structure for the variable information (incl. its type) object.
+     */
+    void setVariableInfoWithTypeObjectString(const std::string &variableInfoWithTypeObjectString);
 
     /**
      * @brief Get the @c std::string for some information about the variable of
@@ -2137,6 +2252,32 @@ public:
      * an array for some information about a variable.
      */
     void setVariableInfoEntryString(const std::string &variableInfoEntryString);
+
+    /**
+     * @brief Get the @c std::string for an entry in an array for some
+     * information about a variable (incl. its type).
+     *
+     * Return the @c std::string for an entry in an array for some information
+     * about a variable (incl. its type).
+     *
+     * @return The @c std::string for an entry in an array for some information
+     * about a variable (incl. its type).
+     */
+    std::string variableInfoWithTypeEntryString() const;
+
+    /**
+     * @brief Set the @c std::string for an entry in an array for some
+     * information about a variable (incl. its type).
+     *
+     * Set this @c std::string for an entry in an array for some information
+     * about a variable (incl. its type). To be useful, the string should
+     * contain the <COMPONENT>, <NAME> and <UNITS> tags, which will be replaced
+     * with the name of the component, name and units of a variable.
+     *
+     * @param variableInfoWithTypeEntryString The @c std::string to use for an
+     * entry in an array for some information about a variable (incl. its type).
+     */
+    void setVariableInfoWithTypeEntryString(const std::string &variableInfoWithTypeEntryString);
 
     /**
      * @brief Get the @c std::string for the name of the variable of

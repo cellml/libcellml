@@ -9,19 +9,32 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 0;
 const size_t VARIABLE_COUNT = 1;
 
+typedef enum {
+    CONSTANT,
+    COMPUTED_CONSTANT,
+    ALGEBRAIC
+} VariableType;
+
 typedef struct {
     char name[2];
     char units[14];
     char component[13];
 } VariableInfo;
 
+typedef struct {
+    char name[2];
+    char units[14];
+    char component[13];
+    VariableType type;
+} VariableInfoWithType;
+
 const VariableInfo VOI_INFO = {"", "", ""};
 
 const VariableInfo STATE_INFO[] = {
 };
 
-const VariableInfo VARIABLE_INFO[] = {
-    {"x", "dimensionless", "my_component"}
+const VariableInfoWithType VARIABLE_INFO[] = {
+    {"x", "dimensionless", "my_component", COMPUTED_CONSTANT}
 };
 
 double * createStatesArray()
