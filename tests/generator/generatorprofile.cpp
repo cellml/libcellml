@@ -352,7 +352,6 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
 }
 
-
 TEST(GeneratorProfile, generalSettings)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
