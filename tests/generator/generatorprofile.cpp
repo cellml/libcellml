@@ -307,7 +307,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("rates", generatorProfile->ratesArrayString());
     EXPECT_EQ("variables", generatorProfile->variablesArrayString());
 
-    EXPECT_EQ("return (double *) malloc(<ARRAY_SIZE> * sizeof(double));\n",
+    EXPECT_EQ("return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n",
               generatorProfile->returnCreatedArrayString());
 
     EXPECT_EQ("double * createStatesArray()\n{\n"

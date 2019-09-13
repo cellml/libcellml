@@ -42,12 +42,12 @@ const VariableInfoWithType VARIABLE_INFO[] = {
 
 double * createStatesArray()
 {
-    return (double *) malloc(2 * sizeof(double));
+    return (double *) malloc(2*sizeof(double));
 }
 
 double * createVariablesArray()
 {
-    return (double *) malloc(2 * sizeof(double));
+    return (double *) malloc(2*sizeof(double));
 }
 
 void deleteArray(double *array)
