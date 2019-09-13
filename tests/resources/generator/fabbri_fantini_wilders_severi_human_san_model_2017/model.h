@@ -2,6 +2,11 @@
 
 #include <stddef.h>
 
+extern const char LIBCELLML_VERSION[];
+
+extern const size_t STATE_COUNT;
+extern const size_t VARIABLE_COUNT;
+
 typedef enum {
     CONSTANT,
     COMPUTED_CONSTANT,

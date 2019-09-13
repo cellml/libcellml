@@ -419,12 +419,12 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <math.h>\n"
                                       "#include <stdlib.h>\n";
 
-        mInterfaceDeclarationString = "extern <CODE>;\n" ;
+        mInterfaceDeclarationString = "extern <CODE>;\n";
 
-        mLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
+        mLibcellmlVersionString = "const char LIBCELLML_VERSION[]";
 
-        mStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
-        mVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
+        mStateCountString = "const size_t STATE_COUNT";
+        mVariableCountString = "const size_t VARIABLE_COUNT";
 
         mVariableTypeObjectString = "typedef enum {\n"
                                     "    CONSTANT,\n"
@@ -698,10 +698,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mInterfaceDeclarationString = "";
 
-        mLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
+        mLibcellmlVersionString = "LIBCELLML_VERSION";
 
-        mStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
-        mVariableCountString = "VARIABLE_COUNT = <VARIABLE_COUNT>\n";
+        mStateCountString = "STATE_COUNT";
+        mVariableCountString = "VARIABLE_COUNT";
 
         mVariableTypeObjectString = "\n"
                                     "class VariableType(Enum):\n"
