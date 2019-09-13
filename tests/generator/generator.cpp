@@ -1183,7 +1183,7 @@ TEST(Generator, coverage)
     profile->setPiecewiseElseString(", <ELSE_STATEMENT>)");
     profile->setHasConditionalOperator(false);
 
-    profile->setHeaderString("");
+    profile->setImplementationHeaderString("");
 
     profile->setLibcellmlVersionString("");
 

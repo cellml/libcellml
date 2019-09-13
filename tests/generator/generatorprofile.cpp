@@ -253,10 +253,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
     EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
 
+    EXPECT_EQ("#include <stddef.h>\n",
+              generatorProfile->interfaceHeaderString());
     EXPECT_EQ("#include <math.h>\n"
-              "#include <stddef.h>\n"
               "#include <stdlib.h>\n",
-              generatorProfile->headerString());
+              generatorProfile->implementationHeaderString());
 
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->libcellmlVersionString());
 
@@ -639,7 +640,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setCommentString(value);
     generatorProfile->setOriginCommentString(value);
 
-    generatorProfile->setHeaderString(value);
+    generatorProfile->setInterfaceHeaderString(value);
+    generatorProfile->setImplementationHeaderString(value);
 
     generatorProfile->setLibcellmlVersionString(value);
 
@@ -692,7 +694,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->commentString());
     EXPECT_EQ(value, generatorProfile->originCommentString());
 
-    EXPECT_EQ(value, generatorProfile->headerString());
+    EXPECT_EQ(value, generatorProfile->interfaceHeaderString());
+    EXPECT_EQ(value, generatorProfile->implementationHeaderString());
 
     EXPECT_EQ(value, generatorProfile->libcellmlVersionString());
 

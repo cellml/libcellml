@@ -1958,22 +1958,42 @@ public:
     void setOriginCommentString(const std::string &originCommentString);
 
     /**
-     * @brief Get the @c std::string for a header.
+     * @brief Get the @c std::string for an interface header.
      *
-     * Return the @c std::string for a header.
+     * Return the @c std::string for an interface header.
      *
-     * @return The @c std::string for a header.
+     * @return The @c std::string for an interface header.
      */
-    std::string headerString() const;
+    std::string interfaceHeaderString() const;
 
     /**
-     * @brief Set the @c std::string for a header.
+     * @brief Set the @c std::string for an interface header.
      *
-     * Set this @c std::string for a header.
+     * Set this @c std::string for an interface header.
      *
-     * @param headerString The @c std::string to use for a header.
+     * @param interfaceHeaderString The @c std::string to use for an interface
+     * header.
      */
-    void setHeaderString(const std::string &headerString);
+    void setInterfaceHeaderString(const std::string &interfaceHeaderString);
+
+    /**
+     * @brief Get the @c std::string for an implementation header.
+     *
+     * Return the @c std::string for an implementation header.
+     *
+     * @return The @c std::string for an implementation header.
+     */
+    std::string implementationHeaderString() const;
+
+    /**
+     * @brief Set the @c std::string for an implementation header.
+     *
+     * Set this @c std::string for an implementation header.
+     *
+     * @param implementationHeaderString The @c std::string to use for an
+     * implementation header.
+     */
+    void setImplementationHeaderString(const std::string &implementationHeaderString);
 
     /**
      * @brief Get the @c std::string for the libCellML version constant.

@@ -165,7 +165,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCommentString;
     std::string mOriginCommentString;
 
-    std::string mHeaderString;
+    std::string mInterfaceHeaderString;
+    std::string mImplementationHeaderString;
 
     std::string mLibcellmlVersionString;
 
@@ -404,9 +405,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCommentString = "/* <CODE> */\n";
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
 
-        mHeaderString = "#include <math.h>\n"
-                        "#include <stddef.h>\n"
-                        "#include <stdlib.h>\n";
+        mInterfaceHeaderString = "#include <stddef.h>\n";
+        mImplementationHeaderString = "#include <math.h>\n"
+                                      "#include <stdlib.h>\n";
 
         mLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
 
@@ -672,9 +673,10 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCommentString = "# <CODE>\n";
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
 
-        mHeaderString = "from enum import Enum\n"
-                        "from math import *\n"
-                        "\n";
+        mInterfaceHeaderString = "";
+        mImplementationHeaderString = "from enum import Enum\n"
+                                      "from math import *\n"
+                                      "\n";
 
         mLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
 
@@ -897,7 +899,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mCommentString = rhs.mPimpl->mCommentString;
     mPimpl->mOriginCommentString = rhs.mPimpl->mOriginCommentString;
 
-    mPimpl->mHeaderString = rhs.mPimpl->mHeaderString;
+    mPimpl->mInterfaceHeaderString = rhs.mPimpl->mInterfaceHeaderString;
+    mPimpl->mImplementationHeaderString = rhs.mPimpl->mImplementationHeaderString;
 
     mPimpl->mLibcellmlVersionString = rhs.mPimpl->mLibcellmlVersionString;
 
@@ -2375,18 +2378,32 @@ void GeneratorProfile::setOriginCommentString(const std::string &originCommentSt
     mPimpl->mOriginCommentString = originCommentString;
 }
 
-std::string GeneratorProfile::headerString() const
+std::string GeneratorProfile::interfaceHeaderString() const
 {
-    return mPimpl->mHeaderString;
+    return mPimpl->mInterfaceHeaderString;
 }
 
-void GeneratorProfile::setHeaderString(const std::string &headerString)
+void GeneratorProfile::setInterfaceHeaderString(const std::string &interfaceHeaderString)
 {
-    if (mPimpl->mHeaderString != headerString) {
+    if (mPimpl->mInterfaceHeaderString != interfaceHeaderString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mHeaderString = headerString;
+    mPimpl->mInterfaceHeaderString = interfaceHeaderString;
+}
+
+std::string GeneratorProfile::implementationHeaderString() const
+{
+    return mPimpl->mImplementationHeaderString;
+}
+
+void GeneratorProfile::setImplementationHeaderString(const std::string &implementationHeaderString)
+{
+    if (mPimpl->mImplementationHeaderString != implementationHeaderString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationHeaderString = implementationHeaderString;
 }
 
 std::string GeneratorProfile::libcellmlVersionString() const
