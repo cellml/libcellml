@@ -212,6 +212,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mIndentString;
 
+    std::string mOpenArrayInitializerString;
+    std::string mCloseArrayInitializerString;
+
     std::string mOpenArrayString;
     std::string mCloseArrayString;
 
@@ -490,6 +493,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
+        mOpenArrayInitializerString = "{";
+        mCloseArrayInitializerString = "}";
+
         mOpenArrayString = "[";
         mCloseArrayString = "]";
 
@@ -751,6 +757,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
+        mOpenArrayInitializerString = "[";
+        mCloseArrayInitializerString = "]";
+
         mOpenArrayString = "[";
         mCloseArrayString = "]";
 
@@ -956,6 +965,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
+
+    mPimpl->mOpenArrayInitializerString = rhs.mPimpl->mOpenArrayInitializerString;
+    mPimpl->mCloseArrayInitializerString = rhs.mPimpl->mCloseArrayInitializerString;
 
     mPimpl->mOpenArrayString = rhs.mPimpl->mOpenArrayString;
     mPimpl->mCloseArrayString = rhs.mPimpl->mCloseArrayString;
@@ -2824,6 +2836,34 @@ void GeneratorProfile::setIndentString(const std::string &indentString)
     }
 
     mPimpl->mIndentString = indentString;
+}
+
+std::string GeneratorProfile::openArrayInitializerString() const
+{
+    return mPimpl->mOpenArrayInitializerString;
+}
+
+void GeneratorProfile::setOpenArrayInitializerString(const std::string &openArrayInitializerString)
+{
+    if (mPimpl->mOpenArrayInitializerString != openArrayInitializerString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mOpenArrayInitializerString = openArrayInitializerString;
+}
+
+std::string GeneratorProfile::closeArrayInitializerString() const
+{
+    return mPimpl->mCloseArrayInitializerString;
+}
+
+void GeneratorProfile::setCloseArrayInitializerString(const std::string &closeArrayInitializerString)
+{
+    if (mPimpl->mCloseArrayInitializerString != closeArrayInitializerString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mCloseArrayInitializerString = closeArrayInitializerString;
 }
 
 std::string GeneratorProfile::openArrayString() const
