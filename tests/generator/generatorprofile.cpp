@@ -255,7 +255,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("#include <stddef.h>\n",
               generatorProfile->interfaceHeaderString());
-    EXPECT_EQ("#include <math.h>\n"
+    EXPECT_EQ("#include \"model.h\"\n"
+              "\n"
+              "#include <math.h>\n"
               "#include <stdlib.h>\n",
               generatorProfile->implementationHeaderString());
 

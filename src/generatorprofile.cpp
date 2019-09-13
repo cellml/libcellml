@@ -406,7 +406,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mOriginCommentString = "The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.";
 
         mInterfaceHeaderString = "#include <stddef.h>\n";
-        mImplementationHeaderString = "#include <math.h>\n"
+        mImplementationHeaderString = "#include \"model.h\"\n"
+                                      "\n"
+                                      "#include <math.h>\n"
                                       "#include <stdlib.h>\n";
 
         mLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
