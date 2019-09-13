@@ -214,6 +214,7 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCloseArrayString;
 
     std::string mArrayElementSeparatorString;
+
     std::string mCommandSeparatorString;
 
     void loadProfile(GeneratorProfile::Profile profile);
@@ -489,6 +490,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
+
         mCommandSeparatorString = ";";
     } else if (profile == GeneratorProfile::Profile::PYTHON) {
         // Whether the profile requires an interface to be generated.
@@ -747,6 +749,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
+
         mCommandSeparatorString = "";
     }
 }
@@ -950,6 +953,7 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mCloseArrayString = rhs.mPimpl->mCloseArrayString;
 
     mPimpl->mArrayElementSeparatorString = rhs.mPimpl->mArrayElementSeparatorString;
+
     mPimpl->mCommandSeparatorString = rhs.mPimpl->mCommandSeparatorString;
 }
 

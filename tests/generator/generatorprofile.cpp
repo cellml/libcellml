@@ -352,6 +352,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("]", generatorProfile->closeArrayString());
 
     EXPECT_EQ(",", generatorProfile->arrayElementSeparatorString());
+
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
 }
 
@@ -691,6 +692,7 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setCloseArrayString(value);
 
     generatorProfile->setArrayElementSeparatorString(value);
+
     generatorProfile->setCommandSeparatorString(value);
 
     EXPECT_EQ(value, generatorProfile->commentString());
@@ -745,5 +747,6 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->closeArrayString());
 
     EXPECT_EQ(value, generatorProfile->arrayElementSeparatorString());
+
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
 }
