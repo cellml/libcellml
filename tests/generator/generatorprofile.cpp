@@ -263,10 +263,10 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("extern <CODE>;\n", generatorProfile->interfaceDeclarationString());
 
-    EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->libcellmlVersionString());
+    EXPECT_EQ("const char LIBCELLML_VERSION[]", generatorProfile->libcellmlVersionString());
 
-    EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->stateCountString());
-    EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->variableCountString());
+    EXPECT_EQ("const size_t STATE_COUNT", generatorProfile->stateCountString());
+    EXPECT_EQ("const size_t VARIABLE_COUNT", generatorProfile->variableCountString());
 
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"

@@ -2028,9 +2028,7 @@ public:
     /**
      * @brief Set the @c std::string for the libCellML version constant.
      *
-     * Set this @c std::string for the libCellML version constant. To be useful,
-     * the string should contain the <LIBCELLML_VERSION> tag, which will be
-     * replaced with the version of libCellML used.
+     * Set this @c std::string for the libCellML version constant.
      *
      * @param versionString The @c std::string to use for the libCellML version
      * constant.
@@ -2049,9 +2047,7 @@ public:
     /**
      * @brief Set the @c std::string for the state count constant.
      *
-     * Set this @c std::string for the state count constant. To be useful, the
-     * string should contain the <STATE_COUNT> tag, which will be replaced with
-     * the number of states in the model.
+     * Set this @c std::string for the state count constant.
      *
      * @param stateCountString The @c std::string to use for the state count
      * constant.
@@ -2070,9 +2066,7 @@ public:
     /**
      * @brief Set the @c std::string for the variable count constant.
      *
-     * Set this @c std::string for the variable count constant. To be useful,
-     * the string should contain the <VARIABLE_COUNT> tag, which will be
-     * replaced with the number of states in the model.
+     * Set this @c std::string for the variable count constant.
      *
      * @param variableCountString The @c std::string to use for the variable
      * count constant.

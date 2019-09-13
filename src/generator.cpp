@@ -625,8 +625,13 @@ struct Generator::GeneratorImpl
     void addOriginCommentCode(std::string &code);
     void addInterfaceHeaderCode(std::string &code);
     void addImplementationHeaderCode(std::string &code);
-    void addVersionCode(std::string &code);
-    void addStateAndVariableCountCode(std::string &code);
+
+    void addInterfaceLibcellmlVersionCode(std::string &code);
+    void addImplementationLibcellmlVersionCode(std::string &code);
+
+    void addInterfaceStateAndVariableCountCode(std::string &code);
+    void addImplementationStateAndVariableCountCode(std::string &code);
+
     void addVariableTypeObjectCode(std::string &code);
 
     std::string generateVariableInfoObjectCode(const std::string &objectString);
@@ -1662,19 +1667,60 @@ void Generator::GeneratorImpl::addImplementationHeaderCode(std::string &code)
     }
 }
 
-void Generator::GeneratorImpl::addVersionCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceLibcellmlVersionCode(std::string &code)
 {
-    if (!mProfile->libcellmlVersionString().empty()) {
+    if (!mProfile->interfaceDeclarationString().empty()
+        && !mProfile->libcellmlVersionString().empty()
+        && !mProfile->stringDelimiterString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += replace(mProfile->libcellmlVersionString(),
-                        "<LIBCELLML_VERSION>", versionString());
+        code += replace(mProfile->interfaceDeclarationString(),
+                        "<CODE>", mProfile->libcellmlVersionString());
     }
 }
 
-void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationLibcellmlVersionCode(std::string &code)
+{
+    if (!mProfile->libcellmlVersionString().empty()
+        && !mProfile->stringDelimiterString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->libcellmlVersionString()
+                + mProfile->assignmentString()
+                + mProfile->stringDelimiterString()
+                + versionString()
+                + mProfile->stringDelimiterString()
+                + mProfile->commandSeparatorString()
+                + "\n";
+    }
+}
+
+void Generator::GeneratorImpl::addInterfaceStateAndVariableCountCode(std::string &code)
+{
+    if (!mProfile->interfaceDeclarationString().empty()
+        && (!mProfile->stateCountString().empty()
+            || !mProfile->variableCountString().empty())) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        if (!mProfile->stateCountString().empty()) {
+            code += replace(mProfile->interfaceDeclarationString(),
+                            "<CODE>", mProfile->stateCountString());
+        }
+
+        if (!mProfile->variableCountString().empty()) {
+            code += replace(mProfile->interfaceDeclarationString(),
+                            "<CODE>", mProfile->variableCountString());
+        }
+    }
+}
+
+void Generator::GeneratorImpl::addImplementationStateAndVariableCountCode(std::string &code)
 {
     if (!mProfile->stateCountString().empty()
         || !mProfile->variableCountString().empty()) {
@@ -1683,13 +1729,19 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code)
         }
 
         if (!mProfile->stateCountString().empty()) {
-            code += replace(mProfile->stateCountString(),
-                            "<STATE_COUNT>", std::to_string(mStates.size()));
+            code += mProfile->stateCountString()
+                    + mProfile->assignmentString()
+                    + std::to_string(mStates.size())
+                    + mProfile->commandSeparatorString()
+                    + "\n";
         }
 
         if (!mProfile->variableCountString().empty()) {
-            code += replace(mProfile->variableCountString(),
-                            "<VARIABLE_COUNT>", std::to_string(mVariables.size()));
+            code += mProfile->variableCountString()
+                    + mProfile->assignmentString()
+                    + std::to_string(mVariables.size())
+                    + mProfile->commandSeparatorString()
+                    + "\n";
         }
     }
 }
@@ -3168,6 +3220,14 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addInterfaceHeaderCode(res);
 
+    // Add code for the interface of the version (of libCellML).
+
+    mPimpl->addInterfaceLibcellmlVersionCode(res);
+
+    // Add code for the interface of the number of states and variables.
+
+    mPimpl->addInterfaceStateAndVariableCountCode(res);
+
     // Add code for the variable information related objects.
 
     if (mPimpl->mProfile->hasInterface()) {
@@ -3197,11 +3257,11 @@ std::string Generator::implementationCode() const
 
     // Add code for the version (of libCellML).
 
-    mPimpl->addVersionCode(res);
+    mPimpl->addImplementationLibcellmlVersionCode(res);
 
     // Add code for the number of states and variables.
 
-    mPimpl->addStateAndVariableCountCode(res);
+    mPimpl->addImplementationStateAndVariableCountCode(res);
 
     // Add code for the variable information related objects.
 
