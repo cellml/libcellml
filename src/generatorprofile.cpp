@@ -452,7 +452,7 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mRatesArrayString = "rates";
         mVariablesArrayString = "variables";
 
-        mReturnCreatedArrayString = "return (double *) malloc(<ARRAY_SIZE> * sizeof(double));\n";
+        mReturnCreatedArrayString = "return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n";
 
         mCreateStatesArrayMethodString = "double * createStatesArray()\n{\n"
                                          "<CODE>"
