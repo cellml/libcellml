@@ -1,7 +1,6 @@
 /* The content of this file was generated using the C profile of libCellML 0.2.0. */
 
 #include <math.h>
-#include <stddef.h>
 #include <stdlib.h>
 
 const char LIBCELLML_VERSION[] = "0.2.0";

@@ -623,7 +623,8 @@ struct Generator::GeneratorImpl
                                  const VariablePtr &variable);
 
     void addOriginCommentCode(std::string &code);
-    void addHeaderCode(std::string &code);
+    void addInterfaceHeaderCode(std::string &code);
+    void addImplementationHeaderCode(std::string &code);
     void addVersionCode(std::string &code);
     void addStateAndVariableCountCode(std::string &code);
     void addVariableTypeObjectCode(std::string &code);
@@ -1639,14 +1640,25 @@ void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
     }
 }
 
-void Generator::GeneratorImpl::addHeaderCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceHeaderCode(std::string &code)
 {
-    if (!mProfile->headerString().empty()) {
+    if (!mProfile->interfaceHeaderString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += mProfile->headerString();
+        code += mProfile->interfaceHeaderString();
+    }
+}
+
+void Generator::GeneratorImpl::addImplementationHeaderCode(std::string &code)
+{
+    if (!mProfile->implementationHeaderString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->implementationHeaderString();
     }
 }
 
@@ -3152,6 +3164,10 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addOriginCommentCode(res);
 
+    // Add code for the header.
+
+    mPimpl->addInterfaceHeaderCode(res);
+
     return res;
 }
 
@@ -3169,7 +3185,7 @@ std::string Generator::implementationCode() const
 
     // Add code for the header.
 
-    mPimpl->addHeaderCode(res);
+    mPimpl->addImplementationHeaderCode(res);
 
     // Add code for the version (of libCellML).
 
