@@ -8,25 +8,6 @@ const char LIBCELLML_VERSION[] = "0.2.0";
 const size_t STATE_COUNT = 4;
 const size_t VARIABLE_COUNT = 18;
 
-typedef enum {
-    CONSTANT,
-    COMPUTED_CONSTANT,
-    ALGEBRAIC
-} VariableType;
-
-typedef struct {
-    char name[8];
-    char units[16];
-    char component[25];
-} VariableInfo;
-
-typedef struct {
-    char name[8];
-    char units[16];
-    char component[25];
-    VariableType type;
-} VariableInfoWithType;
-
 const VariableInfo VOI_INFO = {"time", "millisecond", "membrane"};
 
 const VariableInfo STATE_INFO[] = {
