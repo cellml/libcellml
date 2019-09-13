@@ -2631,6 +2631,44 @@ public:
     void setIndentString(const std::string &indentString);
 
     /**
+     * @brief Get the @c std::string for opening an array initializer.
+     *
+     * Return the @c std::string for opening an array initializer.
+     *
+     * @return The @c std::string for opening an array initializer.
+     */
+    std::string openArrayInitializerString() const;
+
+    /**
+     * @brief Set the @c std::string for opening an array initializer.
+     *
+     * Set this @c std::string for opening an array initializer.
+     *
+     * @param openArrayInitializerString The @c std::string to use for opening
+     * an array initializer.
+     */
+    void setOpenArrayInitializerString(const std::string &openArrayInitializerString);
+
+    /**
+     * @brief Get the @c std::string for closing an array initializer.
+     *
+     * Return the @c std::string for closing an array initializer.
+     *
+     * @return The @c std::string for closing an array initializer.
+     */
+    std::string closeArrayInitializerString() const;
+
+    /**
+     * @brief Set the @c std::string for closing an array initializer.
+     *
+     * Set this @c std::string for closing an array initializer.
+     *
+     * @param closeArrayInitializerString The @c std::string to use for closing
+     *  an array initializer.
+     */
+    void setCloseArrayInitializerString(const std::string &closeArrayInitializerString);
+
+    /**
      * @brief Get the @c std::string for opening an array.
      *
      * Return the @c std::string for opening an array.
