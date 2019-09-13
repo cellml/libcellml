@@ -350,6 +350,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
 
     EXPECT_EQ("    ", generatorProfile->indentString());
 
+    EXPECT_EQ("\"", generatorProfile->stringDelimiterString());
+
     EXPECT_EQ("{", generatorProfile->openArrayInitializerString());
     EXPECT_EQ("}", generatorProfile->closeArrayInitializerString());
 
@@ -695,6 +697,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setIndentString(value);
 
+    generatorProfile->setStringDelimiterString(value);
+
     generatorProfile->setOpenArrayInitializerString(value);
     generatorProfile->setCloseArrayInitializerString(value);
 
@@ -754,6 +758,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->emptyMethodString());
 
     EXPECT_EQ(value, generatorProfile->indentString());
+
+    EXPECT_EQ(value, generatorProfile->stringDelimiterString());
 
     EXPECT_EQ(value, generatorProfile->openArrayInitializerString());
     EXPECT_EQ(value, generatorProfile->closeArrayInitializerString());
