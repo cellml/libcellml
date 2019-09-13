@@ -261,6 +261,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "#include <stdlib.h>\n",
               generatorProfile->implementationHeaderString());
 
+    EXPECT_EQ("extern <CODE>;\n", generatorProfile->interfaceDeclarationString());
+
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->libcellmlVersionString());
 
     EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->stateCountString());
@@ -646,6 +648,8 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceHeaderString(value);
     generatorProfile->setImplementationHeaderString(value);
 
+    generatorProfile->setInterfaceDeclarationString(value);
+
     generatorProfile->setLibcellmlVersionString(value);
 
     generatorProfile->setStateCountString(value);
@@ -700,6 +704,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->interfaceHeaderString());
     EXPECT_EQ(value, generatorProfile->implementationHeaderString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceDeclarationString());
 
     EXPECT_EQ(value, generatorProfile->libcellmlVersionString());
 
