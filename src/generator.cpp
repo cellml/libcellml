@@ -3168,6 +3168,14 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addInterfaceHeaderCode(res);
 
+    // Add code for the variable information related objects.
+
+    if (mPimpl->mProfile->hasInterface()) {
+        mPimpl->addVariableTypeObjectCode(res);
+        mPimpl->addVariableInfoObjectCode(res);
+        mPimpl->addVariableInfoWithTypeObjectCode(res);
+    }
+
     return res;
 }
 
@@ -3197,9 +3205,11 @@ std::string Generator::implementationCode() const
 
     // Add code for the variable information related objects.
 
-    mPimpl->addVariableTypeObjectCode(res);
-    mPimpl->addVariableInfoObjectCode(res);
-    mPimpl->addVariableInfoWithTypeObjectCode(res);
+    if (!mPimpl->mProfile->hasInterface()) {
+        mPimpl->addVariableTypeObjectCode(res);
+        mPimpl->addVariableInfoObjectCode(res);
+        mPimpl->addVariableInfoWithTypeObjectCode(res);
+    }
 
     // Add code for the information about the variable of integration, states
     // and (other) variables.
