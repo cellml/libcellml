@@ -168,6 +168,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceHeaderString;
     std::string mImplementationHeaderString;
 
+    std::string mInterfaceDeclarationString;
+
     std::string mLibcellmlVersionString;
 
     std::string mStateCountString;
@@ -411,6 +413,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "\n"
                                       "#include <math.h>\n"
                                       "#include <stdlib.h>\n";
+
+        mInterfaceDeclarationString = "extern <CODE>;\n" ;
 
         mLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
 
@@ -682,6 +686,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "from math import *\n"
                                       "\n";
 
+        mInterfaceDeclarationString = "";
+
         mLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
 
         mStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
@@ -906,6 +912,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mInterfaceHeaderString = rhs.mPimpl->mInterfaceHeaderString;
     mPimpl->mImplementationHeaderString = rhs.mPimpl->mImplementationHeaderString;
+
+    mPimpl->mInterfaceDeclarationString = rhs.mPimpl->mInterfaceDeclarationString;
 
     mPimpl->mLibcellmlVersionString = rhs.mPimpl->mLibcellmlVersionString;
 
@@ -2410,6 +2418,20 @@ void GeneratorProfile::setImplementationHeaderString(const std::string &implemen
     }
 
     mPimpl->mImplementationHeaderString = implementationHeaderString;
+}
+
+std::string GeneratorProfile::interfaceDeclarationString() const
+{
+    return mPimpl->mInterfaceDeclarationString;
+}
+
+void GeneratorProfile::setInterfaceDeclarationString(const std::string &interfaceDeclarationString)
+{
+    if (mPimpl->mInterfaceDeclarationString != interfaceDeclarationString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceDeclarationString = interfaceDeclarationString;
 }
 
 std::string GeneratorProfile::libcellmlVersionString() const

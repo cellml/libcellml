@@ -1996,6 +1996,27 @@ public:
     void setImplementationHeaderString(const std::string &implementationHeaderString);
 
     /**
+     * @brief Get the @c std::string for an interface declaration.
+     *
+     * Return the @c std::string for an interface declaration.
+     *
+     * @return The @c std::string for an interface declaration.
+     */
+    std::string interfaceDeclarationString() const;
+
+    /**
+     * @brief Set the @c std::string for an interface declaration.
+     *
+     * Set this @c std::string for an interface declaration. To be useful, the
+     * string should contain the <CODE> tag, which will be replaced with the
+     * variable/function for which there is an implementation.
+     *
+     * @param interfaceDeclarationString The @c std::string to use for an
+     * interface declaration.
+     */
+    void setInterfaceDeclarationString(const std::string &interfaceDeclarationString);
+
+    /**
      * @brief Get the @c std::string for the libCellML version constant.
      *
      * Return the @c std::string for the libCellML version constant.
