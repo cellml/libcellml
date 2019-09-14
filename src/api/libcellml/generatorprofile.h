@@ -2036,6 +2036,27 @@ public:
     void setLibcellmlVersionString(const std::string &libcellmlVersionString);
 
     /**
+     * @brief Get the @c std::string for the version of the profile.
+     *
+     * Return the @c std::string for the version of the profile.
+     *
+     * @return The @c std::string for the version of the profile.
+     */
+    std::string versionString() const;
+
+    /**
+     * @brief Set the @c std::string for the version of the profile.
+     *
+     * Set this @c std::string for the version of the profile.
+     *
+     * @param versionString The @c std::string to use for the version of the profile.
+     */
+    void setVersionString(const std::string &versionString);
+
+    std::string interfaceDeclarationVersionString() const;
+    void setInterfaceDeclarationVersionString(const std::string &interfaceDeclarationVersionString);
+
+    /**
      * @brief Get the @c std::string for the state count constant.
      *
      * Return the @c std::string for the state count constant.
