@@ -629,6 +629,9 @@ struct Generator::GeneratorImpl
     void addInterfaceLibcellmlVersionCode(std::string &code);
     void addImplementationLibcellmlVersionCode(std::string &code);
 
+    void addInterfaceVersionCode(std::string &code);
+    void addImplementationVersionCode(std::string &code);
+
     void addInterfaceStateAndVariableCountCode(std::string &code);
     void addImplementationStateAndVariableCountCode(std::string &code);
 
@@ -1696,6 +1699,30 @@ void Generator::GeneratorImpl::addImplementationLibcellmlVersionCode(std::string
                 + mProfile->stringDelimiterString()
                 + mProfile->commandSeparatorString()
                 + "\n";
+    }
+}
+
+void Generator::GeneratorImpl::addInterfaceVersionCode(std::string &code)
+{
+    if (!mProfile->interfaceDeclarationString().empty()
+        && !mProfile->interfaceDeclarationVersionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->interfaceDeclarationVersionString() + "\n";
+    }
+}
+
+void Generator::GeneratorImpl::addImplementationVersionCode(std::string &code)
+{
+    if (!mProfile->libcellmlVersionString().empty()
+        && !mProfile->stringDelimiterString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->versionString() + "\n";
     }
 }
 
@@ -3220,8 +3247,9 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addInterfaceHeaderCode(res);
 
-    // Add code for the interface of the version (of libCellML).
+    // Add code for the version of the profile and libCellML.
 
+    mPimpl->addInterfaceVersionCode(res);
     mPimpl->addInterfaceLibcellmlVersionCode(res);
 
     // Add code for the interface of the number of states and variables.
@@ -3245,9 +3273,9 @@ std::string Generator::implementationCode() const
         return {};
     }
 
-    // Add code for the origin comment.
-
     std::string res;
+
+    // Add code for the origin comment.
 
     mPimpl->addOriginCommentCode(res);
 
@@ -3255,8 +3283,9 @@ std::string Generator::implementationCode() const
 
     mPimpl->addImplementationHeaderCode(res);
 
-    // Add code for the version (of libCellML).
+    // Add code for the version of the profile and libCellML.
 
+    mPimpl->addImplementationVersionCode(res);
     mPimpl->addImplementationLibcellmlVersionCode(res);
 
     // Add code for the number of states and variables.

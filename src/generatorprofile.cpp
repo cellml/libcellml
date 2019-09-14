@@ -171,6 +171,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceDeclarationString;
 
     std::string mLibcellmlVersionString;
+    std::string mVersionString;
+    std::string mInterfaceDeclarationVersionString;
 
     std::string mStateCountString;
     std::string mVariableCountString;
@@ -422,6 +424,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeclarationString = "extern <CODE>;\n";
 
         mLibcellmlVersionString = "const char LIBCELLML_VERSION[]";
+        mVersionString = "const char VERSION[] = \"0.1.0\";";
+        mInterfaceDeclarationVersionString = "extern const char VERSION[];";
 
         mStateCountString = "const size_t STATE_COUNT";
         mVariableCountString = "const size_t VARIABLE_COUNT";
@@ -699,6 +703,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeclarationString = "";
 
         mLibcellmlVersionString = "LIBCELLML_VERSION";
+        mVersionString = "__version__ = \"0.1.0\"";
+        mInterfaceDeclarationVersionString = "";
 
         mStateCountString = "STATE_COUNT";
         mVariableCountString = "VARIABLE_COUNT";
@@ -931,6 +937,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mInterfaceDeclarationString = rhs.mPimpl->mInterfaceDeclarationString;
 
     mPimpl->mLibcellmlVersionString = rhs.mPimpl->mLibcellmlVersionString;
+    mPimpl->mVersionString = rhs.mPimpl->mVersionString;
+    mPimpl->mInterfaceDeclarationVersionString = rhs.mPimpl->mInterfaceDeclarationVersionString;
 
     mPimpl->mStateCountString = rhs.mPimpl->mStateCountString;
     mPimpl->mVariableCountString = rhs.mPimpl->mVariableCountString;
@@ -2466,6 +2474,26 @@ void GeneratorProfile::setLibcellmlVersionString(const std::string &libcellmlVer
     }
 
     mPimpl->mLibcellmlVersionString = libcellmlVersionString;
+}
+
+std::string GeneratorProfile::versionString() const
+{
+    return mPimpl->mVersionString;
+}
+
+void GeneratorProfile::setVersionString(const std::string &versionString)
+{
+    mPimpl->mVersionString = versionString;
+}
+
+std::string GeneratorProfile::interfaceDeclarationVersionString() const
+{
+    return mPimpl->mInterfaceDeclarationVersionString;
+}
+
+void GeneratorProfile::setInterfaceDeclarationVersionString(const std::string &interfaceDeclarationVersionString)
+{
+    mPimpl->mInterfaceDeclarationVersionString = interfaceDeclarationVersionString;
 }
 
 std::string GeneratorProfile::stateCountString() const

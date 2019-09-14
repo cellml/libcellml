@@ -976,6 +976,27 @@ TEST(Generator, dependent_eqns)
     EXPECT_EQ(fileContents("generator/dependent_eqns/model.py"), generator.implementationCode());
 }
 
+TEST(Generator, modifiedGeneratorProfile)
+{
+    libcellml::Parser parser;
+    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/modified/model.cellml"));
+
+    EXPECT_EQ(size_t(0), parser.errorCount());
+
+    libcellml::Generator generator;
+
+    generator.processModel(model);
+
+    EXPECT_EQ(fileContents("generator/modified/model.h"), generator.interfaceCode());
+    EXPECT_EQ(fileContents("generator/modified/model.c"), generator.implementationCode());
+
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+    generator.setProfile(profile);
+
+    EXPECT_EQ(fileContents("generator/modified/model.py"), generator.implementationCode());
+}
+
 TEST(Generator, fabbri_fantini_wilders_severi_human_san_model_2017)
 {
     libcellml::Parser parser;
@@ -1186,6 +1207,8 @@ TEST(Generator, coverage)
     profile->setImplementationHeaderString("");
 
     profile->setLibcellmlVersionString("");
+    profile->setVersionString("");
+    profile->setInterfaceDeclarationVersionString("interface declaration of version");
 
     profile->setStateCountString("");
     profile->setVariableCountString("");
