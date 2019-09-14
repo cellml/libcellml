@@ -22,7 +22,7 @@ const VariableInfoWithType VARIABLE_INFO[] = {
     {"a", "second", "my_component", ALGEBRAIC}
 };
 
-double * createStatesArray()
+double * createStatesVector()
 {
     return (double *) malloc(1*sizeof(double));
 }
