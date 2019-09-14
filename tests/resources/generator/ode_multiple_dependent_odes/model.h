@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 
+extern const char VERSION[];
 extern const char LIBCELLML_VERSION[];
 
 extern const size_t STATE_COUNT;
