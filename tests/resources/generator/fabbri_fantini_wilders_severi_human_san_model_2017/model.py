@@ -4,6 +4,8 @@ from enum import Enum
 from math import *
 
 
+__version__ = "0.1.0"
+
 LIBCELLML_VERSION = "0.2.0"
 
 STATE_COUNT = 33
