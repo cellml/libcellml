@@ -1710,7 +1710,7 @@ void Generator::GeneratorImpl::addInterfaceVersionCode(std::string &code)
             code += "\n";
         }
 
-        code += mProfile->interfaceDeclarationVersionString() + "\n";
+        code += mProfile->interfaceDeclarationVersionString();
     }
 }
 
@@ -1722,7 +1722,7 @@ void Generator::GeneratorImpl::addImplementationVersionCode(std::string &code)
             code += "\n";
         }
 
-        code += mProfile->versionString() + "\n";
+        code += mProfile->versionString();
     }
 }
 
