@@ -2641,7 +2641,7 @@ public:
      * @param stringDelimiterString The @c std::string to use for a string
      * delimiter.
      */
-    void setStringDelimiterString(const std::string &stringDelimiterbString);
+    void setStringDelimiterString(const std::string &stringDelimiterString);
 
     /**
      * @brief Get the @c std::string for opening an array initializer.
