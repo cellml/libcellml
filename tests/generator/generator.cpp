@@ -987,10 +987,19 @@ TEST(Generator, modifiedGeneratorProfile)
 
     generator.processModel(model);
 
+    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::C);
+    profile->setCreateStatesArrayMethodString("double * createStatesVector()\n{\n"
+                                              "<CODE>"
+                                              "}\n");
+    generator.setProfile(profile);
+
     EXPECT_EQ(fileContents("generator/modified/model.h"), generator.interfaceCode());
     EXPECT_EQ(fileContents("generator/modified/model.c"), generator.implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile->setCreateStatesArrayMethodString("\n"
+                                              "def create_states_vector():\n"
+                                              "<CODE>");
 
     generator.setProfile(profile);
 
