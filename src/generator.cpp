@@ -1673,8 +1673,7 @@ void Generator::GeneratorImpl::addImplementationHeaderCode(std::string &code)
 void Generator::GeneratorImpl::addInterfaceLibcellmlVersionCode(std::string &code)
 {
     if (!mProfile->interfaceDeclarationString().empty()
-        && !mProfile->libcellmlVersionString().empty()
-        && !mProfile->stringDelimiterString().empty()) {
+        && !mProfile->libcellmlVersionString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
@@ -1694,9 +1693,7 @@ void Generator::GeneratorImpl::addImplementationLibcellmlVersionCode(std::string
 
         code += mProfile->libcellmlVersionString()
                 + mProfile->assignmentString()
-                + mProfile->stringDelimiterString()
-                + versionString()
-                + mProfile->stringDelimiterString()
+                + mProfile->stringDelimiterString() + versionString() + mProfile->stringDelimiterString()
                 + mProfile->commandSeparatorString()
                 + "\n";
     }
