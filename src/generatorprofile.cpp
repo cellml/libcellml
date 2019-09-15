@@ -448,13 +448,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                             "    VariableType type;\n"
                                             "} VariableInfoWithType;\n";
 
-        mVoiInfoString = "const VariableInfo VOI_INFO = <CODE>;\n";
-        mStateInfoString = "const VariableInfo STATE_INFO[] = {\n"
-                           "<CODE>"
-                           "};\n";
-        mVariableInfoString = "const VariableInfoWithType VARIABLE_INFO[] = {\n"
-                              "<CODE>"
-                              "};\n";
+        mVoiInfoString = "const VariableInfo VOI_INFO";
+        mStateInfoString = "const VariableInfo STATE_INFO[]";
+        mVariableInfoString = "const VariableInfoWithType VARIABLE_INFO[]";
 
         mVariableInfoEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}";
         mVariableInfoWithTypeEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}";
@@ -717,13 +713,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableInfoObjectString = "";
         mVariableInfoWithTypeObjectString = "";
 
-        mVoiInfoString = "VOI_INFO = <CODE>\n";
-        mStateInfoString = "STATE_INFO = [\n"
-                           "<CODE>"
-                           "]\n";
-        mVariableInfoString = "VARIABLE_INFO = [\n"
-                              "<CODE>"
-                              "]\n";
+        mVoiInfoString = "VOI_INFO";
+        mStateInfoString = "STATE_INFO";
+        mVariableInfoString = "VARIABLE_INFO";
 
         mVariableInfoEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\"}";
         mVariableInfoWithTypeEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\", \"type\": <TYPE>}";

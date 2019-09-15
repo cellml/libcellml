@@ -2232,8 +2232,6 @@ public:
      * integration.
      *
      * Set this @c std::string for some information about the variable of
-     * integration. To be useful, the string should contain the <CODE> tag,
-     * which will be replaced with some information about the variable of
      * integration.
      *
      * @param voiInfoString The @c std::string to use for some information about
@@ -2258,8 +2256,6 @@ public:
      * states.
      *
      * Set this @c std::string for some information about the different states.
-     * To be useful, the string should contain the <CODE> tag, which will be
-     * replaced with some information about the different states.
      *
      * @param stateInfoString The @c std::string to use for some information
      * about the different states.
@@ -2283,8 +2279,7 @@ public:
      * variables.
      *
      * Set this @c std::string for some information about the different
-     * variables. To be useful, the string should contain the <CODE> tag, which
-     * will be replaced with some information about the different variables.
+     * variables.
      *
      * @param variableInfoString The @c std::string to use for some information
      * about the different variables.
