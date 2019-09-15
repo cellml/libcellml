@@ -1027,10 +1027,6 @@ bool GeneratorProfile::hasInterface() const
 
 void GeneratorProfile::setHasInterface(bool hasInterface)
 {
-    if (mPimpl->mHasInterface != hasInterface) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasInterface = hasInterface;
 }
 
@@ -1041,10 +1037,6 @@ std::string GeneratorProfile::assignmentString() const
 
 void GeneratorProfile::setAssignmentString(const std::string &assignmentString)
 {
-    if (mPimpl->mAssignmentString != assignmentString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAssignmentString = assignmentString;
 }
 
@@ -1055,10 +1047,6 @@ std::string GeneratorProfile::eqString() const
 
 void GeneratorProfile::setEqString(const std::string &eqString)
 {
-    if (mPimpl->mEqString != eqString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mEqString = eqString;
 }
 
@@ -1069,10 +1057,6 @@ std::string GeneratorProfile::neqString() const
 
 void GeneratorProfile::setNeqString(const std::string &neqString)
 {
-    if (mPimpl->mNeqString != neqString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mNeqString = neqString;
 }
 
@@ -1083,10 +1067,6 @@ std::string GeneratorProfile::ltString() const
 
 void GeneratorProfile::setLtString(const std::string &ltString)
 {
-    if (mPimpl->mLtString != ltString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mLtString = ltString;
 }
 
@@ -1097,10 +1077,6 @@ std::string GeneratorProfile::leqString() const
 
 void GeneratorProfile::setLeqString(const std::string &leqString)
 {
-    if (mPimpl->mLeqString != leqString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mLeqString = leqString;
 }
 
@@ -1111,10 +1087,6 @@ std::string GeneratorProfile::gtString() const
 
 void GeneratorProfile::setGtString(const std::string &gtString)
 {
-    if (mPimpl->mGtString != gtString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mGtString = gtString;
 }
 
@@ -1125,10 +1097,6 @@ std::string GeneratorProfile::geqString() const
 
 void GeneratorProfile::setGeqString(const std::string &geqString)
 {
-    if (mPimpl->mGeqString != geqString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mGeqString = geqString;
 }
 
@@ -1139,10 +1107,6 @@ std::string GeneratorProfile::andString() const
 
 void GeneratorProfile::setAndString(const std::string &andString)
 {
-    if (mPimpl->mAndString != andString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAndString = andString;
 }
 
@@ -1153,10 +1117,6 @@ std::string GeneratorProfile::orString() const
 
 void GeneratorProfile::setOrString(const std::string &orString)
 {
-    if (mPimpl->mOrString != orString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mOrString = orString;
 }
 
@@ -1167,10 +1127,6 @@ std::string GeneratorProfile::xorString() const
 
 void GeneratorProfile::setXorString(const std::string &xorString)
 {
-    if (mPimpl->mXorString != xorString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mXorString = xorString;
 }
 
@@ -1181,10 +1137,6 @@ std::string GeneratorProfile::notString() const
 
 void GeneratorProfile::setNotString(const std::string &notString)
 {
-    if (mPimpl->mNotString != notString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mNotString = notString;
 }
 
@@ -1195,10 +1147,6 @@ bool GeneratorProfile::hasEqOperator() const
 
 void GeneratorProfile::setHasEqOperator(bool hasEqOperator)
 {
-    if (mPimpl->mHasEqOperator != hasEqOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasEqOperator = hasEqOperator;
 }
 
@@ -1209,10 +1157,6 @@ bool GeneratorProfile::hasNeqOperator() const
 
 void GeneratorProfile::setHasNeqOperator(bool hasNeqOperator)
 {
-    if (mPimpl->mHasNeqOperator != hasNeqOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasNeqOperator = hasNeqOperator;
 }
 
@@ -1223,10 +1167,6 @@ bool GeneratorProfile::hasLtOperator() const
 
 void GeneratorProfile::setHasLtOperator(bool hasLtOperator)
 {
-    if (mPimpl->mHasLtOperator != hasLtOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasLtOperator = hasLtOperator;
 }
 
@@ -1237,10 +1177,6 @@ bool GeneratorProfile::hasLeqOperator() const
 
 void GeneratorProfile::setHasLeqOperator(bool hasLeqOperator)
 {
-    if (mPimpl->mHasLeqOperator != hasLeqOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasLeqOperator = hasLeqOperator;
 }
 
@@ -1251,10 +1187,6 @@ bool GeneratorProfile::hasGtOperator() const
 
 void GeneratorProfile::setHasGtOperator(bool hasGtOperator)
 {
-    if (mPimpl->mHasGtOperator != hasGtOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasGtOperator = hasGtOperator;
 }
 
@@ -1265,10 +1197,6 @@ bool GeneratorProfile::hasGeqOperator() const
 
 void GeneratorProfile::setHasGeqOperator(bool hasGeqOperator)
 {
-    if (mPimpl->mHasGeqOperator != hasGeqOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasGeqOperator = hasGeqOperator;
 }
 
@@ -1279,10 +1207,6 @@ bool GeneratorProfile::hasAndOperator() const
 
 void GeneratorProfile::setHasAndOperator(bool hasAndOperator)
 {
-    if (mPimpl->mHasAndOperator != hasAndOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasAndOperator = hasAndOperator;
 }
 
@@ -1293,10 +1217,6 @@ bool GeneratorProfile::hasOrOperator() const
 
 void GeneratorProfile::setHasOrOperator(bool hasOrOperator)
 {
-    if (mPimpl->mHasOrOperator != hasOrOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasOrOperator = hasOrOperator;
 }
 
@@ -1307,10 +1227,6 @@ bool GeneratorProfile::hasXorOperator() const
 
 void GeneratorProfile::setHasXorOperator(bool hasXorOperator)
 {
-    if (mPimpl->mHasXorOperator != hasXorOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasXorOperator = hasXorOperator;
 }
 
@@ -1321,10 +1237,6 @@ bool GeneratorProfile::hasNotOperator() const
 
 void GeneratorProfile::setHasNotOperator(bool hasNotOperator)
 {
-    if (mPimpl->mHasNotOperator != hasNotOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasNotOperator = hasNotOperator;
 }
 
@@ -1335,10 +1247,6 @@ std::string GeneratorProfile::plusString() const
 
 void GeneratorProfile::setPlusString(const std::string &plusString)
 {
-    if (mPimpl->mPlusString != plusString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mPlusString = plusString;
 }
 
@@ -1349,10 +1257,6 @@ std::string GeneratorProfile::minusString() const
 
 void GeneratorProfile::setMinusString(const std::string &minusString)
 {
-    if (mPimpl->mMinusString != minusString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mMinusString = minusString;
 }
 
@@ -1363,10 +1267,6 @@ std::string GeneratorProfile::timesString() const
 
 void GeneratorProfile::setTimesString(const std::string &timesString)
 {
-    if (mPimpl->mTimesString != timesString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mTimesString = timesString;
 }
 
@@ -1377,10 +1277,6 @@ std::string GeneratorProfile::divideString() const
 
 void GeneratorProfile::setDivideString(const std::string &divideString)
 {
-    if (mPimpl->mDivideString != divideString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mDivideString = divideString;
 }
 
@@ -1391,10 +1287,6 @@ std::string GeneratorProfile::powerString() const
 
 void GeneratorProfile::setPowerString(const std::string &powerString)
 {
-    if (mPimpl->mPowerString != powerString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mPowerString = powerString;
 }
 
@@ -1405,10 +1297,6 @@ std::string GeneratorProfile::squareRootString() const
 
 void GeneratorProfile::setSquareRootString(const std::string &squareRootString)
 {
-    if (mPimpl->mSquareRootString != squareRootString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSquareRootString = squareRootString;
 }
 
@@ -1419,10 +1307,6 @@ std::string GeneratorProfile::squareString() const
 
 void GeneratorProfile::setSquareString(const std::string &squareString)
 {
-    if (mPimpl->mSquareString != squareString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSquareString = squareString;
 }
 
@@ -1433,10 +1317,6 @@ std::string GeneratorProfile::absoluteValueString() const
 
 void GeneratorProfile::setAbsoluteValueString(const std::string &absoluteValueString)
 {
-    if (mPimpl->mAbsoluteValueString != absoluteValueString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAbsoluteValueString = absoluteValueString;
 }
 
@@ -1447,10 +1327,6 @@ std::string GeneratorProfile::exponentialString() const
 
 void GeneratorProfile::setExponentialString(const std::string &exponentialString)
 {
-    if (mPimpl->mExponentialString != exponentialString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mExponentialString = exponentialString;
 }
 
@@ -1461,10 +1337,6 @@ std::string GeneratorProfile::napierianLogarithmString() const
 
 void GeneratorProfile::setNapierianLogarithmString(const std::string &napierianLogarithmString)
 {
-    if (mPimpl->mNapierianLogarithmString != napierianLogarithmString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mNapierianLogarithmString = napierianLogarithmString;
 }
 
@@ -1475,10 +1347,6 @@ std::string GeneratorProfile::commonLogarithmString() const
 
 void GeneratorProfile::setCommonLogarithmString(const std::string &commonLogarithmString)
 {
-    if (mPimpl->mCommonLogarithmString != commonLogarithmString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCommonLogarithmString = commonLogarithmString;
 }
 
@@ -1489,10 +1357,6 @@ std::string GeneratorProfile::ceilingString() const
 
 void GeneratorProfile::setCeilingString(const std::string &ceilingString)
 {
-    if (mPimpl->mCeilingString != ceilingString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCeilingString = ceilingString;
 }
 
@@ -1503,10 +1367,6 @@ std::string GeneratorProfile::floorString() const
 
 void GeneratorProfile::setFloorString(const std::string &floorString)
 {
-    if (mPimpl->mFloorString != floorString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mFloorString = floorString;
 }
 
@@ -1517,10 +1377,6 @@ std::string GeneratorProfile::minString() const
 
 void GeneratorProfile::setMinString(const std::string &minString)
 {
-    if (mPimpl->mMinString != minString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mMinString = minString;
 }
 
@@ -1531,10 +1387,6 @@ std::string GeneratorProfile::maxString() const
 
 void GeneratorProfile::setMaxString(const std::string &maxString)
 {
-    if (mPimpl->mMaxString != maxString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mMaxString = maxString;
 }
 
@@ -1545,10 +1397,6 @@ std::string GeneratorProfile::remString() const
 
 void GeneratorProfile::setRemString(const std::string &remString)
 {
-    if (mPimpl->mRemString != remString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mRemString = remString;
 }
 
@@ -1559,10 +1407,6 @@ bool GeneratorProfile::hasPowerOperator() const
 
 void GeneratorProfile::setHasPowerOperator(bool hasPowerOperator)
 {
-    if (mPimpl->mHasPowerOperator != hasPowerOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasPowerOperator = hasPowerOperator;
 }
 
@@ -1573,10 +1417,6 @@ std::string GeneratorProfile::sinString() const
 
 void GeneratorProfile::setSinString(const std::string &sinString)
 {
-    if (mPimpl->mSinString != sinString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSinString = sinString;
 }
 
@@ -1587,10 +1427,6 @@ std::string GeneratorProfile::cosString() const
 
 void GeneratorProfile::setCosString(const std::string &cosString)
 {
-    if (mPimpl->mCosString != cosString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCosString = cosString;
 }
 
@@ -1601,10 +1437,6 @@ std::string GeneratorProfile::tanString() const
 
 void GeneratorProfile::setTanString(const std::string &tanString)
 {
-    if (mPimpl->mTanString != tanString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mTanString = tanString;
 }
 
@@ -1615,10 +1447,6 @@ std::string GeneratorProfile::secString() const
 
 void GeneratorProfile::setSecString(const std::string &secString)
 {
-    if (mPimpl->mSecString != secString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSecString = secString;
 }
 
@@ -1629,10 +1457,6 @@ std::string GeneratorProfile::cscString() const
 
 void GeneratorProfile::setCscString(const std::string &cscString)
 {
-    if (mPimpl->mCscString != cscString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCscString = cscString;
 }
 
@@ -1643,10 +1467,6 @@ std::string GeneratorProfile::cotString() const
 
 void GeneratorProfile::setCotString(const std::string &cotString)
 {
-    if (mPimpl->mCotString != cotString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCotString = cotString;
 }
 
@@ -1657,10 +1477,6 @@ std::string GeneratorProfile::sinhString() const
 
 void GeneratorProfile::setSinhString(const std::string &sinhString)
 {
-    if (mPimpl->mSinhString != sinhString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSinhString = sinhString;
 }
 
@@ -1671,10 +1487,6 @@ std::string GeneratorProfile::coshString() const
 
 void GeneratorProfile::setCoshString(const std::string &coshString)
 {
-    if (mPimpl->mCoshString != coshString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCoshString = coshString;
 }
 
@@ -1685,10 +1497,6 @@ std::string GeneratorProfile::tanhString() const
 
 void GeneratorProfile::setTanhString(const std::string &tanhString)
 {
-    if (mPimpl->mTanhString != tanhString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mTanhString = tanhString;
 }
 
@@ -1699,10 +1507,6 @@ std::string GeneratorProfile::sechString() const
 
 void GeneratorProfile::setSechString(const std::string &sechString)
 {
-    if (mPimpl->mSechString != sechString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSechString = sechString;
 }
 
@@ -1713,10 +1517,6 @@ std::string GeneratorProfile::cschString() const
 
 void GeneratorProfile::setCschString(const std::string &cschString)
 {
-    if (mPimpl->mCschString != cschString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCschString = cschString;
 }
 
@@ -1727,10 +1527,6 @@ std::string GeneratorProfile::cothString() const
 
 void GeneratorProfile::setCothString(const std::string &cothString)
 {
-    if (mPimpl->mCothString != cothString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCothString = cothString;
 }
 
@@ -1741,10 +1537,6 @@ std::string GeneratorProfile::asinString() const
 
 void GeneratorProfile::setAsinString(const std::string &asinString)
 {
-    if (mPimpl->mAsinString != asinString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAsinString = asinString;
 }
 
@@ -1755,10 +1547,6 @@ std::string GeneratorProfile::acosString() const
 
 void GeneratorProfile::setAcosString(const std::string &acosString)
 {
-    if (mPimpl->mAcosString != acosString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcosString = acosString;
 }
 
@@ -1769,10 +1557,6 @@ std::string GeneratorProfile::atanString() const
 
 void GeneratorProfile::setAtanString(const std::string &atanString)
 {
-    if (mPimpl->mAtanString != atanString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAtanString = atanString;
 }
 
@@ -1783,10 +1567,6 @@ std::string GeneratorProfile::asecString() const
 
 void GeneratorProfile::setAsecString(const std::string &asecString)
 {
-    if (mPimpl->mAsecString != asecString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAsecString = asecString;
 }
 
@@ -1797,10 +1577,6 @@ std::string GeneratorProfile::acscString() const
 
 void GeneratorProfile::setAcscString(const std::string &acscString)
 {
-    if (mPimpl->mAcscString != acscString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcscString = acscString;
 }
 
@@ -1811,10 +1587,6 @@ std::string GeneratorProfile::acotString() const
 
 void GeneratorProfile::setAcotString(const std::string &acotString)
 {
-    if (mPimpl->mAcotString != acotString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcotString = acotString;
 }
 
@@ -1825,10 +1597,6 @@ std::string GeneratorProfile::asinhString() const
 
 void GeneratorProfile::setAsinhString(const std::string &asinhString)
 {
-    if (mPimpl->mAsinhString != asinhString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAsinhString = asinhString;
 }
 
@@ -1839,10 +1607,6 @@ std::string GeneratorProfile::acoshString() const
 
 void GeneratorProfile::setAcoshString(const std::string &acoshString)
 {
-    if (mPimpl->mAcoshString != acoshString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcoshString = acoshString;
 }
 
@@ -1853,10 +1617,6 @@ std::string GeneratorProfile::atanhString() const
 
 void GeneratorProfile::setAtanhString(const std::string &atanhString)
 {
-    if (mPimpl->mAtanhString != atanhString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAtanhString = atanhString;
 }
 
@@ -1867,10 +1627,6 @@ std::string GeneratorProfile::asechString() const
 
 void GeneratorProfile::setAsechString(const std::string &asechString)
 {
-    if (mPimpl->mAsechString != asechString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAsechString = asechString;
 }
 
@@ -1881,10 +1637,6 @@ std::string GeneratorProfile::acschString() const
 
 void GeneratorProfile::setAcschString(const std::string &acschString)
 {
-    if (mPimpl->mAcschString != acschString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcschString = acschString;
 }
 
@@ -1895,10 +1647,6 @@ std::string GeneratorProfile::acothString() const
 
 void GeneratorProfile::setAcothString(const std::string &acothString)
 {
-    if (mPimpl->mAcothString != acothString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcothString = acothString;
 }
 
@@ -1909,10 +1657,6 @@ std::string GeneratorProfile::conditionalOperatorIfString() const
 
 void GeneratorProfile::setConditionalOperatorIfString(const std::string &conditionalOperatorIfString)
 {
-    if (mPimpl->mConditionalOperatorIfString != conditionalOperatorIfString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mConditionalOperatorIfString = conditionalOperatorIfString;
 }
 
@@ -1923,10 +1667,6 @@ std::string GeneratorProfile::conditionalOperatorElseString() const
 
 void GeneratorProfile::setConditionalOperatorElseString(const std::string &conditionalOperatorElseString)
 {
-    if (mPimpl->mConditionalOperatorElseString != conditionalOperatorElseString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mConditionalOperatorElseString = conditionalOperatorElseString;
 }
 
@@ -1937,10 +1677,6 @@ std::string GeneratorProfile::piecewiseIfString() const
 
 void GeneratorProfile::setPiecewiseIfString(const std::string &piecewiseIfString)
 {
-    if (mPimpl->mPiecewiseIfString != piecewiseIfString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mPiecewiseIfString = piecewiseIfString;
 }
 
@@ -1951,10 +1687,6 @@ std::string GeneratorProfile::piecewiseElseString() const
 
 void GeneratorProfile::setPiecewiseElseString(const std::string &piecewiseElseString)
 {
-    if (mPimpl->mPiecewiseElseString != piecewiseElseString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mPiecewiseElseString = piecewiseElseString;
 }
 
@@ -1965,10 +1697,6 @@ bool GeneratorProfile::hasConditionalOperator() const
 
 void GeneratorProfile::setHasConditionalOperator(bool hasConditionalOperator)
 {
-    if (mPimpl->mHasConditionalOperator != hasConditionalOperator) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mHasConditionalOperator = hasConditionalOperator;
 }
 
@@ -1979,10 +1707,6 @@ std::string GeneratorProfile::trueString() const
 
 void GeneratorProfile::setTrueString(const std::string &trueString)
 {
-    if (mPimpl->mTrueString != trueString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mTrueString = trueString;
 }
 
@@ -1993,10 +1717,6 @@ std::string GeneratorProfile::falseString() const
 
 void GeneratorProfile::setFalseString(const std::string &falseString)
 {
-    if (mPimpl->mFalseString != falseString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mFalseString = falseString;
 }
 
@@ -2007,10 +1727,6 @@ std::string GeneratorProfile::eString() const
 
 void GeneratorProfile::setEString(const std::string &eString)
 {
-    if (mPimpl->mEString != eString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mEString = eString;
 }
 
@@ -2021,10 +1737,6 @@ std::string GeneratorProfile::piString() const
 
 void GeneratorProfile::setPiString(const std::string &piString)
 {
-    if (mPimpl->mPiString != piString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mPiString = piString;
 }
 
@@ -2035,10 +1747,6 @@ std::string GeneratorProfile::infString() const
 
 void GeneratorProfile::setInfString(const std::string &infString)
 {
-    if (mPimpl->mInfString != infString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInfString = infString;
 }
 
@@ -2049,10 +1757,6 @@ std::string GeneratorProfile::nanString() const
 
 void GeneratorProfile::setNanString(const std::string &nanString)
 {
-    if (mPimpl->mNanString != nanString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mNanString = nanString;
 }
 
@@ -2063,10 +1767,6 @@ std::string GeneratorProfile::eqFunctionString() const
 
 void GeneratorProfile::setEqFunctionString(const std::string &eqFunctionString)
 {
-    if (mPimpl->mEqFunctionString != eqFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mEqFunctionString = eqFunctionString;
 }
 
@@ -2077,10 +1777,6 @@ std::string GeneratorProfile::neqFunctionString() const
 
 void GeneratorProfile::setNeqFunctionString(const std::string &neqFunctionString)
 {
-    if (mPimpl->mNeqFunctionString != neqFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mNeqFunctionString = neqFunctionString;
 }
 
@@ -2091,10 +1787,6 @@ std::string GeneratorProfile::ltFunctionString() const
 
 void GeneratorProfile::setLtFunctionString(const std::string &ltFunctionString)
 {
-    if (mPimpl->mLtFunctionString != ltFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mLtFunctionString = ltFunctionString;
 }
 
@@ -2105,10 +1797,6 @@ std::string GeneratorProfile::leqFunctionString() const
 
 void GeneratorProfile::setLeqFunctionString(const std::string &leqFunctionString)
 {
-    if (mPimpl->mLeqFunctionString != leqFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mLeqFunctionString = leqFunctionString;
 }
 
@@ -2119,10 +1807,6 @@ std::string GeneratorProfile::gtFunctionString() const
 
 void GeneratorProfile::setGtFunctionString(const std::string &gtFunctionString)
 {
-    if (mPimpl->mGtFunctionString != gtFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mGtFunctionString = gtFunctionString;
 }
 
@@ -2133,10 +1817,6 @@ std::string GeneratorProfile::geqFunctionString() const
 
 void GeneratorProfile::setGeqFunctionString(const std::string &geqFunctionString)
 {
-    if (mPimpl->mGeqFunctionString != geqFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mGeqFunctionString = geqFunctionString;
 }
 
@@ -2147,10 +1827,6 @@ std::string GeneratorProfile::andFunctionString() const
 
 void GeneratorProfile::setAndFunctionString(const std::string &andFunctionString)
 {
-    if (mPimpl->mAndFunctionString != andFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAndFunctionString = andFunctionString;
 }
 
@@ -2161,10 +1837,6 @@ std::string GeneratorProfile::orFunctionString() const
 
 void GeneratorProfile::setOrFunctionString(const std::string &orFunctionString)
 {
-    if (mPimpl->mOrFunctionString != orFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mOrFunctionString = orFunctionString;
 }
 
@@ -2175,10 +1847,6 @@ std::string GeneratorProfile::xorFunctionString() const
 
 void GeneratorProfile::setXorFunctionString(const std::string &xorFunctionString)
 {
-    if (mPimpl->mXorFunctionString != xorFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mXorFunctionString = xorFunctionString;
 }
 
@@ -2189,10 +1857,6 @@ std::string GeneratorProfile::notFunctionString() const
 
 void GeneratorProfile::setNotFunctionString(const std::string &notFunctionString)
 {
-    if (mPimpl->mNotFunctionString != notFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mNotFunctionString = notFunctionString;
 }
 
@@ -2203,10 +1867,6 @@ std::string GeneratorProfile::minFunctionString() const
 
 void GeneratorProfile::setMinFunctionString(const std::string &minFunctionString)
 {
-    if (mPimpl->mMinFunctionString != minFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mMinFunctionString = minFunctionString;
 }
 
@@ -2217,10 +1877,6 @@ std::string GeneratorProfile::maxFunctionString() const
 
 void GeneratorProfile::setMaxFunctionString(const std::string &maxFunctionString)
 {
-    if (mPimpl->mMaxFunctionString != maxFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mMaxFunctionString = maxFunctionString;
 }
 
@@ -2231,10 +1887,6 @@ std::string GeneratorProfile::secFunctionString() const
 
 void GeneratorProfile::setSecFunctionString(const std::string &secFunctionString)
 {
-    if (mPimpl->mSecFunctionString != secFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSecFunctionString = secFunctionString;
 }
 
@@ -2245,10 +1897,6 @@ std::string GeneratorProfile::cscFunctionString() const
 
 void GeneratorProfile::setCscFunctionString(const std::string &cscFunctionString)
 {
-    if (mPimpl->mCscFunctionString != cscFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCscFunctionString = cscFunctionString;
 }
 
@@ -2259,10 +1907,6 @@ std::string GeneratorProfile::cotFunctionString() const
 
 void GeneratorProfile::setCotFunctionString(const std::string &cotFunctionString)
 {
-    if (mPimpl->mCotFunctionString != cotFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCotFunctionString = cotFunctionString;
 }
 
@@ -2273,10 +1917,6 @@ std::string GeneratorProfile::sechFunctionString() const
 
 void GeneratorProfile::setSechFunctionString(const std::string &sechFunctionString)
 {
-    if (mPimpl->mSechFunctionString != sechFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mSechFunctionString = sechFunctionString;
 }
 
@@ -2287,10 +1927,6 @@ std::string GeneratorProfile::cschFunctionString() const
 
 void GeneratorProfile::setCschFunctionString(const std::string &cschFunctionString)
 {
-    if (mPimpl->mCschFunctionString != cschFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCschFunctionString = cschFunctionString;
 }
 
@@ -2301,10 +1937,6 @@ std::string GeneratorProfile::cothFunctionString() const
 
 void GeneratorProfile::setCothFunctionString(const std::string &cothFunctionString)
 {
-    if (mPimpl->mCothFunctionString != cothFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCothFunctionString = cothFunctionString;
 }
 
@@ -2315,10 +1947,6 @@ std::string GeneratorProfile::asecFunctionString() const
 
 void GeneratorProfile::setAsecFunctionString(const std::string &asecFunctionString)
 {
-    if (mPimpl->mAsecFunctionString != asecFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAsecFunctionString = asecFunctionString;
 }
 
@@ -2329,10 +1957,6 @@ std::string GeneratorProfile::acscFunctionString() const
 
 void GeneratorProfile::setAcscFunctionString(const std::string &acscFunctionString)
 {
-    if (mPimpl->mAcscFunctionString != acscFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcscFunctionString = acscFunctionString;
 }
 
@@ -2343,10 +1967,6 @@ std::string GeneratorProfile::acotFunctionString() const
 
 void GeneratorProfile::setAcotFunctionString(const std::string &acotFunctionString)
 {
-    if (mPimpl->mAcotFunctionString != acotFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcotFunctionString = acotFunctionString;
 }
 
@@ -2357,10 +1977,6 @@ std::string GeneratorProfile::asechFunctionString() const
 
 void GeneratorProfile::setAsechFunctionString(const std::string &asechFunctionString)
 {
-    if (mPimpl->mAsechFunctionString != asechFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAsechFunctionString = asechFunctionString;
 }
 
@@ -2371,10 +1987,6 @@ std::string GeneratorProfile::acschFunctionString() const
 
 void GeneratorProfile::setAcschFunctionString(const std::string &acschFunctionString)
 {
-    if (mPimpl->mAcschFunctionString != acschFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcschFunctionString = acschFunctionString;
 }
 
@@ -2385,10 +1997,6 @@ std::string GeneratorProfile::acothFunctionString() const
 
 void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionString)
 {
-    if (mPimpl->mAcothFunctionString != acothFunctionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAcothFunctionString = acothFunctionString;
 }
 
@@ -2399,10 +2007,6 @@ std::string GeneratorProfile::commentString() const
 
 void GeneratorProfile::setCommentString(const std::string &commentString)
 {
-    if (mPimpl->mCommentString != commentString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCommentString = commentString;
 }
 
@@ -2413,10 +2017,6 @@ std::string GeneratorProfile::originCommentString() const
 
 void GeneratorProfile::setOriginCommentString(const std::string &originCommentString)
 {
-    if (mPimpl->mOriginCommentString != originCommentString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mOriginCommentString = originCommentString;
 }
 
@@ -2427,10 +2027,6 @@ std::string GeneratorProfile::interfaceHeaderString() const
 
 void GeneratorProfile::setInterfaceHeaderString(const std::string &interfaceHeaderString)
 {
-    if (mPimpl->mInterfaceHeaderString != interfaceHeaderString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInterfaceHeaderString = interfaceHeaderString;
 }
 
@@ -2441,10 +2037,6 @@ std::string GeneratorProfile::implementationHeaderString() const
 
 void GeneratorProfile::setImplementationHeaderString(const std::string &implementationHeaderString)
 {
-    if (mPimpl->mImplementationHeaderString != implementationHeaderString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mImplementationHeaderString = implementationHeaderString;
 }
 
@@ -2455,10 +2047,6 @@ std::string GeneratorProfile::interfaceDeclarationString() const
 
 void GeneratorProfile::setInterfaceDeclarationString(const std::string &interfaceDeclarationString)
 {
-    if (mPimpl->mInterfaceDeclarationString != interfaceDeclarationString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInterfaceDeclarationString = interfaceDeclarationString;
 }
 
@@ -2469,10 +2057,6 @@ std::string GeneratorProfile::libcellmlVersionString() const
 
 void GeneratorProfile::setLibcellmlVersionString(const std::string &libcellmlVersionString)
 {
-    if (mPimpl->mLibcellmlVersionString != libcellmlVersionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mLibcellmlVersionString = libcellmlVersionString;
 }
 
@@ -2503,10 +2087,6 @@ std::string GeneratorProfile::stateCountString() const
 
 void GeneratorProfile::setStateCountString(const std::string &stateCountString)
 {
-    if (mPimpl->mStateCountString != stateCountString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mStateCountString = stateCountString;
 }
 
@@ -2517,10 +2097,6 @@ std::string GeneratorProfile::variableCountString() const
 
 void GeneratorProfile::setVariableCountString(const std::string &variableCountString)
 {
-    if (mPimpl->mVariableCountString != variableCountString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariableCountString = variableCountString;
 }
 
@@ -2531,10 +2107,6 @@ std::string GeneratorProfile::variableTypeObjectString() const
 
 void GeneratorProfile::setVariableTypeObjectString(const std::string &variableTypeObjectString)
 {
-    if (mPimpl->mVariableTypeObjectString != variableTypeObjectString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariableTypeObjectString = variableTypeObjectString;
 }
 
@@ -2545,10 +2117,6 @@ std::string GeneratorProfile::constantVariableTypeString() const
 
 void GeneratorProfile::setConstantVariableTypeString(const std::string &constantVariableTypeString)
 {
-    if (mPimpl->mConstantVariableType != constantVariableTypeString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mConstantVariableType = constantVariableTypeString;
 }
 
@@ -2559,10 +2127,6 @@ std::string GeneratorProfile::computedConstantVariableTypeString() const
 
 void GeneratorProfile::setComputedConstantVariableTypeString(const std::string &computedConstantVariableTypeString)
 {
-    if (mPimpl->mComputedConstantVariableType != computedConstantVariableTypeString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mComputedConstantVariableType = computedConstantVariableTypeString;
 }
 
@@ -2573,10 +2137,6 @@ std::string GeneratorProfile::algebraicVariableTypeString() const
 
 void GeneratorProfile::setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString)
 {
-    if (mPimpl->mAlgebraicVariableType != algebraicVariableTypeString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mAlgebraicVariableType = algebraicVariableTypeString;
 }
 
@@ -2587,10 +2147,6 @@ std::string GeneratorProfile::variableInfoObjectString() const
 
 void GeneratorProfile::setVariableInfoObjectString(const std::string &variableInfoObjectString)
 {
-    if (mPimpl->mVariableInfoObjectString != variableInfoObjectString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariableInfoObjectString = variableInfoObjectString;
 }
 
@@ -2601,10 +2157,6 @@ std::string GeneratorProfile::variableInfoWithTypeObjectString() const
 
 void GeneratorProfile::setVariableInfoWithTypeObjectString(const std::string &variableInfoWithTypeObjectString)
 {
-    if (mPimpl->mVariableInfoWithTypeObjectString != variableInfoWithTypeObjectString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariableInfoWithTypeObjectString = variableInfoWithTypeObjectString;
 }
 
@@ -2615,10 +2167,6 @@ std::string GeneratorProfile::voiInfoString() const
 
 void GeneratorProfile::setVoiInfoString(const std::string &voiInfoString)
 {
-    if (mPimpl->mVoiInfoString != voiInfoString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVoiInfoString = voiInfoString;
 }
 
@@ -2629,10 +2177,6 @@ std::string GeneratorProfile::stateInfoString() const
 
 void GeneratorProfile::setStateInfoString(const std::string &stateInfoString)
 {
-    if (mPimpl->mStateInfoString != stateInfoString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mStateInfoString = stateInfoString;
 }
 
@@ -2643,10 +2187,6 @@ std::string GeneratorProfile::variableInfoString() const
 
 void GeneratorProfile::setVariableInfoString(const std::string &variableInfoString)
 {
-    if (mPimpl->mVariableInfoString != variableInfoString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariableInfoString = variableInfoString;
 }
 
@@ -2657,10 +2197,6 @@ std::string GeneratorProfile::variableInfoEntryString() const
 
 void GeneratorProfile::setVariableInfoEntryString(const std::string &variableInfoEntryString)
 {
-    if (mPimpl->mVariableInfoEntryString != variableInfoEntryString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariableInfoEntryString = variableInfoEntryString;
 }
 
@@ -2671,10 +2207,6 @@ std::string GeneratorProfile::variableInfoWithTypeEntryString() const
 
 void GeneratorProfile::setVariableInfoWithTypeEntryString(const std::string &variableInfoWithTypeEntryString)
 {
-    if (mPimpl->mVariableInfoWithTypeEntryString != variableInfoWithTypeEntryString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariableInfoWithTypeEntryString = variableInfoWithTypeEntryString;
 }
 
@@ -2685,10 +2217,6 @@ std::string GeneratorProfile::voiString() const
 
 void GeneratorProfile::setVoiString(const std::string &voiString)
 {
-    if (mPimpl->mVoiString != voiString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVoiString = voiString;
 }
 
@@ -2699,10 +2227,6 @@ std::string GeneratorProfile::statesArrayString() const
 
 void GeneratorProfile::setStatesArrayString(const std::string &statesArrayString)
 {
-    if (mPimpl->mStatesArrayString != statesArrayString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mStatesArrayString = statesArrayString;
 }
 
@@ -2713,10 +2237,6 @@ std::string GeneratorProfile::ratesArrayString() const
 
 void GeneratorProfile::setRatesArrayString(const std::string &ratesArrayString)
 {
-    if (mPimpl->mRatesArrayString != ratesArrayString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mRatesArrayString = ratesArrayString;
 }
 
@@ -2727,10 +2247,6 @@ std::string GeneratorProfile::variablesArrayString() const
 
 void GeneratorProfile::setVariablesArrayString(const std::string &variablesArrayString)
 {
-    if (mPimpl->mVariablesArrayString != variablesArrayString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mVariablesArrayString = variablesArrayString;
 }
 
@@ -2741,10 +2257,6 @@ std::string GeneratorProfile::returnCreatedArrayString() const
 
 void GeneratorProfile::setReturnCreatedArrayString(const std::string &returnCreatedArrayString)
 {
-    if (mPimpl->mReturnCreatedArrayString != returnCreatedArrayString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mReturnCreatedArrayString = returnCreatedArrayString;
 }
 
@@ -2755,10 +2267,6 @@ std::string GeneratorProfile::createStatesArrayMethodString() const
 
 void GeneratorProfile::setCreateStatesArrayMethodString(const std::string &createStatesArrayMethodString)
 {
-    if (mPimpl->mCreateStatesArrayMethodString != createStatesArrayMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCreateStatesArrayMethodString = createStatesArrayMethodString;
 }
 
@@ -2769,10 +2277,6 @@ std::string GeneratorProfile::createVariablesArrayMethodString() const
 
 void GeneratorProfile::setCreateVariablesArrayMethodString(const std::string &createVariablesArrayMethodString)
 {
-    if (mPimpl->mCreateVariablesArrayMethodString != createVariablesArrayMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCreateVariablesArrayMethodString = createVariablesArrayMethodString;
 }
 
@@ -2783,10 +2287,6 @@ std::string GeneratorProfile::deleteArrayMethodString() const
 
 void GeneratorProfile::setDeleteArrayMethodString(const std::string &deleteArrayMethodString)
 {
-    if (mPimpl->mDeleteArrayMethodString != deleteArrayMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mDeleteArrayMethodString = deleteArrayMethodString;
 }
 
@@ -2797,10 +2297,6 @@ std::string GeneratorProfile::initializeStatesAndConstantsMethodString() const
 
 void GeneratorProfile::setInitializeStatesAndConstantsMethodString(const std::string &initializeStatesAndConstantsMethodString)
 {
-    if (mPimpl->mInitializeStatesAndConstantsMethodString != initializeStatesAndConstantsMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInitializeStatesAndConstantsMethodString = initializeStatesAndConstantsMethodString;
 }
 
@@ -2811,10 +2307,6 @@ std::string GeneratorProfile::computeComputedConstantsMethodString() const
 
 void GeneratorProfile::setComputeComputedConstantsMethodString(const std::string &computeComputedConstantsMethodString)
 {
-    if (mPimpl->mComputeComputedConstantsMethodString != computeComputedConstantsMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mComputeComputedConstantsMethodString = computeComputedConstantsMethodString;
 }
 
@@ -2825,10 +2317,6 @@ std::string GeneratorProfile::computeRatesMethodString() const
 
 void GeneratorProfile::setComputeRatesMethodString(const std::string &computeRatesMethodString)
 {
-    if (mPimpl->mComputeRatesMethodString != computeRatesMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mComputeRatesMethodString = computeRatesMethodString;
 }
 
@@ -2839,10 +2327,6 @@ std::string GeneratorProfile::computeVariablesMethodString() const
 
 void GeneratorProfile::setComputeVariablesMethodString(const std::string &computeVariablesMethodString)
 {
-    if (mPimpl->mComputeVariablesMethodString != computeVariablesMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mComputeVariablesMethodString = computeVariablesMethodString;
 }
 
@@ -2853,10 +2337,6 @@ std::string GeneratorProfile::emptyMethodString() const
 
 void GeneratorProfile::setEmptyMethodString(const std::string &emptyMethodString)
 {
-    if (mPimpl->mEmptyMethodString != emptyMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mEmptyMethodString = emptyMethodString;
 }
 
@@ -2867,10 +2347,6 @@ std::string GeneratorProfile::indentString() const
 
 void GeneratorProfile::setIndentString(const std::string &indentString)
 {
-    if (mPimpl->mIndentString != indentString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mIndentString = indentString;
 }
 
@@ -2881,10 +2357,6 @@ std::string GeneratorProfile::stringDelimiterString() const
 
 void GeneratorProfile::setStringDelimiterString(const std::string &stringDelimiterString)
 {
-    if (mPimpl->mStringDelimiterString != stringDelimiterString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mStringDelimiterString = stringDelimiterString;
 }
 
@@ -2895,10 +2367,6 @@ std::string GeneratorProfile::openArrayInitializerString() const
 
 void GeneratorProfile::setOpenArrayInitializerString(const std::string &openArrayInitializerString)
 {
-    if (mPimpl->mOpenArrayInitializerString != openArrayInitializerString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mOpenArrayInitializerString = openArrayInitializerString;
 }
 
@@ -2909,10 +2377,6 @@ std::string GeneratorProfile::closeArrayInitializerString() const
 
 void GeneratorProfile::setCloseArrayInitializerString(const std::string &closeArrayInitializerString)
 {
-    if (mPimpl->mCloseArrayInitializerString != closeArrayInitializerString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCloseArrayInitializerString = closeArrayInitializerString;
 }
 
@@ -2923,10 +2387,6 @@ std::string GeneratorProfile::openArrayString() const
 
 void GeneratorProfile::setOpenArrayString(const std::string &openArrayString)
 {
-    if (mPimpl->mOpenArrayString != openArrayString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mOpenArrayString = openArrayString;
 }
 
@@ -2937,10 +2397,6 @@ std::string GeneratorProfile::closeArrayString() const
 
 void GeneratorProfile::setCloseArrayString(const std::string &closeArrayString)
 {
-    if (mPimpl->mCloseArrayString != closeArrayString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCloseArrayString = closeArrayString;
 }
 
@@ -2951,10 +2407,6 @@ std::string GeneratorProfile::arrayElementSeparatorString() const
 
 void GeneratorProfile::setArrayElementSeparatorString(const std::string &arrayElementSeparatorString)
 {
-    if (mPimpl->mArrayElementSeparatorString != arrayElementSeparatorString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mArrayElementSeparatorString = arrayElementSeparatorString;
 }
 
@@ -2965,10 +2417,6 @@ std::string GeneratorProfile::commandSeparatorString() const
 
 void GeneratorProfile::setCommandSeparatorString(const std::string &commandSeparatorString)
 {
-    if (mPimpl->mCommandSeparatorString != commandSeparatorString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mCommandSeparatorString = commandSeparatorString;
 }
 
