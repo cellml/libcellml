@@ -1623,145 +1623,145 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
 
 bool Generator::GeneratorImpl::profileHasBeenModified() const
 {
-std::string repr = mProfile->absoluteValueString() +
-mProfile->acosString() +
-mProfile->acoshString() +
-mProfile->acotFunctionString() +
-mProfile->acotString() +
-mProfile->acothFunctionString() +
-mProfile->acothString() +
-mProfile->acscFunctionString() +
-mProfile->acscString() +
-mProfile->acschFunctionString() +
-mProfile->acschString() +
-mProfile->algebraicVariableTypeString() +
-mProfile->andFunctionString() +
-mProfile->andString() +
-mProfile->arrayElementSeparatorString() +
-mProfile->asecFunctionString() +
-mProfile->asecString() +
-mProfile->asechFunctionString() +
-mProfile->asechString() +
-mProfile->asinString() +
-mProfile->asinhString() +
-mProfile->assignmentString() +
-mProfile->atanString() +
-mProfile->atanhString() +
-mProfile->ceilingString() +
-mProfile->closeArrayInitializerString() +
-mProfile->closeArrayString() +
-mProfile->commandSeparatorString() +
-mProfile->commentString() +
-mProfile->commonLogarithmString() +
-mProfile->computeComputedConstantsMethodString() +
-mProfile->computeRatesMethodString() +
-mProfile->computeVariablesMethodString() +
-mProfile->computedConstantVariableTypeString() +
-mProfile->conditionalOperatorElseString() +
-mProfile->conditionalOperatorIfString() +
-mProfile->constantVariableTypeString() +
-mProfile->cosString() +
-mProfile->coshString() +
-mProfile->cotFunctionString() +
-mProfile->cotString() +
-mProfile->cothFunctionString() +
-mProfile->cothString() +
-mProfile->createStatesArrayMethodString() +
-mProfile->createVariablesArrayMethodString() +
-mProfile->cscFunctionString() +
-mProfile->cscString() +
-mProfile->cschFunctionString() +
-mProfile->cschString() +
-mProfile->deleteArrayMethodString() +
-mProfile->divideString() +
-mProfile->eString() +
-mProfile->emptyMethodString() +
-mProfile->eqFunctionString() +
-mProfile->eqString() +
-mProfile->exponentialString() +
-mProfile->falseString() +
-mProfile->floorString() +
-mProfile->geqFunctionString() +
-mProfile->geqString() +
-mProfile->gtFunctionString() +
-mProfile->gtString() +
-            (mProfile->hasInterface() ? std::string("true ") : std::string("false ")) +
-mProfile->implementationHeaderString() +
-mProfile->indentString() +
-mProfile->infString() +
-mProfile->initializeStatesAndConstantsMethodString() +
-mProfile->interfaceDeclarationString() +
-mProfile->interfaceDeclarationVersionString() +
-mProfile->interfaceHeaderString() +
-mProfile->leqFunctionString() +
-mProfile->leqString() +
-mProfile->libcellmlVersionString() +
-mProfile->ltFunctionString() +
-mProfile->ltString() +
-mProfile->maxFunctionString() +
-mProfile->maxString() +
-mProfile->minFunctionString() +
-mProfile->minString() +
-mProfile->minusString() +
-mProfile->nanString() +
-mProfile->napierianLogarithmString() +
-mProfile->neqFunctionString() +
-mProfile->neqString() +
-mProfile->notFunctionString() +
-mProfile->notString() +
-mProfile->openArrayInitializerString() +
-mProfile->openArrayString() +
-mProfile->orFunctionString() +
-mProfile->orString() +
-mProfile->originCommentString() +
-mProfile->piString() +
-mProfile->piecewiseElseString() +
-mProfile->piecewiseIfString() +
-mProfile->plusString() +
-mProfile->powerString() +
-mProfile->ratesArrayString() +
-mProfile->remString() +
-mProfile->returnCreatedArrayString() +
-mProfile->secFunctionString() +
-mProfile->secString() +
-mProfile->sechFunctionString() +
-mProfile->sechString() +
-mProfile->sinString() +
-mProfile->sinhString() +
-mProfile->squareRootString() +
-mProfile->squareString() +
-mProfile->stateCountString() +
-mProfile->stateInfoString() +
-mProfile->statesArrayString() +
-mProfile->stringDelimiterString() +
-mProfile->tanString() +
-mProfile->tanhString() +
-mProfile->timesString() +
-mProfile->trueString() +
-mProfile->variableCountString() +
-mProfile->variableInfoEntryString() +
-mProfile->variableInfoObjectString() +
-mProfile->variableInfoString() +
-mProfile->variableInfoWithTypeEntryString() +
-mProfile->variableInfoWithTypeObjectString() +
-mProfile->variableTypeObjectString() +
-mProfile->variablesArrayString() +
-mProfile->versionString() +
-mProfile->voiInfoString() +
-mProfile->voiString() +
-mProfile->xorFunctionString() +
-mProfile->xorString();
+    std::string repr = mProfile->absoluteValueString() +
+            mProfile->acosString() +
+            mProfile->acoshString() +
+            mProfile->acotFunctionString() +
+            mProfile->acotString() +
+            mProfile->acothFunctionString() +
+            mProfile->acothString() +
+            mProfile->acscFunctionString() +
+            mProfile->acscString() +
+            mProfile->acschFunctionString() +
+            mProfile->acschString() +
+            mProfile->algebraicVariableTypeString() +
+            mProfile->andFunctionString() +
+            mProfile->andString() +
+            mProfile->arrayElementSeparatorString() +
+            mProfile->asecFunctionString() +
+            mProfile->asecString() +
+            mProfile->asechFunctionString() +
+            mProfile->asechString() +
+            mProfile->asinString() +
+            mProfile->asinhString() +
+            mProfile->assignmentString() +
+            mProfile->atanString() +
+            mProfile->atanhString() +
+            mProfile->ceilingString() +
+            mProfile->closeArrayInitializerString() +
+            mProfile->closeArrayString() +
+            mProfile->commandSeparatorString() +
+            mProfile->commentString() +
+            mProfile->commonLogarithmString() +
+            mProfile->computeComputedConstantsMethodString() +
+            mProfile->computeRatesMethodString() +
+            mProfile->computeVariablesMethodString() +
+            mProfile->computedConstantVariableTypeString() +
+            mProfile->conditionalOperatorElseString() +
+            mProfile->conditionalOperatorIfString() +
+            mProfile->constantVariableTypeString() +
+            mProfile->cosString() +
+            mProfile->coshString() +
+            mProfile->cotFunctionString() +
+            mProfile->cotString() +
+            mProfile->cothFunctionString() +
+            mProfile->cothString() +
+            mProfile->createStatesArrayMethodString() +
+            mProfile->createVariablesArrayMethodString() +
+            mProfile->cscFunctionString() +
+            mProfile->cscString() +
+            mProfile->cschFunctionString() +
+            mProfile->cschString() +
+            mProfile->deleteArrayMethodString() +
+            mProfile->divideString() +
+            mProfile->eString() +
+            mProfile->emptyMethodString() +
+            mProfile->eqFunctionString() +
+            mProfile->eqString() +
+            mProfile->exponentialString() +
+            mProfile->falseString() +
+            mProfile->floorString() +
+            mProfile->geqFunctionString() +
+            mProfile->geqString() +
+            mProfile->gtFunctionString() +
+            mProfile->gtString() +
+                        (mProfile->hasInterface() ?
+                             std::string("true ") :
+                             std::string("false ")) +
+            mProfile->implementationHeaderString() +
+            mProfile->indentString() +
+            mProfile->infString() +
+            mProfile->initializeStatesAndConstantsMethodString() +
+            mProfile->interfaceDeclarationString() +
+            mProfile->interfaceDeclarationVersionString() +
+            mProfile->interfaceHeaderString() +
+            mProfile->leqFunctionString() +
+            mProfile->leqString() +
+            mProfile->libcellmlVersionString() +
+            mProfile->ltFunctionString() +
+            mProfile->ltString() +
+            mProfile->maxFunctionString() +
+            mProfile->maxString() +
+            mProfile->minFunctionString() +
+            mProfile->minString() +
+            mProfile->minusString() +
+            mProfile->nanString() +
+            mProfile->napierianLogarithmString() +
+            mProfile->neqFunctionString() +
+            mProfile->neqString() +
+            mProfile->notFunctionString() +
+            mProfile->notString() +
+            mProfile->openArrayInitializerString() +
+            mProfile->openArrayString() +
+            mProfile->orFunctionString() +
+            mProfile->orString() +
+            mProfile->originCommentString() +
+            mProfile->piString() +
+            mProfile->piecewiseElseString() +
+            mProfile->piecewiseIfString() +
+            mProfile->plusString() +
+            mProfile->powerString() +
+            mProfile->ratesArrayString() +
+            mProfile->remString() +
+            mProfile->returnCreatedArrayString() +
+            mProfile->secFunctionString() +
+            mProfile->secString() +
+            mProfile->sechFunctionString() +
+            mProfile->sechString() +
+            mProfile->sinString() +
+            mProfile->sinhString() +
+            mProfile->squareRootString() +
+            mProfile->squareString() +
+            mProfile->stateCountString() +
+            mProfile->stateInfoString() +
+            mProfile->statesArrayString() +
+            mProfile->stringDelimiterString() +
+            mProfile->tanString() +
+            mProfile->tanhString() +
+            mProfile->timesString() +
+            mProfile->trueString() +
+            mProfile->variableCountString() +
+            mProfile->variableInfoEntryString() +
+            mProfile->variableInfoObjectString() +
+            mProfile->variableInfoString() +
+            mProfile->variableInfoWithTypeEntryString() +
+            mProfile->variableInfoWithTypeObjectString() +
+            mProfile->variableTypeObjectString() +
+            mProfile->variablesArrayString() +
+            mProfile->versionString() +
+            mProfile->voiInfoString() +
+            mProfile->voiString() +
+            mProfile->xorFunctionString() +
+            mProfile->xorString();
+
     std::size_t hashRepr = std::hash<std::string>{}(repr);
     bool inBuilt = false;
-    size_t hashValue = 0;
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        hashValue = 3387295728753284751U;
-        inBuilt = hashValue != hashRepr;
+        inBuilt = 3387295728753284751U != hashRepr;
         break;
     case GeneratorProfile::Profile::PYTHON:
-        hashValue = 4718672871973104838U;
-        inBuilt = hashValue != hashRepr;
+        inBuilt = 4718672871973104838U != hashRepr;
         break;
     case GeneratorProfile::Profile::CUSTOM:
         break;
