@@ -44,7 +44,7 @@ TEST(Generator, emptyModel)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, initialized_variable_of_integration)
+TEST(Generator, initializedVariableOfIntegration)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/initialized_variable_of_integration.cellml"));
@@ -78,7 +78,7 @@ TEST(Generator, initialized_variable_of_integration)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, two_variables_of_integration)
+TEST(Generator, twoVariablesOfIntegration)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/two_variables_of_integration.cellml"));
@@ -112,7 +112,7 @@ TEST(Generator, two_variables_of_integration)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, non_first_order_odes)
+TEST(Generator, nonFirstOrderOdes)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/non_first_order_odes.cellml"));
@@ -148,7 +148,7 @@ TEST(Generator, non_first_order_odes)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, undefined_variables)
+TEST(Generator, undefinedVariables)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/undefined_variables.cellml"));
@@ -182,7 +182,7 @@ TEST(Generator, undefined_variables)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, variable_initialized_twice)
+TEST(Generator, variableInitializedTwice)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/variable_initialized_twice.cellml"));
@@ -215,7 +215,7 @@ TEST(Generator, variable_initialized_twice)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, non_initialized_state)
+TEST(Generator, nonInitializedState)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/non_initialized_state.cellml"));
@@ -314,7 +314,7 @@ TEST(Generator, overconstrained)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, unsuitably_constrained)
+TEST(Generator, unsuitablyConstrained)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/unsuitably_constrained.cellml"));
@@ -348,7 +348,7 @@ TEST(Generator, unsuitably_constrained)
     EXPECT_EQ(EMPTY_STRING, generator.implementationCode());
 }
 
-TEST(Generator, algebraic_eqn_computed_var_on_rhs)
+TEST(Generator, algebraicEqnComputedVarOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.cellml"));
@@ -382,7 +382,7 @@ TEST(Generator, algebraic_eqn_computed_var_on_rhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, algebraic_eqn_const_var_on_rhs)
+TEST(Generator, algebraicEqnConstVarOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.cellml"));
@@ -416,7 +416,7 @@ TEST(Generator, algebraic_eqn_const_var_on_rhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_const_var_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, algebraic_eqn_constant_on_rhs)
+TEST(Generator, algebraicEqnConstantOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_constant_on_rhs/model.cellml"));
@@ -450,7 +450,7 @@ TEST(Generator, algebraic_eqn_constant_on_rhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_constant_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, algebraic_eqn_derivative_on_rhs)
+TEST(Generator, algebraicEqnDerivativeOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.cellml"));
@@ -485,7 +485,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
+TEST(Generator, algebraicEqnDerivativeOnRhsOneComponent)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.cellml"));
@@ -520,7 +520,7 @@ TEST(Generator, algebraic_eqn_derivative_on_rhs_one_component)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_derivative_on_rhs_one_component/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, algebraic_eqn_state_var_on_rhs)
+TEST(Generator, algebraicEqnStateVarOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.cellml"));
@@ -555,7 +555,7 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, algebraic_eqn_state_var_on_rhs_one_component)
+TEST(Generator, algebraicEqnStateVarOnRhsOneComponent)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.cellml"));
@@ -590,7 +590,7 @@ TEST(Generator, algebraic_eqn_state_var_on_rhs_one_component)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_state_var_on_rhs_one_component/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_computed_var_on_rhs)
+TEST(Generator, odeComputedVarOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_computed_var_on_rhs/model.cellml"));
@@ -625,7 +625,7 @@ TEST(Generator, ode_computed_var_on_rhs)
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_computed_var_on_rhs_one_component)
+TEST(Generator, odeComputedVarOnRhsOneComponent)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_computed_var_on_rhs_one_component/model.cellml"));
@@ -660,7 +660,7 @@ TEST(Generator, ode_computed_var_on_rhs_one_component)
     EXPECT_EQ(fileContents("generator/ode_computed_var_on_rhs_one_component/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_const_var_on_rhs)
+TEST(Generator, odeConstVarOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_const_var_on_rhs/model.cellml"));
@@ -695,7 +695,7 @@ TEST(Generator, ode_const_var_on_rhs)
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_const_var_on_rhs_one_component)
+TEST(Generator, odeConstVarOnRhsOneComponent)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_const_var_on_rhs_one_component/model.cellml"));
@@ -730,7 +730,7 @@ TEST(Generator, ode_const_var_on_rhs_one_component)
     EXPECT_EQ(fileContents("generator/ode_const_var_on_rhs_one_component/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_constant_on_rhs)
+TEST(Generator, odeConstantOnRhs)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_constant_on_rhs/model.cellml"));
@@ -764,7 +764,7 @@ TEST(Generator, ode_constant_on_rhs)
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_constant_on_rhs_one_component)
+TEST(Generator, odeConstantOnRhsOneComponent)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_constant_on_rhs_one_component/model.cellml"));
@@ -798,7 +798,7 @@ TEST(Generator, ode_constant_on_rhs_one_component)
     EXPECT_EQ(fileContents("generator/ode_constant_on_rhs_one_component/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_multiple_dependent_odes)
+TEST(Generator, odeMultipleDependentOdes)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_multiple_dependent_odes/model.cellml"));
@@ -833,7 +833,7 @@ TEST(Generator, ode_multiple_dependent_odes)
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_multiple_dependent_odes_one_component)
+TEST(Generator, odeMultipleDependentOdesOneComponent)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_multiple_dependent_odes_one_component/model.cellml"));
@@ -868,7 +868,7 @@ TEST(Generator, ode_multiple_dependent_odes_one_component)
     EXPECT_EQ(fileContents("generator/ode_multiple_dependent_odes_one_component/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, ode_multiple_odes_with_same_name)
+TEST(Generator, odeMultipleOdesWithSameName)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/ode_multiple_odes_with_same_name/model.cellml"));
@@ -903,7 +903,7 @@ TEST(Generator, ode_multiple_odes_with_same_name)
     EXPECT_EQ(fileContents("generator/ode_multiple_odes_with_same_name/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, cellml_mappings_and_encapsulations)
+TEST(Generator, cellmlMappingsAndEncapsulations)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/cellml_mappings_and_encapsulations/model.cellml"));
@@ -941,7 +941,7 @@ TEST(Generator, cellml_mappings_and_encapsulations)
     EXPECT_EQ(fileContents("generator/cellml_mappings_and_encapsulations/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, dependent_eqns)
+TEST(Generator, dependentEqns)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/dependent_eqns/model.cellml"));
@@ -976,7 +976,7 @@ TEST(Generator, dependent_eqns)
     EXPECT_EQ(fileContents("generator/dependent_eqns/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, fabbri_fantini_wilders_severi_human_san_model_2017)
+TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.cellml"));
@@ -1011,7 +1011,7 @@ TEST(Generator, fabbri_fantini_wilders_severi_human_san_model_2017)
     EXPECT_EQ(fileContents("generator/fabbri_fantini_wilders_severi_human_san_model_2017/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, garny_kohl_hunter_boyett_noble_rabbit_san_model_2003)
+TEST(Generator, garnyKohlHunterBoyettNobleRabbitSanModel2003)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.cellml"));
@@ -1046,7 +1046,7 @@ TEST(Generator, garny_kohl_hunter_boyett_noble_rabbit_san_model_2003)
     EXPECT_EQ(fileContents("generator/garny_kohl_hunter_boyett_noble_rabbit_san_model_2003/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
+TEST(Generator, hodgkinHuxleySquidAxonModel1952)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.cellml"));
@@ -1106,7 +1106,7 @@ TEST(Generator, hodgkin_huxley_squid_axon_model_1952)
     EXPECT_EQ(fileContents("generator/hodgkin_huxley_squid_axon_model_1952/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, noble_model_1962)
+TEST(Generator, nobleModel1962)
 {
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(fileContents("generator/noble_model_1962/model.cellml"));
