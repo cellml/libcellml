@@ -623,6 +623,7 @@ struct Generator::GeneratorImpl
                                  const VariablePtr &variable);
 
     void addOriginCommentCode(std::string &code);
+
     void addInterfaceHeaderCode(std::string &code);
     void addImplementationHeaderCode(std::string &code);
 
@@ -639,13 +640,14 @@ struct Generator::GeneratorImpl
     void addVariableInfoObjectCode(std::string &code);
     void addVariableInfoWithTypeObjectCode(std::string &code);
 
-    std::string generateVariableInfoEntryCode(const std::string &component,
-                                              const std::string &name,
-                                              const std::string &units);
+    std::string generateVariableInfoEntryCode(const std::string &name,
+                                              const std::string &units,
+                                              const std::string &component);
 
     void addVoiInfoCode(std::string &code);
     void addStateInfoCode(std::string &code);
     void addVariableInfoCode(std::string &code);
+
     void addExtraMathFunctionsCode(std::string &code);
 
     std::string generateCreateArrayCode(size_t arraySize);
@@ -1805,9 +1807,9 @@ void Generator::GeneratorImpl::addVariableInfoWithTypeObjectCode(std::string &co
     }
 }
 
-std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &component,
-                                                                    const std::string &name,
-                                                                    const std::string &units)
+std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::string &name,
+                                                                    const std::string &units,
+                                                                    const std::string &component)
 {
     return replace(replace(replace(mProfile->variableInfoEntryString(),
                                    "<NAME>", name),
@@ -1823,12 +1825,12 @@ void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
             code += "\n";
         }
 
-        std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
         std::string name = (mVoi != nullptr) ? mVoi->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->units() : "";
+        std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
 
         code += replace(mProfile->voiInfoString(),
-                        "<CODE>", generateVariableInfoEntryCode(component, name, units));
+                        "<CODE>", generateVariableInfoEntryCode(name, units, component));
     }
 }
 
@@ -1849,9 +1851,9 @@ void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
             }
 
             infoElements += mProfile->indentString()
-                            + generateVariableInfoEntryCode(state->parentComponent()->name(),
-                                                            state->name(),
-                                                            state->units());
+                            + generateVariableInfoEntryCode(state->name(),
+                                                            state->units(),
+                                                            state->parentComponent()->name());
         }
 
         if (!infoElements.empty()) {
@@ -3255,11 +3257,11 @@ std::string Generator::implementationCode() const
 
     mPimpl->addImplementationHeaderCode(res);
 
-    // Add code for the version (of libCellML).
+    // Add code for the implementation of the version (of libCellML).
 
     mPimpl->addImplementationLibcellmlVersionCode(res);
 
-    // Add code for the number of states and variables.
+    // Add code for the implementation of the number of states and variables.
 
     mPimpl->addImplementationStateAndVariableCountCode(res);
 
