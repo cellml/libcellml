@@ -1,4 +1,4 @@
-# The content of this file was generated using the Python profile of libCellML 0.2.0.
+# The content of this file was generated using a modified Python profile of libCellML 0.2.0.
 
 from enum import Enum
 from math import *
