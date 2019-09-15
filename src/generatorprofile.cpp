@@ -212,8 +212,6 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mIndentString;
 
-    std::string mStringDelimiterString;
-
     std::string mOpenArrayInitializerString;
     std::string mCloseArrayInitializerString;
 
@@ -221,6 +219,8 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mCloseArrayString;
 
     std::string mArrayElementSeparatorString;
+
+    std::string mStringDelimiterString;
 
     std::string mCommandSeparatorString;
 
@@ -491,8 +491,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mStringDelimiterString = "\"";
-
         mOpenArrayInitializerString = "{";
         mCloseArrayInitializerString = "}";
 
@@ -500,6 +498,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
+
+        mStringDelimiterString = "\"";
 
         mCommandSeparatorString = ";";
     } else if (profile == GeneratorProfile::Profile::PYTHON) {
@@ -753,8 +753,6 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mIndentString = "    ";
 
-        mStringDelimiterString = "\"";
-
         mOpenArrayInitializerString = "[";
         mCloseArrayInitializerString = "]";
 
@@ -762,6 +760,8 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mCloseArrayString = "]";
 
         mArrayElementSeparatorString = ",";
+
+        mStringDelimiterString = "\"";
 
         mCommandSeparatorString = "";
     }
@@ -964,8 +964,6 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mIndentString = rhs.mPimpl->mIndentString;
 
-    mPimpl->mStringDelimiterString = rhs.mPimpl->mStringDelimiterString;
-
     mPimpl->mOpenArrayInitializerString = rhs.mPimpl->mOpenArrayInitializerString;
     mPimpl->mCloseArrayInitializerString = rhs.mPimpl->mCloseArrayInitializerString;
 
@@ -973,6 +971,8 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mCloseArrayString = rhs.mPimpl->mCloseArrayString;
 
     mPimpl->mArrayElementSeparatorString = rhs.mPimpl->mArrayElementSeparatorString;
+
+    mPimpl->mStringDelimiterString = rhs.mPimpl->mStringDelimiterString;
 
     mPimpl->mCommandSeparatorString = rhs.mPimpl->mCommandSeparatorString;
 }
@@ -2838,20 +2838,6 @@ void GeneratorProfile::setIndentString(const std::string &indentString)
     mPimpl->mIndentString = indentString;
 }
 
-std::string GeneratorProfile::stringDelimiterString() const
-{
-    return mPimpl->mStringDelimiterString;
-}
-
-void GeneratorProfile::setStringDelimiterString(const std::string &stringDelimiterString)
-{
-    if (mPimpl->mStringDelimiterString != stringDelimiterString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
-    mPimpl->mStringDelimiterString = stringDelimiterString;
-}
-
 std::string GeneratorProfile::openArrayInitializerString() const
 {
     return mPimpl->mOpenArrayInitializerString;
@@ -2920,6 +2906,20 @@ void GeneratorProfile::setArrayElementSeparatorString(const std::string &arrayEl
     }
 
     mPimpl->mArrayElementSeparatorString = arrayElementSeparatorString;
+}
+
+std::string GeneratorProfile::stringDelimiterString() const
+{
+    return mPimpl->mStringDelimiterString;
+}
+
+void GeneratorProfile::setStringDelimiterString(const std::string &stringDelimiterString)
+{
+    if (mPimpl->mStringDelimiterString != stringDelimiterString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mStringDelimiterString = stringDelimiterString;
 }
 
 std::string GeneratorProfile::commandSeparatorString() const
