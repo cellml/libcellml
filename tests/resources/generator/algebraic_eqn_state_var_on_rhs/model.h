@@ -25,3 +25,7 @@ typedef struct {
     char component[17];
     VariableType type;
 } VariableInfoWithType;
+
+extern const VariableInfo VOI_INFO;
+extern const VariableInfo STATE_INFO[];
+extern const VariableInfoWithType VARIABLE_INFO[];

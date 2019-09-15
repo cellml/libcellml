@@ -644,9 +644,10 @@ struct Generator::GeneratorImpl
                                               const std::string &units,
                                               const std::string &component);
 
-    void addVoiInfoCode(std::string &code);
-    void addStateInfoCode(std::string &code);
-    void addVariableInfoCode(std::string &code);
+    void addInterfaceVoiStateAndVariableInfoCode(std::string &code);
+    void addImplementationVoiInfoCode(std::string &code);
+    void addImplementationStateInfoCode(std::string &code);
+    void addImplementationVariableInfoCode(std::string &code);
 
     void addExtraMathFunctionsCode(std::string &code);
 
@@ -1817,7 +1818,34 @@ std::string Generator::GeneratorImpl::generateVariableInfoEntryCode(const std::s
                    "<COMPONENT>", component);
 }
 
-void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceVoiStateAndVariableInfoCode(std::string &code)
+{
+    if (!mProfile->interfaceDeclarationString().empty()
+        && (!mProfile->voiInfoString().empty()
+            || !mProfile->stateInfoString().empty()
+            || !mProfile->variableInfoString().empty())) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        if (!mProfile->voiInfoString().empty()) {
+            code += replace(mProfile->interfaceDeclarationString(),
+                            "<CODE>", mProfile->voiInfoString());
+        }
+
+        if (!mProfile->stateInfoString().empty()) {
+            code += replace(mProfile->interfaceDeclarationString(),
+                            "<CODE>", mProfile->stateInfoString());
+        }
+
+        if (!mProfile->variableInfoString().empty()) {
+            code += replace(mProfile->interfaceDeclarationString(),
+                            "<CODE>", mProfile->variableInfoString());
+        }
+    }
+}
+
+void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
 {
     if (!mProfile->voiInfoString().empty()
         && !mProfile->variableInfoEntryString().empty()) {
@@ -1829,12 +1857,15 @@ void Generator::GeneratorImpl::addVoiInfoCode(std::string &code)
         std::string units = (mVoi != nullptr) ? mVoi->units() : "";
         std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
 
-        code += replace(mProfile->voiInfoString(),
-                        "<CODE>", generateVariableInfoEntryCode(name, units, component));
+        code += mProfile->voiInfoString()
+                + mProfile->assignmentString()
+                + generateVariableInfoEntryCode(name, units, component)
+                + mProfile->commandSeparatorString()
+                + "\n";
     }
 }
 
-void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
 {
     if (!mProfile->stateInfoString().empty()
         && !mProfile->variableInfoEntryString().empty()
@@ -1842,6 +1873,10 @@ void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
         if (!code.empty()) {
             code += "\n";
         }
+
+        code += mProfile->stateInfoString()
+                + mProfile->assignmentString()
+                + mProfile->openArrayInitializerString() + "\n";
 
         std::string infoElements;
 
@@ -1858,14 +1893,16 @@ void Generator::GeneratorImpl::addStateInfoCode(std::string &code)
 
         if (!infoElements.empty()) {
             infoElements += "\n";
+
+            code += infoElements;
         }
 
-        code += replace(mProfile->stateInfoString(),
-                        "<CODE>", infoElements);
+        code += mProfile->closeArrayInitializerString()
+                + mProfile->commandSeparatorString() + "\n";
     }
 }
 
-void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &code)
 {
     if (!mProfile->variableInfoString().empty()
         && !mProfile->variableInfoWithTypeEntryString().empty()
@@ -1876,6 +1913,10 @@ void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
         if (!code.empty()) {
             code += "\n";
         }
+
+        code += mProfile->variableInfoString()
+                + mProfile->assignmentString()
+                + mProfile->openArrayInitializerString() + "\n";
 
         std::string infoElements;
 
@@ -1911,10 +1952,12 @@ void Generator::GeneratorImpl::addVariableInfoCode(std::string &code)
 
         if (!infoElements.empty()) {
             infoElements += "\n";
+
+            code += infoElements;
         }
 
-        code += replace(mProfile->variableInfoString(),
-                        "<CODE>", infoElements);
+        code += mProfile->closeArrayInitializerString()
+                + mProfile->commandSeparatorString() + "\n";
     }
 }
 
@@ -3238,6 +3281,11 @@ std::string Generator::interfaceCode() const
         mPimpl->addVariableInfoWithTypeObjectCode(res);
     }
 
+    // Add code for the interface of the information about the variable of
+    // integration, states and (other) variables.
+
+    mPimpl->addInterfaceVoiStateAndVariableInfoCode(res);
+
     return res;
 }
 
@@ -3273,12 +3321,12 @@ std::string Generator::implementationCode() const
         mPimpl->addVariableInfoWithTypeObjectCode(res);
     }
 
-    // Add code for the information about the variable of integration, states
-    // and (other) variables.
+    // Add code for the implementation of the information about the variable of
+    // integration, states and (other) variables.
 
-    mPimpl->addVoiInfoCode(res);
-    mPimpl->addStateInfoCode(res);
-    mPimpl->addVariableInfoCode(res);
+    mPimpl->addImplementationVoiInfoCode(res);
+    mPimpl->addImplementationStateInfoCode(res);
+    mPimpl->addImplementationVariableInfoCode(res);
 
     // Add code for extra mathematical functions.
 

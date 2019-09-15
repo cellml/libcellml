@@ -293,15 +293,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "} VariableInfoWithType;\n",
               generatorProfile->variableInfoWithTypeObjectString());
 
-    EXPECT_EQ("const VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->voiInfoString());
-    EXPECT_EQ("const VariableInfo STATE_INFO[] = {\n"
-              "<CODE>"
-              "};\n",
-              generatorProfile->stateInfoString());
-    EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[] = {\n"
-              "<CODE>"
-              "};\n",
-              generatorProfile->variableInfoString());
+    EXPECT_EQ("const VariableInfo VOI_INFO", generatorProfile->voiInfoString());
+    EXPECT_EQ("const VariableInfo STATE_INFO[]", generatorProfile->stateInfoString());
+    EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[]", generatorProfile->variableInfoString());
 
     EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}", generatorProfile->variableInfoEntryString());
     EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}", generatorProfile->variableInfoWithTypeEntryString());
