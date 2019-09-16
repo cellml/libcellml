@@ -1213,9 +1213,11 @@ TEST(Generator, coverage)
 
     profile->setReturnCreatedArrayString("");
 
-    profile->setCreateStatesArrayMethodString("");
-    profile->setCreateVariablesArrayMethodString("");
-    profile->setDeleteArrayMethodString("");
+    profile->setImplementationCreateStatesArrayMethodString("");
+
+    profile->setImplementationCreateVariablesArrayMethodString("");
+
+    profile->setImplementationDeleteArrayMethodString("");
 
     profile->setComputeVariablesMethodString("// We should have computeVariables() here, but we replaced it with this comment\n"
                                              "// and no code template that can be replaced so that our replace() method can\n"
@@ -1288,9 +1290,14 @@ TEST(Generator, coverage)
 
     profile->setReturnCreatedArrayString("");
 
-    profile->setCreateStatesArrayMethodString("");
-    profile->setCreateVariablesArrayMethodString("");
-    profile->setDeleteArrayMethodString("");
+    profile->setInterfaceCreateStatesArrayMethodString("");
+    profile->setImplementationCreateStatesArrayMethodString("");
+
+    profile->setInterfaceCreateVariablesArrayMethodString("");
+    profile->setImplementationCreateVariablesArrayMethodString("");
+
+    profile->setInterfaceDeleteArrayMethodString("");
+    profile->setImplementationDeleteArrayMethodString("");
 
     EXPECT_EQ(fileContents("generator/coverage/model.interface.out"), generator.interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.implementation.out"), generator.implementationCode());

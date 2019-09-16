@@ -46,3 +46,7 @@ extern double acot(double x);
 extern double asech(double x);
 extern double acsch(double x);
 extern double acoth(double x);
+
+extern double * createStatesArray();
+extern double * createVariablesArray();
+extern void deleteArray(double *array);

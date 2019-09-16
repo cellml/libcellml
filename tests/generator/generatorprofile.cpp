@@ -382,19 +382,29 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n",
               generatorProfile->returnCreatedArrayString());
 
-    EXPECT_EQ("double * createStatesArray()\n{\n"
+    EXPECT_EQ("extern double * createStatesArray();\n",
+              generatorProfile->interfaceCreateStatesArrayMethodString());
+    EXPECT_EQ("double * createStatesArray()\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->createStatesArrayMethodString());
-    EXPECT_EQ("double * createVariablesArray()\n{\n"
+              generatorProfile->implementationCreateStatesArrayMethodString());
+
+    EXPECT_EQ("extern double * createVariablesArray();\n",
+              generatorProfile->interfaceCreateVariablesArrayMethodString());
+    EXPECT_EQ("double * createVariablesArray()\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->createVariablesArrayMethodString());
+              generatorProfile->implementationCreateVariablesArrayMethodString());
+
+    EXPECT_EQ("extern void deleteArray(double *array);\n",
+              generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ("void deleteArray(double *array)\n"
               "{\n"
               "    free(array);\n"
               "}\n",
-              generatorProfile->deleteArrayMethodString());
+              generatorProfile->implementationDeleteArrayMethodString());
 
     EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables)\n{\n"
               "<CODE>"
@@ -848,9 +858,14 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setReturnCreatedArrayString(value);
 
-    generatorProfile->setCreateStatesArrayMethodString(value);
-    generatorProfile->setCreateVariablesArrayMethodString(value);
-    generatorProfile->setDeleteArrayMethodString(value);
+    generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
+    generatorProfile->setImplementationCreateStatesArrayMethodString(value);
+
+    generatorProfile->setInterfaceCreateVariablesArrayMethodString(value);
+    generatorProfile->setImplementationCreateVariablesArrayMethodString(value);
+
+    generatorProfile->setInterfaceDeleteArrayMethodString(value);
+    generatorProfile->setImplementationDeleteArrayMethodString(value);
 
     generatorProfile->setInitializeStatesAndConstantsMethodString(value);
     generatorProfile->setComputeComputedConstantsMethodString(value);
@@ -917,9 +932,14 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->returnCreatedArrayString());
 
-    EXPECT_EQ(value, generatorProfile->createStatesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->createVariablesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->deleteArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCreateVariablesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateVariablesArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceDeleteArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationDeleteArrayMethodString());
 
     EXPECT_EQ(value, generatorProfile->initializeStatesAndConstantsMethodString());
     EXPECT_EQ(value, generatorProfile->computeComputedConstantsMethodString());

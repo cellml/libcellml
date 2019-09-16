@@ -655,9 +655,10 @@ struct Generator::GeneratorImpl
 
     std::string generateCreateArrayCode(size_t arraySize);
 
-    void addCreateStatesArrayCode(std::string &code);
-    void addCreateVariablesArrayCode(std::string &code);
-    void addDeleteArrayMethodCode(std::string &code);
+    void addInterfaceCreateDeleteArraysCode(std::string &code);
+    void addImplementationCreateStatesArrayCode(std::string &code);
+    void addImplementationCreateVariablesArrayCode(std::string &code);
+    void addImplementationDeleteArrayMethodCode(std::string &code);
 
     std::string generateMethodBodyCode(const std::string &methodBody);
 
@@ -2235,40 +2236,63 @@ std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
                    "<ARRAY_SIZE>", std::to_string(arraySize));
 }
 
-void Generator::GeneratorImpl::addCreateStatesArrayCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceCreateDeleteArraysCode(std::string &code)
 {
-    if (!mProfile->createStatesArrayMethodString().empty()
+    std::string interfaceCreateDeleteArraysCode;
+
+    if (!mProfile->interfaceCreateStatesArrayMethodString().empty()) {
+        interfaceCreateDeleteArraysCode += mProfile->interfaceCreateStatesArrayMethodString();
+    }
+
+    if (!mProfile->interfaceCreateVariablesArrayMethodString().empty()) {
+        interfaceCreateDeleteArraysCode += mProfile->interfaceCreateVariablesArrayMethodString();
+    }
+
+    if (!mProfile->interfaceDeleteArrayMethodString().empty()) {
+        interfaceCreateDeleteArraysCode += mProfile->interfaceDeleteArrayMethodString();
+    }
+
+    if (!interfaceCreateDeleteArraysCode.empty()) {
+        code += "\n";
+    }
+
+    code += interfaceCreateDeleteArraysCode;
+}
+
+void Generator::GeneratorImpl::addImplementationCreateStatesArrayCode(std::string &code)
+{
+    if (!mProfile->implementationCreateStatesArrayMethodString().empty()
         && !mProfile->returnCreatedArrayString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += replace(mProfile->createStatesArrayMethodString(),
+        code += replace(mProfile->implementationCreateStatesArrayMethodString(),
                         "<CODE>", mProfile->indentString() + generateCreateArrayCode(mStates.size()));
     }
 }
 
-void Generator::GeneratorImpl::addCreateVariablesArrayCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationCreateVariablesArrayCode(std::string &code)
 {
-    if (!mProfile->createVariablesArrayMethodString().empty()
+    if (!mProfile->implementationCreateVariablesArrayMethodString().empty()
         && !mProfile->returnCreatedArrayString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += replace(mProfile->createVariablesArrayMethodString(),
+        code += replace(mProfile->implementationCreateVariablesArrayMethodString(),
                         "<CODE>", mProfile->indentString() + generateCreateArrayCode(mVariables.size()));
     }
 }
 
-void Generator::GeneratorImpl::addDeleteArrayMethodCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationDeleteArrayMethodCode(std::string &code)
 {
-    if (!mProfile->deleteArrayMethodString().empty()) {
+    if (!mProfile->implementationDeleteArrayMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
 
-        code += mProfile->deleteArrayMethodString();
+        code += mProfile->implementationDeleteArrayMethodString();
     }
 }
 
@@ -3354,6 +3378,10 @@ std::string Generator::interfaceCode() const
     mPimpl->addExtraArithmeticOperatorFunctionsCode(res, true);
     mPimpl->addExtraTrigonometricOperatorFunctionsCode(res, true);
 
+    // Add code for the interface for creating and deleting arrays.
+
+    mPimpl->addInterfaceCreateDeleteArraysCode(res);
+
     return res;
 }
 
@@ -3401,11 +3429,11 @@ std::string Generator::implementationCode() const
     mPimpl->addExtraArithmeticOperatorFunctionsCode(res);
     mPimpl->addExtraTrigonometricOperatorFunctionsCode(res);
 
-    // Add code to create and delete arrays.
+    // Add code for the implementation for creating and deleting arrays.
 
-    mPimpl->addCreateStatesArrayCode(res);
-    mPimpl->addCreateVariablesArrayCode(res);
-    mPimpl->addDeleteArrayMethodCode(res);
+    mPimpl->addImplementationCreateStatesArrayCode(res);
+    mPimpl->addImplementationCreateVariablesArrayCode(res);
+    mPimpl->addImplementationDeleteArrayMethodCode(res);
 
     // Add code to initialise our states and constants.
 
