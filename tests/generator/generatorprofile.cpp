@@ -313,7 +313,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
     EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
 
-    EXPECT_EQ("#include <stddef.h>\n",
+    EXPECT_EQ("#pragma once\n"
+              "\n"
+              "#include <stddef.h>\n",
               generatorProfile->interfaceHeaderString());
     EXPECT_EQ("#include \"model.h\"\n"
               "\n"
