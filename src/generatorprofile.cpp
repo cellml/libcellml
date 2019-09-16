@@ -260,10 +260,17 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceDeleteArrayMethodString;
     std::string mImplementationDeleteArrayMethodString;
 
-    std::string mInitializeStatesAndConstantsMethodString;
-    std::string mComputeComputedConstantsMethodString;
-    std::string mComputeRatesMethodString;
-    std::string mComputeVariablesMethodString;
+    std::string mInterfaceInitializeStatesAndConstantsMethodString;
+    std::string mImplementationInitializeStatesAndConstantsMethodString;
+
+    std::string mInterfaceComputeComputedConstantsMethodString;
+    std::string mImplementationComputeComputedConstantsMethodString;
+
+    std::string mInterfaceComputeRatesMethodString;
+    std::string mImplementationComputeRatesMethodString;
+
+    std::string mInterfaceComputeVariablesMethodString;
+    std::string mImplementationComputeVariablesMethodString;
 
     std::string mEmptyMethodString;
 
@@ -594,18 +601,28 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables)\n{\n"
-                                                    "<CODE>"
-                                                    "}\n";
-        mComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n{\n"
-                                                "<CODE>"
-                                                "}\n";
-        mComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
-                                    "<CODE>"
-                                    "}\n";
-        mComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n"
-                                        "<CODE>"
-                                        "}\n";
+        mInterfaceInitializeStatesAndConstantsMethodString = "extern void initializeStatesAndConstants(double *states, double *variables);\n";
+        mImplementationInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables)\n"
+                                                                  "{\n"
+                                                                  "<CODE>"
+                                                                  "}\n";
+
+        mInterfaceComputeComputedConstantsMethodString = "extern void computeComputedConstants(double *variables);\n";
+        mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n"
+                                                              "{\n"
+                                                              "<CODE>"
+                                                              "}\n";
+
+        mInterfaceComputeRatesMethodString = "extern void computeRates(double voi, double *states, double *rates, double *variables);\n";
+        mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+                                                  "<CODE>"
+                                                  "}\n";
+
+        mInterfaceComputeVariablesMethodString = "extern void computeVariables(double voi, double *states, double *rates, double *variables);\n";
+        mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+                                                      "{\n"
+                                                      "<CODE>"
+                                                      "}\n";
 
         mEmptyMethodString = "";
 
@@ -917,18 +934,25 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mInterfaceDeleteArrayMethodString = "";
         mImplementationDeleteArrayMethodString = "";
 
-        mInitializeStatesAndConstantsMethodString = "\n"
-                                                    "def initialize_states_and_constants(states, variables):\n"
-                                                    "<CODE>";
-        mComputeComputedConstantsMethodString = "\n"
-                                                "def compute_computed_constants(variables):\n"
-                                                "<CODE>";
-        mComputeRatesMethodString = "\n"
-                                    "def compute_rates(voi, states, rates, variables):\n"
-                                    "<CODE>";
-        mComputeVariablesMethodString = "\n"
-                                        "def compute_variables(voi, states, rates, variables):\n"
-                                        "<CODE>";
+        mInterfaceInitializeStatesAndConstantsMethodString = "";
+        mImplementationInitializeStatesAndConstantsMethodString = "\n"
+                                                                  "def initialize_states_and_constants(states, variables):\n"
+                                                                  "<CODE>";
+
+        mInterfaceComputeComputedConstantsMethodString = "";
+        mImplementationComputeComputedConstantsMethodString = "\n"
+                                                              "def compute_computed_constants(variables):\n"
+                                                              "<CODE>";
+
+        mInterfaceComputeRatesMethodString = "";
+        mImplementationComputeRatesMethodString = "\n"
+                                                  "def compute_rates(voi, states, rates, variables):\n"
+                                                  "<CODE>";
+
+        mInterfaceComputeVariablesMethodString = "";
+        mImplementationComputeVariablesMethodString = "\n"
+                                                      "def compute_variables(voi, states, rates, variables):\n"
+                                                      "<CODE>";
 
         mEmptyMethodString = "pass\n";
 
@@ -1193,10 +1217,17 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mInterfaceDeleteArrayMethodString = rhs.mPimpl->mInterfaceDeleteArrayMethodString;
     mPimpl->mImplementationDeleteArrayMethodString = rhs.mPimpl->mImplementationDeleteArrayMethodString;
 
-    mPimpl->mInitializeStatesAndConstantsMethodString = rhs.mPimpl->mInitializeStatesAndConstantsMethodString;
-    mPimpl->mComputeComputedConstantsMethodString = rhs.mPimpl->mComputeComputedConstantsMethodString;
-    mPimpl->mComputeRatesMethodString = rhs.mPimpl->mComputeRatesMethodString;
-    mPimpl->mComputeVariablesMethodString = rhs.mPimpl->mComputeVariablesMethodString;
+    mPimpl->mInterfaceInitializeStatesAndConstantsMethodString = rhs.mPimpl->mInterfaceInitializeStatesAndConstantsMethodString;
+    mPimpl->mImplementationInitializeStatesAndConstantsMethodString = rhs.mPimpl->mImplementationInitializeStatesAndConstantsMethodString;
+
+    mPimpl->mInterfaceComputeComputedConstantsMethodString = rhs.mPimpl->mInterfaceComputeComputedConstantsMethodString;
+    mPimpl->mImplementationComputeComputedConstantsMethodString = rhs.mPimpl->mImplementationComputeComputedConstantsMethodString;
+
+    mPimpl->mInterfaceComputeRatesMethodString = rhs.mPimpl->mInterfaceComputeRatesMethodString;
+    mPimpl->mImplementationComputeRatesMethodString = rhs.mPimpl->mImplementationComputeRatesMethodString;
+
+    mPimpl->mInterfaceComputeVariablesMethodString = rhs.mPimpl->mInterfaceComputeVariablesMethodString;
+    mPimpl->mImplementationComputeVariablesMethodString = rhs.mPimpl->mImplementationComputeVariablesMethodString;
 
     mPimpl->mEmptyMethodString = rhs.mPimpl->mEmptyMethodString;
 
@@ -3440,60 +3471,116 @@ void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::strin
     mPimpl->mImplementationDeleteArrayMethodString = implementationDeleteArrayMethodString;
 }
 
-std::string GeneratorProfile::initializeStatesAndConstantsMethodString() const
+std::string GeneratorProfile::interfaceInitializeStatesAndConstantsMethodString() const
 {
-    return mPimpl->mInitializeStatesAndConstantsMethodString;
+    return mPimpl->mInterfaceInitializeStatesAndConstantsMethodString;
 }
 
-void GeneratorProfile::setInitializeStatesAndConstantsMethodString(const std::string &initializeStatesAndConstantsMethodString)
+void GeneratorProfile::setInterfaceInitializeStatesAndConstantsMethodString(const std::string &interfaceInitializeStatesAndConstantsMethodString)
 {
-    if (mPimpl->mInitializeStatesAndConstantsMethodString != initializeStatesAndConstantsMethodString) {
+    if (mPimpl->mInterfaceInitializeStatesAndConstantsMethodString != interfaceInitializeStatesAndConstantsMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mInitializeStatesAndConstantsMethodString = initializeStatesAndConstantsMethodString;
+    mPimpl->mInterfaceInitializeStatesAndConstantsMethodString = interfaceInitializeStatesAndConstantsMethodString;
 }
 
-std::string GeneratorProfile::computeComputedConstantsMethodString() const
+std::string GeneratorProfile::implementationInitializeStatesAndConstantsMethodString() const
 {
-    return mPimpl->mComputeComputedConstantsMethodString;
+    return mPimpl->mImplementationInitializeStatesAndConstantsMethodString;
 }
 
-void GeneratorProfile::setComputeComputedConstantsMethodString(const std::string &computeComputedConstantsMethodString)
+void GeneratorProfile::setImplementationInitializeStatesAndConstantsMethodString(const std::string &implementationInitializeStatesAndConstantsMethodString)
 {
-    if (mPimpl->mComputeComputedConstantsMethodString != computeComputedConstantsMethodString) {
+    if (mPimpl->mImplementationInitializeStatesAndConstantsMethodString != implementationInitializeStatesAndConstantsMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mComputeComputedConstantsMethodString = computeComputedConstantsMethodString;
+    mPimpl->mImplementationInitializeStatesAndConstantsMethodString = implementationInitializeStatesAndConstantsMethodString;
 }
 
-std::string GeneratorProfile::computeRatesMethodString() const
+std::string GeneratorProfile::interfaceComputeComputedConstantsMethodString() const
 {
-    return mPimpl->mComputeRatesMethodString;
+    return mPimpl->mInterfaceComputeComputedConstantsMethodString;
 }
 
-void GeneratorProfile::setComputeRatesMethodString(const std::string &computeRatesMethodString)
+void GeneratorProfile::setInterfaceComputeComputedConstantsMethodString(const std::string &interfaceComputeComputedConstantsMethodString)
 {
-    if (mPimpl->mComputeRatesMethodString != computeRatesMethodString) {
+    if (mPimpl->mInterfaceComputeComputedConstantsMethodString != interfaceComputeComputedConstantsMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mComputeRatesMethodString = computeRatesMethodString;
+    mPimpl->mInterfaceComputeComputedConstantsMethodString = interfaceComputeComputedConstantsMethodString;
 }
 
-std::string GeneratorProfile::computeVariablesMethodString() const
+std::string GeneratorProfile::implementationComputeComputedConstantsMethodString() const
 {
-    return mPimpl->mComputeVariablesMethodString;
+    return mPimpl->mImplementationComputeComputedConstantsMethodString;
 }
 
-void GeneratorProfile::setComputeVariablesMethodString(const std::string &computeVariablesMethodString)
+void GeneratorProfile::setImplementationComputeComputedConstantsMethodString(const std::string &implementationComputeComputedConstantsMethodString)
 {
-    if (mPimpl->mComputeVariablesMethodString != computeVariablesMethodString) {
+    if (mPimpl->mImplementationComputeComputedConstantsMethodString != implementationComputeComputedConstantsMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mComputeVariablesMethodString = computeVariablesMethodString;
+    mPimpl->mImplementationComputeComputedConstantsMethodString = implementationComputeComputedConstantsMethodString;
+}
+
+std::string GeneratorProfile::interfaceComputeRatesMethodString() const
+{
+    return mPimpl->mInterfaceComputeRatesMethodString;
+}
+
+void GeneratorProfile::setInterfaceComputeRatesMethodString(const std::string &interfaceComputeRatesMethodString)
+{
+    if (mPimpl->mInterfaceComputeRatesMethodString != interfaceComputeRatesMethodString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceComputeRatesMethodString = interfaceComputeRatesMethodString;
+}
+
+std::string GeneratorProfile::implementationComputeRatesMethodString() const
+{
+    return mPimpl->mImplementationComputeRatesMethodString;
+}
+
+void GeneratorProfile::setImplementationComputeRatesMethodString(const std::string &implementationComputeRatesMethodString)
+{
+    if (mPimpl->mImplementationComputeRatesMethodString != implementationComputeRatesMethodString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationComputeRatesMethodString = implementationComputeRatesMethodString;
+}
+
+std::string GeneratorProfile::interfaceComputeVariablesMethodString() const
+{
+    return mPimpl->mInterfaceComputeVariablesMethodString;
+}
+
+void GeneratorProfile::setInterfaceComputeVariablesMethodString(const std::string &interfaceComputeVariablesMethodString)
+{
+    if (mPimpl->mInterfaceComputeVariablesMethodString != interfaceComputeVariablesMethodString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceComputeVariablesMethodString = interfaceComputeVariablesMethodString;
+}
+
+std::string GeneratorProfile::implementationComputeVariablesMethodString() const
+{
+    return mPimpl->mImplementationComputeVariablesMethodString;
+}
+
+void GeneratorProfile::setImplementationComputeVariablesMethodString(const std::string &implementationComputeVariablesMethodString)
+{
+    if (mPimpl->mImplementationComputeVariablesMethodString != implementationComputeVariablesMethodString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationComputeVariablesMethodString = implementationComputeVariablesMethodString;
 }
 
 std::string GeneratorProfile::emptyMethodString() const

@@ -50,3 +50,8 @@ extern double acoth(double x);
 extern double * createStatesArray();
 extern double * createVariablesArray();
 extern void deleteArray(double *array);
+
+extern void initializeStatesAndConstants(double *states, double *variables);
+extern void computeComputedConstants(double *variables);
+extern void computeRates(double voi, double *states, double *rates, double *variables);
+extern void computeVariables(double voi, double *states, double *rates, double *variables);

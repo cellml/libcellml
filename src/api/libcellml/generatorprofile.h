@@ -3328,89 +3328,178 @@ public:
     void setImplementationDeleteArrayMethodString(const std::string &implementationDeleteArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the method that initialises states and
+     * @brief Get the @c std::string for the interface to initialise states and
      * constants.
      *
-     * Return the @c std::string for the method that initialises states and
+     * Return the @c std::string for the interface to initialise states and
      * constants.
      *
-     * @return The @c std::string for the method that initialises states and
+     * @return The @c std::string for the interface to initialise states and
      * constants.
      */
-    std::string initializeStatesAndConstantsMethodString() const;
+    std::string interfaceInitializeStatesAndConstantsMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the method that initialises states and
+     * @brief Set the @c std::string for the interface to initialise states and
      * constants.
      *
-     * Set this @c std::string for the method that initialises states and
+     * Set this @c std::string for the interface to initialise states and
      * constants.
      *
-     * @param initializeStatesAndConstantsMethodString The @c std::string to use
-     * for the method that initialises states and constants.
+     * @param interfaceInitializeStatesAndConstantsMethodString The @c std::string to use
+     * for the interface to initialise states and constants.
      */
-    void setInitializeStatesAndConstantsMethodString(const std::string &initializeStatesAndConstantsMethodString);
+    void setInterfaceInitializeStatesAndConstantsMethodString(const std::string &interfaceInitializeStatesAndConstantsMethodString);
 
     /**
-     * @brief Get the @c std::string for the method that computes computed
+     * @brief Get the @c std::string for the implementation to initialise states
+     * and constants.
+     *
+     * Return the @c std::string for the implementation to initialise states and
      * constants.
      *
-     * Return the @c std::string for the method that computes computed
+     * @return The @c std::string for the implementation to initialise states
+     * and constants.
+     */
+    std::string implementationInitializeStatesAndConstantsMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to initialise states
+     * and constants.
+     *
+     * Set this @c std::string for the implementation to initialise states and
      * constants.
      *
-     * @return The @c std::string for the method that computes computed
+     * @param implementationInitializeStatesAndConstantsMethodString The
+     * @c std::string to use for the implementation to initialise states and
      * constants.
      */
-    std::string computeComputedConstantsMethodString() const;
+    void setImplementationInitializeStatesAndConstantsMethodString(const std::string &implementationInitializeStatesAndConstantsMethodString);
 
     /**
-     * @brief Set the @c std::string for the method that computes computed
+     * @brief Get the @c std::string for the interface to compute computed
      * constants.
      *
-     * Set this @c std::string for the method that computes computed constants.
+     * Return the @c std::string for the interface to compute computed
+     * constants.
      *
-     * @param computeComputedConstantsMethodString The @c std::string to use for
-     * the method that computes computed constants.
+     * @return The @c std::string for the interface to compute computed
+     * constants.
      */
-    void setComputeComputedConstantsMethodString(const std::string &computeComputedConstantsMethodString);
+    std::string interfaceComputeComputedConstantsMethodString() const;
 
     /**
-     * @brief Get the @c std::string for the method that computes rates.
+     * @brief Set the @c std::string for the interface to compute computed
+     * constants.
      *
-     * Return the @c std::string for the method that computes rates.
+     * Set this @c std::string for the interface to compute computed constants.
      *
-     * @return The @c std::string for the method that computes rates.
+     * @param interfaceComputeComputedConstantsMethodString The @c std::string
+     * to use for the interface to compute computed constants.
      */
-    std::string computeRatesMethodString() const;
+    void setInterfaceComputeComputedConstantsMethodString(const std::string &interfaceComputeComputedConstantsMethodString);
 
     /**
-     * @brief Set the @c std::string for the method that computes rates.
+     * @brief Get the @c std::string for the implementation to compute computed
+     * constants.
      *
-     * Set this @c std::string for the method that computes rates.
+     * Return the @c std::string for the implementation to compute computed
+     * constants.
      *
-     * @param computeRatesMethodString The @c std::string to use for the method
-     * that computes rates.
+     * @return The @c std::string for the implementation to compute computed
+     * constants.
      */
-    void setComputeRatesMethodString(const std::string &computeRatesMethodString);
+    std::string implementationComputeComputedConstantsMethodString() const;
 
     /**
-     * @brief Get the @c std::string for the method that computes variables.
+     * @brief Set the @c std::string for the implementation to compute computed
+     * constants.
      *
-     * Return the @c std::string for the method that computes variables.
+     * Set this @c std::string for the implementation to compute computed
+     * constants.
      *
-     * @return The @c std::string for the method that computes variables.
+     * @param implementationComputeComputedConstantsMethodString The
+     * @c std::string to use for the implementation to compute computed
+     * constants.
      */
-    std::string computeVariablesMethodString() const;
+    void setImplementationComputeComputedConstantsMethodString(const std::string &implementationComputeComputedConstantsMethodString);
 
     /**
-     * @brief Set the @c std::string for the method that computes variables.
+     * @brief Get the @c std::string for the interface to compute rates.
      *
-     * Set this @c std::string for the method that computes variables.
+     * Return the @c std::string for the interface to compute rates.
      *
-     * @param computeVariablesMethodString The @c std::string to use for the
-     * method that computes variables.
+     * @return The @c std::string for the interface to compute rates.
      */
-    void setComputeVariablesMethodString(const std::string &computeVariablesMethodString);
+    std::string interfaceComputeRatesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to compute rates.
+     *
+     * Set this @c std::string for the interface to compute rates.
+     *
+     * @param interfaceComputeRatesMethodString The @c std::string to use for
+     * the interface to compute rates.
+     */
+    void setInterfaceComputeRatesMethodString(const std::string &interfaceComputeRatesMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to compute rates.
+     *
+     * Return the @c std::string for the implementation to compute rates.
+     *
+     * @return The @c std::string for the implementation to compute rates.
+     */
+    std::string implementationComputeRatesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to compute rates.
+     *
+     * Set this @c std::string for the implementation to compute rates.
+     *
+     * @param implementationComputeRatesMethodString The @c std::string to use
+     * for the implementation to compute rates.
+     */
+    void setImplementationComputeRatesMethodString(const std::string &implementationComputeRatesMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to compute variables.
+     *
+     * Return the @c std::string for the interface to compute variables.
+     *
+     * @return The @c std::string for the interface to compute variables.
+     */
+    std::string interfaceComputeVariablesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to compute variables.
+     *
+     * Set this @c std::string for the interface to compute variables.
+     *
+     * @param interfaceComputeVariablesMethodString The @c std::string to use
+     * for the interface to compute variables.
+     */
+    void setInterfaceComputeVariablesMethodString(const std::string &interfaceComputeVariablesMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to compute variables.
+     *
+     * Return the @c std::string for the implementation to compute variables.
+     *
+     * @return The @c std::string for the implementation to compute variables.
+     */
+    std::string implementationComputeVariablesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to compute
+     * variables.
+     *
+     * Set this @c std::string for the implementation to compute variables.
+     *
+     * @param implementationComputeVariablesMethodString The @c std::string to
+     * use for the implementation to compute variables.
+     */
+    void setImplementationComputeVariablesMethodString(const std::string &implementationComputeVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for an empty method.

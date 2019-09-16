@@ -36,3 +36,8 @@ extern double acot(double x);
 extern double asech(double x);
 extern double acsch(double x);
 extern double acoth(double x);
+
+extern void initializeStatesAndConstants(double *states, double *variables);
+extern void computeComputedConstants(double *variables);
+extern void computeRates(double voi, double *states, double *rates, double *variables);
+extern void computeVariables(double voi, double *states, double *rates, double *variables);
