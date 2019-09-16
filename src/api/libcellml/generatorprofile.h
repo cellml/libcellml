@@ -2570,20 +2570,20 @@ public:
     void setOriginCommentString(const std::string &originCommentString);
 
     /**
-     * @brief Get the @c std::string for an interface header.
+     * @brief Get the @c std::string for the interface of a header.
      *
-     * Return the @c std::string for an interface header.
+     * Return the @c std::string for the interface of a header.
      *
-     * @return The @c std::string for an interface header.
+     * @return The @c std::string for the interface of a header.
      */
     std::string interfaceHeaderString() const;
 
     /**
-     * @brief Set the @c std::string for an interface header.
+     * @brief Set the @c std::string for the interface of a header.
      *
-     * Set this @c std::string for an interface header.
+     * Set this @c std::string for the interface of a header.
      *
-     * @param interfaceHeaderString The @c std::string to use for an interface
+     * @param interfaceHeaderString The @c std::string to use the interface of a
      * header.
      */
     void setInterfaceHeaderString(const std::string &interfaceHeaderString);
@@ -3194,124 +3194,136 @@ public:
     void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
 
     /**
-     * @brief Get the @c std::string for creating the states array.
+     * @brief Get the @c std::string for the interface to create the states
+     * array.
      *
-     * Return the @c std::string for creating the states array.
+     * Return the @c std::string for the interface to create the states array.
      *
-     * @return The @c std::string for creating the states array.
+     * @return The @c std::string for the interface to create the states array.
      */
     std::string interfaceCreateStatesArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for creating the states array.
+     * @brief Set the @c std::string for the interface to create the states
+     * array.
      *
-     * Set this @c std::string for creating the states array. To be useful, the
-     * string should contain the <CODE> tag, which will be replaced with some
-     * code to create the states array.
+     * Set this @c std::string for the interface to create the states array. To
+     * be useful, the string should contain the <CODE> tag, which will be
+     * replaced with some code to create the states array.
      *
-     * @param interfaceCreateStatesArrayMethodString The @c std::string to use for
-     * creating the states array.
+     * @param interfaceCreateStatesArrayMethodString The @c std::string to use
+     * for the interface to create the states array.
      */
     void setInterfaceCreateStatesArrayMethodString(const std::string &interfaceCreateStatesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for creating the states array.
+     * @brief Get the @c std::string for the implementation to create the states
+     * array.
      *
-     * Return the @c std::string for creating the states array.
+     * Return the @c std::string for the implementation to create the states
+     * array.
      *
-     * @return The @c std::string for creating the states array.
+     * @return The @c std::string for the implementation to create the states
+     * array.
      */
     std::string implementationCreateStatesArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for creating the states array.
+     * @brief Set the @c std::string for the implementation to create the states
+     * array.
      *
-     * Set this @c std::string for creating the states array. To be useful, the
-     * string should contain the <CODE> tag, which will be replaced with some
-     * code to create the states array.
+     * Set this @c std::string for the implementation to create the states
+     * array. To be useful, the string should contain the <CODE> tag, which will
+     * be replaced with some code to create the states array.
      *
-     * @param implementationCreateStatesArrayMethodString The @c std::string to use for
-     * creating the states array.
+     * @param implementationCreateStatesArrayMethodString The @c std::string to
+     * use for the implementation to create the states array.
      */
     void setImplementationCreateStatesArrayMethodString(const std::string &implementationCreateStatesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for creating the variables array.
+     * @brief Get the @c std::string for the interface to create variables
+     * array.
      *
-     * Return the @c std::string for creating the variables array.
+     * Return the @c std::string for the interface to create variables array.
      *
-     * @return The @c std::string for creating the variables array.
+     * @return The @c std::string for the interface to create variables array.
      */
     std::string interfaceCreateVariablesArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for creating the variables array.
+     * @brief Set the @c std::string for the interface to create variables
+     * array.
      *
-     * Set this @c std::string for creating the variables array. To be useful,
-     * the string should contain the <CODE> tag, which will be replaced with
-     * some code to create the variables array.
+     * Set this @c std::string for the interface to create variables array. To
+     * be useful, the string should contain the <CODE> tag, which will be
+     * replaced with some code to create the variables array.
      *
-     * @param interfaceCreateVariablesArrayMethodString The @c std::string to use for
-     * creating the variables array.
+     * @param interfaceCreateVariablesArrayMethodString The @c std::string to
+     * use for the interface to create variables array.
      */
     void setInterfaceCreateVariablesArrayMethodString(const std::string &interfaceCreateVariablesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for creating the variables array.
+     * @brief Get the @c std::string for the implementation to create the
+     * variables array.
      *
-     * Return the @c std::string for creating the variables array.
+     * Return the @c std::string for the implementation to create the variables
+     * array.
      *
-     * @return The @c std::string for creating the variables array.
+     * @return The @c std::string for the implementation to create the variables
+     * array.
      */
     std::string implementationCreateVariablesArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for creating the variables array.
+     * @brief Set the @c std::string for the implementation to create the
+     * variables array.
      *
-     * Set this @c std::string for creating the variables array. To be useful,
-     * the string should contain the <CODE> tag, which will be replaced with
-     * some code to create the variables array.
+     * Set this @c std::string for the implementation to create the variables
+     * array. To be useful, the string should contain the <CODE> tag, which will
+     * be replaced with some code to create the variables array.
      *
-     * @param implementationCreateVariablesArrayMethodString The @c std::string to use for
-     * creating the variables array.
+     * @param implementationCreateVariablesArrayMethodString The @c std::string
+     * to use for the implementation to create the variables array.
      */
     void setImplementationCreateVariablesArrayMethodString(const std::string &implementationCreateVariablesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for deleting an array.
+     * @brief Get the @c std::string for the interface to delete an array.
      *
-     * Return the @c std::string for deleting an array.
+     * Return the @c std::string for the interface to delete an array.
      *
-     * @return The @c std::string for deleting an array.
+     * @return The @c std::string for the interface to delete an array.
      */
     std::string interfaceDeleteArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for deleting an array.
+     * @brief Set the @c std::string for the interface to delete an array.
      *
-     * Set this @c std::string for deleting an array.
+     * Set this @c std::string for the interface to delete an array.
      *
-     * @param interfaceDeleteArrayMethodString The @c std::string to use for
-     * deleting an array.
+     * @param interfaceDeleteArrayMethodString The @c std::string to use for the
+     * interface to delete an array.
      */
     void setInterfaceDeleteArrayMethodString(const std::string &interfaceDeleteArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for deleting an array.
+     * @brief Get the @c std::string for the implementation to delete an array.
      *
-     * Return the @c std::string for deleting an array.
+     * Return the @c std::string for the implementation to delete an array.
      *
-     * @return The @c std::string for deleting an array.
+     * @return The @c std::string for the implementation to delete an array.
      */
     std::string implementationDeleteArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for deleting an array.
+     * @brief Set the @c std::string for the implementation to delete an array.
      *
-     * Set this @c std::string for deleting an array.
+     * Set this @c std::string for the implementation to delete an array.
      *
-     * @param implementationDeleteArrayMethodString The @c std::string to use for
-     * deleting an array.
+     * @param implementationDeleteArrayMethodString The @c std::string to use
+     * for the implementation to delete an array.
      */
     void setImplementationDeleteArrayMethodString(const std::string &implementationDeleteArrayMethodString);
 
