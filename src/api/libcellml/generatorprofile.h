@@ -1459,460 +1459,1072 @@ public:
     // Mathematical functions.
 
     /**
-     * @brief Get the @c std::string for the equivalence function.
+     * @brief Get the @c std::string for the interface of the equivalence
+     * function.
      *
-     * Return the @c std::string for the equivalence function.
+     * Return the @c std::string for the interface of the equivalence function.
      *
-     * @return The @c std::string for the equivalence function.
+     * @return The @c std::string for the interface of the equivalence function.
      */
-    std::string eqFunctionString() const;
+    std::string interfaceEqFunctionString() const;
 
     /**
-     * @brief Set the @c std::string for the equivalence function.
+     * @brief Set the @c std::string for the interface of the equivalence
+     * function.
      *
-     * Set this @c std::string for the equivalence function.
+     * Set this @c std::string for the interface of the equivalence function.
      *
-     * @param eqFunctionString The @c std::string to use for the equivalence
+     * @param interfaceEqFunctionString The @c std::string to use for the
+     * interface of the equivalence function.
+     */
+    void setInterfaceEqFunctionString(const std::string &interfaceEqFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the equivalence
+     * function.
+     *
+     * Return the @c std::string for the implementation of the equivalence
+     * function.
+     *
+     * @return The @c std::string for the implementation of the equivalence
      * function.
      */
-    void setEqFunctionString(const std::string &eqFunctionString);
+    std::string implementationEqFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the nonequivalence function.
+     * @brief Set the @c std::string for the implementation of the equivalence
+     * function.
      *
-     * Return the @c std::string for the nonequivalence function.
+     * Set this @c std::string for the implementation of the equivalence
+     * function.
      *
-     * @return The @c std::string for the nonequivalence function.
+     * @param implementationEqFunctionString The @c std::string to use for
+     * the implementation of the equivalence function.
      */
-    std::string neqFunctionString() const;
+    void setImplementationEqFunctionString(const std::string &implementationEqFunctionString);
 
     /**
-     * @brief Set the @c std::string for the nonequivalence function.
+     * @brief Get the @c std::string for the interface of the nonequivalence
+     * function.
      *
-     * Set this @c std::string for the nonequivalence function.
+     * Return the @c std::string for the interface of the nonequivalence
+     * function.
      *
-     * @param neqFunctionString The @c std::string to use for the nonequivalence
+     * @return The @c std::string for the interface of the nonequivalence
      * function.
      */
-    void setNeqFunctionString(const std::string &neqFunctionString);
+    std::string interfaceNeqFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the lower than function.
+     * @brief Set the @c std::string for the interface of the nonequivalence
+     * function.
      *
-     * Return the @c std::string for the lower than function.
+     * Set this @c std::string for the interface of the nonequivalence function.
      *
-     * @return The @c std::string for the lower than function.
+     * @param interfaceNeqFunctionString The @c std::string to use for the
+     * interface of the nonequivalence function.
      */
-    std::string ltFunctionString() const;
+    void setInterfaceNeqFunctionString(const std::string &interfaceNeqFunctionString);
 
     /**
-     * @brief Set the @c std::string for the lower than function.
+     * @brief Get the @c std::string for the implementation of the
+     * nonequivalence function.
      *
-     * Set this @c std::string for the lower than function.
+     * Return the @c std::string for the implementation of the nonequivalence
+     * function.
      *
-     * @param ltFunctionString The @c std::string to use for the lower than
+     * @return The @c std::string for the implementation of the nonequivalence
      * function.
      */
-    void setLtFunctionString(const std::string &ltFunctionString);
+    std::string implementationNeqFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the lower or equal than function.
+     * @brief Set the @c std::string for the implementation of the
+     * nonequivalence function.
      *
-     * Return the @c std::string for the lower or equal than function.
+     * Set this @c std::string for the implementation of the nonequivalence
+     * function.
      *
-     * @return The @c std::string for the lower or equal than function.
+     * @param implementationNeqFunctionString The @c std::string to use for the
+     * implementation of the nonequivalence function.
      */
-    std::string leqFunctionString() const;
+    void setImplementationNeqFunctionString(const std::string &implementationNeqFunctionString);
 
     /**
-     * @brief Set the @c std::string for the lower or equal than function.
+     * @brief Get the @c std::string for the interface of the lower than
+     * function.
      *
-     * Set this @c std::string for the lower or equal than function.
+     * Return the @c std::string for the interface of the lower than function.
      *
-     * @param leqFunctionString The @c std::string to use for the lower or equal
+     * @return The @c std::string for the interface of the lower than function.
+     */
+    std::string interfaceLtFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the lower than function.
+     *
+     * Set this @c std::string for the interface of the lower than function.
+     *
+     * @param interfaceLtFunctionString The @c std::string to use for the
+     * interface of the lower than function.
+     */
+    void setInterfaceLtFunctionString(const std::string &interfaceLtFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the lower than
+     * function.
+     *
+     * Return the @c std::string for the implementation of the lower than
+     * function.
+     *
+     * @return The @c std::string for the implementation of the lower than
+     * function.
+     */
+    std::string implementationLtFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the lower than
+     * function.
+     *
+     * Set this @c std::string for the implementation of the lower than
+     * function.
+     *
+     * @param implementationLtFunctionString The @c std::string to use for the
+     * implementation of the lower than function.
+     */
+    void setImplementationLtFunctionString(const std::string &implementationLtFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the lower or equal
+     * than function.
+     *
+     * Return the @c std::string for the interface of the lower or equal than
+     * function.
+     *
+     * @return The @c std::string for the interface of the lower or equal than
+     * function.
+     */
+    std::string interfaceLeqFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the lower or equal
+     * than function.
+     *
+     * Set this @c std::string for the interface of the lower or equal than
+     * function.
+     *
+     * @param interfaceLeqFunctionString The @c std::string to use for the
+     * interface of the lower or equal than function.
+     */
+    void setInterfaceLeqFunctionString(const std::string &interfaceLeqFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the lower or
+     * equal than function.
+     *
+     * Return the @c std::string for the implementation of the lower or equal
+     * than function.
+     *
+     * @return The @c std::string for the implementation of the lower or equal
      * than function.
      */
-    void setLeqFunctionString(const std::string &leqFunctionString);
+    std::string implementationLeqFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the greater than function.
-     *
-     * Return the @c std::string for the greater than function.
-     *
-     * @return The @c std::string for the greater than function.
-     */
-    std::string gtFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the greater than function.
-     *
-     * Set this @c std::string for the greater than function.
-     *
-     * @param gtFunctionString The @c std::string to use for the greater than
-     * function.
-     */
-    void setGtFunctionString(const std::string &gtFunctionString);
-
-    /**
-     * @brief Get the @c std::string for the greater or equal than function.
-     *
-     * Return the @c std::string for the greater or equal than function.
-     *
-     * @return The @c std::string for the greater or equal than function.
-     */
-    std::string geqFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the greater or equal than function.
-     *
-     * Set this @c std::string for the greater or equal than function.
-     *
-     * @param geqFunctionString The @c std::string to use for the greater or
+     * @brief Set the @c std::string for the implementation of the lower or
      * equal than function.
+     *
+     * Set this @c std::string for the implementation of the lower or equal than
+     * function.
+     *
+     * @param implementationLeqFunctionString The @c std::string to use for the
+     * implementation of the lower or equal than function.
      */
-    void setGeqFunctionString(const std::string &geqFunctionString);
+    void setImplementationLeqFunctionString(const std::string &implementationLeqFunctionString);
 
     /**
-     * @brief Get the @c std::string for the and function.
+     * @brief Get the @c std::string for the interface of the greater than
+     * function.
      *
-     * Return the @c std::string for the and function.
+     * Return the @c std::string for the interface of the greater than function.
      *
-     * @return The @c std::string for the and function.
-     */
-    std::string andFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the and function.
-     *
-     * Set this @c std::string for the and function.
-     *
-     * @param andFunctionString The @c std::string to use for the and function.
-     */
-    void setAndFunctionString(const std::string &andFunctionString);
-
-    /**
-     * @brief Get the @c std::string for the or function.
-     *
-     * Return the @c std::string for the or function.
-     *
-     * @return The @c std::string for the or function.
-     */
-    std::string orFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the or function.
-     *
-     * Set this @c std::string for the or function.
-     *
-     * @param orFunctionString The @c std::string to use for the or function.
-     */
-    void setOrFunctionString(const std::string &orFunctionString);
-
-    /**
-     * @brief Get the @c std::string for the xor function.
-     *
-     * Return the @c std::string for the xor function.
-     *
-     * @return The @c std::string for the xor function.
-     */
-    std::string xorFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the xor function.
-     *
-     * Set this @c std::string for the xor function.
-     *
-     * @param xorFunctionString The @c std::string to use for the xor function.
-     */
-    void setXorFunctionString(const std::string &xorFunctionString);
-
-    /**
-     * @brief Get the @c std::string for the not function.
-     *
-     * Return the @c std::string for the not function.
-     *
-     * @return The @c std::string for the not function.
-     */
-    std::string notFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the not function.
-     *
-     * Set this @c std::string for the not function.
-     *
-     * @param notFunctionString The @c std::string to use for the not function.
-     */
-    void setNotFunctionString(const std::string &notFunctionString);
-
-    /**
-     * @brief Get the @c std::string for the minimum function.
-     *
-     * Return the @c std::string for the minimum function.
-     *
-     * @return The @c std::string for the minimum function.
-     */
-    std::string minFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the minimum function.
-     *
-     * Set this @c std::string for the minimum function.
-     *
-     * @param minFunctionString The @c std::string to use for the minimum
+     * @return The @c std::string for the interface of the greater than
      * function.
      */
-    void setMinFunctionString(const std::string &minFunctionString);
+    std::string interfaceGtFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the maximum function.
+     * @brief Set the @c std::string for the interface of the greater than
+     * function.
      *
-     * Return the @c std::string for the maximum function.
+     * Set this @c std::string for the interface of the greater than function.
      *
-     * @return The @c std::string for the maximum function.
+     * @param interfaceGtFunctionString The @c std::string to use for the
+     * interface of the greater than function.
      */
-    std::string maxFunctionString() const;
+    void setInterfaceGtFunctionString(const std::string &interfaceGtFunctionString);
 
     /**
-     * @brief Set the @c std::string for the maximum function.
+     * @brief Get the @c std::string for the implementation of the greater than
+     * function.
      *
-     * Set this @c std::string for the maximum function.
+     * Return the @c std::string for the implementation of the greater than
+     * function.
      *
-     * @param maxFunctionString The @c std::string to use for the maximum
+     * @return The @c std::string for the implementation of the greater than
      * function.
      */
-    void setMaxFunctionString(const std::string &maxFunctionString);
+    std::string implementationGtFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the secant function.
+     * @brief Set the @c std::string for the implementation of the greater than
+     * function.
      *
-     * Return the @c std::string for the secant function.
+     * Set this @c std::string for the implementation of the greater than
+     * function.
      *
-     * @return The @c std::string for the secant function.
+     * @param implementationGtFunctionString The @c std::string to use for the
+     * implementation of the greater than function.
      */
-    std::string secFunctionString() const;
+    void setImplementationGtFunctionString(const std::string &implementationGtFunctionString);
 
     /**
-     * @brief Set the @c std::string for the secant function.
+     * @brief Get the @c std::string for the interface of the greater or equal
+     *  than function.
      *
-     * Set this @c std::string for the secant function.
+     * Return the @c std::string for the interface of the greater or equal than
+     * function.
      *
-     * @param secFunctionString The @c std::string to use for the secant
+     * @return The @c std::string for the interface of the greater or equal than
      * function.
      */
-    void setSecFunctionString(const std::string &secFunctionString);
+    std::string interfaceGeqFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the cosecant function.
+     * @brief Set the @c std::string for the interface of the greater or equal
+     * than function.
      *
-     * Return the @c std::string for the cosecant function.
+     * Set this @c std::string for the interface of the greater or equal than
+     * function.
      *
-     * @return The @c std::string for the cosecant function.
+     * @param interfaceGeqFunctionString The @c std::string to use for the
+     * interface of the greater or equal than function.
      */
-    std::string cscFunctionString() const;
+    void setInterfaceGeqFunctionString(const std::string &interfaceGeqFunctionString);
 
     /**
-     * @brief Set the @c std::string for the cosecant function.
+     * @brief Get the @c std::string for the implementation of the greater or
+     * equal than function.
      *
-     * Set this @c std::string for the cosecant function.
+     * Return the @c std::string for the implementation of the greater or equal
+     * than function.
      *
-     * @param cscFunctionString The @c std::string to use for the cosecant
+     * @return The @c std::string for the implementation of the greater or equal
+     * than function.
+     */
+    std::string implementationGeqFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the greater or
+     * equal than function.
+     *
+     * Set this @c std::string for the implementation of the greater or equal
+     * than function.
+     *
+     * @param implementationGeqFunctionString The @c std::string to use for the
+     * implementation of the greater or equal than function.
+     */
+    void setImplementationGeqFunctionString(const std::string &implementationGeqFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the and function.
+     *
+     * Return the @c std::string for the interface of the and function.
+     *
+     * @return The @c std::string for the interface of the and function.
+     */
+    std::string interfaceAndFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the and function.
+     *
+     * Set this @c std::string for the interface of the and function.
+     *
+     * @param interfaceAndFunctionString The @c std::string to use for the
+     * interface of the and function.
+     */
+    void setInterfaceAndFunctionString(const std::string &interfaceAndFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the and function.
+     *
+     * Return the @c std::string for the implementation of the and function.
+     *
+     * @return The @c std::string for the implementation of the and function.
+     */
+    std::string implementationAndFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the and function.
+     *
+     * Set this @c std::string for the implementation of the and function.
+     *
+     * @param implementationAndFunctionString The @c std::string to use for the
+     * implementation of the and function.
+     */
+    void setImplementationAndFunctionString(const std::string &implementationAndFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the or function.
+     *
+     * Return the @c std::string for the interface of the or function.
+     *
+     * @return The @c std::string for the interface of the or function.
+     */
+    std::string interfaceOrFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the or function.
+     *
+     * Set this @c std::string for the interface of the or function.
+     *
+     * @param interfaceOrFunctionString The @c std::string to use for the
+     * interface of the or function.
+     */
+    void setInterfaceOrFunctionString(const std::string &interfaceOrFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the or function.
+     *
+     * Return the @c std::string the implementation of the the or function.
+     *
+     * @return The @c std::string for the implementation of the or function.
+     */
+    std::string implementationOrFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the or function.
+     *
+     * Set this @c std::string for the implementation of the or function.
+     *
+     * @param implementationOrFunctionString The @c std::string to use for the
+     * implementation of the or function.
+     */
+    void setImplementationOrFunctionString(const std::string &implementationOrFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the xor function.
+     *
+     * Return the @c std::string for the interface of the xor function.
+     *
+     * @return The @c std::string for the interface of the xor function.
+     */
+    std::string interfaceXorFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the xor function.
+     *
+     * Set this @c std::string for the interface of the xor function.
+     *
+     * @param interfaceXorFunctionString The @c std::string to use for the
+     * interface of the xor function.
+     */
+    void setInterfaceXorFunctionString(const std::string &interfaceXorFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the xor function.
+     *
+     * Return the @c std::string for the implementation of the xor function.
+     *
+     * @return The @c std::string for the implementation of the xor function.
+     */
+    std::string implementationXorFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the xor function.
+     *
+     * Set this @c std::string for the implementation of the xor function.
+     *
+     * @param implementationXorFunctionString The @c std::string to use for the
+     * implementation of the xor function.
+     */
+    void setImplementationXorFunctionString(const std::string &implementationXorFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the not function.
+     *
+     * Return the @c std::string for the interface of the not function.
+     *
+     * @return The @c std::string for the interface of the not function.
+     */
+    std::string interfaceNotFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the not function.
+     *
+     * Set this @c std::string for the interface of the not function.
+     *
+     * @param interfaceNotFunctionString The @c std::string to use for the
+     * interface of the not function.
+     */
+    void setInterfaceNotFunctionString(const std::string &interfaceNotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the not function.
+     *
+     * Return the @c std::string for the implementation of the not function.
+     *
+     * @return The @c std::string for the implementation of the not function.
+     */
+    std::string implementationNotFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the not function.
+     *
+     * Set this @c std::string for the implementation of the not function.
+     *
+     * @param implementationNotFunctionString The @c std::string to use for the
+     * implementation of the not function.
+     */
+    void setImplementationNotFunctionString(const std::string &implementationNotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the minimum function.
+     *
+     * Return the @c std::string for the interface of the minimum function.
+     *
+     * @return The @c std::string for the interface of the minimum function.
+     */
+    std::string interfaceMinFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the minimum function.
+     *
+     * Set this @c std::string for the interface of the minimum function.
+     *
+     * @param interfaceMinFunctionString The @c std::string to use for the
+     * interface of the minimum function.
+     */
+    void setInterfaceMinFunctionString(const std::string &interfaceMinFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the minimum
+     * function.
+     *
+     * Return the @c std::string for the implementation of the minimum function.
+     *
+     * @return The @c std::string for the implementation of the minimum
      * function.
      */
-    void setCscFunctionString(const std::string &cscFunctionString);
+    std::string implementationMinFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the cotangent function.
+     * @brief Set the @c std::string for the implementation of the minimum
+     * function.
      *
-     * Return the @c std::string for the cotangent function.
+     * Set this @c std::string for the implementation of the minimum function.
      *
-     * @return The @c std::string for the cotangent function.
+     * @param implementationMinFunctionString The @c std::string to use for the
+     * implementation of the minimum function.
      */
-    std::string cotFunctionString() const;
+    void setImplementationMinFunctionString(const std::string &implementationMinFunctionString);
 
     /**
-     * @brief Set the @c std::string for the cotangent function.
+     * @brief Get the @c std::string for the interface of the maximum function.
      *
-     * Set this @c std::string for the cotangent function.
+     * Return the @c std::string for the interface of the maximum function.
      *
-     * @param cotFunctionString The @c std::string to use for the cotangent
+     * @return The @c std::string for the interface of the maximum function.
+     */
+    std::string interfaceMaxFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the maximum function.
+     *
+     * Set this @c std::string for the interface of the maximum function.
+     *
+     * @param interfaceMaxFunctionString The @c std::string to use for the
+     * interface of the maximum function.
+     */
+    void setInterfaceMaxFunctionString(const std::string &interfaceMaxFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the maximum function.
+     *
+     * Return the @c std::string for the implementation of the maximum function.
+     *
+     * @return The @c std::string for the implementation of the maximum function.
+     */
+    std::string implementationMaxFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the maximum
+     * function.
+     *
+     * Set this @c std::string for the implementation of the maximum function.
+     *
+     * @param implementationMaxFunctionString The @c std::string to use for the
+     * implementation of the maximum function.
+     */
+    void setImplementationMaxFunctionString(const std::string &implementationMaxFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the secant function.
+     *
+     * Return the @c std::string for the interface of the secant function.
+     *
+     * @return The @c std::string for the interface of the secant function.
+     */
+    std::string interfaceSecFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the secant function.
+     *
+     * Set this @c std::string for the interface of the secant function.
+     *
+     * @param interfaceSecFunctionString The @c std::string to use for the
+     * interface of the secant function.
+     */
+    void setInterfaceSecFunctionString(const std::string &interfaceSecFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the secant
+     * function.
+     *
+     * Return the @c std::string for the implementation of the secant function.
+     *
+     * @return The @c std::string for the implementation of the secant function.
+     */
+    std::string implementationSecFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the secant
+     * function.
+     *
+     * Set this @c std::string for the implementation of the secant function.
+     *
+     * @param implementationSecFunctionString The @c std::string to use for the
+     * implementation of the secant function.
+     */
+    void setImplementationSecFunctionString(const std::string &implementationSecFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the cosecant function.
+     *
+     * Return the @c std::string for the interface of the cosecant function.
+     *
+     * @return The @c std::string for the interface of the cosecant function.
+     */
+    std::string interfaceCscFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the cosecant function.
+     *
+     * Set this @c std::string for the interface of the cosecant function.
+     *
+     * @param interfaceCscFunctionString The @c std::string to use for the
+     * interface of the cosecant function.
+     */
+    void setInterfaceCscFunctionString(const std::string &interfaceCscFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the cosecant
+     * function.
+     *
+     * Return the @c std::string for the implementation of the cosecant
+     * function.
+     *
+     * @return The @c std::string for the implementation of the cosecant
      * function.
      */
-    void setCotFunctionString(const std::string &cotFunctionString);
+    std::string implementationCscFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the hyperbolic secant function.
+     * @brief Set the @c std::string for the implementation of the cosecant
+     * function.
      *
-     * Return the @c std::string for the hyperbolic secant function.
+     * Set this @c std::string for the implementation of the cosecant function.
      *
-     * @return The @c std::string for the hyperbolic secant function.
+     * @param implementationCscFunctionString The @c std::string to use for the
+     * implementation of the cosecant function.
      */
-    std::string sechFunctionString() const;
+    void setImplementationCscFunctionString(const std::string &implementationCscFunctionString);
 
     /**
-     * @brief Set the @c std::string for the hyperbolic secant function.
+     * @brief Get the @c std::string for the interface of the cotangent
+     * function.
      *
-     * Set this @c std::string for the hyperbolic secant function.
+     * Return the @c std::string for the interface of the cotangent function.
      *
-     * @param sechFunctionString The @c std::string to use for the hyperbolic
+     * @return The @c std::string for the interface of the cotangent function.
+     */
+    std::string interfaceCotFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the cotangent
+     * function.
+     *
+     * Set this @c std::string for the interface of the cotangent function.
+     *
+     * @param interfaceCotFunctionString The @c std::string to use for the
+     * interface of the cotangent function.
+     */
+    void setInterfaceCotFunctionString(const std::string &interfaceCotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the cotangent
+     * function.
+     *
+     * Return the @c std::string for the implementation of the cotangent
+     * function.
+     *
+     * @return The @c std::string for the implementation of the cotangent
+     * function.
+     */
+    std::string implementationCotFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the cotangent
+     * function.
+     *
+     * Set this @c std::string for the implementation of the cotangent
+     * function.
+     *
+     * @param implementationCotFunctionString The @c std::string to use for the
+     * implementation of the cotangent function.
+     */
+    void setImplementationCotFunctionString(const std::string &implementationCotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the hyperbolic secant
+     * function.
+     *
+     * Return the @c std::string for the interface of the hyperbolic secant
+     * function.
+     *
+     * @return The @c std::string for the interface of the hyperbolic secant
+     * function.
+     */
+    std::string interfaceSechFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the hyperbolic secant
+     * function.
+     *
+     * Set this @c std::string for the interface of the hyperbolic secant
+     * function.
+     *
+     * @param interfaceSechFunctionString The @c std::string to use for the
+     * interface of the hyperbolic secant function.
+     */
+    void setInterfaceSechFunctionString(const std::string &interfaceSechFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the hyperbolic
+     * secant function.
+     *
+     * Return the @c std::string for the implementation of the hyperbolic secant
+     * function.
+     *
+     * @return The @c std::string for the implementation of the hyperbolic
      * secant function.
      */
-    void setSechFunctionString(const std::string &sechFunctionString);
+    std::string implementationSechFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the hyperbolic cosecant function.
+     * @brief Set the @c std::string for the implementation of the hyperbolic
+     * secant function.
      *
-     * Return the @c std::string for the hyperbolic cosecant function.
+     * Set this @c std::string for the implementation of the hyperbolic secant
+     * function.
      *
-     * @return The @c std::string for the hyperbolic cosecant function.
+     * @param implementationSechFunctionString The @c std::string to use for the
+     * implementation of the hyperbolic secant function.
      */
-    std::string cschFunctionString() const;
+    void setImplementationSechFunctionString(const std::string &implementationSechFunctionString);
 
     /**
-     * @brief Set the @c std::string for the hyperbolic cosecant function.
+     * @brief Get the @c std::string for the interface of the hyperbolic
+     * cosecant function.
      *
-     * Set this @c std::string for the hyperbolic cosecant function.
+     * Return the @c std::string for the interface of the hyperbolic cosecant
+     * function.
      *
-     * @param cschFunctionString The @c std::string to use for the hyperbolic
+     * @return The @c std::string for the interface of the hyperbolic cosecant
+     * function.
+     */
+    std::string interfaceCschFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the hyperbolic
+     * cosecant function.
+     *
+     * Set this @c std::string for the interface of the hyperbolic cosecant
+     * function.
+     *
+     * @param interfaceCschFunctionString The @c std::string to use for the
+     * interface of the hyperbolic cosecant function.
+     */
+    void setInterfaceCschFunctionString(const std::string &interfaceCschFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the hyperbolic
+     * cosecant function.
+     *
+     * Return the @c std::string for the implementation of the hyperbolic
+     * cosecant function.
+     *
+     * @return The @c std::string for the implementation of the hyperbolic
      * cosecant function.
      */
-    void setCschFunctionString(const std::string &cschFunctionString);
+    std::string implementationCschFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the hyperbolic cotangent function.
+     * @brief Set the @c std::string for the implementation of the hyperbolic
+     * cosecant function.
      *
-     * Return the @c std::string for the hyperbolic cotangent function.
+     * Set this @c std::string for the implementation of the hyperbolic cosecant
+     * function.
      *
-     * @return The @c std::string for the hyperbolic cotangent function.
+     * @param implementationCschFunctionString The @c std::string to use for the
+     * implementation of the hyperbolic cosecant function.
      */
-    std::string cothFunctionString() const;
+    void setImplementationCschFunctionString(const std::string &implementationCschFunctionString);
 
     /**
-     * @brief Set the @c std::string for the hyperbolic cotangent function.
+     * @brief Get the @c std::string for the interface of the hyperbolic
+     * cotangent function.
      *
-     * Set this @c std::string for the hyperbolic cotangent function.
+     * Return the @c std::string for the interface of the hyperbolic cotangent
+     * function.
      *
-     * @param cothFunctionString The @c std::string to use for the hyperbolic
+     * @return The @c std::string for the interface of the hyperbolic cotangent
+     * function.
+     */
+    std::string interfaceCothFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the hyperbolic
+     * cotangent function.
+     *
+     * Set this @c std::string for the interface of the hyperbolic cotangent
+     * function.
+     *
+     * @param interfaceCothFunctionString The @c std::string to use for the
+     * interface of the hyperbolic cotangent function.
+     */
+    void setInterfaceCothFunctionString(const std::string &interfaceCothFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the hyperbolic
+     * cotangent function.
+     *
+     * Return the @c std::string for the implementation of the hyperbolic
+     * cotangent function.
+     *
+     * @return The @c std::string for the implementation of the hyperbolic
      * cotangent function.
      */
-    void setCothFunctionString(const std::string &cothFunctionString);
+    std::string implementationCothFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the inverse secant function.
+     * @brief Set the @c std::string for the implementation of the hyperbolic
+     * cotangent function.
      *
-     * Return the @c std::string for the inverse secant function.
+     * Set this @c std::string for the implementation of the hyperbolic
+     * cotangent function.
      *
-     * @return The @c std::string for the inverse secant function.
+     * @param implementationCothFunctionString The @c std::string to use for the
+     * implementation of the hyperbolic cotangent function.
      */
-    std::string asecFunctionString() const;
+    void setImplementationCothFunctionString(const std::string &implementationCothFunctionString);
 
     /**
-     * @brief Set the @c std::string for the inverse secant function.
+     * @brief Get the @c std::string for the interface of the inverse secant
+     * function.
      *
-     * Set this @c std::string for the inverse secant function.
+     * Return the @c std::string for the interface of the inverse secant
+     * function.
      *
-     * @param asecFunctionString The @c std::string to use for the inverse
+     * @return The @c std::string for the interface of the inverse secant
+     * function.
+     */
+    std::string interfaceAsecFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the inverse secant
+     * function.
+     *
+     * Set this @c std::string for the interface of the inverse secant function.
+     *
+     * @param interfaceAsecFunctionString The @c std::string to use for the
+     * interface of the inverse secant function.
+     */
+    void setInterfaceAsecFunctionString(const std::string &interfaceAsecFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the inverse
+     * secant function.
+     *
+     * Return the @c std::string for the implementation of the inverse secant
+     * function.
+     *
+     * @return The @c std::string for the implementation of the inverse secant
+     * function.
+     */
+    std::string implementationAsecFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the inverse
+     * secant function.
+     *
+     * Set this @c std::string for the implementation of the inverse secant
+     * function.
+     *
+     * @param implementationAsecFunctionString The @c std::string to use for the
+     * implementation of the inverse secant function.
+     */
+    void setImplementationAsecFunctionString(const std::string &implementationAsecFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the inverse cosecant
+     * function.
+     *
+     * Return the @c std::string for the interface of the inverse cosecant
+     * function.
+     *
+     * @return The @c std::string for the interface of the inverse cosecant
+     * function.
+     */
+    std::string interfaceAcscFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the inverse cosecant
+     * function.
+     *
+     * Set this @c std::string for the interface of the inverse cosecant
+     * function.
+     *
+     * @param interfaceAcscFunctionString The @c std::string to use for the
+     * interface of the inverse cosecant function.
+     */
+    void setInterfaceAcscFunctionString(const std::string &interfaceAcscFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the inverse
+     * cosecant function.
+     *
+     * Return the @c std::string for the implementation of the inverse cosecant
+     * function.
+     *
+     * @return The @c std::string for the implementation of the inverse cosecant
+     * function.
+     */
+    std::string implementationAcscFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the inverse
+     * cosecant function.
+     *
+     * Set this @c std::string for the implementation of the inverse cosecant
+     * function.
+     *
+     * @param implementationAcscFunctionString The @c std::string to use for the
+     * implementation of the inverse cosecant function.
+     */
+    void setImplementationAcscFunctionString(const std::string &implementationAcscFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the inverse cotangent
+     * function.
+     *
+     * Return the @c std::string for the interface of the inverse cotangent
+     * function.
+     *
+     * @return The @c std::string for the interface of the inverse cotangent
+     * function.
+     */
+    std::string interfaceAcotFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the inverse cotangent
+     * function.
+     *
+     * Set this @c std::string for the interface of the inverse cotangent
+     * function.
+     *
+     * @param interfaceAcotFunctionString The @c std::string to use for the
+     * interface of the inverse cotangent function.
+     */
+    void setInterfaceAcotFunctionString(const std::string &interfaceAcotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the inverse
+     * cotangent function.
+     *
+     * Return the @c std::string for the implementation of the inverse cotangent
+     * function.
+     *
+     * @return The @c std::string for the implementation of the inverse
+     * cotangent function.
+     */
+    std::string implementationAcotFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the inverse
+     * cotangent function.
+     *
+     * Set this @c std::string for the implementation of the inverse cotangent
+     * function.
+     *
+     * @param implementationAcotFunctionString The @c std::string to use for the
+     * implementation of the inverse cotangent function.
+     */
+    void setImplementationAcotFunctionString(const std::string &implementationAcotFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the inverse hyperbolic
+     * secant function.
+     *
+     * Return the @c std::string for the interface of the inverse hyperbolic
+     * secant function.
+     *
+     * @return The @c std::string for the interface of the inverse hyperbolic
      * secant function.
      */
-    void setAsecFunctionString(const std::string &asecFunctionString);
+    std::string interfaceAsechFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the inverse cosecant function.
+     * @brief Set the @c std::string for the interface of the inverse hyperbolic
+     * secant function.
      *
-     * Return the @c std::string for the inverse cosecant function.
+     * Set this @c std::string for the interface of the inverse hyperbolic
+     * secant function.
      *
-     * @return The @c std::string for the inverse cosecant function.
+     * @param interfaceAsechFunctionString The @c std::string to use for the
+     * interface of the inverse hyperbolic secant function.
      */
-    std::string acscFunctionString() const;
+    void setInterfaceAsechFunctionString(const std::string &interfaceAsechFunctionString);
 
     /**
-     * @brief Set the @c std::string for the inverse cosecant function.
+     * @brief Get the @c std::string for the implementation of the inverse
+     * hyperbolic secant function.
      *
-     * Set this @c std::string for the inverse cosecant function.
+     * Return the @c std::string for the implementation of the inverse
+     * hyperbolic secant function.
      *
-     * @param acscFunctionString The @c std::string to use for the inverse
-     * cosecant function.
-     */
-    void setAcscFunctionString(const std::string &acscFunctionString);
-
-    /**
-     * @brief Get the @c std::string for the inverse cotangent function.
-     *
-     * Return the @c std::string for the inverse cotangent function.
-     *
-     * @return The @c std::string for the inverse cotangent function.
-     */
-    std::string acotFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the inverse cotangent function.
-     *
-     * Set this @c std::string for the inverse cotangent function.
-     *
-     * @param acotFunctionString The @c std::string to use for the inverse
-     * cotangent function.
-     */
-    void setAcotFunctionString(const std::string &acotFunctionString);
-
-    /**
-     * @brief Get the @c std::string for the inverse hyperbolic secant function.
-     *
-     * Return the @c std::string for the inverse hyperbolic secant function.
-     *
-     * @return The @c std::string for the inverse hyperbolic secant function.
-     */
-    std::string asechFunctionString() const;
-
-    /**
-     * @brief Set the @c std::string for the inverse hyperbolic secant function.
-     *
-     * Set this @c std::string for the inverse hyperbolic secant function.
-     *
-     * @param asechFunctionString The @c std::string to use for the inverse
+     * @return The @c std::string for the implementation of the inverse
      * hyperbolic secant function.
      */
-    void setAsechFunctionString(const std::string &asechFunctionString);
+    std::string implementationAsechFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the inverse hyperbolic cosecant
-     * function.
+     * @brief Set the @c std::string for the implementation of the inverse
+     * hyperbolic secant function.
      *
-     * Return the @c std::string for the inverse hyperbolic cosecant function.
+     * Set this @c std::string for the implementation of the inverse hyperbolic
+     * secant function.
      *
-     * @return The @c std::string for the inverse hyperbolic cosecant function.
+     * @param implementationAsechFunctionString The @c std::string to use for
+     * the implementation of the inverse hyperbolic secant function.
      */
-    std::string acschFunctionString() const;
+    void setImplementationAsechFunctionString(const std::string &implementationAsechFunctionString);
 
     /**
-     * @brief Set the @c std::string for the inverse hyperbolic cosecant
-     * function.
+     * @brief Get the @c std::string for the interface of the inverse hyperbolic
+     * cosecant function.
      *
-     * Set this @c std::string for the inverse hyperbolic cosecant function.
+     * Return the @c std::string for the interface of the inverse hyperbolic
+     * cosecant function.
      *
-     * @param acschFunctionString The @c std::string to use for the inverse
+     * @return The @c std::string for the interface of the inverse hyperbolic
+     * cosecant function.
+     */
+    std::string interfaceAcschFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the inverse hyperbolic
+     * cosecant function.
+     *
+     * Set this @c std::string for the interface of the inverse hyperbolic
+     * cosecant function.
+     *
+     * @param interfaceAcschFunctionString The @c std::string to use for the
+     * interface of the inverse hyperbolic cosecant function.
+     */
+    void setInterfaceAcschFunctionString(const std::string &interfaceAcschFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the inverse
+     * hyperbolic cosecant function.
+     *
+     * Return the @c std::string for the implementation of the inverse
+     * hyperbolic cosecant function.
+     *
+     * @return The @c std::string for the implementation of the inverse
      * hyperbolic cosecant function.
      */
-    void setAcschFunctionString(const std::string &acschFunctionString);
+    std::string implementationAcschFunctionString() const;
 
     /**
-     * @brief Get the @c std::string for the inverse hyperbolic cotangent
-     * function.
+     * @brief Set the @c std::string for the implementation of the inverse
+     * hyperbolic cosecant function.
      *
-     * Return the @c std::string for the inverse hyperbolic cotangent function.
+     * Set this @c std::string for the implementation of the inverse hyperbolic
+     * cosecant function.
      *
-     * @return The @c std::string for the inverse hyperbolic cotangent function.
+     * @param implementationAcschFunctionString The @c std::string to use for
+     * the implementation of the inverse hyperbolic cosecant function.
      */
-    std::string acothFunctionString() const;
+    void setImplementationAcschFunctionString(const std::string &implementationAcschFunctionString);
 
     /**
-     * @brief Set the @c std::string for the inverse hyperbolic cotangent
-     * function.
+     * @brief Get the @c std::string for the interface of the inverse hyperbolic
+     * cotangent function.
      *
-     * Set this @c std::string for the inverse hyperbolic cotangent function.
+     * Return the @c std::string for the interface of the inverse hyperbolic
+     * cotangent function.
      *
-     * @param acothFunctionString The @c std::string to use for the inverse
+     * @return The @c std::string for the interface of the inverse hyperbolic
+     * cotangent function.
+     */
+    std::string interfaceAcothFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the inverse hyperbolic
+     * cotangent function.
+     *
+     * Set this @c std::string for the interface of the inverse hyperbolic
+     * cotangent function.
+     *
+     * @param interfaceAcothFunctionString The @c std::string to use for the
+     * interface of the inverse hyperbolic cotangent function.
+     */
+    void setInterfaceAcothFunctionString(const std::string &interfaceAcothFunctionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the inverse
+     * hyperbolic cotangent function.
+     *
+     * Return the @c std::string for the implementation of the inverse
+     * hyperbolic cotangent function.
+     *
+     * @return The @c std::string for the implementation of the inverse
      * hyperbolic cotangent function.
      */
-    void setAcothFunctionString(const std::string &acothFunctionString);
+    std::string implementationAcothFunctionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the inverse
+     * hyperbolic cotangent function.
+     *
+     * Set this @c std::string for the implementation of the inverse hyperbolic
+     * cotangent function.
+     *
+     * @param implementationAcothFunctionString The @c std::string to use for
+     * the implementation of the inverse hyperbolic cotangent function.
+     */
+    void setImplementationAcothFunctionString(const std::string &implementationAcothFunctionString);
 
     // Miscellaneous.
 

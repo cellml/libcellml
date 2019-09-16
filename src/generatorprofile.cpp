@@ -133,32 +133,77 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     // Mathematical functions.
 
-    std::string mEqFunctionString;
-    std::string mNeqFunctionString;
-    std::string mLtFunctionString;
-    std::string mLeqFunctionString;
-    std::string mGtFunctionString;
-    std::string mGeqFunctionString;
-    std::string mAndFunctionString;
-    std::string mOrFunctionString;
-    std::string mXorFunctionString;
-    std::string mNotFunctionString;
+    std::string mInterfaceEqFunctionString;
+    std::string mImplementationEqFunctionString;
 
-    std::string mMinFunctionString;
-    std::string mMaxFunctionString;
+    std::string mInterfaceNeqFunctionString;
+    std::string mImplementationNeqFunctionString;
 
-    std::string mSecFunctionString;
-    std::string mCscFunctionString;
-    std::string mCotFunctionString;
-    std::string mSechFunctionString;
-    std::string mCschFunctionString;
-    std::string mCothFunctionString;
-    std::string mAsecFunctionString;
-    std::string mAcscFunctionString;
-    std::string mAcotFunctionString;
-    std::string mAsechFunctionString;
-    std::string mAcschFunctionString;
-    std::string mAcothFunctionString;
+    std::string mInterfaceLtFunctionString;
+    std::string mImplementationLtFunctionString;
+
+    std::string mInterfaceLeqFunctionString;
+    std::string mImplementationLeqFunctionString;
+
+    std::string mInterfaceGtFunctionString;
+    std::string mImplementationGtFunctionString;
+
+    std::string mInterfaceGeqFunctionString;
+    std::string mImplementationGeqFunctionString;
+
+    std::string mInterfaceAndFunctionString;
+    std::string mImplementationAndFunctionString;
+
+    std::string mInterfaceOrFunctionString;
+    std::string mImplementationOrFunctionString;
+
+    std::string mInterfaceXorFunctionString;
+    std::string mImplementationXorFunctionString;
+
+    std::string mInterfaceNotFunctionString;
+    std::string mImplementationNotFunctionString;
+
+    std::string mInterfaceMinFunctionString;
+    std::string mImplementationMinFunctionString;
+
+    std::string mInterfaceMaxFunctionString;
+    std::string mImplementationMaxFunctionString;
+
+    std::string mInterfaceSecFunctionString;
+    std::string mImplementationSecFunctionString;
+
+    std::string mInterfaceCscFunctionString;
+    std::string mImplementationCscFunctionString;
+
+    std::string mInterfaceCotFunctionString;
+    std::string mImplementationCotFunctionString;
+
+    std::string mInterfaceSechFunctionString;
+    std::string mImplementationSechFunctionString;
+
+    std::string mInterfaceCschFunctionString;
+    std::string mImplementationCschFunctionString;
+
+    std::string mInterfaceCothFunctionString;
+    std::string mImplementationCothFunctionString;
+
+    std::string mInterfaceAsecFunctionString;
+    std::string mImplementationAsecFunctionString;
+
+    std::string mInterfaceAcscFunctionString;
+    std::string mImplementationAcscFunctionString;
+
+    std::string mInterfaceAcotFunctionString;
+    std::string mImplementationAcotFunctionString;
+
+    std::string mInterfaceAsechFunctionString;
+    std::string mImplementationAsechFunctionString;
+
+    std::string mInterfaceAcschFunctionString;
+    std::string mImplementationAcschFunctionString;
+
+    std::string mInterfaceAcothFunctionString;
+    std::string mImplementationAcothFunctionString;
 
     // Miscellaneous.
 
@@ -330,83 +375,128 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions.
 
-        mEqFunctionString = "";
-        mNeqFunctionString = "";
-        mLtFunctionString = "";
-        mLeqFunctionString = "";
-        mGtFunctionString = "";
-        mGeqFunctionString = "";
-        mAndFunctionString = "";
-        mOrFunctionString = "";
-        mXorFunctionString = "double xor(double x, double y)\n"
-                             "{\n"
-                             "    return (x != 0.0) ^ (y != 0.0);\n"
-                             "}\n";
-        mNotFunctionString = "";
+        mInterfaceEqFunctionString = "";
+        mImplementationEqFunctionString = "";
 
-        mMinFunctionString = "double min(double x, double y)\n"
-                             "{\n"
-                             "    return (x < y)?x:y;\n"
-                             "}\n";
-        mMaxFunctionString = "double max(double x, double y)\n"
-                             "{\n"
-                             "    return (x > y)?x:y;\n"
-                             "}\n";
+        mInterfaceNeqFunctionString = "";
+        mImplementationNeqFunctionString = "";
 
-        mSecFunctionString = "double sec(double x)\n"
-                             "{\n"
-                             "    return 1.0/cos(x);\n"
-                             "}\n";
-        mCscFunctionString = "double csc(double x)\n"
-                             "{\n"
-                             "    return 1.0/sin(x);\n"
-                             "}\n";
-        mCotFunctionString = "double cot(double x)\n"
-                             "{\n"
-                             "    return 1.0/tan(x);\n"
-                             "}\n";
-        mSechFunctionString = "double sech(double x)\n"
-                              "{\n"
-                              "    return 1.0/cosh(x);\n"
-                              "}\n";
-        mCschFunctionString = "double csch(double x)\n"
-                              "{\n"
-                              "    return 1.0/sinh(x);\n"
-                              "}\n";
-        mCothFunctionString = "double coth(double x)\n"
-                              "{\n"
-                              "    return 1.0/tanh(x);\n"
-                              "}\n";
-        mAsecFunctionString = "double asec(double x)\n"
-                              "{\n"
-                              "    return acos(1.0/x);\n"
-                              "}\n";
-        mAcscFunctionString = "double acsc(double x)\n"
-                              "{\n"
-                              "    return asin(1.0/x);\n"
-                              "}\n";
-        mAcotFunctionString = "double acot(double x)\n"
-                              "{\n"
-                              "    return atan(1.0/x);\n"
-                              "}\n";
-        mAsechFunctionString = "double asech(double x)\n"
-                               "{\n"
-                               "    double oneOverX = 1.0/x;\n"
-                               "\n"
-                               "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
-                               "}\n";
-        mAcschFunctionString = "double acsch(double x)\n"
-                               "{\n"
-                               "    double oneOverX = 1.0/x;\n"
-                               "\n"
-                               "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
-                               "}\n";
-        mAcothFunctionString = "double acoth(double x)\n"
-                               "{\n"
-                               "    double oneOverX = 1.0/x;\n"
-                               "\n"
-                               "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
-                               "}\n";
+        mInterfaceLtFunctionString = "";
+        mImplementationLtFunctionString = "";
+
+        mInterfaceLeqFunctionString = "";
+        mImplementationLeqFunctionString = "";
+
+        mInterfaceGtFunctionString = "";
+        mImplementationGtFunctionString = "";
+
+        mInterfaceGeqFunctionString = "";
+        mImplementationGeqFunctionString = "";
+
+        mInterfaceAndFunctionString = "";
+        mImplementationAndFunctionString = "";
+
+        mInterfaceOrFunctionString = "";
+        mImplementationOrFunctionString = "";
+
+        mInterfaceXorFunctionString = "extern double xor(double x, double y);\n";
+        mImplementationXorFunctionString = "double xor(double x, double y)\n"
+                                           "{\n"
+                                           "    return (x != 0.0) ^ (y != 0.0);\n"
+                                           "}\n";
+
+        mInterfaceNotFunctionString = "";
+        mImplementationNotFunctionString = "";
+
+        mInterfaceMinFunctionString = "extern double min(double x, double y);\n";
+        mImplementationMinFunctionString = "double min(double x, double y)\n"
+                                           "{\n"
+                                           "    return (x < y)?x:y;\n"
+                                           "}\n";
+
+        mInterfaceMaxFunctionString = "extern double max(double x, double y);\n";
+        mImplementationMaxFunctionString = "double max(double x, double y)\n"
+                                           "{\n"
+                                           "    return (x > y)?x:y;\n"
+                                           "}\n";
+
+        mInterfaceSecFunctionString = "extern double sec(double x);\n";
+        mImplementationSecFunctionString = "double sec(double x)\n"
+                                           "{\n"
+                                           "    return 1.0/cos(x);\n"
+                                           "}\n";
+
+        mInterfaceCscFunctionString = "extern double csc(double x);\n";
+        mImplementationCscFunctionString = "double csc(double x)\n"
+                                           "{\n"
+                                           "    return 1.0/sin(x);\n"
+                                           "}\n";
+
+        mInterfaceCotFunctionString = "extern double cot(double x);\n";
+        mImplementationCotFunctionString = "double cot(double x)\n"
+                                           "{\n"
+                                           "    return 1.0/tan(x);\n"
+                                           "}\n";
+
+        mInterfaceSechFunctionString = "extern double sech(double x);\n";
+        mImplementationSechFunctionString = "double sech(double x)\n"
+                                            "{\n"
+                                            "    return 1.0/cosh(x);\n"
+                                            "}\n";
+
+        mInterfaceCschFunctionString = "extern double csch(double x);\n";
+        mImplementationCschFunctionString = "double csch(double x)\n"
+                                            "{\n"
+                                            "    return 1.0/sinh(x);\n"
+                                            "}\n";
+
+        mInterfaceCothFunctionString = "extern double coth(double x);\n";
+        mImplementationCothFunctionString = "double coth(double x)\n"
+                                            "{\n"
+                                            "    return 1.0/tanh(x);\n"
+                                            "}\n";
+
+        mInterfaceAsecFunctionString = "extern double asec(double x);\n";
+        mImplementationAsecFunctionString = "double asec(double x)\n"
+                                            "{\n"
+                                            "    return acos(1.0/x);\n"
+                                            "}\n";
+
+        mInterfaceAcscFunctionString = "extern double acsc(double x);\n";
+        mImplementationAcscFunctionString = "double acsc(double x)\n"
+                                            "{\n"
+                                            "    return asin(1.0/x);\n"
+                                            "}\n";
+
+        mInterfaceAcotFunctionString = "extern double acot(double x);\n";
+        mImplementationAcotFunctionString = "double acot(double x)\n"
+                                            "{\n"
+                                            "    return atan(1.0/x);\n"
+                                            "}\n";
+
+        mInterfaceAsechFunctionString = "extern double asech(double x);\n";
+        mImplementationAsechFunctionString = "double asech(double x)\n"
+                                             "{\n"
+                                             "    double oneOverX = 1.0/x;\n"
+                                             "\n"
+                                             "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
+                                             "}\n";
+
+        mInterfaceAcschFunctionString = "extern double acsch(double x);\n";
+        mImplementationAcschFunctionString = "double acsch(double x)\n"
+                                             "{\n"
+                                             "    double oneOverX = 1.0/x;\n"
+                                             "\n"
+                                             "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
+                                             "}\n";
+
+        mInterfaceAcothFunctionString = "extern double acoth(double x);\n";
+        mImplementationAcothFunctionString = "double acoth(double x)\n"
+                                             "{\n"
+                                             "    double oneOverX = 1.0/x;\n"
+                                             "\n"
+                                             "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
+                                             "}\n";
 
         // Miscellaneous.
 
@@ -601,86 +691,131 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         // Mathematical functions.
 
-        mEqFunctionString = "\n"
-                            "def eq_func(x, y):\n"
-                            "    return 1.0 if x == y else 0.0\n";
-        mNeqFunctionString = "\n"
-                             "def neq_func(x, y):\n"
-                             "    return 1.0 if x != y else 0.0\n";
-        mLtFunctionString = "\n"
-                            "def lt_func(x, y):\n"
-                            "    return 1.0 if x < y else 0.0\n";
-        mLeqFunctionString = "\n"
-                             "def leq_func(x, y):\n"
-                             "    return 1.0 if x <= y else 0.0\n";
-        mGtFunctionString = "\n"
-                            "def gt_func(x, y):\n"
-                            "    return 1.0 if x > y else 0.0\n";
-        mGeqFunctionString = "\n"
-                             "def geq_func(x, y):\n"
-                             "    return 1.0 if x >= y else 0.0\n";
-        mAndFunctionString = "\n"
-                             "def and_func(x, y):\n"
-                             "    return 1.0 if bool(x) & bool(y) else 0.0\n";
-        mOrFunctionString = "\n"
-                            "def or_func(x, y):\n"
-                            "    return 1.0 if bool(x) | bool(y) else 0.0\n";
-        mXorFunctionString = "\n"
-                             "def xor_func(x, y):\n"
-                             "    return 1.0 if bool(x) ^ bool(y) else 0.0\n";
-        mNotFunctionString = "\n"
-                             "def not_func(x):\n"
-                             "    return 1.0 if not bool(x) else 0.0\n";
+        mInterfaceEqFunctionString = "";
+        mImplementationEqFunctionString = "\n"
+                                          "def eq_func(x, y):\n"
+                                          "    return 1.0 if x == y else 0.0\n";
 
-        mMinFunctionString = "\n"
-                             "def min(x, y):\n"
-                             "    return x if x < y else y\n";
-        mMaxFunctionString = "\n"
-                             "def max(x, y):\n"
-                             "    return x if x > y else y\n";
+        mInterfaceNeqFunctionString = "";
+        mImplementationNeqFunctionString = "\n"
+                                           "def neq_func(x, y):\n"
+                                           "    return 1.0 if x != y else 0.0\n";
 
-        mSecFunctionString = "\n"
-                             "def sec(x):\n"
-                             "    return 1.0/cos(x)\n";
-        mCscFunctionString = "\n"
-                             "def csc(x):\n"
-                             "    return 1.0/sin(x)\n";
-        mCotFunctionString = "\n"
-                             "def cot(x):\n"
-                             "    return 1.0/tan(x)\n";
-        mSechFunctionString = "\n"
-                              "def sech(x):\n"
-                              "    return 1.0/cosh(x)\n";
-        mCschFunctionString = "\n"
-                              "def csch(x):\n"
-                              "    return 1.0/sinh(x)\n";
-        mCothFunctionString = "\n"
-                              "def coth(x):\n"
-                              "    return 1.0/tanh(x)\n";
-        mAsecFunctionString = "\n"
-                              "def asec(x):\n"
-                              "    return acos(1.0/x)\n";
-        mAcscFunctionString = "\n"
-                              "def acsc(x):\n"
-                              "    return asin(1.0/x)\n";
-        mAcotFunctionString = "\n"
-                              "def acot(x):\n"
-                              "    return atan(1.0/x)\n";
-        mAsechFunctionString = "\n"
-                               "def asech(x):\n"
-                               "    one_over_x = 1.0/x\n"
-                               "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n";
-        mAcschFunctionString = "\n"
-                               "def acsch(x):\n"
-                               "    one_over_x = 1.0/x\n"
-                               "\n"
-                               "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n";
-        mAcothFunctionString = "\n"
-                               "def acoth(x):\n"
-                               "    one_over_x = 1.0/x\n"
-                               "\n"
-                               "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n";
+        mInterfaceLtFunctionString = "";
+        mImplementationLtFunctionString = "\n"
+                                          "def lt_func(x, y):\n"
+                                          "    return 1.0 if x < y else 0.0\n";
+
+        mInterfaceLeqFunctionString = "";
+        mImplementationLeqFunctionString = "\n"
+                                           "def leq_func(x, y):\n"
+                                           "    return 1.0 if x <= y else 0.0\n";
+
+        mInterfaceGtFunctionString = "";
+        mImplementationGtFunctionString = "\n"
+                                          "def gt_func(x, y):\n"
+                                          "    return 1.0 if x > y else 0.0\n";
+
+        mInterfaceGeqFunctionString = "";
+        mImplementationGeqFunctionString = "\n"
+                                           "def geq_func(x, y):\n"
+                                           "    return 1.0 if x >= y else 0.0\n";
+
+        mInterfaceAndFunctionString = "";
+        mImplementationAndFunctionString = "\n"
+                                           "def and_func(x, y):\n"
+                                           "    return 1.0 if bool(x) & bool(y) else 0.0\n";
+
+        mInterfaceOrFunctionString = "";
+        mImplementationOrFunctionString = "\n"
+                                          "def or_func(x, y):\n"
+                                          "    return 1.0 if bool(x) | bool(y) else 0.0\n";
+
+        mInterfaceXorFunctionString = "";
+        mImplementationXorFunctionString = "\n"
+                                           "def xor_func(x, y):\n"
+                                           "    return 1.0 if bool(x) ^ bool(y) else 0.0\n";
+
+        mInterfaceNotFunctionString = "";
+        mImplementationNotFunctionString = "\n"
+                                           "def not_func(x):\n"
+                                           "    return 1.0 if not bool(x) else 0.0\n";
+
+        mInterfaceMinFunctionString = "";
+        mImplementationMinFunctionString = "\n"
+                                           "def min(x, y):\n"
+                                           "    return x if x < y else y\n";
+
+        mInterfaceMaxFunctionString = "";
+        mImplementationMaxFunctionString = "\n"
+                                           "def max(x, y):\n"
+                                           "    return x if x > y else y\n";
+
+        mInterfaceSecFunctionString = "";
+        mImplementationSecFunctionString = "\n"
+                                           "def sec(x):\n"
+                                           "    return 1.0/cos(x)\n";
+
+        mInterfaceCscFunctionString = "";
+        mImplementationCscFunctionString = "\n"
+                                           "def csc(x):\n"
+                                           "    return 1.0/sin(x)\n";
+
+        mInterfaceCotFunctionString = "";
+        mImplementationCotFunctionString = "\n"
+                                           "def cot(x):\n"
+                                           "    return 1.0/tan(x)\n";
+
+        mInterfaceSechFunctionString = "";
+        mImplementationSechFunctionString = "\n"
+                                            "def sech(x):\n"
+                                            "    return 1.0/cosh(x)\n";
+
+        mInterfaceCschFunctionString = "";
+        mImplementationCschFunctionString = "\n"
+                                            "def csch(x):\n"
+                                            "    return 1.0/sinh(x)\n";
+
+        mInterfaceCothFunctionString = "";
+        mImplementationCothFunctionString = "\n"
+                                            "def coth(x):\n"
+                                            "    return 1.0/tanh(x)\n";
+
+        mInterfaceAsecFunctionString = "";
+        mImplementationAsecFunctionString = "\n"
+                                            "def asec(x):\n"
+                                            "    return acos(1.0/x)\n";
+
+        mInterfaceAcscFunctionString = "";
+        mImplementationAcscFunctionString = "\n"
+                                            "def acsc(x):\n"
+                                            "    return asin(1.0/x)\n";
+
+        mInterfaceAcotFunctionString = "";
+        mImplementationAcotFunctionString = "\n"
+                                            "def acot(x):\n"
+                                            "    return atan(1.0/x)\n";
+
+        mInterfaceAsechFunctionString = "";
+        mImplementationAsechFunctionString = "\n"
+                                             "def asech(x):\n"
+                                             "    one_over_x = 1.0/x\n"
+                                             "\n"
+                                             "    return log(one_over_x+sqrt(one_over_x*one_over_x-1.0))\n";
+
+        mInterfaceAcschFunctionString = "";
+        mImplementationAcschFunctionString = "\n"
+                                             "def acsch(x):\n"
+                                             "    one_over_x = 1.0/x\n"
+                                             "\n"
+                                             "    return log(one_over_x+sqrt(one_over_x*one_over_x+1.0))\n";
+
+        mInterfaceAcothFunctionString = "";
+        mImplementationAcothFunctionString = "\n"
+                                             "def acoth(x):\n"
+                                             "    one_over_x = 1.0/x\n"
+                                             "\n"
+                                             "    return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))\n";
 
         // Miscellaneous.
 
@@ -885,32 +1020,77 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     // Mathematical functions.
 
-    mPimpl->mEqFunctionString = rhs.mPimpl->mEqFunctionString;
-    mPimpl->mNeqFunctionString = rhs.mPimpl->mNeqFunctionString;
-    mPimpl->mLtFunctionString = rhs.mPimpl->mLtFunctionString;
-    mPimpl->mLeqFunctionString = rhs.mPimpl->mLeqFunctionString;
-    mPimpl->mGtFunctionString = rhs.mPimpl->mGtFunctionString;
-    mPimpl->mGeqFunctionString = rhs.mPimpl->mGeqFunctionString;
-    mPimpl->mAndFunctionString = rhs.mPimpl->mAndFunctionString;
-    mPimpl->mOrFunctionString = rhs.mPimpl->mOrFunctionString;
-    mPimpl->mXorFunctionString = rhs.mPimpl->mXorFunctionString;
-    mPimpl->mNotFunctionString = rhs.mPimpl->mNotFunctionString;
+    mPimpl->mInterfaceEqFunctionString = rhs.mPimpl->mInterfaceEqFunctionString;
+    mPimpl->mImplementationEqFunctionString = rhs.mPimpl->mImplementationEqFunctionString;
 
-    mPimpl->mMinFunctionString = rhs.mPimpl->mMinFunctionString;
-    mPimpl->mMaxFunctionString = rhs.mPimpl->mMaxFunctionString;
+    mPimpl->mInterfaceNeqFunctionString = rhs.mPimpl->mInterfaceNeqFunctionString;
+    mPimpl->mImplementationNeqFunctionString = rhs.mPimpl->mImplementationNeqFunctionString;
 
-    mPimpl->mSecFunctionString = rhs.mPimpl->mSecFunctionString;
-    mPimpl->mCscFunctionString = rhs.mPimpl->mCscFunctionString;
-    mPimpl->mCotFunctionString = rhs.mPimpl->mCotFunctionString;
-    mPimpl->mSechFunctionString = rhs.mPimpl->mSechFunctionString;
-    mPimpl->mCschFunctionString = rhs.mPimpl->mCschFunctionString;
-    mPimpl->mCothFunctionString = rhs.mPimpl->mCothFunctionString;
-    mPimpl->mAsecFunctionString = rhs.mPimpl->mAsecFunctionString;
-    mPimpl->mAcscFunctionString = rhs.mPimpl->mAcscFunctionString;
-    mPimpl->mAcotFunctionString = rhs.mPimpl->mAcotFunctionString;
-    mPimpl->mAsechFunctionString = rhs.mPimpl->mAsechFunctionString;
-    mPimpl->mAcschFunctionString = rhs.mPimpl->mAcschFunctionString;
-    mPimpl->mAcothFunctionString = rhs.mPimpl->mAcothFunctionString;
+    mPimpl->mInterfaceLtFunctionString = rhs.mPimpl->mInterfaceLtFunctionString;
+    mPimpl->mImplementationLtFunctionString = rhs.mPimpl->mImplementationLtFunctionString;
+
+    mPimpl->mInterfaceLeqFunctionString = rhs.mPimpl->mInterfaceLeqFunctionString;
+    mPimpl->mImplementationLeqFunctionString = rhs.mPimpl->mImplementationLeqFunctionString;
+
+    mPimpl->mInterfaceGtFunctionString = rhs.mPimpl->mInterfaceGtFunctionString;
+    mPimpl->mImplementationGtFunctionString = rhs.mPimpl->mImplementationGtFunctionString;
+
+    mPimpl->mInterfaceGeqFunctionString = rhs.mPimpl->mInterfaceGeqFunctionString;
+    mPimpl->mImplementationGeqFunctionString = rhs.mPimpl->mImplementationGeqFunctionString;
+
+    mPimpl->mInterfaceAndFunctionString = rhs.mPimpl->mInterfaceAndFunctionString;
+    mPimpl->mImplementationAndFunctionString = rhs.mPimpl->mImplementationAndFunctionString;
+
+    mPimpl->mInterfaceOrFunctionString = rhs.mPimpl->mInterfaceOrFunctionString;
+    mPimpl->mImplementationOrFunctionString = rhs.mPimpl->mImplementationOrFunctionString;
+
+    mPimpl->mInterfaceXorFunctionString = rhs.mPimpl->mInterfaceXorFunctionString;
+    mPimpl->mImplementationXorFunctionString = rhs.mPimpl->mImplementationXorFunctionString;
+
+    mPimpl->mInterfaceNotFunctionString = rhs.mPimpl->mInterfaceNotFunctionString;
+    mPimpl->mImplementationNotFunctionString = rhs.mPimpl->mImplementationNotFunctionString;
+
+    mPimpl->mInterfaceMinFunctionString = rhs.mPimpl->mInterfaceMinFunctionString;
+    mPimpl->mImplementationMinFunctionString = rhs.mPimpl->mImplementationMinFunctionString;
+
+    mPimpl->mInterfaceMaxFunctionString = rhs.mPimpl->mInterfaceMaxFunctionString;
+    mPimpl->mImplementationMaxFunctionString = rhs.mPimpl->mImplementationMaxFunctionString;
+
+    mPimpl->mInterfaceSecFunctionString = rhs.mPimpl->mInterfaceSecFunctionString;
+    mPimpl->mImplementationSecFunctionString = rhs.mPimpl->mImplementationSecFunctionString;
+
+    mPimpl->mInterfaceCscFunctionString = rhs.mPimpl->mInterfaceCscFunctionString;
+    mPimpl->mImplementationCscFunctionString = rhs.mPimpl->mImplementationCscFunctionString;
+
+    mPimpl->mInterfaceCotFunctionString = rhs.mPimpl->mInterfaceCotFunctionString;
+    mPimpl->mImplementationCotFunctionString = rhs.mPimpl->mImplementationCotFunctionString;
+
+    mPimpl->mInterfaceSechFunctionString = rhs.mPimpl->mInterfaceSechFunctionString;
+    mPimpl->mImplementationSechFunctionString = rhs.mPimpl->mImplementationSechFunctionString;
+
+    mPimpl->mInterfaceCschFunctionString = rhs.mPimpl->mInterfaceCschFunctionString;
+    mPimpl->mImplementationCschFunctionString = rhs.mPimpl->mImplementationCschFunctionString;
+
+    mPimpl->mInterfaceCothFunctionString = rhs.mPimpl->mInterfaceCothFunctionString;
+    mPimpl->mImplementationCothFunctionString = rhs.mPimpl->mImplementationCothFunctionString;
+
+    mPimpl->mInterfaceAsecFunctionString = rhs.mPimpl->mInterfaceAsecFunctionString;
+    mPimpl->mImplementationAsecFunctionString = rhs.mPimpl->mImplementationAsecFunctionString;
+
+    mPimpl->mInterfaceAcscFunctionString = rhs.mPimpl->mInterfaceAcscFunctionString;
+    mPimpl->mImplementationAcscFunctionString = rhs.mPimpl->mImplementationAcscFunctionString;
+
+    mPimpl->mInterfaceAcotFunctionString = rhs.mPimpl->mInterfaceAcotFunctionString;
+    mPimpl->mImplementationAcotFunctionString = rhs.mPimpl->mImplementationAcotFunctionString;
+
+    mPimpl->mInterfaceAsechFunctionString = rhs.mPimpl->mInterfaceAsechFunctionString;
+    mPimpl->mImplementationAsechFunctionString = rhs.mPimpl->mImplementationAsechFunctionString;
+
+    mPimpl->mInterfaceAcschFunctionString = rhs.mPimpl->mInterfaceAcschFunctionString;
+    mPimpl->mImplementationAcschFunctionString = rhs.mPimpl->mImplementationAcschFunctionString;
+
+    mPimpl->mInterfaceAcothFunctionString = rhs.mPimpl->mInterfaceAcothFunctionString;
+    mPimpl->mImplementationAcothFunctionString = rhs.mPimpl->mImplementationAcothFunctionString;
 
     // Miscellaneous.
 
@@ -2040,340 +2220,676 @@ void GeneratorProfile::setNanString(const std::string &nanString)
     mPimpl->mNanString = nanString;
 }
 
-std::string GeneratorProfile::eqFunctionString() const
+std::string GeneratorProfile::interfaceEqFunctionString() const
 {
-    return mPimpl->mEqFunctionString;
+    return mPimpl->mInterfaceEqFunctionString;
 }
 
-void GeneratorProfile::setEqFunctionString(const std::string &eqFunctionString)
+void GeneratorProfile::setInterfaceEqFunctionString(const std::string &interfaceEqFunctionString)
 {
-    if (mPimpl->mEqFunctionString != eqFunctionString) {
+    if (mPimpl->mInterfaceEqFunctionString != interfaceEqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mEqFunctionString = eqFunctionString;
+    mPimpl->mInterfaceEqFunctionString = interfaceEqFunctionString;
 }
 
-std::string GeneratorProfile::neqFunctionString() const
+std::string GeneratorProfile::implementationEqFunctionString() const
 {
-    return mPimpl->mNeqFunctionString;
+    return mPimpl->mImplementationEqFunctionString;
 }
 
-void GeneratorProfile::setNeqFunctionString(const std::string &neqFunctionString)
+void GeneratorProfile::setImplementationEqFunctionString(const std::string &implementationEqFunctionString)
 {
-    if (mPimpl->mNeqFunctionString != neqFunctionString) {
+    if (mPimpl->mImplementationEqFunctionString != implementationEqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mNeqFunctionString = neqFunctionString;
+    mPimpl->mImplementationEqFunctionString = implementationEqFunctionString;
 }
 
-std::string GeneratorProfile::ltFunctionString() const
+std::string GeneratorProfile::interfaceNeqFunctionString() const
 {
-    return mPimpl->mLtFunctionString;
+    return mPimpl->mInterfaceNeqFunctionString;
 }
 
-void GeneratorProfile::setLtFunctionString(const std::string &ltFunctionString)
+void GeneratorProfile::setInterfaceNeqFunctionString(const std::string &interfaceNeqFunctionString)
 {
-    if (mPimpl->mLtFunctionString != ltFunctionString) {
+    if (mPimpl->mInterfaceNeqFunctionString != interfaceNeqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mLtFunctionString = ltFunctionString;
+    mPimpl->mInterfaceNeqFunctionString = interfaceNeqFunctionString;
 }
 
-std::string GeneratorProfile::leqFunctionString() const
+std::string GeneratorProfile::implementationNeqFunctionString() const
 {
-    return mPimpl->mLeqFunctionString;
+    return mPimpl->mImplementationNeqFunctionString;
 }
 
-void GeneratorProfile::setLeqFunctionString(const std::string &leqFunctionString)
+void GeneratorProfile::setImplementationNeqFunctionString(const std::string &implementationNeqFunctionString)
 {
-    if (mPimpl->mLeqFunctionString != leqFunctionString) {
+    if (mPimpl->mImplementationNeqFunctionString != implementationNeqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mLeqFunctionString = leqFunctionString;
+    mPimpl->mImplementationNeqFunctionString = implementationNeqFunctionString;
 }
 
-std::string GeneratorProfile::gtFunctionString() const
+std::string GeneratorProfile::interfaceLtFunctionString() const
 {
-    return mPimpl->mGtFunctionString;
+    return mPimpl->mInterfaceLtFunctionString;
 }
 
-void GeneratorProfile::setGtFunctionString(const std::string &gtFunctionString)
+void GeneratorProfile::setInterfaceLtFunctionString(const std::string &interfaceLtFunctionString)
 {
-    if (mPimpl->mGtFunctionString != gtFunctionString) {
+    if (mPimpl->mInterfaceLtFunctionString != interfaceLtFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mGtFunctionString = gtFunctionString;
+    mPimpl->mInterfaceLtFunctionString = interfaceLtFunctionString;
 }
 
-std::string GeneratorProfile::geqFunctionString() const
+std::string GeneratorProfile::implementationLtFunctionString() const
 {
-    return mPimpl->mGeqFunctionString;
+    return mPimpl->mImplementationLtFunctionString;
 }
 
-void GeneratorProfile::setGeqFunctionString(const std::string &geqFunctionString)
+void GeneratorProfile::setImplementationLtFunctionString(const std::string &implementationLtFunctionString)
 {
-    if (mPimpl->mGeqFunctionString != geqFunctionString) {
+    if (mPimpl->mImplementationLtFunctionString != implementationLtFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mGeqFunctionString = geqFunctionString;
+    mPimpl->mImplementationLtFunctionString = implementationLtFunctionString;
 }
 
-std::string GeneratorProfile::andFunctionString() const
+std::string GeneratorProfile::interfaceLeqFunctionString() const
 {
-    return mPimpl->mAndFunctionString;
+    return mPimpl->mInterfaceLeqFunctionString;
 }
 
-void GeneratorProfile::setAndFunctionString(const std::string &andFunctionString)
+void GeneratorProfile::setInterfaceLeqFunctionString(const std::string &interfaceLeqFunctionString)
 {
-    if (mPimpl->mAndFunctionString != andFunctionString) {
+    if (mPimpl->mInterfaceLeqFunctionString != interfaceLeqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mAndFunctionString = andFunctionString;
+    mPimpl->mInterfaceLeqFunctionString = interfaceLeqFunctionString;
 }
 
-std::string GeneratorProfile::orFunctionString() const
+std::string GeneratorProfile::implementationLeqFunctionString() const
 {
-    return mPimpl->mOrFunctionString;
+    return mPimpl->mImplementationLeqFunctionString;
 }
 
-void GeneratorProfile::setOrFunctionString(const std::string &orFunctionString)
+void GeneratorProfile::setImplementationLeqFunctionString(const std::string &implementationLeqFunctionString)
 {
-    if (mPimpl->mOrFunctionString != orFunctionString) {
+    if (mPimpl->mImplementationLeqFunctionString != implementationLeqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mOrFunctionString = orFunctionString;
+    mPimpl->mImplementationLeqFunctionString = implementationLeqFunctionString;
 }
 
-std::string GeneratorProfile::xorFunctionString() const
+std::string GeneratorProfile::interfaceGtFunctionString() const
 {
-    return mPimpl->mXorFunctionString;
+    return mPimpl->mInterfaceGtFunctionString;
 }
 
-void GeneratorProfile::setXorFunctionString(const std::string &xorFunctionString)
+void GeneratorProfile::setInterfaceGtFunctionString(const std::string &interfaceGtFunctionString)
 {
-    if (mPimpl->mXorFunctionString != xorFunctionString) {
+    if (mPimpl->mInterfaceGtFunctionString != interfaceGtFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mXorFunctionString = xorFunctionString;
+    mPimpl->mInterfaceGtFunctionString = interfaceGtFunctionString;
 }
 
-std::string GeneratorProfile::notFunctionString() const
+std::string GeneratorProfile::implementationGtFunctionString() const
 {
-    return mPimpl->mNotFunctionString;
+    return mPimpl->mImplementationGtFunctionString;
 }
 
-void GeneratorProfile::setNotFunctionString(const std::string &notFunctionString)
+void GeneratorProfile::setImplementationGtFunctionString(const std::string &implementationGtFunctionString)
 {
-    if (mPimpl->mNotFunctionString != notFunctionString) {
+    if (mPimpl->mImplementationGtFunctionString != implementationGtFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mNotFunctionString = notFunctionString;
+    mPimpl->mImplementationGtFunctionString = implementationGtFunctionString;
 }
 
-std::string GeneratorProfile::minFunctionString() const
+std::string GeneratorProfile::interfaceGeqFunctionString() const
 {
-    return mPimpl->mMinFunctionString;
+    return mPimpl->mInterfaceGeqFunctionString;
 }
 
-void GeneratorProfile::setMinFunctionString(const std::string &minFunctionString)
+void GeneratorProfile::setInterfaceGeqFunctionString(const std::string &interfaceGeqFunctionString)
 {
-    if (mPimpl->mMinFunctionString != minFunctionString) {
+    if (mPimpl->mInterfaceGeqFunctionString != interfaceGeqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mMinFunctionString = minFunctionString;
+    mPimpl->mInterfaceGeqFunctionString = interfaceGeqFunctionString;
 }
 
-std::string GeneratorProfile::maxFunctionString() const
+std::string GeneratorProfile::implementationGeqFunctionString() const
 {
-    return mPimpl->mMaxFunctionString;
+    return mPimpl->mImplementationGeqFunctionString;
 }
 
-void GeneratorProfile::setMaxFunctionString(const std::string &maxFunctionString)
+void GeneratorProfile::setImplementationGeqFunctionString(const std::string &implementationGeqFunctionString)
 {
-    if (mPimpl->mMaxFunctionString != maxFunctionString) {
+    if (mPimpl->mImplementationGeqFunctionString != implementationGeqFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mMaxFunctionString = maxFunctionString;
+    mPimpl->mImplementationGeqFunctionString = implementationGeqFunctionString;
 }
 
-std::string GeneratorProfile::secFunctionString() const
+std::string GeneratorProfile::interfaceAndFunctionString() const
 {
-    return mPimpl->mSecFunctionString;
+    return mPimpl->mInterfaceAndFunctionString;
 }
 
-void GeneratorProfile::setSecFunctionString(const std::string &secFunctionString)
+void GeneratorProfile::setInterfaceAndFunctionString(const std::string &interfaceAndFunctionString)
 {
-    if (mPimpl->mSecFunctionString != secFunctionString) {
+    if (mPimpl->mInterfaceAndFunctionString != interfaceAndFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mSecFunctionString = secFunctionString;
+    mPimpl->mInterfaceAndFunctionString = interfaceAndFunctionString;
 }
 
-std::string GeneratorProfile::cscFunctionString() const
+std::string GeneratorProfile::implementationAndFunctionString() const
 {
-    return mPimpl->mCscFunctionString;
+    return mPimpl->mImplementationAndFunctionString;
 }
 
-void GeneratorProfile::setCscFunctionString(const std::string &cscFunctionString)
+void GeneratorProfile::setImplementationAndFunctionString(const std::string &implementationAndFunctionString)
 {
-    if (mPimpl->mCscFunctionString != cscFunctionString) {
+    if (mPimpl->mImplementationAndFunctionString != implementationAndFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mCscFunctionString = cscFunctionString;
+    mPimpl->mImplementationAndFunctionString = implementationAndFunctionString;
 }
 
-std::string GeneratorProfile::cotFunctionString() const
+std::string GeneratorProfile::interfaceOrFunctionString() const
 {
-    return mPimpl->mCotFunctionString;
+    return mPimpl->mInterfaceOrFunctionString;
 }
 
-void GeneratorProfile::setCotFunctionString(const std::string &cotFunctionString)
+void GeneratorProfile::setInterfaceOrFunctionString(const std::string &interfaceOrFunctionString)
 {
-    if (mPimpl->mCotFunctionString != cotFunctionString) {
+    if (mPimpl->mInterfaceOrFunctionString != interfaceOrFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mCotFunctionString = cotFunctionString;
+    mPimpl->mInterfaceOrFunctionString = interfaceOrFunctionString;
 }
 
-std::string GeneratorProfile::sechFunctionString() const
+std::string GeneratorProfile::implementationOrFunctionString() const
 {
-    return mPimpl->mSechFunctionString;
+    return mPimpl->mImplementationOrFunctionString;
 }
 
-void GeneratorProfile::setSechFunctionString(const std::string &sechFunctionString)
+void GeneratorProfile::setImplementationOrFunctionString(const std::string &implementationOrFunctionString)
 {
-    if (mPimpl->mSechFunctionString != sechFunctionString) {
+    if (mPimpl->mImplementationOrFunctionString != implementationOrFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mSechFunctionString = sechFunctionString;
+    mPimpl->mImplementationOrFunctionString = implementationOrFunctionString;
 }
 
-std::string GeneratorProfile::cschFunctionString() const
+std::string GeneratorProfile::interfaceXorFunctionString() const
 {
-    return mPimpl->mCschFunctionString;
+    return mPimpl->mInterfaceXorFunctionString;
 }
 
-void GeneratorProfile::setCschFunctionString(const std::string &cschFunctionString)
+void GeneratorProfile::setInterfaceXorFunctionString(const std::string &interfaceXorFunctionString)
 {
-    if (mPimpl->mCschFunctionString != cschFunctionString) {
+    if (mPimpl->mInterfaceXorFunctionString != interfaceXorFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mCschFunctionString = cschFunctionString;
+    mPimpl->mInterfaceXorFunctionString = interfaceXorFunctionString;
 }
 
-std::string GeneratorProfile::cothFunctionString() const
+std::string GeneratorProfile::implementationXorFunctionString() const
 {
-    return mPimpl->mCothFunctionString;
+    return mPimpl->mImplementationXorFunctionString;
 }
 
-void GeneratorProfile::setCothFunctionString(const std::string &cothFunctionString)
+void GeneratorProfile::setImplementationXorFunctionString(const std::string &implementationXorFunctionString)
 {
-    if (mPimpl->mCothFunctionString != cothFunctionString) {
+    if (mPimpl->mImplementationXorFunctionString != implementationXorFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mCothFunctionString = cothFunctionString;
+    mPimpl->mImplementationXorFunctionString = implementationXorFunctionString;
 }
 
-std::string GeneratorProfile::asecFunctionString() const
+std::string GeneratorProfile::interfaceNotFunctionString() const
 {
-    return mPimpl->mAsecFunctionString;
+    return mPimpl->mInterfaceNotFunctionString;
 }
 
-void GeneratorProfile::setAsecFunctionString(const std::string &asecFunctionString)
+void GeneratorProfile::setInterfaceNotFunctionString(const std::string &interfaceNotFunctionString)
 {
-    if (mPimpl->mAsecFunctionString != asecFunctionString) {
+    if (mPimpl->mInterfaceNotFunctionString != interfaceNotFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mAsecFunctionString = asecFunctionString;
+    mPimpl->mInterfaceNotFunctionString = interfaceNotFunctionString;
 }
 
-std::string GeneratorProfile::acscFunctionString() const
+std::string GeneratorProfile::implementationNotFunctionString() const
 {
-    return mPimpl->mAcscFunctionString;
+    return mPimpl->mImplementationNotFunctionString;
 }
 
-void GeneratorProfile::setAcscFunctionString(const std::string &acscFunctionString)
+void GeneratorProfile::setImplementationNotFunctionString(const std::string &implementationNotFunctionString)
 {
-    if (mPimpl->mAcscFunctionString != acscFunctionString) {
+    if (mPimpl->mImplementationNotFunctionString != implementationNotFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mAcscFunctionString = acscFunctionString;
+    mPimpl->mImplementationNotFunctionString = implementationNotFunctionString;
 }
 
-std::string GeneratorProfile::acotFunctionString() const
+std::string GeneratorProfile::interfaceMinFunctionString() const
 {
-    return mPimpl->mAcotFunctionString;
+    return mPimpl->mInterfaceMinFunctionString;
 }
 
-void GeneratorProfile::setAcotFunctionString(const std::string &acotFunctionString)
+void GeneratorProfile::setInterfaceMinFunctionString(const std::string &interfaceMinFunctionString)
 {
-    if (mPimpl->mAcotFunctionString != acotFunctionString) {
+    if (mPimpl->mInterfaceMinFunctionString != interfaceMinFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mAcotFunctionString = acotFunctionString;
+    mPimpl->mInterfaceMinFunctionString = interfaceMinFunctionString;
 }
 
-std::string GeneratorProfile::asechFunctionString() const
+std::string GeneratorProfile::implementationMinFunctionString() const
 {
-    return mPimpl->mAsechFunctionString;
+    return mPimpl->mImplementationMinFunctionString;
 }
 
-void GeneratorProfile::setAsechFunctionString(const std::string &asechFunctionString)
+void GeneratorProfile::setImplementationMinFunctionString(const std::string &implementationMinFunctionString)
 {
-    if (mPimpl->mAsechFunctionString != asechFunctionString) {
+    if (mPimpl->mImplementationMinFunctionString != implementationMinFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mAsechFunctionString = asechFunctionString;
+    mPimpl->mImplementationMinFunctionString = implementationMinFunctionString;
 }
 
-std::string GeneratorProfile::acschFunctionString() const
+std::string GeneratorProfile::interfaceMaxFunctionString() const
 {
-    return mPimpl->mAcschFunctionString;
+    return mPimpl->mInterfaceMaxFunctionString;
 }
 
-void GeneratorProfile::setAcschFunctionString(const std::string &acschFunctionString)
+void GeneratorProfile::setInterfaceMaxFunctionString(const std::string &interfaceMaxFunctionString)
 {
-    if (mPimpl->mAcschFunctionString != acschFunctionString) {
+    if (mPimpl->mInterfaceMaxFunctionString != interfaceMaxFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mAcschFunctionString = acschFunctionString;
+    mPimpl->mInterfaceMaxFunctionString = interfaceMaxFunctionString;
 }
 
-std::string GeneratorProfile::acothFunctionString() const
+std::string GeneratorProfile::implementationMaxFunctionString() const
 {
-    return mPimpl->mAcothFunctionString;
+    return mPimpl->mImplementationMaxFunctionString;
 }
 
-void GeneratorProfile::setAcothFunctionString(const std::string &acothFunctionString)
+void GeneratorProfile::setImplementationMaxFunctionString(const std::string &implementationMaxFunctionString)
 {
-    if (mPimpl->mAcothFunctionString != acothFunctionString) {
+    if (mPimpl->mImplementationMaxFunctionString != implementationMaxFunctionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mAcothFunctionString = acothFunctionString;
+    mPimpl->mImplementationMaxFunctionString = implementationMaxFunctionString;
+}
+
+std::string GeneratorProfile::interfaceSecFunctionString() const
+{
+    return mPimpl->mInterfaceSecFunctionString;
+}
+
+void GeneratorProfile::setInterfaceSecFunctionString(const std::string &interfaceSecFunctionString)
+{
+    if (mPimpl->mInterfaceSecFunctionString != interfaceSecFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceSecFunctionString = interfaceSecFunctionString;
+}
+
+std::string GeneratorProfile::implementationSecFunctionString() const
+{
+    return mPimpl->mImplementationSecFunctionString;
+}
+
+void GeneratorProfile::setImplementationSecFunctionString(const std::string &implementationSecFunctionString)
+{
+    if (mPimpl->mImplementationSecFunctionString != implementationSecFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationSecFunctionString = implementationSecFunctionString;
+}
+
+std::string GeneratorProfile::interfaceCscFunctionString() const
+{
+    return mPimpl->mInterfaceCscFunctionString;
+}
+
+void GeneratorProfile::setInterfaceCscFunctionString(const std::string &interfaceCscFunctionString)
+{
+    if (mPimpl->mInterfaceCscFunctionString != interfaceCscFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceCscFunctionString = interfaceCscFunctionString;
+}
+
+std::string GeneratorProfile::implementationCscFunctionString() const
+{
+    return mPimpl->mImplementationCscFunctionString;
+}
+
+void GeneratorProfile::setImplementationCscFunctionString(const std::string &implementationCscFunctionString)
+{
+    if (mPimpl->mImplementationCscFunctionString != implementationCscFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationCscFunctionString = implementationCscFunctionString;
+}
+
+std::string GeneratorProfile::interfaceCotFunctionString() const
+{
+    return mPimpl->mInterfaceCotFunctionString;
+}
+
+void GeneratorProfile::setInterfaceCotFunctionString(const std::string &interfaceCotFunctionString)
+{
+    if (mPimpl->mInterfaceCotFunctionString != interfaceCotFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceCotFunctionString = interfaceCotFunctionString;
+}
+
+std::string GeneratorProfile::implementationCotFunctionString() const
+{
+    return mPimpl->mImplementationCotFunctionString;
+}
+
+void GeneratorProfile::setImplementationCotFunctionString(const std::string &implementationCotFunctionString)
+{
+    if (mPimpl->mImplementationCotFunctionString != implementationCotFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationCotFunctionString = implementationCotFunctionString;
+}
+
+std::string GeneratorProfile::interfaceSechFunctionString() const
+{
+    return mPimpl->mInterfaceSechFunctionString;
+}
+
+void GeneratorProfile::setInterfaceSechFunctionString(const std::string &interfaceSechFunctionString)
+{
+    if (mPimpl->mInterfaceSechFunctionString != interfaceSechFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceSechFunctionString = interfaceSechFunctionString;
+}
+
+std::string GeneratorProfile::implementationSechFunctionString() const
+{
+    return mPimpl->mImplementationSechFunctionString;
+}
+
+void GeneratorProfile::setImplementationSechFunctionString(const std::string &implementationSechFunctionString)
+{
+    if (mPimpl->mImplementationSechFunctionString != implementationSechFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationSechFunctionString = implementationSechFunctionString;
+}
+
+std::string GeneratorProfile::interfaceCschFunctionString() const
+{
+    return mPimpl->mInterfaceCschFunctionString;
+}
+
+void GeneratorProfile::setInterfaceCschFunctionString(const std::string &interfaceCschFunctionString)
+{
+    if (mPimpl->mInterfaceCschFunctionString != interfaceCschFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceCschFunctionString = interfaceCschFunctionString;
+}
+
+std::string GeneratorProfile::implementationCschFunctionString() const
+{
+    return mPimpl->mImplementationCschFunctionString;
+}
+
+void GeneratorProfile::setImplementationCschFunctionString(const std::string &implementationCschFunctionString)
+{
+    if (mPimpl->mImplementationCschFunctionString != implementationCschFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationCschFunctionString = implementationCschFunctionString;
+}
+
+std::string GeneratorProfile::interfaceCothFunctionString() const
+{
+    return mPimpl->mInterfaceCothFunctionString;
+}
+
+void GeneratorProfile::setInterfaceCothFunctionString(const std::string &interfaceCothFunctionString)
+{
+    if (mPimpl->mInterfaceCothFunctionString != interfaceCothFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceCothFunctionString = interfaceCothFunctionString;
+}
+
+std::string GeneratorProfile::implementationCothFunctionString() const
+{
+    return mPimpl->mImplementationCothFunctionString;
+}
+
+void GeneratorProfile::setImplementationCothFunctionString(const std::string &implementationCothFunctionString)
+{
+    if (mPimpl->mImplementationCothFunctionString != implementationCothFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationCothFunctionString = implementationCothFunctionString;
+}
+
+std::string GeneratorProfile::interfaceAsecFunctionString() const
+{
+    return mPimpl->mInterfaceAsecFunctionString;
+}
+
+void GeneratorProfile::setInterfaceAsecFunctionString(const std::string &interfaceAsecFunctionString)
+{
+    if (mPimpl->mInterfaceAsecFunctionString != interfaceAsecFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceAsecFunctionString = interfaceAsecFunctionString;
+}
+
+std::string GeneratorProfile::implementationAsecFunctionString() const
+{
+    return mPimpl->mImplementationAsecFunctionString;
+}
+
+void GeneratorProfile::setImplementationAsecFunctionString(const std::string &implementationAsecFunctionString)
+{
+    if (mPimpl->mImplementationAsecFunctionString != implementationAsecFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationAsecFunctionString = implementationAsecFunctionString;
+}
+
+std::string GeneratorProfile::interfaceAcscFunctionString() const
+{
+    return mPimpl->mInterfaceAcscFunctionString;
+}
+
+void GeneratorProfile::setInterfaceAcscFunctionString(const std::string &interfaceAcscFunctionString)
+{
+    if (mPimpl->mInterfaceAcscFunctionString != interfaceAcscFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceAcscFunctionString = interfaceAcscFunctionString;
+}
+
+std::string GeneratorProfile::implementationAcscFunctionString() const
+{
+    return mPimpl->mImplementationAcscFunctionString;
+}
+
+void GeneratorProfile::setImplementationAcscFunctionString(const std::string &implementationAcscFunctionString)
+{
+    if (mPimpl->mImplementationAcscFunctionString != implementationAcscFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationAcscFunctionString = implementationAcscFunctionString;
+}
+
+std::string GeneratorProfile::interfaceAcotFunctionString() const
+{
+    return mPimpl->mInterfaceAcotFunctionString;
+}
+
+void GeneratorProfile::setInterfaceAcotFunctionString(const std::string &interfaceAcotFunctionString)
+{
+    if (mPimpl->mInterfaceAcotFunctionString != interfaceAcotFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceAcotFunctionString = interfaceAcotFunctionString;
+}
+
+std::string GeneratorProfile::implementationAcotFunctionString() const
+{
+    return mPimpl->mImplementationAcotFunctionString;
+}
+
+void GeneratorProfile::setImplementationAcotFunctionString(const std::string &implementationAcotFunctionString)
+{
+    if (mPimpl->mImplementationAcotFunctionString != implementationAcotFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationAcotFunctionString = implementationAcotFunctionString;
+}
+
+std::string GeneratorProfile::interfaceAsechFunctionString() const
+{
+    return mPimpl->mInterfaceAsechFunctionString;
+}
+
+void GeneratorProfile::setInterfaceAsechFunctionString(const std::string &interfaceAsechFunctionString)
+{
+    if (mPimpl->mInterfaceAsechFunctionString != interfaceAsechFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceAsechFunctionString = interfaceAsechFunctionString;
+}
+
+std::string GeneratorProfile::implementationAsechFunctionString() const
+{
+    return mPimpl->mImplementationAsechFunctionString;
+}
+
+void GeneratorProfile::setImplementationAsechFunctionString(const std::string &implementationAsechFunctionString)
+{
+    if (mPimpl->mImplementationAsechFunctionString != implementationAsechFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationAsechFunctionString = implementationAsechFunctionString;
+}
+
+std::string GeneratorProfile::interfaceAcschFunctionString() const
+{
+    return mPimpl->mInterfaceAcschFunctionString;
+}
+
+void GeneratorProfile::setInterfaceAcschFunctionString(const std::string &interfaceAcschFunctionString)
+{
+    if (mPimpl->mInterfaceAcschFunctionString != interfaceAcschFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceAcschFunctionString = interfaceAcschFunctionString;
+}
+
+std::string GeneratorProfile::implementationAcschFunctionString() const
+{
+    return mPimpl->mImplementationAcschFunctionString;
+}
+
+void GeneratorProfile::setImplementationAcschFunctionString(const std::string &implementationAcschFunctionString)
+{
+    if (mPimpl->mImplementationAcschFunctionString != implementationAcschFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationAcschFunctionString = implementationAcschFunctionString;
+}
+
+std::string GeneratorProfile::interfaceAcothFunctionString() const
+{
+    return mPimpl->mInterfaceAcothFunctionString;
+}
+
+void GeneratorProfile::setInterfaceAcothFunctionString(const std::string &interfaceAcothFunctionString)
+{
+    if (mPimpl->mInterfaceAcothFunctionString != interfaceAcothFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceAcothFunctionString = interfaceAcothFunctionString;
+}
+
+std::string GeneratorProfile::implementationAcothFunctionString() const
+{
+    return mPimpl->mImplementationAcothFunctionString;
+}
+
+void GeneratorProfile::setImplementationAcothFunctionString(const std::string &implementationAcothFunctionString)
+{
+    if (mPimpl->mImplementationAcothFunctionString != implementationAcothFunctionString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationAcothFunctionString = implementationAcothFunctionString;
 }
 
 std::string GeneratorProfile::commentString() const
