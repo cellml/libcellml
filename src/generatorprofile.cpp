@@ -585,42 +585,42 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mReturnCreatedArrayString = "return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n";
 
-        mInterfaceCreateStatesArrayMethodString = "extern double * createStatesArray();\n";
+        mInterfaceCreateStatesArrayMethodString = "double * createStatesArray();\n";
         mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
                                                        "{\n"
                                                        "<CODE>"
                                                        "}\n";
 
-        mInterfaceCreateVariablesArrayMethodString = "extern double * createVariablesArray();\n";
+        mInterfaceCreateVariablesArrayMethodString = "double * createVariablesArray();\n";
         mImplementationCreateVariablesArrayMethodString = "double * createVariablesArray()\n"
                                                           "{\n"
                                                           "<CODE>"
                                                           "}\n";
 
-        mInterfaceDeleteArrayMethodString = "extern void deleteArray(double *array);\n";
+        mInterfaceDeleteArrayMethodString = "void deleteArray(double *array);\n";
         mImplementationDeleteArrayMethodString = "void deleteArray(double *array)\n"
                                                  "{\n"
                                                  "    free(array);\n"
                                                  "}\n";
 
-        mInterfaceInitializeStatesAndConstantsMethodString = "extern void initializeStatesAndConstants(double *states, double *variables);\n";
+        mInterfaceInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables);\n";
         mImplementationInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables)\n"
                                                                   "{\n"
                                                                   "<CODE>"
                                                                   "}\n";
 
-        mInterfaceComputeComputedConstantsMethodString = "extern void computeComputedConstants(double *variables);\n";
+        mInterfaceComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables);\n";
         mImplementationComputeComputedConstantsMethodString = "void computeComputedConstants(double *variables)\n"
                                                               "{\n"
                                                               "<CODE>"
                                                               "}\n";
 
-        mInterfaceComputeRatesMethodString = "extern void computeRates(double voi, double *states, double *rates, double *variables);\n";
+        mInterfaceComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables);\n";
         mImplementationComputeRatesMethodString = "void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
                                                   "<CODE>"
                                                   "}\n";
 
-        mInterfaceComputeVariablesMethodString = "extern void computeVariables(double voi, double *states, double *rates, double *variables);\n";
+        mInterfaceComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables);\n";
         mImplementationComputeVariablesMethodString = "void computeVariables(double voi, double *states, double *rates, double *variables)\n"
                                                       "{\n"
                                                       "<CODE>"

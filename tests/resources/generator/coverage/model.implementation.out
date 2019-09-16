@@ -81,6 +81,21 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
+double * createStatesArray()
+{
+    return (double *) malloc(1*sizeof(double));
+}
+
+double * createVariablesArray()
+{
+    return (double *) malloc(186*sizeof(double));
+}
+
+void deleteArray(double *array)
+{
+    free(array);
+}
+
 void initializeStatesAndConstants(double *states, double *variables)
 {
     states[0] = 0.0;
