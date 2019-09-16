@@ -1185,10 +1185,11 @@ TEST(Generator, coverage)
 
     profile->setImplementationHeaderString("");
 
-    profile->setLibcellmlVersionString("");
+    profile->setImplementationLibcellmlVersionString("");
 
-    profile->setStateCountString("");
-    profile->setVariableCountString("");
+    profile->setImplementationStateCountString("");
+
+    profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
 
@@ -1199,9 +1200,11 @@ TEST(Generator, coverage)
     profile->setVariableInfoObjectString("");
     profile->setVariableInfoWithTypeObjectString("");
 
-    profile->setVoiInfoString("");
-    profile->setStateInfoString("");
-    profile->setVariableInfoString("");
+    profile->setImplementationVoiInfoString("");
+
+    profile->setImplementationStateInfoString("");
+
+    profile->setImplementationVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
     profile->setVariableInfoWithTypeEntryString("");
