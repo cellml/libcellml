@@ -213,12 +213,14 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceHeaderString;
     std::string mImplementationHeaderString;
 
-    std::string mInterfaceDeclarationString;
+    std::string mInterfaceLibcellmlVersionString;
+    std::string mImplementationLibcellmlVersionString;
 
-    std::string mLibcellmlVersionString;
+    std::string mInterfaceStateCountString;
+    std::string mImplementationStateCountString;
 
-    std::string mStateCountString;
-    std::string mVariableCountString;
+    std::string mInterfaceVariableCountString;
+    std::string mImplementationVariableCountString;
 
     std::string mVariableTypeObjectString;
 
@@ -229,9 +231,14 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mVariableInfoObjectString;
     std::string mVariableInfoWithTypeObjectString;
 
-    std::string mVoiInfoString;
-    std::string mStateInfoString;
-    std::string mVariableInfoString;
+    std::string mInterfaceVoiInfoString;
+    std::string mImplementationVoiInfoString;
+
+    std::string mInterfaceStateInfoString;
+    std::string mImplementationStateInfoString;
+
+    std::string mInterfaceVariableInfoString;
+    std::string mImplementationVariableInfoString;
 
     std::string mVariableInfoEntryString;
     std::string mVariableInfoWithTypeEntryString;
@@ -509,12 +516,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <math.h>\n"
                                       "#include <stdlib.h>\n";
 
-        mInterfaceDeclarationString = "extern <CODE>;\n";
+        mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
+        mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
 
-        mLibcellmlVersionString = "const char LIBCELLML_VERSION[]";
+        mInterfaceStateCountString = "extern const size_t STATE_COUNT;\n";
+        mImplementationStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
 
-        mStateCountString = "const size_t STATE_COUNT";
-        mVariableCountString = "const size_t VARIABLE_COUNT";
+        mInterfaceVariableCountString = "extern const size_t VARIABLE_COUNT;\n";
+        mImplementationVariableCountString = "const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n";
 
         mVariableTypeObjectString = "typedef enum {\n"
                                     "    CONSTANT,\n"
@@ -538,9 +547,18 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                             "    VariableType type;\n"
                                             "} VariableInfoWithType;\n";
 
-        mVoiInfoString = "const VariableInfo VOI_INFO";
-        mStateInfoString = "const VariableInfo STATE_INFO[]";
-        mVariableInfoString = "const VariableInfoWithType VARIABLE_INFO[]";
+        mInterfaceVoiInfoString = "extern const VariableInfo VOI_INFO;\n";
+        mImplementationVoiInfoString = "const VariableInfo VOI_INFO = <CODE>;\n";
+
+        mInterfaceStateInfoString = "extern const VariableInfo STATE_INFO[];\n";
+        mImplementationStateInfoString = "const VariableInfo STATE_INFO[] = {\n"
+                                         "<CODE>"
+                                         "};\n";
+
+        mInterfaceVariableInfoString = "extern const VariableInfoWithType VARIABLE_INFO[];\n";
+        mImplementationVariableInfoString = "const VariableInfoWithType VARIABLE_INFO[] = {\n"
+                                            "<CODE>"
+                                            "};\n";
 
         mVariableInfoEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}";
         mVariableInfoWithTypeEntryString = "{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}";
@@ -827,12 +845,14 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "from math import *\n"
                                       "\n";
 
-        mInterfaceDeclarationString = "";
+        mInterfaceLibcellmlVersionString = "";
+        mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
 
-        mLibcellmlVersionString = "LIBCELLML_VERSION";
+        mInterfaceStateCountString = "";
+        mImplementationStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
 
-        mStateCountString = "STATE_COUNT";
-        mVariableCountString = "VARIABLE_COUNT";
+        mInterfaceVariableCountString = "";
+        mImplementationVariableCountString = "VARIABLE_COUNT = <VARIABLE_COUNT>\n";
 
         mVariableTypeObjectString = "\n"
                                     "class VariableType(Enum):\n"
@@ -848,9 +868,18 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
         mVariableInfoObjectString = "";
         mVariableInfoWithTypeObjectString = "";
 
-        mVoiInfoString = "VOI_INFO";
-        mStateInfoString = "STATE_INFO";
-        mVariableInfoString = "VARIABLE_INFO";
+        mInterfaceVoiInfoString = "";
+        mImplementationVoiInfoString = "VOI_INFO = <CODE>\n";
+
+        mInterfaceStateInfoString = "";
+        mImplementationStateInfoString = "STATE_INFO = [\n"
+                                         "<CODE>"
+                                         "]\n";
+
+        mInterfaceVariableInfoString = "";
+        mImplementationVariableInfoString = "VARIABLE_INFO = [\n"
+                                            "<CODE>"
+                                            "]\n";
 
         mVariableInfoEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\"}";
         mVariableInfoWithTypeEntryString = "{\"name\": \"<NAME>\", \"units\": \"<UNITS>\", \"component\": \"<COMPONENT>\", \"type\": <TYPE>}";
@@ -1100,12 +1129,14 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mInterfaceHeaderString = rhs.mPimpl->mInterfaceHeaderString;
     mPimpl->mImplementationHeaderString = rhs.mPimpl->mImplementationHeaderString;
 
-    mPimpl->mInterfaceDeclarationString = rhs.mPimpl->mInterfaceDeclarationString;
+    mPimpl->mInterfaceLibcellmlVersionString = rhs.mPimpl->mInterfaceLibcellmlVersionString;
+    mPimpl->mImplementationLibcellmlVersionString = rhs.mPimpl->mImplementationLibcellmlVersionString;
 
-    mPimpl->mLibcellmlVersionString = rhs.mPimpl->mLibcellmlVersionString;
+    mPimpl->mInterfaceStateCountString = rhs.mPimpl->mInterfaceStateCountString;
+    mPimpl->mImplementationStateCountString = rhs.mPimpl->mImplementationStateCountString;
 
-    mPimpl->mStateCountString = rhs.mPimpl->mStateCountString;
-    mPimpl->mVariableCountString = rhs.mPimpl->mVariableCountString;
+    mPimpl->mInterfaceVariableCountString = rhs.mPimpl->mInterfaceVariableCountString;
+    mPimpl->mImplementationVariableCountString = rhs.mPimpl->mImplementationVariableCountString;
 
     mPimpl->mVariableTypeObjectString = rhs.mPimpl->mVariableTypeObjectString;
 
@@ -1116,9 +1147,14 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
     mPimpl->mVariableInfoWithTypeObjectString = rhs.mPimpl->mVariableInfoWithTypeObjectString;
 
-    mPimpl->mVoiInfoString = rhs.mPimpl->mVoiInfoString;
-    mPimpl->mStateInfoString = rhs.mPimpl->mStateInfoString;
-    mPimpl->mVariableInfoString = rhs.mPimpl->mVariableInfoString;
+    mPimpl->mInterfaceVoiInfoString = rhs.mPimpl->mInterfaceVoiInfoString;
+    mPimpl->mImplementationVoiInfoString = rhs.mPimpl->mImplementationVoiInfoString;
+
+    mPimpl->mInterfaceStateInfoString = rhs.mPimpl->mInterfaceStateInfoString;
+    mPimpl->mImplementationStateInfoString = rhs.mPimpl->mImplementationStateInfoString;
+
+    mPimpl->mInterfaceVariableInfoString = rhs.mPimpl->mInterfaceVariableInfoString;
+    mPimpl->mImplementationVariableInfoString = rhs.mPimpl->mImplementationVariableInfoString;
 
     mPimpl->mVariableInfoEntryString = rhs.mPimpl->mVariableInfoEntryString;
     mPimpl->mVariableInfoWithTypeEntryString = rhs.mPimpl->mVariableInfoWithTypeEntryString;
@@ -2948,60 +2984,88 @@ void GeneratorProfile::setImplementationHeaderString(const std::string &implemen
     mPimpl->mImplementationHeaderString = implementationHeaderString;
 }
 
-std::string GeneratorProfile::interfaceDeclarationString() const
+std::string GeneratorProfile::interfaceLibcellmlVersionString() const
 {
-    return mPimpl->mInterfaceDeclarationString;
+    return mPimpl->mInterfaceLibcellmlVersionString;
 }
 
-void GeneratorProfile::setInterfaceDeclarationString(const std::string &interfaceDeclarationString)
+void GeneratorProfile::setInterfaceLibcellmlVersionString(const std::string &interfaceLibcellmlVersionString)
 {
-    if (mPimpl->mInterfaceDeclarationString != interfaceDeclarationString) {
+    if (mPimpl->mInterfaceLibcellmlVersionString != interfaceLibcellmlVersionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mInterfaceDeclarationString = interfaceDeclarationString;
+    mPimpl->mInterfaceLibcellmlVersionString = interfaceLibcellmlVersionString;
 }
 
-std::string GeneratorProfile::libcellmlVersionString() const
+std::string GeneratorProfile::implementationLibcellmlVersionString() const
 {
-    return mPimpl->mLibcellmlVersionString;
+    return mPimpl->mImplementationLibcellmlVersionString;
 }
 
-void GeneratorProfile::setLibcellmlVersionString(const std::string &libcellmlVersionString)
+void GeneratorProfile::setImplementationLibcellmlVersionString(const std::string &implementationLibcellmlVersionString)
 {
-    if (mPimpl->mLibcellmlVersionString != libcellmlVersionString) {
+    if (mPimpl->mImplementationLibcellmlVersionString != implementationLibcellmlVersionString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mLibcellmlVersionString = libcellmlVersionString;
+    mPimpl->mImplementationLibcellmlVersionString = implementationLibcellmlVersionString;
 }
 
-std::string GeneratorProfile::stateCountString() const
+std::string GeneratorProfile::interfaceStateCountString() const
 {
-    return mPimpl->mStateCountString;
+    return mPimpl->mInterfaceStateCountString;
 }
 
-void GeneratorProfile::setStateCountString(const std::string &stateCountString)
+void GeneratorProfile::setInterfaceStateCountString(const std::string &interfaceStateCountString)
 {
-    if (mPimpl->mStateCountString != stateCountString) {
+    if (mPimpl->mInterfaceStateCountString != interfaceStateCountString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mStateCountString = stateCountString;
+    mPimpl->mInterfaceStateCountString = interfaceStateCountString;
 }
 
-std::string GeneratorProfile::variableCountString() const
+std::string GeneratorProfile::implementationStateCountString() const
 {
-    return mPimpl->mVariableCountString;
+    return mPimpl->mImplementationStateCountString;
 }
 
-void GeneratorProfile::setVariableCountString(const std::string &variableCountString)
+void GeneratorProfile::setImplementationStateCountString(const std::string &implementationStateCountString)
 {
-    if (mPimpl->mVariableCountString != variableCountString) {
+    if (mPimpl->mImplementationStateCountString != implementationStateCountString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mVariableCountString = variableCountString;
+    mPimpl->mImplementationStateCountString = implementationStateCountString;
+}
+
+std::string GeneratorProfile::interfaceVariableCountString() const
+{
+    return mPimpl->mInterfaceVariableCountString;
+}
+
+void GeneratorProfile::setInterfaceVariableCountString(const std::string &interfaceVariableCountString)
+{
+    if (mPimpl->mInterfaceVariableCountString != interfaceVariableCountString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceVariableCountString = interfaceVariableCountString;
+}
+
+std::string GeneratorProfile::implementationVariableCountString() const
+{
+    return mPimpl->mImplementationVariableCountString;
+}
+
+void GeneratorProfile::setImplementationVariableCountString(const std::string &implementationVariableCountString)
+{
+    if (mPimpl->mImplementationVariableCountString != implementationVariableCountString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationVariableCountString = implementationVariableCountString;
 }
 
 std::string GeneratorProfile::variableTypeObjectString() const
@@ -3088,46 +3152,88 @@ void GeneratorProfile::setVariableInfoWithTypeObjectString(const std::string &va
     mPimpl->mVariableInfoWithTypeObjectString = variableInfoWithTypeObjectString;
 }
 
-std::string GeneratorProfile::voiInfoString() const
+std::string GeneratorProfile::interfaceVoiInfoString() const
 {
-    return mPimpl->mVoiInfoString;
+    return mPimpl->mInterfaceVoiInfoString;
 }
 
-void GeneratorProfile::setVoiInfoString(const std::string &voiInfoString)
+void GeneratorProfile::setInterfaceVoiInfoString(const std::string &interfaceVoiInfoString)
 {
-    if (mPimpl->mVoiInfoString != voiInfoString) {
+    if (mPimpl->mInterfaceVoiInfoString != interfaceVoiInfoString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mVoiInfoString = voiInfoString;
+    mPimpl->mInterfaceVoiInfoString = interfaceVoiInfoString;
 }
 
-std::string GeneratorProfile::stateInfoString() const
+std::string GeneratorProfile::implementationVoiInfoString() const
 {
-    return mPimpl->mStateInfoString;
+    return mPimpl->mImplementationVoiInfoString;
 }
 
-void GeneratorProfile::setStateInfoString(const std::string &stateInfoString)
+void GeneratorProfile::setImplementationVoiInfoString(const std::string &implementationVoiInfoString)
 {
-    if (mPimpl->mStateInfoString != stateInfoString) {
+    if (mPimpl->mImplementationVoiInfoString != implementationVoiInfoString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mStateInfoString = stateInfoString;
+    mPimpl->mImplementationVoiInfoString = implementationVoiInfoString;
 }
 
-std::string GeneratorProfile::variableInfoString() const
+std::string GeneratorProfile::interfaceStateInfoString() const
 {
-    return mPimpl->mVariableInfoString;
+    return mPimpl->mInterfaceStateInfoString;
 }
 
-void GeneratorProfile::setVariableInfoString(const std::string &variableInfoString)
+void GeneratorProfile::setInterfaceStateInfoString(const std::string &interfaceStateInfoString)
 {
-    if (mPimpl->mVariableInfoString != variableInfoString) {
+    if (mPimpl->mInterfaceStateInfoString != interfaceStateInfoString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mVariableInfoString = variableInfoString;
+    mPimpl->mInterfaceStateInfoString = interfaceStateInfoString;
+}
+
+std::string GeneratorProfile::implementationStateInfoString() const
+{
+    return mPimpl->mImplementationStateInfoString;
+}
+
+void GeneratorProfile::setImplementationStateInfoString(const std::string &implementationStateInfoString)
+{
+    if (mPimpl->mImplementationStateInfoString != implementationStateInfoString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationStateInfoString = implementationStateInfoString;
+}
+
+std::string GeneratorProfile::interfaceVariableInfoString() const
+{
+    return mPimpl->mInterfaceVariableInfoString;
+}
+
+void GeneratorProfile::setInterfaceVariableInfoString(const std::string &interfaceVariableInfoString)
+{
+    if (mPimpl->mInterfaceVariableInfoString != interfaceVariableInfoString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceVariableInfoString = interfaceVariableInfoString;
+}
+
+std::string GeneratorProfile::implementationVariableInfoString() const
+{
+    return mPimpl->mImplementationVariableInfoString;
+}
+
+void GeneratorProfile::setImplementationVariableInfoString(const std::string &implementationVariableInfoString)
+{
+    if (mPimpl->mImplementationVariableInfoString != implementationVariableInfoString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationVariableInfoString = implementationVariableInfoString;
 }
 
 std::string GeneratorProfile::variableInfoEntryString() const

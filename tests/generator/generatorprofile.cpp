@@ -321,12 +321,14 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "#include <stdlib.h>\n",
               generatorProfile->implementationHeaderString());
 
-    EXPECT_EQ("extern <CODE>;\n", generatorProfile->interfaceDeclarationString());
+    EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
+    EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->implementationLibcellmlVersionString());
 
-    EXPECT_EQ("const char LIBCELLML_VERSION[]", generatorProfile->libcellmlVersionString());
+    EXPECT_EQ("extern const size_t STATE_COUNT;\n", generatorProfile->interfaceStateCountString());
+    EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->implementationStateCountString());
 
-    EXPECT_EQ("const size_t STATE_COUNT", generatorProfile->stateCountString());
-    EXPECT_EQ("const size_t VARIABLE_COUNT", generatorProfile->variableCountString());
+    EXPECT_EQ("extern const size_t VARIABLE_COUNT;\n", generatorProfile->interfaceVariableCountString());
+    EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->implementationVariableCountString());
 
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"
@@ -353,9 +355,20 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "} VariableInfoWithType;\n",
               generatorProfile->variableInfoWithTypeObjectString());
 
-    EXPECT_EQ("const VariableInfo VOI_INFO", generatorProfile->voiInfoString());
-    EXPECT_EQ("const VariableInfo STATE_INFO[]", generatorProfile->stateInfoString());
-    EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[]", generatorProfile->variableInfoString());
+    EXPECT_EQ("extern const VariableInfo VOI_INFO;\n", generatorProfile->interfaceVoiInfoString());
+    EXPECT_EQ("const VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->implementationVoiInfoString());
+
+    EXPECT_EQ("extern const VariableInfo STATE_INFO[];\n", generatorProfile->interfaceStateInfoString());
+    EXPECT_EQ("const VariableInfo STATE_INFO[] = {\n"
+              "<CODE>"
+              "};\n",
+              generatorProfile->implementationStateInfoString());
+
+    EXPECT_EQ("extern const VariableInfoWithType VARIABLE_INFO[];\n", generatorProfile->interfaceVariableInfoString());
+    EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[] = {\n"
+              "<CODE>"
+              "};\n",
+              generatorProfile->implementationVariableInfoString());
 
     EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}", generatorProfile->variableInfoEntryString());
     EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}", generatorProfile->variableInfoWithTypeEntryString());
@@ -797,12 +810,14 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceHeaderString(value);
     generatorProfile->setImplementationHeaderString(value);
 
-    generatorProfile->setInterfaceDeclarationString(value);
+    generatorProfile->setInterfaceLibcellmlVersionString(value);
+    generatorProfile->setImplementationLibcellmlVersionString(value);
 
-    generatorProfile->setLibcellmlVersionString(value);
+    generatorProfile->setInterfaceStateCountString(value);
+    generatorProfile->setImplementationStateCountString(value);
 
-    generatorProfile->setStateCountString(value);
-    generatorProfile->setVariableCountString(value);
+    generatorProfile->setInterfaceVariableCountString(value);
+    generatorProfile->setImplementationVariableCountString(value);
 
     generatorProfile->setVariableTypeObjectString(value);
 
@@ -813,9 +828,14 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setVariableInfoObjectString(value);
     generatorProfile->setVariableInfoWithTypeObjectString(value);
 
-    generatorProfile->setVoiInfoString(value);
-    generatorProfile->setStateInfoString(value);
-    generatorProfile->setVariableInfoString(value);
+    generatorProfile->setInterfaceVoiInfoString(value);
+    generatorProfile->setImplementationVoiInfoString(value);
+
+    generatorProfile->setInterfaceStateInfoString(value);
+    generatorProfile->setImplementationStateInfoString(value);
+
+    generatorProfile->setInterfaceVariableInfoString(value);
+    generatorProfile->setImplementationVariableInfoString(value);
 
     generatorProfile->setVariableInfoEntryString(value);
     generatorProfile->setVariableInfoWithTypeEntryString(value);
@@ -859,12 +879,14 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceHeaderString());
     EXPECT_EQ(value, generatorProfile->implementationHeaderString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceDeclarationString());
+    EXPECT_EQ(value, generatorProfile->interfaceLibcellmlVersionString());
+    EXPECT_EQ(value, generatorProfile->implementationLibcellmlVersionString());
 
-    EXPECT_EQ(value, generatorProfile->libcellmlVersionString());
+    EXPECT_EQ(value, generatorProfile->interfaceStateCountString());
+    EXPECT_EQ(value, generatorProfile->implementationStateCountString());
 
-    EXPECT_EQ(value, generatorProfile->stateCountString());
-    EXPECT_EQ(value, generatorProfile->variableCountString());
+    EXPECT_EQ(value, generatorProfile->interfaceVariableCountString());
+    EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
 
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString());
 
@@ -875,9 +897,14 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
     EXPECT_EQ(value, generatorProfile->variableInfoWithTypeObjectString());
 
-    EXPECT_EQ(value, generatorProfile->voiInfoString());
-    EXPECT_EQ(value, generatorProfile->stateInfoString());
-    EXPECT_EQ(value, generatorProfile->variableInfoString());
+    EXPECT_EQ(value, generatorProfile->interfaceVoiInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationVoiInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceStateInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationStateInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceVariableInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationVariableInfoString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
     EXPECT_EQ(value, generatorProfile->variableInfoWithTypeEntryString());

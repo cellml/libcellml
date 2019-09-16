@@ -2608,82 +2608,147 @@ public:
     void setImplementationHeaderString(const std::string &implementationHeaderString);
 
     /**
-     * @brief Get the @c std::string for an interface declaration.
+     * @brief Get the @c std::string for the interface of the libCellML version
+     * constant.
      *
-     * Return the @c std::string for an interface declaration.
+     * Return the @c std::string for the interface of the libCellML version
+     * constant.
      *
-     * @return The @c std::string for an interface declaration.
-     */
-    std::string interfaceDeclarationString() const;
-
-    /**
-     * @brief Set the @c std::string for an interface declaration.
-     *
-     * Set this @c std::string for an interface declaration. To be useful, the
-     * string should contain the <CODE> tag, which will be replaced with the
-     * variable/function for which there is an implementation.
-     *
-     * @param interfaceDeclarationString The @c std::string to use for an
-     * interface declaration.
-     */
-    void setInterfaceDeclarationString(const std::string &interfaceDeclarationString);
-
-    /**
-     * @brief Get the @c std::string for the libCellML version constant.
-     *
-     * Return the @c std::string for the libCellML version constant.
-     *
-     * @return The @c std::string for the libCellML version constant.
-     */
-    std::string libcellmlVersionString() const;
-
-    /**
-     * @brief Set the @c std::string for the libCellML version constant.
-     *
-     * Set this @c std::string for the libCellML version constant.
-     *
-     * @param versionString The @c std::string to use for the libCellML version
+     * @return The @c std::string for the interface of the libCellML version
      * constant.
      */
-    void setLibcellmlVersionString(const std::string &libcellmlVersionString);
+    std::string interfaceLibcellmlVersionString() const;
 
     /**
-     * @brief Get the @c std::string for the state count constant.
+     * @brief Set the @c std::string for the interface of the libCellML version
+     * constant.
      *
-     * Return the @c std::string for the state count constant.
+     * Set this @c std::string for the interface of the libCellML version
+     * constant.
      *
-     * @return The @c std::string for the state count constant.
+     * @param interfaceLibcellmlVersionString The @c std::string to use for the
+     * interface of the libCellML version constant.
      */
-    std::string stateCountString() const;
+    void setInterfaceLibcellmlVersionString(const std::string &interfaceLibcellmlVersionString);
 
     /**
-     * @brief Set the @c std::string for the state count constant.
+     * @brief Get the @c std::string for the implementation of the libCellML
+     * version constant.
      *
-     * Set this @c std::string for the state count constant.
+     * Return the @c std::string for the implementation of the libCellML version
+     * constant.
      *
-     * @param stateCountString The @c std::string to use for the state count
+     * @return The @c std::string for the implementation of the libCellML
+     * version constant.
+     */
+    std::string implementationLibcellmlVersionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the libCellML
+     * version constant.
+     *
+     * Set this @c std::string for the implementation of the libCellML version
+     * constant. To be useful, the string should contain the <LIBCELLML_VERSION>
+     * tag, which will be replaced with the version of libCellML used.
+     *
+     * @param implementationLibcellmlVersionString The @c std::string to use for
+     * the implementation of the libCellML version constant.
+     */
+    void setImplementationLibcellmlVersionString(const std::string &implementationLibcellmlVersionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the state count
+     * constant.
+     *
+     * Return the @c std::string for the interface of the state count constant.
+     *
+     * @return The @c std::string for the interface of the state count constant.
+     */
+    std::string interfaceStateCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the state count
+     * constant.
+     *
+     * Set this @c std::string for the interface of the state count constant.
+     *
+     * @param interfaceStateCountString The @c std::string to use for the
+     * interface of the state count constant.
+     */
+    void setInterfaceStateCountString(const std::string &interfaceStateCountString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the state count
+     * constant.
+     *
+     * Return the @c std::string for the implementation of the state count
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the state count
      * constant.
      */
-    void setStateCountString(const std::string &stateCountString);
+    std::string implementationStateCountString() const;
 
     /**
-     * @brief Get the @c std::string for the variable count constant.
+     * @brief Set the @c std::string for the implementation of the state count
+     * constant.
      *
-     * Return the @c std::string for the variable count constant.
+     * Set this @c std::string for the implementation of the state count
+     * constant. To be useful, the string should contain the <STATE_COUNT> tag,
+     * which will be replaced with the number of states in the model.
      *
-     * @return The @c std::string for the variable count constant.
+     * @param implementationStateCountString The @c std::string to use for the
+     * implementation of the state count constant.
      */
-    std::string variableCountString() const;
+    void setImplementationStateCountString(const std::string &implementationStateCountString);
 
     /**
-     * @brief Set the @c std::string for the variable count constant.
+     * @brief Get the @c std::string for the interface of the variable count
+     * constant.
      *
-     * Set this @c std::string for the variable count constant.
+     * Return the @c std::string for the interface of the variable count
+     * constant.
      *
-     * @param variableCountString The @c std::string to use for the variable
+     * @return The @c std::string for the interface of the variable count
+     * constant.
+     */
+    std::string interfaceVariableCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the variable count
+     * constant.
+     *
+     * Set this @c std::string for the interface of the variable count constant.
+     *
+     * @param interfaceVariableCountString The @c std::string to use for the
+     * interface of the variable count constant.
+     */
+    void setInterfaceVariableCountString(const std::string &interfaceVariableCountString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the variable
      * count constant.
+     *
+     * Return the @c std::string for the implementation of the variable count
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the variable count
+     * constant.
      */
-    void setVariableCountString(const std::string &variableCountString);
+    std::string implementationVariableCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the variable
+     * count constant.
+     *
+     * Set this @c std::string for the implementation of the variable count
+     * constant. To be useful, the string should contain the <VARIABLE_COUNT>
+     * tag, which will be replaced with the number of states in the model.
+     *
+     * @param implementationVariableCountString The @c std::string to use for
+     * the implementation of the variable count constant.
+     */
+    void setImplementationVariableCountString(const std::string &implementationVariableCountString);
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
@@ -2828,75 +2893,154 @@ public:
     void setVariableInfoWithTypeObjectString(const std::string &variableInfoWithTypeObjectString);
 
     /**
-     * @brief Get the @c std::string for some information about the variable of
-     * integration.
+     * @brief Get the @c std::string for the interface of some information about
+     * the variable of integration.
      *
-     * Return the @c std::string for some information about the variable of
-     * integration.
+     * Return the @c std::string for the interface of some information about the
+     * variable of integration.
      *
-     * @return The @c std::string for some information about the variable of
-     * integration.
-     */
-    std::string voiInfoString() const;
-
-    /**
-     * @brief Set the @c std::string for some information about the variable of
-     * integration.
-     *
-     * Set this @c std::string for some information about the variable of
-     * integration.
-     *
-     * @param voiInfoString The @c std::string to use for some information about
+     * @return The @c std::string for the interface of some information about
      * the variable of integration.
      */
-    void setVoiInfoString(const std::string &voiInfoString);
+    std::string interfaceVoiInfoString() const;
 
     /**
-     * @brief Get the @c std::string for some information about the different
-     * states.
+     * @brief Set the @c std::string for the interface of some information about
+     * the variable of integration.
      *
-     * Return the @c std::string for some information about the different
-     * states.
+     * Set this @c std::string for the interface of some information about the
+     * variable of integration.
      *
-     * @return The @c std::string for some information about the different
-     * states.
+     * @param interfaceVoiInfoString The @c std::string to use for the interface
+     * of some information about the variable of integration.
      */
-    std::string stateInfoString() const;
+    void setInterfaceVoiInfoString(const std::string &interfaceVoiInfoString);
 
     /**
-     * @brief Set the @c std::string for some information about the different
-     * states.
+     * @brief Get the @c std::string for the implementation of some information
+     * about the variable of integration.
      *
-     * Set this @c std::string for some information about the different states.
+     * Return the @c std::string for the implementation of some information
+     * about the variable of integration.
      *
-     * @param stateInfoString The @c std::string to use for some information
+     * @return The @c std::string for the implementation of some information
+     * about the variable of integration.
+     */
+    std::string implementationVoiInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the variable of integration.
+     *
+     * Set this @c std::string for the implementation of some information about
+     * the variable of integration. To be useful, the string should contain the
+     * <CODE> tag, which will be replaced with some information about the
+     * variable of integration.
+     *
+     * @param implementationVoiInfoString The @c std::string to use for the
+     * implementation of some information about the variable of integration.
+     */
+    void setImplementationVoiInfoString(const std::string &implementationVoiInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different states.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different states.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different states.
+     */
+    std::string interfaceStateInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different states.
+     *
+     * Set this @c std::string for the interface of some information about the
+     * different states.
+     *
+     * @param interfaceStateInfoString The @c std::string to use for the
+     * interface of some information about the different states.
+     */
+    void setInterfaceStateInfoString(const std::string &interfaceStateInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different states.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different states.
+     *
+     * @return The @c std::string for the implementation of some information
      * about the different states.
      */
-    void setStateInfoString(const std::string &stateInfoString);
+    std::string implementationStateInfoString() const;
 
     /**
-     * @brief Get the @c std::string for some information about the different
-     * variables.
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different states.
      *
-     * Return the @c std::string for some information about the different
-     * variables.
+     * Set this @c std::string for the implementation of some information about
+     * the different states. To be useful, the string should contain the <CODE>
+     * tag, which will be replaced with some information about the different
+     * states.
      *
-     * @return The @c std::string for some information about the different
-     * variables.
+     * @param implementationStateInfoString The @c std::string to use for the
+     * implementation of some information about the different states.
      */
-    std::string variableInfoString() const;
+    void setImplementationStateInfoString(const std::string &implementationStateInfoString);
 
     /**
-     * @brief Set the @c std::string for some information about the different
-     * variables.
+     * @brief Get the @c std::string for the interface of some information about
+     * the different variables.
      *
-     * Set this @c std::string for some information about the different
-     * variables.
+     * Return the @c std::string for the interface of some information about the
+     * different variables.
      *
-     * @param variableInfoString The @c std::string to use for some information
+     * @return The @c std::string for the interface of some information about
+     * the different variables.
+     */
+    std::string interfaceVariableInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different variables.
+     *
+     * Set this @c std::string for the interface of some information about the
+     * different variables.
+     *
+     * @param interfaceVariableInfoString The @c std::string to use for the
+     * interface of some information about the different variables.
+     */
+    void setInterfaceVariableInfoString(const std::string &interfaceVariableInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different variables.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different variables.
+     *
+     * @return The @c std::string for the implementation of some information
      * about the different variables.
      */
-    void setVariableInfoString(const std::string &variableInfoString);
+    std::string implementationVariableInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different variables.
+     *
+     * Set this @c std::string for the implementation of some information about
+     * the different variables. To be useful, the string should contain the
+     * <CODE> tag, which will be replaced with some information about the
+     * different variables.
+     *
+     * @param implementationVariableInfoString The @c std::string to use for the
+     * implementation of some information about the different variables.
+     */
+    void setImplementationVariableInfoString(const std::string &implementationVariableInfoString);
 
     /**
      * @brief Get the @c std::string for an entry in an array for some
