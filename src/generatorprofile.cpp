@@ -251,9 +251,14 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mReturnCreatedArrayString;
 
-    std::string mCreateStatesArrayMethodString;
-    std::string mCreateVariablesArrayMethodString;
-    std::string mDeleteArrayMethodString;
+    std::string mInterfaceCreateStatesArrayMethodString;
+    std::string mImplementationCreateStatesArrayMethodString;
+
+    std::string mInterfaceCreateVariablesArrayMethodString;
+    std::string mImplementationCreateVariablesArrayMethodString;
+
+    std::string mInterfaceDeleteArrayMethodString;
+    std::string mImplementationDeleteArrayMethodString;
 
     std::string mInitializeStatesAndConstantsMethodString;
     std::string mComputeComputedConstantsMethodString;
@@ -571,16 +576,23 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mReturnCreatedArrayString = "return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n";
 
-        mCreateStatesArrayMethodString = "double * createStatesArray()\n{\n"
-                                         "<CODE>"
-                                         "}\n";
-        mCreateVariablesArrayMethodString = "double * createVariablesArray()\n{\n"
-                                            "<CODE>"
-                                            "}\n";
-        mDeleteArrayMethodString = "void deleteArray(double *array)\n"
-                                   "{\n"
-                                   "    free(array);\n"
-                                   "}\n";
+        mInterfaceCreateStatesArrayMethodString = "extern double * createStatesArray();\n";
+        mImplementationCreateStatesArrayMethodString = "double * createStatesArray()\n"
+                                                       "{\n"
+                                                       "<CODE>"
+                                                       "}\n";
+
+        mInterfaceCreateVariablesArrayMethodString = "extern double * createVariablesArray();\n";
+        mImplementationCreateVariablesArrayMethodString = "double * createVariablesArray()\n"
+                                                          "{\n"
+                                                          "<CODE>"
+                                                          "}\n";
+
+        mInterfaceDeleteArrayMethodString = "extern void deleteArray(double *array);\n";
+        mImplementationDeleteArrayMethodString = "void deleteArray(double *array)\n"
+                                                 "{\n"
+                                                 "    free(array);\n"
+                                                 "}\n";
 
         mInitializeStatesAndConstantsMethodString = "void initializeStatesAndConstants(double *states, double *variables)\n{\n"
                                                     "<CODE>"
@@ -892,13 +904,18 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
 
         mReturnCreatedArrayString = "return [nan]*<ARRAY_SIZE>\n";
 
-        mCreateStatesArrayMethodString = "\n"
-                                         "def create_states_array():\n"
-                                         "<CODE>";
-        mCreateVariablesArrayMethodString = "\n"
-                                            "def create_variables_array():\n"
-                                            "<CODE>";
-        mDeleteArrayMethodString = "";
+        mInterfaceCreateStatesArrayMethodString = "";
+        mImplementationCreateStatesArrayMethodString = "\n"
+                                                       "def create_states_array():\n"
+                                                       "<CODE>";
+
+        mInterfaceCreateVariablesArrayMethodString = "";
+        mImplementationCreateVariablesArrayMethodString = "\n"
+                                                          "def create_variables_array():\n"
+                                                          "<CODE>";
+
+        mInterfaceDeleteArrayMethodString = "";
+        mImplementationDeleteArrayMethodString = "";
 
         mInitializeStatesAndConstantsMethodString = "\n"
                                                     "def initialize_states_and_constants(states, variables):\n"
@@ -1167,9 +1184,14 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mReturnCreatedArrayString = rhs.mPimpl->mReturnCreatedArrayString;
 
-    mPimpl->mCreateStatesArrayMethodString = rhs.mPimpl->mCreateStatesArrayMethodString;
-    mPimpl->mCreateVariablesArrayMethodString = rhs.mPimpl->mCreateVariablesArrayMethodString;
-    mPimpl->mDeleteArrayMethodString = rhs.mPimpl->mDeleteArrayMethodString;
+    mPimpl->mInterfaceCreateStatesArrayMethodString = rhs.mPimpl->mInterfaceCreateStatesArrayMethodString;
+    mPimpl->mImplementationCreateStatesArrayMethodString = rhs.mPimpl->mImplementationCreateStatesArrayMethodString;
+
+    mPimpl->mInterfaceCreateVariablesArrayMethodString = rhs.mPimpl->mInterfaceCreateVariablesArrayMethodString;
+    mPimpl->mImplementationCreateVariablesArrayMethodString = rhs.mPimpl->mImplementationCreateVariablesArrayMethodString;
+
+    mPimpl->mInterfaceDeleteArrayMethodString = rhs.mPimpl->mInterfaceDeleteArrayMethodString;
+    mPimpl->mImplementationDeleteArrayMethodString = rhs.mPimpl->mImplementationDeleteArrayMethodString;
 
     mPimpl->mInitializeStatesAndConstantsMethodString = rhs.mPimpl->mInitializeStatesAndConstantsMethodString;
     mPimpl->mComputeComputedConstantsMethodString = rhs.mPimpl->mComputeComputedConstantsMethodString;
@@ -3334,46 +3356,88 @@ void GeneratorProfile::setReturnCreatedArrayString(const std::string &returnCrea
     mPimpl->mReturnCreatedArrayString = returnCreatedArrayString;
 }
 
-std::string GeneratorProfile::createStatesArrayMethodString() const
+std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
 {
-    return mPimpl->mCreateStatesArrayMethodString;
+    return mPimpl->mInterfaceCreateStatesArrayMethodString;
 }
 
-void GeneratorProfile::setCreateStatesArrayMethodString(const std::string &createStatesArrayMethodString)
+void GeneratorProfile::setInterfaceCreateStatesArrayMethodString(const std::string &interfaceCreateStatesArrayMethodString)
 {
-    if (mPimpl->mCreateStatesArrayMethodString != createStatesArrayMethodString) {
+    if (mPimpl->mInterfaceCreateStatesArrayMethodString != interfaceCreateStatesArrayMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mCreateStatesArrayMethodString = createStatesArrayMethodString;
+    mPimpl->mInterfaceCreateStatesArrayMethodString = interfaceCreateStatesArrayMethodString;
 }
 
-std::string GeneratorProfile::createVariablesArrayMethodString() const
+std::string GeneratorProfile::implementationCreateStatesArrayMethodString() const
 {
-    return mPimpl->mCreateVariablesArrayMethodString;
+    return mPimpl->mImplementationCreateStatesArrayMethodString;
 }
 
-void GeneratorProfile::setCreateVariablesArrayMethodString(const std::string &createVariablesArrayMethodString)
+void GeneratorProfile::setImplementationCreateStatesArrayMethodString(const std::string &implementationCreateStatesArrayMethodString)
 {
-    if (mPimpl->mCreateVariablesArrayMethodString != createVariablesArrayMethodString) {
+    if (mPimpl->mImplementationCreateStatesArrayMethodString != implementationCreateStatesArrayMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mCreateVariablesArrayMethodString = createVariablesArrayMethodString;
+    mPimpl->mImplementationCreateStatesArrayMethodString = implementationCreateStatesArrayMethodString;
 }
 
-std::string GeneratorProfile::deleteArrayMethodString() const
+std::string GeneratorProfile::interfaceCreateVariablesArrayMethodString() const
 {
-    return mPimpl->mDeleteArrayMethodString;
+    return mPimpl->mInterfaceCreateVariablesArrayMethodString;
 }
 
-void GeneratorProfile::setDeleteArrayMethodString(const std::string &deleteArrayMethodString)
+void GeneratorProfile::setInterfaceCreateVariablesArrayMethodString(const std::string &interfaceCreateVariablesArrayMethodString)
 {
-    if (mPimpl->mDeleteArrayMethodString != deleteArrayMethodString) {
+    if (mPimpl->mInterfaceCreateVariablesArrayMethodString != interfaceCreateVariablesArrayMethodString) {
         mPimpl->mProfile = Profile::CUSTOM;
     }
 
-    mPimpl->mDeleteArrayMethodString = deleteArrayMethodString;
+    mPimpl->mInterfaceCreateVariablesArrayMethodString = interfaceCreateVariablesArrayMethodString;
+}
+
+std::string GeneratorProfile::implementationCreateVariablesArrayMethodString() const
+{
+    return mPimpl->mImplementationCreateVariablesArrayMethodString;
+}
+
+void GeneratorProfile::setImplementationCreateVariablesArrayMethodString(const std::string &implementationCreateVariablesArrayMethodString)
+{
+    if (mPimpl->mImplementationCreateVariablesArrayMethodString != implementationCreateVariablesArrayMethodString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationCreateVariablesArrayMethodString = implementationCreateVariablesArrayMethodString;
+}
+
+std::string GeneratorProfile::interfaceDeleteArrayMethodString() const
+{
+    return mPimpl->mInterfaceDeleteArrayMethodString;
+}
+
+void GeneratorProfile::setInterfaceDeleteArrayMethodString(const std::string &interfaceDeleteArrayMethodString)
+{
+    if (mPimpl->mInterfaceDeleteArrayMethodString != interfaceDeleteArrayMethodString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mInterfaceDeleteArrayMethodString = interfaceDeleteArrayMethodString;
+}
+
+std::string GeneratorProfile::implementationDeleteArrayMethodString() const
+{
+    return mPimpl->mImplementationDeleteArrayMethodString;
+}
+
+void GeneratorProfile::setImplementationDeleteArrayMethodString(const std::string &implementationDeleteArrayMethodString)
+{
+    if (mPimpl->mImplementationDeleteArrayMethodString != implementationDeleteArrayMethodString) {
+        mPimpl->mProfile = Profile::CUSTOM;
+    }
+
+    mPimpl->mImplementationDeleteArrayMethodString = implementationDeleteArrayMethodString;
 }
 
 std::string GeneratorProfile::initializeStatesAndConstantsMethodString() const

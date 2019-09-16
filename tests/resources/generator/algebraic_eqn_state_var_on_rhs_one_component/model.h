@@ -29,3 +29,7 @@ typedef struct {
 extern const VariableInfo VOI_INFO;
 extern const VariableInfo STATE_INFO[];
 extern const VariableInfoWithType VARIABLE_INFO[];
+
+extern double * createStatesArray();
+extern double * createVariablesArray();
+extern void deleteArray(double *array);
