@@ -1875,23 +1875,23 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
                 + mProfile->assignmentString()
                 + mProfile->openArrayInitializerString() + "\n";
 
-        std::string infoElements;
+        std::string infoElementsCode;
 
         for (const auto &state : mStates) {
-            if (!infoElements.empty()) {
-                infoElements += mProfile->arrayElementSeparatorString() + "\n";
+            if (!infoElementsCode.empty()) {
+                infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
-            infoElements += mProfile->indentString()
-                            + generateVariableInfoEntryCode(state->name(),
-                                                            state->units(),
-                                                            state->parentComponent()->name());
+            infoElementsCode += mProfile->indentString()
+                                + generateVariableInfoEntryCode(state->name(),
+                                                                state->units(),
+                                                                state->parentComponent()->name());
         }
 
-        if (!infoElements.empty()) {
-            infoElements += "\n";
+        if (!infoElementsCode.empty()) {
+            infoElementsCode += "\n";
 
-            code += infoElements;
+            code += infoElementsCode;
         }
 
         code += mProfile->closeArrayInitializerString()
@@ -1915,11 +1915,11 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                 + mProfile->assignmentString()
                 + mProfile->openArrayInitializerString() + "\n";
 
-        std::string infoElements;
+        std::string infoElementsCode;
 
         for (const auto &variable : mVariables) {
-            if (!infoElements.empty()) {
-                infoElements += mProfile->arrayElementSeparatorString() + "\n";
+            if (!infoElementsCode.empty()) {
+                infoElementsCode += mProfile->arrayElementSeparatorString() + "\n";
             }
 
             std::string variableType;
@@ -1939,18 +1939,18 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                 break;
             }
 
-            infoElements += mProfile->indentString()
-                            + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
-                                                              "<NAME>", variable->variable()->name()),
-                                                      "<UNITS>", variable->variable()->units()),
-                                              "<COMPONENT>", variable->variable()->parentComponent()->name()),
-                                      "<TYPE>", variableType);
+            infoElementsCode += mProfile->indentString()
+                                + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
+                                                                  "<NAME>", variable->variable()->name()),
+                                                          "<UNITS>", variable->variable()->units()),
+                                                  "<COMPONENT>", variable->variable()->parentComponent()->name()),
+                                          "<TYPE>", variableType);
         }
 
-        if (!infoElements.empty()) {
-            infoElements += "\n";
+        if (!infoElementsCode.empty()) {
+            infoElementsCode += "\n";
 
-            code += infoElements;
+            code += infoElementsCode;
         }
 
         code += mProfile->closeArrayInitializerString()
