@@ -683,14 +683,15 @@ struct Generator::GeneratorImpl
                                      std::vector<GeneratorEquationPtr> &remainingEquations,
                                      bool onlyStateRateBasedEquations = false);
 
-    void addInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                   std::vector<GeneratorEquationPtr> &remainingEquations);
-    void addComputeComputedConstantsMethodCode(std::string &code,
-                                               std::vector<GeneratorEquationPtr> &remainingEquations);
-    void addComputeRatesMethodCode(std::string &code,
-                                   std::vector<GeneratorEquationPtr> &remainingEquations);
-    void addComputeVariablesMethodCode(std::string &code,
-                                       std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addInterfaceComputeModelMethodsCode(std::string &code);
+    void addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
+                                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addImplementationComputeComputedConstantsMethodCode(std::string &code,
+                                                             std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addImplementationComputeRatesMethodCode(std::string &code,
+                                                 std::vector<GeneratorEquationPtr> &remainingEquations);
+    void addImplementationComputeVariablesMethodCode(std::string &code,
+                                                     std::vector<GeneratorEquationPtr> &remainingEquations);
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -3084,11 +3085,37 @@ std::string Generator::GeneratorImpl::generateEquationCode(const GeneratorEquati
 
     return res;
 }
-
-void Generator::GeneratorImpl::addInitializeStatesAndConstantsMethodCode(std::string &code,
-                                                                         std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addInterfaceComputeModelMethodsCode(std::string &code)
 {
-    if (!mProfile->initializeStatesAndConstantsMethodString().empty()) {
+    std::string interfaceComputeModelMethodsCode;
+
+    if (!mProfile->interfaceInitializeStatesAndConstantsMethodString().empty()) {
+        interfaceComputeModelMethodsCode += mProfile->interfaceInitializeStatesAndConstantsMethodString();
+    }
+
+    if (!mProfile->interfaceComputeComputedConstantsMethodString().empty()) {
+        interfaceComputeModelMethodsCode += mProfile->interfaceComputeComputedConstantsMethodString();
+    }
+
+    if (!mProfile->interfaceComputeRatesMethodString().empty()) {
+        interfaceComputeModelMethodsCode += mProfile->interfaceComputeRatesMethodString();
+    }
+
+    if (!mProfile->interfaceComputeVariablesMethodString().empty()) {
+        interfaceComputeModelMethodsCode += mProfile->interfaceComputeVariablesMethodString();
+    }
+
+    if (!interfaceComputeModelMethodsCode.empty()) {
+        code += "\n";
+    }
+
+    code += interfaceComputeModelMethodsCode;
+}
+
+void Generator::GeneratorImpl::addImplementationInitializeStatesAndConstantsMethodCode(std::string &code,
+                                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
+{
+    if (!mProfile->implementationInitializeStatesAndConstantsMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
@@ -3108,15 +3135,15 @@ void Generator::GeneratorImpl::addInitializeStatesAndConstantsMethodCode(std::st
             }
         }
 
-        code += replace(mProfile->initializeStatesAndConstantsMethodString(),
+        code += replace(mProfile->implementationInitializeStatesAndConstantsMethodString(),
                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
-void Generator::GeneratorImpl::addComputeComputedConstantsMethodCode(std::string &code,
-                                                                     std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationComputeComputedConstantsMethodCode(std::string &code,
+                                                                                   std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->computeComputedConstantsMethodString().empty()) {
+    if (!mProfile->implementationComputeComputedConstantsMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
@@ -3129,15 +3156,15 @@ void Generator::GeneratorImpl::addComputeComputedConstantsMethodCode(std::string
             }
         }
 
-        code += replace(mProfile->computeComputedConstantsMethodString(),
+        code += replace(mProfile->implementationComputeComputedConstantsMethodString(),
                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
-void Generator::GeneratorImpl::addComputeRatesMethodCode(std::string &code,
-                                                         std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationComputeRatesMethodCode(std::string &code,
+                                                                       std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->computeRatesMethodString().empty()) {
+    if (!mProfile->implementationComputeRatesMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
@@ -3150,15 +3177,15 @@ void Generator::GeneratorImpl::addComputeRatesMethodCode(std::string &code,
             }
         }
 
-        code += replace(mProfile->computeRatesMethodString(),
+        code += replace(mProfile->implementationComputeRatesMethodString(),
                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
 
-void Generator::GeneratorImpl::addComputeVariablesMethodCode(std::string &code,
-                                                             std::vector<GeneratorEquationPtr> &remainingEquations)
+void Generator::GeneratorImpl::addImplementationComputeVariablesMethodCode(std::string &code,
+                                                                           std::vector<GeneratorEquationPtr> &remainingEquations)
 {
-    if (!mProfile->computeVariablesMethodString().empty()) {
+    if (!mProfile->implementationComputeVariablesMethodString().empty()) {
         if (!code.empty()) {
             code += "\n";
         }
@@ -3175,7 +3202,7 @@ void Generator::GeneratorImpl::addComputeVariablesMethodCode(std::string &code,
             }
         }
 
-        code += replace(mProfile->computeVariablesMethodString(),
+        code += replace(mProfile->implementationComputeVariablesMethodString(),
                         "<CODE>", generateMethodBodyCode(methodBody));
     }
 }
@@ -3378,9 +3405,13 @@ std::string Generator::interfaceCode() const
     mPimpl->addExtraArithmeticOperatorFunctionsCode(res, true);
     mPimpl->addExtraTrigonometricOperatorFunctionsCode(res, true);
 
-    // Add code for the interface for creating and deleting arrays.
+    // Add code for the interface to create and delete arrays.
 
     mPimpl->addInterfaceCreateDeleteArraysCode(res);
+
+    // Add code for the interface to compute the model.
+
+    mPimpl->addInterfaceComputeModelMethodsCode(res);
 
     return res;
 }
@@ -3429,28 +3460,28 @@ std::string Generator::implementationCode() const
     mPimpl->addExtraArithmeticOperatorFunctionsCode(res);
     mPimpl->addExtraTrigonometricOperatorFunctionsCode(res);
 
-    // Add code for the implementation for creating and deleting arrays.
+    // Add code for the implementation to create and delete arrays.
 
     mPimpl->addImplementationCreateStatesArrayCode(res);
     mPimpl->addImplementationCreateVariablesArrayCode(res);
     mPimpl->addImplementationDeleteArrayMethodCode(res);
 
-    // Add code to initialise our states and constants.
+    // Add code for the implementation to initialise our states and constants.
 
     std::vector<GeneratorEquationPtr> remainingEquations {std::begin(mPimpl->mEquations), std::end(mPimpl->mEquations)};
 
-    mPimpl->addInitializeStatesAndConstantsMethodCode(res, remainingEquations);
+    mPimpl->addImplementationInitializeStatesAndConstantsMethodCode(res, remainingEquations);
 
-    // Generate code to compute our computed constants.
+    // Add code for the implementation to compute our computed constants.
 
-    mPimpl->addComputeComputedConstantsMethodCode(res, remainingEquations);
+    mPimpl->addImplementationComputeComputedConstantsMethodCode(res, remainingEquations);
 
-    // Generate code to compute our rates (and any variables on which they
-    // depend).
+    // Add code for the implementation to compute our rates (and any variables
+    // on which they depend).
 
-    mPimpl->addComputeRatesMethodCode(res, remainingEquations);
+    mPimpl->addImplementationComputeRatesMethodCode(res, remainingEquations);
 
-    // Generate code to compute our variables.
+    // Add code for the implementation to compute our variables.
     // Note: this method computes all the remaining variables, i.e. the ones not
     //       needed to compute our rates, but also the variables that depend on
     //       the value of some states/rates. Indeed, this method is typically
@@ -3458,7 +3489,7 @@ std::string Generator::implementationCode() const
     //       variables that rely on the value of some states/rates are up to
     //       date.
 
-    mPimpl->addComputeVariablesMethodCode(res, remainingEquations);
+    mPimpl->addImplementationComputeVariablesMethodCode(res, remainingEquations);
 
     return res;
 }
