@@ -1170,6 +1170,8 @@ TEST(Generator, coverage)
 
     libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
 
+    generator.setProfile(profile);
+
     profile->setHasInterface(false);
 
     profile->setXorString("^");
@@ -1219,14 +1221,81 @@ TEST(Generator, coverage)
                                              "// and no code template that can be replaced so that our replace() method can\n"
                                              "// is forced to return an empty string, ensuring 100% coverage using llvm-cov...\n");
 
-    generator.setProfile(profile);
-
     EXPECT_EQ(EMPTY_STRING, generator.interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.out"), generator.implementationCode());
 
-    profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
+    profile = std::make_shared<libcellml::GeneratorProfile>();
 
     generator.setProfile(profile);
+
+    profile->setHasInterface(true);
+
+    profile->setEqString("eq");
+    profile->setNeqString("neq");
+    profile->setLtString("lt");
+    profile->setLeqString("leq");
+    profile->setGtString("gt");
+    profile->setGeqString("geq");
+    profile->setAndString("and");
+    profile->setOrString("or");
+    profile->setNotString("not");
+
+    profile->setHasEqOperator(false);
+    profile->setHasNeqOperator(false);
+    profile->setHasLtOperator(false);
+    profile->setHasLeqOperator(false);
+    profile->setHasGtOperator(false);
+    profile->setHasGeqOperator(false);
+    profile->setHasAndOperator(false);
+    profile->setHasOrOperator(false);
+    profile->setHasNotOperator(false);
+
+    profile->setInterfaceEqFunctionString("extern double eq(double x, double y);\n");
+    profile->setInterfaceNeqFunctionString("extern double neq(double x, double y);\n");
+    profile->setInterfaceLtFunctionString("extern double lt(double x, double y);\n");
+    profile->setInterfaceLeqFunctionString("extern double leq(double x, double y);\n");
+    profile->setInterfaceGtFunctionString("extern double gt(double x, double y);\n");
+    profile->setInterfaceGeqFunctionString("extern double geq(double x, double y);\n");
+    profile->setInterfaceAndFunctionString("extern double and(double x, double y);\n");
+    profile->setInterfaceOrFunctionString("extern double or(double x, double y);\n");
+    profile->setInterfaceNotFunctionString("extern double not(double x, double y);\n");
+
+    profile->setImplementationHeaderString("");
+
+    profile->setImplementationLibcellmlVersionString("");
+
+    profile->setImplementationStateCountString("");
+
+    profile->setImplementationVariableCountString("");
+
+    profile->setVariableTypeObjectString("");
+
+    profile->setConstantVariableTypeString("");
+    profile->setComputedConstantVariableTypeString("");
+    profile->setAlgebraicVariableTypeString("");
+
+    profile->setVariableInfoObjectString("");
+    profile->setVariableInfoWithTypeObjectString("");
+
+    profile->setImplementationVoiInfoString("");
+
+    profile->setImplementationStateInfoString("");
+
+    profile->setImplementationVariableInfoString("");
+
+    profile->setVariableInfoEntryString("");
+    profile->setVariableInfoWithTypeEntryString("");
+
+    profile->setReturnCreatedArrayString("");
+
+    profile->setCreateStatesArrayMethodString("");
+    profile->setCreateVariablesArrayMethodString("");
+    profile->setDeleteArrayMethodString("");
+
+    EXPECT_EQ(fileContents("generator/coverage/model.interface.out"), generator.interfaceCode());
+    EXPECT_EQ(fileContents("generator/coverage/model.implementation.out"), generator.implementationCode());
+
+    profile->setProfile(libcellml::GeneratorProfile::Profile::PYTHON);
 
     EXPECT_EQ(EMPTY_STRING, generator.interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.py"), generator.implementationCode());
