@@ -648,10 +648,8 @@ struct Generator::GeneratorImpl
     void addImplementationStateInfoCode(std::string &code);
     void addImplementationVariableInfoCode(std::string &code);
 
-    void addExtraArithmeticOperatorFunctionsCode(std::string &code,
-                                                 bool interface = false);
-    void addExtraTrigonometricOperatorFunctionsCode(std::string &code,
-                                                    bool interface = false);
+    void addArithmeticFunctionsCode(std::string &code);
+    void addTrigonometricFunctionsCode(std::string &code);
 
     std::string generateCreateArrayCode(size_t arraySize);
 
@@ -1911,324 +1909,226 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
     }
 }
 
-void Generator::GeneratorImpl::addExtraArithmeticOperatorFunctionsCode(std::string &code,
-                                                                       bool interface)
+void Generator::GeneratorImpl::addArithmeticFunctionsCode(std::string &code)
 {
-    std::string extraFunctionsCode;
-
     if (mNeedEq && !mProfile->hasEqOperator()
-        && ((interface && !mProfile->interfaceEqFunctionString().empty())
-            || (!interface && !mProfile->implementationEqFunctionString().empty()))) {
-        extraFunctionsCode += "\n";
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceEqFunctionString() :
-                                  mProfile->implementationEqFunctionString();
+        && !mProfile->eqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->eqFunctionString();
     }
 
     if (mNeedNeq && !mProfile->hasNeqOperator()
-        && ((interface && !mProfile->interfaceNeqFunctionString().empty())
-            || (!interface && !mProfile->implementationNeqFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->neqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceNeqFunctionString() :
-                                  mProfile->implementationNeqFunctionString();
+        code += mProfile->neqFunctionString();
     }
 
     if (mNeedLt && !mProfile->hasLtOperator()
-        && ((interface && !mProfile->interfaceLtFunctionString().empty())
-            || (!interface && !mProfile->implementationLtFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->ltFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceLtFunctionString() :
-                                  mProfile->implementationLtFunctionString();
+        code += mProfile->ltFunctionString();
     }
 
     if (mNeedLeq && !mProfile->hasLeqOperator()
-        && ((interface && !mProfile->interfaceLeqFunctionString().empty())
-            || (!interface && !mProfile->implementationLeqFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->leqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceLeqFunctionString() :
-                                  mProfile->implementationLeqFunctionString();
+        code += mProfile->leqFunctionString();
     }
 
     if (mNeedGt && !mProfile->hasGtOperator()
-        && ((interface && !mProfile->interfaceGtFunctionString().empty())
-            || (!interface && !mProfile->implementationGtFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->gtFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceGtFunctionString() :
-                                  mProfile->implementationGtFunctionString();
+        code += mProfile->gtFunctionString();
     }
 
     if (mNeedGeq && !mProfile->hasGeqOperator()
-        && ((interface && !mProfile->interfaceGeqFunctionString().empty())
-            || (!interface && !mProfile->implementationGeqFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->geqFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceGeqFunctionString() :
-                                  mProfile->implementationGeqFunctionString();
+        code += mProfile->geqFunctionString();
     }
 
     if (mNeedAnd && !mProfile->hasAndOperator()
-        && ((interface && !mProfile->interfaceAndFunctionString().empty())
-            || (!interface && !mProfile->implementationAndFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->andFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceAndFunctionString() :
-                                  mProfile->implementationAndFunctionString();
+        code += mProfile->andFunctionString();
     }
 
     if (mNeedOr && !mProfile->hasOrOperator()
-        && ((interface && !mProfile->interfaceOrFunctionString().empty())
-            || (!interface && !mProfile->implementationOrFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->orFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceOrFunctionString() :
-                                  mProfile->implementationOrFunctionString();
+        code += mProfile->orFunctionString();
     }
 
     if (mNeedXor && !mProfile->hasXorOperator()
-        && ((interface && !mProfile->interfaceXorFunctionString().empty())
-            || (!interface && !mProfile->implementationXorFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->xorFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceXorFunctionString() :
-                                  mProfile->implementationXorFunctionString();
+        code += mProfile->xorFunctionString();
     }
 
     if (mNeedNot && !mProfile->hasNotOperator()
-        && ((interface && !mProfile->interfaceNotFunctionString().empty())
-            || (!interface && !mProfile->implementationNotFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->notFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceNotFunctionString() :
-                                  mProfile->implementationNotFunctionString();
+        code += mProfile->notFunctionString();
     }
 
     if (mNeedMin
-        && ((interface && !mProfile->interfaceMinFunctionString().empty())
-            || (!interface && !mProfile->implementationMinFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->minFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceMinFunctionString() :
-                                  mProfile->implementationMinFunctionString();
+        code += mProfile->minFunctionString();
     }
 
     if (mNeedMax
-        && ((interface && !mProfile->interfaceMaxFunctionString().empty())
-            || (!interface && !mProfile->implementationMaxFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->maxFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceMaxFunctionString() :
-                                  mProfile->implementationMaxFunctionString();
+        code += mProfile->maxFunctionString();
     }
-
-    code += extraFunctionsCode;
 }
 
-void Generator::GeneratorImpl::addExtraTrigonometricOperatorFunctionsCode(std::string &code,
-                                                                          bool interface)
+void Generator::GeneratorImpl::addTrigonometricFunctionsCode(std::string &code)
 {
-    std::string extraFunctionsCode;
-
     if (mNeedSec
-        && ((interface && !mProfile->interfaceSecFunctionString().empty())
-            || (!interface && !mProfile->implementationSecFunctionString().empty()))) {
-        extraFunctionsCode += "\n";
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceSecFunctionString() :
-                                  mProfile->implementationSecFunctionString();
+        && !mProfile->secFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
+        }
+
+        code += mProfile->secFunctionString();
     }
 
     if (mNeedCsc
-        && ((interface && !mProfile->interfaceCscFunctionString().empty())
-            || (!interface && !mProfile->implementationCscFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->cscFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceCscFunctionString() :
-                                  mProfile->implementationCscFunctionString();
+        code += mProfile->cscFunctionString();
     }
 
     if (mNeedCot
-        && ((interface && !mProfile->interfaceCotFunctionString().empty())
-            || (!interface && !mProfile->implementationCotFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->cotFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceCotFunctionString() :
-                                  mProfile->implementationCotFunctionString();
+        code += mProfile->cotFunctionString();
     }
 
     if (mNeedSech
-        && ((interface && !mProfile->interfaceSechFunctionString().empty())
-            || (!interface && !mProfile->implementationSechFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->sechFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceSechFunctionString() :
-                                  mProfile->implementationSechFunctionString();
+        code += mProfile->sechFunctionString();
     }
 
     if (mNeedCsch
-        && ((interface && !mProfile->interfaceCschFunctionString().empty())
-            || (!interface && !mProfile->implementationCschFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->cschFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceCschFunctionString() :
-                                  mProfile->implementationCschFunctionString();
+        code += mProfile->cschFunctionString();
     }
 
     if (mNeedCoth
-        && ((interface && !mProfile->interfaceCothFunctionString().empty())
-            || (!interface && !mProfile->implementationCothFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->cothFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceCothFunctionString() :
-                                  mProfile->implementationCothFunctionString();
+        code += mProfile->cothFunctionString();
     }
 
     if (mNeedAsec
-        && ((interface && !mProfile->interfaceAsecFunctionString().empty())
-            || (!interface && !mProfile->implementationAsecFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->asecFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceAsecFunctionString() :
-                                  mProfile->implementationAsecFunctionString();
+        code += mProfile->asecFunctionString();
     }
 
     if (mNeedAcsc
-        && ((interface && !mProfile->interfaceAcscFunctionString().empty())
-            || (!interface && !mProfile->implementationAcscFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->acscFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceAcscFunctionString() :
-                                  mProfile->implementationAcscFunctionString();
+        code += mProfile->acscFunctionString();
     }
 
     if (mNeedAcot
-        && ((interface && !mProfile->interfaceAcotFunctionString().empty())
-            || (!interface && !mProfile->implementationAcotFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->acotFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceAcotFunctionString() :
-                                  mProfile->implementationAcotFunctionString();
+        code += mProfile->acotFunctionString();
     }
 
     if (mNeedAsech
-        && ((interface && !mProfile->interfaceAsechFunctionString().empty())
-            || (!interface && !mProfile->implementationAsechFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->asechFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceAsechFunctionString() :
-                                  mProfile->implementationAsechFunctionString();
+        code += mProfile->asechFunctionString();
     }
 
     if (mNeedAcsch
-        && ((interface && !mProfile->interfaceAcschFunctionString().empty())
-            || (!interface && !mProfile->implementationAcschFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->acschFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceAcschFunctionString() :
-                                  mProfile->implementationAcschFunctionString();
+        code += mProfile->acschFunctionString();
     }
 
     if (mNeedAcoth
-        && ((interface && !mProfile->interfaceAcothFunctionString().empty())
-            || (!interface && !mProfile->implementationAcothFunctionString().empty()))) {
-        if (extraFunctionsCode.empty()
-            || (!interface && !extraFunctionsCode.empty())) {
-            extraFunctionsCode += "\n";
+        && !mProfile->acothFunctionString().empty()) {
+        if (!code.empty()) {
+            code += "\n";
         }
 
-        extraFunctionsCode += interface ?
-                                  mProfile->interfaceAcothFunctionString() :
-                                  mProfile->implementationAcothFunctionString();
+        code += mProfile->acothFunctionString();
     }
-
-    code += extraFunctionsCode;
 }
 
 std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
@@ -3400,11 +3300,6 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addInterfaceVoiStateAndVariableInfoCode(res);
 
-    // Add code for the interface of the extra functions.
-
-    mPimpl->addExtraArithmeticOperatorFunctionsCode(res, true);
-    mPimpl->addExtraTrigonometricOperatorFunctionsCode(res, true);
-
     // Add code for the interface to create and delete arrays.
 
     mPimpl->addInterfaceCreateDeleteArrayMethodsCode(res);
@@ -3455,10 +3350,10 @@ std::string Generator::implementationCode() const
     mPimpl->addImplementationStateInfoCode(res);
     mPimpl->addImplementationVariableInfoCode(res);
 
-    // Add code for the implementation of the extra functions.
+    // Add code for the arithmetic and trigonometric functions.
 
-    mPimpl->addExtraArithmeticOperatorFunctionsCode(res);
-    mPimpl->addExtraTrigonometricOperatorFunctionsCode(res);
+    mPimpl->addArithmeticFunctionsCode(res);
+    mPimpl->addTrigonometricFunctionsCode(res);
 
     // Add code for the implementation to create and delete arrays.
 

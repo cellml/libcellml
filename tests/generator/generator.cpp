@@ -1252,16 +1252,6 @@ TEST(Generator, coverage)
     profile->setHasOrOperator(false);
     profile->setHasNotOperator(false);
 
-    profile->setInterfaceEqFunctionString("extern double eq(double x, double y);\n");
-    profile->setInterfaceNeqFunctionString("extern double neq(double x, double y);\n");
-    profile->setInterfaceLtFunctionString("extern double lt(double x, double y);\n");
-    profile->setInterfaceLeqFunctionString("extern double leq(double x, double y);\n");
-    profile->setInterfaceGtFunctionString("extern double gt(double x, double y);\n");
-    profile->setInterfaceGeqFunctionString("extern double geq(double x, double y);\n");
-    profile->setInterfaceAndFunctionString("extern double and(double x, double y);\n");
-    profile->setInterfaceOrFunctionString("extern double or(double x, double y);\n");
-    profile->setInterfaceNotFunctionString("extern double not(double x, double y);\n");
-
     profile->setImplementationHeaderString("");
 
     profile->setImplementationLibcellmlVersionString("");
