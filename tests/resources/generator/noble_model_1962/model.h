@@ -1,5 +1,7 @@
 /* The content of this file was generated using the C profile of libCellML 0.2.0. */
 
+#pragma once
+
 #include <stddef.h>
 
 extern const char LIBCELLML_VERSION[];
