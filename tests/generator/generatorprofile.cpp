@@ -384,7 +384,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n",
               generatorProfile->returnCreatedArrayString());
 
-    EXPECT_EQ("extern double * createStatesArray();\n",
+    EXPECT_EQ("double * createStatesArray();\n",
               generatorProfile->interfaceCreateStatesArrayMethodString());
     EXPECT_EQ("double * createStatesArray()\n"
               "{\n"
@@ -392,7 +392,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationCreateStatesArrayMethodString());
 
-    EXPECT_EQ("extern double * createVariablesArray();\n",
+    EXPECT_EQ("double * createVariablesArray();\n",
               generatorProfile->interfaceCreateVariablesArrayMethodString());
     EXPECT_EQ("double * createVariablesArray()\n"
               "{\n"
@@ -400,7 +400,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationCreateVariablesArrayMethodString());
 
-    EXPECT_EQ("extern void deleteArray(double *array);\n",
+    EXPECT_EQ("void deleteArray(double *array);\n",
               generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ("void deleteArray(double *array)\n"
               "{\n"
@@ -408,7 +408,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ("extern void initializeStatesAndConstants(double *states, double *variables);\n",
+    EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables);\n",
               generatorProfile->interfaceInitializeStatesAndConstantsMethodString());
     EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables)\n"
               "{\n"
@@ -416,7 +416,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationInitializeStatesAndConstantsMethodString());
 
-    EXPECT_EQ("extern void computeComputedConstants(double *variables);\n",
+    EXPECT_EQ("void computeComputedConstants(double *variables);\n",
               generatorProfile->interfaceComputeComputedConstantsMethodString());
     EXPECT_EQ("void computeComputedConstants(double *variables)\n"
               "{\n"
@@ -424,7 +424,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationComputeComputedConstantsMethodString());
 
-    EXPECT_EQ("extern void computeRates(double voi, double *states, double *rates, double *variables);\n",
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables);\n",
               generatorProfile->interfaceComputeRatesMethodString());
     EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables)\n"
               "{\n"
@@ -432,7 +432,7 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "}\n",
               generatorProfile->implementationComputeRatesMethodString());
 
-    EXPECT_EQ("extern void computeVariables(double voi, double *states, double *rates, double *variables);\n",
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables);\n",
               generatorProfile->interfaceComputeVariablesMethodString());
     EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n"
               "{\n"

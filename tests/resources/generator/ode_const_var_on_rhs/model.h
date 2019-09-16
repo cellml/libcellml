@@ -32,11 +32,11 @@ extern const VariableInfo VOI_INFO;
 extern const VariableInfo STATE_INFO[];
 extern const VariableInfoWithType VARIABLE_INFO[];
 
-extern double * createStatesArray();
-extern double * createVariablesArray();
-extern void deleteArray(double *array);
+double * createStatesArray();
+double * createVariablesArray();
+void deleteArray(double *array);
 
-extern void initializeStatesAndConstants(double *states, double *variables);
-extern void computeComputedConstants(double *variables);
-extern void computeRates(double voi, double *states, double *rates, double *variables);
-extern void computeVariables(double voi, double *states, double *rates, double *variables);
+void initializeStatesAndConstants(double *states, double *variables);
+void computeComputedConstants(double *variables);
+void computeRates(double voi, double *states, double *rates, double *variables);
+void computeVariables(double voi, double *states, double *rates, double *variables);

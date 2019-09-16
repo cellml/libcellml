@@ -1288,17 +1288,6 @@ TEST(Generator, coverage)
     profile->setVariableInfoEntryString("");
     profile->setVariableInfoWithTypeEntryString("");
 
-    profile->setReturnCreatedArrayString("");
-
-    profile->setInterfaceCreateStatesArrayMethodString("");
-    profile->setImplementationCreateStatesArrayMethodString("");
-
-    profile->setInterfaceCreateVariablesArrayMethodString("");
-    profile->setImplementationCreateVariablesArrayMethodString("");
-
-    profile->setInterfaceDeleteArrayMethodString("");
-    profile->setImplementationDeleteArrayMethodString("");
-
     EXPECT_EQ(fileContents("generator/coverage/model.interface.out"), generator.interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.implementation.out"), generator.implementationCode());
 
