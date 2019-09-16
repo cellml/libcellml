@@ -29,3 +29,19 @@ typedef struct {
 extern const VariableInfo VOI_INFO;
 extern const VariableInfo STATE_INFO[];
 extern const VariableInfoWithType VARIABLE_INFO[];
+
+extern double xor(double x, double y);
+extern double min(double x, double y);
+extern double max(double x, double y);
+extern double sec(double x);
+extern double csc(double x);
+extern double cot(double x);
+extern double sech(double x);
+extern double csch(double x);
+extern double coth(double x);
+extern double asec(double x);
+extern double acsc(double x);
+extern double acot(double x);
+extern double asech(double x);
+extern double acsch(double x);
+extern double acoth(double x);

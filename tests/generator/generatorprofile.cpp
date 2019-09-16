@@ -152,98 +152,158 @@ TEST(GeneratorProfile, defaultMathematicalFunctionValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
-    EXPECT_EQ("", generatorProfile->eqFunctionString());
-    EXPECT_EQ("", generatorProfile->neqFunctionString());
-    EXPECT_EQ("", generatorProfile->ltFunctionString());
-    EXPECT_EQ("", generatorProfile->leqFunctionString());
-    EXPECT_EQ("", generatorProfile->gtFunctionString());
-    EXPECT_EQ("", generatorProfile->geqFunctionString());
-    EXPECT_EQ("", generatorProfile->andFunctionString());
-    EXPECT_EQ("", generatorProfile->orFunctionString());
+    EXPECT_EQ("", generatorProfile->interfaceEqFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationEqFunctionString());
+
+    EXPECT_EQ("", generatorProfile->interfaceNeqFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationNeqFunctionString());
+
+    EXPECT_EQ("", generatorProfile->interfaceLtFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationLtFunctionString());
+
+    EXPECT_EQ("", generatorProfile->interfaceLeqFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationLeqFunctionString());
+
+    EXPECT_EQ("", generatorProfile->interfaceGtFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationGtFunctionString());
+
+    EXPECT_EQ("", generatorProfile->interfaceGeqFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationGeqFunctionString());
+
+    EXPECT_EQ("", generatorProfile->interfaceAndFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationAndFunctionString());
+
+    EXPECT_EQ("", generatorProfile->interfaceOrFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationOrFunctionString());
+
+    EXPECT_EQ("extern double xor(double x, double y);\n",
+              generatorProfile->interfaceXorFunctionString());
     EXPECT_EQ("double xor(double x, double y)\n"
               "{\n"
               "    return (x != 0.0) ^ (y != 0.0);\n"
               "}\n",
-              generatorProfile->xorFunctionString());
-    EXPECT_EQ("", generatorProfile->notFunctionString());
+              generatorProfile->implementationXorFunctionString());
 
+    EXPECT_EQ("", generatorProfile->interfaceNotFunctionString());
+    EXPECT_EQ("", generatorProfile->implementationNotFunctionString());
+
+    EXPECT_EQ("extern double min(double x, double y);\n",
+              generatorProfile->interfaceMinFunctionString());
     EXPECT_EQ("double min(double x, double y)\n"
               "{\n"
               "    return (x < y)?x:y;\n"
               "}\n",
-              generatorProfile->minFunctionString());
+              generatorProfile->implementationMinFunctionString());
+
+    EXPECT_EQ("extern double max(double x, double y);\n",
+              generatorProfile->interfaceMaxFunctionString());
     EXPECT_EQ("double max(double x, double y)\n"
               "{\n"
               "    return (x > y)?x:y;\n"
               "}\n",
-              generatorProfile->maxFunctionString());
+              generatorProfile->implementationMaxFunctionString());
 
+    EXPECT_EQ("extern double sec(double x);\n",
+              generatorProfile->interfaceSecFunctionString());
     EXPECT_EQ("double sec(double x)\n"
               "{\n"
               "    return 1.0/cos(x);\n"
               "}\n",
-              generatorProfile->secFunctionString());
+              generatorProfile->implementationSecFunctionString());
+
+    EXPECT_EQ("extern double csc(double x);\n",
+              generatorProfile->interfaceCscFunctionString());
     EXPECT_EQ("double csc(double x)\n"
               "{\n"
               "    return 1.0/sin(x);\n"
               "}\n",
-              generatorProfile->cscFunctionString());
+              generatorProfile->implementationCscFunctionString());
+
+    EXPECT_EQ("extern double cot(double x);\n",
+              generatorProfile->interfaceCotFunctionString());
     EXPECT_EQ("double cot(double x)\n"
               "{\n"
               "    return 1.0/tan(x);\n"
               "}\n",
-              generatorProfile->cotFunctionString());
+              generatorProfile->implementationCotFunctionString());
+
+    EXPECT_EQ("extern double sech(double x);\n",
+              generatorProfile->interfaceSechFunctionString());
     EXPECT_EQ("double sech(double x)\n"
               "{\n"
               "    return 1.0/cosh(x);\n"
               "}\n",
-              generatorProfile->sechFunctionString());
+              generatorProfile->implementationSechFunctionString());
+
+    EXPECT_EQ("extern double csch(double x);\n",
+              generatorProfile->interfaceCschFunctionString());
     EXPECT_EQ("double csch(double x)\n"
               "{\n"
               "    return 1.0/sinh(x);\n"
               "}\n",
-              generatorProfile->cschFunctionString());
+              generatorProfile->implementationCschFunctionString());
+
+    EXPECT_EQ("extern double coth(double x);\n",
+              generatorProfile->interfaceCothFunctionString());
     EXPECT_EQ("double coth(double x)\n"
               "{\n"
               "    return 1.0/tanh(x);\n"
               "}\n",
-              generatorProfile->cothFunctionString());
+              generatorProfile->implementationCothFunctionString());
+
+    EXPECT_EQ("extern double asec(double x);\n",
+              generatorProfile->interfaceAsecFunctionString());
     EXPECT_EQ("double asec(double x)\n"
               "{\n"
               "    return acos(1.0/x);\n"
               "}\n",
-              generatorProfile->asecFunctionString());
+              generatorProfile->implementationAsecFunctionString());
+
+    EXPECT_EQ("extern double acsc(double x);\n",
+              generatorProfile->interfaceAcscFunctionString());
     EXPECT_EQ("double acsc(double x)\n"
               "{\n"
               "    return asin(1.0/x);\n"
               "}\n",
-              generatorProfile->acscFunctionString());
+              generatorProfile->implementationAcscFunctionString());
+
+    EXPECT_EQ("extern double acot(double x);\n",
+              generatorProfile->interfaceAcotFunctionString());
     EXPECT_EQ("double acot(double x)\n"
               "{\n"
               "    return atan(1.0/x);\n"
               "}\n",
-              generatorProfile->acotFunctionString());
+              generatorProfile->implementationAcotFunctionString());
+
+    EXPECT_EQ("extern double asech(double x);\n",
+              generatorProfile->interfaceAsechFunctionString());
     EXPECT_EQ("double asech(double x)\n"
               "{\n"
               "    double oneOverX = 1.0/x;\n"
               "\n"
               "    return log(oneOverX+sqrt(oneOverX*oneOverX-1.0));\n"
               "}\n",
-              generatorProfile->asechFunctionString());
+              generatorProfile->implementationAsechFunctionString());
+
+    EXPECT_EQ("extern double acsch(double x);\n",
+              generatorProfile->interfaceAcschFunctionString());
     EXPECT_EQ("double acsch(double x)\n"
               "{\n"
               "    double oneOverX = 1.0/x;\n"
               "\n"
               "    return log(oneOverX+sqrt(oneOverX*oneOverX+1.0));\n"
               "}\n",
-              generatorProfile->acschFunctionString());
+              generatorProfile->implementationAcschFunctionString());
+
+    EXPECT_EQ("extern double acoth(double x);\n",
+              generatorProfile->interfaceAcothFunctionString());
     EXPECT_EQ("double acoth(double x)\n"
               "{\n"
               "    double oneOverX = 1.0/x;\n"
               "\n"
               "    return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));\n"
               "}\n",
-              generatorProfile->acothFunctionString());
+              generatorProfile->implementationAcothFunctionString());
 }
 
 TEST(GeneratorProfile, defaultMiscellaneousValues)
@@ -580,59 +640,149 @@ TEST(GeneratorProfile, mathematicalFunctions)
 
     const std::string value = "value";
 
-    generatorProfile->setEqFunctionString(value);
-    generatorProfile->setNeqFunctionString(value);
-    generatorProfile->setLtFunctionString(value);
-    generatorProfile->setLeqFunctionString(value);
-    generatorProfile->setGtFunctionString(value);
-    generatorProfile->setGeqFunctionString(value);
-    generatorProfile->setAndFunctionString(value);
-    generatorProfile->setOrFunctionString(value);
-    generatorProfile->setXorFunctionString(value);
-    generatorProfile->setNotFunctionString(value);
+    generatorProfile->setInterfaceEqFunctionString(value);
+    generatorProfile->setImplementationEqFunctionString(value);
 
-    generatorProfile->setMinFunctionString(value);
-    generatorProfile->setMaxFunctionString(value);
+    generatorProfile->setInterfaceNeqFunctionString(value);
+    generatorProfile->setImplementationNeqFunctionString(value);
 
-    generatorProfile->setSecFunctionString(value);
-    generatorProfile->setCscFunctionString(value);
-    generatorProfile->setCotFunctionString(value);
-    generatorProfile->setSechFunctionString(value);
-    generatorProfile->setCschFunctionString(value);
-    generatorProfile->setCothFunctionString(value);
-    generatorProfile->setAsecFunctionString(value);
-    generatorProfile->setAcscFunctionString(value);
-    generatorProfile->setAcotFunctionString(value);
-    generatorProfile->setAsechFunctionString(value);
-    generatorProfile->setAcschFunctionString(value);
-    generatorProfile->setAcothFunctionString(value);
+    generatorProfile->setInterfaceLtFunctionString(value);
+    generatorProfile->setImplementationLtFunctionString(value);
 
-    EXPECT_EQ(value, generatorProfile->eqFunctionString());
-    EXPECT_EQ(value, generatorProfile->neqFunctionString());
-    EXPECT_EQ(value, generatorProfile->ltFunctionString());
-    EXPECT_EQ(value, generatorProfile->leqFunctionString());
-    EXPECT_EQ(value, generatorProfile->gtFunctionString());
-    EXPECT_EQ(value, generatorProfile->geqFunctionString());
-    EXPECT_EQ(value, generatorProfile->andFunctionString());
-    EXPECT_EQ(value, generatorProfile->orFunctionString());
-    EXPECT_EQ(value, generatorProfile->xorFunctionString());
-    EXPECT_EQ(value, generatorProfile->notFunctionString());
+    generatorProfile->setInterfaceLeqFunctionString(value);
+    generatorProfile->setImplementationLeqFunctionString(value);
 
-    EXPECT_EQ(value, generatorProfile->minFunctionString());
-    EXPECT_EQ(value, generatorProfile->maxFunctionString());
+    generatorProfile->setInterfaceGtFunctionString(value);
+    generatorProfile->setImplementationGtFunctionString(value);
 
-    EXPECT_EQ(value, generatorProfile->secFunctionString());
-    EXPECT_EQ(value, generatorProfile->cscFunctionString());
-    EXPECT_EQ(value, generatorProfile->cotFunctionString());
-    EXPECT_EQ(value, generatorProfile->sechFunctionString());
-    EXPECT_EQ(value, generatorProfile->cschFunctionString());
-    EXPECT_EQ(value, generatorProfile->cothFunctionString());
-    EXPECT_EQ(value, generatorProfile->asecFunctionString());
-    EXPECT_EQ(value, generatorProfile->acscFunctionString());
-    EXPECT_EQ(value, generatorProfile->acotFunctionString());
-    EXPECT_EQ(value, generatorProfile->asechFunctionString());
-    EXPECT_EQ(value, generatorProfile->acschFunctionString());
-    EXPECT_EQ(value, generatorProfile->acothFunctionString());
+    generatorProfile->setInterfaceGeqFunctionString(value);
+    generatorProfile->setImplementationGeqFunctionString(value);
+
+    generatorProfile->setInterfaceAndFunctionString(value);
+    generatorProfile->setImplementationAndFunctionString(value);
+
+    generatorProfile->setInterfaceOrFunctionString(value);
+    generatorProfile->setImplementationOrFunctionString(value);
+
+    generatorProfile->setInterfaceXorFunctionString(value);
+    generatorProfile->setImplementationXorFunctionString(value);
+
+    generatorProfile->setInterfaceNotFunctionString(value);
+    generatorProfile->setImplementationNotFunctionString(value);
+
+    generatorProfile->setInterfaceMinFunctionString(value);
+    generatorProfile->setImplementationMinFunctionString(value);
+
+    generatorProfile->setInterfaceMaxFunctionString(value);
+    generatorProfile->setImplementationMaxFunctionString(value);
+
+    generatorProfile->setInterfaceSecFunctionString(value);
+    generatorProfile->setImplementationSecFunctionString(value);
+
+    generatorProfile->setInterfaceCscFunctionString(value);
+    generatorProfile->setImplementationCscFunctionString(value);
+
+    generatorProfile->setInterfaceCotFunctionString(value);
+    generatorProfile->setImplementationCotFunctionString(value);
+
+    generatorProfile->setInterfaceSechFunctionString(value);
+    generatorProfile->setImplementationSechFunctionString(value);
+
+    generatorProfile->setInterfaceCschFunctionString(value);
+    generatorProfile->setImplementationCschFunctionString(value);
+
+    generatorProfile->setInterfaceCothFunctionString(value);
+    generatorProfile->setImplementationCothFunctionString(value);
+
+    generatorProfile->setInterfaceAsecFunctionString(value);
+    generatorProfile->setImplementationAsecFunctionString(value);
+
+    generatorProfile->setInterfaceAcscFunctionString(value);
+    generatorProfile->setImplementationAcscFunctionString(value);
+
+    generatorProfile->setInterfaceAcotFunctionString(value);
+    generatorProfile->setImplementationAcotFunctionString(value);
+
+    generatorProfile->setInterfaceAsechFunctionString(value);
+    generatorProfile->setImplementationAsechFunctionString(value);
+
+    generatorProfile->setInterfaceAcschFunctionString(value);
+    generatorProfile->setImplementationAcschFunctionString(value);
+
+    generatorProfile->setInterfaceAcothFunctionString(value);
+    generatorProfile->setImplementationAcothFunctionString(value);
+
+    EXPECT_EQ(value, generatorProfile->interfaceEqFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationEqFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceNeqFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationNeqFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceLtFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationLtFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceLeqFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationLeqFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceGtFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationGtFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceGeqFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationGeqFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAndFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationAndFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceOrFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationOrFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceXorFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationXorFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceNotFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationNotFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceMinFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationMinFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceMaxFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationMaxFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceSecFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationSecFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCscFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationCscFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCotFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationCotFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceSechFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationSechFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCschFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationCschFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceCothFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationCothFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAsecFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationAsecFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAcscFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationAcscFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAcotFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationAcotFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAsechFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationAsechFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAcschFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationAcschFunctionString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceAcothFunctionString());
+    EXPECT_EQ(value, generatorProfile->implementationAcothFunctionString());
 }
 
 TEST(GeneratorProfile, miscellaneous)
