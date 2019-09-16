@@ -655,9 +655,9 @@ struct Generator::GeneratorImpl
 
     std::string generateCreateArrayCode(size_t arraySize);
 
-    void addInterfaceCreateDeleteArraysCode(std::string &code);
-    void addImplementationCreateStatesArrayCode(std::string &code);
-    void addImplementationCreateVariablesArrayCode(std::string &code);
+    void addInterfaceCreateDeleteArrayMethodsCode(std::string &code);
+    void addImplementationCreateStatesArrayMethodCode(std::string &code);
+    void addImplementationCreateVariablesArrayMethodCode(std::string &code);
     void addImplementationDeleteArrayMethodCode(std::string &code);
 
     std::string generateMethodBodyCode(const std::string &methodBody);
@@ -2237,7 +2237,7 @@ std::string Generator::GeneratorImpl::generateCreateArrayCode(size_t arraySize)
                    "<ARRAY_SIZE>", std::to_string(arraySize));
 }
 
-void Generator::GeneratorImpl::addInterfaceCreateDeleteArraysCode(std::string &code)
+void Generator::GeneratorImpl::addInterfaceCreateDeleteArrayMethodsCode(std::string &code)
 {
     std::string interfaceCreateDeleteArraysCode;
 
@@ -2260,7 +2260,7 @@ void Generator::GeneratorImpl::addInterfaceCreateDeleteArraysCode(std::string &c
     code += interfaceCreateDeleteArraysCode;
 }
 
-void Generator::GeneratorImpl::addImplementationCreateStatesArrayCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationCreateStatesArrayMethodCode(std::string &code)
 {
     if (!mProfile->implementationCreateStatesArrayMethodString().empty()
         && !mProfile->returnCreatedArrayString().empty()) {
@@ -2273,7 +2273,7 @@ void Generator::GeneratorImpl::addImplementationCreateStatesArrayCode(std::strin
     }
 }
 
-void Generator::GeneratorImpl::addImplementationCreateVariablesArrayCode(std::string &code)
+void Generator::GeneratorImpl::addImplementationCreateVariablesArrayMethodCode(std::string &code)
 {
     if (!mProfile->implementationCreateVariablesArrayMethodString().empty()
         && !mProfile->returnCreatedArrayString().empty()) {
@@ -3407,7 +3407,7 @@ std::string Generator::interfaceCode() const
 
     // Add code for the interface to create and delete arrays.
 
-    mPimpl->addInterfaceCreateDeleteArraysCode(res);
+    mPimpl->addInterfaceCreateDeleteArrayMethodsCode(res);
 
     // Add code for the interface to compute the model.
 
@@ -3462,8 +3462,8 @@ std::string Generator::implementationCode() const
 
     // Add code for the implementation to create and delete arrays.
 
-    mPimpl->addImplementationCreateStatesArrayCode(res);
-    mPimpl->addImplementationCreateVariablesArrayCode(res);
+    mPimpl->addImplementationCreateStatesArrayMethodCode(res);
+    mPimpl->addImplementationCreateVariablesArrayMethodCode(res);
     mPimpl->addImplementationDeleteArrayMethodCode(res);
 
     // Add code for the implementation to initialise our states and constants.
