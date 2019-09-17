@@ -1456,7 +1456,7 @@ public:
      */
     void setNanString(const std::string &nanString);
 
-    // Mathematical functions.
+    // Arithmetic functions.
 
     /**
      * @brief Get the @c std::string for the equivalence function.
@@ -1681,6 +1681,8 @@ public:
      * function.
      */
     void setMaxFunctionString(const std::string &maxFunctionString);
+
+    // Trigonometric functions.
 
     /**
      * @brief Get the @c std::string for the secant function.
@@ -1949,8 +1951,8 @@ public:
      *
      * Set this @c std::string for an origin comment. To be useful, the string
      * should contain the <PROFILE_INFORMATION> and <LIBCELLML_VERSION> tags,
-     * which will be replaced with some profile information and the the version
-     * of libCellML used.
+     * which will be replaced with some profile information and the version of
+     * libCellML used.
      *
      * @param originCommentString The @c std::string to use for an origin
      * comment.
@@ -1958,20 +1960,20 @@ public:
     void setOriginCommentString(const std::string &originCommentString);
 
     /**
-     * @brief Get the @c std::string for an interface header.
+     * @brief Get the @c std::string for the interface of a header.
      *
-     * Return the @c std::string for an interface header.
+     * Return the @c std::string for the interface of a header.
      *
-     * @return The @c std::string for an interface header.
+     * @return The @c std::string for the interface of a header.
      */
     std::string interfaceHeaderString() const;
 
     /**
-     * @brief Set the @c std::string for an interface header.
+     * @brief Set the @c std::string for the interface of a header.
      *
-     * Set this @c std::string for an interface header.
+     * Set this @c std::string for the interface of a header.
      *
-     * @param interfaceHeaderString The @c std::string to use for an interface
+     * @param interfaceHeaderString The @c std::string to use the interface of a
      * header.
      */
     void setInterfaceHeaderString(const std::string &interfaceHeaderString);
@@ -1996,44 +1998,63 @@ public:
     void setImplementationHeaderString(const std::string &implementationHeaderString);
 
     /**
-     * @brief Get the @c std::string for an interface declaration.
+     * @brief Get the @c std::string for the interface of the libCellML version
+     * constant.
      *
-     * Return the @c std::string for an interface declaration.
+     * Return the @c std::string for the interface of the libCellML version
+     * constant.
      *
-     * @return The @c std::string for an interface declaration.
-     */
-    std::string interfaceDeclarationString() const;
-
-    /**
-     * @brief Set the @c std::string for an interface declaration.
-     *
-     * Set this @c std::string for an interface declaration. To be useful, the
-     * string should contain the <CODE> tag, which will be replaced with the
-     * variable/function for which there is an implementation.
-     *
-     * @param interfaceDeclarationString The @c std::string to use for an
-     * interface declaration.
-     */
-    void setInterfaceDeclarationString(const std::string &interfaceDeclarationString);
-
-    /**
-     * @brief Get the @c std::string for the libCellML version constant.
-     *
-     * Return the @c std::string for the libCellML version constant.
-     *
-     * @return The @c std::string for the libCellML version constant.
-     */
-    std::string libcellmlVersionString() const;
-
-    /**
-     * @brief Set the @c std::string for the libCellML version constant.
-     *
-     * Set this @c std::string for the libCellML version constant.
-     *
-     * @param versionString The @c std::string to use for the libCellML version
+     * @return The @c std::string for the interface of the libCellML version
      * constant.
      */
-    void setLibcellmlVersionString(const std::string &libcellmlVersionString);
+    std::string interfaceLibcellmlVersionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the libCellML version
+     * constant.
+     *
+     * Set this @c std::string for the interface of the libCellML version
+     * constant.
+     *
+     * @param interfaceLibcellmlVersionString The @c std::string to use for the
+     * interface of the libCellML version constant.
+     */
+    void setInterfaceLibcellmlVersionString(const std::string &interfaceLibcellmlVersionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the libCellML
+     * version constant.
+     *
+     * Return the @c std::string for the implementation of the libCellML version
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the libCellML
+     * version constant.
+     */
+    std::string implementationLibcellmlVersionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the libCellML
+     * version constant.
+     *
+     * Set this @c std::string for the implementation of the libCellML version
+     * constant. To be useful, the string should contain the <LIBCELLML_VERSION>
+     * tag, which will be replaced with the version of libCellML used.
+     *
+     * @param implementationLibcellmlVersionString The @c std::string to use for
+     * the implementation of the libCellML version constant.
+     */
+    void setImplementationLibcellmlVersionString(const std::string &implementationLibcellmlVersionString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the state count
+     * constant.
+     *
+     * Return the @c std::string for the interface of the state count constant.
+     *
+     * @return The @c std::string for the interface of the state count constant.
+     */
+    std::string interfaceStateCountString() const;
 
     /**
      * @brief Get the @c std::string for the version of the profile.
@@ -2057,42 +2078,88 @@ public:
     void setInterfaceDeclarationVersionString(const std::string &interfaceDeclarationVersionString);
 
     /**
-     * @brief Get the @c std::string for the state count constant.
+     * @brief Set the @c std::string for the interface of the state count
+     * constant.
      *
-     * Return the @c std::string for the state count constant.
+     * Set this @c std::string for the interface of the state count constant.
      *
-     * @return The @c std::string for the state count constant.
+     * @param interfaceStateCountString The @c std::string to use for the
+     * interface of the state count constant.
      */
-    std::string stateCountString() const;
+    void setInterfaceStateCountString(const std::string &interfaceStateCountString);
 
     /**
-     * @brief Set the @c std::string for the state count constant.
+     * @brief Get the @c std::string for the implementation of the state count
+     * constant.
      *
-     * Set this @c std::string for the state count constant.
+     * Return the @c std::string for the implementation of the state count
+     * constant.
      *
-     * @param stateCountString The @c std::string to use for the state count
+     * @return The @c std::string for the implementation of the state count
      * constant.
      */
-    void setStateCountString(const std::string &stateCountString);
+    std::string implementationStateCountString() const;
 
     /**
-     * @brief Get the @c std::string for the variable count constant.
+     * @brief Set the @c std::string for the implementation of the state count
+     * constant.
      *
-     * Return the @c std::string for the variable count constant.
+     * Set this @c std::string for the implementation of the state count
+     * constant. To be useful, the string should contain the <STATE_COUNT> tag,
+     * which will be replaced with the number of states in the model.
      *
-     * @return The @c std::string for the variable count constant.
+     * @param implementationStateCountString The @c std::string to use for the
+     * implementation of the state count constant.
      */
-    std::string variableCountString() const;
+    void setImplementationStateCountString(const std::string &implementationStateCountString);
 
     /**
-     * @brief Set the @c std::string for the variable count constant.
+     * @brief Get the @c std::string for the interface of the variable count
+     * constant.
      *
-     * Set this @c std::string for the variable count constant.
+     * Return the @c std::string for the interface of the variable count
+     * constant.
      *
-     * @param variableCountString The @c std::string to use for the variable
+     * @return The @c std::string for the interface of the variable count
+     * constant.
+     */
+    std::string interfaceVariableCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the variable count
+     * constant.
+     *
+     * Set this @c std::string for the interface of the variable count constant.
+     *
+     * @param interfaceVariableCountString The @c std::string to use for the
+     * interface of the variable count constant.
+     */
+    void setInterfaceVariableCountString(const std::string &interfaceVariableCountString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the variable
      * count constant.
+     *
+     * Return the @c std::string for the implementation of the variable count
+     * constant.
+     *
+     * @return The @c std::string for the implementation of the variable count
+     * constant.
      */
-    void setVariableCountString(const std::string &variableCountString);
+    std::string implementationVariableCountString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the variable
+     * count constant.
+     *
+     * Set this @c std::string for the implementation of the variable count
+     * constant. To be useful, the string should contain the <VARIABLE_COUNT>
+     * tag, which will be replaced with the number of states in the model.
+     *
+     * @param implementationVariableCountString The @c std::string to use for
+     * the implementation of the variable count constant.
+     */
+    void setImplementationVariableCountString(const std::string &implementationVariableCountString);
 
     /**
      * @brief Get the @c std::string for the data structure for the variable
@@ -2237,80 +2304,154 @@ public:
     void setVariableInfoWithTypeObjectString(const std::string &variableInfoWithTypeObjectString);
 
     /**
-     * @brief Get the @c std::string for some information about the variable of
-     * integration.
+     * @brief Get the @c std::string for the interface of some information about
+     * the variable of integration.
      *
-     * Return the @c std::string for some information about the variable of
-     * integration.
+     * Return the @c std::string for the interface of some information about the
+     * variable of integration.
      *
-     * @return The @c std::string for some information about the variable of
-     * integration.
-     */
-    std::string voiInfoString() const;
-
-    /**
-     * @brief Set the @c std::string for some information about the variable of
-     * integration.
-     *
-     * Set this @c std::string for some information about the variable of
-     * integration. To be useful, the string should contain the <CODE> tag,
-     * which will be replaced with some information about the variable of
-     * integration.
-     *
-     * @param voiInfoString The @c std::string to use for some information about
+     * @return The @c std::string for the interface of some information about
      * the variable of integration.
      */
-    void setVoiInfoString(const std::string &voiInfoString);
+    std::string interfaceVoiInfoString() const;
 
     /**
-     * @brief Get the @c std::string for some information about the different
-     * states.
+     * @brief Set the @c std::string for the interface of some information about
+     * the variable of integration.
      *
-     * Return the @c std::string for some information about the different
-     * states.
+     * Set this @c std::string for the interface of some information about the
+     * variable of integration.
      *
-     * @return The @c std::string for some information about the different
-     * states.
+     * @param interfaceVoiInfoString The @c std::string to use for the interface
+     * of some information about the variable of integration.
      */
-    std::string stateInfoString() const;
+    void setInterfaceVoiInfoString(const std::string &interfaceVoiInfoString);
 
     /**
-     * @brief Set the @c std::string for some information about the different
-     * states.
+     * @brief Get the @c std::string for the implementation of some information
+     * about the variable of integration.
      *
-     * Set this @c std::string for some information about the different states.
-     * To be useful, the string should contain the <CODE> tag, which will be
-     * replaced with some information about the different states.
+     * Return the @c std::string for the implementation of some information
+     * about the variable of integration.
      *
-     * @param stateInfoString The @c std::string to use for some information
+     * @return The @c std::string for the implementation of some information
+     * about the variable of integration.
+     */
+    std::string implementationVoiInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the variable of integration.
+     *
+     * Set this @c std::string for the implementation of some information about
+     * the variable of integration. To be useful, the string should contain the
+     * <CODE> tag, which will be replaced with some information about the
+     * variable of integration.
+     *
+     * @param implementationVoiInfoString The @c std::string to use for the
+     * implementation of some information about the variable of integration.
+     */
+    void setImplementationVoiInfoString(const std::string &implementationVoiInfoString);
+
+    /**
+     * @brief Get the @c std::string for the interface of some information about
+     * the different states.
+     *
+     * Return the @c std::string for the interface of some information about the
+     * different states.
+     *
+     * @return The @c std::string for the interface of some information about
+     * the different states.
+     */
+    std::string interfaceStateInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different states.
+     *
+     * Set this @c std::string for the interface of some information about the
+     * different states.
+     *
+     * @param interfaceStateInfoString The @c std::string to use for the
+     * interface of some information about the different states.
+     */
+    void setInterfaceStateInfoString(const std::string &interfaceStateInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different states.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different states.
+     *
+     * @return The @c std::string for the implementation of some information
      * about the different states.
      */
-    void setStateInfoString(const std::string &stateInfoString);
+    std::string implementationStateInfoString() const;
 
     /**
-     * @brief Get the @c std::string for some information about the different
-     * variables.
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different states.
      *
-     * Return the @c std::string for some information about the different
-     * variables.
+     * Set this @c std::string for the implementation of some information about
+     * the different states. To be useful, the string should contain the <CODE>
+     * tag, which will be replaced with some information about the different
+     * states.
      *
-     * @return The @c std::string for some information about the different
-     * variables.
+     * @param implementationStateInfoString The @c std::string to use for the
+     * implementation of some information about the different states.
      */
-    std::string variableInfoString() const;
+    void setImplementationStateInfoString(const std::string &implementationStateInfoString);
 
     /**
-     * @brief Set the @c std::string for some information about the different
-     * variables.
+     * @brief Get the @c std::string for the interface of some information about
+     * the different variables.
      *
-     * Set this @c std::string for some information about the different
-     * variables. To be useful, the string should contain the <CODE> tag, which
-     * will be replaced with some information about the different variables.
+     * Return the @c std::string for the interface of some information about the
+     * different variables.
      *
-     * @param variableInfoString The @c std::string to use for some information
+     * @return The @c std::string for the interface of some information about
+     * the different variables.
+     */
+    std::string interfaceVariableInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of some information about
+     * the different variables.
+     *
+     * Set this @c std::string for the interface of some information about the
+     * different variables.
+     *
+     * @param interfaceVariableInfoString The @c std::string to use for the
+     * interface of some information about the different variables.
+     */
+    void setInterfaceVariableInfoString(const std::string &interfaceVariableInfoString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of some information
+     * about the different variables.
+     *
+     * Return the @c std::string for the implementation of some information
+     * about the different variables.
+     *
+     * @return The @c std::string for the implementation of some information
      * about the different variables.
      */
-    void setVariableInfoString(const std::string &variableInfoString);
+    std::string implementationVariableInfoString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of some information
+     * about the different variables.
+     *
+     * Set this @c std::string for the implementation of some information about
+     * the different variables. To be useful, the string should contain the
+     * <CODE> tag, which will be replaced with some information about the
+     * different variables.
+     *
+     * @param implementationVariableInfoString The @c std::string to use for the
+     * implementation of some information about the different variables.
+     */
+    void setImplementationVariableInfoString(const std::string &implementationVariableInfoString);
 
     /**
      * @brief Get the @c std::string for an entry in an array for some
@@ -2464,150 +2605,314 @@ public:
     void setReturnCreatedArrayString(const std::string &returnCreatedArrayString);
 
     /**
-     * @brief Get the @c std::string for creating the states array.
+     * @brief Get the @c std::string for the interface to create the states
+     * array.
      *
-     * Return the @c std::string for creating the states array.
+     * Return the @c std::string for the interface to create the states array.
      *
-     * @return The @c std::string for creating the states array.
+     * @return The @c std::string for the interface to create the states array.
      */
-    std::string createStatesArrayMethodString() const;
+    std::string interfaceCreateStatesArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for creating the states array.
+     * @brief Set the @c std::string for the interface to create the states
+     * array.
      *
-     * Set this @c std::string for creating the states array. To be useful, the
-     * string should contain the <CODE> tag, which will be replaced with some
-     * code to create the states array.
+     * Set this @c std::string for the interface to create the states array. To
+     * be useful, the string should contain the <CODE> tag, which will be
+     * replaced with some code to create the states array.
      *
-     * @param createStatesArrayMethodString The @c std::string to use for
-     * creating the states array.
+     * @param interfaceCreateStatesArrayMethodString The @c std::string to use
+     * for the interface to create the states array.
      */
-    void setCreateStatesArrayMethodString(const std::string &createStatesArrayMethodString);
+    void setInterfaceCreateStatesArrayMethodString(const std::string &interfaceCreateStatesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for creating the variables array.
+     * @brief Get the @c std::string for the implementation to create the states
+     * array.
      *
-     * Return the @c std::string for creating the variables array.
+     * Return the @c std::string for the implementation to create the states
+     * array.
      *
-     * @return The @c std::string for creating the variables array.
+     * @return The @c std::string for the implementation to create the states
+     * array.
      */
-    std::string createVariablesArrayMethodString() const;
+    std::string implementationCreateStatesArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for creating the variables array.
+     * @brief Set the @c std::string for the implementation to create the states
+     * array.
      *
-     * Set this @c std::string for creating the variables array. To be useful,
-     * the string should contain the <CODE> tag, which will be replaced with
-     * some code to create the variables array.
+     * Set this @c std::string for the implementation to create the states
+     * array. To be useful, the string should contain the <CODE> tag, which will
+     * be replaced with some code to create the states array.
      *
-     * @param createVariablesArrayMethodString The @c std::string to use for
-     * creating the variables array.
+     * @param implementationCreateStatesArrayMethodString The @c std::string to
+     * use for the implementation to create the states array.
      */
-    void setCreateVariablesArrayMethodString(const std::string &createVariablesArrayMethodString);
+    void setImplementationCreateStatesArrayMethodString(const std::string &implementationCreateStatesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for deleting an array.
+     * @brief Get the @c std::string for the interface to create variables
+     * array.
      *
-     * Return the @c std::string for deleting an array.
+     * Return the @c std::string for the interface to create variables array.
      *
-     * @return The @c std::string for deleting an array.
+     * @return The @c std::string for the interface to create variables array.
      */
-    std::string deleteArrayMethodString() const;
+    std::string interfaceCreateVariablesArrayMethodString() const;
 
     /**
-     * @brief Set the @c std::string for deleting an array.
+     * @brief Set the @c std::string for the interface to create variables
+     * array.
      *
-     * Set this @c std::string for deleting an array.
+     * Set this @c std::string for the interface to create variables array. To
+     * be useful, the string should contain the <CODE> tag, which will be
+     * replaced with some code to create the variables array.
      *
-     * @param createVariablesArrayMethodString The @c std::string to use for
-     * deleting an array.
+     * @param interfaceCreateVariablesArrayMethodString The @c std::string to
+     * use for the interface to create variables array.
      */
-    void setDeleteArrayMethodString(const std::string &deleteArrayMethodString);
+    void setInterfaceCreateVariablesArrayMethodString(const std::string &interfaceCreateVariablesArrayMethodString);
 
     /**
-     * @brief Get the @c std::string for the method that initialises states and
+     * @brief Get the @c std::string for the implementation to create the
+     * variables array.
+     *
+     * Return the @c std::string for the implementation to create the variables
+     * array.
+     *
+     * @return The @c std::string for the implementation to create the variables
+     * array.
+     */
+    std::string implementationCreateVariablesArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to create the
+     * variables array.
+     *
+     * Set this @c std::string for the implementation to create the variables
+     * array. To be useful, the string should contain the <CODE> tag, which will
+     * be replaced with some code to create the variables array.
+     *
+     * @param implementationCreateVariablesArrayMethodString The @c std::string
+     * to use for the implementation to create the variables array.
+     */
+    void setImplementationCreateVariablesArrayMethodString(const std::string &implementationCreateVariablesArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to delete an array.
+     *
+     * Return the @c std::string for the interface to delete an array.
+     *
+     * @return The @c std::string for the interface to delete an array.
+     */
+    std::string interfaceDeleteArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to delete an array.
+     *
+     * Set this @c std::string for the interface to delete an array.
+     *
+     * @param interfaceDeleteArrayMethodString The @c std::string to use for the
+     * interface to delete an array.
+     */
+    void setInterfaceDeleteArrayMethodString(const std::string &interfaceDeleteArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to delete an array.
+     *
+     * Return the @c std::string for the implementation to delete an array.
+     *
+     * @return The @c std::string for the implementation to delete an array.
+     */
+    std::string implementationDeleteArrayMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to delete an array.
+     *
+     * Set this @c std::string for the implementation to delete an array.
+     *
+     * @param implementationDeleteArrayMethodString The @c std::string to use
+     * for the implementation to delete an array.
+     */
+    void setImplementationDeleteArrayMethodString(const std::string &implementationDeleteArrayMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to initialise states and
      * constants.
      *
-     * Return the @c std::string for the method that initialises states and
+     * Return the @c std::string for the interface to initialise states and
      * constants.
      *
-     * @return The @c std::string for the method that initialises states and
+     * @return The @c std::string for the interface to initialise states and
      * constants.
      */
-    std::string initializeStatesAndConstantsMethodString() const;
+    std::string interfaceInitializeStatesAndConstantsMethodString() const;
 
     /**
-     * @brief Set the @c std::string for the method that initialises states and
+     * @brief Set the @c std::string for the interface to initialise states and
      * constants.
      *
-     * Set this @c std::string for the method that initialises states and
+     * Set this @c std::string for the interface to initialise states and
      * constants.
      *
-     * @param initializeStatesAndConstantsMethodString The @c std::string to use
-     * for the method that initialises states and constants.
-     */
-    void setInitializeStatesAndConstantsMethodString(const std::string &initializeStatesAndConstantsMethodString);
-
-    /**
-     * @brief Get the @c std::string for the method that computes computed
-     * constants.
-     *
-     * Return the @c std::string for the method that computes computed
-     * constants.
-     *
-     * @return The @c std::string for the method that computes computed
+     * @param interfaceInitializeStatesAndConstantsMethodString The
+     * @c std::string to use for the interface to initialise states and
      * constants.
      */
-    std::string computeComputedConstantsMethodString() const;
+    void setInterfaceInitializeStatesAndConstantsMethodString(const std::string &interfaceInitializeStatesAndConstantsMethodString);
 
     /**
-     * @brief Set the @c std::string for the method that computes computed
+     * @brief Get the @c std::string for the implementation to initialise states
+     * and constants.
+     *
+     * Return the @c std::string for the implementation to initialise states and
      * constants.
      *
-     * Set this @c std::string for the method that computes computed constants.
-     *
-     * @param computeComputedConstantsMethodString The @c std::string to use for
-     * the method that computes computed constants.
+     * @return The @c std::string for the implementation to initialise states
+     * and constants.
      */
-    void setComputeComputedConstantsMethodString(const std::string &computeComputedConstantsMethodString);
+    std::string implementationInitializeStatesAndConstantsMethodString() const;
 
     /**
-     * @brief Get the @c std::string for the method that computes rates.
+     * @brief Set the @c std::string for the implementation to initialise states
+     * and constants.
      *
-     * Return the @c std::string for the method that computes rates.
+     * Set this @c std::string for the implementation to initialise states and
+     * constants.
      *
-     * @return The @c std::string for the method that computes rates.
+     * @param implementationInitializeStatesAndConstantsMethodString The
+     * @c std::string to use for the implementation to initialise states and
+     * constants.
      */
-    std::string computeRatesMethodString() const;
+    void setImplementationInitializeStatesAndConstantsMethodString(const std::string &implementationInitializeStatesAndConstantsMethodString);
 
     /**
-     * @brief Set the @c std::string for the method that computes rates.
+     * @brief Get the @c std::string for the interface to compute computed
+     * constants.
      *
-     * Set this @c std::string for the method that computes rates.
+     * Return the @c std::string for the interface to compute computed
+     * constants.
      *
-     * @param computeRatesMethodString The @c std::string to use for the method
-     * that computes rates.
+     * @return The @c std::string for the interface to compute computed
+     * constants.
      */
-    void setComputeRatesMethodString(const std::string &computeRatesMethodString);
+    std::string interfaceComputeComputedConstantsMethodString() const;
 
     /**
-     * @brief Get the @c std::string for the method that computes variables.
+     * @brief Set the @c std::string for the interface to compute computed
+     * constants.
      *
-     * Return the @c std::string for the method that computes variables.
+     * Set this @c std::string for the interface to compute computed constants.
      *
-     * @return The @c std::string for the method that computes variables.
+     * @param interfaceComputeComputedConstantsMethodString The @c std::string
+     * to use for the interface to compute computed constants.
      */
-    std::string computeVariablesMethodString() const;
+    void setInterfaceComputeComputedConstantsMethodString(const std::string &interfaceComputeComputedConstantsMethodString);
 
     /**
-     * @brief Set the @c std::string for the method that computes variables.
+     * @brief Get the @c std::string for the implementation to compute computed
+     * constants.
      *
-     * Set this @c std::string for the method that computes variables.
+     * Return the @c std::string for the implementation to compute computed
+     * constants.
      *
-     * @param computeVariablesMethodString The @c std::string to use for the
-     * method that computes variables.
+     * @return The @c std::string for the implementation to compute computed
+     * constants.
      */
-    void setComputeVariablesMethodString(const std::string &computeVariablesMethodString);
+    std::string implementationComputeComputedConstantsMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to compute computed
+     * constants.
+     *
+     * Set this @c std::string for the implementation to compute computed
+     * constants.
+     *
+     * @param implementationComputeComputedConstantsMethodString The
+     * @c std::string to use for the implementation to compute computed
+     * constants.
+     */
+    void setImplementationComputeComputedConstantsMethodString(const std::string &implementationComputeComputedConstantsMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to compute rates.
+     *
+     * Return the @c std::string for the interface to compute rates.
+     *
+     * @return The @c std::string for the interface to compute rates.
+     */
+    std::string interfaceComputeRatesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to compute rates.
+     *
+     * Set this @c std::string for the interface to compute rates.
+     *
+     * @param interfaceComputeRatesMethodString The @c std::string to use for
+     * the interface to compute rates.
+     */
+    void setInterfaceComputeRatesMethodString(const std::string &interfaceComputeRatesMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to compute rates.
+     *
+     * Return the @c std::string for the implementation to compute rates.
+     *
+     * @return The @c std::string for the implementation to compute rates.
+     */
+    std::string implementationComputeRatesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to compute rates.
+     *
+     * Set this @c std::string for the implementation to compute rates.
+     *
+     * @param implementationComputeRatesMethodString The @c std::string to use
+     * for the implementation to compute rates.
+     */
+    void setImplementationComputeRatesMethodString(const std::string &implementationComputeRatesMethodString);
+
+    /**
+     * @brief Get the @c std::string for the interface to compute variables.
+     *
+     * Return the @c std::string for the interface to compute variables.
+     *
+     * @return The @c std::string for the interface to compute variables.
+     */
+    std::string interfaceComputeVariablesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface to compute variables.
+     *
+     * Set this @c std::string for the interface to compute variables.
+     *
+     * @param interfaceComputeVariablesMethodString The @c std::string to use
+     * for the interface to compute variables.
+     */
+    void setInterfaceComputeVariablesMethodString(const std::string &interfaceComputeVariablesMethodString);
+
+    /**
+     * @brief Get the @c std::string for the implementation to compute
+     * variables.
+     *
+     * Return the @c std::string for the implementation to compute variables.
+     *
+     * @return The @c std::string for the implementation to compute variables.
+     */
+    std::string implementationComputeVariablesMethodString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation to compute
+     * variables.
+     *
+     * Set this @c std::string for the implementation to compute variables.
+     *
+     * @param implementationComputeVariablesMethodString The @c std::string to
+     * use for the implementation to compute variables.
+     */
+    void setImplementationComputeVariablesMethodString(const std::string &implementationComputeVariablesMethodString);
 
     /**
      * @brief Get the @c std::string for an empty method.
@@ -2644,25 +2949,6 @@ public:
      * @param indentString The @c std::string to use for an indent.
      */
     void setIndentString(const std::string &indentString);
-
-    /**
-     * @brief Get the @c std::string for a string delimiter.
-     *
-     * Return the @c std::string for a string delimiter.
-     *
-     * @return The @c std::string for a string delimiter.
-     */
-    std::string stringDelimiterString() const;
-
-    /**
-     * @brief Set the @c std::string for a string delimiter.
-     *
-     * Set this @c std::string for a string delimiter.
-     *
-     * @param stringDelimiterString The @c std::string to use for a string
-     * delimiter.
-     */
-    void setStringDelimiterString(const std::string &stringDelimiterbString);
 
     /**
      * @brief Get the @c std::string for opening an array initializer.
@@ -2756,6 +3042,25 @@ public:
      * separating elements in an array.
      */
     void setArrayElementSeparatorString(const std::string &arrayElementSeparatorString);
+
+    /**
+     * @brief Get the @c std::string for a string delimiter.
+     *
+     * Return the @c std::string for a string delimiter.
+     *
+     * @return The @c std::string for a string delimiter.
+     */
+    std::string stringDelimiterString() const;
+
+    /**
+     * @brief Set the @c std::string for a string delimiter.
+     *
+     * Set this @c std::string for a string delimiter.
+     *
+     * @param stringDelimiterString The @c std::string to use for a string
+     * delimiter.
+     */
+    void setStringDelimiterString(const std::string &stringDelimiterString);
 
     /**
      * @brief Get the @c std::string for a command separator.
