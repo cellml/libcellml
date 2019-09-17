@@ -863,15 +863,15 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     if (model->containsComponent(parentComponentName)) {
                         // Will re-add this to the model once we encapsulate the child(ren).
                         parentComponent = model->takeComponent(parentComponentName);
-                    } 
-                    // else {
-                    //     ErrorPtr err = std::make_shared<Error>();
-                    //     err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it does not exist in the model.");
-                    //     err->setModel(model);
-                    //     err->setKind(Error::Kind::ENCAPSULATION);
-                    //     err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-                    //     mParser->addError(err);
-                    // }
+                    } else {
+                        // TODO Should this be removed?
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponentName + "' as a component in a component_ref but it does not exist in the model.");
+                        err->setModel(model);
+                        err->setKind(Error::Kind::ENCAPSULATION);
+                        err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+                        mParser->addError(err);
+                    }
                 } else if (attribute->isType("id")) {
                     encapsulationId = attribute->value();
                 } else {
@@ -892,8 +892,7 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 err->setKind(Error::Kind::ENCAPSULATION);
                 err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
                 mParser->addError(err);
-            } else 
-            if (parentComponent) {
+            } else if (parentComponent) {
                 parentComponent->setEncapsulationId(encapsulationId);
             }
         } else if (parentComponentNode->isText()) {
@@ -922,45 +921,44 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
 
         // Get first child of this parent component_ref.
         XmlNodePtr childComponentNode = parentComponentNode->firstChild();
-        // if (!childComponentNode) {
-        //     XmlNodePtr grandParentComponentNode = parentComponentNode->parent();
-        //     if (grandParentComponentNode->isCellmlElement("encapsulation")) {
-        //         ErrorPtr err = std::make_shared<Error>();
-        //         if (parentComponent) {
-        //             err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponent->name() + "' as a parent component_ref but it does not have any children.");
-        //         } else {
-        //             err->setDescription("Encapsulation in model '" + model->name() + "' specifies an invalid parent component_ref that also does not have any children.");
-        //         }
-        //         err->setModel(model);
-        //         err->setKind(Error::Kind::ENCAPSULATION);
-        //         mParser->addError(err);
-        //     }
-        // }
+        if (!childComponentNode) {
+            XmlNodePtr grandParentComponentNode = parentComponentNode->parent();
+            if (grandParentComponentNode->isCellmlElement("encapsulation")) {
+                ErrorPtr err = std::make_shared<Error>();
+                if (parentComponent) {
+                    err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + parentComponent->name() + "' as a parent component_ref but it does not have any children.");
+                } else {
+                    err->setDescription("Encapsulation in model '" + model->name() + "' specifies an invalid parent component_ref that also does not have any children.");
+                }
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                mParser->addError(err);
+            }
+        }
 
         // Loop over encapsulated children.
         std::string childEncapsulationId;
         while (childComponentNode) {
             ComponentPtr childComponent = nullptr;
             if (childComponentNode->isCellmlElement("component_ref")) {
-                // bool childComponentMissing = false;
-                // bool foundChildComponent = false;
+                bool childComponentMissing = false;
+                bool foundChildComponent = false;
                 XmlAttributePtr attribute = childComponentNode->firstAttribute();
                 while (attribute) {
                     if (attribute->isType("component")) {
-                        // const std::string childComponentName = attribute->value();
-                        // if (model->containsComponent(childComponentName)) {
-                        //     childComponent = model->component(childComponentName);
-                        //     foundChildComponent = true;
-                        // } 
-                        // else {
-                        //     ErrorPtr err = std::make_shared<Error>();
-                        //     err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + childComponentName + "' as a component in a component_ref but it does not exist in the model.");
-                        //     err->setModel(model);
-                        //     err->setKind(Error::Kind::ENCAPSULATION);
-                        //     err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-                        //     mParser->addError(err);
-                        //     childComponentMissing = true;
-                        // }
+                        const std::string childComponentName = attribute->value();
+                        if (model->containsComponent(childComponentName)) {
+                            childComponent = model->component(childComponentName);
+                            foundChildComponent = true;
+                        } else {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Encapsulation in model '" + model->name() + "' specifies '" + childComponentName + "' as a component in a component_ref but it does not exist in the model.");
+                            err->setModel(model);
+                            err->setKind(Error::Kind::ENCAPSULATION);
+                            err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+                            mParser->addError(err);
+                            childComponentMissing = true;
+                        }
                     } else if (attribute->isType("id")) {
                         childEncapsulationId = attribute->value();
                     } else {
@@ -972,20 +970,20 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                     }
                     attribute = attribute->next();
                 }
-                // if ((!foundChildComponent) && (!childComponentMissing)) {
-                //     ErrorPtr err = std::make_shared<Error>();
-                //     if (parentComponent) {
-                //         err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of '" + parentComponent->name() + "'.");
-                //     } else if (!parentComponentName.empty()) {
-                //         err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of invalid parent component '" + parentComponentName + "'.");
-                //     } else {
-                //         err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.");
-                //     }
-                //     err->setModel(model);
-                //     err->setKind(Error::Kind::ENCAPSULATION);
-                //     err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
-                //     mParser->addError(err);
-                // }
+                if ((!foundChildComponent) && (!childComponentMissing)) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    if (parentComponent) {
+                        err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of '" + parentComponent->name() + "'.");
+                    } else if (!parentComponentName.empty()) {
+                        err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of invalid parent component '" + parentComponentName + "'.");
+                    } else {
+                        err->setDescription("Encapsulation in model '" + model->name() + "' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.");
+                    }
+                    err->setModel(model);
+                    err->setKind(Error::Kind::ENCAPSULATION);
+                    err->setRule(SpecificationRule::COMPONENT_REF_COMPONENT_ATTRIBUTE);
+                    mParser->addError(err);
+                }
                 if (childComponent) {
                     childComponent->setEncapsulationId(childEncapsulationId);
                 }
@@ -1166,7 +1164,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
                 order = convertToInt(attribute->value());
-            } 
+            }
             // else {
             //     if (reset->variable() != nullptr) {
             //         variableName = reset->variable()->name();
@@ -1198,7 +1196,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
 
     if (orderValid) {
         reset->setOrder(order);
-    } 
+    }
     // else if (!orderDefined) {
     //     ErrorPtr err = std::make_shared<Error>();
     //     err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' does not have an order defined.");
