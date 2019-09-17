@@ -1593,7 +1593,7 @@ public:
     /**
      * @brief Get the @c std::string for the or function.
      *
-     * Return the @c std::string the the or function.
+     * Return the @c std::string for the or function.
      *
      * @return The @c std::string for the or function.
      */
@@ -1951,8 +1951,8 @@ public:
      *
      * Set this @c std::string for an origin comment. To be useful, the string
      * should contain the <PROFILE_INFORMATION> and <LIBCELLML_VERSION> tags,
-     * which will be replaced with some profile information and the the version
-     * of libCellML used.
+     * which will be replaced with some profile information and the version of
+     * libCellML used.
      *
      * @param originCommentString The @c std::string to use for an origin
      * comment.
