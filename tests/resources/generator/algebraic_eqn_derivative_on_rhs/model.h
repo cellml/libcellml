@@ -1,5 +1,7 @@
 /* The content of this file was generated using the C profile of libCellML 0.2.0. */
 
+#pragma once
+
 #include <stddef.h>
 
 extern const char VERSION[];
@@ -26,3 +28,16 @@ typedef struct {
     char component[17];
     VariableType type;
 } VariableInfoWithType;
+
+extern const VariableInfo VOI_INFO;
+extern const VariableInfo STATE_INFO[];
+extern const VariableInfoWithType VARIABLE_INFO[];
+
+double * createStatesArray();
+double * createVariablesArray();
+void deleteArray(double *array);
+
+void initializeStatesAndConstants(double *states, double *variables);
+void computeComputedConstants(double *variables);
+void computeRates(double voi, double *states, double *rates, double *variables);
+void computeVariables(double voi, double *states, double *rates, double *variables);

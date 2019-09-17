@@ -148,7 +148,7 @@ TEST(GeneratorProfile, defaultConstantValues)
     EXPECT_EQ("sqrt(-1.0)", generatorProfile->nanString());
 }
 
-TEST(GeneratorProfile, defaultMathematicalFunctionValues)
+TEST(GeneratorProfile, defaultArithmeticFunctionValues)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
@@ -166,7 +166,6 @@ TEST(GeneratorProfile, defaultMathematicalFunctionValues)
               "}\n",
               generatorProfile->xorFunctionString());
     EXPECT_EQ("", generatorProfile->notFunctionString());
-
     EXPECT_EQ("double min(double x, double y)\n"
               "{\n"
               "    return (x < y)?x:y;\n"
@@ -177,6 +176,11 @@ TEST(GeneratorProfile, defaultMathematicalFunctionValues)
               "    return (x > y)?x:y;\n"
               "}\n",
               generatorProfile->maxFunctionString());
+}
+
+TEST(GeneratorProfile, defaultTrigonometricFunctionValues)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     EXPECT_EQ("double sec(double x)\n"
               "{\n"
@@ -253,7 +257,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("/* <CODE> */\n", generatorProfile->commentString());
     EXPECT_EQ("The content of this file was generated using <PROFILE_INFORMATION> libCellML <LIBCELLML_VERSION>.", generatorProfile->originCommentString());
 
-    EXPECT_EQ("#include <stddef.h>\n",
+    EXPECT_EQ("#pragma once\n"
+              "\n"
+              "#include <stddef.h>\n",
               generatorProfile->interfaceHeaderString());
     EXPECT_EQ("#include \"model.h\"\n"
               "\n"
@@ -261,13 +267,15 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "#include <stdlib.h>\n",
               generatorProfile->implementationHeaderString());
 
-    EXPECT_EQ("extern <CODE>;\n", generatorProfile->interfaceDeclarationString());
-
-    EXPECT_EQ("const char LIBCELLML_VERSION[]", generatorProfile->libcellmlVersionString());
+    EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
+    EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->implementationLibcellmlVersionString());
     EXPECT_EQ("const char VERSION[] = \"0.1.0\";", generatorProfile->versionString());
 
-    EXPECT_EQ("const size_t STATE_COUNT", generatorProfile->stateCountString());
-    EXPECT_EQ("const size_t VARIABLE_COUNT", generatorProfile->variableCountString());
+    EXPECT_EQ("extern const size_t STATE_COUNT;\n", generatorProfile->interfaceStateCountString());
+    EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->implementationStateCountString());
+
+    EXPECT_EQ("extern const size_t VARIABLE_COUNT;\n", generatorProfile->interfaceVariableCountString());
+    EXPECT_EQ("const size_t VARIABLE_COUNT = <VARIABLE_COUNT>;\n", generatorProfile->implementationVariableCountString());
 
     EXPECT_EQ("typedef enum {\n"
               "    CONSTANT,\n"
@@ -294,15 +302,20 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "} VariableInfoWithType;\n",
               generatorProfile->variableInfoWithTypeObjectString());
 
-    EXPECT_EQ("const VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->voiInfoString());
+    EXPECT_EQ("extern const VariableInfo VOI_INFO;\n", generatorProfile->interfaceVoiInfoString());
+    EXPECT_EQ("const VariableInfo VOI_INFO = <CODE>;\n", generatorProfile->implementationVoiInfoString());
+
+    EXPECT_EQ("extern const VariableInfo STATE_INFO[];\n", generatorProfile->interfaceStateInfoString());
     EXPECT_EQ("const VariableInfo STATE_INFO[] = {\n"
               "<CODE>"
               "};\n",
-              generatorProfile->stateInfoString());
+              generatorProfile->implementationStateInfoString());
+
+    EXPECT_EQ("extern const VariableInfoWithType VARIABLE_INFO[];\n", generatorProfile->interfaceVariableInfoString());
     EXPECT_EQ("const VariableInfoWithType VARIABLE_INFO[] = {\n"
               "<CODE>"
               "};\n",
-              generatorProfile->variableInfoString());
+              generatorProfile->implementationVariableInfoString());
 
     EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\"}", generatorProfile->variableInfoEntryString());
     EXPECT_EQ("{\"<NAME>\", \"<UNITS>\", \"<COMPONENT>\", <TYPE>}", generatorProfile->variableInfoWithTypeEntryString());
@@ -316,42 +329,65 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("return (double *) malloc(<ARRAY_SIZE>*sizeof(double));\n",
               generatorProfile->returnCreatedArrayString());
 
-    EXPECT_EQ("double * createStatesArray()\n{\n"
+    EXPECT_EQ("double * createStatesArray();\n",
+              generatorProfile->interfaceCreateStatesArrayMethodString());
+    EXPECT_EQ("double * createStatesArray()\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->createStatesArrayMethodString());
-    EXPECT_EQ("double * createVariablesArray()\n{\n"
+              generatorProfile->implementationCreateStatesArrayMethodString());
+
+    EXPECT_EQ("double * createVariablesArray();\n",
+              generatorProfile->interfaceCreateVariablesArrayMethodString());
+    EXPECT_EQ("double * createVariablesArray()\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->createVariablesArrayMethodString());
+              generatorProfile->implementationCreateVariablesArrayMethodString());
+
+    EXPECT_EQ("void deleteArray(double *array);\n",
+              generatorProfile->interfaceDeleteArrayMethodString());
     EXPECT_EQ("void deleteArray(double *array)\n"
               "{\n"
               "    free(array);\n"
               "}\n",
-              generatorProfile->deleteArrayMethodString());
+              generatorProfile->implementationDeleteArrayMethodString());
 
-    EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables)\n{\n"
+    EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables);\n",
+              generatorProfile->interfaceInitializeStatesAndConstantsMethodString());
+    EXPECT_EQ("void initializeStatesAndConstants(double *states, double *variables)\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->initializeStatesAndConstantsMethodString());
-    EXPECT_EQ("void computeComputedConstants(double *variables)\n{\n"
+              generatorProfile->implementationInitializeStatesAndConstantsMethodString());
+
+    EXPECT_EQ("void computeComputedConstants(double *variables);\n",
+              generatorProfile->interfaceComputeComputedConstantsMethodString());
+    EXPECT_EQ("void computeComputedConstants(double *variables)\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->computeComputedConstantsMethodString());
-    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables)\n{\n"
+              generatorProfile->implementationComputeComputedConstantsMethodString());
+
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables);\n",
+              generatorProfile->interfaceComputeRatesMethodString());
+    EXPECT_EQ("void computeRates(double voi, double *states, double *rates, double *variables)\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->computeRatesMethodString());
-    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n{\n"
+              generatorProfile->implementationComputeRatesMethodString());
+
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables);\n",
+              generatorProfile->interfaceComputeVariablesMethodString());
+    EXPECT_EQ("void computeVariables(double voi, double *states, double *rates, double *variables)\n"
+              "{\n"
               "<CODE>"
               "}\n",
-              generatorProfile->computeVariablesMethodString());
+              generatorProfile->implementationComputeVariablesMethodString());
 
     EXPECT_EQ("", generatorProfile->emptyMethodString());
 
     EXPECT_EQ("    ", generatorProfile->indentString());
-
-    EXPECT_EQ("\"", generatorProfile->stringDelimiterString());
 
     EXPECT_EQ("{", generatorProfile->openArrayInitializerString());
     EXPECT_EQ("}", generatorProfile->closeArrayInitializerString());
@@ -360,6 +396,8 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
     EXPECT_EQ("]", generatorProfile->closeArrayString());
 
     EXPECT_EQ(",", generatorProfile->arrayElementSeparatorString());
+
+    EXPECT_EQ("\"", generatorProfile->stringDelimiterString());
 
     EXPECT_EQ(";", generatorProfile->commandSeparatorString());
 }
@@ -581,7 +619,7 @@ TEST(GeneratorProfile, constants)
     EXPECT_EQ(value, generatorProfile->nanString());
 }
 
-TEST(GeneratorProfile, mathematicalFunctions)
+TEST(GeneratorProfile, arithmeticFunctions)
 {
     libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
 
@@ -597,9 +635,28 @@ TEST(GeneratorProfile, mathematicalFunctions)
     generatorProfile->setOrFunctionString(value);
     generatorProfile->setXorFunctionString(value);
     generatorProfile->setNotFunctionString(value);
-
     generatorProfile->setMinFunctionString(value);
     generatorProfile->setMaxFunctionString(value);
+
+    EXPECT_EQ(value, generatorProfile->eqFunctionString());
+    EXPECT_EQ(value, generatorProfile->neqFunctionString());
+    EXPECT_EQ(value, generatorProfile->ltFunctionString());
+    EXPECT_EQ(value, generatorProfile->leqFunctionString());
+    EXPECT_EQ(value, generatorProfile->gtFunctionString());
+    EXPECT_EQ(value, generatorProfile->geqFunctionString());
+    EXPECT_EQ(value, generatorProfile->andFunctionString());
+    EXPECT_EQ(value, generatorProfile->orFunctionString());
+    EXPECT_EQ(value, generatorProfile->xorFunctionString());
+    EXPECT_EQ(value, generatorProfile->notFunctionString());
+    EXPECT_EQ(value, generatorProfile->minFunctionString());
+    EXPECT_EQ(value, generatorProfile->maxFunctionString());
+}
+
+TEST(GeneratorProfile, trigonometricFunctions)
+{
+    libcellml::GeneratorProfilePtr generatorProfile = std::make_shared<libcellml::GeneratorProfile>();
+
+    const std::string value = "value";
 
     generatorProfile->setSecFunctionString(value);
     generatorProfile->setCscFunctionString(value);
@@ -613,20 +670,6 @@ TEST(GeneratorProfile, mathematicalFunctions)
     generatorProfile->setAsechFunctionString(value);
     generatorProfile->setAcschFunctionString(value);
     generatorProfile->setAcothFunctionString(value);
-
-    EXPECT_EQ(value, generatorProfile->eqFunctionString());
-    EXPECT_EQ(value, generatorProfile->neqFunctionString());
-    EXPECT_EQ(value, generatorProfile->ltFunctionString());
-    EXPECT_EQ(value, generatorProfile->leqFunctionString());
-    EXPECT_EQ(value, generatorProfile->gtFunctionString());
-    EXPECT_EQ(value, generatorProfile->geqFunctionString());
-    EXPECT_EQ(value, generatorProfile->andFunctionString());
-    EXPECT_EQ(value, generatorProfile->orFunctionString());
-    EXPECT_EQ(value, generatorProfile->xorFunctionString());
-    EXPECT_EQ(value, generatorProfile->notFunctionString());
-
-    EXPECT_EQ(value, generatorProfile->minFunctionString());
-    EXPECT_EQ(value, generatorProfile->maxFunctionString());
 
     EXPECT_EQ(value, generatorProfile->secFunctionString());
     EXPECT_EQ(value, generatorProfile->cscFunctionString());
@@ -654,14 +697,17 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceHeaderString(value);
     generatorProfile->setImplementationHeaderString(value);
 
-    generatorProfile->setInterfaceDeclarationString(value);
+    generatorProfile->setInterfaceLibcellmlVersionString(value);
+    generatorProfile->setImplementationLibcellmlVersionString(value);
 
-    generatorProfile->setLibcellmlVersionString(value);
     generatorProfile->setVersionString(value);
     generatorProfile->setInterfaceDeclarationVersionString(value);
 
-    generatorProfile->setStateCountString(value);
-    generatorProfile->setVariableCountString(value);
+    generatorProfile->setInterfaceStateCountString(value);
+    generatorProfile->setImplementationStateCountString(value);
+
+    generatorProfile->setInterfaceVariableCountString(value);
+    generatorProfile->setImplementationVariableCountString(value);
 
     generatorProfile->setVariableTypeObjectString(value);
 
@@ -672,9 +718,14 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setVariableInfoObjectString(value);
     generatorProfile->setVariableInfoWithTypeObjectString(value);
 
-    generatorProfile->setVoiInfoString(value);
-    generatorProfile->setStateInfoString(value);
-    generatorProfile->setVariableInfoString(value);
+    generatorProfile->setInterfaceVoiInfoString(value);
+    generatorProfile->setImplementationVoiInfoString(value);
+
+    generatorProfile->setInterfaceStateInfoString(value);
+    generatorProfile->setImplementationStateInfoString(value);
+
+    generatorProfile->setInterfaceVariableInfoString(value);
+    generatorProfile->setImplementationVariableInfoString(value);
 
     generatorProfile->setVariableInfoEntryString(value);
     generatorProfile->setVariableInfoWithTypeEntryString(value);
@@ -687,20 +738,30 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setReturnCreatedArrayString(value);
 
-    generatorProfile->setCreateStatesArrayMethodString(value);
-    generatorProfile->setCreateVariablesArrayMethodString(value);
-    generatorProfile->setDeleteArrayMethodString(value);
+    generatorProfile->setInterfaceCreateStatesArrayMethodString(value);
+    generatorProfile->setImplementationCreateStatesArrayMethodString(value);
 
-    generatorProfile->setInitializeStatesAndConstantsMethodString(value);
-    generatorProfile->setComputeComputedConstantsMethodString(value);
-    generatorProfile->setComputeRatesMethodString(value);
-    generatorProfile->setComputeVariablesMethodString(value);
+    generatorProfile->setInterfaceCreateVariablesArrayMethodString(value);
+    generatorProfile->setImplementationCreateVariablesArrayMethodString(value);
+
+    generatorProfile->setInterfaceDeleteArrayMethodString(value);
+    generatorProfile->setImplementationDeleteArrayMethodString(value);
+
+    generatorProfile->setInterfaceInitializeStatesAndConstantsMethodString(value);
+    generatorProfile->setImplementationInitializeStatesAndConstantsMethodString(value);
+
+    generatorProfile->setInterfaceComputeComputedConstantsMethodString(value);
+    generatorProfile->setImplementationComputeComputedConstantsMethodString(value);
+
+    generatorProfile->setInterfaceComputeRatesMethodString(value);
+    generatorProfile->setImplementationComputeRatesMethodString(value);
+
+    generatorProfile->setInterfaceComputeVariablesMethodString(value);
+    generatorProfile->setImplementationComputeVariablesMethodString(value);
 
     generatorProfile->setEmptyMethodString(value);
 
     generatorProfile->setIndentString(value);
-
-    generatorProfile->setStringDelimiterString(value);
 
     generatorProfile->setOpenArrayInitializerString(value);
     generatorProfile->setCloseArrayInitializerString(value);
@@ -710,6 +771,8 @@ TEST(GeneratorProfile, miscellaneous)
 
     generatorProfile->setArrayElementSeparatorString(value);
 
+    generatorProfile->setStringDelimiterString(value);
+
     generatorProfile->setCommandSeparatorString(value);
 
     EXPECT_EQ(value, generatorProfile->commentString());
@@ -718,14 +781,17 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceHeaderString());
     EXPECT_EQ(value, generatorProfile->implementationHeaderString());
 
-    EXPECT_EQ(value, generatorProfile->interfaceDeclarationString());
+    EXPECT_EQ(value, generatorProfile->interfaceLibcellmlVersionString());
+    EXPECT_EQ(value, generatorProfile->implementationLibcellmlVersionString());
 
-    EXPECT_EQ(value, generatorProfile->libcellmlVersionString());
     EXPECT_EQ(value, generatorProfile->versionString());
     EXPECT_EQ(value, generatorProfile->interfaceDeclarationVersionString());
 
-    EXPECT_EQ(value, generatorProfile->stateCountString());
-    EXPECT_EQ(value, generatorProfile->variableCountString());
+    EXPECT_EQ(value, generatorProfile->interfaceStateCountString());
+    EXPECT_EQ(value, generatorProfile->implementationStateCountString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceVariableCountString());
+    EXPECT_EQ(value, generatorProfile->implementationVariableCountString());
 
     EXPECT_EQ(value, generatorProfile->variableTypeObjectString());
 
@@ -736,9 +802,14 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->variableInfoObjectString());
     EXPECT_EQ(value, generatorProfile->variableInfoWithTypeObjectString());
 
-    EXPECT_EQ(value, generatorProfile->voiInfoString());
-    EXPECT_EQ(value, generatorProfile->stateInfoString());
-    EXPECT_EQ(value, generatorProfile->variableInfoString());
+    EXPECT_EQ(value, generatorProfile->interfaceVoiInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationVoiInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceStateInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationStateInfoString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceVariableInfoString());
+    EXPECT_EQ(value, generatorProfile->implementationVariableInfoString());
 
     EXPECT_EQ(value, generatorProfile->variableInfoEntryString());
     EXPECT_EQ(value, generatorProfile->variableInfoWithTypeEntryString());
@@ -751,20 +822,30 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->returnCreatedArrayString());
 
-    EXPECT_EQ(value, generatorProfile->createStatesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->createVariablesArrayMethodString());
-    EXPECT_EQ(value, generatorProfile->deleteArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceCreateStatesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateStatesArrayMethodString());
 
-    EXPECT_EQ(value, generatorProfile->initializeStatesAndConstantsMethodString());
-    EXPECT_EQ(value, generatorProfile->computeComputedConstantsMethodString());
-    EXPECT_EQ(value, generatorProfile->computeRatesMethodString());
-    EXPECT_EQ(value, generatorProfile->computeVariablesMethodString());
+    EXPECT_EQ(value, generatorProfile->interfaceCreateVariablesArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationCreateVariablesArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceDeleteArrayMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationDeleteArrayMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceInitializeStatesAndConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationInitializeStatesAndConstantsMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputeComputedConstantsMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationComputeComputedConstantsMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputeRatesMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationComputeRatesMethodString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceComputeVariablesMethodString());
+    EXPECT_EQ(value, generatorProfile->implementationComputeVariablesMethodString());
 
     EXPECT_EQ(value, generatorProfile->emptyMethodString());
 
     EXPECT_EQ(value, generatorProfile->indentString());
-
-    EXPECT_EQ(value, generatorProfile->stringDelimiterString());
 
     EXPECT_EQ(value, generatorProfile->openArrayInitializerString());
     EXPECT_EQ(value, generatorProfile->closeArrayInitializerString());
@@ -773,6 +854,8 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->closeArrayString());
 
     EXPECT_EQ(value, generatorProfile->arrayElementSeparatorString());
+
+    EXPECT_EQ(value, generatorProfile->stringDelimiterString());
 
     EXPECT_EQ(value, generatorProfile->commandSeparatorString());
 }
