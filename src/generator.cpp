@@ -1365,8 +1365,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         processComponent(model->component(i));
     }
 
-    // Process our different equations' AST to determine the type of each of all
-    // our variables.
+    // Process our different equations' AST to determine the type of our
+    // variables.
 
     if (mGenerator->errorCount() == 0) {
         for (const auto &equation : mEquations) {
@@ -1408,7 +1408,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
         mModelType = Generator::ModelType::INVALID;
     }
 
-    // Make sure that all our variables are valid.
+    // Make sure that our variables are valid.
 
     if (mGenerator->errorCount() == 0) {
         for (const auto &internalVariable : mInternalVariables) {
@@ -3377,7 +3377,7 @@ std::string Generator::implementationCode() const
     mPimpl->addImplementationComputeRatesMethodCode(res, remainingEquations);
 
     // Add code for the implementation to compute our variables.
-    // Note: this method computes all the remaining variables, i.e. the ones not
+    // Note: this method computes the remaining variables, i.e. the ones not
     //       needed to compute our rates, but also the variables that depend on
     //       the value of some states/rates. Indeed, this method is typically
     //       called after having integrated a model, thus ensuring that
