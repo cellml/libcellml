@@ -1124,7 +1124,7 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
 void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
 {
     int order = 0;
-    bool orderDefined = false;
+    // bool orderDefined = false;
     bool orderValid = false;
     VariablePtr referencedVariable = nullptr;
     VariablePtr testVariable = nullptr;
@@ -1160,7 +1160,7 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
                 reset->setTestVariable(testVariable);
             }
         } else if (attribute->isType("order")) {
-            orderDefined = true;
+            // orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
                 order = convertToInt(attribute->value());
