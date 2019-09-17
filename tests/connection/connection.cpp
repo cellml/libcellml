@@ -1004,14 +1004,15 @@ TEST(Connection, componentConnectionAndParseMissingVariable)
         "    <variable name=\"variable_bob\" units=\"dimensionless\"/>\n"
         "  </component>\n"
         "</model>\n";
-    const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
+
+    // const std::string expectError = "Variable 'variable_angus' is specified as variable_1 in a connection but it does not exist in component_1 component 'component_dave' of model ''.";
 
     // Parse
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(s);
-    EXPECT_EQ(size_t(1), parser.errorCount());
+    EXPECT_EQ(size_t(0), parser.errorCount());
 
-    EXPECT_EQ(expectError, parser.error(0)->description());
+    // EXPECT_EQ(expectError, parser.error(0)->description());
     parser.clearErrors();
     EXPECT_EQ(size_t(0), parser.errorCount());
 
