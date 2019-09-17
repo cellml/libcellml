@@ -1645,8 +1645,7 @@ public:
     void setNotFunctionString(const std::string &notFunctionString);
 
     /**
-     * @brief Get the @c std::string for the minimum
-     * function.
+     * @brief Get the @c std::string for the minimum function.
      *
      * Return the @c std::string for the minimum function.
      *
@@ -1876,7 +1875,8 @@ public:
     void setAsechFunctionString(const std::string &asechFunctionString);
 
     /**
-     * @brief Get the @c std::string for the inverse hyperbolic cosecant function.
+     * @brief Get the @c std::string for the inverse hyperbolic cosecant
+     * function.
      *
      * Return the @c std::string for the inverse hyperbolic cosecant function.
      *
@@ -2736,8 +2736,9 @@ public:
      * Set this @c std::string for the interface to initialise states and
      * constants.
      *
-     * @param interfaceInitializeStatesAndConstantsMethodString The @c std::string to use
-     * for the interface to initialise states and constants.
+     * @param interfaceInitializeStatesAndConstantsMethodString The
+     * @c std::string to use for the interface to initialise states and
+     * constants.
      */
     void setInterfaceInitializeStatesAndConstantsMethodString(const std::string &interfaceInitializeStatesAndConstantsMethodString);
 
@@ -2872,7 +2873,8 @@ public:
     void setInterfaceComputeVariablesMethodString(const std::string &interfaceComputeVariablesMethodString);
 
     /**
-     * @brief Get the @c std::string for the implementation to compute variables.
+     * @brief Get the @c std::string for the implementation to compute
+     * variables.
      *
      * Return the @c std::string for the implementation to compute variables.
      *
