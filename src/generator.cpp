@@ -1960,7 +1960,7 @@ void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(std::string &co
             if (modifiedProfile()) {
                 std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
 
-                versionAndLibcellmlCode += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.modified");
+                versionAndLibcellmlCode += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.post0");
             } else {
                 versionAndLibcellmlCode += mProfile->implementationVersionString();
             }
