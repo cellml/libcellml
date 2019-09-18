@@ -26,8 +26,7 @@ public:
     enum class Profile
     {
         C,
-        PYTHON,
-        CUSTOM
+        PYTHON
     };
 
     explicit GeneratorProfile(Profile profile = Profile::C); /**< Constructor */
@@ -1996,6 +1995,47 @@ public:
      * implementation header.
      */
     void setImplementationHeaderString(const std::string &implementationHeaderString);
+
+    /**
+     * @brief Get the @c std::string for the interface of the version constant.
+     *
+     * Return the @c std::string for the interface of the version constant.
+     *
+     * @return The @c std::string for the interface of the version constant.
+     */
+    std::string interfaceVersionString() const;
+
+    /**
+     * @brief Set the @c std::string for the interface of the version constant.
+     *
+     * Set this @c std::string for the interface of the version constant.
+     *
+     * @param interfaceVersionString The @c std::string to use for the interface
+     * of the version constant.
+     */
+    void setInterfaceVersionString(const std::string &interfaceVersionString);
+
+    /**
+     * @brief Get the @c std::string for the implementation of the version
+     * constant.
+     *
+     * Return the @c std::string for the implementation of the version constant.
+     *
+     * @return The @c std::string for the implementation of the version
+     * constant.
+     */
+    std::string implementationVersionString() const;
+
+    /**
+     * @brief Set the @c std::string for the implementation of the version
+     * constant.
+     *
+     * Set this @c std::string for the implementation of the version constant.
+     *
+     * @param implementationVersionString The @c std::string to use for the
+     * implementation of the version constant.
+     */
+    void setImplementationVersionString(const std::string &implementationVersionString);
 
     /**
      * @brief Get the @c std::string for the interface of the libCellML version
