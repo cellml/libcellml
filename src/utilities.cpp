@@ -17,6 +17,7 @@ limitations under the License.
 #include "utilities.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -160,13 +161,14 @@ bool areEqual(double value1, double value2)
 static const size_t BLOCK_INTS = 16;
 static const size_t BLOCK_BYTES = BLOCK_INTS * 4;
 
-static void bufferToBlock(const std::string &buffer, uint32_t block[BLOCK_INTS])
+static void bufferToBlock(const std::string &buffer,
+                          std::array<uint32_t, BLOCK_INTS> &block)
 {
     for (size_t i = 0; i < BLOCK_INTS; ++i) {
-        block[i] = uint32_t((buffer[4 * i + 3] & 0xff)
-                            | (buffer[4 * i + 2] & 0xff) << 8
-                            | (buffer[4 * i + 1] & 0xff) << 16
-                            | (buffer[4 * i + 0] & 0xff) << 24);
+        block.at(i) = (uint32_t(buffer[4 * i + 3]) & 0xffU)
+                      | (uint32_t(buffer[4 * i + 2]) & 0xffU) << 8U
+                      | (uint32_t(buffer[4 * i + 1]) & 0xffU) << 16U
+                      | (uint32_t(buffer[4 * i + 0]) & 0xffU) << 24U;
     }
 }
 
@@ -175,51 +177,62 @@ static uint32_t rol(const uint32_t value, const size_t bits)
     return (value << bits) | (value >> (32 - bits));
 }
 
-static uint32_t blk(const uint32_t block[BLOCK_INTS], const size_t i)
+static uint32_t blk(const std::array<uint32_t, BLOCK_INTS> block,
+                    const size_t i)
 {
-    return rol(block[(i + 13) & 15] ^ block[(i + 8) & 15] ^ block[(i + 2) & 15] ^ block[i], 1);
+    return rol(block.at((i + 13) & 15U) ^ block.at((i + 8) & 15U) ^ block.at((i + 2) & 15U) ^ block.at(i), 1);
 }
 
-static void r0(const uint32_t block[BLOCK_INTS], const uint32_t v, uint32_t &w,
-               const uint32_t x, const uint32_t y, uint32_t &z, const size_t i)
+static void r0(const std::array<uint32_t, BLOCK_INTS> block, const uint32_t v,
+               uint32_t &w, const uint32_t x, const uint32_t y, uint32_t &z,
+               const size_t i)
 {
-    z += ((w & (x ^ y)) ^ y) + block[i] + 0x5a827999 + rol(v, 5);
+    z += ((w & (x ^ y)) ^ y) + block.at(i) + 0x5a827999U + rol(v, 5);
     w = rol(w, 30);
 }
 
-static void r1(uint32_t block[BLOCK_INTS], const uint32_t v, uint32_t &w,
-               const uint32_t x, const uint32_t y, uint32_t &z, const size_t i)
+static void r1(std::array<uint32_t, BLOCK_INTS> &block, const uint32_t v,
+               uint32_t &w, const uint32_t x, const uint32_t y, uint32_t &z,
+               const size_t i)
 {
-    block[i] = blk(block, i);
-    z += ((w & (x ^ y)) ^ y) + block[i] + 0x5a827999 + rol(v, 5);
+    block.at(i) = blk(block, i);
+
+    z += ((w & (x ^ y)) ^ y) + block.at(i) + 0x5a827999U + rol(v, 5);
     w = rol(w, 30);
 }
 
-static void r2(uint32_t block[BLOCK_INTS], const uint32_t v, uint32_t &w,
-               const uint32_t x, const uint32_t y, uint32_t &z, const size_t i)
+static void r2(std::array<uint32_t, BLOCK_INTS> &block, const uint32_t v,
+               uint32_t &w, const uint32_t x, const uint32_t y, uint32_t &z,
+               const size_t i)
 {
-    block[i] = blk(block, i);
-    z += (w ^ x ^ y) + block[i] + 0x6ed9eba1 + rol(v, 5);
+    block.at(i) = blk(block, i);
+
+    z += (w ^ x ^ y) + block.at(i) + 0x6ed9eba1U + rol(v, 5);
     w = rol(w, 30);
 }
 
-static void r3(uint32_t block[BLOCK_INTS], const uint32_t v, uint32_t &w,
-               const uint32_t x, const uint32_t y, uint32_t &z, const size_t i)
+static void r3(std::array<uint32_t, BLOCK_INTS> &block, const uint32_t v,
+               uint32_t &w, const uint32_t x, const uint32_t y, uint32_t &z,
+               const size_t i)
 {
-    block[i] = blk(block, i);
-    z += (((w | x) & y) | (w & x)) + block[i] + 0x8f1bbcdc + rol(v, 5);
+    block.at(i) = blk(block, i);
+
+    z += (((w | x) & y) | (w & x)) + block.at(i) + 0x8f1bbcdcU + rol(v, 5);
     w = rol(w, 30);
 }
 
-static void r4(uint32_t block[BLOCK_INTS], const uint32_t v, uint32_t &w,
-               const uint32_t x, const uint32_t y, uint32_t &z, const size_t i)
+static void r4(std::array<uint32_t, BLOCK_INTS> &block, const uint32_t v,
+               uint32_t &w, const uint32_t x, const uint32_t y, uint32_t &z,
+               const size_t i)
 {
-    block[i] = blk(block, i);
-    z += (w ^ x ^ y) + block[i] + 0xca62c1d6 + rol(v, 5);
+    block.at(i) = blk(block, i);
+
+    z += (w ^ x ^ y) + block.at(i) + 0xca62c1d6U + rol(v, 5);
     w = rol(w, 30);
 }
 
-static void transform(uint32_t digest[], uint32_t block[BLOCK_INTS],
+static void transform(std::array<uint32_t, 5> &digest,
+                      std::array<uint32_t, BLOCK_INTS> &block,
                       uint64_t &transforms)
 {
     uint32_t a = digest[0];
@@ -320,23 +333,23 @@ static void transform(uint32_t digest[], uint32_t block[BLOCK_INTS],
 
 std::string sha1(const std::string &string)
 {
-    uint32_t digest[] = {0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0};
+    std::array<uint32_t, 5> digest = {0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0};
     std::string buffer;
     uint64_t transforms = 0;
     std::istringstream is(string);
 
     while (true) {
-        char sbuf[BLOCK_BYTES];
+        std::array<char, BLOCK_BYTES> sbuf = {};
 
-        is.read(sbuf, long(BLOCK_BYTES - buffer.size()));
+        is.read(sbuf.data(), int64_t(BLOCK_BYTES - buffer.size()));
 
-        buffer.append(sbuf, size_t(is.gcount()));
+        buffer.append(sbuf.data(), size_t(is.gcount()));
 
         if (buffer.size() != BLOCK_BYTES) {
             break;
         }
 
-        uint32_t block[BLOCK_INTS];
+        std::array<uint32_t, BLOCK_INTS> block = {};
 
         bufferToBlock(buffer, block);
         transform(digest, block, transforms);
@@ -354,28 +367,28 @@ std::string sha1(const std::string &string)
         buffer += char(0x00);
     }
 
-    uint32_t block[BLOCK_INTS];
+    std::array<uint32_t, BLOCK_INTS> block = {};
 
     bufferToBlock(buffer, block);
 
     if (origSize > BLOCK_BYTES - 8) {
         transform(digest, block, transforms);
 
-        for (size_t i = 0; i < BLOCK_INTS - 2; i++) {
-            block[i] = 0;
+        for (size_t i = 0; i < BLOCK_INTS - 2; ++i) {
+            block.at(i) = 0;
         }
     }
 
     block[BLOCK_INTS - 1] = uint32_t(totalBits);
-    block[BLOCK_INTS - 2] = uint32_t(totalBits >> 32);
+    block[BLOCK_INTS - 2] = uint32_t(totalBits >> 32U);
 
     transform(digest, block, transforms);
 
     std::ostringstream result;
 
-    for (size_t i = 0; i < sizeof(digest) / sizeof(digest[0]); i++) {
+    for (uint32_t d : digest) {
         result << std::hex << std::setfill('0') << std::setw(8);
-        result << digest[i];
+        result << d;
     }
 
     return result.str();
