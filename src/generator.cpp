@@ -623,15 +623,15 @@ struct Generator::GeneratorImpl
                                  size_t &unitsSize,
                                  const VariablePtr &variable);
 
+    bool modifiedProfile() const;
+
     void addOriginCommentCode(std::string &code);
 
     void addInterfaceHeaderCode(std::string &code);
     void addImplementationHeaderCode(std::string &code);
 
-    void addLibcellmlVersionCode(std::string &code, bool interface = false);
-
-    void addInterfaceVersionCode(std::string &code);
-    void addImplementationVersionCode(std::string &code);
+    void addVersionAndLibcellmlVersionCode(std::string &code,
+                                           bool interface = false);
 
     void addStateAndVariableCountCode(std::string &code,
                                       bool interface = false);
@@ -694,8 +694,6 @@ struct Generator::GeneratorImpl
                                                  std::vector<GeneratorEquationPtr> &remainingEquations);
     void addImplementationComputeVariablesMethodCode(std::string &code,
                                                      std::vector<GeneratorEquationPtr> &remainingEquations);
-
-    bool profileHasBeenModified() const;
 };
 
 bool Generator::GeneratorImpl::hasValidModel() const
@@ -1626,182 +1624,295 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
     unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
 }
 
-bool Generator::GeneratorImpl::profileHasBeenModified() const
+bool Generator::GeneratorImpl::modifiedProfile() const
 {
-    std::string repr = mProfile->absoluteValueString() +
-            mProfile->acosString() +
-            mProfile->acoshString() +
-            mProfile->acotFunctionString() +
-            mProfile->acotString() +
-            mProfile->acothFunctionString() +
-            mProfile->acothString() +
-            mProfile->acscFunctionString() +
-            mProfile->acscString() +
-            mProfile->acschFunctionString() +
-            mProfile->acschString() +
-            mProfile->algebraicVariableTypeString() +
-            mProfile->andFunctionString() +
-            mProfile->andString() +
-            mProfile->arrayElementSeparatorString() +
-            mProfile->asecFunctionString() +
-            mProfile->asecString() +
-            mProfile->asechFunctionString() +
-            mProfile->asechString() +
-            mProfile->asinString() +
-            mProfile->asinhString() +
-            mProfile->assignmentString() +
-            mProfile->atanString() +
-            mProfile->atanhString() +
-            mProfile->ceilingString() +
-            mProfile->closeArrayInitializerString() +
-            mProfile->closeArrayString() +
-            mProfile->commandSeparatorString() +
-            mProfile->commentString() +
-            mProfile->commonLogarithmString() +
-            mProfile->computeComputedConstantsMethodString() +
-            mProfile->computeRatesMethodString() +
-            mProfile->computeVariablesMethodString() +
-            mProfile->computedConstantVariableTypeString() +
-            mProfile->conditionalOperatorElseString() +
-            mProfile->conditionalOperatorIfString() +
-            mProfile->constantVariableTypeString() +
-            mProfile->cosString() +
-            mProfile->coshString() +
-            mProfile->cotFunctionString() +
-            mProfile->cotString() +
-            mProfile->cothFunctionString() +
-            mProfile->cothString() +
-            mProfile->createStatesArrayMethodString() +
-            mProfile->createVariablesArrayMethodString() +
-            mProfile->cscFunctionString() +
-            mProfile->cscString() +
-            mProfile->cschFunctionString() +
-            mProfile->cschString() +
-            mProfile->deleteArrayMethodString() +
-            mProfile->divideString() +
-            mProfile->eString() +
-            mProfile->emptyMethodString() +
-            mProfile->eqFunctionString() +
-            mProfile->eqString() +
-            mProfile->exponentialString() +
-            mProfile->falseString() +
-            mProfile->floorString() +
-            mProfile->geqFunctionString() +
-            mProfile->geqString() +
-            mProfile->gtFunctionString() +
-            mProfile->gtString() +
-                        (mProfile->hasInterface() ?
-                             std::string("true ") :
-                             std::string("false ")) +
-            mProfile->implementationHeaderString() +
-            mProfile->indentString() +
-            mProfile->infString() +
-            mProfile->initializeStatesAndConstantsMethodString() +
-            mProfile->interfaceDeclarationString() +
-            mProfile->interfaceDeclarationVersionString() +
-            mProfile->interfaceHeaderString() +
-            mProfile->leqFunctionString() +
-            mProfile->leqString() +
-            mProfile->libcellmlVersionString() +
-            mProfile->ltFunctionString() +
-            mProfile->ltString() +
-            mProfile->maxFunctionString() +
-            mProfile->maxString() +
-            mProfile->minFunctionString() +
-            mProfile->minString() +
-            mProfile->minusString() +
-            mProfile->nanString() +
-            mProfile->napierianLogarithmString() +
-            mProfile->neqFunctionString() +
-            mProfile->neqString() +
-            mProfile->notFunctionString() +
-            mProfile->notString() +
-            mProfile->openArrayInitializerString() +
-            mProfile->openArrayString() +
-            mProfile->orFunctionString() +
-            mProfile->orString() +
-            mProfile->originCommentString() +
-            mProfile->piString() +
-            mProfile->piecewiseElseString() +
-            mProfile->piecewiseIfString() +
-            mProfile->plusString() +
-            mProfile->powerString() +
-            mProfile->ratesArrayString() +
-            mProfile->remString() +
-            mProfile->returnCreatedArrayString() +
-            mProfile->secFunctionString() +
-            mProfile->secString() +
-            mProfile->sechFunctionString() +
-            mProfile->sechString() +
-            mProfile->sinString() +
-            mProfile->sinhString() +
-            mProfile->squareRootString() +
-            mProfile->squareString() +
-            mProfile->stateCountString() +
-            mProfile->stateInfoString() +
-            mProfile->statesArrayString() +
-            mProfile->stringDelimiterString() +
-            mProfile->tanString() +
-            mProfile->tanhString() +
-            mProfile->timesString() +
-            mProfile->trueString() +
-            mProfile->variableCountString() +
-            mProfile->variableInfoEntryString() +
-            mProfile->variableInfoObjectString() +
-            mProfile->variableInfoString() +
-            mProfile->variableInfoWithTypeEntryString() +
-            mProfile->variableInfoWithTypeObjectString() +
-            mProfile->variableTypeObjectString() +
-            mProfile->variablesArrayString() +
-            mProfile->versionString() +
-            mProfile->voiInfoString() +
-            mProfile->voiString() +
-            mProfile->xorFunctionString() +
-            mProfile->xorString();
+    // Whether the profile requires an interface to be generated.
 
-    std::size_t hashRepr = std::hash<std::string>{}(repr);
-    bool inBuilt = false;
+    const std::string trueValue = "true";
+    const std::string falseValue = "false";
+
+    std::string profileContents = mProfile->hasInterface() ?
+                                      trueValue :
+                                      falseValue;
+
+    // Assignment.
+
+    profileContents += mProfile->assignmentString();
+
+    // Relational and logical operators.
+
+    profileContents += mProfile->eqString()
+                       + mProfile->neqString()
+                       + mProfile->ltString()
+                       + mProfile->leqString()
+                       + mProfile->gtString()
+                       + mProfile->geqString()
+                       + mProfile->andString()
+                       + mProfile->orString()
+                       + mProfile->xorString()
+                       + mProfile->notString();
+
+    profileContents += (mProfile->hasEqOperator() ?
+                            trueValue :
+                            falseValue)
+                       + (mProfile->hasNeqOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasLtOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasLeqOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasGtOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasGeqOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasAndOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasOrOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasXorOperator() ?
+                              trueValue :
+                              falseValue)
+                       + (mProfile->hasNotOperator() ?
+                              trueValue :
+                              falseValue);
+
+    // Arithmetic operators.
+
+    profileContents += mProfile->plusString()
+                       + mProfile->minusString()
+                       + mProfile->timesString()
+                       + mProfile->divideString()
+                       + mProfile->powerString()
+                       + mProfile->squareRootString()
+                       + mProfile->squareString()
+                       + mProfile->absoluteValueString()
+                       + mProfile->exponentialString()
+                       + mProfile->napierianLogarithmString()
+                       + mProfile->commonLogarithmString()
+                       + mProfile->ceilingString()
+                       + mProfile->floorString()
+                       + mProfile->minString()
+                       + mProfile->maxString()
+                       + mProfile->remString();
+
+    profileContents += mProfile->hasPowerOperator() ?
+                           trueValue :
+                           falseValue;
+
+    // Trigonometric operators.
+
+    profileContents += mProfile->sinString()
+                       + mProfile->cosString()
+                       + mProfile->tanString()
+                       + mProfile->secString()
+                       + mProfile->cscString()
+                       + mProfile->cotString()
+                       + mProfile->sinhString()
+                       + mProfile->coshString()
+                       + mProfile->tanhString()
+                       + mProfile->sechString()
+                       + mProfile->cschString()
+                       + mProfile->cothString()
+                       + mProfile->asinString()
+                       + mProfile->acosString()
+                       + mProfile->atanString()
+                       + mProfile->asecString()
+                       + mProfile->acscString()
+                       + mProfile->acotString()
+                       + mProfile->asinhString()
+                       + mProfile->acoshString()
+                       + mProfile->atanhString()
+                       + mProfile->asechString()
+                       + mProfile->acschString()
+                       + mProfile->acothString();
+
+    // Piecewise statement.
+
+    profileContents += mProfile->conditionalOperatorIfString()
+                       + mProfile->conditionalOperatorElseString()
+                       + mProfile->piecewiseIfString()
+                       + mProfile->piecewiseElseString();
+
+    profileContents += mProfile->hasConditionalOperator() ?
+                           trueValue :
+                           falseValue;
+
+    // Constants.
+
+    profileContents += mProfile->trueString()
+                       + mProfile->falseString()
+                       + mProfile->eString()
+                       + mProfile->piString()
+                       + mProfile->infString()
+                       + mProfile->nanString();
+
+    // Arithmetic functions.
+
+    profileContents += mProfile->eqFunctionString()
+                       + mProfile->neqFunctionString()
+                       + mProfile->ltFunctionString()
+                       + mProfile->leqFunctionString()
+                       + mProfile->gtFunctionString()
+                       + mProfile->geqFunctionString()
+                       + mProfile->andFunctionString()
+                       + mProfile->orFunctionString()
+                       + mProfile->xorFunctionString()
+                       + mProfile->notFunctionString()
+                       + mProfile->minFunctionString()
+                       + mProfile->maxFunctionString();
+
+    // Trigonometric functions.
+
+    profileContents += mProfile->secFunctionString()
+                       + mProfile->cscFunctionString()
+                       + mProfile->cotFunctionString()
+                       + mProfile->sechFunctionString()
+                       + mProfile->cschFunctionString()
+                       + mProfile->cothFunctionString()
+                       + mProfile->asecFunctionString()
+                       + mProfile->acscFunctionString()
+                       + mProfile->acotFunctionString()
+                       + mProfile->asechFunctionString()
+                       + mProfile->acschFunctionString()
+                       + mProfile->acothFunctionString();
+
+    // Miscellaneous.
+
+    profileContents += mProfile->commentString()
+                       + mProfile->originCommentString();
+
+    profileContents += mProfile->interfaceHeaderString()
+                       + mProfile->implementationHeaderString();
+
+    profileContents += mProfile->interfaceVersionString()
+                       + mProfile->implementationVersionString();
+
+    profileContents += mProfile->interfaceLibcellmlVersionString()
+                       + mProfile->implementationLibcellmlVersionString();
+
+    profileContents += mProfile->interfaceStateCountString()
+                       + mProfile->implementationStateCountString();
+
+    profileContents += mProfile->interfaceVariableCountString()
+                       + mProfile->implementationVariableCountString();
+
+    profileContents += mProfile->variableTypeObjectString();
+
+    profileContents += mProfile->constantVariableTypeString()
+                       + mProfile->computedConstantVariableTypeString()
+                       + mProfile->algebraicVariableTypeString();
+
+    profileContents += mProfile->variableInfoObjectString()
+                       + mProfile->variableInfoWithTypeObjectString();
+
+    profileContents += mProfile->interfaceVoiInfoString()
+                       + mProfile->implementationVoiInfoString();
+
+    profileContents += mProfile->interfaceStateInfoString()
+                       + mProfile->implementationStateInfoString();
+
+    profileContents += mProfile->interfaceVariableInfoString()
+                       + mProfile->implementationVariableInfoString();
+
+    profileContents += mProfile->variableInfoEntryString()
+                       + mProfile->variableInfoWithTypeEntryString();
+
+    profileContents += mProfile->voiString();
+
+    profileContents += mProfile->statesArrayString()
+                       + mProfile->ratesArrayString()
+                       + mProfile->variablesArrayString();
+
+    profileContents += mProfile->returnCreatedArrayString();
+
+    profileContents += mProfile->interfaceCreateStatesArrayMethodString()
+                       + mProfile->implementationCreateStatesArrayMethodString();
+
+    profileContents += mProfile->interfaceCreateVariablesArrayMethodString()
+                       + mProfile->implementationCreateVariablesArrayMethodString();
+
+    profileContents += mProfile->interfaceDeleteArrayMethodString()
+                       + mProfile->implementationDeleteArrayMethodString();
+
+    profileContents += mProfile->interfaceInitializeStatesAndConstantsMethodString()
+                       + mProfile->implementationInitializeStatesAndConstantsMethodString();
+
+    profileContents += mProfile->interfaceComputeComputedConstantsMethodString()
+                       + mProfile->implementationComputeComputedConstantsMethodString();
+
+    profileContents += mProfile->interfaceComputeRatesMethodString()
+                       + mProfile->implementationComputeRatesMethodString();
+
+    profileContents += mProfile->interfaceComputeVariablesMethodString()
+                       + mProfile->implementationComputeVariablesMethodString();
+
+    profileContents += mProfile->emptyMethodString();
+
+    profileContents += mProfile->indentString();
+
+    profileContents += mProfile->openArrayInitializerString()
+                       + mProfile->closeArrayInitializerString();
+
+    profileContents += mProfile->openArrayString()
+                       + mProfile->closeArrayString();
+
+    profileContents += mProfile->arrayElementSeparatorString();
+
+    profileContents += mProfile->stringDelimiterString();
+
+    profileContents += mProfile->commandSeparatorString();
+
+    // Compute and check the hash of our profile contents.
+
+    std::size_t profileContentsHash = std::hash<std::string> {}(profileContents);
+    bool res = false;
+    //printf(">>> %s profile: %zu\n",
+    //       (mProfile->profile() == GeneratorProfile::Profile::C) ?
+    //           "C" :
+    //           "Python",
+    //       profileContentsHash);
+
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        inBuilt = 3387295728753284751U != hashRepr;
+        res = profileContentsHash != 3965718121003034966U;
+
         break;
     case GeneratorProfile::Profile::PYTHON:
-        inBuilt = 4718672871973104838U != hashRepr;
-        break;
-    case GeneratorProfile::Profile::CUSTOM:
+        res = profileContentsHash != 9109763827176614202U;
+
         break;
     }
-    return inBuilt;
+
+    return res;
 }
 
 void Generator::GeneratorImpl::addOriginCommentCode(std::string &code)
 {
     if (!mProfile->commentString().empty()
         && !mProfile->originCommentString().empty()) {
-        std::string profileInformation;
+        std::string profileInformation = modifiedProfile() ?
+                                             "a modified " :
+                                             "the ";
 
         switch (mProfile->profile()) {
         case GeneratorProfile::Profile::C:
-            profileInformation = "the ";
-            if (profileHasBeenModified()) {
-                profileInformation = "a modified ";
-            }
-            profileInformation += "C profile of";
+            profileInformation += "C";
 
             break;
         case GeneratorProfile::Profile::PYTHON:
-            profileInformation = "the ";
-            if (profileHasBeenModified()) {
-                profileInformation = "a modified ";
-            }
-            profileInformation += "Python profile of";
-
-            break;
-        case GeneratorProfile::Profile::CUSTOM:
-            profileInformation = "a customized profile and";
+            profileInformation += "Python";
 
             break;
         }
+
+        profileInformation += " profile of";
 
         std::string commentCode = replace(replace(mProfile->originCommentString(),
                                                   "<PROFILE_INFORMATION>", profileInformation),
@@ -1834,20 +1945,39 @@ void Generator::GeneratorImpl::addImplementationHeaderCode(std::string &code)
     }
 }
 
-void Generator::GeneratorImpl::addLibcellmlVersionCode(std::string &code,
-                                                       bool interface)
+void Generator::GeneratorImpl::addVersionAndLibcellmlVersionCode(std::string &code,
+                                                                 bool interface)
 {
+    std::string versionAndLibcellmlCode;
+
+    if ((interface && !mProfile->interfaceVersionString().empty())
+        || (!interface && !mProfile->implementationVersionString().empty())) {
+        if (interface) {
+            versionAndLibcellmlCode += mProfile->interfaceVersionString();
+        } else {
+            if (modifiedProfile()) {
+                std::regex regEx("([0-9]+\\.[0-9]+\\.[0-9]+)");
+
+                versionAndLibcellmlCode += std::regex_replace(mProfile->implementationVersionString(), regEx, "$1.modified");
+            } else {
+                versionAndLibcellmlCode += mProfile->implementationVersionString();
+            }
+        }
+    }
+
     if ((interface && !mProfile->interfaceLibcellmlVersionString().empty())
         || (!interface && !mProfile->implementationLibcellmlVersionString().empty())) {
-        if (!code.empty()) {
-            code += "\n";
-        }
-
-        code += interface ?
-                    mProfile->interfaceLibcellmlVersionString() :
-                    replace(mProfile->implementationLibcellmlVersionString(),
-                            "<LIBCELLML_VERSION>", versionString());
+        versionAndLibcellmlCode += interface ?
+                                       mProfile->interfaceLibcellmlVersionString() :
+                                       replace(mProfile->implementationLibcellmlVersionString(),
+                                               "<LIBCELLML_VERSION>", versionString());
     }
+
+    if (!versionAndLibcellmlCode.empty()) {
+        code += "\n";
+    }
+
+    code += versionAndLibcellmlCode;
 }
 
 void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code,
@@ -1862,6 +1992,7 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code,
                                          replace(mProfile->implementationStateCountString(),
                                                  "<STATE_COUNT>", std::to_string(mStates.size()));
     }
+
     if ((interface && !mProfile->interfaceVariableCountString().empty())
         || (!interface && !mProfile->implementationVariableCountString().empty())) {
         stateAndVariableCountCode += interface ?
@@ -1875,29 +2006,6 @@ void Generator::GeneratorImpl::addStateAndVariableCountCode(std::string &code,
     }
 
     code += stateAndVariableCountCode;
-}
-
-void Generator::GeneratorImpl::addInterfaceVersionCode(std::string &code)
-{
-    if (!mProfile->interfaceDeclarationString().empty()
-        && !mProfile->interfaceDeclarationVersionString().empty()) {
-        if (!code.empty()) {
-            code += "\n";
-        }
-
-        code += mProfile->interfaceDeclarationVersionString();
-    }
-}
-
-void Generator::GeneratorImpl::addInterfaceStateAndVariableCountCode(std::string &code)
-{
-    if (!mProfile->interfaceDeclarationString().empty()
-        && (!mProfile->stateCountString().empty()
-            || !mProfile->variableCountString().empty())) {
-        if (!code.empty()) {
-            code += "\n";
-        }
-    }
 }
 
 void Generator::GeneratorImpl::addVariableTypeObjectCode(std::string &code)
@@ -3366,6 +3474,11 @@ void Generator::swap(Generator &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
+GeneratorProfilePtr Generator::profile()
+{
+    return mPimpl->mProfile;
+}
+
 void Generator::setProfile(const GeneratorProfilePtr &profile)
 {
     mPimpl->mProfile = profile;
@@ -3463,10 +3576,9 @@ std::string Generator::interfaceCode() const
 
     mPimpl->addInterfaceHeaderCode(res);
 
-    // Add code for the version of the profile and libCellML.
+    // Add code for the interface of the version of the profile and libCellML.
 
-    mPimpl->addInterfaceVersionCode(res);
-    mPimpl->addLibcellmlVersionCode(res, true);
+    mPimpl->addVersionAndLibcellmlVersionCode(res, true);
 
     // Add code for the interface of the number of states and variables.
 
@@ -3512,10 +3624,10 @@ std::string Generator::implementationCode() const
 
     mPimpl->addImplementationHeaderCode(res);
 
-    // Add code for the version of the profile and libCellML.
+    // Add code for the implementation of the version of the profile and
+    // libCellML.
 
-    mPimpl->addImplementationVersionCode(res);
-    mPimpl->addLibcellmlVersionCode(res);
+    mPimpl->addVersionAndLibcellmlVersionCode(res);
 
     // Add code for the implementation of the number of states and variables.
 

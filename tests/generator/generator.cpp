@@ -976,36 +976,6 @@ TEST(Generator, dependentEqns)
     EXPECT_EQ(fileContents("generator/dependent_eqns/model.py"), generator.implementationCode());
 }
 
-TEST(Generator, modifiedGeneratorProfile)
-{
-    libcellml::Parser parser;
-    libcellml::ModelPtr model = parser.parseModel(fileContents("generator/modified/model.cellml"));
-
-    EXPECT_EQ(size_t(0), parser.errorCount());
-
-    libcellml::Generator generator;
-
-    generator.processModel(model);
-
-    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::C);
-    profile->setCreateStatesArrayMethodString("double * createStatesVector()\n{\n"
-                                              "<CODE>"
-                                              "}\n");
-    generator.setProfile(profile);
-
-    EXPECT_EQ(fileContents("generator/modified/model.h"), generator.interfaceCode());
-    EXPECT_EQ(fileContents("generator/modified/model.c"), generator.implementationCode());
-
-    profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
-    profile->setCreateStatesArrayMethodString("\n"
-                                              "def create_states_vector():\n"
-                                              "<CODE>");
-
-    generator.setProfile(profile);
-
-    EXPECT_EQ(fileContents("generator/modified/model.py"), generator.implementationCode());
-}
-
 TEST(Generator, fabbriFantiniWildersSeveriHumanSanModel2017)
 {
     libcellml::Parser parser;
@@ -1198,7 +1168,18 @@ TEST(Generator, coverage)
     EXPECT_EQ(fileContents("generator/coverage/model.h"), generator.interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.c"), generator.implementationCode());
 
-    libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>();
+    libcellml::GeneratorProfilePtr profile = generator.profile();
+
+    profile->setInterfaceCreateStatesArrayMethodString("double * createStatesVector();\n");
+    profile->setImplementationCreateStatesArrayMethodString("double * createStatesVector()\n"
+                                                            "{\n"
+                                                            "<CODE>"
+                                                            "}\n");
+
+    EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.h"), generator.interfaceCode());
+    EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.c"), generator.implementationCode());
+
+    profile = std::make_shared<libcellml::GeneratorProfile>();
 
     generator.setProfile(profile);
 
@@ -1217,8 +1198,8 @@ TEST(Generator, coverage)
 
     profile->setImplementationHeaderString("");
 
-    profile->setVersionString("");
-    profile->setInterfaceDeclarationVersionString("interface declaration of version");
+    profile->setImplementationVersionString("");
+
     profile->setImplementationLibcellmlVersionString("");
 
     profile->setImplementationStateCountString("");
@@ -1286,10 +1267,16 @@ TEST(Generator, coverage)
 
     profile->setImplementationHeaderString("");
 
+    profile->setInterfaceVersionString("");
+    profile->setImplementationVersionString("");
+
+    profile->setInterfaceLibcellmlVersionString("");
     profile->setImplementationLibcellmlVersionString("");
 
+    profile->setInterfaceStateCountString("");
     profile->setImplementationStateCountString("");
 
+    profile->setInterfaceVariableCountString("");
     profile->setImplementationVariableCountString("");
 
     profile->setVariableTypeObjectString("");
@@ -1301,10 +1288,13 @@ TEST(Generator, coverage)
     profile->setVariableInfoObjectString("");
     profile->setVariableInfoWithTypeObjectString("");
 
+    profile->setInterfaceVoiInfoString("");
     profile->setImplementationVoiInfoString("");
 
+    profile->setInterfaceStateInfoString("");
     profile->setImplementationStateInfoString("");
 
+    profile->setInterfaceVariableInfoString("");
     profile->setImplementationVariableInfoString("");
 
     profile->setVariableInfoEntryString("");
@@ -1317,4 +1307,11 @@ TEST(Generator, coverage)
 
     EXPECT_EQ(EMPTY_STRING, generator.interfaceCode());
     EXPECT_EQ(fileContents("generator/coverage/model.py"), generator.implementationCode());
+
+    profile->setImplementationCreateStatesArrayMethodString("\n"
+                                                            "def create_states_vector():\n"
+                                                            "<CODE>");
+
+    EXPECT_EQ(EMPTY_STRING, generator.interfaceCode());
+    EXPECT_EQ(fileContents("generator/coverage/model.modified.profile.py"), generator.implementationCode());
 }
