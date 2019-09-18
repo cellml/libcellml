@@ -267,6 +267,9 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "#include <stdlib.h>\n",
               generatorProfile->implementationHeaderString());
 
+    EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.1.0\";\n", generatorProfile->implementationVersionString());
+
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->implementationLibcellmlVersionString());
 
@@ -696,6 +699,9 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceHeaderString(value);
     generatorProfile->setImplementationHeaderString(value);
 
+    generatorProfile->setInterfaceVersionString(value);
+    generatorProfile->setImplementationVersionString(value);
+
     generatorProfile->setInterfaceLibcellmlVersionString(value);
     generatorProfile->setImplementationLibcellmlVersionString(value);
 
@@ -776,6 +782,9 @@ TEST(GeneratorProfile, miscellaneous)
 
     EXPECT_EQ(value, generatorProfile->interfaceHeaderString());
     EXPECT_EQ(value, generatorProfile->implementationHeaderString());
+
+    EXPECT_EQ(value, generatorProfile->interfaceVersionString());
+    EXPECT_EQ(value, generatorProfile->implementationVersionString());
 
     EXPECT_EQ(value, generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ(value, generatorProfile->implementationLibcellmlVersionString());

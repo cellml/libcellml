@@ -88,6 +88,15 @@ public:
     Generator &operator=(Generator rhs); /**< Assignment operator */
 
     /**
+     * @brief Get the @c GeneratorProfile.
+     *
+     * Get the @c GeneratorProfile used by this @c Generator.
+     *
+     * @return The @c GeneratorProfile used.
+     */
+    GeneratorProfilePtr profile();
+
+    /**
      * @brief Set the @c GeneratorProfile.
      *
      * Set the @c GeneratorProfile to be used by this @c Generator.
@@ -123,6 +132,7 @@ public:
      * @return The number of states.
      */
     size_t stateCount() const;
+
     /**
      * @brief Get the number of variables in the @c Model.
      *

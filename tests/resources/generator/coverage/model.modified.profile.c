@@ -1,11 +1,11 @@
-/* The content of this file was generated using the C profile of libCellML 0.2.0. */
+/* The content of this file was generated using a modified C profile of libCellML 0.2.0. */
 
 #include "model.h"
 
 #include <math.h>
 #include <stdlib.h>
 
-const char VERSION[] = "0.1.0";
+const char VERSION[] = "0.1.0.modified";
 const char LIBCELLML_VERSION[] = "0.2.0";
 
 const size_t STATE_COUNT = 1;
@@ -287,7 +287,7 @@ double acoth(double x)
     return 0.5*log((1.0+oneOverX)/(1.0-oneOverX));
 }
 
-double * createStatesArray()
+double * createStatesVector()
 {
     return (double *) malloc(1*sizeof(double));
 }
