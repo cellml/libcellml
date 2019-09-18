@@ -1,10 +1,10 @@
-# The content of this file was generated using the Python profile of libCellML 0.2.0.
+# The content of this file was generated using a modified Python profile of libCellML 0.2.0.
 
 from enum import Enum
 from math import *
 
 
-__version__ = "0.1.0"
+__version__ = "0.1.0.modified"
 LIBCELLML_VERSION = "0.2.0"
 
 STATE_COUNT = 1
@@ -315,7 +315,7 @@ def acoth(x):
     return 0.5*log((1.0+one_over_x)/(1.0-one_over_x))
 
 
-def create_states_array():
+def create_states_vector():
     return [nan]*1
 
 

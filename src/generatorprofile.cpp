@@ -169,11 +169,11 @@ struct GeneratorProfile::GeneratorProfileImpl
     std::string mInterfaceHeaderString;
     std::string mImplementationHeaderString;
 
+    std::string mInterfaceVersionString;
+    std::string mImplementationVersionString;
+
     std::string mInterfaceLibcellmlVersionString;
     std::string mImplementationLibcellmlVersionString;
-
-    std::string mVersionString;
-    std::string mInterfaceDeclarationVersionString;
 
     std::string mInterfaceStateCountString;
     std::string mImplementationStateCountString;
@@ -183,9 +183,9 @@ struct GeneratorProfile::GeneratorProfileImpl
 
     std::string mVariableTypeObjectString;
 
-    std::string mConstantVariableType;
-    std::string mComputedConstantVariableType;
-    std::string mAlgebraicVariableType;
+    std::string mConstantVariableTypeString;
+    std::string mComputedConstantVariableTypeString;
+    std::string mAlgebraicVariableTypeString;
 
     std::string mVariableInfoObjectString;
     std::string mVariableInfoWithTypeObjectString;
@@ -445,11 +445,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "#include <math.h>\n"
                                       "#include <stdlib.h>\n";
 
+        mInterfaceVersionString = "extern const char VERSION[];\n";
+        mImplementationVersionString = "const char VERSION[] = \"0.1.0\";\n";
+
         mInterfaceLibcellmlVersionString = "extern const char LIBCELLML_VERSION[];\n";
         mImplementationLibcellmlVersionString = "const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n";
-
-        mVersionString = "const char VERSION[] = \"0.1.0\";";
-        mInterfaceDeclarationVersionString = "extern const char VERSION[];";
 
         mInterfaceStateCountString = "extern const size_t STATE_COUNT;\n";
         mImplementationStateCountString = "const size_t STATE_COUNT = <STATE_COUNT>;\n";
@@ -463,9 +463,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "    ALGEBRAIC\n"
                                     "} VariableType;\n";
 
-        mConstantVariableType = "CONSTANT";
-        mComputedConstantVariableType = "COMPUTED_CONSTANT";
-        mAlgebraicVariableType = "ALGEBRAIC";
+        mConstantVariableTypeString = "CONSTANT";
+        mComputedConstantVariableTypeString = "COMPUTED_CONSTANT";
+        mAlgebraicVariableTypeString = "ALGEBRAIC";
 
         mVariableInfoObjectString = "typedef struct {\n"
                                     "    char name[<NAME_SIZE>];\n"
@@ -750,11 +750,11 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                       "from math import *\n"
                                       "\n";
 
+        mInterfaceVersionString = "";
+        mImplementationVersionString = "__version__ = \"0.1.0\"\n";
+
         mInterfaceLibcellmlVersionString = "";
         mImplementationLibcellmlVersionString = "LIBCELLML_VERSION = \"<LIBCELLML_VERSION>\"\n";
-
-        mVersionString = "__version__ = \"0.1.0\"";
-        mInterfaceDeclarationVersionString = "";
 
         mInterfaceStateCountString = "";
         mImplementationStateCountString = "STATE_COUNT = <STATE_COUNT>\n";
@@ -769,9 +769,9 @@ void GeneratorProfile::GeneratorProfileImpl::loadProfile(GeneratorProfile::Profi
                                     "    ALGEBRAIC = 3\n"
                                     "\n";
 
-        mConstantVariableType = "VariableType.CONSTANT";
-        mComputedConstantVariableType = "VariableType.COMPUTED_CONSTANT";
-        mAlgebraicVariableType = "VariableType.ALGEBRAIC";
+        mConstantVariableTypeString = "VariableType.CONSTANT";
+        mComputedConstantVariableTypeString = "VariableType.COMPUTED_CONSTANT";
+        mAlgebraicVariableTypeString = "VariableType.ALGEBRAIC";
 
         mVariableInfoObjectString = "";
         mVariableInfoWithTypeObjectString = "";
@@ -1005,11 +1005,11 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
     mPimpl->mInterfaceHeaderString = rhs.mPimpl->mInterfaceHeaderString;
     mPimpl->mImplementationHeaderString = rhs.mPimpl->mImplementationHeaderString;
 
+    mPimpl->mInterfaceVersionString = rhs.mPimpl->mInterfaceVersionString;
+    mPimpl->mImplementationVersionString = rhs.mPimpl->mImplementationVersionString;
+
     mPimpl->mInterfaceLibcellmlVersionString = rhs.mPimpl->mInterfaceLibcellmlVersionString;
     mPimpl->mImplementationLibcellmlVersionString = rhs.mPimpl->mImplementationLibcellmlVersionString;
-
-    mPimpl->mVersionString = rhs.mPimpl->mVersionString;
-    mPimpl->mInterfaceDeclarationVersionString = rhs.mPimpl->mInterfaceDeclarationVersionString;
 
     mPimpl->mInterfaceStateCountString = rhs.mPimpl->mInterfaceStateCountString;
     mPimpl->mImplementationStateCountString = rhs.mPimpl->mImplementationStateCountString;
@@ -1019,9 +1019,9 @@ GeneratorProfile::GeneratorProfile(const GeneratorProfile &rhs)
 
     mPimpl->mVariableTypeObjectString = rhs.mPimpl->mVariableTypeObjectString;
 
-    mPimpl->mConstantVariableType = rhs.mPimpl->mConstantVariableType;
-    mPimpl->mComputedConstantVariableType = rhs.mPimpl->mComputedConstantVariableType;
-    mPimpl->mAlgebraicVariableType = rhs.mPimpl->mAlgebraicVariableType;
+    mPimpl->mConstantVariableTypeString = rhs.mPimpl->mConstantVariableTypeString;
+    mPimpl->mComputedConstantVariableTypeString = rhs.mPimpl->mComputedConstantVariableTypeString;
+    mPimpl->mAlgebraicVariableTypeString = rhs.mPimpl->mAlgebraicVariableTypeString;
 
     mPimpl->mVariableInfoObjectString = rhs.mPimpl->mVariableInfoObjectString;
     mPimpl->mVariableInfoWithTypeObjectString = rhs.mPimpl->mVariableInfoWithTypeObjectString;
@@ -2131,6 +2131,26 @@ void GeneratorProfile::setImplementationHeaderString(const std::string &implemen
     mPimpl->mImplementationHeaderString = implementationHeaderString;
 }
 
+std::string GeneratorProfile::interfaceVersionString() const
+{
+    return mPimpl->mInterfaceVersionString;
+}
+
+void GeneratorProfile::setInterfaceVersionString(const std::string &interfaceVersionString)
+{
+    mPimpl->mInterfaceVersionString = interfaceVersionString;
+}
+
+std::string GeneratorProfile::implementationVersionString() const
+{
+    return mPimpl->mImplementationVersionString;
+}
+
+void GeneratorProfile::setImplementationVersionString(const std::string &implementationVersionString)
+{
+    mPimpl->mImplementationVersionString = implementationVersionString;
+}
+
 std::string GeneratorProfile::interfaceLibcellmlVersionString() const
 {
     return mPimpl->mInterfaceLibcellmlVersionString;
@@ -2138,10 +2158,6 @@ std::string GeneratorProfile::interfaceLibcellmlVersionString() const
 
 void GeneratorProfile::setInterfaceLibcellmlVersionString(const std::string &interfaceLibcellmlVersionString)
 {
-    if (mPimpl->mInterfaceLibcellmlVersionString != interfaceLibcellmlVersionString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInterfaceLibcellmlVersionString = interfaceLibcellmlVersionString;
 }
 
@@ -2173,26 +2189,6 @@ std::string GeneratorProfile::implementationStateCountString() const
 void GeneratorProfile::setImplementationStateCountString(const std::string &implementationStateCountString)
 {
     mPimpl->mImplementationStateCountString = implementationStateCountString;
-}
-
-std::string GeneratorProfile::versionString() const
-{
-    return mPimpl->mVersionString;
-}
-
-void GeneratorProfile::setVersionString(const std::string &versionString)
-{
-    mPimpl->mVersionString = versionString;
-}
-
-std::string GeneratorProfile::interfaceDeclarationVersionString() const
-{
-    return mPimpl->mInterfaceDeclarationVersionString;
-}
-
-void GeneratorProfile::setInterfaceDeclarationVersionString(const std::string &interfaceDeclarationVersionString)
-{
-    mPimpl->mInterfaceDeclarationVersionString = interfaceDeclarationVersionString;
 }
 
 std::string GeneratorProfile::interfaceVariableCountString() const
@@ -2227,32 +2223,32 @@ void GeneratorProfile::setVariableTypeObjectString(const std::string &variableTy
 
 std::string GeneratorProfile::constantVariableTypeString() const
 {
-    return mPimpl->mConstantVariableType;
+    return mPimpl->mConstantVariableTypeString;
 }
 
 void GeneratorProfile::setConstantVariableTypeString(const std::string &constantVariableTypeString)
 {
-    mPimpl->mConstantVariableType = constantVariableTypeString;
+    mPimpl->mConstantVariableTypeString = constantVariableTypeString;
 }
 
 std::string GeneratorProfile::computedConstantVariableTypeString() const
 {
-    return mPimpl->mComputedConstantVariableType;
+    return mPimpl->mComputedConstantVariableTypeString;
 }
 
 void GeneratorProfile::setComputedConstantVariableTypeString(const std::string &computedConstantVariableTypeString)
 {
-    mPimpl->mComputedConstantVariableType = computedConstantVariableTypeString;
+    mPimpl->mComputedConstantVariableTypeString = computedConstantVariableTypeString;
 }
 
 std::string GeneratorProfile::algebraicVariableTypeString() const
 {
-    return mPimpl->mAlgebraicVariableType;
+    return mPimpl->mAlgebraicVariableTypeString;
 }
 
 void GeneratorProfile::setAlgebraicVariableTypeString(const std::string &algebraicVariableTypeString)
 {
-    mPimpl->mAlgebraicVariableType = algebraicVariableTypeString;
+    mPimpl->mAlgebraicVariableTypeString = algebraicVariableTypeString;
 }
 
 std::string GeneratorProfile::variableInfoObjectString() const
@@ -2282,10 +2278,6 @@ std::string GeneratorProfile::interfaceVoiInfoString() const
 
 void GeneratorProfile::setInterfaceVoiInfoString(const std::string &interfaceVoiInfoString)
 {
-    if (mPimpl->mInterfaceVoiInfoString != interfaceVoiInfoString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInterfaceVoiInfoString = interfaceVoiInfoString;
 }
 
@@ -2296,10 +2288,6 @@ std::string GeneratorProfile::implementationVoiInfoString() const
 
 void GeneratorProfile::setImplementationVoiInfoString(const std::string &implementationVoiInfoString)
 {
-    if (mPimpl->mImplementationVoiInfoString != implementationVoiInfoString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mImplementationVoiInfoString = implementationVoiInfoString;
 }
 
@@ -2310,10 +2298,6 @@ std::string GeneratorProfile::interfaceStateInfoString() const
 
 void GeneratorProfile::setInterfaceStateInfoString(const std::string &interfaceStateInfoString)
 {
-    if (mPimpl->mInterfaceStateInfoString != interfaceStateInfoString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInterfaceStateInfoString = interfaceStateInfoString;
 }
 
@@ -2424,10 +2408,6 @@ std::string GeneratorProfile::interfaceCreateStatesArrayMethodString() const
 
 void GeneratorProfile::setInterfaceCreateStatesArrayMethodString(const std::string &interfaceCreateStatesArrayMethodString)
 {
-    if (mPimpl->mInterfaceCreateStatesArrayMethodString != interfaceCreateStatesArrayMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInterfaceCreateStatesArrayMethodString = interfaceCreateStatesArrayMethodString;
 }
 
@@ -2438,10 +2418,6 @@ std::string GeneratorProfile::implementationCreateStatesArrayMethodString() cons
 
 void GeneratorProfile::setImplementationCreateStatesArrayMethodString(const std::string &implementationCreateStatesArrayMethodString)
 {
-    if (mPimpl->mImplementationCreateStatesArrayMethodString != implementationCreateStatesArrayMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mImplementationCreateStatesArrayMethodString = implementationCreateStatesArrayMethodString;
 }
 
@@ -2452,10 +2428,6 @@ std::string GeneratorProfile::interfaceCreateVariablesArrayMethodString() const
 
 void GeneratorProfile::setInterfaceCreateVariablesArrayMethodString(const std::string &interfaceCreateVariablesArrayMethodString)
 {
-    if (mPimpl->mInterfaceCreateVariablesArrayMethodString != interfaceCreateVariablesArrayMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mInterfaceCreateVariablesArrayMethodString = interfaceCreateVariablesArrayMethodString;
 }
 
@@ -2466,10 +2438,6 @@ std::string GeneratorProfile::implementationCreateVariablesArrayMethodString() c
 
 void GeneratorProfile::setImplementationCreateVariablesArrayMethodString(const std::string &implementationCreateVariablesArrayMethodString)
 {
-    if (mPimpl->mImplementationCreateVariablesArrayMethodString != implementationCreateVariablesArrayMethodString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mImplementationCreateVariablesArrayMethodString = implementationCreateVariablesArrayMethodString;
 }
 
@@ -2650,10 +2618,6 @@ std::string GeneratorProfile::stringDelimiterString() const
 
 void GeneratorProfile::setStringDelimiterString(const std::string &stringDelimiterString)
 {
-    if (mPimpl->mStringDelimiterString != stringDelimiterString) {
-        mPimpl->mProfile = Profile::CUSTOM;
-    }
-
     mPimpl->mStringDelimiterString = stringDelimiterString;
 }
 

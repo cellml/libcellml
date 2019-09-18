@@ -267,9 +267,11 @@ TEST(GeneratorProfile, defaultMiscellaneousValues)
               "#include <stdlib.h>\n",
               generatorProfile->implementationHeaderString());
 
+    EXPECT_EQ("extern const char VERSION[];\n", generatorProfile->interfaceVersionString());
+    EXPECT_EQ("const char VERSION[] = \"0.1.0\";\n", generatorProfile->implementationVersionString());
+
     EXPECT_EQ("extern const char LIBCELLML_VERSION[];\n", generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ("const char LIBCELLML_VERSION[] = \"<LIBCELLML_VERSION>\";\n", generatorProfile->implementationLibcellmlVersionString());
-    EXPECT_EQ("const char VERSION[] = \"0.1.0\";", generatorProfile->versionString());
 
     EXPECT_EQ("extern const size_t STATE_COUNT;\n", generatorProfile->interfaceStateCountString());
     EXPECT_EQ("const size_t STATE_COUNT = <STATE_COUNT>;\n", generatorProfile->implementationStateCountString());
@@ -697,11 +699,11 @@ TEST(GeneratorProfile, miscellaneous)
     generatorProfile->setInterfaceHeaderString(value);
     generatorProfile->setImplementationHeaderString(value);
 
+    generatorProfile->setInterfaceVersionString(value);
+    generatorProfile->setImplementationVersionString(value);
+
     generatorProfile->setInterfaceLibcellmlVersionString(value);
     generatorProfile->setImplementationLibcellmlVersionString(value);
-
-    generatorProfile->setVersionString(value);
-    generatorProfile->setInterfaceDeclarationVersionString(value);
 
     generatorProfile->setInterfaceStateCountString(value);
     generatorProfile->setImplementationStateCountString(value);
@@ -781,11 +783,11 @@ TEST(GeneratorProfile, miscellaneous)
     EXPECT_EQ(value, generatorProfile->interfaceHeaderString());
     EXPECT_EQ(value, generatorProfile->implementationHeaderString());
 
+    EXPECT_EQ(value, generatorProfile->interfaceVersionString());
+    EXPECT_EQ(value, generatorProfile->implementationVersionString());
+
     EXPECT_EQ(value, generatorProfile->interfaceLibcellmlVersionString());
     EXPECT_EQ(value, generatorProfile->implementationLibcellmlVersionString());
-
-    EXPECT_EQ(value, generatorProfile->versionString());
-    EXPECT_EQ(value, generatorProfile->interfaceDeclarationVersionString());
 
     EXPECT_EQ(value, generatorProfile->interfaceStateCountString());
     EXPECT_EQ(value, generatorProfile->implementationStateCountString());
