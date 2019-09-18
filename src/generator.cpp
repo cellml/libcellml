@@ -39,8 +39,6 @@ limitations under the License.
 #    undef FALSE
 #endif
 
-#include <iostream>
-
 namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
@@ -551,6 +549,9 @@ struct Generator::GeneratorImpl
     std::vector<VariablePtr> mStates;
     std::vector<GeneratorVariablePtr> mVariables;
 
+    std::string mCProfileContents = profileContents(std::make_shared<libcellml::GeneratorProfile>());
+    std::string mPythonProfileContents = profileContents(std::make_shared<libcellml::GeneratorProfile>(GeneratorProfile::Profile::PYTHON));
+
     GeneratorProfilePtr mProfile = std::make_shared<libcellml::GeneratorProfile>();
 
     bool mNeedEq = false;
@@ -624,6 +625,8 @@ struct Generator::GeneratorImpl
     void updateVariableInfoSizes(size_t &componentSize, size_t &nameSize,
                                  size_t &unitsSize,
                                  const VariablePtr &variable);
+
+    std::string profileContents(const GeneratorProfilePtr &profile) const;
 
     bool modifiedProfile() const;
 
@@ -1626,270 +1629,265 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
     unitsSize = (unitsSize > variableUnitsSize) ? unitsSize : variableUnitsSize;
 }
 
-bool Generator::GeneratorImpl::modifiedProfile() const
+std::string Generator::GeneratorImpl::profileContents(const GeneratorProfilePtr &profile) const
 {
     // Whether the profile requires an interface to be generated.
 
     const std::string trueValue = "true";
     const std::string falseValue = "false";
 
-    std::string profileContents = mProfile->hasInterface() ?
+    std::string res = profile->hasInterface() ?
                                       trueValue :
                                       falseValue;
 
     // Assignment.
 
-    profileContents += mProfile->assignmentString();
+    res += profile->assignmentString();
 
     // Relational and logical operators.
 
-    profileContents += mProfile->eqString()
-                       + mProfile->neqString()
-                       + mProfile->ltString()
-                       + mProfile->leqString()
-                       + mProfile->gtString()
-                       + mProfile->geqString()
-                       + mProfile->andString()
-                       + mProfile->orString()
-                       + mProfile->xorString()
-                       + mProfile->notString();
+    res += profile->eqString()
+                       + profile->neqString()
+                       + profile->ltString()
+                       + profile->leqString()
+                       + profile->gtString()
+                       + profile->geqString()
+                       + profile->andString()
+                       + profile->orString()
+                       + profile->xorString()
+                       + profile->notString();
 
-    profileContents += (mProfile->hasEqOperator() ?
+    res += (profile->hasEqOperator() ?
                             trueValue :
                             falseValue)
-                       + (mProfile->hasNeqOperator() ?
+                       + (profile->hasNeqOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasLtOperator() ?
+                       + (profile->hasLtOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasLeqOperator() ?
+                       + (profile->hasLeqOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasGtOperator() ?
+                       + (profile->hasGtOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasGeqOperator() ?
+                       + (profile->hasGeqOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasAndOperator() ?
+                       + (profile->hasAndOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasOrOperator() ?
+                       + (profile->hasOrOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasXorOperator() ?
+                       + (profile->hasXorOperator() ?
                               trueValue :
                               falseValue)
-                       + (mProfile->hasNotOperator() ?
+                       + (profile->hasNotOperator() ?
                               trueValue :
                               falseValue);
 
     // Arithmetic operators.
 
-    profileContents += mProfile->plusString()
-                       + mProfile->minusString()
-                       + mProfile->timesString()
-                       + mProfile->divideString()
-                       + mProfile->powerString()
-                       + mProfile->squareRootString()
-                       + mProfile->squareString()
-                       + mProfile->absoluteValueString()
-                       + mProfile->exponentialString()
-                       + mProfile->napierianLogarithmString()
-                       + mProfile->commonLogarithmString()
-                       + mProfile->ceilingString()
-                       + mProfile->floorString()
-                       + mProfile->minString()
-                       + mProfile->maxString()
-                       + mProfile->remString();
+    res += profile->plusString()
+                       + profile->minusString()
+                       + profile->timesString()
+                       + profile->divideString()
+                       + profile->powerString()
+                       + profile->squareRootString()
+                       + profile->squareString()
+                       + profile->absoluteValueString()
+                       + profile->exponentialString()
+                       + profile->napierianLogarithmString()
+                       + profile->commonLogarithmString()
+                       + profile->ceilingString()
+                       + profile->floorString()
+                       + profile->minString()
+                       + profile->maxString()
+                       + profile->remString();
 
-    profileContents += mProfile->hasPowerOperator() ?
+    res += profile->hasPowerOperator() ?
                            trueValue :
                            falseValue;
 
     // Trigonometric operators.
 
-    profileContents += mProfile->sinString()
-                       + mProfile->cosString()
-                       + mProfile->tanString()
-                       + mProfile->secString()
-                       + mProfile->cscString()
-                       + mProfile->cotString()
-                       + mProfile->sinhString()
-                       + mProfile->coshString()
-                       + mProfile->tanhString()
-                       + mProfile->sechString()
-                       + mProfile->cschString()
-                       + mProfile->cothString()
-                       + mProfile->asinString()
-                       + mProfile->acosString()
-                       + mProfile->atanString()
-                       + mProfile->asecString()
-                       + mProfile->acscString()
-                       + mProfile->acotString()
-                       + mProfile->asinhString()
-                       + mProfile->acoshString()
-                       + mProfile->atanhString()
-                       + mProfile->asechString()
-                       + mProfile->acschString()
-                       + mProfile->acothString();
+    res += profile->sinString()
+                       + profile->cosString()
+                       + profile->tanString()
+                       + profile->secString()
+                       + profile->cscString()
+                       + profile->cotString()
+                       + profile->sinhString()
+                       + profile->coshString()
+                       + profile->tanhString()
+                       + profile->sechString()
+                       + profile->cschString()
+                       + profile->cothString()
+                       + profile->asinString()
+                       + profile->acosString()
+                       + profile->atanString()
+                       + profile->asecString()
+                       + profile->acscString()
+                       + profile->acotString()
+                       + profile->asinhString()
+                       + profile->acoshString()
+                       + profile->atanhString()
+                       + profile->asechString()
+                       + profile->acschString()
+                       + profile->acothString();
 
     // Piecewise statement.
 
-    profileContents += mProfile->conditionalOperatorIfString()
-                       + mProfile->conditionalOperatorElseString()
-                       + mProfile->piecewiseIfString()
-                       + mProfile->piecewiseElseString();
+    res += profile->conditionalOperatorIfString()
+                       + profile->conditionalOperatorElseString()
+                       + profile->piecewiseIfString()
+                       + profile->piecewiseElseString();
 
-    profileContents += mProfile->hasConditionalOperator() ?
+    res += profile->hasConditionalOperator() ?
                            trueValue :
                            falseValue;
 
     // Constants.
 
-    profileContents += mProfile->trueString()
-                       + mProfile->falseString()
-                       + mProfile->eString()
-                       + mProfile->piString()
-                       + mProfile->infString()
-                       + mProfile->nanString();
+    res += profile->trueString()
+                       + profile->falseString()
+                       + profile->eString()
+                       + profile->piString()
+                       + profile->infString()
+                       + profile->nanString();
 
     // Arithmetic functions.
 
-    profileContents += mProfile->eqFunctionString()
-                       + mProfile->neqFunctionString()
-                       + mProfile->ltFunctionString()
-                       + mProfile->leqFunctionString()
-                       + mProfile->gtFunctionString()
-                       + mProfile->geqFunctionString()
-                       + mProfile->andFunctionString()
-                       + mProfile->orFunctionString()
-                       + mProfile->xorFunctionString()
-                       + mProfile->notFunctionString()
-                       + mProfile->minFunctionString()
-                       + mProfile->maxFunctionString();
+    res += profile->eqFunctionString()
+                       + profile->neqFunctionString()
+                       + profile->ltFunctionString()
+                       + profile->leqFunctionString()
+                       + profile->gtFunctionString()
+                       + profile->geqFunctionString()
+                       + profile->andFunctionString()
+                       + profile->orFunctionString()
+                       + profile->xorFunctionString()
+                       + profile->notFunctionString()
+                       + profile->minFunctionString()
+                       + profile->maxFunctionString();
 
     // Trigonometric functions.
 
-    profileContents += mProfile->secFunctionString()
-                       + mProfile->cscFunctionString()
-                       + mProfile->cotFunctionString()
-                       + mProfile->sechFunctionString()
-                       + mProfile->cschFunctionString()
-                       + mProfile->cothFunctionString()
-                       + mProfile->asecFunctionString()
-                       + mProfile->acscFunctionString()
-                       + mProfile->acotFunctionString()
-                       + mProfile->asechFunctionString()
-                       + mProfile->acschFunctionString()
-                       + mProfile->acothFunctionString();
+    res += profile->secFunctionString()
+                       + profile->cscFunctionString()
+                       + profile->cotFunctionString()
+                       + profile->sechFunctionString()
+                       + profile->cschFunctionString()
+                       + profile->cothFunctionString()
+                       + profile->asecFunctionString()
+                       + profile->acscFunctionString()
+                       + profile->acotFunctionString()
+                       + profile->asechFunctionString()
+                       + profile->acschFunctionString()
+                       + profile->acothFunctionString();
 
     // Miscellaneous.
 
-    profileContents += mProfile->commentString()
-                       + mProfile->originCommentString();
+    res += profile->commentString()
+                       + profile->originCommentString();
 
-    profileContents += mProfile->interfaceHeaderString()
-                       + mProfile->implementationHeaderString();
+    res += profile->interfaceHeaderString()
+                       + profile->implementationHeaderString();
 
-    profileContents += mProfile->interfaceVersionString()
-                       + mProfile->implementationVersionString();
+    res += profile->interfaceVersionString()
+                       + profile->implementationVersionString();
 
-    profileContents += mProfile->interfaceLibcellmlVersionString()
-                       + mProfile->implementationLibcellmlVersionString();
+    res += profile->interfaceLibcellmlVersionString()
+                       + profile->implementationLibcellmlVersionString();
 
-    profileContents += mProfile->interfaceStateCountString()
-                       + mProfile->implementationStateCountString();
+    res += profile->interfaceStateCountString()
+                       + profile->implementationStateCountString();
 
-    profileContents += mProfile->interfaceVariableCountString()
-                       + mProfile->implementationVariableCountString();
+    res += profile->interfaceVariableCountString()
+                       + profile->implementationVariableCountString();
 
-    profileContents += mProfile->variableTypeObjectString();
+    res += profile->variableTypeObjectString();
 
-    profileContents += mProfile->constantVariableTypeString()
-                       + mProfile->computedConstantVariableTypeString()
-                       + mProfile->algebraicVariableTypeString();
+    res += profile->constantVariableTypeString()
+                       + profile->computedConstantVariableTypeString()
+                       + profile->algebraicVariableTypeString();
 
-    profileContents += mProfile->variableInfoObjectString()
-                       + mProfile->variableInfoWithTypeObjectString();
+    res += profile->variableInfoObjectString()
+                       + profile->variableInfoWithTypeObjectString();
 
-    profileContents += mProfile->interfaceVoiInfoString()
-                       + mProfile->implementationVoiInfoString();
+    res += profile->interfaceVoiInfoString()
+                       + profile->implementationVoiInfoString();
 
-    profileContents += mProfile->interfaceStateInfoString()
-                       + mProfile->implementationStateInfoString();
+    res += profile->interfaceStateInfoString()
+                       + profile->implementationStateInfoString();
 
-    profileContents += mProfile->interfaceVariableInfoString()
-                       + mProfile->implementationVariableInfoString();
+    res += profile->interfaceVariableInfoString()
+                       + profile->implementationVariableInfoString();
 
-    profileContents += mProfile->variableInfoEntryString()
-                       + mProfile->variableInfoWithTypeEntryString();
+    res += profile->variableInfoEntryString()
+                       + profile->variableInfoWithTypeEntryString();
 
-    profileContents += mProfile->voiString();
+    res += profile->voiString();
 
-    profileContents += mProfile->statesArrayString()
-                       + mProfile->ratesArrayString()
-                       + mProfile->variablesArrayString();
+    res += profile->statesArrayString()
+                       + profile->ratesArrayString()
+                       + profile->variablesArrayString();
 
-    profileContents += mProfile->returnCreatedArrayString();
+    res += profile->returnCreatedArrayString();
 
-    profileContents += mProfile->interfaceCreateStatesArrayMethodString()
-                       + mProfile->implementationCreateStatesArrayMethodString();
+    res += profile->interfaceCreateStatesArrayMethodString()
+                       + profile->implementationCreateStatesArrayMethodString();
 
-    profileContents += mProfile->interfaceCreateVariablesArrayMethodString()
-                       + mProfile->implementationCreateVariablesArrayMethodString();
+    res += profile->interfaceCreateVariablesArrayMethodString()
+                       + profile->implementationCreateVariablesArrayMethodString();
 
-    profileContents += mProfile->interfaceDeleteArrayMethodString()
-                       + mProfile->implementationDeleteArrayMethodString();
+    res += profile->interfaceDeleteArrayMethodString()
+                       + profile->implementationDeleteArrayMethodString();
 
-    profileContents += mProfile->interfaceInitializeStatesAndConstantsMethodString()
-                       + mProfile->implementationInitializeStatesAndConstantsMethodString();
+    res += profile->interfaceInitializeStatesAndConstantsMethodString()
+                       + profile->implementationInitializeStatesAndConstantsMethodString();
 
-    profileContents += mProfile->interfaceComputeComputedConstantsMethodString()
-                       + mProfile->implementationComputeComputedConstantsMethodString();
+    res += profile->interfaceComputeComputedConstantsMethodString()
+                       + profile->implementationComputeComputedConstantsMethodString();
 
-    profileContents += mProfile->interfaceComputeRatesMethodString()
-                       + mProfile->implementationComputeRatesMethodString();
+    res += profile->interfaceComputeRatesMethodString()
+                       + profile->implementationComputeRatesMethodString();
 
-    profileContents += mProfile->interfaceComputeVariablesMethodString()
-                       + mProfile->implementationComputeVariablesMethodString();
+    res += profile->interfaceComputeVariablesMethodString()
+                       + profile->implementationComputeVariablesMethodString();
 
-    profileContents += mProfile->emptyMethodString();
+    res += profile->emptyMethodString();
 
-    profileContents += mProfile->indentString();
+    res += profile->indentString();
 
-    profileContents += mProfile->openArrayInitializerString()
-                       + mProfile->closeArrayInitializerString();
+    res += profile->openArrayInitializerString()
+                       + profile->closeArrayInitializerString();
 
-    profileContents += mProfile->openArrayString()
-                       + mProfile->closeArrayString();
+    res += profile->openArrayString()
+                       + profile->closeArrayString();
 
-    profileContents += mProfile->arrayElementSeparatorString();
+    res += profile->arrayElementSeparatorString();
 
-    profileContents += mProfile->stringDelimiterString();
+    res += profile->stringDelimiterString();
 
-    profileContents += mProfile->commandSeparatorString();
+    res += profile->commandSeparatorString();
 
-    // Compute and check the hash of our profile contents.
+    return res;
+}
 
-    std::size_t profileContentsHash = std::hash<std::string> {}(profileContents);
+bool Generator::GeneratorImpl::modifiedProfile() const
+{
     bool res = false;
-std::cout << ">>> "
-          << ((mProfile->profile() == GeneratorProfile::Profile::C) ?
-                  "C" :
-                  "Python")
-          << " profile: "
-          << profileContentsHash
-          << std::endl;
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
-        res = profileContentsHash != 3965718121003034966U;
+        res = profileContents(mProfile) != mCProfileContents;
 
         break;
     case GeneratorProfile::Profile::PYTHON:
-        res = profileContentsHash != 9109763827176614202U;
+        res = profileContents(mProfile) != mPythonProfileContents;
 
         break;
     }
