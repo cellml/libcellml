@@ -39,6 +39,8 @@ limitations under the License.
 #    undef FALSE
 #endif
 
+#include <iostream>
+
 namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
@@ -1873,11 +1875,13 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     std::size_t profileContentsHash = std::hash<std::string> {}(profileContents);
     bool res = false;
-printf(">>> %s profile: %zu\n",
-       (mProfile->profile() == GeneratorProfile::Profile::C) ?
-           "C" :
-           "Python",
-       profileContentsHash);
+std::cout << ">>> "
+          << ((mProfile->profile() == GeneratorProfile::Profile::C) ?
+                  "C" :
+                  "Python")
+          << " profile: "
+          << profileContentsHash
+          << std::endl;
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
