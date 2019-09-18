@@ -1873,11 +1873,11 @@ bool Generator::GeneratorImpl::modifiedProfile() const
 
     std::size_t profileContentsHash = std::hash<std::string> {}(profileContents);
     bool res = false;
-    //printf(">>> %s profile: %zu\n",
-    //       (mProfile->profile() == GeneratorProfile::Profile::C) ?
-    //           "C" :
-    //           "Python",
-    //       profileContentsHash);
+printf(">>> %s profile: %zu\n",
+       (mProfile->profile() == GeneratorProfile::Profile::C) ?
+           "C" :
+           "Python",
+       profileContentsHash);
 
     switch (mProfile->profile()) {
     case GeneratorProfile::Profile::C:
