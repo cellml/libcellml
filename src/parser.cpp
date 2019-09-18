@@ -494,7 +494,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             if (isCellMLReal(attribute->value())) {
                 exponent = convertToDouble(attribute->value());
             } else {
-                // TODO This value won't be saved for validation later, so need to test it now?
+                // TODO This value won't be saved for validation later, so it does need to be reported now
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has an exponent with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
@@ -505,7 +505,7 @@ void Parser::ParserImpl::loadUnit(const UnitsPtr &units, const XmlNodePtr &node)
             if (isCellMLReal(attribute->value())) {
                 multiplier = convertToDouble(attribute->value());
             } else {
-                // TODO This value won't be saved for validation later, so need to test it now?
+                // TODO his value won't be saved for validation later, so it does need to be reported now
                 ErrorPtr err = std::make_shared<Error>();
                 err->setDescription("Unit referencing '" + node->attribute("units") + "' in units '" + units->name() + "' has a multiplier with the value '" + attribute->value() + "' that is not a representation of a CellML real valued number.");
                 err->setUnits(units);
@@ -584,10 +584,10 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     NamePair variableNamePair;
     NamePairMap variableNameMap;
     bool mapVariablesFound = false;
-    // bool component1Missing = false;
-    // bool component2Missing = false;
-    // bool variable1Missing = false;
-    // bool variable2Missing = false;
+    bool component1Missing = false;
+    bool component2Missing = false;
+    bool variable1Missing = false;
+    bool variable2Missing = false;
 
     // Check connection for component_{1, 2} attributes and get the name pair.
     std::string component1Name;
@@ -612,24 +612,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
         attribute = attribute->next();
     }
     // Check that we found both components.
-    // if (component1Name.empty()) {
-    //     ErrorPtr err = std::make_shared<Error>();
-    //     err->setDescription("Connection in model '" + model->name() + "' does not have a valid component_1 in a connection element.");
-    //     err->setModel(model);
-    //     err->setKind(Error::Kind::CONNECTION);
-    //     err->setRule(SpecificationRule::CONNECTION_COMPONENT1);
-    //     mParser->addError(err);
-    //     component1Missing = true;
-    // }
-    // if (component2Name.empty()) {
-    //     ErrorPtr err = std::make_shared<Error>();
-    //     err->setDescription("Connection in model '" + model->name() + "' does not have a valid component_2 in a connection element.");
-    //     err->setModel(model);
-    //     err->setKind(Error::Kind::CONNECTION);
-    //     err->setRule(SpecificationRule::CONNECTION_COMPONENT2);
-    //     mParser->addError(err);
-    //     component2Missing = true;
-    // }
+    if (component1Name.empty()) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Connection in model '" + model->name() + "' does not have a valid component_1 in a connection element.");
+        err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::CONNECTION_COMPONENT1);
+        mParser->addError(err);
+        component1Missing = true;
+    }
+    if (component2Name.empty()) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Connection in model '" + model->name() + "' does not have a valid component_2 in a connection element.");
+        err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::CONNECTION_COMPONENT2);
+        mParser->addError(err);
+        component2Missing = true;
+    }
     componentNamePair = std::make_pair(component1Name, component2Name);
 
     XmlNodePtr childNode = node->firstChild();
@@ -693,24 +693,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                 childAttribute = childAttribute->next();
             }
             // Check that we found both variables.
-            // if (variable1Name.empty()) {
-            //     ErrorPtr err = std::make_shared<Error>();
-            //     err->setDescription("Connection in model '" + model->name() + "' does not have a valid variable_1 in a map_variables element.");
-            //     err->setModel(model);
-            //     err->setKind(Error::Kind::CONNECTION);
-            //     err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
-            //     mParser->addError(err);
-            //     variable1Missing = true;
-            // }
-            // if (variable2Name.empty()) {
-            //     ErrorPtr err = std::make_shared<Error>();
-            //     err->setDescription("Connection in model '" + model->name() + "' does not have a valid variable_2 in a map_variables element.");
-            //     err->setModel(model);
-            //     err->setKind(Error::Kind::CONNECTION);
-            //     err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
-            //     mParser->addError(err);
-            //     variable2Missing = true;
-            // }
+            if (variable1Name.empty()) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Connection in model '" + model->name() + "' does not have a valid variable_1 in a map_variables element.");
+                err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
+                mParser->addError(err);
+                variable1Missing = true;
+            }
+            if (variable2Name.empty()) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Connection in model '" + model->name() + "' does not have a valid variable_2 in a map_variables element.");
+                err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
+                mParser->addError(err);
+                variable2Missing = true;
+            }
             // We can have multiple map_variables per connection.
             variableNamePair = std::make_pair(variable1Name, variable2Name);
             variableNameMap.push_back(variableNamePair);
@@ -745,30 +745,28 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
     // Now check the objects exist in the model. TODO Remove as is validation?
     if (model->containsComponent(componentNamePair.first)) {
         component1 = model->component(componentNamePair.first);
+    } else {
+        if (!component1Missing) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
+            err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
+            err->setRule(SpecificationRule::CONNECTION_COMPONENT1);
+            mParser->addError(err);
+        }
     }
-    // else {
-    //     if (!component1Missing) {
-    //         ErrorPtr err = std::make_shared<Error>();
-    //         err->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.first + "' as component_1 but it does not exist in the model.");
-    //         err->setModel(model);
-    //         err->setKind(Error::Kind::CONNECTION);
-    //         err->setRule(SpecificationRule::CONNECTION_COMPONENT1);
-    //         mParser->addError(err);
-    //     }
-    // }
     if (model->containsComponent(componentNamePair.second)) {
         component2 = model->component(componentNamePair.second);
+    } else {
+        if (!component2Missing) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");
+            err->setModel(model);
+            err->setKind(Error::Kind::CONNECTION);
+            err->setRule(SpecificationRule::CONNECTION_COMPONENT2);
+            mParser->addError(err);
+        }
     }
-    // else {
-    //     if (!component2Missing) {
-    //         ErrorPtr err = std::make_shared<Error>();
-    //         err->setDescription("Connection in model '" + model->name() + "' specifies '" + componentNamePair.second + "' as component_2 but it does not exist in the model.");
-    //         err->setModel(model);
-    //         err->setKind(Error::Kind::CONNECTION);
-    //         err->setRule(SpecificationRule::CONNECTION_COMPONENT2);
-    //         mParser->addError(err);
-    //     }
-    // }
 
     // If we have a map_variables, check that the variables exist in the named components. TODO Remove as is validation?
     if (mapVariablesFound) {
@@ -783,26 +781,24 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable1 = std::make_shared<Variable>();
                     variable1->setName(iterPair.first);
                     component1->addVariable(variable1);
+                } else {
+                    if (!variable1Missing) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Variable '" + iterPair.first + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->name() + "' of model '" + model->name() + "'.");
+                        err->setComponent(component1);
+                        err->setKind(Error::Kind::CONNECTION);
+                        err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
+                        mParser->addError(err);
+                    }
                 }
-                // else {
-                //     if (!variable1Missing) {
-                //         ErrorPtr err = std::make_shared<Error>();
-                //         err->setDescription("Variable '" + iterPair.first + "' is specified as variable_1 in a connection but it does not exist in component_1 component '" + component1->name() + "' of model '" + model->name() + "'.");
-                //         err->setComponent(component1);
-                //         err->setKind(Error::Kind::CONNECTION);
-                //         err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
-                //         mParser->addError(err);
-                //     }
-                // }
+            } else {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.first + "' as variable_1 but the corresponding component_1 is invalid.");
+                err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
+                mParser->addError(err);
             }
-            // else {
-            //     ErrorPtr err = std::make_shared<Error>();
-            //     err->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.first + "' as variable_1 but the corresponding component_1 is invalid.");
-            //     err->setModel(model);
-            //     err->setKind(Error::Kind::CONNECTION);
-            //     err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE1);
-            //     mParser->addError(err);
-            // }
             if (component2) {
                 if (component2->hasVariable(iterPair.second)) {
                     variable2 = component2->variable(iterPair.second);
@@ -811,40 +807,37 @@ void Parser::ParserImpl::loadConnection(const ModelPtr &model, const XmlNodePtr 
                     variable2 = std::make_shared<Variable>();
                     variable2->setName(iterPair.second);
                     component2->addVariable(variable2);
+                } else {
+                    if (!variable2Missing) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Variable '" + iterPair.second + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
+                        err->setComponent(component1);
+                        err->setKind(Error::Kind::CONNECTION);
+                        err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
+                        mParser->addError(err);
+                    }
                 }
-                // else {
-                //     if (!variable2Missing) {
-                //         ErrorPtr err = std::make_shared<Error>();
-                //         err->setDescription("Variable '" + iterPair.second + "' is specified as variable_2 in a connection but it does not exist in component_2 component '" + component2->name() + "' of model '" + model->name() + "'.");
-                //         err->setComponent(component1);
-                //         err->setKind(Error::Kind::CONNECTION);
-                //         err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
-                //         mParser->addError(err);
-                //     }
-                // }
+            } else {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.second + "' as variable_2 but the corresponding component_2 is invalid.");
+                err->setModel(model);
+                err->setKind(Error::Kind::CONNECTION);
+                err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
+                mParser->addError(err);
             }
-            // else {
-            //     ErrorPtr err = std::make_shared<Error>();
-            //     err->setDescription("Connection in model '" + model->name() + "' specifies '" + iterPair.second + "' as variable_2 but the corresponding component_2 is invalid.");
-            //     err->setModel(model);
-            //     err->setKind(Error::Kind::CONNECTION);
-            //     err->setRule(SpecificationRule::MAP_VARIABLES_VARIABLE2);
-            //     mParser->addError(err);
-            // }
             // Set the variable equivalence relationship for this variable pair.
             if ((variable1) && (variable2)) {
                 Variable::addEquivalence(variable1, variable2, mappingId, connectionId);
             }
         }
+    } else {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription("Connection in model '" + model->name() + "' does not have a map_variables element.");
+        err->setModel(model);
+        err->setKind(Error::Kind::CONNECTION);
+        err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
+        mParser->addError(err);
     }
-    // else {
-    //     ErrorPtr err = std::make_shared<Error>();
-    //     err->setDescription("Connection in model '" + model->name() + "' does not have a map_variables element.");
-    //     err->setModel(model);
-    //     err->setKind(Error::Kind::CONNECTION);
-    //     err->setRule(SpecificationRule::CONNECTION_MAP_VARIABLES);
-    //     mParser->addError(err);
-    // }
 }
 
 void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodePtr &node)
@@ -1124,7 +1117,6 @@ void Parser::ParserImpl::loadImport(const ImportSourcePtr &importSource, const M
 void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &component, const XmlNodePtr &node)
 {
     int order = 0;
-    // bool orderDefined = false;
     bool orderValid = false;
     VariablePtr referencedVariable = nullptr;
     VariablePtr testVariable = nullptr;
@@ -1137,13 +1129,13 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             const std::string variableReference = attribute->value();
             referencedVariable = component->variable(variableReference);
 
-            // TODO Remove as validation?
+            // TODO This follows the same pattern as the errors returned from parsing the encapsulations
             if (referencedVariable == nullptr) {
-                // ErrorPtr err = std::make_shared<Error>();
-                // err->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
-                // err->setReset(reset);
-                // err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
-                // mParser->addError(err);
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Reset referencing variable '" + variableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
+                err->setReset(reset);
+                err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
+                mParser->addError(err);
             } else {
                 reset->setVariable(referencedVariable);
             }
@@ -1151,30 +1143,29 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
             const std::string testVariableReference = attribute->value();
             testVariable = component->variable(testVariableReference);
             if (testVariable == nullptr) {
-                // ErrorPtr err = std::make_shared<Error>();
-                // err->setDescription("Reset referencing test_variable '" + testVariableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
-                // err->setReset(reset);
-                // err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
-                // mParser->addError(err);
+                // TODO This follows the same pattern as the errors returned from parsing the encapsulations
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Reset referencing test_variable '" + testVariableReference + "' is not a valid reference for a variable in component '" + component->name() + "'.");
+                err->setReset(reset);
+                err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
+                mParser->addError(err);
             } else {
                 reset->setTestVariable(testVariable);
             }
         } else if (attribute->isType("order")) {
-            // orderDefined = true;
             orderValid = isCellMLInteger(attribute->value());
             if (orderValid) {
                 order = convertToInt(attribute->value());
+            } else { // TODO This value won't be saved for validation later, so it does need to be reported now
+                if (reset->variable() != nullptr) {
+                    variableName = reset->variable()->name();
+                }
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' has a non-integer order value '" + attribute->value() + "'.");
+                err->setReset(reset);
+                err->setRule(SpecificationRule::RESET_ORDER);
+                mParser->addError(err);
             }
-            // else {
-            //     if (reset->variable() != nullptr) {
-            //         variableName = reset->variable()->name();
-            //     }
-            //     ErrorPtr err = std::make_shared<Error>();
-            //     err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' has a non-integer order value '" + attribute->value() + "'.");
-            //     err->setReset(reset);
-            //     err->setRule(SpecificationRule::RESET_ORDER);
-            //     mParser->addError(err);
-            // }
         } else if (attribute->isType("id")) {
             reset->setId(attribute->value());
         } else {
@@ -1197,13 +1188,6 @@ void Parser::ParserImpl::loadReset(const ResetPtr &reset, const ComponentPtr &co
     if (orderValid) {
         reset->setOrder(order);
     }
-    // else if (!orderDefined) {
-    //     ErrorPtr err = std::make_shared<Error>();
-    //     err->setDescription("Reset in component '" + component->name() + "' referencing variable '" + variableName + "' and test_variable '" + testVariableName + "' does not have an order defined.");
-    //     err->setReset(reset);
-    //     err->setRule(SpecificationRule::RESET_ORDER);
-    //     mParser->addError(err);
-    // }
 
     XmlNodePtr childNode = node->firstChild();
     int testValueCount = 0;
