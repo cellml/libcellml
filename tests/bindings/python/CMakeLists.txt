@@ -17,6 +17,8 @@ set(TEST_SRCS
   test_component_entity.py
   test_entity.py
   test_error.py
+  test_generator.py
+  test_generator_profile.py
   test_import_source.py
   test_imported_entity.py
   test_logger.py
@@ -33,6 +35,8 @@ set(TEST_SRCS
   test_when.py
   test_docstrings.py
 )
+
+include(test_resources.cmake)
 
 foreach(_TEST ${TEST_SRCS})
   configure_file(${_TEST} ${_TEST} COPYONLY)

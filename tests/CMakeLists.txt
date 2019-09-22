@@ -47,6 +47,8 @@ set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
 set(TESTS_SOURCE_FILES ${TEST_UTILS_SRC})
 set(TESTS_HEADER_FILES ${TEST_UTILS_HDR})
 
+include(test_resources.cmake)
+
 # Cycle through all the tests 'included' above
 set(TEST_LIST)
 foreach(TEST ${LIBCELLML_TESTS})
@@ -165,8 +167,6 @@ if(LIBCELLML_MEMCHECK)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/memcheck
     COMMENT "Running memcheck tests")
 endif()
-
-include(test_resources.cmake)
 
 set(TESTS_SOURCE_FILES ${TESTS_SOURCE_FILES} PARENT_SCOPE)
 set(TESTS_HEADER_FILES ${TESTS_HEADER_FILES} PARENT_SCOPE)
