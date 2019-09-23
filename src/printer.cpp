@@ -439,7 +439,7 @@ Printer &Printer::operator=(Printer rhs)
 
 void Printer::swap(Printer &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 std::string Printer::printModel(const ModelPtr &model) const

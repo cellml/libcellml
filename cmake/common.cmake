@@ -122,6 +122,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
 
   if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
+        set(_NO_BUGPRONE_EXCEPTION_ESCAPE -bugprone-exception-escape)
         set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
         set(_NO_HICPP_VARARG -hicpp-vararg)
     endif()
@@ -131,6 +132,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     set(_CLANG_TIDY_CHECKS
       -*
       bugprone-*
+      ${_NO_BUGPRONE_EXCEPTION_ESCAPE}
       cert-*
       -cert-err58-cpp
       cppcoreguidelines-*
@@ -155,6 +157,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       misc-*
       -misc-non-private-member-variables-in-classes
       modernize-*
+      -modernize-pass-by-value
       -modernize-raw-string-literal
       performance-*
       -performance-inefficient-string-concatenation

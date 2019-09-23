@@ -14,9 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_resources.h"
 #include "test_utils.h"
 
+#include <fstream>
 #include <iostream>
+#include <sstream>
+
+std::string resourcePath(const std::string &resourceRelativePath)
+{
+    return std::string(TESTS_RESOURCE_LOCATION + "/").append(resourceRelativePath);
+}
+
+std::string fileContents(const std::string &fileName)
+{
+    std::ifstream file(resourcePath(fileName));
+    std::stringstream buffer;
+
+    buffer << file.rdbuf();
+
+    return buffer.str();
+}
 
 void printErrors(const libcellml::Validator &v)
 {

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.cmake_minimum_required (VERSION 3.1)
+
 include(GenerateExportHeader)
 
 set(CLEAN_FILES)
@@ -48,6 +49,8 @@ set(SOURCE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/componententity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/entity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/error.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/generatorprofile.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importedentity.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/importsource.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
@@ -74,6 +77,8 @@ set(GIT_API_HEADER_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/entity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/enumerations.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/error.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generator.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/generatorprofile.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importedentity.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/importsource.h
   ${CMAKE_CURRENT_SOURCE_DIR}/api/libcellml/logger.h
