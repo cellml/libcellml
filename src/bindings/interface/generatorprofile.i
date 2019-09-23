@@ -985,11 +985,11 @@ be replaced with some code to create the variables array.";
 "Set the string for a command separator.";
 
 %{
+#include <memory>
 #include "libcellml/generatorprofile.h"
 %}
 
 %ignore libcellml::GeneratorProfile::GeneratorProfile(GeneratorProfile &&);
 %ignore libcellml::GeneratorProfile::operator =;
 
-%include "libcellml/types.h"
 %include "libcellml/generatorprofile.h"
