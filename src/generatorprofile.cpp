@@ -27,6 +27,11 @@ limitations under the License.
 
 namespace libcellml {
 
+/**
+ * @brief The GeneratorProfile::GeneratorProfileImpl struct.
+ *
+ * The private implementation for the GeneratorProfile class.
+ */
 struct GeneratorProfile::GeneratorProfileImpl
 {
     // Whether the profile is official.
