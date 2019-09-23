@@ -18,8 +18,6 @@ limitations under the License.
 
 #include "libcellml/exportdefinitions.h"
 
-#include <string>
-
 namespace libcellml {
 
 class LIBCELLML_EXPORT GeneratorProfile
