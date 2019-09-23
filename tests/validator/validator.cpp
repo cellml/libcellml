@@ -1150,8 +1150,6 @@ TEST(Validator, variableEquivalenceInSameComponent)
 
 TEST(Validator, validateNoCyclesSimple)
 {
-    // TODO Can two sibling variables in the same component be equivalent to one variable in another?
-
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
@@ -1197,8 +1195,6 @@ TEST(Validator, validateNoCyclesSimple)
 
 TEST(Validator, validateNoCyclesComplicated)
 {
-    // TODO Can two sibling variables in the same component be equivalent to one variable in another?
-
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
