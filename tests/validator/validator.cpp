@@ -316,9 +316,9 @@ TEST(Validator, importComponents)
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
         "Imported component 'invalid_imported_component_in_this_model' does not have a valid component_ref attribute.",
         "Import of component 'invalid_imported_component_in_this_model' does not have a valid locator xlink:href attribute.",
-        "Model 'model_name' contains multiple imported components from 'some-other-model.xml' with the same component_ref attribute 'component_in_that_model'.",
         "CellML identifiers must contain one or more basic Latin alphabetic characters.",
-        "Imported component does not have a valid name attribute."};
+        "Imported component does not have a valid name attribute.",
+        "Import of component 'a_bad_imported_component' has an invalid URI in the href attribute."};
 
     libcellml::Validator v;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -334,31 +334,71 @@ TEST(Validator, importComponents)
     v.validateModel(m);
     EXPECT_EQ(size_t(0), v.errorCount());
 
-    // Invalid component import- missing refs
+    // Another valid component import
     libcellml::ImportSourcePtr imp2 = std::make_shared<libcellml::ImportSource>();
+    imp2->setUrl("yet-another-other-model.xml");
     libcellml::ComponentPtr importedComponent2 = std::make_shared<libcellml::Component>();
-    importedComponent2->setName("invalid_imported_component_in_this_model");
-    importedComponent2->setSourceComponent(imp2, "");
+    importedComponent2->setName("another_valid_imported_component_in_this_model");
+    importedComponent2->setSourceComponent(imp2, "new_shiny_component_ref");
     m->addComponent(importedComponent2);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+
+    // Invalid component import - missing ref to source component
+    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
+    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
+    importedComponent3->setName("invalid_imported_component_in_this_model");
+    importedComponent3->setSourceComponent(imp3, "");
+    m->addComponent(importedComponent3);
     v.validateModel(m);
     EXPECT_EQ(size_t(3), v.errorCount());
 
-    // Invalid component import - duplicate refs
-    libcellml::ImportSourcePtr imp3 = std::make_shared<libcellml::ImportSource>();
-    imp3->setUrl("some-other-model.xml");
-    libcellml::ComponentPtr importedComponent3 = std::make_shared<libcellml::Component>();
-    importedComponent3->setName("duplicate_imported_component_in_this_model");
-    importedComponent3->setSourceComponent(imp3, "component_in_that_model");
-    m->addComponent(importedComponent3);
-    v.validateModel(m);
-    EXPECT_EQ(size_t(4), v.errorCount());
-
-    // Invalid component import - unnamed component
+    // Valid component import - two components imported from the same place is allowed
     libcellml::ImportSourcePtr imp4 = std::make_shared<libcellml::ImportSource>();
-    imp4->setUrl("some-other-different-model.xml");
+    imp4->setUrl("some-other-model.xml");
     libcellml::ComponentPtr importedComponent4 = std::make_shared<libcellml::Component>();
+    importedComponent4->setName("duplicate_imported_component_in_this_model");
     importedComponent4->setSourceComponent(imp4, "component_in_that_model");
     m->addComponent(importedComponent4);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(3), v.errorCount());
+
+    // Invalid - name missing from component
+    libcellml::ImportSourcePtr imp5 = std::make_shared<libcellml::ImportSource>();
+    imp5->setUrl("some-other-different-model.xml");
+    libcellml::ComponentPtr importedComponent5 = std::make_shared<libcellml::Component>();
+    importedComponent5->setSourceComponent(imp5, "component_in_that_model");
+    m->addComponent(importedComponent5);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Valid - two components from the same source is allowed
+    libcellml::ImportSourcePtr imp7 = std::make_shared<libcellml::ImportSource>();
+    imp7->setUrl("yet-another-other-model.xml");
+    libcellml::ComponentPtr importedComponent7 = std::make_shared<libcellml::Component>();
+    importedComponent7->setName("another_duplicate_imported_component");
+    importedComponent7->setSourceComponent(imp7, "new_shiny_component_ref");
+    m->addComponent(importedComponent7);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Valid - duplicate component_ref from a different source
+    libcellml::ImportSourcePtr imp8 = std::make_shared<libcellml::ImportSource>();
+    imp8->setUrl("yet-another-other-model.xml"); // source used before
+    libcellml::ComponentPtr importedComponent8 = std::make_shared<libcellml::Component>();
+    importedComponent8->setName("a_good_imported_component");
+    importedComponent8->setSourceComponent(imp8, "component_in_that_model");
+    m->addComponent(importedComponent8);
+    v.validateModel(m);
+    EXPECT_EQ(size_t(5), v.errorCount());
+
+    // Invalid: component_ref url is not valid html
+    libcellml::ImportSourcePtr imp9 = std::make_shared<libcellml::ImportSource>();
+    imp9->setUrl("not @ valid url");
+    libcellml::ComponentPtr importedComponent9 = std::make_shared<libcellml::Component>();
+    importedComponent9->setName("a_bad_imported_component");
+    importedComponent9->setSourceComponent(imp9, "component_in_some_model");
+    m->addComponent(importedComponent9);
     v.validateModel(m);
     EXPECT_EQ(size_t(6), v.errorCount());
 
@@ -706,7 +746,6 @@ TEST(Validator, validateInvalidConnections)
 {
     const std::vector<std::string> expectedErrors = {
         "Variable 'variable4' is an equivalent variable to 'variable1_1' but has no parent component.",
-        "Variable 'variable2' has an equivalent variable 'variable1_2'  which does not reciprocally have 'variable2' set as an equivalent variable.",
     };
 
     libcellml::Validator v;
@@ -715,52 +754,79 @@ TEST(Validator, validateInvalidConnections)
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp5 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp6 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp7 = std::make_shared<libcellml::Component>();
+
     libcellml::VariablePtr v1_1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v1_2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v5 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v6 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v7 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
     comp1->setName("component1");
     comp2->setName("component2");
     comp3->setName("component3");
     comp4->setName("component4");
+    comp5->setName("component5");
+    comp6->setName("component6");
+    comp7->setName("component7");
+
     v1_1->setName("variable1_1");
     v1_2->setName("variable1_2");
     v2->setName("variable2");
     v3->setName("variable3");
     v4->setName("variable4");
+    v5->setName("variable5");
+    v6->setName("variable6");
+    v7->setName("variable7");
 
     v1_1->setUnits("dimensionless");
     v1_2->setUnits("dimensionless");
     v2->setUnits("dimensionless");
     v3->setUnits("dimensionless");
     v4->setUnits("dimensionless");
+    v5->setUnits("dimensionless");
+    v6->setUnits("dimensionless");
+    v7->setUnits("dimensionless");
 
     comp1->addVariable(v1_1);
     comp1->addVariable(v1_2);
     comp2->addVariable(v2);
     comp3->addVariable(v3);
     comp4->addVariable(v4);
+    comp5->addVariable(v5);
+    comp6->addVariable(v6);
+    comp7->addVariable(v7);
     m->addComponent(comp1);
     m->addComponent(comp2);
     m->addComponent(comp3);
     m->addComponent(comp4);
+    m->addComponent(comp5);
+    m->addComponent(comp6);
+    m->addComponent(comp7);
 
     // Valid connections.
     libcellml::Variable::addEquivalence(v1_1, v2);
     libcellml::Variable::addEquivalence(v1_2, v2);
-    libcellml::Variable::addEquivalence(v1_1, v3);
     libcellml::Variable::addEquivalence(v1_1, v4);
     libcellml::Variable::addEquivalence(v2, v3);
-    libcellml::Variable::addEquivalence(v1_1, v3);
+    libcellml::Variable::addEquivalence(v5, v6); // valid here but duplicated below
+
+    // Not valid connections
+    libcellml::Variable::addEquivalence(v6, v5); // duplicated above, does not overwrite, skips silently
+
     // Make v4 a variable without a parent component.
     comp4->removeVariable(v4);
-    // Remove all connections on v1_2, leaving dangling reciprocal connections.
+    // Remove all connections on v1_2.
     v1_2->removeAllEquivalences();
 
     v.validateModel(m);
+
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
@@ -857,7 +923,7 @@ static const std::string emptyMath = "<math xmlns=\"http://www.w3.org/1998/Math/
 TEST(Validator, resets)
 {
     const std::vector<std::string> expectedErrors = {
-        "Component 'comp' contains multiple resets with order '300'.",
+        // "Component 'comp' contains multiple resets with order '300'.",
         "Reset in component 'comp' with order '300' does not reference a variable.",
         "Reset in component 'comp' does not have an order set, does not reference a variable.",
         "Reset in component 'comp' does not have an order set, does not reference a variable.",
@@ -1162,8 +1228,10 @@ TEST(Validator, setUnitsWithNoChildUnit)
         "Variable 'v5' has units of 'metre' and an equivalent variable 'v6' with non-matching units of 'second'. The mismatch is: metre^1, second^-1, ",
         "Variable 'v8' has units of 'banana' and an equivalent variable 'v7' with non-matching units of 'apple'. The mismatch is: apple^-1, banana^1, ",
         "Variable 'v3' has units of 'litre' and an equivalent variable 'v4' with non-matching units of 'gram'. The mismatch is: kilogram^-1, metre^3, ",
+        "Variable 'v9' is an equivalent variable to 'v3' but they are in the same component, 'c3'.",
         // "Variable 'v3' has units of 'litre' and an equivalent variable 'v9' with non-matching units of 'big_barrel'. The mismatch is: multiplication factor of 10^-3, ", // removed until multiplication checking is turned on
         "Variable 'v6' has units of 'second' and an equivalent variable 'v5' with non-matching units of 'metre'. The mismatch is: metre^-1, second^1, ",
+        "Variable 'v3' is an equivalent variable to 'v9' but they are in the same component, 'c3'.",
         // "Variable 'v9' has units of 'big_barrel' and an equivalent variable 'v3' with non-matching units of 'litre'. The mismatch is: multiplication factor of 10^3, ", // removed until multiplication checking is turned on
     };
 
@@ -1475,31 +1543,4 @@ TEST(Validator, variableEquivalentUnits) //new
     for (size_t i = 0; i < validator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
-}
-
-TEST(Validator, integerPrefixOutOfRange)
-{
-    const std::string e = "Prefix '2147483648' of a unit referencing 'metre' in units 'unit' is out of the integer range.";
-
-    libcellml::Validator validator;
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-
-    m->setName("model");
-    c->setName("component");
-    u->setName("unit");
-    u->addUnit("metre", 2147483648, 1.0, 1.0); // should throw out of integer range error
-
-    v->setName("variable");
-    v->setUnits(u);
-    c->addVariable(v);
-    m->addUnits(u);
-    m->addComponent(c);
-
-    validator.validateModel(m);
-
-    EXPECT_EQ(size_t(1), validator.errorCount());
-    EXPECT_EQ(e, validator.error(0)->description());
 }

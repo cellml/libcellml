@@ -59,6 +59,36 @@ TEST(Variable, addDuplicateEquivalentVariablesAndCount)
     EXPECT_EQ(e, a);
 }
 
+TEST(Variable, removeAllEquivalences)
+{
+    const size_t e = 0;
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v1->removeAllEquivalences();
+    EXPECT_EQ(e, v1->equivalentVariableCount());
+    EXPECT_EQ(e, v2->equivalentVariableCount());
+}
+
+TEST(Variable, removeAllEquivalencesWithTriangleEquivalence)
+{
+    const size_t e0 = 0;
+    const size_t e1 = 1;
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v1, v3);
+    libcellml::Variable::addEquivalence(v3, v2);
+
+    v1->removeAllEquivalences();
+    EXPECT_EQ(e0, v1->equivalentVariableCount());
+    EXPECT_EQ(e1, v2->equivalentVariableCount());
+    EXPECT_EQ(e1, v3->equivalentVariableCount());
+}
+
 TEST(Variable, hasNoEquivalentVariable)
 {
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
@@ -556,6 +586,7 @@ TEST(Connection, removeEquivalentVariableMethods)
     libcellml::Variable::addEquivalence(v1, v3);
     libcellml::Variable::setEquivalenceConnectionId(v1, v3, "con2Id");
     libcellml::Variable::addEquivalence(v2, v3, "mapId", "con1Id");
+
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);

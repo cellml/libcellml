@@ -29,11 +29,14 @@ limitations under the License.
 #include "libcellml/when.h"
 
 #include <cmath>
+#include <deque>
 #include <map>
 #include <regex>
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <libxml/uri.h>
 
 namespace libcellml {
 
@@ -83,7 +86,7 @@ struct Validator::ValidatorImpl
      * Checks if the provided @p name is a valid CellML identifier according
      * to the CellML 2.0 specification. This requires a non-zero length Unicode
      * character sequence containing basic Latin alphanumeric characters or
-     * underscores that does not start with a number.
+     * underscores that does not begin with a number.
      *
      * @param name The @c std::string name to check the validity of.
      *
@@ -294,6 +297,35 @@ struct Validator::ValidatorImpl
     */
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
                             std::vector<std::string> &history);
+
+    /**
+    * @brief Utility function called recursively from the @c isModelVariableCycleFree function
+    *
+    * @param parent Previous variable
+    * @param child Connected variable to start checking from
+    * @param checkList The helper string returned containing the list(s) of cyclic variables
+    */
+    bool cycleVariableFound(VariablePtr &parent, VariablePtr &child,
+                            std::deque<libcellml::VariablePtr> &checkList,
+                            std::vector<libcellml::VariablePtr> &allVariableList);
+
+    /**
+    * @brief Validate that there are no cycles in the equivalance network in the @p model
+    * using the CellML 2.0 Specification.  Called from the @c validateConnections function.
+    * Any errors will be logged in the @c Validator.
+    *
+    * @param model The model which may contain variable connections to validate.
+    * @param hintList The helper string returned containing the list(s) of cyclic variables
+    */
+    bool isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList);
+
+    /**
+     * @brief Validate that within a connected variable set, any associated reset has an unique order value.
+     * @param variable The variable to check
+     * @param resetMap Returns a map of resets indexed by the order connected through the equivalent variable network
+     * @param localDoneList Returns a list of previously checked varaibles to save time
+     */
+    void fetchConnectedResets(const VariablePtr &variable, std::map<std::string, std::vector<libcellml::ResetPtr>> &resetMap, std::vector<libcellml::VariablePtr> &localDoneList);
 };
 
 Validator::Validator()
@@ -356,38 +388,34 @@ void Validator::validateModel(const ModelPtr &model)
             std::string componentName = component->name();
             if (!componentName.empty()) {
                 if (component->isImport()) {
-                    // Check for a component_ref.
+                    // Check for a component_ref; assumes imported if the import source is not null.
                     std::string componentRef = component->importReference();
                     std::string importSource = component->importSource()->url();
-                    bool foundImportError = false;
+
                     if (!mPimpl->isCellmlIdentifier(componentRef)) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Imported component '" + componentName + "' does not have a valid component_ref attribute.");
                         err->setComponent(component);
                         err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
                         addError(err);
-                        foundImportError = true;
                     }
-                    // Check for a xlink:href.
-                    // TODO: check this id against the XLink spec (see CellML Spec 5.1.1).
                     if (importSource.empty()) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Import of component '" + componentName + "' does not have a valid locator xlink:href attribute.");
                         err->setImportSource(component->importSource());
                         err->setRule(SpecificationRule::IMPORT_HREF);
                         addError(err);
-                        foundImportError = true;
-                    }
-                    // Check if we already have another import from the same source with the same component_ref.
-                    // (This looks for matching entries at the same position in the source and ref vectors).
-                    if (!componentImportSources.empty() && (!foundImportError)) {
-                        if ((std::find(componentImportSources.begin(), componentImportSources.end(), importSource) - componentImportSources.begin())
-                            == (std::find(componentRefs.begin(), componentRefs.end(), componentRef) - componentRefs.begin())) {
+                    } else {
+                        xmlURIPtr uri = xmlParseURI(importSource.c_str());
+                        if (uri == nullptr) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Model '" + model->name() + "' contains multiple imported components from '" + importSource + "' with the same component_ref attribute '" + componentRef + "'.");
-                            err->setModel(model);
-                            err->setRule(SpecificationRule::IMPORT_COMPONENT_REF);
+                            err->setDescription("Import of component '" + componentName + "' has an invalid URI in the href attribute.");
+                            err->setImportSource(component->importSource());
+                            err->setRule(SpecificationRule::IMPORT_HREF);
                             addError(err);
+
+                        } else {
+                            xmlFreeURI(uri);
                         }
                     }
                     // Push back the unique sources and refs.
@@ -522,24 +550,6 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     }
     // Check for resets in this component
     if (component->resetCount() > 0) {
-        // Check for duplicate order values in resets
-        std::vector<int> resetOrders;
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->reset(i);
-            int resetOrder = reset->order();
-            if (reset->isOrderSet()) {
-                if (std::find(resetOrders.begin(), resetOrders.end(), resetOrder) != resetOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->name() + "' contains multiple resets with order '" + convertIntToString(resetOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    resetOrders.push_back(resetOrder);
-                }
-            }
-        }
-
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->reset(i);
             validateReset(reset, component);
@@ -622,7 +632,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
                     (void)test;
                 } catch (std::out_of_range &) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is out of the integer range.");
+                    err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is too big to be represented as an integer.");
                     err->setUnits(units);
                     err->setRule(SpecificationRule::UNIT_PREFIX);
                     mValidator->addError(err);
@@ -1062,8 +1072,10 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
-    std::string hints;
     // Check the components in this model.
+    std::string hints;
+    std::vector<std::string> hintList;
+
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
@@ -1076,7 +1088,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
                         // TODO: validate variable interfaces according to 17.10.8
                         // TODO: add check for cyclical connections (17.10.5)
-
                         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
@@ -1084,10 +1095,20 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             err->setKind(Error::Kind::UNITS);
                             mValidator->addError(err);
                         }
-
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
-                            // Check that the equivalent variable has a valid parent component.
                             auto component2 = static_cast<Component *>(equivalentVariable->parent());
+                            // Check that the components of the two equivalent variables are not the same
+                            std::string c1name = component->name();
+                            std::string c2name = component2->name();
+                            if (c1name == c2name) {
+                                ErrorPtr err = std::make_shared<Error>();
+                                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
+                                                    + variable->name() + "' but they are in the same component, '" + component->name() + "'.");
+                                err->setModel(model);
+                                err->setKind(Error::Kind::CONNECTION);
+                                mValidator->addError(err);
+                            }
+                            // Check that the equivalent variable has a valid parent component.
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
                                 err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
@@ -1095,11 +1116,54 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 err->setKind(Error::Kind::CONNECTION);
                                 mValidator->addError(err);
                             }
-                        } else {
+                        }
+                    }
+                }
+            }
+        }
+        if (!isModelVariableCycleFree(model, hintList)) {
+            ErrorPtr err = std::make_shared<Error>();
+            std::string des;
+            std::string loops;
+            loops = hintList.size() > 1 ? " loops" : " loop";
+            for (auto &s : hintList) {
+                des += s;
+            }
+            err->setDescription("Cyclic variables exist, " + std::to_string(hintList.size()) + loops + " found (Component, Variable):\n" + des);
+            err->setModel(model);
+            err->setKind(Error::Kind::VARIABLE);
+            mValidator->addError(err);
+        } else {
+            // Check reset orders among connected variable sets.  NB only safe when model variable network is cycle-free as not checked here
+            std::vector<libcellml::VariablePtr> totalVariableDoneList;
+
+            for (size_t c = 0; c < model->componentCount(); ++c) {
+                ComponentPtr component = model->component(c);
+                for (size_t v = 0; v < component->variableCount(); ++v) {
+                    VariablePtr variable = component->variable(v);
+                    if (variable->equivalentVariableCount() == 0) {
+                        continue; // skip if there are no equivalent variables
+                    }
+                    if ((std::find(totalVariableDoneList.begin(), totalVariableDoneList.end(), variable) != totalVariableDoneList.end())) {
+                        continue; // skip if we've checked this variable before
+                    }
+
+                    // Retrieving connected variable order set
+                    std::vector<libcellml::VariablePtr> localDoneList;
+                    std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
+                    fetchConnectedResets(variable, resetMap, localDoneList);
+
+                    totalVariableDoneList.insert(totalVariableDoneList.end(), localDoneList.begin(), localDoneList.end());
+
+                    for (auto const &order : resetMap) {
+                        if (order.second.size() > 1) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "'  which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
-                            err->setModel(model);
-                            err->setKind(Error::Kind::CONNECTION);
+                            std::string des = "Non-unique reset order of '" + order.first + "' found within equivalent variable set:";
+                            for (auto const &r : order.second) {
+                                auto *parent = static_cast<Component *>(r->variable()->parent());
+                                des += "\n  - variable '" + r->variable()->name() + "' in component '" + parent->name() + "' reset with order '" + order.first + "'";
+                            }
+                            err->setDescription(des);
                             mValidator->addError(err);
                         }
                     }
@@ -1109,7 +1173,123 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     }
 }
 
-// TODO: validateEncapsulations
+void Validator::ValidatorImpl::fetchConnectedResets(const VariablePtr &variable, std::map<std::string, std::vector<libcellml::ResetPtr>> &resetMap, std::vector<libcellml::VariablePtr> &localDoneList)
+{
+    // Get all connected variables
+    for (size_t e = 0; e < variable->equivalentVariableCount(); ++e) {
+        VariablePtr equiv = variable->equivalentVariable(e);
+        if ((std::find(localDoneList.begin(), localDoneList.end(), equiv) != localDoneList.end())) {
+            continue; // skip if we've checked this variable before
+        }
+        // Look for resets of the equiv variable and add to resetList
+        auto *component = static_cast<Component *>(equiv->parent());
+        for (size_t r = 0; r < component->resetCount(); ++r) {
+            ResetPtr reset = component->reset(r);
+            if (reset->variable()->name() == equiv->name()) {
+                resetMap[std::to_string(reset->order())].push_back(reset);
+            }
+        }
+        localDoneList.push_back(equiv);
+        fetchConnectedResets(equiv, resetMap, localDoneList);
+    }
+}
+
+bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList)
+{
+    bool found = false;
+    std::deque<libcellml::VariablePtr> checkList = {};
+    std::vector<std::deque<libcellml::VariablePtr>> totalList = {};
+    std::vector<libcellml::VariablePtr> allVariableList = {};
+
+    if (model->componentCount() > 0) {
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            ComponentPtr component = model->component(i);
+
+            for (size_t j = 0; j < component->variableCount(); ++j) {
+                VariablePtr variable = component->variable(j);
+
+                if (variable->equivalentVariableCount() < 2) {
+                    continue; // one equivalent variable cannot make a loop
+                }
+                if ((std::find(allVariableList.begin(), allVariableList.end(), variable) != allVariableList.end())) {
+                    continue; // skip if we've checked this variable before
+                }
+                for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                    std::deque<libcellml::VariablePtr>().swap(checkList);
+                    checkList.push_back(variable);
+
+                    VariablePtr eq = variable->equivalentVariable(k);
+
+                    if (cycleVariableFound(variable, eq, checkList, allVariableList)) {
+                        totalList.push_back(checkList);
+                        found = true;
+                    }
+                }
+            }
+        }
+    }
+    if (found) {
+        // Only report the loops which start with the lowest alphabetical variable name to reduce duplicate reporting
+        for (auto &list : totalList) {
+            std::string min = list.front()->name();
+            bool useMe = true;
+            for (auto &var : list) {
+                if (min.compare(var->name()) > 0) {
+                    useMe = false;
+                    break;
+                }
+            }
+            if (useMe) {
+                std::string description;
+                std::string reverseDescription;
+                std::string separator;
+
+                for (VariablePtr &v : list) {
+                    auto *parent = static_cast<Component *>(v->parent());
+                    description += separator + "('" + parent->name() + "', '" + v->name() + "')";
+                    reverseDescription = "('" + parent->name() + "', '" + v->name() + "')" + separator + reverseDescription;
+                    separator = " -> ";
+                }
+                description += "\n";
+                reverseDescription += "\n";
+
+                if ((std::find(hintList.begin(), hintList.end(), description) == hintList.end())
+                    && (std::find(hintList.begin(), hintList.end(), reverseDescription) == hintList.end())) {
+                    hintList.push_back(description);
+                }
+            }
+        }
+    }
+    return (!found);
+}
+
+bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariablePtr &child,
+                                                  std::deque<libcellml::VariablePtr> &checkList,
+                                                  std::vector<libcellml::VariablePtr> &allVariableList)
+{
+    allVariableList.push_back(child);
+
+    if (std::find(checkList.begin(), checkList.end(), child) != checkList.end()) {
+        checkList.push_back(child);
+        // Removing items from the start of the loop to avoid lasso shapes
+        while (checkList.front() != checkList.back()) {
+            checkList.pop_front();
+        }
+        return true;
+    }
+
+    checkList.push_back(child);
+    for (size_t k = 0; k < child->equivalentVariableCount(); ++k) {
+        VariablePtr eq = child->equivalentVariable(k);
+        if (eq == parent) {
+            continue;
+        }
+        if (cycleVariableFound(child, eq, checkList, allVariableList)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
 {

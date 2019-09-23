@@ -24,7 +24,7 @@ limitations under the License.
 namespace libcellml {
 
 class XmlAttribute; /**< Forward declaration of the internal XmlAttribute class. */
-typedef std::shared_ptr<XmlAttribute> XmlAttributePtr; /**< Type definition for shared XML attribute pointer. */
+using XmlAttributePtr = std::shared_ptr<XmlAttribute>; /**< Type definition for shared XML attribute pointer. */
 
 /**
  * @brief The XmlAttribute class.
@@ -55,8 +55,20 @@ public:
      *
      * @return A @c std::string representation of the XML namespace URI.
      */
-
     std::string namespaceUri() const;
+
+    /**
+     * @brief Test if this XmlAttribute is in the given namespace.
+     *
+     * Test if this XmlAttribute is in the given namespace. Return @c true
+     * if this XmlAttribute is in the given namespace and @c false otherwise.
+     *
+     * @param ns The @c char namespace in which the attribute is in.
+     *
+     * @return @c true if this XmlAttribute is in the namespace
+     * specified by @p ns and @c false otherwise.
+     */
+    bool inNamespaceUri(const char *ns);
 
     /**
      * @brief Check if this XmlAttribute is of the named attribute type in the
@@ -64,7 +76,7 @@ public:
      *
      * Checks whether this XmlAttribute has the argument attribute type name in
      * the given namespace.
-     * Returns @ true if so, and @c false otherwise.
+     * Returns @c true if so, and @c false otherwise.
      *
      * @param name The @c char attribute type name to check for.
      * @param ns The @c char namespace in which the attribute

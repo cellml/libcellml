@@ -101,14 +101,19 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -Wno-global-constructors
       -Wno-missing-prototypes
       -Wno-padded
-      -Wno-reserved-id-macro
     )
 
-  if(NOT "${_TARGET}" STREQUAL "cellml")
-    list(APPEND _COMPILE_OPTIONS
-      --system-header-prefix=gtest/
-    )
-  endif()
+    if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)
+      list(APPEND _COMPILE_OPTIONS
+        -Wno-reserved-id-macro
+      )
+    endif()
+
+    if(NOT "${_TARGET}" STREQUAL "cellml")
+      list(APPEND _COMPILE_OPTIONS
+        --system-header-prefix=gtest/
+      )
+    endif()
 
     set_target_properties(${_TARGET} PROPERTIES
       COMPILE_OPTIONS "${_COMPILE_OPTIONS}"
@@ -118,14 +123,12 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
   if(CLANG_TIDY_AVAILABLE)
     if(NOT "${_TARGET}" STREQUAL "cellml")
         set(_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG -cppcoreguidelines-pro-type-vararg)
-        set(_NO_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS -cppcoreguidelines-special-member-functions)
-        set(_NO_HICPP_SPECIAL_MEMBER_FUNCTIONS -hicpp-special-member-functions)
         set(_NO_HICPP_VARARG -hicpp-vararg)
     endif()
 
     # The full list of Clang-Tidy checks can be found at
     # https://clang.llvm.org/extra/clang-tidy/checks/list.html
-    set(_CLANG_TIDY_WARNINGS
+    set(_CLANG_TIDY_CHECKS
       -*
       bugprone-*
       cert-*
@@ -136,17 +139,19 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -cppcoreguidelines-pro-type-reinterpret-cast
       ${_NO_CPPCOREGUIDELINES_PRO_TYPE_VARARG}
       -cppcoreguidelines-slicing
-      ${_NO_CPPCOREGUIDELINES_SPECIAL_MEMBER_FUNCTIONS}
+      -cppcoreguidelines-special-member-functions
       fuchsia-*
       -fuchsia-default-arguments
+      -fuchsia-multiple-inheritance
       -fuchsia-statically-constructed-objects
       google-*
       -google-readability-todo
       -google-runtime-references
       hicpp-*
-      ${_NO_HICPP_SPECIAL_MEMBER_FUNCTIONS}
+      -hicpp-special-member-functions
       ${_NO_HICPP_VARARG}
       llvm-*
+      -llvm-header-guard
       misc-*
       -misc-non-private-member-variables-in-classes
       modernize-*
@@ -157,12 +162,26 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -readability-magic-numbers
     )
     string(REPLACE ";" ","
-           _CLANG_TIDY_WARNINGS "${_CLANG_TIDY_WARNINGS}")
+           _CLANG_TIDY_CHECKS "${_CLANG_TIDY_CHECKS}")
     if(LIBCELLML_TREAT_WARNINGS_AS_ERRORS)
-      set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_WARNINGS}")
+      set(_CLANG_TIDY_WARNINGS_AS_ERRORS ";-warnings-as-errors=${_CLANG_TIDY_CHECKS}")
     endif()
+
+    if("${CMAKE_GENERATOR}" STREQUAL "Ninja")
+      set(_HEADER_FILTER_DIR ..)
+    else()
+      set(_HEADER_FILTER_DIR ${CMAKE_SOURCE_DIR})
+    endif()
+
+    set(_HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}/src/")
+
+    string(REPLACE "." "\\\."
+           _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
+    string(REPLACE "/" "\\\/"
+           _HEADER_FILTER_DIR "${_HEADER_FILTER_DIR}")
+
     set_target_properties(${_TARGET} PROPERTIES
-      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_WARNINGS}${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
+      CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${_CLANG_TIDY_CHECKS};-header-filter=${_HEADER_FILTER_DIR}.*${_CLANG_TIDY_WARNINGS_AS_ERRORS}"
     )
   endif()
 endfunction()
