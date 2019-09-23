@@ -24,6 +24,13 @@ namespace libcellml {
 
 class Generator;
 
+/**
+ * @brief The GeneratorVariable class.
+ *
+ * The GeneratorVariable class is for representing a variable in the context
+ * of a CellML Generator, i.e. a constant, a computed constant or an algebraic
+ * variable.
+ */
 class LIBCELLML_EXPORT GeneratorVariable
 {
     friend class Generator;
@@ -67,6 +74,11 @@ private:
     GeneratorVariableImpl *mPimpl;
 };
 
+/**
+ * @brief The Generator class.
+ *
+ * The Generator class is for representing a CellML Generator.
+ */
 class LIBCELLML_EXPORT Generator: public Logger
 {
 public:

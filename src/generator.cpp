@@ -43,6 +43,11 @@ namespace libcellml {
 
 static const size_t MAX_SIZE_T = std::numeric_limits<size_t>::max();
 
+/**
+ * @brief The GeneratorVariable::GeneratorVariableImpl struct.
+ *
+ * The private implementation for the GeneratorVariable class.
+ */
 struct GeneratorVariable::GeneratorVariableImpl
 {
     VariablePtr mVariable;
@@ -536,6 +541,11 @@ bool GeneratorEquation::check(size_t &equationOrder, size_t &stateIndex,
     return relevantCheck;
 }
 
+/**
+ * @brief The Generator::GeneratorImpl struct.
+ *
+ * The private implementation for the Generator class.
+ */
 struct Generator::GeneratorImpl
 {
     Generator *mGenerator = nullptr;

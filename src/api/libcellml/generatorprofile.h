@@ -20,6 +20,11 @@ limitations under the License.
 
 namespace libcellml {
 
+/**
+ * @brief The GeneratorProfile class.
+ *
+ * The GeneratorProfile class is for representing a CellML Generator Profile.
+ */
 class LIBCELLML_EXPORT GeneratorProfile
 {
 public:
