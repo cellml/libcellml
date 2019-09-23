@@ -19,15 +19,13 @@ limitations under the License.
 #include "xmldoc.h"
 
 #include "libcellml/component.h"
-#include "libcellml/error.h"
 #include "libcellml/importsource.h"
-#include "libcellml/model.h"
 #include "libcellml/reset.h"
-#include "libcellml/units.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <algorithm>
 #include <cmath>
 #include <deque>
 #include <map>
@@ -47,7 +45,7 @@ namespace libcellml {
  */
 struct Validator::ValidatorImpl
 {
-    Validator *mValidator;
+    Validator *mValidator = nullptr;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -237,93 +235,79 @@ struct Validator::ValidatorImpl
     /**
     * @brief Validate that equivalent variable pairs in the @p model
     * have equivalent units.
-    * @cellml2_19 Validate that equivalent variable pairs in the @p model
-    * have equivalent units
     * Any errors will be logged in the @c Validator.
     *
     * @param model The model containing the variables
     * @param v1 The variable which may contain units.
     * @param v2 The equivalent variable which may contain units.
-    * @param hints String containing error messages to be passed back to calling function for logging
+    * @param hints String containing error messages to be passed back to the calling function for logging.
     */
     bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints);
 
     /**
-    * @brief Utility function used by unitsAreEquivalent to compare base units of two varaibles
+    * @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
     *
-    * @param model The model containing the variables
-    * @param unitmap A list of the exponents of base varaibles.
+    * @param model The model containing the variables.
+    * @param unitMap A list of the exponents of base variables.
     * @param uName String name of the current variable being investigated.
     * @param standardList Nested map of the conversion between built-in units and the base units they contain
-    * @param uExp Exponent of the current unit in its parent.  
+    * @param uExp Exponent of the current unit in its parent.
+    * @param direction Specify whether we want to increment (1) or decrement (-1).
     */
-    void incrementBaseUnitCount(const ModelPtr &model,
-                                std::map<std::string, double> &unitmap,
-                                double &multmap,
-                                const std::string &uName,
-                                const double &uExp,
-                                const double &logMult);
+    void updateBaseUnitCount(const ModelPtr &model,
+                             std::map<std::string, double> &unitMap,
+                             const std::string &uName,
+                             double uExp, double logMult, int direction);
 
     /**
-    * @brief Utility function used by unitsAreEquivalent to compare base units of two varaibles
+    * @brief Checks dependency hierarchies of units in the model.
     *
-    * @param model The model containing the variables
-    * @param unitmap A list of the exponents of base varaibles.
-    * @param uName String name of the current variable being investigated.
-    * @param standardList Nested map of the conversion between built-in units and the base units they contain
-    * @param uExp Exponent of the current unit in its parent.  
-    */
-    void decrementBaseUnitCount(const ModelPtr &model,
-                                std::map<std::string, double> &unitmap,
-                                double &multmap,
-                                const std::string &uName,
-                                const double &uExp,
-                                const double &logMult);
-
-    /**
-    * @brief Checks dependency heirarchies of units in the model 
-    *
-    * @param model The model containing the units to be tested
+    * @param model The model containing the units to be tested.
     */
     void validateNoUnitsAreCyclic(const ModelPtr &model);
 
     /**
-    * @brief Utility function called recursively by validateNoUnitsAreCyclic
+    * @brief Utility function called recursively by validateNoUnitsAreCyclic.
     *
-    * @param model The model containing the units to be tested
-    * @param parent The current Units pointer to test
-    * @param history A vector of the chained dependencies.  Cyclic variables exist where the first and 
-    *                last units are equal.
+    * @param model The model containing the units to be tested.
+    * @param parent The current @c Units pointer to test.
+    * @param history A vector of the chained dependencies. Cyclic variables exist where the first and last units are equal.
+    * @param errorList An array of loops, returned so that the reported errors are not too repetitive.
     */
     void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                            std::vector<std::string> &history);
+                            std::vector<std::string> &history,
+                            std::vector<std::vector<std::string>> &errorList);
 
     /**
     * @brief Utility function called recursively from the @c isModelVariableCycleFree function
     *
-    * @param parent Previous variable
-    * @param child Connected variable to start checking from
-    * @param checkList The helper string returned containing the list(s) of cyclic variables
+    * @param parent Previous variable.
+    * @param child Connected variable to start checking from.
+    * @param checkList The helper string returned containing the list(s) of cyclic variables.
+    * @param allVariableList The list of all variables.
     */
     bool cycleVariableFound(VariablePtr &parent, VariablePtr &child,
                             std::deque<libcellml::VariablePtr> &checkList,
                             std::vector<libcellml::VariablePtr> &allVariableList);
 
     /**
-    * @brief Validate that there are no cycles in the equivalance network in the @p model
+    * @brief Validate that there are no cycles in the equivalance network.
+    *
+    * Validate that there are no cycles in the equivalance network in the @p model
     * using the CellML 2.0 Specification.  Called from the @c validateConnections function.
     * Any errors will be logged in the @c Validator.
     *
     * @param model The model which may contain variable connections to validate.
-    * @param hintList The helper string returned containing the list(s) of cyclic variables
+    * @param hintList The helper string returned containing the list(s) of cyclic variables.
     */
     bool isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList);
 
     /**
      * @brief Validate that within a connected variable set, any associated reset has an unique order value.
-     * @param variable The variable to check
-     * @param resetMap Returns a map of resets indexed by the order connected through the equivalent variable network
-     * @param localDoneList Returns a list of previously checked varaibles to save time
+     *
+     * @param variable The variable to check.
+     * @param resetMap Returns a map of resets indexed by the order connected through the equivalent variable network.
+     * @param localDoneList Returns a list of previously checked varaibles to save time.
      */
     void fetchConnectedResets(const VariablePtr &variable, std::map<std::string, std::vector<libcellml::ResetPtr>> &resetMap, std::vector<libcellml::VariablePtr> &localDoneList);
 };
@@ -362,7 +346,7 @@ Validator &Validator::operator=(Validator rhs)
 
 void Validator::swap(Validator &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Validator::validateModel(const ModelPtr &model)
@@ -500,7 +484,7 @@ void Validator::validateModel(const ModelPtr &model)
         }
     }
 
-    // Check that unit relationships are not cyclical
+    // Check that unit relationships are not cyclical.
     if (model->unitsCount() > 0) {
         mPimpl->validateNoUnitsAreCyclic(model);
     }
@@ -579,7 +563,7 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         // Check for a matching standard units.
         if (isStandardUnitName(units->name())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Units is named '" + units->name() + "', which is a protected standard unit name.");
+            err->setDescription("Units is named '" + units->name() + "' which is a protected standard unit name.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNITS_STANDARD);
             mValidator->addError(err);
@@ -601,7 +585,6 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     double exponent;
     double multiplier;
 
-    // TODO This function silently sets invalid numbers to 1.0, maybe should give a better error message?
     units->unitAttributes(index, reference, prefix, exponent, multiplier, id);
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
@@ -622,7 +605,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         if (!isStandardPrefixName(prefix)) {
             if (!isCellMLInteger(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or a SI prefix.");
+                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
@@ -660,8 +643,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
-        auto component = static_cast<Component *>(variable->parent());
-        auto model = static_cast<Model *>(component->parent());
+        ComponentPtr component = variable->parentComponent();
+        ModelPtr model = component->parentModel();
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
@@ -911,7 +894,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) && (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("MathML ci element has the child text '" + textNode + "', which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
+                            err->setDescription("MathML ci element has the child text '" + textNode + "' which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
                             err->setComponent(component);
                             err->setKind(Error::Kind::MATHML);
                             mValidator->addError(err);
@@ -974,7 +957,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            auto model = static_cast<Model *>(component->parent());
+            ModelPtr model = component->parentModel();
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
@@ -1090,13 +1073,13 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                         // TODO: add check for cyclical connections (17.10.5)
                         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' with non-matching units of '" + equivalentVariable->units() + "'. The mismatch is: " + hints);
+                            err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
                             err->setModel(model);
                             err->setKind(Error::Kind::UNITS);
                             mValidator->addError(err);
                         }
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
-                            auto component2 = static_cast<Component *>(equivalentVariable->parent());
+                            auto component2 = equivalentVariable->parentComponent();
                             // Check that the components of the two equivalent variables are not the same
                             std::string c1name = component->name();
                             std::string c2name = component2->name();
@@ -1111,7 +1094,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             // Check that the equivalent variable has a valid parent component.
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
+                                err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                                 err->setModel(model);
                                 err->setKind(Error::Kind::CONNECTION);
                                 mValidator->addError(err);
@@ -1160,7 +1143,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             ErrorPtr err = std::make_shared<Error>();
                             std::string des = "Non-unique reset order of '" + order.first + "' found within equivalent variable set:";
                             for (auto const &r : order.second) {
-                                auto *parent = static_cast<Component *>(r->variable()->parent());
+                                auto parent = r->variable()->parentComponent();
                                 des += "\n  - variable '" + r->variable()->name() + "' in component '" + parent->name() + "' reset with order '" + order.first + "'";
                             }
                             err->setDescription(des);
@@ -1182,7 +1165,7 @@ void Validator::ValidatorImpl::fetchConnectedResets(const VariablePtr &variable,
             continue; // skip if we've checked this variable before
         }
         // Look for resets of the equiv variable and add to resetList
-        auto *component = static_cast<Component *>(equiv->parent());
+        auto component = equiv->parentComponent();
         for (size_t r = 0; r < component->resetCount(); ++r) {
             ResetPtr reset = component->reset(r);
             if (reset->variable()->name() == equiv->name()) {
@@ -1245,7 +1228,7 @@ bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, s
                 std::string separator;
 
                 for (VariablePtr &v : list) {
-                    auto *parent = static_cast<Component *>(v->parent());
+                    auto parent = v->parentComponent();
                     description += separator + "('" + parent->name() + "', '" + v->name() + "')";
                     reverseDescription = "('" + parent->name() + "', '" + v->name() + "')" + separator + reverseDescription;
                     separator = " -> ";
@@ -1290,6 +1273,8 @@ bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariableP
     }
     return false;
 }
+
+// TODO: validateEncapsulations.
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
 {
@@ -1362,224 +1347,173 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
                                                   const VariablePtr &v2,
                                                   std::string &hints)
 {
-    bool status;
-    double multmap = 0.0;
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr mu = std::make_shared<libcellml::Units>();
-    std::map<std::string, double> unitmap = {};
+    std::map<std::string, double> unitMap = {};
 
-    for (const auto &pos : baseUnitsList) {
-        unitmap[pos] = 0.0;
+    for (const auto &baseUnits : baseUnitsList) {
+        unitMap[baseUnits] = 0.0;
     }
 
-    std::string myRef;
-    std::string myPre;
-    std::string myId;
-    std::map<std::string, double> myBase;
+    std::string ref;
     hints = "";
 
     if (model->hasUnits(v1->units())) {
+        libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
         u1 = model->units(v1->units());
-        incrementBaseUnitCount(model, unitmap, multmap, u1->name(), 1, 0);
-    } else if (unitmap.find(v1->units()) != unitmap.end()) {
-        myRef = v1->units();
-        unitmap.at(myRef) += 1.0;
+        updateBaseUnitCount(model, unitMap, u1->name(), 1, 0, 1);
+    } else if (unitMap.find(v1->units()) != unitMap.end()) {
+        ref = v1->units();
+        unitMap.at(ref) += 1.0;
     } else if (isStandardUnitName(v1->units())) {
-        incrementBaseUnitCount(model, unitmap, multmap, v1->units(), 1, 0);
+        updateBaseUnitCount(model, unitMap, v1->units(), 1, 0, 1);
     }
 
     if (model->hasUnits(v2->units())) {
+        libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
         u2 = model->units(v2->units());
-        decrementBaseUnitCount(model, unitmap, multmap, u2->name(), 1, 0);
-    } else if (unitmap.find(v2->units()) != unitmap.end()) {
-        myRef = v2->units();
-        unitmap.at(v2->units()) -= 1.0;
+        updateBaseUnitCount(model, unitMap, u2->name(), 1, 0, -1);
+    } else if (unitMap.find(v2->units()) != unitMap.end()) {
+        ref = v2->units();
+        unitMap.at(v2->units()) -= 1.0;
     } else if (isStandardUnitName(v2->units())) {
-        decrementBaseUnitCount(model, unitmap, multmap, v2->units(), 1, 0);
+        updateBaseUnitCount(model, unitMap, v2->units(), 1, 0, -1);
     }
 
-    // Remove "dimensionless" from base unit testing
-    unitmap.erase("dimensionless");
+    // Remove "dimensionless" from base unit testing.
+    unitMap.erase("dimensionless");
 
-    status = true;
-    for (const auto &basepair : unitmap) {
-        if (basepair.second != 0.0) {
-            std::string num = std::to_string(basepair.second);
+    bool status = true;
+    for (const auto &basePair : unitMap) {
+        if (basePair.second != 0.0) {
+            std::string num = std::to_string(basePair.second);
             num.erase(num.find_last_not_of('0') + 1, num.length());
             if (num.back() == '.') {
                 num.pop_back();
             }
-            hints += basepair.first + "^" + num + ", ";
+            hints += basePair.first + "^" + num + ", ";
             status = false;
         }
     }
-    // TODO Removing multiplier reporting until error-levels are enabled and multiplier testing can be a warning
-    // if (multmap != 0.0) {
-    //     std::string num = std::to_string(multmap);
-    //     num.erase(num.find_last_not_of('0') + 1, num.length());
-    //     if (num.back() == '.'){
-    //         num.pop_back();
-    //     }
-    //     hints += "multiplication factor of 10^" + num + ", ";
-    //     status = false;
-    // }
+
+    // Remove the final trailing comma from the hints string.
+    if (hints.length() > 2) {
+        hints.pop_back();
+        hints.back() = '.';
+    }
 
     return status;
 }
 
-void Validator::ValidatorImpl::incrementBaseUnitCount(const ModelPtr &model,
-                                                      std::map<std::string, double> &unitmap,
-                                                      double &multmap,
-                                                      const std::string &uName,
-                                                      const double &uExp,
-                                                      const double &logMult)
+void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
+                                                   std::map<std::string, double> &unitMap,
+                                                   const std::string &uName,
+                                                   double uExp, double logMult,
+                                                   int direction)
 {
-    std::string myRef;
-    std::string myPre;
-    std::string myId;
-    double myExp;
-    double myMult;
-    double m;
-    std::map<std::string, double> myBase;
-
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    libcellml::UnitsPtr uRef = std::make_shared<libcellml::Units>();
-
     if (model->hasUnits(uName)) {
-        u = model->units(uName);
+        libcellml::UnitsPtr u = model->units(uName);
         if (!u->isBaseUnit()) {
+            std::string ref;
+            std::string pre;
+            std::string id;
+            double exp;
+            double mult;
+            double expMult;
             for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->unitAttributes(i, myRef, myPre, myExp, m, myId);
-                myMult = std::log10(m);
-                if (!isStandardUnitName(myRef)) {
-                    incrementBaseUnitCount(model, unitmap, multmap, myRef,
-                                           uExp * myExp, // effective exponent
-                                           logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp); // effective multiplier
+                u->unitAttributes(i, ref, pre, exp, expMult, id);
+                mult = std::log10(expMult);
+                if (!isStandardUnitName(ref)) {
+                    updateBaseUnitCount(model, unitMap, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
                 } else {
-                    myBase = standardUnitsList.at(myRef);
-                    for (const auto &iter : myBase) {
-                        unitmap.at(iter.first) += iter.second * myExp * uExp;
+                    for (const auto &iter : standardUnitsList.at(ref)) {
+                        unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
                     }
-                    multmap += logMult + (standardMultiplierList.at(myRef) + myMult + standardPrefixList.at(myPre)) * uExp;
                 }
             }
-        } else if (unitmap.find(uName) == unitmap.end()) {
-            // Empty unit, add to base list
-            unitmap.emplace(std::pair<std::string, double>(uName, uExp));
-            multmap += logMult;
+        } else if (unitMap.find(uName) == unitMap.end()) {
+            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
         }
     } else if (isStandardUnitName(uName)) {
-        myBase = standardUnitsList.at(uName);
-        for (const auto &iter : myBase) {
-            unitmap.at(iter.first) += iter.second * uExp;
+        for (const auto &iter : standardUnitsList.at(uName)) {
+            unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
-        multmap += logMult + standardMultiplierList.at(uName);
-    }
-}
-
-void Validator::ValidatorImpl::decrementBaseUnitCount(const ModelPtr &model,
-                                                      std::map<std::string, double> &unitmap,
-                                                      double &multmap,
-                                                      const std::string &uName,
-                                                      const double &uExp,
-                                                      const double &logMult)
-{
-    std::string myRef;
-    std::string myPre;
-    std::string myId;
-    double myExp;
-    double myMult;
-    double m;
-    std::map<std::string, double> myBase;
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-
-    if (model->hasUnits(uName)) {
-        u = model->units(uName);
-
-        if (!u->isBaseUnit()) {
-            for (size_t i = 0; i < u->unitCount(); ++i) {
-                u->unitAttributes(i, myRef, myPre, myExp, m, myId);
-                myMult = std::log10(m);
-                if (!isStandardUnitName(myRef)) {
-                    decrementBaseUnitCount(model, unitmap, multmap, myRef,
-                                           myExp * uExp,
-                                           logMult + myMult * uExp + standardPrefixList.at(myPre) * uExp); // effective multiplier
-                } else {
-                    myBase = standardUnitsList.at(myRef);
-                    for (const auto &iter : myBase) {
-                        unitmap.at(iter.first) -= iter.second * myExp * uExp;
-                    }
-                    multmap -= logMult + (standardMultiplierList.at(myRef) + myMult + standardPrefixList.at(myPre)) * uExp;
-                }
-            }
-        } else if (unitmap.find(uName) == unitmap.end()) {
-            unitmap.emplace(std::pair<std::string, double>(uName, -1.0 * uExp));
-            multmap -= logMult;
-        }
-    } else if (isStandardUnitName(uName)) {
-        myBase = standardUnitsList.at(uName);
-        for (const auto &iter : myBase) {
-            unitmap.at(iter.first) -= iter.second * uExp;
-        }
-        multmap -= logMult + standardMultiplierList.at(uName);
     }
 }
 
 void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
 {
     std::vector<std::string> history;
+    std::vector<std::vector<std::string>> errorList;
+
     for (size_t i = 0; i < model->unitsCount(); ++i) {
-        // Test each units' dependencies for presence of self in tree
+        // Test each units' dependencies for presence of self in tree.
         UnitsPtr u = model->units(i);
         history.push_back(u->name());
-        checkUnitForCycles(model, u, history);
-        // Have to delete this each time to prevent reinitialisation with previous base variables
+        checkUnitForCycles(model, u, history, errorList);
+        // Have to delete this each time to prevent reinitialisation with previous base variables.
         std::vector<std::string>().swap(history);
+    }
+
+    if (!errorList.empty()) {
+        std::vector<std::map<std::string, bool>> reportedErrorList;
+        for (auto &errors : errorList) {
+            std::map<std::string, bool> hash;
+
+            for (auto &e : errors) {
+                hash.insert(std::pair<std::string, bool>(e, true));
+            }
+
+            // Only return as error if this combo has not been reported already.
+            if (std::find(reportedErrorList.begin(), reportedErrorList.end(), hash) == reportedErrorList.end()) {
+                ErrorPtr err = std::make_shared<Error>();
+                std::string des = "'";
+                for (size_t j = 0; j < errors.size() - 1; ++j) {
+                    des += errors[j] + "' -> '";
+                }
+                des += errors[errors.size() - 1] + "'";
+                err->setDescription("Cyclic units exist: " + des);
+                err->setModel(model);
+                err->setKind(Error::Kind::UNITS);
+                mValidator->addError(err);
+                reportedErrorList.push_back(hash);
+            }
+            std::map<std::string, bool>().swap(hash);
+        }
     }
 }
 
 void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
-                                                  std::vector<std::string> &history)
+                                                  std::vector<std::string> &history,
+                                                  std::vector<std::vector<std::string>> &errorList)
 {
     if (parent->isBaseUnit()) {
         return;
     }
 
-    // Recursive function to check for self-referencing in unit definitions
+    // Recursive function to check for self-referencing in unit definitions.
     std::string id;
     std::string ref;
     std::string prefix;
     double exp;
     double mult;
 
-    // Take history, and copy it for each new branch
+    // Take history, and copy it for each new branch.
     for (size_t i = 0; i < parent->unitCount(); ++i) {
         parent->unitAttributes(i, ref, prefix, exp, mult, id);
         if (std::find(history.begin(), history.end(), ref) != history.end()) {
             history.push_back(ref);
             // Print to error output *only* when the first and last units are the same
-            // otherwise we get lasso shapes reported
+            // otherwise we get lasso shapes reported.
             if (history.front() == history.back()) {
-                ErrorPtr err = std::make_shared<Error>();
-                std::string des = "'";
-                for (size_t j = 0; j < history.size() - 1; ++j) {
-                    des += history[j] + "' -> '";
-                }
-                des += history[history.size() - 1] + "'";
-                err->setDescription("Cyclic units exist: " + des);
-                err->setModel(model);
-                err->setKind(Error::Kind::UNITS);
-                mValidator->addError(err);
+                errorList.push_back(history);
             }
         } else {
-            // Step into dependencies if they are not built-in units
+            // Step into dependencies if they are not built-in units.
             if (model->hasUnits(ref)) {
                 UnitsPtr child = model->units(ref);
                 history.push_back(ref);
-                // Making a copy of the history vector to this point
+                // Making a copy of the history vector to this point.
                 std::vector<std::string> child_history(history);
-                checkUnitForCycles(model, child, child_history);
+                checkUnitForCycles(model, child, child_history, errorList);
                 std::vector<std::string>().swap(child_history);
             }
         }
