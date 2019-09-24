@@ -19,17 +19,15 @@ limitations under the License.
 #include "xmldoc.h"
 
 #include "libcellml/component.h"
-#include "libcellml/error.h"
 #include "libcellml/importsource.h"
-#include "libcellml/model.h"
 #include "libcellml/reset.h"
-#include "libcellml/units.h"
 #include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
 
+#include <algorithm>
+#include <cmath>
 #include <deque>
-#include <iostream>
 #include <map>
 #include <regex>
 #include <sstream>
@@ -47,7 +45,7 @@ namespace libcellml {
  */
 struct Validator::ValidatorImpl
 {
-    Validator *mValidator;
+    Validator *mValidator = nullptr;
 
     /**
      * @brief Validate the @p component using the CellML 2.0 Specification.
@@ -235,31 +233,57 @@ struct Validator::ValidatorImpl
     bool isSupportedMathMLElement(const XmlNodePtr &node);
 
     /**
-    * @brief Utility function called recursively from the @c isModelVariableCycleFree function
-    *
-    * @param parent Previous variable
-    * @param child Connected variable to start checking from
-    * @param checkList The helper string returned containing the list(s) of cyclic variables
-    */
-    bool cycleVariableFound(VariablePtr &parent, VariablePtr &child,
-                            std::deque<libcellml::VariablePtr> &checkList,
-                            std::vector<libcellml::VariablePtr> &allVariableList);
-
-    /**
-    * @brief Validate that there are no cycles in the equivalance network in the @p model
-    * using the CellML 2.0 Specification.  Called from the @c validateConnections function.
+    * @brief Validate that equivalent variable pairs in the @p model
+    * have equivalent units.
     * Any errors will be logged in the @c Validator.
     *
-    * @param model The model which may contain variable connections to validate.
-    * @param hintList The helper string returned containing the list(s) of cyclic variables
+    * @param model The model containing the variables
+    * @param v1 The variable which may contain units.
+    * @param v2 The equivalent variable which may contain units.
+    * @param hints String containing error messages to be passed back to the calling function for logging.
     */
-    bool isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList);
+    bool unitsAreEquivalent(const ModelPtr &model, const VariablePtr &v1, const VariablePtr &v2, std::string &hints);
+
+    /**
+    * @brief Utility function used by unitsAreEquivalent to compare base units of two variables.
+    *
+    * @param model The model containing the variables.
+    * @param unitMap A list of the exponents of base variables.
+    * @param uName String name of the current variable being investigated.
+    * @param standardList Nested map of the conversion between built-in units and the base units they contain
+    * @param uExp Exponent of the current unit in its parent.
+    * @param direction Specify whether we want to increment (1) or decrement (-1).
+    */
+    void updateBaseUnitCount(const ModelPtr &model,
+                             std::map<std::string, double> &unitMap,
+                             const std::string &uName,
+                             double uExp, double logMult, int direction);
+
+    /**
+    * @brief Checks dependency hierarchies of units in the model.
+    *
+    * @param model The model containing the units to be tested.
+    */
+    void validateNoUnitsAreCyclic(const ModelPtr &model);
+
+    /**
+    * @brief Utility function called recursively by validateNoUnitsAreCyclic.
+    *
+    * @param model The model containing the units to be tested.
+    * @param parent The current @c Units pointer to test.
+    * @param history A vector of the chained dependencies. Cyclic variables exist where the first and last units are equal.
+    * @param errorList An array of loops, returned so that the reported errors are not too repetitive.
+    */
+    void checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                            std::vector<std::string> &history,
+                            std::vector<std::vector<std::string>> &errorList);
 
     /**
      * @brief Validate that within a connected variable set, any associated reset has an unique order value.
-     * @param variable The variable to check
-     * @param resetMap Returns a map of resets indexed by the order connected through the equivalent variable network
-     * @param localDoneList Returns a list of previously checked varaibles to save time
+     *
+     * @param variable The variable to check.
+     * @param resetMap Returns a map of resets indexed by the order connected through the equivalent variable network.
+     * @param localDoneList Returns a list of previously checked varaibles to save time.
      */
     void fetchConnectedResets(const VariablePtr &variable, std::map<std::string, std::vector<libcellml::ResetPtr>> &resetMap, std::vector<libcellml::VariablePtr> &localDoneList);
 };
@@ -298,7 +322,7 @@ Validator &Validator::operator=(Validator rhs)
 
 void Validator::swap(Validator &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Validator::validateModel(const ModelPtr &model)
@@ -435,6 +459,12 @@ void Validator::validateModel(const ModelPtr &model)
             mPimpl->validateUnits(units, unitsNames);
         }
     }
+
+    // Check that unit relationships are not cyclical.
+    if (model->unitsCount() > 0) {
+        mPimpl->validateNoUnitsAreCyclic(model);
+    }
+
     // Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
 }
@@ -480,9 +510,30 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     }
     // Check for resets in this component
     if (component->resetCount() > 0) {
+        std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->reset(i);
             validateReset(reset, component);
+            if (reset->isOrderSet()) {
+                resetMap[std::to_string(reset->order())].push_back(reset);
+            }
+        }
+        for (auto const &entry : resetMap) {
+            if (entry.second.size() > 1) {
+                std::map<std::string, bool> nameMap;
+                for (auto const &reset : entry.second) {
+                    auto variableName = reset->variable()->name();
+                    if (nameMap.count(variableName) != 0u) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Non-unique reset order of '" + entry.first + "' found within the reset set of the variable '" + variableName + "' in component '" + component->name() + "'.");
+                        err->setReset(reset);
+                        err->setRule(SpecificationRule::RESET_ORDER);
+                        mValidator->addError(err);
+                    } else {
+                        nameMap[variableName] = true;
+                    }
+                }
+            }
         }
     }
     // Validate math through the private implementation (for XML handling).
@@ -494,7 +545,6 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
 void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::vector<std::string> &unitsNames)
 {
     // Check for a valid name attribute.
-    // TODO: Check for valid base unit reduction (see 17.3)
     if (!isCellmlIdentifier(units->name())) {
         ErrorPtr err = std::make_shared<Error>();
         err->setUnits(units);
@@ -510,14 +560,13 @@ void Validator::ValidatorImpl::validateUnits(const UnitsPtr &units, const std::v
         // Check for a matching standard units.
         if (isStandardUnitName(units->name())) {
             ErrorPtr err = std::make_shared<Error>();
-            err->setDescription("Units is named '" + units->name() + "', which is a protected standard unit name.");
+            err->setDescription("Units is named '" + units->name() + "' which is a protected standard unit name.");
             err->setUnits(units);
             err->setRule(SpecificationRule::UNITS_STANDARD);
             mValidator->addError(err);
         }
     }
     if (units->unitCount() > 0) {
-        // Validate each unit in units.
         for (size_t i = 0; i < units->unitCount(); ++i) {
             validateUnitsUnit(i, units, unitsNames);
         }
@@ -532,6 +581,7 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     std::string id;
     double exponent;
     double multiplier;
+
     units->unitAttributes(index, reference, prefix, exponent, multiplier, id);
     if (isCellmlIdentifier(reference)) {
         if ((std::find(unitsNames.begin(), unitsNames.end(), reference) == unitsNames.end()) && (!isStandardUnitName(reference))) {
@@ -549,14 +599,24 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
         mValidator->addError(err);
     }
     if (!prefix.empty()) {
-        // If the prefix is not in the list of valid prefix names, check if it is a real number.
         if (!isStandardPrefixName(prefix)) {
-            if (!isCellMLReal(prefix)) {
+            if (!isCellMLInteger(prefix)) {
                 ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid real number or a SI prefix.");
+                err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is not a valid integer or an SI prefix.");
                 err->setUnits(units);
                 err->setRule(SpecificationRule::UNIT_PREFIX);
                 mValidator->addError(err);
+            } else {
+                try {
+                    int test = std::stoi(prefix);
+                    (void)test;
+                } catch (std::out_of_range &) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Prefix '" + prefix + "' of a unit referencing '" + reference + "' in units '" + units->name() + "' is too big to be represented as an integer.");
+                    err->setUnits(units);
+                    err->setRule(SpecificationRule::UNIT_PREFIX);
+                    mValidator->addError(err);
+                }
             }
         }
     }
@@ -580,8 +640,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
-        auto component = static_cast<Component *>(variable->parent());
-        auto model = static_cast<Model *>(component->parent());
+        ComponentPtr component = variable->parentComponent();
+        ModelPtr model = component->parentModel();
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
@@ -831,7 +891,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
                         // Check whether we can find this text as a variable name in this component.
                         if ((std::find(variableNames.begin(), variableNames.end(), textNode) == variableNames.end()) && (std::find(bvarNames.begin(), bvarNames.end(), textNode) == bvarNames.end())) {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("MathML ci element has the child text '" + textNode + "', which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
+                            err->setDescription("MathML ci element has the child text '" + textNode + "' which does not correspond with any variable names present in component '" + component->name() + "' and is not a variable defined within a bvar element.");
                             err->setComponent(component);
                             err->setKind(Error::Kind::MATHML);
                             mValidator->addError(err);
@@ -894,7 +954,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            auto model = static_cast<Model *>(component->parent());
+            ModelPtr model = component->parentModel();
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
@@ -992,9 +1052,8 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
-    // Check the components in this model.
+    // Check the connections in this model.
     std::string hints;
-    std::vector<std::string> hintList;
 
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
@@ -1007,8 +1066,16 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
                         // TODO: validate variable interfaces according to 17.10.8
+                        // TODO: add check for cyclical connections (17.10.5)
+                        if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
+                            err->setModel(model);
+                            err->setKind(Error::Kind::UNITS);
+                            mValidator->addError(err);
+                        }
                         if (equivalentVariable->hasEquivalentVariable(variable)) {
-                            auto component2 = static_cast<Component *>(equivalentVariable->parent());
+                            auto component2 = equivalentVariable->parentComponent();
                             // Check that the components of the two equivalent variables are not the same
                             std::string c1name = component->name();
                             std::string c2name = component2->name();
@@ -1023,7 +1090,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                             // Check that the equivalent variable has a valid parent component.
                             if (!component2->hasVariable(equivalentVariable)) {
                                 ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
+                                err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                                 err->setModel(model);
                                 err->setKind(Error::Kind::CONNECTION);
                                 mValidator->addError(err);
@@ -1033,51 +1100,42 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 }
             }
         }
-        if (!isModelVariableCycleFree(model, hintList)) {
-            ErrorPtr err = std::make_shared<Error>();
-            std::string des;
-            std::string loops;
-            loops = hintList.size() > 1 ? " loops" : " loop";
-            for (auto &s : hintList) {
-                des += s;
+        // Check reset orders across variables and their connected variable sets.
+        std::vector<libcellml::VariablePtr> globalVariableDoneList;
+
+        for (size_t componentIndex = 0; componentIndex < model->componentCount(); ++componentIndex) {
+            ComponentPtr component = model->component(componentIndex);
+            for (size_t resetIndex = 0; resetIndex < component->resetCount(); ++resetIndex) {
+                auto const reset = component->reset(resetIndex);
+
             }
-            err->setDescription("Cyclic variables exist, " + std::to_string(hintList.size()) + loops + " found (Component, Variable):\n" + des);
-            err->setModel(model);
-            err->setKind(Error::Kind::VARIABLE);
-            mValidator->addError(err);
-        } else {
-            // Check reset orders among connected variable sets.  NB only safe when model variable network is cycle-free as not checked here
-            std::vector<libcellml::VariablePtr> totalVariableDoneList;
+            for (size_t variableIndex = 0; variableIndex < component->variableCount(); ++variableIndex) {
+                VariablePtr variable = component->variable(variableIndex);
+                if (variable->equivalentVariableCount() == 0) {
+                    continue; // skip if there are no equivalent variables
+                }
+                if ((std::find(globalVariableDoneList.begin(), globalVariableDoneList.end(), variable) != globalVariableDoneList.end())) {
+                    continue; // skip if we've checked this variable before
+                }
 
-            for (size_t c = 0; c < model->componentCount(); ++c) {
-                ComponentPtr component = model->component(c);
-                for (size_t v = 0; v < component->variableCount(); ++v) {
-                    VariablePtr variable = component->variable(v);
-                    if (variable->equivalentVariableCount() == 0) {
-                        continue; // skip if there are no equivalent variables
-                    }
-                    if ((std::find(totalVariableDoneList.begin(), totalVariableDoneList.end(), variable) != totalVariableDoneList.end())) {
-                        continue; // skip if we've checked this variable before
-                    }
+                // Retrieving connected variable order set
+                std::vector<libcellml::VariablePtr> localDoneList;
+                std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
+                fetchConnectedResets(variable, resetMap, localDoneList);
 
-                    // Retrieving connected variable order set
-                    std::vector<libcellml::VariablePtr> localDoneList;
-                    std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
-                    fetchConnectedResets(variable, resetMap, localDoneList);
+                globalVariableDoneList.insert(globalVariableDoneList.end(), localDoneList.begin(), localDoneList.end());
 
-                    totalVariableDoneList.insert(totalVariableDoneList.end(), localDoneList.begin(), localDoneList.end());
-
-                    for (auto const &order : resetMap) {
-                        if (order.second.size() > 1) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            std::string des = "Non-unique reset order of '" + order.first + "' found within equivalent variable set:";
-                            for (auto const &r : order.second) {
-                                auto *parent = static_cast<Component *>(r->variable()->parent());
-                                des += "\n  - variable '" + r->variable()->name() + "' in component '" + parent->name() + "' reset with order '" + order.first + "'";
-                            }
-                            err->setDescription(des);
-                            mValidator->addError(err);
+                for (auto const &order : resetMap) {
+                    if (order.second.size() > 1) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        std::string des = "Non-unique reset order of '" + order.first + "' found within equivalent variable set:";
+                        for (auto const &r : order.second) {
+                            auto parent = r->variable()->parentComponent();
+                            des += "\n  - variable '" + r->variable()->name() + "' in component '" + parent->name() + "' reset with order '" + order.first + "'";
                         }
+                        des += ".";
+                        err->setDescription(des);
+                        mValidator->addError(err);
                     }
                 }
             }
@@ -1094,7 +1152,7 @@ void Validator::ValidatorImpl::fetchConnectedResets(const VariablePtr &variable,
             continue; // skip if we've checked this variable before
         }
         // Look for resets of the equiv variable and add to resetList
-        auto *component = static_cast<Component *>(equiv->parent());
+        auto component = equiv->parentComponent();
         for (size_t r = 0; r < component->resetCount(); ++r) {
             ResetPtr reset = component->reset(r);
             if (reset->variable()->name() == equiv->name()) {
@@ -1104,103 +1162,6 @@ void Validator::ValidatorImpl::fetchConnectedResets(const VariablePtr &variable,
         localDoneList.push_back(equiv);
         fetchConnectedResets(equiv, resetMap, localDoneList);
     }
-}
-
-bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList)
-{
-    bool found = false;
-    std::deque<libcellml::VariablePtr> checkList = {};
-    std::vector<std::deque<libcellml::VariablePtr>> totalList = {};
-    std::vector<libcellml::VariablePtr> allVariableList = {};
-
-    if (model->componentCount() > 0) {
-        for (size_t i = 0; i < model->componentCount(); ++i) {
-            ComponentPtr component = model->component(i);
-
-            for (size_t j = 0; j < component->variableCount(); ++j) {
-                VariablePtr variable = component->variable(j);
-
-                if (variable->equivalentVariableCount() < 2) {
-                    continue; // one equivalent variable cannot make a loop
-                }
-                if ((std::find(allVariableList.begin(), allVariableList.end(), variable) != allVariableList.end())) {
-                    continue; // skip if we've checked this variable before
-                }
-                for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                    std::deque<libcellml::VariablePtr>().swap(checkList);
-                    checkList.push_back(variable);
-
-                    VariablePtr eq = variable->equivalentVariable(k);
-
-                    if (cycleVariableFound(variable, eq, checkList, allVariableList)) {
-                        totalList.push_back(checkList);
-                        found = true;
-                    }
-                }
-            }
-        }
-    }
-    if (found) {
-        // Only report the loops which start with the lowest alphabetical variable name to reduce duplicate reporting
-        for (auto &list : totalList) {
-            std::string min = list.front()->name();
-            bool useMe = true;
-            for (auto &var : list) {
-                if (min.compare(var->name()) > 0) {
-                    useMe = false;
-                    break;
-                }
-            }
-            if (useMe) {
-                std::string description;
-                std::string reverseDescription;
-                std::string separator;
-
-                for (VariablePtr &v : list) {
-                    auto *parent = static_cast<Component *>(v->parent());
-                    description += separator + "('" + parent->name() + "', '" + v->name() + "')";
-                    reverseDescription = "('" + parent->name() + "', '" + v->name() + "')" + separator + reverseDescription;
-                    separator = " -> ";
-                }
-                description += "\n";
-                reverseDescription += "\n";
-
-                if ((std::find(hintList.begin(), hintList.end(), description) == hintList.end())
-                    && (std::find(hintList.begin(), hintList.end(), reverseDescription) == hintList.end())) {
-                    hintList.push_back(description);
-                }
-            }
-        }
-    }
-    return (!found);
-}
-
-bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariablePtr &child,
-                                                  std::deque<libcellml::VariablePtr> &checkList,
-                                                  std::vector<libcellml::VariablePtr> &allVariableList)
-{
-    allVariableList.push_back(child);
-
-    if (std::find(checkList.begin(), checkList.end(), child) != checkList.end()) {
-        checkList.push_back(child);
-        // Removing items from the start of the loop to avoid lasso shapes
-        while (checkList.front() != checkList.back()) {
-            checkList.pop_front();
-        }
-        return true;
-    }
-
-    checkList.push_back(child);
-    for (size_t k = 0; k < child->equivalentVariableCount(); ++k) {
-        VariablePtr eq = child->equivalentVariable(k);
-        if (eq == parent) {
-            continue;
-        }
-        if (cycleVariableFound(child, eq, checkList, allVariableList)) {
-            return true;
-        }
-    }
-    return false;
 }
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
@@ -1267,6 +1228,184 @@ bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
         mValidator->addError(err);
     }
     return result;
+}
+
+bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
+                                                  const VariablePtr &v1,
+                                                  const VariablePtr &v2,
+                                                  std::string &hints)
+{
+    std::map<std::string, double> unitMap = {};
+
+    for (const auto &baseUnits : baseUnitsList) {
+        unitMap[baseUnits] = 0.0;
+    }
+
+    std::string ref;
+    hints = "";
+
+    if (model->hasUnits(v1->units())) {
+        libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+        u1 = model->units(v1->units());
+        updateBaseUnitCount(model, unitMap, u1->name(), 1, 0, 1);
+    } else if (unitMap.find(v1->units()) != unitMap.end()) {
+        ref = v1->units();
+        unitMap.at(ref) += 1.0;
+    } else if (isStandardUnitName(v1->units())) {
+        updateBaseUnitCount(model, unitMap, v1->units(), 1, 0, 1);
+    }
+
+    if (model->hasUnits(v2->units())) {
+        libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+        u2 = model->units(v2->units());
+        updateBaseUnitCount(model, unitMap, u2->name(), 1, 0, -1);
+    } else if (unitMap.find(v2->units()) != unitMap.end()) {
+        ref = v2->units();
+        unitMap.at(v2->units()) -= 1.0;
+    } else if (isStandardUnitName(v2->units())) {
+        updateBaseUnitCount(model, unitMap, v2->units(), 1, 0, -1);
+    }
+
+    // Remove "dimensionless" from base unit testing.
+    unitMap.erase("dimensionless");
+
+    bool status = true;
+    for (const auto &basePair : unitMap) {
+        if (basePair.second != 0.0) {
+            std::string num = std::to_string(basePair.second);
+            num.erase(num.find_last_not_of('0') + 1, num.length());
+            if (num.back() == '.') {
+                num.pop_back();
+            }
+            hints += basePair.first + "^" + num + ", ";
+            status = false;
+        }
+    }
+
+    // Remove the final trailing comma from the hints string.
+    if (hints.length() > 2) {
+        hints.pop_back();
+        hints.back() = '.';
+    }
+
+    return status;
+}
+
+void Validator::ValidatorImpl::updateBaseUnitCount(const ModelPtr &model,
+                                                   std::map<std::string, double> &unitMap,
+                                                   const std::string &uName,
+                                                   double uExp, double logMult,
+                                                   int direction)
+{
+    if (model->hasUnits(uName)) {
+        libcellml::UnitsPtr u = model->units(uName);
+        if (!u->isBaseUnit()) {
+            std::string ref;
+            std::string pre;
+            std::string id;
+            double exp;
+            double mult;
+            double expMult;
+            for (size_t i = 0; i < u->unitCount(); ++i) {
+                u->unitAttributes(i, ref, pre, exp, expMult, id);
+                mult = std::log10(expMult);
+                if (!isStandardUnitName(ref)) {
+                    updateBaseUnitCount(model, unitMap, ref, exp * uExp, logMult + mult * uExp + standardPrefixList.at(pre) * uExp, direction);
+                } else {
+                    for (const auto &iter : standardUnitsList.at(ref)) {
+                        unitMap.at(iter.first) += direction * (iter.second * exp * uExp);
+                    }
+                }
+            }
+        } else if (unitMap.find(uName) == unitMap.end()) {
+            unitMap.emplace(std::pair<std::string, double>(uName, direction * uExp));
+        }
+    } else if (isStandardUnitName(uName)) {
+        for (const auto &iter : standardUnitsList.at(uName)) {
+            unitMap.at(iter.first) += direction * (iter.second * uExp);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::validateNoUnitsAreCyclic(const ModelPtr &model)
+{
+    std::vector<std::string> history;
+    std::vector<std::vector<std::string>> errorList;
+
+    for (size_t i = 0; i < model->unitsCount(); ++i) {
+        // Test each units' dependencies for presence of self in tree.
+        UnitsPtr u = model->units(i);
+        history.push_back(u->name());
+        checkUnitForCycles(model, u, history, errorList);
+        // Have to delete this each time to prevent reinitialisation with previous base variables.
+        std::vector<std::string>().swap(history);
+    }
+
+    if (!errorList.empty()) {
+        std::vector<std::map<std::string, bool>> reportedErrorList;
+        for (auto &errors : errorList) {
+            std::map<std::string, bool> hash;
+
+            for (auto &e : errors) {
+                hash.insert(std::pair<std::string, bool>(e, true));
+            }
+
+            // Only return as error if this combo has not been reported already.
+            if (std::find(reportedErrorList.begin(), reportedErrorList.end(), hash) == reportedErrorList.end()) {
+                ErrorPtr err = std::make_shared<Error>();
+                std::string des = "'";
+                for (size_t j = 0; j < errors.size() - 1; ++j) {
+                    des += errors[j] + "' -> '";
+                }
+                des += errors[errors.size() - 1] + "'";
+                err->setDescription("Cyclic units exist: " + des);
+                err->setModel(model);
+                err->setKind(Error::Kind::UNITS);
+                mValidator->addError(err);
+                reportedErrorList.push_back(hash);
+            }
+            std::map<std::string, bool>().swap(hash);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const UnitsPtr &parent,
+                                                  std::vector<std::string> &history,
+                                                  std::vector<std::vector<std::string>> &errorList)
+{
+    if (parent->isBaseUnit()) {
+        return;
+    }
+
+    // Recursive function to check for self-referencing in unit definitions.
+    std::string id;
+    std::string ref;
+    std::string prefix;
+    double exp;
+    double mult;
+
+    // Take history, and copy it for each new branch.
+    for (size_t i = 0; i < parent->unitCount(); ++i) {
+        parent->unitAttributes(i, ref, prefix, exp, mult, id);
+        if (std::find(history.begin(), history.end(), ref) != history.end()) {
+            history.push_back(ref);
+            // Print to error output *only* when the first and last units are the same
+            // otherwise we get lasso shapes reported.
+            if (history.front() == history.back()) {
+                errorList.push_back(history);
+            }
+        } else {
+            // Step into dependencies if they are not built-in units.
+            if (model->hasUnits(ref)) {
+                UnitsPtr child = model->units(ref);
+                history.push_back(ref);
+                // Making a copy of the history vector to this point.
+                std::vector<std::string> child_history(history);
+                checkUnitForCycles(model, child, child_history, errorList);
+                std::vector<std::string>().swap(child_history);
+            }
+        }
+    }
 }
 
 } // namespace libcellml

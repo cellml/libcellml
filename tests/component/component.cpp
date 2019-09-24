@@ -85,8 +85,8 @@ TEST(Component, setAndUnsetName)
 
 TEST(Component, addAndCountChildren)
 {
-    libcellml::Component parent;
-    parent.setName("parent");
+    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    parent->setName("parent");
     libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
     child1->setName("child1");
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
@@ -96,24 +96,24 @@ TEST(Component, addAndCountChildren)
     libcellml::ComponentPtr child4 = std::make_shared<libcellml::Component>();
     child4->setName("child4");
 
-    EXPECT_EQ(size_t(0), parent.componentCount());
+    EXPECT_EQ(size_t(0), parent->componentCount());
 
-    parent.addComponent(child1);
-    parent.addComponent(child2);
-    parent.addComponent(child3);
-    parent.addComponent(child4);
-    EXPECT_EQ(size_t(4), parent.componentCount());
+    parent->addComponent(child1);
+    parent->addComponent(child2);
+    parent->addComponent(child3);
+    parent->addComponent(child4);
+    EXPECT_EQ(size_t(4), parent->componentCount());
 
     child3->addComponent(child4);
-    parent.addComponent(child3);
-    EXPECT_EQ(size_t(5), parent.componentCount());
+    parent->addComponent(child3);
+    EXPECT_EQ(size_t(5), parent->componentCount());
 
     EXPECT_EQ(size_t(1), child3->componentCount());
 }
 
 TEST(Component, contains)
 {
-    libcellml::Component c;
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c21 = std::make_shared<libcellml::Component>();
@@ -121,12 +121,12 @@ TEST(Component, contains)
     c2->setName("child2");
     c2->addComponent(c21);
 
-    EXPECT_FALSE(c.containsComponent("child1"));
+    EXPECT_FALSE(c->containsComponent("child1"));
 
-    c.addComponent(c1);
-    c.addComponent(c2);
-    EXPECT_TRUE(c.containsComponent(c2));
-    EXPECT_TRUE(c.containsComponent(c21));
+    c->addComponent(c1);
+    c->addComponent(c2);
+    EXPECT_TRUE(c->containsComponent(c2));
+    EXPECT_TRUE(c->containsComponent(c21));
 }
 
 TEST(Component, addChildrenAndSerialise)
@@ -313,7 +313,7 @@ TEST(Component, componentMethods)
     EXPECT_EQ(e1, a);
 
     // Using const version of overloaded method
-    const libcellml::ComponentPtr cS = static_cast<const libcellml::ComponentPtr>(c)->component(0);
+    const libcellml::ComponentPtr cS = c->component(0);
     // Can do this as we just have a const pointer
     cS->setName("gus");
     EXPECT_EQ("gus", cS->name());
@@ -334,7 +334,7 @@ TEST(Component, componentMethods)
 
     EXPECT_EQ(nullptr, c->component(3));
 
-    libcellml::ComponentPtr cSn = static_cast<const libcellml::ComponentPtr>(c)->component("gus");
+    libcellml::ComponentPtr cSn = c->component("gus");
     EXPECT_EQ("gus", cSn->name());
 
     a = printer.printModel(m);
@@ -363,11 +363,13 @@ TEST(Component, takeComponentMethods)
     EXPECT_EQ(c->takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->name());
+    EXPECT_EQ(nullptr, c02->parentComponent());
 
     libcellml::ComponentPtr c01 = c->takeComponent("child1");
     EXPECT_EQ(size_t(0), c->componentCount());
 
     EXPECT_EQ("child1", c01->name());
+    EXPECT_EQ(nullptr, c01->parentComponent());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
