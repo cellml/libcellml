@@ -11,6 +11,9 @@ from libcellml.component import Component
 from libcellml.componententity import ComponentEntity
 from libcellml.entity import Entity
 from libcellml.error import Error
+from libcellml.generator import Generator
+from libcellml.generator import GeneratorVariable
+from libcellml.generatorprofile import GeneratorProfile
 from libcellml.importedentity import ImportedEntity
 from libcellml.importsource import ImportSource
 from libcellml.logger import Logger
@@ -57,6 +60,19 @@ convert(Error, 'Kind', [
     'VARIABLE',
     'XML',
     ])
+convert(Generator, 'ModelType', [
+    'UNKNOWN',
+    'ALGEBRAIC',
+    'ODE',
+    'INVALID',
+    'UNDERCONSTRAINED',
+    'OVERCONSTRAINED',
+    'UNSUITABLY_CONSTRAINED',
+    ])
+convert(GeneratorProfile, 'Profile', [
+    'C',
+    'PYTHON',
+    ])
 convert(Variable, 'InterfaceType', [
     'NONE',
     'PRIVATE',
@@ -78,11 +94,9 @@ convert(Units, 'StandardUnit', [
     'KATAL',
     'KELVIN',
     'KILOGRAM',
-    'LITER',
     'LITRE',
     'LUMEN',
     'LUX',
-    'METER',
     'METRE',
     'MOLE',
     'NEWTON',
@@ -179,5 +193,5 @@ convert(specificationrule, 'SpecificationRule', [
     'MAP_VARIABLES_VARIABLE1',
     'MAP_VARIABLES_VARIABLE2',
     'MAP_VARIABLES_UNIQUE',
-    ], new_base =  libcellml)
+    ], new_base = libcellml)
 del(convert, libcellml)

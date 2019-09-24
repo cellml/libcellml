@@ -18,8 +18,16 @@ limitations under the License.
 
 #include <libcellml>
 
+const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
+
+std::string resourcePath(const std::string &resourceRelativePath = "");
+
+std::string fileContents(const std::string &fileName);
+
 void printErrors(const libcellml::Validator &v);
 void printErrors(const libcellml::Parser &p);
+
+void checkExpectedErrors(const std::vector<std::string> &expectedErrors, const libcellml::Logger &logger);
 
 libcellml::ModelPtr createModel(const std::string &name = "");
 libcellml::ModelPtr createModelWithComponent(const std::string &name = "");

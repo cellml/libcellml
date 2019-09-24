@@ -34,11 +34,12 @@ namespace libcellml {
 struct Component::ComponentImpl
 {
     std::string mMath;
+    std::vector<ResetPtr> mResets;
+    std::vector<VariablePtr> mVariables;
+
+    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
     std::vector<VariablePtr>::iterator findVariable(const std::string &name);
     std::vector<VariablePtr>::iterator findVariable(const VariablePtr &variable);
-    std::vector<VariablePtr> mVariables;
-    std::vector<ResetPtr>::iterator findReset(const ResetPtr &reset);
-    std::vector<ResetPtr> mResets;
 };
 
 std::vector<VariablePtr>::iterator Component::ComponentImpl::findVariable(const std::string &name)
@@ -77,6 +78,9 @@ Component::~Component()
 Component::Component(const Component &rhs)
     : ComponentEntity(rhs)
     , ImportedEntity(rhs)
+#ifndef SWIG
+    , std::enable_shared_from_this<Component>(rhs)
+#endif
     , mPimpl(new ComponentImpl())
 {
     mPimpl->mVariables = rhs.mPimpl->mVariables;
@@ -102,13 +106,13 @@ Component &Component::operator=(Component rhs)
 
 void Component::swap(Component &rhs)
 {
-    std::swap(this->mPimpl, rhs.mPimpl);
+    std::swap(mPimpl, rhs.mPimpl);
 }
 
 void Component::doAddComponent(const ComponentPtr &component)
 {
-    if (!hasParent(component.get())) {
-        component->setParent(this);
+    if (!hasParent(component)) {
+        component->setParent(shared_from_this());
         ComponentEntity::doAddComponent(component);
     }
 }
@@ -137,7 +141,7 @@ void Component::setMath(const std::string &math)
 void Component::addVariable(const VariablePtr &variable)
 {
     mPimpl->mVariables.push_back(variable);
-    variable->setParent(this);
+    variable->setParent(shared_from_this());
 }
 
 bool Component::removeVariable(size_t index)

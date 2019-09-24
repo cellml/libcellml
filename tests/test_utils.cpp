@@ -14,9 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "test_resources.h"
 #include "test_utils.h"
 
+#include "gtest/gtest.h"
+
+#include <fstream>
 #include <iostream>
+#include <sstream>
+
+std::string resourcePath(const std::string &resourceRelativePath)
+{
+    return std::string(TESTS_RESOURCE_LOCATION + "/").append(resourceRelativePath);
+}
+
+std::string fileContents(const std::string &fileName)
+{
+    std::ifstream file(resourcePath(fileName));
+    std::stringstream buffer;
+
+    buffer << file.rdbuf();
+
+    return buffer.str();
+}
 
 void printErrors(const libcellml::Validator &v)
 {
@@ -48,4 +68,12 @@ libcellml::ModelPtr createModelWithComponent(const std::string &name)
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
     model->addComponent(component);
     return model;
+}
+
+void checkExpectedErrors(const std::vector<std::string> &expectedErrors, const libcellml::Logger &logger)
+{
+    EXPECT_EQ(expectedErrors.size(), logger.errorCount());
+    for (size_t i = 0; i < logger.errorCount() && i < expectedErrors.size(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), logger.error(i)->description());
+    }
 }

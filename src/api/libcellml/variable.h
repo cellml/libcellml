@@ -209,6 +209,22 @@ public:
      *
      * @return @c true if the @p equivalentVariable is in this variable's equivalent variables
      * and @c false otherwise.
+     *
+     * @deprecated This method is currently needed by our Printer and Validator classes, but this is
+     * not a method that a libCellML user should ever need. It will therefore be removed at some point.
+     */
+    bool hasDirectEquivalentVariable(const VariablePtr &equivalentVariable) const;
+
+    /**
+     * @brief Test whether the argument variable is equivalent to this variable.
+     *
+     * Tests to see if the argument variable is equivalent to this variable. Returns @c true if
+     * the argument variable is equivalent to this variable and @c false otherwise.
+     *
+     * @param equivalentVariable The variable to check for equivalence.
+     *
+     * @return @c true if the @p equivalentVariable is equivalent to this variable and
+     * @c false otherwise.
      */
     bool hasEquivalentVariable(const VariablePtr &equivalentVariable) const;
 
