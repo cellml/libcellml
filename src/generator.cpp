@@ -332,10 +332,9 @@ GeneratorEquationAst::GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
 {
 }
 
-#ifdef SWIG
 struct GeneratorEquation
-#else
-struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
+#ifndef SWIG
+    : public std::enable_shared_from_this<GeneratorEquation>
 #endif
 {
     enum struct Type
