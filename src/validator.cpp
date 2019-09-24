@@ -523,7 +523,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
                 std::map<std::string, bool> nameMap;
                 for (auto const &reset : entry.second) {
                     auto variableName = reset->variable()->name();
-                    if (nameMap.count(variableName) != 0u) {
+                    if (nameMap.count(variableName) != 0U) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Non-unique reset order of '" + entry.first + "' found within the reset set of the variable '" + variableName + "' in component '" + component->name() + "'.");
                         err->setReset(reset);
