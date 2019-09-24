@@ -279,30 +279,6 @@ struct Validator::ValidatorImpl
                             std::vector<std::vector<std::string>> &errorList);
 
     /**
-    * @brief Utility function called recursively from the @c isModelVariableCycleFree function
-    *
-    * @param parent Previous variable.
-    * @param child Connected variable to start checking from.
-    * @param checkList The helper string returned containing the list(s) of cyclic variables.
-    * @param allVariableList The list of all variables.
-    */
-    bool cycleVariableFound(VariablePtr &parent, VariablePtr &child,
-                            std::deque<libcellml::VariablePtr> &checkList,
-                            std::vector<libcellml::VariablePtr> &allVariableList);
-
-    /**
-    * @brief Validate that there are no cycles in the equivalance network.
-    *
-    * Validate that there are no cycles in the equivalance network in the @p model
-    * using the CellML 2.0 Specification.  Called from the @c validateConnections function.
-    * Any errors will be logged in the @c Validator.
-    *
-    * @param model The model which may contain variable connections to validate.
-    * @param hintList The helper string returned containing the list(s) of cyclic variables.
-    */
-    bool isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList);
-
-    /**
      * @brief Validate that within a connected variable set, any associated reset has an unique order value.
      *
      * @param variable The variable to check.
@@ -534,9 +510,30 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     }
     // Check for resets in this component
     if (component->resetCount() > 0) {
+        std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
         for (size_t i = 0; i < component->resetCount(); ++i) {
             ResetPtr reset = component->reset(i);
             validateReset(reset, component);
+            if (reset->isOrderSet()) {
+                resetMap[std::to_string(reset->order())].push_back(reset);
+            }
+        }
+        for (auto const &entry : resetMap) {
+            if (entry.second.size() > 1) {
+                std::map<std::string, bool> nameMap;
+                for (auto const &reset : entry.second) {
+                    auto variableName = reset->variable()->name();
+                    if (nameMap.count(variableName)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Non-unique reset order of '" + entry.first + "' found within the reset set of the variable '" + variableName + "' in component '" + component->name() + "'.");
+                        err->setComponent(component);
+                        err->setRule(SpecificationRule::VARIABLE_NAME);
+                        mValidator->addError(err);
+                    } else {
+                        nameMap[variableName] = true;
+                    }
+                }
+            }
         }
     }
     // Validate math through the private implementation (for XML handling).
@@ -1055,9 +1052,8 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
 
 void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 {
-    // Check the components in this model.
+    // Check the connections in this model.
     std::string hints;
-    std::vector<std::string> hintList;
 
     if (model->componentCount() > 0) {
         for (size_t i = 0; i < model->componentCount(); ++i) {
@@ -1104,51 +1100,42 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 }
             }
         }
-        if (!isModelVariableCycleFree(model, hintList)) {
-            ErrorPtr err = std::make_shared<Error>();
-            std::string des;
-            std::string loops;
-            loops = hintList.size() > 1 ? " loops" : " loop";
-            for (auto &s : hintList) {
-                des += s;
+        // Check reset orders across variables and their connected variable sets.
+        std::vector<libcellml::VariablePtr> globalVariableDoneList;
+
+        for (size_t componentIndex = 0; componentIndex < model->componentCount(); ++componentIndex) {
+            ComponentPtr component = model->component(componentIndex);
+            for (size_t resetIndex = 0; resetIndex < component->resetCount(); ++resetIndex) {
+                auto const reset = component->reset(resetIndex);
+
             }
-            err->setDescription("Cyclic variables exist, " + std::to_string(hintList.size()) + loops + " found (Component, Variable):\n" + des);
-            err->setModel(model);
-            err->setKind(Error::Kind::VARIABLE);
-            mValidator->addError(err);
-        } else {
-            // Check reset orders among connected variable sets.  NB only safe when model variable network is cycle-free as not checked here
-            std::vector<libcellml::VariablePtr> totalVariableDoneList;
+            for (size_t variableIndex = 0; variableIndex < component->variableCount(); ++variableIndex) {
+                VariablePtr variable = component->variable(variableIndex);
+                if (variable->equivalentVariableCount() == 0) {
+                    continue; // skip if there are no equivalent variables
+                }
+                if ((std::find(globalVariableDoneList.begin(), globalVariableDoneList.end(), variable) != globalVariableDoneList.end())) {
+                    continue; // skip if we've checked this variable before
+                }
 
-            for (size_t c = 0; c < model->componentCount(); ++c) {
-                ComponentPtr component = model->component(c);
-                for (size_t v = 0; v < component->variableCount(); ++v) {
-                    VariablePtr variable = component->variable(v);
-                    if (variable->equivalentVariableCount() == 0) {
-                        continue; // skip if there are no equivalent variables
-                    }
-                    if ((std::find(totalVariableDoneList.begin(), totalVariableDoneList.end(), variable) != totalVariableDoneList.end())) {
-                        continue; // skip if we've checked this variable before
-                    }
+                // Retrieving connected variable order set
+                std::vector<libcellml::VariablePtr> localDoneList;
+                std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
+                fetchConnectedResets(variable, resetMap, localDoneList);
 
-                    // Retrieving connected variable order set
-                    std::vector<libcellml::VariablePtr> localDoneList;
-                    std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
-                    fetchConnectedResets(variable, resetMap, localDoneList);
+                globalVariableDoneList.insert(globalVariableDoneList.end(), localDoneList.begin(), localDoneList.end());
 
-                    totalVariableDoneList.insert(totalVariableDoneList.end(), localDoneList.begin(), localDoneList.end());
-
-                    for (auto const &order : resetMap) {
-                        if (order.second.size() > 1) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            std::string des = "Non-unique reset order of '" + order.first + "' found within equivalent variable set:";
-                            for (auto const &r : order.second) {
-                                auto parent = r->variable()->parentComponent();
-                                des += "\n  - variable '" + r->variable()->name() + "' in component '" + parent->name() + "' reset with order '" + order.first + "'";
-                            }
-                            err->setDescription(des);
-                            mValidator->addError(err);
+                for (auto const &order : resetMap) {
+                    if (order.second.size() > 1) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        std::string des = "Non-unique reset order of '" + order.first + "' found within equivalent variable set:";
+                        for (auto const &r : order.second) {
+                            auto parent = r->variable()->parentComponent();
+                            des += "\n  - variable '" + r->variable()->name() + "' in component '" + parent->name() + "' reset with order '" + order.first + "'";
                         }
+                        des += ".";
+                        err->setDescription(des);
+                        mValidator->addError(err);
                     }
                 }
             }
@@ -1176,105 +1163,6 @@ void Validator::ValidatorImpl::fetchConnectedResets(const VariablePtr &variable,
         fetchConnectedResets(equiv, resetMap, localDoneList);
     }
 }
-
-bool Validator::ValidatorImpl::isModelVariableCycleFree(const ModelPtr &model, std::vector<std::string> &hintList)
-{
-    bool found = false;
-    std::deque<libcellml::VariablePtr> checkList = {};
-    std::vector<std::deque<libcellml::VariablePtr>> totalList = {};
-    std::vector<libcellml::VariablePtr> allVariableList = {};
-
-    if (model->componentCount() > 0) {
-        for (size_t i = 0; i < model->componentCount(); ++i) {
-            ComponentPtr component = model->component(i);
-
-            for (size_t j = 0; j < component->variableCount(); ++j) {
-                VariablePtr variable = component->variable(j);
-
-                if (variable->equivalentVariableCount() < 2) {
-                    continue; // one equivalent variable cannot make a loop
-                }
-                if ((std::find(allVariableList.begin(), allVariableList.end(), variable) != allVariableList.end())) {
-                    continue; // skip if we've checked this variable before
-                }
-                for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                    std::deque<libcellml::VariablePtr>().swap(checkList);
-                    checkList.push_back(variable);
-
-                    VariablePtr eq = variable->equivalentVariable(k);
-
-                    if (cycleVariableFound(variable, eq, checkList, allVariableList)) {
-                        totalList.push_back(checkList);
-                        found = true;
-                    }
-                }
-            }
-        }
-    }
-    if (found) {
-        // Only report the loops which start with the lowest alphabetical variable name to reduce duplicate reporting
-        for (auto &list : totalList) {
-            std::string min = list.front()->name();
-            bool useMe = true;
-            for (auto &var : list) {
-                if (min.compare(var->name()) > 0) {
-                    useMe = false;
-                    break;
-                }
-            }
-            if (useMe) {
-                std::string description;
-                std::string reverseDescription;
-                std::string separator;
-
-                for (VariablePtr &v : list) {
-                    auto parent = v->parentComponent();
-                    description += separator + "('" + parent->name() + "', '" + v->name() + "')";
-                    reverseDescription = "('" + parent->name() + "', '" + v->name() + "')" + separator + reverseDescription;
-                    separator = " -> ";
-                }
-                description += "\n";
-                reverseDescription += "\n";
-
-                if ((std::find(hintList.begin(), hintList.end(), description) == hintList.end())
-                    && (std::find(hintList.begin(), hintList.end(), reverseDescription) == hintList.end())) {
-                    hintList.push_back(description);
-                }
-            }
-        }
-    }
-    return (!found);
-}
-
-bool Validator::ValidatorImpl::cycleVariableFound(VariablePtr &parent, VariablePtr &child,
-                                                  std::deque<libcellml::VariablePtr> &checkList,
-                                                  std::vector<libcellml::VariablePtr> &allVariableList)
-{
-    allVariableList.push_back(child);
-
-    if (std::find(checkList.begin(), checkList.end(), child) != checkList.end()) {
-        checkList.push_back(child);
-        // Removing items from the start of the loop to avoid lasso shapes
-        while (checkList.front() != checkList.back()) {
-            checkList.pop_front();
-        }
-        return true;
-    }
-
-    checkList.push_back(child);
-    for (size_t k = 0; k < child->equivalentVariableCount(); ++k) {
-        VariablePtr eq = child->equivalentVariable(k);
-        if (eq == parent) {
-            continue;
-        }
-        if (cycleVariableFound(child, eq, checkList, allVariableList)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-// TODO: validateEncapsulations.
 
 void Validator::ValidatorImpl::removeSubstring(std::string &input, const std::string &pattern)
 {

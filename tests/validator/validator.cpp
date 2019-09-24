@@ -787,6 +787,45 @@ TEST(Validator, validateInvalidConnectionsParentlessVariable)
     }
 }
 
+TEST(Validator, equivalentVariablesInSameComponent)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'variable2' is an equivalent variable to 'variable1' but they are in the same component, 'component1'.",
+        "Variable 'variable1' is an equivalent variable to 'variable2' but they are in the same component, 'component1'.",
+    };
+
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp1->addVariable(v2);
+    m->addComponent(comp1);
+
+    // Equivalence for variables in the same component.
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v.validateModel(m);
+
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
+    }
+}
+
 TEST(Validator, integerStrings)
 {
     const std::string input =
@@ -844,12 +883,14 @@ TEST(Validator, integerStrings)
         "    </reset>\n"
         "  </component>\n"
         "</model>\n";
+
     const std::vector<std::string> expectedParsingErrors = {
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '+1'.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value ''.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value '-'.",
         "Reset in component 'component' referencing variable 'variable' has a non-integer order value 'odd'.",
     };
+
     const std::vector<std::string> expectedValidationErrors = {
         "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
         "Reset in component 'component' does not have an order set, referencing variable 'variable'.",
@@ -872,77 +913,193 @@ TEST(Validator, integerStrings)
     }
 }
 
-TEST(Validator, resets)
+TEST(Validator, validReset)
 {
-    const std::vector<std::string> expectedErrors = {
-        // "Component 'comp' contains multiple resets with order '300'.",
-        "Reset in component 'comp' with order '300' does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' with order '500' referencing variable 'var' does not have at least one child When.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
-        "Reset in component 'comp' does not have an order set, referencing variable 'var' does not have at least one child When.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable.",
-        "Reset in component 'comp' does not have an order set, does not reference a variable, does not have at least one child When."
-    };
-
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr var = std::make_shared<libcellml::Variable>();
-    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r4 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r5 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r6 = std::make_shared<libcellml::Reset>();
-    libcellml::ResetPtr r7 = std::make_shared<libcellml::Reset>();
-    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
-    libcellml::WhenPtr w2 = std::make_shared<libcellml::When>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
 
-    w1->setOrder(776);
-    w1->setCondition(EMPTY_MATH);
-    w1->setValue(EMPTY_MATH);
-    w2->setOrder(345);
-    w2->setCondition(EMPTY_MATH);
-    w2->setValue(EMPTY_MATH);
+    libcellml::ResetPtr r = std::make_shared<libcellml::Reset>();
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
 
-    r1->setOrder(300);
-    r1->addWhen(w1);
-    r6->addWhen(w1);
-    r2->setOrder(300);
-    r2->addWhen(w1);
-    r2->addWhen(w2);
-    r2->setVariable(var);
-    r3->setOrder(400);
-    r3->addWhen(w2);
-    r3->setVariable(var);
-    r4->setVariable(var);
-    r4->setOrder(500);
-    r5->setVariable(var);
+    w->setOrder(1);
+    w->setCondition(EMPTY_MATH);
+    w->setValue(EMPTY_MATH);
 
     c->setName("comp");
-    var->setName("var");
-    var->setUnits("second");
+    v->setName("var");
+    v->setUnits("second");
 
-    c->addVariable(var);
-    c->addReset(r1);
-    c->addReset(r6);
-    c->addReset(r2);
-    c->addReset(r3);
-    c->addReset(r4);
-    c->addReset(r5);
-    c->addReset(r7);
+    r->addWhen(w);
+    r->setOrder(3);
+    r->setVariable(v);
+
+    c->addVariable(v);
+    c->addReset(r);
 
     m->setName("main");
     m->addComponent(c);
 
-    libcellml::Validator v;
-    v.validateModel(m);
+    libcellml::Validator validator;
+    validator.validateModel(m);
 
-    EXPECT_EQ(expectedErrors.size(), v.errorCount());
-    for (size_t i = 0; i < expectedErrors.size(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
+    EXPECT_EQ(size_t(0), validator.errorCount());
+}
+
+TEST(Validator, invalidResets)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Reset in component 'comp' with order '300' does not reference a variable.",
+        "Reset in component 'comp' does not have an order set, does not reference a variable.",
+        "Reset in component 'comp' does not have an order set, does not reference a variable.",
+        "Reset in component 'comp' with order '400' referencing variable 'var' does not have at least one child When.",
+    };
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
+    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r3 = std::make_shared<libcellml::Reset>();
+
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    w->setOrder(776);
+    w->setCondition(EMPTY_MATH);
+    w->setValue(EMPTY_MATH);
+
+    r1->setOrder(300);
+    r1->addWhen(w);
+
+    r2->addWhen(w);
+
+    r3->setOrder(400);
+    r3->setVariable(v);
+
+    c->setName("comp");
+    v->setName("var");
+    v->setUnits("second");
+
+    c->addVariable(v);
+    c->addReset(r1);
+    c->addReset(r2);
+    c->addReset(r3);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
+    for (size_t i = 0; i < expectedErrors.size() && i < validator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
+    }
+}
+
+TEST(Validator, resetsWithDuplicatedOrder)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Non-unique reset order of '153' found within the reset set of the variable 'var' in component 'comp'.",
+    };
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
+    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
+
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    w->setOrder(776);
+    w->setCondition(EMPTY_MATH);
+    w->setValue(EMPTY_MATH);
+
+    r1->setOrder(153);
+    r1->addWhen(w);
+    r1->setVariable(v);
+
+    r2->setOrder(153);
+    r2->addWhen(w);
+    r2->setVariable(v);
+
+    c->setName("comp");
+    v->setName("var");
+    v->setUnits("second");
+
+    c->addVariable(v);
+    c->addReset(r1);
+    c->addReset(r2);
+
+    m->setName("main");
+    m->addComponent(c);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
+    for (size_t i = 0; i < expectedErrors.size() && i < validator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
+    }
+}
+
+TEST(Validator, resetsWithDuplicatedOrderAcrossConnectedVariables)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Non-unique reset order of '236' found within equivalent variable set:\n  - variable 'var2' in component 'comp2' reset with order '236'\n  - variable 'var1' in component 'comp1' reset with order '236'.",
+    };
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::ResetPtr r2 = std::make_shared<libcellml::Reset>();
+
+    libcellml::WhenPtr w = std::make_shared<libcellml::When>();
+
+    w->setOrder(776);
+    w->setCondition(EMPTY_MATH);
+    w->setValue(EMPTY_MATH);
+
+    r1->setOrder(236);
+    r1->addWhen(w);
+    r1->setVariable(v1);
+
+    r2->setOrder(236);
+    r2->addWhen(w);
+    r2->setVariable(v2);
+
+    c1->setName("comp1");
+    c2->setName("comp2");
+
+    v1->setName("var1");
+    v1->setUnits("second");
+    v2->setName("var2");
+    v2->setUnits("second");
+
+    c1->addVariable(v1);
+    c1->addReset(r1);
+
+    c2->addVariable(v2);
+    c2->addReset(r2);
+
+    m->setName("main");
+    m->addComponent(c1);
+    m->addComponent(c2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    libcellml::Validator validator;
+    validator.validateModel(m);
+
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
+    for (size_t i = 0; i < expectedErrors.size() && i < validator.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), validator.error(i)->description());
     }
 }
 
