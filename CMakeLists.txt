@@ -91,7 +91,7 @@ if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
   if(NOT LIBCELLML_UNIT_TESTS)
     message(SEND_ERROR "Configuration confusion:
       Memchecking or coverage testing has been requested but unit tests have not.
-      This is not possible please change the configuration to clear this condition.
+      This is not possible, please change the configuration to clear this condition.
       ")
   endif()
 endif()
@@ -117,7 +117,7 @@ if(LIBCELLML_MEMCHECK)
   if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
     message(SEND_ERROR "Configuration confusion:
       Release build requested but memchecking has also been requested.
-      This is not possible please change the configuration to clear this condition.
+      This is not possible, please change the configuration to clear this condition.
       ")
   endif()
 endif()
