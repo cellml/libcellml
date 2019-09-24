@@ -89,11 +89,10 @@ unset(UNIT_TESTS CACHE)
 
 if(LIBCELLML_COVERAGE OR LIBCELLML_MEMCHECK)
   if(NOT LIBCELLML_UNIT_TESTS)
-    message(STATUS "Configuration confusion:
+    message(SEND_ERROR "Configuration confusion:
       Memchecking or coverage testing has been requested but unit tests have not.
-      This is not possible so forcing the unit tests to 'on' to make it possible.
+      This is not possible please change the configuration to clear this condition.
       ")
-    set(LIBCELLML_UNIT_TESTS ON CACHE BOOL ${_PARAM_ANNOTATION} FORCE)
   endif()
 endif()
 
@@ -116,11 +115,10 @@ endif()
 unset(BUILD_TYPE CACHE)
 if(LIBCELLML_MEMCHECK)
   if(LIBCELLML_BUILD_TYPE STREQUAL "Release")
-    message(WARNING "Configuration confusion:
+    message(SEND_ERROR "Configuration confusion:
       Release build requested but memchecking has also been requested.
-      This is not possible so forcing the build type to 'Debug' to make it possible.
+      This is not possible please change the configuration to clear this condition.
       ")
-    set(LIBCELLML_BUILD_TYPE "Debug" CACHE STRING ${_PARAM_ANNOTATION} FORCE)
   endif()
 endif()
 
