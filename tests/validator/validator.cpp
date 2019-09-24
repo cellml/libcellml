@@ -715,7 +715,7 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
 TEST(Validator, validateInvalidConnectionsParentlessVariable)
 {
     const std::vector<std::string> expectedErrors = {
-        "Variable 'variable1' has an equivalent variable 'variable2' which does not reciprocally have 'variable1' set as an equivalent variable."
+        "Variable 'variable1' has an equivalent variable 'variable2' which does not reciprocally have 'variable1' set as an equivalent variable.",
     };
 
     libcellml::Validator v;
@@ -1068,7 +1068,8 @@ TEST(Validator, whens)
         "Reset in component 'comp' does not have an order set, referencing variable 'var'.",
         "Reset in component 'comp' does not have an order set, referencing variable 'var' has multiple whens with order '250'.",
         "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML value set.",
-        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML condition set."};
+        "When in reset which does not have an order set, referencing variable 'var' with order '250' does not have a MathML condition set.",
+    };
 
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
@@ -1480,7 +1481,6 @@ TEST(Validator, unitEquivalenceComplicatedValidNestedUnits)
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-
 
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v8 = std::make_shared<libcellml::Variable>();

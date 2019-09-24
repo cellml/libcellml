@@ -1107,7 +1107,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
             ComponentPtr component = model->component(componentIndex);
             for (size_t resetIndex = 0; resetIndex < component->resetCount(); ++resetIndex) {
                 auto const reset = component->reset(resetIndex);
-
             }
             for (size_t variableIndex = 0; variableIndex < component->variableCount(); ++variableIndex) {
                 VariablePtr variable = component->variable(variableIndex);
