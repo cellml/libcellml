@@ -332,10 +332,9 @@ GeneratorEquationAst::GeneratorEquationAst(const GeneratorEquationAstPtr &ast,
 {
 }
 
-#ifdef SWIG
 struct GeneratorEquation
-#else
-struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
+#ifndef SWIG
+    : public std::enable_shared_from_this<GeneratorEquation>
 #endif
 {
     enum struct Type
@@ -375,7 +374,7 @@ struct GeneratorEquation: public std::enable_shared_from_this<GeneratorEquation>
     static bool knownVariable(const GeneratorInternalVariablePtr &variable);
     static bool knownOdeVariable(const GeneratorInternalVariablePtr &odeVariable);
 
-    bool check(size_t & equationOrder, size_t & stateIndex, size_t & variableIndex);
+    bool check(size_t &equationOrder, size_t &stateIndex, size_t &variableIndex);
 };
 
 GeneratorEquation::GeneratorEquation()
