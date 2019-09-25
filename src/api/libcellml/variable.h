@@ -22,10 +22,6 @@ limitations under the License.
 
 #include <string>
 
-#ifndef SWIG
-template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
-#endif
-
 namespace libcellml {
 
 /**
@@ -33,17 +29,17 @@ namespace libcellml {
  *
  * Class for each variable in libCellML.
  */
+#ifdef SWIG
 class LIBCELLML_EXPORT Variable: public NamedEntity
-#ifndef SWIG
-    ,
-                                 public std::enable_shared_from_this<Variable>
+#else
+class LIBCELLML_EXPORT Variable: public NamedEntity, public std::enable_shared_from_this<Variable>
 #endif
 {
 public:
     Variable(); /**< Constructor */
     ~Variable() override; /**< Destructor */
     Variable(const Variable &rhs); /**< Copy constructor */
-    Variable(Variable &&rhs) noexcept; /**< Move constructor */
+    Variable(Variable && rhs) noexcept; /**< Move constructor */
     Variable &operator=(Variable rhs); /**< Assignment operator */
 
     /**
@@ -353,7 +349,7 @@ public:
     std::string interfaceType() const;
 
 private:
-    void swap(Variable &rhs); /**< Swap method required for C++ 11 move semantics. */
+    void swap(Variable & rhs); /**< Swap method required for C++ 11 move semantics. */
 
     struct VariableImpl; /**< Forward declaration for pImpl idiom. */
     VariableImpl *mPimpl; /**< Private member to implementation pointer */
