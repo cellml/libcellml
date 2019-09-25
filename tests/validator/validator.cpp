@@ -1151,14 +1151,8 @@ TEST(Validator, validMathCnElements)
     EXPECT_EQ(size_t(0), v.errorCount());
 }
 
-TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
+TEST(Validator, equivalentUnitsInSameComponent)
 {
-    const std::vector<std::string> expectedErrors = {
-        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
-        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' has units of 'testunit2' which do not match. The mismatch is: metre^1.",
-        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' has units of 'testunit1' which do not match. The mismatch is: metre^-1.",
-    };
-
     libcellml::Validator validator;
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
@@ -1187,9 +1181,14 @@ TEST(Validator, unitAmericanSpellingOfUnitsRemoved)
     }
 }
 
-TEST(Validator, validateNoCyclesSimple)
+TEST(Validator, removeUsSpellingsFromUnits)
 {
-    libcellml::Validator v;
+    const std::vector<std::string> expectedErrors = {
+        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
+        "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' has units of 'testunit2' which do not match. The mismatch is: metre^1.",
+        "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' has units of 'testunit1' which do not match. The mismatch is: metre^-1.",
+    };
+    libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
