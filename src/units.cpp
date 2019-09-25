@@ -21,6 +21,7 @@ limitations under the License.
 
 #include <algorithm>
 #include <cassert>
+#include <stdexcept>
 #include <map>
 #include <vector>
 
