@@ -499,3 +499,30 @@ TEST(Component, constructors)
     libcellml::ComponentPtr c3 = std::move(c2);
     EXPECT_EQ("my_name", c3->name());
 }
+
+TEST(Component, multiParentWithAddComponentBugIssue399)
+{
+    // Addressing Issue 399.
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    parent->setName("parent_component");
+    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    child1->setName("child1");
+    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    child2->setName("child2");
+    libcellml::ComponentPtr child3 = std::make_shared<libcellml::Component>();
+    child3->setName("child3");
+
+    parent->addComponent(child1);
+    parent->addComponent(child2);
+    parent->addComponent(child3);
+    model->addComponent(parent);
+
+    EXPECT_EQ(size_t(3), parent->componentCount());
+    EXPECT_EQ(size_t(0), child2->componentCount());
+
+    child2->addComponent(child3);
+
+    EXPECT_EQ(size_t(2), parent->componentCount());
+    EXPECT_EQ(size_t(1), child2->componentCount());
+}
