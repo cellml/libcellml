@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/exportdefinitions.h"
+#include "libcellml/types.h"
 
 #include <map>
 #include <string>
@@ -324,5 +324,7 @@ bool areEqual(double value1, double value2);
  * @return The @c std::string SHA-1 value.
  */
 std::string sha1(const std::string &string);
+
+std::string getEntityName(const EntityPtr &entity);
 
 } // namespace libcellml

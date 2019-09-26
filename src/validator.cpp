@@ -14,16 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "namespaces.h"
-#include "utilities.h"
-#include "xmldoc.h"
+#include "libcellml/validator.h"
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/reset.h"
-#include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
+
+#include "namespaces.h"
+#include "utilities.h"
+#include "xmldoc.h"
 
 #include <algorithm>
 #include <cmath>
@@ -622,8 +623,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
-        ComponentPtr component = variable->parentComponent();
-        ModelPtr model = component->parentModel();
+        ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+        ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
@@ -936,7 +937,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            ModelPtr model = component->parentModel();
+            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
@@ -1070,7 +1071,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
                             if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
-                                auto component2 = equivalentVariable->parentComponent();
+                                auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                                 if (!component2->hasVariable(equivalentVariable)) {
                                     ErrorPtr err = std::make_shared<Error>();
                                     err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");

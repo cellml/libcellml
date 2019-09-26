@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include "libcellml/component.h"
+
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
