@@ -736,6 +736,9 @@ TEST(Validator, validateInvalidConnectionsParentlessVariable)
     v1->setUnits("dimensionless");
     v2->setUnits("dimensionless");
 
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
+
     comp1->addVariable(v1);
     comp2->addVariable(v2);
     m->addComponent(comp1);
@@ -743,6 +746,9 @@ TEST(Validator, validateInvalidConnectionsParentlessVariable)
 
     // Valid connections.
     libcellml::Variable::addEquivalence(v1, v2);
+
+    v.validateModel(m);
+    printErrors(v);
 
     // Not valid connections
     libcellml::Variable::addEquivalence(v2, v1); // opposite to above, equivalence already made so effectively a no-op.
@@ -781,6 +787,9 @@ TEST(Validator, equivalentVariablesInSameComponent)
 
     v1->setUnits("dimensionless");
     v2->setUnits("dimensionless");
+
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
 
     comp1->addVariable(v1);
     comp1->addVariable(v2);
@@ -1037,8 +1046,10 @@ TEST(Validator, resetsWithDuplicatedOrderAcrossConnectedVariables)
 
     v1->setName("var1");
     v1->setUnits("second");
+    v1->setInterfaceType("public");
     v2->setName("var2");
     v2->setUnits("second");
+    v2->setInterfaceType("public");
 
     c1->addVariable(v1);
     c1->addReset(r1);
@@ -1168,6 +1179,8 @@ TEST(Validator, equivalentUnitsInSameComponent)
     variable1->setUnits("dimensionless");
     variable2->setName("variable2");
     variable2->setUnits("dimensionless");
+    variable1->setInterfaceType("public");
+    variable2->setInterfaceType("public");
     component->setName("component");
     component->addVariable(variable1);
     component->addVariable(variable2);
@@ -1184,9 +1197,9 @@ TEST(Validator, equivalentUnitsInSameComponent)
 TEST(Validator, removeUsSpellingsFromUnits)
 {
     const std::vector<std::string> expectedErrors = {
-        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
         "Variable 'tomayto' has units of 'testunit1' and an equivalent variable 'tomahto' has units of 'testunit2' which do not match. The mismatch is: metre^1.",
         "Variable 'tomahto' has units of 'testunit2' and an equivalent variable 'tomayto' has units of 'testunit1' which do not match. The mismatch is: metre^-1.",
+        "Units reference 'meter' in units 'testunit2' is not a valid reference to a local units or a standard unit type.",
     };
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1216,6 +1229,8 @@ TEST(Validator, removeUsSpellingsFromUnits)
 
     v1->setUnits(u1);
     v2->setUnits(u2);
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
     m->addUnits(u1);
     m->addUnits(u2);
 
@@ -1223,7 +1238,8 @@ TEST(Validator, removeUsSpellingsFromUnits)
     libcellml::Variable::addEquivalence(v1, v2);
     validator.validateModel(m);
 
-    validator.validateModel(m);
+    printErrors(validator);
+
     checkExpectedErrors(expectedErrors, validator);
 }
 
@@ -1312,6 +1328,9 @@ TEST(Validator, unitEquivalenceBasicDimensionlessUnits)
     v1->setName("tomayto");
     v2->setName("tomahto");
 
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
+
     m->setName("callthewholethingoff");
     comp1->addVariable(v1);
     comp2->addVariable(v2);
@@ -1356,6 +1375,9 @@ TEST(Validator, unitEquivalenceDimensionlessUnits)
     v1->setName("tomayto");
     v2->setName("tomahto");
     v3->setName("tomaat");
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
+    v3->setInterfaceType("public");
 
     m->setName("callthewholethingoff");
     comp1->addVariable(v1);
@@ -1462,6 +1484,8 @@ TEST(Validator, unitEquivalenceInvalidNestedUnits)
 
     v13->setName("pjs");
     v14->setName("pajamas");
+    v13->setInterfaceType("public");
+    v14->setInterfaceType("public");
 
     comp1->setName("isay");
     comp2->setName("yousay");
@@ -1518,6 +1542,9 @@ TEST(Validator, unitEquivalenceComplicatedValidNestedUnits)
     v1->setName("tomayto");
     v8->setName("neether");
     v9->setName("nyther");
+    v1->setInterfaceType("public");
+    v8->setInterfaceType("public");
+    v9->setInterfaceType("public");
 
     comp1->setName("isay");
     comp2->setName("yousay");
@@ -1580,6 +1607,8 @@ TEST(Validator, unitEquivalenceExponentMultiplierPrefixExponent)
 
     v1->setName("v1");
     v2->setName("v2");
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
 
     // millimetres
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
@@ -1667,6 +1696,12 @@ TEST(Validator, unitMismatchedUnits)
     v4->setName("v4");
     v5->setName("v5");
 
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
+    v3->setInterfaceType("public");
+    v4->setInterfaceType("public");
+    v5->setInterfaceType("public");
+
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("big_barrel");
     u1->addUnit("metre", 3.0);
@@ -1726,6 +1761,11 @@ TEST(Validator, unitMismatchedUserDefinedUnits)
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
+    v3->setInterfaceType("public");
+    v4->setInterfaceType("public");
 
     m->setName("m");
     c1->setName("c1");
@@ -1945,44 +1985,55 @@ TEST(Validator, encapsulationHierarchyNoCycles)
     EXPECT_EQ(size_t(0), v.errorCount());
 }
 
-TEST(Validator, equivalentVariablesUsingAllowedInterfaces)
+TEST(Validator, equivalentVariablesUsingDifferentInterfaceTypesValid)
 {
-    libcellml::Validator v;
+    libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c_parent = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c_child1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c_child2 = std::make_shared<libcellml::Component>();
 
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v_parent = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v_child1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v_child2 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
-    comp1->setName("component1");
-    comp2->setName("component2");
-    comp3->setName("component3");
+    c_parent->setName("c_parent");
+    c->setName("c");
+    c_child1->setName("c_child1");
+    c_child2->setName("c_child2");
 
-    v1->setName("variable1");
-    v2->setName("variable2");
-    v3->setName("variable3");
+    v_parent->setName("v_parent");
+    v->setName("v");
+    v_child1->setName("v_child1");
+    v_child2->setName("v_child2");
 
-    v1->setUnits("dimensionless");
-    v2->setUnits("dimensionless");
-    v3->setUnits("dimensionless");
+    v_parent->setUnits("dimensionless");
+    v->setUnits("dimensionless");
+    v_child1->setUnits("dimensionless");
+    v_child2->setUnits("dimensionless");
 
-    comp1->addVariable(v1);
-    comp2->addVariable(v2);
-    comp3->addVariable(v3);
+    c_parent->addVariable(v_parent);
+    c->addVariable(v);
+    c_child1->addVariable(v_child1);
+    c_child2->addVariable(v_child2);
 
-    // comp1( comp2 ( comp3 )) -> valid
-    m->addComponent(comp1);
-    comp1->addComponent(comp2);
-    comp2->addComponent(comp3);
+    // model ( c_parent (c (c_child1, c_child2)))
+    m->addComponent(c_parent);
+    c_parent->addComponent(c);
+    c->addComponent(c_child1);
+    c->addComponent(c_child2);
 
-    libcellml::Variable::addEquivalence(v1, v2); // allowed
-    libcellml::Variable::addEquivalence(v2, v3); // allowed
-    libcellml::Variable::addEquivalence(v1, v3); // not allowed because comp3 is hidden from comp1
+    libcellml::Variable::addEquivalence(v_child1, v_child2); // sibling components, needs public interface
+    v_child1->setInterfaceType("public");
+    v_child2->setInterfaceType("public");
 
-    v.validateModel(m);
-    printErrors(v);
+    libcellml::Variable::addEquivalence(v, v_parent); // parent and child, needs public on child and private on parent
+    v_parent->setInterfaceType("public");
+    v->setInterfaceType("private");
+
+    validator.validateModel(m);
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }

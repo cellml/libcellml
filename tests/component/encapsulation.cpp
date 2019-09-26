@@ -123,9 +123,9 @@ TEST(Encapsulation, reparentComponent)
     }
     std::cout << "Child3 has parent: " << child3->parentComponent()->name() << "\n"; // child2
     // Prints: ----------------
-    // parent component has children: 
+    // parent component has children:
     // - child1
-    // - child2 
+    // - child2
     // - child3 << why is this still there?? shouldn't it no longer be on the child list??
     // Child3 has parent: child2
 
