@@ -96,23 +96,75 @@ TEST(Encapsulation, reparentComponent)
 
     model->addComponent(parent);
 
+    // model (parent (child1, child2, child3 ) )
+
     libcellml::Printer printer;
     std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_1, a_parent);
 
-    // what do we expect this to achieve? The addition of child3 to child2
+    // what do we expect this to achieve? The addition of child3 to child2 << KRM swaps parents of child3 but does not update component() array
+
+    std::cout << "parent component has children: \n";
+    for (size_t c = 0; c < parent->componentCount(); c++) {
+        std::cout << " - " << parent->component(c)->name() << "\n";
+    }
+    std::cout << "Child3 has parent: " << child3->parentComponent()->name() << "\n";
+    // Prints: ----------------
+    // parent component has children:
+    //  - child1
+    //  - child2
+    //  - child3
+    // Child3 has parent: parent_component
+
     child2->addComponent(child3);
+    std::cout << "parent component has children: \n";
+    for (size_t c = 0; c < parent->componentCount(); c++) {
+        std::cout << " - " << parent->component(c)->name() << "\n";
+    }
+    std::cout << "Child3 has parent: " << child3->parentComponent()->name() << "\n"; // child2
+    // Prints: ----------------
+    // parent component has children: 
+    // - child1
+    // - child2 
+    // - child3 << why is this still there?? shouldn't it no longer be on the child list??
+    // Child3 has parent: child2
+
+    // model (parent (child1, child2( child3 ))
 
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
-    // Now we have two 'child2's and three 'child3's with a hierarchical encapsulation
+    // Now we have two 'child2's and three 'child3's with a hierarchical encapsulation << KRM I don't get this bit
+    std::cout << parent->componentCount() << "\n"; // 3
     parent->addComponent(child2);
+    std::cout << parent->componentCount() << "\n"; // 4 -> why is this allowed ?? why not prevented in the same way as if it was in the parent list?
+
+    for (size_t c = 0; c < model->componentCount(); c++) {
+        libcellml::ComponentPtr comp = model->component(c);
+        std::cout << comp->name() << "\n";
+        for (size_t d = 0; d < comp->componentCount(); d++) {
+            libcellml::ComponentPtr comp2 = comp->component(d);
+            std::cout << " - " << comp2->name() << "\n";
+            for (size_t e = 0; e < comp2->componentCount(); e++) {
+                libcellml::ComponentPtr comp3 = comp2->component(e);
+                std::cout << " -  - " << comp3->name() << "\n";
+            }
+        }
+    }
+    // Prints: ----------------
+    // parent_component
+    // - child1
+    // - child2
+    // -  - child3
+    // - child3
+    // - child2
+    // -  - child3
+
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_re_add, a_parent);
 
     // option 2: add child3 as a child of child2 and remove it as a child of parent_component
-    // Not really an option is it a bit side-effecty
+    // Not really an option is it a bit side-effecty << why?  isn't this what the user would be intending?
 
     // other options?
 }
@@ -308,9 +360,15 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     c->addComponent(c1);
     c1->addComponent(c2);
     c2->addComponent(c3);
-    c3->addComponent(c4);
+    EXPECT_TRUE(c2->hasParent(c));
+
     c4->addComponent(c5);
     c5->addComponent(c6);
+    EXPECT_TRUE(c6->hasParent(c4));
+    EXPECT_FALSE(c6->hasParent(c));
+
+    c3->addComponent(c4);
+    EXPECT_TRUE(c6->hasParent(c));
 
     // Contains component
     EXPECT_TRUE(c->containsComponent("comp5"));
@@ -323,6 +381,7 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     EXPECT_EQ(const_c->component("invalid"), nullptr);
     EXPECT_FALSE(c->containsComponent("comp4new"));
     EXPECT_EQ(const_c->component("comp4new"), nullptr);
+
     // Replace component
     c->replaceComponent("comp4", c4n);
     c4n->addComponent(c5);
@@ -335,6 +394,7 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     c->removeComponent(c4n);
     EXPECT_FALSE(c->containsComponent("comp5"));
     EXPECT_FALSE(c->containsComponent("comp4new"));
+    EXPECT_FALSE(c6->hasParent(c));
 }
 
 TEST(Encapsulation, encapsulationWithMultipleRootHierarchy)

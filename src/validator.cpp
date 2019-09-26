@@ -34,6 +34,9 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+// KRM Delete me...
+#include <iostream>
+
 #include <libxml/uri.h>
 
 namespace libcellml {
@@ -286,6 +289,12 @@ struct Validator::ValidatorImpl
      * @param localDoneList Returns a list of previously checked varaibles to save time.
      */
     void fetchConnectedResets(const VariablePtr &variable, std::map<std::string, std::vector<libcellml::ResetPtr>> &resetMap, std::vector<libcellml::VariablePtr> &localDoneList);
+
+    void validateEncapsulationHasNoCycles(const ModelPtr &model);
+
+    void checkComponentForCycles(const ComponentPtr &parent,
+                                 std::vector<std::string> &history,
+                                 std::vector<std::vector<std::string>> &errorList);
 };
 
 Validator::Validator()
@@ -464,6 +473,9 @@ void Validator::validateModel(const ModelPtr &model)
     if (model->unitsCount() > 0) {
         mPimpl->validateNoUnitsAreCyclic(model);
     }
+
+    // Validate the encapsulation hierarchy of the components
+    // mPimpl->validateEncapsulationHasNoCycles(model);
 
     // Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
@@ -1055,9 +1067,20 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     // Check the connections in this model.
     std::string hints;
 
+
     if (model->componentCount() > 0) {
+        
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
+
+            // Make the list of non-hidden components from this one
+            std::vector<libcellml::ComponentPtr> availableComponents;
+            // Add siblings of this component
+            
+
+
+
+
             // Check the variables in this component.
             for (size_t j = 0; j < component->variableCount(); ++j) {
                 VariablePtr variable = component->variable(j);
@@ -1066,7 +1089,13 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                     for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                         VariablePtr equivalentVariable = variable->equivalentVariable(k);
                         // TODO: validate variable interfaces according to 17.10.8
-                        // TODO: add check for cyclical connections (17.10.5)
+                        // Check that the parent component of the equivalent variable is not in the hidden component set
+
+
+
+
+
+                        // TODO: add check for cyclical connections (17.10.5) Nope, don't need to do this anymore?
                         if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
@@ -1406,5 +1435,79 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
         }
     }
 }
+
+/*
+void Validator::ValidatorImpl::validateEncapsulationHasNoCycles(const ModelPtr &model)
+{
+    std::vector<std::string> history;
+    std::vector<std::vector<std::string>> errorList;
+
+    for (size_t c = 0; c < model->componentCount(); ++c) {
+        ComponentPtr component = model->component(c);
+
+        std::cout << "testing " << component->name() << "\n";
+
+        history.push_back(component->name());
+        checkComponentForCycles(component, history, errorList);
+        // Have to delete this each time to prevent reinitialisation with previous base variables.
+        std::vector<std::string>().swap(history);
+    }
+
+    if (!errorList.empty()) {
+        std::vector<std::map<std::string, bool>> reportedErrorList;
+        for (auto &errors : errorList) {
+            std::map<std::string, bool> hash;
+
+            for (auto &e : errors) {
+                hash.insert(std::pair<std::string, bool>(e, true));
+            }
+
+            // Only return as error if this combo has not been reported already.
+            if (std::find(reportedErrorList.begin(), reportedErrorList.end(), hash) == reportedErrorList.end()) {
+                ErrorPtr err = std::make_shared<Error>();
+                std::string des = "'";
+                for (size_t j = 0; j < errors.size() - 1; ++j) {
+                    des += errors[j] + "' -> '";
+                }
+                des += errors[errors.size() - 1] + "'";
+                err->setDescription("Cyclic definitions of encapsulated components exist: " + des);
+                err->setModel(model);
+                err->setKind(Error::Kind::ENCAPSULATION);
+                mValidator->addError(err);
+                reportedErrorList.push_back(hash);
+            }
+            std::map<std::string, bool>().swap(hash);
+        }
+    }
+}
+
+void Validator::ValidatorImpl::checkComponentForCycles(const ComponentPtr &parent,
+                                                       std::vector<std::string> &history,
+                                                       std::vector<std::vector<std::string>> &errorList)
+{
+    // Recursive function to check for directed cycles in the encapsulation structure
+
+    // Take history, and copy it for each new branch.
+    for (size_t c = 0; c < parent->componentCount(); ++c) {
+        ComponentPtr child = parent->component(c);
+        std::cout << "Testing child: " << child->name() << "\n";
+
+        if (std::find(history.begin(), history.end(), child->name()) != history.end()) {
+            history.push_back(child->name());
+            // Print to error output *only* when the first and last components are the same
+            // otherwise we get lasso shapes reported.
+            if (history.front() == history.back()) {
+                errorList.push_back(history);
+            }
+        } else {
+            history.push_back(child->name());
+            // Making a copy of the history vector to this point.
+            std::vector<std::string> child_history(history);
+            checkComponentForCycles(child, child_history, errorList);
+            std::vector<std::string>().swap(child_history);
+        }
+    }
+}
+*/
 
 } // namespace libcellml

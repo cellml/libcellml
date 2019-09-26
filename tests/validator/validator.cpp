@@ -1900,3 +1900,89 @@ TEST(Validator, unitComplexCycle)
     EXPECT_EQ(size_t(1), v.errorCount());
     EXPECT_EQ(expectedError, v.error(0)->description());
 }
+
+TEST(Validator, encapsulationHierarchyNoCycles)
+{
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+
+    // comp1( comp2 ( comp3 )) -> valid
+    m->addComponent(comp1);
+    comp1->addComponent(comp2);
+    comp2->addComponent(comp3);
+
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+
+    // Breaking the encapsulation hierarchy by creating a loop
+    comp3->addComponent(comp1);
+    // ... but this is prevented inside the addComponent function - fails silently - and model is unchanged
+    v.validateModel(m);
+    EXPECT_EQ(size_t(0), v.errorCount());
+}
+
+TEST(Validator, equivalentVariablesUsingAllowedInterfaces)
+{
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+
+    // comp1( comp2 ( comp3 )) -> valid
+    m->addComponent(comp1);
+    comp1->addComponent(comp2);
+    comp2->addComponent(comp3);
+
+    libcellml::Variable::addEquivalence(v1, v2); // allowed
+    libcellml::Variable::addEquivalence(v2, v3); // allowed
+    libcellml::Variable::addEquivalence(v1, v3); // not allowed because comp3 is hidden from comp1
+
+    v.validateModel(m);
+    printErrors(v);
+}

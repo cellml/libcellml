@@ -111,6 +111,7 @@ void Component::swap(Component &rhs)
 
 void Component::doAddComponent(const ComponentPtr &component)
 {
+    // TODO Need to add a warning or alert if this if condition is not met.
     if (!hasParent(component)) {
         component->setParent(shared_from_this());
         ComponentEntity::doAddComponent(component);

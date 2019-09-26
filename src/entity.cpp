@@ -116,6 +116,7 @@ bool Entity::hasParent(const ComponentPtr &component) const
     if (parentComponent == component) {
         hasParent = true;
     } else if (parentComponent) {
+        // Check all previous parents up through the hierarchy
         hasParent = parentComponent->hasParent(component);
     }
 
