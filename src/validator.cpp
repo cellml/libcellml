@@ -58,7 +58,8 @@ struct Validator::ValidatorImpl
      *
      * @param component The component to validate.
      */
-    void validateComponent(const ComponentPtr &component);
+    // void validateComponent(const ComponentPtr &component);
+    void validateComponentRecursively(const ComponentPtr &component, const std::vector<std::string> &siblingsOfComponent, const ModelPtr &model);
 
     /**
      * @brief Validate the @p units using the CellML 2.0 Specification.
@@ -116,8 +117,11 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames);
-
+    // void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames);
+    void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames,
+                          const std::vector<std::string> &availablePrivateConnections,
+                          const std::vector<std::string> &availablePublicConnections,
+                          const ModelPtr &model);
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
      *
@@ -351,6 +355,12 @@ void Validator::validateModel(const ModelPtr &model)
         std::vector<std::string> componentNames;
         std::vector<std::string> componentRefs;
         std::vector<std::string> componentImportSources;
+        std::vector<std::string> componentSiblings;
+
+        for (size_t i = 0; i < model->componentCount(); ++i) {
+            componentSiblings.push_back(model->component(i)->name());
+        }
+
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
             // Check for duplicate component names in this model.
@@ -399,8 +409,9 @@ void Validator::validateModel(const ModelPtr &model)
                 }
                 componentNames.push_back(componentName);
             }
-            // Validate component.
-            mPimpl->validateComponent(component);
+            // Validate component.  KRM
+            // mPimpl->validateComponent(component);
+            mPimpl->validateComponentRecursively(component, componentSiblings, model);
         }
     }
     // Check for units in this model.
@@ -481,8 +492,25 @@ void Validator::validateModel(const ModelPtr &model)
     mPimpl->validateConnections(model);
 }
 
-void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
+void Validator::ValidatorImpl::validateComponentRecursively(const ComponentPtr &component, const std::vector<std::string> &siblingsOfComponent, const ModelPtr &model)
 {
+    // Setting up the allowed interface types.  component-> parent = private, component->children and component->sibling = public
+
+    std::vector<std::string> privateConnections;
+    std::vector<std::string> childComponentNames;
+    // TODO If we ever allow more than one parent then this will need to be changed?
+    ComponentPtr parent = component->parentComponent();
+    if (parent != nullptr) {
+        privateConnections.push_back(component->parentComponent()->name());
+    }
+    std::vector<std::string> publicConnections(siblingsOfComponent);
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        publicConnections.push_back(component->component(c)->name());
+        childComponentNames.push_back(component->component(c)->name());
+    }
+    // removing self from the list of available components for variable equivalence
+    publicConnections.erase(std::remove(publicConnections.begin(), publicConnections.end(), component->name()), publicConnections.end());
+
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(component->name())) {
         ErrorPtr err = std::make_shared<Error>();
@@ -517,7 +545,7 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         // Validate variable(s).
         for (size_t i = 0; i < component->variableCount(); ++i) {
             VariablePtr variable = component->variable(i);
-            validateVariable(variable, variableNames);
+            validateVariable(variable, variableNames, privateConnections, publicConnections, model);
         }
     }
     // Check for resets in this component
@@ -551,6 +579,10 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
     // Validate math through the private implementation (for XML handling).
     if (!component->math().empty()) {
         validateMath(component->math(), component);
+    }
+
+    for (size_t c = 0; c < component->componentCount(); ++c) {
+        validateComponentRecursively(component->component(c), childComponentNames, model);
     }
 }
 
@@ -634,8 +666,13 @@ void Validator::ValidatorImpl::validateUnitsUnit(size_t index, const UnitsPtr &u
     }
 }
 
-void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames)
+void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames,
+                                                const std::vector<std::string> &availablePrivateConnections,
+                                                const std::vector<std::string> &availablePublicConnections,
+                                                const ModelPtr &model)
 {
+    ComponentPtr component = variable->parentComponent();
+    std::string hints;
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(variable->name())) {
         ErrorPtr err = std::make_shared<Error>();
@@ -652,8 +689,6 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
-        ComponentPtr component = variable->parentComponent();
-        ModelPtr model = component->parentModel();
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
@@ -662,15 +697,102 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             mValidator->addError(err);
         }
     }
+    std::string interfaceType = "unspecified";
     // Check for a valid interface attribute.
     if (!variable->interfaceType().empty()) {
-        std::string interfaceType = variable->interfaceType();
+        interfaceType = variable->interfaceType();
         if ((interfaceType != "public") && (interfaceType != "private") && (interfaceType != "none") && (interfaceType != "public_and_private")) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid interface attribute value '" + interfaceType + "'.");
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_INTERFACE);
             mValidator->addError(err);
+        }
+    }
+    if (variable->equivalentVariableCount() > 0) {
+        if ((interfaceType == "none") || (interfaceType == "unspecified")) {
+            ErrorPtr err = std::make_shared<Error>();
+            err->setDescription("Variable '" + variable->name() + "' specifies connections to equivalent variables but has an '" + interfaceType + "' interface type which prevents them.");
+            err->setVariable(variable);
+            err->setRule(SpecificationRule::VARIABLE_INTERFACE);
+            mValidator->addError(err);
+        }
+
+        for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+            VariablePtr equivalentVariable = variable->equivalentVariable(k);
+
+            // Check that the parent component of the equivalent variable is not in the hidden component set
+            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
+                ErrorPtr err = std::make_shared<Error>();
+                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
+                err->setModel(model);
+                err->setKind(Error::Kind::UNITS);
+                mValidator->addError(err);
+            }
+            if (equivalentVariable->hasEquivalentVariable(variable)) {
+                auto component2 = equivalentVariable->parentComponent();
+
+                std::string allowedConnectionType = "none";
+
+                if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) != availablePrivateConnections.end()) {
+                    allowedConnectionType = "private";
+                } else if (std::find(availablePublicConnections.begin(), availablePublicConnections.end(), component2->name()) != availablePublicConnections.end()) {
+                    allowedConnectionType = "public";
+                }
+
+                if (!((interfaceType == "private") || (interfaceType == "public_and_private")) && (allowedConnectionType == "private")) {
+                    // Then the interface on this variable does not match with available interfaces
+                    // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
+                                        + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', which is in a sibling component '"
+                                        + component2->name() + "'.");
+                    err->setVariable(variable);
+                    err->setKind(Error::Kind::CONNECTION);
+                    mValidator->addError(err);
+                } else if (!((interfaceType == "public") || (interfaceType == "public_and_private")) && (allowedConnectionType == "public")) {
+                    // Then the interface on this variable does not match with available interfaces
+                    // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
+                                        + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', which is in a sibling component '"
+                                        + component2->name() + "'.");
+                    err->setVariable(variable);
+                    err->setKind(Error::Kind::CONNECTION);
+                    mValidator->addError(err);
+                }
+                // Check that this component is in the available list for each type
+                if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) == availablePrivateConnections.end()) {
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Variable '" + equivalentVariable->name() + "' is in a component '" + component2->name()
+                                        + "' which is hidden from component '" + variable->parentComponent()->name() + "', the parent component of variable '"
+                                        + variable->name() + "', so these variables cannot be connected.");
+                    err->setVariable(variable);
+                    err->setKind(Error::Kind::CONNECTION);
+                    mValidator->addError(err);
+                } else {
+                    // Check that the components of the two equivalent variables are not the same
+                    std::string c1name = component->name();
+                    std::string c2name = component2->name();
+                    if (c1name == c2name) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
+                                            + variable->name() + "' but they are in the same component, '" + component->name() + "'.");
+                        err->setModel(model);
+                        err->setKind(Error::Kind::CONNECTION);
+                        mValidator->addError(err);
+                    }
+
+                    // Check that the equivalent variable has a valid parent component.
+                    if (!component2->hasVariable(equivalentVariable)) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
+                        err->setModel(model);
+                        err->setKind(Error::Kind::CONNECTION);
+                        mValidator->addError(err);
+                    }
+                }
+            }
         }
     }
     // Check for a valid initial value attribute.
@@ -1067,67 +1189,57 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
     // Check the connections in this model.
     std::string hints;
 
-
     if (model->componentCount() > 0) {
-        
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
 
-            // Make the list of non-hidden components from this one
-            std::vector<libcellml::ComponentPtr> availableComponents;
-            // Add siblings of this component
-            
+            /// ****************************** move inside funtion above
 
+            // // Check the variables in this component.
+            // for (size_t j = 0; j < component->variableCount(); ++j) {
+            //     VariablePtr variable = component->variable(j);
+            //     // Check the equivalent variables in this variable.
+            //     if (variable->equivalentVariableCount() > 0) {
+            //         for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+            //             VariablePtr equivalentVariable = variable->equivalentVariable(k);
+            //             // TODO: validate variable interfaces according to 17.10.8
+            //             // Check that the parent component of the equivalent variable is not in the hidden component set
 
+            //             // TODO: add check for cyclical connections (17.10.5) Nope, don't need to do this anymore?
+            //             if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
+            //                 ErrorPtr err = std::make_shared<Error>();
+            //                 err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
+            //                 err->setModel(model);
+            //                 err->setKind(Error::Kind::UNITS);
+            //                 mValidator->addError(err);
+            //             }
+            //             if (equivalentVariable->hasEquivalentVariable(variable)) {
+            //                 auto component2 = equivalentVariable->parentComponent();
+            //                 // Check that the components of the two equivalent variables are not the same
+            //                 std::string c1name = component->name();
+            //                 std::string c2name = component2->name();
+            //                 if (c1name == c2name) {
+            //                     ErrorPtr err = std::make_shared<Error>();
+            //                     err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
+            //                                         + variable->name() + "' but they are in the same component, '" + component->name() + "'.");
+            //                     err->setModel(model);
+            //                     err->setKind(Error::Kind::CONNECTION);
+            //                     mValidator->addError(err);
+            //                 }
+            //                 // Check that the equivalent variable has a valid parent component.
+            //                 if (!component2->hasVariable(equivalentVariable)) {
+            //                     ErrorPtr err = std::make_shared<Error>();
+            //                     err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
+            //                     err->setModel(model);
+            //                     err->setKind(Error::Kind::CONNECTION);
+            //                     mValidator->addError(err);
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
 
-
-            // Check the variables in this component.
-            for (size_t j = 0; j < component->variableCount(); ++j) {
-                VariablePtr variable = component->variable(j);
-                // Check the equivalent variables in this variable.
-                if (variable->equivalentVariableCount() > 0) {
-                    for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-                        VariablePtr equivalentVariable = variable->equivalentVariable(k);
-                        // TODO: validate variable interfaces according to 17.10.8
-                        // Check that the parent component of the equivalent variable is not in the hidden component set
-
-
-
-
-
-                        // TODO: add check for cyclical connections (17.10.5) Nope, don't need to do this anymore?
-                        if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
-                            ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
-                            err->setModel(model);
-                            err->setKind(Error::Kind::UNITS);
-                            mValidator->addError(err);
-                        }
-                        if (equivalentVariable->hasEquivalentVariable(variable)) {
-                            auto component2 = equivalentVariable->parentComponent();
-                            // Check that the components of the two equivalent variables are not the same
-                            std::string c1name = component->name();
-                            std::string c2name = component2->name();
-                            if (c1name == c2name) {
-                                ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
-                                                    + variable->name() + "' but they are in the same component, '" + component->name() + "'.");
-                                err->setModel(model);
-                                err->setKind(Error::Kind::CONNECTION);
-                                mValidator->addError(err);
-                            }
-                            // Check that the equivalent variable has a valid parent component.
-                            if (!component2->hasVariable(equivalentVariable)) {
-                                ErrorPtr err = std::make_shared<Error>();
-                                err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
-                                err->setModel(model);
-                                err->setKind(Error::Kind::CONNECTION);
-                                mValidator->addError(err);
-                            }
-                        }
-                    }
-                }
-            }
+            // ********************
         }
         // Check reset orders across variables and their connected variable sets.
         std::vector<libcellml::VariablePtr> globalVariableDoneList;
