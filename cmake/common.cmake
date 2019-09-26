@@ -132,6 +132,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
     set(_CLANG_TIDY_CHECKS
       -*
       bugprone-*
+      -bugprone-branch-clone
       ${_NO_BUGPRONE_EXCEPTION_ESCAPE}
       cert-*
       -cert-err58-cpp
@@ -144,6 +145,8 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -cppcoreguidelines-special-member-functions
       fuchsia-*
       -fuchsia-default-arguments
+      -fuchsia-default-arguments-calls
+      -fuchsia-default-arguments-declarations
       -fuchsia-multiple-inheritance
       -fuchsia-statically-constructed-objects
       google-*
@@ -159,9 +162,11 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       modernize-*
       -modernize-pass-by-value
       -modernize-raw-string-literal
+      -modernize-use-trailing-return-type
       performance-*
       -performance-inefficient-string-concatenation
       readability-*
+      -readability-convert-member-functions-to-static
       -readability-magic-numbers
     )
     string(REPLACE ";" ","
