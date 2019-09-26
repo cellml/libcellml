@@ -357,11 +357,9 @@ void Validator::validateModel(const ModelPtr &model)
         std::vector<std::string> componentImportSources;
         std::vector<std::string> componentSiblings;
 
-        // std::cout << "model has components:\n";
-        // for (size_t i = 0; i < model->componentCount(); ++i) {
-        //     componentSiblings.push_back(model->component(i)->name());
-        //     std::cout << " - " << model->component(i)->name() << "\n";
-        // }
+        for(size_t i=0; i < model->componentCount(); ++i){
+            componentSiblings.push_back(model->component(i)->name());
+        }
 
         for (size_t i = 0; i < model->componentCount(); ++i) {
             ComponentPtr component = model->component(i);
@@ -411,8 +409,6 @@ void Validator::validateModel(const ModelPtr &model)
                 }
                 componentNames.push_back(componentName);
             }
-            // Validate component.  KRM
-            // mPimpl->validateComponent(component);
             mPimpl->validateComponentRecursively(component, componentSiblings, model);
         }
     }
@@ -487,9 +483,6 @@ void Validator::validateModel(const ModelPtr &model)
         mPimpl->validateNoUnitsAreCyclic(model);
     }
 
-    // Validate the encapsulation hierarchy of the components
-    // mPimpl->validateEncapsulationHasNoCycles(model);
-
     // Validate any connections / variable equivalence networks in the model.
     mPimpl->validateConnections(model);
 }
@@ -509,21 +502,13 @@ void Validator::ValidatorImpl::validateComponentRecursively(const ComponentPtr &
         privateConnections.push_back(component->parentComponent()->name());
     }
     std::vector<std::string> publicConnections(siblingsOfComponent);
-    make t for (size_t c = 0; c < component->componentCount(); ++c)
-    {
+    
+    for (size_t c = 0; c < component->componentCount(); ++c) {
         publicConnections.push_back(component->component(c)->name());
         childComponentNames.push_back(component->component(c)->name());
     }
     // removing self from the list of available components for variable equivalence
     publicConnections.erase(std::remove(publicConnections.begin(), publicConnections.end(), component->name()), publicConnections.end());
-
-    // std::cout << "Inside component: " << component->name() << std::endl;
-    // for (auto &i : privateConnections) {
-    //     std::cout << "privateConnections includes = " << i << std::endl;
-    // }
-    // for (auto &i : publicConnections) {
-    //     std::cout << "publicConnections includes = " << i << std::endl;
-    // }
 
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(component->name())) {
@@ -731,85 +716,99 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             err->setRule(SpecificationRule::VARIABLE_INTERFACE);
             mValidator->addError(err);
         }
+        else {
+            for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
+                VariablePtr equivalentVariable = variable->equivalentVariable(k);
 
-        for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-            VariablePtr equivalentVariable = variable->equivalentVariable(k);
-
-            // Check that the parent component of the equivalent variable is not in the hidden component set
-            if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
-                ErrorPtr err = std::make_shared<Error>();
-                err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
-                err->setModel(model);
-                err->setKind(Error::Kind::UNITS);
-                mValidator->addError(err);
-            }
-            if (equivalentVariable->hasEquivalentVariable(variable)) {
-                auto component2 = equivalentVariable->parentComponent();
-
-                std::string allowedConnectionType = "none";
-
-                if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) != availablePrivateConnections.end()) {
-                    allowedConnectionType = "private";
-                } else if (std::find(availablePublicConnections.begin(), availablePublicConnections.end(), component2->name()) != availablePublicConnections.end()) {
-                    allowedConnectionType = "public";
-                }
-
-                if (!((interfaceType == "private") || (interfaceType == "public_and_private")) && (allowedConnectionType == "private")) {
-                    // Then the interface on this variable does not match with available interfaces
-                    // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
+                // Check that the parent component of the equivalent variable is not in the hidden component set
+                if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
                     ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
-                                        + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', in component '"
-                                        + component2->name() + "'.");
-                    err->setVariable(variable);
-                    err->setKind(Error::Kind::CONNECTION);
-                    mValidator->addError(err);
-                } else if (!((interfaceType == "public") || (interfaceType == "public_and_private")) && (allowedConnectionType == "public")) {
-                    // Then the interface on this variable does not match with available interfaces
-                    // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
-                                        + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', in component '"
-                                        + component2->name() + "'.");
-                    err->setVariable(variable);
-                    err->setKind(Error::Kind::CONNECTION);
+                    err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
+                    err->setModel(model);
+                    err->setKind(Error::Kind::UNITS);
                     mValidator->addError(err);
                 }
-                // Check that this component is in the available list for each type
-                // if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) == availablePrivateConnections.end()) {
-                //     ErrorPtr err = std::make_shared<Error>();
-                //     err->setDescription("Variable '" + equivalentVariable->name() + "' is in a component '" + component2->name()
-                //                         + "' which is hidden from component '" + variable->parentComponent()->name() + "', the parent component of variable '"
-                //                         + variable->name() + "', so these variables cannot be connected.");
-                //     err->setVariable(variable);
-                //     err->setKind(Error::Kind::CONNECTION);
-                //     mValidator->addError(err);
-                // }
+                // KRM std::cout<<variable->name()<<" "<<equivalentVariable->name()<<" has equiv="<< equivalentVariable->hasEquivalentVariable(variable)<<"\n";
+
+                if (equivalentVariable->hasEquivalentVariable(variable)) {
+                    auto component2 = equivalentVariable->parentComponent();
+                    if(component2==nullptr) {
+                        ErrorPtr err = std::make_shared<Error>();
+                        err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not have a parent component.");
+                        err->setVariable(equivalentVariable);
+                        err->setKind(Error::Kind::COMPONENT);
+                        mValidator->addError(err);
+                    }
+                    else if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) != availablePrivateConnections.end()) {
+                        if (!((interfaceType == "private") || (interfaceType == "public_and_private"))) {
+                            // Then the interface on this variable does not match with available interfaces
+                            // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
+                                                + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', in component '"
+                                                + component2->name() + "'.");
+                            err->setVariable(variable);
+                            err->setKind(Error::Kind::CONNECTION);
+                            mValidator->addError(err);
+                        }
+                    } else if (std::find(availablePublicConnections.begin(), availablePublicConnections.end(), component2->name()) != availablePublicConnections.end()) {
+                        if (!((interfaceType == "public") || (interfaceType == "public_and_private"))) {
+                            // Then the interface on this variable does not match with available interfaces
+                            // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
+                                                + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', in component '"
+                                                + component2->name() + "'.");
+                            err->setVariable(variable);
+                            err->setKind(Error::Kind::CONNECTION);
+                            mValidator->addError(err);
+                        }
+                    } else {
+                        // Then the connection is not permitted
+                        std::string c1name = component->name();
+                        std::string c2name = component2->name();
+                        if (c1name == c2name) {
+                            // Check that the components of the two equivalent variables are not the same
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
+                                                + variable->name() + "' but they are in the same component, '" + c1name + "'.");
+                            err->setVariable(variable);
+                            err->setKind(Error::Kind::CONNECTION);
+                            mValidator->addError(err);
+                        } else {
+                            // The other component set is not visible to this one
+
+                            // KRM remove ... 
+                            // std::cout <<"inside component "<<component->name()<<std::endl;
+                            // for(auto &i: availablePrivateConnections) {
+                            //     std::cout << "private = "<<i << std::endl;
+                            // }
+
+                            // for(auto &i: availablePublicConnections) {
+                            //     std::cout << "public = "<<i << std::endl;
+                            // }
+
+                            ErrorPtr err = std::make_shared<Error>();
+                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an equivalent variable '" +
+                                                equivalentVariable->name()+"' in component '"+component2->name()+"', which is not in the available component set.");
+                            err->setVariable(variable);
+                            err->setKind(Error::Kind::CONNECTION);
+                            mValidator->addError(err);
+                        }
+                    }
+                }
                 else {
-                    // Check that the components of the two equivalent variables are not the same
-                    std::string c1name = component->name();
-                    std::string c2name = component2->name();
-                    if (c1name == c2name) {
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
-                                            + variable->name() + "' but they are in the same component, '" + component->name() + "'.");
-                        err->setModel(model);
-                        err->setKind(Error::Kind::CONNECTION);
-                        mValidator->addError(err);
-                    }
+                    ErrorPtr err = std::make_shared<Error>();
+                    err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
+                    err->setModel(model);
+                    err->setKind(Error::Kind::CONNECTION);
+                    mValidator->addError(err);
+                } // end if equivalentVariable->hasVariable(variable)
 
-                    // Check that the equivalent variable has a valid parent component.
-                    if (!component2->hasVariable(equivalentVariable)) {
-                        ErrorPtr err = std::make_shared<Error>();
-                        err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
-                        err->setModel(model);
-                        err->setKind(Error::Kind::CONNECTION);
-                        mValidator->addError(err);
-                    }
-                }
-            }
-        }
-    }
+            } // end for 
+        } // end if interface type is specified  
+    } // end if equivalentVariableCount() > 0
+
     // Check for a valid initial value attribute.
     if (!variable->initialValue().empty()) {
         std::string initialValue = variable->initialValue();
