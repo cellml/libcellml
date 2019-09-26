@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/component.h"
 #include "libcellml/componententity.h"
+
+#include "libcellml/component.h"
+#include "libcellml/model.h"
 #include "libcellml/units.h"
 
 #include <algorithm>
@@ -97,6 +99,11 @@ void ComponentEntity::addComponent(const ComponentPtr &component)
 
 void ComponentEntity::doAddComponent(const ComponentPtr &component)
 {
+//    auto parent = component->parent();
+//    if (parent) {
+//        auto parentComponentEntity = reinterpret_cast<ComponentEntity *>(parent.get());
+//        parentComponentEntity->removeComponent(component);
+//    }
     mPimpl->mComponents.push_back(component);
 }
 

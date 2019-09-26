@@ -16,6 +16,8 @@ limitations under the License.
 
 #include "utilities.h"
 
+#include "libcellml/namedentity.h"
+
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -392,6 +394,16 @@ std::string sha1(const std::string &string)
     }
 
     return result.str();
+}
+
+std::string getEntityName(const EntityPtr &entity)
+{
+    std::string name;
+    auto namedEntity = dynamic_cast<NamedEntity *>(entity.get());
+    if (namedEntity != nullptr) {
+        name = namedEntity->name();
+    }
+    return name;
 }
 
 } // namespace libcellml

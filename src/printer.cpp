@@ -169,8 +169,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            ComponentPtr component1 = variable->parentComponent();
-                            ComponentPtr component2 = equivalentVariable->parentComponent();
+                            ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
+                            ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2 != nullptr) {
@@ -253,6 +253,7 @@ std::string Printer::PrinterImpl::printUnits(const UnitsPtr &units, const std::s
 
 std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, const std::string &indent) const
 {
+    std::cout << "c: " << component->name() <<  std::endl;
     std::string repr;
     if (component->isImport()) {
         return repr;
@@ -291,6 +292,7 @@ std::string Printer::PrinterImpl::printComponent(const ComponentPtr &component, 
         repr += printComponent(component->component(i), indent);
     }
 
+    std::cout << "out: " << std::endl;
     return repr;
 }
 
@@ -445,6 +447,7 @@ void Printer::swap(Printer &rhs)
 std::string Printer::printModel(const ModelPtr &model) const
 {
     // ImportMap
+    std::cout << "here 01" <<  std::endl;
     using ImportPair = std::pair<std::string, ComponentPtr>;
     using ImportMap = std::map<ImportSourcePtr, std::vector<ImportPair>>;
     ImportMap importMap;
@@ -472,6 +475,9 @@ std::string Printer::printModel(const ModelPtr &model) const
             } else if (comp->componentCount() != 0) {
                 // If the current component is a model component
                 // let the 'for' loop take care of the stack.
+                std::cout << modelComponent->name() << ", " << comp->name() << std::endl;
+                std::cout << (modelComponent != comp) <<  std::endl;
+
                 if (modelComponent != comp) {
                     componentStack.push(comp);
                     indeciesStack.push(index);
@@ -502,6 +508,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         }
     }
 
+    std::cout << "here 02" <<  std::endl;
     std::string repr;
     repr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<model xmlns=\"http://www.cellml.org/cellml/2.0#\"";
     if (!model->name().empty()) {
@@ -516,6 +523,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         repr += ">\n";
     }
 
+    std::cout << "here 03" <<  std::endl;
     for (const auto &iter : importMap) {
         repr += tabIndent + "<import xlink:href=\"" + iter.first->url() + "\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"";
         if (!iter.first->id().empty()) {
@@ -539,6 +547,8 @@ std::string Printer::printModel(const ModelPtr &model) const
 
     std::string componentEncapsulation;
     // Serialise components of the model, imported components have already been dealt with at this point.
+    std::cout << "encapsulation" <<  std::endl;
+
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->component(i);
         repr += mPimpl->printComponent(component, tabIndent);
@@ -547,6 +557,7 @@ std::string Printer::printModel(const ModelPtr &model) const
         }
     }
 
+    std::cout << "here 04" <<  std::endl;
     // Build unique variable equivalence pairs (ComponentMap, VariableMap) for connections.
     buildMaps(model, componentMap, variableMap);
     // Serialise connections of the model.

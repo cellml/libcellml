@@ -61,13 +61,15 @@ public:
      */
     std::string id() const;
 
+    EntityPtr parent() const;
+
     /**
      * @brief Returns the parent model of the CellML Entity.
      *
      * @return A pointer to the entity's parent model if it has one,
      * otherwise the null pointer.
      */
-    ModelPtr parentModel() const;
+    //ModelPtr parentModel() const;
 
     /**
      * @brief Returns the parent component of the CellML Entity.
@@ -75,7 +77,7 @@ public:
      * @return A pointer to the entity's parent component if it has one,
      * otherwise the null pointer.
      */
-    ComponentPtr parentComponent() const;
+   // ComponentPtr parentComponent() const;
 
     /**
      * @brief Sets the model as the parent of this entity.
@@ -84,7 +86,7 @@ public:
      *
      * @param parent A pointer to a cellml::Model.
      */
-    void setParent(const ModelPtr &parent);
+    void setParent(const EntityPtr &parent);
 
     /**
      * @brief Sets the component as the parent of this entity.
@@ -95,7 +97,7 @@ public:
      *
      * @param parent A pointer to a cellml::Component.
      */
-    void setParent(const ComponentPtr &parent);
+    //void setParent(const ComponentPtr &parent);
 
     /**
      * @brief Clear the pointer to the parent entity.
@@ -117,7 +119,9 @@ public:
      *
      * @return @c true if the entity has the given component as a parent, @c false otherwise.
      */
-    bool hasParent(const ComponentPtr &component) const;
+    bool hasParent(const EntityPtr &entity) const;
+
+    bool hasAncestor(const EntityPtr &entity) const;
 
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */

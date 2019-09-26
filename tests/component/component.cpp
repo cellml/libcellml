@@ -363,13 +363,13 @@ TEST(Component, takeComponentMethods)
     EXPECT_EQ(c->takeComponent(4), nullptr);
 
     EXPECT_EQ("child2", c02->name());
-    EXPECT_EQ(nullptr, c02->parentComponent());
+    EXPECT_EQ(nullptr, c02->parent());
 
     libcellml::ComponentPtr c01 = c->takeComponent("child1");
     EXPECT_EQ(size_t(0), c->componentCount());
 
     EXPECT_EQ("child1", c01->name());
-    EXPECT_EQ(nullptr, c01->parentComponent());
+    EXPECT_EQ(nullptr, c01->parent());
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
@@ -498,31 +498,4 @@ TEST(Component, constructors)
     // Testing move constructor for component
     libcellml::ComponentPtr c3 = std::move(c2);
     EXPECT_EQ("my_name", c3->name());
-}
-
-TEST(Component, multiParentWithAddComponentBugIssue399)
-{
-    // Addressing Issue 399.
-    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
-    parent->setName("parent_component");
-    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
-    child1->setName("child1");
-    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
-    child2->setName("child2");
-    libcellml::ComponentPtr child3 = std::make_shared<libcellml::Component>();
-    child3->setName("child3");
-
-    parent->addComponent(child1);
-    parent->addComponent(child2);
-    parent->addComponent(child3);
-    model->addComponent(parent);
-
-    EXPECT_EQ(size_t(3), parent->componentCount());
-    EXPECT_EQ(size_t(0), child2->componentCount());
-
-    child2->addComponent(child3);
-
-    EXPECT_EQ(size_t(2), parent->componentCount());
-    EXPECT_EQ(size_t(1), child2->componentCount());
 }
