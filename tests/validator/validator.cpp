@@ -129,6 +129,41 @@ TEST(Validator, namedModelWithUnnamedComponent)
     EXPECT_EQ(expectedError, validator.error(1)->description());
 }
 
+TEST(Validator, removeVariableFromComponent)
+{
+    libcellml::Validator validator;
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr component2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr variable = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr variable2 = std::make_shared<libcellml::Variable>();
+
+    model->setName("model");
+    component->setName("component");
+    component2->setName("component2");
+    variable->setName("variable");
+    variable->setUnits("dimensionless");
+    variable2->setName("variable2");
+    variable2->setUnits("dimensionless");
+
+    variable->setInterfaceType("public");
+    variable2->setInterfaceType("public");
+
+    component->addVariable(variable);
+    component2->addVariable(variable2);
+    model->addComponent(component);
+    model->addComponent(component2);
+    validator.validateModel(model);
+
+    libcellml::Variable::addEquivalence(variable, variable2);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
+    component->removeVariable(variable);
+    validator.validateModel(model);
+
+    EXPECT_EQ("Variable 'variable' is an equivalent variable to 'variable2' but has no parent component.", validator.error(0)->description());
+}
+
 TEST(Validator, unnamedModelWithUnnamedComponentWithUnnamedUnits)
 {
     const std::vector<std::string> expectedErrors = {
@@ -797,7 +832,6 @@ TEST(Validator, validateInvalidConnections)
     comp4->removeVariable(v4);
     // Remove all connections on v1_2, leaving dangling reciprocal connections.
     v1_2->removeAllEquivalences();
-
     v.validateModel(m);
     EXPECT_EQ(expectedErrors.size(), v.errorCount());
     for (size_t i = 0; i < v.errorCount(); ++i) {

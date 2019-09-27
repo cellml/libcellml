@@ -232,6 +232,9 @@ TEST(Component, removeComponentMethods)
     EXPECT_TRUE(c->removeComponent(0));
     EXPECT_EQ(size_t(1), c->componentCount());
 
+    EXPECT_EQ(nullptr, c1->parentComponent());
+    EXPECT_EQ(nullptr, c1->parentModel()); // parent model not set for this component
+
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
@@ -242,8 +245,11 @@ TEST(Component, removeComponentMethods)
     c->addComponent(c1);
     // Remove the first occurence of "child1".
     EXPECT_TRUE(c->removeComponent("child1"));
+    EXPECT_EQ(nullptr, c1->parentComponent());
+
     // Remove the second occurence of "child1".
     EXPECT_TRUE(c->removeComponent(c1));
+
     EXPECT_EQ(size_t(2), c->componentCount());
     a = printer.printModel(m);
     EXPECT_EQ(e2, a);

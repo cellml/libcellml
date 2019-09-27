@@ -1052,7 +1052,6 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
                         // Skip if this pairing has been checked before.
                         auto checkPairing = std::make_pair(variable, equivalentVariable);
-
                         if (std::find(checkedPairs.begin(), checkedPairs.end(), checkPairing) == checkedPairs.end()) {
                             // Swap the order for storage in the pair.
                             checkPairing = std::make_pair(equivalentVariable, variable);
@@ -1068,18 +1067,19 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                                 err->setKind(Error::Kind::UNITS);
                                 mValidator->addError(err);
                             }
-
                             if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
                                 auto component2 = equivalentVariable->parentComponent();
-                                if (!component2->hasVariable(equivalentVariable)) {
+                                if (component2 == nullptr) {
                                     ErrorPtr err = std::make_shared<Error>();
                                     err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");
                                     err->setModel(model);
                                     err->setKind(Error::Kind::CONNECTION);
                                     mValidator->addError(err);
                                 }
-                            } else {
+                            }
+                            // TODO This error is wrong ... is fixed in #350
+                            else {
                                 ErrorPtr err = std::make_shared<Error>();
                                 err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                                 err->setModel(model);

@@ -607,14 +607,24 @@ TEST(Variable, removeVariableMethods)
     c->addVariable(v3);
 
     EXPECT_TRUE(c->removeVariable("variable1"));
+    EXPECT_EQ(nullptr, v1->parentComponent());
+
     EXPECT_TRUE(c->removeVariable(v3));
+    EXPECT_EQ(nullptr, v3->parentComponent());
+
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
     EXPECT_FALSE(c->removeVariable("BAD_NAME"));
 
     c->addVariable(v4);
+
+    // v2 and v4 present in c
     c->removeAllVariables();
+    EXPECT_EQ(nullptr, v2->parentComponent());
+    EXPECT_EQ(nullptr, v4->parentComponent());
+    EXPECT_EQ(size_t(0), c->variableCount());
+
     a = printer.printModel(m);
     EXPECT_EQ(e2, a);
     EXPECT_FALSE(c->removeVariable(v5));
@@ -623,8 +633,17 @@ TEST(Variable, removeVariableMethods)
     c->addVariable(v2);
     c->addVariable(v3);
 
+    EXPECT_EQ(c, v1->parentComponent());
+    EXPECT_EQ(c, v2->parentComponent());
+    EXPECT_EQ(c, v3->parentComponent());
+
     EXPECT_TRUE(c->removeVariable(0)); // v1
     EXPECT_TRUE(c->removeVariable(1)); // new index of v3
+
+    EXPECT_EQ(nullptr, v1->parentComponent());
+    EXPECT_EQ(c, v2->parentComponent());
+    EXPECT_EQ(nullptr, v3->parentComponent());
+
     a = printer.printModel(m);
     EXPECT_EQ(e1, a);
     EXPECT_FALSE(c->removeVariable(1));
