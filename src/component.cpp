@@ -112,7 +112,7 @@ void Component::swap(Component &rhs)
 
 void Component::doAddComponent(const ComponentPtr &component)
 {
-    if (!hasParent(component)) {
+    if (!hasAncestor(component)) {
         component->setParent(shared_from_this());
         ComponentEntity::doAddComponent(component);
     }
