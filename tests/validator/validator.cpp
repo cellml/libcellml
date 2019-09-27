@@ -2041,12 +2041,12 @@ TEST(Validator, interfaceTestingNotValid)
 {
     std::vector<std::string> expectedErrors = {
         "Variable 'v_parent' in component 'c_parent' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v', in component 'c'.",
-        "Variable 'v_parent' in component 'c_parent' specifies an equivalent variable 'v_child3' in component 'c_child2', which is not in the available component set.",
+        "Variable 'v_parent' in component 'c_parent' specifies an equivalent variable 'v_child2b' in component 'c_child2', which is not in the available component set.",
         "Variable 'v_parent' in component 'c_parent' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v2', in component 'c2'.",
         "Variable 'v' in component 'c' specifies an interface type of 'public' which is incompatible with connecting to the variable 'v_parent', in component 'c_parent'.",
-        "Variable 'v_child1' in component 'c_child1' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v_child2', in component 'c_child2'.",
-        "Variable 'v_child2' specifies connections to equivalent variables but has an 'none' interface type which prevents them.",
-        "Variable 'v_child3' in component 'c_child2' specifies an equivalent variable 'v_parent' in component 'c_parent', which is not in the available component set.",
+        "Variable 'v_child1' in component 'c_child1' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v_child2a', in component 'c_child2'.",
+        "Variable 'v_child2a' specifies connections to equivalent variables but has an 'none' interface type which prevents them.",
+        "Variable 'v_child2b' in component 'c_child2' specifies an equivalent variable 'v_parent' in component 'c_parent', which is not in the available component set.",
         "Variable 'v2' specifies connections to equivalent variables but has an 'unspecified' interface type which prevents them.",
     };
 
@@ -2057,13 +2057,15 @@ TEST(Validator, interfaceTestingNotValid)
     libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c_child1 = std::make_shared<libcellml::Component>();
     libcellml::ComponentPtr c_child2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c_child3 = std::make_shared<libcellml::Component>();
 
     libcellml::VariablePtr v_parent = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v_child1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v_child2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v_child3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v_child2a = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v_child2b = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
     c_parent->setName("c_parent");
@@ -2071,47 +2073,64 @@ TEST(Validator, interfaceTestingNotValid)
     c2->setName("c2");
     c_child1->setName("c_child1");
     c_child2->setName("c_child2");
+    c_child3->setName("c_child3");
 
     v_parent->setName("v_parent");
     v->setName("v");
     v2->setName("v2");
     v_child1->setName("v_child1");
-    v_child2->setName("v_child2");
+    v_child2a->setName("v_child2a");
+    v_child2b->setName("v_child2b");
     v_child3->setName("v_child3");
 
     v_parent->setUnits("dimensionless");
     v->setUnits("dimensionless");
     v2->setUnits("dimensionless");
     v_child1->setUnits("dimensionless");
-    v_child2->setUnits("dimensionless");
+    v_child2a->setUnits("dimensionless");
+    v_child2b->setUnits("dimensionless");
     v_child3->setUnits("dimensionless");
 
     c_parent->addVariable(v_parent);
     c->addVariable(v);
     c2->addVariable(v2);
     c_child1->addVariable(v_child1);
-    c_child2->addVariable(v_child2);
-    c_child2->addVariable(v_child3);
+    c_child2->addVariable(v_child2a);
+    c_child2->addVariable(v_child2b);
+    c_child3->addVariable(v_child3);
 
-    // model ( c_parent (c (c_child1, c_child2) , c2 ))
+    // model ( c_parent (c (c_child1, c_child2, c) , c2 ))
     m->addComponent(c_parent);
     c_parent->addComponent(c);
     c_parent->addComponent(c2);
     c->addComponent(c_child1);
     c->addComponent(c_child2);
+    c->addComponent(c_child3);
 
-    libcellml::Variable::addEquivalence(v_child1, v_child2); // sibling components, needs public interface - both will fail
+    // Variable 'v_child1' in component 'c_child1' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v_child2a', in component 'c_child2'.
+    libcellml::Variable::addEquivalence(v_child1, v_child2a); // sibling components, needs public interface - both will fail
     v_child1->setInterfaceType("private");
-    v_child2->setInterfaceType("none");
+    // Variable 'v_child2a' specifies connections to equivalent variables but has an 'none' interface type which prevents them.
+    v_child2a->setInterfaceType("none");
 
-    libcellml::Variable::addEquivalence(v, v_parent); // parent and child, needs public on child and private on parent - wrong way around
+    // Variable 'v_parent' in component 'c_parent' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v', in component 'c'.,
+    // Variable 'v' in component 'c' specifies an interface type of 'public' which is incompatible with connecting to the variable 'v_parent', in component 'c_parent'.
+    libcellml::Variable::addEquivalence(v, v_parent);
     v_parent->setInterfaceType("private");
     v->setInterfaceType("public");
 
-    libcellml::Variable::addEquivalence(v_parent, v_child3); // not allowed to connect these components
-    v_child3->setInterfaceType("public_and_private");
+    // Variable 'v_parent' in component 'c_parent' specifies an equivalent variable 'v_child2b' in component 'c_child2', which is not in the available component set.,
+    // Variable 'v_child2b' in component 'c_child2' specifies an equivalent variable 'v_parent' in component 'c_parent', which is not in the available component set.
+    libcellml::Variable::addEquivalence(v_parent, v_child2b);
+    v_child2b->setInterfaceType("public_and_private");
 
-    libcellml::Variable::addEquivalence(v_parent, v2); // connection is allowed, but no interface type is specified on v2
+    // Variable 'v_parent' in component 'c_parent' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v2', in component 'c2'
+    // Variable 'v2' specifies connections to equivalent variables but has an 'unspecified' interface type which prevents them.,
+    libcellml::Variable::addEquivalence(v_parent, v2);
+
+    // libcellml::Variable::addEquivalence(v_child2b, v_child3);
+    // v_child3->setInterfaceType("public");
+    // c_child3->removeVariable(v_child3);  // this is *supposed* to orphan the variable from the component, but it currently has a bug ...
 
     validator.validateModel(m);
 

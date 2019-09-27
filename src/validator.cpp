@@ -31,6 +31,7 @@ limitations under the License.
 #include <map>
 #include <regex>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -357,7 +358,7 @@ void Validator::validateModel(const ModelPtr &model)
         std::vector<std::string> componentImportSources;
         std::vector<std::string> componentSiblings;
 
-        for(size_t i=0; i < model->componentCount(); ++i){
+        for (size_t i = 0; i < model->componentCount(); ++i) {
             componentSiblings.push_back(model->component(i)->name());
         }
 
@@ -502,7 +503,7 @@ void Validator::ValidatorImpl::validateComponentRecursively(const ComponentPtr &
         privateConnections.push_back(component->parentComponent()->name());
     }
     std::vector<std::string> publicConnections(siblingsOfComponent);
-    
+
     for (size_t c = 0; c < component->componentCount(); ++c) {
         publicConnections.push_back(component->component(c)->name());
         childComponentNames.push_back(component->component(c)->name());
@@ -715,8 +716,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             err->setVariable(variable);
             err->setRule(SpecificationRule::VARIABLE_INTERFACE);
             mValidator->addError(err);
-        }
-        else {
+        } else {
             for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                 VariablePtr equivalentVariable = variable->equivalentVariable(k);
 
@@ -732,14 +732,13 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 
                 if (equivalentVariable->hasEquivalentVariable(variable)) {
                     auto component2 = equivalentVariable->parentComponent();
-                    if(component2==nullptr) {
+                    if (component2 == nullptr) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not have a parent component.");
                         err->setVariable(equivalentVariable);
                         err->setKind(Error::Kind::COMPONENT);
                         mValidator->addError(err);
-                    }
-                    else if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) != availablePrivateConnections.end()) {
+                    } else if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) != availablePrivateConnections.end()) {
                         if (!((interfaceType == "private") || (interfaceType == "public_and_private"))) {
                             // Then the interface on this variable does not match with available interfaces
                             // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
@@ -778,7 +777,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                         } else {
                             // The other component set is not visible to this one
 
-                            // KRM remove ... 
+                            // KRM remove ...
                             // std::cout <<"inside component "<<component->name()<<std::endl;
                             // for(auto &i: availablePrivateConnections) {
                             //     std::cout << "private = "<<i << std::endl;
@@ -789,15 +788,13 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                             // }
 
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an equivalent variable '" +
-                                                equivalentVariable->name()+"' in component '"+component2->name()+"', which is not in the available component set.");
+                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an equivalent variable '" + equivalentVariable->name() + "' in component '" + component2->name() + "', which is not in the available component set.");
                             err->setVariable(variable);
                             err->setKind(Error::Kind::CONNECTION);
                             mValidator->addError(err);
                         }
                     }
-                }
-                else {
+                } else {
                     ErrorPtr err = std::make_shared<Error>();
                     err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
                     err->setModel(model);
@@ -805,8 +802,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                     mValidator->addError(err);
                 } // end if equivalentVariable->hasVariable(variable)
 
-            } // end for 
-        } // end if interface type is specified  
+            } // end for
+        } // end if interface type is specified
     } // end if equivalentVariableCount() > 0
 
     // Check for a valid initial value attribute.
