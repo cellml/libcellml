@@ -58,8 +58,9 @@ struct Validator::ValidatorImpl
      * the CellML 2.0 Specification. Any errors will be logged in the @c Validator.
      *
      * @param component The component to validate.
+     * @param siblingsOfComponent The other components in the same parent encapuslating entity
+     * @param model The parent model being validated
      */
-    // void validateComponent(const ComponentPtr &component);
     void validateComponentRecursively(const ComponentPtr &component, const std::vector<std::string> &siblingsOfComponent, const ModelPtr &model);
 
     /**
@@ -81,7 +82,7 @@ struct Validator::ValidatorImpl
      *
      * @param model The model which may contain variable connections to validate.
      */
-    void validateConnections(const ModelPtr &model);
+    void validateResets(const ModelPtr &model);
 
     /**
      * @brief Check if the provided @p name is a valid CellML identifier.
@@ -118,11 +119,12 @@ struct Validator::ValidatorImpl
      * @param variable The variable to validate.
      * @param variableNames A vector list of the name attributes of the @p variable and its siblings.
      */
-    // void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames);
+
     void validateVariable(const VariablePtr &variable, const std::vector<std::string> &variableNames,
                           const std::vector<std::string> &availablePrivateConnections,
                           const std::vector<std::string> &availablePublicConnections,
                           const ModelPtr &model);
+
     /**
      * @brief Validate the @p reset using the CellML 2.0 Specification.
      *
@@ -294,12 +296,6 @@ struct Validator::ValidatorImpl
      * @param localDoneList Returns a list of previously checked varaibles to save time.
      */
     void fetchConnectedResets(const VariablePtr &variable, std::map<std::string, std::vector<libcellml::ResetPtr>> &resetMap, std::vector<libcellml::VariablePtr> &localDoneList);
-
-    void validateEncapsulationHasNoCycles(const ModelPtr &model);
-
-    void checkComponentForCycles(const ComponentPtr &parent,
-                                 std::vector<std::string> &history,
-                                 std::vector<std::vector<std::string>> &errorList);
 };
 
 Validator::Validator()
@@ -485,7 +481,7 @@ void Validator::validateModel(const ModelPtr &model)
     }
 
     // Validate any connections / variable equivalence networks in the model.
-    mPimpl->validateConnections(model);
+    mPimpl->validateResets(model);
 }
 
 void Validator::ValidatorImpl::validateComponentRecursively(const ComponentPtr &component, const std::vector<std::string> &siblingsOfComponent, const ModelPtr &model)
@@ -1186,66 +1182,12 @@ void Validator::ValidatorImpl::gatherMathBvarVariableNames(XmlNodePtr &node, std
     }
 }
 
-void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
+void Validator::ValidatorImpl::validateResets(const ModelPtr &model)
 {
-    // Check the connections in this model.
     std::string hints;
-
     if (model->componentCount() > 0) {
-        for (size_t i = 0; i < model->componentCount(); ++i) {
-            ComponentPtr component = model->component(i);
-
-            /// ****************************** move inside funtion above
-
-            // // Check the variables in this component.
-            // for (size_t j = 0; j < component->variableCount(); ++j) {
-            //     VariablePtr variable = component->variable(j);
-            //     // Check the equivalent variables in this variable.
-            //     if (variable->equivalentVariableCount() > 0) {
-            //         for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
-            //             VariablePtr equivalentVariable = variable->equivalentVariable(k);
-            //             // TODO: validate variable interfaces according to 17.10.8
-            //             // Check that the parent component of the equivalent variable is not in the hidden component set
-
-            //             // TODO: add check for cyclical connections (17.10.5) Nope, don't need to do this anymore?
-            //             if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
-            //                 ErrorPtr err = std::make_shared<Error>();
-            //                 err->setDescription("Variable '" + variable->name() + "' has units of '" + variable->units() + "' and an equivalent variable '" + equivalentVariable->name() + "' has units of '" + equivalentVariable->units() + "' which do not match. The mismatch is: " + hints);
-            //                 err->setModel(model);
-            //                 err->setKind(Error::Kind::UNITS);
-            //                 mValidator->addError(err);
-            //             }
-            //             if (equivalentVariable->hasEquivalentVariable(variable)) {
-            //                 auto component2 = equivalentVariable->parentComponent();
-            //                 // Check that the components of the two equivalent variables are not the same
-            //                 std::string c1name = component->name();
-            //                 std::string c2name = component2->name();
-            //                 if (c1name == c2name) {
-            //                     ErrorPtr err = std::make_shared<Error>();
-            //                     err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '"
-            //                                         + variable->name() + "' but they are in the same component, '" + component->name() + "'.");
-            //                     err->setModel(model);
-            //                     err->setKind(Error::Kind::CONNECTION);
-            //                     mValidator->addError(err);
-            //                 }
-            //                 // Check that the equivalent variable has a valid parent component.
-            //                 if (!component2->hasVariable(equivalentVariable)) {
-            //                     ErrorPtr err = std::make_shared<Error>();
-            //                     err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
-            //                     err->setModel(model);
-            //                     err->setKind(Error::Kind::CONNECTION);
-            //                     mValidator->addError(err);
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
-
-            // ********************
-        }
         // Check reset orders across variables and their connected variable sets.
         std::vector<libcellml::VariablePtr> globalVariableDoneList;
-
         for (size_t componentIndex = 0; componentIndex < model->componentCount(); ++componentIndex) {
             ComponentPtr component = model->component(componentIndex);
             for (size_t resetIndex = 0; resetIndex < component->resetCount(); ++resetIndex) {
@@ -1552,79 +1494,5 @@ void Validator::ValidatorImpl::checkUnitForCycles(const ModelPtr &model, const U
         }
     }
 }
-
-/*
-void Validator::ValidatorImpl::validateEncapsulationHasNoCycles(const ModelPtr &model)
-{
-    std::vector<std::string> history;
-    std::vector<std::vector<std::string>> errorList;
-
-    for (size_t c = 0; c < model->componentCount(); ++c) {
-        ComponentPtr component = model->component(c);
-
-        std::cout << "testing " << component->name() << "\n";
-
-        history.push_back(component->name());
-        checkComponentForCycles(component, history, errorList);
-        // Have to delete this each time to prevent reinitialisation with previous base variables.
-        std::vector<std::string>().swap(history);
-    }
-
-    if (!errorList.empty()) {
-        std::vector<std::map<std::string, bool>> reportedErrorList;
-        for (auto &errors : errorList) {
-            std::map<std::string, bool> hash;
-
-            for (auto &e : errors) {
-                hash.insert(std::pair<std::string, bool>(e, true));
-            }
-
-            // Only return as error if this combo has not been reported already.
-            if (std::find(reportedErrorList.begin(), reportedErrorList.end(), hash) == reportedErrorList.end()) {
-                ErrorPtr err = std::make_shared<Error>();
-                std::string des = "'";
-                for (size_t j = 0; j < errors.size() - 1; ++j) {
-                    des += errors[j] + "' -> '";
-                }
-                des += errors[errors.size() - 1] + "'";
-                err->setDescription("Cyclic definitions of encapsulated components exist: " + des);
-                err->setModel(model);
-                err->setKind(Error::Kind::ENCAPSULATION);
-                mValidator->addError(err);
-                reportedErrorList.push_back(hash);
-            }
-            std::map<std::string, bool>().swap(hash);
-        }
-    }
-}
-
-void Validator::ValidatorImpl::checkComponentForCycles(const ComponentPtr &parent,
-                                                       std::vector<std::string> &history,
-                                                       std::vector<std::vector<std::string>> &errorList)
-{
-    // Recursive function to check for directed cycles in the encapsulation structure
-
-    // Take history, and copy it for each new branch.
-    for (size_t c = 0; c < parent->componentCount(); ++c) {
-        ComponentPtr child = parent->component(c);
-        std::cout << "Testing child: " << child->name() << "\n";
-
-        if (std::find(history.begin(), history.end(), child->name()) != history.end()) {
-            history.push_back(child->name());
-            // Print to error output *only* when the first and last components are the same
-            // otherwise we get lasso shapes reported.
-            if (history.front() == history.back()) {
-                errorList.push_back(history);
-            }
-        } else {
-            history.push_back(child->name());
-            // Making a copy of the history vector to this point.
-            std::vector<std::string> child_history(history);
-            checkComponentForCycles(child, child_history, errorList);
-            std::vector<std::string>().swap(child_history);
-        }
-    }
-}
-*/
 
 } // namespace libcellml
