@@ -712,59 +712,53 @@ TEST(Validator, parseAndValidateInvalidUnitErrors)
     checkExpectedErrors(expectedErrors, v);
 }
 
-// TODO removed until the removeVariable bug is fixed ...
-// TEST(Validator, validateInvalidConnectionsParentlessVariable)
-// {
-//     const std::vector<std::string> expectedErrors = {
-//         "Variable 'variable1' has an equivalent variable 'variable2' which does not reciprocally have 'variable1' set as an equivalent variable.",
-//     };
+TEST(Validator, validateInvalidConnectionsParentlessVariable)
+{
+    const std::vector<std::string> expectedErrors = {
+        "Variable 'variable1' has an equivalent variable 'variable2' which does not have a parent component.",
+    };
 
-//     libcellml::Validator v;
-//     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-//     libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-//     libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
 
-//     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-//     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
 
-//     m->setName("modelName");
-//     comp1->setName("component1");
-//     comp2->setName("component2");
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
 
-//     v1->setName("variable1");
-//     v2->setName("variable2");
+    v1->setName("variable1");
+    v2->setName("variable2");
 
-//     v1->setUnits("dimensionless");
-//     v2->setUnits("dimensionless");
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
 
-//     v1->setInterfaceType("public");
-//     v2->setInterfaceType("public");
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
 
-//     comp1->addVariable(v1);
-//     comp2->addVariable(v2);
-//     m->addComponent(comp1);
-//     m->addComponent(comp2);
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
 
-//     // Valid connections.
-//     libcellml::Variable::addEquivalence(v1, v2);
+    // Valid connections.
+    libcellml::Variable::addEquivalence(v1, v2);
 
-//     // Not valid connections
-//     libcellml::Variable::addEquivalence(v2, v1); // opposite to above, equivalence already made so effectively a no-op.
+    // Not valid connections
+    libcellml::Variable::addEquivalence(v2, v1); // opposite to above, equivalence already made so effectively a no-op.
 
-//     // Make v4 a variable without a parent component.
-//     comp2->removeVariable(v2);
+    // Make v4 a variable without a parent component.
+    comp2->removeVariable(v2);
+    v.validateModel(m);
 
-//     std::cout<<comp2->variableCount()<<"\n";
-//     std::cout<<v2->parentComponent()->name()<<"\n";
-
-//     v.validateModel(m);
-//     printErrors(v);
-
-//     EXPECT_EQ(expectedErrors.size(), v.errorCount());
-//     for (size_t i = 0; i < v.errorCount(); ++i) {
-//         EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
-//     }
-// }
+    EXPECT_EQ(expectedErrors.size(), v.errorCount());
+    for (size_t i = 0; i < v.errorCount(); ++i) {
+        EXPECT_EQ(expectedErrors.at(i), v.error(i)->description());
+    }
+}
 
 TEST(Validator, equivalentVariablesInSameComponent)
 {

@@ -145,6 +145,7 @@ void Component::addVariable(const VariablePtr &variable)
     variable->setParent(shared_from_this());
 }
 
+/*
 bool Component::removeVariable(size_t index)
 {
     if (index < mPimpl->mVariables.size()) {
@@ -179,6 +180,62 @@ bool Component::removeVariable(const VariablePtr &variable)
 
 void Component::removeAllVariables()
 {
+    mPimpl->mVariables.clear();
+}
+
+*/
+
+bool Component::removeVariable(size_t index)
+{
+    if (index < mPimpl->mVariables.size()) {
+        VariablePtr v = mPimpl->mVariables.at(index);
+        ModelPtr model = v->parentModel();
+        v->clearParent();
+        v->setParent(model);
+        mPimpl->mVariables.erase(mPimpl->mVariables.begin() + int64_t(index));
+        return true;
+    }
+
+    return false;
+}
+
+bool Component::removeVariable(const std::string &name)
+{
+    auto result = mPimpl->findVariable(name);
+
+    if (result != mPimpl->mVariables.end()) {
+        VariablePtr v = *result;
+        ModelPtr model = v->parentModel();
+        v->clearParent();
+        v->setParent(model);
+        mPimpl->mVariables.erase(result);
+        return true;
+    }
+
+    return false;
+}
+
+bool Component::removeVariable(const VariablePtr &variable)
+{
+    auto result = mPimpl->findVariable(variable);
+    if (result != mPimpl->mVariables.end()) {
+        VariablePtr v = *result;
+        ModelPtr model = v->parentModel();
+        v->clearParent();
+        v->setParent(model);
+        mPimpl->mVariables.erase(result);
+        return true;
+    }
+    return false;
+}
+
+void Component::removeAllVariables()
+{
+    for (auto &v : mPimpl->mVariables) {
+        ModelPtr model = v->parentModel(); // These should be the same for all variables, but just in case they're not ...
+        v->clearParent();
+        v->setParent(model);
+    }
     mPimpl->mVariables.clear();
 }
 

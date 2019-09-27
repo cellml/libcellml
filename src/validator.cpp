@@ -38,7 +38,6 @@ limitations under the License.
 // KRM Delete me...
 #include <iostream>
 
-
 #include <libxml/uri.h>
 
 namespace libcellml {
@@ -549,6 +548,7 @@ void Validator::ValidatorImpl::validateComponentRecursively(const ComponentPtr &
             validateVariable(variable, variableNames, privateConnections, publicConnections, model);
         }
     }
+
     // Check for resets in this component
     if (component->resetCount() > 0) {
         std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
@@ -577,6 +577,7 @@ void Validator::ValidatorImpl::validateComponentRecursively(const ComponentPtr &
             }
         }
     }
+
     // Validate math through the private implementation (for XML handling).
     if (!component->math().empty()) {
         validateMath(component->math(), component);
@@ -729,15 +730,14 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                     err->setKind(Error::Kind::UNITS);
                     mValidator->addError(err);
                 }
-                // KRM std::cout<<variable->name()<<" "<<equivalentVariable->name()<<" has equiv="<< equivalentVariable->hasEquivalentVariable(variable)<<"\n";
 
                 if (equivalentVariable->hasEquivalentVariable(variable)) {
                     auto component2 = equivalentVariable->parentComponent();
                     if (component2 == nullptr) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not have a parent component.");
-                        err->setVariable(equivalentVariable);
-                        err->setKind(Error::Kind::COMPONENT);
+                        err->setModel(model);
+                        err->setKind(Error::Kind::VARIABLE);
                         mValidator->addError(err);
                     } else if (std::find(availablePrivateConnections.begin(), availablePrivateConnections.end(), component2->name()) != availablePrivateConnections.end()) {
                         if (!((interfaceType == "private") || (interfaceType == "public_and_private"))) {
@@ -776,18 +776,6 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                             err->setKind(Error::Kind::CONNECTION);
                             mValidator->addError(err);
                         } else {
-                            // The other component set is not visible to this one
-
-                            // KRM remove ...
-                            // std::cout <<"inside component "<<component->name()<<std::endl;
-                            // for(auto &i: availablePrivateConnections) {
-                            //     std::cout << "private = "<<i << std::endl;
-                            // }
-
-                            // for(auto &i: availablePublicConnections) {
-                            //     std::cout << "public = "<<i << std::endl;
-                            // }
-
                             ErrorPtr err = std::make_shared<Error>();
                             err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an equivalent variable '" + equivalentVariable->name() + "' in component '" + component2->name() + "', which is not in the available component set.");
                             err->setVariable(variable);
@@ -802,11 +790,9 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                     err->setKind(Error::Kind::CONNECTION);
                     mValidator->addError(err);
                 } // end if equivalentVariable->hasVariable(variable)
-
             } // end for
         } // end if interface type is specified
     } // end if equivalentVariableCount() > 0
-
     // Check for a valid initial value attribute.
     if (!variable->initialValue().empty()) {
         std::string initialValue = variable->initialValue();
@@ -1273,6 +1259,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
                 // Retrieving connected variable order set
                 std::vector<libcellml::VariablePtr> localDoneList;
                 std::map<std::string, std::vector<libcellml::ResetPtr>> resetMap;
+
                 fetchConnectedResets(variable, resetMap, localDoneList);
 
                 globalVariableDoneList.insert(globalVariableDoneList.end(), localDoneList.begin(), localDoneList.end());
@@ -1305,10 +1292,12 @@ void Validator::ValidatorImpl::fetchConnectedResets(const VariablePtr &variable,
         }
         // Look for resets of the equiv variable and add to resetList
         auto component = equiv->parentComponent();
-        for (size_t r = 0; r < component->resetCount(); ++r) {
-            ResetPtr reset = component->reset(r);
-            if (reset->variable()->name() == equiv->name()) {
-                resetMap[std::to_string(reset->order())].push_back(reset);
+        if (component != nullptr) {
+            for (size_t r = 0; r < component->resetCount(); ++r) {
+                ResetPtr reset = component->reset(r);
+                if (reset->variable()->name() == equiv->name()) {
+                    resetMap[std::to_string(reset->order())].push_back(reset);
+                }
             }
         }
         localDoneList.push_back(equiv);
