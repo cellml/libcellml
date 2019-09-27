@@ -97,11 +97,11 @@ void Entity::clearParent()
     mPimpl->mParent = {};
 }
 
-bool Entity::hasParent(const EntityPtr &entity) const
+bool Entity::hasParent() const
 {
     bool hasParent = false;
     EntityPtr parent = mPimpl->mParent.lock();
-    if (parent == entity) {
+    if (parent) {
         hasParent = true;
     }
 
