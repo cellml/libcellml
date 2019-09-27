@@ -32,9 +32,6 @@ using EntityWeakPtr = std::weak_ptr<Entity>;
  */
 struct Entity::EntityImpl
 {
-    ModelWeakPtr mParentModel; /**< Pointer to parent model. */
-    ComponentWeakPtr mParentComponent; /**< Pointer to component model. */
-
     EntityWeakPtr mParent;
 
     std::string mId; /**< String document identifier for this entity. */
@@ -43,8 +40,6 @@ struct Entity::EntityImpl
 Entity::Entity()
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParentModel = {};
-    mPimpl->mParentComponent = {};
     mPimpl->mParent = {};
 }
 
@@ -56,8 +51,6 @@ Entity::~Entity()
 Entity::Entity(const Entity &rhs)
     : mPimpl(new EntityImpl())
 {
-    mPimpl->mParentComponent = rhs.mPimpl->mParentComponent;
-    mPimpl->mParentModel = rhs.mPimpl->mParentModel;
     mPimpl->mParent = rhs.mPimpl->mParent;
     mPimpl->mId = rhs.mPimpl->mId;
 }
@@ -93,22 +86,7 @@ EntityPtr Entity::parent() const
 {
     return mPimpl->mParent.lock();
 }
-/*
-ModelPtr Entity::parentModel() const
-{
-    return mPimpl->mParentModel.lock();
-}
 
-ComponentPtr Entity::parentComponent() const
-{
-    return mPimpl->mParentComponent.lock();
-}
-
-void Entity::setParent(const ComponentPtr &parent)
-{
-    mPimpl->mParentComponent = parent;
-}
-*/
 void Entity::setParent(const EntityPtr &parent)
 {
     mPimpl->mParent = parent;
@@ -117,8 +95,6 @@ void Entity::setParent(const EntityPtr &parent)
 void Entity::clearParent()
 {
     mPimpl->mParent = {};
-//    mPimpl->mParentComponent = {};
-//    mPimpl->mParentModel = {};
 }
 
 bool Entity::hasParent(const EntityPtr &entity) const
