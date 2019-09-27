@@ -208,9 +208,7 @@ TEST(Encapsulation, hierarchyCircular)
     EXPECT_EQ(e_parent_2, a_parent);
 
     child2->addComponent(parent);
-    std::cout << "here 1" << std::endl;
     a_parent = printer.printModel(model);
-    std::cout << "here 2" << std::endl;
     EXPECT_EQ(e_parent_2, a_parent);
 }
 

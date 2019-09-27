@@ -99,11 +99,6 @@ void ComponentEntity::addComponent(const ComponentPtr &component)
 
 void ComponentEntity::doAddComponent(const ComponentPtr &component)
 {
-//    auto parent = component->parent();
-//    if (parent) {
-//        auto parentComponentEntity = reinterpret_cast<ComponentEntity *>(parent.get());
-//        parentComponentEntity->removeComponent(component);
-//    }
     mPimpl->mComponents.push_back(component);
 }
 
