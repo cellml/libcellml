@@ -480,7 +480,7 @@ void Validator::validateModel(const ModelPtr &model)
         mPimpl->validateNoUnitsAreCyclic(model);
     }
 
-    // Validate any connections / variable equivalence networks in the model.
+    // Validate the reset order within the equivalence networks in the model.
     mPimpl->validateResets(model);
 }
 
