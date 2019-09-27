@@ -23,6 +23,7 @@ limitations under the License.
 #include <cassert>
 #include <stdexcept>
 #include <map>
+#include <stdexcept>
 #include <vector>
 
 namespace libcellml {
