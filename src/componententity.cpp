@@ -105,6 +105,10 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
     bool status = false;
     auto result = mPimpl->findComponent(name);
     if (result != mPimpl->mComponents.end()) {
+        ComponentPtr c = *result;
+        ModelPtr m = c->parentModel();
+        c->clearParent();
+        c->setParent(m);
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -112,7 +116,6 @@ bool ComponentEntity::removeComponent(const std::string &name, bool searchEncaps
             status = component(i)->removeComponent(name, searchEncapsulated);
         }
     }
-
     return status;
 }
 
@@ -120,6 +123,10 @@ bool ComponentEntity::removeComponent(size_t index)
 {
     bool status = false;
     if (index < mPimpl->mComponents.size()) {
+        ComponentPtr c = mPimpl->mComponents.at(index);
+        ModelPtr m = c->parentModel();
+        c->clearParent();
+        c->setParent(m);
         mPimpl->mComponents.erase(mPimpl->mComponents.begin() + int64_t(index));
         status = true;
     }
@@ -132,6 +139,10 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
     bool status = false;
     auto result = mPimpl->findComponent(component);
     if (result != mPimpl->mComponents.end()) {
+        ComponentPtr c = *result;
+        ModelPtr m = c->parentModel();
+        c->clearParent();
+        c->setParent(m);
         mPimpl->mComponents.erase(result);
         status = true;
     } else if (searchEncapsulated) {
@@ -145,6 +156,11 @@ bool ComponentEntity::removeComponent(const ComponentPtr &component, bool search
 
 void ComponentEntity::removeAllComponents()
 {
+    for (auto &c : mPimpl->mComponents) {
+        ModelPtr m = c->parentModel(); // Should be the same for all these components, but just in case ...
+        c->clearParent();
+        c->setParent(m);
+    }
     mPimpl->mComponents.clear();
 }
 
