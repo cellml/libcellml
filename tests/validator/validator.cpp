@@ -2041,6 +2041,7 @@ TEST(Validator, interfaceTestingNotValid)
         "Variable 'v_child1' in component 'c_child1' specifies an interface type of 'private' which is incompatible with connecting to the variable 'v_child2a', in component 'c_child2'.",
         "Variable 'v_child2a' specifies connections to equivalent variables but has an 'none' interface type which prevents them.",
         "Variable 'v_child2b' in component 'c_child2' specifies an equivalent variable 'v_parent' in component 'c_parent', which is not in the available component set.",
+        "Variable 'v_child2b' has an equivalent variable 'v_child3' which does not have a parent component.",
         "Variable 'v2' specifies connections to equivalent variables but has an 'unspecified' interface type which prevents them.",
     };
 
@@ -2057,9 +2058,9 @@ TEST(Validator, interfaceTestingNotValid)
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v_child1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v_child3 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v_child2a = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v_child2b = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v_child3 = std::make_shared<libcellml::Variable>();
 
     m->setName("modelName");
     c_parent->setName("c_parent");
@@ -2091,7 +2092,6 @@ TEST(Validator, interfaceTestingNotValid)
     c_child1->addVariable(v_child1);
     c_child2->addVariable(v_child2a);
     c_child2->addVariable(v_child2b);
-    c_child3->addVariable(v_child3);
 
     // model ( c_parent (c (c_child1, c_child2, c) , c2 ))
     m->addComponent(c_parent);
@@ -2122,12 +2122,13 @@ TEST(Validator, interfaceTestingNotValid)
     // Variable 'v2' specifies connections to equivalent variables but has an 'unspecified' interface type which prevents them.,
     libcellml::Variable::addEquivalence(v_parent, v2);
 
-    // libcellml::Variable::addEquivalence(v_child2b, v_child3);
-    // v_child3->setInterfaceType("public");
-    // c_child3->removeVariable(v_child3);  // this is *supposed* to orphan the variable from the component, but it currently has a bug ...
+    // Variable 'v_child2b' has an equivalent variable 'v_child3' which does not have a parent component.,
+    libcellml::Variable::addEquivalence(v_child2b, v_child3);
+    v_child3->setInterfaceType("public");
+    c_child3->removeVariable(v_child3);
 
     validator.validateModel(m);
 
-    EXPECT_EQ(size_t(8), validator.errorCount());
+    EXPECT_EQ(expectedErrors.size(), validator.errorCount());
     checkExpectedErrors(expectedErrors, validator);
 }

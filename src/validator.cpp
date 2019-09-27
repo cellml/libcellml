@@ -722,6 +722,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
             for (size_t k = 0; k < variable->equivalentVariableCount(); ++k) {
                 VariablePtr equivalentVariable = variable->equivalentVariable(k);
 
+                // TODO will equivalentVariable ever be nullptr??
+
                 // Check that the parent component of the equivalent variable is not in the hidden component set
                 if (!unitsAreEquivalent(model, variable, equivalentVariable, hints)) {
                     ErrorPtr err = std::make_shared<Error>();
@@ -783,13 +785,15 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                             mValidator->addError(err);
                         }
                     }
-                } else {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
-                    err->setModel(model);
-                    err->setKind(Error::Kind::CONNECTION);
-                    mValidator->addError(err);
-                } // end if equivalentVariable->hasVariable(variable)
+                }
+                // KRM TODO Check whether it's possible to ever get here?  Don't think so ... ?
+                // else {
+                //     ErrorPtr err = std::make_shared<Error>();
+                //     err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not reciprocally have '" + variable->name() + "' set as an equivalent variable.");
+                //     err->setModel(model);
+                //     err->setKind(Error::Kind::CONNECTION);
+                //     mValidator->addError(err);
+                // } // end if equivalentVariable->hasVariable(variable)
             } // end for
         } // end if interface type is specified
     } // end if equivalentVariableCount() > 0
