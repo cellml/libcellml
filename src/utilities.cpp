@@ -408,12 +408,11 @@ std::string getEntityName(const EntityPtr &entity)
     return name;
 }
 
-ModelPtr parentModel(const EntityPtr & entity)
+ModelPtr parentModel(const EntityPtr &entity)
 {
     auto model = std::dynamic_pointer_cast<Model>(entity->parent());
     auto component = std::dynamic_pointer_cast<Component>(entity->parent());
-    while(!model && component && component->parent())
-    {
+    while (!model && component && component->parent()) {
         model = std::dynamic_pointer_cast<Model>(component->parent());
         component = std::dynamic_pointer_cast<Component>(component->parent());
     }
