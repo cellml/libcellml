@@ -115,6 +115,9 @@ void Component::swap(Component &rhs)
 void Component::doAddComponent(const ComponentPtr &component)
 {
     if (component->hasParent()) {
+        if (hasAncestor(component)) {
+            return;
+        }
         auto parent = component->parent();
         removeComponentFromEntity(parent, component);
     }
