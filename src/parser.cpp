@@ -957,6 +957,8 @@ void Parser::ParserImpl::loadEncapsulation(const ModelPtr &model, const XmlNodeP
                 componentRefNode = componentRefNode->next();
                 continue;
             }
+        } else if (componentRefNode->isComment()) {
+            // Do nothing.
         } else {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Encapsulation in model '" + model->name() + "' has an invalid child element '" + componentRefNode->name() + "'.");

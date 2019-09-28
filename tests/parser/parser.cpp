@@ -1739,6 +1739,7 @@ TEST(Parser, unitsWithCellMLRealVariations)
         "    <unit multiplier=\"3.4e7.8\" units=\"fruit\"/>\n"
         "  </units>\n"
         "</model>\n";
+
     const std::string e =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
@@ -1774,7 +1775,7 @@ TEST(Parser, xmlComments)
         "    <!-- THIS COMMENT SHOULD BE IGNORED 2 -->\n"
         "    <unit units=\"kelvin\"><!-- THIS COMMENT SHOULD BE IGNORED 2a --></unit>\n"
         "  </units>\n"
-        "  <component>\n"
+        "  <component name=\"main\">\n"
         "    <!-- THIS COMMENT SHOULD BE IGNORED 3 -->\n"
         "    <variable name=\"stan\" units=\"dimensionless\"/>\n"
         "    <variable name=\"V_k\" units=\"dimensionless\"><!-- THIS COMMENT SHOULD BE IGNORED 3a --></variable>\n"
@@ -1791,11 +1792,18 @@ TEST(Parser, xmlComments)
         "      </when>\n"
         "    </reset>\n"
         "  </component>\n"
+        "  <component name=\"child\"/>\n"
+        "  <encapsulation>\n"
+        "    <!-- THIS COMMENT SHOULD BE IGNORED 6 -->\n"
+        "    <component_ref component=\"main\">\n"
+        "       <!-- THIS COMMENT SHOULD BE IGNORED 7 -->\n"
+        "       <component_ref component=\"child\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
         "</model>\n";
 
     libcellml::Parser parser;
     parser.parseModel(input);
-    printErrors(parser);
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 }
