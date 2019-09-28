@@ -276,7 +276,7 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
     printErrors(parser);
     EXPECT_EQ(size_t(1), model->componentCount());
     auto component = model->component(0);
-    for(size_t i = 0; i < 3; ++i) {
+    for (size_t i = 0; i < 3; ++i) {
         EXPECT_EQ(size_t(1), component->componentCount());
         component = component->component(0);
     }

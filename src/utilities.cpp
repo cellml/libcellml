@@ -426,5 +426,4 @@ void removeComponentFromParent(const EntityPtr &entity, const ComponentPtr &comp
     componentEntity->removeComponent(component);
 }
 
-
 } // namespace libcellml
