@@ -346,7 +346,7 @@ std::string getEntityName(const EntityPtr &entity);
  * @param entity The entity to get the owning model for.
  * @return The owning @c Model or the @c nullptr if no model owns this entity.
  */
-ModelPtr parentModel(const EntityPtr &entity);
+ModelPtr owningModel(const EntityPtr &entity);
 
 /**
  * @brief Remove the given component for the given entity.
