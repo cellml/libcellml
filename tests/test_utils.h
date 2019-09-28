@@ -24,7 +24,7 @@ std::string fileContents(const std::string &fileName);
 
 void printErrors(const libcellml::Validator &v);
 void printErrors(const libcellml::Parser &p);
-void expectEqualErrors(const std::vector<std::string> errors, const libcellml::Logger &logger);
+void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::Logger &logger);
 
 libcellml::ModelPtr createModel(const std::string &name = "");
 libcellml::ModelPtr createModelWithComponent(const std::string &name = "");
