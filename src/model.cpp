@@ -21,6 +21,8 @@ limitations under the License.
 #include "libcellml/units.h"
 #include "libcellml/variable.h"
 
+#include "utilities.h"
+
 #include <algorithm>
 #include <fstream>
 #include <map>
@@ -99,11 +101,12 @@ void Model::swap(Model &rhs)
 
 void Model::doAddComponent(const ComponentPtr &component)
 {
-    // Check for cycles.
-    if (!hasAncestor(component)) {
-        component->setParent(shared_from_this());
-        ComponentEntity::doAddComponent(component);
+    if (component->hasParent()) {
+        auto parent = component->parent();
+        removeComponentFromParent(parent, component);
     }
+    component->setParent(shared_from_this());
+    ComponentEntity::doAddComponent(component);
 }
 
 void Model::addUnits(const UnitsPtr &units)

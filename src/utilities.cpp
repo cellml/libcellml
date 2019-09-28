@@ -401,7 +401,7 @@ std::string sha1(const std::string &string)
 std::string getEntityName(const EntityPtr &entity)
 {
     std::string name;
-    auto namedEntity = dynamic_cast<NamedEntity *>(entity.get());
+    auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(entity);
     if (namedEntity != nullptr) {
         name = namedEntity->name();
     }
@@ -419,5 +419,12 @@ ModelPtr parentModel(const EntityPtr &entity)
 
     return model;
 }
+
+void removeComponentFromParent(const EntityPtr &entity, const ComponentPtr &component)
+{
+    auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(entity);
+    componentEntity->removeComponent(component);
+}
+
 
 } // namespace libcellml

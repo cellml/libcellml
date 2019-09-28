@@ -46,14 +46,12 @@ TEST(Encapsulation, reparentComponent)
         "  <component name=\"child1\"/>\n"
         "  <component name=\"child2\"/>\n"
         "  <component name=\"child3\"/>\n"
-        "  <component name=\"child3\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"parent_component\">\n"
         "      <component_ref component=\"child1\"/>\n"
         "      <component_ref component=\"child2\">\n"
         "        <component_ref component=\"child3\"/>\n"
         "      </component_ref>\n"
-        "      <component_ref component=\"child3\"/>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
@@ -64,19 +62,12 @@ TEST(Encapsulation, reparentComponent)
         "  <component name=\"child1\"/>\n"
         "  <component name=\"child2\"/>\n"
         "  <component name=\"child3\"/>\n"
-        "  <component name=\"child3\"/>\n"
-        "  <component name=\"child2\"/>\n"
-        "  <component name=\"child3\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"parent_component\">\n"
         "      <component_ref component=\"child1\"/>\n"
-        "      <component_ref component=\"child2\">\n"
-        "        <component_ref component=\"child3\"/>\n"
-        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "    <component_ref component=\"child2\">\n"
         "      <component_ref component=\"child3\"/>\n"
-        "      <component_ref component=\"child2\">\n"
-        "        <component_ref component=\"child3\"/>\n"
-        "      </component_ref>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
@@ -100,21 +91,16 @@ TEST(Encapsulation, reparentComponent)
     std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_1, a_parent);
 
-    // what do we expect this to achieve? The addition of child3 to child2
+    // 'child3's parent is changed to 'child2'.
     child2->addComponent(child3);
 
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
-    // Now we have two 'child2's and three 'child3's with a hierarchical encapsulation
-    parent->addComponent(child2);
+    // Now we have two components at the bottom of the hierarchy.
+    model->addComponent(child2);
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_re_add, a_parent);
-
-    // option 2: add child3 as a child of child2 and remove it as a child of parent_component
-    // Not really an option is it a bit side-effecty
-
-    // other options?
 }
 
 TEST(Encapsulation, hierarchyWaterfall)
@@ -185,6 +171,9 @@ TEST(Encapsulation, hierarchyCircular)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
+    const std::string e_parent_3 =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -207,9 +196,11 @@ TEST(Encapsulation, hierarchyCircular)
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
+    // Making a circular hierarchy but all we do is orhpan the components
+    // from the model leaving it empty.
     child2->addComponent(parent);
     a_parent = printer.printModel(model);
-    EXPECT_EQ(e_parent_2, a_parent);
+    EXPECT_EQ(e_parent_3, a_parent);
 }
 
 TEST(Encapsulation, hierarchyWaterfallAndParse)
@@ -282,7 +273,14 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
     libcellml::ModelPtr model = parser.parseModel(input);
 
     EXPECT_EQ(size_t(0), parser.errorCount());
+    printErrors(parser);
     EXPECT_EQ(size_t(1), model->componentCount());
+    auto component = model->component(0);
+    for(size_t i = 0; i < 3; ++i) {
+        EXPECT_EQ(size_t(1), component->componentCount());
+        component = component->component(0);
+    }
+    EXPECT_EQ(size_t(0), component->componentCount());
 }
 
 TEST(Encapsulation, encapsulatedComponentMethods)
