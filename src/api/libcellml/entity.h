@@ -111,7 +111,6 @@ public:
      */
     bool hasAncestor(const EntityPtr &entity) const;
 
-
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
