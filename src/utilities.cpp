@@ -420,7 +420,7 @@ ModelPtr parentModel(const EntityPtr &entity)
     return model;
 }
 
-void removeComponentFromParent(const EntityPtr &entity, const ComponentPtr &component)
+void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component)
 {
     auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(entity);
     componentEntity->removeComponent(component, false);
