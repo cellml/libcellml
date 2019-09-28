@@ -423,7 +423,7 @@ ModelPtr parentModel(const EntityPtr &entity)
 void removeComponentFromParent(const EntityPtr &entity, const ComponentPtr &component)
 {
     auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(entity);
-    componentEntity->removeComponent(component);
+    componentEntity->removeComponent(component, false);
 }
 
 } // namespace libcellml
