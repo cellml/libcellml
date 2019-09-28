@@ -171,9 +171,6 @@ TEST(Encapsulation, hierarchyCircular)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string e_parent_3 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\"/>\n";
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
@@ -196,11 +193,12 @@ TEST(Encapsulation, hierarchyCircular)
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
-    // Making a circular hierarchy but all we do is orhpan the components
-    // from the model leaving it empty.
+    // Try to make a circular hierarchy but we will not succeed as this is not
+    // allowed.  The model will stay as it is.
     child2->addComponent(parent);
+    EXPECT_FALSE(parent->hasAncestor(child2));
     a_parent = printer.printModel(model);
-    EXPECT_EQ(e_parent_3, a_parent);
+    EXPECT_EQ(e_parent_2, a_parent);
 }
 
 TEST(Encapsulation, hierarchyWaterfallAndParse)
