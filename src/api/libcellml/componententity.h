@@ -51,7 +51,17 @@ public:
     /**
      * @brief Add a child component to this component entity.
      *
-     * Add a copy of the given component as a child component of this component entity.
+     * Add the given component as a child component of this component entity.
+     * If the given component doesn't have a parent then this component entity
+     * will be set as its parent.  If the given component does have a parent
+     * then the given component will have this component entity set as its parent
+     * and its old parent will no longer have the given component as a child.
+     *
+     * If the addition of the given component creates a cycle of components
+     * the given component will not be added to this component entity and it
+     * will not have this component entity set as its parent.  The component
+     * will keep its current parent and it will remain a child of its
+     * current parent.
      *
      * @param component The component to add.
      */
