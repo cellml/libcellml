@@ -108,17 +108,4 @@ bool Entity::hasParent() const
     return hasParent;
 }
 
-bool Entity::hasAncestor(const EntityPtr &entity) const
-{
-    bool hasParent = false;
-    EntityPtr parent = mPimpl->mParent.lock();
-    if (parent == entity) {
-        hasParent = true;
-    } else if (parent) {
-        hasParent = parent->hasAncestor(entity);
-    }
-
-    return hasParent;
-}
-
 } // namespace libcellml
