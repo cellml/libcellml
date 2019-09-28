@@ -96,6 +96,22 @@ public:
      */
     bool hasParent() const;
 
+    /**
+     * @brief Test to see if the given entity is an ancestor of this entity.
+     *
+     * Tests the given entity to determine if the entity or
+     * any of its parent entities already has this entity as a parent.
+     * This allows for a test against creating cycles. If the given entity
+     * is a parent of the current entity then the result is @c true otherwise the
+     * result is false.
+     *
+     * @param component The entity to test against.
+     *
+     * @return @c true if this entity has the given entity as a parent, @c false otherwise.
+     */
+    bool hasAncestor(const EntityPtr &entity) const;
+
+
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */
 
