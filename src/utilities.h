@@ -348,6 +348,17 @@ std::string getEntityName(const EntityPtr &entity);
  */
 ModelPtr parentModel(const EntityPtr &entity);
 
-void removeComponentFromParent(const EntityPtr &entity, const ComponentPtr &component);
+/**
+ * @brief Remove the given component for the given entity.
+ *
+ * The entity is expected to be derived from @c ComponentEntity and the
+ * component is expected to be a direct child of that entity.  The component
+ * will only be removed from the entity itself the component hierarchy of the
+ * entity will not be searched for the location of the component.
+ *
+ * @param entity The entity to remove the component from.
+ * @param component The component to remove from the entity.
+ */
+void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component);
 
 } // namespace libcellml

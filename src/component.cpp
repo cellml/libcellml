@@ -116,7 +116,7 @@ void Component::doAddComponent(const ComponentPtr &component)
 {
     if (component->hasParent()) {
         auto parent = component->parent();
-        removeComponentFromParent(parent, component);
+        removeComponentFromEntity(parent, component);
     }
     component->setParent(shared_from_this());
     ComponentEntity::doAddComponent(component);
