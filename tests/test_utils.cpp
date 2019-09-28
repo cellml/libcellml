@@ -54,7 +54,7 @@ void printErrors(const libcellml::Parser &p)
     }
 }
 
-void expectEqualErrors(const std::vector<std::string> errors, const libcellml::Logger &logger)
+void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::Logger &logger)
 {
     EXPECT_EQ(errors.size(), logger.errorCount());
     for (size_t i = 0; i < logger.errorCount() && i < errors.size(); ++i) {
