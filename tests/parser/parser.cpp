@@ -653,6 +653,10 @@ TEST(Parser, encapsulationWithNoComponentAttribute)
 
 TEST(Parser, encapsulationWithNoComponentRef)
 {
+    const std::vector<std::string> expectedErrors = {
+        "Encapsulation in model 'model_name' has an invalid child element 'component_free'.",
+    };
+
     const std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
@@ -660,18 +664,21 @@ TEST(Parser, encapsulationWithNoComponentRef)
         "    <component_free/>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string expectedError1 = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
-    const std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(2), p.errorCount());
-    EXPECT_EQ(expectedError1, p.error(0)->description());
-    EXPECT_EQ(expectedError2, p.error(1)->description());
+
+    expectEqualErrors(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoComponent)
 {
+    const std::vector<std::string> expectedErrors = {
+        "Encapsulation in model 'model_name' specifies 'bob' as a component in a component_ref but it does not exist in the model.",
+        "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref element.",
+        "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.",
+    };
+
     const std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
@@ -681,18 +688,20 @@ TEST(Parser, encapsulationWithNoComponent)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string expectedError1 = "Encapsulation in model 'model_name' specifies 'bob' as a component in a component_ref but it does not exist in the model.";
-    const std::string expectedError2 = "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref that is a child of invalid parent component 'bob'.";
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(2), p.errorCount());
-    EXPECT_EQ(expectedError1, p.error(0)->description());
-    EXPECT_EQ(expectedError2, p.error(1)->description());
+
+    expectEqualErrors(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithMissingComponent)
 {
+    const std::vector<std::string> expectedErrors = {
+        "Encapsulation in model 'model_name' specifies 'dave' as a component in a component_ref but it does not exist in the model.",
+        "Encapsulation in model 'model_name' specifies 'bob' as a parent component_ref but it does not have any children.",
+    };
+
     const std::string ex =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
@@ -703,12 +712,11 @@ TEST(Parser, encapsulationWithMissingComponent)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string expectedError1 = "Encapsulation in model 'model_name' specifies 'dave' as a component in a component_ref but it does not exist in the model.";
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
-    EXPECT_EQ(expectedError1, p.error(0)->description());
+
+    expectEqualErrors(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoComponentChild)
@@ -741,12 +749,16 @@ TEST(Parser, encapsulationNoChildComponentRef)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string expectedError = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
+
+    const std::vector<std::string> expectedErrors = {
+        "Encapsulation in model 'model_name' has an invalid child element 'component_free'.",
+        "Encapsulation in model 'model_name' specifies 'bob' as a parent component_ref but it does not have any children.",
+    };
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
-    EXPECT_EQ(expectedError, p.error(0)->description());
+
+    expectEqualErrors(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoGrandchildComponentRef)
@@ -764,12 +776,15 @@ TEST(Parser, encapsulationWithNoGrandchildComponentRef)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string expectedError = "Encapsulation in model 'model_name' has an invalid child element 'component_free'.";
+
+    const std::vector<std::string> expectedErrors = {
+        "Encapsulation in model 'model_name' has an invalid child element 'component_free'.",
+    };
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(1), p.errorCount());
-    EXPECT_EQ(expectedError, p.error(0)->description());
+
+    expectEqualErrors(expectedErrors, p);
 }
 
 TEST(Parser, invalidEncapsulations)
@@ -793,26 +808,25 @@ TEST(Parser, invalidEncapsulations)
         "    <component_ref component=\"bob\"/>\n"
         "  </encapsulation>\n"
         "</model>\n";
+
     const std::vector<std::string> expectedErrors = {
         "Encapsulation in model 'ringo' has an invalid attribute 'relationship'.",
         "Encapsulation in model 'ringo' has an invalid component_ref attribute 'bogus'.",
         "Encapsulation in model 'ringo' has an invalid component_ref attribute 'bogus'.",
         "Encapsulation in model 'ringo' has an invalid component_ref attribute 'enemy'.",
-        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref that is a child of 'dave'.",
+        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref element.",
         "Encapsulation in model 'ringo' specifies 'ignatio' as a component in a component_ref but it does not exist in the model.",
         "Encapsulation in model 'ringo' specifies an invalid parent component_ref that also does not have any children.",
         "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref element.",
-        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref that is a child of an invalid parent component.",
+        "Encapsulation in model 'ringo' does not have a valid component attribute in a component_ref element.",
+        "Encapsulation in model 'ringo' specifies an invalid parent component_ref that also does not have any children.",
         "Model 'ringo' has more than one encapsulation element.",
     };
 
     libcellml::Parser parser;
     parser.parseModel(e);
 
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
-    }
+    expectEqualErrors(expectedErrors, parser);
 }
 
 TEST(Parser, invalidVariableAttributesAndGetVariableError)
@@ -1393,6 +1407,7 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
+
     const std::vector<std::string> expectedErrors = {
         "Model 'starwars' has an invalid non-whitespace child text element '\n  episode7\n  '.",
         "Import from 'sith.xml' has an invalid non-whitespace child text element '\n    kylo\n  '.",
@@ -1401,8 +1416,8 @@ TEST(Parser, invalidModelWithTextInAllElements)
         "Component 'ship' has an invalid non-whitespace child text element '\n    falcon\n    '.",
         "Variable 'jedi' has an invalid non-whitespace child text element '\n      rey\n    '.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n    awakens\n    '.",
-        "Encapsulation in model 'starwars' specifies an invalid parent component_ref that also does not have any children.",
         "Encapsulation in model 'starwars' has an invalid non-whitespace child text element '\n      force\n    '.",
+        "Encapsulation in model 'starwars' specifies 'ship' as a parent component_ref but it does not have any children.",
         "Connection in model 'starwars' does not have a valid component_1 in a connection element.",
         "Connection in model 'starwars' does not have a valid component_2 in a connection element.",
         "Connection in model 'starwars' has an invalid non-whitespace child text element '\n    finn\n    '.",
@@ -1416,10 +1431,8 @@ TEST(Parser, invalidModelWithTextInAllElements)
     // Parse and check for CellML errors.
     libcellml::Parser parser;
     parser.parseModel(input);
-    EXPECT_EQ(expectedErrors.size(), parser.errorCount());
-    for (size_t i = 0; i < parser.errorCount(); ++i) {
-        EXPECT_EQ(expectedErrors.at(i), parser.error(i)->description());
-    }
+
+    expectEqualErrors(expectedErrors, parser);
 }
 
 TEST(Parser, parseIds)

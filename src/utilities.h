@@ -348,4 +348,6 @@ std::string getEntityName(const EntityPtr &entity);
  */
 ModelPtr parentModel(const EntityPtr &entity);
 
+void removeComponentFromParent(const EntityPtr &entity, const ComponentPtr &component);
+
 } // namespace libcellml

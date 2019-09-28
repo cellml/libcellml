@@ -17,6 +17,8 @@ limitations under the License.
 #include "test_resources.h"
 #include "test_utils.h"
 
+#include "gtest/gtest.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -49,6 +51,14 @@ void printErrors(const libcellml::Parser &p)
         std::cout << p.error(i)->description() << ", " << std::endl;
         std::cout << static_cast<int>(p.error(i)->rule()) << std::endl;
         std::cout << p.error(i)->specificationHeading() << std::endl;
+    }
+}
+
+void expectEqualErrors(const std::vector<std::string> errors, const libcellml::Logger &logger)
+{
+    EXPECT_EQ(errors.size(), logger.errorCount());
+    for (size_t i = 0; i < logger.errorCount() && i < errors.size(); ++i) {
+        EXPECT_EQ(errors.at(i), logger.error(i)->description());
     }
 }
 

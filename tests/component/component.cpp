@@ -106,7 +106,7 @@ TEST(Component, addAndCountChildren)
 
     child3->addComponent(child4);
     parent->addComponent(child3);
-    EXPECT_EQ(size_t(5), parent->componentCount());
+    EXPECT_EQ(size_t(3), parent->componentCount());
 
     EXPECT_EQ(size_t(1), child3->componentCount());
 }
@@ -206,11 +206,9 @@ TEST(Component, removeComponentMethods)
         "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
         "  <component/>\n"
         "  <component name=\"child2\"/>\n"
-        "  <component name=\"child1\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref>\n"
         "      <component_ref component=\"child2\"/>\n"
-        "      <component_ref component=\"child1\"/>\n"
         "    </component_ref>\n"
         "  </encapsulation>\n"
         "</model>\n";
@@ -235,23 +233,26 @@ TEST(Component, removeComponentMethods)
     libcellml::Printer printer;
     std::string a = printer.printModel(m);
     EXPECT_EQ(e1, a);
+    // No longer a component at position 1.
     EXPECT_FALSE(c->removeComponent(1));
 
+    // This will only add the one child 'c1'.
     c->addComponent(c1);
     c->addComponent(c1);
     c->addComponent(c1);
     // Remove the first occurence of "child1".
     EXPECT_TRUE(c->removeComponent("child1"));
-    // Remove the second occurence of "child1".
-    EXPECT_TRUE(c->removeComponent(c1));
-    EXPECT_EQ(size_t(2), c->componentCount());
+    // Cannot remove a second occurence of "child1".
+    EXPECT_FALSE(c->removeComponent(c1));
+    // Still have component 'c2'.
+    EXPECT_EQ(size_t(1), c->componentCount());
     a = printer.printModel(m);
     EXPECT_EQ(e2, a);
 
     // Expect no change
     EXPECT_FALSE(c->removeComponent("child3"));
     EXPECT_FALSE(c->removeComponent(c3));
-    EXPECT_EQ(size_t(2), c->componentCount());
+    EXPECT_EQ(size_t(1), c->componentCount());
 
     c->removeAllComponents();
     a = printer.printModel(m);
@@ -279,15 +280,8 @@ TEST(Component, componentMethods)
         "  <component name=\"gus\"/>\n"
         "  <component name=\"childB\"/>\n"
         "  <component name=\"child3\"/>\n"
-        "  <component name=\"gus\"/>\n"
-        "  <component name=\"childB\"/>\n"
-        "  <component name=\"child3\"/>\n"
         "  <encapsulation>\n"
         "    <component_ref component=\"parent\">\n"
-        "      <component_ref component=\"gus\">\n"
-        "        <component_ref component=\"childB\"/>\n"
-        "        <component_ref component=\"child3\"/>\n"
-        "      </component_ref>\n"
         "      <component_ref component=\"gus\">\n"
         "        <component_ref component=\"childB\"/>\n"
         "        <component_ref component=\"child3\"/>\n"
@@ -324,11 +318,11 @@ TEST(Component, componentMethods)
 
     // Modify a deeper Component
     c->setName("parent");
-    c->addComponent(c1);
+    //c->addComponent(c1);
     c1->addComponent(c2);
     c1->addComponent(c3);
 
-    libcellml::ComponentPtr cB = c->component(1);
+    libcellml::ComponentPtr cB = c->component(0);
     libcellml::ComponentPtr cBB = cB->component(0);
     cBB->setName("childB");
 
@@ -498,4 +492,31 @@ TEST(Component, constructors)
     // Testing move constructor for component
     libcellml::ComponentPtr c3 = std::move(c2);
     EXPECT_EQ("my_name", c3->name());
+}
+
+TEST(Component, multiParentWithAddComponentBugIssue399)
+{
+    // Addressing Issue 399.
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
+    parent->setName("parent_component");
+    libcellml::ComponentPtr child1 = std::make_shared<libcellml::Component>();
+    child1->setName("child1");
+    libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
+    child2->setName("child2");
+    libcellml::ComponentPtr child3 = std::make_shared<libcellml::Component>();
+    child3->setName("child3");
+
+    parent->addComponent(child1);
+    parent->addComponent(child2);
+    parent->addComponent(child3);
+    model->addComponent(parent);
+
+    EXPECT_EQ(size_t(3), parent->componentCount());
+    EXPECT_EQ(size_t(0), child2->componentCount());
+
+    child2->addComponent(child3);
+
+    EXPECT_EQ(size_t(2), parent->componentCount());
+    EXPECT_EQ(size_t(1), child2->componentCount());
 }
