@@ -30,6 +30,8 @@ limitations under the License.
 #include <cmath>
 #include <stdexcept>
 
+#include <iostream>
+
 #include <libxml/uri.h>
 
 namespace libcellml {
@@ -781,9 +783,22 @@ void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr 
 
 void Validator::ValidatorImpl::validateMath(const std::string &input, const ComponentPtr &component)
 {
+    const std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
+
     XmlDocPtr doc = std::make_shared<XmlDoc>();
     // Parse as XML first.
-    doc->parse(input);
+    std::string modifiedInput = input;
+//    if (input.find(cellml2NamespaceString) == std::string::npos) {
+//        std::cout << "no cellml namespace" << std::endl;
+//        const std::string keyText = "MathML\"";
+//        size_t foundAt = input.find(keyText);
+//        if (foundAt != std::string::npos) {
+//            std::cout << "adjusting" << std::endl;
+//            modifiedInput.insert(foundAt + std::string(keyText).size(), cellml2NamespaceString);
+//        }
+//        std::cout << modifiedInput;
+//    }
+    doc->parse(modifiedInput);
     // Copy any XML parsing errors into the common validator error handler.
     if (doc->xmlErrorCount() > 0) {
         for (size_t i = 0; i < doc->xmlErrorCount(); ++i) {
@@ -840,7 +855,6 @@ void Validator::ValidatorImpl::validateMath(const std::string &input, const Comp
     // Get the MathML string (with cellml:units attributes already removed) and remove the CellML namespace.
     // While the removeSubstring() approach for removing the cellml namespace before validating with the MathML DTD
     // is not ideal, libxml does not appear to have a better way to remove a namespace declaration from the tree.
-    std::string cellml2NamespaceString = std::string(" xmlns:cellml=\"http://www.cellml.org/cellml/2.0#\"");
     std::string cleanMathml = mathNode->convertToString();
     removeSubstring(cleanMathml, cellml2NamespaceString);
 
