@@ -180,15 +180,27 @@ TEST(Encapsulation, hierarchyCircular)
     libcellml::ComponentPtr child2 = std::make_shared<libcellml::Component>();
     child2->setName("child2");
 
+    // Standard addition of one component onto another.
     parent->addComponent(child1);
-    child1->addComponent(parent);
+    EXPECT_EQ(size_t(0), child1->componentCount());
+    EXPECT_EQ(size_t(1), parent->componentCount());
 
+    // Can't make this circular hierarchy 'parent' will not be added as a child
+    // of 'child1'. Everything will remain as it is.
+    child1->addComponent(parent);
+    EXPECT_EQ(size_t(0), child1->componentCount());
+    EXPECT_EQ(size_t(1), parent->componentCount());
+
+    // Add the 'parent' component onto the model to make a
+    // waterfall hierarchy of two steps.
     model->addComponent(parent);
 
     libcellml::Printer printer;
     std::string a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_1, a_parent);
 
+    // Add 'child2' to 'child1' to make a waterfall hierarchy of
+    // three steps.
     child1->addComponent(child2);
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
