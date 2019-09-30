@@ -363,7 +363,7 @@ std::string sha1(const std::string &string)
 
     uint64_t totalBits = (transforms * BLOCK_BYTES + buffer.size()) * 8;
 
-    buffer += char(0x80);
+    buffer += "\x80";
 
     size_t origSize = buffer.size();
 
