@@ -40,6 +40,7 @@ include(units/tests.cmake)
 include(validator/tests.cmake)
 include(variable/tests.cmake)
 include(version/tests.cmake)
+include(when/tests.cmake)
 
 set(TEST_UTILS_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.cpp)
 set(TEST_UTILS_HDR ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.h)
