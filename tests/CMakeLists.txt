@@ -90,6 +90,13 @@ foreach(TEST ${LIBCELLML_TESTS})
   unset(CURRENT_CATEGORY)
 endforeach()
 
+# Generate tests for header files.
+# Generated tests will be in the build directory based off the list of API header files.
+
+# configure a template header test and then from the template generate the actual test for the header
+# then include the generated test
+include(api_headers/tests.cmake)
+
 add_subdirectory(bindings)
 
 if(LIBCELLML_COVERAGE)
