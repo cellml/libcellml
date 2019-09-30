@@ -1080,3 +1080,74 @@ TEST(Variable, modelUnitsAttributeBeforeNameAttribute)
     parser.parseModel(e);
     EXPECT_EQ(size_t(0), parser.errorCount());
 }
+
+TEST(Validator, fixUpEquivVariables)
+{
+    libcellml::Validator v;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp3 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp4 = std::make_shared<libcellml::Component>();
+
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+
+    m->setName("modelName");
+    comp1->setName("component1");
+    comp2->setName("component2");
+    comp3->setName("component3");
+    comp4->setName("component4");
+
+    v1->setName("variable1");
+    v2->setName("variable2");
+    v3->setName("variable3");
+    v4->setName("variable4");
+
+    v1->setUnits("dimensionless");
+    v2->setUnits("dimensionless");
+    v3->setUnits("dimensionless");
+    v4->setUnits("dimensionless");
+
+    v1->setInterfaceType("public");
+    v2->setInterfaceType("public");
+    v3->setInterfaceType("public");
+    v4->setInterfaceType("public");
+
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    comp3->addVariable(v3);
+    comp4->addVariable(v4);
+
+    // No encapsulation, all components can access each other
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+    m->addComponent(comp3);
+    m->addComponent(comp3);
+
+    // Making a set of equivalent variables v1, v2, v3, v4
+    libcellml::Variable::addEquivalence(v1, v2);
+    libcellml::Variable::addEquivalence(v2, v3);  
+    libcellml::Variable::addEquivalence(v3, v4);
+    libcellml::Variable::addEquivalence(v4, v1);   
+
+    // In reality, all of these variables are equivalent to *three* others ... but ...
+    EXPECT_EQ(size_t(3), v1->equivalentVariableCount()); // fails, is 2
+    EXPECT_EQ(size_t(3), v2->equivalentVariableCount()); // fails, is 2
+    EXPECT_EQ(size_t(3), v3->equivalentVariableCount()); // fails, is 2
+    EXPECT_EQ(size_t(3), v4->equivalentVariableCount()); // fails, is 2
+
+    // Now say we want to remove one of these variables from the equivalent set:
+    libcellml::Variable::removeEquivalence(v2,v3);
+    
+    //  ... but this does not behave as we'd expect, they are still equivalent because the other side of the "network" is not updated
+    // because the findEquivalentVariable function which is called to remove it only returns one equivalence id, but there are
+    // two connections?
+    EXPECT_FALSE(v2->hasEquivalentVariable(v3));  // Fails, is true
+    
+    // Since we're allowing more than one connection (as loops in the variables network *are* permitted) then the way in which we store
+    // this info doesn't reflect its use.
+
+}
