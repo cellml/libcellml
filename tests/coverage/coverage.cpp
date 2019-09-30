@@ -115,89 +115,20 @@ TEST(Coverage, units)
     EXPECT_EQ(n, uc.name());
 }
 
-TEST(Coverage, unitsGetVariations)
+TEST(Coverage, when)
 {
-    libcellml::Model m;
+    const std::string id = "id";
 
-    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-    u->setName("a_unit");
+    libcellml::When w;
+    libcellml::When wm;
 
-    u->addUnit(libcellml::Units::StandardUnit::AMPERE, "micro");
-    m.addUnits(u);
+    w.setId(id);
 
-    libcellml::UnitsPtr un = m.units(0);
-    EXPECT_EQ("a_unit", un->name());
-    libcellml::UnitsPtr uSn = static_cast<const libcellml::Model>(m).units(0);
-    EXPECT_EQ("a_unit", uSn->name());
+    wm = std::move(w);
 
-    libcellml::UnitsPtr uns = m.units("a_unit");
-    EXPECT_EQ("a_unit", uns->name());
-    libcellml::UnitsPtr uSns = static_cast<const libcellml::Model>(m).units("a_unit");
-    EXPECT_EQ("a_unit", uSns->name());
+    libcellml::When wc(wm);
 
-    EXPECT_EQ(nullptr, m.units("b_unit"));
-    EXPECT_EQ(nullptr, m.units(4));
-}
-
-TEST(Coverage, prefixToString)
-{
-    libcellml::Model m;
-    libcellml::Printer printer;
-
-    std::vector<std::string> prefixString =
-        {"atto",
-         "centi",
-         "deca",
-         "deci",
-         "exa",
-         "femto",
-         "giga",
-         "hecto",
-         "kilo",
-         "mega",
-         "micro",
-         "milli",
-         "nano",
-         "peta",
-         "pico",
-         "tera",
-         "yocto",
-         "yotta",
-         "zepto",
-         "zetta"};
-    std::vector<libcellml::Prefix> prefixEnum =
-        {libcellml::Prefix::ATTO,
-         libcellml::Prefix::CENTI,
-         libcellml::Prefix::DECA,
-         libcellml::Prefix::DECI,
-         libcellml::Prefix::EXA,
-         libcellml::Prefix::FEMTO,
-         libcellml::Prefix::GIGA,
-         libcellml::Prefix::HECTO,
-         libcellml::Prefix::KILO,
-         libcellml::Prefix::MEGA,
-         libcellml::Prefix::MICRO,
-         libcellml::Prefix::MILLI,
-         libcellml::Prefix::NANO,
-         libcellml::Prefix::PETA,
-         libcellml::Prefix::PICO,
-         libcellml::Prefix::TERA,
-         libcellml::Prefix::YOCTO,
-         libcellml::Prefix::YOTTA,
-         libcellml::Prefix::ZEPTO,
-         libcellml::Prefix::ZETTA};
-    for (std::vector<std::string>::size_type i = 0; i != prefixString.size(); ++i) {
-        libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
-        u->setName("abcdefg");
-        u->addUnit("empty", prefixEnum[i]);
-
-        m.addUnits(u);
-
-        const std::string a = printer.printModel(m);
-        std::size_t found = a.find(prefixString[i]);
-        EXPECT_NE(std::string::npos, found);
-        m.removeAllUnits();
-    }
+    EXPECT_EQ(id, wc.id());
 }
 
 TEST(Coverage, variable)

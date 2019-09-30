@@ -482,7 +482,9 @@ TEST(Model, setAndCheckIdsAllEntities)
         "  <units name=\"u3name\" id=\"u3id\"/>\n"
         "  <component name=\"c2name\" id=\"c2id\">\n"
         "    <variable name=\"vname\" units=\"u1name\" id=\"vid\"/>\n"
-        "    <reset id=\"r1id\"/>\n"
+        "    <reset id=\"r1id\">\n"
+        "      <when id=\"w1id\"/>\n"
+        "    </reset>\n"
         "  </component>\n"
         "</model>\n";
 
@@ -496,6 +498,7 @@ TEST(Model, setAndCheckIdsAllEntities)
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
     libcellml::ResetPtr r1 = std::make_shared<libcellml::Reset>();
+    libcellml::WhenPtr w1 = std::make_shared<libcellml::When>();
 
     i1->setUrl("some-other-model.xml");
     c1->setSourceComponent(i1, "a_component_in_that_model");
@@ -521,8 +524,10 @@ TEST(Model, setAndCheckIdsAllEntities)
     u2->setId("u2id");
     u3->setId("u3id");
     r1->setId("r1id");
+    w1->setId("w1id");
 
     v->setUnits(u1);
+    r1->addWhen(w1);
     c2->addReset(r1);
     c2->addVariable(v);
 

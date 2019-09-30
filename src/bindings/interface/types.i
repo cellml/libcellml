@@ -23,6 +23,7 @@ Only meant to be included, shouldn't be passed to cmake as a module!
 %shared_ptr(libcellml::Units)
 %shared_ptr(libcellml::Validator)
 %shared_ptr(libcellml::Variable)
+%shared_ptr(libcellml::When)
 
 // Shared typemaps
 
