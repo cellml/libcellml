@@ -219,8 +219,26 @@ void Variable::swap(Variable &rhs)
 
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2)
 {
-    variable1->mPimpl->setEquivalentTo(variable2);
-    variable2->mPimpl->setEquivalentTo(variable1);
+    if (!variable1->hasDirectEquivalentVariable(variable2)) {
+        variable1->mPimpl->setEquivalentTo(variable2);
+    }
+    if (!variable2->hasDirectEquivalentVariable(variable1)) {
+        variable2->mPimpl->setEquivalentTo(variable1);
+    }
+
+    for (size_t i = 0; i < variable1->equivalentVariableCount(); ++i) {
+        VariablePtr ev1 = variable1->equivalentVariable(i);
+        if ((!ev1->hasDirectEquivalentVariable(variable2)) && (variable2 != ev1)) {
+            libcellml::Variable::addEquivalence(ev1, variable2);
+        }
+    }
+
+    for (size_t i = 0; i < variable2->equivalentVariableCount(); ++i) {
+        VariablePtr ev2 = variable2->equivalentVariable(i);
+        if ((!ev2->hasDirectEquivalentVariable(variable1)) && (variable1 != ev2)) {
+            libcellml::Variable::addEquivalence(ev2, variable1);
+        }
+    }
 }
 
 void Variable::addEquivalence(const VariablePtr &variable1, const VariablePtr &variable2, const std::string &mappingId, const std::string &connectionId)
@@ -341,7 +359,6 @@ bool Variable::VariableImpl::unsetEquivalentTo(const VariablePtr &equivalentVari
         }
         status = true;
     }
-
     return status;
 }
 

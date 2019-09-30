@@ -391,33 +391,77 @@ TEST(Variable, hasDirectEquivalentVariable)
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v4 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("v1");
+    v2->setName("v2");
+    v3->setName("v3");
+    v4->setName("v4");
 
     EXPECT_FALSE(v1->hasDirectEquivalentVariable(v1));
     EXPECT_FALSE(v1->hasDirectEquivalentVariable(v2));
     EXPECT_FALSE(v1->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v4));
 
     EXPECT_FALSE(v2->hasDirectEquivalentVariable(v1));
     EXPECT_FALSE(v2->hasDirectEquivalentVariable(v2));
     EXPECT_FALSE(v2->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v4));
 
     EXPECT_FALSE(v3->hasDirectEquivalentVariable(v1));
     EXPECT_FALSE(v3->hasDirectEquivalentVariable(v2));
     EXPECT_FALSE(v3->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v4));
+
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v4));
 
     libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Variable::addEquivalence(v2, v3);
+    libcellml::Variable::addEquivalence(v3, v4);
 
     EXPECT_FALSE(v1->hasDirectEquivalentVariable(v1));
     EXPECT_TRUE(v1->hasDirectEquivalentVariable(v2));
     EXPECT_FALSE(v1->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v4));
+
+    EXPECT_TRUE(v2->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v2->hasDirectEquivalentVariable(v4));
+
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v2));
+    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v3));
+    EXPECT_TRUE(v3->hasDirectEquivalentVariable(v4));
+
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v1));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v2));
+    EXPECT_TRUE(v4->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v4));
+
+    libcellml::Variable::addEquivalence(v2, v3);
+
+    EXPECT_FALSE(v1->hasDirectEquivalentVariable(v1));
+    EXPECT_TRUE(v1->hasDirectEquivalentVariable(v2));
+    EXPECT_TRUE(v1->hasDirectEquivalentVariable(v3));
+    EXPECT_TRUE(v1->hasDirectEquivalentVariable(v4));
 
     EXPECT_TRUE(v2->hasDirectEquivalentVariable(v1));
     EXPECT_FALSE(v2->hasDirectEquivalentVariable(v2));
     EXPECT_TRUE(v2->hasDirectEquivalentVariable(v3));
+    EXPECT_TRUE(v2->hasDirectEquivalentVariable(v4));
 
-    EXPECT_FALSE(v3->hasDirectEquivalentVariable(v1));
+    EXPECT_TRUE(v3->hasDirectEquivalentVariable(v1));
     EXPECT_TRUE(v3->hasDirectEquivalentVariable(v2));
     EXPECT_FALSE(v3->hasDirectEquivalentVariable(v3));
+    EXPECT_TRUE(v3->hasDirectEquivalentVariable(v4));
+
+    EXPECT_TRUE(v4->hasDirectEquivalentVariable(v1));
+    EXPECT_TRUE(v4->hasDirectEquivalentVariable(v2));
+    EXPECT_TRUE(v4->hasDirectEquivalentVariable(v3));
+    EXPECT_FALSE(v4->hasDirectEquivalentVariable(v4));
 }
 
 TEST(Variable, hasEquivalentVariable)
@@ -1129,9 +1173,9 @@ TEST(Validator, fixUpEquivVariables)
 
     // Making a set of equivalent variables v1, v2, v3, v4
     libcellml::Variable::addEquivalence(v1, v2);
-    libcellml::Variable::addEquivalence(v2, v3);  
+    libcellml::Variable::addEquivalence(v2, v3);
     libcellml::Variable::addEquivalence(v3, v4);
-    libcellml::Variable::addEquivalence(v4, v1);   
+    libcellml::Variable::addEquivalence(v4, v1);
 
     // In reality, all of these variables are equivalent to *three* others ... but ...
     EXPECT_EQ(size_t(3), v1->equivalentVariableCount()); // fails, is 2
@@ -1139,15 +1183,54 @@ TEST(Validator, fixUpEquivVariables)
     EXPECT_EQ(size_t(3), v3->equivalentVariableCount()); // fails, is 2
     EXPECT_EQ(size_t(3), v4->equivalentVariableCount()); // fails, is 2
 
+    std::cout << "Variable 1 is equivalent to:\n";
+    for (size_t i = 0; i < v1->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v1->equivalentVariable(i)->name() << "\n";
+    }
+
+    std::cout << "Variable 2 is equivalent to:\n";
+    for (size_t i = 0; i < v2->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v2->equivalentVariable(i)->name() << "\n";
+    }
+
+    std::cout << "Variable 3 is equivalent to:\n";
+    for (size_t i = 0; i < v3->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v3->equivalentVariable(i)->name() << "\n";
+    }
+
+    std::cout << "Variable 4 is equivalent to:\n";
+    for (size_t i = 0; i < v4->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v4->equivalentVariable(i)->name() << "\n";
+    }
+
     // Now say we want to remove one of these variables from the equivalent set:
-    libcellml::Variable::removeEquivalence(v2,v3);
-    
+    libcellml::Variable::removeEquivalence(v2, v3);
+
+    std::cout << "Variable 1 is equivalent to:\n";
+    for (size_t i = 0; i < v1->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v1->equivalentVariable(i)->name() << "\n";
+    }
+
+    std::cout << "Variable 2 is equivalent to:\n";
+    for (size_t i = 0; i < v2->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v2->equivalentVariable(i)->name() << "\n";
+    }
+
+    std::cout << "Variable 3 is equivalent to:\n";
+    for (size_t i = 0; i < v3->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v3->equivalentVariable(i)->name() << "\n";
+    }
+
+    std::cout << "Variable 4 is equivalent to:\n";
+    for (size_t i = 0; i < v4->equivalentVariableCount(); ++i) {
+        std::cout << " - " << v4->equivalentVariable(i)->name() << "\n";
+    }
+
     //  ... but this does not behave as we'd expect, they are still equivalent because the other side of the "network" is not updated
     // because the findEquivalentVariable function which is called to remove it only returns one equivalence id, but there are
     // two connections?
-    EXPECT_FALSE(v2->hasEquivalentVariable(v3));  // Fails, is true
-    
+    EXPECT_FALSE(v2->hasEquivalentVariable(v3)); // Fails, is true
+
     // Since we're allowing more than one connection (as loops in the variables network *are* permitted) then the way in which we store
     // this info doesn't reflect its use.
-
 }
