@@ -18,12 +18,12 @@ limitations under the License.
 #    define _USE_MATH_DEFINES
 #endif
 
-#include "utilities.h"
-
 #include "libcellml/generatorprofile.h"
 
 #include <cmath>
 #include <string>
+
+#include "utilities.h"
 
 namespace libcellml {
 
