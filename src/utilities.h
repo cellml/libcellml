@@ -236,7 +236,6 @@ std::string convertDoubleToString(double value);
  * @param candidate The @c std::string value to convert to an @c int.
  *
  * @return The @c int value of the candidate.
- *
  */
 int convertToInt(const std::string &candidate);
 
@@ -301,5 +300,29 @@ bool isCellMLInteger(const std::string &candidate);
  * @return @c true if the @p candidate is a CellML real and @c false otherwise.
  */
 bool isCellMLReal(const std::string &candidate);
+
+/**
+ * @brief Test if @p value1 @c double and @p value2 @c double are equal.
+ *
+ * Return @c true if @p value1 @c double and @p value2 @c double are equal,
+ * otherwise return @c false.
+ *
+ * @param value1 The first @c double value to test.
+ * @param value2 The second @c double value to test.
+ *
+ * @return @c true if @p value1 and @p value2 are equal and @c false otherwise.
+ */
+bool areEqual(double value1, double value2);
+
+/**
+ * @brief Compute the SHA-1 value of the @p string @c std::string.
+ *
+ * Compute and return the SHA-1 value of the @p string @c std::string.
+ *
+ * @param string The @c std::string value for which we want the SHA-1 value.
+ *
+ * @return The @c std::string SHA-1 value.
+ */
+std::string sha1(const std::string &string);
 
 } // namespace libcellml
