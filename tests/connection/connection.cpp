@@ -138,10 +138,50 @@ TEST(Connection, componentlessVariableInvalidConnection)
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     comp1->setName("component1");
     v1->setName("variable1");
-    v2->setName("variable2");
+    v2->setName("variable2"); // orphan variable
     comp1->addVariable(v1);
     m->addComponent(comp1);
     libcellml::Variable::addEquivalence(v1, v2);
+
+    libcellml::Printer printer;
+    const std::string a = printer.printModel(m);
+    EXPECT_EQ(e, a);
+}
+
+TEST(Connection, componentlessVariableInvalidConnectionInvalidComponent)
+{
+    const std::string e =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"component1\">\n"
+        "    <variable name=\"variable1\"/>\n"
+        "  </component>\n"
+        "  <component name=\"component2\">\n"
+        "    <variable name=\"variable2\"/>\n"
+        "  </component>\n"
+        "  <connection>\n"
+        "    <map_variables variable_1=\"variable1\" variable_2=\"variable2\"/>\n"
+        "  </connection>\n"
+        "</model>\n";
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+    comp1->setName("component1");
+    comp2->setName("component2");
+    v1->setName("variable1");
+    v2->setName("variable2");
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    v1->clearParent();
+    v2->clearParent();
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
