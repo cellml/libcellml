@@ -25,6 +25,10 @@ limitations under the License.
 #include <sstream>
 #include <vector>
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
+#endif
+
 namespace libcellml {
 
 /**

@@ -35,9 +35,6 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-// KRM Delete me...
-#include <iostream>
-
 #include <libxml/uri.h>
 
 namespace libcellml {
