@@ -73,8 +73,6 @@ TEST(Variable, removeAllEquivalences)
 
 TEST(Variable, removeAllEquivalencesWithTriangleEquivalence)
 {
-    const size_t e0 = 0;
-    const size_t e1 = 1;
     libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
     libcellml::VariablePtr v3 = std::make_shared<libcellml::Variable>();
@@ -84,9 +82,9 @@ TEST(Variable, removeAllEquivalencesWithTriangleEquivalence)
     libcellml::Variable::addEquivalence(v3, v2);
 
     v1->removeAllEquivalences();
-    EXPECT_EQ(e0, v1->equivalentVariableCount());
-    EXPECT_EQ(e1, v2->equivalentVariableCount());
-    EXPECT_EQ(e1, v3->equivalentVariableCount());
+    EXPECT_EQ(size_t(0), v1->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), v2->equivalentVariableCount());
+    EXPECT_EQ(size_t(1), v3->equivalentVariableCount());
 }
 
 TEST(Variable, hasNoEquivalentVariable)
