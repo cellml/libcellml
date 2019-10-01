@@ -2134,7 +2134,8 @@ TEST(Validator, interfaceTestingNotValid)
 }
 
 /* 
-// TODO Commenting out for now, but still demonstrates a bug in the way we store equiv variables
+// TODO Commenting out for now - Tests show how the variable equivalence is set up at the moment, and 
+// unexpected behaviour in removeEquivalence and equivalentVariables.  
 TEST(Validator, fixUpEquivVariables)
 {
     libcellml::Validator v;
@@ -2200,8 +2201,5 @@ TEST(Validator, fixUpEquivVariables)
     // because the findEquivalentVariable function which is called to remove it only returns one equvalence id, but there are
     // two connections?
     EXPECT_FALSE(v2->hasEquivalentVariable(v3));  // Fails, is true
-    
-    // Since we're allowing more than one connection (as loops in the variables network *are* permitted) then the way in which we store
-    // this info doesn't reflect its use.
 }
 */

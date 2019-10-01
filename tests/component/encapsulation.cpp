@@ -23,7 +23,7 @@ limitations under the License.
 #include <iostream>
 
 /*
-// TODO Removed this test as doesn't actually test anything ... except show a bug in how we deal with parents
+// TODO Test to be reinstated when we have ironed out how to deal with parents
 TEST(Encapsulation, reparentComponent)
 {
     const std::string e_parent_1 =
