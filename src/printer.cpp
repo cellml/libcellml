@@ -173,6 +173,19 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                             ComponentPtr component2 = equivalentVariable->parentComponent();
                             // Add new unique variable equivalence pair to the VariableMap.
                             variableMap.push_back(variablePair);
+
+                            if (component1 != nullptr) {
+                                if (!component1->hasVariable(variable)) {
+                                    component1 = nullptr;
+                                }
+                            }
+
+                            if (component2 != nullptr) {
+                                if (!component2->hasVariable(equivalentVariable)) {
+                                    component2 = nullptr;
+                                }
+                            }
+
                             // Also create a component map pair corresponding with the variable map pair.
                             ComponentPair componentPair = std::make_pair(component1, component2);
                             componentMap.push_back(componentPair);
