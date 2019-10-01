@@ -181,7 +181,9 @@ TEST(Connection, componentlessVariableInvalidConnectionInvalidComponent)
     libcellml::Variable::addEquivalence(v1, v2);
 
     v1->clearParent();
+    v1->setParent(comp2);
     v2->clearParent();
+    v2->setParent(comp1);
 
     libcellml::Printer printer;
     const std::string a = printer.printModel(m);
