@@ -22,6 +22,10 @@ limitations under the License.
 
 #include <string>
 
+#ifndef SWIG
+template class LIBCELLML_EXPORT std::weak_ptr<libcellml::Variable>;
+#endif
+
 namespace libcellml {
 
 /**
@@ -34,6 +38,7 @@ class LIBCELLML_EXPORT Variable: public NamedEntity
 #else
 class LIBCELLML_EXPORT Variable: public NamedEntity, public std::enable_shared_from_this<Variable>
 #endif
+
 {
 public:
     Variable(); /**< Constructor */
