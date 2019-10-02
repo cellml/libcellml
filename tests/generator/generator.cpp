@@ -382,6 +382,44 @@ TEST(Generator, algebraicEqnComputedVarOnRhs)
     EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator.implementationCode());
 }
 
+TEST(Generator, algebraicEqnComputedVarOnRhsImport)
+{
+	libcellml::Parser parser;
+	libcellml::ModelPtr model = parser.parseModel(fileContents("generator/imports/algebraic_eqn_computed_var_on_rhs/level0.cellml"));
+
+	EXPECT_EQ(size_t(0), parser.errorCount());
+	
+	EXPECT_TRUE(model->hasUnresolvedImports());
+	model->resolveImports(resourcePath("generator/imports/algebraic_eqn_computed_var_on_rhs/"));
+	EXPECT_FALSE(model->hasUnresolvedImports());
+
+	libcellml::Generator generator;
+
+	generator.processModel(model);
+
+	EXPECT_EQ(size_t(0), generator.errorCount());
+
+	EXPECT_EQ(libcellml::Generator::ModelType::ALGEBRAIC, generator.modelType());
+
+	EXPECT_EQ(size_t(0), generator.stateCount());
+	EXPECT_EQ(size_t(2), generator.variableCount());
+
+	EXPECT_EQ(nullptr, generator.voi());
+	EXPECT_EQ(nullptr, generator.state(0));
+	EXPECT_NE(nullptr, generator.variable(0));
+	EXPECT_EQ(nullptr, generator.variable(generator.variableCount()));
+
+	EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.h"), generator.interfaceCode());
+	EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.c"), generator.implementationCode());
+
+	libcellml::GeneratorProfilePtr profile = std::make_shared<libcellml::GeneratorProfile>(libcellml::GeneratorProfile::Profile::PYTHON);
+
+	generator.setProfile(profile);
+
+	EXPECT_EQ(EMPTY_STRING, generator.interfaceCode());
+	EXPECT_EQ(fileContents("generator/algebraic_eqn_computed_var_on_rhs/model.py"), generator.implementationCode());
+}
+
 TEST(Generator, algebraicEqnConstVarOnRhs)
 {
     libcellml::Parser parser;
