@@ -62,40 +62,21 @@ public:
     std::string id() const;
 
     /**
-     * @brief Returns the parent model of the CellML Entity.
+     * @brief Returns the parent of the CellML Entity.
      *
-     * @return A pointer to the entity's parent model if it has one,
-     * otherwise the null pointer.
+     * @return A pointer to the entity's parent if it has one,
+     * otherwise it returns the null pointer.
      */
-    ModelPtr parentModel() const;
+    EntityPtr parent() const;
 
     /**
-     * @brief Returns the parent component of the CellML Entity.
+     * @brief Sets the entity as the parent of this entity.
      *
-     * @return A pointer to the entity's parent component if it has one,
-     * otherwise the null pointer.
+     * Set the parent of the entity to the entity given.
+     *
+     * @param parent An @c Entity.
      */
-    ComponentPtr parentComponent() const;
-
-    /**
-     * @brief Sets the model as the parent of this entity.
-     *
-     * Set the parent of the entity to the model given.
-     *
-     * @param parent A pointer to a cellml::Model.
-     */
-    void setParent(const ModelPtr &parent);
-
-    /**
-     * @brief Sets the component as the parent of this entity.
-     *
-     * Set the parent of the entity to the component given.
-     *
-     * @overload
-     *
-     * @param parent A pointer to a cellml::Component.
-     */
-    void setParent(const ComponentPtr &parent);
+    void setParent(const EntityPtr &parent);
 
     /**
      * @brief Clear the pointer to the parent entity.
@@ -105,19 +86,30 @@ public:
     void clearParent();
 
     /**
-     * @brief Test to see if the given component is a parent.
+     * @brief Test to see if the given entity has a parent.
      *
-     * Tests the given component pointer to determine if the entity or
-     * any of its parent entities already has this component as a parent.
-     * This allows for a test against creating cycles. If the given component
+     * Tests the given entity to determine if the entity has a parent.
+     * If the entity has a parent then @c true is returned otherwise
+     * @c false is returned.m
+     *
+     * @return @c true if this entity has a parent, @c false otherwise.
+     */
+    bool hasParent() const;
+
+    /**
+     * @brief Test to see if the given entity is an ancestor of this entity.
+     *
+     * Tests the given entity to determine if the entity or
+     * any of its parent entities already has this entity as a parent.
+     * This allows for a test against creating cycles. If the given entity
      * is a parent of the current entity then the result is @c true otherwise the
      * result is false.
      *
-     * @param component The pointer to the component to test against.
+     * @param component The entity to test against.
      *
-     * @return @c true if the entity has the given component as a parent, @c false otherwise.
+     * @return @c true if this entity has the given entity as a parent, @c false otherwise.
      */
-    bool hasParent(const ComponentPtr &component) const;
+    bool hasAncestor(const EntityPtr &entity) const;
 
 private:
     void swap(Entity &rhs); /**< Swap method required for C++ 11 move semantics. */

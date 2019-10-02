@@ -169,8 +169,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            ComponentPtr component1 = variable->parentComponent();
-                            ComponentPtr component2 = equivalentVariable->parentComponent();
+                            ComponentPtr component1 = std::dynamic_pointer_cast<Component>(variable->parent());
+                            ComponentPtr component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                             // Do not serialise a variable's parent component in a connection if that variable no longer
                             // exists in that component. Allow serialisation of one componentless variable as an empty component_2.
                             if (component2 != nullptr) {
@@ -472,6 +472,7 @@ std::string Printer::printModel(const ModelPtr &model) const
             } else if (comp->componentCount() != 0) {
                 // If the current component is a model component
                 // let the 'for' loop take care of the stack.
+
                 if (modelComponent != comp) {
                     componentStack.push(comp);
                     indeciesStack.push(index);
@@ -539,6 +540,7 @@ std::string Printer::printModel(const ModelPtr &model) const
 
     std::string componentEncapsulation;
     // Serialise components of the model, imported components have already been dealt with at this point.
+
     for (size_t i = 0; i < model->componentCount(); ++i) {
         ComponentPtr component = model->component(i);
         repr += mPimpl->printComponent(component, tabIndent);
