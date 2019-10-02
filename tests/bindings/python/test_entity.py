@@ -36,23 +36,11 @@ class EntityTestCase(unittest.TestCase):
         y = Entity(x)
         self.assertEqual(y.id(), idx)
 
-    def test_parent_model(self):
+    def test_parent(self):
         from libcellml import Entity
 
-        # ModelPtr parentModel
-        # TODO: This method might be moved out of entity!
-        # TODO: If not, this needs a workaround!
         x = Entity()
-        self.assertIsNone(x.parentModel())
-
-    def test_parent_component(self):
-        from libcellml import Entity
-
-        # ComponentPtr parentComponent
-        # TODO: This method might be moved out of entity!
-        # TODO: If not, this needs a workaround!
-        x = Entity()
-        self.assertIsNone(x.parentComponent())
+        self.assertIsNone(x.parent())
 
     def test_set_parent(self):
         from libcellml import Entity, Model, Component
@@ -61,13 +49,13 @@ class EntityTestCase(unittest.TestCase):
         m = Model()
         x = Entity()
         x.setParent(m)
-        self.assertIsNotNone(x.parentModel())
+        self.assertIsNotNone(x.parent())
         # TODO: Check equivalence
 
         c = Component()
         x = Entity()
         x.setParent(c)
-        self.assertIsNotNone(x.parentComponent())
+        self.assertIsNotNone(x.parent())
         # TODO: Check equivalence
 
     def test_clear_parent(self):
@@ -75,35 +63,50 @@ class EntityTestCase(unittest.TestCase):
 
         # void clearParent()
         x = Entity()
-        self.assertIsNone(x.parentModel())
+        self.assertIsNone(x.parent())
         m = Model()
         x.setParent(m)
-        self.assertIsNotNone(x.parentModel())
+        self.assertIsNotNone(x.parent())
         x.clearParent()
-        self.assertIsNone(x.parentComponent())
+        self.assertIsNone(x.parent())
         c = Component()
         x.setParent(c)
-        self.assertIsNotNone(x.parentComponent())
+        self.assertIsNotNone(x.parent())
         x.clearParent()
-        self.assertIsNone(x.parentModel())
-        self.assertIsNone(x.parentComponent())
+        self.assertIsNone(x.parent())
 
     def test_has_parent(self):
         from libcellml import Entity, Component
 
         # bool hasParent(Component* c)
         x = Entity()
-        c = Component()
-        self.assertFalse(x.hasParent(c))
-        x.setParent(c)
-        self.assertTrue(x.hasParent(c))
+        c1 = Component()
+        self.assertFalse(x.hasParent())
+        x.setParent(c1)
+        self.assertTrue(x.hasParent())
         x.clearParent()
-        self.assertFalse(x.hasParent(c))
-        d = Component()
-        d.setParent(c)
-        x.setParent(d)
-        self.assertTrue(x.hasParent(d))
-        self.assertTrue(x.hasParent(c))
+        self.assertFalse(x.hasParent())
+        c2 = Component()
+        c2.setParent(c1)
+        x.setParent(c2)
+        self.assertTrue(x.hasParent())
+
+
+    def test_has_parent(self):
+        from libcellml import Entity, Component
+
+        # bool hasParent(Component* c)
+        x = Entity()
+        c1 = Component()
+        self.assertFalse(x.hasAncestor(c1))
+        x.setParent(c1)
+        self.assertTrue(x.hasAncestor(c1))
+        x.clearParent()
+        self.assertFalse(x.hasAncestor(c1))
+        c2 = Component()
+        c2.setParent(c1)
+        x.setParent(c2)
+        self.assertTrue(x.hasAncestor(c1))
 
 
 if __name__ == '__main__':
