@@ -1324,6 +1324,7 @@ TEST(Parser, invalidModelWithAllKindsOfErrors)
         case libcellml::Error::Kind::RESET:
         case libcellml::Error::Kind::UNDEFINED:
         case libcellml::Error::Kind::XML:
+        case libcellml::Error::Kind::GENERATOR:
             break;
         }
     }
