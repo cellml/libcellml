@@ -283,7 +283,6 @@ TEST(Encapsulation, parseAlternateFormHierarchy)
     libcellml::ModelPtr model = parser.parseModel(input);
 
     EXPECT_EQ(size_t(0), parser.errorCount());
-    printErrors(parser);
     EXPECT_EQ(size_t(1), model->componentCount());
     auto component = model->component(0);
     for (size_t i = 0; i < 3; ++i) {

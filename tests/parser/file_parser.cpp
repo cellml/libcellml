@@ -31,8 +31,6 @@ TEST(Parser, parseSineModelFromFile)
     p.parseModel(fileContents("sine_approximations.xml"));
 
     EXPECT_EQ(size_t(0), p.errorCount());
-
-    printErrors(p);
 }
 
 TEST(Parser, parseSineImportsModelFromFile)
