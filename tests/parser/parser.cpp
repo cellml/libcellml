@@ -1520,7 +1520,6 @@ TEST(Parser, parseIdsOnEverything)
     libcellml::Parser parser;
     libcellml::ModelPtr model = parser.parseModel(input);
 
-    printErrors(parser);
     EXPECT_EQ(size_t(0), parser.errorCount());
     EXPECT_EQ("mid", model->id());
     EXPECT_EQ("c1id", model->component("component1")->id());
