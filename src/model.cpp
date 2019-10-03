@@ -28,6 +28,8 @@ limitations under the License.
 #include <stack>
 #include <utility>
 #include <vector>
+#include <iostream>
+
 
 namespace libcellml {
 
@@ -341,6 +343,27 @@ bool Model::hasUnresolvedImports()
         unresolvedImports = hasUnresolvedComponentImports(shared_from_this());
     }
     return unresolvedImports;
+}
+
+
+bool flattenComponent(ComponentPtr& component)
+{
+	ComponentPtr src = component->importSource()->model()->component(component->importReference());
+	std::cout << "Flatening component: " << component->name() << "; using the source component: " << src->name() << std::endl;
+	std::cout << "Number of variables in component to flatten: " << int(component->variableCount()) << std::endl;
+
+	return true;
+}
+
+bool Model::flatten()
+{
+	for (size_t n = 0; n < this->componentCount(); ++n) {
+		libcellml::ComponentPtr component = this->component(n);
+		if (component->isImport()) {
+			flattenComponent(component);
+		}
+	}
+	return true;
 }
 
 } // namespace libcellml

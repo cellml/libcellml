@@ -251,6 +251,16 @@ public:
      */
     bool hasUnresolvedImports();
 
+	/**
+	 * @brief Flatten all imports in this model.
+	 *
+	 * Flatten this model to remove all imports. If any unresolved imports are found
+	 * flattening will fail and leave the model in an unusable state.
+	 *
+	 * @return True if the @c Model has been flattened, False otherwise.
+	 */
+	bool flatten();
+
 private:
     void doAddComponent(const ComponentPtr &component) override;
     void swap(Model & rhs); /**< Swap method required for C++ 11 move semantics. */
