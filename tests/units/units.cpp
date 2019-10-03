@@ -613,41 +613,41 @@ TEST(Units, unitsWithPrefixOutOfRange)
     EXPECT_EQ(e, validator.error(0)->description());
 }
 
-TEST(Units, compareMultiplier)
+TEST(Units, compareMultiplierSimple)
 {
     // Test to show that we need a function to return multiplier mismatch ahead of the code generation
-
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
-    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
-    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
-    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
-
-    v1->setName("v1");
-    v2->setName("v2");
     m->setName("model");
-    comp1->setName("comp1");
-    comp2->setName("comp2");
-    comp1->addVariable(v1);
-    comp2->addVariable(v2);
-    m->addComponent(comp1);
-    m->addComponent(comp2);
 
-    // u1 = 10*u2
+    // u1 = 1000*u2
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("u1");
-    u1->addUnit("metre", 1, 1.0, 1000.0);
+    u1->addUnit("metre", 0, 1.0, 1000.0);
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("u2");
-    u2->addUnit("metre", 1, 1.0, 1.0);
-
-    v1->setUnits(u1);
-    v2->setUnits(u2);
-
+    u2->addUnit("metre", 0, 1.0, 1.0);
     m->addUnits(u1);
     m->addUnits(u2);
 
     double expFactor = u1->scalingFactor(m, u1, u2);
 
     EXPECT_EQ(3.0, expFactor); // 10^3.0 factor difference
+}
+
+TEST(Units, complicatedMultiplicationFactorUnits)
+{
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("u");
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("u1");
+    u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("u2");
+    u2->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
+    model->setName("model");
+    model->addUnits(u1);
+    model->addUnits(u2);
+    double factor = u1->scalingFactor(model, u1, u2);
+    EXPECT_EQ(0.0, factor);
 }
