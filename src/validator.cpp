@@ -256,7 +256,7 @@ struct Validator::ValidatorImpl
     */
     void updateBaseUnitCount(const ModelPtr &model,
                              std::map<std::string, double> &unitMap,
-                             double &multiplier, 
+                             double &multiplier,
                              const std::string &uName,
                              double uExp, double logMult, int direction);
 
