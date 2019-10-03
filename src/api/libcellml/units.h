@@ -367,6 +367,18 @@ public:
      */
     size_t unitCount() const;
 
+    /**
+     * @brief Return the scaling factor difference between two units
+     * 
+     * This can be interpreted as factor, where u1 = (10^factor)*u2
+     * 
+     * @param u1 The first unit pointer
+     * @param u2 The second unit pointer
+     * @return The factor u1/u2
+     * 
+     */
+    double scalingFactor(const ModelPtr &model, const UnitsPtr &u1, const UnitsPtr &u2);
+
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
 

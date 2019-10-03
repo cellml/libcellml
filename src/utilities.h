@@ -348,4 +348,41 @@ std::string getEntityName(const EntityPtr &entity);
  */
 ModelPtr parentModel(const EntityPtr &entity);
 
+/**
+ * @brief Check if the provided @p name is a standard unit.
+ *
+ * Checks if the provided @p name is one of the standard units in the
+ * @c Units::StandardUnit @c enum. Returns @c true if @name is a standard unit
+ * and @c false otherwise.
+ *
+ * @param name The @c std::string name to check against the list of standard units.
+ *
+ * @return @c true if @name is a standard unit and @c false otherwise.
+ */
+bool isStandardUnitName(const std::string &name);
+
+/**
+ * @brief Check if the provided @p name is a standard prefix.
+ *
+ * Checks if the provided @p name is one of the standard prefixes in the
+ * @c Prefix @c enum. Returns @c true if @name is a standard prefix
+ * and @c false otherwise.
+ *
+ * @param name The @c std::string name to check against the list of standard prefixes.
+ *
+ * @return @c true if @name is a standard prefix and @c false otherwise.
+ */
+bool isStandardPrefixName(const std::string &name);
+
+/**
+ * @brief Check if the provided @p node is a supported MathML element.
+ *
+ * Checks if the provided @p node is one of the supported MathML elements defined in the table
+ * of supported MathML elements from the CellML specification version 2.0 document.
+ *
+ * @param node The @c XmlNode node to check against the list of supported MathML elements.
+ * @return @c true if @node is a supported MathML element and @c false otherwise.
+ */
+//bool isSupportedMathMLElement(const XmlNodePtr &node);
+
 } // namespace libcellml

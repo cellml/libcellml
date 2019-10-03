@@ -420,4 +420,28 @@ ModelPtr parentModel(const EntityPtr &entity)
     return model;
 }
 
+// bool isSupportedMathMLElement(const XmlNodePtr &node)
+// {
+//     return (node->namespaceUri() == MATHML_NS)
+//            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
+// }
+
+bool isStandardUnitName(const std::string &name)
+{
+    bool result = false;
+    if (standardUnitsList.count(name) != 0) {
+        result = true;
+    }
+    return result;
+}
+
+bool isStandardPrefixName(const std::string &name)
+{
+    bool result = false;
+    if (standardPrefixList.count(name) != 0) {
+        result = true;
+    }
+    return result;
+}
+
 } // namespace libcellml

@@ -202,7 +202,7 @@ struct Validator::ValidatorImpl
      *
      * @return @c true if @name is a standard unit and @c false otherwise.
      */
-    bool isStandardUnitName(const std::string &name);
+    // bool isStandardUnitName(const std::string &name);
 
     /**
      * @brief Check if the provided @p name is a standard prefix.
@@ -215,7 +215,7 @@ struct Validator::ValidatorImpl
      *
      * @return @c true if @name is a standard prefix and @c false otherwise.
      */
-    bool isStandardPrefixName(const std::string &name);
+    // bool isStandardPrefixName(const std::string &name);
 
     /**
      * @brief Check if the provided @p node is a supported MathML element.
@@ -1118,23 +1118,23 @@ bool Validator::ValidatorImpl::isSupportedMathMLElement(const XmlNodePtr &node)
            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
 }
 
-bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
-{
-    bool result = false;
-    if (standardUnitsList.count(name) != 0) {
-        result = true;
-    }
-    return result;
-}
+// bool Validator::ValidatorImpl::isStandardUnitName(const std::string &name)
+// {
+//     bool result = false;
+//     if (standardUnitsList.count(name) != 0) {
+//         result = true;
+//     }
+//     return result;
+// }
 
-bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
-{
-    bool result = false;
-    if (standardPrefixList.count(name) != 0) {
-        result = true;
-    }
-    return result;
-}
+// bool Validator::ValidatorImpl::isStandardPrefixName(const std::string &name)
+// {
+//     bool result = false;
+//     if (standardPrefixList.count(name) != 0) {
+//         result = true;
+//     }
+//     return result;
+// }
 
 bool Validator::ValidatorImpl::isCellmlIdentifier(const std::string &name)
 {

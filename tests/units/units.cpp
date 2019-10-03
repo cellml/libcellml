@@ -612,3 +612,42 @@ TEST(Units, unitsWithPrefixOutOfRange)
     EXPECT_EQ(size_t(1), validator.errorCount());
     EXPECT_EQ(e, validator.error(0)->description());
 }
+
+TEST(Units, compareMultiplier)
+{
+    // Test to show that we need a function to return multiplier mismatch ahead of the code generation
+
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("v1");
+    v2->setName("v2");
+    m->setName("model");
+    comp1->setName("comp1");
+    comp2->setName("comp2");
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    // u1 = 10*u2
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("u1");
+    u1->addUnit("metre", 1, 1.0, 1000.0);
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("u2");
+    u2->addUnit("metre", 1, 1.0, 1.0);
+
+    v1->setUnits(u1);
+    v2->setUnits(u2);
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    double expFactor = u1->scalingFactor(m, u1, u2);
+
+    EXPECT_EQ(3.0, expFactor); // 10^3.0 factor difference
+}
