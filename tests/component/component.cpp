@@ -496,7 +496,6 @@ TEST(Component, constructors)
 
 TEST(Component, multiParentWithAddComponentBugIssue399)
 {
-    // Addressing Issue 399.
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
     parent->setName("parent_component");
