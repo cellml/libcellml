@@ -349,12 +349,13 @@ std::string getEntityName(const EntityPtr &entity);
 ModelPtr owningModel(const EntityPtr &entity);
 
 /**
- * @brief Remove the given component for the given entity.
+ * @brief Remove the given component from the given entity.
  *
- * The entity is expected to be derived from @c ComponentEntity and the
- * component is expected to be a direct child of that entity.  The component
- * will only be removed from the entity itself the component hierarchy of the
- * entity will not be searched for the location of the component.
+ * The entity given can be either a @c Model or @c Component and as such is
+ * expected to be derived from @c ComponentEntity.  The component to be removed
+ * is expected to be a direct child of the given entity.  That is to say the component
+ * will only be removed if it is a direct child of the entity itself, the component
+ * hierarchy of the entity will *not* be searched for the location of the component.
  *
  * @param entity The entity to remove the component from.
  * @param component The component to remove from the entity.
