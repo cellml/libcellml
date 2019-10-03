@@ -39,6 +39,8 @@ class Component; /**< Forward declaration of Component class. */
 using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
 using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
+class Entity;
+using EntityPtr = std::shared_ptr<Entity>;
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
