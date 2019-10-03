@@ -32,6 +32,9 @@ limitations under the License.
 
 #include <libxml/uri.h>
 
+// KRM REmove me!
+#include <iostream>
+
 namespace libcellml {
 
 /**
@@ -1191,8 +1194,10 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     } else if (unitMap.find(v1->units()) != unitMap.end()) {
         ref = v1->units();
         unitMap.at(ref) += 1.0;
+        std::cout << "mark1\n";
     } else if (isStandardUnitName(v1->units())) {
         updateBaseUnitCount(model, unitMap, multiplier, v1->units(), 1, 0, 1);
+        std::cout << "mark2\n";
     }
 
     if (model->hasUnits(v2->units())) {
@@ -1202,8 +1207,10 @@ bool Validator::ValidatorImpl::unitsAreEquivalent(const ModelPtr &model,
     } else if (unitMap.find(v2->units()) != unitMap.end()) {
         ref = v2->units();
         unitMap.at(v2->units()) -= 1.0;
+        std::cout << "mark3\n";
     } else if (isStandardUnitName(v2->units())) {
         updateBaseUnitCount(model, unitMap, multiplier, v2->units(), 1, 0, -1);
+        std::cout << "mark4\n";
     }
 
     // Remove "dimensionless" from base unit testing.

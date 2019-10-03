@@ -629,7 +629,7 @@ TEST(Units, compareMultiplierSimple)
     m->addUnits(u1);
     m->addUnits(u2);
 
-    double expFactor = u1->scalingFactor(m, u1, u2);
+    double expFactor = u1->scalingFactor(m, "u1", "u2");
 
     EXPECT_EQ(3.0, expFactor); // 10^3.0 factor difference
 }
@@ -642,12 +642,63 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("u1");
     u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
+    u1->addUnit("dimensionless");
+
     libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
     u2->setName("u2");
     u2->addUnit("u", "kilo", 2.0, 0.001); // standard, exponent.
+    u2->addUnit("dimensionless");
+
+    libcellml::UnitsPtr u3 = std::make_shared<libcellml::Units>();
+    u3->setName("u3");
+    u3->addUnit("1", "kilo", 4.0, 0.001); // standard, exponent.
+
+    libcellml::UnitsPtr u4 = std::make_shared<libcellml::Units>();
+    u4->setName("u4");
+    u4->addUnit("u2", "milli", 4.0, 1000.0);
+
     model->setName("model");
     model->addUnits(u1);
     model->addUnits(u2);
-    double factor = u1->scalingFactor(model, u1, u2);
+    model->addUnits(u3);
+    model->addUnits(u4);
+
+    double factor = u3->scalingFactor(model, u3->name(), u4->name());
     EXPECT_EQ(0.0, factor);
+}
+
+TEST(Units, unitUserCreatedBaseUnits)
+{
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+
+    m->setName("m");
+
+    libcellml::UnitsPtr uApple = std::make_shared<libcellml::Units>();
+    uApple->setName("apple");
+
+    libcellml::UnitsPtr uBanana = std::make_shared<libcellml::Units>();
+    uBanana->setName("banana");
+
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("bushell_of_apples");
+    u1->addUnit("apple", 10.0);
+
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("bunch_of_bananas");
+    u2->addUnit("banana", 5.0);
+
+    libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
+    u9->setName("big_barrel");
+    u9->addUnit("metre", 3.0);
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+    m->addUnits(u9);
+    m->addUnits(uApple);
+    m->addUnits(uBanana);
+
+    std::cout << u1->scalingFactor(m, "litre", u9->name()) << "\n";
+    std::cout << u1->scalingFactor(m, u9->name(), "litre") << "\n";
+    std::cout << u1->scalingFactor(m, "dimensionless", "kilogram") << "\n";
+    std::cout << u1->scalingFactor(m, "kilogram", "gram") << "\n";
 }

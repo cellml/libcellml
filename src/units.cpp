@@ -131,7 +131,7 @@ struct Units::UnitsImpl
      * @param u2 The second @c UnitsPtr to compare
      * @return factor The log10 of the scaling factor between u1 and u2
      */
-    double doGetScalingFactor(const ModelPtr &model, const UnitsPtr &u1, const UnitsPtr &u2);
+    double doGetScalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name);
 
     /**
      * @brief Checking function for units mismatch
@@ -150,7 +150,7 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
                         [=](const Unit &u) -> bool { return u.mReference == reference; });
 }
 
-double Units::UnitsImpl::doGetScalingFactor(const ModelPtr &model, const UnitsPtr &u1, const UnitsPtr &u2)
+double Units::UnitsImpl::doGetScalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name)
 {
     std::map<std::string, double> unitMap = {};
 
@@ -160,20 +160,20 @@ double Units::UnitsImpl::doGetScalingFactor(const ModelPtr &model, const UnitsPt
 
     double multiplier = 0.0;
 
-    if (model->hasUnits(u1)) {
-        updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
-    } else if (unitMap.find(u1->name()) != unitMap.end()) {
-        unitMap.at(u1->name()) += 1.0;
-    } else if (isStandardUnitName(u1->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, u1->name(), 1, 0, 1);
+    if (model->hasUnits(u1Name)) {
+        updateBaseUnitCount(model, unitMap, multiplier, u1Name, 1, 0, 1);
+    } else if (unitMap.find(u1Name) != unitMap.end()) {
+        unitMap.at(u1Name) += 1.0;
+    } else if (isStandardUnitName(u1Name)) {
+        updateBaseUnitCount(model, unitMap, multiplier, u1Name, 1, 0, 1);
     }
 
-    if (model->hasUnits(u2)) {
-        updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
-    } else if (unitMap.find(u2->name()) != unitMap.end()) {
-        unitMap.at(u2->name()) -= 1.0;
-    } else if (isStandardUnitName(u2->name())) {
-        updateBaseUnitCount(model, unitMap, multiplier, u2->name(), 1, 0, -1);
+    if (model->hasUnits(u2Name)) {
+        updateBaseUnitCount(model, unitMap, multiplier, u2Name, 1, 0, -1);
+    } else if (unitMap.find(u2Name) != unitMap.end()) {
+        unitMap.at(u2Name) -= 1.0;
+    } else if (isStandardUnitName(u2Name)) {
+        updateBaseUnitCount(model, unitMap, multiplier, u2Name, 1, 0, -1);
     }
 
     return multiplier;
@@ -432,11 +432,11 @@ size_t Units::unitCount() const
     return mPimpl->mUnits.size();
 }
 
-double Units::scalingFactor(const ModelPtr &model, const UnitsPtr &u1, const UnitsPtr &u2)
+double Units::scalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name)
 {
     // Assumes that the units have base equivalence - does not report that here
     double factor = 0.0;
-    factor = mPimpl->doGetScalingFactor(model, u1, u2);
+    factor = mPimpl->doGetScalingFactor(model, u1Name, u2Name);
     return (factor);
 }
 

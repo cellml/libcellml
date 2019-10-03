@@ -372,12 +372,12 @@ public:
      * 
      * This can be interpreted as factor, where u1 = (10^factor)*u2
      * 
-     * @param u1 The first unit pointer
-     * @param u2 The second unit pointer
+     * @param u1Name The first unit name
+     * @param u2Name The second unit name
      * @return The factor u1/u2
      * 
      */
-    double scalingFactor(const ModelPtr &model, const UnitsPtr &u1, const UnitsPtr &u2);
+    double scalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name);
 
 private:
     void swap(Units &rhs); /**< Swap method required for C++ 11 move semantics. */
