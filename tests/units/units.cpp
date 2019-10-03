@@ -665,40 +665,7 @@ TEST(Units, complicatedMultiplicationFactorUnits)
 
     double factor = u3->scalingFactor(model, u3->name(), u4->name());
     EXPECT_EQ(0.0, factor);
-}
 
-TEST(Units, unitUserCreatedBaseUnits)
-{
-    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
-
-    m->setName("m");
-
-    libcellml::UnitsPtr uApple = std::make_shared<libcellml::Units>();
-    uApple->setName("apple");
-
-    libcellml::UnitsPtr uBanana = std::make_shared<libcellml::Units>();
-    uBanana->setName("banana");
-
-    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
-    u1->setName("bushell_of_apples");
-    u1->addUnit("apple", 10.0);
-
-    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
-    u2->setName("bunch_of_bananas");
-    u2->addUnit("banana", 5.0);
-
-    libcellml::UnitsPtr u9 = std::make_shared<libcellml::Units>();
-    u9->setName("big_barrel");
-    u9->addUnit("metre", 3.0);
-
-    m->addUnits(u1);
-    m->addUnits(u2);
-    m->addUnits(u9);
-    m->addUnits(uApple);
-    m->addUnits(uBanana);
-
-    std::cout << u1->scalingFactor(m, "litre", u9->name()) << "\n";
-    std::cout << u1->scalingFactor(m, u9->name(), "litre") << "\n";
-    std::cout << u1->scalingFactor(m, "dimensionless", "kilogram") << "\n";
-    std::cout << u1->scalingFactor(m, "kilogram", "gram") << "\n";
+    EXPECT_EQ(-3.0, u1->scalingFactor(model, "gram", "kilogram"));
+    EXPECT_EQ(3.0, u1->scalingFactor(model, "kilogram", "gram"));
 }

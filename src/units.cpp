@@ -153,11 +153,9 @@ std::vector<Unit>::iterator Units::UnitsImpl::findUnit(const std::string &refere
 double Units::UnitsImpl::doGetScalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name)
 {
     std::map<std::string, double> unitMap = {};
-
     for (const auto &baseUnits : baseUnitsList) {
         unitMap[baseUnits] = 0.0;
     }
-
     double multiplier = 0.0;
 
     if (model->hasUnits(u1Name)) {
@@ -216,6 +214,7 @@ void Units::UnitsImpl::updateBaseUnitCount(const ModelPtr &model,
             unitMap.at(iter.first) += direction * (iter.second * uExp);
         }
         multiplier += direction * logMult;
+        multiplier += direction * standardMultiplierList.at(uName);
     }
 }
 
