@@ -693,7 +693,7 @@ TEST(Parser, encapsulationWithNoComponent)
     libcellml::Parser p;
     p.parseModel(ex);
 
-    expectEqualErrors(expectedErrors, p);
+    EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithMissingComponent)
@@ -717,7 +717,7 @@ TEST(Parser, encapsulationWithMissingComponent)
     libcellml::Parser p;
     p.parseModel(ex);
 
-    expectEqualErrors(expectedErrors, p);
+    EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoComponentChild)
@@ -759,7 +759,7 @@ TEST(Parser, encapsulationNoChildComponentRef)
     libcellml::Parser p;
     p.parseModel(ex);
 
-    expectEqualErrors(expectedErrors, p);
+    EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoGrandchildComponentRef)
@@ -785,7 +785,7 @@ TEST(Parser, encapsulationWithNoGrandchildComponentRef)
     libcellml::Parser p;
     p.parseModel(ex);
 
-    expectEqualErrors(expectedErrors, p);
+    EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, invalidEncapsulations)
@@ -827,7 +827,7 @@ TEST(Parser, invalidEncapsulations)
     libcellml::Parser parser;
     parser.parseModel(e);
 
-    expectEqualErrors(expectedErrors, parser);
+    EXPECT_EQ_ERRORS(expectedErrors, parser);
 }
 
 TEST(Parser, invalidVariableAttributesAndGetVariableError)
@@ -1433,7 +1433,7 @@ TEST(Parser, invalidModelWithTextInAllElements)
     libcellml::Parser parser;
     parser.parseModel(input);
 
-    expectEqualErrors(expectedErrors, parser);
+    EXPECT_EQ_ERRORS(expectedErrors, parser);
 }
 
 TEST(Parser, parseIds)
