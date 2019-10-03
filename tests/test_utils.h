@@ -31,4 +31,6 @@ void TEST_EXPORT expectEqualErrors(const std::vector<std::string> &errors, const
 libcellml::ModelPtr TEST_EXPORT createModel(const std::string &name = "");
 libcellml::ModelPtr TEST_EXPORT createModelWithComponent(const std::string &name = "");
 
-#define EXPECT_EQ_ERRORS(errors, logger) SCOPED_TRACE("Error occured here.");expectEqualErrors(errors, logger)
+#define EXPECT_EQ_ERRORS(errors, logger) \
+    SCOPED_TRACE("Error occured here."); \
+    expectEqualErrors(errors, logger)
