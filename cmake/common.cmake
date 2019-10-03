@@ -101,6 +101,7 @@ function(CONFIGURE_CLANG_AND_CLANG_TIDY_SETTINGS _TARGET)
       -Wno-global-constructors
       -Wno-missing-prototypes
       -Wno-padded
+      -Wno-used-but-marked-unused
     )
 
     if (${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL 7.0.0)
