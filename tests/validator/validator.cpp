@@ -1329,7 +1329,7 @@ TEST(Validator, unitEquivalenceMultiplierPrefix)
 TEST(Validator, unitEquivalenceComplicatedNestedUnits)
 {
     std::vector<std::string> expectedErrors = {
-        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1."};
+        "Variable 'pjs' has units of 'testunit13' and an equivalent variable 'pajamas' with non-matching units of 'testunit14'. The mismatch is: metre^1, multiplication factor of 10^3."};
 
     libcellml::Validator validator;
     libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
@@ -1714,4 +1714,46 @@ TEST(Validator, unitComplexCycle)
 
     EXPECT_EQ(size_t(1), v.errorCount());
     EXPECT_EQ(expectedError, v.error(0)->description());
+}
+
+TEST(Validator, unitEquivalenceMultiplierTemp)
+{
+    libcellml::Validator validator;
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr comp1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr comp2 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v1 = std::make_shared<libcellml::Variable>();
+    libcellml::VariablePtr v2 = std::make_shared<libcellml::Variable>();
+
+    v1->setName("v1");
+    v2->setName("v2");
+    m->setName("model");
+    comp1->setName("comp1");
+    comp2->setName("comp2");
+    comp1->addVariable(v1);
+    comp2->addVariable(v2);
+    m->addComponent(comp1);
+    m->addComponent(comp2);
+
+    // u1 = 10*u2
+    libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
+    u1->setName("u1");
+    u1->addUnit("metre", 1, 1.0, 10.0);
+    libcellml::UnitsPtr u2 = std::make_shared<libcellml::Units>();
+    u2->setName("u2");
+    u2->addUnit("metre", 1, 1.0, 1.0);
+
+    v1->setUnits(u1);
+    v2->setUnits(u2);
+
+    m->addUnits(u1);
+    m->addUnits(u2);
+
+    libcellml::Variable::addEquivalence(v1, v2);
+
+    validator.validateModel(m);
+
+    printErrors(validator);
+
+    EXPECT_EQ(size_t(0), validator.errorCount());
 }
