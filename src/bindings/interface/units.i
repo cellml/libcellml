@@ -75,6 +75,9 @@ StandardUnit.";
 "Makes this Units an imported units by defining an `ImportSource` from which to
 extract the units with the given `name`.";
 
+%feature("docstring") libcellml::Units::scalingFactor
+"Returns the log10 of the scaling factor between two Units objects.";
+
 #if defined(SWIGPYTHON)
     // Treat negative size_t as invalid index (instead of unknown method)
     %extend libcellml::Units {
