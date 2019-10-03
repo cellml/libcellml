@@ -668,7 +668,7 @@ TEST(Parser, encapsulationWithNoComponentRef)
     libcellml::Parser p;
     p.parseModel(ex);
 
-    expectEqualErrors(expectedErrors, p);
+    EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoComponent)

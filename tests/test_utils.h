@@ -28,3 +28,5 @@ void expectEqualErrors(const std::vector<std::string> &errors, const libcellml::
 
 libcellml::ModelPtr createModel(const std::string &name = "");
 libcellml::ModelPtr createModelWithComponent(const std::string &name = "");
+
+#define EXPECT_EQ_ERRORS(errors, logger) {SCOPED_TRACE("Error occured here");expectEqualErrors(errors, logger);}
