@@ -217,7 +217,7 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
 {
     const std::string expected =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"main\">\n"
         "  <component name=\"repeated_component\"/>\n"
         "  <component name=\"repeated_component\"/>\n"
         "  <encapsulation>\n"
@@ -228,8 +228,7 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
         "</model>\n";
 
     const std::vector<std::string> expectedErrors = {
-        "Duplicated names.",
-        "",
+        "Model 'main' contains multiple components with the name 'repeated_component'. Valid component names must be unique to their model.",
     };
 
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
@@ -238,11 +237,9 @@ TEST(Encapsulation, hierarchyRepeatedComponent)
     first_instance->setName("repeated_component");
     libcellml::ComponentPtr second_instance = std::make_shared<libcellml::Component>();
     second_instance->setName("repeated_component");
-    libcellml::ComponentPtr third_instance = std::make_shared<libcellml::Component>();
 
     model->addComponent(first_instance);
     first_instance->addComponent(second_instance);
-    second_instance->addComponent(third_instance);
 
     libcellml::Printer printer;
     std::string actual = printer.printModel(model);
