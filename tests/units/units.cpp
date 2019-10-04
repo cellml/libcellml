@@ -629,16 +629,18 @@ TEST(Units, compareMultiplierSimple)
     m->addUnits(u1);
     m->addUnits(u2);
 
-    double expFactor = u1->scalingFactor(m, "u1", "u2");
+    double factor = u1->scalingFactor(m, "u1", "u2");
 
-    EXPECT_EQ(3.0, expFactor); // 10^3.0 factor difference
+    EXPECT_EQ(1000.0, factor); // 10^3.0 factor difference
 }
 
 TEST(Units, complicatedMultiplicationFactorUnits)
 {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+
     libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
     u->setName("u");
+
     libcellml::UnitsPtr u1 = std::make_shared<libcellml::Units>();
     u1->setName("u1");
     u1->addUnit("u", "milli", 2.0, 1000.0); //m^2
@@ -657,12 +659,12 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     u4->setName("u4");
     u4->addUnit("u2", "milli", 4.0, 1000.0);
 
+    libcellml::UnitsPtr apple = std::make_shared<libcellml::Units>();
+    apple->setName("apple");
+
     libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
     u5->setName("bushell_of_apples");
     u5->addUnit("apple", "mega", 1.0, 1000.0); // 1000*mega*apple^1
-
-    libcellml::UnitsPtr apple = std::make_shared<libcellml::Units>();
-    apple->setName("apple");
 
     libcellml::UnitsPtr square_apple = std::make_shared<libcellml::Units>();
     square_apple->setName("square_apple");
@@ -671,6 +673,10 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     libcellml::UnitsPtr incredible_pile_of_square_apples = std::make_shared<libcellml::Units>();
     incredible_pile_of_square_apples->setName("incredible_pile_of_square_apples");
     incredible_pile_of_square_apples->addUnit("square_apple", "mega", 1, 100.0);
+
+    libcellml::UnitsPtr bunch_of_bananas = std::make_shared<libcellml::Units>();
+    bunch_of_bananas->setName("bunch_of_bananas");
+    bunch_of_bananas->addUnit("banana", 1, 1, 1.0); // 10 bananas
 
     model->setName("model");
     model->addUnits(u1);
@@ -681,8 +687,43 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     model->addUnits(apple);
     model->addUnits(square_apple);
     model->addUnits(incredible_pile_of_square_apples);
+    model->addUnits(bunch_of_bananas);
 
-    EXPECT_EQ(0.0, u1->scalingFactor(model, "u1", "u2"));
-    EXPECT_EQ(0.0, u3->scalingFactor(model, "u3", "u4"));
-    EXPECT_EQ(8.0, u1->scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
+    EXPECT_EQ(1.0, u1->scalingFactor(model, "u1", "u2"));
+    EXPECT_EQ(1.0, u3->scalingFactor(model, "u3", "u4"));
+    EXPECT_EQ(100000000.0, u1->scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
+    EXPECT_EQ(0.0, u1->scalingFactor(model, "bunch_of_bananas", "banana")); // banana doesn't exist, returns 0
+    EXPECT_EQ(1000.0, u1->scalingFactor(model, "kilogram", "gram"));
+    EXPECT_EQ(0.001, u1->scalingFactor(model, "gram", "kilogram"));
 }
+
+// TEST(Units, scalingUnitsWithoutModel)
+// {
+//     // Trying to see whether it's useful to be able to compare units without those units having to belong to a model
+
+//     libcellml::UnitsPtr apple = std::make_shared<libcellml::Units>();
+//     apple->setName("apple");
+
+//     libcellml::UnitsPtr dozen_apples = std::make_shared<libcellml::Units>();
+//     dozen_apples->setName("dozen_apples");
+//     dozen_apples->addUnit(apple, 0, 1, 12.0); // pass by pointer not name or StandardUnit?
+
+//     libcellml::UnitsPtr bushell_of_apples = std::make_shared<libcellml::Units>();
+//     bushell_of_apples->setName("bushell_of_apples");
+//     bushell_of_apples->addUnit("apple", "mega", 1.0, 1000.0); // (1000)(10^6)apple^1
+
+//     libcellml::UnitsPtr square_apple = std::make_shared<libcellml::Units>();
+//     square_apple->setName("square_apple");
+//     square_apple->addUnit("apple", 2);  // apple^2
+
+//     libcellml::UnitsPtr incredible_pile_of_square_apples = std::make_shared<libcellml::Units>();
+//     incredible_pile_of_square_apples->setName("incredible_pile_of_square_apples");
+//     incredible_pile_of_square_apples->addUnit("square_apple", "mega", 1, 100.0); // (100)(10^6)apple^2
+
+//     libcellml::UnitsPtr squared_bushell = std::make_shared<libcellml::Units>();
+//     squared_bushell->setName("squared_bushell");
+//     squared_bushell->addUnit("bushell_of_apples", 2); // ((1000)(10^6)apple^1)^2
+
+//     double factor = scalingFactor()
+
+// }
