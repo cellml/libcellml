@@ -124,12 +124,12 @@ struct Units::UnitsImpl
     /**
      * @brief Returns the log of the scaling factor between two similar units
      * 
-     *  The factor returned can be interpreted as u1 = (10^factor)*u2
+     *  The factor returned can be interpreted as u1 = (factor)*u2
      * 
      * @param model The @c ModelPtr containing the units
      * @param u1 The first @c UnitsPtr to compare
      * @param u2 The second @c UnitsPtr to compare
-     * @return factor The log10 of the scaling factor between u1 and u2
+     * @return factor The scaling factor between u1 and u2
      */
     double doGetScalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name);
 
