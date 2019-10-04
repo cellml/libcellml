@@ -657,15 +657,32 @@ TEST(Units, complicatedMultiplicationFactorUnits)
     u4->setName("u4");
     u4->addUnit("u2", "milli", 4.0, 1000.0);
 
+    libcellml::UnitsPtr u5 = std::make_shared<libcellml::Units>();
+    u5->setName("bushell_of_apples");
+    u5->addUnit("apple", "mega", 1.0, 1000.0); // 1000*mega*apple^1
+
+    libcellml::UnitsPtr apple = std::make_shared<libcellml::Units>();
+    apple->setName("apple");
+
+    libcellml::UnitsPtr square_apple = std::make_shared<libcellml::Units>();
+    square_apple->setName("square_apple");
+    square_apple->addUnit("apple", 2);
+
+    libcellml::UnitsPtr incredible_pile_of_square_apples = std::make_shared<libcellml::Units>();
+    incredible_pile_of_square_apples->setName("incredible_pile_of_square_apples");
+    incredible_pile_of_square_apples->addUnit("square_apple", "mega", 1, 100.0);
+
     model->setName("model");
     model->addUnits(u1);
     model->addUnits(u2);
     model->addUnits(u3);
     model->addUnits(u4);
+    model->addUnits(u5);
+    model->addUnits(apple);
+    model->addUnits(square_apple);
+    model->addUnits(incredible_pile_of_square_apples);
 
-    double factor = u3->scalingFactor(model, u3->name(), u4->name());
-    EXPECT_EQ(0.0, factor);
-
-    EXPECT_EQ(-3.0, u1->scalingFactor(model, "gram", "kilogram"));
-    EXPECT_EQ(3.0, u1->scalingFactor(model, "kilogram", "gram"));
+    EXPECT_EQ(0.0, u1->scalingFactor(model, "u1", "u2"));
+    EXPECT_EQ(0.0, u3->scalingFactor(model, "u3", "u4"));
+    EXPECT_EQ(8.0, u1->scalingFactor(model, "incredible_pile_of_square_apples", "square_apple"));
 }
