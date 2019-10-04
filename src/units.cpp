@@ -157,24 +157,35 @@ double Units::UnitsImpl::doGetScalingFactor(const ModelPtr &model, const std::st
         unitMap[baseUnits] = 0.0;
     }
     double multiplier = 0.0;
+    bool found1 = false;
+    bool found2 = false;
 
     if (model->hasUnits(u1Name)) {
         updateBaseUnitCount(model, unitMap, multiplier, u1Name, 1, 0, 1);
+        found1 = true;
     } else if (unitMap.find(u1Name) != unitMap.end()) {
         unitMap.at(u1Name) += 1.0;
+        found1 = true;
     } else if (isStandardUnitName(u1Name)) {
         updateBaseUnitCount(model, unitMap, multiplier, u1Name, 1, 0, 1);
+        found1 = true;
     }
 
     if (model->hasUnits(u2Name)) {
         updateBaseUnitCount(model, unitMap, multiplier, u2Name, 1, 0, -1);
+        found2 = true;
     } else if (unitMap.find(u2Name) != unitMap.end()) {
         unitMap.at(u2Name) -= 1.0;
+        found2 = true;
     } else if (isStandardUnitName(u2Name)) {
         updateBaseUnitCount(model, unitMap, multiplier, u2Name, 1, 0, -1);
+        found2 = true;
     }
 
-    return multiplier;
+    if (found1 && found2) {
+        return (std::pow(10, multiplier));
+    }
+    return (0.0);
 }
 
 void Units::UnitsImpl::updateBaseUnitCount(const ModelPtr &model,
