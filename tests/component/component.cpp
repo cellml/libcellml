@@ -111,6 +111,17 @@ TEST(Component, addAndCountChildren)
     EXPECT_EQ(size_t(1), child3->componentCount());
 }
 
+TEST(Component, addComponentToItself)
+{
+    libcellml::ComponentPtr component = std::make_shared<libcellml::Component>();
+    component->setName("component");
+
+    EXPECT_EQ(size_t(0), component->componentCount());
+
+    EXPECT_FALSE(component->addComponent(component));
+    EXPECT_EQ(size_t(0), component->componentCount());
+}
+
 TEST(Component, contains)
 {
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
