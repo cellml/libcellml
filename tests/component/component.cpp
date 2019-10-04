@@ -329,7 +329,6 @@ TEST(Component, componentMethods)
 
     // Modify a deeper Component
     c->setName("parent");
-    //c->addComponent(c1);
     c1->addComponent(c2);
     c1->addComponent(c3);
 
