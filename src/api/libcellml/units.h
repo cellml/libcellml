@@ -370,12 +370,11 @@ public:
     /**
      * @brief Return the scaling factor difference between two units
      * 
-     * This can be interpreted as factor, where u1 = (10^factor)*u2
+     * This can be interpreted as factor, where u1 = (factor)*u2
      * 
      * @param u1Name The first unit name
      * @param u2Name The second unit name
      * @return The factor u1/u2
-     * 
      */
     double scalingFactor(const ModelPtr &model, const std::string &u1Name, const std::string &u2Name);
 
