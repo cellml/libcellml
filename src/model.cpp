@@ -355,7 +355,7 @@ bool flattenComponent(ComponentPtr& component)
 	return true;
 }
 
-bool Model::flatten()
+ModelPtr Model::flatten() const
 {
 	for (size_t n = 0; n < this->componentCount(); ++n) {
 		libcellml::ComponentPtr component = this->component(n);
@@ -363,7 +363,7 @@ bool Model::flatten()
 			flattenComponent(component);
 		}
 	}
-	return true;
+	return nullptr;
 }
 
 } // namespace libcellml

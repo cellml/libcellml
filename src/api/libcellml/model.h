@@ -252,14 +252,15 @@ public:
     bool hasUnresolvedImports();
 
 	/**
-	 * @brief Flatten all imports in this model.
+	 * @brief Create a self-contained (flat) version of this @c Model.
 	 *
-	 * Flatten this model to remove all imports. If any unresolved imports are found
-	 * flattening will fail and leave the model in an unusable state.
+	 * Create a new model which is an entirely self-contained instance of this model. All imported
+	 * entities are instantiated directly in the flattened version of the this @c Model, including all imported
+	 * entities throughout the model hierarchy.
 	 *
-	 * @return True if the @c Model has been flattened, False otherwise.
+	 * @return The flattened version of this @c Model if flattening has been successful. @c nullptr otherwise.
 	 */
-	bool flatten();
+	ModelPtr flatten() const;
 
 private:
     void doAddComponent(const ComponentPtr &component) override;
