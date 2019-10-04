@@ -673,12 +673,14 @@ TEST(Parser, encapsulationWithCycleDefined)
         "  </encapsulation>\n"
         "</model>\n";
 
-    const std::vector<std::string> expectedErrors = {};
+    const std::vector<std::string> expectedErrors = {
+        "Model 'model_name' contains multiple components with the name 'bob'. Valid component names must be unique to their model.",
+    };
 
     libcellml::Parser p;
     auto m = p.parseModel(ex);
 
-    EXPECT_EQ_ERRORS(expectedErrors, p);
+    EXPECT_EQ(size_t(0), p.errorCount());
 
     libcellml::Printer printer;
     auto output = printer.printModel(m);
@@ -687,11 +689,7 @@ TEST(Parser, encapsulationWithCycleDefined)
     libcellml::Validator v;
     v.validateModel(m);
 
-    const std::vector<std::string> expectedErrorsValidator = {
-        "Duplicated names.",
-    };
-
-    EXPECT_EQ_ERRORS(expectedErrorsValidator, v);
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
 TEST(Parser, encapsulationWithNoComponentAttribute)
