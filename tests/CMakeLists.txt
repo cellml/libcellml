@@ -114,6 +114,9 @@ if(LIBCELLML_COVERAGE)
     COMMAND ${FIND_EXE} ${GCOV_ANALYSIS_PATH} -type f -name '*.gcda' -print | xargs /bin/rm -f
     COMMENT "Clean old coverage data")
 
+  # Clean away any coverage files when the libCellML is built.
+  add_dependencies(cellml clean_coverage)
+
   # Prepare for test coverage by generating the gcov note files
   add_custom_target(prepare_coverage
     DEPENDS clean_coverage ${TEST_LIST}
