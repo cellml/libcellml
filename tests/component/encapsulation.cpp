@@ -201,16 +201,57 @@ TEST(Encapsulation, hierarchyCircular)
 
     // Add 'child2' to 'child1' to make a waterfall hierarchy of
     // three steps.
-    child1->addComponent(child2);
+    EXPECT_TRUE(child1->addComponent(child2));
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
 
     // Try to make a circular hierarchy but we will not succeed as this is not
     // allowed.  The model will stay as it is.
-    child2->addComponent(parent);
+    EXPECT_FALSE(child2->addComponent(parent));
     EXPECT_FALSE(parent->hasAncestor(child2));
     a_parent = printer.printModel(model);
     EXPECT_EQ(e_parent_2, a_parent);
+}
+
+TEST(Encapsulation, hierarchyRepeatedComponent)
+{
+    const std::string expected =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\">\n"
+        "  <component name=\"repeated_component\"/>\n"
+        "  <component name=\"repeated_component\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"repeated_component\">\n"
+        "      <component_ref component=\"repeated_component\"/>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    const std::vector<std::string> expectedErrors = {
+        "Duplicated names.",
+        "",
+    };
+
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    model->setName("main");
+    libcellml::ComponentPtr first_instance = std::make_shared<libcellml::Component>();
+    first_instance->setName("repeated_component");
+    libcellml::ComponentPtr second_instance = std::make_shared<libcellml::Component>();
+    second_instance->setName("repeated_component");
+    libcellml::ComponentPtr third_instance = std::make_shared<libcellml::Component>();
+
+    model->addComponent(first_instance);
+    first_instance->addComponent(second_instance);
+    second_instance->addComponent(third_instance);
+
+    libcellml::Printer printer;
+    std::string actual = printer.printModel(model);
+    EXPECT_EQ(expected, actual);
+
+    libcellml::Validator v;
+    v.validateModel(model);
+
+    EXPECT_EQ_ERRORS(expectedErrors, v);
 }
 
 TEST(Encapsulation, hierarchyWaterfallAndParse)
