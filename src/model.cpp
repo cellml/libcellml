@@ -99,14 +99,14 @@ void Model::swap(Model &rhs)
     std::swap(mPimpl, rhs.mPimpl);
 }
 
-void Model::doAddComponent(const ComponentPtr &component)
+bool Model::doAddComponent(const ComponentPtr &component)
 {
     if (component->hasParent()) {
         auto parent = component->parent();
         removeComponentFromEntity(parent, component);
     }
     component->setParent(shared_from_this());
-    ComponentEntity::doAddComponent(component);
+    return ComponentEntity::doAddComponent(component);
 }
 
 void Model::addUnits(const UnitsPtr &units)

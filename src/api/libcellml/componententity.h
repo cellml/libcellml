@@ -64,8 +64,10 @@ public:
      * current parent.
      *
      * @param component The component to add.
+     *
+     * @return True if the component was added, false otherwise.
      */
-    void addComponent(const ComponentPtr &component);
+    bool addComponent(const ComponentPtr &component);
 
     /**
      * @brief Remove the component at the given @p index.
@@ -311,8 +313,10 @@ protected:
      * implement their own versions.
      *
      * @param component The ComponentPtr to add to the list of components.
+     *
+     * @return True if the component was added, false otherwise.
      */
-    virtual void doAddComponent(const ComponentPtr &component);
+    virtual bool doAddComponent(const ComponentPtr &component);
 
 private:
     void swap(ComponentEntity &rhs); /**< Swap method required for C++ 11 move semantics. */
