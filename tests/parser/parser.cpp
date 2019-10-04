@@ -632,6 +632,68 @@ TEST(Parser, emptyEncapsulation)
     EXPECT_EQ(expectedError, p.error(0)->description());
 }
 
+TEST(Parser, validEncapsulation)
+{
+    const std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component name=\"bob\"/>\n"
+        "  <component name=\"jim\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"bob\">\n"
+        "      <component_ref component=\"jim\">\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    libcellml::Parser p;
+    p.parseModel(ex);
+
+    EXPECT_EQ(size_t(0), p.errorCount());
+}
+
+TEST(Parser, encapsulationWithCycleDefined)
+{
+    const std::string ex =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<model xmlns=\"http://www.cellml.org/cellml/2.0#\" name=\"model_name\">\n"
+        "  <component name=\"bob\"/>\n"
+        "  <component name=\"jim\"/>\n"
+        "  <component name=\"dave\"/>\n"
+        "  <component name=\"bob\"/>\n"
+        "  <encapsulation>\n"
+        "    <component_ref component=\"bob\">\n"
+        "      <component_ref component=\"jim\">\n"
+        "        <component_ref component=\"dave\">\n"
+        "          <component_ref component=\"bob\"/>\n"
+        "        </component_ref>\n"
+        "      </component_ref>\n"
+        "    </component_ref>\n"
+        "  </encapsulation>\n"
+        "</model>\n";
+
+    const std::vector<std::string> expectedErrors = {};
+
+    libcellml::Parser p;
+    auto m = p.parseModel(ex);
+
+    EXPECT_EQ_ERRORS(expectedErrors, p);
+
+    libcellml::Printer printer;
+    auto output = printer.printModel(m);
+    EXPECT_EQ(output, ex);
+
+    libcellml::Validator v;
+    v.validateModel(m);
+
+    const std::vector<std::string> expectedErrorsValidator = {
+        "Duplicated names.",
+    };
+
+    EXPECT_EQ_ERRORS(expectedErrorsValidator, v);
+}
+
 TEST(Parser, encapsulationWithNoComponentAttribute)
 {
     const std::string ex =
@@ -641,14 +703,16 @@ TEST(Parser, encapsulationWithNoComponentAttribute)
         "    <component_ref/>\n"
         "  </encapsulation>\n"
         "</model>\n";
-    const std::string expectedError1 = "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref element.";
-    const std::string expectedError2 = "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.";
+
+    const std::vector<std::string> expectedErrors = {
+        "Encapsulation in model 'model_name' does not have a valid component attribute in a component_ref element.",
+        "Encapsulation in model 'model_name' specifies an invalid parent component_ref that also does not have any children.",
+    };
 
     libcellml::Parser p;
     p.parseModel(ex);
-    EXPECT_EQ(size_t(2), p.errorCount());
-    EXPECT_EQ(expectedError1, p.error(0)->description());
-    EXPECT_EQ(expectedError2, p.error(1)->description());
+
+    EXPECT_EQ_ERRORS(expectedErrors, p);
 }
 
 TEST(Parser, encapsulationWithNoComponentRef)
