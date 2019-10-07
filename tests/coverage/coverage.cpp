@@ -16,7 +16,6 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
-#include <iostream>
 #include <libcellml>
 
 /*
@@ -311,4 +310,23 @@ TEST(Coverage, generatorVariable)
 
     vec.push_back(rgp);
     vec.insert(vec.begin(), ao);
+}
+
+TEST(Coverage, entityHasParent)
+{
+    libcellml::ModelPtr m = std::make_shared<libcellml::Model>();
+    libcellml::ComponentPtr c1 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c2 = std::make_shared<libcellml::Component>();
+    libcellml::ComponentPtr c3 = std::make_shared<libcellml::Component>();
+    libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
+
+    c2->addVariable(v);
+    c1->addComponent(c2);
+    m->addComponent(c1);
+
+    EXPECT_TRUE(v->hasParent());
+    EXPECT_TRUE(c2->hasParent());
+    EXPECT_TRUE(c1->hasParent());
+    EXPECT_TRUE(c2->hasParent());
+    EXPECT_FALSE(c3->hasParent());
 }

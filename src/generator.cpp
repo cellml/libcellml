@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include "libcellml/generator.h"
+
 #include "utilities.h"
 #include "xmldoc.h"
 
 #include "libcellml/component.h"
-#include "libcellml/generator.h"
 #include "libcellml/generatorprofile.h"
 #include "libcellml/model.h"
 #include "libcellml/validator.h"
@@ -1065,12 +1066,12 @@ void Generator::GeneratorImpl::processNode(const XmlNodePtr &node,
                 equation->addVariable(generatorVariable);
             }
         } else {
-            ModelPtr model = component->parentModel();
+            std::string modelName = getEntityName(component->parent());
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + variableName
                                 + "' in component '" + component->name()
-                                + "' of model '" + model->name()
+                                + "' of model '" + modelName
                                 + "' is referenced in an equation, but it is not defined anywhere.");
             err->setKind(Error::Kind::GENERATOR);
 
@@ -1179,9 +1180,9 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         } else if ((variable != generatorVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
-            ModelPtr model = component->parentModel();
-            ComponentPtr trackedVariableComponent = generatorVariable->mVariable->parentComponent();
-            ModelPtr trackedVariableModel = trackedVariableComponent->parentModel();
+            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+            ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
+            ModelPtr trackedVariableModel = std::dynamic_pointer_cast<Model>(trackedVariableComponent->parent());
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + variable->name()
@@ -1230,13 +1231,13 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             // that it is not initialised.
 
             if (!variable->initialValue().empty()) {
-                ComponentPtr component = variable->parentComponent();
-                ModelPtr model = component->parentModel();
+                ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+                std::string modelName = getEntityName(component->parent());
                 ErrorPtr err = std::make_shared<Error>();
 
                 err->setDescription("Variable '" + variable->name()
                                     + "' in component '" + component->name()
-                                    + "' of model '" + model->name()
+                                    + "' of model '" + modelName
                                     + "' cannot be both a variable of integration and initialised.");
                 err->setKind(Error::Kind::GENERATOR);
 
@@ -1246,10 +1247,11 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             }
         } else if ((variable != mVoi)
                    && !variable->hasEquivalentVariable(mVoi)) {
-            ComponentPtr voiComponent = mVoi->parentComponent();
-            ModelPtr voiModel = voiComponent->parentModel();
-            ComponentPtr component = variable->parentComponent();
-            ModelPtr model = component->parentModel();
+            ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
+            ModelPtr voiModel = std::dynamic_pointer_cast<Model>(voiComponent->parent());
+            ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+            ModelPtr model = parentModel(component);
+            ComponentPtr c1 = std::dynamic_pointer_cast<Component>(component->parent());
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + mVoi->name()
@@ -1273,8 +1275,8 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         && (astGreatGrandParent != nullptr) && (astGreatGrandParent->mType == GeneratorEquationAst::Type::DIFF)) {
         if (convertToDouble(ast->mValue) != 1.0) {
             VariablePtr variable = astGreatGrandParent->mRight->mVariable;
-            ComponentPtr component = variable->parentComponent();
-            ModelPtr model = component->parentModel();
+            ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
+            ModelPtr model = parentModel(component);
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("The differential equation for variable '" + variable->name()
@@ -1315,8 +1317,8 @@ bool Generator::GeneratorImpl::compareVariablesByName(const GeneratorInternalVar
     //       account for the name of a model.
     VariablePtr realVariable1 = variable1->mVariable;
     VariablePtr realVariable2 = variable2->mVariable;
-    ComponentPtr realComponent1 = realVariable1->parentComponent();
-    ComponentPtr realComponent2 = realVariable2->parentComponent();
+    ComponentPtr realComponent1 = std::dynamic_pointer_cast<Component>(realVariable1->parent());
+    ComponentPtr realComponent2 = std::dynamic_pointer_cast<Component>(realVariable2->parent());
 
     if (realComponent1->name() == realComponent2->name()) {
         return realVariable1->name() < realVariable2->name();
@@ -1453,8 +1455,8 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
             if (!errorType.empty()) {
                 ErrorPtr err = std::make_shared<Error>();
                 VariablePtr realVariable = internalVariable->mVariable;
-                ComponentPtr realComponent = realVariable->parentComponent();
-                ModelPtr realModel = realComponent->parentModel();
+                ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
+                ModelPtr realModel = std::dynamic_pointer_cast<Model>(realComponent->parent());
 
                 err->setDescription("Variable '" + realVariable->name()
                                     + "' in component '" + realComponent->name()
@@ -1624,7 +1626,7 @@ void Generator::GeneratorImpl::updateVariableInfoSizes(size_t &componentSize,
                                                        size_t &unitsSize,
                                                        const VariablePtr &variable)
 {
-    auto variableComponentSize = variable->parentComponent()->name().length() + 1;
+    auto variableComponentSize = getEntityName(variable->parent()).length() + 1;
     auto variableNameSize = variable->name().length() + 1;
     auto variableUnitsSize = variable->units().length() + 1;
     // Note: +1 to account for the end of string termination.
@@ -2115,7 +2117,7 @@ void Generator::GeneratorImpl::addImplementationVoiInfoCode(std::string &code)
 
         std::string name = (mVoi != nullptr) ? mVoi->name() : "";
         std::string units = (mVoi != nullptr) ? mVoi->units() : "";
-        std::string component = (mVoi != nullptr) ? mVoi->parentComponent()->name() : "";
+        std::string component = (mVoi != nullptr) ? getEntityName(mVoi->parent()) : "";
 
         code += replace(mProfile->implementationVoiInfoString(),
                         "<CODE>", generateVariableInfoEntryCode(name, units, component));
@@ -2141,7 +2143,7 @@ void Generator::GeneratorImpl::addImplementationStateInfoCode(std::string &code)
             infoElementsCode += mProfile->indentString()
                                 + generateVariableInfoEntryCode(state->name(),
                                                                 state->units(),
-                                                                state->parentComponent()->name());
+                                                                getEntityName(state->parent()));
         }
 
         if (!infoElementsCode.empty()) {
@@ -2193,7 +2195,7 @@ void Generator::GeneratorImpl::addImplementationVariableInfoCode(std::string &co
                                 + replace(replace(replace(replace(mProfile->variableInfoWithTypeEntryString(),
                                                                   "<NAME>", variable->variable()->name()),
                                                           "<UNITS>", variable->variable()->units()),
-                                                  "<COMPONENT>", variable->variable()->parentComponent()->name()),
+                                                  "<COMPONENT>", getEntityName(variable->variable()->parent())),
                                           "<TYPE>", variableType);
         }
 
