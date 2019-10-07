@@ -1254,13 +1254,32 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             ComponentPtr c1 = std::dynamic_pointer_cast<Component>(component->parent());
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("Variable '" + mVoi->name()
-                                + "' in component '" + voiComponent->name()
-                                + "' of model '" + voiModel->name()
-                                + "' and variable '" + variable->name()
-                                + "' in component '" + component->name()
-                                + "' of model '" + model->name()
-                                + "' cannot both be a variable of integration.");
+            // KRM had to add the conditional statements here to get around components with null parents
+            std::string description;
+            if (mVoi != nullptr) {
+                description += "Variable '" + mVoi->name();
+            }
+            if (voiComponent != nullptr) {
+                description += "' in component '" + voiComponent->name();
+            }
+            if (variable != nullptr) {
+                description += "' and variable '" + variable->name();
+            }
+            if (component != nullptr) {
+                description += "' in component '" + component->name();
+            }
+            if (model != nullptr) {
+                description += "' of model '" + model->name();
+            }
+            description += "' cannot both be a variable of integration.";
+            err->setDescription(description);
+            // err->setDescription("Variable '" + mVoi->name()
+            //                     + "' in component '" + voiComponent->name()
+            //                     + "' of model '" + voiModel->name()
+            //                     + "' and variable '" + variable->name()
+            //                     + "' in component '" + component->name()
+            //                     + "' of model '" + model->name()
+            //                     + "' cannot both be a variable of integration.");
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
@@ -1279,10 +1298,24 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
             ModelPtr model = parentModel(component);
             ErrorPtr err = std::make_shared<Error>();
 
-            err->setDescription("The differential equation for variable '" + variable->name()
-                                + "' in component '" + component->name()
-                                + "' of model '" + model->name()
-                                + "' must be of the first order.");
+            // err->setDescription("The differential equation for variable '" + variable->name()
+            //                     + "' in component '" + component->name()
+            //                     + "' of model '" + model->name()
+            //                     + "' must be of the first order.");
+            std::string description = "The differential equation for ";
+            if (variable != nullptr) {
+                description += "variable '" + variable->name() + "' ";
+            } else {
+                description += "a variable";
+            }
+            if (component != nullptr) {
+                description += "in component '" + component->name();
+            }
+            if (model != nullptr) {
+                description += "' of model '" + model->name();
+            }
+            description += "' must be of the first order.";
+            err->setDescription(description);
             err->setKind(Error::Kind::GENERATOR);
 
             mGenerator->addError(err);
