@@ -492,9 +492,9 @@ void Validator::ValidatorImpl::validateComponentRecursively(const ComponentPtr &
     // privateConnections = connections to parents
     // publicConnections = connection to siblings and connection to children
 
-    ComponentPtr parent = component->parentComponent();
+    auto parent = std::dynamic_pointer_cast<Component>(component->parent());
     if (parent != nullptr) {
-        privateConnections.push_back(component->parentComponent()->name());
+        privateConnections.push_back(parent->name());
     }
     std::vector<std::string> publicConnections(siblingsOfComponent);
 
@@ -667,7 +667,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                                                 const std::vector<std::string> &availablePublicConnections,
                                                 const ModelPtr &model)
 {
-    ComponentPtr component = variable->parentComponent();
+    auto component = std::dynamic_pointer_cast<Component>(variable->parent());
     std::string hints;
     // Check for a valid name attribute.
     if (!isCellmlIdentifier(variable->name())) {
@@ -728,7 +728,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                 }
 
                 if (equivalentVariable->hasEquivalentVariable(variable)) {
-                    auto component2 = equivalentVariable->parentComponent();
+                    auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                     if (component2 == nullptr) {
                         ErrorPtr err = std::make_shared<Error>();
                         err->setDescription("Variable '" + variable->name() + "' has an equivalent variable '" + equivalentVariable->name() + "' which does not have a parent component.");
@@ -740,7 +740,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                             // Then the interface on this variable does not match with available interfaces
                             // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
+                            err->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' specifies an interface type of '"
                                                 + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', in component '"
                                                 + component2->name() + "'.");
                             err->setVariable(variable);
@@ -752,7 +752,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                             // Then the interface on this variable does not match with available interfaces
                             // NB Don't check the reverse (interface specified on other variable back to this one) as will be done by the component which owns it instead
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an interface type of '"
+                            err->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' specifies an interface type of '"
                                                 + interfaceType + "' which is incompatible with connecting to the variable '" + equivalentVariable->name() + "', in component '"
                                                 + component2->name() + "'.");
                             err->setVariable(variable);
@@ -773,7 +773,7 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
                             mValidator->addError(err);
                         } else {
                             ErrorPtr err = std::make_shared<Error>();
-                            err->setDescription("Variable '" + variable->name() + "' in component '" + variable->parentComponent()->name() + "' specifies an equivalent variable '" + equivalentVariable->name() + "' in component '" + component2->name() + "', which is not in the available component set.");
+                            err->setDescription("Variable '" + variable->name() + "' in component '" + component->name() + "' specifies an equivalent variable '" + equivalentVariable->name() + "' in component '" + component2->name() + "', which is not in the available component set.");
                             err->setVariable(variable);
                             err->setKind(Error::Kind::CONNECTION);
                             mValidator->addError(err);
@@ -1213,7 +1213,7 @@ void Validator::ValidatorImpl::validateResets(const ModelPtr &model)
                         ErrorPtr err = std::make_shared<Error>();
                         std::string des = "Non-unique reset order of '" + order.first + "' found within equivalent variable set:";
                         for (auto const &r : order.second) {
-                            auto parent = r->variable()->parentComponent();
+                            auto parent = std::dynamic_pointer_cast<Component>(r->variable()->parent());
                             des += "\n  - variable '" + r->variable()->name() + "' in component '" + parent->name() + "' reset with order '" + order.first + "'";
                         }
                         des += ".";
@@ -1235,7 +1235,7 @@ void Validator::ValidatorImpl::fetchConnectedResets(const VariablePtr &variable,
             continue; // skip if we've checked this variable before
         }
         // Look for resets of the equiv variable and add to resetList
-        auto component = equiv->parentComponent();
+        auto component = std::dynamic_pointer_cast<Component>(equiv->parent());
         if (component != nullptr) {
             for (size_t r = 0; r < component->resetCount(); ++r) {
                 ResetPtr reset = component->reset(r);

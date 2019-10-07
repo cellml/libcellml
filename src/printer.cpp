@@ -169,8 +169,8 @@ void buildMaps(const ModelPtr &model, ComponentMap &componentMap, VariableMap &v
                         }
                         if (!pairFound) {
                             // Get parent components.
-                            ComponentPtr component1 = variable->parentComponent();
-                            ComponentPtr component2 = equivalentVariable->parentComponent();
+                            auto component1 = std::dynamic_pointer_cast<Component>(variable->parent());
+                            auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
                             // Add new unique variable equivalence pair to the VariableMap.
                             variableMap.push_back(variablePair);
 

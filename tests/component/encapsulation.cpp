@@ -360,18 +360,33 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     c6->setName("comp6");
     c4n->setName("comp4new");
 
+    // c->addComponent(c1);
+    // c1->addComponent(c2);
+    // c2->addComponent(c3);
+    // EXPECT_TRUE(c2->hasParent(c));
+
+    // c4->addComponent(c5);
+    // c5->addComponent(c6);
+    // EXPECT_TRUE(c6->hasParent(c4));
+    // EXPECT_FALSE(c6->hasParent(c));
+
+    // c3->addComponent(c4);
+    // EXPECT_TRUE(c6->hasParent(c));
+
     c->addComponent(c1);
     c1->addComponent(c2);
     c2->addComponent(c3);
-    EXPECT_TRUE(c2->hasParent(c));
 
+    auto tempC = std::dynamic_pointer_cast<libcellml::Component>(c2->parent());
+    EXPECT_EQ(tempC, c1); // EXPECT_TRUE(c2->hasParent(c)); // KRM Existing test should have failed ...?
     c4->addComponent(c5);
     c5->addComponent(c6);
-    EXPECT_TRUE(c6->hasParent(c4));
-    EXPECT_FALSE(c6->hasParent(c));
 
+    tempC = std::dynamic_pointer_cast<libcellml::Component>(c6->parent());
+    EXPECT_NE(tempC, c4); //EXPECT_TRUE(c6->hasParent(c4));  // KRM existing test should have failed?
+    EXPECT_FALSE(c6->hasAncestor(c));
     c3->addComponent(c4);
-    EXPECT_TRUE(c6->hasParent(c));
+    EXPECT_TRUE(c6->hasAncestor(c));
 
     // Contains component
     EXPECT_TRUE(c->containsComponent("comp5"));
@@ -397,7 +412,7 @@ TEST(Encapsulation, encapsulatedComponentMethods)
     c->removeComponent(c4n);
     EXPECT_FALSE(c->containsComponent("comp5"));
     EXPECT_FALSE(c->containsComponent("comp4new"));
-    EXPECT_FALSE(c6->hasParent(c));
+    EXPECT_FALSE(c6->hasAncestor(c));
 }
 
 TEST(Encapsulation, encapsulationWithMultipleRootHierarchy)
