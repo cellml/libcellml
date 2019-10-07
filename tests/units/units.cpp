@@ -612,3 +612,17 @@ TEST(Units, unitsWithPrefixOutOfRange)
     EXPECT_EQ(size_t(1), validator.errorCount());
     EXPECT_EQ(e, validator.error(0)->description());
 }
+
+TEST(Units, parentsOfUnits)
+{
+    libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
+    model->setName("I_am_a_model");
+
+    libcellml::UnitsPtr u = std::make_shared<libcellml::Units>();
+    u->setName("u");
+
+    model->addUnits(u);  
+
+    libcellml::ModelPtr parent = std::dynamic_pointer_cast<libcellml::Model>(u->parent());
+    EXPECT_FALSE(parent == nullptr);
+}
