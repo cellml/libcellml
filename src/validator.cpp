@@ -14,16 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "namespaces.h"
-#include "utilities.h"
-#include "xmldoc.h"
+#include "libcellml/validator.h"
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/reset.h"
-#include "libcellml/validator.h"
 #include "libcellml/variable.h"
 #include "libcellml/when.h"
+
+#include "namespaces.h"
+#include "utilities.h"
+#include "xmldoc.h"
 
 #include <algorithm>
 #include <cmath>
@@ -1083,7 +1084,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            ModelPtr model = component->parentModel();
+            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
