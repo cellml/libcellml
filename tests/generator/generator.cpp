@@ -18,9 +18,6 @@ limitations under the License.
 
 #include "gtest/gtest.h"
 
-// KRM delete me
-#include <iostream>
-
 #include <libcellml>
 
 static const std::string EMPTY_STRING;
@@ -88,17 +85,20 @@ TEST(Generator, twoVariablesOfIntegration)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    // TODO Model is returned as null?
     const std::vector<std::string> expectedErrors = {
-        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model '' cannot both be a variable of integration."};
+        "Variable 'time' in component 'main' of model 'two_variables_of_integration' and variable 'other_time' in component 'sub_sub_sub' of model 'two_variables_of_integration' cannot both be a variable of integration."};
 
     libcellml::Generator generator;
+
     generator.processModel(model);
+
     EXPECT_EQ(expectedErrors.size(), generator.errorCount());
+
     for (size_t i = 0; i < generator.errorCount(); ++i) {
         EXPECT_EQ(expectedErrors.at(i), generator.error(i)->description());
         EXPECT_EQ(libcellml::Error::Kind::GENERATOR, generator.error(i)->kind());
     }
+
     EXPECT_EQ(libcellml::Generator::ModelType::INVALID, generator.modelType());
 
     EXPECT_EQ(size_t(0), generator.stateCount());
@@ -119,11 +119,10 @@ TEST(Generator, nonFirstOrderOdes)
 
     EXPECT_EQ(size_t(0), parser.errorCount());
 
-    // TODO model for variable z is being returned as null?
     const std::vector<std::string> expectedErrors = {
         "The differential equation for variable 'x' in component 'main' of model 'non_first_order_odes' must be of the first order.",
         "The differential equation for variable 'y' in component 'sub' of model 'non_first_order_odes' must be of the first order.",
-        "The differential equation for variable 'z' in component 'sub_sub' of model '' must be of the first order."};
+        "The differential equation for variable 'z' in component 'sub_sub' of model 'non_first_order_odes' must be of the first order."};
 
     libcellml::Generator generator;
 
