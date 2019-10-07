@@ -16,10 +16,6 @@ limitations under the License.
 
 #include "utilities.h"
 
-#include "libcellml/component.h"
-#include "libcellml/model.h"
-#include "libcellml/namedentity.h"
-
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -396,28 +392,6 @@ std::string sha1(const std::string &string)
     }
 
     return result.str();
-}
-
-std::string getEntityName(const EntityPtr &entity)
-{
-    std::string name;
-    auto namedEntity = dynamic_cast<NamedEntity *>(entity.get());
-    if (namedEntity != nullptr) {
-        name = namedEntity->name();
-    }
-    return name;
-}
-
-ModelPtr parentModel(const EntityPtr &entity)
-{
-    auto model = std::dynamic_pointer_cast<Model>(entity->parent());
-    auto component = std::dynamic_pointer_cast<Component>(entity->parent());
-    while (!model && component && component->parent()) {
-        model = std::dynamic_pointer_cast<Model>(component->parent());
-        component = std::dynamic_pointer_cast<Component>(component->parent());
-    }
-
-    return model;
 }
 
 } // namespace libcellml

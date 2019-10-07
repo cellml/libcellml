@@ -14,17 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/validator.h"
+#include "namespaces.h"
+#include "utilities.h"
+#include "xmldoc.h"
 
 #include "libcellml/component.h"
 #include "libcellml/importsource.h"
 #include "libcellml/reset.h"
+#include "libcellml/validator.h"
 #include "libcellml/variable.h"
-#include "libcellml/when.h"
-
-#include "namespaces.h"
-#include "utilities.h"
-#include "xmldoc.h"
 
 #include <algorithm>
 #include <cmath>
@@ -121,18 +119,6 @@ struct Validator::ValidatorImpl
      * @param component The component the reset belongs to.
      */
     void validateReset(const ResetPtr &reset, const ComponentPtr &component);
-
-    /**
-     * @brief Validate the @p when using the CellML 2.0 specification.
-     *
-     * Examine the @p when for conformance to the CellML 2.0 specification.  Any
-     * errors will be logged in the @c Validator.
-     *
-     * @param when The when to validate.
-     * @param reset The reset the when belongs to.
-     * @param component The component the reset belongs to.
-     */
-    void validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component);
 
     /**
      * @brief Validate the math @p input @c std::string.
@@ -496,30 +482,11 @@ void Validator::ValidatorImpl::validateComponent(const ComponentPtr &component)
         }
     }
     // Check for resets in this component
-    if (component->resetCount() > 0) {
-        // Check for duplicate order values in resets
-        std::vector<int> resetOrders;
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->reset(i);
-            int resetOrder = reset->order();
-            if (reset->isOrderSet()) {
-                if (std::find(resetOrders.begin(), resetOrders.end(), resetOrder) != resetOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Component '" + component->name() + "' contains multiple resets with order '" + convertIntToString(resetOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    resetOrders.push_back(resetOrder);
-                }
-            }
-        }
-
-        for (size_t i = 0; i < component->resetCount(); ++i) {
-            ResetPtr reset = component->reset(i);
-            validateReset(reset, component);
-        }
+    for (size_t i = 0; i < component->resetCount(); ++i) {
+        ResetPtr reset = component->reset(i);
+        validateReset(reset, component);
     }
+
     // Validate math through the private implementation (for XML handling).
     if (!component->math().empty()) {
         validateMath(component->math(), component);
@@ -624,8 +591,8 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
         err->setRule(SpecificationRule::VARIABLE_UNITS);
         mValidator->addError(err);
     } else if (!isStandardUnitName(variable->units())) {
-        ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
-        ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+        ComponentPtr component = variable->parentComponent();
+        ModelPtr model = component->parentModel();
         if ((model != nullptr) && !model->hasUnits(variable->units())) {
             ErrorPtr err = std::make_shared<Error>();
             err->setDescription("Variable '" + variable->name() + "' has an invalid units reference '" + variable->units() + "' that does not correspond with a standard unit or units in the variable's parent component or model.");
@@ -664,17 +631,24 @@ void Validator::ValidatorImpl::validateVariable(const VariablePtr &variable, con
 
 void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const ComponentPtr &component)
 {
-    std::string orderString;
+    bool noOrder = false;
+    bool noVariable = false;
+    bool noTestVariable = false;
+    bool noTestValue = false;
+    bool noResetValue = false;
+    bool varOutsideComponent = false;
+    bool testVarOutsideComponent = false;
+    std::string varParentName;
+    std::string testVarParentName;
+
+    std::string description = "Reset in component '" + component->name() + "' ";
+
     if (reset->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(reset->order()) + "'";
+        description += "with order '" + convertIntToString(reset->order()) + "', ";
     } else {
-        orderString = "does not have an order set,";
+        noOrder = true;
     }
 
-    std::string variableString;
-    std::string variableContinuation;
-    std::string description;
-    bool noVariable = false;
     if (reset->variable() == nullptr) {
         noVariable = true;
     } else {
@@ -712,99 +686,56 @@ void Validator::ValidatorImpl::validateReset(const ResetPtr &reset, const Compon
     if ((resetValueString.empty()) || (std::all_of(resetValueString.begin(), resetValueString.end(), isspace))) {
         noResetValue = true;
     } else {
-        variableString = "referencing variable '" + reset->variable()->name() + "'";
+        validateMath(resetValueString, component);
     }
 
-    if (!reset->isOrderSet()) {
+    if (noOrder) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + ".");
+        err->setDescription(description + "does not have an order set.");
         err->setComponent(component);
         err->setRule(SpecificationRule::RESET_ORDER);
         mValidator->addError(err);
     }
-
-    if (reset->whenCount() > 0) {
-        // Check for duplicate when order values.
-        std::vector<int> whenOrders;
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->when(i);
-            if (when->isOrderSet()) {
-                int whenOrder = when->order();
-                if (std::find(whenOrders.begin(), whenOrders.end(), whenOrder) != whenOrders.end()) {
-                    ErrorPtr err = std::make_shared<Error>();
-                    err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " has multiple whens with order '" + convertIntToString(whenOrder) + "'.");
-                    err->setComponent(component);
-                    err->setRule(SpecificationRule::RESET_ORDER);
-                    mValidator->addError(err);
-                } else {
-                    whenOrders.push_back(whenOrder);
-                }
-            }
-        }
-        for (size_t i = 0; i < reset->whenCount(); ++i) {
-            WhenPtr when = reset->when(i);
-            validateWhen(when, reset, component);
-        }
-    } else {
+    if (noVariable) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("Reset in component '" + component->name() + "' " + orderString + " " + variableString + variableContinuation + " does not have at least one child When.");
+        err->setDescription(description + "does not reference a variable.");
         err->setReset(reset);
-        err->setRule(SpecificationRule::RESET_CHILD);
+        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
         mValidator->addError(err);
     }
-}
-
-void Validator::ValidatorImpl::validateWhen(const WhenPtr &when, const ResetPtr &reset, const ComponentPtr &component)
-{
-    std::string orderString;
-    std::string resetOrderString;
-    std::string resetVariableString;
-    std::string resetVariableContinuation;
-    if (when->isOrderSet()) {
-        orderString = "with order '" + convertIntToString(when->order()) + "'";
-    } else {
-        orderString = "does not have an order set,";
-    }
-
-    if (reset->isOrderSet()) {
-        resetOrderString = "with order '" + convertIntToString(reset->order()) + "'";
-    } else {
-        resetOrderString = "which does not have an order set,";
-    }
-
-    if (reset->variable() == nullptr) {
-        resetVariableString = "which does not reference a variable";
-        resetVariableContinuation = ",";
-    } else {
-        resetVariableContinuation = "";
-        resetVariableString = "referencing variable '" + reset->variable()->name() + "'";
-    }
-
-    if (!when->isOrderSet()) {
+    if (noTestVariable) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " does not have an order set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_ORDER);
+        err->setDescription(description + "does not reference a test_variable.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
         mValidator->addError(err);
     }
-
-    if (!when->condition().empty()) {
-        validateMath(when->condition(), component);
-    } else {
+    if (noTestValue) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML condition set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
+        err->setDescription(description + "does not have a test_value specified.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VALUE);
         mValidator->addError(err);
     }
-
-    if (!when->value().empty()) {
-        validateMath(when->value(), component);
-    } else {
+    if (noResetValue) {
         ErrorPtr err = std::make_shared<Error>();
-        err->setDescription("When in reset " + resetOrderString + " " + resetVariableString + resetVariableContinuation + " " + orderString + " does not have a MathML value set.");
-        err->setWhen(when);
-        err->setRule(SpecificationRule::WHEN_CHILD);
+        err->setDescription(description + "does not have a reset_value specified.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_RESET_VALUE);
+        mValidator->addError(err);
+    }
+    if (varOutsideComponent) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "refers to a variable '" + reset->variable()->name() + "' in a different component '" + varParentName + "'.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_VARIABLE_REFERENCE);
+        mValidator->addError(err);
+    }
+    if (testVarOutsideComponent) {
+        ErrorPtr err = std::make_shared<Error>();
+        err->setDescription(description + "refers to a test_variable '" + reset->testVariable()->name() + "' in a different component '" + testVarParentName + "'.");
+        err->setReset(reset);
+        err->setRule(SpecificationRule::RESET_TEST_VARIABLE_REFERENCE);
         mValidator->addError(err);
     }
 }
@@ -968,7 +899,7 @@ void Validator::ValidatorImpl::validateAndCleanMathCiCnNodes(XmlNodePtr &node, c
         // Check that a specified units is valid.
         if (checkUnitsIsInComponent) {
             // Check for a matching units in this component.
-            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+            ModelPtr model = component->parentModel();
             if (!model->hasUnits(unitsName)) {
                 // Check for a matching standard units.
                 if (!isStandardUnitName(unitsName)) {
@@ -1102,7 +1033,7 @@ void Validator::ValidatorImpl::validateConnections(const ModelPtr &model)
 
                             if (equivalentVariable->hasDirectEquivalentVariable(variable)) {
                                 // Check that the equivalent variable has a valid parent component.
-                                auto component2 = std::dynamic_pointer_cast<Component>(equivalentVariable->parent());
+                                auto component2 = equivalentVariable->parentComponent();
                                 if (!component2->hasVariable(equivalentVariable)) {
                                     ErrorPtr err = std::make_shared<Error>();
                                     err->setDescription("Variable '" + equivalentVariable->name() + "' is an equivalent variable to '" + variable->name() + "' but has no parent component.");

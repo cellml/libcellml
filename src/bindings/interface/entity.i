@@ -19,14 +19,15 @@ unset).";
 %feature("docstring") libcellml::Entity::clearParent
 "Removes any parent set for this entity.";
 
-%feature("docstring") libcellml::Entity::parent
-"Returns the parent of the CellML Entity (or `None` if not set).";
+%feature("docstring") libcellml::Entity::parentModel
+"Returns the parent model of the CellML Entity (or `None` if not set).";
+
+%feature("docstring") libcellml::Entity::parentComponent
+"Returns the parent component of the CellML Entity (or `None` if not set).";
 
 %feature("docstring") libcellml::Entity::hasParent
-"Tests if this entity have the given entity as a parent.";
-
-%feature("docstring") libcellml::Entity::hasAncestor
-"Tests if this entity or any of its ancestors have the given entity as a parent.";
+"Tests if this entity, or any of its parent entities, have the given entity as
+parent.";
 
 %feature("docstring") libcellml::Entity::setParent
 "Set the parent of the entity to the given Model or Component.";

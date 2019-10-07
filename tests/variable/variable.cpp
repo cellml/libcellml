@@ -377,13 +377,13 @@ TEST(Variable, parentComponent)
     libcellml::ComponentPtr c = std::make_shared<libcellml::Component>();
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
     c->addVariable(v);
-    EXPECT_EQ(c, v->parent());
+    EXPECT_EQ(c, v->parentComponent());
 }
 
 TEST(Variable, nullParentComponent)
 {
     libcellml::VariablePtr v = std::make_shared<libcellml::Variable>();
-    EXPECT_EQ(nullptr, v->parent());
+    EXPECT_EQ(nullptr, v->parentComponent());
 }
 
 TEST(Variable, hasDirectEquivalentVariable)
