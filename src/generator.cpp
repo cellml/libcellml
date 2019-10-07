@@ -1180,9 +1180,9 @@ void Generator::GeneratorImpl::processComponent(const ComponentPtr &component)
         } else if ((variable != generatorVariable->mVariable)
                    && !variable->initialValue().empty()
                    && !generatorVariable->mVariable->initialValue().empty()) {
-            ModelPtr model = std::dynamic_pointer_cast<Model>(component->parent());
+            ModelPtr model = parentModel(component);
             ComponentPtr trackedVariableComponent = std::dynamic_pointer_cast<Component>(generatorVariable->mVariable->parent());
-            ModelPtr trackedVariableModel = std::dynamic_pointer_cast<Model>(trackedVariableComponent->parent());
+            ModelPtr trackedVariableModel = parentModel(trackedVariableComponent);
             ErrorPtr err = std::make_shared<Error>();
 
             err->setDescription("Variable '" + variable->name()
@@ -1248,7 +1248,7 @@ void Generator::GeneratorImpl::processEquationAst(const GeneratorEquationAstPtr 
         } else if ((variable != mVoi)
                    && !variable->hasEquivalentVariable(mVoi)) {
             ComponentPtr voiComponent = std::dynamic_pointer_cast<Component>(mVoi->parent());
-            ModelPtr voiModel = std::dynamic_pointer_cast<Model>(voiComponent->parent());
+            ModelPtr voiModel = parentModel(voiComponent);
             ComponentPtr component = std::dynamic_pointer_cast<Component>(variable->parent());
             ModelPtr model = parentModel(component);
             ComponentPtr c1 = std::dynamic_pointer_cast<Component>(component->parent());
@@ -1456,7 +1456,7 @@ void Generator::GeneratorImpl::processModel(const ModelPtr &model)
                 ErrorPtr err = std::make_shared<Error>();
                 VariablePtr realVariable = internalVariable->mVariable;
                 ComponentPtr realComponent = std::dynamic_pointer_cast<Component>(realVariable->parent());
-                ModelPtr realModel = std::dynamic_pointer_cast<Model>(realComponent->parent());
+                ModelPtr realModel = parentModel(realComponent);
 
                 err->setDescription("Variable '" + realVariable->name()
                                     + "' in component '" + realComponent->name()
