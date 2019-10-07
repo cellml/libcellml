@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#include "libcellml/componententity.h"
-
 #include "libcellml/component.h"
-#include "libcellml/model.h"
+#include "libcellml/componententity.h"
 #include "libcellml/units.h"
 
 #include <algorithm>

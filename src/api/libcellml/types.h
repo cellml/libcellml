@@ -39,8 +39,6 @@ class Component; /**< Forward declaration of Component class. */
 using ComponentPtr = std::shared_ptr<Component>; /**< Type definition for shared component pointer. */
 class ComponentEntity; /**< Forward declaration of ComponentEntity class. */
 using ComponentEntityPtr = std::shared_ptr<ComponentEntity>; /**< Type definition for shared component entity pointer. */
-class Entity;
-using EntityPtr = std::shared_ptr<Entity>;
 class ImportedEntity; /**< Forward declaration of ImportedEntity class. */
 using ImportedEntityPtr = std::shared_ptr<ImportedEntity>; /**< Type definition for shared imported entity pointer. */
 class ImportSource; /**< Forward declaration of ImportSource class. */
@@ -53,7 +51,5 @@ class Units; /**< Forward declaration of Units class. */
 using UnitsPtr = std::shared_ptr<Units>; /**< Type definition for shared units pointer. */
 class Variable; /**< Forward declaration of Variable class. */
 using VariablePtr = std::shared_ptr<Variable>; /**< Type definition for shared variable pointer. */
-class When; /**< Forward declaration of When class. */
-using WhenPtr = std::shared_ptr<When>; /**< Type definition for shared when pointer. */
 
 } // namespace libcellml

@@ -16,7 +16,7 @@ limitations under the License.
 
 #pragma once
 
-#include "libcellml/types.h"
+#include "libcellml/exportdefinitions.h"
 
 #include <map>
 #include <string>
@@ -324,28 +324,5 @@ bool areEqual(double value1, double value2);
  * @return The @c std::string SHA-1 value.
  */
 std::string sha1(const std::string &string);
-
-/**
- * @brief Get the name of the entity.
- *
- * If the entity is a @c NamedEntity then the name of the entity will
- * be returned (which could be the empty string).  If the entity is not
- * a @c NamedEntity then the empty string will be returned.
- *
- * @param entity The entity to get the name for.
- * @return The @c std::string name of the entity.
- */
-std::string getEntityName(const EntityPtr &entity);
-
-/**
- * @brief Get the @c Model that the entity is owned by.
- *
- * Travel up the entities hierarchy to find the owning model. If
- * the entity doesn't have an owning model return the @c nullptr.
- *
- * @param entity The entity to get the owning model for.
- * @return The owning @c Model or the @c nullptr if no model owns this entity.
- */
-ModelPtr parentModel(const EntityPtr &entity);
 
 } // namespace libcellml

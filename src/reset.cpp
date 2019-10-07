@@ -15,9 +15,9 @@ limitations under the License.
 */
 
 #include "libcellml/reset.h"
-#include "libcellml/when.h"
 
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
 namespace libcellml {
@@ -38,12 +38,6 @@ struct Reset::ResetImpl
     std::string mResetValueId = ""; /**< The id of the reset_value block */
 };
 
-// std::vector<WhenPtr>::iterator Reset::ResetImpl::findWhen(const WhenPtr &when)
-// {
-//     return std::find_if(mWhens.begin(), mWhens.end(),
-//                         [=](const WhenPtr &w) -> bool { return w == when; });
-// }
-
 Reset::Reset()
     : mPimpl(new ResetImpl())
 {
@@ -60,11 +54,11 @@ Reset::Reset(const Reset &rhs)
 {
     mPimpl->mOrder = rhs.mPimpl->mOrder;
     mPimpl->mVariable = rhs.mPimpl->mVariable;
-    mPimpl->mTestVariable = rhs.mPimpl->mTestVariable; /**< The associated test_variable for the reset.*/
-    mPimpl->mTestValue = rhs.mPimpl->mTestValue; /**< The mathml string for the test_value.*/
-    mPimpl->mTestValueId = rhs.mPimpl->mTestValueId; /**< The id of the test_value block */
-    mPimpl->mResetValue = rhs.mPimpl->mResetValue; /**< The mathml string for the reset_value.*/
-    mPimpl->mResetValueId = rhs.mPimpl->mResetValueId; /**< The id of the reset_value block */
+    mPimpl->mTestVariable = rhs.mPimpl->mTestVariable;
+    mPimpl->mTestValue = rhs.mPimpl->mTestValue;
+    mPimpl->mResetValue = rhs.mPimpl->mResetValue;
+    mPimpl->mTestValueId = rhs.mPimpl->mTestValueId;
+    mPimpl->mResetValueId = rhs.mPimpl->mResetValueId;
 }
 
 Reset::Reset(Reset &&rhs) noexcept
@@ -96,14 +90,64 @@ VariablePtr Reset::variable() const
     return mPimpl->mVariable;
 }
 
-void Reset::setTestVariable(const VariablePtr &testVariable)
+void Reset::setTestVariable(const VariablePtr &variable)
 {
-    mPimpl->mTestVariable = testVariable;
+    mPimpl->mTestVariable = variable;
 }
 
 VariablePtr Reset::testVariable() const
 {
     return mPimpl->mTestVariable;
+}
+
+void Reset::appendTestValue(const std::string &math)
+{
+    mPimpl->mTestValue.append(math);
+}
+
+std::string Reset::testValue() const
+{
+    return mPimpl->mTestValue;
+}
+
+void Reset::setTestValueId(const std::string &id)
+{
+    mPimpl->mTestValueId = id;
+}
+
+std::string Reset::testValueId() const
+{
+    return mPimpl->mTestValueId;
+}
+
+void Reset::setTestValue(const std::string &math)
+{
+    mPimpl->mTestValue = math;
+}
+
+void Reset::appendResetValue(const std::string &math)
+{
+    mPimpl->mResetValue.append(math);
+}
+
+std::string Reset::resetValue() const
+{
+    return mPimpl->mResetValue;
+}
+
+void Reset::setResetValue(const std::string &math)
+{
+    mPimpl->mResetValue = math;
+}
+
+void Reset::setResetValueId(const std::string &id)
+{
+    mPimpl->mResetValueId = id;
+}
+
+std::string Reset::resetValueId() const
+{
+    return mPimpl->mResetValueId;
 }
 
 } // namespace libcellml
