@@ -16,7 +16,6 @@ limitations under the License.
 
 #include "libcellml/generator.h"
 
-
 #include <algorithm>
 #include <limits>
 #include <list>
