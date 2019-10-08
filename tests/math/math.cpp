@@ -20,8 +20,6 @@ limitations under the License.
 
 #include <libcellml>
 
-static const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
-
 TEST(Maths, setAndGetMath)
 {
     libcellml::Component c;
