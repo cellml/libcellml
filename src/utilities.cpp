@@ -398,17 +398,17 @@ std::string sha1(const std::string &string)
     return result.str();
 }
 
-std::string getEntityName(const EntityPtr &entity)
+std::string entityName(const EntityPtr &entity)
 {
     std::string name;
-    auto namedEntity = dynamic_cast<NamedEntity *>(entity.get());
+    auto namedEntity = std::dynamic_pointer_cast<NamedEntity>(entity);
     if (namedEntity != nullptr) {
         name = namedEntity->name();
     }
     return name;
 }
 
-ModelPtr parentModel(const EntityPtr &entity)
+ModelPtr owningModel(const EntityPtr &entity)
 {
     auto model = std::dynamic_pointer_cast<Model>(entity->parent());
     auto component = std::dynamic_pointer_cast<Component>(entity->parent());
@@ -419,12 +419,6 @@ ModelPtr parentModel(const EntityPtr &entity)
 
     return model;
 }
-
-// bool isSupportedMathMLElement(const XmlNodePtr &node)
-// {
-//     return (node->namespaceUri() == MATHML_NS)
-//            && std::find(supportedMathMLElements.begin(), supportedMathMLElements.end(), node->name()) != supportedMathMLElements.end();
-// }
 
 bool isStandardUnitName(const std::string &name)
 {
@@ -442,6 +436,12 @@ bool isStandardPrefixName(const std::string &name)
         result = true;
     }
     return result;
+}
+
+void removeComponentFromEntity(const EntityPtr &entity, const ComponentPtr &component)
+{
+    auto componentEntity = std::dynamic_pointer_cast<ComponentEntity>(entity);
+    componentEntity->removeComponent(component, false);
 }
 
 } // namespace libcellml
