@@ -22,7 +22,7 @@ limitations under the License.
 
 const std::string EMPTY_MATH = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"/>\n";
 
-void TEST_EXPORT dbg(const std::string &text, bool newLine=true);
+void TEST_EXPORT dbg(const std::string &text, bool newLine = true);
 
 std::string TEST_EXPORT resourcePath(const std::string &resourceRelativePath = "");
 
