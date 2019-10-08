@@ -251,7 +251,7 @@ TEST(Component, removeComponentMethods)
     c->addComponent(c1);
     c->addComponent(c1);
     c->addComponent(c1);
-    // Remove the first occurence of "child1".
+    // Remove the occurence of "child1".
     EXPECT_TRUE(c->removeComponent("child1"));
     // Cannot remove a second occurence of "child1".
     EXPECT_FALSE(c->removeComponent(c1));
@@ -504,7 +504,7 @@ TEST(Component, constructors)
     EXPECT_EQ("my_name", c3->name());
 }
 
-TEST(Component, multiParentWithAddComponentBugIssue399)
+TEST(Component, onlyOneParentAtAnyGivenTime)
 {
     libcellml::ModelPtr model = std::make_shared<libcellml::Model>();
     libcellml::ComponentPtr parent = std::make_shared<libcellml::Component>();
