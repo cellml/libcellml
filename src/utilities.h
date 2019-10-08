@@ -335,7 +335,7 @@ std::string sha1(const std::string &string);
  * @param entity The entity to get the name for.
  * @return The @c std::string name of the entity.
  */
-std::string getEntityName(const EntityPtr &entity);
+std::string entityName(const EntityPtr &entity);
 
 /**
  * @brief Get the @c Model that the entity is owned by.
